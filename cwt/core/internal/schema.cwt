@@ -1,7 +1,8 @@
 priorities = {
-	$path = $enum:priority
+	$path = $enum:priority$
 }
-$enum:priority = { fios lios ordered }
+$enum:priority$ = { fios lios ordered }
+
 sysstem_scopes = {
 	$system_scope$ = {
 		base_id = $system_scope$
@@ -22,15 +23,15 @@ types = {
 	type[$type$] = {
 		skip_root_key = { $scalar }
 		base_type = $type$
-		path = $path
-		path_file = $file_name
-		path_extension = $file_extension
+		path = $scalar
+		path_file = $scalar 
+		path_extension = $scalar
 		path_strict = $bool
 		name_field = $scalar
 		name_from_file = $bool
 		type_per_file = $bool
 		unique = $bool
-		severity = $enum:severity
+		severity = $enum:severity$
 		subtype[$subtype$] = $any
 		localisation = {
 			subtype[$subtype$] = {
@@ -46,15 +47,16 @@ types = {
 		}
 	}
 }
-$enum:severity = { error warning info hint }
+$enum:severity$ = { error warning info hint }
 
 enums = {
 	enum[$enum$] = {
 		$scalar
 	}
 	complex_enum[$complex_enum$] = {
-		path = $path
-		path_file = $file_name
+		path = $scalar
+		path_file = $scalar
+		path_extension = $scalar
 		path_strict = $bool
 		start_from_root = $bool
 		name = $any
@@ -71,7 +73,7 @@ links = {
 	$link$ = {
 		desc = $scalar
 		from_data = $bool
-		type = $enum:link_type
+		type = $enum:link_type$
 		prefix = $scalar
 		data_source = $data_expression
 		for_definition_type = $type$
@@ -79,7 +81,7 @@ links = {
 		output_scope = $scope$
 	}
 }
-$enum:link_type = { scope value both }
+$enum:link_type$ = { scope value both }
 
 localisation_links = {
 	$localisation_link$ = {
@@ -135,7 +137,7 @@ definitions = {
 ## extended
 game_rules = {
 	$game_rule$
-	$game_rule$ = $any
+	$game_rule$ = $declaration
 }
 
 ## extended
@@ -146,13 +148,13 @@ on_actions = {
 ## extended
 inline_scripts = {
 	$inline_script$
-	$inline_script$ = $any
+	$inline_script$ = $declaration
 }
 
 ## extended
 parameters = {
 	$parameter$
-	$parameter$ = $any
+	$parameter$ = $declaration
 }
 
 ## extended
@@ -169,8 +171,71 @@ dynamic_values = {
 	}
 }
 
-single_alias[$single_alias$] = $any
+single_alias[$single_alias$] = $declaration
 
-alias_name[$alias_name$:$alias_sub_name$] = $any
+alias_name[$alias_name$:$alias_sub_name$] = $declaration
 
-inline[$inline$] = $any
+inline[$inline$] = $declaration
+
+$type$ = $declaration
+
+$$data_expression = {
+	bool
+	int
+	int[$start$..$end$]
+	float
+	float[$start$..$end$]
+	scalar
+	colour_field
+	colour_field[$type$]
+
+	percentage_field
+	date_field
+	localisation
+	localisation_synced
+	localisation_inline
+	abs_filepath
+	filename
+	filename[$expression$]
+	filepath
+	filepath[$expression$]
+	icon[$expression$]
+	<modifier>
+	<technology_with_level>
+	<$definition_type_expression$>
+	value[$dynamic_value_type$]
+	value_set[$dynamic_value_type$]
+	dynamic_value[$dynamic_value_type$]
+	enum[$enum$]
+	enum[$complex_enum$]
+	scope_field
+	scope[any]
+	scope[$scope$]
+	scope_group[$scope_group$]
+	value_field
+	value_field[$scope$]
+	int_value_field
+	int_value_field[$scope$]
+	variable_field
+	variable_field_32
+	variable_field[$scope$]
+	int_variable_field
+	int_variable_field_32
+	int_variable_field[$scope$]
+	single_alias_right[$single_alias$]
+	alias_name[$alias_name$] = alias_match_left[$alias_name$]
+	alias_keys_field[$alias_name$]
+	$any
+	$parameter
+	$parameter_value
+	$localisation_parameter
+	$shader_effect
+	$database_object
+	stellaris_name_format[$format$]
+	
+	ant:$ant_expression$
+	ant.i:$ant_expression$
+	
+	re:$re$
+	re.i:$re$
+}

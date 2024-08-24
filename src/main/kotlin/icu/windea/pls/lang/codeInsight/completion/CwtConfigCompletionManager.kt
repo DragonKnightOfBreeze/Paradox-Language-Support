@@ -3,10 +3,14 @@ package icu.windea.pls.lang.codeInsight.completion
 import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.codeInsight.template.*
+import com.intellij.icons.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.config.internal.*
 import icu.windea.pls.config.configGroup.*
@@ -144,9 +148,11 @@ object CwtConfigCompletionManager {
         config: CwtMemberConfig<*>,
         processor: Processor<LookupElementBuilder>
     ): Boolean {
-        val icon = when(config) {
-            is CwtPropertyConfig -> PlsIcons.Nodes.Property
-            is CwtValueConfig -> PlsIcons.Nodes.Value
+        val icon = when {
+            schemaExpression is CwtSchemaExpression.Enum -> AllIcons.Nodes.Enum
+            config is CwtPropertyConfig -> PlsIcons.Nodes.Property
+            config is CwtValueConfig -> PlsIcons.Nodes.Value
+            else -> null
         }
         return when(schemaExpression) {
             is CwtSchemaExpression.Constant -> {
@@ -162,10 +168,11 @@ object CwtConfigCompletionManager {
             is CwtSchemaExpression.Enum -> {
                 val enumName = schemaExpression.name
                 val tailText = " by ${schemaExpression}"
-                schema.enums[enumName]?.values?.forEach {
+                val enumValueConfigs = schema.enums[enumName]?.values ?: return true
+                enumValueConfigs.process p@{
                     val element = it.pointer
                     val typeFile = element.containingFile
-                    val v = it.stringValue ?: return@forEach
+                    val v = it.stringValue ?: return@p true
                     val lookupElement = LookupElementBuilder.create(element, v)
                         .withTypeText(typeFile?.name, typeFile?.icon, true)
                         .withIcon(icon)
@@ -173,7 +180,6 @@ object CwtConfigCompletionManager {
                         .withPatchableTailText(tailText)
                     processor.process(lookupElement)
                 }
-                true
             }
             is CwtSchemaExpression.Template -> {
                 val tailText = " (template)"
@@ -197,6 +203,104 @@ object CwtConfigCompletionManager {
                 }
                 //TODO 1.3.19+
                 true
+            }
+        }
+    }
+    
+    fun completeByTemplateExpression(
+        templateExpression: CwtConfigTemplateExpression,
+        context: ExpressionContext,
+    ): Array<out LookupElement>? {
+        val icon = when {
+            templateExpression is CwtConfigTemplateExpression.Enum -> AllIcons.Nodes.Enum
+            templateExpression is CwtConfigTemplateExpression.Parameter -> AllIcons.Nodes.Parameter
+            else -> null
+        }
+        
+        val configGroup = templateExpression.context.configGroup ?: return null
+        val schema = configGroup.schemas.firstOrNull() ?: return null
+        
+        val tailText = " by ${templateExpression.text}"
+        return when(templateExpression) {
+            is CwtConfigTemplateExpression.Enum -> {
+                val enumName = templateExpression.name
+                val enumValueConfigs = schema.enums[enumName]?.values ?: return null
+                enumValueConfigs.mapNotNull p@{
+                    val element = it.pointer
+                    val typeFile = element.containingFile
+                    val v = it.stringValue ?: return@p null
+                    LookupElementBuilder.create(element, v)
+                        .withIcon(icon)
+                        .withTailText(tailText, true)
+                        .withTypeText(typeFile?.name, typeFile?.icon, true)
+                }.toTypedArray()
+            }
+            is CwtConfigTemplateExpression.Parameter -> {
+                fun createLookupItem(name: String, config: CwtConfig<*>? = null): LookupElement {
+                    return LookupElementBuilder.create(name).withPsiElement(config?.pointer?.element)
+                        .withIcon(icon)
+                        .withTailText(tailText, true)
+                }
+                
+                //currently only calculate from configs
+                when(templateExpression.name) {
+                    "system_scope" -> configGroup.systemScopes.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "localisation_locale" -> configGroup.localisationLocalesById.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "localisation_predefined_parameter" -> configGroup.localisationPredefinedParameters.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "type" -> configGroup.types.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "subtype" -> {
+                        val configPath = templateExpression.context.contextElement?.parentOfType<CwtMemberElement>(withSelf = true)?.configPath ?: return null
+                        val type = when {
+                            configPath.subPaths[0] == "types" -> configPath.subPaths.getOrNull(1)?.removeSurroundingOrNull("type[", "]") ?: return null
+                            else -> return null
+                        }
+                        configGroup.types[type]?.subtypes?.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    }
+                    "enum" -> configGroup.enums.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "complex_enum" -> configGroup.complexEnums.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "complex_enum_value" -> {
+                        val configPath = templateExpression.context.contextElement?.parentOfType<CwtMemberElement>(withSelf = true)?.configPath ?: return null
+                        val complexEnum = when {
+                            configPath.subPaths[0] == "complex_enum_values" -> configPath.subPaths.getOrNull(1) ?: return null
+                            else -> return null
+                        }
+                        configGroup.extendedComplexEnumValues[complexEnum]?.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    }
+                    "dynamic_value_type" -> configGroup.dynamicValueTypes.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "dynamic_value" -> {
+                        val configPath = templateExpression.context.contextElement?.parentOfType<CwtMemberElement>(withSelf = true)?.configPath ?: return null
+                        val complexEnum = when {
+                            configPath.subPaths[0] == "dynamic_values" -> configPath.subPaths.getOrNull(1) ?: return null
+                            else -> return null
+                        }
+                        configGroup.extendedDynamicValues[complexEnum]?.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    }
+                    "link" -> configGroup.links.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "scope" -> null //no completion yet
+                    "localisation_link" -> configGroup.localisationLinks.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "localisation_command" -> configGroup.localisationCommands.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "modifier_category" -> configGroup.modifierCategories.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "modifier" -> configGroup.modifiers.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "scope_name" -> configGroup.scopes.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "scope_group" -> configGroup.scopeGroups.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "database_object_type" -> configGroup.databaseObjectTypes.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "scripted_variable" -> configGroup.extendedScriptedVariables.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "definition" -> configGroup.extendedDefinitions.mapToArray { (n, c) -> createLookupItem(n, c.singleOrNull()) }
+                    "game_rule" -> configGroup.extendedGameRules.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "on_action" -> configGroup.extendedOnActions.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "inline_script" -> configGroup.extendedInlineScripts.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "parameter" -> configGroup.extendedParameters.mapToArray { (n, c) -> createLookupItem(n, c.singleOrNull()) }
+                    "single_alias" -> configGroup.singleAliases.mapToArray { (n, c) -> createLookupItem(n, c) }
+                    "alias_name" -> configGroup.aliasGroups.mapToArray { (n) -> createLookupItem(n) }
+                    "alias_sub_name" -> {
+                        val editor = context.editor ?: return null
+                        val currentText = editor.document.charsSequence.substring(context.templateStartOffset, context.startOffset)
+                        val aliasName = currentText.removeSurroundingOrNull("alias_name[", ":") ?: return null
+                        configGroup.aliasGroups[aliasName]?.mapToArray { (n, c) -> createLookupItem(n, c.singleOrNull()) }
+                    }
+                    "inline" -> configGroup.inlineConfigGroup.mapToArray { (n, c) -> createLookupItem(n, c.singleOrNull()) }
+                    else -> null
+                }
             }
         }
     }

@@ -7,48 +7,37 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 
-sealed interface CwtSchemaExpression : CwtExpression {
+sealed class CwtSchemaExpression(
+    override val expressionString: String
+) : CwtExpression {
+    override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
+    override fun hashCode() = expressionString.hashCode()
+    override fun toString() = expressionString
+    
     class Constant(
-        override val expressionString: String
-    ) : CwtSchemaExpression {
-        override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
-        override fun hashCode() = expressionString.hashCode()
-        override fun toString() = expressionString
-    }
+        expressionString: String
+    ) : CwtSchemaExpression(expressionString)
     
     class Template(
-        override val expressionString: String,
+        expressionString: String,
         val pattern: String,
         val parameterRanges: List<TextRange>
-    ) : CwtSchemaExpression {
-        override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
-        override fun hashCode() = expressionString.hashCode()
-        override fun toString() = expressionString
-    }
+    ) : CwtSchemaExpression(expressionString)
     
-    /**
-     * @property name 类型名。
-     */
     class Type(
-        override val expressionString: String,
+        expressionString: String,
         val name: String
-    ) : CwtSchemaExpression {
-        override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
-        override fun hashCode() = expressionString.hashCode()
-        override fun toString() = expressionString
-    }
+    ) : CwtSchemaExpression(expressionString)
     
-    /**
-     * @property name 枚举名。
-     */
     class Enum(
-        override val expressionString: String,
+        expressionString: String,
         val name: String
-    ) : CwtSchemaExpression {
-        override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
-        override fun hashCode() = expressionString.hashCode()
-        override fun toString() = expressionString
-    }
+    ) : CwtSchemaExpression(expressionString)
+    
+    class Constraint(
+        expressionString: String,
+        val name: String
+    ) : CwtSchemaExpression(expressionString)
     
     companion object Resolver {
         private val cache = CacheBuilder.newBuilder().buildCache<String, CwtSchemaExpression> { doResolve(it) }
@@ -63,12 +52,17 @@ sealed interface CwtSchemaExpression : CwtExpression {
             }
             if(indices.size == 1) {
                 run {
-                    val name = expressionString.removePrefixOrNull("\$enum:") ?: return@run
-                    return Enum(expressionString, name)
+                    val name = expressionString.removePrefixOrNull("$") ?: return@run
+                    return Type(expressionString, name)
+                }
+            } else if(indices.size == 2) {
+                run {
+                    val name = expressionString.removePrefixOrNull("$$") ?: return@run
+                    return Constraint(expressionString, name)
                 }
                 run {
-                    val name = expressionString.removePrefixOrNull("\$") ?: return@run
-                    return Type(expressionString, name)
+                    val name = expressionString.removeSurroundingOrNull("\$enum:", "$") ?: return@run
+                    return Enum(expressionString, name)
                 }
             }
             if(indices.size % 2 == 1) {
