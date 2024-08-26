@@ -18,7 +18,8 @@ cd $root_path/cwtools-ir-config
 git pull origin master && git pull https://github.com/cwtools/cwtools-ir-config master && echo "git pull cwtools-ir-config: DONE" 2>&1
 
 cd $root_path/cwtools-stellaris-config
-git pull origin master && git pull https://github.com/cwtools/cwtools-stellaris-config master && echo "git pull cwtools-stellaris-config: DONE" 2>&1
+# git pull origin master && git pull https://github.com/cwtools/cwtools-stellaris-config master && echo "git pull cwtools-stellaris-config: DONE" 2>&1
+git pull origin master && echo "git pull cwtools-stellaris-config: DONE" 2>&1
 
 cd $root_path/cwtools-vic2-config
 git pull origin master && git pull https://github.com/cwtools/cwtools-vic2-config master && echo "git pull cwtools-vic2-config: DONE" 2>&1
