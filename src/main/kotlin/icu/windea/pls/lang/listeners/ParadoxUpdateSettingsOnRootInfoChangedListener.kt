@@ -69,10 +69,6 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
             ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onAdd(modSettings)
         }
     }
-    
-    override fun onRemove(rootInfo: ParadoxRootInfo) {
-        
-    }
 }
 
 
