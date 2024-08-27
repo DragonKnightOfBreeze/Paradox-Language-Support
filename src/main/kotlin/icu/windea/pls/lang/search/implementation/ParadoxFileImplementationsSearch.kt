@@ -19,7 +19,7 @@ class ParadoxFileImplementationsSearch : QueryExecutor<PsiElement, DefinitionsSc
         val sourceElement = queryParameters.element
         if(sourceElement !is PsiFile) return true
         val fileInfo = sourceElement.fileInfo ?: return true
-        val path = fileInfo.pathToEntry.path
+        val path = fileInfo.path.path
         if(path.isEmpty()) return true
         val project = queryParameters.project
         DumbService.getInstance(project).runReadActionInSmartMode {

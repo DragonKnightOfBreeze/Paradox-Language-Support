@@ -42,8 +42,8 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
         return DataIndexer { inputData ->
             //这里索引的路径，使用相对于入口目录的路径
             val fileInfo = inputData.file.fileInfo ?: return@DataIndexer emptyMap()
-            val path = fileInfo.pathToEntry.path
-            val directoryPath = fileInfo.pathToEntry.parent
+            val path = fileInfo.path.path
+            val directoryPath = fileInfo.path.parent
             val gameType = fileInfo.rootInfo.gameType
             val included = isIncluded(inputData.file)
             val info = ParadoxFilePathInfo(directoryPath, gameType, included)

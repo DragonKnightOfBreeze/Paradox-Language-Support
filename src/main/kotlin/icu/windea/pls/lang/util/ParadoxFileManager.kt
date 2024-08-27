@@ -39,14 +39,14 @@ object ParadoxFileManager {
     /**
      * 判断目标文件能否引用另一个文件中的内容。
      *
-     * 对于某些蠢驴游戏来说，游戏目录下可以存在多个入口目录（entryPaths）。
-     * 认为模组目录以及主要入口目录（根目录或者game目录）不能引用次要入口目录（非根目录或者game目录）下的文件中的内容。
+     * 游戏目录下可以存在多个入口目录，
+     * 插件认为模组目录以及主要入口目录（游戏目录或其game子目录）不能引用次要入口目录下的文件中的内容。
      */
     fun canReference(targetFile: VirtualFile?, otherFile: VirtualFile?): Boolean {
         val target = targetFile?.fileInfo ?: return true
         val other = otherFile?.fileInfo ?: return true
-        if(target.isMainEntry()) {
-            if(!other.isMainEntry()) return false
+        if(target.inMainEntry()) {
+            if(!other.inMainEntry()) return false
         }
         return true
     }
@@ -61,7 +61,6 @@ object ParadoxFileManager {
      * 基于指定的虚拟文件创建一个临时文件。
      */
     @Deprecated("Use createLightFile()")
-    @JvmStatic
     fun createTempFile(file: VirtualFile): VirtualFile? {
         try {
             val diffDirPath = PlsConstants.Paths.diffDirectoryPath
@@ -82,7 +81,6 @@ object ParadoxFileManager {
      * 基于指定的文本和文件信息创建一个临时文件。
      */
     @Deprecated("Use createLightFile()")
-    @JvmStatic
     fun createTempFile(text: String, fileInfo: ParadoxFileInfo): VirtualFile? {
         try {
             val diffDirPath = PlsConstants.Paths.diffDirectoryPath
@@ -102,7 +100,6 @@ object ParadoxFileManager {
     /**
      * 基于指定的虚拟文件创建一个临时文件。
      */
-    @JvmStatic
     fun createLightFile(name: String, file: VirtualFile, project: Project): VirtualFile {
         //为了兼容不同的lineSeparator，这里不能直接使用document.charSequence
         val text = file.toPsiFile(project)?.text ?: throw IllegalStateException()
@@ -114,25 +111,21 @@ object ParadoxFileManager {
     /**
      * 基于指定的文本和文件信息创建一个临时文件。
      */
-    @JvmStatic
     fun createLightFile(name: String, text: CharSequence, fileInfo: ParadoxFileInfo): VirtualFile {
         val lightFile = LightVirtualFile(name, text)
         lightFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
         return lightFile
     }
     
-    @JvmStatic
     fun createLightFile(name: String, text: CharSequence, language: Language): VirtualFile {
         val lightFile = LightVirtualFile(name, language, text)
         return lightFile
     }
     
-    @JvmStatic
     fun isLightFile(file: VirtualFile): Boolean {
         return file is LightVirtualFile
     }
     
-    @JvmStatic
     fun isInjectedFile(file: VirtualFile): Boolean {
         return file is VirtualFileWindow
     }

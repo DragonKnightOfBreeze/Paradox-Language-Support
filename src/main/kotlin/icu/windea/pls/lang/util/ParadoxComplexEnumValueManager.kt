@@ -41,7 +41,7 @@ object ParadoxComplexEnumValueManager {
         if(element.text.isInlineUsage()) return null //排除是内联调用的情况
         val project = file.project
         val fileInfo = file.fileInfo ?: return null
-        val path = fileInfo.pathToEntry //这里使用pathToEntry
+        val path = fileInfo.path //这里使用pathToEntry
         val gameType = fileInfo.rootInfo.gameType
         val configGroup = getConfigGroup(project, gameType)
         for(complexEnumConfig in configGroup.complexEnums.values) {

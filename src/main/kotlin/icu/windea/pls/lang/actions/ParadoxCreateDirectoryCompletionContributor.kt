@@ -34,7 +34,7 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         if(DumbService.isDumb(directory.project)) return emptySet()
         
         val fileInfo = directory.fileInfo ?: return emptySet()
-        val path = fileInfo.pathToEntry.path //use pathToEntry here
+        val path = fileInfo.path.path //use pathToEntry here
         val gameType = fileInfo.rootInfo.gameType
         val pathPrefix = if(path.isEmpty()) "" else "$path/"
         val result = sortedSetOf<String>()

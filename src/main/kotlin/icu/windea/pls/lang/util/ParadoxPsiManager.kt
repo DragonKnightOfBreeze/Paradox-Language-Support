@@ -465,7 +465,7 @@ object ParadoxPsiManager {
     }
     
     fun isGlobalScriptedVariable(element: ParadoxScriptScriptedVariable): Boolean {
-        val path = selectFile(element)?.fileInfo?.pathToEntry?.path ?: return false
+        val path = selectFile(element)?.fileInfo?.path?.path ?: return false
         return "common/scripted_variables".matchesPath(path)
     }
     

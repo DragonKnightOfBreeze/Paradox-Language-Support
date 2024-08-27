@@ -25,7 +25,7 @@ class UnsupportedScriptedVariableUsageInspection: LocalInspectionTool() {
                         val resolved = element.reference?.resolve() ?: return
                         if(resolved.parent !is ParadoxScriptRootBlock) return //快速判断
                         val fileInfo = resolved.fileInfo ?: return
-                        if(!"common/scripted_variables".matchesPath(fileInfo.pathToEntry.path)) return
+                        if(!"common/scripted_variables".matchesPath(fileInfo.path.path)) return
                         holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedScriptedVariableUsage.desc.1"))
                     }
                 }

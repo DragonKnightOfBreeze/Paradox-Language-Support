@@ -3,7 +3,7 @@ package icu.windea.pls.model
 import icu.windea.pls.core.*
 
 /**
- * 文件或目录相对于游戏或模组根路径的路径。保留大小写。
+ * 文件路径，相对于游戏或模组目录，或者入口目录。保留大小写。
  *
  * 示例：
  * * `common/buildings/00_capital_buildings.txt`

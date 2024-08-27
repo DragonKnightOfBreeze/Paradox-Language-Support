@@ -32,7 +32,7 @@ class ParadoxDirectoryElementNode(
         if(!file.isDirectory) return false
         val fileInfo = file.fileInfo ?: return false
         if(value.gameType != fileInfo.rootInfo.gameType) return false
-        if(value.path != fileInfo.pathToEntry) return false
+        if(value.path != fileInfo.path) return false
         return true
     }
     
@@ -40,7 +40,7 @@ class ParadoxDirectoryElementNode(
         if(value == null) return false
         val fileInfo = file.fileInfo ?: return false
         if(value.gameType != fileInfo.rootInfo.gameType) return false
-        if(!value.path.path.matchesPath(fileInfo.pathToEntry.parent)) return false
+        if(!value.path.path.matchesPath(fileInfo.path.parent)) return false
         return true
     }
     
@@ -52,7 +52,7 @@ class ParadoxDirectoryElementNode(
         val files = sortedSetOf(query.getPriorityComparator()) //按照覆盖顺序进行排序
         query.processQuery p@{ file ->
             val fileInfo = file.fileInfo ?: return@p true
-            if(fileInfo.pathToEntry.parent != value.path.path) return@p true
+            if(fileInfo.path.parent != value.path.path) return@p true
             if(file.isDirectory) {
                 //直接位于入口目录中，且未被排除
                 if(!directoryNames.add(file.name)) return@p true
@@ -68,7 +68,7 @@ class ParadoxDirectoryElementNode(
         return files.mapNotNull { file ->
             if(file.isDirectory) {
                 val fileInfo = file.fileInfo ?: return@mapNotNull null
-                val element = ParadoxDirectoryElement(project, fileInfo.pathToEntry, fileInfo.rootInfo.gameType, value.preferredRootFile)
+                val element = ParadoxDirectoryElement(project, fileInfo.path, fileInfo.rootInfo.gameType, value.preferredRootFile)
                 ParadoxDirectoryElementNode(project, element, settings)
             } else {
                 val psiFile = file.toPsiFile(project) ?: return@mapNotNull null

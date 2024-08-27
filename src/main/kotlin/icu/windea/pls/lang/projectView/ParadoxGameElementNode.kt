@@ -30,7 +30,7 @@ class ParadoxGameElementNode(
         if(!file.isDirectory) return false
         val fileInfo = file.fileInfo ?: return false
         if(value.gameType != fileInfo.rootInfo.gameType) return false
-        if(fileInfo.pathToEntry.isNotEmpty()) return false
+        if(fileInfo.path.isNotEmpty()) return false
         return true
     }
     
@@ -38,7 +38,7 @@ class ParadoxGameElementNode(
         if(value == null) return false
         val fileInfo = file.fileInfo ?: return false
         if(value.gameType != fileInfo.rootInfo.gameType) return false
-        if(fileInfo.pathToEntry.isEmpty()) return false
+        if(fileInfo.path.isEmpty()) return false
         return true
     }
     
@@ -49,13 +49,13 @@ class ParadoxGameElementNode(
         val directoryNames = mutableSetOf<String>()
         ParadoxFilePathSearch.search(null, selector).processQuery p@{ file ->
             val fileInfo = file.fileInfo ?: return@p true
-            if(fileInfo.pathToEntry.length != 1) return@p true
+            if(fileInfo.path.length != 1) return@p true
             if(file.isDirectory) {
                 //直接位于入口目录中，且未被排除
                 if(!directoryNames.add(file.name)) return@p true
                 val fileData = FileBasedIndex.getInstance().getFileData(ParadoxFilePathIndex.NAME, file, project)
                 if(!fileData.values.single().included) return@p true
-                val element = ParadoxDirectoryElement(project, fileInfo.pathToEntry, fileInfo.rootInfo.gameType, value.preferredRootFile)
+                val element = ParadoxDirectoryElement(project, fileInfo.path, fileInfo.rootInfo.gameType, value.preferredRootFile)
                 val elementNode = ParadoxDirectoryElementNode(project, element, settings)
                 children += elementNode
             } else {

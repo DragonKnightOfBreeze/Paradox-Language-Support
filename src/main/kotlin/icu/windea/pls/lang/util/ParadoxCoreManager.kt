@@ -140,11 +140,10 @@ object ParadoxCoreManager {
     }
     
     private fun doGetFileInfo(file: VirtualFile, filePath: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo {
-        val path = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimStart('/'))
-        val entry = resolveEntry(path, rootInfo)
-        val pathToEntry = if(entry == null) path else ParadoxPath.resolve(path.path.removePrefix("$entry/"))
-        val fileType = ParadoxFileType.resolve(file, pathToEntry, rootInfo)
-        val fileInfo = ParadoxFileInfo(path, entry, pathToEntry, fileType, rootInfo)
+        val relPath = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimFast('/'))
+        val path = resolvePath(relPath, rootInfo)
+        val fileType = ParadoxFileType.resolve(file, path, rootInfo)
+        val fileInfo = ParadoxFileInfo(path, relPath, fileType, rootInfo)
         return fileInfo
     }
     
@@ -171,26 +170,22 @@ object ParadoxCoreManager {
     }
     
     private fun doGetFileInfo(filePath: FilePath, rootInfo: ParadoxRootInfo): ParadoxFileInfo {
-        val path = ParadoxPath.resolve(filePath.path.removePrefix(rootInfo.rootFile.path).trimStart('/'))
-        val entry = resolveEntry(path, rootInfo)
-        val pathToEntry = if(entry == null) path else ParadoxPath.resolve(path.path.removePrefix("$entry/"))
-        val fileType = ParadoxFileType.resolve(filePath, pathToEntry, rootInfo)
-        val fileInfo = ParadoxFileInfo(path, entry, pathToEntry, fileType, rootInfo)
+        val relPath = ParadoxPath.resolve(filePath.path.removePrefix(rootInfo.rootFile.path).trimFast('/'))
+        val path = resolvePath(relPath, rootInfo)
+        val fileType = ParadoxFileType.resolve(filePath, path, rootInfo)
+        val fileInfo = ParadoxFileInfo(path, relPath, fileType, rootInfo)
         return fileInfo
     }
     
-    private fun resolveEntry(path: ParadoxPath, rootInfo: ParadoxRootInfo): String? {
-        if(rootInfo is ParadoxModRootInfo) return null
-        val filePath = path.path
-        rootInfo.gameEntryPath?.let { entry ->
-            if(entry == filePath) return null
-            if(filePath.contains("$entry/")) return entry
+    private fun resolvePath(relPath: ParadoxPath, rootInfo: ParadoxRootInfo): ParadoxPath {
+        if(rootInfo is ParadoxModRootInfo) return relPath
+        rootInfo.gameEntryPath?.let { entryPath ->
+            relPath.path.removePrefixOrNull("$entryPath/")?.let { return ParadoxPath.resolve(it) }
         }
-        rootInfo.gameType.entryPaths.forEach { entry ->
-            if(entry == filePath) return null
-            if(filePath.contains("$entry/")) return entry
+        rootInfo.gameType.entryPaths.forEach { entryPath ->
+            relPath.path.removePrefixOrNull("$entryPath/")?.let { return ParadoxPath.resolve(it) }
         }
-        return null
+        return relPath
     }
     
     fun getLauncherSettingsFile(root: VirtualFile): VirtualFile? {

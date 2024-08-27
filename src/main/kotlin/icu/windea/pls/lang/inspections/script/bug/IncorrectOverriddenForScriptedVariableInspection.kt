@@ -22,7 +22,7 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
         val file = holder.file
         val project = holder.project
         val fileInfo = file.fileInfo ?: return PsiElementVisitor.EMPTY_VISITOR
-        val isGlobal = "common/scripted_variables".matchesPath(fileInfo.pathToEntry.path)
+        val isGlobal = "common/scripted_variables".matchesPath(fileInfo.path.path)
         if(!isGlobal) return PsiElementVisitor.EMPTY_VISITOR //only for global scripted variables
         val virtualFile = file.virtualFile
         val inProject = virtualFile != null && ProjectFileIndex.getInstance(project).isInContent(virtualFile)

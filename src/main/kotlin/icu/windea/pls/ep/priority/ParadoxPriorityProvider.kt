@@ -59,8 +59,8 @@ interface ParadoxPriorityProvider {
                 }
                 val fileInfo1 = file1.fileInfo ?: return@c 1
                 val fileInfo2 = file2.fileInfo ?: return@c -1
-                val path1 = fileInfo1.pathToEntry.path
-                val path2 = fileInfo2.pathToEntry.path
+                val path1 = fileInfo1.path.path
+                val path2 = fileInfo2.path.path
                 val pathResult = path1.compareTo(path2)
                 if(pathResult != 0) {
                     //文件路径不同时，基于优先级进行排序

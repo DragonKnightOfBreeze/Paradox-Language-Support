@@ -14,7 +14,7 @@ class ParadoxFilesPaneSelectInTarget(project: Project) : ProjectViewSelectInTarg
         if(vFile == null || !vFile.isValid) return false
         val fileInfo = vFile.fileInfo
         if(fileInfo == null) return false
-        if(fileInfo.pathToEntry.length == 1 && vFile.isFile) return false //排除直接位于根目录下的文件
+        if(fileInfo.path.length == 1 && vFile.isFile) return false //排除直接位于根目录下的文件
         return true
     }
     

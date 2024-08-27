@@ -47,7 +47,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         if(file.isDirectory) return null
         if(file.fileType != ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
-        if(fileInfo.pathToEntry.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
+        if(fileInfo.path.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
         //val gameType = fileInfo.rootInfo.gameType
         //val path = fileInfo.path.path
         return file

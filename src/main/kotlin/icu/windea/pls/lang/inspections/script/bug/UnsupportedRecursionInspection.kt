@@ -68,7 +68,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     
     private fun isFileToInspect(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
-        val filePath = fileInfo.pathToEntry
+        val filePath = fileInfo.path
         return "txt" == filePath.fileExtension && ("common/scripted_triggers".matchesPath(filePath.path) || "common/scripted_effects".matchesPath(filePath.path))
     }
     

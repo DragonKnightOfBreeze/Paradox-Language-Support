@@ -42,7 +42,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
             ?: return null
         if(file.isDirectory) return null
         val fileInfo = file.fileInfo ?: return null
-        if(fileInfo.pathToEntry.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
+        if(fileInfo.path.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
         //val gameType = fileInfo.rootInfo.gameType
         //val path = fileInfo.path.path
         return file
@@ -65,7 +65,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         val project = e.project ?: return null
         val file = findFile(e) ?: return null
-        val path = file.fileInfo?.pathToEntry?.path ?: return null
+        val path = file.fileInfo?.path?.path ?: return null
         val virtualFiles = Collections.synchronizedList(mutableListOf<VirtualFile>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
             runReadAction {

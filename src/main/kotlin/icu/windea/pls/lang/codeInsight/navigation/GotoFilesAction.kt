@@ -24,7 +24,7 @@ class GotoFilesAction : BaseCodeInsightAction() {
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
         val fileInfo = file.fileInfo ?: return
-        if(fileInfo.pathToEntry.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
+        if(fileInfo.path.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
         presentation.isEnabledAndVisible = true
     }
 }

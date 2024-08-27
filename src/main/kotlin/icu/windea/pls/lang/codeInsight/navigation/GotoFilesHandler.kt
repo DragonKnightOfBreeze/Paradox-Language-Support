@@ -23,7 +23,7 @@ class GotoFilesHandler : GotoTargetHandler() {
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
         val project = file.project
         val fileInfo = file.fileInfo ?: return null
-        val path = fileInfo.pathToEntry.path
+        val path = fileInfo.path.path
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
         val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
             //need read action here

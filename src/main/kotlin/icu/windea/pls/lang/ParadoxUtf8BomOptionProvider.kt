@@ -11,7 +11,7 @@ class ParadoxUtf8BomOptionProvider : Utf8BomOptionProvider {
 	override fun shouldAddBOMForNewUtf8File(file: VirtualFile): Boolean {
 		val fileInfo = file.fileInfo ?: return false
 		return when(fileInfo.fileType) {
-			ParadoxFileType.ParadoxScript -> fileInfo.pathToEntry.parent.startsWith("common/name_lists")
+			ParadoxFileType.ParadoxScript -> fileInfo.path.parent.startsWith("common/name_lists")
 			ParadoxFileType.ParadoxLocalisation -> true
 			else -> false
 		}

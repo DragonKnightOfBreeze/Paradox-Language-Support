@@ -44,7 +44,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     
     private fun isFileToInspect(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
-        val filePath = fileInfo.pathToEntry
+        val filePath = fileInfo.path
         return filePath.canBeLocalisationPath()
     }
     

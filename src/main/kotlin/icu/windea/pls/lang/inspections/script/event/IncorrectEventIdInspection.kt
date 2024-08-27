@@ -39,7 +39,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
     
     private fun isEventScriptFile(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
-        val filePath = fileInfo.pathToEntry
+        val filePath = fileInfo.path
         return "txt" == filePath.fileExtension && "events".matchesPath(filePath.path)
     }
 }

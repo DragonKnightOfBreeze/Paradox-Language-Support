@@ -69,7 +69,7 @@ object ParadoxScriptedVariableManager {
         val parentType = node.treeParent.elementType
         if(parentType != ROOT_BLOCK) return false
         val file = selectFile(node.psi) ?: return false
-        val pathToEntry = file.fileInfo?.pathToEntry?.path ?: return false
+        val pathToEntry = file.fileInfo?.path?.path ?: return false
         return "common/scripted_variables".matchesPath(pathToEntry, acceptSelf = false)
     }
     
@@ -78,7 +78,7 @@ object ParadoxScriptedVariableManager {
         val parentType = tree.getParent(node)?.tokenType
         if(parentType != ROOT_BLOCK) return false
         val file = selectFile(parentStub.psi) ?: return false
-        val pathToEntry = file.fileInfo?.pathToEntry?.path ?: return false
+        val pathToEntry = file.fileInfo?.path?.path ?: return false
         return "common/scripted_variables".matchesPath(pathToEntry, acceptSelf = false)
     }
 }

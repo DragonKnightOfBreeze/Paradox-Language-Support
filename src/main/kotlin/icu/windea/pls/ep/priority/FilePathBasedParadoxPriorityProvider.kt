@@ -66,7 +66,7 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
     private fun getFilePaths(target: Any, filePaths: MutableSet<String>) {
         when {
             target is ParadoxScriptScriptedVariable -> {
-                val targetPath = target.fileInfo?.pathToEntry?.path ?: return
+                val targetPath = target.fileInfo?.path?.path ?: return
                 filePaths += ("common/scripted_variables".takeIf { it.matchesPath(targetPath) } ?: return)
             }
             target is ParadoxScriptDefinitionElement -> {

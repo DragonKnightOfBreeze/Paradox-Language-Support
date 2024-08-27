@@ -260,7 +260,7 @@ object ParadoxCompletionManager {
         val fileInfo = originalFile.fileInfo ?: return
         val gameType = context.gameType ?: return
         val configGroup = context.configGroup ?: return
-        val path = fileInfo.pathToEntry //这里使用pathToEntry
+        val path = fileInfo.path //这里使用pathToEntry
         val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
         for(typeConfig in configGroup.types.values) {
             if(ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(path, null, null, typeConfig)) {
@@ -483,7 +483,7 @@ object ParadoxCompletionManager {
             ParadoxFilePathSearch.search(configExpression, selector).processQueryAsync p@{ virtualFile ->
                 ProgressManager.checkCanceled()
                 val file = virtualFile.toPsiFile(project) ?: return@p true
-                val filePath = virtualFile.fileInfo?.pathToEntry?.path ?: return@p true
+                val filePath = virtualFile.fileInfo?.path?.path ?: return@p true
                 val name = pathReferenceExpressionSupport.extract(configExpression, contextFile, filePath) ?: return@p true
                 val icon = when {
                     ParadoxInlineScriptManager.isInlineScriptExpressionConfig(config) -> PlsIcons.Nodes.InlineScript

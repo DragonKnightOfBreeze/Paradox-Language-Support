@@ -51,7 +51,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
             //key_ = { ... }
             element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockMember()) -> {
                 val fileInfo = file.fileInfo ?: return
-                val path = fileInfo.pathToEntry //这里使用pathToEntry
+                val path = fileInfo.path //这里使用pathToEntry
                 val elementPath = ParadoxExpressionPathManager.get(element, PlsConstants.Settings.maxDefinitionDepth) ?: return
                 if(elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
                 for(typeConfig in configGroup.types.values) {
