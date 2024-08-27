@@ -272,7 +272,10 @@ object CwtConfigManager {
                 value.matchesPattern(schemaExpression.pattern)
             }
             is CwtSchemaExpression.Type -> {
-                true //TODO 1.3.19+ 
+                true //fast check
+            }
+            is CwtSchemaExpression.Constraint -> {
+                false //fast check 
             }
         }
     }

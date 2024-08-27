@@ -204,6 +204,7 @@ object CwtConfigCompletionManager {
                 //TODO 1.3.19+
                 true
             }
+            is CwtSchemaExpression.Constraint -> true
         }
     }
     
