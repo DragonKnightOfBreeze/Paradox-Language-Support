@@ -2,6 +2,7 @@ package icu.windea.pls.lang.util
 
 import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.daemon.*
+import com.intellij.injected.editor.VirtualFileWindow
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileEditor.*
@@ -45,6 +46,7 @@ object ParadoxCoreManager {
             val _cachedRootInfo = rootFile.getUserData(PlsKeys.rootInfo)
             if(_cachedRootInfo != null) return _cachedRootInfo.castOrNull()
             
+            //resolve rootInfo
             try {
                 val rootInfo = doGetRootInfo(rootFile)
                 if(rootInfo != null) {
@@ -102,6 +104,13 @@ object ParadoxCoreManager {
             val _cachedFileInfo = file.getUserData(PlsKeys.fileInfo)
             if(_cachedFileInfo != null) return _cachedFileInfo.castOrNull()
             
+            //no fileInfo for VirtualFileWindow (injected PSI)
+            if(file is VirtualFileWindow) {
+                file.tryPutUserData(PlsKeys.fileInfo, EMPTY_OBJECT)
+                return null
+            }
+            
+            //resolve fileInfo by file path
             try {
                 val filePath = file.path
                 var currentFilePath = filePath.toPathOrNull() ?: return null

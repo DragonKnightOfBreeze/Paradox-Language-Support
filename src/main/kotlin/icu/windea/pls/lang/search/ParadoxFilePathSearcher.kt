@@ -31,7 +31,8 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 val keys = FileBasedIndex.getInstance().getAllKeys(ParadoxFilePathIndex.NAME, project)
                 FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
-                    ParadoxCoreManager.getFileInfo(file) ?: return@p true //ensure file info is resolved here
+                    val fileInfo = ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
+                    if(fileInfo == null) return@p true
                     if(gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level
                     consumer.process(file)
                 }
@@ -39,7 +40,8 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 val keys = getFilePaths(filePath, queryParameters)
                 FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
-                    ParadoxCoreManager.getFileInfo(file) ?: return@p true //ensure file info is resolved here
+                    val fileInfo = ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
+                    if(fileInfo == null) return@p true
                     if(gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level
                     consumer.process(file)
                 }
@@ -54,7 +56,8 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 }, scope, null)
                 FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) p@{ file ->
                     ProgressManager.checkCanceled()
-                    ParadoxCoreManager.getFileInfo(file) ?: return@p true //ensure file info is resolved here
+                    val fileInfo = ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
+                    if(fileInfo == null) return@p true
                     if(gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level
                     consumer.process(file)
                 }
@@ -64,7 +67,8 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                     val keys = resolvedPaths
                     FileBasedIndex.getInstance().processFilesContainingAnyKey(ParadoxFilePathIndex.NAME, keys, scope, null, null) p@{ file ->
                         ProgressManager.checkCanceled()
-                        ParadoxCoreManager.getFileInfo(file) ?: return@p true //ensure file info is resolved here
+                        val fileInfo = ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
+                        if(fileInfo == null) return@p true
                         if(gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level
                         consumer.process(file)
                     }
@@ -74,10 +78,10 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 if(resolvedFileNames.isNotNullOrEmpty()) {
                     FilenameIndex.processFilesByNames(resolvedFileNames, false, scope, null) p@{ file ->
                         ProgressManager.checkCanceled()
-                        val fileInfo = ParadoxCoreManager.getFileInfo(file) ?: return@p true //ensure file info is resolved here
+                        val fileInfo = ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
+                        if(fileInfo == null) return@p true
                         if(gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level
-                        val p = fileInfo.path.path
-                        if(!support.matches(configExpression, contextElement, p)) return@p true
+                        if(!support.matches(configExpression, contextElement, fileInfo.path.path)) return@p true
                         consumer.process(file)
                     }
                 }

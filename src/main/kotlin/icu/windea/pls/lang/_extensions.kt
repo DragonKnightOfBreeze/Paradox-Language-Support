@@ -179,7 +179,7 @@ tailrec fun selectRootFile(from: Any?): VirtualFile? {
 tailrec fun selectFile(from: Any?): VirtualFile? {
     return when {
         from == null -> null
-        from is VirtualFileWindow -> from.castOrNull() //for injected PSI (and not from.delegate)
+        from is VirtualFileWindow -> from.castOrNull() //for injected PSI (result is from, not from.delegate)
         from is LightVirtualFileBase && from.originalFile != null -> selectFile(from.originalFile)
         from is VirtualFile -> from
         from is PsiDirectory -> selectFile(from.virtualFile)

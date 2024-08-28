@@ -1,10 +1,9 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.injected.editor.VirtualFileWindow
+import com.intellij.injected.editor.*
 import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.vcs.FilePath
+import com.intellij.openapi.vcs.*
 import com.intellij.openapi.vfs.*
-import com.intellij.testFramework.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
@@ -39,8 +38,10 @@ object ParadoxFilePathManager {
     
     fun canBeScriptOrLocalisationFile(file: VirtualFile): Boolean {
         //require pre-check from user data
+        //require further check for VirtualFileWindow (injected PSI)
+        
         if(file is VirtualFileWithoutContent) return false
-        if(file is VirtualFileWindow) return true //require further check for VirtualFileWindow (injected PSI)
+        if(file is VirtualFileWindow) return true
         val fileName = file.name.lowercase()
         val fileExtension = file.extension?.lowercase() ?: return false
         return when {
