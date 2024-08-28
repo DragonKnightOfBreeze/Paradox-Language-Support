@@ -6,6 +6,8 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
@@ -18,6 +20,8 @@ class UnresolvedIconInspection : LocalInspectionTool() {
     @JvmField var ignoredIconNames = ""
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -35,6 +39,12 @@ class UnresolvedIconInspection : LocalInspectionTool() {
                 holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedIcon.desc", iconName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        val fileInfo = file.fileInfo ?: return false
+        val filePath = fileInfo.path
+        return ParadoxFilePathManager.inLocalisationPath(filePath)
     }
     
     override fun createOptionsPanel(): JComponent {

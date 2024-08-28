@@ -14,6 +14,8 @@ import icu.windea.pls.localisation.psi.*
 
 class IncorrectScopeInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         val configGroup = getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -66,5 +68,11 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                 }
             }
         }
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        val fileInfo = file.fileInfo ?: return false
+        val filePath = fileInfo.path
+        return ParadoxFilePathManager.inLocalisationPath(filePath)
     }
 }

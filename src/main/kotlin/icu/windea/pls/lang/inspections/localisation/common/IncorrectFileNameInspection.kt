@@ -13,7 +13,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 
 /**
  * 不正确的文件名的检查。
@@ -25,10 +24,9 @@ import icu.windea.pls.model.*
  */
 class IncorrectFileNameInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if(file !is ParadoxLocalisationFile) return null //不期望的结果
-        val fileInfo = file.fileInfo ?: return null
-        if(!fileInfo.path.canBeLocalisationPath()) return null //仅对于localisation
-        if(ParadoxFileManager.isLightFile(file.virtualFile)) return null //不检查临时文件
+        if(file !is ParadoxLocalisationFile) return null
+        if(!shouldCheckFile(file)) return null
+        
         //仅对于存在且仅存在一个locale的本地化文件
         var theOnlyPropertyList: ParadoxLocalisationPropertyList? = null
         file.processChildrenOfType<ParadoxLocalisationPropertyList> {
@@ -55,6 +53,13 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
         //将检查注册在locale上，而非file上
         holder.registerProblem(locale, PlsBundle.message("inspection.localisation.incorrectFileName.desc", fileName, localeId), *quickFixes)
         return holder.resultsArray
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if(ParadoxFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        val fileInfo = file.fileInfo ?: return false
+        val filePath = fileInfo.path
+        return ParadoxFilePathManager.inLocalisationPath(filePath)
     }
 	
 	//org.jetbrains.kotlin.idea.intentions.RenameFileToMatchClassIntention

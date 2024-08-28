@@ -26,6 +26,8 @@ import icu.windea.pls.script.psi.*
  */
 class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -47,6 +49,12 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
         }
     }
     
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        val fileInfo = file.fileInfo ?: return false
+        val filePath = fileInfo.path
+        return ParadoxFilePathManager.inLocalisationPath(filePath)
+    }
+    
     private class IntroduceGlobalVariableFix(
         private val variableName: String,
         element: ParadoxScriptedVariableReference,
@@ -60,7 +68,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
         override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
             //打开对话框
             val virtualFile = file.virtualFile ?: return
-            val scriptedVariablesDirectory = ParadoxFileManager.getScriptedVariablesDirectory(virtualFile) ?: return //不期望的结果
+            val scriptedVariablesDirectory = ParadoxFilePathManager.getScriptedVariablesDirectory(virtualFile) ?: return //不期望的结果
             val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, variableName, "0")
             if(!dialog.showAndGet()) return //取消
             

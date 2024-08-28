@@ -9,6 +9,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
@@ -21,10 +22,9 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
     @JvmField var ignoredByConfigs = false
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val file = holder.file
-        val project = holder.project
-        val configGroup = getConfigGroup(project, selectGameType(file))
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
         
+        val configGroup = getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -49,6 +49,12 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
                 return false
             }
         }
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        val fileInfo = file.fileInfo ?: return false
+        val filePath = fileInfo.path
+        return ParadoxFilePathManager.inLocalisationPath(filePath)
     }
     
     override fun createOptionsPanel(): JComponent {

@@ -2,6 +2,7 @@ package icu.windea.pls.lang
 
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.encoding.*
+import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 
 /**
@@ -11,8 +12,8 @@ class ParadoxUtf8BomOptionProvider : Utf8BomOptionProvider {
 	override fun shouldAddBOMForNewUtf8File(file: VirtualFile): Boolean {
 		val fileInfo = file.fileInfo ?: return false
 		return when(fileInfo.fileType) {
-			ParadoxFileType.ParadoxScript -> fileInfo.path.parent.startsWith("common/name_lists")
-			ParadoxFileType.ParadoxLocalisation -> true
+			ParadoxFileType.Script -> "common/name_lists".matchesPath(fileInfo.path.parent)
+			ParadoxFileType.Localisation -> true
 			else -> false
 		}
 	}

@@ -9,7 +9,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 
 /**
  * （对于本地化文件）检查是否存在不支持的递归。
@@ -19,7 +18,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     //目前仅做检查即可，不需要显示递归的装订线图标
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if(!isFileToInspect(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -42,10 +42,10 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
         }
     }
     
-    private fun isFileToInspect(file: PsiFile): Boolean {
+    private fun shouldCheckFile(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         val filePath = fileInfo.path
-        return filePath.canBeLocalisationPath()
+        return ParadoxFilePathManager.inLocalisationPath(filePath)
     }
     
     private class NavigateToRecursionFix(key: String, target: PsiElement, recursions: Collection<PsiElement>) : NavigateToFix(key, target, recursions) {

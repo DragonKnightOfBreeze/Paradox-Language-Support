@@ -8,6 +8,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
@@ -20,6 +21,8 @@ class IncorrectCommandExpressionInspection : LocalInspectionTool() {
     @JvmField var reportsUnresolved = true
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         val configGroup = getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -45,6 +48,12 @@ class IncorrectCommandExpressionInspection : LocalInspectionTool() {
                 holder.registerExpressionError(error, element)
             }
         }
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        val fileInfo = file.fileInfo ?: return false
+        val filePath = fileInfo.path
+        return ParadoxFilePathManager.inLocalisationPath(filePath)
     }
     
     override fun createOptionsPanel(): JComponent {

@@ -22,7 +22,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     //在定义声明级别进行此项检查
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if(!isFileToInspect(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -66,10 +67,12 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
         }
     }
     
-    private fun isFileToInspect(file: PsiFile): Boolean {
+    private fun shouldCheckFile(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         val filePath = fileInfo.path
-        return "txt" == filePath.fileExtension && ("common/scripted_triggers".matchesPath(filePath.path) || "common/scripted_effects".matchesPath(filePath.path))
+        if(filePath.fileExtension?.lowercase() != "txt") return false
+        if(!"common/scripted_triggers".matchesPath(filePath.path) && !"common/scripted_effects".matchesPath(filePath.path)) return false
+        return true
     }
     
     private class NavigateToRecursionFix(key: String, target: PsiElement, recursions: Collection<PsiElement>) : NavigateToFix(key, target, recursions) {

@@ -5,7 +5,9 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import kotlin.collections.component1
 import kotlin.collections.component2

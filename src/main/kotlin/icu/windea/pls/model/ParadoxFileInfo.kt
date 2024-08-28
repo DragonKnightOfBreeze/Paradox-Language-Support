@@ -27,13 +27,4 @@ class ParadoxFileInfo(
     fun inMainEntry(): Boolean {
         return relPath == path || relPath.root == "game"
     }
-    
-    fun getIcon(): Icon? {
-        return when {
-            fileType == ParadoxFileType.ParadoxScript && relPath.fileName.equals(PlsConstants.descriptorFileName, true) -> PlsIcons.FileTypes.ModeDescriptor
-            fileType == ParadoxFileType.ParadoxScript -> PlsIcons.FileTypes.ParadoxScript
-            fileType == ParadoxFileType.ParadoxLocalisation -> PlsIcons.FileTypes.ParadoxLocalisation
-            else -> null
-        }
-    }
 }

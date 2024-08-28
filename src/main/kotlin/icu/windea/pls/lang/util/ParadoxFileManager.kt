@@ -24,18 +24,6 @@ object ParadoxFileManager {
         val fileExtensions by createKey<Set<String>>(this)
     }
     
-    const val scriptedVariablesPath = "common/scripted_variables"
-    
-    fun getRootDirectory(context: VirtualFile): VirtualFile? {
-        return context.fileInfo?.rootInfo?.gameRootFile
-    }
-    
-    fun getScriptedVariablesDirectory(context: VirtualFile): VirtualFile? {
-        val root = getRootDirectory(context) ?: return null
-        VfsUtil.createDirectoryIfMissing(root, scriptedVariablesPath)
-        return root.findFileByRelativePath(scriptedVariablesPath)
-    }
-    
     /**
      * 判断目标文件能否引用另一个文件中的内容。
      *

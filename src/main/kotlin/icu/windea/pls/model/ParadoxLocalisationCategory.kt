@@ -4,6 +4,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 
 enum class ParadoxLocalisationCategory(
@@ -31,10 +32,10 @@ enum class ParadoxLocalisationCategory(
 		@JvmStatic
 		fun resolve(path: ParadoxPath): ParadoxLocalisationCategory? {
 			return when {
-				path.canBeLocalisationPath() -> Localisation
-				path.canBeSyncedLocalisationPath() -> SyncedLocalisation
-				else -> null
-			}
+                ParadoxFilePathManager.inLocalisationPath(path, synced = true) -> Localisation
+                ParadoxFilePathManager.inLocalisationPath(path, synced = false) -> SyncedLocalisation
+                else -> null
+            }
 		}
 		
 		@JvmStatic

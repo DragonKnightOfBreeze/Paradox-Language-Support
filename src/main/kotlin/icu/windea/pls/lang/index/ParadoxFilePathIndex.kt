@@ -95,11 +95,11 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
             if(fileName in EXCLUDED_DIRECTORIES) return false //排除一些特定的目录
             return true
         }
-        val extension = fileName.substringAfterLast('.')
-        if(extension.isEmpty()) return false
-        return extension in PlsConstants.scriptFileExtensions
-            || extension in PlsConstants.localisationFileExtensions
-            || extension in PlsConstants.imageFileExtensions
+        val fileExtension = fileName.substringAfterLast('.')
+        if(fileExtension.isEmpty()) return false
+        return fileExtension in PlsConstants.scriptFileExtensions
+            || fileExtension in PlsConstants.localisationFileExtensions
+            || fileExtension in PlsConstants.imageFileExtensions
     }
 }
 

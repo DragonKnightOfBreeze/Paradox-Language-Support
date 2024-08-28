@@ -1,6 +1,7 @@
 package icu.windea.pls.model
 
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.*
 
 /**
  * 文件路径，相对于游戏或模组目录，或者入口目录。保留大小写。
@@ -32,22 +33,6 @@ interface ParadoxPath : Iterable<String> {
         
         fun resolve(subPaths: List<String>): ParadoxPath = doResolve(subPaths)
     }
-}
-
-fun ParadoxPath.canBeScriptFilePath(): Boolean {
-    return !canBeLocalisationFilePath()
-}
-
-fun ParadoxPath.canBeLocalisationFilePath(): Boolean {
-    return canBeLocalisationPath() || canBeSyncedLocalisationPath()
-}
-
-fun ParadoxPath.canBeLocalisationPath(): Boolean {
-    return root == "localisation" || root == "localization"
-}
-
-fun ParadoxPath.canBeSyncedLocalisationPath(): Boolean {
-    return root == "localisation_synced" || root == "localization_synced"
 }
 
 //Implementations (interned)
