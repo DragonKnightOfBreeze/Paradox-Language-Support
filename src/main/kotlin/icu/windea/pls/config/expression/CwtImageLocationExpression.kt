@@ -134,8 +134,8 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                 if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
-                return withRecursionGuard("icu.windea.pls.lang.cwt.expression.CwtImageLocationExpression.resolve") {
-                    withCheckRecursion(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
+                return withRecursionGuard {
+                    withRecursionCheck(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
                         primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
                             val locationExpression = primaryImageConfig.locationExpression
                             val r = locationExpression.resolve(resolvedDefinition, resolvedDefinitionInfo, newFrameInfo, true)
@@ -185,8 +185,8 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
                     }
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                     if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
-                    return withRecursionGuard("icu.windea.pls.lang.cwt.expression.CwtImageLocationExpression.resolve") {
-                        withCheckRecursion(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
+                    return withRecursionGuard {
+                        withRecursionCheck(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
                             primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
                                 val locationExpression = primaryImageConfig.locationExpression
                                 val r = locationExpression.resolve(resolvedDefinition, resolvedDefinitionInfo, newFrameInfo, toFile)
@@ -223,8 +223,8 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                 if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
-                return withRecursionGuard("icu.windea.pls.lang.cwt.expression.CwtImageLocationExpression.resolveAll") {
-                    withCheckRecursion(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
+                return withRecursionGuard {
+                    withRecursionCheck(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
                         var resolvedFilePath: String? = null
                         var resolvedElements: MutableSet<PsiElement>? = null
                         for(primaryImageConfig in primaryImageConfigs) {
@@ -283,8 +283,8 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
                     }
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                     if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
-                    return withRecursionGuard("icu.windea.pls.lang.cwt.expression.CwtImageLocationExpression.resolveAll") {
-                        withCheckRecursion(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
+                    return withRecursionGuard {
+                        withRecursionCheck(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
                             var resolvedFilePath: String? = null
                             var resolvedElements: MutableSet<PsiElement>? = null
                             for(primaryImageConfig in primaryImageConfigs) {

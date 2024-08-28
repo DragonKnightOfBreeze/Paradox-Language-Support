@@ -673,6 +673,3 @@ fun URL.toPath() = Paths.get(this.toURI())
 typealias FloatRange = ClosedRange<Float>
 
 operator fun FloatRange.contains(element: Float?) = element != null && contains(element)
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun DataOutput.writeByte(v: Byte) = writeByte(v.toInt())

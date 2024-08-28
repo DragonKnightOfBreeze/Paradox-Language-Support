@@ -150,8 +150,8 @@ object ParadoxInlineScriptManager {
     fun getInferredContextConfigs(contextElement: ParadoxScriptMemberElement, inlineScriptExpression: String, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
         if(!getSettings().inference.configContextForInlineScripts) return emptyList()
         
-        return withRecursionGuard("icu.windea.pls.lang.ParadoxInlineScriptManager.getInferredContextConfigs") {
-            withCheckRecursion(inlineScriptExpression) {
+        return withRecursionGuard {
+            withRecursionCheck(inlineScriptExpression) {
                 context.inlineScriptHasConflict = false
                 context.inlineScriptHasRecursion = false
                 doGetInferredContextConfigs(contextElement, context, inlineScriptExpression, matchOptions)

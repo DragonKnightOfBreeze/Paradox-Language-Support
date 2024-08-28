@@ -24,6 +24,8 @@ inline fun <T, V> DataOutput.writeOrWriteFrom(value: T, from: T?, selector: (T) 
     writeAction(selector(value))
 }
 
+inline fun DataOutput.writeByte(v: Byte) = writeByte(v.toInt())
+
 inline fun DataInput.readIntFast(): Int = DataInputOutputUtil.readINT(this)
 
 inline fun DataOutput.writeIntFast(value: Int) = DataInputOutputUtil.writeINT(this, value)

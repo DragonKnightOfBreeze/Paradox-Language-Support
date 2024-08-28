@@ -82,8 +82,8 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
-        return withRecursionGuard("icu.windea.pls.lang.scope.ParadoxBaseDefinitionInferredScopeContextProvider.doProcessQuery") {
-            withCheckRecursion(definitionInfo.name + "@" + definitionInfo.type) {
+        return withRecursionGuard {
+            withRecursionCheck(definitionInfo.name + "@" + definitionInfo.type) {
                 val indexId = ParadoxExpressionIndexId.InferredScopeContextAwareDefinition
                 ParadoxExpressionIndex.processQuery(indexId, project, gameType, searchScope) p@{ file, infos ->
                     val psiFile = file.toPsiFile(project) ?: return@p true
@@ -186,7 +186,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
-        return withRecursionGuard("icu.windea.pls.lang.scope.ParadoxEventInEventInferredScopeContextProvider.doProcessQuery") {
+        return withRecursionGuard {
             if(depth == 1) stackTrace.addLast(thisEventName)
             
             val indexId = ParadoxExpressionIndexId.EventInOnAction
@@ -196,7 +196,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
                     val eventName = info.eventName
                     if(eventName != thisEventName) return@f
                     val containingOnActionName = info.containingOnActionName
-                    withCheckRecursion(containingOnActionName) {
+                    withRecursionCheck(containingOnActionName) {
                         //这里使用psiFile作为contextElement
                         val config = configGroup.extendedOnActions.findFromPattern(containingOnActionName, psiFile, configGroup)
                         if(config == null) return@f //missing
@@ -291,7 +291,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
-        return withRecursionGuard("icu.windea.pls.lang.scope.ParadoxEventInEventInferredScopeContextProvider.doProcessQuery") {
+        return withRecursionGuard {
             if(depth == 1) stackTrace.addLast(thisEventName)
             
             val toRef = "from".repeat(depth)
@@ -302,7 +302,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                     val eventName = info.eventName
                     if(eventName != thisEventName) return@f
                     val containingEventName = info.containingEventName
-                    withCheckRecursion(containingEventName) {
+                    withRecursionCheck(containingEventName) {
                         val scopesElementOffset = info.scopesElementOffset
                         if(scopesElementOffset != -1) {
                             //从scopes = { ... }中推断
@@ -441,7 +441,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
-        return withRecursionGuard("icu.windea.pls.lang.scope.ParadoxOnActionInEventInferredScopeContextProvider.doProcessQuery") {
+        return withRecursionGuard {
             if(depth == 1) stackTrace.addLast(thisOnActionName)
             
             val toRef = "from".repeat(depth)
@@ -452,7 +452,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                     val onActionName = info.onActionName
                     if(onActionName != thisOnActionName) return@f
                     val containingEventName = info.containingEventName
-                    withCheckRecursion(containingEventName) {
+                    withRecursionCheck(containingEventName) {
                         val scopesElementOffset = info.scopesElementOffset
                         if(scopesElementOffset != -1) {
                             //从scopes = { ... }中推断

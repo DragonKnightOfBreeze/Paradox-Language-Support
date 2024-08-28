@@ -1,20 +1,29 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package icu.windea.pls.core
 
 import com.intellij.openapi.util.*
 
-object SmartRecursionGuardContext {
-    val recursionGuardCacheThreadLocal: ThreadLocal<MutableMap<String, SmartRecursionGuard>> by lazy { ThreadLocal.withInitial { mutableMapOf() } }
+class SmartRecursionGuard(val key: Any) {
+    val stackTrace = ArrayDeque<Any>()
+    
+    companion object {
+        val cache: ThreadLocal<MutableMap<String, SmartRecursionGuard>> by lazy { ThreadLocal.withInitial { mutableMapOf() } }
+    }
 }
 
 /**
- * 执行一段代码并尝试避免SOE。
+ * 执行一段代码，并通过[SmartRecursionGuard]尝试避免堆栈溢出。
  */
-inline fun <T> withRecursionGuard(key: String, action: SmartRecursionGuard.() -> T): T? {
-    val recursionGuardCache = SmartRecursionGuardContext.recursionGuardCacheThreadLocal.get()
+inline fun <T> withRecursionGuard(action: SmartRecursionGuard.() -> T): T? {
+    val recursionGuardCache = SmartRecursionGuard.cache.get()
+    val currentStackTrace = getCurrentStackTrace()
+    val currentStack = currentStackTrace.firstOrNull()
+    val key = currentStack?.let { "${it.className}.${it.methodName}#${it.lineNumber}" } ?: ""
+    println(key)
     val cached = recursionGuardCache.get(key)
     try {
-        val recursionGuard = cached
-            ?: SmartRecursionGuard().also { recursionGuardCache.put(key, it) }
+        val recursionGuard = cached ?: SmartRecursionGuard(key).also { recursionGuardCache.put(key, it) }
         return recursionGuard.action()
     } catch(e1: StackOverflowError) {
         return null
@@ -28,49 +37,36 @@ inline fun <T> withRecursionGuard(key: String, action: SmartRecursionGuard.() ->
 }
 
 /**
- * 用于基于传入的键避免SOE。
+ * 如果指定的[key]未存在于[SmartRecursionGuard.stackTrace]中，则入栈并执行指定的一段代码[action]，否则直接返回null。
  */
-class SmartRecursionGuard {
-    val stackTrace = ArrayDeque<Any>()
-    var checkStatus = false
-    
-    /**
-     * 如果将要发生SOE则执行指定的一段代码。
-     */
-    inline fun onRecursion(key: Any, action: () -> Unit) {
-        if(stackTrace.contains(key)) {
-            action()
-        }
+inline fun <T> SmartRecursionGuard.withRecursionCheck(key: Any, action: () -> T): T? {
+    if(stackTrace.contains(key)) {
+        return null
     }
-    
-    /**
-     * 判断当前键是否出现在之前的堆栈中。如果没有出现，添加到堆栈中。
-     */
-    inline fun <T> withCheckRecursion(key: Any, action: () -> T): T? {
-        if(stackTrace.contains(key)) {
-            checkStatus = true
-            return null
-        }
-        stackTrace.addLast(key)
-        try {
-            return action()
-        } finally {
-            stackTrace.removeLast()
-        }
+    stackTrace.addLast(key)
+    try {
+        return action()
+    } finally {
+        stackTrace.removeLast()
     }
+}
+
+/**
+ * 得到当前堆栈。
+ */
+inline fun getCurrentStackTrace(): Array<StackTraceElement> {
+    return Exception().stackTrace
 }
 
 /**
  * 判断当前堆栈对应的方法是否出现在之前的堆栈中。
  */
 fun checkMethodRecursion(): Boolean {
-    val stackTrace = Thread.currentThread().stackTrace
-    if(stackTrace.size <= 2) return false
-    val currentStack = stackTrace[1]
-    val size = stackTrace.size
-    var i = 2
-    while(i < size) {
-        val stack = stackTrace[i]
+    val currentStackTrace = getCurrentStackTrace()
+    val currentStack = currentStackTrace.firstOrNull() ?: return false
+    var i = 1
+    while(i < currentStackTrace.size) {
+        val stack = currentStackTrace[i]
         if(currentStack.className == stack.className && currentStack.methodName == stack.methodName) return true
         i++
     }

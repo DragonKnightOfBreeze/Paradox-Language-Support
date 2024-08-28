@@ -42,8 +42,8 @@ class CwtConfigContext(
         val rootFile = selectRootFile(element) ?: return emptyList()
         val cache = configGroup.configsCache.value.get(rootFile)
         val cachedKey = doGetCacheKey(matchOptions) ?: return emptyList()
-        val cached = withRecursionGuard("icu.windea.pls.config.config.CwtConfigContext.getConfigs") {
-            withCheckRecursion(cachedKey) action@{
+        val cached = withRecursionGuard {
+            withRecursionCheck(cachedKey) action@{
                 try {
                     //use lock-freeze ConcurrentMap.getOrPut to prevent IDE freezing problems
                     cache.asMap().getOrPut(cachedKey) {
