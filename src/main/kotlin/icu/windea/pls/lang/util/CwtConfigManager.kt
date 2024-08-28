@@ -16,11 +16,17 @@ import icu.windea.pls.model.*
 import java.util.*
 
 object CwtConfigManager {
-    fun getContainingConfigGroup(element: PsiElement): CwtConfigGroup? {
+    /**
+     * @param forRepo 是否兼容插件或者规则仓库中的CWT文件（此时将其视为规则文件）。
+     */
+    fun getContainingConfigGroup(element: PsiElement, forRepo: Boolean = false): CwtConfigGroup? {
         if(element.language != CwtLanguage) return null
         val file = element.containingFile ?: return null
         val vFile = file.virtualFile ?: return null
         val project = file.project
+        if(forRepo) {
+            //TODO 1.3.20
+        }
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         return fileProviders.firstNotNullOfOrNull { fileProvider ->
             fileProvider.getContainingConfigGroup(vFile, project)
