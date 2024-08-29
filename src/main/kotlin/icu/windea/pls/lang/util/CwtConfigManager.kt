@@ -12,6 +12,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.configGroup.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import java.util.*
 
@@ -24,13 +25,31 @@ object CwtConfigManager {
         val file = element.containingFile ?: return null
         val vFile = file.virtualFile ?: return null
         val project = file.project
-        if(forRepo) {
-            //TODO 1.3.20
-        }
+        
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        return fileProviders.firstNotNullOfOrNull { fileProvider ->
+        val configGroup = fileProviders.firstNotNullOfOrNull { fileProvider ->
             fileProvider.getContainingConfigGroup(vFile, project)
         }
+        if(configGroup != null) return configGroup
+        
+        runCatchingCancelable r@{
+            if(!forRepo) return@r
+            val workDirectory = vFile.toNioPath().toFile().parentFile ?: return@r
+            val command = "git remote -v"
+            val commandResult = executeCommand(command, CommandType.POWER_SHELL, null, workDirectory)
+            val gameTypeId = commandResult.lines()
+                .mapNotNull { it.splitByBlank(3).getOrNull(1) }
+                .firstNotNullOfOrNull t@{
+                    if(it.contains("Paradox-Language-Support")) return@t "core"
+                    val s = it.substringInLast("cwtools-", "-config", "")
+                    if(s.isNotEmpty()) return@t s
+                    null
+                } ?: return@r
+            val gameType = ParadoxGameType.resolve(gameTypeId)
+            return getConfigGroup(project, gameType)
+        }
+        
+        return null
     }
     
     fun getConfigPath(element: PsiElement): CwtConfigPath? {

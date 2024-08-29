@@ -16,7 +16,7 @@ import java.util.concurrent.*
 //创意工坊安装目录：steamapps/common/content
 //其子目录是游戏的steamid
 
-//游戏模组安装目录：~\Documents\Paradox Interactive\{gameName}\mod
+//游戏模组安装目录：~\Documents\Paradox Interactive\${gameName}\mod
 
 @Service
 class ParadoxPathProvider(private val coroutineScope: CoroutineScope) {
@@ -27,11 +27,11 @@ class ParadoxPathProvider(private val coroutineScope: CoroutineScope) {
         //preload cached values
         coroutineScope.launch {
             launch {
-                steamPathCache.put("", doGetSteamPath())
+                getSteamPath()
             }
             ParadoxGameType.entries.forEach { gameType ->
                 launch {
-                    steamPathCache.put(gameType.steamId, doGetSteamGamePath(gameType.steamId))
+                    getSteamGamePath(gameType.steamId)
                 }
             }
         }
@@ -46,39 +46,30 @@ class ParadoxPathProvider(private val coroutineScope: CoroutineScope) {
     }
     
     private fun doGetSteamPath(): String {
-        try {
-            if(System.getProperty("os.name")?.contains("windows", true) != true) return ""
-            val command = "Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Wow6432Node\\Valve\\Steam' | Select-Object InstallPath | Format-Table -HideTableHeaders"
-            val commandArray = arrayOf("powershell", "-command", command)
-            val process = Runtime.getRuntime().exec(commandArray)
-            process.waitFor()
-            return process.inputStream.reader().use { it.readText() }.trim()
-        } catch(e: Exception) {
-            return ""
-        }
+        val command = "Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Wow6432Node\\Valve\\Steam' | Select-Object InstallPath | Format-Table -HideTableHeaders"
+        return runCatchingCancelable { executeCommand(command, CommandType.POWER_SHELL) }.getOrDefault("")
     }
     
     /**
      * 得到指定ID对应的Steam游戏目录的路径。
      */
-    fun getSteamGamePath(steamId: String, gameName: String): String? {
+    fun getSteamGamePath(steamId: String, gameName: String? = null): String? {
         val result = steamPathCache.computeIfAbsent(steamId) { doGetSteamGamePath(steamId) }.orNull()
         if(result != null) return result
-        //不准确，可以放在不同库目录下
-        return getSteamPath()?.let { steamPath -> """$steamPath\steamapps\common\$gameName""" }
+        
+        run {
+            if(gameName == null) return@run
+            //不准确，可以放在不同库目录下
+            val steamPath = getSteamPath() ?: return@run
+            return """$steamPath\steamapps\common\$gameName"""
+        }
+        
+        return null
     }
     
     private fun doGetSteamGamePath(steamId: String): String {
-        try {
-            if(System.getProperty("os.name")?.contains("windows", true) != true) return ""
-            val command = "Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App ${steamId}' | Select-Object InstallLocation | Format-Table -HideTableHeaders"
-            val commandArray = arrayOf("powershell", "-command", command)
-            val process = Runtime.getRuntime().exec(commandArray)
-            process.waitFor()
-            return process.inputStream.reader().use { it.readText() }.trim()
-        } catch(e: Exception) {
-            return ""
-        }
+        val command = "Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App ${steamId}' | Select-Object InstallLocation | Format-Table -HideTableHeaders"
+        return runCatchingCancelable { executeCommand(command, CommandType.POWER_SHELL) }.getOrDefault("")
     }
     
     /**
@@ -86,7 +77,8 @@ class ParadoxPathProvider(private val coroutineScope: CoroutineScope) {
      */
     fun getSteamWorkshopPath(steamId: String): String? {
         //不准确，可以放在不同库目录下
-        return getSteamPath()?.let { steamPath -> """$steamPath\steamapps\workshop\content\$steamId""" }
+        val steamPath = getSteamPath() ?: return null
+        return """$steamPath\steamapps\workshop\content\$steamId"""
     }
     
     /**

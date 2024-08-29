@@ -11,6 +11,7 @@ import java.net.*
 import java.nio.charset.*
 import java.nio.file.*
 import java.util.*
+import java.util.concurrent.*
 import kotlin.contracts.*
 import kotlin.io.path.*
 import kotlin.math.*
@@ -251,7 +252,7 @@ fun String.isLeftQuoted(): Boolean {
 fun String.isRightQuoted(): Boolean {
     return length > 1 && endsWith('"') && run {
         var n = 0
-        for(i in (lastIndex - 1) downTo  0) {
+        for(i in (lastIndex - 1) downTo 0) {
             if(this[i] == '\\') n++ else break
         }
         n % 2 == 0
@@ -316,10 +317,10 @@ fun String.quoteIfNecessary(): String {
 /**
  * 判断当前字符串中的指定索引[index]的字符是否被转义。（在前面有连续的奇数个反斜线）
  */
-fun String.isEscapedCharAt(index: Int) : Boolean {
+fun String.isEscapedCharAt(index: Int): Boolean {
     if(index == 0) return false
     var n = 0
-    for(i in (index - 1) downTo  0) {
+    for(i in (index - 1) downTo 0) {
         if(this[i] == '\\') n++ else break
     }
     return n % 2 == 1
@@ -417,7 +418,7 @@ fun CharSequence.indicesOf(char: Char, startIndex: Int = 0, ignoreCase: Boolean 
     return indices ?: emptyList()
 }
 
-fun Collection<String>.truncate(limit: Int, ellipsis: String = "...") : List<String> {
+fun Collection<String>.truncate(limit: Int, ellipsis: String = "..."): List<String> {
     return take(limit).let { if(size > limit) it + ellipsis else it }
 }
 
@@ -673,3 +674,37 @@ fun URL.toPath() = Paths.get(this.toURI())
 typealias FloatRange = ClosedRange<Float>
 
 operator fun FloatRange.contains(element: Float?) = element != null && contains(element)
+
+enum class CommandType {
+    CMD,
+    POWER_SHELL,
+    SHELL,
+    ;
+}
+
+@Throws(IOException::class, InterruptedException::class)
+fun executeCommand(
+    command: String,
+    commandType: CommandType? = null,
+    environmentVariables: Array<out String>? = null,
+    workDirectory: File? = null,
+    timeout: Long? = null,
+): String {
+    if(commandType == CommandType.CMD || commandType == CommandType.POWER_SHELL) {
+        if(System.getProperty("os.name")?.contains("windows", true) != true) throw UnsupportedOperationException()
+    }
+    
+    val commandArray = when(commandType) {
+        CommandType.CMD -> arrayOf("cmd", "/c", command)
+        CommandType.POWER_SHELL -> arrayOf("powershell", "-command", command)
+        CommandType.SHELL -> arrayOf("/bin/sh", "-c", command)
+        else -> arrayOf(command)
+    }
+    val process = Runtime.getRuntime().exec(commandArray, environmentVariables, workDirectory)
+    if(timeout == null) {
+        process.waitFor()
+    } else {
+        process.waitFor(timeout, TimeUnit.MILLISECONDS)
+    }
+    return process.inputStream.bufferedReader().readText().trim()
+}
