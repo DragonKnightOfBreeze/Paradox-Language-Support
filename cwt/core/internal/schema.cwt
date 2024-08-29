@@ -15,10 +15,6 @@ localisation_locales = {
 	}
 }
 
-localisation_predefined_parameters = {
-	$localisation_predefined_parameter$ = $scalar
-}
-
 types = {
 	type[$type$] = {
 		skip_root_key = { $scalar }

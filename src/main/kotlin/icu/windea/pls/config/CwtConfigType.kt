@@ -113,11 +113,6 @@ enum class CwtConfigType(
         override val descriptionText get() = PlsBundle.message("cwt.description.localisationLocale")
         override val icon get() = PlsIcons.LocalisationNodes.Locale
     },
-    LocalisationPredefinedParameter("localisation predefined parameter", true) {
-        override val prefix get() = PlsBundle.message("prefix.localisationPredefinedParameter")
-        override val descriptionText get() = PlsBundle.message("cwt.description.localisationPredefinedParameter")
-        override val icon get() = PlsIcons.Nodes.PredefinedParameter
-    },
     
     ExtendedScriptedVariable("extended scripted variable") {
         override val prefix get() = PlsBundle.message("prefix.scriptedVariable")

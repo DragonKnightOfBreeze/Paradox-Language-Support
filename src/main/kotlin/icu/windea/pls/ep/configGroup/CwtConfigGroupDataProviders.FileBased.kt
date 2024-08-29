@@ -89,13 +89,6 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         }
                     }
                 }
-                key == "localisation_predefined_parameters" -> {
-                    val configs = property.properties ?: continue
-                    for(config in configs) {
-                        val localisationPredefinedParameterConfig = CwtLocalisationPredefinedParameterConfig.resolve(config)
-                        configGroup.localisationPredefinedParameters[localisationPredefinedParameterConfig.id] = localisationPredefinedParameterConfig
-                    }
-                }
                 key == "types" -> {
                     val configs = property.properties ?: continue
                     for(config in configs) {

@@ -188,9 +188,6 @@ object CwtConfigManager {
             element is CwtProperty && path.matchesAntPattern("localisation_locales/*") -> {
                 CwtConfigType.LocalisationLocale
             }
-            element is CwtProperty && path.matchesAntPattern("localisation_predefined_parameters/*") -> {
-                CwtConfigType.LocalisationPredefinedParameter
-            }
             path.matchesAntPattern("scripted_variables/*") -> {
                 CwtConfigType.ExtendedScriptedVariable
             }

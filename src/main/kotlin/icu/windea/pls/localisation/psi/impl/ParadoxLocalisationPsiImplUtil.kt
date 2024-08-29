@@ -147,7 +147,6 @@ object ParadoxLocalisationPsiImplUtil {
         val resolved = element.reference?.resolve()
         return when {
             resolved is ParadoxLocalisationProperty -> PlsIcons.Nodes.Localisation
-            resolved is CwtProperty -> PlsIcons.Nodes.PredefinedParameter
             resolved is ParadoxParameterElement -> PlsIcons.Nodes.Parameter
             else -> PlsIcons.LocalisationNodes.Property
         }

@@ -28,7 +28,6 @@ object PlsIcons {
         @JvmField val Property = loadIcon("/icons/nodes/property.svg")
         @JvmField val Value = loadIcon("/icons/nodes/value.svg")
         @JvmField val Parameter = loadIcon("/icons/nodes/parameter.svg")
-        @JvmField val PredefinedParameter = loadIcon("/icons/nodes/predefinedParameter.svg")
         @JvmField val Type = loadIcon("/icons/nodes/type.svg")
         @JvmField val Variable = loadIcon("/icons/nodes/variable.svg")
         @JvmField val DynamicValueType = loadIcon("/icons/nodes/dynamicValueType.svg")

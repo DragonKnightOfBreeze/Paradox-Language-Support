@@ -247,7 +247,6 @@ object CwtConfigCompletionManager {
                 when(templateExpression.name) {
                     "system_scope" -> configGroup.systemScopes.mapToArray { (n, c) -> createLookupItem(n, c) }
                     "localisation_locale" -> configGroup.localisationLocalesById.mapToArray { (n, c) -> createLookupItem(n, c) }
-                    "localisation_predefined_parameter" -> configGroup.localisationPredefinedParameters.mapToArray { (n, c) -> createLookupItem(n, c) }
                     "type" -> configGroup.types.mapToArray { (n, c) -> createLookupItem(n, c) }
                     "subtype" -> {
                         val configPath = templateExpression.context.contextElement?.parentOfType<CwtMemberElement>(withSelf = true)?.configPath ?: return null

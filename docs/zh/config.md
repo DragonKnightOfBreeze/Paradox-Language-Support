@@ -116,10 +116,6 @@ TODO
 
 TODO
 
-#### Localisation Predefined Parameters
-
-TODO
-
 #### Types and Subtypes
 
 TODO

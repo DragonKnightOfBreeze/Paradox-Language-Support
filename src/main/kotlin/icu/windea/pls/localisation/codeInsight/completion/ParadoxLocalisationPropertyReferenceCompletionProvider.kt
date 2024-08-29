@@ -22,8 +22,6 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
         val category = ParadoxLocalisationCategory.resolve(file) ?: return
         val project = parameters.originalFile.project
         
-        //不提示predefined_parameter
-        
         //提示parameter
         val localisation = parameters.position.parentOfType<ParadoxLocalisationProperty>()
         if(localisation != null) {

@@ -28,8 +28,6 @@ val CwtConfigGroup.localisationLocalesById: MutableMap<String, CwtLocalisationLo
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 val CwtConfigGroup.localisationLocalesByCode: MutableMap<String, CwtLocalisationLocaleConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
-val CwtConfigGroup.localisationPredefinedParameters: MutableMap<String, CwtLocalisationPredefinedParameterConfig>
-    by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
 //type - typeConfig
 val CwtConfigGroup.types: MutableMap<String, CwtTypeConfig>

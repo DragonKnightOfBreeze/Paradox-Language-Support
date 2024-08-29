@@ -75,10 +75,6 @@ class ParadoxLocalisationPropertyPsiReference(
         val resolvedParameter = ParadoxLocalisationParameterSupport.resolveParameter(element)
         if(resolvedParameter != null) return resolvedParameter
         
-        //尝试解析成predefined_parameter
-        val resolvedPredefinedParameter = getConfigGroup(project, null).localisationLocalesById.get(name)?.pointer?.element
-        if(resolvedPredefinedParameter != null) return resolvedPredefinedParameter
-        
         return null
     }
     
@@ -97,13 +93,9 @@ class ParadoxLocalisationPropertyPsiReference(
         }
         if(resolved.isNotEmpty()) return resolved.mapToArray { PsiElementResolveResult(it) }
         
-        //尝试解析成parameter
+        //尝试解析成localisation_parameter
         val resolvedParameter = ParadoxLocalisationParameterSupport.resolveParameter(element)
         if(resolvedParameter != null) return resolvedParameter.let { arrayOf(PsiElementResolveResult(it)) }
-        
-        //尝试解析成predefined_parameter
-        val resolvedPredefinedParameter = getConfigGroup(project, null).localisationLocalesById.get(name)?.pointer?.element
-        if(resolvedPredefinedParameter != null) return resolvedPredefinedParameter.let { arrayOf(PsiElementResolveResult(it)) }
         
         return ResolveResult.EMPTY_ARRAY
     }
