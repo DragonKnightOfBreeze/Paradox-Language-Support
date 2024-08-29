@@ -34,8 +34,8 @@ object ParadoxLocalisationTextHtmlRenderer {
         val colorStack = LinkedList<Color>()
     }
     
-    fun render(element: ParadoxLocalisationProperty, color: Color? = null): String {
-        return buildDocumentation { renderTo(this, element, color) }
+    fun render(element: ParadoxLocalisationProperty, color: Color? = null, forDoc: Boolean = false): String {
+        return buildDocumentation { renderTo(this, element, color, forDoc) }
     }
     
     fun renderTo(builder: DocumentationBuilder, element: ParadoxLocalisationProperty, color: Color? = null, forDoc: Boolean = false) {

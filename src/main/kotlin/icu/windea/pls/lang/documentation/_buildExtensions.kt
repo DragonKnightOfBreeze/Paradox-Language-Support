@@ -3,6 +3,7 @@
 package icu.windea.pls.lang.documentation
 
 import com.intellij.codeInsight.documentation.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.*
@@ -66,7 +67,7 @@ fun DocumentationBuilder.appendImgTag(url: String, width: Int, height: Int, loca
 }
 
 fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): DocumentationBuilder {
-    val file = selectFile(element) ?: return this
+    val file = runReadAction { selectFile(element) } ?: return this
     if(ParadoxFileManager.isInjectedFile(file)) return this //ignored for injected PSI
     val fileInfo = file.fileInfo ?: return this
     val rootInfo = fileInfo.rootInfo

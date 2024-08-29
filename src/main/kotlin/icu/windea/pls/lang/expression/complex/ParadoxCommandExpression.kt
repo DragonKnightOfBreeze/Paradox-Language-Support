@@ -19,7 +19,7 @@ import icu.windea.pls.lang.expression.complex.nodes.*
  * 语法：
  *
  * ```bnf
- * command_expression ::= command_scope_link * (command_field) extra_content ?
+ * command_expression ::= command_scope_link * (command_field)
  * command_scope_link := system_command_scope | command_scope | dynamic_command_scope_link
  * system_command_scope := TOKEN //predefined by CWT Config (see system scopes)
  * command_scope := TOKEN //predefined by CWT Config (see localisation links)
