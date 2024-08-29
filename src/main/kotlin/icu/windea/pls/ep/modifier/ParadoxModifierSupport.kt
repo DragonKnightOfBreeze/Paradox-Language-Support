@@ -104,18 +104,17 @@ interface ParadoxModifierSupport {
     }
     
     object Keys : KeyRegistry() {
-        val keysToSync = buildSet {
-            this += support
-            this += modifierConfig
-        }
+        val keysToSync: Set<Key<*>> = _keysToSync
     }
 }
+
+private val _keysToSync = mutableSetOf<Key<*>>()
 
 val ParadoxModifierSupport.Keys.support by createKey<ParadoxModifierSupport>(ParadoxModifierSupport.Keys)
 val ParadoxModifierSupport.Keys.modifierConfig by createKey<CwtModifierConfig>(ParadoxModifierSupport.Keys)
 
-var ParadoxModifierInfo.support by ParadoxModifierSupport.Keys.support
-var ParadoxModifierInfo.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig
+var ParadoxModifierInfo.support by ParadoxModifierSupport.Keys.support.also { _keysToSync += it }
+var ParadoxModifierInfo.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig.also { _keysToSync += it }
 
 var ParadoxModifierElement.support by ParadoxModifierSupport.Keys.support
 var ParadoxModifierElement.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig

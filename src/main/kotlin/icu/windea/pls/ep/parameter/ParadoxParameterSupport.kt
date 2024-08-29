@@ -131,14 +131,11 @@ interface ParadoxParameterSupport {
     }
     
     object Keys : KeyRegistry() {
-        val keysToSync = buildSet {
-            this += support
-            this += definitionName
-            this += definitionTypes
-            this += inlineScriptExpression
-        }
+        val keysToSync: Set<Key<*>> = _keysToSync
     }
 }
+
+private val _keysToSync = mutableSetOf<Key<*>>()
 
 val ParadoxParameterSupport.Keys.support by createKey<ParadoxParameterSupport>(ParadoxParameterSupport.Keys)
 val ParadoxParameterSupport.Keys.containingContext by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys)
@@ -147,10 +144,10 @@ val ParadoxParameterSupport.Keys.definitionName by createKey<String>(ParadoxPara
 val ParadoxParameterSupport.Keys.definitionTypes by createKey<List<String>>(ParadoxParameterSupport.Keys)
 val ParadoxParameterSupport.Keys.inlineScriptExpression by createKey<String>(ParadoxParameterSupport.Keys)
 
-var ParadoxParameterInfo.support by ParadoxParameterSupport.Keys.support
-var ParadoxParameterInfo.definitionName by ParadoxParameterSupport.Keys.definitionName
-var ParadoxParameterInfo.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
-var ParadoxParameterInfo.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression
+var ParadoxParameterInfo.support by ParadoxParameterSupport.Keys.support.also { _keysToSync += it }
+var ParadoxParameterInfo.definitionName by ParadoxParameterSupport.Keys.definitionName.also { _keysToSync += it }
+var ParadoxParameterInfo.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes.also { _keysToSync += it }
+var ParadoxParameterInfo.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression.also { _keysToSync += it }
 
 var ParadoxParameterElement.support by ParadoxParameterSupport.Keys.support
 var ParadoxParameterElement.containingContext by ParadoxParameterSupport.Keys.containingContext
