@@ -10,7 +10,9 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 检查是否ID的格式是否合法。
+ * 检查事件脚本文件中的事件ID的格式是否合法。
+ * 
+ * 注意：这项代码检查不是强制性的，未通过这项代码检查并不意味着脚本文件中存在错误，以至于导致游戏运行时的异常。
  */
 class IncorrectEventIdInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
