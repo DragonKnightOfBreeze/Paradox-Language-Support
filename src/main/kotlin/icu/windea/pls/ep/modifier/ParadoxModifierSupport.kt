@@ -103,7 +103,12 @@ interface ParadoxModifierSupport {
         }
     }
     
-    object Keys : KeyRegistry()
+    object Keys : KeyRegistry() {
+        val keysToSync = buildSet {
+            this += support
+            this += modifierConfig
+        }
+    }
 }
 
 val ParadoxModifierSupport.Keys.support by createKey<ParadoxModifierSupport>(ParadoxModifierSupport.Keys)

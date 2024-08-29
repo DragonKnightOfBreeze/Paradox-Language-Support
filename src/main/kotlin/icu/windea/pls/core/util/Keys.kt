@@ -15,7 +15,7 @@ inline fun <T, THIS> createKey(name: String, noinline factory: THIS.() -> T) = K
 
 abstract class KeyRegistry {
     val id = javaClass.name.substringAfterLast(".").replace("\$Keys", "")
-    val keys = ConcurrentHashMap<String, Key<*>>()
+    val keys: MutableMap<String, Key<*>> = ConcurrentHashMap()
     
     fun getKeyName(propName: String): String {
         return "${id}.${propName}"

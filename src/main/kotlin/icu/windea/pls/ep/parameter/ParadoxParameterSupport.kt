@@ -130,7 +130,14 @@ interface ParadoxParameterSupport {
         }
     }
     
-    object Keys : KeyRegistry()
+    object Keys : KeyRegistry() {
+        val keysToSync = buildSet {
+            this += support
+            this += definitionName
+            this += definitionTypes
+            this += inlineScriptExpression
+        }
+    }
 }
 
 val ParadoxParameterSupport.Keys.support by createKey<ParadoxParameterSupport>(ParadoxParameterSupport.Keys)
@@ -141,8 +148,6 @@ val ParadoxParameterSupport.Keys.definitionTypes by createKey<List<String>>(Para
 val ParadoxParameterSupport.Keys.inlineScriptExpression by createKey<String>(ParadoxParameterSupport.Keys)
 
 var ParadoxParameterInfo.support by ParadoxParameterSupport.Keys.support
-var ParadoxParameterInfo.containingContext by ParadoxParameterSupport.Keys.containingContext
-var ParadoxParameterInfo.containingContextReference by ParadoxParameterSupport.Keys.containingContextReference
 var ParadoxParameterInfo.definitionName by ParadoxParameterSupport.Keys.definitionName
 var ParadoxParameterInfo.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
 var ParadoxParameterInfo.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression

@@ -29,10 +29,10 @@ fun ParadoxModifierElement.toInfo(): ParadoxModifierInfo {
 }
 
 //use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
-@Suppress("UNCHECKED_CAST")
 private fun syncUserData(from: UserDataHolder, to : UserDataHolder) {
-    ParadoxModifierSupport.Keys.keys.values.forEach {
-        val key = it as Key<Any>
+    ParadoxModifierSupport.Keys.keysToSync.forEach { key ->
+        @Suppress("UNCHECKED_CAST")
+        key as Key<Any>
         to.putUserData(key, from.getUserData(key))
     }
 }

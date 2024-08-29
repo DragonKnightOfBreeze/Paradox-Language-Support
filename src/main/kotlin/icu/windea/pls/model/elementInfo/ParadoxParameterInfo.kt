@@ -4,6 +4,7 @@ import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.ep.modifier.*
 import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
@@ -34,10 +35,11 @@ fun ParadoxParameterElement.toInfo(): ParadoxParameterInfo {
 }
 
 //use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
-@Suppress("UNCHECKED_CAST")
 private fun syncUserData(from: UserDataHolder, to : UserDataHolder) {
-    ParadoxParameterSupport.Keys.keys.values.forEach {
-        val key = it as Key<Any>
+    ParadoxParameterSupport.Keys.keysToSync.forEach { key ->
+        @Suppress("UNCHECKED_CAST")
+        key as Key<Any>
         to.putUserData(key, from.getUserData(key))
     }
 }
+
