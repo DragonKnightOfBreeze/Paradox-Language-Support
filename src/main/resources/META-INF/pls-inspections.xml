@@ -145,12 +145,6 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.bug.group"
                      groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedParameterUsageInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedScriptedVariableUsage"
-                     enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.unsupportedScriptedVariableUsage"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.bug.group"
-                     groupPathKey="inspection.script.groupPath"
-                     implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedScriptedVariableUsageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedInlineMathUsage"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.unsupportedInlineMathUsage"
