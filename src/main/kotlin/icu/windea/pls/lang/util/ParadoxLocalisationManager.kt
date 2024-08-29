@@ -84,4 +84,12 @@ object ParadoxLocalisationManager {
         val gameType = stub.gameType
         return ParadoxLocalisationInfo(name, category, gameType)
     }
+    
+    fun isSpecialLocalisation(element: ParadoxLocalisationProperty): Boolean {
+        //存在一些特殊的本地化，不能直接用来渲染文本
+        val file = element.containingFile ?: return false
+        val fileName = file.name
+        if(fileName.startsWith("name_system_")) return true //e.g., name_system_l_english.yml
+        return false
+    }
 }

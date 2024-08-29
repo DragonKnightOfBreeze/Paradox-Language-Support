@@ -50,16 +50,20 @@ object ParadoxLocalisationTextRenderer {
             ?: element.scriptedVariableReference?.reference?.resolve()
         when {
             resolved is ParadoxLocalisationProperty -> {
-                val resolvedName = resolved.name
-                if(context.guardStack.contains(resolvedName)) {
-                    //infinite recursion, do not render context
+                if(ParadoxLocalisationManager.isSpecialLocalisation(resolved)) {
                     context.builder.append(element.text)
                 } else {
-                    context.guardStack.addLast(resolvedName)
-                    try {
-                        renderTo(resolved, context)
-                    } finally {
-                        context.guardStack.removeLast()
+                    val resolvedName = resolved.name
+                    if(context.guardStack.contains(resolvedName)) {
+                        //infinite recursion, do not render context
+                        context.builder.append(element.text)
+                    } else {
+                        context.guardStack.addLast(resolvedName)
+                        try {
+                            renderTo(resolved, context)
+                        } finally {
+                            context.guardStack.removeLast()
+                        }
                     }
                 }
             }

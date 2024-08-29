@@ -103,21 +103,25 @@ object ParadoxLocalisationTextInlayRenderer {
             ?: element.scriptedVariableReference?.reference?.resolve()
         val presentation = when {
             resolved is ParadoxLocalisationProperty -> {
-                val resolvedName = resolved.name
-                if(context.guardStack.contains(resolvedName)) {
-                    //infinite recursion, do not render context
-                    truncatedSmallText(element.text, context)
+                if(ParadoxLocalisationManager.isSpecialLocalisation(resolved)) {
+                    getElementPresentation(element, context)
                 } else {
-                    context.guardStack.addLast(resolvedName)
-                    try {
-                        val oldBuilder = context.builder
-                        context.builder = mutableListOf()
-                        renderTo(resolved, context)
-                        val newBuilder = context.builder
-                        context.builder = oldBuilder
-                        mergePresentation(newBuilder)
-                    } finally {
-                        context.guardStack.removeLast()
+                    val resolvedName = resolved.name
+                    if(context.guardStack.contains(resolvedName)) {
+                        //infinite recursion, do not render context
+                        truncatedSmallText(element.text, context)
+                    } else {
+                        context.guardStack.addLast(resolvedName)
+                        try {
+                            val oldBuilder = context.builder
+                            context.builder = mutableListOf()
+                            renderTo(resolved, context)
+                            val newBuilder = context.builder
+                            context.builder = oldBuilder
+                            mergePresentation(newBuilder)
+                        } finally {
+                            context.guardStack.removeLast()
+                        }
                     }
                 }
             }
@@ -213,10 +217,8 @@ object ParadoxLocalisationTextInlayRenderer {
         
         //直接显示命令文本，适用对应的颜色高亮
         //点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）
-        element.forEachChild { e ->
-            ProgressManager.checkCanceled()
-            getElementPresentation(e, context)
-        }
+        val presentation = getElementPresentation(element, context)
+        if(presentation != null) context.builder.add(presentation)
         return continueProcess(context)
     }
     
@@ -270,11 +272,20 @@ object ParadoxLocalisationTextInlayRenderer {
         return context.truncateLimit <= 0 || context.truncateRemain.get() >= 0
     }
     
-    fun getElementPresentation(element: PsiElement, context: Context) = with(context.factory) {
+    private fun getElementPresentation(element: PsiElement, context: Context): InlayPresentation? {
+        val presentations = mutableListOf<InlayPresentation>()
+        element.forEachChild { e ->
+            ProgressManager.checkCanceled()
+            collectElementPresentation(e, context, presentations)
+        }
+        return mergePresentation(presentations)
+    }
+    
+    private fun collectElementPresentation(element: PsiElement, context: Context, presentations: MutableList<InlayPresentation>) = with(context.factory) {
         val text = element.text
         val references = element.references
         if(references.isEmpty()) {
-            context.builder.add(smallText(element.text))
+            presentations.add(smallText(element.text))
             return
         }
         var i = 0
@@ -283,22 +294,22 @@ object ParadoxLocalisationTextInlayRenderer {
             val startOffset = reference.rangeInElement.startOffset
             if(startOffset != i) {
                 val s = text.substring(i, startOffset)
-                context.builder.add(smallText(s))
+                presentations.add(smallText(s))
             }
             i = reference.rangeInElement.endOffset
             val s = reference.rangeInElement.substring(text)
             val resolved = reference.resolve()
             //不要尝试跳转到dynamicValue的声明处
             if(resolved == null || resolved is ParadoxFakePsiElement) {
-                context.builder.add(smallText(s))
+                presentations.add(smallText(s))
             } else {
-                context.builder.add(psiSingleReference(smallText(s)) { reference.resolve() })
+                presentations.add(psiSingleReference(smallText(s)) { reference.resolve() })
             }
         }
         val endOffset = references.last().rangeInElement.endOffset
         if(endOffset != text.length) {
             val s = text.substring(endOffset)
-            context.builder.add(smallText(s))
+            presentations.add(smallText(s))
         }
     }
 }
