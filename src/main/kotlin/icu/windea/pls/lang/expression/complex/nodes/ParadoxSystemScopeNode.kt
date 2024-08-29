@@ -3,6 +3,8 @@ package icu.windea.pls.lang.expression.complex.nodes
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.references.*
@@ -23,7 +25,8 @@ class ParadoxSystemScopeNode(
     
     override fun getReference(element: ParadoxExpressionElement): Reference {
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement, config.pointer.element)
+        val resolved = config.pointer.element?.bindConfig(config)
+        return Reference(element, rangeInElement, resolved)
     }
     
     class Reference(element: PsiElement, rangeInElement: TextRange, resolved: CwtProperty?) :

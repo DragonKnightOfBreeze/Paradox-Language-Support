@@ -19,7 +19,7 @@ import icu.windea.pls.lang.expression.complex.nodes.*
  * 语法：
  *
  * ```bnf
- * command_expression ::= command_scope_link * (command_field)
+ * command_expression ::= command_scope_link * (command_field) tagging_suffix ?
  * command_scope_link := system_command_scope | command_scope | dynamic_command_scope_link
  * system_command_scope := TOKEN //predefined by CWT Config (see system scopes)
  * command_scope := TOKEN //predefined by CWT Config (see localisation links)
@@ -29,6 +29,7 @@ import icu.windea.pls.lang.expression.complex.nodes.*
  * command_field ::= predefined_command_field | dynamic_command_field
  * predefined_command_field := TOKEN //predefined by CWT Config (see localisation commands)
  * dynamic_command_field ::= TOKEN //matching config expression "<scripted_loc>" or "value[variable]"
+ * tagging_suffix ::= TOKEN //see 99_README_GRAMMAR.txt
  * ```
  *
  * 示例：

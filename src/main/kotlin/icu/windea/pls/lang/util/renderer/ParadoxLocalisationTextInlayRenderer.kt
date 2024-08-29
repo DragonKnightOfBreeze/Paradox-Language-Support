@@ -274,19 +274,23 @@ object ParadoxLocalisationTextInlayRenderer {
     
     private fun getElementPresentation(element: PsiElement, context: Context): InlayPresentation? {
         val presentations = mutableListOf<InlayPresentation>()
-        element.forEachChild { e ->
-            ProgressManager.checkCanceled()
-            collectElementPresentation(e, context, presentations)
+        ProgressManager.checkCanceled()
+        val r = collectElementPresentation(element, context, presentations)
+        if(!r) {
+            element.forEachChild { e ->
+                ProgressManager.checkCanceled()
+                collectElementPresentation(e, context, presentations)
+            }
         }
         return mergePresentation(presentations)
     }
     
-    private fun collectElementPresentation(element: PsiElement, context: Context, presentations: MutableList<InlayPresentation>) = with(context.factory) {
+    private fun collectElementPresentation(element: PsiElement, context: Context, presentations: MutableList<InlayPresentation>): Boolean = with(context.factory) {
         val text = element.text
         val references = element.references
         if(references.isEmpty()) {
             presentations.add(smallText(element.text))
-            return
+            return false
         }
         var i = 0
         for(reference in references) {
@@ -311,5 +315,6 @@ object ParadoxLocalisationTextInlayRenderer {
             val s = text.substring(endOffset)
             presentations.add(smallText(s))
         }
+        return true
     }
 }

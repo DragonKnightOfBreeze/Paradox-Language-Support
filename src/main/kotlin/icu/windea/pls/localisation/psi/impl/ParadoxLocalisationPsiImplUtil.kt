@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.psi.impl
 
 import com.intellij.navigation.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.util.Iconable.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.*
@@ -9,7 +10,6 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.*
@@ -68,7 +68,7 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getName(element: ParadoxLocalisationProperty): String {
-        element.stub?.name?.let { return it }
+        runReadAction { element.stub?.name }?.let { return it }
         return element.propertyKey.propertyKeyId.text
     }
     
@@ -92,7 +92,7 @@ object ParadoxLocalisationPsiImplUtil {
     
     @JvmStatic
     fun getCategory(element: ParadoxLocalisationProperty): ParadoxLocalisationCategory? {
-        element.stub?.category?.let { return it }
+        runReadAction { element.stub?.category }?.let { return it }
         return element.localisationInfo?.category
     }
     

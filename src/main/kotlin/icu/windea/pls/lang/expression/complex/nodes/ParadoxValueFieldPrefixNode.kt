@@ -2,6 +2,7 @@ package icu.windea.pls.lang.expression.complex.nodes
 
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.references.*
@@ -22,7 +23,8 @@ class ParadoxValueFieldPrefixNode(
     
     override fun getReference(element: ParadoxExpressionElement): Reference {
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement, linkConfigs.mapNotNull { it.pointer.element })
+        val resolved = linkConfigs.mapNotNull { it.pointer.element?.bindConfig(it) }
+        return Reference(element, rangeInElement, resolved)
     }
     
     class Reference(element: ParadoxExpressionElement, rangeInElement: TextRange, resolved: List<CwtProperty>) :

@@ -3,6 +3,7 @@
 package icu.windea.pls.lang.documentation
 
 import com.intellij.model.*
+import com.intellij.openapi.application.*
 import com.intellij.platform.backend.documentation.*
 import com.intellij.platform.backend.presentation.*
 import com.intellij.pom.*

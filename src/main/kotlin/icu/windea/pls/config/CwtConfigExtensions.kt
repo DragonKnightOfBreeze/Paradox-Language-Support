@@ -54,6 +54,10 @@ val CwtMemberElement.configPath: CwtConfigPath?
 val CwtMemberElement.configType: CwtConfigType?
     get() = CwtConfigManager.getConfigType(this)
 
+fun <T: CwtMemberElement> T.bindConfig(config: CwtConfig<*>): T {
+    this.putUserData(PlsKeys.bindingConfig, config)
+    return this
+}
 
 fun CwtTemplateExpression.extract(referenceName: String): String {
     return CwtTemplateExpressionManager.extract(this, referenceName)

@@ -61,7 +61,7 @@ val PlsKeys.cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<St
 val PlsKeys.parameterValueInjectionInfos by createKey<List<ParameterValueInjectionInfo>>(PlsKeys)
 
 //用于将CWT规则临时写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）
-val PlsKeys.cwtConfig by createKey<CwtConfig<*>>(PlsKeys)
+val PlsKeys.bindingConfig by createKey<CwtConfig<*>>(PlsKeys)
 //用于标记快速文档使用的本地化语言区域
 val PlsKeys.documentationLocale by createKey<String>(PlsKeys)
 //用于标记图片的帧数信息以便后续进行切分

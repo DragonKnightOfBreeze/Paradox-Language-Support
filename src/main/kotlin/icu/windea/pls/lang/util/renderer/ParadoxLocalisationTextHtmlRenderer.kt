@@ -205,9 +205,12 @@ object ParadoxLocalisationTextHtmlRenderer {
     private fun getElementText(element: PsiElement, context: Context) {
         context.builder.append("<code>")
         if(context.forDoc) {
-            element.forEachChild { e ->
-                ProgressManager.checkCanceled()
-                getElementTextForDoc(e, context)
+            val r = getElementTextForDoc(element, context)
+            if(!r) {
+                element.forEachChild { e ->
+                    ProgressManager.checkCanceled()
+                    getElementTextForDoc(e, context)
+                }
             }
         } else {
             context.builder.append(element.text)
@@ -218,14 +221,14 @@ object ParadoxLocalisationTextHtmlRenderer {
     /**
      * 获取嵌入PSI链接的PSI元素的HTML文本。
      */
-    private fun getElementTextForDoc(element: PsiElement, context: Context) {
+    private fun getElementTextForDoc(element: PsiElement, context: Context) : Boolean{
         val defaultColor = UIManager.getColor("EditorPane.foreground")
         
         val text = element.text
         val references = element.references
         if(references.isEmpty()) {
             context.builder.append(text.escapeXml())
-            return
+            return false
         }
         var i = 0
         for(reference in references) {
@@ -264,5 +267,6 @@ object ParadoxLocalisationTextHtmlRenderer {
             val s = text.substring(endOffset)
             context.builder.append(s.escapeXml())
         }
+        return true
     }
 }

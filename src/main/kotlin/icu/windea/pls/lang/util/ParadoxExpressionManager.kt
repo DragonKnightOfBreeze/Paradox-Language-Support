@@ -695,21 +695,21 @@ object ParadoxExpressionManager {
     fun resolvePredefinedScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val systemScope = configGroup.systemScopes[name] ?: return null
         val resolved = systemScope.pointer.element ?: return null
-        resolved.putUserData(PlsKeys.cwtConfig, systemScope)
+        resolved.putUserData(PlsKeys.bindingConfig, systemScope)
         return resolved
     }
     
     fun resolveScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.linksAsScopeNotData[name] ?: return null
         val resolved = linkConfig.pointer.element ?: return null
-        resolved.putUserData(PlsKeys.cwtConfig, linkConfig)
+        resolved.putUserData(PlsKeys.bindingConfig, linkConfig)
         return resolved
     }
     
     fun resolveValueField(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.linksAsValueNotData[name] ?: return null
         val resolved = linkConfig.pointer.element ?: return null
-        resolved.putUserData(PlsKeys.cwtConfig, linkConfig)
+        resolved.putUserData(PlsKeys.bindingConfig, linkConfig)
         return resolved
     }
     
@@ -717,21 +717,21 @@ object ParadoxExpressionManager {
         val enumConfig = configGroup.enums[enumName] ?: return null
         val enumValueConfig = enumConfig.valueConfigMap.get(name) ?: return null
         val resolved = enumValueConfig.pointer.element ?: return null
-        resolved.putUserData(PlsKeys.cwtConfig, enumValueConfig)
+        resolved.putUserData(PlsKeys.bindingConfig, enumValueConfig)
         return resolved
     }
     
     fun resolvePredefinedLocalisationScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.localisationLinks[name] ?: return null
         val resolved = linkConfig.pointer.element ?: return null
-        resolved.putUserData(PlsKeys.cwtConfig, linkConfig)
+        resolved.putUserData(PlsKeys.bindingConfig, linkConfig)
         return resolved
     }
     
     fun resolvePredefinedLocalisationCommand(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val commandConfig = configGroup.localisationCommands[name] ?: return null
         val resolved = commandConfig.pointer.element ?: return null
-        resolved.putUserData(PlsKeys.cwtConfig, commandConfig)
+        resolved.putUserData(PlsKeys.bindingConfig, commandConfig)
         return resolved
     }
     //endregion
