@@ -4,7 +4,7 @@ import icu.windea.pls.core.*
 
 /**
  * 表达式路径。保留大小写。
- * 
+ *
  * 可以用来表示：
  * * 定义成员相对于所属定义的路径。
  * * 定义相对于所在文件的路径。
@@ -22,10 +22,9 @@ import icu.windea.pls.core.*
 interface ParadoxExpressionPath : Iterable<String> {
     val path: String
     val subPaths: List<String>
-    val length: Int
-    
     val originalPath: String
     val originalSubPaths: List<String>
+    val length: Int
     
     fun isEmpty(): Boolean = length == 0
     fun isNotEmpty(): Boolean = length != 0
@@ -95,32 +94,32 @@ private fun doResolve(originalSubPaths: List<String>): ParadoxExpressionPath {
     return ParadoxExpressionPathImplB(originalSubPaths)
 }
 
+//to optimize memory, it's better to use cache, or make property 'path' and 'originalPath' computed 
+
+//12 + 4 * 4 = 28 -> 32
 private class ParadoxExpressionPathImplA(
     path: String
 ) : ParadoxExpressionPath {
     override val originalPath: String = path.intern()
     override val originalSubPaths: List<String> = path2SubPaths(path)
-    
     override val subPaths: List<String> = originalSubPaths.map { it.unquote().intern() }
     override val path: String = subPaths2Path(subPaths)
-    
-    override val length: Int = subPaths.size
+    override val length: Int get() = subPaths.size
     
     override fun equals(other: Any?) = this === other || other is ParadoxExpressionPath && path == other.path
     override fun hashCode() = path.hashCode()
     override fun toString() = path
 }
 
+//12 + 4 * 4 = 28 -> 32
 private class ParadoxExpressionPathImplB(
     originalSubPaths: List<String>
 ) : ParadoxExpressionPath {
     override val originalSubPaths: List<String> = originalSubPaths.map { it.intern() }
     override val originalPath: String = subPaths2Path(originalSubPaths)
-    
     override val subPaths: List<String> = originalSubPaths.map { it.unquote().intern() }
     override val path: String = subPaths2Path(subPaths)
-    
-    override val length: Int = originalSubPaths.size
+    override val length: Int get() = originalSubPaths.size
     
     override fun equals(other: Any?) = this === other || other is ParadoxExpressionPath && path == other.path
     override fun hashCode() = path.hashCode()
@@ -130,10 +129,9 @@ private class ParadoxExpressionPathImplB(
 private object EmptyParadoxExpressionPath : ParadoxExpressionPath {
     override val path: String = ""
     override val subPaths: List<String> = emptyList()
-    override val length: Int = 0
-    
     override val originalPath: String = ""
     override val originalSubPaths: List<String> = emptyList()
+    override val length: Int = 0
     
     override fun equals(other: Any?) = this === other || other is ParadoxExpressionPath && path == other.path
     override fun hashCode() = path.hashCode()
