@@ -16,6 +16,8 @@ class UnsupportedScriptedVariableUsageInspection: LocalInspectionTool() {
     //NOTE: vanilla files indicates that this inspection may be unnecessary!
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if(shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         val extension = holder.file.name.substringAfterLast('.').lowercase()
         if(extension == "asset") {
             return object : PsiElementVisitor() {
@@ -32,6 +34,11 @@ class UnsupportedScriptedVariableUsageInspection: LocalInspectionTool() {
             }
         }
         return PsiElementVisitor.EMPTY_VISITOR
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if(selectRootFile(file) == null) return false
+        return true
     }
 }
 

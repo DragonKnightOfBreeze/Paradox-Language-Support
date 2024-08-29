@@ -4,6 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.ep.checker.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
@@ -12,6 +13,8 @@ import icu.windea.pls.script.psi.*
  */
 class IncorrectExpressionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -32,6 +35,11 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                 ParadoxIncorrectExpressionChecker.check(element, config, holder)
             }
         }
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if(selectRootFile(file) == null) return false
+        return true
     }
 }
 

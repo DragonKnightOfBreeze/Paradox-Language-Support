@@ -53,7 +53,6 @@ class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
     
     private fun shouldCheckFile(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
-        val filePath = fileInfo.path
-        return ParadoxFilePathManager.inLocalisationPath(filePath)
+        return ParadoxFilePathManager.inLocalisationPath(fileInfo.path)
     }
 }

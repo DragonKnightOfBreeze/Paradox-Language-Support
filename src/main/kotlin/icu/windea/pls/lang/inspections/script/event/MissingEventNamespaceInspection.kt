@@ -12,8 +12,7 @@ import icu.windea.pls.script.psi.*
  */
 class MissingEventNamespaceInspection : LocalInspectionTool() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        //仅检查事件脚本文件
-        if(!isEventScriptFile(file)) return null
+        if(!shouldCheckFile(file)) return null
         
 		file as ParadoxScriptFile
         val rootBlock = file.block ?: return null
@@ -26,7 +25,8 @@ class MissingEventNamespaceInspection : LocalInspectionTool() {
         return null
     }
     
-    private fun isEventScriptFile(file: PsiFile): Boolean {
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        //仅检查事件脚本文件
         val fileInfo = file.fileInfo ?: return false
         val filePath = fileInfo.path
         return "txt" == filePath.fileExtension && "events".matchesPath(filePath.path)

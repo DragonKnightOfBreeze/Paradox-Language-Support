@@ -58,8 +58,7 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
     private fun shouldCheckFile(file: PsiFile): Boolean {
         if(ParadoxFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
         val fileInfo = file.fileInfo ?: return false
-        val filePath = fileInfo.path
-        return ParadoxFilePathManager.inLocalisationPath(filePath)
+        return ParadoxFilePathManager.inLocalisationPath(fileInfo.path)
     }
 	
 	//org.jetbrains.kotlin.idea.intentions.RenameFileToMatchClassIntention

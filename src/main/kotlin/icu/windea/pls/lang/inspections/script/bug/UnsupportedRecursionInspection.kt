@@ -68,6 +68,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     }
     
     private fun shouldCheckFile(file: PsiFile): Boolean {
+        if(selectRootFile(file) == null) return false
         val fileInfo = file.fileInfo ?: return false
         val filePath = fileInfo.path
         if(filePath.fileExtension?.lowercase() != "txt") return false

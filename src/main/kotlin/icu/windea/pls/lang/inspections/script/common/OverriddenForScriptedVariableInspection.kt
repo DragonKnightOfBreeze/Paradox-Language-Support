@@ -18,6 +18,8 @@ import icu.windea.pls.script.psi.*
  */
 class OverriddenForScriptedVariableInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         val file = holder.file
         val project = holder.project
         val fileInfo = file.fileInfo ?: return PsiElementVisitor.EMPTY_VISITOR
@@ -49,6 +51,11 @@ class OverriddenForScriptedVariableInspection : LocalInspectionTool() {
                 holder.registerProblem(locationElement, message, fix)
             }
         }
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if(selectRootFile(file) == null) return false
+        return true
     }
     
     private class NavigateToOverriddenScriptedVariablesFix(key: String, element: PsiElement, elements: Collection<PsiElement>) : NavigateToFix(key, element, elements) {

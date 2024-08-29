@@ -26,10 +26,11 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     @JvmField var ignoredFileNames = "*.lua;*.tga"
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         val file = holder.file
         val project = holder.project
         val configGroup = getConfigGroup(project, selectGameType(file))
-        
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -78,6 +79,11 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 return false
             }
         }
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if(selectRootFile(file) == null) return false
+        return true
     }
     
     override fun createOptionsPanel(): JComponent {

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.script.common
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
@@ -12,6 +13,8 @@ import icu.windea.pls.lang.util.*
  */
 class UnusedInlineScriptInspection : LocalInspectionTool() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
+        if(!shouldCheckFile(file)) return null
+        
         //still check if inference.inlineScriptConfig is not checked
         //if(!getSettings().inference.inlineScriptConfig) return null
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return null
@@ -23,5 +26,10 @@ class UnusedInlineScriptInspection : LocalInspectionTool() {
         val description = PlsBundle.message("inspection.script.unusedInlineScript.desc", inlineScriptExpression)
         holder.registerProblem(file, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL)
         return holder.resultsArray
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if(selectRootFile(file) == null) return false
+        return true
     }
 }

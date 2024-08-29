@@ -14,8 +14,7 @@ import icu.windea.pls.script.psi.*
  */
 class IncorrectEventNamespaceInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        //仅检查事件脚本文件
-        if(isEventScriptFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
         
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -37,7 +36,8 @@ class IncorrectEventNamespaceInspection : LocalInspectionTool() {
         }
     }
     
-    private fun isEventScriptFile(file: PsiFile): Boolean {
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        //仅检查事件脚本文件
         val fileInfo = file.fileInfo ?: return false
         val filePath = fileInfo.path
         return "txt" == filePath.fileExtension && "events".matchesPath(filePath.path)

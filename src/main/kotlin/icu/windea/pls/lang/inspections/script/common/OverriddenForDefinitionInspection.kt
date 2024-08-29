@@ -18,9 +18,10 @@ import icu.windea.pls.script.psi.*
  */
 class OverriddenForDefinitionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         val file = holder.file
         val project = holder.project
-        file.fileInfo ?: return PsiElementVisitor.EMPTY_VISITOR
         val virtualFile = file.virtualFile
         val inProject = virtualFile != null && ProjectFileIndex.getInstance(project).isInContent(virtualFile)
         if(!inProject) return PsiElementVisitor.EMPTY_VISITOR //only for project files
@@ -48,6 +49,11 @@ class OverriddenForDefinitionInspection : LocalInspectionTool() {
                 holder.registerProblem(locationElement, message, fix)
             }
         }
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if(selectRootFile(file) == null) return false
+        return true
     }
     
     private class NavigateToOverriddenDefinitionsFix(key: String, element: PsiElement, elements: Collection<PsiElement>) : NavigateToFix(key, element, elements) {

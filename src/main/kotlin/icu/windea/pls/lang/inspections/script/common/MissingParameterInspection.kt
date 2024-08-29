@@ -17,6 +17,8 @@ import icu.windea.pls.script.psi.*
  */
 class MissingParameterInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         return object : PsiElementVisitor() {
             private fun shouldVisit(element: PsiElement): Boolean {
                 return (element is ParadoxScriptProperty && !element.name.isParameterized()) || element is ParadoxScriptString
@@ -58,5 +60,10 @@ class MissingParameterInspection : LocalInspectionTool() {
                 holder.registerProblem(element, rangeInElement, message)
             }
         }
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if(selectRootFile(file) == null) return false
+        return true
     }
 }

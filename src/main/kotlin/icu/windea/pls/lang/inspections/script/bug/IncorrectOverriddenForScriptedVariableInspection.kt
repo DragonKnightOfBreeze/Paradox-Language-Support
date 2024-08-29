@@ -12,6 +12,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -19,6 +20,8 @@ import icu.windea.pls.script.psi.*
  */
 class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         val file = holder.file
         val project = holder.project
         val fileInfo = file.fileInfo ?: return PsiElementVisitor.EMPTY_VISITOR
@@ -57,6 +60,12 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
                 }
             }
         }
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if(ParadoxFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if(selectRootFile(file) == null) return false
+        return true
     }
     
     private class NavigateToOverriddenScriptedVariablesFix(key: String, element: PsiElement, scriptedVariables: Collection<PsiElement>) : NavigateToFix(key, element, scriptedVariables) {

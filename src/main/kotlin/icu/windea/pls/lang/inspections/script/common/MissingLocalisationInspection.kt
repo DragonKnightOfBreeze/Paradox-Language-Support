@@ -9,6 +9,7 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
@@ -36,6 +37,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField var checkModifierDescriptions = false
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
         val locales = mutableSetOf<CwtLocalisationLocaleConfig>()
         if(checkForPreferredLocale) locales.add(ParadoxLocaleManager.getPreferredLocaleConfig())
@@ -111,6 +114,11 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 }
             }
         }
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if(selectRootFile(file) == null) return false
+        return true
     }
     
     override fun createOptionsPanel(): JComponent {

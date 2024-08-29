@@ -31,12 +31,12 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     //如果一个表达式（属性/值）无法解析，需要跳过直接检测下一个表达式，而不是继续向下检查它的子节点
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        var suppressed: PsiElement? = null
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
         
+        var suppressed: PsiElement? = null
         val file = holder.file
         val project = holder.project
         val configGroup = getConfigGroup(project, selectGameType(file))
-        
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -205,6 +205,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 }
             }
         }
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if(selectRootFile(file) == null) return false
+        return true
     }
     
     override fun createOptionsPanel(): JComponent {

@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.script.psi.*
@@ -23,6 +24,8 @@ class MissingImageInspection : LocalInspectionTool() {
     @JvmField var checkModifierIcons = true
     
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -85,6 +88,11 @@ class MissingImageInspection : LocalInspectionTool() {
                 return PlsBundle.message("inspection.script.missingImage.desc", from)
             }
         }
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if(selectRootFile(file) == null) return false
+        return true
     }
     
     override fun createOptionsPanel(): JComponent {

@@ -15,6 +15,8 @@ import icu.windea.pls.script.psi.*
  */
 class IncorrectDynamicValueExpressionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+        
         val configGroup = getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -41,6 +43,11 @@ class IncorrectDynamicValueExpressionInspection : LocalInspectionTool() {
                 holder.registerExpressionError(error, element)
             }
         }
+    }
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if(selectRootFile(file) == null) return false
+        return true
     }
 }
 

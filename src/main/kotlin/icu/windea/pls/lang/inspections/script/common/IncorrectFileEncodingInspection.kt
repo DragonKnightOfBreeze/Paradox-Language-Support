@@ -12,7 +12,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.lang.util.*
 
 //com.intellij.openapi.editor.actions.AddBomAction
 //com.intellij.openapi.editor.actions.RemoveBomAction
@@ -27,7 +27,8 @@ import icu.windea.pls.localisation.psi.*
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
 	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
-		if(file !is ParadoxLocalisationFile) return null //不期望的结果
+        if(!shouldCheckFile(file)) return null
+        
 		val virtualFile = file.virtualFile ?: return null
 		val charset = virtualFile.charset
 		val hasBom = virtualFile.hasBom(PlsConstants.utf8Bom)
@@ -44,6 +45,13 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
 		}
 		return null
 	}
+    
+    
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if(ParadoxFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if(selectRootFile(file) == null) return false
+        return true
+    }
 	
 	private class ChangeToCorrectFileEncodingFix(
 		element: PsiElement,

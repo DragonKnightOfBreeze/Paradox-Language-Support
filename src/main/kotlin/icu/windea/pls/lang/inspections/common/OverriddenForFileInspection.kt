@@ -16,10 +16,6 @@ import icu.windea.pls.lang.search.selector.*
  * 检查是否存在对文件的重载
  */
 class OverriddenForFileInspection : LocalInspectionTool() {
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        return super.checkFile(file, manager, isOnTheFly)
-    }
-    
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         val project = holder.project
