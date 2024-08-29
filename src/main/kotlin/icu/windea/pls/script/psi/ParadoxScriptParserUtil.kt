@@ -12,15 +12,13 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     fun checkRightTemplate(b: PsiBuilder, l: Int): Boolean {
         //a token should not be parsed to a value when with a trailing separator
         var s = -1
-        var end = false
         while(true) {
             s++
             val t = b.rawLookup(s)
             when{
                 t == null -> break
-                t == TokenType.WHITE_SPACE -> end = true
+                t == TokenType.WHITE_SPACE -> break
                 t in ParadoxScriptTokenSets.PROPERTY_SEPARATOR_TOKENS -> return false
-                else -> if(end) break
             }
         }
         return true
