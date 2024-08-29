@@ -4,6 +4,9 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.*
 
+/**
+ * 参见：`99_README_GRAMMAR.txt`
+ */
 class ParadoxParameterizedCommandFieldNode(
     override val text: String,
     override val rangeInExpression: TextRange,
