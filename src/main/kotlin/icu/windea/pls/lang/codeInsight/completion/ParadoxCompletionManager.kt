@@ -1399,7 +1399,8 @@ object ParadoxCompletionManager {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, localisationScope.inputScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
             
-            val name = localisationScope.name
+            //optimize: make first char uppercase (e.g., owner -> Owner)
+            val name = localisationScope.name.replaceFirstChar { it.uppercaseChar() }
             val element = localisationScope.pointer.element ?: continue
             val tailText = " from command scopes"
             val typeFile = localisationScope.pointer.containingFile

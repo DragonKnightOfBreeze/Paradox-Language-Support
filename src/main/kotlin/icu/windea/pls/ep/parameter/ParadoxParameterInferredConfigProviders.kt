@@ -18,14 +18,16 @@ import icu.windea.pls.script.psi.*
 /**
  * 用于基于所在位置推断参数的上下文规则。
  */
-class ParadoxDefaultExpressionParameterInferredConfigProvider: ParadoxParameterInferredConfigProvider {
+class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameterInferredConfigProvider {
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
         return true
     }
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val configGroup = getConfigGroup(parameterContextInfo.project, parameterContextInfo.gameType)
-        return getConfig(parameterInfo, configGroup)?.toSingletonList()
+        val finalConfigs = getConfig(parameterInfo, configGroup)?.toSingletonList() ?: return null
+        val contextConfig = CwtConfigManipulator.inlineWithConfigs(null, finalConfigs, configGroup)
+        return listOf(contextConfig)
     }
     
     private fun getConfig(parameterInfo: ParadoxParameterContextInfo.Parameter, configGroup: CwtConfigGroup): CwtMemberConfig<*>? {
@@ -59,20 +61,21 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return null
         if(!expressionElement.value.isFullParameterized()) return null
-        val expressionContextConfigs = ParadoxExpressionManager.getConfigContext(expressionElement)?.getConfigs().orEmpty()
+        val expressionContextConfigs = ParadoxExpressionManager.getConfigContext(expressionElement)?.getConfigs()
+        if(expressionContextConfigs.isNullOrEmpty()) return null
         val contextConfigs = getContextConfigsFromExpressionContextConfigs(expressionContextConfigs, parameterInfo)
+        if(contextConfigs.isNullOrEmpty()) return null
         return contextConfigs
     }
     
-    private fun getContextConfigsFromExpressionContextConfigs(expressionContextConfigs: List<CwtMemberConfig<*>>, parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>>{
-        if(expressionContextConfigs.isEmpty()) return emptyList()
+    private fun getContextConfigsFromExpressionContextConfigs(expressionContextConfigs: List<CwtMemberConfig<*>>, parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>>? {
         val expressionContextConfig = expressionContextConfigs.find { it.expression.type == CwtDataTypes.ParameterValue }
         if(expressionContextConfig != null) {
             //处理参数传递的情况
-            if(expressionContextConfig !is CwtValueConfig) return emptyList()
-            val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return emptyList()
-            val argumentNameConfig = expressionContextConfig.propertyConfig ?: return emptyList()
-            val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return emptyList()
+            if(expressionContextConfig !is CwtValueConfig) return null
+            val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return null
+            val argumentNameConfig = expressionContextConfig.propertyConfig ?: return null
+            val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return null
             val passingContextConfigs = ParadoxParameterManager.getInferredContextConfigs(passingParameterElement)
             return passingContextConfigs
         }
@@ -82,7 +85,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
                 is CwtValueConfig -> config.delegated(CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
             }
         }
-        val configGroup = expressionContextConfigs.first().configGroup
+        val configGroup = finalConfigs.first().configGroup
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(null, finalConfigs, configGroup)
         return listOf(contextConfig)
     }
@@ -107,8 +110,12 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
         val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return null
         if(expressionElement.value.isFullParameterized()) return null
         val expressionConfigs = parameterInfo.expressionConfigs
-        val configs = expressionConfigs.mapNotNull { getConfigFromExpressionConfig(expressionElement, it, parameterInfo) }
-        return configs
+        if(expressionConfigs.isEmpty()) return null
+        val finalConfigs = expressionConfigs.mapNotNull { getConfigFromExpressionConfig(expressionElement, it, parameterInfo) }
+        if(finalConfigs.isEmpty()) return null
+        val configGroup = finalConfigs.first().configGroup
+        val contextConfig = CwtConfigManipulator.inlineWithConfigs(null, finalConfigs, configGroup)
+        return listOf(contextConfig)
     }
     
     private fun getConfigFromExpressionConfig(expressionElement: ParadoxScriptStringExpressionElement, expressionConfig: CwtMemberConfig<*>, parameterInfo: ParadoxParameterContextInfo.Parameter): CwtValueConfig? {
