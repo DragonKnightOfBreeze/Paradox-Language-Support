@@ -32,7 +32,10 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                     element is ParadoxScriptBlock -> element
                     else -> null
                 } ?: return Result.NotMatch
-                if(config.configs.isNullOrEmpty() && blockElement.isEmpty) return Result.ExactMatch
+                if(config.configs.isNullOrEmpty()) {
+                    if(blockElement.isEmpty) return Result.ExactMatch
+                    return Result.FallbackMatch
+                }
                 Result.LazyBlockAwareMatch p@{
                     val keys = ParadoxExpressionManager.getInBlockKeys(config)
                     if(keys.isEmpty()) return@p true

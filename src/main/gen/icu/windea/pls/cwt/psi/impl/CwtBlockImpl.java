@@ -1,24 +1,25 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi.impl;
 
-import com.intellij.lang.*;
-import com.intellij.navigation.*;
-import com.intellij.psi.*;
-import com.intellij.psi.search.*;
-import com.intellij.psi.util.*;
-import icu.windea.pls.cwt.psi.*;
+import java.util.List;
 import org.jetbrains.annotations.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
+import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
+import icu.windea.pls.cwt.psi.*;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.SearchScope;
+import javax.swing.Icon;
 
-import javax.swing.*;
-import java.util.*;
-
-public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
+public class CwtBlockImpl extends CwtNamedElementImpl implements CwtBlock {
 
   public CwtBlockImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull CwtVisitor visitor) {
     visitor.visitBlock(this);
   }
@@ -73,8 +74,20 @@ public class CwtBlockImpl extends CwtValueImpl implements CwtBlock {
 
   @Override
   @NotNull
+  public CwtBlock setName(@NotNull String name) {
+    return CwtPsiImplUtil.setName(this, name);
+  }
+
+  @Override
+  @NotNull
   public String getValue() {
     return CwtPsiImplUtil.getValue(this);
+  }
+
+  @Override
+  @NotNull
+  public CwtValue setValue(@NotNull String value) {
+    return CwtPsiImplUtil.setValue(this, value);
   }
 
   @Override

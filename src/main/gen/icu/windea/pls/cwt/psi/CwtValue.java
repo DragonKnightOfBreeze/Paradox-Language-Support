@@ -1,11 +1,13 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
-import com.intellij.navigation.*;
-import com.intellij.psi.search.*;
+import java.util.List;
 import org.jetbrains.annotations.*;
-
-import javax.swing.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.search.SearchScope;
+import javax.swing.Icon;
 
 public interface CwtValue extends CwtMemberElement {
 

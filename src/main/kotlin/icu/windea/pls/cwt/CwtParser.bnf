@@ -113,8 +113,9 @@ string ::= STRING_TOKEN {
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
   extends=value
+  mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements=["icu.windea.pls.cwt.psi.CwtBlockElement"]
-  methods=[getIcon getName getValue isEmpty isNotEmpty getComponents]
+  methods=[getIcon getName setName getValue setValue isEmpty isNotEmpty getComponents]
 }
 private block_item ::= comment | property | option | value{
   recoverWhile="#auto"

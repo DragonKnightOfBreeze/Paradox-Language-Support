@@ -6,7 +6,6 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import javax.swing.*
 
-@Suppress("UNCHECKED_CAST")
 class CwtItemPresentation(
     element: PsiElement
 ) : ItemPresentation {

@@ -1,9 +1,11 @@
 package icu.windea.pls.cwt.editor
 
+import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.lang.*
 import com.intellij.lang.cacheBuilder.*
 import com.intellij.lang.findUsages.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.intellij.refactoring.util.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
@@ -25,23 +27,25 @@ class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
     
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
         if(element is RefactoringDescriptionLocation) return null
+        if(element.elementType == CwtElementTypes.LEFT_BRACE) {
+            return when(location) {
+                UsageViewTypeLocation.INSTANCE -> PlsBundle.message("cwt.description.block")
+                else -> PlsConstants.Folders.block
+            }
+        }
         return when(element) {
             is CwtProperty -> {
                 val configType = element.configType?.takeIf { it.isReference }
                 when(location) {
                     UsageViewTypeLocation.INSTANCE -> configType?.descriptionText ?: PlsBundle.message("cwt.description.property")
-                    else -> {
-                        element.configType?.getShortName(element.name) ?: element.name
-                    }
+                    else -> element.configType?.getShortName(element.name) ?: element.name
                 }
             }
             is CwtString -> {
                 val configType = element.configType?.takeIf { it.isReference }
                 when(location) {
                     UsageViewTypeLocation.INSTANCE -> configType?.descriptionText ?: PlsBundle.message("cwt.description.value")
-                    else -> {
-                        element.configType?.getShortName(element.name) ?: element.name
-                    }
+                    else -> element.configType?.getShortName(element.name) ?: element.name
                 }
             }
             else -> null
