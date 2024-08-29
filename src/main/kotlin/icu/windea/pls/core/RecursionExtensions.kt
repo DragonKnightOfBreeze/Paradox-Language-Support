@@ -4,7 +4,7 @@ package icu.windea.pls.core
 
 import com.intellij.openapi.util.*
 
-class SmartRecursionGuard(val key: Any) {
+class SmartRecursionGuard(val name: Any) {
     val stackTrace = ArrayDeque<Any>()
     
     companion object {
@@ -15,15 +15,11 @@ class SmartRecursionGuard(val key: Any) {
 /**
  * 执行一段代码，并通过[SmartRecursionGuard]尝试避免堆栈溢出。
  */
-inline fun <T> withRecursionGuard(action: SmartRecursionGuard.() -> T): T? {
+inline fun <T> withRecursionGuard(name: String, action: SmartRecursionGuard.() -> T): T? {
     val recursionGuardCache = SmartRecursionGuard.cache.get()
-    val currentStackTrace = getCurrentStackTrace()
-    val currentStack = currentStackTrace.firstOrNull()
-    val key = currentStack?.let { "${it.className}.${it.methodName}#${it.lineNumber}" } ?: ""
-    println(key)
-    val cached = recursionGuardCache.get(key)
+    val cached = recursionGuardCache.get(name)
     try {
-        val recursionGuard = cached ?: SmartRecursionGuard(key).also { recursionGuardCache.put(key, it) }
+        val recursionGuard = cached ?: SmartRecursionGuard(name).also { recursionGuardCache.put(name, it) }
         return recursionGuard.action()
     } catch(e1: StackOverflowError) {
         return null
@@ -31,7 +27,7 @@ inline fun <T> withRecursionGuard(action: SmartRecursionGuard.() -> T): T? {
         return null
     } finally {
         if(cached == null) {
-            recursionGuardCache.remove(key)
+            recursionGuardCache.remove(name)
         }
     }
 }

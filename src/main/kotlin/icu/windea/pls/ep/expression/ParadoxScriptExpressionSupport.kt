@@ -50,7 +50,7 @@ interface ParadoxScriptExpressionSupport {
         
         fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
             val gameType = config.configGroup.gameType
-            withRecursionGuard {
+            withRecursionGuard("ParadoxScriptExpressionSupport.INSTANCE.annotate") {
                 EP_NAME.extensionList.forEach f@{ ep ->
                     if(!ep.supports(config)) return@f
                     if(!gameType.supportsByAnnotation(ep)) return@f
@@ -63,7 +63,7 @@ interface ParadoxScriptExpressionSupport {
         
         fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
             val gameType = config.configGroup.gameType
-            withRecursionGuard {
+            withRecursionGuard("ParadoxScriptExpressionSupport.INSTANCE.resolve") {
                 EP_NAME.extensionList.forEach f@{ ep ->
                     if(!ep.supports(config)) return@f
                     if(!gameType.supportsByAnnotation(ep)) return@f
@@ -78,7 +78,7 @@ interface ParadoxScriptExpressionSupport {
         
         fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
             val gameType = config.configGroup.gameType
-            withRecursionGuard {
+            withRecursionGuard("ParadoxScriptExpressionSupport.INSTANCE.multiResolve") {
                 EP_NAME.extensionList.forEach f@{ ep ->
                     if(!ep.supports(config)) return@f
                     if(!gameType.supportsByAnnotation(ep)) return@f
@@ -93,7 +93,7 @@ interface ParadoxScriptExpressionSupport {
         
         fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {
             val gameType = config.configGroup.gameType
-            withRecursionGuard {
+            withRecursionGuard("ParadoxScriptExpressionSupport.INSTANCE.getReferences") {
                 EP_NAME.extensionList.forEach f@{ ep ->
                     if(!ep.supports(config)) return@f
                     if(!gameType.supportsByAnnotation(ep)) return@f
@@ -109,7 +109,7 @@ interface ParadoxScriptExpressionSupport {
         fun complete(context: ProcessingContext, result: CompletionResultSet) {
             val config = context.config ?: return
             val gameType = config.configGroup.gameType
-            withRecursionGuard {
+            withRecursionGuard("ParadoxScriptExpressionSupport.INSTANCE.complete") {
                 EP_NAME.extensionList.forEach f@{ ep ->
                     if(!ep.supports(config)) return@f
                     if(!gameType.supportsByAnnotation(ep)) return@f

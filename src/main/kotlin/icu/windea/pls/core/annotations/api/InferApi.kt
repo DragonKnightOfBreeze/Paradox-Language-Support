@@ -6,4 +6,3 @@ package icu.windea.pls.core.annotations.api
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
 annotation class InferApi
-

@@ -29,7 +29,7 @@ interface ParadoxParameterInferredConfigProvider {
         
         fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
             val gameType = parameterContextInfo.gameType
-            return withRecursionGuard {
+            return withRecursionGuard("ParadoxParameterInferredConfigProvider.INSTANCE.getContextConfigs") {
                 EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                     if(!gameType.supportsByAnnotation(ep)) return@f null
                     if(!ep.supports(parameterInfo, parameterContextInfo)) return@f null

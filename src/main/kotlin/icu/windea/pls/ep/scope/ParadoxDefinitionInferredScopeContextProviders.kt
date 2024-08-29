@@ -84,7 +84,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
-        return withRecursionGuard {
+        return withRecursionGuard("ParadoxBaseDefinitionInferredScopeContextProvider.doProcessQuery") {
             withRecursionCheck(definitionInfo.name + "@" + definitionInfo.type) {
                 val indexId = ParadoxExpressionIndexId.InferredScopeContextAwareDefinition
                 ParadoxExpressionIndex.processQuery(indexId, project, gameType, searchScope) p@{ file, infos ->
@@ -191,7 +191,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
-        return withRecursionGuard {
+        return withRecursionGuard("ParadoxEventInOnActionInferredScopeContextProvider.doProcessQuery") {
             if(depth == 1) stackTrace.addLast(thisEventName)
             
             val indexId = ParadoxExpressionIndexId.EventInOnAction
@@ -299,7 +299,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
-        return withRecursionGuard {
+        return withRecursionGuard("ParadoxEventInEventInferredScopeContextProvider.doProcessQuery") {
             if(depth == 1) stackTrace.addLast(thisEventName)
             
             val toRef = "from".repeat(depth)
@@ -452,7 +452,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         ProgressManager.checkCanceled()
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return true
-        return withRecursionGuard {
+        return withRecursionGuard("ParadoxOnActionInEventInferredScopeContextProvider.doProcessQuery") {
             if(depth == 1) stackTrace.addLast(thisOnActionName)
             
             val toRef = "from".repeat(depth)

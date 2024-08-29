@@ -42,7 +42,7 @@ class CwtConfigContext(
         val rootFile = selectRootFile(element) ?: return emptyList()
         val cache = configGroup.configsCache.value.get(rootFile)
         val cachedKey = doGetCacheKey(matchOptions) ?: return emptyList()
-        val cached = withRecursionGuard {
+        val cached = withRecursionGuard("CwtConfigContext.getConfigs") {
             withRecursionCheck(cachedKey) action@{
                 try {
                     //use lock-freeze ConcurrentMap.getOrPut to prevent IDE freezing problems

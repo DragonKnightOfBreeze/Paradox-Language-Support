@@ -17,7 +17,6 @@ import kotlin.collections.set
 /**
  * 用于在重命名定义时自动重命名由其生成的修正（如果存在）。
  */
-@SlowApi
 class AutomaticGeneratedModifiersRenamer(element: PsiElement, newName: String) : AutomaticRenamer() {
     init {
         element as ParadoxScriptDefinitionElement

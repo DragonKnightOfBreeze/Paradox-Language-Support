@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.registry.*
 import com.intellij.psi.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.annotations.api.*
 import org.intellij.plugins.markdown.lang.psi.impl.*
 
