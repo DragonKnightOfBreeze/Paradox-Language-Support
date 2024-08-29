@@ -22,8 +22,27 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if(expression.isKey != false) return Result.NotMatch
                 if(expression.type != ParadoxType.Block) return Result.NotMatch
                 if(config !is CwtMemberConfig) return Result.NotMatch
-                Result.LazyBlockAwareMatch {
-                    matchesScriptExpressionInBlock(element, config)
+                
+                //* 如果子句中包含对应的任意子句规则中的任意必须的键（忽略大小写），则认为匹配
+                //* 如果存在子句规则内容为空，则仅当子句内容为空时才认为匹配
+                //* 不同的子句规则可以拥有部分相同的propertyKey
+                
+                val blockElement = when {
+                    element is ParadoxScriptProperty -> element.propertyValue()
+                    element is ParadoxScriptBlock -> element
+                    else -> null
+                } ?: return Result.NotMatch
+                if(config.configs.isNullOrEmpty() && blockElement.isEmpty) return Result.ExactMatch
+                Result.LazyBlockAwareMatch p@{
+                    val keys = ParadoxExpressionManager.getInBlockKeys(config)
+                    if(keys.isEmpty()) return@p true
+                    val actualKeys = mutableSetOf<String>()
+                    //注意这里需要考虑内联和可选的情况
+                    blockElement.processData(conditional = true, inline = true) {
+                        if(it is ParadoxScriptProperty) actualKeys.add(it.name)
+                        true
+                    }
+                    actualKeys.any { it in keys }
                 }
             }
             configExpression.type == CwtDataTypes.Bool -> {
@@ -71,25 +90,6 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             else -> null
         }
     }
-    
-    private fun matchesScriptExpressionInBlock(element: PsiElement, config: CwtMemberConfig<*>): Boolean {
-        val block = when {
-            element is ParadoxScriptProperty -> element.propertyValue()
-            element is ParadoxScriptBlock -> element
-            else -> null
-        } ?: return false
-        //简单判断：如果block中包含configsInBlock声明的必须的任意propertyKey（作为常量字符串，忽略大小写），则认为匹配
-        //注意：不同的子句规则可以拥有部分相同的propertyKey
-        val keys = ParadoxExpressionManager.getInBlockKeys(config)
-        if(keys.isEmpty()) return true
-        val actualKeys = mutableSetOf<String>()
-        //注意这里需要考虑内联和可选的情况
-        block.processData(conditional = true, inline = true) {
-            if(it is ParadoxScriptProperty) actualKeys.add(it.name)
-            true
-        }
-        return actualKeys.any { it in keys }
-    }
 }
 
 class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
@@ -128,7 +128,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             configExpression.type == CwtDataTypes.Definition -> {
                 //can be a integer here (e.g., for <technology_tier>)
                 if(!expression.type.isStringType() && expression.type != ParadoxType.Int) return Result.NotMatch
-                if(!expression.text.isParameterAwareIdentifier('.')) return Result.NotMatch
+                if(!expression.text.isParameterAwareIdentifier('.','-')) return Result.NotMatch
                 if(expression.isParameterized()) return Result.ParameterizedMatch
                 ParadoxExpressionMatcher.Impls.getDefinitionMatchResult(element, expression, configExpression, project)
             }
