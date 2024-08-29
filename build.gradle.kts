@@ -60,7 +60,7 @@ dependencies {
 	testImplementation("org.xerial:sqlite-jdbc:3.46.0.0")
 	//Byte Buddy
 	testImplementation("net.bytebuddy:byte-buddy:1.14.17")
-	testImplementation("net.bytebuddy:byte-buddy-agent:1.14.18")
+	testImplementation("net.bytebuddy:byte-buddy-agent:1.15.0")
 	//Javassist
 	testImplementation("org.javassist:javassist:3.30.2-GA")
 	////JOGL
