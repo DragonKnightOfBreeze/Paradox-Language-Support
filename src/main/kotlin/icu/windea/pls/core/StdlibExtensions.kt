@@ -407,12 +407,13 @@ fun String.toCapitalizedWords(): String {
     }
 }
 
-fun CharSequence.indicesOf(char: Char, startIndex: Int = 0, ignoreCase: Boolean = false): List<Int> {
+fun CharSequence.indicesOf(char: Char, startIndex: Int = 0, ignoreCase: Boolean = false,  limit: Int = 0): List<Int> {
     var indices: MutableList<Int>? = null
     var lastIndex = indexOf(char, startIndex, ignoreCase)
     while(lastIndex != -1) {
         if(indices == null) indices = mutableListOf()
         indices.add(lastIndex)
+        if(limit > 0 && indices.size == limit) break
         lastIndex = indexOf(char, lastIndex + 1, ignoreCase)
     }
     return indices ?: emptyList()

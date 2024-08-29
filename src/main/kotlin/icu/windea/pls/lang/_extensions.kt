@@ -89,8 +89,9 @@ fun String.isFullParameterized(): Boolean {
     //快速判断，不检测带参数后的语法是否合法
     if(this.length < 2) return false
     // $PARAM$ - 仅限 高级插值语法 A
-    if(surroundsWith('$', '$') && !isEscapedCharAt(lastIndex)) return true
-    return false
+    if(!this.startsWith('$')) return false
+    if(this.indexOf('$', 1).let { c -> c != lastIndex || isEscapedCharAt(c) }) return false
+    return true
 }
 
 fun String.getParameterRanges(): List<TextRange> {

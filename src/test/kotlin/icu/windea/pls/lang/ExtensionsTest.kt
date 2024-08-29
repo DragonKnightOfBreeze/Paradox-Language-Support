@@ -19,7 +19,7 @@ class ExtensionsTest {
         Assert.assertTrue("[[a]]".isParameterized())
         Assert.assertTrue("aaa[[a]]bbb".isParameterized())
         
-        Assert.assertFalse("\$abc\\$".isFullParameterized())
+        Assert.assertTrue("\$abc\\$".isParameterized())
         Assert.assertFalse("\\\$abc$".isParameterized())
         Assert.assertFalse("\\[[a]]".isParameterized())
         Assert.assertFalse("abc".isParameterized())
@@ -30,7 +30,8 @@ class ExtensionsTest {
         Assert.assertTrue("\$abc$".isFullParameterized())
         Assert.assertFalse("aaa\$abc\$bbb".isFullParameterized())
         Assert.assertFalse("\$abc\\$".isFullParameterized())
-        Assert.assertFalse("\\\$abc$".isParameterized())
+        Assert.assertFalse("\\\$abc$".isFullParameterized())
+        Assert.assertFalse("\$abc\$def\$gh\$".isFullParameterized())
     }
     
     @Test
