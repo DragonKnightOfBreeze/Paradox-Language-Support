@@ -39,11 +39,11 @@ object ParadoxDefinitionManager {
     }
     
     private fun doGetInfoFromCache(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
+        //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfo) {
             ProgressManager.checkCanceled()
             val file = element.containingFile ?: return@getCachedValue null
             val value = doGetInfo(element, file)
-            //invalidated on file modification
             CachedValueProvider.Result.create(value, file)
         }
     }

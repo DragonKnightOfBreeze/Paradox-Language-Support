@@ -280,6 +280,17 @@ inline fun <T> Query<T>.processQueryAsync(onlyMostRelevant: Boolean = false, con
     }
     return allowParallelProcessing().forEach(consumer)
 }
+
+
+fun <T> createCachedValue(project: Project = getDefaultProject(), trackValue: Boolean = false, provider: CachedValueProvider<T>): CachedValue<T> {
+    return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
+}
+
+fun <T> T.withDependencyItems(vararg dependencyItems: Any): CachedValueProvider.Result<T> {
+    if(dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
+    return CachedValueProvider.Result.create(this, *dependencyItems)
+}
+
 //endregion
 
 //region Key & DataKey Related Extensions
@@ -303,7 +314,7 @@ inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, nullValue: T, action
     return newValue
 }
 
-fun <T, THIS: UserDataHolder> THIS.getUserDataOrDefault(key: Key<T>): T? {
+fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: Key<T>): T? {
     val value = this.getUserData(key)
     return when {
         value != null -> value
@@ -344,22 +355,6 @@ inline operator fun <T> Key<T>.setValue(thisRef: ProcessingContext, property: KP
 inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)
 
 inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.dataContext.getData(this)
-//endregion
-
-//region CachedValue Related Extensions
-fun <T> createCachedValue(project: Project = getDefaultProject(), trackValue: Boolean = false, provider: CachedValueProvider<T>): CachedValue<T> {
-    return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
-}
-
-fun <T> T.withDependencyItems(vararg dependencyItems: Any): CachedValueProvider.Result<T> {
-    if(dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
-    return CachedValueProvider.Result.create(this, *dependencyItems)
-}
-
-fun <T> T.withDependencyItems(dependencyItems: List<Any>): CachedValueProvider.Result<T> {
-    if(dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
-    return CachedValueProvider.Result.create(this, dependencyItems)
-}
 //endregion
 
 //region Code Insight Extensions

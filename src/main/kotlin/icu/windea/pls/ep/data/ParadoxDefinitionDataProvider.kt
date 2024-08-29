@@ -21,10 +21,11 @@ abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
     fun getData(definition: ParadoxScriptDefinitionElement): T? {
         return CachedValuesManager.getCachedValue(definition, cachedDataKey) {
             val value = doGetData(definition)
-            //invalidated on ScriptedVariablesTracker or InlineScriptsTracker
-            val tracker1 = ParadoxModificationTrackers.ScriptedVariablesTracker
-            val tracker2 = ParadoxModificationTrackers.InlineScriptsTracker
-            CachedValueProvider.Result.create(value, definition, tracker1, tracker2)
+            val trackers = buildList { 
+                this += ParadoxModificationTrackers.ScriptedVariablesTracker
+                this += ParadoxModificationTrackers.InlineScriptsTracker
+            }.toTypedArray()
+            CachedValueProvider.Result.create(value, definition, *trackers)
         }
     }
     

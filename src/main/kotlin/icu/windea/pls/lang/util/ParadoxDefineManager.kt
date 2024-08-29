@@ -53,8 +53,8 @@ object ParadoxDefineManager {
     }
     
     private fun getDefinesFromFile(file: ParadoxScriptFile): MutableMap<String, Any?> {
+        //invalidated on file modification
         return CachedValuesManager.getCachedValue(file, PlsKeys.cachedDefineValues) {
-            //invalidated on file modification
             CachedValueProvider.Result.create(mutableMapOf(), file)
         }
     }

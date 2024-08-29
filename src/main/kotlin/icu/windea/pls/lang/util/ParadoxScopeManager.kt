@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -180,13 +181,14 @@ object ParadoxScopeManager {
     
     private fun doGetSwitchedScopeContextFromCache(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContext) {
+            ProgressManager.checkCanceled()
             val file = element.containingFile ?: return@getCachedValue null
-            val value = doGetSwitchedScopeContextOfDefinition(element) ?: doGetSwitchedScopeContextOfDefinitionMember(element)
-            value.withDependencyItems(
-                file,
-                ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker, //from inference
-                //getConfigGroup(file.project, selectGameType(file)).modificationTracker, //from extended configs (currently unnecessary)
-            )
+            val value = doGetSwitchedScopeContextOfDefinition(element)
+                ?: doGetSwitchedScopeContextOfDefinitionMember(element)
+            val trackers = buildList {
+                this += ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker //from inference
+            }.toTypedArray()
+            CachedValueProvider.Result(value, file, *trackers)
         }
     }
     
@@ -247,18 +249,16 @@ object ParadoxScopeManager {
     
     private fun doGetSwitchedScopeContextFromCache(element: ParadoxDynamicValueElement): ParadoxScopeContext {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedScopeContext) {
+            ProgressManager.checkCanceled()
             val value = doGetSwitchedScopeContext(element)
-            value.withDependencyItems(
-                element
-                //getConfigGroup(file.project, selectGameType(file)).modificationTracker, //from extended configs (currently unnecessary)
-            )
+            CachedValueProvider.Result(value, element)
         }
     }
     
     private fun doGetSwitchedScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContext {
         //使用提供的作用域上下文
         val scopeContext = ParadoxDynamicValueScopeContextProvider.getScopeContext(element)
-        if(scopeContext != null && scopeContext.isExact == true) return scopeContext
+        if(scopeContext != null && scopeContext.isExact) return scopeContext
         
         //除非提供的作用域上下文是准确的，否则再尝试获取推断得到的作用域上下文，并进行合并
         val inferredScopeContext = ParadoxDynamicValueInferredScopeContextProvider.getScopeContext(element)

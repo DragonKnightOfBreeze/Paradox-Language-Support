@@ -154,6 +154,8 @@
   </applicationListeners>
 
   <projectListeners>
+    <listener class="icu.windea.pls.lang.psi.ParadoxPsiTreeChangePreprocessor$Listener"
+              topic="com.intellij.openapi.project.DumbService$DumbModeListener"/>
     <listener class="icu.windea.pls.lang.ParadoxCheckModSettingsFileEditorManagerListener"
               topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
   </projectListeners>

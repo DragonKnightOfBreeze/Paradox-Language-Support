@@ -27,11 +27,11 @@ object ParadoxComplexEnumValueManager {
     }
     
     private fun doGetInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
+        //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedComplexEnumValueInfo) {
             ProgressManager.checkCanceled()
             val file = element.containingFile ?: return@getCachedValue null
             val value = doGetInfo(element, file)
-            //invalidated on file modification
             CachedValueProvider.Result.create(value, file)
         }
     }

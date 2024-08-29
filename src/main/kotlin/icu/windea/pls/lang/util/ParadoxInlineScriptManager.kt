@@ -43,11 +43,11 @@ object ParadoxInlineScriptManager {
     }
     
     private fun doGetUsageInfoFromCache(element: ParadoxScriptProperty): ParadoxInlineScriptUsageInfo? {
+        //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedInlineScriptUsageInfo) {
             ProgressManager.checkCanceled()
             val file = element.containingFile ?: return@getCachedValue null
             val value = runReadAction { doGetUsageInfo(element, file) }
-            //invalidated on file modification
             CachedValueProvider.Result.create(value, file)
         }
     }

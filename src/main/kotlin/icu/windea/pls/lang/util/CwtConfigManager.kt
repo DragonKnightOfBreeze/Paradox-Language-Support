@@ -59,9 +59,11 @@ object CwtConfigManager {
     }
     
     private fun doGetConfigPathFromCache(element: CwtMemberElement): CwtConfigPath? {
+        //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigPath) {
+            val file = element.containingFile ?: return@getCachedValue null
             val value = doGetConfigPath(element)
-            CachedValueProvider.Result.create(value, element)
+            CachedValueProvider.Result.create(value, file)
         }
     }
     
@@ -92,6 +94,7 @@ object CwtConfigManager {
     }
     
     private fun doGetConfigTypeFromCache(element: CwtMemberElement): CwtConfigType? {
+        //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigType) {
             val file = element.containingFile ?: return@getCachedValue null
             val value = when(element) {
@@ -99,7 +102,6 @@ object CwtConfigManager {
                 is CwtValue -> doGetConfigType(element)
                 else -> null
             }
-            //invalidated on file modification
             CachedValueProvider.Result.create(value, file)
         }
     }

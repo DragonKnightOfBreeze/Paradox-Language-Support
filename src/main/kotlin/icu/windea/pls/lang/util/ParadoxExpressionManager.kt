@@ -74,7 +74,7 @@ object ParadoxExpressionManager {
     private fun doGetParameterRangesInExpressionFromCache(element: ParadoxExpressionElement): List<TextRange> {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParameterRanges) {
             val value = doGetParameterRangesInExpression(element)
-            value.withDependencyItems(element)
+            CachedValueProvider.Result.create(value, element)
         }
     }
     
@@ -110,11 +110,11 @@ object ParadoxExpressionManager {
     private fun doGetConfigContextFromCache(element: ParadoxScriptMemberElement): CwtConfigContext? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigContext) {
             val value = doGetConfigContext(element)
-            val trackers = buildList<Any> {
+            val trackers = buildList {
                 this += ParadoxModificationTrackers.ScriptFileTracker
                 this += ParadoxModificationTrackers.LocalisationFileTracker //for loc references
-            }
-            value.withDependencyItems(trackers)
+            }.toTypedArray()
+            CachedValueProvider.Result.create(value, element, trackers)
         }
     }
     
@@ -266,11 +266,11 @@ object ParadoxExpressionManager {
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>> {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsCache) {
             val value = doGetConfigsCache()
-            val trackers = buildList<Any> {
+            val trackers = buildList {
                 this += ParadoxModificationTrackers.ScriptFileTracker
                 this += ParadoxModificationTrackers.LocalisationFileTracker //for loc references
-            }
-            value.withDependencyItems(trackers)
+            }.toTypedArray()
+            CachedValueProvider.Result.create(value, element, trackers)
         }
     }
     
@@ -465,11 +465,11 @@ object ParadoxExpressionManager {
     private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMemberElement): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedChildOccurrenceMapCache) {
             val value = doGetChildOccurrenceMapCache()
-            val trackers = buildList<Any> {
+            val trackers = buildList {
                 this += ParadoxModificationTrackers.ScriptFileTracker
                 this += ParadoxModificationTrackers.LocalisationFileTracker //for loc references
-            }
-            value.withDependencyItems(trackers)
+            }.toTypedArray()
+            CachedValueProvider.Result.create(value, element, trackers)
         }
     }
     

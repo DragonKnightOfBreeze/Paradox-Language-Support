@@ -1,7 +1,6 @@
 package icu.windea.pls.ep.color
 
 import com.intellij.openapi.command.*
-import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
@@ -15,12 +14,7 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
     override fun getColor(element: PsiElement): Color? {
         if(element !is ParadoxScriptColor) return null
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColor) {
-            val value = try {
-                doGetColor(element)
-            } catch(e: Exception) {
-                if(e is ProcessCanceledException) throw e
-                null
-            }
+            val value = runCatchingCancelable { doGetColor(element) }.getOrNull()
             CachedValueProvider.Result.create(value, element)
         }
     }
@@ -33,12 +27,7 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
     
     override fun setColor(element: PsiElement, color: Color): Boolean {
         if(element !is ParadoxScriptColor) return false
-        try {
-            doSetColor(element, color)
-        } catch(e: Exception) {
-            if(e is ProcessCanceledException) throw e
-            //ignored
-        }
+        runCatchingCancelable { doSetColor(element, color) }
         return true
     }
     
@@ -85,12 +74,7 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
 class ParadoxScriptStringColorSupport : ParadoxColorSupport {
     override fun getColor(element: PsiElement): Color? {
         if(element !is ParadoxScriptString) return null
-        return try {
-            doGetColor(element)
-        } catch(e: Exception) {
-            if(e is ProcessCanceledException) throw e
-            null
-        }
+        return runCatchingCancelable { doGetColor(element) }.getOrNull()
     }
     
     private fun doGetColor(element: ParadoxScriptString): Color? {
@@ -103,12 +87,7 @@ class ParadoxScriptStringColorSupport : ParadoxColorSupport {
     
     override fun setColor(element: PsiElement, color: Color): Boolean {
         if(element !is ParadoxScriptString) return false
-        try {
-            doSetColor(element, color)
-        } catch(e: Exception) {
-            if(e is ProcessCanceledException) throw e
-            //ignored
-        }
+        runCatchingCancelable { doSetColor(element, color) }
         return true
     }
     
@@ -133,12 +112,7 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
     override fun getColor(element: PsiElement): Color? {
         if(element !is ParadoxScriptBlock) return null
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColor) {
-            val value = try {
-                doGetColor(element)
-            } catch(e: Exception) {
-                if(e is ProcessCanceledException) throw e
-                null
-            }
+            val value = runCatchingCancelable { doGetColor(element) }.getOrNull()
             CachedValueProvider.Result.create(value, element)
         }
     }
@@ -171,12 +145,7 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
     
     override fun setColor(element: PsiElement, color: Color): Boolean {
         if(element !is ParadoxScriptBlock) return false
-        try {
-            doSetColor(element, color)
-        } catch(e: Exception) {
-            if(e is ProcessCanceledException) throw e
-            //ignored
-        }
+        runCatchingCancelable { doSetColor(element, color) }
         return true
     }
     
