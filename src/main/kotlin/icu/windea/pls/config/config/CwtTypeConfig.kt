@@ -10,9 +10,10 @@ import icu.windea.pls.model.*
 /**
  * @property name string
  * @property baseType (property) path: string
- * @property path (property) path: string/path
- * @property pathFile (property) path_file: string/fileName
- * @property pathExtension (property) path_extension: string/fileExtension
+ * @property pathPatterns (property*) path_pattern: string
+ * @property path (property) path: string
+ * @property pathFile (property) path_file: string
+ * @property pathExtension (property) path_extension: string
  * @property pathStrict (property) path_strict: boolean
  * @property nameField (property) name_field: string/propertyKey
  * @property nameFromFile (property) name_from_file: boolean
@@ -31,6 +32,7 @@ import icu.windea.pls.model.*
 interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val baseType: String?
+    val pathPatterns: Set<String>
     val path: String?
     val pathFile: String?
     val pathExtension: String?
@@ -62,8 +64,10 @@ interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
 
 private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
     val configGroup = config.configGroup
+    
     val name = config.key.removeSurroundingOrNull("type[", "]")?.orNull()?.intern() ?: return null
     var baseType: String? = null
+    val pathPatterns = sortedSetOf<String>()
     var path: String? = null
     var pathFile: String? = null
     var pathExtension: String? = null
@@ -82,93 +86,87 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
     var localisation: CwtTypeLocalisationConfig? = null
     var images: CwtTypeImagesConfig? = null
     
-    val props = config.properties
-    if(!props.isNullOrEmpty()) {
-        for(prop in props) {
-            val key = prop.key
-            when(key) {
-                "base_type" -> baseType = prop.stringValue
-                //这里的path一般以"game/"开始，需要去除
-                "path" -> path = prop.stringValue?.let { it.removePrefix("game/").normalizePath() } ?: continue
-                "path_file" -> pathFile = prop.stringValue ?: continue
-                //这里的path_extension一般以"."开始，需要去除
-                "path_extension" -> pathExtension = prop.stringValue?.removePrefix(".") ?: continue
-                "path_strict" -> pathStrict = prop.booleanValue ?: continue
-                "name_field" -> nameField = prop.stringValue ?: continue
-                "name_from_file" -> nameFromFile = prop.booleanValue ?: continue
-                "type_per_file" -> typePerFile = prop.booleanValue ?: continue
-                "unique" -> unique = prop.booleanValue ?: continue
-                "severity" -> severity = prop.stringValue ?: continue
-                "skip_root_key" -> {
-                    //值可能是string也可能是stringArray
-                    val list = prop.stringValue?.let { listOf(it) }
-                        ?: prop.values?.mapNotNull { it.stringValue }
-                        ?: continue
-                    if(skipRootKey == null) skipRootKey = mutableListOf()
-                    skipRootKey.add(list) //出于一点点的性能考虑，这里保留大小写，后面匹配路径时会忽略掉
-                }
-                "localisation" -> {
-                    localisation = CwtTypeLocalisationConfig.resolve(prop)
-                }
-                "images" -> {
-                    images = CwtTypeImagesConfig.resolve(prop)
-                }
-                "modifiers" -> {
-                    val propProps = prop.properties ?: continue
-                    for(p in propProps) {
-                        val subtypeName = p.key.removeSurroundingOrNull("subtype[", "]")
-                        if(subtypeName != null) {
-                            val pps = p.properties ?: continue
-                            for(pp in pps) {
-                                val typeExpression = "$name.$subtypeName"
-                                val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(pp, pp.key, typeExpression) ?: continue
-                                configGroup.modifiers[modifierConfig.name] = modifierConfig
-                                configGroup.type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }[pp.key] = modifierConfig
-                            }
-                        } else {
-                            val typeExpression = name
-                            val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(p, p.key, typeExpression) ?: continue
+    val props = config.properties.orEmpty()
+    if(props.isEmpty()) return null
+    for(prop in props) {
+        when(prop.key) {
+            "base_type" -> baseType = prop.stringValue
+            "path_pattern" -> prop.stringValue?.normalizePath()?.let { pathPatterns += it }
+            "path" -> path = prop.stringValue?.removePrefix("game/")?.normalizePath() ?: continue
+            "path_file" -> pathFile = prop.stringValue ?: continue
+            "path_extension" -> pathExtension = prop.stringValue?.removePrefix(".") ?: continue
+            "path_strict" -> pathStrict = prop.booleanValue ?: continue
+            "name_field" -> nameField = prop.stringValue ?: continue
+            "name_from_file" -> nameFromFile = prop.booleanValue ?: continue
+            "type_per_file" -> typePerFile = prop.booleanValue ?: continue
+            "unique" -> unique = prop.booleanValue ?: continue
+            "severity" -> severity = prop.stringValue ?: continue
+            "skip_root_key" -> {
+                //值可能是string也可能是stringArray
+                val list = prop.stringValue?.let { listOf(it) }
+                    ?: prop.values?.mapNotNull { it.stringValue }
+                    ?: continue
+                if(skipRootKey == null) skipRootKey = mutableListOf()
+                skipRootKey.add(list) //出于一点点的性能考虑，这里保留大小写，后面匹配路径时会忽略掉
+            }
+            "localisation" -> {
+                localisation = CwtTypeLocalisationConfig.resolve(prop)
+            }
+            "images" -> {
+                images = CwtTypeImagesConfig.resolve(prop)
+            }
+            "modifiers" -> {
+                val propProps = prop.properties ?: continue
+                for(p in propProps) {
+                    val subtypeName = p.key.removeSurroundingOrNull("subtype[", "]")
+                    if(subtypeName != null) {
+                        val pps = p.properties ?: continue
+                        for(pp in pps) {
+                            val typeExpression = "$name.$subtypeName"
+                            val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(pp, pp.key, typeExpression) ?: continue
                             configGroup.modifiers[modifierConfig.name] = modifierConfig
-                            configGroup.type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }[p.key] = modifierConfig
+                            configGroup.type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }[pp.key] = modifierConfig
                         }
+                    } else {
+                        val typeExpression = name
+                        val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(p, p.key, typeExpression) ?: continue
+                        configGroup.modifiers[modifierConfig.name] = modifierConfig
+                        configGroup.type2ModifiersMap.getOrPut(typeExpression) { mutableMapOf() }[p.key] = modifierConfig
                     }
                 }
             }
-            
-            run {
-                val subtypeConfig = CwtSubtypeConfig.resolve(prop) ?: return@run
-                subtypes[subtypeConfig.name] = subtypeConfig
-            }
+        }
+        
+        run {
+            val subtypeConfig = CwtSubtypeConfig.resolve(prop) ?: return@run
+            subtypes[subtypeConfig.name] = subtypeConfig
         }
     }
     
-    val options = config.optionConfigs
-    if(!options.isNullOrEmpty()) {
-        for(option in options) {
-            if(option !is CwtOptionConfig) continue
-            val key = option.key
-            when(key) {
-                "type_key_filter" -> {
-                    //值可能是string也可能是stringArray
-                    val values = option.getOptionValueOrValues() ?: continue
-                    val set = caseInsensitiveStringSet() //忽略大小写
-                    set.addAll(values)
-                    val o = option.separatorType == CwtSeparatorType.EQUAL
-                    typeKeyFilter = set reverseIf o
-                }
-                "type_key_regex" -> {
-                    typeKeyRegex = option.stringValue?.toRegex(RegexOption.IGNORE_CASE)
-                }
-                "starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
-                "graph_related_types" -> {
-                    graphRelatedTypes = option.getOptionValues()
-                }
+    val options = config.optionConfigs.orEmpty()
+    for(option in options) {
+        if(option !is CwtOptionConfig) continue
+        when(option.key) {
+            "type_key_filter" -> {
+                //值可能是string也可能是stringArray
+                val values = option.getOptionValueOrValues() ?: continue
+                val set = caseInsensitiveStringSet() //忽略大小写
+                set.addAll(values)
+                val o = option.separatorType == CwtSeparatorType.EQUAL
+                typeKeyFilter = set reverseIf o
+            }
+            "type_key_regex" -> {
+                typeKeyRegex = option.stringValue?.toRegex(RegexOption.IGNORE_CASE)
+            }
+            "starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
+            "graph_related_types" -> {
+                graphRelatedTypes = option.getOptionValues()
             }
         }
     }
     
     return CwtTypeConfigImpl(
-        config, name, baseType, path, pathStrict, pathFile, pathExtension, nameField, nameFromFile,
+        config, name, baseType, pathPatterns, path, pathStrict, pathFile, pathExtension, nameField, nameFromFile,
         typePerFile, unique, severity, skipRootKey, typeKeyFilter, typeKeyRegex, startsWith, graphRelatedTypes,
         subtypes, localisation, images
     )
@@ -177,24 +175,25 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
 private class CwtTypeConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
-    override val baseType: String? = null,
-    override val path: String? = null,
-    override val pathStrict: Boolean = false,
-    override val pathFile: String? = null,
-    override val pathExtension: String? = null,
-    override val nameField: String? = null,
-    override val nameFromFile: Boolean = false,
-    override val typePerFile: Boolean = false,
-    override val unique: Boolean = false,
-    override val severity: String? = null,
-    override val skipRootKey: List<List<String>>? = null,
-    override val typeKeyFilter: ReversibleValue<Set<String>>? = null,
-    override val typeKeyRegex: Regex? = null,
-    override val startsWith: String? = null,
-    override val graphRelatedTypes: Set<String>? = null,
-    override val subtypes: Map<String, CwtSubtypeConfig> = emptyMap(),
-    override val localisation: CwtTypeLocalisationConfig? = null,
-    override val images: CwtTypeImagesConfig? = null
+    override val baseType: String?,
+    override val pathPatterns: Set<String>,
+    override val path: String? ,
+    override val pathStrict: Boolean,
+    override val pathFile: String? ,
+    override val pathExtension: String?,
+    override val nameField: String? ,
+    override val nameFromFile: Boolean ,
+    override val typePerFile: Boolean ,
+    override val unique: Boolean ,
+    override val severity: String?,
+    override val skipRootKey: List<List<String>>?,
+    override val typeKeyFilter: ReversibleValue<Set<String>>?,
+    override val typeKeyRegex: Regex?,
+    override val startsWith: String?,
+    override val graphRelatedTypes: Set<String>?,
+    override val subtypes: Map<String, CwtSubtypeConfig>,
+    override val localisation: CwtTypeLocalisationConfig?,
+    override val images: CwtTypeImagesConfig?,
 ) : CwtTypeConfig {
     override val possibleRootKeys by lazy {
         caseInsensitiveStringSet().apply {

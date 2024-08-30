@@ -216,6 +216,55 @@ object CwtConfigManager {
         }
     }
     
+    fun getPathPatterns(configs: Collection<CwtConfig<*>>): Set<String> {
+        val patterns = sortedSetOf<String>()
+        configs.forEach { config -> collectPathPatterns(config, patterns) }
+        return patterns
+    }
+    
+    fun collectPathPatterns(config: CwtConfig<*>, patterns: MutableCollection<String>) {
+        val path = when(config) {
+            is CwtTypeConfig -> config.path
+            is CwtComplexEnumConfig -> config.path
+            else -> null
+        }
+        val pathFile = when(config) {
+            is CwtTypeConfig -> config.pathFile
+            is CwtComplexEnumConfig -> config.pathFile
+            else -> null
+        }
+        val pathExtension = when(config) {
+            is CwtTypeConfig -> config.pathExtension
+            is CwtComplexEnumConfig -> config.pathExtension
+            else -> null
+        }
+        val pathStrict = when(config) {
+            is CwtTypeConfig -> config.pathStrict
+            is CwtComplexEnumConfig -> config.pathStrict
+            else -> false
+        }
+        val pattern = buildString {
+            if(path != null) {
+                append(path)
+                if(pathStrict) append("/") else append("/**")
+            }
+            if(pathFile!= null) {
+                if(path != null) append("/")
+                append(pathFile)
+            } else if(pathExtension != null) {
+                if(path != null) append("/")
+                append("*.").append(pathExtension)
+            }
+        }
+        if(pattern.isNotEmpty()) patterns += pattern
+        
+        //TODO 1.3.20
+    }
+    
+    fun matchesPath(config: CwtConfig<*>, path: ParadoxPath): Boolean {
+        TODO() //TODO 1.3.20
+    }
+    
     fun getConfigByPathExpression(configGroup: CwtConfigGroup, pathExpression: String): List<CwtMemberConfig<*>> {
         val separatorIndex = pathExpression.indexOf('#')
         if(separatorIndex == -1) return emptyList()

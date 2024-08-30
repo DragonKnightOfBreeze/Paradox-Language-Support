@@ -2,13 +2,14 @@ package icu.windea.pls.config.config
 
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 
 /**
  * @property name string
- * @property path (property*) path: string 相对于入口目录的路径。
- * @property pathFile (property) path_file: string 路径下的文件名。
+ * @property pathPatterns (property*) path_pattern: string
+ * @property path (property) path: string
+ * @property pathFile (property) path_file: string
+ * @property pathExtension (property) path_extension: string
  * @property pathStrict (property) path_strict: boolean
  * @property startFromRoot (property) start_from_root: boolean
  * @property searchScopeType (property) search_scope_type: string 查询作用域，认为仅该作用域下的复杂枚举值是等同的。（目前支持：definition）
@@ -17,8 +18,10 @@ import icu.windea.pls.cwt.psi.*
  */
 interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
-    val path: Set<String>
+    val pathPatterns: Set<String>
+    val path: String?
     val pathFile: String?
+    val pathExtension: String?
     val pathStrict: Boolean
     val startFromRoot: Boolean
     val searchScopeType: String?
@@ -33,38 +36,49 @@ interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
 //Implementations (interned)
 
 private fun doResolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
-    val key = config.key
-    val name = key.removeSurroundingOrNull("complex_enum[", "]")?.orNull()?.intern() ?: return null
-    val props = config.properties?.orNull() ?: return null
-    val path: MutableSet<String> = mutableSetOf()
+    val name = config.key.removeSurroundingOrNull("complex_enum[", "]")?.orNull()?.intern() ?: return null
+    val pathPatterns = sortedSetOf<String>()
+    var path: String? = null
     var pathFile: String? = null
+    var pathExtension: String? = null
     var pathStrict = false
     var startFromRoot = false
     var nameConfig: CwtPropertyConfig? = null
+    
+    val props = config.properties.orEmpty()
+    if(props.isEmpty()) return null
     for(prop in props) {
         when(prop.key) {
-            //这里的path一般"game/"开始，这里需要忽略
-            "path" -> prop.stringValue?.let { it.removePrefix("game/").normalizePath() }?.let { path += it }
-            "path_file" -> pathFile = prop.stringValue?.intern()
-            "path_strict" -> pathStrict = prop.booleanValue ?: false
+            "path_pattern" -> prop.stringValue?.normalizePath()?.let { pathPatterns += it }
+            "path" -> path = prop.stringValue?.removePrefix("game/")?.normalizePath() ?: continue
+            "path_file" -> pathFile = prop.stringValue ?: continue
+            "path_extension" -> pathExtension = prop.stringValue?.removePrefix(".") ?: continue
+            "path_strict" -> pathStrict = prop.booleanValue ?: continue
             "start_from_root" -> startFromRoot = prop.booleanValue ?: false
             "name" -> nameConfig = prop
         }
     }
+    
     val searchScopeType = config.findOption("search_scope_type")?.stringValue
-    if(path.isEmpty() || nameConfig == null) return null //invalid
-    return CwtComplexEnumConfigImpl(config, name, path, pathFile, pathStrict, startFromRoot, searchScopeType, nameConfig)
+    
+    if(nameConfig == null) return null
+    return CwtComplexEnumConfigImpl(
+        config, name, pathPatterns, path, pathFile, pathExtension, pathStrict,
+        startFromRoot, searchScopeType, nameConfig
+    )
 }
 
 private class CwtComplexEnumConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
-    override val path: Set<String>,
+    override val pathPatterns: Set<String>,
+    override val path: String?,
     override val pathFile: String?,
+    override val pathExtension: String?,
     override val pathStrict: Boolean,
     override val startFromRoot: Boolean,
     override val searchScopeType: String?,
-    override val nameConfig: CwtPropertyConfig
+    override val nameConfig: CwtPropertyConfig,
 ) : CwtComplexEnumConfig {
     override val enumNameConfigs: List<CwtMemberConfig<*>> by lazy {
         buildList {
