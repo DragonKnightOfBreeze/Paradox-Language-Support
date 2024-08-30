@@ -90,13 +90,15 @@ object CwtConfigManipulator {
         )
     }
     
-    fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
+    fun <T: CwtMemberConfig<*>> inlineSingleAlias(config: T): T? {
+        if(config !is CwtPropertyConfig) return null
         val configGroup = config.configGroup
         val valueExpression = config.valueExpression
         if(valueExpression.type != CwtDataTypes.SingleAliasRight) return null
         val singleAliasName = valueExpression.value ?: return null
         val singleAliasConfig = configGroup.singleAliases[singleAliasName] ?: return null
-        return singleAliasConfig.inline(config)
+        @Suppress("UNCHECKED_CAST")
+        return singleAliasConfig.inline(config) as T
     }
     //endregion
     

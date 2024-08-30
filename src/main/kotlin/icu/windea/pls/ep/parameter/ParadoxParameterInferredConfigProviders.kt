@@ -34,7 +34,9 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
         val element = parameterInfo.element ?: return null
         val parentElement = parameterInfo.parentElement ?: return null
         when {
-            element is ParadoxConditionParameter -> return CwtValueConfig.resolve(emptyPointer(), configGroup, "bool")
+            element is ParadoxConditionParameter -> {
+                return CwtValueConfig.resolve(emptyPointer(), configGroup, "scalar") //bool-like
+            }
             element is ParadoxScriptParameter -> {
                 if(parentElement.text.isFullParameterized()) return null
                 return CwtValueConfig.resolve(emptyPointer(), configGroup, "scalar")
@@ -59,27 +61,26 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     }
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
-        val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return null
-        if(!expressionElement.value.isFullParameterized()) return null
-        val expressionContextConfigs = ParadoxExpressionManager.getConfigContext(expressionElement)?.getConfigs()
-        if(expressionContextConfigs.isNullOrEmpty()) return null
+        val expressionContextConfigs = parameterInfo.expressionContextConfigs
+        if(expressionContextConfigs.isEmpty()) return null
         val contextConfigs = getContextConfigsFromExpressionContextConfigs(expressionContextConfigs, parameterInfo)
         if(contextConfigs.isNullOrEmpty()) return null
         return contextConfigs
     }
     
     private fun getContextConfigsFromExpressionContextConfigs(expressionContextConfigs: List<CwtMemberConfig<*>>, parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>>? {
-        val expressionContextConfig = expressionContextConfigs.find { it.expression.type == CwtDataTypes.ParameterValue }
-        if(expressionContextConfig != null) {
+        val inlinedContextConfigs = expressionContextConfigs.map { CwtConfigManipulator.inlineSingleAlias(it) ?: it }
+        val passingConfig = inlinedContextConfigs.find { it.expression.type == CwtDataTypes.ParameterValue }
+        if(passingConfig != null) {
             //处理参数传递的情况
-            if(expressionContextConfig !is CwtValueConfig) return null
+            if(passingConfig !is CwtValueConfig) return null
             val argumentNameElement = parameterInfo.element?.parent?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return null
-            val argumentNameConfig = expressionContextConfig.propertyConfig ?: return null
+            val argumentNameConfig = passingConfig.propertyConfig ?: return null
             val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return null
             val passingContextConfigs = ParadoxParameterManager.getInferredContextConfigs(passingParameterElement)
             return passingContextConfigs
         }
-        val finalConfigs = expressionContextConfigs.map { config ->
+        val finalConfigs = inlinedContextConfigs.map { config ->
             when(config) {
                 is CwtPropertyConfig -> config.delegated(CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
                 is CwtValueConfig -> config.delegated(CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
@@ -107,10 +108,9 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
     }
     
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
-        val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return null
-        if(expressionElement.value.isFullParameterized()) return null
         val expressionConfigs = parameterInfo.expressionConfigs
         if(expressionConfigs.isEmpty()) return null
+        val expressionElement = parameterInfo.parentElement?.castOrNull<ParadoxScriptStringExpressionElement>() ?: return null
         val finalConfigs = expressionConfigs.mapNotNull { getConfigFromExpressionConfig(expressionElement, it, parameterInfo) }
         if(finalConfigs.isEmpty()) return null
         val configGroup = finalConfigs.first().configGroup

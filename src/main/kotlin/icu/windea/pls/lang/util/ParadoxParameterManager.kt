@@ -92,7 +92,7 @@ object ParadoxParameterManager {
             private fun visitParameter(element: ParadoxParameter) {
                 val name = element.name ?: return
                 val defaultValue = element.defaultValue
-                val conditionalStack = ArrayDeque(fileConditionStack).orNull()
+                val conditionalStack = ArrayDeque(fileConditionStack) //not null
                 val info = ParadoxParameterContextInfo.Parameter(element.createPointer(file), name, defaultValue, conditionalStack)
                 parameters.getOrPut(name) { mutableListOf() }.add(info)
                 //不需要继续向下遍历
