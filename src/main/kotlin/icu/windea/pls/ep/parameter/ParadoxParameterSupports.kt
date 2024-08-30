@@ -222,12 +222,12 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         append(": ")
         val type = definitionType.first()
         val typeLink = "${gameType.prefix}types/${type}"
-        appendCwtLink(typeLink, type)
+        appendCwtConfigLink(typeLink, type)
         for((index, t) in definitionType.withIndex()) {
             if(index == 0) continue
             append(", ")
             val subtypeLink = "$typeLink/${t}"
-            appendCwtLink(subtypeLink, t)
+            appendCwtConfigLink(subtypeLink, t)
         }
         return true
     }

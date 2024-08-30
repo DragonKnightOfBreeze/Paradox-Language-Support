@@ -3,7 +3,6 @@
 package icu.windea.pls.lang.documentation
 
 import com.intellij.model.*
-import com.intellij.openapi.application.*
 import com.intellij.platform.backend.documentation.*
 import com.intellij.platform.backend.presentation.*
 import com.intellij.pom.*
@@ -240,7 +239,7 @@ private fun DocumentationBuilder.buildDynamicValueDefinition(element: ParadoxDyn
             val valueConfig = configGroup.dynamicValueTypes[dynamicValueType]
             if(valueConfig != null) {
                 val typeLink = "${gameType.prefix}values/${dynamicValueType}"
-                appendCwtLink(typeLink, dynamicValueType)
+                appendCwtConfigLink(typeLink, dynamicValueType)
             } else {
                 append(dynamicValueType)
             }
@@ -260,7 +259,7 @@ private fun DocumentationBuilder.buildComplexEnumValueDefinition(element: Parado
         val complexEnumConfig = configGroup.complexEnums[enumName]
         if(complexEnumConfig != null) {
             val typeLink = "${gameType.prefix}complex_enums/${enumName}"
-            append(": ").appendCwtLink(typeLink, enumName)
+            append(": ").appendCwtConfigLink(typeLink, enumName)
         } else {
             append(": ").append(enumName)
         }
@@ -472,13 +471,13 @@ private fun DocumentationBuilder.addDefinitionInfo(definitionInfo: ParadoxDefini
     append("</b>: ")
     val typeConfig = definitionInfo.typeConfig
     val typeLink = "${gameType.prefix}types/${typeConfig.name}"
-    appendCwtLink(typeLink, typeConfig.name)
+    appendCwtConfigLink(typeLink, typeConfig.name)
     val subtypeConfigs = definitionInfo.subtypeConfigs
     if(subtypeConfigs.isNotEmpty()) {
         for(subtypeConfig in subtypeConfigs) {
             append(", ")
             val subtypeLink = "$typeLink/${subtypeConfig.name}"
-            appendCwtLink(subtypeLink, subtypeConfig.name)
+            appendCwtConfigLink(subtypeLink, subtypeConfig.name)
         }
     }
 }
@@ -492,13 +491,13 @@ private fun DocumentationBuilder.addSuperDefinitionInfo(definition: ParadoxScrip
     append(": ")
     val typeConfig = definitionInfo.typeConfig
     val typeLink = "${gameType.prefix}types/${typeConfig.name}"
-    appendCwtLink(typeLink, typeConfig.name)
+    appendCwtConfigLink(typeLink, typeConfig.name)
     val subtypeConfigs = definitionInfo.subtypeConfigs
     if(subtypeConfigs.isNotEmpty()) {
         for(subtypeConfig in subtypeConfigs) {
             append(", ")
             val subtypeLink = "$typeLink/${subtypeConfig.name}"
-            appendCwtLink(subtypeLink, subtypeConfig.name)
+            appendCwtConfigLink(subtypeLink, subtypeConfig.name)
         }
     }
 }
@@ -660,7 +659,7 @@ private fun DocumentationBuilder.addEventTypeForOnAction(element: ParadoxScriptP
     val eventType = config.eventType
     appendBr()
     val typeLink = "${gameType.prefix}types/event/$eventType"
-    append(PlsBundle.message("prefix.eventType")).append(" ").appendCwtLink(typeLink, eventType)
+    append(PlsBundle.message("prefix.eventType")).append(" ").appendCwtConfigLink(typeLink, eventType)
 }
 
 private fun DocumentationBuilder.buildLocalisationLocaleDefinition(name: String) {

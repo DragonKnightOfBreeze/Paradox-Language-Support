@@ -151,7 +151,7 @@ private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiEle
                 if(configGroup != null) {
                     val gameType = configGroup.gameType
                     val typeLink = "${gameType.prefix}${typeCategory}/${typeName}"
-                    append(": ").appendCwtLink(typeLink, typeName, typeElement)
+                    append(": ").appendCwtConfigLink(typeLink, typeName, typeElement)
                 } else {
                     append(": ").append(typeName)
                 }

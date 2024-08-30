@@ -1,12 +1,15 @@
 package icu.windea.pls.lang
 
 import com.intellij.ide.util.*
+import com.intellij.psi.PsiElement
 import com.intellij.util.*
 import icons.*
+import icu.windea.pls.cwt.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 /**
- * 用于渲染定义、本地化等所在的位置（游戏目录/模组目录）。在弹出项右侧显示特定的图标和位置文本。
+ * 用于在快速文档等处渲染目标的位置信息（规则目录/游戏目录/模组目录）。
  */
 class ParadoxModuleRenderFactory : ModuleRendererFactory() {
     override fun rendersLocationString(): Boolean {
@@ -14,9 +17,16 @@ class ParadoxModuleRenderFactory : ModuleRendererFactory() {
     }
     
     override fun getModuleTextWithIcon(element: Any?): TextWithIcon? {
-        val file = selectFile(element) ?: return null
-        val fileInfo = file.fileInfo ?: return null
-        val rootInfo = fileInfo.rootInfo
+        run {
+            if(element !is PsiElement || element.language != CwtLanguage) return@run
+            val configGroup = CwtConfigManager.getContainingConfigGroup(element) ?: return@run
+            val gameType = configGroup.gameType
+            val text = "${gameType.title} Config"
+            return TextWithIcon(text, PlsIcons.ConfigGroupDirectory)
+        }
+        
+        val rootFile = selectRootFile(element) ?: return null
+        val rootInfo = rootFile.rootInfo ?: return null
         return when(rootInfo) {
             is ParadoxGameRootInfo -> {
                 TextWithIcon(rootInfo.qualifiedName, PlsIcons.GameDirectory)

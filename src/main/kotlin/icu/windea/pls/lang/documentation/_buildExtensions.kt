@@ -117,7 +117,7 @@ fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): Doc
     } ?: return this
     //规则分组信息
     val gameType = configGroup.gameType
-    append("[").append(gameType?.title ?: "Core").append(" Config]")
+    append("[").append(gameType.title).append(" Config]")
     grayed {
         append(" ").append(fileProvider.getHintMessage())
     }
@@ -128,7 +128,7 @@ fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): Doc
     return this
 }
 
-fun DocumentationBuilder.appendCwtLink(shortLink: String, linkText: String, context: PsiElement? = null): DocumentationBuilder {
+fun DocumentationBuilder.appendCwtConfigLink(shortLink: String, linkText: String, context: PsiElement? = null): DocumentationBuilder {
     //如果context不为null且链接无法被解析，则显示未解析的链接
     val linkPrefix = CwtConfigLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix$shortLink".escapeXml()
@@ -195,7 +195,7 @@ fun DocumentationBuilder.appendModifierLink(
 fun DocumentationBuilder.buildScopeDoc(scopeId: String, gameType: ParadoxGameType?, contextElement: PsiElement): DocumentationBuilder {
     when {
         isUnsureScopeId(scopeId) -> append(scopeId)
-        else -> appendCwtLink("${gameType.prefix}scopes/$scopeId", scopeId, contextElement)
+        else -> appendCwtConfigLink("${gameType.prefix}scopes/$scopeId", scopeId, contextElement)
     }
     return this
 }
@@ -204,11 +204,11 @@ fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext,
     var appendSeparator = false
     scopeContext.toScopeMap().forEach { (systemScope, scope) ->
         if(appendSeparator) appendBr() else appendSeparator = true
-        appendCwtLink("${gameType.prefix}system_scopes/$systemScope", systemScope, contextElement)
+        appendCwtConfigLink("${gameType.prefix}system_scopes/$systemScope", systemScope, contextElement)
         append(" = ")
         when {
             isUnsureScopeId(scope.id) -> append(scope)
-            else -> appendCwtLink("${gameType.prefix}scopes/${scope.id}", scope.id, contextElement)
+            else -> appendCwtConfigLink("${gameType.prefix}scopes/${scope.id}", scope.id, contextElement)
         }
     }
     return this
@@ -221,7 +221,7 @@ fun DocumentationBuilder.getModifierCategoriesText(categories: Set<String>, game
         var appendSeparator = false
         for(category in categories) {
             if(appendSeparator) append(", ") else appendSeparator = true
-            appendCwtLink("${gameType.prefix}modifier_categories/$category", category, contextElement)
+            appendCwtConfigLink("${gameType.prefix}modifier_categories/$category", category, contextElement)
         }
         append("</code>")
     }
