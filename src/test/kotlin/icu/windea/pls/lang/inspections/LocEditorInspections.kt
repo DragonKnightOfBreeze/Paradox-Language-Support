@@ -1,6 +1,6 @@
 @file:Suppress("InspectionDescriptionNotFoundInspection", "unused")
 
-package icu.windea.pls.localisation.inspection
+package icu.windea.pls.lang.inspections
 
 import com.intellij.codeInspection.*
 

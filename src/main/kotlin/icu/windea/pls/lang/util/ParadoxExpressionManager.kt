@@ -41,6 +41,88 @@ object ParadoxExpressionManager {
     }
     
     //region Common Methods
+    fun isParameterized(text: String): Boolean {
+        //快速判断，不检测带参数后的语法是否合法
+        if(text.length < 2) return false
+        // a_$PARAM$_b - 高级插值语法 A
+        if(text.indexOf('$').let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
+        // a_[[PARAM]b]_c - 高级插值语法 B
+        if(text.indexOf('[').let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
+        return false
+    }
+    
+    fun isFullParameterized(text: String): Boolean {
+        //快速判断，不检测带参数后的语法是否合法
+        if(text.length < 2) return false
+        // $PARAM$ - 仅限 高级插值语法 A
+        if(!text.startsWith('$')) return false
+        if(text.indexOf('$', 1).let { c -> c != text.lastIndex || text.isEscapedCharAt(c) }) return false
+        return true
+    }
+    
+    fun getParameterRanges(text: String): List<TextRange> {
+        //比较复杂的实现逻辑
+        val ranges = mutableListOf<TextRange>()
+        // a_$PARAM$_b - 高级插值语法 A - 深度计数
+        var depth1 = 0
+        // a_[[PARAM]b]_c - 高级插值语法 B - 深度计数
+        var depth2 = 0
+        var startIndex = -1
+        var endIndex = -1
+        for((i, c) in text.withIndex()) {
+            if(c == '$' && !text.isEscapedCharAt(i)) {
+                if(depth2 > 0) continue
+                if(depth1 == 0) {
+                    startIndex = i
+                    endIndex = -1
+                    depth1++
+                } else {
+                    endIndex = i
+                    ranges += TextRange.create(startIndex, endIndex + 1)
+                    depth1--
+                    
+                }
+            } else if(c == '[' && !text.isEscapedCharAt(i)) {
+                if(depth1 > 0) continue
+                if(depth2 == 0) {
+                    startIndex = i
+                    endIndex = -1
+                }
+                depth2++
+            } else if(c == ']' && !text.isEscapedCharAt(i)) {
+                if(depth1 > 0) continue
+                if(depth2 <= 0) continue
+                depth2--
+                if(depth2 == 0) {
+                    endIndex = i
+                    ranges += TextRange.create(startIndex, endIndex + 1)
+                }
+            }
+        }
+        if(startIndex != -1 && endIndex == -1) {
+            ranges += TextRange.create(startIndex, text.length)
+        }
+        return ranges
+    }
+    
+    private val regex1 = """(?<!\\)\$.*?\$""".toRegex()
+    private val regex2 = """(?<!\\)\[\[.*?](.*?)]""".toRegex()
+    
+    fun toRegex(text: String): Regex {
+        var s = text
+        s = """\Q$s\E"""
+        s = s.replace(regex1, """\\E.*\\Q""")
+        s = s.replace(regex2) { g ->
+            val dv = g.groupValues[1]
+            when {
+                dv == """\E.*\Q""" -> """\E.*\Q"""
+                else -> """\E(?:\Q$dv\E)?\Q"""
+            }
+        }
+        s = s.replace("""\Q\E""", "")
+        return s.toRegex(RegexOption.IGNORE_CASE)
+    }
+    
     fun getExpressionText(element: ParadoxExpressionElement, rangeInElement: TextRange? = null): String {
         return when {
             element is ParadoxScriptBlock -> "" //should not be used

@@ -8,6 +8,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.nodes.*
+import icu.windea.pls.lang.util.*
 import kotlin.Pair
 
 /**
@@ -58,7 +59,7 @@ class ParadoxScriptValueExpression private constructor(
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
             if(expressionString.isEmpty()) return null
             
-            val parameterRanges = expressionString.getParameterRanges()
+            val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
             
             val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
             

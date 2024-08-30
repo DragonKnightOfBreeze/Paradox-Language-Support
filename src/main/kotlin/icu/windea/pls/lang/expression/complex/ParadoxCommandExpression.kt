@@ -10,6 +10,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.nodes.*
+import icu.windea.pls.lang.util.*
 
 /**
  * （本地化）命令表达式。
@@ -51,7 +52,7 @@ class ParadoxCommandExpression private constructor(
             
             //val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
             
-            val parameterRanges = expressionString.getParameterRanges()
+            val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
             
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val expression = ParadoxCommandExpression(expressionString, range, nodes, configGroup)

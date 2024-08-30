@@ -19,7 +19,7 @@ class ParadoxDataExpression private constructor(
     val quoted: Boolean,
     val isKey: Boolean?
 ) {
-    private val regex by lazy { text.toRegexWhenIsParameterized() }
+    private val regex by lazy { ParadoxExpressionManager.toRegex(text) }
     
     fun isParameterized(): Boolean {
         return type == ParadoxType.String && text.isParameterized()

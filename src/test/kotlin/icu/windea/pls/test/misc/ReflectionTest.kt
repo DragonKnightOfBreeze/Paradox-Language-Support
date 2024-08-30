@@ -1,4 +1,4 @@
-package icu.windea.pls.test
+package icu.windea.pls.test.misc
 
 import org.junit.*
 import kotlin.reflect.full.*
@@ -13,6 +13,6 @@ class ReflectionTest {
     }
 }
 
-fun test() {
+private fun test() {
     println("123")
 }

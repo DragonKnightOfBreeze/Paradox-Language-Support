@@ -1,4 +1,4 @@
-package icu.windea.pls.test
+package icu.windea.pls.test.misc
 
 import icu.windea.pls.core.*
 import org.junit.Test

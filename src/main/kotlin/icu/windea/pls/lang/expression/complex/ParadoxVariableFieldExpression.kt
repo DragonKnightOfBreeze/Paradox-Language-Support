@@ -39,7 +39,7 @@ class ParadoxVariableFieldExpression(
             //skip if text is a number
             if(isNumber(expressionString)) return null
             
-            val parameterRanges = expressionString.getParameterRanges()
+            val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
             
             //skip if text is a parameter with unary operator prefix
             if(ParadoxExpressionManager.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null

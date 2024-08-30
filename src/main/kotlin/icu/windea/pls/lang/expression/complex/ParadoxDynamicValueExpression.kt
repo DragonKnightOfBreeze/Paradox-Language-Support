@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.nodes.*
+import icu.windea.pls.lang.util.*
 
 /**
  * 动态值表达式。对应的CWT规则类型为[CwtDataTypeGroups.DynamicValue]。
@@ -48,7 +49,7 @@ class ParadoxDynamicValueExpression private constructor(
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
             if(expressionString.isEmpty()) return null
             
-            val parameterRanges = expressionString.getParameterRanges()
+            val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
             
             val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
             

@@ -62,7 +62,7 @@ fun String.isIdentifier(vararg extraChars: Char): Boolean {
 fun String.isParameterAwareIdentifier(vararg extraChars: Char): Boolean {
     //比较复杂的实现逻辑
     val fullRange = TextRange.create(0, this.length)
-    val parameterRanges = this.getParameterRanges()
+    val parameterRanges = ParadoxExpressionManager.getParameterRanges(this)
     val ranges = TextRangeUtil.excludeRanges(fullRange, parameterRanges)
     ranges.forEach f@{ range ->
         for(i in range.startOffset until range.endOffset) {
@@ -76,85 +76,11 @@ fun String.isParameterAwareIdentifier(vararg extraChars: Char): Boolean {
 }
 
 fun String.isParameterized(): Boolean {
-    //快速判断，不检测带参数后的语法是否合法
-    if(this.length < 2) return false
-    // a_$PARAM$_b - 高级插值语法 A
-    if(this.indexOf('$').let { c -> c != -1 && !isEscapedCharAt(c) }) return true
-    // a_[[PARAM]b]_c - 高级插值语法 B
-    if(this.indexOf('[').let { c -> c != -1 && !isEscapedCharAt(c) }) return true
-    return false
+    return ParadoxExpressionManager.isParameterized(this)
 }
 
 fun String.isFullParameterized(): Boolean {
-    //快速判断，不检测带参数后的语法是否合法
-    if(this.length < 2) return false
-    // $PARAM$ - 仅限 高级插值语法 A
-    if(!this.startsWith('$')) return false
-    if(this.indexOf('$', 1).let { c -> c != lastIndex || isEscapedCharAt(c) }) return false
-    return true
-}
-
-fun String.getParameterRanges(): List<TextRange> {
-    //比较复杂的实现逻辑
-    val ranges = mutableListOf<TextRange>()
-    // a_$PARAM$_b - 高级插值语法 A - 深度计数
-    var depth1 = 0
-    // a_[[PARAM]b]_c - 高级插值语法 B - 深度计数
-    var depth2 = 0
-    var startIndex = -1
-    var endIndex = -1
-    for((i, c) in this.withIndex()) {
-        if(c == '$' && !isEscapedCharAt(i)) {
-            if(depth2 > 0) continue
-            if(depth1 == 0) {
-                startIndex = i
-                endIndex = -1
-                depth1++
-            } else {
-                endIndex = i
-                ranges += TextRange.create(startIndex, endIndex + 1)
-                depth1--
-                
-            }
-        } else if(c == '[' && !isEscapedCharAt(i)) {
-            if(depth1 > 0) continue
-            if(depth2 == 0) {
-                startIndex = i
-                endIndex = -1
-            }
-            depth2++
-        } else if(c == ']' && !isEscapedCharAt(i)) {
-            if(depth1 > 0) continue
-            if(depth2 <= 0) continue
-            depth2--
-            if(depth2 == 0) {
-                endIndex = i
-                ranges += TextRange.create(startIndex, endIndex + 1)
-            }
-        }
-    }
-    if(startIndex != -1 && endIndex == -1) {
-        ranges += TextRange.create(startIndex, this.length)
-    }
-    return ranges
-}
-
-private val regex1 = """(?<!\\)\$.*?\$""".toRegex()
-private val regex2 = """(?<!\\)\[\[.*?](.*?)]""".toRegex()
-
-fun String.toRegexWhenIsParameterized(): Regex {
-    var s = this
-    s = """\Q$s\E"""
-    s = s.replace(regex1, """\\E.*\\Q""")
-    s = s.replace(regex2) { g ->
-        val dv = g.groupValues[1]
-        when {
-            dv == """\E.*\Q""" -> """\E.*\Q"""
-            else -> """\E(?:\Q$dv\E)?\Q"""
-        }
-    }
-    s = s.replace("""\Q\E""", "")
-    return s.toRegex(RegexOption.IGNORE_CASE)
+    return ParadoxExpressionManager.isFullParameterized(this)
 }
 
 fun String.isInlineUsage(): Boolean {

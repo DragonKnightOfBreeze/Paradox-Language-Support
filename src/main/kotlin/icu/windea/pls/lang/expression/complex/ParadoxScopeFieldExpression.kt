@@ -7,6 +7,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.nodes.*
+import icu.windea.pls.lang.util.*
 
 /**
  * 作用域字段表达式。对应的CWT规则类型为[CwtDataTypeGroups.ScopeField]。
@@ -45,7 +46,7 @@ class ParadoxScopeFieldExpression private constructor(
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
             if(expressionString.isEmpty()) return null
             
-            val parameterRanges = expressionString.getParameterRanges()
+            val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
             
             val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
             

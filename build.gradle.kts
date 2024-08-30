@@ -26,9 +26,9 @@ intellij {
 	plugins.add("cn.yiiguxing.plugin.translate:3.5.2") //https://github.com/YiiGuxing/TranslationPlugin
 	
 	//reference
-	plugins.add("properties")
-	plugins.add("java")
-	plugins.add("org.jetbrains.kotlin")
+	//plugins.add("properties")
+	//plugins.add("java")
+	//plugins.add("org.jetbrains.kotlin")
 }
 
 grammarKit {
