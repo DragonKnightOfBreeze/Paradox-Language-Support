@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.highlighter.*
@@ -34,6 +35,7 @@ class ParadoxPredefinedValueFieldNode(
     
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxPredefinedValueFieldNode? {
+            if(text.isParameterized()) return null
             val config = configGroup.linksAsValueNotData.get(text) ?: return null
             return ParadoxPredefinedValueFieldNode(text, textRange, configGroup, config)
         }
