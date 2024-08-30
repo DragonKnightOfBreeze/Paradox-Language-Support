@@ -91,23 +91,25 @@ class TrackingCache<K : Any, V : Any, C : Cache<K, V>>(
     override fun get(key: K, loader: Callable<out V>): V {
         val result = delegate.get(key, loader)
         val newModificationCount = modificationTrackerProvider(result)?.modificationCount
-        if(newModificationCount == null || newModificationCount != modificationCounts.get(key)) {
-            delegate.invalidate(key)
-            val newResult = delegate.get(key, loader)
-            return newResult
-        }
+        if(newModificationCount == null) return result
+        val oldModificationCount = modificationCounts.get(key)
+        if(oldModificationCount == newModificationCount) return result
         modificationCounts.put(key, newModificationCount)
-        return result
+        if(oldModificationCount == null) return result
+        delegate.invalidate(key)
+        val newResult = delegate.get(key, loader)
+        return newResult
     }
     
     override fun getIfPresent(key: Any): V? {
         val result = delegate.getIfPresent(key) ?: return null
         val newModificationCount = modificationTrackerProvider(result)?.modificationCount
-        if(newModificationCount == null || newModificationCount != modificationCounts.get(key)) {
-            return null
-        }
-        return result
-        
+        if(newModificationCount == null) return result
+        val oldModificationCount = modificationCounts.get(key)
+        if(oldModificationCount == newModificationCount) return result
+        if(oldModificationCount == null) return result
+        delegate.invalidate(key)
+        return null
     }
     
     override fun invalidate(key: Any) {
