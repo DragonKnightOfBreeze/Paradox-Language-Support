@@ -2,6 +2,7 @@ package icu.windea.pls.config.config
 
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -34,7 +35,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtDynamicValueTypeConfig? {
         values.add(v)
         valueConfigMap.put(v, propertyConfigValue)
     }
-    return CwtDynamicValueTypeConfigImpl(config, name, values, valueConfigMap)
+    return CwtDynamicValueTypeConfigImpl(config, name, values.optimized(), valueConfigMap.optimized())
 }
 
 private class CwtDynamicValueTypeConfigImpl(

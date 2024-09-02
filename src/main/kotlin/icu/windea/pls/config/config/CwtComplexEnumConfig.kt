@@ -2,12 +2,13 @@ package icu.windea.pls.config.config
 
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 
 /**
  * @property name string
  * @property pathPatterns (property*) path_pattern: string
- * @property path (property) path: string
+ * @property paths (property) path: string
  * @property pathFile (property) path_file: string
  * @property pathExtension (property) path_extension: string
  * @property pathStrict (property) path_strict: boolean
@@ -19,7 +20,7 @@ import icu.windea.pls.cwt.psi.*
 interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val pathPatterns: Set<String>
-    val path: String?
+    val paths: Set<String>
     val pathFile: String?
     val pathExtension: String?
     val pathStrict: Boolean
@@ -38,7 +39,7 @@ interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
 private fun doResolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
     val name = config.key.removeSurroundingOrNull("complex_enum[", "]")?.orNull()?.intern() ?: return null
     val pathPatterns = sortedSetOf<String>()
-    var path: String? = null
+    val paths = sortedSetOf<String>()
     var pathFile: String? = null
     var pathExtension: String? = null
     var pathStrict = false
@@ -50,7 +51,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
     for(prop in props) {
         when(prop.key) {
             "path_pattern" -> prop.stringValue?.normalizePath()?.let { pathPatterns += it }
-            "path" -> path = prop.stringValue?.removePrefix("game/")?.normalizePath() ?: continue
+            "path" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { paths += it }
             "path_file" -> pathFile = prop.stringValue ?: continue
             "path_extension" -> pathExtension = prop.stringValue?.removePrefix(".") ?: continue
             "path_strict" -> pathStrict = prop.booleanValue ?: continue
@@ -63,7 +64,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
     
     if(nameConfig == null) return null
     return CwtComplexEnumConfigImpl(
-        config, name, pathPatterns, path, pathFile, pathExtension, pathStrict,
+        config, name, pathPatterns.optimized(), paths.optimized(), pathFile, pathExtension, pathStrict,
         startFromRoot, searchScopeType, nameConfig
     )
 }
@@ -72,7 +73,7 @@ private class CwtComplexEnumConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
     override val pathPatterns: Set<String>,
-    override val path: String?,
+    override val paths: Set<String>,
     override val pathFile: String?,
     override val pathExtension: String?,
     override val pathStrict: Boolean,

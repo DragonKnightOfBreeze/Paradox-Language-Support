@@ -77,7 +77,6 @@ links = {
 		output_scope = $scope$
 	}
 }
-$enum:link_type$ = { scope value both }
 
 localisation_links = {
 	$localisation_link$ = {
@@ -90,6 +89,8 @@ localisation_commands = {
 	$localisation_command$ = $scope$
 	$localisation_command$ = { $scope$ }
 }
+
+$enum:link_type$ = { scope value both }
 
 modifier_categories = {
 	$modifier_category$ = {

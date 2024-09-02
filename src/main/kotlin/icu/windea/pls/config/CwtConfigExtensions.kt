@@ -43,9 +43,13 @@ private fun CwtMemberConfig<*>.doProcessDescendants(processor: (CwtMemberConfig<
     return true
 }
 
-inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T) -> CwtDataExpression, crossinline configGroupProvider: (T) -> CwtConfigGroup): List<T> {
+inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T) -> CwtDataExpression?, crossinline configGroupProvider: (T) -> CwtConfigGroup): List<T> {
     if(size <= 1) return toListOrThis()
-    return sortedByDescending { CwtDataExpressionPriorityProvider.getPriority(expressionProvider(it), configGroupProvider(it)) }
+    return sortedByDescending s@{
+        val expression = expressionProvider(it) ?: return@s Double.MAX_VALUE
+        val configGroup = configGroupProvider(it)
+        CwtDataExpressionPriorityProvider.getPriority(expression, configGroup)
+    }
 }
 
 val CwtMemberElement.configPath: CwtConfigPath?
@@ -54,7 +58,7 @@ val CwtMemberElement.configPath: CwtConfigPath?
 val CwtMemberElement.configType: CwtConfigType?
     get() = CwtConfigManager.getConfigType(this)
 
-fun <T: CwtMemberElement> T.bindConfig(config: CwtConfig<*>): T {
+fun <T : CwtMemberElement> T.bindConfig(config: CwtConfig<*>): T {
     this.putUserData(PlsKeys.bindingConfig, config)
     return this
 }

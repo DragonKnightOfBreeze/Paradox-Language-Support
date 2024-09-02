@@ -121,31 +121,13 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     for(config in configs) {
                         val linkConfig = CwtLinkConfig.resolve(config) ?: continue
                         configGroup.links[linkConfig.name] = linkConfig
-                        
-                        val fromData = linkConfig.fromData && linkConfig.dataSourceExpression != null
-                        val withPrefix = linkConfig.prefix != null
-                        val type = linkConfig.type
-                        if(type == null || type == "scope" || type == "both") {
-                            when {
-                                !fromData -> configGroup.linksAsScopeNotData[linkConfig.name] = linkConfig
-                                withPrefix -> configGroup.linksAsScopeWithPrefix[linkConfig.name] = linkConfig
-                                else -> configGroup.linksAsScopeWithoutPrefix[linkConfig.name] = linkConfig
-                            }
-                        }
-                        if(type == "value" || type == "both") {
-                            when {
-                                !fromData -> configGroup.linksAsValueNotData[linkConfig.name] = linkConfig
-                                withPrefix -> configGroup.linksAsValueWithPrefix[linkConfig.name] = linkConfig
-                                else -> configGroup.linksAsValueWithoutPrefix[linkConfig.name] = linkConfig
-                            }
-                        }
                     }
                 }
                 key == "localisation_links" -> {
                     val configs = property.properties ?: continue
                     for(config in configs) {
-                        val localisationLinkConfig = CwtLocalisationLinkConfig.resolve(config) ?: continue
-                        configGroup.localisationLinks[localisationLinkConfig.name] = localisationLinkConfig
+                        val linkConfig = CwtLinkConfig.resolve(config) ?: continue
+                        configGroup.localisationLinks[linkConfig.name] = linkConfig
                     }
                 }
                 key == "localisation_commands" -> {

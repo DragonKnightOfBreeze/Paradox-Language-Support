@@ -22,6 +22,12 @@ inline fun <T> Set<T>.asMutable(): MutableSet<T> = this as MutableSet<T>
 
 inline fun <K, V> Map<K, V>.asMutable(): MutableMap<K, V> = this as MutableMap<K, V>
 
+inline fun <T> List<T>.optimized(): List<T> = this.ifEmpty { emptyList() }
+
+inline fun <T> Set<T>.optimized(): Set<T> = this.ifEmpty { emptySet() }
+
+inline fun <K, V> Map<K, V>.optimized(): Map<K, V> = this.ifEmpty { emptyMap() }
+
 inline fun <T> MutableList<T>.synced(): MutableList<T> = Collections.synchronizedList(this)
 
 inline fun <T> MutableSet<T>.synced(): MutableSet<T> = Collections.synchronizedSet(this)

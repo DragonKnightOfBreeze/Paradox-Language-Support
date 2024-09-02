@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.expression.complex.nodes
 
 import com.intellij.openapi.util.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.collections.*
@@ -19,31 +20,39 @@ class ParadoxDynamicValueFieldNode(
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicValueFieldNode? {
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val offset = textRange.startOffset
-            val linkConfigs = configGroup.linksAsValueWithPrefixSorted
-                .filter { it.prefix != null && text.startsWith(it.prefix!!) }
-            if(linkConfigs.isNotEmpty()) {
-                //匹配某一前缀
-                //prefix node
-                val prefixText = linkConfigs.first().prefix!!
-                val prefixRange = TextRange.create(offset, prefixText.length + offset)
-                val prefixNode = ParadoxValueFieldPrefixNode.resolve(prefixText, prefixRange, configGroup, linkConfigs)
-                nodes.add(prefixNode)
-                //data source node
-                val dataSourceText = text.drop(prefixText.length)
-                val dataSourceRange = TextRange.create(prefixText.length + offset, text.length + offset)
-                val dataSourceNode = ParadoxValueFieldValueNode.resolve(dataSourceText, dataSourceRange, configGroup, linkConfigs)
-                nodes.add(dataSourceNode)
-                return ParadoxDynamicValueFieldNode(text, textRange, nodes, configGroup, linkConfigs)
-            } else {
-                //没有前缀且允许没有前缀
-                val linkConfigsNoPrefix = configGroup.linksAsValueWithoutPrefixSorted
-                if(linkConfigsNoPrefix.isNotEmpty()) {
-                    //这里直接认为匹配
-                    val node = ParadoxValueFieldValueNode.resolve(text, textRange, configGroup,linkConfigsNoPrefix)
-                    nodes.add(node)
-                    return ParadoxDynamicValueFieldNode(text, textRange, nodes, configGroup, linkConfigs)
+            var startIndex = 0
+            
+            //匹配某一前缀的场合
+            run r1@{
+                val linkConfigs = configGroup.links.values.filter { it.forValue() && it.fromData && it.prefix != null && text.startsWith(it.prefix!!) }
+                    .sortedByPriority({ it.dataSourceExpression!! }, { configGroup })
+                if(linkConfigs.isEmpty()) return@r1
+                run r2@{
+                    val nodeText = linkConfigs.first().prefix!!
+                    val nodeTextRange = TextRange.from(offset, nodeText.length)
+                    val node = ParadoxValueFieldPrefixNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
+                    nodes += node
+                    startIndex += nodeText.length
                 }
+                run r2@{
+                    val nodeText = text.substring(startIndex)
+                    val nodeTextRange = TextRange.from(offset + startIndex, nodeText.length)
+                    val node = ParadoxValueFieldValueNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
+                    nodes += node
+                }
+                return ParadoxDynamicValueFieldNode(text, textRange, nodes, configGroup, linkConfigs)
             }
+            
+            //没有前缀且允许没有前缀的场合
+            run r1@{
+                val linkConfigs = configGroup.links.values.filter { it.forValue() && it.fromData && it.prefix == null }
+                    .sortedByPriority({ it.dataSourceExpression!! }, { configGroup })
+                if(linkConfigs.isEmpty()) return@r1
+                val node = ParadoxValueFieldValueNode.resolve(text, textRange, configGroup, linkConfigs)
+                nodes += node
+                return ParadoxDynamicValueFieldNode(text, textRange, nodes, configGroup, linkConfigs)
+            }
+            
             return null
         }
     }

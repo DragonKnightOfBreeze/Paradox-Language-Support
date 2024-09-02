@@ -1,13 +1,13 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.util.*
 
 /**
  * @property name string
- * @property desc (property) desc: string?
  * @property fromData (property) from_data: boolean
  * @property type (property) type: string?
  * @property prefix (property) prefix: string?
@@ -18,14 +18,13 @@ import icu.windea.pls.lang.util.*
  */
 interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
-    val desc: String?
     val fromData: Boolean
     val type: String?
     val prefix: String?
     val dataSource: String?
-    val forDefinitionType: String?
     val inputScopes: Set<String>
     val outputScope: String?
+    val forDefinitionType: String?
     
     val dataSourceExpression: CwtDataExpression? get() = dataSource?.let { CwtDataExpression.resolve(it, false) }
     override val expression: CwtDataExpression? get() = dataSourceExpression
@@ -38,11 +37,16 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     }
 }
 
+fun CwtLinkConfig.forScope() = this.type == "scope" || this.type == "both"
+
+fun CwtLinkConfig.forValue() = this.type == "scope" || this.type == "both"
+
+fun CwtLinkConfig.withPrefix() = this.prefix.isNotNullOrEmpty()
+
 //Implementations (interned)
 
 private fun doResolve(config: CwtPropertyConfig): CwtLinkConfigImpl? {
     val name = config.key
-    var desc: String? = null
     var fromData = false
     var type: String? = null
     var prefix: String? = null
@@ -53,32 +57,31 @@ private fun doResolve(config: CwtPropertyConfig): CwtLinkConfigImpl? {
     val props = config.properties ?: return null
     for(prop in props) {
         when(prop.key) {
-            "desc" -> desc = prop.stringValue?.trim() //去除首尾空白
             "from_data" -> fromData = prop.booleanValue ?: false
             "type" -> type = prop.stringValue
             "prefix" -> prefix = prop.stringValue
             "data_source" -> dataSource = prop.value
-            "for_definition_type" -> forDefinitionType = prop.stringValue
             "input_scopes" -> inputScopes = buildSet {
                 prop.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
                 prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
             }
             "output_scope" -> outputScope = prop.stringValue?.let { v -> ParadoxScopeManager.getScopeId(v) }
+            "for_definition_type" -> forDefinitionType = prop.stringValue
         }
     }
+    if(fromData && dataSource == null) return null //invalid
     inputScopes = inputScopes.orNull() ?: ParadoxScopeManager.anyScopeIdSet
-    return CwtLinkConfigImpl(config, name, desc, fromData, type, prefix, dataSource, forDefinitionType, inputScopes, outputScope)
+    return CwtLinkConfigImpl(config, name, fromData, type, prefix, dataSource, inputScopes, outputScope, forDefinitionType)
 }
 
 private class CwtLinkConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
-    override val desc: String? = null,
     override val fromData: Boolean = false,
     override val type: String? = null,
     override val prefix: String?,
     override val dataSource: String?,
-    override val forDefinitionType: String?,
     override val inputScopes: Set<String>,
-    override val outputScope: String?
+    override val outputScope: String?,
+    override val forDefinitionType: String?
 ) : CwtLinkConfig

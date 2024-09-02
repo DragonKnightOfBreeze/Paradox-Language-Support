@@ -2,7 +2,6 @@ package icu.windea.pls.lang.expression.complex.nodes
 
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -32,7 +31,7 @@ class ParadoxScopeLinkPrefixNode(
         PsiResolvedPolyVariantReference<CwtProperty>(element, rangeInElement, resolved)
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup,linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkPrefixNode {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkPrefixNode {
             return ParadoxScopeLinkPrefixNode(text, textRange, configGroup, linkConfigs)
         }
     }

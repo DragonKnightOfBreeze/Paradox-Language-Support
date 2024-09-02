@@ -75,7 +75,7 @@ class ParadoxVariableFieldExpression(
                 val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
                 startIndex = tokenIndex + 1
                 val node = when {
-                    isLast -> ParadoxDataSourceNode.resolve(nodeText, nodeTextRange, configGroup, configGroup.linksAsVariable)
+                    isLast -> ParadoxDataSourceNode.resolve(nodeText, nodeTextRange, configGroup, configGroup.linksOfVariable)
                     else -> ParadoxScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
                 }
                 //handle mismatch situation

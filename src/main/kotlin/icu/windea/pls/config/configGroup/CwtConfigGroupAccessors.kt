@@ -55,20 +55,7 @@ val CwtConfigGroup.dynamicValueTypes: MutableMap<String, CwtDynamicValueTypeConf
 
 val CwtConfigGroup.links: MutableMap<@CaseInsensitive String, CwtLinkConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-val CwtConfigGroup.linksAsScopeNotData: MutableMap<@CaseInsensitive String, CwtLinkConfig>
-    by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-val CwtConfigGroup.linksAsScopeWithPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig>
-    by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-val CwtConfigGroup.linksAsScopeWithoutPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig>
-    by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-val CwtConfigGroup.linksAsValueNotData: MutableMap<@CaseInsensitive String, CwtLinkConfig>
-    by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-val CwtConfigGroup.linksAsValueWithPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig>
-    by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-val CwtConfigGroup.linksAsValueWithoutPrefix: MutableMap<@CaseInsensitive String, CwtLinkConfig>
-    by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-
-val CwtConfigGroup.localisationLinks: MutableMap<@CaseInsensitive String, CwtLocalisationLinkConfig>
+val CwtConfigGroup.localisationLinks: MutableMap<@CaseInsensitive String, CwtLinkConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 val CwtConfigGroup.localisationCommands: MutableMap<@CaseInsensitive String, CwtLocalisationCommandConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
@@ -151,25 +138,13 @@ val CwtConfigGroup.aliasKeysGroupConst: MutableMap<@CaseInsensitive String, Muta
 val CwtConfigGroup.aliasKeysGroupNoConst: MutableMap<String, MutableSet<String>>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableMapOf() }
 
-//处理后的连接规则
+//变量对应的连接规则
 @Tags(Tag.Computed)
-val CwtConfigGroup.linksAsScopeWithPrefixSorted: MutableList<CwtLinkConfig>
+val CwtConfigGroup.linksOfVariable: MutableList<CwtLinkConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableListOf() }
-//处理后的连接规则
+//事件目标对应的本地化连接规则
 @Tags(Tag.Computed)
-val CwtConfigGroup.linksAsValueWithPrefixSorted: MutableList<CwtLinkConfig>
-    by createKeyDelegate(CwtConfigGroup.Keys) { mutableListOf() }
-//处理后的连接规则
-@Tags(Tag.Computed)
-val CwtConfigGroup.linksAsScopeWithoutPrefixSorted: MutableList<CwtLinkConfig>
-    by createKeyDelegate(CwtConfigGroup.Keys) { mutableListOf() }
-//处理后的连接规则
-@Tags(Tag.Computed)
-val CwtConfigGroup.linksAsValueWithoutPrefixSorted: MutableList<CwtLinkConfig>
-    by createKeyDelegate(CwtConfigGroup.Keys) { mutableListOf() }
-//处理后的连接规则
-@Tags(Tag.Computed)
-val CwtConfigGroup.linksAsVariable: MutableList<CwtLinkConfig>
+val CwtConfigGroup.localisationLinksOfEventTarget: MutableList<CwtLinkConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { mutableListOf() }
 
 //必定支持作用域的CWT别名规则

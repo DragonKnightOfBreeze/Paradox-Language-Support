@@ -42,16 +42,24 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
         }
         
+        //add missing localisation links from links
         run {
-            for(linkConfig in configGroup.linksAsScopeNotData.values) {
-                val localisationLinkConfig = CwtLocalisationLinkConfig.resolveFromLink(linkConfig)
-                configGroup.localisationLinks[localisationLinkConfig.name] = localisationLinkConfig
+            val localisationLinksNotFromData = configGroup.localisationLinks.values.filter { !it.fromData }
+            if(localisationLinksNotFromData.isNotEmpty()) return@run
+            val linksNotFromData = configGroup.links.values.filter { !it.fromData }
+            for(linkConfig in linksNotFromData) {
+                configGroup.localisationLinks[linkConfig.name] = linkConfig
             }
+        }
+        
+        //bind specific links and localisation links
+        run {
+            configGroup.linksOfVariable += configGroup.links.values.filter { it.forValue() && it.fromData && it.name == "variable" }
+            configGroup.localisationLinksOfEventTarget += configGroup.localisationLinks.values.filter { it.forScope() && it.fromData && it.name == "event_target" }
         }
         
         run {
             for(modifier in configGroup.modifiers.values) {
-                //category可能是modifierCategory的name，也可能是modifierCategory的internalId
                 for(category in modifier.categories) {
                     val categoryConfig = configGroup.modifierCategories[category] ?: continue
                     modifier.categoryConfigMap[categoryConfig.name] = categoryConfig
@@ -79,14 +87,6 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     configGroup.aliasKeysGroupNoConst[k] = keysNoConst.sortedByPriority({ CwtDataExpression.resolve(it, true) }, { configGroup }).toMutableSet()
                 }
             }
-        }
-        
-        run {
-            configGroup.linksAsScopeWithPrefixSorted += configGroup.linksAsScopeWithPrefix.values.sortedByPriority({ it.dataSourceExpression!! }, { configGroup })
-            configGroup.linksAsValueWithPrefixSorted += configGroup.linksAsValueWithPrefix.values.sortedByPriority({ it.dataSourceExpression!! }, { configGroup })
-            configGroup.linksAsScopeWithoutPrefixSorted += configGroup.linksAsScopeWithoutPrefix.values.sortedByPriority({ it.dataSourceExpression!! }, { configGroup })
-            configGroup.linksAsValueWithoutPrefixSorted += configGroup.linksAsValueWithoutPrefix.values.sortedByPriority({ it.dataSourceExpression!! }, { configGroup })
-            configGroup.linksAsVariable += configGroup.linksAsValueWithoutPrefix["variable"].toSingletonListOrEmpty()
         }
         
         run {

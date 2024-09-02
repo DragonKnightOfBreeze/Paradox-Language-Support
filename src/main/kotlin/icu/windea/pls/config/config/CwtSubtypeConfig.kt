@@ -2,6 +2,7 @@ package icu.windea.pls.config.config
 
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
@@ -69,7 +70,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtSubtypeConfig? {
             }
         }
     }
-    return CwtSubtypeConfigImpl(config, name, typeKeyFilter, typeKeyRegex, startsWith, pushScope, displayName, abbreviation, onlyIfNot)
+    return CwtSubtypeConfigImpl(config, name, typeKeyFilter, typeKeyRegex, startsWith, pushScope, displayName, abbreviation, onlyIfNot?.optimized())
 }
 
 private class CwtSubtypeConfigImpl(

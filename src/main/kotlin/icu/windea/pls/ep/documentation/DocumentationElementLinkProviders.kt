@@ -144,7 +144,7 @@ class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
                 val link = "${linkPrefix}${gameType.prefix}links/${name}"
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
-            config is CwtLocalisationLinkConfig -> {
+            config is CwtLinkConfig -> {
                 val gameType = config.configGroup.gameType
                 val name = config.name
                 val link = "${linkPrefix}${gameType.prefix}localisation_links/${name}"

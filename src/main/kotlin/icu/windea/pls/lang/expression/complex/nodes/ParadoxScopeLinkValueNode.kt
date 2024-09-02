@@ -23,27 +23,26 @@ class ParadoxScopeLinkValueNode(
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkValueNode {
             //text may contain parameters
-            //child node can be dynamicValueExpression
+            //child node can be ParadoxScopeLinkNode / ParadoxDynamicValueExpression / ParadoxDataSourceNode
+            
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             run {
                 val scopeFieldConfig = linkConfigs.find { it.expression?.type in CwtDataTypeGroups.ScopeField }
-                if(scopeFieldConfig != null) {
-                    val node = ParadoxScopeLinkNode.resolve(text, textRange, configGroup)
-                    nodes.add(node)
-                }
+                if(scopeFieldConfig == null) return@run
+                val node = ParadoxScopeLinkNode.resolve(text, textRange, configGroup)
+                nodes += node
             }
             run {
                 if(nodes.isNotEmpty()) return@run
                 val configs = linkConfigs.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.DynamicValue }
-                if(configs.isNotEmpty()) {
-                    val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
-                    nodes.add(node)
-                }
+                if(configs.isEmpty()) return@run
+                val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
+                nodes += node
             }
             run {
                 if(nodes.isNotEmpty()) return@run
                 val node = ParadoxDataSourceNode.resolve(text, textRange, configGroup, linkConfigs)
-                nodes.add(node)
+                nodes += node
             }
             return ParadoxScopeLinkValueNode(text, textRange, nodes, configGroup, linkConfigs)
         }

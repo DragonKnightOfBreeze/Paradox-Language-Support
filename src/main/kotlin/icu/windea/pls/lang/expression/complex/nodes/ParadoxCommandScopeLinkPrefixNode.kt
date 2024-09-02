@@ -32,10 +32,8 @@ class ParadoxCommandScopeLinkPrefixNode(
         PsiResolvedPolyVariantReference<CwtProperty>(element, rangeInElement, resolved)
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxCommandScopeLinkPrefixNode? {
-            val configs = configGroup.linksAsScopeWithPrefixSorted.filter { it.prefix != null && text == it.prefix!! }
-            if(configs.isEmpty()) return null
-            return ParadoxCommandScopeLinkPrefixNode(text, textRange, configGroup, configs)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandScopeLinkPrefixNode {
+            return ParadoxCommandScopeLinkPrefixNode(text, textRange, configGroup, linkConfigs)
         }
     }
 }

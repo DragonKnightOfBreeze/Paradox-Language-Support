@@ -25,7 +25,7 @@ import icu.windea.pls.lang.util.*
  * system_command_scope := TOKEN //predefined by CWT Config (see system scopes)
  * command_scope := TOKEN //predefined by CWT Config (see localisation links)
  * dynamic_command_scope_link := dynamic_command_scope_link_prefix ? dynamic_command_scope_link_value
- * dynamic_command_scope_link_prefix := TOKEN //"event_target:"
+ * dynamic_command_scope_link_prefix := TOKEN //"event_target:", "parameter:", etc.
  * dynamic_command_scope_link_value := TOKEN //matching config expression "value[event_target]" or "value[global_event_target]"
  * command_field ::= predefined_command_field | dynamic_command_field
  * predefined_command_field := TOKEN //predefined by CWT Config (see localisation commands)

@@ -2,53 +2,33 @@ package icu.windea.pls.lang.expression.complex.nodes
 
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
-import com.intellij.psi.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.psi.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.highlighter.*
 
 class ParadoxCommandScopeLinkValueNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val configGroup: CwtConfigGroup
+    override val nodes: List<ParadoxComplexExpressionNode>,
+    override val configGroup: CwtConfigGroup,
+    val linkConfigs: List<CwtLinkConfig>,
 ) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE_KEY
-    }
-    
-    override fun getReference(element: ParadoxExpressionElement): Reference {
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement, text, configGroup)
-    }
-    
-    class Reference(
-        element: ParadoxExpressionElement,
-        rangeInElement: TextRange,
-        val name: String,
-        val configGroup: CwtConfigGroup
-    ) : PsiReferenceBase<ParadoxExpressionElement>(element, rangeInElement), PsiReferencesAware {
-        val configExpressions = listOf(
-            configGroup.mockEventTargetConfig.expression,
-            configGroup.mockGlobalEventTargetConfig.expression,
-        )
-        
-        override fun handleElementRename(newElementName: String): PsiElement {
-            return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-        }
-        
-        override fun resolve(): PsiElement? {
-            return ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
-        }
+        return ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_VALUE_KEY
     }
     
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxCommandScopeLinkValueNode? {
-            if(!text.isIdentifier()) return null
-            return ParadoxCommandScopeLinkValueNode(text, textRange, configGroup)
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandScopeLinkValueNode {
+            //text may contain parameters
+            //child node can be ParadoxDataSourceNode
+            
+            val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+            run {
+                val node = ParadoxDataSourceNode.resolve(text, textRange, configGroup, linkConfigs)
+                nodes += node
+            }
+            return ParadoxCommandScopeLinkValueNode(text, textRange, nodes, configGroup, linkConfigs)
         }
     }
 }

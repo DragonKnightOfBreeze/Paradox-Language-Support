@@ -12,7 +12,6 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.model.*
 import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -45,7 +44,7 @@ object ParadoxComplexEnumValueManager {
         val gameType = fileInfo.rootInfo.gameType
         val configGroup = getConfigGroup(project, gameType)
         for(complexEnumConfig in configGroup.complexEnums.values) {
-            if(matchesComplexEnumByPath(complexEnumConfig, path)) {
+            if(CwtConfigManager.matchesPath(complexEnumConfig, path)) {
                 if(matchesComplexEnum(complexEnumConfig, element)) {
                     val name = getName(element.value) ?: continue
                     val enumName = complexEnumConfig.name
@@ -59,13 +58,6 @@ object ParadoxComplexEnumValueManager {
     }
     
     //NOTE 这里匹配时并不兼容向下内联的情况
-    
-    fun matchesComplexEnumByPath(complexEnum: CwtComplexEnumConfig, path: ParadoxPath): Boolean {
-        return complexEnum.path.any {
-            (complexEnum.pathFile == null || complexEnum.pathFile == path.fileName)
-                && (if(complexEnum.pathStrict) it == path.parent else it.matchesPath(path.parent))
-        }
-    }
     
     fun matchesComplexEnum(complexEnumConfig: CwtComplexEnumConfig, element: ParadoxScriptStringExpressionElement): Boolean {
         for(enumNameConfig in complexEnumConfig.enumNameConfigs) {

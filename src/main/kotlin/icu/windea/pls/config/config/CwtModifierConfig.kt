@@ -1,6 +1,7 @@
 package icu.windea.pls.config.config
 
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.util.*
 
@@ -34,7 +35,7 @@ private fun doResolve(config: CwtPropertyConfig, name: String): CwtModifierConfi
     val categories = config.stringValue?.let { setOf(it) }
         ?: config.values?.mapNotNullTo(mutableSetOf()) { it.stringValue }
         ?: return null
-    return CwtModifierConfigImpl(config, name, categories)
+    return CwtModifierConfigImpl(config, name, categories.optimized())
 }
 
 private fun doResolveFromAlias(config: CwtAliasConfig): CwtModifierConfig {

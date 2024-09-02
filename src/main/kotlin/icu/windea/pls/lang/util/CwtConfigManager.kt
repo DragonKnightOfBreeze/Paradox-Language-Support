@@ -224,8 +224,8 @@ object CwtConfigManager {
     
     fun collectPathPatterns(config: CwtConfig<*>, patterns: MutableCollection<String>) {
         val path = when(config) {
-            is CwtTypeConfig -> config.path
-            is CwtComplexEnumConfig -> config.path
+            is CwtTypeConfig -> config.paths
+            is CwtComplexEnumConfig -> config.paths
             else -> null
         }
         val pathFile = when(config) {

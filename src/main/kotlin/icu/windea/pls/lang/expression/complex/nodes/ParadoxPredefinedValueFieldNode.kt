@@ -36,7 +36,7 @@ class ParadoxPredefinedValueFieldNode(
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxPredefinedValueFieldNode? {
             if(text.isParameterized()) return null
-            val config = configGroup.linksAsValueNotData.get(text) ?: return null
+            val config = configGroup.links.get(text)?.takeIf { it.forValue() && !it.fromData } ?: return null
             return ParadoxPredefinedValueFieldNode(text, textRange, configGroup, config)
         }
     }

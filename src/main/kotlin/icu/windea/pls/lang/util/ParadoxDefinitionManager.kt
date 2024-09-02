@@ -110,8 +110,7 @@ object ParadoxDefinitionManager {
         configGroup: CwtConfigGroup
     ): Boolean {
         //判断definition是否需要是scriptFile还是scriptProperty
-        val typePerFileConfig = typeConfig.typePerFile
-        if(typePerFileConfig) {
+        if(typeConfig.typePerFile) {
             if(element !is ParadoxScriptFile) return false
         } else {
             if(element !is ParadoxScriptProperty) return false
@@ -148,8 +147,7 @@ object ParadoxDefinitionManager {
     ): Boolean {
         //判断definition是否需要是scriptFile还是scriptProperty
         val elementType = node.tokenType
-        val typePerFileConfig = typeConfig.typePerFile
-        if(typePerFileConfig) {
+        if(typeConfig.typePerFile) {
             if(elementType != ParadoxScriptStubElementTypes.FILE) return false
         } else {
             if(elementType != PROPERTY) return false
@@ -177,23 +175,7 @@ object ParadoxDefinitionManager {
         typeConfig: CwtTypeConfig
     ): Boolean? {
         //判断path是否匹配
-        val pathConfig = typeConfig.path ?: return false
-        val pathStrictConfig = typeConfig.pathStrict
-        if(pathStrictConfig) {
-            if(pathConfig != path.parent) return false
-        } else {
-            if(!pathConfig.matchesPath(path.parent)) return false
-        }
-        //判断path_name是否匹配
-        val pathFileConfig = typeConfig.pathFile //String?
-        if(pathFileConfig != null) {
-            if(pathFileConfig != path.fileName) return false
-        }
-        //判断path_extension是否匹配
-        val pathExtensionConfig = typeConfig.pathExtension //String?
-        if(pathExtensionConfig != null) {
-            if(pathExtensionConfig != path.fileExtension) return false
-        }
+        if(!CwtConfigManager.matchesPath(typeConfig, path)) return false
         
         //如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
         //skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
@@ -239,27 +221,10 @@ object ParadoxDefinitionManager {
         typeConfig: CwtTypeConfig
     ): Boolean {
         //判断element是否需要是scriptFile还是scriptProperty
-        val typePerFileConfig = typeConfig.typePerFile
-        if(typePerFileConfig) return false
+        if(typeConfig.typePerFile) return false
         
         //判断path是否匹配
-        val pathConfig = typeConfig.path ?: return false
-        val pathStrictConfig = typeConfig.pathStrict
-        if(pathStrictConfig) {
-            if(pathConfig != path.parent) return false
-        } else {
-            if(!pathConfig.matchesPath(path.parent)) return false
-        }
-        //判断path_name是否匹配
-        val pathFileConfig = typeConfig.pathFile //String?
-        if(pathFileConfig != null) {
-            if(pathFileConfig != path.fileName) return false
-        }
-        //判断path_extension是否匹配
-        val pathExtensionConfig = typeConfig.pathExtension //String?
-        if(pathExtensionConfig != null) {
-            if(pathExtensionConfig != path.fileExtension) return false
-        }
+        if(!CwtConfigManager.matchesPath(typeConfig, path)) return false
         
         if(elementPath != null) {
             //如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）

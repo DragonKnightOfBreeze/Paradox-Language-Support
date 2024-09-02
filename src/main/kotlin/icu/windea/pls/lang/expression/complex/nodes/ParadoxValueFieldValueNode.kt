@@ -23,17 +23,16 @@ class ParadoxValueFieldValueNode(
     
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxValueFieldValueNode {
-            val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
-            
             //text may contain parameters
-            //child node can be dynamicValueExpression / scriptValueExpression
+            //child node can be ParadoxDynamicValueExpression / ParadoxScriptValueExpression / ParadoxDataSourceNode
+            
+            val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             run {
                 val configs = linkConfigs.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.DynamicValue }
-                if(configs.isNotEmpty()) {
-                    val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
-                    nodes.add(node)
-                }
+                if(configs.isEmpty()) return@run 
+                val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
+                nodes += node
             }
             run {
                 if(nodes.isNotEmpty()) return@run
@@ -51,14 +50,14 @@ class ParadoxValueFieldValueNode(
                         val dataText = text.substring(0, tokenIndex)
                         val dataRange = TextRange.create(offset, tokenIndex + offset)
                         val dataNode = ParadoxDataSourceNode.resolve(dataText, dataRange, configGroup, linkConfigs)
-                        nodes.add(dataNode)
+                        nodes += dataNode
                         val errorText = text.substring(tokenIndex)
                         val errorRange = TextRange.create(tokenIndex + offset, text.length + offset)
                         val errorNode = ParadoxErrorTokenNode(errorText, errorRange, configGroup)
-                        nodes.add(errorNode)
+                        nodes += errorNode
                     } else {
                         val node = ParadoxScriptValueExpression.resolve(text, textRange, configGroup, scriptValueConfig)
-                        if(node != null) nodes.add(node)
+                        if(node != null) nodes += node
                     }
                     break
                 }
@@ -66,7 +65,7 @@ class ParadoxValueFieldValueNode(
             run {
                 if(nodes.isNotEmpty()) return@run
                 val node = ParadoxDataSourceNode.resolve(text, textRange, configGroup, linkConfigs)
-                nodes.add(node)
+                nodes += node
             }
             return ParadoxValueFieldValueNode(text, textRange, nodes, configGroup, linkConfigs)
         }

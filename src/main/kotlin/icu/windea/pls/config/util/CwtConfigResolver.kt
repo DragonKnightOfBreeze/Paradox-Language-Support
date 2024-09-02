@@ -36,7 +36,7 @@ object CwtConfigResolver {
             logger.warn("Incorrect CWT config in ${file.virtualFile.path}")
             return null
         }
-        //1. ues EmptyPointer for default project to optimize memory
+        //1. use EmptyPointer for default project to optimize memory
         //2. use CwtPropertyPointer to optimize performance and memory
         val pointer = when {
             configGroup.project.isDefault -> emptyPointer()

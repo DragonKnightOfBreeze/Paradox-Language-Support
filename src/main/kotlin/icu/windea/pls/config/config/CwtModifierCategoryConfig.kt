@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config
 
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.util.*
 
@@ -32,7 +33,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtModifierCategoryConfigImpl?
             }
         }
     }
-    supportedScopes = supportedScopes ?: ParadoxScopeManager.anyScopeIdSet
+    supportedScopes = supportedScopes?.optimized() ?: ParadoxScopeManager.anyScopeIdSet
     return CwtModifierCategoryConfigImpl(config, name, supportedScopes)
 }
 

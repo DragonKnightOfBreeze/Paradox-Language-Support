@@ -775,21 +775,21 @@ object ParadoxExpressionManager {
     }
     
     fun resolvePredefinedScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val systemScope = configGroup.systemScopes[name] ?: return null
-        val resolved = systemScope.pointer.element ?: return null
-        resolved.putUserData(PlsKeys.bindingConfig, systemScope)
+        val systemScopeConfig = configGroup.systemScopes[name] ?: return null
+        val resolved = systemScopeConfig.pointer.element ?: return null
+        resolved.putUserData(PlsKeys.bindingConfig, systemScopeConfig)
         return resolved
     }
     
     fun resolveScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val linkConfig = configGroup.linksAsScopeNotData[name] ?: return null
+        val linkConfig = configGroup.links[name]?.takeIf { it.forScope() && !it.fromData } ?: return null
         val resolved = linkConfig.pointer.element ?: return null
         resolved.putUserData(PlsKeys.bindingConfig, linkConfig)
         return resolved
     }
     
     fun resolveValueField(name: String, configGroup: CwtConfigGroup): PsiElement? {
-        val linkConfig = configGroup.linksAsValueNotData[name] ?: return null
+        val linkConfig = configGroup.links[name]?.takeIf { it.forValue() && !it.fromData } ?: return null
         val resolved = linkConfig.pointer.element ?: return null
         resolved.putUserData(PlsKeys.bindingConfig, linkConfig)
         return resolved
