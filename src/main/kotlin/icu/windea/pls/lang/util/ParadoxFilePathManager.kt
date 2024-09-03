@@ -5,13 +5,19 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.vcs.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import java.lang.invoke.*
 
 object ParadoxFilePathManager {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
+    
+    object Keys: KeyRegistry() {
+        val fileExtensions by createKey<Set<String>>(this)
+    }
     
     const val scriptedVariablesPath = "common/scripted_variables"
     
@@ -75,5 +81,11 @@ object ParadoxFilePathManager {
             if(root == "localisation_synced" || root == "localization_synced") return true
         }
         return false
+    }
+    
+    fun getFileExtensionOptionValues(config: CwtMemberConfig<*>) : Set<String> {
+        return config.getOrPutUserData(Keys.fileExtensions) {
+            config.findOption("file_extensions")?.getOptionValueOrValues().orEmpty()
+        }
     }
 }

@@ -223,46 +223,106 @@ object CwtConfigManager {
     }
     
     fun collectPathPatterns(config: CwtConfig<*>, patterns: MutableCollection<String>) {
-        val path = when(config) {
-            is CwtTypeConfig -> config.paths
-            is CwtComplexEnumConfig -> config.paths
-            else -> null
-        }
-        val pathFile = when(config) {
-            is CwtTypeConfig -> config.pathFile
-            is CwtComplexEnumConfig -> config.pathFile
-            else -> null
-        }
-        val pathExtension = when(config) {
-            is CwtTypeConfig -> config.pathExtension
-            is CwtComplexEnumConfig -> config.pathExtension
-            else -> null
-        }
-        val pathStrict = when(config) {
-            is CwtTypeConfig -> config.pathStrict
-            is CwtComplexEnumConfig -> config.pathStrict
-            else -> false
-        }
-        val pattern = buildString {
-            if(path != null) {
-                append(path)
-                if(pathStrict) append("/") else append("/**")
+        var pathPatterns: Set<String> = emptySet()
+        var paths: Set<String> = emptySet()
+        var pathFile: String? = null
+        var pathExtension: String? = null
+        var pathStrict = false
+        when(config) {
+            is CwtTypeConfig -> {
+                pathPatterns = config.pathPatterns
+                paths = config.paths
+                pathFile = config.pathFile
+                pathExtension = config.pathExtension
+                pathStrict = config.pathStrict
             }
-            if(pathFile!= null) {
-                if(path != null) append("/")
-                append(pathFile)
-            } else if(pathExtension != null) {
-                if(path != null) append("/")
-                append("*.").append(pathExtension)
+            is CwtComplexEnumConfig -> {
+                pathPatterns = config.pathPatterns
+                paths = config.paths
+                pathFile = config.pathFile
+                pathExtension = config.pathExtension
+                pathStrict = config.pathStrict
             }
         }
-        if(pattern.isNotEmpty()) patterns += pattern
         
-        //TODO 1.3.20
+        if(pathPatterns.isNotEmpty()) {
+            patterns += pathPatterns
+        }
+        
+        val filePattern = when {
+            pathFile.isNotNullOrEmpty() -> pathFile
+            pathExtension.isNotNullOrEmpty() -> "*.${pathExtension}"
+            else -> null
+        }
+        if(paths.isNotEmpty()) {
+            for(path in paths) {
+                if(path.isNotEmpty()) {
+                    patterns += buildString {
+                        append(path)
+                        if(pathStrict) {
+                            if(filePattern.isNotNullOrEmpty()) {
+                                append("/").append(filePattern)
+                            } else {
+                                append("/*")
+                            }
+                        } else {
+                            if(filePattern.isNotNullOrEmpty()) {
+                                append("/**/").append(filePattern)
+                            } else {
+                                append("/**")
+                            }
+                        }
+                    }
+                } else if(filePattern.isNotNullOrEmpty()) {
+                    patterns += filePattern
+                }
+            }
+        } else if(filePattern.isNotNullOrEmpty()) {
+            patterns += filePattern
+        }
     }
     
-    fun matchesPath(config: CwtConfig<*>, path: ParadoxPath): Boolean {
-        TODO() //TODO 1.3.20
+    fun matchesPath(config: CwtConfig<*>, filePath: ParadoxPath): Boolean {
+        var pathPatterns: Set<String> = emptySet()
+        var paths: Set<String> = emptySet()
+        var pathFile: String? = null
+        var pathExtension: String? = null
+        var pathStrict = false
+        when(config) {
+            is CwtTypeConfig -> {
+                pathPatterns = config.pathPatterns
+                paths = config.paths
+                pathFile = config.pathFile
+                pathExtension = config.pathExtension
+                pathStrict = config.pathStrict
+            }
+            is CwtComplexEnumConfig -> {
+                pathPatterns = config.pathPatterns
+                paths = config.paths
+                pathFile = config.pathFile
+                pathExtension = config.pathExtension
+                pathStrict = config.pathStrict
+            }
+        }
+        
+        if(pathPatterns.isNotEmpty()) {
+            if(pathPatterns.any { filePath.path.matchesAntPattern(it) }) return true
+        }
+        
+        if(pathFile.isNotNullOrEmpty()) {
+            if(pathFile != filePath.fileName) return false
+        } else if(pathExtension.isNotNullOrEmpty()) {
+            if(filePath.fileExtension == null || !pathExtension.equals(filePath.fileExtension, true)) return false
+        }
+        if(paths.isNotEmpty()) {
+            for(path in paths) {
+                if(path.matchesPath(filePath.parent, pathStrict)) return true
+            }
+            return false
+        } else {
+            if(pathFile.isNullOrEmpty() && pathExtension.isNullOrEmpty()) return false
+            return true
+        }
     }
     
     fun getConfigByPathExpression(configGroup: CwtConfigGroup, pathExpression: String): List<CwtMemberConfig<*>> {

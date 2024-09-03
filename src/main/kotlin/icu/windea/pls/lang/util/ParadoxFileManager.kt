@@ -20,10 +20,6 @@ import java.util.*
 object ParadoxFileManager {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     
-    object Keys: KeyRegistry() {
-        val fileExtensions by createKey<Set<String>>(this)
-    }
-    
     /**
      * 判断目标文件能否引用另一个文件中的内容。
      *
@@ -37,12 +33,6 @@ object ParadoxFileManager {
             if(!other.inMainEntry()) return false
         }
         return true
-    }
-    
-    fun getFileExtensionOptionValues(config: CwtMemberConfig<*>) : Set<String> {
-        return config.getOrPutUserData(Keys.fileExtensions) {
-            config.findOption("file_extensions")?.getOptionValueOrValues().orEmpty()
-        }
     }
     
     /**

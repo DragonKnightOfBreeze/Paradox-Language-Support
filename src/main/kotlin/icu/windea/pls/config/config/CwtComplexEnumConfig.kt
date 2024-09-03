@@ -50,7 +50,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
     if(props.isEmpty()) return null
     for(prop in props) {
         when(prop.key) {
-            "path_pattern" -> prop.stringValue?.normalizePath()?.let { pathPatterns += it }
+            "path_pattern" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { pathPatterns += it }
             "path" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { paths += it }
             "path_file" -> pathFile = prop.stringValue ?: continue
             "path_extension" -> pathExtension = prop.stringValue?.removePrefix(".") ?: continue

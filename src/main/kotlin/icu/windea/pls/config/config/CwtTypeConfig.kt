@@ -92,7 +92,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
     for(prop in props) {
         when(prop.key) {
             "base_type" -> baseType = prop.stringValue
-            "path_pattern" -> prop.stringValue?.normalizePath()?.let { pathPatterns += it }
+            "path_pattern" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { pathPatterns += it }
             "path" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { paths += it }
             "path_file" -> pathFile = prop.stringValue ?: continue
             "path_extension" -> pathExtension = prop.stringValue?.removePrefix(".") ?: continue

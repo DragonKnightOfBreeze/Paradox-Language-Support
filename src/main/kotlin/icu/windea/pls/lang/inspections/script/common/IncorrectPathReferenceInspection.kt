@@ -29,7 +29,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
                 val dataType = configExpression.type
                 if(dataType == CwtDataTypes.AbsoluteFilePath) return
                 if(dataType !in CwtDataTypeGroups.PathReference) return
-                val fileExtensions = ParadoxFileManager.getFileExtensionOptionValues(config)
+                val fileExtensions = ParadoxFilePathManager.getFileExtensionOptionValues(config)
                 if(fileExtensions.isEmpty()) return
                 val value = element.value
                 if(fileExtensions.any { value.endsWith(it, true) }) return
