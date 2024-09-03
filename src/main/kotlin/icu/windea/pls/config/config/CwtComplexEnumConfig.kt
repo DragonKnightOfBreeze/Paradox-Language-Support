@@ -1,8 +1,10 @@
 package icu.windea.pls.config.config
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -17,7 +19,7 @@ import icu.windea.pls.cwt.psi.*
  * @property nameConfig `name`对应的CWT规则。
  * @property enumNameConfigs [nameConfig]中作为锚点的`enum_name`对应的CWT规则。
  */
-interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, UserDataHolder {
     val name: String
     val pathPatterns: Set<String>
     val paths: Set<String>
@@ -28,6 +30,8 @@ interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     val searchScopeType: String?
     val nameConfig: CwtPropertyConfig
     val enumNameConfigs: List<CwtMemberConfig<*>>
+    
+    object Keys: KeyRegistry()
     
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig): CwtComplexEnumConfig? = doResolve(config)
@@ -80,7 +84,7 @@ private class CwtComplexEnumConfigImpl(
     override val startFromRoot: Boolean,
     override val searchScopeType: String?,
     override val nameConfig: CwtPropertyConfig,
-) : CwtComplexEnumConfig {
+) : UserDataHolderBase(), CwtComplexEnumConfig {
     override val enumNameConfigs: List<CwtMemberConfig<*>> by lazy {
         buildList {
             nameConfig.processDescendants {

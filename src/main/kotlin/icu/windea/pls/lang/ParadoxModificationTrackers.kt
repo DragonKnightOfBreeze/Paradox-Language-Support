@@ -1,9 +1,7 @@
 package icu.windea.pls.lang
 
 import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.util.*
 import java.util.concurrent.*
 
 /**
@@ -13,10 +11,10 @@ object ParadoxModificationTrackers {
     val ScriptFileTracker = SimpleModificationTracker()
     val LocalisationFileTracker = SimpleModificationTracker()
     
-    val ScriptFileTrackers = ConcurrentHashMap<String, PathBasedModificationTracker>()
+    val ScriptFileTrackers = ConcurrentHashMap<String, FilePathBasedModificationTracker>()
     
-    fun ScriptFileTracker(key: String): PathBasedModificationTracker {
-        return ScriptFileTrackers.getOrPut(key) { PathBasedModificationTracker(key) }
+    fun ScriptFileTracker(key: String): FilePathBasedModificationTracker {
+        return ScriptFileTrackers.getOrPut(key) { FilePathBasedModificationTracker(key) }
     }
     
     val ScriptedVariablesTracker = ScriptFileTracker("common/scripted_variables/**/*.txt")

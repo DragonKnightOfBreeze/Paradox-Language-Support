@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
@@ -30,7 +31,7 @@ import icu.windea.pls.model.*
  * @property localisation (property*) localisation: localisationInfo
  * @property images (property*) images: imagesInfo
  */
-interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, UserDataHolder {
     val name: String
     val baseType: String?
     val pathPatterns: Set<String>
@@ -52,9 +53,7 @@ interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val localisation: CwtTypeLocalisationConfig?
     val images: CwtTypeImagesConfig?
     
-    val possibleRootKeys: Set<String>
-    val possibleSwappedTypeRootKeys: Set<String>
-    val possibleNestedTypeRootKeys: Set<String>
+    object Keys: KeyRegistry()
     
     companion object {
         fun resolve(config: CwtPropertyConfig): CwtTypeConfig? = doResolve(config)
@@ -195,29 +194,4 @@ private class CwtTypeConfigImpl(
     override val subtypes: Map<String, CwtSubtypeConfig>,
     override val localisation: CwtTypeLocalisationConfig?,
     override val images: CwtTypeImagesConfig?,
-) : CwtTypeConfig {
-    override val possibleRootKeys by lazy {
-        caseInsensitiveStringSet().apply {
-            typeKeyFilter?.takeIfTrue()?.let { addAll(it) }
-            subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeIfTrue()?.let { addAll(it) } }
-        }
-    }
-    
-    override val possibleSwappedTypeRootKeys by lazy {
-        caseInsensitiveStringSet().apply {
-            configGroup.swappedTypes.values.forEach f@{ swappedTypeConfig ->
-                val baseType = swappedTypeConfig.baseType ?: return@f
-                val baseTypeName = baseType.substringBefore('.')
-                if(baseTypeName != name) return@f
-                val rootKey = swappedTypeConfig.typeKeyFilter?.takeIfTrue()?.singleOrNull() ?: return@f
-                add(rootKey)
-            }
-        }
-    }
-    
-    override val possibleNestedTypeRootKeys by lazy {
-        caseInsensitiveStringSet().apply {
-            addAll(possibleSwappedTypeRootKeys)
-        }
-    }
-}
+) : UserDataHolderBase(), CwtTypeConfig 

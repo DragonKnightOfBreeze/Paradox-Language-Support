@@ -5,7 +5,7 @@ import com.intellij.util.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
 
-fun icu.windea.pls.lang.expression.complex.ParadoxComplexExpression.processAllNodes(processor: Processor<ParadoxComplexExpressionNode>): Boolean {
+fun ParadoxComplexExpression.processAllNodes(processor: Processor<ParadoxComplexExpressionNode>): Boolean {
     return doProcessAllNodes(processor)
 }
 
@@ -21,7 +21,7 @@ private fun ParadoxComplexExpressionNode.doProcessAllNodes(processor: Processor<
     return true
 }
 
-fun icu.windea.pls.lang.expression.complex.ParadoxComplexExpression.processAllLeafNodes(processor: Processor<ParadoxComplexExpressionNode>): Boolean {
+fun ParadoxComplexExpression.processAllLeafNodes(processor: Processor<ParadoxComplexExpressionNode>): Boolean {
     return doProcessAllLeafNodes(processor)
 }
 
@@ -37,7 +37,7 @@ private fun ParadoxComplexExpressionNode.doProcessAllLeafNodes(processor: Proces
     }
 }
 
-fun icu.windea.pls.lang.expression.complex.ParadoxComplexExpression.getReferences(element: ParadoxExpressionElement): Array<PsiReference> {
+fun ParadoxComplexExpression.getReferences(element: ParadoxExpressionElement): Array<PsiReference> {
     val references = mutableListOf<PsiReference>()
     this.doGetReferences(element, references)
     return references.toTypedArray()

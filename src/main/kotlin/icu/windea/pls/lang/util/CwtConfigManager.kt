@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util
 
+import com.intellij.openapi.util.UserDataHolder
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -216,13 +217,9 @@ object CwtConfigManager {
         }
     }
     
-    fun getPathPatterns(configs: Collection<CwtConfig<*>>): Set<String> {
+    fun getFilePathPatterns(config: CwtConfig<*>): Set<String> {
         val patterns = sortedSetOf<String>()
-        configs.forEach { config -> collectPathPatterns(config, patterns) }
-        return patterns
-    }
-    
-    fun collectPathPatterns(config: CwtConfig<*>, patterns: MutableCollection<String>) {
+        
         var pathPatterns: Set<String> = emptySet()
         var paths: Set<String> = emptySet()
         var pathFile: String? = null
@@ -280,9 +277,46 @@ object CwtConfigManager {
         } else if(filePattern.isNotNullOrEmpty()) {
             patterns += filePattern
         }
+        
+        return patterns
     }
     
-    fun matchesPath(config: CwtConfig<*>, filePath: ParadoxPath): Boolean {
+    fun getFilePathsForPriority(config: CwtConfig<*>): Set<String> {
+        var pathPatterns: Set<String> = emptySet()
+        var paths: Set<String> = emptySet()
+        var pathFile: String? = null
+        var pathStrict = false
+        when(config) {
+            is CwtTypeConfig -> {
+                pathPatterns = config.pathPatterns
+                paths = config.paths
+                pathFile = config.pathFile
+                pathStrict = config.pathStrict
+            }
+            is CwtComplexEnumConfig -> {
+                pathPatterns = config.pathPatterns
+                paths = config.paths
+                pathFile = config.pathFile
+                pathStrict = config.pathStrict
+            }
+        }
+        val filePaths = sortedSetOf<String>()
+        if(pathPatterns.isNotEmpty()) {
+            filePaths += pathPatterns.map { it.substringBefore("/*") }
+        }
+        if(paths.isNotEmpty()) {
+            if(pathFile.isNotNullOrEmpty() && pathStrict) {
+                filePaths += paths.map { "$it/$pathFile" }
+            } else {
+                filePaths += paths
+            }
+        } else if(pathFile.isNotNullOrEmpty()) {
+            filePaths += pathFile
+        }
+        return filePaths
+    }
+    
+    fun matchesFilePath(config: CwtConfig<*>, filePath: ParadoxPath): Boolean {
         var pathPatterns: Set<String> = emptySet()
         var paths: Set<String> = emptySet()
         var pathFile: String? = null

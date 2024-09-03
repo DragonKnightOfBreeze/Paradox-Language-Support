@@ -234,9 +234,9 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
 }
 
 /**
- * @see icu.windea.pls.model.expression.complex.ParadoxScriptValueExpression
- * @see icu.windea.pls.model.expression.complex.nodes.ParadoxScriptValueArgumentNode
- * @see icu.windea.pls.model.expression.complex.nodes.ParadoxScriptValueArgumentValueNode
+ * @see icu.windea.pls.lang.expression.complex.ParadoxScriptValueExpression
+ * @see icu.windea.pls.lang.expression.complex.nodes.ParadoxScriptValueArgumentNode
+ * @see icu.windea.pls.lang.expression.complex.nodes.ParadoxScriptValueArgumentValueNode
  */
 class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
     override fun isContext(element: ParadoxScriptDefinitionElement) = false

@@ -12,7 +12,7 @@ val CwtConfigGroup.definitionParameterModificationTracker: ModificationTracker
     by createKeyDelegate(CwtConfigGroup.Keys) {
         val definitionTypes = definitionTypesSupportParameters
         val configs = definitionTypes.mapNotNull { types[it] }
-        val patterns = CwtConfigManager.getPathPatterns(configs)
+        val patterns = configs.flatMapTo(sortedSetOf()) { CwtConfigManager.getFilePathPatterns(it) }
         ParadoxModificationTrackers.ScriptFileTracker(patterns.joinToString(";"))
     }
 
@@ -21,6 +21,6 @@ val CwtConfigGroup.definitionScopeContextModificationTracker: ModificationTracke
     by createKeyDelegate(CwtConfigGroup.Keys) {
         val definitionTypes = ParadoxBaseDefinitionInferredScopeContextProvider.Constants.DEFINITION_TYPES
         val configs = definitionTypes.mapNotNull { types[it] }
-        val patterns = CwtConfigManager.getPathPatterns(configs)
+        val patterns = configs.flatMapTo(sortedSetOf()) { CwtConfigManager.getFilePathPatterns(it) }
         ParadoxModificationTrackers.ScriptFileTracker(patterns.joinToString(";"))
     }

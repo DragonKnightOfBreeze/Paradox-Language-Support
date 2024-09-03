@@ -175,7 +175,7 @@ object ParadoxDefinitionManager {
         typeConfig: CwtTypeConfig
     ): Boolean? {
         //判断path是否匹配
-        if(!CwtConfigManager.matchesPath(typeConfig, path)) return false
+        if(!CwtConfigManager.matchesFilePath(typeConfig, path)) return false
         
         //如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
         //skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
@@ -224,7 +224,7 @@ object ParadoxDefinitionManager {
         if(typeConfig.typePerFile) return false
         
         //判断path是否匹配
-        if(!CwtConfigManager.matchesPath(typeConfig, path)) return false
+        if(!CwtConfigManager.matchesFilePath(typeConfig, path)) return false
         
         if(elementPath != null) {
             //如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）

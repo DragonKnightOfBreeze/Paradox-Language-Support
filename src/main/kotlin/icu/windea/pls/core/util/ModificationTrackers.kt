@@ -8,6 +8,6 @@ class MergedModificationTracker(vararg val modificationTrackers: ModificationTra
     }
 }
 
-class PathBasedModificationTracker(key: String) : SimpleModificationTracker() {
+class FilePathBasedModificationTracker(key: String) : SimpleModificationTracker() {
     val patterns = key.split(';').toSet()
 }

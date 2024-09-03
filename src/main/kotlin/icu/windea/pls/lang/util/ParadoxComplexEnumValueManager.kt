@@ -44,7 +44,7 @@ object ParadoxComplexEnumValueManager {
         val gameType = fileInfo.rootInfo.gameType
         val configGroup = getConfigGroup(project, gameType)
         for(complexEnumConfig in configGroup.complexEnums.values) {
-            if(CwtConfigManager.matchesPath(complexEnumConfig, path)) {
+            if(CwtConfigManager.matchesFilePath(complexEnumConfig, path)) {
                 if(matchesComplexEnum(complexEnumConfig, element)) {
                     val name = getName(element.value) ?: continue
                     val enumName = complexEnumConfig.name

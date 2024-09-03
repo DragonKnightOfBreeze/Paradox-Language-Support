@@ -1,6 +1,7 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.stubs.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*

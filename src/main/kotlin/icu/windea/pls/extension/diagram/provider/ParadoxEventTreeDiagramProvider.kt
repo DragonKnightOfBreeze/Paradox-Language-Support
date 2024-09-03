@@ -222,7 +222,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         file: VirtualFile?, //umlFile   
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
-        override fun getModificationTracker(): PathBasedModificationTracker {
+        override fun getModificationTracker(): FilePathBasedModificationTracker {
             return ParadoxModificationTrackers.ScriptFileTracker("events/**/*.txt")
         }
     }
