@@ -7,4 +7,4 @@ import com.intellij.psi.*
  * 
  * 注意：实际上，脚本文件与本地化文件（中的本地化文本）中的任何地方都能使用参数。
  */
-interface ParadoxParameterAwareElement: PsiElement, NavigatablePsiElement
+interface ParadoxParameterAwareElement: PsiElement

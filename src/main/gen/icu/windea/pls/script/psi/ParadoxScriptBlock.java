@@ -22,6 +22,12 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlo
   List<ParadoxScriptScriptedVariable> getScriptedVariableList();
 
   @NotNull
+  List<ParadoxScriptProperty> getPropertyList();
+
+  @NotNull
+  List<ParadoxScriptValue> getValueList();
+
+  @NotNull
   Icon getIcon(@IconFlags int flags);
 
   @NotNull
@@ -30,12 +36,6 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlo
   boolean isEmpty();
 
   boolean isNotEmpty();
-
-  @NotNull
-  List<ParadoxScriptProperty> getPropertyList();
-
-  @NotNull
-  List<ParadoxScriptValue> getValueList();
 
   @NotNull
   List<PsiElement> getComponents();

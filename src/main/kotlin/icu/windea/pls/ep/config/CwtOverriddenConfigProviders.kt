@@ -25,6 +25,7 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
         //重载switch = {...}中对应的CWT规则为scalar的属性的键对应的CWT规则
         //重载inverted_switch = {...}中对应的CWT规则为scalar的属性的键对应的CWT规则
         //兼容使用内联或者使用封装变量的情况
+        
         if(config !is CwtPropertyConfig) return null
         if(config.key != Constants.CASE_KEY) return null
         val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
@@ -61,6 +62,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
         //重载complex_trigger_modifier = {...}中属性parameters的值对应的CWT规则
         //重载export_trigger_value_to_variable = {...}中属性parameters的值对应的CWT规则
         //兼容使用内联或者使用封装变量的情况
+        
         if(config !is CwtPropertyConfig) return null
         if(config.key != Constants.PARAMETERS_KEY) return null
         val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
@@ -86,7 +88,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
     
     override fun skipMissingExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression): Boolean {
         //for export_trigger_value_to_variable, skip all properties
-        // 
+
         //for complex_trigger_modifier, skip properties whose value config type is one of the following types:
         //int / float / value_field / int_value_field / variable_field / int_variable_field
         

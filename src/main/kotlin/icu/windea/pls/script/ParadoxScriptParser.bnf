@@ -46,8 +46,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   stubClass="icu.windea.pls.script.psi.ParadoxScriptScriptedVariableStub"
   methods=[
     scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
-    getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue
-    getType
+    getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue getType
     isEquivalentTo toString
   ]
 }
@@ -76,8 +75,7 @@ property ::= property_key property_separator property_value {
   ]
   methods=[
     property_key="property_key" property_value="value"
-    getIcon getName setName getNameIdentifier getValue getDepth getBlock 
-    getType getConfigExpression getExpression
+    getIcon getName setName getNameIdentifier getValue getDepth getBlock getType getConfigExpression getExpression
     isEquivalentTo toString
   ]
 }
@@ -89,8 +87,7 @@ property_key ::= property_key_part (<<processTemplate>> property_key_part) * {
     "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
   ] 
   methods=[
-    getIcon getName getValue setValue
-    getType getExpression getConfigExpression
+    getIcon getName getValue setValue getType getExpression getConfigExpression
     getReference getReferences toString
   ]
 }
@@ -102,13 +99,11 @@ private property_value ::= scripted_variable_reference | boolean | int | float |
 //noinspection BnfUnusedRule
 value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math {
   implements=[
-    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
     "icu.windea.pls.script.psi.ParadoxScriptMemberElement"
   ]
   methods=[
-    getIcon getName getValue setValue
-    getType getExpression getConfigExpression
+    getIcon getName getValue setValue getType getExpression getConfigExpression
   ]
 }
 //can be parameterized
@@ -153,8 +148,7 @@ string ::= string_part <<checkRightTemplate>> (<<processTemplate>> string_part) 
     "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
   ]
   methods=[
-    getIcon getValue setValue getStringValue
-    getType getExpression getConfigExpression
+    getIcon getValue setValue getStringValue getType getExpression getConfigExpression
     getReference getReferences toString
   ]
 }
@@ -172,9 +166,8 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     "com.intellij.psi.ContributedReferenceHost"
   ]
   methods=[
-    property="" value=""
-    getIcon getValue isEmpty isNotEmpty getPropertyList getValueList getComponents
-    getType getExpression
+    property="" value="" getPropertyList getValueList
+    getIcon getValue isEmpty isNotEmpty getComponents getType getExpression
     getReference getReferences
   ]
 }

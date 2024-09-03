@@ -31,18 +31,18 @@ fun CwtPropertyConfig.Companion.resolve(
     valueType: CwtType = CwtType.String,
     separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
     configs: List<CwtMemberConfig<*>>? = null,
-    options: List<CwtOptionMemberConfig<*>>? = null,
+    optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null
 ): CwtPropertyConfig {
     return if(configs != null) {
-        if(options != null || documentation != null) {
-            CwtPropertyConfigImpl1(pointer, configGroup, key, value, valueType, separatorType, configs, options, documentation)
+        if(optionConfigs != null || documentation != null) {
+            CwtPropertyConfigImpl1(pointer, configGroup, key, value, valueType, separatorType, configs, optionConfigs, documentation)
         } else {
             CwtPropertyConfigImpl2(pointer, configGroup, key, value, valueType, separatorType, configs)
         }
     } else {
-        if(options != null || documentation != null) {
-            CwtPropertyConfigImpl3(pointer, configGroup, key, value, valueType, separatorType, options, documentation)
+        if(optionConfigs != null || documentation != null) {
+            CwtPropertyConfigImpl3(pointer, configGroup, key, value, valueType, separatorType, optionConfigs, documentation)
         } else {
             CwtPropertyConfigImpl4(pointer, configGroup, key, value, valueType, separatorType)
         }
@@ -71,10 +71,10 @@ fun CwtPropertyConfig.copy(
     valueType: CwtType = this.valueType,
     separatorType: CwtSeparatorType = this.separatorType,
     configs: List<CwtMemberConfig<*>>? = this.configs,
-    options: List<CwtOptionMemberConfig<*>>? = this.optionConfigs,
+    optionConfigs: List<CwtOptionMemberConfig<*>>? = this.optionConfigs,
     documentation: String? = this.documentation
 ): CwtPropertyConfig {
-    return CwtPropertyConfig.resolve(pointer, this.configGroup, key, value, valueType, separatorType, configs, options, documentation)
+    return CwtPropertyConfig.resolve(pointer, this.configGroup, key, value, valueType, separatorType, configs, optionConfigs, documentation)
 }
 
 //Implementations

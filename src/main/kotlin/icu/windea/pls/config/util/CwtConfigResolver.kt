@@ -36,6 +36,7 @@ object CwtConfigResolver {
             logger.warn("Incorrect CWT config in ${file.virtualFile.path}")
             return null
         }
+        
         //1. use EmptyPointer for default project to optimize memory
         //2. use CwtPropertyPointer to optimize performance and memory
         val pointer = when {
@@ -44,82 +45,11 @@ object CwtConfigResolver {
         }
         val key = propertyElement.name.intern() //intern to optimize memory
         val value: String = valueElement.value.intern() //intern to optimize memory
-        val valueType: CwtType
+        val valueType = valueElement.type
         val separatorType = propertyElement.separatorType
-        var configs: List<CwtMemberConfig<*>>? = null
-        var options: MutableList<CwtOptionMemberConfig<*>>? = null
-        var documentationLines: MutableList<String>? = null
-        var html = false
-        
-        when {
-            valueElement is CwtBoolean -> {
-                valueType = CwtType.Boolean
-            }
-            valueElement is CwtInt -> {
-                valueType = CwtType.Int
-            }
-            valueElement is CwtFloat -> {
-                valueType = CwtType.Float
-            }
-            valueElement is CwtString -> {
-                valueType = CwtType.String
-            }
-            valueElement is CwtBlock -> {
-                valueType = CwtType.Block
-                valueElement.forEachChild f@{
-                    when {
-                        it is CwtProperty -> {
-                            val resolved = resolveProperty(it, file, fileConfig) ?: return@f
-                            if(configs == null) configs = mutableListOf() //use ArrayList to optimize memory
-                            configs!!.asMutable().add(resolved)
-                        }
-                        it is CwtValue -> {
-                            val resolved = resolveValue(it, file, fileConfig)
-                            if(configs == null) configs = mutableListOf() //use ArrayList to optimize memory
-                            configs!!.asMutable().add(resolved)
-                        }
-                    }
-                }
-                if(configs == null) configs = emptyList()
-            }
-            else -> {
-                valueType = CwtType.Unknown
-            }
-        }
-        
-        var current: PsiElement = propertyElement
-        while(true) {
-            current = current.prevSibling ?: break
-            when {
-                current is CwtOptionComment -> {
-                    val option = current.option
-                    if(option != null) {
-                        if(option.name == "format" && option.value == "html") html = true
-                        if(options == null) options = mutableListOf() //use ArrayList to optimize memory
-                        val resolved = resolveOption(option, file, fileConfig) ?: continue
-                        options.add(0, resolved)
-                    } else {
-                        val optionValue = current.value ?: continue
-                        if(options == null) options = mutableListOf() //use ArrayList to optimize memory
-                        val resolved = resolveOptionValue(optionValue, file, fileConfig)
-                        options.add(0, resolved)
-                    }
-                }
-                current is CwtDocumentationComment -> {
-                    val documentationText = current.documentationText
-                    if(documentationText != null) {
-                        if(documentationLines == null) documentationLines = LinkedList()
-                        val docText = documentationText.text.trimStart('#').trim() //这里接受HTML
-                        documentationLines.add(0, docText)
-                    }
-                }
-                current is PsiWhiteSpace || current is PsiComment -> continue
-                else -> break
-            }
-        }
-        val documentation = getDocumentation(documentationLines, html)
-        
-        val config = CwtPropertyConfig.resolve(pointer, configGroup, key, value, valueType, separatorType, configs, options, documentation)
+        val configs = doGetConfigs(valueElement, file, fileConfig)
+        val (optionConfigs,documentation) = doGetOptionConfigsAndDocumentation(propertyElement, file, fileConfig)
+        val config = CwtPropertyConfig.resolve(pointer, configGroup, key, value, valueType, separatorType, configs, optionConfigs, documentation)
             .let { applyInheritOptions(it) }
         CwtConfigCollector.processConfigWithConfigExpression(config, config.keyExpression)
         CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
@@ -129,55 +59,48 @@ object CwtConfigResolver {
     
     private fun resolveValue(valueElement: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): CwtValueConfig {
         val configGroup = fileConfig.configGroup
-        //1. ues EmptyPointer for default project to optimize memory
+        
+        //1. use EmptyPointer for default project to optimize memory
         val pointer = when {
             configGroup.project.isDefault -> emptyPointer()
             else -> valueElement.createPointer(file)
         }
         val value: String = valueElement.value.intern() //intern to optimize memory
-        val valueType: CwtType
-        var configs: List<CwtMemberConfig<*>>? = null
-        var documentationLines: MutableList<String>? = null
-        var html = false
-        var options: MutableList<CwtOptionMemberConfig<*>>? = null
+        val valueType = valueElement.type
+        val configs = doGetConfigs(valueElement, file, fileConfig)
+        val (optionConfigs,documentation) = doGetOptionConfigsAndDocumentation(valueElement, file, fileConfig)
+        val config = CwtValueConfig.resolve(pointer, configGroup, value, valueType, configs, optionConfigs, documentation)
+            .let { applyInheritOptions(it) }
+        CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
+        configs?.forEach { it.parentConfig = config }
+        return config
+    }
+    
+    private fun doGetConfigs(valueElement: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): List<CwtMemberConfig<*>>? {
+        if(valueElement !is CwtBlock) return null
         
-        when {
-            valueElement is CwtBoolean -> {
-                valueType = CwtType.Boolean
-            }
-            valueElement is CwtInt -> {
-                valueType = CwtType.Int
-            }
-            valueElement is CwtFloat -> {
-                valueType = CwtType.Float
-            }
-            valueElement is CwtString -> {
-                valueType = CwtType.String
-            }
-            valueElement is CwtBlock -> {
-                valueType = CwtType.Block
-                valueElement.forEachChild f@{
-                    when {
-                        it is CwtProperty -> {
-                            val resolved = resolveProperty(it, file, fileConfig) ?: return@f
-                            if(configs == null) configs = mutableListOf()
-                            configs!!.asMutable().add(resolved)
-                        }
-                        it is CwtValue -> {
-                            val resolved = resolveValue(it, file, fileConfig)
-                            if(configs == null) configs = mutableListOf()
-                            configs!!.asMutable().add(resolved)
-                        }
-                    }
+        val configs = mutableListOf<CwtMemberConfig<*>>()
+        valueElement.forEachChild f@{ e ->
+            when {
+                e is CwtProperty -> {
+                    val resolved = resolveProperty(e, file, fileConfig) ?: return@f
+                    configs += resolved
                 }
-                if(configs == null) configs = emptyList()
-            }
-            else -> {
-                valueType = CwtType.Unknown
+                e is CwtValue -> {
+                    val resolved = resolveValue(e, file, fileConfig)
+                    configs += resolved
+                }
             }
         }
+        return configs.optimized() //optimized to optimize memory
+    }
+    
+    private fun doGetOptionConfigsAndDocumentation(element: PsiElement, file: CwtFile, fileConfig: CwtFileConfig): Tuple2<List<CwtOptionMemberConfig<*>>?, String?> {
+        var optionConfigs: MutableList<CwtOptionMemberConfig<*>>? = null
+        var documentationLines: MutableList<String>? = null
+        var html = false
         
-        var current: PsiElement = valueElement
+        var current: PsiElement = element
         while(true) {
             current = current.prevSibling ?: break
             when {
@@ -185,14 +108,14 @@ object CwtConfigResolver {
                     val option = current.option
                     if(option != null) {
                         if(option.name == "format" && option.value == "html") html = true
-                        if(options == null) options = mutableListOf()
+                        if(optionConfigs == null) optionConfigs = mutableListOf()
                         val resolved = resolveOption(option, file, fileConfig) ?: continue
-                        options.add(0, resolved)
+                        optionConfigs.add(0, resolved)
                     } else {
                         val optionValue = current.value ?: continue
-                        if(options == null) options = mutableListOf()
+                        if(optionConfigs == null) optionConfigs = mutableListOf()
                         val resolved = resolveOptionValue(optionValue, file, fileConfig)
-                        options.add(0, resolved)
+                        optionConfigs.add(0, resolved)
                     }
                 }
                 current is CwtDocumentationComment -> {
@@ -208,107 +131,48 @@ object CwtConfigResolver {
             }
         }
         val documentation = getDocumentation(documentationLines, html)
-        
-        val config = CwtValueConfig.resolve(pointer, configGroup, value, valueType, configs, options, documentation)
-            .let { applyInheritOptions(it) }
-        CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
-        configs?.forEach { it.parentConfig = config }
-        return config
+        return optionConfigs?.optimized() to documentation //optimized to optimize memory
     }
     
     private fun resolveOption(optionElement: CwtOption, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionConfig? {
         val optionValueElement = optionElement.optionValue
         if(optionValueElement == null) {
-            logger.warn("Incorrect CWT config in ${file.virtualFile.path}")
+            logger.warn("Incorrect CWT config in ${file.virtualFile.path}:\n${optionElement.text}")
             return null
         }
+        
         val key = optionElement.name.intern() //intern to optimize memory
         val value = optionValueElement.value.intern() //intern to optimize memory
-        val valueType: CwtType
+        val valueType: CwtType = optionValueElement.type
         val separatorType = optionElement.separatorType
-        var optionConfigs: List<CwtOptionMemberConfig<*>>? = null
-        
-        when {
-            optionValueElement is CwtBoolean -> {
-                valueType = CwtType.Boolean
-            }
-            optionValueElement is CwtInt -> {
-                valueType = CwtType.Int
-            }
-            optionValueElement is CwtFloat -> {
-                valueType = CwtType.Float
-            }
-            optionValueElement is CwtString -> {
-                valueType = CwtType.String
-            }
-            optionValueElement is CwtBlock -> {
-                valueType = CwtType.Block
-                optionValueElement.forEachChild f@{
-                    when {
-                        it is CwtOption -> {
-                            val resolved = resolveOption(it, file, fileConfig) ?: return@f
-                            if(optionConfigs == null) optionConfigs = mutableListOf()
-                            optionConfigs!!.asMutable().add(resolved)
-                        }
-                        it is CwtValue -> {
-                            val resolved = resolveOptionValue(it, file, fileConfig)
-                            if(optionConfigs == null) optionConfigs = mutableListOf()
-                            optionConfigs!!.asMutable().add(resolved)
-                        }
-                    }
-                }
-                if(optionConfigs == null) optionConfigs = emptyList()
-            }
-            else -> {
-                valueType = CwtType.Unknown
-            }
-        }
-        
+        val optionConfigs = doGetOptionConfigs(optionValueElement, file, fileConfig)
         return CwtOptionConfig.resolve(key, value, valueType, separatorType, optionConfigs)
     }
     
     private fun resolveOptionValue(optionValueElement: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionValueConfig {
         val value = optionValueElement.value.intern() //intern to optimize memory
-        val valueType: CwtType
-        var optionConfigs: List<CwtOptionMemberConfig<*>>? = null
+        val valueType = optionValueElement.type
+        val optionConfigs = doGetOptionConfigs(optionValueElement, file, fileConfig)
+        return CwtOptionValueConfig.resolve(value, valueType, optionConfigs)
+    }
+    
+    private fun doGetOptionConfigs(optionValueElement: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): List<CwtOptionMemberConfig<*>>? {
+        if(optionValueElement !is CwtBlock) return null
         
-        when {
-            optionValueElement is CwtBoolean -> {
-                valueType = CwtType.Boolean
-            }
-            optionValueElement is CwtInt -> {
-                valueType = CwtType.Int
-            }
-            optionValueElement is CwtFloat -> {
-                valueType = CwtType.Float
-            }
-            optionValueElement is CwtString -> {
-                valueType = CwtType.String
-            }
-            optionValueElement is CwtBlock -> {
-                valueType = CwtType.Block
-                optionValueElement.forEachChild f@{
-                    when {
-                        it is CwtOption -> {
-                            val resolved = resolveOption(it, file, fileConfig) ?: return@f
-                            if(optionConfigs == null) optionConfigs = mutableListOf()
-                            optionConfigs!!.asMutable().add(resolved)
-                        }
-                        it is CwtValue -> {
-                            val resolved = resolveOptionValue(it, file, fileConfig)
-                            if(optionConfigs == null) optionConfigs = mutableListOf()
-                            optionConfigs!!.asMutable().add(resolved)
-                        }
-                    }
+        val optionConfigs = mutableListOf<CwtOptionMemberConfig<*>>()
+        optionValueElement.forEachChild f@{ e ->
+            when {
+                e is CwtOption -> {
+                    val resolved = resolveOption(e, file, fileConfig) ?: return@f
+                    optionConfigs += resolved
                 }
-                if(optionConfigs == null) optionConfigs = emptyList()
-            }
-            else -> {
-                valueType = CwtType.Unknown
+                e is CwtValue -> {
+                    val resolved = resolveOptionValue(e, file, fileConfig)
+                    optionConfigs += resolved
+                }
             }
         }
-        
-        return CwtOptionValueConfig.resolve(value, valueType, optionConfigs)
+        return optionConfigs.optimized() //optimized to optimize memory
     }
     
     private fun <T : CwtMemberConfig<*>> applyInheritOptions(config: T): T {

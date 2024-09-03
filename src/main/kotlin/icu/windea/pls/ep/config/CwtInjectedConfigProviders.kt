@@ -82,6 +82,7 @@ class CwtTechnologyWithLevelInjectedConfigProvider : ExpressionStringBasedCwtInj
     override fun doInject(config: CwtMemberConfig<*>, expressionString: String): List<String>? {
         //如果Stellaris中的脚本表达式至少匹配"<technology.repeatable>"，它也可以匹配"<technology_with_level>"
         //https://github.com/cwtools/cwtools-vscode/issues/58
+        
         if(expressionString !in expressions) return null
         return injectedExpressions
     }
@@ -90,6 +91,7 @@ class CwtTechnologyWithLevelInjectedConfigProvider : ExpressionStringBasedCwtInj
 class CwtInOnActionInjectedConfigProvider: ExpressionStringBasedCwtInjectedConfigProvider() {
     override fun doInject(config: CwtMemberConfig<*>, expressionString: String): List<String>? {
         //如果预定义的on_action可以确定事件类型，直接位于其中的"<event>"需要替换为此事件类型对应的规则
+        
         if(expressionString != "<event>") return null
         var currentConfig = config.memberConfig
         while(true) {

@@ -11,7 +11,6 @@ import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
 import com.intellij.psi.ContributedReferenceHost;
 import icu.windea.pls.lang.psi.ParadoxParameter;
 import com.intellij.psi.PsiListLikeElement;
-import com.intellij.psi.NavigatablePsiElement;
 import icu.windea.pls.lang.psi.ParadoxConditionParameter;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
@@ -147,13 +146,8 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitValue(@NotNull ParadoxScriptValue o) {
-    visitNavigatablePsiElement(o);
-    // visitExpressionElement(o);
+    visitExpressionElement(o);
     // visitMemberElement(o);
-  }
-
-  public void visitNavigatablePsiElement(@NotNull NavigatablePsiElement o) {
-    visitElement(o);
   }
 
   public void visitPsiListLikeElement(@NotNull PsiListLikeElement o) {
@@ -177,6 +171,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitBlockElement(@NotNull ParadoxScriptBlockElement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExpressionElement(@NotNull ParadoxScriptExpressionElement o) {
     visitPsiElement(o);
   }
 

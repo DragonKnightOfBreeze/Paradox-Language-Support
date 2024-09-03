@@ -48,6 +48,18 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
 
   @Override
   @NotNull
+  public List<ParadoxScriptProperty> getPropertyList() {
+    return ParadoxScriptPsiImplUtil.getPropertyList(this);
+  }
+
+  @Override
+  @NotNull
+  public List<ParadoxScriptValue> getValueList() {
+    return ParadoxScriptPsiImplUtil.getValueList(this);
+  }
+
+  @Override
+  @NotNull
   public Icon getIcon(@IconFlags int flags) {
     return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
@@ -66,18 +78,6 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   @Override
   public boolean isNotEmpty() {
     return ParadoxScriptPsiImplUtil.isNotEmpty(this);
-  }
-
-  @Override
-  @NotNull
-  public List<ParadoxScriptProperty> getPropertyList() {
-    return ParadoxScriptPsiImplUtil.getPropertyList(this);
-  }
-
-  @Override
-  @NotNull
-  public List<ParadoxScriptValue> getValueList() {
-    return ParadoxScriptPsiImplUtil.getValueList(this);
   }
 
   @Override

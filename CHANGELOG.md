@@ -2,9 +2,9 @@
 
 ## 1.3.20
 
-* [X] 适用于规则文件的代码补全，也适用于插件或者规则仓库中的CWT文件
+* [X] 适用于规则文件的代码补全，也适用于插件或者规则仓库中的CWT文件 *
 * [X] 完善脚本文件与本地化文件的词法器与解析器，修复存在的一些问题
-* [ ] 完善对本地化命令的支持
+* [X] 完善对本地化命令的支持 *
 * [ ] 完善参数对应的规则的推断与合并逻辑
 * [ ] 其他优化与BUG修复
 
@@ -12,8 +12,8 @@
 
 * [X] Code completion for config files: also for CWT files in plugin or config repositories
 * [X] Optimize lexer and parser for script and localisation fixes, fix some existing problems
-* [ ] Optimize support for localisation commands
-* [ ] Optimize inference and merging logic for configs corresponding to parameters
+* [X] Optimize support for localisation commands
+* [ ] Optimize inference and merging logic for configs of parameters
 * [X] Other optimizations and bug fixes
 
 ## 1.3.19

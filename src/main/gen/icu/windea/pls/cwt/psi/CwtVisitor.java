@@ -5,7 +5,6 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
-import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiComment;
 
 public class CwtVisitor extends PsiElementVisitor {
@@ -57,7 +56,7 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitPropertyKey(@NotNull CwtPropertyKey o) {
     visitPsiLiteralValue(o);
-    // visitNavigatablePsiElement(o);
+    // visitStringExpressionElement(o);
   }
 
   public void visitRootBlock(@NotNull CwtRootBlock o) {
@@ -68,10 +67,12 @@ public class CwtVisitor extends PsiElementVisitor {
     visitValue(o);
     // visitNamedElement(o);
     // visitPsiLiteralValue(o);
+    // visitStringExpressionElement(o);
   }
 
   public void visitValue(@NotNull CwtValue o) {
-    visitMemberElement(o);
+    visitExpressionElement(o);
+    // visitMemberElement(o);
   }
 
   public void visitPsiComment(@NotNull PsiComment o) {
@@ -86,7 +87,7 @@ public class CwtVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitMemberElement(@NotNull CwtMemberElement o) {
+  public void visitExpressionElement(@NotNull CwtExpressionElement o) {
     visitPsiElement(o);
   }
 

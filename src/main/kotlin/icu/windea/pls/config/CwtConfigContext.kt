@@ -8,6 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.*
@@ -47,7 +48,7 @@ class CwtConfigContext(
                 try {
                     //use lock-freeze ConcurrentMap.getOrPut to prevent IDE freezing problems
                     cache.asMap().getOrPut(cachedKey) {
-                        doGetConfigs(matchOptions)
+                        doGetConfigs(matchOptions)?.optimized().orEmpty()
                     }
                 } finally {
                     //use uncached result if there are overridden configs (cannot be cached)
@@ -63,8 +64,8 @@ class CwtConfigContext(
         return provider!!.getCacheKey(this, matchOptions)
     }
     
-    private fun doGetConfigs(matchOptions: Int): List<CwtMemberConfig<*>> {
-        return provider!!.getConfigs(this, matchOptions).orEmpty()
+    private fun doGetConfigs(matchOptions: Int): List<CwtMemberConfig<*>>? {
+        return provider!!.getConfigs(this, matchOptions)
     }
     
     fun skipMissingExpressionCheck(): Boolean {

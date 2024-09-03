@@ -14,8 +14,8 @@ interface CwtOptionConfig : CwtOptionMemberConfig<CwtOption> {
             value: String,
             valueType: CwtType = CwtType.String,
             separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
-            options: List<CwtOptionMemberConfig<*>>? = null,
-        ): CwtOptionConfig = doResolve(key, value, valueType, separatorType, options)
+            optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
+        ): CwtOptionConfig = doResolve(key, value, valueType, separatorType, optionConfigs)
     }
 }
 

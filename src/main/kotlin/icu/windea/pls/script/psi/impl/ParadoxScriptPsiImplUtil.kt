@@ -108,11 +108,6 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptScriptedVariable): ParadoxType? {
-        return element.scriptedVariableValue?.type
-    }
-    
-    @JvmStatic
     fun getPresentation(element: ParadoxScriptScriptedVariable): ItemPresentation {
         return ParadoxScriptScriptedVariablePresentation(element)
     }
@@ -211,24 +206,6 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptProperty): ParadoxType? {
-        return element.propertyValue?.type
-    }
-    
-    @JvmStatic
-    fun getExpression(element: ParadoxScriptProperty): String {
-        val keyExpression = element.propertyKey.expression
-        val valueExpression = element.propertyValue?.expression ?: PlsConstants.unresolvedString
-        return "$keyExpression = $valueExpression"
-    }
-    
-    @JvmStatic
-    fun getConfigExpression(element: ParadoxScriptProperty): String? {
-        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() as? CwtPropertyConfig ?: return null
-        return "${config.key} = ${config.value}"
-    }
-    
-    @JvmStatic
     fun getPresentation(element: ParadoxScriptProperty): ItemPresentation {
         val definitionInfo = element.definitionInfo
         if(definitionInfo != null) return ParadoxDefinitionPresentation(element, definitionInfo)
@@ -272,22 +249,6 @@ object ParadoxScriptPsiImplUtil {
     }
     
     @JvmStatic
-    fun getType(element: ParadoxScriptPropertyKey): ParadoxType {
-        return ParadoxTypeManager.resolve(element.value)
-    }
-    
-    @JvmStatic
-    fun getExpression(element: ParadoxScriptPropertyKey): String {
-        return element.text
-    }
-    
-    @JvmStatic
-    fun getConfigExpression(element: ParadoxScriptPropertyKey): String? {
-        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() as? CwtPropertyConfig ?: return null
-        return config.key
-    }
-    
-    @JvmStatic
     fun toString(element: ParadoxScriptPropertyKey): String {
         return "ParadoxScriptPropertyKey(value=${element.value})"
     }
@@ -326,21 +287,6 @@ object ParadoxScriptPsiImplUtil {
             CachedValueProvider.Result.create(value, element)
         }
     }
-    
-    @JvmStatic
-    fun getType(element: ParadoxScriptScriptedVariableReference): ParadoxType {
-        return element.reference?.resolve()?.type ?: ParadoxType.Unknown
-    }
-    
-    @JvmStatic
-    fun getExpression(element: ParadoxScriptScriptedVariableReference): String {
-        return element.text
-        //return buildString {
-        //    append(element.text)
-        //    val expression = element.referenceValue?.expression
-        //    if(expression != null) append("(= ").append(expression).append(")")
-        //}
-    }
     //endregion
     
     //region ParadoxScriptValue
@@ -364,33 +310,12 @@ object ParadoxScriptPsiImplUtil {
         val newElement = ParadoxScriptElementFactory.createValue(element.project, value)
         return element.replace(newElement).cast()
     }
-    
-    @JvmStatic
-    fun getType(element: ParadoxScriptValue): ParadoxType {
-        return ParadoxType.Unknown
-    }
-    
-    @JvmStatic
-    fun getExpression(element: ParadoxScriptValue): String {
-        return element.text
-    }
-    
-    @JvmStatic
-    fun getConfigExpression(element: ParadoxScriptValue): String? {
-        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() as? CwtValueConfig ?: return null
-        return config.value
-    }
     //endregion
     
     //region ParadoxScriptBoolean
     @JvmStatic
     fun getBooleanValue(element: ParadoxScriptBoolean): Boolean {
         return element.value.toBooleanYesNo()
-    }
-    
-    @JvmStatic
-    fun getType(element: ParadoxScriptBoolean): ParadoxType {
-        return ParadoxType.Boolean
     }
     //endregion
     
@@ -400,21 +325,12 @@ object ParadoxScriptPsiImplUtil {
         return element.value.toIntOrNull() ?: 0
     }
     
-    @JvmStatic
-    fun getType(element: ParadoxScriptInt): ParadoxType {
-        return ParadoxType.Int
-    }
     //endregion
     
     //region ParadoxScriptFloat
     @JvmStatic
     fun getFloatValue(element: ParadoxScriptFloat): Float {
         return element.value.toFloatOrNull() ?: 0f
-    }
-    
-    @JvmStatic
-    fun getType(element: ParadoxScriptFloat): ParadoxType {
-        return ParadoxType.Float
     }
     //endregion
     
@@ -439,11 +355,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getStringValue(element: ParadoxScriptString): String {
         return element.value
-    }
-    
-    @JvmStatic
-    fun getType(element: ParadoxScriptString): ParadoxType {
-        return ParadoxType.String
     }
     
     @JvmStatic
@@ -478,11 +389,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun setColor(element: ParadoxScriptColor, color: Color) {
         colorSupport.setColor(element, color)
-    }
-    
-    @JvmStatic
-    fun getType(element: ParadoxScriptColor): ParadoxType {
-        return ParadoxType.Color
     }
     //endregion
     
@@ -542,16 +448,6 @@ object ParadoxScriptPsiImplUtil {
             || element is ParadoxScriptProperty
             || element is ParadoxScriptValue
             || element is ParadoxScriptParameterCondition
-    }
-    
-    @JvmStatic
-    fun getType(element: ParadoxScriptBlock): ParadoxType {
-        return ParadoxType.Block
-    }
-    
-    @JvmStatic
-    fun getExpression(element: ParadoxScriptBlock): String {
-        return PlsConstants.Folders.block
     }
     //endregion
     
@@ -696,31 +592,11 @@ object ParadoxScriptPsiImplUtil {
     fun getValue(element: ParadoxScriptInlineMath): String {
         return PlsConstants.Folders.inlineMath
     }
-    
-    @JvmStatic
-    fun getType(element: ParadoxScriptInlineMath): ParadoxType {
-        return ParadoxType.InlineMath
-    }
-    
-    @JvmStatic
-    fun getExpression(element: ParadoxScriptInlineMath): String {
-        return PlsConstants.Folders.inlineMath
-    }
     //endregion
     
     //region ParadoxScriptInlineMathNumber
     @JvmStatic
     fun getValue(element: ParadoxScriptInlineMathNumber): String {
-        return element.text
-    }
-    
-    @JvmStatic
-    fun getType(element: ParadoxScriptInlineMathNumber): ParadoxType {
-        return ParadoxTypeManager.resolve(element.text)
-    }
-    
-    @JvmStatic
-    fun getExpression(element: ParadoxScriptInlineMathNumber): String {
         return element.text
     }
     //endregion
@@ -757,16 +633,6 @@ object ParadoxScriptPsiImplUtil {
             }
             CachedValueProvider.Result.create(value, element)
         }
-    }
-    
-    @JvmStatic
-    fun getType(element: ParadoxScriptInlineMathScriptedVariableReference): ParadoxType {
-        return element.reference?.resolve()?.type ?: ParadoxType.Unknown
-    }
-    
-    @JvmStatic
-    fun getExpression(element: ParadoxScriptInlineMathScriptedVariableReference): String {
-        return element.text
     }
     //endregion
     
@@ -853,6 +719,60 @@ object ParadoxScriptPsiImplUtil {
         return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
     }
     //endregion
+    
+    @JvmStatic
+    fun getType(element: PsiElement): ParadoxType {
+        return when(element) {
+            is ParadoxScriptScriptedVariable -> element.scriptedVariableValue?.type ?: ParadoxType.Unknown
+            is ParadoxScriptProperty -> element.propertyValue?.type ?: ParadoxType.Unknown
+            is ParadoxScriptPropertyKey -> ParadoxTypeManager.resolve(element.value)
+            is ParadoxScriptScriptedVariableReference -> element.reference?.resolve()?.type ?: ParadoxType.Unknown
+            is ParadoxScriptBoolean -> ParadoxType.Boolean
+            is ParadoxScriptInt -> ParadoxType.Int
+            is ParadoxScriptFloat -> ParadoxType.Float
+            is ParadoxScriptString -> ParadoxType.String
+            is ParadoxScriptColor -> ParadoxType.Color
+            is ParadoxScriptBlock -> ParadoxType.Block
+            is ParadoxScriptInlineMath -> ParadoxType.InlineMath
+            is ParadoxScriptInlineMathNumber -> ParadoxTypeManager.resolve(element.text)
+            is ParadoxScriptInlineMathScriptedVariableReference -> element.reference?.resolve()?.type ?: ParadoxType.Unknown
+            else -> ParadoxType.Unknown
+        }
+    }
+    
+    @JvmStatic
+    fun getExpression(element: PsiElement): String {
+        return when(element) {
+            is ParadoxScriptProperty -> {
+                val keyExpression = element.propertyKey.expression
+                val valueExpression = element.propertyValue?.expression ?: PlsConstants.unresolvedString
+                "$keyExpression = $valueExpression"
+            }
+            is ParadoxScriptBlock -> PlsConstants.Folders.block
+            is ParadoxScriptInlineMath -> PlsConstants.Folders.inlineMath
+            else -> element.text
+        }
+    }
+    
+    @JvmStatic
+    fun getConfigExpression(element: PsiElement): String? {
+        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
+        return when(element) {
+            is ParadoxScriptProperty -> {
+                if(config !is CwtPropertyConfig) return null
+                "${config.key} = ${config.value}"
+            }
+            is ParadoxScriptPropertyKey -> {
+                if(config !is CwtPropertyConfig) return null
+                config.key
+            }
+            is ParadoxScriptValue -> {
+                if(config !is CwtValueConfig) return null
+                config.value
+            }
+            else -> null
+        }
+    }
     
     @JvmStatic
     fun getReference(element: PsiElement): PsiReference? {

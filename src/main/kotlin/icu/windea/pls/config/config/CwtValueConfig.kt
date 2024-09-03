@@ -22,19 +22,19 @@ fun CwtValueConfig.Companion.resolve(
     value: String,
     valueType: CwtType = CwtType.String,
     configs: List<CwtMemberConfig<*>>? = null,
-    options: List<CwtOptionMemberConfig<*>>? = null,
+    optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null,
     propertyConfig: CwtPropertyConfig? = null
 ): CwtValueConfig {
     return if(configs != null) {
-        if(options != null || documentation != null) {
-            CwtValueConfigImpl1(pointer, configGroup, value, valueType, configs, options, documentation, propertyConfig)
+        if(optionConfigs != null || documentation != null) {
+            CwtValueConfigImpl1(pointer, configGroup, value, valueType, configs, optionConfigs, documentation, propertyConfig)
         } else {
             CwtValueConfigImpl2(pointer, configGroup, value, valueType, configs, propertyConfig)
         }
     } else {
-        if(options != null || documentation != null) {
-            CwtValueConfigImpl3(pointer, configGroup, value, valueType, options, documentation, propertyConfig)
+        if(optionConfigs != null || documentation != null) {
+            CwtValueConfigImpl3(pointer, configGroup, value, valueType, optionConfigs, documentation, propertyConfig)
         } else {
             CwtValueConfigImpl4(pointer, configGroup, value, valueType, propertyConfig)
         }
@@ -68,11 +68,11 @@ fun CwtValueConfig.copy(
     value: String = this.value,
     valueType: CwtType = this.valueType,
     configs: List<CwtMemberConfig<*>>? = this.configs,
-    options: List<CwtOptionMemberConfig<*>>? = this.optionConfigs,
+    optionConfigs: List<CwtOptionMemberConfig<*>>? = this.optionConfigs,
     documentation: String? = this.documentation,
     propertyConfig: CwtPropertyConfig? = this.propertyConfig,
 ): CwtValueConfig {
-    return CwtValueConfig.resolve(pointer, this.configGroup, value, valueType, configs, options, documentation, propertyConfig)
+    return CwtValueConfig.resolve(pointer, this.configGroup, value, valueType, configs, optionConfigs, documentation, propertyConfig)
 }
 
 class CwtPropertyPointer(

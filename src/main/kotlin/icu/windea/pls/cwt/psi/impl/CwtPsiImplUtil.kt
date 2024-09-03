@@ -14,6 +14,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.navigation.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import javax.swing.*
 
@@ -300,6 +301,24 @@ object CwtPsiImplUtil {
         return OPTION_COMMENT
     }
     //endregion
+    
+    @JvmStatic
+    fun getType(element: CwtExpressionElement): CwtType {
+        return when(element) {
+            is CwtPropertyKey -> CwtType.String
+            is CwtBoolean -> CwtType.Boolean
+            is CwtInt -> CwtType.Int
+            is CwtFloat -> CwtType.Float
+            is CwtString -> CwtType.String
+            is CwtBlock -> CwtType.Block
+            else -> CwtType.Unknown
+        }
+    }
+    
+    @JvmStatic
+    fun getConfigType(element: PsiElement): CwtConfigType? {
+        return CwtConfigManager.getConfigType(element)
+    }
     
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {

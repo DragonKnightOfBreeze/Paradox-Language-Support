@@ -66,40 +66,41 @@ property ::= property_key property_separator value {
   ]
 }
 property_key ::= PROPERTY_KEY_TOKEN {
-  methods=[getIcon getName getValue setValue]
+  methods=[getIcon getName getValue setValue getType getConfigType]
   implements=[
     "com.intellij.psi.PsiLiteralValue"
-    "com.intellij.psi.NavigatablePsiElement"
+    "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
 }
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
 
 value ::= boolean | int | float | string | block {
   implements=[
+    "icu.windea.pls.cwt.psi.CwtExpressionElement"
     "icu.windea.pls.cwt.psi.CwtMemberElement"
   ]
-  methods=[getIcon getName getValue setValue]
+  methods=[getIcon getName getValue setValue getType getConfigType]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getBooleanValue]
+  methods=[getBooleanValue getType getConfigType]
 }
 int ::= INT_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getIntValue]
+  methods=[getIntValue getType getConfigType]
 }
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getFloatValue]
+  methods=[getFloatValue getType getConfigType]
 }
 string ::= STRING_TOKEN {
   extends=value
@@ -107,15 +108,18 @@ string ::= STRING_TOKEN {
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "com.intellij.psi.PsiLiteralValue"
+    "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
-  methods=[getIcon getName setName getNameIdentifier getValue setValue getStringValue]
+  methods=[getIcon getName setName getNameIdentifier getValue setValue getStringValue getType getConfigType]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
   extends=value
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
-  implements=["icu.windea.pls.cwt.psi.CwtBlockElement"]
-  methods=[getIcon getName setName getValue setValue isEmpty isNotEmpty getComponents]
+  implements=[
+    "icu.windea.pls.cwt.psi.CwtBlockElement"
+  ]
+  methods=[getIcon getName setName getValue setValue isEmpty isNotEmpty getComponents getType getConfigType]
 }
 private block_item ::= comment | property | option | value{
   recoverWhile="#auto"

@@ -7,9 +7,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.config.CwtConfigType;
+import icu.windea.pls.model.CwtType;
 import javax.swing.Icon;
 
-public interface CwtValue extends CwtMemberElement {
+public interface CwtValue extends CwtExpressionElement, CwtMemberElement {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -22,6 +24,12 @@ public interface CwtValue extends CwtMemberElement {
 
   @NotNull
   CwtValue setValue(@NotNull String value);
+
+  @NotNull
+  CwtType getType();
+
+  @Nullable
+  CwtConfigType getConfigType();
 
   @NotNull
   ItemPresentation getPresentation();

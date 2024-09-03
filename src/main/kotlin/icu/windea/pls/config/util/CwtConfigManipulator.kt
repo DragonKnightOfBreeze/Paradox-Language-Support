@@ -85,7 +85,7 @@ object CwtConfigManipulator {
             value = PlsConstants.Folders.block,
             valueType = CwtType.Block,
             configs = configs,
-            options = config?.optionConfigs,
+            optionConfigs = config?.optionConfigs,
             documentation = config?.documentation
         )
     }
@@ -137,12 +137,12 @@ object CwtConfigManipulator {
                 return when(c1) {
                     is CwtPropertyConfig -> c1.copy(
                         pointer = emptyPointer(),
-                        options = mergeOptions(c1.optionConfigs, c2.optionConfigs),
+                        optionConfigs = mergeOptions(c1.optionConfigs, c2.optionConfigs),
                         documentation = mergeDocumentations(c1.documentation, c2.documentation)
                     )
                     is CwtValueConfig -> c1.copy(
                         pointer = emptyPointer(),
-                        options = mergeOptions(c1.optionConfigs, c2.optionConfigs),
+                        optionConfigs = mergeOptions(c1.optionConfigs, c2.optionConfigs),
                         documentation = mergeDocumentations(c1.documentation, c2.documentation)
                     )
                 }
@@ -161,7 +161,7 @@ object CwtConfigManipulator {
             pointer = emptyPointer(),
             configGroup = c1.configGroup,
             value = c1.value,
-            options = mergeOptions(c1.optionConfigs, c2.optionConfigs),
+            optionConfigs = mergeOptions(c1.optionConfigs, c2.optionConfigs),
             documentation = mergeDocumentations(c1.documentation, c2.documentation)
         )
     }
