@@ -114,8 +114,8 @@ private class CwtPropertyConfigImpl1(
     options: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null,
 ) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueType, separatorType) {
-    override val configs = configs?.toMutableIfNotEmptyInActual()
-    override val optionConfigs = options?.toMutableIfNotEmptyInActual()
+    override val configs = configs?.optimized()
+    override val optionConfigs = options?.optimized()
     override val documentation = documentation
 }
 
@@ -129,7 +129,7 @@ private class CwtPropertyConfigImpl2(
     separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
     configs: List<CwtMemberConfig<*>>? = null,
 ) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueType, separatorType) {
-    override val configs = configs?.toMutableIfNotEmptyInActual()
+    override val configs = configs?.optimized()
     override val optionConfigs get() = null
     override val documentation get() = null
 }
@@ -146,7 +146,7 @@ private class CwtPropertyConfigImpl3(
     documentation: String? = null,
 ) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueType, separatorType) {
     override val configs: List<CwtMemberConfig<*>>? get() = if(valueType == CwtType.Block) emptyList() else null
-    override val optionConfigs = options?.toMutableIfNotEmptyInActual()
+    override val optionConfigs = options?.optimized()
     override val documentation = documentation
 }
 
@@ -184,7 +184,7 @@ private class CwtPropertyConfigDelegate1(
     delegate: CwtPropertyConfig,
     configs: List<CwtMemberConfig<*>>? = null,
 ) : CwtPropertyConfigDelegate(delegate) {
-    override val configs = configs?.toMutableIfNotEmptyInActual()
+    override val configs = configs?.optimized()
 }
 
 //12 + 4 * 4 = 28 -> 32
@@ -205,7 +205,7 @@ private class CwtPropertyConfigDelegateWith(
 }
 
 private fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
-    //this function should be enough fast because there is no pointers to be created
+    //this function should be enough fast because there are no pointers to be created
     val resolvedPointer = resolved().pointer
     val valuePointer = when {
         resolvedPointer is CwtPropertyPointer -> resolvedPointer.valuePointer

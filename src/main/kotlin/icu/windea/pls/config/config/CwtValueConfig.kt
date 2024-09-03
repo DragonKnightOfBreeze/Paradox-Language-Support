@@ -111,8 +111,8 @@ private class CwtValueConfigImpl1(
     documentation: String? = null,
     propertyConfig: CwtPropertyConfig? = null,
 ) : CwtValueConfigImpl(pointer, configGroup, value, valueType, propertyConfig) {
-    override val configs = configs?.toMutableIfNotEmptyInActual()
-    override val optionConfigs = options?.toMutableIfNotEmptyInActual()
+    override val configs = configs?.optimized()
+    override val optionConfigs = options?.optimized()
     override val documentation = documentation
 }
 
@@ -125,7 +125,7 @@ private class CwtValueConfigImpl2(
     configs: List<CwtMemberConfig<*>>? = null,
     propertyConfig: CwtPropertyConfig? = null,
 ) : CwtValueConfigImpl(pointer, configGroup, value, valueType, propertyConfig) {
-    override val configs = configs?.toMutableIfNotEmptyInActual()
+    override val configs = configs?.optimized()
     override val optionConfigs get() = null
     override val documentation get() = null
 }
@@ -141,7 +141,7 @@ private class CwtValueConfigImpl3(
     propertyConfig: CwtPropertyConfig? = null,
 ) : CwtValueConfigImpl(pointer, configGroup, value, valueType, propertyConfig) {
     override val configs: List<CwtMemberConfig<*>>? get() = if(valueType == CwtType.Block) emptyList() else null
-    override val optionConfigs = options?.toMutableIfNotEmptyInActual()
+    override val optionConfigs = options?.optimized()
     override val documentation = documentation
 }
 
@@ -174,7 +174,7 @@ private class CwtValueConfigDelegate1(
     delegate: CwtValueConfig,
     configs: List<CwtMemberConfig<*>>? = null,
 ) : CwtValueConfigDelegate(delegate) {
-    override val configs = configs?.toMutableIfNotEmptyInActual()
+    override val configs = configs?.optimized()
 }
 
 //12 + 3 * 4 = 24 -> 24
