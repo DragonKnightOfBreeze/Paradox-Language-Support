@@ -23,15 +23,15 @@ interface CwtOptionConfig : CwtOptionMemberConfig<CwtOption> {
 
 private val cache = ConcurrentHashMap<String, CwtOptionConfig>()
 
-private fun doResolve(key: String, value: String, valueType: CwtType, separatorType: CwtSeparatorType, options: List<CwtOptionMemberConfig<*>>?): CwtOptionConfig {
+private fun doResolve(key: String, value: String, valueType: CwtType, separatorType: CwtSeparatorType, optionConfigs: List<CwtOptionMemberConfig<*>>?): CwtOptionConfig {
     //use cache if possible to optimize memory
-    if(options.isNullOrEmpty()) {
+    if(optionConfigs.isNullOrEmpty()) {
         val cacheKey = "${valueType.ordinal}#${separatorType.ordinal}#${key}#${value}"
         return cache.getOrPut(cacheKey) {
-            CwtOptionConfigImpl(key, value, valueType, separatorType, options)
+            CwtOptionConfigImpl(key, value, valueType, separatorType, optionConfigs)
         }
     }
-    return CwtOptionConfigImpl(key, value, valueType, separatorType, options)
+    return CwtOptionConfigImpl(key, value, valueType, separatorType, optionConfigs)
 }
 
 private class CwtOptionConfigImpl(

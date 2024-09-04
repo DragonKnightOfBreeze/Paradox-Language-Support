@@ -24,15 +24,15 @@ val CwtOptionValueConfig.stringValue: String? get() = if(valueType == CwtType.St
 
 private val cache = ConcurrentHashMap<String, CwtOptionValueConfig>()
 
-private fun doResolve(value: String, valueType: CwtType, options: List<CwtOptionMemberConfig<*>>?): CwtOptionValueConfig {
+private fun doResolve(value: String, valueType: CwtType, optionConfigs: List<CwtOptionMemberConfig<*>>?): CwtOptionValueConfig {
     //use cache if possible to optimize memory
-    if(options.isNullOrEmpty()) {
+    if(optionConfigs.isNullOrEmpty()) {
         val cacheKey = "${valueType.ordinal}#${value}"
         return cache.getOrPut(cacheKey) {
-            CwtOptionValueConfigImpl(value, valueType, options)
+            CwtOptionValueConfigImpl(value, valueType, optionConfigs)
         }
     }
-    return CwtOptionValueConfigImpl(value, valueType, options)
+    return CwtOptionValueConfigImpl(value, valueType, optionConfigs)
 }
 
 private class CwtOptionValueConfigImpl(

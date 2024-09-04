@@ -6,7 +6,6 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
@@ -112,11 +111,11 @@ private class CwtPropertyConfigImpl1(
     valueType: CwtType = CwtType.String,
     separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
     configs: List<CwtMemberConfig<*>>? = null,
-    options: List<CwtOptionMemberConfig<*>>? = null,
+    optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null,
 ) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueType, separatorType) {
-    override val configs = configs?.optimized()
-    override val optionConfigs = options?.optimized()
+    override val configs = configs
+    override val optionConfigs = optionConfigs
     override val documentation = documentation
 }
 
@@ -130,7 +129,7 @@ private class CwtPropertyConfigImpl2(
     separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
     configs: List<CwtMemberConfig<*>>? = null,
 ) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueType, separatorType) {
-    override val configs = configs?.optimized()
+    override val configs = configs
     override val optionConfigs get() = null
     override val documentation get() = null
 }
@@ -143,11 +142,11 @@ private class CwtPropertyConfigImpl3(
     value: String,
     valueType: CwtType = CwtType.String,
     separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
-    options: List<CwtOptionMemberConfig<*>>? = null,
+    optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null,
 ) : CwtPropertyConfigImpl(pointer, configGroup, key, value, valueType, separatorType) {
     override val configs: List<CwtMemberConfig<*>>? get() = if(valueType == CwtType.Block) emptyList() else null
-    override val optionConfigs = options?.optimized()
+    override val optionConfigs = optionConfigs
     override val documentation = documentation
 }
 
@@ -185,7 +184,7 @@ private class CwtPropertyConfigDelegate1(
     delegate: CwtPropertyConfig,
     configs: List<CwtMemberConfig<*>>? = null,
 ) : CwtPropertyConfigDelegate(delegate) {
-    override val configs = configs?.optimized()
+    override val configs = configs
 }
 
 //12 + 4 * 4 = 28 -> 32

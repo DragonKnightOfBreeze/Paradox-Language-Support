@@ -1,6 +1,5 @@
 types = {
 	type[mod_descriptor] = {
-		path = "game"
 		path_file = descriptor.mod
 		type_per_file = yes
 		name_field = name

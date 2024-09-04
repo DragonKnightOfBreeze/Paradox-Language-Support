@@ -107,12 +107,12 @@ private class CwtValueConfigImpl1(
     value: String,
     valueType: CwtType = CwtType.String,
     configs: List<CwtMemberConfig<*>>? = null,
-    options: List<CwtOptionMemberConfig<*>>? = null,
+    optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null,
     propertyConfig: CwtPropertyConfig? = null,
 ) : CwtValueConfigImpl(pointer, configGroup, value, valueType, propertyConfig) {
-    override val configs = configs?.optimized()
-    override val optionConfigs = options?.optimized()
+    override val configs = configs
+    override val optionConfigs = optionConfigs
     override val documentation = documentation
 }
 
@@ -125,7 +125,7 @@ private class CwtValueConfigImpl2(
     configs: List<CwtMemberConfig<*>>? = null,
     propertyConfig: CwtPropertyConfig? = null,
 ) : CwtValueConfigImpl(pointer, configGroup, value, valueType, propertyConfig) {
-    override val configs = configs?.optimized()
+    override val configs = configs
     override val optionConfigs get() = null
     override val documentation get() = null
 }
@@ -136,12 +136,12 @@ private class CwtValueConfigImpl3(
     configGroup: CwtConfigGroup,
     value: String,
     valueType: CwtType = CwtType.String,
-    options: List<CwtOptionMemberConfig<*>>? = null,
+    optionConfigs: List<CwtOptionMemberConfig<*>>? = null,
     documentation: String? = null,
     propertyConfig: CwtPropertyConfig? = null,
 ) : CwtValueConfigImpl(pointer, configGroup, value, valueType, propertyConfig) {
     override val configs: List<CwtMemberConfig<*>>? get() = if(valueType == CwtType.Block) emptyList() else null
-    override val optionConfigs = options?.optimized()
+    override val optionConfigs = optionConfigs
     override val documentation = documentation
 }
 
@@ -174,7 +174,7 @@ private class CwtValueConfigDelegate1(
     delegate: CwtValueConfig,
     configs: List<CwtMemberConfig<*>>? = null,
 ) : CwtValueConfigDelegate(delegate) {
-    override val configs = configs?.optimized()
+    override val configs = configs
 }
 
 //12 + 3 * 4 = 24 -> 24
@@ -188,8 +188,9 @@ private class CwtValueConfigDelegate2(
 private class CwtValueConfigDelegateWith(
     delegate: CwtValueConfig,
     override val value: String,
-    //configs should be always null here
 ) : CwtValueConfigDelegate(delegate) {
+    //configs should be always null here
+    
     override fun toString(): String = value
 }
 

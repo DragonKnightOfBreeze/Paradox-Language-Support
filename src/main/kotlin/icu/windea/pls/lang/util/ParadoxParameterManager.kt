@@ -269,34 +269,34 @@ object ParadoxParameterManager {
     }
     
     private fun doOptimizeContextConfigsByLocation(parameterElement: ParadoxParameterElement, contextConfigs: List<CwtMemberConfig<*>>) {
-        val parent = parameterElement.parent?.parent
-        contextConfigs.forEach f1@{
-            val configs = it.configs
-            if(configs.isNullOrEmpty()) return@f1
-            if(configs !is MutableList) return@f1
-            val keysToDistinct = mutableSetOf<String>()
-            val opConfigs = mutableListOf<CwtMemberConfig<*>>()
-            configs.forEach f2@{ config ->
-                when(config) {
-                    is CwtPropertyConfig -> {
-                        if(parent is ParadoxScriptPropertyKey) {
-                            if(config.isBlock) return@f2
-                            if(!keysToDistinct.add(config.key)) return@f2
-                            val opConfig = CwtValueConfig.resolve(emptyPointer(), config.configGroup, config.key)
-                            opConfigs += opConfig
-                        } else {
-                            opConfigs += config
-                        }
-                    }
-                    is CwtValueConfig -> {
-                        if(!keysToDistinct.add(config.value)) return@f2
-                        opConfigs += config
-                    }
-                }
-            }
-            configs.clear()
-            configs += opConfigs
-        }
+        //val parent = parameterElement.parent?.parent
+        //contextConfigs.forEach f1@{
+        //    val configs = it.configs
+        //    if(configs.isNullOrEmpty()) return@f1
+        //    if(configs !is MutableList) return@f1
+        //    val keysToDistinct = mutableSetOf<String>()
+        //    val opConfigs = mutableListOf<CwtMemberConfig<*>>()
+        //    configs.forEach f2@{ config ->
+        //        when(config) {
+        //            is CwtPropertyConfig -> {
+        //                if(parent is ParadoxScriptPropertyKey) {
+        //                    if(config.isBlock) return@f2
+        //                    if(!keysToDistinct.add(config.key)) return@f2
+        //                    val opConfig = CwtValueConfig.resolve(emptyPointer(), config.configGroup, config.key)
+        //                    opConfigs += opConfig
+        //                } else {
+        //                    opConfigs += config
+        //                }
+        //            }
+        //            is CwtValueConfig -> {
+        //                if(!keysToDistinct.add(config.value)) return@f2
+        //                opConfigs += config
+        //            }
+        //        }
+        //    }
+        //    configs.clear()
+        //    configs += opConfigs
+        //}
     }
     
     private fun doGetInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
