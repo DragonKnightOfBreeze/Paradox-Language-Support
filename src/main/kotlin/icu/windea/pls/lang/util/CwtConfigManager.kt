@@ -292,10 +292,10 @@ object CwtConfigManager {
     }
     
     fun getFilePathsForPriority(config: CwtConfig<*>): Set<String> {
-        return config.getOrPutUserData(Keys.filePathsForPriority) { doGetFilePathsFOrPriority(config) }
+        return config.getOrPutUserData(Keys.filePathsForPriority) { doGetFilePathsForPriority(config) }
     }
     
-    private fun doGetFilePathsFOrPriority(config: CwtConfig<*>): TreeSet<String> {
+    private fun doGetFilePathsForPriority(config: CwtConfig<*>): TreeSet<String> {
         var pathPatterns: Set<String> = emptySet()
         var paths: Set<String> = emptySet()
         var pathFile: String? = null
