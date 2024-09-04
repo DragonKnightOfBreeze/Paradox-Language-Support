@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.cwt.psi.*
 
 interface CwtSystemScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
@@ -29,7 +30,7 @@ private class CwtSystemScopeConfigImpl(
     override val baseId: String,
     override val description: String,
     override val name: String
-) : CwtSystemScopeConfig {
+) : UserDataHolderBase(), CwtSystemScopeConfig {
     override fun equals(other: Any?): Boolean {
         return this === other || other is CwtSystemScopeConfig && id == other.id
     }

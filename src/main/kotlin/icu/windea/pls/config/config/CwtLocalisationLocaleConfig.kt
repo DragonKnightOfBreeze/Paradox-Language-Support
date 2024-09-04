@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 
@@ -32,7 +33,7 @@ private class CwtLocalisationLocaleConfigImpl(
     override val id: String,
     override val description: String,
     override val codes: List<String>
-) : CwtLocalisationLocaleConfig {
+) : UserDataHolderBase(), CwtLocalisationLocaleConfig {
     override val text = buildString {
         append(id)
         if(description.isNotEmpty()) append(" (").append(description).append(")")
@@ -51,7 +52,7 @@ private class CwtLocalisationLocaleConfigImpl(
     }
 }
 
-private object AutoCwtLocalisationLocaleConfig: CwtLocalisationLocaleConfig {
+private object AutoCwtLocalisationLocaleConfig: UserDataHolderBase(), CwtLocalisationLocaleConfig {
     override val config: CwtPropertyConfig get() = throw UnsupportedOperationException()
     override val id: String = "auto"
     override val description: String get() = PlsBundle.message("locale.auto")

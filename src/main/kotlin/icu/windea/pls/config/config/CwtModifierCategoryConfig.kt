@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.util.*
@@ -41,4 +42,4 @@ private class CwtModifierCategoryConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
     override val supportedScopes: Set<String>
-) : CwtModifierCategoryConfig
+) : UserDataHolderBase(), CwtModifierCategoryConfig

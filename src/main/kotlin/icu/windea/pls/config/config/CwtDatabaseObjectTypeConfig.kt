@@ -1,8 +1,8 @@
 package icu.windea.pls.config.config
 
+import com.intellij.openapi.util.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.util.*
-
 
 /**
  * @property name string
@@ -42,4 +42,4 @@ private class CwtDatabaseObjectTypeConfigImpl(
     override val name: String,
     override val type: String,
     override val swapType: String?
-) : CwtDatabaseObjectTypeConfig
+) : UserDataHolderBase(), CwtDatabaseObjectTypeConfig

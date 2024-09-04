@@ -2,6 +2,7 @@ package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
@@ -206,7 +207,7 @@ private class CwtPropertyConfigDelegateWith(
 
 private fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
     //this function should be enough fast because there are no pointers to be created
-    val resolvedPointer = resolved().pointer
+    val resolvedPointer = this.resolved().pointer
     val valuePointer = when {
         resolvedPointer is CwtPropertyPointer -> resolvedPointer.valuePointer
         else -> resolvedPointer.element?.propertyValue?.createPointer()

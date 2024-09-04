@@ -19,6 +19,28 @@ import icu.windea.pls.model.*
 val Project.configGroupLibrary: CwtConfigGroupLibrary
     get() = this.getOrPutUserData(PlsKeys.configGroupLibrary) { CwtConfigGroupLibrary(this) }
 
+/**
+ * 解析为被内联的CWT规则，或者返回自身。
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T: CwtConfig<*>> T.resolved(): T {
+    return when {
+        this is CwtMemberConfig<*> -> inlineableConfig?.takeIf { it !is CwtSingleAliasConfig }?.config as? T ?: this
+        else -> this
+    }
+}
+
+/**
+ * 解析为被内联的规则，或者返回null。
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T: CwtConfig<*>> T.resolvedOrNull(): T? {
+    return when {
+        this is CwtMemberConfig<*> -> inlineableConfig?.takeIf { it !is CwtSingleAliasConfig }?.config as? T
+        else -> this
+    }
+}
+
 inline fun CwtMemberConfig<*>.processParent(inline: Boolean = false, processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
     var parent = this.parentConfig
     while(parent != null) {

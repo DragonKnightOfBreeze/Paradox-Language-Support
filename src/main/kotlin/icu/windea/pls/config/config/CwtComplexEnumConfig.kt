@@ -31,8 +31,6 @@ interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     val nameConfig: CwtPropertyConfig
     val enumNameConfigs: List<CwtMemberConfig<*>>
     
-    object Keys: KeyRegistry()
-    
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig): CwtComplexEnumConfig? = doResolve(config)
     }

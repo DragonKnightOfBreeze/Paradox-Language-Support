@@ -60,6 +60,33 @@ interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Us
     }
 }
 
+//Accessors
+
+val CwtTypeConfig.possibleRootKeys: Set<String> by createKeyDelegate(CwtTypeConfig.Keys) {
+    caseInsensitiveStringSet().apply {
+        typeKeyFilter?.takeIfTrue()?.let { addAll(it) }
+        subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeIfTrue()?.let { addAll(it) } }
+    }
+}
+
+val CwtTypeConfig.possibleSwappedTypeRootKeys: Set<String> by createKeyDelegate(CwtTypeConfig.Keys) {
+    caseInsensitiveStringSet().apply {
+        configGroup.swappedTypes.values.forEach f@{ swappedTypeConfig ->
+            val baseType = swappedTypeConfig.baseType ?: return@f
+            val baseTypeName = baseType.substringBefore('.')
+            if(baseTypeName != name) return@f
+            val rootKey = swappedTypeConfig.typeKeyFilter?.takeIfTrue()?.singleOrNull() ?: return@f
+            add(rootKey)
+        }
+    }
+}
+
+val CwtTypeConfig.possibleNestedTypeRootKeys: Set<String> by createKeyDelegate(CwtTypeConfig.Keys) {
+    caseInsensitiveStringSet().apply {
+        addAll(possibleSwappedTypeRootKeys)
+    }
+}
+
 //Implementations (interned)
 
 private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {

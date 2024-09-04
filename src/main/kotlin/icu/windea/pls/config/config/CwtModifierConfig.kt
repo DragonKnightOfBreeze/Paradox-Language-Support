@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
@@ -55,7 +56,7 @@ private class CwtModifierConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String, //template name, not actual modifier name!
     override val categories: Set<String> = emptySet() //category names
-) : CwtModifierConfig {
+) : UserDataHolderBase(), CwtModifierConfig {
     override val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
     
     override val template = CwtTemplateExpression.resolve(name)

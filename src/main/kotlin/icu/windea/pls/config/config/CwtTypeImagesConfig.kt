@@ -1,10 +1,12 @@
 package icu.windea.pls.config.config
 
 import com.google.common.cache.*
+import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.expression.*
+import kotlin.Pair
 
 interface CwtTypeImagesConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val locationConfigs: List<Pair<String?, CwtLocationConfig>> //(subtypeExpression, locationConfig)
@@ -43,7 +45,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeImagesConfig? {
 private class CwtTypeImagesConfigImpl(
     override val config: CwtPropertyConfig,
     override val locationConfigs: List<Pair<String?, CwtLocationConfig>>
-) : CwtTypeImagesConfig {
+) : UserDataHolderBase(), CwtTypeImagesConfig {
     private val configsCache: Cache<String, List<CwtLocationConfig>> = CacheBuilder.newBuilder().buildCache()
     
     override fun getConfigs(subtypes: List<String>): List<CwtLocationConfig> {

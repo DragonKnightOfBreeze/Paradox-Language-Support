@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -84,4 +85,4 @@ private class CwtLinkConfigImpl(
     override val inputScopes: Set<String>,
     override val outputScope: String?,
     override val forDefinitionType: String?
-) : CwtLinkConfig
+) : UserDataHolderBase(), CwtLinkConfig

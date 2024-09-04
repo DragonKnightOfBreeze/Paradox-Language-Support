@@ -37,6 +37,10 @@ import kotlin.collections.isNullOrEmpty
 
 object ParadoxExpressionManager {
     object Keys : KeyRegistry() {
+        val cachedConfigContext by createKey<CachedValue<CwtConfigContext>>(Keys)
+        val cachedConfigsCache by createKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>(Keys)
+        val cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>(Keys)
+        
         val inBlockKeys by createKey<Set<String>>(this)
     }
     
@@ -190,7 +194,7 @@ object ParadoxExpressionManager {
     }
     
     private fun doGetConfigContextFromCache(element: ParadoxScriptMemberElement): CwtConfigContext? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigContext) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedConfigContext) {
             val value = doGetConfigContext(element)
             val trackers = buildList {
                 this += ParadoxModificationTrackers.ScriptFileTracker
@@ -346,7 +350,7 @@ object ParadoxExpressionManager {
     }
     
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>> {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigsCache) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
             val value = doGetConfigsCache()
             val trackers = buildList {
                 this += ParadoxModificationTrackers.ScriptFileTracker
@@ -545,7 +549,7 @@ object ParadoxExpressionManager {
     }
     
     private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMemberElement): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedChildOccurrenceMapCache) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrenceMapCache) {
             val value = doGetChildOccurrenceMapCache()
             val trackers = buildList {
                 this += ParadoxModificationTrackers.ScriptFileTracker

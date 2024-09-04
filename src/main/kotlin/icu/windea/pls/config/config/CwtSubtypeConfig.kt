@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
@@ -81,4 +82,4 @@ private class CwtSubtypeConfigImpl(
     override val displayName: String? = null,
     override val abbreviation: String? = null,
     override val onlyIfNot: Set<String>? = null
-) : CwtSubtypeConfig
+) : UserDataHolderBase(), CwtSubtypeConfig

@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
@@ -25,7 +26,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtSingleAliasConfig? {
 private class CwtSingleAliasConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String
-) : CwtSingleAliasConfig {
+) : UserDataHolderBase(),  CwtSingleAliasConfig {
     override fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
         //inline all value and configs
         val other = this.config

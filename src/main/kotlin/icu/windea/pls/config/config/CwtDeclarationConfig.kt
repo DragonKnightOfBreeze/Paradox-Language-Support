@@ -1,9 +1,11 @@
 package icu.windea.pls.config.config
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
@@ -14,29 +16,18 @@ import icu.windea.pls.lang.expression.*
 interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val configForDeclaration: CwtPropertyConfig
-    val subtypesUsedInDeclaration: Set<String>
+    
+    object Keys : KeyRegistry()
     
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig, name: String? = null): CwtDeclarationConfig? = doResolve(config, name)
     }
 }
 
-//Implementations (interned)
+//Accessors
 
-private fun doResolve(config: CwtPropertyConfig, name: String?): CwtDeclarationConfig? {
-    val name0 = name ?: config.key.takeIf { it.isIdentifier() } ?: return null
-    return CwtDeclarationConfigImpl(config, name0)
-}
-
-private class CwtDeclarationConfigImpl(
-    override val config: CwtPropertyConfig,
-    override val name: String,
-) : CwtDeclarationConfig {
-    override val configForDeclaration: CwtPropertyConfig by lazy {
-        CwtConfigManipulator.inlineSingleAlias(config) ?: config
-    }
-    
-    override val subtypesUsedInDeclaration by lazy {
+val CwtDeclarationConfig.subtypesUsedInDeclaration: Set<String>
+    by createKeyDelegate(CwtDeclarationConfig.Keys) {
         val result = sortedSetOf<String>()
         config.processDescendants {
             if(it is CwtPropertyConfig) {
@@ -49,5 +40,20 @@ private class CwtDeclarationConfigImpl(
             true
         }
         result.optimized()
+    }
+
+//Implementations (interned)
+
+private fun doResolve(config: CwtPropertyConfig, name: String?): CwtDeclarationConfig? {
+    val name0 = name ?: config.key.takeIf { it.isIdentifier() } ?: return null
+    return CwtDeclarationConfigImpl(config, name0)
+}
+
+private class CwtDeclarationConfigImpl(
+    override val config: CwtPropertyConfig,
+    override val name: String,
+) : UserDataHolderBase(), CwtDeclarationConfig {
+    override val configForDeclaration: CwtPropertyConfig by lazy {
+        CwtConfigManipulator.inlineSingleAlias(config) ?: config
     }
 }

@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -39,4 +40,4 @@ private class CwtLocationConfigImpl(
     override val value: String,
     override val required: Boolean = false,
     override val primary: Boolean = false,
-) : CwtLocationConfig
+) : UserDataHolderBase(),  CwtLocationConfig

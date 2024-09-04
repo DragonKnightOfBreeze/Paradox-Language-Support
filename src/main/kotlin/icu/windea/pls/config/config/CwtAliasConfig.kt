@@ -1,8 +1,10 @@
 package icu.windea.pls.config.config
 
+import com.intellij.openapi.util.UserDataHolderBase
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -42,7 +44,7 @@ private class CwtAliasConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
     override val subName: String
-) : CwtAliasConfig {
+) : UserDataHolderBase(), CwtAliasConfig {
     override val supportedScopes get() = config.supportedScopes
     override val outputScope get() = config.pushScope
     

@@ -52,12 +52,6 @@ val PlsKeys.cachedParameterContextInfo by createKey<CachedValue<ParadoxParameter
 val PlsKeys.cachedGameConceptAlias by createKey<CachedValue<Set<String>>>(PlsKeys)
 val PlsKeys.cachedParameterRanges by createKey<CachedValue<List<TextRange>>>(PlsKeys)
 
-val PlsKeys.cachedConfigPath by createKey<CachedValue<CwtConfigPath>>(PlsKeys)
-val PlsKeys.cachedConfigType by createKey<CachedValue<CwtConfigType>>(PlsKeys)
-val PlsKeys.cachedConfigContext by createKey<CachedValue<CwtConfigContext>>(PlsKeys)
-val PlsKeys.cachedConfigsCache by createKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>(PlsKeys)
-val PlsKeys.cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>(PlsKeys)
-
 val PlsKeys.parameterValueInjectionInfos by createKey<List<ParameterValueInjectionInfo>>(PlsKeys)
 
 //用于将CWT规则临时写入到CWT元素的userData中（例如，解析引用为枚举值后，将会是对应的CwtEnumConfig）

@@ -1,15 +1,14 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.util.UserDataHolder
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.config.internal.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.internal.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.configGroup.*
@@ -18,6 +17,13 @@ import icu.windea.pls.model.*
 import java.util.*
 
 object CwtConfigManager {
+    object Keys : KeyRegistry() {
+        val cachedConfigPath by createKey<CachedValue<CwtConfigPath>>(Keys)
+        val cachedConfigType by createKey<CachedValue<CwtConfigType>>(Keys)
+        val filePathPatterns by createKey<Set<String>>(Keys)
+        val filePathsForPriority by createKey<Set<String>>(Keys)
+    }
+    
     /**
      * @param forRepo 是否兼容插件或者规则仓库中的CWT文件（此时将其视为规则文件）。
      */
@@ -61,7 +67,7 @@ object CwtConfigManager {
     
     private fun doGetConfigPathFromCache(element: CwtMemberElement): CwtConfigPath? {
         //invalidated on file modification
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigPath) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedConfigPath) {
             val file = element.containingFile ?: return@getCachedValue null
             val value = doGetConfigPath(element)
             CachedValueProvider.Result.create(value, file)
@@ -96,7 +102,7 @@ object CwtConfigManager {
     
     private fun doGetConfigTypeFromCache(element: CwtMemberElement): CwtConfigType? {
         //invalidated on file modification
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedConfigType) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedConfigType) {
             val file = element.containingFile ?: return@getCachedValue null
             val value = when(element) {
                 is CwtProperty -> doGetConfigType(element)
@@ -218,6 +224,10 @@ object CwtConfigManager {
     }
     
     fun getFilePathPatterns(config: CwtConfig<*>): Set<String> {
+        return config.getOrPutUserData(Keys.filePathPatterns) { doGetFilePathPatterns(config) }
+    }
+    
+    private fun doGetFilePathPatterns(config: CwtConfig<*>): TreeSet<String> {
         val patterns = sortedSetOf<String>()
         
         var pathPatterns: Set<String> = emptySet()
@@ -282,6 +292,10 @@ object CwtConfigManager {
     }
     
     fun getFilePathsForPriority(config: CwtConfig<*>): Set<String> {
+        return config.getOrPutUserData(Keys.filePathsForPriority) { doGetFilePathsFOrPriority(config) }
+    }
+    
+    private fun doGetFilePathsFOrPriority(config: CwtConfig<*>): TreeSet<String> {
         var pathPatterns: Set<String> = emptySet()
         var paths: Set<String> = emptySet()
         var pathFile: String? = null
