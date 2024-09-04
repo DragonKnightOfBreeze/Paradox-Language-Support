@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config.extended
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.cwt.psi.*
@@ -29,7 +30,7 @@ private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedGameRuleConfig {
 private class CwtExtendedGameRuleConfigImpl(
     override val config: CwtMemberConfig<*>,
     override val name: String
-) : CwtExtendedGameRuleConfig {
+) : UserDataHolderBase(), CwtExtendedGameRuleConfig {
     override val configForDeclaration: CwtPropertyConfig? by lazy {
         if(config !is CwtPropertyConfig) return@lazy null
         CwtConfigManipulator.inlineSingleAlias(config) ?: config

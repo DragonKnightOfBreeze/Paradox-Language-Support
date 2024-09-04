@@ -1,6 +1,7 @@
 package icu.windea.pls.config.config.extended
 
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.cwt.psi.*
 
@@ -32,4 +33,4 @@ private class CwtExtendedScriptedVariableConfigImpl(
     override val config: CwtMemberConfig<*>,
     override val name: String,
     override val hint: String?
-) : CwtExtendedScriptedVariableConfig 
+) : UserDataHolderBase(), CwtExtendedScriptedVariableConfig 

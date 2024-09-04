@@ -1,5 +1,6 @@
 package icu.windea.pls.config.config.extended
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.collections.*
@@ -43,7 +44,7 @@ private class CwtExtendedInlineScriptConfigImpl(
     override val config: CwtMemberConfig<*>,
     override val name: String,
     override val contextConfigsType: String,
-) : CwtExtendedInlineScriptConfig {
+) : UserDataHolderBase(), CwtExtendedInlineScriptConfig {
     private val _containerConfig by lazy { doGetContainerConfig() }
     private val _contextConfigs by lazy { doGetContextConfigs() }
     
