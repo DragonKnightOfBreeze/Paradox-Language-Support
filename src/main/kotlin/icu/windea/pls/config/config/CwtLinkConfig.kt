@@ -38,11 +38,11 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     }
 }
 
-fun CwtLinkConfig.forScope() = this.type == "scope" || this.type == "both"
+fun CwtLinkConfig.forScope() = type.isNullOrEmpty() || type == "both" || type == "scope"
 
-fun CwtLinkConfig.forValue() = this.type == "scope" || this.type == "both"
+fun CwtLinkConfig.forValue() = type.isNullOrEmpty() || type == "both" || type == "value"
 
-fun CwtLinkConfig.withPrefix() = this.prefix.isNotNullOrEmpty()
+fun CwtLinkConfig.withPrefix() = prefix.isNotNullOrEmpty()
 
 //Implementations (interned)
 
