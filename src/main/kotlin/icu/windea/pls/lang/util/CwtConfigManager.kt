@@ -364,7 +364,7 @@ object CwtConfigManager {
         }
         if(paths.isNotEmpty()) {
             for(path in paths) {
-                if(path.matchesPath(filePath.path, pathStrict)) return true
+                if(path.matchesPath(filePath.path, strict = pathStrict)) return true
             }
             return false
         } else {
