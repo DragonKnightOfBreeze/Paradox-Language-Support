@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
@@ -69,6 +69,14 @@ object ParadoxScopeManager {
         if(thisScope == scopeToMatch) return true
         val scopeConfig = configGroup.scopeAliasMap[thisScope]
         if(scopeConfig != null && scopeConfig.aliases.any { it == scopeToMatch }) return true
+        
+        val promotions = scopeContext.promotions
+        for(promotion in promotions) {
+            if(promotion == scopeToMatch) return true
+            val promotionConfig = configGroup.scopeAliasMap[promotion]
+            if(promotionConfig != null && promotionConfig.aliases.any { it == scopeToMatch }) return true
+        }
+        
         return false
     }
     
@@ -81,6 +89,14 @@ object ParadoxScopeManager {
         if(thisScope in scopesToMatch) return true
         val scopeConfig = configGroup.scopeAliasMap[thisScope]
         if(scopeConfig != null) return scopeConfig.aliases.any { it in scopesToMatch }
+        
+        val promotions = scopeContext.promotions
+        for(promotion in promotions) {
+            if(promotion in scopesToMatch) return true
+            val promotionConfig = configGroup.scopeAliasMap[promotion]
+            if(promotionConfig != null && promotionConfig.aliases.any { it in scopesToMatch }) return true
+        }
+        
         return false
     }
     
@@ -319,9 +335,13 @@ object ParadoxScopeManager {
                     is ParadoxSystemCommandScopeNode -> {
                         return getSwitchedScopeContextOfSystemScopeLinkNode(element, node, inputScopeContext)
                     }
-                    //predefined -> static
+                    //predefined -> static (with promotions)
                     is ParadoxCommandScopeNode -> {
-                        return inputScopeContext.resolveNext(node.config.outputScope)
+                        val linkConfig = node.config
+                        val promotions = linkConfig.configGroup.localisationPromotions[linkConfig.name]?.supportedScopes
+                        val next = inputScopeContext.resolveNext(linkConfig.outputScope)
+                        if(promotions.isNotNullOrEmpty()) next.promotions = promotions
+                        return next
                     }
                     //dynamic -> any (or inferred from extended configs)
                     is ParadoxDynamicCommandScopeLinkNode -> {

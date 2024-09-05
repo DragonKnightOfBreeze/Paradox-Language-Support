@@ -1,6 +1,7 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.util.*
 
@@ -24,7 +25,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig
     val supportedScopes = buildSet {
         config.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
         config.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
-    }
+    }.optimized()
     return CwtLocalisationPromotionConfigImpl(config, name, supportedScopes)
 }
 

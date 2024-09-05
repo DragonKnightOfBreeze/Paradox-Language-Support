@@ -29,6 +29,9 @@ interface ParadoxScopeContext : UserDataHolder {
     object Keys : KeyRegistry()
 }
 
+/** 需要提升的作用域的ID列表。 */
+var ParadoxScopeContext.promotions: Set<String> by createKeyDelegate(ParadoxScopeContext.Keys) { emptySet() }
+
 /** 当前作用域上下文是否是精确的 - 这意味着不需要再进一步推断其中的各个作用域。 */
 var ParadoxScopeContext.isExact: Boolean by createKeyDelegate(ParadoxScopeContext.Keys) { true }
 
