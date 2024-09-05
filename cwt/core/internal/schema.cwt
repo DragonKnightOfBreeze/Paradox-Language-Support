@@ -85,6 +85,11 @@ localisation_links = {
 	}
 }
 
+localisation_promotions = {
+	$localisation_link$ = $scope$
+	$localisation_link$ = { $scope$ }
+}
+
 localisation_commands = {
 	$localisation_command$ = $scope$
 	$localisation_command$ = { $scope$ }

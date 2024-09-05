@@ -62,58 +62,62 @@ class CwtLocalisationConfigGenerator(
         if(info.name.isNotEmpty()) {
             infos.add(info)
         }
-        val newLocLines = getLocLines(infos)
+        val newText = getText(infos)
         val cwtFile = File(cwtPath)
-        val allCwtLines = cwtFile.bufferedReader().readLines()
-        val newLines = mutableListOf<String>()
-        var flag = false
-        for(line in allCwtLines) {
-            if(line == "localisation_commands = {") {
-                flag = true
-                newLines.addAll(newLocLines)
-                continue
-            }
-            if(flag && line == "}") {
-                flag = false
-                continue
-            }
-            if(flag) continue
-            newLines.add(line)
-        }
-        cwtFile.writeText(newLines.joinToString("\n"))
+        cwtFile.writeText(newText)
     }
     
-    private fun getLocLines(infos: List<LocalisationInfo>): List<String> {
-        val map = mutableMapOf<String, MutableSet<String>>()
-        infos.forEach { info ->
-            info.properties.forEach { prop ->
-                val set = map.getOrPut(prop) { mutableSetOf() }
-                val scope = info.name
-                when {
-                    scope == "Base Scope" -> {
-                        set.add("any")
-                    }
-                    scope == "Ship (and Starbase)" -> {
-                        set.add("ship")
-                        set.add("starbase")
-                    }
-                    else -> {
-                        set.add(scope.lowercase())
+    private fun getText(infos: List<LocalisationInfo>): String {
+        return buildString {
+            run {
+                append("localisation_promotions = {").appendLine()
+                val map = mutableMapOf<String, MutableSet<String>>()
+                infos.forEach { info ->
+                    val scopeIds = getScopeIds(info.name)
+                    info.promotions.forEach { prop ->
+                        val scopes = map.getOrPut(prop) { mutableSetOf() }
+                        scopes += scopeIds
                     }
                 }
+                map.forEach { (k, v) ->
+                    val s = when {
+                        v.isEmpty() -> return@forEach
+                        v.contains("any") -> return@forEach
+                        else -> v.joinToString(" ", "{ ", " }")
+                    }
+                    append("    ").append("$k = $s").appendLine()
+                }
+                append("}").appendLine()
+            }
+            
+            run {
+                append("localisation_commands = {").appendLine()
+                val map = mutableMapOf<String, MutableSet<String>>()
+                infos.forEach { info ->
+                    val scopeIds = getScopeIds(info.name)
+                    info.properties.forEach { prop ->
+                        val scopes = map.getOrPut(prop) { mutableSetOf() }
+                        scopes += scopeIds
+                    }
+                }
+                map.forEach { (k, v) ->
+                    val s = when {
+                        v.isEmpty() -> "{}"
+                        v.contains("any") -> "{ any }"
+                        else -> v.joinToString(" ", "{ ", " }")
+                    }
+                    append("    ").append("$k = $s").appendLine()
+                }
+                append("}").appendLine()
             }
         }
-        val result = mutableListOf<String>()
-        result.add("localisation_commands = {")
-        map.forEach { (k, v) ->
-            val vs = when {
-                v.isEmpty() -> "{}"
-                v.contains("any") -> "{ any }"
-                else -> v.joinToString(" ", "{ ", " }")
-            }
-            result.add("    $k = $vs")
+    }
+    
+    private fun getScopeIds(text: String):Set<String> {
+        return when {
+            text == "Base Scope" -> setOf("any")
+            text == "Ship (and Starbase)" -> setOf("ship", "starbase")
+            else -> setOf(text.lowercase().replace(" ", "_"))
         }
-        result.add("}")
-        return result
     }
 }
