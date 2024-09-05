@@ -1,6 +1,5 @@
 package icu.windea.pls.cwt.editor
 
-import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.lang.*
 import com.intellij.lang.cacheBuilder.*
 import com.intellij.lang.findUsages.*
