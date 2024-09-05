@@ -171,6 +171,9 @@ object CwtConfigManager {
             element is CwtProperty && path.matchesAntPattern("localisation_links/*") -> {
                 CwtConfigType.LocalisationLink
             }
+            element is CwtProperty && path.matchesAntPattern("localisation_promotions/*") -> {
+                CwtConfigType.LocalisationPromotion
+            }
             element is CwtProperty && path.matchesAntPattern("localisation_commands/*") -> {
                 CwtConfigType.LocalisationCommand
             }

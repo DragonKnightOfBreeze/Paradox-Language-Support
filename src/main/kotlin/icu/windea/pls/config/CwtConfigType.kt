@@ -62,6 +62,11 @@ enum class CwtConfigType(
         override val descriptionText get() = PlsBundle.message("cwt.description.localisationLink")
         override val icon get() = PlsIcons.Nodes.Link
     },
+    LocalisationPromotion("localisation promotion", true) {
+        override val prefix get() = PlsBundle.message("prefix.localisationPromotion")
+        override val descriptionText get() = PlsBundle.message("cwt.description.localisationPromotion")
+        override val icon get() = PlsIcons.Nodes.Link
+    },
     LocalisationCommand("localisation command", true) {
         override val prefix get() = PlsBundle.message("prefix.localisationCommand")
         override val descriptionText get() = PlsBundle.message("cwt.description.localisationCommand")

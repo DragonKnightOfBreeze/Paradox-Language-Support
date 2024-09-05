@@ -305,6 +305,13 @@ private fun DocumentationBuilder.addScope(element: PsiElement, name: String, con
                 sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
             }
         }
+        CwtConfigType.LocalisationPromotion -> {
+            val localisationPromotionConfig = configGroup.localisationPromotions[name] ?: return
+            if(sections != null) {
+                val supportedScopes = localisationPromotionConfig.supportedScopes
+                sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
+            }
+        }
         CwtConfigType.LocalisationCommand -> {
             val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
             if(sections != null) {

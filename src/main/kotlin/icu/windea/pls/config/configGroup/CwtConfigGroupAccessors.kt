@@ -59,6 +59,8 @@ val CwtConfigGroup.localisationLinks: MutableMap<@CaseInsensitive String, CwtLin
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 val CwtConfigGroup.localisationCommands: MutableMap<@CaseInsensitive String, CwtLocalisationCommandConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
+val CwtConfigGroup.localisationPromotions: MutableMap<@CaseInsensitive String, CwtLocalisationPromotionConfig>
+    by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
 
 val CwtConfigGroup.scopes: MutableMap<@CaseInsensitive String, CwtScopeConfig>
     by createKeyDelegate(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }

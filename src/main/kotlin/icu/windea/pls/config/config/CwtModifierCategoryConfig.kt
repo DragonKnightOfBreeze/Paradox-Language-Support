@@ -20,7 +20,7 @@ interface CwtModifierCategoryConfig : CwtDelegatedConfig<CwtProperty, CwtPropert
 
 //Implementations (interned)
 
-private fun doResolve(config: CwtPropertyConfig): CwtModifierCategoryConfigImpl? {
+private fun doResolve(config: CwtPropertyConfig): CwtModifierCategoryConfig? {
     val name = config.key
     var supportedScopes: Set<String>? = null
     val props = config.properties

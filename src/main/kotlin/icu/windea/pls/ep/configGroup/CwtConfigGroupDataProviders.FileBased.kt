@@ -130,6 +130,13 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.localisationLinks[linkConfig.name] = linkConfig
                     }
                 }
+                key == "localisation_promotions" -> {
+                    val configs = property.properties ?: continue
+                    for(config in configs) {
+                        val localisationPromotionConfig = CwtLocalisationPromotionConfig.resolve(config)
+                        configGroup.localisationPromotions[localisationPromotionConfig.name] = localisationPromotionConfig
+                    }
+                }
                 key == "localisation_commands" -> {
                     val configs = property.properties ?: continue
                     for(config in configs) {

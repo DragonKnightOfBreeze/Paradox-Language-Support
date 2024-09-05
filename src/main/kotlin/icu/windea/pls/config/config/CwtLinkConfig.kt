@@ -46,7 +46,7 @@ fun CwtLinkConfig.withPrefix() = prefix.isNotNullOrEmpty()
 
 //Implementations (interned)
 
-private fun doResolve(config: CwtPropertyConfig): CwtLinkConfigImpl? {
+private fun doResolve(config: CwtPropertyConfig): CwtLinkConfig? {
     val name = config.key
     var fromData = false
     var type: String? = null
