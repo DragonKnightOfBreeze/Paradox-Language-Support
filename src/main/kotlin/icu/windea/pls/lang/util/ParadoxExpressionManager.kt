@@ -687,15 +687,6 @@ object ParadoxExpressionManager {
     //endregion
     
     //region Resolve Methods
-    fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): Array<out PsiReference>? {
-        ProgressManager.checkCanceled()
-        if(configExpression == null) return null
-        val expressionText = getExpressionText(element, rangeInElement)
-        
-        val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expressionText, config, isKey)
-        return result.orNull()
-    }
-    
     fun resolveExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
         ProgressManager.checkCanceled()
         if(configExpression == null) return null
@@ -707,7 +698,7 @@ object ParadoxExpressionManager {
         
         val configGroup = config.configGroup
         if(configExpression.isKey && configExpression.type in CwtDataTypeGroups.KeyReference) {
-            return getResolvedConfigElement(config, configGroup, element)
+            return getResolvedConfigElement(element, config, configGroup)
         }
         return null
     }
@@ -723,12 +714,12 @@ object ParadoxExpressionManager {
         
         val configGroup = config.configGroup
         if(configExpression.isKey && configExpression.type in CwtDataTypeGroups.KeyReference) {
-            return getResolvedConfigElement(config, configGroup, element).toSingletonSetOrEmpty()
+            return getResolvedConfigElement(element, config, configGroup).toSingletonSetOrEmpty()
         }
         return emptySet()
     }
     
-    private fun getResolvedConfigElement(config: CwtConfig<*>, configGroup: CwtConfigGroup, element: ParadoxScriptExpressionElement): PsiElement? {
+    private fun getResolvedConfigElement(element: ParadoxScriptExpressionElement, config: CwtConfig<*>, configGroup: CwtConfigGroup): PsiElement? {
         val resolvedConfig = config.resolved()
         if(resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
             //特殊处理合成的CWT规则
@@ -739,11 +730,12 @@ object ParadoxExpressionManager {
         return resolvedConfig.pointer.element
     }
     
-    fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): Array<out PsiReference>? {
+    fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): Array<out PsiReference>? {
         ProgressManager.checkCanceled()
+        if(configExpression == null) return null
         val expressionText = getExpressionText(element, rangeInElement)
         
-        val result = ParadoxLocalisationExpressionSupport.getReferences(element, rangeInElement, expressionText)
+        val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expressionText, config, isKey)
         return result.orNull()
     }
     
@@ -765,15 +757,21 @@ object ParadoxExpressionManager {
         return result
     }
     
+    fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): Array<out PsiReference>? {
+        ProgressManager.checkCanceled()
+        val expressionText = getExpressionText(element, rangeInElement)
+        
+        val result = ParadoxLocalisationExpressionSupport.getReferences(element, rangeInElement, expressionText)
+        return result.orNull()
+    }
+    
     fun resolveModifier(element: ParadoxScriptExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
         if(element !is ParadoxScriptStringExpressionElement) return null
-        ProgressManager.checkCanceled()
         return ParadoxModifierManager.resolveModifier(name, element, configGroup)
     }
     
     fun resolveTemplateExpression(element: ParadoxScriptExpressionElement, text: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
         if(element !is ParadoxScriptStringExpressionElement) return null
-        ProgressManager.checkCanceled()
         val templateConfigExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
         return templateConfigExpression.resolve(text, element, configGroup)
     }

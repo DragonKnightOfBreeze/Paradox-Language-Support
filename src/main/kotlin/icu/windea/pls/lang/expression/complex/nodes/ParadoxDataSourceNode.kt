@@ -9,7 +9,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
@@ -24,15 +23,17 @@ class ParadoxDataSourceNode(
     val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? {
-        if(element !is ParadoxScriptStringExpressionElement) return null //unexpected
         if(text.isParameterized()) return null
+        if(linkConfigs.isEmpty()) return null
+        if(linkConfigs.size == 1) return linkConfigs.first()
+        if(linkConfigs.all { it.expression?.type in CwtDataTypeGroups.DynamicValue }) return linkConfigs.first()
+        if(element !is ParadoxScriptStringExpressionElement) return null
         return linkConfigs.find { linkConfig ->
             ParadoxExpressionManager.resolveExpression(element, rangeInExpression, linkConfig, linkConfig.expression, exact = false) != null
         } ?: linkConfigs.firstOrNull()
     }
     
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
-        if(element !is ParadoxScriptStringExpressionElement) return null //unexpected
         if(nodes.isNotEmpty()) return null
         if(text.isEmpty()) return null
         if(text.isParameterized()) return null
@@ -46,33 +47,32 @@ class ParadoxDataSourceNode(
     }
     
     override fun getReference(element: ParadoxExpressionElement): Reference? {
-        if(element !is ParadoxScriptStringExpressionElement) return null //unexpected
         if(linkConfigs.isEmpty()) return null
         if(text.isParameterized()) return null
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement, linkConfigs)
+        return Reference(element, rangeInElement, text, linkConfigs, configGroup)
     }
     
     class Reference(
-        element: ParadoxScriptStringExpressionElement,
+        element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        val linkConfigs: List<CwtLinkConfig>
-    ) : PsiPolyVariantReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement), PsiReferencesAware {
+        val name: String,   
+        val linkConfigs: List<CwtLinkConfig>,
+        val configGroup: CwtConfigGroup
+    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
         val project = linkConfigs.first().config.configGroup.project
         
         override fun handleElementRename(newElementName: String): PsiElement {
-            val resolved = element.resolved()
-            return when {
-                resolved == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-                resolved.language == CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
-                resolved.language.isParadoxLanguage() -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-                else -> throw IncorrectOperationException()
+            val element = element
+            val resolvedElement = when {
+                element is ParadoxScriptStringExpressionElement -> element.resolved()
+                else -> element
             }
-        }
-        
-        override fun getReferences(): Array<out PsiReference>? {
-            return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-                ParadoxExpressionManager.getReferences(element, rangeInElement, linkConfig, linkConfig.expression).orNull()
+            return when {
+                resolvedElement == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+                resolvedElement.language == CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
+                resolvedElement.language.isParadoxLanguage() -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+                else -> throw IncorrectOperationException()
             }
         }
         
@@ -100,6 +100,11 @@ class ParadoxDataSourceNode(
         
         private fun doResolve(): PsiElement? {
             val element = element
+            if(linkConfigs.all { it.expression?.type in CwtDataTypeGroups.DynamicValue }) {
+                val configExpressions = linkConfigs.mapNotNull { it.expression }
+                return ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
+            }
+            if(element !is ParadoxScriptStringExpressionElement) return null
             return linkConfigs.firstNotNullOfOrNull { linkConfig ->
                 ParadoxExpressionManager.resolveExpression(element, rangeInElement, linkConfig, linkConfig.expression)
             }
@@ -107,6 +112,12 @@ class ParadoxDataSourceNode(
         
         private fun doMultiResolve(): Array<out ResolveResult> {
             val element = element
+            if(linkConfigs.all { it.expression?.type in CwtDataTypeGroups.DynamicValue }) {
+                val configExpressions = linkConfigs.mapNotNull { it.expression }
+                return ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
+                    ?.let { arrayOf(PsiElementResolveResult(it)) } ?: ResolveResult.EMPTY_ARRAY
+            }
+            if(element !is ParadoxScriptStringExpressionElement) return ResolveResult.EMPTY_ARRAY
             return linkConfigs.flatMap { linkConfig ->
                 ParadoxExpressionManager.multiResolveExpression(element, rangeInElement, linkConfig, configExpression = linkConfig.expression)
             }.mapToArray { PsiElementResolveResult(it) }
