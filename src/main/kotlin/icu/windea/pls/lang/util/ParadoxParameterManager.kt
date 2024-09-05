@@ -242,7 +242,6 @@ object ParadoxParameterManager {
             withRecursionGuard("ParadoxParameterManager.getInferredContextConfigs") {
                 withRecursionCheck(parameterElement) {
                     doGetInferredContextConfigs(parameterElement)
-                        .also { doOptimizeContextConfigsByLocation(parameterElement, it) }
                 }
             } ?: emptyList()
         }
@@ -255,7 +254,6 @@ object ParadoxParameterManager {
         val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
         return parameterInfo.getOrPutUserData(Keys.parameterInferredContextConfigsFromConfig) {
             doGetInferredContextConfigsFromConfig(parameterElement)
-                .also { doOptimizeContextConfigsByLocation(parameterElement, it) }
         }
     }
     
@@ -266,37 +264,6 @@ object ParadoxParameterManager {
         if(!getSettings().inference.configContextForParameters) return emptyList()
         
         return doGetInferredContextConfigsFromUsages(parameterElement)
-    }
-    
-    private fun doOptimizeContextConfigsByLocation(parameterElement: ParadoxParameterElement, contextConfigs: List<CwtMemberConfig<*>>) {
-        //val parent = parameterElement.parent?.parent
-        //contextConfigs.forEach f1@{
-        //    val configs = it.configs
-        //    if(configs.isNullOrEmpty()) return@f1
-        //    if(configs !is MutableList) return@f1
-        //    val keysToDistinct = mutableSetOf<String>()
-        //    val opConfigs = mutableListOf<CwtMemberConfig<*>>()
-        //    configs.forEach f2@{ config ->
-        //        when(config) {
-        //            is CwtPropertyConfig -> {
-        //                if(parent is ParadoxScriptPropertyKey) {
-        //                    if(config.isBlock) return@f2
-        //                    if(!keysToDistinct.add(config.key)) return@f2
-        //                    val opConfig = CwtValueConfig.resolve(emptyPointer(), config.configGroup, config.key)
-        //                    opConfigs += opConfig
-        //                } else {
-        //                    opConfigs += config
-        //                }
-        //            }
-        //            is CwtValueConfig -> {
-        //                if(!keysToDistinct.add(config.value)) return@f2
-        //                opConfigs += config
-        //            }
-        //        }
-        //    }
-        //    configs.clear()
-        //    configs += opConfigs
-        //}
     }
     
     private fun doGetInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
@@ -327,13 +294,6 @@ object ParadoxParameterManager {
             result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
         }
         return result.get().orEmpty()
-    }
-    
-    fun isIgnoredInferredConfig(config: CwtValueConfig): Boolean {
-        return when(config.expression.type) {
-            CwtDataTypes.Any, CwtDataTypes.Other -> true
-            else -> false
-        }
     }
     
     /**

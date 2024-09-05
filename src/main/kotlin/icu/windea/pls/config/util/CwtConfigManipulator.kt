@@ -12,6 +12,31 @@ import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*
 
 object CwtConfigManipulator {
+    fun getDistinctKey(config: CwtMemberConfig<*>): String {
+        return when(config) {
+            is CwtPropertyConfig -> {
+                when {
+                    config.configs == null -> "${config.key}=${config.value}"
+                    config.configs.isNullOrEmpty() -> "${config.key}={}"
+                    else -> {
+                        val v = config.configs!!.joinToString("\u0000") { getDistinctKey(it) }
+                        return "${config.key}={${v}}"
+                    }
+                }
+            }
+            is CwtValueConfig -> {
+                when {
+                    config.configs == null -> config.value
+                    config.configs.isNullOrEmpty() -> "{}"
+                    else -> {
+                        val v = config.configs!!.joinToString("\u0000") { getDistinctKey(it) }
+                        return "{${v}}"
+                    }
+                }
+            }
+        }
+    }
+    
     //region Deep Copy Methods
     fun deepCopyConfigs(config: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = config): List<CwtMemberConfig<*>>? {
         val cs1 = config.configs
@@ -90,7 +115,7 @@ object CwtConfigManipulator {
         )
     }
     
-    fun <T: CwtMemberConfig<*>> inlineSingleAlias(config: T): T? {
+    fun <T : CwtMemberConfig<*>> inlineSingleAlias(config: T): T? {
         if(config !is CwtPropertyConfig) return null
         val configGroup = config.configGroup
         val valueExpression = config.valueExpression
@@ -103,6 +128,38 @@ object CwtConfigManipulator {
     //endregion
     
     //region Merge Methods
+    /**
+     * @param relax 如果为true，最终合并得到的结果应当能匹配每一个规则列表。
+     */
+    fun mergeConfigsNew(configs: List<CwtMemberConfig<*>>, otherConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
+        if(configs.isEmpty() && otherConfigs.isEmpty()) return emptyList()
+        if(configs.isEmpty()) return otherConfigs
+        if(otherConfigs.isEmpty()) return configs
+        
+        if(configs.size == 1 && otherConfigs.size == 1) {
+            val c1 = configs.single()
+            val c2 = otherConfigs.single()
+            if(c1 is CwtValueConfig && c2 is CwtValueConfig) {
+                val merged = mergeValueConfig(c1, c2)
+                if(merged != null) return merged.toSingletonList()
+            } else if(c1 is CwtPropertyConfig && c2 is CwtPropertyConfig) {
+                val same = getDistinctKey(c1) == getDistinctKey(c2)
+                if(same) return c1.toSingletonList()
+            } else {
+                return emptyList()
+            }
+        }
+        
+        val m1 = configs.associateBy { getDistinctKey(it) }
+        val m2 = otherConfigs.associateBy { getDistinctKey(it) }
+        val allKeys = m1.keys union m2.keys
+        val sameKeys = m1.keys intersect m2.keys
+        val sameConfigs = sameKeys.mapNotNull { m1[it] ?: m2[it] }
+        if(sameKeys.size == allKeys.size) return sameConfigs
+        
+        return merge(configs, otherConfigs).distinctBy { getDistinctKey(it) }
+    }
+    
     fun mergeConfigs(cs1: List<CwtMemberConfig<*>>, cs2: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
         //try to merge single value configs first (by value expressions)
         val c1 = cs1.singleOrNull()
@@ -166,6 +223,22 @@ object CwtConfigManipulator {
         )
     }
     
+    fun mergeAndMatchValueConfig(configs: List<CwtValueConfig>, configExpression: CwtDataExpression): Boolean {
+        if(configs.isEmpty()) return false
+        for(config in configs) {
+            val e1 = configExpression //expect
+            val e2 = config.expression //actual (e.g., from parameterized key)
+            val e3 = mergeExpressionString(e1, e2) ?: continue //merged
+            
+            //"scope_field" merge "scope[country]" -> "scope[country]" -> true
+            
+            //TODO 1.3.8+ optimize merge & match logic
+            
+            if(e3 == e2.expressionString) return true
+        }
+        return false
+    }
+    
     fun mergeExpressionString(e1: CwtDataExpression, e2: CwtDataExpression): String? {
         val ignoreCase = e1.type == CwtDataTypes.Constant && e2.type == CwtDataTypes.Constant
         if(e1.expressionString.equals(e2.expressionString, ignoreCase)) return e1.expressionString
@@ -215,23 +288,7 @@ object CwtConfigManipulator {
         }
     }
     
-    fun mergeAndMatchValueConfig(configs: List<CwtValueConfig>, configExpression: CwtDataExpression): Boolean {
-        if(configs.isEmpty()) return false
-        for(config in configs) {
-            val e1 = configExpression //expect
-            val e2 = config.expression //actual (e.g., from parameterized key)
-            val e3 = mergeExpressionString(e1, e2) ?: continue //merged
-            
-            //"scope_field" merge "scope[country]" -> "scope[country]" -> true
-            
-            //TODO 1.3.8+ optimize merge & match logic
-            
-            if(e3 == e2.expressionString) return true
-        }
-        return false
-    }
-    
-    private fun mergeOptions(a:  List<CwtOptionMemberConfig<*>>?, b:  List<CwtOptionMemberConfig<*>>?): List<CwtOptionMemberConfig<*>> {
+    private fun mergeOptions(a: List<CwtOptionMemberConfig<*>>?, b: List<CwtOptionMemberConfig<*>>?): List<CwtOptionMemberConfig<*>> {
         //keep duplicate options here (no affect to features)
         return merge(a, b)
     }
