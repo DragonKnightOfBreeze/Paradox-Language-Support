@@ -5,7 +5,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -55,7 +54,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         //bind specific links and localisation links
         run {
             configGroup.linksOfVariable += configGroup.links.values.filter { it.forValue() && it.fromData && it.name == "variable" }
-            configGroup.localisationLinksOfEventTarget += configGroup.localisationLinks.values.filter { it.forScope() && it.fromData && it.name == "event_target" }
+            configGroup.localisationLinksOfEventTarget += configGroup.localisationLinks.values.filter { it.forScope() && it.fromData && it.prefix == "event_target:" }
         }
         
         run {
