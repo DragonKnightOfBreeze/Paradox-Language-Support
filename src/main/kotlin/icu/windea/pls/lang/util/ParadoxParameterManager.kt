@@ -36,9 +36,9 @@ import icu.windea.pls.script.psi.*
 import java.util.*
 
 object ParadoxParameterManager {
-    object Keys: KeyRegistry() {
-       val parameterInferredContextConfigs by createKey<List<CwtMemberConfig<*>>>(this)
-       val parameterInferredContextConfigsFromConfig by createKey<List<CwtMemberConfig<*>>>(this)
+    object Keys : KeyRegistry() {
+        val parameterInferredContextConfigs by createKey<List<CwtMemberConfig<*>>>(this)
+        val parameterInferredContextConfigsFromConfig by createKey<List<CwtMemberConfig<*>>>(this)
     }
     
     /**
@@ -114,14 +114,16 @@ object ParadoxParameterManager {
         val parameterInfos = parameterContextInfo.parameters.get(parameterName)
         if(parameterInfos.isNullOrEmpty()) return true
         return parameterInfos.all f@{ parameterInfo ->
-            //如果是条件参数，则为可选
-            if(parameterInfo.conditionStack == null) return@f true
             //如果带有默认值，则为可选
             if(parameterInfo.defaultValue != null) return@f true
+            //如果是条件参数，则为可选
+            if(parameterInfo.conditionStack == null) return@f true
             //如果基于条件表达式上下文是可选的，则为可选
-            if(parameterInfo.conditionStack.all { it.where { n -> parameterName == n || (argumentNames != null && argumentNames.contains(n)) } }) return@f true
+            if(parameterInfo.conditionStack.isNotEmpty() && parameterInfo.conditionStack
+                    .all { it.where { n -> parameterName == n || (argumentNames != null && argumentNames.contains(n)) } }) return@f true
             //如果作为传入参数的值，则认为是可选的
-            if(parameterInfo.expressionConfigs.any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataTypes.Parameter }) return@f true
+            if(parameterInfo.expressionConfigs
+                    .any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataTypes.Parameter }) return@f true
             false
         }
     }
