@@ -13,23 +13,43 @@ import icu.windea.pls.model.*
 
 object CwtConfigManipulator {
     fun getDistinctKey(config: CwtMemberConfig<*>): String {
-        return when(config) {
+        return doGetDistinctKey(config)
+    }
+    
+    private fun doGetDistinctKey(config: CwtMemberConfig<*>, guardStack: MutableSet<String>? = null): String {
+        var finalConfig = config
+        var guardStack0 = guardStack
+        val inlinedConfig = inlineSingleAlias(config)
+        if(inlinedConfig != null) {
+            //处理规则需要内联的情况，并且尝试避免SOF
+            finalConfig = inlinedConfig
+            val inlineableConfig = inlinedConfig.inlineableConfig
+            val guardKey = when(inlineableConfig) {
+                is CwtSingleAliasConfig -> "sa:${inlineableConfig.name}"
+                else -> null
+            }
+            if(guardKey != null) {
+                guardStack0 = guardStack0 ?: mutableSetOf()
+                if(!guardStack0.add(guardKey)) return "..."
+            }
+        }
+        return when(finalConfig) {
             is CwtPropertyConfig -> {
                 when {
-                    config.configs == null -> "${config.key}=${config.value}"
-                    config.configs.isNullOrEmpty() -> "${config.key}={}"
+                    finalConfig.configs == null -> "${finalConfig.key}=${finalConfig.value}"
+                    finalConfig.configs.isNullOrEmpty() -> "${finalConfig.key}={}"
                     else -> {
-                        val v = config.configs!!.joinToString("\u0000") { getDistinctKey(it) }
-                        return "${config.key}={${v}}"
+                        val v = finalConfig.configs!!.joinToString("\u0000") { doGetDistinctKey(it, guardStack0) }
+                        return "${finalConfig.key}={${v}}"
                     }
                 }
             }
             is CwtValueConfig -> {
                 when {
-                    config.configs == null -> config.value
-                    config.configs.isNullOrEmpty() -> "{}"
+                    finalConfig.configs == null -> finalConfig.value
+                    finalConfig.configs.isNullOrEmpty() -> "{}"
                     else -> {
-                        val v = config.configs!!.joinToString("\u0000") { getDistinctKey(it) }
+                        val v = finalConfig.configs!!.joinToString("\u0000") { doGetDistinctKey(it, guardStack0) }
                         return "{${v}}"
                     }
                 }
@@ -128,10 +148,7 @@ object CwtConfigManipulator {
     //endregion
     
     //region Merge Methods
-    /**
-     * @param relax 如果为true，最终合并得到的结果应当能匹配每一个规则列表。
-     */
-    fun mergeConfigsNew(configs: List<CwtMemberConfig<*>>, otherConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
+    fun mergeConfigs(configs: List<CwtMemberConfig<*>>, otherConfigs: List<CwtMemberConfig<*>>, relax: Boolean = false): List<CwtMemberConfig<*>> {
         if(configs.isEmpty() && otherConfigs.isEmpty()) return emptyList()
         if(configs.isEmpty()) return otherConfigs
         if(otherConfigs.isEmpty()) return configs
@@ -150,61 +167,21 @@ object CwtConfigManipulator {
             }
         }
         
+        if(relax) {
+            return merge(configs, otherConfigs).distinctBy { getDistinctKey(it) }
+        }
+        
         val m1 = configs.associateBy { getDistinctKey(it) }
         val m2 = otherConfigs.associateBy { getDistinctKey(it) }
-        val allKeys = m1.keys union m2.keys
         val sameKeys = m1.keys intersect m2.keys
         val sameConfigs = sameKeys.mapNotNull { m1[it] ?: m2[it] }
-        if(sameKeys.size == allKeys.size) return sameConfigs
-        
-        return merge(configs, otherConfigs).distinctBy { getDistinctKey(it) }
-    }
-    
-    fun mergeConfigs(cs1: List<CwtMemberConfig<*>>, cs2: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
-        //try to merge single value configs first (by value expressions)
-        val c1 = cs1.singleOrNull()
-        val c2 = cs2.singleOrNull()
-        if(c1 is CwtValueConfig && c2 is CwtValueConfig) {
-            val resultConfig = mergeValueConfig(c1, c2)
-            if(resultConfig != null) return resultConfig.toSingletonList()
-        }
-        
-        //merge multiple configs
-        val result = mutableListOf<CwtMemberConfig<*>>()
-        cs1.forEach f1@{ config ->
-            cs2.forEach f2@{ otherConfig ->
-                val resultConfig = mergeConfig(config, otherConfig)
-                if(resultConfig != null) result.add(resultConfig)
-            }
-        }
-        for(config in result) {
-            config.parentConfig = null
-        }
-        return result
+        return sameConfigs
     }
     
     fun mergeConfig(c1: CwtMemberConfig<*>, c2: CwtMemberConfig<*>): CwtMemberConfig<*>? {
         if(c1 === c2) return c1 //reference equality
         if(c1.pointer == c2.pointer) return c1 //value equality (should be)
-        val ic1 = c1.inlineableConfig
-        val ic2 = c2.inlineableConfig
-        if(ic1 != null && ic2 != null) {
-            if(ic1.config.pointer == ic2.config.pointer) {
-                //value equality after inline (should be)
-                return when(c1) {
-                    is CwtPropertyConfig -> c1.copy(
-                        pointer = emptyPointer(),
-                        optionConfigs = mergeOptions(c1.optionConfigs, c2.optionConfigs),
-                        documentation = mergeDocumentations(c1.documentation, c2.documentation)
-                    )
-                    is CwtValueConfig -> c1.copy(
-                        pointer = emptyPointer(),
-                        optionConfigs = mergeOptions(c1.optionConfigs, c2.optionConfigs),
-                        documentation = mergeDocumentations(c1.documentation, c2.documentation)
-                    )
-                }
-            }
-        }
+        if(getDistinctKey(c1) == getDistinctKey(c2)) return c1 //distinct key equality
         return null
     }
     
