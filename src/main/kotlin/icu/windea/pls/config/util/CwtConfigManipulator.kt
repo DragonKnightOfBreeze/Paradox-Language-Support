@@ -8,10 +8,12 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.config.*
+import icu.windea.pls.ep.dataExpression.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*
 
 object CwtConfigManipulator {
+    //region Core Methods
     fun getDistinctKey(config: CwtMemberConfig<*>): String {
         return doGetDistinctKey(config)
     }
@@ -56,6 +58,7 @@ object CwtConfigManipulator {
             }
         }
     }
+    //endregion
     
     //region Deep Copy Methods
     fun deepCopyConfigs(config: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = config): List<CwtMemberConfig<*>>? {
@@ -148,7 +151,7 @@ object CwtConfigManipulator {
     //endregion
     
     //region Merge Methods
-    fun mergeConfigs(configs: List<CwtMemberConfig<*>>, otherConfigs: List<CwtMemberConfig<*>>, relax: Boolean = false): List<CwtMemberConfig<*>> {
+    fun mergeConfigs(configs: List<CwtMemberConfig<*>>, otherConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
         if(configs.isEmpty() && otherConfigs.isEmpty()) return emptyList()
         if(configs.isEmpty()) return otherConfigs
         if(otherConfigs.isEmpty()) return configs
@@ -157,18 +160,18 @@ object CwtConfigManipulator {
             val c1 = configs.single()
             val c2 = otherConfigs.single()
             if(c1 is CwtValueConfig && c2 is CwtValueConfig) {
-                val merged = mergeValueConfig(c1, c2)
-                if(merged != null) return merged.toSingletonList()
+                if(c1.isBlock && c2.isBlock) {
+                    val mergedConfigs = mergeConfigs(c1.configs.orEmpty(), c2.configs.orEmpty())
+                    return listOf(inlineWithConfigs(null, mergedConfigs, c1.configGroup))
+                }
+                val mergedConfig = mergeValueConfig(c1, c2)
+                if(mergedConfig != null) return mergedConfig.toSingletonList()
             } else if(c1 is CwtPropertyConfig && c2 is CwtPropertyConfig) {
                 val same = getDistinctKey(c1) == getDistinctKey(c2)
                 if(same) return c1.toSingletonList()
             } else {
                 return emptyList()
             }
-        }
-        
-        if(relax) {
-            return merge(configs, otherConfigs).distinctBy { getDistinctKey(it) }
         }
         
         val m1 = configs.associateBy { getDistinctKey(it) }
@@ -189,12 +192,12 @@ object CwtConfigManipulator {
         if(c1 === c2) return c1 //reference equality
         if(c1.pointer == c2.pointer) return c1 //value equality (should be) 
         if(c1.expression.type == CwtDataTypes.Block || c2.expression.type == CwtDataTypes.Block) return null //cannot merge non-same clauses
-        val expressionString = mergeExpressionString(c1.expression, c2.expression)
+        val expressionString = CwtDataExpressionMerger.merge(c1.expression, c2.expression)
         if(expressionString == null) return null
         return CwtValueConfig.resolve(
             pointer = emptyPointer(),
             configGroup = c1.configGroup,
-            value = c1.value,
+            value = expressionString,
             optionConfigs = mergeOptions(c1.optionConfigs, c2.optionConfigs),
             documentation = mergeDocumentations(c1.documentation, c2.documentation)
         )
@@ -205,64 +208,10 @@ object CwtConfigManipulator {
         for(config in configs) {
             val e1 = configExpression //expect
             val e2 = config.expression //actual (e.g., from parameterized key)
-            val e3 = mergeExpressionString(e1, e2) ?: continue //merged
-            
-            //"scope_field" merge "scope[country]" -> "scope[country]" -> true
-            
-            //TODO 1.3.8+ optimize merge & match logic
-            
+            val e3 = CwtDataExpressionMerger.merge(e1, e2) ?: continue //merged
             if(e3 == e2.expressionString) return true
         }
         return false
-    }
-    
-    fun mergeExpressionString(e1: CwtDataExpression, e2: CwtDataExpression): String? {
-        val ignoreCase = e1.type == CwtDataTypes.Constant && e2.type == CwtDataTypes.Constant
-        if(e1.expressionString.equals(e2.expressionString, ignoreCase)) return e1.expressionString
-        return doMergeExpressionString(e1, e2) ?: doMergeExpressionString(e2, e1)
-    }
-    
-    private fun doMergeExpressionString(e1: CwtDataExpression, e2: CwtDataExpression): String? {
-        val t1 = e1.type
-        val t2 = e2.type
-        return when(t1) {
-            CwtDataTypes.Any -> e2.expressionString
-            CwtDataTypes.Int -> when(t2) {
-                CwtDataTypes.Int, CwtDataTypes.Float, CwtDataTypes.ValueField, CwtDataTypes.IntValueField, CwtDataTypes.VariableField, CwtDataTypes.IntVariableField -> "int"
-                else -> null
-            }
-            CwtDataTypes.Float -> when(t2) {
-                CwtDataTypes.Float, CwtDataTypes.ValueField, CwtDataTypes.VariableField -> "float"
-                else -> null
-            }
-            CwtDataTypes.Scalar -> when(t2) {
-                CwtDataTypes.Block, CwtDataTypes.ColorField -> null
-                else -> "scalar"
-            }
-            CwtDataTypes.ScopeField, CwtDataTypes.Scope, CwtDataTypes.ScopeGroup -> when(t2) {
-                CwtDataTypes.ScopeField -> e1.expressionString
-                CwtDataTypes.Scope -> if(e2.value == "any") e1.expressionString else null
-                else -> null
-            }
-            CwtDataTypes.Value, CwtDataTypes.ValueSet, CwtDataTypes.DynamicValue -> when(t2) {
-                CwtDataTypes.Value, CwtDataTypes.ValueSet, CwtDataTypes.DynamicValue -> if(e1.value == e2.value) "dynamic_value[${e1.value}]" else null
-                CwtDataTypes.ValueField, CwtDataTypes.IntValueField, CwtDataTypes.VariableField, CwtDataTypes.IntVariableField -> "dynamic_value[${e1.value}]"
-                else -> null
-            }
-            CwtDataTypes.VariableField -> when(t2) {
-                CwtDataTypes.VariableField, CwtDataTypes.ValueField -> "variable_field"
-                else -> null
-            }
-            CwtDataTypes.IntVariableField -> when(t2) {
-                CwtDataTypes.IntVariableField, CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> "int_variable_field"
-                else -> null
-            }
-            CwtDataTypes.IntValueField -> when(t2) {
-                CwtDataTypes.ValueField, CwtDataTypes.IntValueField -> "int_value_field"
-                else -> null
-            }
-            else -> null
-        }
     }
     
     private fun mergeOptions(a: List<CwtOptionMemberConfig<*>>?, b: List<CwtOptionMemberConfig<*>>?): List<CwtOptionMemberConfig<*>> {

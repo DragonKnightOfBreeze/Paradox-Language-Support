@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.expression
+package icu.windea.pls.ep.dataExpression
 
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*

@@ -1,10 +1,10 @@
-package icu.windea.pls.ep.expression
+package icu.windea.pls.ep.dataExpression
 
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.config.expression.*
 
 /**
- * 用于解析CWT规则表达式。
+ * 用于解析CWT数据表达式。
  */
 interface CwtDataExpressionResolver {
     /**

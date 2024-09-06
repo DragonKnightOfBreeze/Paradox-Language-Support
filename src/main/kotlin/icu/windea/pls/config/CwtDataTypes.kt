@@ -44,7 +44,6 @@ object CwtDataTypes {
     val ParameterValue = CwtDataType("ParameterValue")
     val LocalisationParameter = CwtDataType("LocalisationParameter")
     val ShaderEffect = CwtDataType("ShaderEffect") //effects in .shader files
-    
     val DatabaseObject = CwtDataType("DatabaseObject")
     
     @WithGameType(ParadoxGameType.Stellaris)

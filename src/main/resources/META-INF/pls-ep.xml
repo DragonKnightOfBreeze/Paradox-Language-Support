@@ -2,9 +2,6 @@
   <extensionPoints>
     <extensionPoint qualifiedName="icu.windea.pls.incorrectExpressionChecker" interface="icu.windea.pls.ep.checker.ParadoxIncorrectExpressionChecker" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.colorSupport" interface="icu.windea.pls.ep.color.ParadoxColorSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.dataExpressionResolver" interface="icu.windea.pls.ep.expression.CwtDataExpressionResolver" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.dataExpressionMatcher" interface="icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.dataExpressionPriorityProvider" interface="icu.windea.pls.ep.expression.CwtDataExpressionPriorityProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configContextProvider" interface="icu.windea.pls.ep.config.CwtConfigContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.declarationConfigContextProvider" interface="icu.windea.pls.ep.config.CwtDeclarationConfigContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.injectedConfigProvider" interface="icu.windea.pls.ep.config.CwtInjectedConfigProvider" dynamic="true"/>
@@ -19,6 +16,10 @@
     <extensionPoint qualifiedName="icu.windea.pls.parameterExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxParameterExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.complexEnumValueExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxComplexEnumValueExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dynamicValueExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxDynamicValueExtendedDocumentationProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.dataExpressionResolver" interface="icu.windea.pls.ep.dataExpression.CwtDataExpressionResolver" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.dataExpressionMerger" interface="icu.windea.pls.ep.dataExpression.CwtDataExpressionMerger" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.dataExpressionPriorityProvider" interface="icu.windea.pls.ep.dataExpression.CwtDataExpressionPriorityProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionMatcher" interface="icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.localisationExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.pathReferenceExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport" dynamic="true"/>
@@ -107,22 +108,24 @@
     
     <dynamicValueExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxBaseDynamicValueExtendedDocumentationProvider" order="last"/>
     
-    <dataExpressionResolver id="base" implementation="icu.windea.pls.ep.expression.BaseCwtDataExpressionResolver"/>
-    <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.expression.CoreCwtDataExpressionResolver"/>
-    <dataExpressionResolver id="constant" implementation="icu.windea.pls.ep.expression.ConstantCwtDataExpressionResolver" order="last"/>
-    <dataExpressionResolver id="template" implementation="icu.windea.pls.ep.expression.TemplateExpressionCwtDataExpressionResolver" order="last, after constant"/>
-    <dataExpressionResolver id="ant" implementation="icu.windea.pls.ep.expression.AntExpressionCwtDataExpressionResolver"/>
-    <dataExpressionResolver id="re" implementation="icu.windea.pls.ep.expression.RegexCwtDataExpressionResolver"/>
+    <dataExpressionResolver id="base" implementation="icu.windea.pls.ep.dataExpression.BaseCwtDataExpressionResolver"/>
+    <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.dataExpression.CoreCwtDataExpressionResolver"/>
+    <dataExpressionResolver id="constant" implementation="icu.windea.pls.ep.dataExpression.ConstantCwtDataExpressionResolver" order="last"/>
+    <dataExpressionResolver id="template" implementation="icu.windea.pls.ep.dataExpression.TemplateExpressionCwtDataExpressionResolver" order="last, after constant"/>
+    <dataExpressionResolver id="ant" implementation="icu.windea.pls.ep.dataExpression.AntExpressionCwtDataExpressionResolver"/>
+    <dataExpressionResolver id="re" implementation="icu.windea.pls.ep.dataExpression.RegexCwtDataExpressionResolver"/>
 
-    <dataExpressionMatcher implementation="icu.windea.pls.ep.expression.BaseParadoxScriptExpressionMatcher"/>
-    <dataExpressionMatcher implementation="icu.windea.pls.ep.expression.CoreParadoxScriptExpressionMatcher"/>
-    <dataExpressionMatcher implementation="icu.windea.pls.ep.expression.ConstantParadoxScriptExpressionMatcher" order="first"/>
-    <dataExpressionMatcher implementation="icu.windea.pls.ep.expression.TemplateExpressionParadoxScriptExpressionMatcher"/>
-    <dataExpressionMatcher implementation="icu.windea.pls.ep.expression.AntExpressionParadoxScriptExpressionMatcher"/>
-    <dataExpressionMatcher implementation="icu.windea.pls.ep.expression.RegexParadoxScriptExpressionMatcher"/>
+    <dataExpressionMerger implementation="icu.windea.pls.ep.dataExpression.DefaultCwtDataExpressionMerger"/>
     
-    <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.expression.BaseCwtDataExpressionPriorityProvider"/>
-    <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.expression.CoreCwtDataExpressionPriorityProvider"/>
+    <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.dataExpression.BaseCwtDataExpressionPriorityProvider"/>
+    <dataExpressionPriorityProvider implementation="icu.windea.pls.ep.dataExpression.CoreCwtDataExpressionPriorityProvider"/>
+
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.expression.BaseParadoxScriptExpressionMatcher"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.expression.CoreParadoxScriptExpressionMatcher"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.expression.ConstantParadoxScriptExpressionMatcher" order="first"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.expression.TemplateExpressionParadoxScriptExpressionMatcher"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.expression.AntExpressionParadoxScriptExpressionMatcher"/>
+    <scriptExpressionMatcher implementation="icu.windea.pls.ep.expression.RegexParadoxScriptExpressionMatcher"/>
     
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptBlockExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptBoolExpressionSupport"/>

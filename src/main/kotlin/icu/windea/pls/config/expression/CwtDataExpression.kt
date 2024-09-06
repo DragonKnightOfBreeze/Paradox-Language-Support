@@ -3,7 +3,7 @@ package icu.windea.pls.config.expression
 import com.google.common.cache.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.expression.*
+import icu.windea.pls.ep.dataExpression.*
 
 /**
  * @property type 表达式类型，即CWT规则中的dataType。

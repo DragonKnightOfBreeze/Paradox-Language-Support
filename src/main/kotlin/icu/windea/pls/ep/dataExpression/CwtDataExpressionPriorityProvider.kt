@@ -1,13 +1,13 @@
-package icu.windea.pls.ep.expression
+package icu.windea.pls.ep.dataExpression
 
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 
 /**
- * 用于得到CWT规则表达式的优先级。
+ * 用于得到CWT数据表达式的优先级。
  *
- * 脚本表达式会优先匹配优先级更高的CWT规则表达式。
+ * 脚本表达式会优先匹配优先级更高的数据表达式。
  */
 interface CwtDataExpressionPriorityProvider {
     /**

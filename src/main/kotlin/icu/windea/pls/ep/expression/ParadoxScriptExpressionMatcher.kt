@@ -35,7 +35,7 @@ interface ParadoxScriptExpressionMatcher {
     ): ParadoxExpressionMatcher.Result?
     
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxScriptExpressionMatcher>("icu.windea.pls.dataExpressionMatcher")
+        val EP_NAME = ExtensionPointName.create<ParadoxScriptExpressionMatcher>("icu.windea.pls.scriptExpressionMatcher")
         
         /**
          * @see ParadoxScriptExpressionMatcher.matches
