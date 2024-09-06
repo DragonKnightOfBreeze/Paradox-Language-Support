@@ -43,6 +43,12 @@ class ParadoxLocalisationInlineActionHandler : InlineActionHandler() {
             return
         }
         
+        if(ParadoxLocalisationManager.isSpecialLocalisation(element)) {
+            val message = PlsBundle.message("refactoring.localisation.special", getRefactoringName())
+            CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
+            return
+        }
+        
         val isRecursive = ParadoxRecursionManager.isRecursiveLocalisation(element)
         if(isRecursive) {
             val message = PlsBundle.message("refactoring.localisation.recursive", getRefactoringName())
