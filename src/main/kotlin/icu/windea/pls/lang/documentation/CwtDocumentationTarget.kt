@@ -399,7 +399,7 @@ private fun getConfigGroup(element: PsiElement, originalElement: PsiElement?, pr
         if(gameType != null) return getConfigGroup(project, gameType)
     }
     if(element.language == CwtLanguage) {
-        return CwtConfigManager.getContainingConfigGroup(element)
+        return CwtConfigManager.getContainingConfigGroup(element, forRepo = true)
     }
     return null
 }

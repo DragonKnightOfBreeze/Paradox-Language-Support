@@ -51,7 +51,7 @@ object CwtConfigCompletionManager {
         context.parameters = parameters
         context.completionIds = mutableSetOf<String>().synced()
         
-        val configGroup = CwtConfigManager.getContainingConfigGroup(parameters.originalFile) ?: return false
+        val configGroup = CwtConfigManager.getContainingConfigGroup(parameters.originalFile, forRepo = true) ?: return false
         context.configGroup = configGroup
         
         val quoted = contextElement.text.isLeftQuoted()
