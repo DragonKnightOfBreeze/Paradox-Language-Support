@@ -28,12 +28,13 @@ private fun doResolve(subPaths: List<String>): CwtConfigPath {
     return CwtConfigPathImpl(subPaths)
 }
 
+//12 + 2 * 4 = 20 -> 24
 private class CwtConfigPathImpl(
     subPaths: List<String>
 ) : CwtConfigPath {
     override val path: String = subPaths.joinToString("/") { it.replace("/", "\\/") }.intern()
     override val subPaths: List<String> = subPaths.map { it.intern() }
-    override val length: Int = subPaths.size
+    override val length: Int get() = subPaths.size
     
     override fun equals(other: Any?) = this === other || other is CwtConfigPath && path == other.path
     override fun hashCode() = path.hashCode()
