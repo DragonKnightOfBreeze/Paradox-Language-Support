@@ -6,7 +6,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.annotations.api.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.config.*
@@ -23,6 +22,7 @@ import kotlin.collections.component2
  * @property elementPath 相对于所属文件的定义成员路径。
  */
 class ParadoxDefinitionInfo(
+    val element: ParadoxScriptDefinitionElement, //use element directly here
     name0: String?, // null -> lazy get
     typeConfig0: CwtTypeConfig,
     subtypeConfigs0: List<CwtSubtypeConfig>?, //null -> lazy get
@@ -30,7 +30,6 @@ class ParadoxDefinitionInfo(
     val elementPath: ParadoxExpressionPath,
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
-    val element: ParadoxScriptDefinitionElement,
 ) : UserDataHolderBase() {
     //NOTE 部分属性需要使用懒加载
     

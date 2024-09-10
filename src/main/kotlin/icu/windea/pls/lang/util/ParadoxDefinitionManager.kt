@@ -67,7 +67,7 @@ object ParadoxDefinitionManager {
         val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val typeConfig = getMatchedTypeConfig(element, path, elementPath, rootKey, configGroup)
         if(typeConfig == null) return null
-        return ParadoxDefinitionInfo(null, typeConfig, null, rootKey, elementPath, gameType, configGroup, element)
+        return ParadoxDefinitionInfo(element, null, typeConfig, null, rootKey, elementPath, gameType, configGroup)
     }
     
     fun getMatchedTypeConfig(
@@ -634,7 +634,7 @@ object ParadoxDefinitionManager {
         val subtypeConfigs = subtypes?.mapNotNull { typeConfig.subtypes[it] }
         val rootKey = stub.rootKey
         val elementPath = stub.elementPath
-        return ParadoxDefinitionInfo(name, typeConfig, subtypeConfigs, rootKey, elementPath, gameType, configGroup, element)
+        return ParadoxDefinitionInfo(element, name, typeConfig, subtypeConfigs, rootKey, elementPath, gameType, configGroup)
     }
     
     //related localisations & images methods

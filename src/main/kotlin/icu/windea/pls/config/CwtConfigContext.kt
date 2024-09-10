@@ -30,15 +30,12 @@ import java.util.concurrent.*
  * @see CwtConfigContextProvider
  */
 class CwtConfigContext(
-    element: ParadoxScriptMemberElement,
+    val element: ParadoxScriptMemberElement, //use element directly here
     val fileInfo: ParadoxFileInfo?,
     val elementPath: ParadoxExpressionPath?,
     val gameType: ParadoxGameType,
     val configGroup: CwtConfigGroup,
 ) : UserDataHolderBase() {
-    private val elementPointer = element.createPointer()
-    val element get() = elementPointer.element
-    
     fun getConfigs(matchOptions: Int = Options.Default): List<CwtMemberConfig<*>> {
         val rootFile = selectRootFile(element) ?: return emptyList()
         val cache = configGroup.configsCache.value.get(rootFile)
