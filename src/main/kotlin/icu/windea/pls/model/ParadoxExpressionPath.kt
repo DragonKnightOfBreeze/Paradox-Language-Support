@@ -82,44 +82,79 @@ fun ParadoxExpressionPath.matchEntire(other: List<String>, ignoreCase: Boolean =
     return true
 }
 
-//Implementations (interned)
+//Implementations (not interned)
 
 private fun doResolve(originalPath: String): ParadoxExpressionPath {
     if(originalPath.isEmpty()) return EmptyParadoxExpressionPath
-    return ParadoxExpressionPathImplA(originalPath)
+    return ParadoxExpressionPathImpl(originalPath)
 }
 
 private fun doResolve(originalSubPaths: List<String>): ParadoxExpressionPath {
     if(originalSubPaths.isEmpty()) return EmptyParadoxExpressionPath
-    return ParadoxExpressionPathImplB(originalSubPaths)
+    return ParadoxExpressionPathImpl(originalSubPaths)
 }
 
 //to optimize memory, it's better to use cache, or make property 'path' and 'originalPath' computed 
 
 //12 + 4 * 4 = 28 -> 32
-private class ParadoxExpressionPathImplA(
-    path: String
-) : ParadoxExpressionPath {
-    override val originalPath: String = path.intern()
-    override val originalSubPaths: List<String> = path2SubPaths(path)
-    override val subPaths: List<String> = originalSubPaths.map { it.unquote().intern() }
-    override val path: String = subPaths2Path(subPaths)
+private class ParadoxExpressionPathImpl : ParadoxExpressionPath {
+    override val path: String
+    override val subPaths: List<String>
+    override val originalPath: String
+    override val originalSubPaths: List<String>
     override val length: Int get() = subPaths.size
     
-    override fun equals(other: Any?) = this === other || other is ParadoxExpressionPath && path == other.path
-    override fun hashCode() = path.hashCode()
-    override fun toString() = path
-}
-
-//12 + 4 * 4 = 28 -> 32
-private class ParadoxExpressionPathImplB(
-    originalSubPaths: List<String>
-) : ParadoxExpressionPath {
-    override val originalSubPaths: List<String> = originalSubPaths.map { it.intern() }
-    override val originalPath: String = subPaths2Path(originalSubPaths)
-    override val subPaths: List<String> = originalSubPaths.map { it.unquote().intern() }
-    override val path: String = subPaths2Path(subPaths)
-    override val length: Int get() = originalSubPaths.size
+    constructor(originalPath: String) {
+        this.originalPath = originalPath
+        this.originalSubPaths = path2SubPaths(originalPath)
+        val mayBeQuoted = originalPath.contains('"')
+        this.subPaths = if(mayBeQuoted) originalSubPaths.map { it.unquote() } else originalSubPaths
+        this.path = if(mayBeQuoted) subPaths2Path(subPaths) else originalPath
+    }
+    
+    constructor(originalSubPaths: List<String>) {
+        this.originalPath = subPaths2Path(originalSubPaths)
+        this.originalSubPaths = originalSubPaths
+        val mayBeQuoted = originalPath.contains('"')
+        this.subPaths = if(mayBeQuoted) originalSubPaths.map { it.unquote() } else originalSubPaths
+        this.path = if(mayBeQuoted) subPaths2Path(subPaths) else originalPath
+    }
+    
+    private fun path2SubPaths(path: String): List<String> {
+        return buildList {
+            val builder = StringBuilder()
+            var escape = false
+            path.forEach { c ->
+                when {
+                    c == '\\' -> {
+                        escape = true
+                    }
+                    c == '/' && !escape -> {
+                        if(builder.isNotEmpty()) add(builder.toString())
+                        builder.clear()
+                    }
+                    else -> {
+                        if(escape) escape = false
+                        builder.append(c)
+                    }
+                }
+            }
+            if(builder.isNotEmpty()) add(builder.toString())
+        }
+    }
+    
+    private fun subPaths2Path(subPaths: List<String>): String {
+        val builder = StringBuilder()
+        var isFirst = true
+        subPaths.forEach { p ->
+            if(isFirst) isFirst = false else builder.append('/')
+            p.forEach { c ->
+                if(c == '/') builder.append('\\')
+                builder.append(c)
+            }
+        }
+        return builder.toString()
+    }
     
     override fun equals(other: Any?) = this === other || other is ParadoxExpressionPath && path == other.path
     override fun hashCode() = path.hashCode()
@@ -136,42 +171,4 @@ private object EmptyParadoxExpressionPath : ParadoxExpressionPath {
     override fun equals(other: Any?) = this === other || other is ParadoxExpressionPath && path == other.path
     override fun hashCode() = path.hashCode()
     override fun toString() = path
-}
-
-private fun path2SubPaths(path: String): List<String> {
-    return buildList {
-        val builder = StringBuilder()
-        var escape = false
-        path.forEach { c ->
-            when {
-                c == '\\' -> {
-                    escape = true
-                }
-                c == '/' && !escape -> {
-                    add(builder.toString().intern())
-                    builder.clear()
-                }
-                else -> {
-                    if(escape) escape = false
-                    builder.append(c)
-                }
-            }
-        }
-        if(builder.isNotEmpty()) {
-            add(builder.toString().intern())
-        }
-    }
-}
-
-private fun subPaths2Path(originalSubPaths: List<String>): String {
-    val builder = StringBuilder()
-    var isFirst = true
-    originalSubPaths.forEach { p ->
-        if(isFirst) isFirst = false else builder.append('/')
-        p.forEach { c ->
-            if(c == '/') builder.append('\\')
-            builder.append(c)
-        }
-    }
-    return builder.toString().intern()
 }
