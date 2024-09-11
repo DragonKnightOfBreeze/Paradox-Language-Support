@@ -22,6 +22,7 @@ interface ParadoxPath : Iterable<String> {
     
     fun isEmpty(): Boolean = length == 0
     fun isNotEmpty(): Boolean = length != 0
+    fun get(index: Int): String = subPaths.getOrNull(index).orEmpty()
     
     override fun iterator(): Iterator<String> = subPaths.iterator()
     
@@ -34,46 +35,39 @@ interface ParadoxPath : Iterable<String> {
     }
 }
 
-//Implementations (interned)
+//Implementations (not interned)
 
 private fun doResolve(path: String): ParadoxPath {
     if(path.isEmpty()) return EmptyParadoxPath
-    return ParadoxPathImplA(path)
+    return ParadoxPathImpl(path)
 }
 
 private fun doResolve(subPaths: List<String>): ParadoxPath {
     if(subPaths.isEmpty()) return EmptyParadoxPath
-    return ParadoxPathImplB(subPaths)
+    return ParadoxPathImpl(subPaths)
 }
 
-//12 + 5 * 4 = 32 -> 32
-private class ParadoxPathImplA(
-    path: String
-) : ParadoxPath {
-    override val path: String = path.intern()
-    override val subPaths: List<String> = path.split('/').map { it.intern() }
-    override val parent: String = path.substringBeforeLast('/', "").intern()
+//12 + 3 * 4 = 24 -> 24
+private class ParadoxPathImpl: ParadoxPath {
+    override val path: String
+    override val subPaths: List<String>
+    override val parent: String
     override val root: String get() = subPaths.firstOrNull().orEmpty()
-    override val fileName: String = subPaths.lastOrNull().orEmpty()
-    override val fileExtension: String? = fileName.substringAfterLast('.', "").intern().orNull()
+    override val fileName: String get() = subPaths.lastOrNull().orEmpty()
+    override val fileExtension: String? get() = fileName.substringAfterLast('.', "").orNull()
     override val length: Int get() = subPaths.size
     
-    override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path
-    override fun hashCode() = path.hashCode()
-    override fun toString() = path
-}
-
-//12 + 5 * 4 = 32 -> 32
-private class ParadoxPathImplB(
-    subPaths: List<String>
-) : ParadoxPath {
-    override val subPaths: List<String> = subPaths.map { it.intern() }
-    override val path: String = subPaths.joinToString("/").intern()
-    override val parent: String = path.substringBeforeLast('/', "").intern()
-    override val root: String get() = subPaths.firstOrNull().orEmpty()
-    override val fileName: String = subPaths.lastOrNull().orEmpty()
-    override val fileExtension: String? = fileName.substringAfterLast('.', "").intern().orNull()
-    override val length: Int get() = subPaths.size
+    constructor(path: String) {
+        this.path = path.intern()
+        this.subPaths = path.split('/')
+        this.parent = path.substringBeforeLast('/', "")
+    }
+    
+    constructor(subPaths: List<String>) {
+        this.path = subPaths.joinToString("/")
+        this.subPaths= subPaths
+        this.parent = path.substringBeforeLast('/', "")
+    }
     
     override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path
     override fun hashCode() = path.hashCode()
