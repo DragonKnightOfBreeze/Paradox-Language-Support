@@ -19,7 +19,7 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
         val INSTANCE by lazy { findIndex<ParadoxFilePathIndex>() }
         val NAME = ID.create<String, ParadoxFilePathInfo>("paradox.file.path.index")
         
-        private const val VERSION = 53 //1.3.19
+        private const val VERSION = 54 //1.3.21
         
         private val EXCLUDED_DIRECTORIES = listOf(
             "_CommonRedist",

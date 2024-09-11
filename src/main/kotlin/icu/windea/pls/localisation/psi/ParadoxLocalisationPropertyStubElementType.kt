@@ -73,4 +73,8 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
         val gameType = dataStream.readByte().deoptimizeValue<ParadoxGameType>()
         return ParadoxLocalisationPropertyStub.Impl(parentStub, name, category, locale, gameType)
     }
+    
+    override fun isAlwaysLeaf(root: StubBase<*>): Boolean {
+        return true
+    }
 }

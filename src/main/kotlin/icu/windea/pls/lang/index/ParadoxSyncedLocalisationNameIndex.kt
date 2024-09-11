@@ -4,7 +4,7 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.localisation.psi.*
 
 private val KEY = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
-private const val VERSION = 53 //1.3.15
+private const val VERSION = 54 //1.3.21
 private const val CACHE_SIZE = 2 * 1024
 
 /**
@@ -16,7 +16,7 @@ class ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLocal
         val INSTANCE by lazy { findStubIndex<ParadoxSyncedLocalisationNameIndex>() }
         val KEY = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
         
-        private const val VERSION = 53 //1.3.15
+        private const val VERSION = 54 //1.3.21
         private const val CACHE_SIZE = 2 * 1024
     }
     
