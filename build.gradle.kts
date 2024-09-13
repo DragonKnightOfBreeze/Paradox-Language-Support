@@ -3,9 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.*
 import org.jetbrains.kotlin.utils.*
 
 plugins {
-	id("org.jetbrains.kotlin.jvm") version "1.9.24"
-	id("org.jetbrains.kotlin.plugin.allopen") version "1.9.24"
-	id("org.jetbrains.intellij") version "1.17.3"
+	id("org.jetbrains.kotlin.jvm") version "1.9.25"
+	id("org.jetbrains.intellij") version "1.17.4"
 	id("org.jetbrains.grammarkit") version "2022.3.2.2"
 	id("org.jetbrains.changelog") version "2.0.0"
 }
@@ -82,10 +81,6 @@ sourceSets {
 
 kotlin {
 	jvmToolchain(17)
-}
-
-allOpen {
-	annotation("icu.windea.pls.injectx.injectors.FileRenderCodeInjector")
 }
 
 val excludesInJar = listOf(

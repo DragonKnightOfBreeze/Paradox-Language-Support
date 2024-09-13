@@ -1,6 +1,3 @@
-modules.xml
-*.iml
-
 lib/
 tmp/
 cwt/cwtools-*-config
@@ -37,11 +34,11 @@ local.properties
 # When using Gradle or Maven with auto-import, you should exclude module files,
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
-# .idea/modules.xml
-# .idea/*.iml
-# .idea/modules
-# *.iml
-# *.ipr
+.idea/modules.xml
+.idea/*.iml
+.idea/modules
+*.iml
+*.ipr
 
 # CMake
 cmake-build-*/
@@ -230,7 +227,7 @@ out
 dist
 
 # Gatsby files
-.cache/
+#.cache/
 # Comment in the public line in if your project uses Gatsby and not Next.js
 # https://nextjs.org/blog/next-9-1#public-directory-support
 # public
@@ -240,7 +237,7 @@ dist
 
 # vuepress v2.x temp and cache directory
 .temp
-.cache
+#.cache
 
 # Docusaurus cache and generated files
 .docusaurus
