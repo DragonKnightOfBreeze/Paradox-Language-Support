@@ -12,7 +12,6 @@ import icu.windea.pls.ep.documentation.*
  * 
  * @see icu.windea.pls.ep.documentation.ParadoxDocumentationLinkProvider
  */
-@HiddenApi
 class ParadoxPathReferenceProvider : PathReferenceProviderBase() {
     override fun createReferences(element: PsiElement, offset: Int, text: String?, references: MutableList<in PsiReference>, soft: Boolean): Boolean {
         val link = text ?: return true

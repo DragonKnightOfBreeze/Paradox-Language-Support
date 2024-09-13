@@ -6,7 +6,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.api.*
+import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.util.*
@@ -159,7 +159,7 @@ class ParadoxDefinitionInfo(
         val required: Boolean = false,
         val primary: Boolean = false
     ) {
-        @InferApi
+        @Inferred
         val primaryByInference: Boolean = key.equals("icon", true)
     }
     
@@ -169,7 +169,7 @@ class ParadoxDefinitionInfo(
         val required: Boolean = false,
         val primary: Boolean = false
     ) {
-        @InferApi
+        @Inferred
         val primaryByInference: Boolean = key.equals("name", true) || key.equals("title", true)
     }
     

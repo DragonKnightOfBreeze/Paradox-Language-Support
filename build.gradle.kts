@@ -20,7 +20,6 @@ intellij {
 	plugins.add("com.intellij.platform.images")
 	
 	//optional
-	plugins.add("markdown")
 	plugins.add("uml")
 	plugins.add("cn.yiiguxing.plugin.translate:3.5.2") //https://github.com/YiiGuxing/TranslationPlugin
 	
@@ -28,6 +27,7 @@ intellij {
 	//plugins.add("properties")
 	//plugins.add("java")
 	//plugins.add("org.jetbrains.kotlin")
+    //plugins.add("markdown")
 }
 
 grammarKit {

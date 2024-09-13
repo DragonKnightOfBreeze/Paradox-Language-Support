@@ -8,7 +8,6 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.annotations.api.*
 import icu.windea.pls.ep.documentation.*
 
-@HiddenApi
 class ParadoxPathReference(
     element: PsiElement,
     rangeInElement: TextRange,
