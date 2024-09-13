@@ -55,4 +55,8 @@ object ParadoxScriptScriptedVariableStubElementType : ILightStubElementType<Para
         val gameType = dataStream.readByte().deoptimizeValue<ParadoxGameType>()
         return ParadoxScriptScriptedVariableStub.Impl(parentStub, name, gameType)
     }
+    
+    override fun isAlwaysLeaf(root: StubBase<*>): Boolean {
+        return true
+    }
 }

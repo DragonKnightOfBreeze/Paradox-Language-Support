@@ -402,8 +402,9 @@ object ParadoxExpressionManager {
                     element is ParadoxScriptProperty -> config is CwtPropertyConfig && run {
                         if(keyExpression == null) return@run true
                         if(isDefinition) return@run true
-                        doMatchParameterizedKeyConfigs(parameterizedKeyConfigs, config.keyExpression)?.let { return@run it }
-                        ParadoxExpressionMatcher.matches(element, keyExpression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)
+                        val configKeyExpression = config.keyExpression
+                        doMatchParameterizedKeyConfigs(parameterizedKeyConfigs, configKeyExpression)?.let { return@run it }
+                        ParadoxExpressionMatcher.matches(element, keyExpression, configKeyExpression, config, configGroup, matchOptions).get(matchOptions)
                     }
                     
                     element is ParadoxScriptValue -> config is CwtValueConfig
@@ -421,7 +422,8 @@ object ParadoxExpressionManager {
         ProgressManager.checkCanceled()
         val matchResultValues = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
         contextConfigsToMatch.forEach f@{ config ->
-            val matchResult = ParadoxExpressionMatcher.matches(element, valueExpression, config.valueExpression, config, configGroup, matchOptions)
+            val configValueExpression = config.valueExpression
+            val matchResult = ParadoxExpressionMatcher.matches(element, valueExpression, configValueExpression, config, configGroup, matchOptions)
             if(matchResult == ParadoxExpressionMatcher.Result.NotMatch) return@f
             matchResultValues.add(ResultValue(config, matchResult))
         }
