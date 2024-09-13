@@ -50,19 +50,19 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
                     configExpression.type in CwtDataTypeGroups.DynamicValue -> {
                         val type = configExpression.value
                         if(type != null) {
-                            configGroup.dynamicValueTypes[type]?.valueConfigMap?.get(name)?.also { result.add(it) }
+                            configGroup.dynamicValueTypes[type]?.valueConfigMap?.get(name)?.also { result += it }
                         }
                     }
                     configExpression.type == CwtDataTypes.EnumValue -> {
                         val enumName = configExpression.value
                         if(enumName != null) {
-                            configGroup.enums[enumName]?.valueConfigMap?.get(name)?.also { result.add(it) }
-                            configGroup.complexEnums[enumName]?.also { result.add(it) }
+                            configGroup.enums[enumName]?.valueConfigMap?.get(name)?.also { result += it }
+                            configGroup.complexEnums[enumName]?.also { result += it }
                         }
                     }
                     configExpression.type == CwtDataTypes.Modifier -> {
                         val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup)
-                        modifierElement?.modifierConfig?.also { result.add(it) }
+                        modifierElement?.modifierConfig?.also { result += it }
                     }
                 }
             }
@@ -87,7 +87,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             if(name.isNullOrEmpty()) return@r0
             if(name.isParameterized()) return@r0
             val config = configGroup.extendedScriptedVariables.findFromPattern(name, element, configGroup)
-            if(config != null) result.add(config)
+            if(config != null) result += config
         }
         
         run r0@{
@@ -101,17 +101,17 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             run r1@{
                 val extendedConfigs = configGroup.extendedDefinitions.findFromPattern(definitionName, definition, configGroup).orEmpty()
                 val matchedConfigs = extendedConfigs.filter { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionInfo) }
-                result.addAll(matchedConfigs)
+                result += matchedConfigs
             }
             run r1@{
                 if(definitionInfo.type != "game_rule") return@r1
                 val extendedConfig = configGroup.extendedGameRules.findFromPattern(definitionName, element, configGroup)
-                if(extendedConfig != null) result.add(extendedConfig)
+                if(extendedConfig != null) result += extendedConfig
             }
             run r1@{
                 if(definitionInfo.type != "on_action") return@r1
                 val extendedConfig = configGroup.extendedOnActions.findFromPattern(definitionName, element, configGroup)
-                if(extendedConfig != null) result.add(extendedConfig)
+                if(extendedConfig != null) result += extendedConfig
             }
         }
         
@@ -121,7 +121,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             } ?: return@r0
             val extendedConfigs = configGroup.extendedParameters.findFromPattern(element.name, element, configGroup).orEmpty()
                 .filterTo(result) { it.contextKey.matchFromPattern(element.contextKey, element, configGroup) }
-            result.addAll(extendedConfigs)
+            result += extendedConfigs
         }
         
         run r0@{
@@ -135,20 +135,20 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
                         val resolved = reference.resolve()?.castOrNull<ParadoxParameterElement>() ?: continue
                         val extendedConfigs = configGroup.extendedParameters.findFromPattern(name, element, configGroup).orEmpty()
                             .filterTo(result) { it.contextKey.matchFromPattern(resolved.contextKey, element, configGroup) }
-                        result.addAll(extendedConfigs)
+                        result += extendedConfigs
                     }
                     ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxComplexEnumValueElement>() ?: continue
                         val extendedConfigs = configGroup.extendedComplexEnumValues[resolved.enumName] ?: continue
                         val extendedConfig = extendedConfigs.findFromPattern(resolved.name, element, configGroup) ?: continue
-                        result.add(extendedConfig)
+                        result += extendedConfig
                     }
                     ParadoxResolveConstraint.DynamicValueStrictly.canResolve(reference) -> {
                         val resolved = reference.resolve()?.castOrNull<ParadoxDynamicValueElement>() ?: continue
                         for(type in resolved.dynamicValueTypes) {
                             val extendedConfigs = configGroup.extendedDynamicValues[type] ?: continue
                             val extendedConfig = extendedConfigs.findFromPattern(resolved.name, element, configGroup) ?: continue
-                            result.add(extendedConfig)
+                            result += extendedConfig
                         }
                     }
                 }
@@ -162,7 +162,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
                 when {
                     configExpression.expressionString == ParadoxInlineScriptManager.inlineScriptPathExpressionString -> {
                         val extendedConfig = configGroup.extendedInlineScripts.findFromPattern(name, element, configGroup) ?: continue
-                        result.add(extendedConfig)
+                        result += extendedConfig
                     }
                 }
             }
