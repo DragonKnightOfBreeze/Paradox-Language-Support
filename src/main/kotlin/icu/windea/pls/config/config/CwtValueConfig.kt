@@ -4,7 +4,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
@@ -207,9 +206,6 @@ private class CwtValueConfigFromPropertyConfig(
     override val configs: List<CwtMemberConfig<*>>? get() = propertyConfig.configs
     
     override var parentConfig: CwtMemberConfig<*>? = null
-    
-    override fun <T : Any?> getUserData(key: Key<T>) = super.getUserData(key) ?: propertyConfig.getUserData(key)
-    override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
     
     override fun toString(): String = value
 }
