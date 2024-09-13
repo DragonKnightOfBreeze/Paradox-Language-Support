@@ -3,7 +3,6 @@ package icu.windea.pls.lang.tools.actions
 import com.intellij.openapi.actionSystem.*
 import icu.windea.pls.lang.*
 
-@Suppress("MissingActionUpdateThread")
 class PlsToolsActionGroup: DefaultActionGroup() {
     override fun update(e: AnActionEvent) {
         val place = e.place
@@ -14,5 +13,9 @@ class PlsToolsActionGroup: DefaultActionGroup() {
         } else {
             e.presentation.isEnabledAndVisible = true
         }
+    }
+    
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.BGT
     }
 }
