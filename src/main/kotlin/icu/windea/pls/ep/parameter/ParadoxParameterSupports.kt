@@ -10,6 +10,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
@@ -401,13 +402,13 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
                 if(config !is CwtPropertyConfig || config.expression.type != CwtDataTypes.Parameter) return null
                 //infer inline config
                 val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
-                inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptManager.inlineScriptKey } ?: return null
+                inlineConfig = contextConfig.inlineConfig?.takeIf { it.name == ParadoxInlineScriptManager.inlineScriptKey } ?: return null
                 contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
             }
             //extraArgs: contextConfig
             ParadoxParameterContextReferenceInfo.From.ContextReference -> {
                 val contextConfig = extraArgs.getOrNull(0)?.castOrNull<CwtPropertyConfig>() ?: return null
-                inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptManager.inlineScriptKey } ?: return null
+                inlineConfig = contextConfig.inlineConfig?.takeIf { it.name == ParadoxInlineScriptManager.inlineScriptKey } ?: return null
                 contextReferenceElement = element.castOrNull() ?: return null
             }
             //extraArgs: offset?
@@ -419,8 +420,8 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
                 val parentProperties = parentBlock.parentsOfType<ParadoxScriptProperty>(withSelf = false)
                 for(prop in parentProperties) {
                     //infer context config
-                    val propConfig = ParadoxExpressionManager.getConfigs(prop).firstOrNull() ?: continue
-                    val propInlineConfig = propConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptManager.inlineScriptKey } ?: continue
+                    val propConfig = ParadoxExpressionManager.getConfigs(prop).findIsInstance<CwtPropertyConfig>() ?: continue
+                    val propInlineConfig = propConfig.inlineConfig?.takeIf { it.name == ParadoxInlineScriptManager.inlineScriptKey } ?: continue
                     if(propInlineConfig.config.configs?.any { it is CwtPropertyConfig && it.expression.type == CwtDataTypes.Parameter } != true) continue
                     inlineConfig = propInlineConfig
                     contextReferenceElement = prop
@@ -490,7 +491,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
     
     private fun doResolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtPropertyConfig): ParadoxParameterElement? {
         val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
-        val inlineConfig = contextConfig.inlineableConfig?.castOrNull<CwtInlineConfig>()?.takeIf { it.name == ParadoxInlineScriptManager.inlineScriptKey } ?: return null
+        val inlineConfig = contextConfig.inlineConfig?.takeIf { it.name == ParadoxInlineScriptManager.inlineScriptKey } ?: return null
         val contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
         val expression = ParadoxInlineScriptManager.getInlineScriptExpressionFromInlineConfig(contextReferenceElement, inlineConfig) ?: return null
         if(expression.isParameterized()) return null //skip if context name is parameterized

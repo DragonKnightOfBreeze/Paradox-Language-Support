@@ -132,7 +132,7 @@ class ParadoxEventInEventIndexSupport : ParadoxExpressionIndexSupport<ParadoxEve
             ?.memberConfig
             ?.takeIf { it is CwtPropertyConfig && it.key == "id" }
             ?.parentConfig
-            ?.takeIf { it.inlineableConfig?.castOrNull<CwtAliasConfig>()?.let { c -> c.name == "effect" } ?: false }
+            ?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" } ?: false }
         if(effectConfig == null) return null
         val scopesConfig = effectConfig.configs
             ?.find { it is CwtPropertyConfig && it.key == "scopes" }
@@ -198,7 +198,7 @@ class ParadoxOnActionInEventIndexSupport : ParadoxExpressionIndexSupport<Paradox
             ?.memberConfig
             ?.takeIf { it is CwtPropertyConfig && it.key == "on_action" }
             ?.parentConfig
-            ?.takeIf { it.inlineableConfig?.castOrNull<CwtAliasConfig>()?.let { c -> c.name == "effect" && c.subName == "fire_on_action" } ?: false }
+            ?.takeIf { it is CwtPropertyConfig && it.aliasConfig?.let { c -> c.name == "effect" && c.subName == "fire_on_action" } ?: false }
         if(effectConfig == null) return null
         val scopesConfig = effectConfig.configs
             ?.find { it is CwtPropertyConfig && it.key == "scopes" }

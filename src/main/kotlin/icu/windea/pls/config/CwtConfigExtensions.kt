@@ -25,9 +25,9 @@ val Project.configGroupLibrary: CwtConfigGroupLibrary
 @Suppress("UNCHECKED_CAST")
 fun <T: CwtConfig<*>> T.resolved(): T {
     return when {
-        this is CwtMemberConfig<*> -> inlineableConfig?.takeIf { it !is CwtSingleAliasConfig }?.config as? T ?: this
+        this is CwtPropertyConfig -> inlineConfig?.config ?: aliasConfig?.config ?: this
         else -> this
-    }
+    } as T
 }
 
 /**
@@ -36,21 +36,17 @@ fun <T: CwtConfig<*>> T.resolved(): T {
 @Suppress("UNCHECKED_CAST")
 fun <T: CwtConfig<*>> T.resolvedOrNull(): T? {
     return when {
-        this is CwtMemberConfig<*> -> inlineableConfig?.takeIf { it !is CwtSingleAliasConfig }?.config as? T
+        this is CwtPropertyConfig -> inlineConfig?.config ?: aliasConfig?.config
         else -> this
-    }
+    } as? T
 }
 
-inline fun CwtMemberConfig<*>.processParent(inline: Boolean = false, processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
+inline fun CwtMemberConfig<*>.processParent(processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
     var parent = this.parentConfig
     while(parent != null) {
         val result = processor(parent)
         if(!result) return false
-        if(inline) {
-            parent = parent.inlineableConfig?.config ?: parent.parentConfig
-        } else {
-            parent = parent.parentConfig
-        }
+        parent = parent.parentConfig
     }
     return true
 }

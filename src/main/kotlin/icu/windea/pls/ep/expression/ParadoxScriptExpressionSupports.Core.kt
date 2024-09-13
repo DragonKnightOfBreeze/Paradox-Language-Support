@@ -343,7 +343,7 @@ abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpress
     
     private fun annotateByAliasName(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder, config: CwtConfig<*>): Boolean {
         val aliasConfig = when {
-            config is CwtPropertyConfig -> config.inlineableConfig?.castOrNull<CwtAliasConfig?>()
+            config is CwtPropertyConfig -> config.aliasConfig
             config is CwtAliasConfig -> config
             else -> null
         } ?: return false
@@ -369,11 +369,7 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptConstantLikeExpressi
     }
     
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        return when {
-            config is CwtPropertyConfig && config.inlineableConfig is CwtSingleAliasConfig -> config.pointer.element
-            config is CwtMemberConfig<*> -> config.resolved().pointer.element
-            else -> config.pointer.element
-        }
+        return config.resolved().pointer.element
     }
     
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {

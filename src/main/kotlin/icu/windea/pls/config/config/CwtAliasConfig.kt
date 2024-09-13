@@ -13,7 +13,7 @@ import icu.windea.pls.cwt.psi.*
  * @property supportedScopes (option) scope/scopes: string | string[]
  * @property outputScope (option) push_scope: string?
  */
-interface CwtAliasConfig : CwtInlineableConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val subName: String
     val supportedScopes: Set<String>
@@ -53,13 +53,16 @@ private class CwtAliasConfigImpl(
         val inlined = config.copy(
             key = subName,
             value = other.value,
+            valueType = other.valueType,
             configs = CwtConfigManipulator.deepCopyConfigs(other),
+            optionConfigs = other.optionConfigs,
             documentation = other.documentation,
-            optionConfigs = other.optionConfigs
         )
         inlined.parentConfig = config.parentConfig
         inlined.configs?.forEach { it.parentConfig = inlined }
-        inlined.inlineableConfig = this
+        inlined.inlineConfig = config.inlineConfig
+        inlined.aliasConfig = this
+        inlined.singleAliasConfig = config.singleAliasConfig
         return inlined
     }
 }

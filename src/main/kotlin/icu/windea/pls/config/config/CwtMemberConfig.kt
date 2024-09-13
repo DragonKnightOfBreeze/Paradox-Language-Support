@@ -114,8 +114,6 @@ fun <T : CwtMemberElement> CwtMemberConfig<T>.toOccurrence(contextElement: PsiEl
 
 //Accessors
 
-var CwtMemberConfig<*>.inlineableConfig: CwtInlineableConfig<CwtMemberElement, CwtMemberConfig<*>>? by createKeyDelegate(CwtMemberConfig.Keys)
-
 val CwtMemberConfig.Keys.cardinality by createKey<CwtCardinalityExpression>(CwtMemberConfig.Keys)
 val CwtMemberConfig.Keys.cardinalityMinDefine by createKey<String>(CwtMemberConfig.Keys)
 val CwtMemberConfig.Keys.cardinalityMaxDefine by createKey<String>(CwtMemberConfig.Keys)
@@ -195,6 +193,10 @@ val CwtMemberConfig<*>.supportedScopes: Set<String>
         val r = option?.getOptionValueOrValues()?.mapTo(mutableSetOf()) { ParadoxScopeManager.getScopeId(it) }
         if(r.isNullOrEmpty()) ParadoxScopeManager.anyScopeIdSet else r
     }
+
+var CwtPropertyConfig.singleAliasConfig: CwtSingleAliasConfig? by createKeyDelegate(CwtMemberConfig.Keys)
+var CwtPropertyConfig.aliasConfig: CwtAliasConfig? by createKeyDelegate(CwtMemberConfig.Keys)
+var CwtPropertyConfig.inlineConfig: CwtInlineConfig? by createKeyDelegate(CwtMemberConfig.Keys)
 
 var CwtMemberConfig<*>.originalConfig: CwtMemberConfig<CwtMemberElement>? by createKeyDelegate(CwtMemberConfig.Keys)
 var CwtMemberConfig<*>.overriddenProvider: CwtOverriddenConfigProvider? by createKeyDelegate(CwtMemberConfig.Keys)

@@ -19,39 +19,32 @@ object CwtConfigManipulator {
     }
     
     private fun doGetDistinctKey(config: CwtMemberConfig<*>, guardStack: MutableSet<String>? = null): String {
-        var finalConfig = config
-        var guardStack0 = guardStack
-        val inlinedConfig = inlineSingleAlias(config)
-        if(inlinedConfig != null) {
+        run {
             //处理规则需要内联的情况，并且尝试避免SOF
-            finalConfig = inlinedConfig
-            val inlineableConfig = inlinedConfig.inlineableConfig
-            val guardKey = when(inlineableConfig) {
-                is CwtSingleAliasConfig -> "sa:${inlineableConfig.name}"
-                else -> null
-            }
-            if(guardKey != null) {
-                guardStack0 = guardStack0 ?: mutableSetOf()
-                if(!guardStack0.add(guardKey)) return "..."
-            }
+            if(config !is CwtPropertyConfig) return@run
+            val inlinedConfig = inlineSingleAlias(config) ?: return@run
+            val guardKey = inlinedConfig.singleAliasConfig?.let { "sa:${it.name}" } ?: return@run
+            val newGuardStack = guardStack ?: mutableSetOf()
+            if(!newGuardStack.add(guardKey)) return "..."
+            return doGetDistinctKey(inlinedConfig, newGuardStack)
         }
-        return when(finalConfig) {
+        return when(config) {
             is CwtPropertyConfig -> {
                 when {
-                    finalConfig.configs == null -> "${finalConfig.key}=${finalConfig.value}"
-                    finalConfig.configs.isNullOrEmpty() -> "${finalConfig.key}={}"
+                    config.configs == null -> "${config.key}=${config.value}"
+                    config.configs.isNullOrEmpty() -> "${config.key}={}"
                     else -> {
-                        val v = finalConfig.configs!!.joinToString("\u0000") { doGetDistinctKey(it, guardStack0) }
-                        return "${finalConfig.key}={${v}}"
+                        val v = config.configs!!.joinToString("\u0000") { doGetDistinctKey(it, guardStack) }
+                        return "${config.key}={${v}}"
                     }
                 }
             }
             is CwtValueConfig -> {
                 when {
-                    finalConfig.configs == null -> finalConfig.value
-                    finalConfig.configs.isNullOrEmpty() -> "{}"
+                    config.configs == null -> config.value
+                    config.configs.isNullOrEmpty() -> "{}"
                     else -> {
-                        val v = finalConfig.configs!!.joinToString("\u0000") { doGetDistinctKey(it, guardStack0) }
+                        val v = config.configs!!.joinToString("\u0000") { doGetDistinctKey(it, guardStack) }
                         return "{${v}}"
                     }
                 }
@@ -114,6 +107,11 @@ object CwtConfigManipulator {
                 InlineMode.KEY_TO_VALUE -> if(otherConfig is CwtPropertyConfig) otherConfig.key else return null
                 else -> config.value
             },
+            valueType = when(inlineMode) {
+                InlineMode.VALUE_TO_VALUE -> otherConfig.valueType
+                InlineMode.KEY_TO_VALUE -> CwtType.String
+                else -> config.valueType
+            },
             configs = when(inlineMode) {
                 InlineMode.KEY_TO_VALUE -> null
                 InlineMode.VALUE_TO_VALUE -> deepCopyConfigs(otherConfig)
@@ -122,7 +120,9 @@ object CwtConfigManipulator {
         )
         inlined.configs?.forEach { it.parentConfig = inlined }
         inlined.parentConfig = config.parentConfig
-        inlined.inlineableConfig = config.inlineableConfig
+        inlined.singleAliasConfig = config.singleAliasConfig
+        inlined.aliasConfig = config.aliasConfig
+        inlined.inlineConfig = config.inlineConfig
         return inlined
     }
     
@@ -138,15 +138,13 @@ object CwtConfigManipulator {
         )
     }
     
-    fun <T : CwtMemberConfig<*>> inlineSingleAlias(config: T): T? {
-        if(config !is CwtPropertyConfig) return null
+    fun inlineSingleAlias(config: CwtPropertyConfig): CwtPropertyConfig? {
         val configGroup = config.configGroup
         val valueExpression = config.valueExpression
         if(valueExpression.type != CwtDataTypes.SingleAliasRight) return null
         val singleAliasName = valueExpression.value ?: return null
         val singleAliasConfig = configGroup.singleAliases[singleAliasName] ?: return null
-        @Suppress("UNCHECKED_CAST")
-        return singleAliasConfig.inline(config) as T
+        return singleAliasConfig.inline(config)
     }
     //endregion
     

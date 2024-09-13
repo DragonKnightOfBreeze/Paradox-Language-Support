@@ -29,12 +29,12 @@ class ParadoxSwitchOverriddenScopeContextProvider: ParadoxOverriddenScopeContext
         val finalConfig = config.originalConfig ?: config
         if(finalConfig !is CwtPropertyConfig) return null
         if(finalConfig.key != Constants.CASE_KEY && finalConfig.key != Constants.DEFAULT_KEY) return null
-        val aliasConfig = finalConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
+        val aliasConfig = finalConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return null
         if(aliasConfig.subName !in Constants.CONTEXT_NAMES) return null
         ProgressManager.checkCanceled()
         val containerProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
             .filter { it.name.lowercase() in Constants.CONTEXT_NAMES }
-            .find { ParadoxExpressionManager.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
+            .find { ParadoxExpressionManager.getConfigs(it).any { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
             ?: return null
         //基于trigger的值得到最终的scopeContext，然后推断目标属性的scopeContext
         val triggerProperty = containerProperty.findProperty(inline = true) { it in Constants.TRIGGER_KEYS }  ?: return null
@@ -62,12 +62,12 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         val finalConfig = config.originalConfig ?: config
         if(finalConfig !is CwtPropertyConfig) return null
         if(finalConfig.key != Constants.TRIGGER_KEY && finalConfig.key != Constants.PARAMETERS_KEY) return null
-        val aliasConfig = finalConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
+        val aliasConfig = finalConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return null
         if(aliasConfig.subName !in Constants.CONTEXT_NAMES) return null
         ProgressManager.checkCanceled()
         val containerProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
             .filter { it.name.lowercase() in Constants.CONTEXT_NAMES }
-            .find { ParadoxExpressionManager.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
+            .find { ParadoxExpressionManager.getConfigs(it).any { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
             ?: return null
         if(finalConfig.key == Constants.TRIGGER_KEY) {
             //基于trigger_scope的值得到最终的scopeContext，然后推断属性trigger的值的scopeContext

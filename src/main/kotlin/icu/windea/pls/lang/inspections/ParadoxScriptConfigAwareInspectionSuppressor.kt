@@ -39,7 +39,7 @@ class ParadoxScriptConfigAwareInspectionSuppressor : InspectionSuppressor {
                     if(isSuppressed(configToUse, toolId)) return true
                     //向上检查对应的规则的所有父规则，直到不存在或者是内联的父规则为止
                     configToUse.processParent { c ->
-                        if(c is CwtPropertyConfig && c.inlineableConfig != null) {
+                        if(c is CwtPropertyConfig && c.singleAliasConfig != null && c.aliasConfig != null && c.inlineConfig != null) {
                             false
                         } else {
                             if(isSuppressed(c, toolId)) return true

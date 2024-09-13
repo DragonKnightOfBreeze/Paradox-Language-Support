@@ -872,8 +872,11 @@ object ParadoxExpressionManager {
         val configGroup = config.configGroup
         return when {
             config is CwtPropertyConfig -> {
-                config.inlineableConfig?.let { getEntryConfigs(it) }
-                    ?: config.parentConfig?.castOrNull<CwtPropertyConfig>()?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }
+                config.inlineConfig?.let { return getEntryConfigs(it) }
+                config.aliasConfig?.let { return getEntryConfigs(it) }
+                config.singleAliasConfig?.let { return getEntryConfigs(it) }
+                
+                config.parentConfig?.castOrNull<CwtPropertyConfig>()?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }
                     ?: config.toSingletonList()
             }
             config is CwtValueConfig && config.propertyConfig != null -> {

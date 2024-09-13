@@ -86,7 +86,7 @@ class MissingExpressionInspection : LocalInspectionTool() {
                     c1.overriddenProvider?.let { return it }
                     val pc1 = c1.castOrNull<CwtValueConfig>()?.propertyConfig
                     pc1?.overriddenProvider?.let { return it }
-                    (pc1 ?: c1).processParent(inline = true) { c2 ->
+                    (pc1 ?: c1).processParent { c2 ->
                         c2.overriddenProvider?.let { return it }
                         true
                     }

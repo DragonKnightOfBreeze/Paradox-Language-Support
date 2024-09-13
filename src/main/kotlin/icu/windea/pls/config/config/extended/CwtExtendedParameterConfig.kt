@@ -81,6 +81,7 @@ private class CwtExtendedParameterConfigImpl(
     }
     
     private fun doGetContainerConfig(): CwtMemberConfig<*> {
+        if(config !is CwtPropertyConfig) return config
         return CwtConfigManipulator.inlineSingleAlias(config) ?: config // #76
     }
     

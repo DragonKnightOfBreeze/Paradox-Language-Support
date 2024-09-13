@@ -167,9 +167,9 @@ object ParadoxScopeManager {
         var currentConfig = config
         while(true) {
             if(currentConfig is CwtPropertyConfig) {
-                val inlineableConfig = currentConfig.inlineableConfig
-                if(inlineableConfig is CwtAliasConfig) {
-                    val aliasName = inlineableConfig.name
+                val aliasConfig = currentConfig.aliasConfig
+                if(aliasConfig != null) {
+                    val aliasName = aliasConfig.name
                     if(aliasName in configGroup.aliasNamesSupportScope) return true
                 }
             } else if(currentConfig is CwtValueConfig) {
@@ -216,7 +216,7 @@ object ParadoxScopeManager {
             
             //使用提供的作用域上下文
             val scopeContext = ParadoxDefinitionScopeContextProvider.getScopeContext(element, definitionInfo)
-            if(scopeContext != null && scopeContext.isExact == true) return scopeContext
+            if(scopeContext != null && scopeContext.isExact) return scopeContext
             
             //除非提供的作用域上下文是准确的，否则再尝试获取推断得到的作用域上下文，并进行合并
             val inferredScopeContext = ParadoxDefinitionInferredScopeContextProvider.getScopeContext(element, definitionInfo)

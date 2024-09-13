@@ -32,8 +32,17 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
             val matchOptions = Options.Default or Options.AcceptDefinition
             val configs = ParadoxExpressionManager.getConfigs(element, orDefault, matchOptions)
             for(config in configs) {
-                result.add(config)
-                config.resolvedOrNull()?.also { result.add(it) }
+                result += config
+                when {
+                    config is CwtPropertyConfig -> {
+                        config.inlineConfig?.also { result += it }
+                        config.aliasConfig?.also { result += it }
+                        config.singleAliasConfig?.also { result += it }
+                    }
+                    config is CwtValueConfig -> {
+                        config.propertyConfig?.singleAliasConfig?.also { result += it }
+                    }
+                }
                 if(element !is ParadoxScriptStringExpressionElement) continue
                 val name = element.value
                 val configExpression = config.expression

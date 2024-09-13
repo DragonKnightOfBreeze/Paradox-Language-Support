@@ -123,8 +123,8 @@ object ParadoxInlineScriptManager {
     
     fun getExpressionElement(contextReferenceElement: ParadoxScriptProperty): ParadoxScriptValue? {
         if(contextReferenceElement.name.lowercase() != inlineScriptKey) return null
-        val config = ParadoxExpressionManager.getConfigs(contextReferenceElement).firstOrNull() ?: return null
-        val inlineConfig = config.inlineableConfig?.castOrNull<CwtInlineConfig>() ?: return null
+        val config = ParadoxExpressionManager.getConfigs(contextReferenceElement).findIsInstance<CwtPropertyConfig>() ?: return null
+        val inlineConfig = config.inlineConfig ?: return null
         if(inlineConfig.name != inlineScriptKey) return null
         val expressionLocation = inlineConfig.config.findOption { it.key == inlineScriptExpressionOptionName }?.stringValue ?: return null
         val expressionElement = contextReferenceElement.findByPath(expressionLocation, ParadoxScriptValue::class.java) ?: return null
@@ -138,8 +138,8 @@ object ParadoxInlineScriptManager {
             contextReferenceElement = contextReferenceElement.findParentProperty()?.castOrNull<ParadoxScriptProperty>() ?: return null
         }
         if(contextReferenceElement.name.lowercase() != inlineScriptKey) return null
-        val config = ParadoxExpressionManager.getConfigs(contextReferenceElement).firstOrNull() ?: return null
-        val inlineConfig = config.inlineableConfig?.castOrNull<CwtInlineConfig>() ?: return null
+        val config = ParadoxExpressionManager.getConfigs(contextReferenceElement).findIsInstance<CwtPropertyConfig>() ?: return null
+        val inlineConfig = config.inlineConfig ?: return null
         if(inlineConfig.name != inlineScriptKey) return null
         val expressionLocation = inlineConfig.config.findOption { it.key == inlineScriptExpressionOptionName }?.stringValue ?: return null
         val expressionElement0 = contextReferenceElement.findByPath(expressionLocation, ParadoxScriptValue::class.java) ?: return null

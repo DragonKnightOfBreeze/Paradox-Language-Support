@@ -28,7 +28,7 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
         
         if(config !is CwtPropertyConfig) return null
         if(config.key != Constants.CASE_KEY) return null
-        val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
+        val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return null
         if(aliasConfig.subName !in Constants.CONTEXT_NAMES) return null
         ProgressManager.checkCanceled()
         val triggerConfig = aliasConfig.config.configs?.find { it is CwtPropertyConfig && it.key in Constants.TRIGGER_KEYS && it.value == "alias_keys_field[trigger]" } ?: return null
@@ -65,12 +65,12 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
         
         if(config !is CwtPropertyConfig) return null
         if(config.key != Constants.PARAMETERS_KEY) return null
-        val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return null
+        val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return null
         if(aliasConfig.subName !in Constants.CONTEXT_NAMES) return null
         ProgressManager.checkCanceled()
         val contextProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
             .filter { it.name.lowercase() in Constants.CONTEXT_NAMES }
-            .find { ParadoxExpressionManager.getConfigs(it).any { c -> c.inlineableConfig == aliasConfig } }
+            .find { ParadoxExpressionManager.getConfigs(it).any { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
             ?: return null
         val triggerProperty = contextProperty.findProperty(Constants.TRIGGER_KEY, inline = true) ?: return null
         val triggerName = triggerProperty.propertyValue?.stringValue() ?: return null

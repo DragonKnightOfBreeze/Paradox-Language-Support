@@ -141,7 +141,7 @@ class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
         
         val propertyConfig = config.propertyConfig ?: return
         if(propertyConfig.key !in Constants.TRIGGER_KEYS) return
-        val aliasConfig = config.memberConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
+        val aliasConfig = config.memberConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return
         if(aliasConfig.subName !in Constants.CONTEXT_NAMES) return
         
         val triggerName = element.stringValue() ?: return
@@ -166,7 +166,7 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
         
         val propertyConfig = config.propertyConfig ?: return
         if(propertyConfig.key != Constants.TRIGGER_KEY) return
-        val aliasConfig = propertyConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.inlineableConfig?.castOrNull<CwtAliasConfig>() ?: return
+        val aliasConfig = propertyConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return
         if(aliasConfig.subName !in Constants.CONTEXT_NAMES) return
         
         val triggerName = element.stringValue() ?: return
