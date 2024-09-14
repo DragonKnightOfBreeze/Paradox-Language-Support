@@ -1,5 +1,7 @@
 package icu.windea.pls.lang.util
 
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.*
@@ -28,20 +30,25 @@ object CwtConfigManager {
      * @param forRepo 是否兼容插件或者规则仓库中的CWT文件（此时将其视为规则文件）。
      */
     fun getContainingConfigGroup(element: PsiElement, forRepo: Boolean = false): CwtConfigGroup? {
-        if(element.language != CwtLanguage) return null
         val file = element.containingFile ?: return null
         val vFile = file.virtualFile ?: return null
-        val project = file.project
-        
+        return getContainingConfigGroup(vFile, file.project, forRepo)
+    }
+    
+    /**
+     * @param forRepo 是否兼容插件或者规则仓库中的CWT文件（此时将其视为规则文件）。
+     */
+    fun getContainingConfigGroup(file: VirtualFile, project: Project, forRepo: Boolean = false): CwtConfigGroup? {
+        if(file.fileType != CwtFileType) return null
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         val configGroup = fileProviders.firstNotNullOfOrNull { fileProvider ->
-            fileProvider.getContainingConfigGroup(vFile, project)
+            fileProvider.getContainingConfigGroup(file, project)
         }
         if(configGroup != null) return configGroup
         
         runCatchingCancelable r@{
             if(!forRepo) return@r
-            val workDirectory = vFile.toNioPath().toFile().parentFile ?: return@r
+            val workDirectory = file.toNioPath().toFile().parentFile ?: return@r
             val command = "git remote -v"
             val commandResult = executeCommand(command, CommandType.POWER_SHELL, null, workDirectory)
             val gameTypeId = commandResult.lines()
@@ -56,6 +63,26 @@ object CwtConfigManager {
             return getConfigGroup(project, gameType)
         }
         
+        return null
+    }
+    
+    fun getFilePath(element: PsiElement): String? {
+        val file = element.containingFile ?: return null
+        val vFile = file.virtualFile ?: return null
+        return getFilePath(vFile, file.project)
+    }
+    
+    fun getFilePath(file: VirtualFile, project: Project): String? {
+        if(file.fileType != CwtFileType) return null
+        val configGroup = getContainingConfigGroup(file, project) ?: return null
+        val gameTypeId = configGroup.gameType.id
+        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
+        fileProviders.forEach f@{fileProvider ->
+            val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
+            val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return@f
+            val filePath = relativePath.removePrefixOrNull("$gameTypeId/") ?: return@f
+            return filePath
+        }
         return null
     }
     
@@ -105,15 +132,17 @@ object CwtConfigManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigType) {
             val file = element.containingFile ?: return@getCachedValue null
             val value = when(element) {
-                is CwtProperty -> doGetConfigType(element)
-                is CwtValue -> doGetConfigType(element)
+                is CwtProperty -> doGetConfigType(element, file)
+                is CwtValue -> doGetConfigType(element, file)
                 else -> null
             }
             CachedValueProvider.Result.create(value, file)
         }
     }
     
-    private fun doGetConfigType(element: CwtMemberElement): CwtConfigType? {
+    private fun doGetConfigType(element: CwtMemberElement, file: PsiFile): CwtConfigType? {
+        val filePath = getFilePath(file) ?: return null
+        if(filePath.startsWith("internal/")) return null //排除内部规则文件
         val configPath = element.configPath
         if(configPath == null || configPath.isEmpty()) return null
         return when {

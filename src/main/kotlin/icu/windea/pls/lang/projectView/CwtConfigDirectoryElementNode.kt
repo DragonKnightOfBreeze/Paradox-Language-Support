@@ -31,9 +31,9 @@ class CwtConfigDirectoryElementNode(
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            val dir = rootDirectory.findChild(gameTypeId) ?: return@f
-            val relativePath = VfsUtil.getRelativePath(file, dir)
-            if(relativePath.isNotNullOrEmpty()) return true
+            val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return@f
+            val filePath = relativePath.removePrefixOrNull("$gameTypeId/") ?: return@f
+            if(filePath.isNotNullOrEmpty()) return true
         }
         return false
     }

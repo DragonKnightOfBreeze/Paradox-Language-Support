@@ -112,7 +112,8 @@ fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): Doc
     val (fileProvider, configGroup, filePath) = fileProviders.firstNotNullOfOrNull f@{ fileProvider ->
         val configGroup = fileProvider.getContainingConfigGroup(vFile, project) ?: return@f null
         val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f null
-        val filePath = VfsUtil.getRelativePath(vFile, rootDirectory)?.substringAfter('/') ?: return@f null
+        val relativePath = VfsUtil.getRelativePath(vFile, rootDirectory)?: return@f null
+        val filePath = relativePath.substringAfter('/', "").orNull() ?: return@f null
         tupleOf(fileProvider, configGroup, filePath)
     } ?: return this
     //规则分组信息

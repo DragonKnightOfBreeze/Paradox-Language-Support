@@ -13,27 +13,6 @@ fun CwtConfigGroupFileProvider.isBuiltIn(): Boolean {
 }
 
 abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
-    override fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean {
-        val gameTypeId = configGroup.gameType.id
-        val rootDirectory = getRootDirectory(configGroup.project) ?: return true
-        if(gameTypeId != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, consumer) }
-        rootDirectory.findChild(gameTypeId)?.let { doProcessFiles(it, consumer) }
-        return true
-    }
-    
-    private fun doProcessFiles(rootDirectory: VirtualFile, consumer: (String, VirtualFile) -> Boolean) {
-        if(!rootDirectory.isDirectory) return
-        VfsUtil.visitChildrenRecursively(rootDirectory, object : VirtualFileVisitor<Void>() {
-            override fun visitFile(file: VirtualFile): Boolean {
-                if(file.extension?.lowercase() == "cwt") {
-                    val path = VfsUtil.getRelativePath(file, rootDirectory) ?: return true
-                    consumer(path, file)
-                }
-                return true
-            }
-        })
-    }
-    
     override fun getContainingConfigGroup(file: VirtualFile, project: Project): CwtConfigGroup? {
         val rootDirectory = getRootDirectory(project) ?: return null
         val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return null
@@ -44,6 +23,27 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
             val gameType = ParadoxGameType.resolve(gameTypeId) ?: return null
             return getConfigGroup(project, gameType)
         }
+    }
+    
+    override fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean {
+        val gameTypeId = configGroup.gameType.id
+        val rootDirectory = getRootDirectory(configGroup.project) ?: return true
+        if(gameTypeId != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, consumer) }
+        rootDirectory.findChild(gameTypeId)?.let { doProcessFiles(it, consumer) }
+        return true
+    }
+    
+    private fun doProcessFiles(configDirectory: VirtualFile, consumer: (String, VirtualFile) -> Boolean) {
+        if(!configDirectory.isDirectory) return
+        VfsUtil.visitChildrenRecursively(configDirectory, object : VirtualFileVisitor<Void>() {
+            override fun visitFile(file: VirtualFile): Boolean {
+                if(file.extension?.lowercase() == "cwt") {
+                    val filePath = VfsUtil.getRelativePath(file, configDirectory) ?: return true
+                    consumer(filePath, file)
+                }
+                return true
+            }
+        })
     }
 }
 

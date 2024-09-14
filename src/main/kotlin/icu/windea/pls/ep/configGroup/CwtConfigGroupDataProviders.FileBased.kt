@@ -27,12 +27,11 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.all f@{ fileProvider ->
             fileProvider.processFiles(configGroup) p@{ filePath, file ->
-                //不允许覆盖内部的规则文件
-                if(fileProvider.isBuiltIn() && filePath.startsWith("internal/")) {
+                if(filePath.startsWith("internal/")) {
+                    if(fileProvider.isBuiltIn()) return@p true //不允许覆盖内部规则文件
                     allInternalFiles.putIfAbsent(filePath, file)
                     return@p true
                 }
-                
                 allFiles.put(filePath, file)
                 true
             }
