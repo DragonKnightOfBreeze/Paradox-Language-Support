@@ -444,7 +444,7 @@ inline fun <reified T> Any?.castOrNull(): T? = this as? T
 fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C): C = if(this.isNotEmpty()) block(this) else this
 
 /**
- * 判断当前输入是否匹配指定的通配符表达式。使用"."匹配单个字符，使用"*"匹配任意个字符。
+ * 判断当前输入是否匹配指定的通配符表达式。使用"?"匹配单个字符，使用"*"匹配任意个字符。
  */
 fun String.matchesPattern(pattern: String, ignoreCase: Boolean = false): Boolean {
     if(pattern.isEmpty() && this.isNotEmpty()) return false
@@ -479,7 +479,7 @@ private fun String.patternToRegexString(): String {
 }
 
 /**
- * 判断当前输入是否匹配指定的ANT表达式。使用"."匹配单个子路径中的单个字符，使用"*"匹配单个子路径中的任意个字符，使用"**"匹配任意个字符。
+ * 判断当前输入是否匹配指定的ANT表达式。使用"?"匹配单个子路径中的单个字符，使用"*"匹配单个子路径中的任意个字符，使用"**"匹配任意个字符。
  */
 fun String.matchesAntPattern(pattern: String, ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
     if(pattern.isEmpty() && this.isNotEmpty()) return false

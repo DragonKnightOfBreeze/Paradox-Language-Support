@@ -63,15 +63,6 @@ import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.psi.impl.*
 import icu.windea.pls.model.*
 import it.unimi.dsi.fastutil.*
 import it.unimi.dsi.fastutil.objects.*
@@ -93,13 +84,46 @@ import kotlin.collections.isNullOrEmpty
 import kotlin.properties.*
 import kotlin.reflect.*
 
-//region Stdlib Extensions
+//region Common Extensions
 fun String.compareToIgnoreCase(other: String): Int {
     return String.CASE_INSENSITIVE_ORDER.compare(this, other)
 }
-//endregion
 
-//region Common Extensions
+object CaseInsensitiveStringHashingStrategy : Hash.Strategy<String?> {
+    override fun hashCode(s: String?): Int {
+        return if(s == null) 0 else StringUtilRt.stringHashCodeInsensitive(s)
+    }
+    
+    override fun equals(s1: String?, s2: String?): Boolean {
+        return s1.equals(s2, ignoreCase = true)
+    }
+}
+
+fun caseInsensitiveStringSet(): MutableSet<@CaseInsensitive String> {
+    //com.intellij.util.containers.CollectionFactory.createCaseInsensitiveStringSet()
+    return ObjectLinkedOpenCustomHashSet(CaseInsensitiveStringHashingStrategy)
+}
+
+fun <V> caseInsensitiveStringKeyMap(): MutableMap<@CaseInsensitive String, V> {
+    //com.intellij.util.containers.createCaseInsensitiveStringMap()
+    return Object2ObjectLinkedOpenCustomHashMap(CaseInsensitiveStringHashingStrategy)
+}
+
+inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {
+    val oldValue = this.get()
+    val newValue = value
+    if(newValue == null) {
+        return true
+    } else if(oldValue == null) {
+        this.set(newValue)
+        return true
+    } else {
+        val mergedValue = mergeAction(oldValue, newValue)
+        this.set(mergedValue)
+        return mergedValue != null
+    }
+}
+
 inline fun <T> cancelable(block: () -> T): T {
     try {
         return block()
@@ -148,41 +172,6 @@ inline fun <R> disableLogger(block: () -> R): R {
         return block()
     } finally {
         globalLogger.level = loggerLevel
-    }
-}
-
-object CaseInsensitiveStringHashingStrategy : Hash.Strategy<String?> {
-    override fun hashCode(s: String?): Int {
-        return if(s == null) 0 else StringUtilRt.stringHashCodeInsensitive(s)
-    }
-    
-    override fun equals(s1: String?, s2: String?): Boolean {
-        return s1.equals(s2, ignoreCase = true)
-    }
-}
-
-fun caseInsensitiveStringSet(): MutableSet<@CaseInsensitive String> {
-    //com.intellij.util.containers.CollectionFactory.createCaseInsensitiveStringSet()
-    return ObjectLinkedOpenCustomHashSet(CaseInsensitiveStringHashingStrategy)
-}
-
-fun <V> caseInsensitiveStringKeyMap(): MutableMap<@CaseInsensitive String, V> {
-    //com.intellij.util.containers.createCaseInsensitiveStringMap()
-    return Object2ObjectLinkedOpenCustomHashMap(CaseInsensitiveStringHashingStrategy)
-}
-
-inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {
-    val oldValue = this.get()
-    val newValue = value
-    if(newValue == null) {
-        return true
-    } else if(oldValue == null) {
-        this.set(newValue)
-        return true
-    } else {
-        val mergedValue = mergeAction(oldValue, newValue)
-        this.set(mergedValue)
-        return mergedValue != null
     }
 }
 
@@ -263,24 +252,9 @@ fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiE
     return NavigationGutterIconBuilder.create(icon, DEFAULT_PSI_CONVERTOR, gotoRelatedItemProvider)
 }
 
-@Suppress("UNCHECKED_CAST")
-inline fun <T> Query<T>.processQuery(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
-    if(onlyMostRelevant && this is ParadoxQuery<*, *>) {
-        find()?.let { consumer.process(it as T) }
-        return true
-    }
-    return this.forEach(consumer)
-}
+fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
-@Suppress("UNCHECKED_CAST")
-inline fun <T> Query<T>.processQueryAsync(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
-    if(onlyMostRelevant && this is ParadoxQuery<*, *>) {
-        find()?.let { consumer.process(it as T) }
-        return true
-    }
-    return allowParallelProcessing().forEach(consumer)
-}
-
+fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
 
 fun <T> createCachedValue(project: Project = getDefaultProject(), trackValue: Boolean = false, provider: CachedValueProvider<T>): CachedValue<T> {
     return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
@@ -290,7 +264,6 @@ fun <T> T.withDependencyItems(vararg dependencyItems: Any): CachedValueProvider.
     if(dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
     return CachedValueProvider.Result.create(this, *dependencyItems)
 }
-
 //endregion
 
 //region Key & DataKey Related Extensions
@@ -912,23 +885,11 @@ fun PsiElement.isSingleLineBreak(): Boolean {
     return this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) == 1
 }
 
-///**
-// * 搭配[com.intellij.psi.util.PsiUtilCore.getElementAtOffset]使用。
-// */
-//fun PsiElement.getSelfOrPrevSiblingNotWhitespace(): PsiElement {
-//	if(this !is PsiWhiteSpace) return this
-//	var current = this.prevSibling ?: return this
-//	while(current is PsiWhiteSpace){
-//		current = current.prevSibling ?: return this
-//	}
-//	return current
-//}
-
 inline fun findAcceptableElementIncludeComment(element: PsiElement?, predicate: (PsiElement) -> Boolean): Any? {
     var current: PsiElement? = element ?: return null
     while(current != null && current !is PsiFile) {
         if(predicate(current)) return current
-        if(current is PsiComment) return current.siblings().find { it is CwtProperty }
+        if(current is PsiComment) return current.siblings().find { predicate(it) }
             ?.takeIf { it.prevSibling.isSpaceOrSingleLineBreak() }
         current = current.parent
     }

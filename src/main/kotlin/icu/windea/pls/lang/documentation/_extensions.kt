@@ -14,6 +14,7 @@ import com.intellij.platform.backend.documentation.*
 import com.intellij.platform.backend.presentation.*
 import com.intellij.psi.*
 import com.intellij.util.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
@@ -62,7 +63,7 @@ private fun ItemPresentation.getContainerText(): String? {
 }
 
 fun getDocumentationTargets(element: PsiElement, originalElement: PsiElement?): List<DocumentationTarget> {
-    //delegate to [com.intellij.lang.documentation.psi.psiDocumentationTargets] or use fallback logic
+    //delegate to [icu.windea.pls.core.psiDocumentationTargets] or use fallback logic
     
     val targets = psiDocumentationTargets(element, originalElement)
     if(targets.isNotEmpty()) return targets

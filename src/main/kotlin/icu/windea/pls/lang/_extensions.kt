@@ -11,6 +11,7 @@ import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.testFramework.*
+import com.intellij.util.*
 import com.intellij.util.text.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
@@ -19,6 +20,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.ep.data.*
 import icu.windea.pls.lang.io.*
+import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
@@ -28,10 +30,6 @@ import icu.windea.pls.model.expressionInfo.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.lang.Integer.*
-
-fun getDefaultProject() = ProjectManager.getInstance().defaultProject
-
-fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
 
 //from official documentation: Never acquire service instances prematurely or store them in fields for later use.
 
@@ -92,6 +90,24 @@ fun String?.orAnonymous() = if(isNullOrEmpty()) PlsConstants.anonymousString els
 fun String?.orUnknown() = if(isNullOrEmpty()) PlsConstants.unknownString else this
 
 fun String?.orUnresolved() = if(isNullOrEmpty()) PlsConstants.unresolvedString else this
+
+@Suppress("UNCHECKED_CAST")
+fun <T> Query<T>.processQuery(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
+    if(onlyMostRelevant && this is ParadoxQuery<*, *>) {
+        find()?.let { consumer.process(it as T) }
+        return true
+    }
+    return this.forEach(consumer)
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <T> Query<T>.processQueryAsync(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
+    if(onlyMostRelevant && this is ParadoxQuery<*, *>) {
+        find()?.let { consumer.process(it as T) }
+        return true
+    }
+    return allowParallelProcessing().forEach(consumer)
+}
 
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
     return when {
