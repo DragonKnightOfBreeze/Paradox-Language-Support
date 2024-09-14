@@ -2,7 +2,15 @@
 
 ## 1.3.21
 
-* [ ] 优化性能与内存占用
+* [X] 更新CWT规则文件以适配Stellaris 3.13.0
+* [X] 优化性能与内存占用
+* [X] 其他优化与BUG修复
+
+***
+
+* [X] Update CWT configs files to match Stellaris 3.13.0
+* [X] Optimize performance and memory
+* [X] Other optimizations and bug fixes
 
 ## 1.3.20
 
