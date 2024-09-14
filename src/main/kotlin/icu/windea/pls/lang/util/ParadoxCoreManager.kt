@@ -2,7 +2,7 @@ package icu.windea.pls.lang.util
 
 import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.daemon.*
-import com.intellij.injected.editor.VirtualFileWindow
+import com.intellij.injected.editor.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileEditor.*

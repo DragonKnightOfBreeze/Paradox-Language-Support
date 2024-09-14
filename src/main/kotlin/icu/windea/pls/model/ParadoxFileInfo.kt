@@ -1,9 +1,6 @@
 package icu.windea.pls.model
 
-import icons.*
-import icu.windea.pls.*
 import java.util.*
-import javax.swing.*
 
 /**
  * @property path 相对于入口目录的路径。用于匹配规则。

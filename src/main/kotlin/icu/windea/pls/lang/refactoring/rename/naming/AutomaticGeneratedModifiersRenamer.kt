@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import com.intellij.refactoring.rename.naming.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.core.annotations.api.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
