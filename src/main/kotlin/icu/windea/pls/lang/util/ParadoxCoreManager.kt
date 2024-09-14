@@ -392,7 +392,7 @@ object ParadoxCoreManager {
         //* 路径合法
         //* 路径对应的目录存在
         //* 路径是游戏目录（可以查找到对应的launcher-settings.json）
-        val gameDirectory0 = gameDirectory?.normalizeAbsolutePath()?.orNull() ?: return null
+        val gameDirectory0 = gameDirectory?.normalizePath()?.orNull() ?: return null
         val path = gameDirectory0.toPathOrNull()
         if(path == null) return builder.error(PlsBundle.message("gameDirectory.error.1"))
         val rootFile = VfsUtil.findFile(path, true)?.takeIf { it.exists() }
@@ -409,7 +409,7 @@ object ParadoxCoreManager {
     }
     
     fun getGameVersionFromGameDirectory(gameDirectory: String?): String? {
-        val gameDirectory0 = gameDirectory?.normalizeAbsolutePath()?.orNull() ?: return null
+        val gameDirectory0 = gameDirectory?.normalizePath()?.orNull() ?: return null
         val rootFile = gameDirectory0.toVirtualFile(true)?.takeIf { it.exists() } ?: return null
         val rootInfo = rootFile.rootInfo
         if(rootInfo !is ParadoxGameRootInfo) return null
