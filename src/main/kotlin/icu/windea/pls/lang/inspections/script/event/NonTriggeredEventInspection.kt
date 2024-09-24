@@ -8,7 +8,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 class NonTriggeredEventInspection : LocalInspectionTool() {
@@ -28,7 +27,7 @@ class NonTriggeredEventInspection : LocalInspectionTool() {
             val fixes = buildList { 
                 if(element.block != null) this += Fix1(element)
             }.toTypedArray()
-            holder.registerProblem(element, PlsBundle.message("inspection.script.nonTriggeredEvent.desc"), *fixes)
+            holder.registerProblem(element.propertyKey, PlsBundle.message("inspection.script.nonTriggeredEvent.desc"), *fixes)
             true
         }
         
@@ -46,20 +45,20 @@ class NonTriggeredEventInspection : LocalInspectionTool() {
     private class Fix1(
         element: PsiElement
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
-        //add "is_triggered_only = yes" into declaration after "id" field or at start 
+        //add "is_triggered_only = yes" into declaration (after "id" field or at start) 
         
         override fun getText() = PlsBundle.message("inspection.script.nonTriggeredEvent.fix.1")
         
         override fun getFamilyName() = text
         
         override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-            val element = myStartElement.castOrNull<ParadoxScriptProperty>() ?: return
+            val element = startElement.castOrNull<ParadoxScriptProperty>() ?: return
             val definitionInfo = element.definitionInfo ?: return
             val block = element.block ?: return
             val nameField = definitionInfo.typeConfig.nameField
             val insertAfterElement = if(nameField == null) null else element.findProperty(nameField)
-            val newProperty = ParadoxScriptElementFactory.createPropertyFromText(project, "is_triggered_only = yes") 
-            block.addAfter(newProperty, insertAfterElement)
+            block.addAfter(ParadoxScriptElementFactory.createPropertyFromText(project, "is_triggered_only = yes"), insertAfterElement)
+            block.addAfter(ParadoxScriptElementFactory.createLine(project), insertAfterElement)
         }
     }
 }
