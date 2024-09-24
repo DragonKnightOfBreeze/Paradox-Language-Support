@@ -18,28 +18,30 @@ class MismatchedEventIdInspection : LocalInspectionTool() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if(!shouldCheckFile(file)) return null
         
+        val properties = mutableListOf<ParadoxScriptProperty>()
         file as ParadoxScriptFile
-        val rootBlock = file.block ?: return null
-        val properties = rootBlock.propertyList
-        if(properties.isEmpty()) return null //空文件，不进行检查
-        if(properties.find { it.name.equals("namespace", true) } == null) return null //没有事件命名空间，不进行检查
-        val eventGroup: MutableMap<String, MutableList<ParadoxScriptProperty>> = mutableMapOf() //namespace - eventDefinitions
+        file.processProperty(inline = true) p@{ property ->
+            properties += property
+            true
+        }
+        if(properties.isEmpty()) return null
+        val namespace2Events = mutableMapOf<String, MutableList<ParadoxScriptProperty>>()
         var nextNamespace = ""
         for(property in properties) {
             ProgressManager.checkCanceled()
-            if(property.name.equals("namespace", true)) {
+            val definitionInfo = property.definitionInfo ?: continue
+            if(definitionInfo.type == "event_namespace") {
                 //如果值不是一个字符串，作为空字符串存到缓存中
                 val namespace = property.propertyValue?.castOrNull<ParadoxScriptString>()?.stringValue.orEmpty()
                 nextNamespace = namespace
-                eventGroup.getOrPut(namespace) { mutableListOf() }
-            } else {
-                val definitionInfo = property.definitionInfo ?: continue //不是定义，跳过
-                if(definitionInfo.type != "event") continue //不是事件定义，跳过 
-                eventGroup.getOrPut(nextNamespace) { mutableListOf() }.add(property)
+                namespace2Events.getOrPut(namespace) { mutableListOf() }
+            } else if(definitionInfo.type == "event") {
+                namespace2Events.getOrPut(nextNamespace) { mutableListOf() }.add(property)
             }
         }
+        if(namespace2Events.isEmpty()) return null
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        for((namespace, events) in eventGroup) {
+        for((namespace, events) in namespace2Events) {
             ProgressManager.checkCanceled()
             if(namespace.isEmpty()) continue
             if(events.isEmpty()) continue

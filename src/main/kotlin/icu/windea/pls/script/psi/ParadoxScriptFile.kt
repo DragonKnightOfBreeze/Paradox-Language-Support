@@ -2,6 +2,7 @@ package icu.windea.pls.script.psi
 
 import com.intellij.extapi.psi.*
 import com.intellij.navigation.*
+import com.intellij.openapi.fileTypes.*
 import com.intellij.psi.*
 import icons.*
 import icu.windea.pls.*
@@ -26,7 +27,9 @@ class ParadoxScriptFile(
 		return super.getIcon(flags)
 	}
 	
-	override fun getFileType() = ParadoxScriptFileType
+	override fun getFileType(): FileType {
+        return ParadoxScriptFileType
+    }
 	
 	override fun getPresentation(): ItemPresentation {
 		return ParadoxScriptFilePresentation(this)

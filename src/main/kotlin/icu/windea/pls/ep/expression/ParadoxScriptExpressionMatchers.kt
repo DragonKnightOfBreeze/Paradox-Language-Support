@@ -41,7 +41,7 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                     if(keys.isEmpty()) return@p true
                     val actualKeys = mutableSetOf<String>()
                     //注意这里需要考虑内联和可选的情况
-                    blockElement.processData(conditional = true, inline = true) {
+                    blockElement.processMember(conditional = true, inline = true) {
                         if(it is ParadoxScriptProperty) actualKeys.add(it.name)
                         true
                     }

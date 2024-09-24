@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.22
+
+* [ ] #88 新的代码检查：` NonTriggeredEventInspection`
+
 ## 1.3.21
 
 * [X] 更新CWT规则文件以适配Stellaris 3.13.0

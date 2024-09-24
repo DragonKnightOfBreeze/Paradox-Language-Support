@@ -29,11 +29,11 @@ object ParadoxScriptTextRenderer {
         when {
             renderInBlock && element is ParadoxScriptBlock -> {
                 builder.append("{ ")
-                element.processData(conditional, inline) { 
+                element.processMember(conditional, inline) { 
                     when {
                         it is ParadoxScriptProperty -> renderTo(it, builder, renderInBlock, conditional, inline)
                         it is ParadoxScriptValue -> renderTo(it, builder, renderInBlock, conditional, inline)
-                        else -> return@processData true 
+                        else -> return@processMember true 
                     }
                     builder.append(" ")
                     true

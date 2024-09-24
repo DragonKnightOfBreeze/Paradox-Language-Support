@@ -585,7 +585,7 @@ object ParadoxExpressionManager {
         }
         ProgressManager.checkCanceled()
         //注意这里需要考虑内联和可选的情况
-        blockElement.processData(conditional = true, inline = true) p@{ data ->
+        blockElement.processMember(conditional = true, inline = true) p@{ data ->
             val expression = when {
                 data is ParadoxScriptProperty -> ParadoxDataExpression.resolve(data.propertyKey)
                 data is ParadoxScriptValue -> ParadoxDataExpression.resolve(data)

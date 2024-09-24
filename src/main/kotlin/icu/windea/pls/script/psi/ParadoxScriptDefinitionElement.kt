@@ -15,17 +15,9 @@ interface ParadoxScriptDefinitionElement : ParadoxScriptNamedElement, ParadoxScr
     override fun getNameIdentifier(): PsiElement? = null
     
     val block: ParadoxScriptBlockElement?
-    val variableList: List<ParadoxScriptScriptedVariable>
-        get() {
-            return block?.scriptedVariableList.orEmpty()
-        }
-    val valueList: List<ParadoxScriptValue>
-        get() {
-            return buildList { block?.processValue(conditional = true, inline = true) { add(it) } }
-        }
-    val propertyList: List<ParadoxScriptProperty>
-        get() {
-            return buildList { block?.processProperty(conditional = true, inline = true) { add(it) } }
-        }
+    
+    val variableList: List<ParadoxScriptScriptedVariable> get() = block?.scriptedVariableList.orEmpty()
+    val valueList: List<ParadoxScriptValue> get() = block?.valueList.orEmpty()
+    val propertyList: List<ParadoxScriptProperty> get() = block?.propertyList.orEmpty()
 }
 

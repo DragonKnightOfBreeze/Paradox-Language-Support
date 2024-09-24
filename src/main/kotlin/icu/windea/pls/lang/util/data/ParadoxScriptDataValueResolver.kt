@@ -17,7 +17,7 @@ object ParadoxScriptDataValueResolver {
     
     private fun resolveBlock(block: ParadoxScriptBlockElement, conditional: Boolean = false, inline: Boolean = false): List<Entry<String?, Any>> {
         val result: MutableList<Entry<String?, Any>> = mutableListOf()
-        block.processData(conditional, inline) p@{ e ->
+        block.processMember(conditional, inline) p@{ e ->
             when {
                 e is ParadoxScriptValue -> resolveValue(e)?.let { result.add(Entry(null, it)) }
                 e is ParadoxScriptProperty -> resolveProperty(e)?.let { result.add(it) }

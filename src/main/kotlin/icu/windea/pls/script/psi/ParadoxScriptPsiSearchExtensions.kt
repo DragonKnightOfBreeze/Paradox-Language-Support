@@ -13,74 +13,77 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 
 /**
- * 遍历当前代码块中的所有（直接作为子节点的）值和属性。
+ * 遍历当前脚本文件中的所有（直接作为子节点的）成员。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
-fun ParadoxScriptBlockElement.processData(
-    conditional: Boolean = false,
-    inline: Boolean = false,
-    processor: (ParadoxScriptMemberElement) -> Boolean
-): Boolean {
+fun ParadoxScriptFile.processMember(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptMemberElement) -> Boolean): Boolean {
+    return this.block?.processMember(conditional, inline, processor) ?: true
+}
+
+/**
+ * 遍历当前脚本文件中的所有（直接作为子节点的）属性。
+ * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
+ * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
+ */
+fun ParadoxScriptFile.processProperty(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+    return this.block?.processProperty(conditional, inline, processor) ?: true
+}
+
+/**
+ * 遍历当前脚本文件中的所有（直接作为子节点的）值。
+ * @param conditional 是否也包括间接作为其中的参数表达式的子节点的值。
+ * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
+ */
+fun ParadoxScriptFile.processValue(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
+    return this.block?.processValue(conditional, inline, processor) ?: true
+}
+
+/**
+ * 遍历当前脚本块中的所有（直接作为子节点的）成员。
+ * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
+ * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
+ */
+fun ParadoxScriptBlockElement.processMember(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptMemberElement) -> Boolean): Boolean {
     return doProcessData(conditional, inline, processor)
 }
 
 /**
- * 遍历当前代码块中的所有（直接作为子节点的）属性。
+ * 遍历当前脚本块中的所有（直接作为子节点的）属性。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
-fun ParadoxScriptBlockElement.processProperty(
-    conditional: Boolean = false,
-    inline: Boolean = false,
-    processor: (ParadoxScriptProperty) -> Boolean
-): Boolean {
+fun ParadoxScriptBlockElement.processProperty(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
     return doProcessProperty(conditional,inline, processor)
 }
 
 /**
- * 遍历当前代码块中的所有（直接作为子节点的）值。
+ * 遍历当前脚本块中的所有（直接作为子节点的）值。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的值。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
-fun ParadoxScriptBlockElement.processValue(
-    conditional: Boolean = false,
-    inline: Boolean = false,
-    processor: (ParadoxScriptValue) -> Boolean
-): Boolean {
+fun ParadoxScriptBlockElement.processValue(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
     return doProcessValue(conditional, inline, processor)
 }
 
 /**
- * 遍历当前参数表达式中的所有（直接作为子节点的）值或属性。
+ * 遍历当前参数表达式中的所有（直接作为子节点的）成员。
  */
-fun ParadoxScriptParameterCondition.processData(
-    conditional: Boolean = false,
-    inline: Boolean = false,
-    processor: (ParadoxScriptMemberElement) -> Boolean
-): Boolean {
+fun ParadoxScriptParameterCondition.processMember(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptMemberElement) -> Boolean): Boolean {
     return doProcessData(conditional, inline, processor)
 }
 
 /**
  * 遍历当前参数表达式中的所有（直接作为子节点的）属性。
  */
-fun ParadoxScriptParameterCondition.processProperty(
-    conditional: Boolean = false,
-    inline: Boolean = false,
-    processor: (ParadoxScriptProperty) -> Boolean
-): Boolean {
+fun ParadoxScriptParameterCondition.processProperty(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
     return doProcessProperty(conditional,inline, processor)
 }
 
 /**
  * 遍历当前参数表达式中的所有（直接作为子节点的）值。
  */
-fun ParadoxScriptParameterCondition.processValue(
-    conditional: Boolean = false,
-    inline: Boolean = false,
-    processor: (ParadoxScriptValue) -> Boolean
-): Boolean {
+fun ParadoxScriptParameterCondition.processValue(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
     return doProcessValue(conditional, inline, processor)
 }
 
