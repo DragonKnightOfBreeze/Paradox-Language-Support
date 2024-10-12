@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.ui
+package icu.windea.pls.lang.ui.clause
 
 import icu.windea.pls.model.*
 

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.ui
+package icu.windea.pls.lang.ui.clause
 
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
@@ -8,6 +8,7 @@ import com.intellij.ui.table.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.ui.*
 import java.awt.*
 import javax.swing.*
 import javax.swing.event.*

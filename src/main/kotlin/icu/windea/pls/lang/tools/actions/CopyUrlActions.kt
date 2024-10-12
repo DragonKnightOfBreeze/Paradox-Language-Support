@@ -46,14 +46,14 @@ abstract class CopyUrlAction : DumbAwareAction() {
 class CopyGameStorePageUrlAction : CopyUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
-        return UrlProvider.getSteamGameStoreUrl(steamId)
+        return getDataProvider().getSteamGameStoreUrl(steamId)
     }
 }
 
 class CopyGameWorkshopPageUrlAction : CopyUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
-        return UrlProvider.getSteamGameWorkshopUrl(steamId)
+        return getDataProvider().getSteamGameWorkshopUrl(steamId)
     }
 }
 
@@ -68,6 +68,6 @@ class CopyModPageUrlAction : CopyUrlAction() {
     
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
         val steamId = fileInfo.rootInfo.castOrNull<ParadoxModRootInfo>()?.descriptorInfo?.remoteFileId ?: return null
-        return UrlProvider.getSteamWorkshopUrl(steamId)
+        return getDataProvider().getSteamWorkshopUrl(steamId)
     }
 }

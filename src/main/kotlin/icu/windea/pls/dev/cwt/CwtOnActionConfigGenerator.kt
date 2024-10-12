@@ -20,7 +20,7 @@ class CwtOnActionConfigGenerator(
             val oldName = oldItemRegex.matchEntire(it)?.groupValues?.getOrNull(1)
             if(oldName != null) oldItems.add(oldName)
         }
-        val gamePath = PathProvider.getSteamGamePath(gameType.id, gameType.title) ?: throw IllegalStateException()
+        val gamePath = getDataProvider().getSteamGamePath(gameType.id, gameType.title) ?: throw IllegalStateException()
         val newItems = mutableSetOf<String>()
         val txtDirFile = File(gamePath, txtDirPath)
         txtDirFile.walk().filter { it.isFile && it.extension == "txt" }.forEach { txtFile ->

@@ -45,28 +45,28 @@ abstract class OpenUrlAction : DumbAwareAction() {
 class OpenGameStorePageInSteamAction : OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
-        return UrlProvider.getSteamGameStoreUrlInSteam(steamId)
+        return getDataProvider().getSteamGameStoreUrlInSteam(steamId)
     }
 }
 
 class OpenGameStorePageInSteamWebsiteAction : OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
-        return UrlProvider.getSteamGameStoreUrl(steamId)
+        return getDataProvider().getSteamGameStoreUrl(steamId)
     }
 }
 
 class OpenGameWorkshopPageInSteamAction : OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
-        return UrlProvider.getSteamGameWorkshopUrlInSteam(steamId)
+        return getDataProvider().getSteamGameWorkshopUrlInSteam(steamId)
     }
 }
 
 class OpenGameWorkshopPageInSteamWebsiteAction : OpenUrlAction() {
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
         val steamId = fileInfo.rootInfo.gameType.steamId
-        return UrlProvider.getSteamGameWorkshopUrl(steamId)
+        return getDataProvider().getSteamGameWorkshopUrl(steamId)
     }
 }
 
@@ -81,7 +81,7 @@ class OpenModPageInSteamAction : OpenUrlAction() {
     
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
         val steamId = fileInfo.rootInfo.castOrNull<ParadoxModRootInfo>()?.descriptorInfo?.remoteFileId ?: return null
-        return UrlProvider.getSteamWorkshopUrlInSteam(steamId)
+        return getDataProvider().getSteamWorkshopUrlInSteam(steamId)
     }
 }
 
@@ -96,7 +96,7 @@ class OpenModPageInSteamWebsiteAction : OpenUrlAction() {
     
     override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
         val steamId = fileInfo.rootInfo.castOrNull<ParadoxModRootInfo>()?.descriptorInfo?.remoteFileId ?: return null
-        return UrlProvider.getSteamWorkshopUrl(steamId)
+        return getDataProvider().getSteamWorkshopUrl(steamId)
     }
     
 }

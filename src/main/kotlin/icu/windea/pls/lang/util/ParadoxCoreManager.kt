@@ -288,7 +288,7 @@ object ParadoxCoreManager {
             val steamWorkshopDir = parentDir ?: return@r
             val steamId = steamWorkshopDir.name
             val gameType = ParadoxGameType.entries.find { it.steamId == steamId } ?: return@r
-            if(PathProvider.getSteamWorkshopPath(steamId) != steamWorkshopDir.toNioPath().absolutePathString()) return@r
+            if(getDataProvider().getSteamWorkshopPath(steamId) != steamWorkshopDir.toNioPath().absolutePathString()) return@r
             return gameType
         }
         runCatchingCancelable r@{
@@ -297,7 +297,7 @@ object ParadoxCoreManager {
             val gameDataDir = modDir.parent ?: return@r
             val gameName = gameDataDir.name
             val gameType = ParadoxGameType.entries.find { it.title == gameName } ?: return@r
-            if(PathProvider.getGameDataPath(gameName) != gameDataDir.toNioPath().absolutePathString()) return@r
+            if(getDataProvider().getGameDataPath(gameName) != gameDataDir.toNioPath().absolutePathString()) return@r
             return gameType
         }
         return null
@@ -403,7 +403,7 @@ object ParadoxCoreManager {
     }
     
     fun getQuickGameDirectory(gameType: ParadoxGameType): String? {
-        val path = PathProvider.getSteamGamePath(gameType.steamId, gameType.title)
+        val path = getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)
         if(path == null || path.toPathOrNull()?.takeIf { it.exists() } == null) return null
         return path
     }

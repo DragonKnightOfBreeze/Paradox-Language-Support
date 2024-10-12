@@ -89,10 +89,10 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
         appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
         if(remoteFileId != null) {
             append(" | ")
-            appendLink(UrlProvider.getSteamWorkshopUrlInSteam(remoteFileId), PlsBundle.message("text.steamLinkLabel"))
+            appendLink(getDataProvider().getSteamWorkshopUrlInSteam(remoteFileId), PlsBundle.message("text.steamLinkLabel"))
             appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
             append(" | ")
-            appendLink(UrlProvider.getSteamWorkshopUrl(remoteFileId), PlsBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标
+            appendLink(getDataProvider().getSteamWorkshopUrl(remoteFileId), PlsBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标
         }
     }
     append("</span>")

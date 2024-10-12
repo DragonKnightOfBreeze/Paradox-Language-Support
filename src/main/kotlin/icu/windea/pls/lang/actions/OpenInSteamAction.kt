@@ -50,11 +50,11 @@ class OpenInSteamAction : DumbAwareAction() {
         return when {
             rootInfo is ParadoxGameRootInfo -> {
                 val steamId = rootInfo.gameType.steamId
-                UrlProvider.getSteamGameStoreUrlInSteam(steamId)
+                getDataProvider().getSteamGameStoreUrlInSteam(steamId)
             }
             rootInfo is ParadoxModRootInfo -> {
                 val steamId = rootInfo.descriptorInfo.remoteFileId ?: return null
-                UrlProvider.getSteamWorkshopUrlInSteam(steamId)
+                getDataProvider().getSteamWorkshopUrlInSteam(steamId)
             }
             else -> null
         }

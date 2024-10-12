@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.ui
+package icu.windea.pls.lang.ui.clause
 
 class ElementsInfo(
 	val descriptors: List<ElementDescriptor>,

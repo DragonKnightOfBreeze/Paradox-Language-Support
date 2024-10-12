@@ -39,7 +39,7 @@ class ParadoxToLauncherJsonV2Exporter : ParadoxModExporter {
         val settings = tableModel.settings
         val gameType = settings.gameType.orDefault()
         if(defaultSelected == null) {
-            val gameDataPath = PathProvider.getGameDataPath(gameType.title)?.toPathOrNull()
+            val gameDataPath = getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull()
             val playlistsPath = gameDataPath?.resolve("playlists")
             val playlistsFile = playlistsPath?.toVirtualFile(false)
             if(playlistsFile != null) defaultSelected = playlistsFile

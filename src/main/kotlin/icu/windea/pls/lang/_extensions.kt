@@ -19,7 +19,6 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.ep.data.*
-import icu.windea.pls.lang.io.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
@@ -37,13 +36,11 @@ fun getSettings() = service<ParadoxSettings>().state
 
 fun getProfilesSettings() = service<ParadoxProfilesSettings>().state
 
+fun getDataProvider() = service<ParadoxDataProvider>()
+
 fun getConfigGroup(gameType: ParadoxGameType?) = getDefaultProject().service<CwtConfigGroupService>().getConfigGroup(gameType)
 
 fun getConfigGroup(project: Project, gameType: ParadoxGameType?) = project.service<CwtConfigGroupService>().getConfigGroup(gameType)
-
-val PathProvider get() = service<ParadoxPathProvider>()
-
-val UrlProvider get() = service<ParadoxUrlProvider>()
 
 fun FileType.isParadoxFileType() = this == ParadoxScriptFileType || this == ParadoxLocalisationFileType
 
