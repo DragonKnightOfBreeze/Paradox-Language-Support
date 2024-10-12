@@ -2,7 +2,7 @@
 
 ## 1.3.22
 
-* [ ] #88 新的代码检查：` NonTriggeredEventInspection`
+* [X] #88 新的代码检查：`NonTriggeredEventInspection`
 
 ## 1.3.21
 

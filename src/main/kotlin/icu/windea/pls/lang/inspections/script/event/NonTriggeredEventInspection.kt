@@ -57,7 +57,8 @@ class NonTriggeredEventInspection : LocalInspectionTool() {
             val block = element.block ?: return
             val nameField = definitionInfo.typeConfig.nameField
             val insertAfterElement = if(nameField == null) null else element.findProperty(nameField)
-            block.addAfter(ParadoxScriptElementFactory.createPropertyFromText(project, "is_triggered_only = yes"), insertAfterElement)
+            val textToInsert = "is_triggered_only = yes"
+            block.addAfter(ParadoxScriptElementFactory.createPropertyFromText(project, textToInsert), insertAfterElement)
             block.addAfter(ParadoxScriptElementFactory.createLine(project), insertAfterElement)
         }
     }

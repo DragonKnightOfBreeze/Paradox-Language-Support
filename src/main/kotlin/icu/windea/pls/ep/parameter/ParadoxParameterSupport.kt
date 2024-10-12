@@ -43,13 +43,13 @@ interface ParadoxParameterSupport {
     fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement?
     
     /**
-     * @param onlyMostRelevant 只获取最相关的上下文。
+     * @param onlyMostRelevant 是否只遍历最相关的那个上下文。
      * @return 此扩展点是否适用。
      */
     fun processContext(parameterElement: ParadoxParameterElement, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean
     
     /**
-     * @param onlyMostRelevant 只获取最相关的上下文。
+     * @param onlyMostRelevant 是否只遍历最相关的那个上下文。
      * @return 此扩展点是否适用。
      */
     fun processContext(element: PsiElement, contextReferenceInfo: ParadoxParameterContextReferenceInfo, onlyMostRelevant: Boolean, processor: (ParadoxScriptDefinitionElement) -> Boolean): Boolean

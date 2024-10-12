@@ -88,24 +88,6 @@ fun String?.orUnknown() = if(isNullOrEmpty()) PlsConstants.unknownString else th
 
 fun String?.orUnresolved() = if(isNullOrEmpty()) PlsConstants.unresolvedString else this
 
-@Suppress("UNCHECKED_CAST")
-fun <T> Query<T>.processQuery(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
-    if(onlyMostRelevant && this is ParadoxQuery<*, *>) {
-        find()?.let { consumer.process(it as T) }
-        return true
-    }
-    return this.forEach(consumer)
-}
-
-@Suppress("UNCHECKED_CAST")
-fun <T> Query<T>.processQueryAsync(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
-    if(onlyMostRelevant && this is ParadoxQuery<*, *>) {
-        find()?.let { consumer.process(it as T) }
-        return true
-    }
-    return allowParallelProcessing().forEach(consumer)
-}
-
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
     return when {
         from == null -> null

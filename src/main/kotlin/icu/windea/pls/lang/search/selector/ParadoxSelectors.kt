@@ -15,11 +15,11 @@ import icu.windea.pls.model.*
 class ParadoxWithGameTypeSelector<T>(
     val gameType: ParadoxGameType
 ) : ParadoxSelector<T> {
-    override fun select(target: T): Boolean {
+    override fun selectOne(target: T): Boolean {
         return selectGameType(target) == gameType
     }
     
-    override fun selectAll(target: T): Boolean {
+    override fun select(target: T): Boolean {
         return selectGameType(target) == gameType
     }
 }
@@ -45,17 +45,17 @@ class ParadoxWithSearchScopeTypeSelector<T>(
     
     private val root by lazy { this.searchScopeType.findRoot(project, context) }
     
-    override fun select(target: T): Boolean {
+    override fun selectOne(target: T): Boolean {
         val root1 = root
         val root2 = findRoot(target)
         return root1 isSamePosition root2
     }
     
-    override fun selectAll(target: T): Boolean {
-        return select(target)
+    override fun select(target: T): Boolean {
+        return selectOne(target)
     }
     
-    fun findRoot(context: Any?): PsiElement? {
+    private fun findRoot(context: Any?): PsiElement? {
         return searchScopeType.findRoot(project, context)
     }
     
@@ -67,11 +67,11 @@ class ParadoxWithSearchScopeTypeSelector<T>(
 class ParadoxPreferFileSelector<T>(
     val file: VirtualFile
 ) : ParadoxSelector<T> {
-    override fun select(target: T): Boolean {
+    override fun selectOne(target: T): Boolean {
         return file == selectFile(target)
     }
     
-    override fun selectAll(target: T): Boolean {
+    override fun select(target: T): Boolean {
         return true
     }
     
@@ -83,11 +83,11 @@ class ParadoxPreferFileSelector<T>(
 class ParadoxPreferRootFileSelector<T>(
     val rootFile: VirtualFile
 ) : ParadoxSelector<T> {
-    override fun select(target: T): Boolean {
+    override fun selectOne(target: T): Boolean {
         return rootFile == selectRootFile(target)
     }
     
-    override fun selectAll(target: T): Boolean {
+    override fun select(target: T): Boolean {
         return true
     }
     
@@ -99,11 +99,11 @@ class ParadoxPreferRootFileSelector<T>(
 class ParadoxFilterSelector<T>(
     val predicate: (T) -> Boolean
 ) : ParadoxSelector<T> {
-    override fun select(target: T): Boolean {
+    override fun selectOne(target: T): Boolean {
         return predicate(target)
     }
     
-    override fun selectAll(target: T): Boolean {
+    override fun select(target: T): Boolean {
         return predicate(target)
     }
 }
@@ -126,23 +126,23 @@ class ParadoxDistinctSelector<T, K>(
 class ParadoxLocaleSelector(
     val locale: CwtLocalisationLocaleConfig
 ) : ParadoxSelector<ParadoxLocalisationProperty> {
-    override fun select(target: ParadoxLocalisationProperty): Boolean {
+    override fun selectOne(target: ParadoxLocalisationProperty): Boolean {
         return locale == selectLocale(target)
     }
     
-    override fun selectAll(target: ParadoxLocalisationProperty): Boolean {
-        return select(target)
+    override fun select(target: ParadoxLocalisationProperty): Boolean {
+        return selectOne(target)
     }
 }
 
 class ParadoxPreferLocaleSelector(
     val locale: CwtLocalisationLocaleConfig
 ) : ParadoxSelector<ParadoxLocalisationProperty> {
-    override fun select(target: ParadoxLocalisationProperty): Boolean {
+    override fun selectOne(target: ParadoxLocalisationProperty): Boolean {
         return locale == selectLocale(target)
     }
     
-    override fun selectAll(target: ParadoxLocalisationProperty): Boolean {
+    override fun select(target: ParadoxLocalisationProperty): Boolean {
         return true
     }
     

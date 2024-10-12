@@ -24,7 +24,7 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
         val selector = searchParameters.selector
         var result: T? = null
         delegateProcessResults(original) {
-            if(selector.select(it)) {
+            if(selector.selectOne(it)) {
                 result = it
                 false
             } else {
@@ -45,7 +45,7 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
                 true
             }
         }
-        return result ?: selector.defaultValue()
+        return result
     }
     
     override fun findAll(): Set<T> {
@@ -62,7 +62,7 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
         }
         val result = sortedSetOf(comparator)
         delegateProcessResults(original) {
-            if(selector.selectAll(it)) {
+            if(selector.select(it)) {
                 result += it
             }
             true
@@ -77,7 +77,7 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
     }
     
     fun getFinalComparator(): Comparator<T> {
-        //最终使用的排序器需要将比较结果为0的项按照原有顺序进行排序，除非它们值相等
+        //注意：最终使用的排序器需要将比较结果为0的项按照原有顺序进行排序，除非它们值相等
         var comparator = searchParameters.selector.comparator()
         comparator = comparator thenPossible getPriorityComparator()
         comparator = comparator thenPossible Comparator { o1, o2 -> if(o1 == o2) 0 else 1 }

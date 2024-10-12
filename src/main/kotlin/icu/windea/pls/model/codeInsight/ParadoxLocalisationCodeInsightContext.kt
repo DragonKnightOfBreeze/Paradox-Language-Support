@@ -222,8 +222,7 @@ data class ParadoxLocalisationCodeInsightContext(
         
         private fun isMissing(name: String, project: Project, context: PsiElement, locale: CwtLocalisationLocaleConfig): Boolean {
             val selector = localisationSelector(project, context).locale(locale)
-            val localisation = ParadoxLocalisationSearch.search(name, selector).findFirst()
-            val missing = localisation == null
+            val missing = ParadoxLocalisationSearch.search(name, selector).findFirst() == null
             return missing
         }
     }

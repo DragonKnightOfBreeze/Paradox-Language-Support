@@ -63,6 +63,7 @@ import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.search.*
 import icu.windea.pls.model.*
 import it.unimi.dsi.fastutil.*
 import it.unimi.dsi.fastutil.objects.*
@@ -263,6 +264,14 @@ fun <T> createCachedValue(project: Project = getDefaultProject(), trackValue: Bo
 fun <T> T.withDependencyItems(vararg dependencyItems: Any): CachedValueProvider.Result<T> {
     if(dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
     return CachedValueProvider.Result.create(this, *dependencyItems)
+}
+
+fun <T> Query<T>.processQuery(consumer: Processor<in T>): Boolean {
+    return this.forEach(consumer)
+}
+
+fun <T> Query<T>.processQueryAsync(consumer: Processor<in T>): Boolean {
+    return allowParallelProcessing().forEach(consumer)
 }
 //endregion
 
