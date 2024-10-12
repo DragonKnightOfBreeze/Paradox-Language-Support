@@ -3,9 +3,7 @@
     <fileType language="PARADOX_SCRIPT" name="Paradox Script" fieldName="INSTANCE" fileNames="descriptor.mod"
               implementationClass="icu.windea.pls.script.ParadoxScriptFileType"/>
     <lang.parserDefinition language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.psi.ParadoxScriptParserDefinition"/>
-
     <stubElementTypeHolder class="icu.windea.pls.script.psi.ParadoxScriptStubElementTypes" externalIdPrefix="paradoxScript."/>
-
     <spellchecker.support language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.ParadoxScriptSpellchecker"/>
     <lang.syntaxHighlighterFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.highlighter.ParadoxScriptSyntaxHighlighterFactory"/>
     <psi.referenceContributor language="PARADOX_SCRIPT" implementation="icu.windea.pls.script.references.ParadoxScriptReferenceContributor"/>
@@ -62,8 +60,6 @@
     <navbar implementation="icu.windea.pls.script.navigation.ParadoxScriptNavBar"/>
     <lang.psiStructureViewFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.script.usages.ParadoxDefinitionFileStructureGroupRuleProvider"/>
-    <iconProvider implementation="icu.windea.pls.lang.ParadoxIconProvider" order="first"/>
-    <openapi.vcs.changes.ui.filePathIconProvider implementation="icu.windea.pls.lang.ParadoxFilePathIconProvider"/>
     <lang.surroundDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.surroundWith.ParadoxScriptSurroundDescriptor"/>
     <lang.unwrapDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.unwrap.ParadoxScriptUnwrapDescriptor"/>
     <codeInsight.gotoSuper language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptGotoSuperActionHandler"/>
