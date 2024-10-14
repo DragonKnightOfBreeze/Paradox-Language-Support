@@ -145,7 +145,7 @@ faith = {
 * 如果dataType为`enum[X]`，则需要匹配规则`enum[X] = {...}`中的任意一项（忽略大小写）。
 * 如果dataType为`value[X]`，则需要匹配规则`value[X] = {...}`中的任意一项（忽略大小写），或者来自脚本文件（将dataType为`value_set[X]`的输入值视为声明）。
 * 如果dataType为`scope[X]`，则需要匹配所拥有的scope_type匹配`X`的任意target。target可能是link_value或link。
-  * 如果`X`为`any`，则表示匹配任意scope_type。 
+  * 如果`X`为`any`，则表示匹配任意scope_type。
   * scope_type：即作用域类型，需要匹配来自scopes（位于`scopes.cwt`中）的规则。
   * link：类似`root.owner`的格式，即作用域，需要匹配来自`system_scopes`（位于`script_config.pls.cwt`中）和links（位于`links.cwt`中）的规则。
   * link_value：类似`trigger:xxx`的格式。需要匹配来自links（位于`links.cwt`中）的规则（匹配前缀`prefix`且`type`的值是`scope`或`both`）。
@@ -311,7 +311,7 @@ effect（效果）：
   * 确定dds文件的`paradoxPath`，得到对应的png文件的`paradoxPath`，如果`~/dds2png/tmp`目录中存在对应的png文件，则直接使用
   * 如果没有，则需要确定dds文件的绝对路径
   * 执行转化命令：`~/dds2png/dds2png.exe -y <dds_name> <png_name>`
-  * png文件保存在`~/dds2png/tmp`这个目录中 
+  * png文件保存在`~/dds2png/tmp`这个目录中
 * 未知图标（`unknown.png`，44x44）需要保存到`~/dds2png/tmp`的顶级目录下，以便必要时直接使用
 
 #### 方案2（选用）
