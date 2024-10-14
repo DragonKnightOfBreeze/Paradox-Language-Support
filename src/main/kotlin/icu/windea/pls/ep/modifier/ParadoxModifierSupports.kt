@@ -78,6 +78,7 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
             //排除不匹配modifier的supported_scopes的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            
             val tailText = ParadoxCompletionManager.getExpressionTailText(context, modifierConfig.config, withConfigExpression = false)
             val template = modifierConfig.template
             if(template.expressionString.isNotEmpty()) continue
@@ -109,7 +110,6 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
  */
 class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
-        ProgressManager.checkCanceled()
         val modifierName = name
         return configGroup.generatedModifiers.values.any { config ->
             config.template.matches(modifierName, element, configGroup)
@@ -123,6 +123,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         var modifierConfig: CwtModifierConfig? = null
         val templateReferences = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
             ProgressManager.checkCanceled()
+            
             val resolvedReferences = config.template.resolveReferences(modifierName, configGroup).orNull()
             if(resolvedReferences != null) modifierConfig = config
             resolvedReferences
@@ -143,6 +144,8 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         if(modifiers.isEmpty()) return
         
         for(modifierConfig in modifiers.values) {
+            ProgressManager.checkCanceled()
+            
             //排除不匹配modifier的supported_scopes的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
             if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
@@ -291,13 +294,13 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
-        ProgressManager.checkCanceled()
         val modifierName = name
         val project = configGroup.project
         val selector = definitionSelector(project, element).contextSensitive().distinctByName()
         val economicCategories = ParadoxDefinitionSearch.search("economic_category", selector).findAll()
         for(economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
+            
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: continue
             for(economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
                 if(economicCategoryModifierInfo.name == modifierName) return true
@@ -314,6 +317,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val economicCategories = ParadoxDefinitionSearch.search("economic_category", selector).findAll()
         for(economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
+            
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: continue
             for(economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
                 if(economicCategoryModifierInfo.name == modifierName) {
@@ -336,6 +340,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val selector = definitionSelector(configGroup.project, element).contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{ economicCategory ->
             ProgressManager.checkCanceled()
+            
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return@p true
             //排除不匹配modifier的supported_scopes的情况
             val modifierCategories = ParadoxEconomicCategoryManager.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
