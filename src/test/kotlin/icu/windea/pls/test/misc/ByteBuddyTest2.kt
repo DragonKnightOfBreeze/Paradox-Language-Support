@@ -7,19 +7,19 @@ import net.bytebuddy.implementation.*
 import net.bytebuddy.matcher.*
 import org.junit.*
 
-class ByteBuddyTest2  {
+class ByteBuddyTest2 {
     //目标类型已加载 + subtype + 方法调用 - 测试失败
-    
+
     @Test(expected = Exception::class)
     fun test() {
         inject()
-        
+
         TestBean().customize(1)
-        
+
         //hello 1
         //hello 1 !!!
     }
-    
+
     private fun inject() {
         ByteBuddyAgent.install()
         val classLoader = javaClass.classLoader
@@ -31,12 +31,12 @@ class ByteBuddyTest2  {
             .make()
             .load(classLoader, ClassLoadingStrategy.Default.INJECTION)
     }
-    
+
     fun Any.customize(n: Int) {
         callSelf(n)
         println("hello $n !!!")
     }
-    
+
     fun Any.callSelf(vararg args: Any?): Any? {
         //val declaredMethods = this.javaClass.declaredMethods
         //val method = declaredMethods.find { it.name.startsWith("customize\$original") }!!
@@ -44,7 +44,7 @@ class ByteBuddyTest2  {
         //return method.invoke(this, *args)
         return null
     }
-    
+
     class TestBean {
         fun customize(n: Int) {
             println("hello $n")

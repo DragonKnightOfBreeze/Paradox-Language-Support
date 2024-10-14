@@ -12,7 +12,7 @@ class CwtOnActionConfigFromCsvGeneratorTest {
             "cwt/cwtools-ck2-config/on_actions.cwt",
         ).generate()
     }
-    
+
     @Test
     fun testForEu4() {
         CwtOnActionConfigFromCsvGenerator(
@@ -21,7 +21,7 @@ class CwtOnActionConfigFromCsvGeneratorTest {
             "cwt/cwtools-eu4-config/on_actions.cwt",
         ).generate()
     }
-    
+
     @Test
     fun testForHoi4() {
         CwtOnActionConfigFromCsvGenerator(
@@ -30,7 +30,7 @@ class CwtOnActionConfigFromCsvGeneratorTest {
             "cwt/cwtools-hoi4-config/Config/on_actions.cwt",
         ).generate()
     }
-    
+
     @Test
     fun testForStellaris() {
         CwtOnActionConfigFromCsvGenerator(
