@@ -20,10 +20,10 @@ class ParadoxIconProvider : IconProvider(), DumbAware {
                 val file = element.virtualFile
                 val project = element.project
                 val rootInfo = file.fileInfo?.rootInfo ?: return null
-                if(file != rootInfo.rootFile) return null
-                if(ProjectRootsUtil.isModuleContentRoot(file, project)) return null
-                if(ProjectRootsUtil.isModuleSourceRoot(file, project)) return null
-                val icon = when(rootInfo) {
+                if (file != rootInfo.rootFile) return null
+                if (ProjectRootsUtil.isModuleContentRoot(file, project)) return null
+                if (ProjectRootsUtil.isModuleSourceRoot(file, project)) return null
+                val icon = when (rootInfo) {
                     is ParadoxGameRootInfo -> PlsIcons.GameDirectory
                     is ParadoxModRootInfo -> PlsIcons.ModDirectory
                 }
@@ -31,8 +31,8 @@ class ParadoxIconProvider : IconProvider(), DumbAware {
             }
             element is ParadoxScriptFile -> {
                 val file = element.virtualFile ?: return null
-                if(file.fileInfo == null) return null
-                if(file.name.equals(PlsConstants.descriptorFileName, true)) return PlsIcons.FileTypes.ModeDescriptor
+                if (file.fileInfo == null) return null
+                if (file.name.equals(PlsConstants.descriptorFileName, true)) return PlsIcons.FileTypes.ModeDescriptor
                 return null
             }
             else -> return null

@@ -7,9 +7,9 @@ import icu.windea.pls.cwt.psi.*
 
 interface CwtInlineConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
-    
+
     fun inline(): CwtPropertyConfig
-    
+
     companion object {
         fun resolve(config: CwtPropertyConfig): CwtInlineConfig? = doResolve(config)
     }

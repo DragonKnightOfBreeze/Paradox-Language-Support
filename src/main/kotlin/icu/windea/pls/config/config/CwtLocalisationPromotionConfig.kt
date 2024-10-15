@@ -12,7 +12,7 @@ import icu.windea.pls.lang.util.*
 interface CwtLocalisationPromotionConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val supportedScopes: Set<String>
-    
+
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig): CwtLocalisationPromotionConfig = doResolve(config)
     }
@@ -33,4 +33,4 @@ private class CwtLocalisationPromotionConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
     override val supportedScopes: Set<String>
-) : UserDataHolderBase(),  CwtLocalisationPromotionConfig
+) : UserDataHolderBase(), CwtLocalisationPromotionConfig

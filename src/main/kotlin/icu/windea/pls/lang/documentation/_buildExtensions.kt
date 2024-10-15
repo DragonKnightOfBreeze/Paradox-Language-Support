@@ -52,13 +52,13 @@ fun DocumentationBuilder.appendPsiLink(refText: String, label: String, plainLink
  * @param local 输入的[url]是否是本地绝对路径。
  */
 fun DocumentationBuilder.appendImgTag(url: String, local: Boolean = true): DocumentationBuilder {
-    val finalUrl = if(local) url.toFileUrl() else url
+    val finalUrl = if (local) url.toFileUrl() else url
     append("<img src=\"").append(finalUrl).append("\"/>")
     return this
 }
 
 fun DocumentationBuilder.appendImgTag(url: String, width: Int, height: Int, local: Boolean = true): DocumentationBuilder {
-    val finalUrl = if(local) url.toFileUrl() else url
+    val finalUrl = if (local) url.toFileUrl() else url
     append("<img src=\"").append(finalUrl).append("\"")
     //这里不能使用style="..."
     append(" width=\"").append(width).append("\" height=\"").append(height).append("\" vspace=\"0\" hspace=\"0\"")
@@ -68,7 +68,7 @@ fun DocumentationBuilder.appendImgTag(url: String, width: Int, height: Int, loca
 
 fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): DocumentationBuilder {
     val file = runReadAction { selectFile(element) } ?: return this
-    if(ParadoxFileManager.isInjectedFile(file)) return this //ignored for injected PSI
+    if (ParadoxFileManager.isInjectedFile(file)) return this //ignored for injected PSI
     val fileInfo = file.fileInfo ?: return this
     val rootInfo = fileInfo.rootInfo
     append("<span>")
@@ -87,7 +87,7 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
         val rootUri = fileInfo.rootInfo.rootPath.toUri().toString()
         append(" ")
         appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
-        if(remoteFileId != null) {
+        if (remoteFileId != null) {
             append(" | ")
             appendLink(getDataProvider().getSteamWorkshopUrlInSteam(remoteFileId), PlsBundle.message("text.steamLinkLabel"))
             appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
@@ -104,7 +104,7 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
 }
 
 fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): DocumentationBuilder {
-    if(element.language != CwtLanguage) return this
+    if (element.language != CwtLanguage) return this
     val file = element.containingFile ?: return this
     val vFile = file.virtualFile ?: return this
     val project = file.project
@@ -112,7 +112,7 @@ fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): Doc
     val (fileProvider, configGroup, filePath) = fileProviders.firstNotNullOfOrNull f@{ fileProvider ->
         val configGroup = fileProvider.getContainingConfigGroup(vFile, project) ?: return@f null
         val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f null
-        val relativePath = VfsUtil.getRelativePath(vFile, rootDirectory)?: return@f null
+        val relativePath = VfsUtil.getRelativePath(vFile, rootDirectory) ?: return@f null
         val filePath = relativePath.substringAfter('/', "").orNull() ?: return@f null
         tupleOf(fileProvider, configGroup, filePath)
     } ?: return this
@@ -134,7 +134,7 @@ fun DocumentationBuilder.appendCwtConfigLink(shortLink: String, linkText: String
     val linkPrefix = CwtConfigLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix$shortLink".escapeXml()
     val finalLinkText = linkText.escapeXml()
-    if(context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if (context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     appendPsiLink(finalLink, finalLinkText)
     return this
 }
@@ -150,7 +150,7 @@ fun DocumentationBuilder.appendDefinitionLink(
     val linkPrefix = ParadoxDefinitionLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix${gameType.prefix}$typeExpression/$name".escapeXml()
     val finalLinkText = label
-    if(context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if (context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 
@@ -164,7 +164,7 @@ fun DocumentationBuilder.appendLocalisationLink(
     val linkPrefix = ParadoxLocalisationLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix${gameType.prefix}$name".escapeXml()
     val finalLinkText = label
-    if(context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if (context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 
@@ -179,7 +179,7 @@ fun DocumentationBuilder.appendFilePathLink(
     val linkPrefix = ParadoxFilePathLinkProvider.LINK_PREFIX
     val finalLink = "$linkPrefix${gameType.prefix}$filePath".escapeXml()
     val finalLinkText = label
-    if(context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
+    if (context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
     return appendPsiLink(finalLink, finalLinkText)
 }
 
@@ -204,7 +204,7 @@ fun DocumentationBuilder.buildScopeDoc(scopeId: String, gameType: ParadoxGameTyp
 fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement): DocumentationBuilder {
     var appendSeparator = false
     scopeContext.toScopeMap().forEach { (systemScope, scope) ->
-        if(appendSeparator) appendBr() else appendSeparator = true
+        if (appendSeparator) appendBr() else appendSeparator = true
         appendCwtConfigLink("${gameType.prefix}system_scopes/$systemScope", systemScope, contextElement)
         append(" = ")
         when {
@@ -216,12 +216,12 @@ fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext,
 }
 
 fun DocumentationBuilder.getModifierCategoriesText(categories: Set<String>, gameType: ParadoxGameType, contextElement: PsiElement): String {
-    if(categories.isEmpty()) return ""
+    if (categories.isEmpty()) return ""
     return buildDocumentation {
         append("<code>")
         var appendSeparator = false
-        for(category in categories) {
-            if(appendSeparator) append(", ") else appendSeparator = true
+        for (category in categories) {
+            if (appendSeparator) append(", ") else appendSeparator = true
             appendCwtConfigLink("${gameType.prefix}modifier_categories/$category", category, contextElement)
         }
         append("</code>")
@@ -237,12 +237,12 @@ fun DocumentationBuilder.getScopeText(scopeId: String, gameType: ParadoxGameType
 }
 
 fun DocumentationBuilder.getScopesText(scopeIds: Set<String>, gameType: ParadoxGameType, contextElement: PsiElement): String {
-    if(scopeIds.isEmpty()) return ""
+    if (scopeIds.isEmpty()) return ""
     return buildDocumentation {
         append("<code>")
         var appendSeparator = false
-        for(scopeId in scopeIds) {
-            if(appendSeparator) append(", ") else appendSeparator = true
+        for (scopeId in scopeIds) {
+            if (appendSeparator) append(", ") else appendSeparator = true
             buildScopeDoc(scopeId, gameType, contextElement)
         }
         append("</code>")

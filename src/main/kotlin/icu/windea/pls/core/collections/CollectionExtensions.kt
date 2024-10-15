@@ -12,9 +12,9 @@ inline fun <T : Collection<*>> T?.orNull() = this?.takeIf { it.isNotEmpty() }
 
 inline fun <T : Map<*, *>> T?.orNull() = this?.takeIf { it.isNotEmpty() }
 
-inline fun <T> Collection<T>.toListOrThis(): List<T> = if(this is List) this else this.toList()
+inline fun <T> Collection<T>.toListOrThis(): List<T> = if (this is List) this else this.toList()
 
-inline fun <T> Collection<T>.toSetOrThis(): Set<T> = if(this is Set) this else this.toSet()
+inline fun <T> Collection<T>.toSetOrThis(): Set<T> = if (this is Set) this else this.toSet()
 
 inline fun <T> List<T>.asMutable(): MutableList<T> = this as MutableList<T>
 
@@ -44,20 +44,20 @@ inline fun <reified R> Iterable<*>.findIsInstance(): R? {
 
 @Suppress("UNCHECKED_CAST")
 fun <R> Iterable<*>.findIsInstance(klass: Class<R>): R? {
-    for(element in this) if(klass.isInstance(element)) return element as R
+    for (element in this) if (klass.isInstance(element)) return element as R
     return null
 }
 
 fun <K, V> Map<K, V>.find(predicate: (Map.Entry<K, V>) -> Boolean): V? {
-    for(entry in this) {
-        if(predicate(entry)) return entry.value
+    for (entry in this) {
+        if (predicate(entry)) return entry.value
     }
     throw NoSuchElementException()
 }
 
 fun <K, V> Map<K, V>.findOrNull(predicate: (Map.Entry<K, V>) -> Boolean): V? {
-    for(entry in this) {
-        if(predicate(entry)) return entry.value
+    for (entry in this) {
+        if (predicate(entry)) return entry.value
     }
     return null
 }
@@ -71,9 +71,9 @@ inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R): Array<R> {
 }
 
 inline fun <T, reified R> Collection<T>.mapToArray(transform: (T) -> R): Array<R> {
-    if(this is List) return this.mapToArray(transform)
+    if (this is List) return this.mapToArray(transform)
     val result = arrayOfNulls<R>(this.size)
-    for((i, e) in this.withIndex()) {
+    for ((i, e) in this.withIndex()) {
         result[i] = transform(e)
     }
     return result.cast()
@@ -86,8 +86,8 @@ inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -
     try {
         val iterator = entries.iterator()
         return Array(size) { transform(iterator.next()) }
-    } catch(e: Exception) {
-        
+    } catch (e: Exception) {
+
         val list = entries.toList()
         return Array(size) { transform(list[it]) }
     }
@@ -96,8 +96,8 @@ inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -
 inline fun <T> Iterable<T>.pinned(predicate: (T) -> Boolean): List<T> {
     val result = mutableListOf<T>()
     val elementsToPin = mutableListOf<T>()
-    for(e in this) {
-        if(predicate(e)) {
+    for (e in this) {
+        if (predicate(e)) {
             elementsToPin += e
         } else {
             result += e
@@ -109,8 +109,8 @@ inline fun <T> Iterable<T>.pinned(predicate: (T) -> Boolean): List<T> {
 inline fun <T> Iterable<T>.pinnedLast(predicate: (T) -> Boolean): List<T> {
     val result = mutableListOf<T>()
     val elementsToPin = mutableListOf<T>()
-    for(e in this) {
-        if(predicate(e)) {
+    for (e in this) {
+        if (predicate(e)) {
             elementsToPin += e
         } else {
             result += e
@@ -120,31 +120,31 @@ inline fun <T> Iterable<T>.pinnedLast(predicate: (T) -> Boolean): List<T> {
 }
 
 fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
-    for(e in this) {
+    for (e in this) {
         val result = processor(e)
-        if(!result) return false
+        if (!result) return false
     }
     return true
 }
 
 fun <K, V> Map<K, V>.process(processor: (Map.Entry<K, V>) -> Boolean): Boolean {
-    for(entry in this) {
+    for (entry in this) {
         val result = processor(entry)
-        if(!result) return false
+        if (!result) return false
     }
     return true
 }
 
 fun <T> List<T>.toMutableIfNotEmptyInActual(): List<T> {
     //make List<T> properties mutable in actual if not empty (to hack them if necessary)
-    if(this.isEmpty()) return this
-    if(this is ArrayList || this is LinkedList || this is CopyOnWriteArrayList) return this
+    if (this.isEmpty()) return this
+    if (this is ArrayList || this is LinkedList || this is CopyOnWriteArrayList) return this
     try {
         this as MutableList
         this.removeAt(-1)
-    } catch(e: UnsupportedOperationException) {
+    } catch (e: UnsupportedOperationException) {
         return this.toMutableList()
-    } catch(e: Exception) {
+    } catch (e: Exception) {
         return this
     }
     return this

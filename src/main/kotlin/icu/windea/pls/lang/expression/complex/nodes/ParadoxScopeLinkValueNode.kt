@@ -19,28 +19,28 @@ class ParadoxScopeLinkValueNode(
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.SCOPE_LINK_VALUE_KEY
     }
-    
+
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxScopeLinkValueNode {
             //text may contain parameters
             //child node can be ParadoxScopeLinkNode / ParadoxDynamicValueExpression / ParadoxDataSourceNode
-            
+
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             run {
                 val scopeFieldConfig = linkConfigs.find { it.expression?.type in CwtDataTypeGroups.ScopeField }
-                if(scopeFieldConfig == null) return@run
+                if (scopeFieldConfig == null) return@run
                 val node = ParadoxScopeLinkNode.resolve(text, textRange, configGroup)
                 nodes += node
             }
             run {
-                if(nodes.isNotEmpty()) return@run
+                if (nodes.isNotEmpty()) return@run
                 val configs = linkConfigs.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.DynamicValue }
-                if(configs.isEmpty()) return@run
+                if (configs.isEmpty()) return@run
                 val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
                 nodes += node
             }
             run {
-                if(nodes.isNotEmpty()) return@run
+                if (nodes.isNotEmpty()) return@run
                 val node = ParadoxDataSourceNode.resolve(text, textRange, configGroup, linkConfigs)
                 nodes += node
             }

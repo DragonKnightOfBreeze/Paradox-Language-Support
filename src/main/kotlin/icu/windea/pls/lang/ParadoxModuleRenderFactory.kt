@@ -15,19 +15,19 @@ class ParadoxModuleRenderFactory : ModuleRendererFactory() {
     override fun rendersLocationString(): Boolean {
         return true
     }
-    
+
     override fun getModuleTextWithIcon(element: Any?): TextWithIcon? {
         run {
-            if(element !is PsiElement || element.language != CwtLanguage) return@run
+            if (element !is PsiElement || element.language != CwtLanguage) return@run
             val configGroup = CwtConfigManager.getContainingConfigGroup(element) ?: return@run
             val gameType = configGroup.gameType
             val text = "${gameType.title} Config"
             return TextWithIcon(text, PlsIcons.ConfigGroupDirectory)
         }
-        
+
         val rootFile = selectRootFile(element) ?: return null
         val rootInfo = rootFile.rootInfo ?: return null
-        return when(rootInfo) {
+        return when (rootInfo) {
             is ParadoxGameRootInfo -> {
                 TextWithIcon(rootInfo.qualifiedName, PlsIcons.GameDirectory)
             }

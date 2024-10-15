@@ -17,7 +17,7 @@ import java.util.*
 
 object ParadoxFileManager {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
-    
+
     /**
      * 判断目标文件能否引用另一个文件中的内容。
      *
@@ -27,12 +27,12 @@ object ParadoxFileManager {
     fun canReference(targetFile: VirtualFile?, otherFile: VirtualFile?): Boolean {
         val target = targetFile?.fileInfo ?: return true
         val other = otherFile?.fileInfo ?: return true
-        if(target.inMainEntry()) {
-            if(!other.inMainEntry()) return false
+        if (target.inMainEntry()) {
+            if (!other.inMainEntry()) return false
         }
         return true
     }
-    
+
     /**
      * 基于指定的虚拟文件创建一个临时文件。
      */
@@ -46,13 +46,13 @@ object ParadoxFileManager {
             val tempFile = VfsUtil.copyFile(ParadoxFileManager, file, diffDirFile, fileName)
             tempFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
             return tempFile
-        } catch(e: Exception) {
-            if(e is ProcessCanceledException) throw e
+        } catch (e: Exception) {
+            if (e is ProcessCanceledException) throw e
             logger.error(e.message, e)
             return null
         }
     }
-    
+
     /**
      * 基于指定的文本和文件信息创建一个临时文件。
      */
@@ -66,13 +66,13 @@ object ParadoxFileManager {
             val tempFile = VfsUtil.findFile(path, true) ?: return null
             tempFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
             return tempFile
-        } catch(e: Exception) {
-            if(e is ProcessCanceledException) throw e
+        } catch (e: Exception) {
+            if (e is ProcessCanceledException) throw e
             logger.error(e.message, e)
             return null
         }
     }
-    
+
     /**
      * 基于指定的虚拟文件创建一个临时文件。
      */
@@ -83,7 +83,7 @@ object ParadoxFileManager {
         lightFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
         return lightFile
     }
-    
+
     /**
      * 基于指定的文本和文件信息创建一个临时文件。
      */
@@ -92,16 +92,16 @@ object ParadoxFileManager {
         lightFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
         return lightFile
     }
-    
+
     fun createLightFile(name: String, text: CharSequence, language: Language): VirtualFile {
         val lightFile = LightVirtualFile(name, language, text)
         return lightFile
     }
-    
+
     fun isLightFile(file: VirtualFile): Boolean {
         return file is LightVirtualFile
     }
-    
+
     fun isInjectedFile(file: VirtualFile): Boolean {
         return file is VirtualFileWindow
     }

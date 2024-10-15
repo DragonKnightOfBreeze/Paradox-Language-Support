@@ -15,14 +15,14 @@ data class ParadoxImageCodeInsightInfo(
         Definition,
         Modifier
     }
-    
+
     enum class Type {
         Required, Primary, Optional,
         GeneratedModifierIcon,
         ModifierIcon,
         Reference
     }
-    
+
     val key = when {
         relatedImageInfo != null -> "@${relatedImageInfo.key}"
         filePath != null -> filePath

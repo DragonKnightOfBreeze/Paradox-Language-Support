@@ -10,7 +10,7 @@ import javax.swing.event.*
 
 class ParadoxModDependenciesTableView(
     tableModel: ListTableModel<ParadoxModDependencySettingsState>
-): TableView<ParadoxModDependencySettingsState>(tableModel) {
+) : TableView<ParadoxModDependencySettingsState>(tableModel) {
     init {
         setShowGrid(false)
         rowSelectionAllowed = true
@@ -19,12 +19,12 @@ class ParadoxModDependenciesTableView(
         selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
         setColumnSizes()
     }
-    
+
     override fun tableChanged(e: TableModelEvent) {
         super.tableChanged(e)
-        if(e.type == TableModelEvent.INSERT) setColumnSizes() //防止插入条目到空表格后，列的宽度被重置
+        if (e.type == TableModelEvent.INSERT) setColumnSizes() //防止插入条目到空表格后，列的宽度被重置
     }
-    
+
     private fun setColumnSizes() {
         //调整列的宽度
         setFixedColumnWidth(ParadoxModDependenciesTableModel.EnabledItem.columnIndex, ParadoxModDependenciesTableModel.EnabledItem.name)

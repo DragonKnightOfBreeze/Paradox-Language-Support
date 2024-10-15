@@ -17,30 +17,30 @@ import icu.windea.pls.localisation.highlighter.ParadoxLocalisationAttributesKeys
 class ParadoxLocalisationAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         checkSyntax(element, holder)
-        
-        when(element) {
+
+        when (element) {
             is ParadoxLocalisationProperty -> annotateProperty(element, holder)
             is ParadoxLocalisationPropertyReference -> annotatePropertyReference(element, holder)
             is ParadoxLocalisationColorfulText -> annotateColorfulText(element, holder)
             is ParadoxLocalisationExpressionElement -> annotateExpression(element, holder)
         }
     }
-    
+
     private fun checkSyntax(element: PsiElement, holder: AnnotationHolder) {
         //by @雪丶我
         //不允许紧邻的图标
-        if(element is ParadoxLocalisationIcon && element.prevSibling is ParadoxLocalisationIcon) {
+        if (element is ParadoxLocalisationIcon && element.prevSibling is ParadoxLocalisationIcon) {
             holder.newAnnotation(ERROR, PlsBundle.message("localisation.annotator.neighboringIcon"))
                 .withFix(InsertStringFix(PlsBundle.message("localisation.annotator.neighboringIcon.fix"), " ", element.startOffset))
                 .create()
         }
     }
-    
+
     private fun annotateProperty(element: ParadoxLocalisationProperty, holder: AnnotationHolder) {
         val localisationInfo = element.localisationInfo
-        if(localisationInfo != null) annotateLocalisation(element, holder, localisationInfo)
+        if (localisationInfo != null) annotateLocalisation(element, holder, localisationInfo)
     }
-    
+
     private fun annotateLocalisation(element: ParadoxLocalisationProperty, holder: AnnotationHolder, localisationInfo: ParadoxLocalisationInfo) {
         //颜色高亮（并非特别必要，注释掉）
         //val category = localisationInfo.category
@@ -53,11 +53,11 @@ class ParadoxLocalisationAnnotator : Annotator {
         //	.textAttributes(attributesKey)
         //	.create()
     }
-    
+
     private fun annotatePropertyReference(element: ParadoxLocalisationPropertyReference, holder: AnnotationHolder) {
         //颜色高亮
         val location = element.propertyReferenceParameter
-        if(location != null) {
+        if (location != null) {
             val text = location.text
             val colorId = text.find { it.isExactLetter() } ?: return
             val colorConfig = ParadoxTextColorManager.getInfo(colorId.toString(), element.project, element) ?: return
@@ -67,14 +67,14 @@ class ParadoxLocalisationAnnotator : Annotator {
             holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
         }
     }
-    
+
     private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
         //颜色高亮
         val location = element.idElement ?: return
         val attributesKey = element.reference?.getAttributesKey() ?: return
         holder.newSilentAnnotation(INFORMATION).range(location).textAttributes(attributesKey).create()
     }
-    
+
     private fun annotateExpression(element: ParadoxLocalisationExpressionElement, holder: AnnotationHolder) {
         ParadoxExpressionManager.annotateExpression(element, null, holder)
     }

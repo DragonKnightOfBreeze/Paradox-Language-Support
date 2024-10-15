@@ -13,11 +13,11 @@ open class ParadoxFindUsagesHandler(
     override fun getFindUsagesDialog(isSingleFile: Boolean, toShowInNewTab: Boolean, mustOpenInNewTab: Boolean): AbstractFindUsagesDialog {
         return ParadoxFindUsagesDialog(element, project, factory.findOptions, toShowInNewTab, mustOpenInNewTab, isSingleFile, this)
     }
-    
+
     override fun getFindUsagesOptions(dataContext: DataContext?): ParadoxFindUsagesOptions {
         return factory.findOptions
     }
-    
+
     override fun isSearchForTextOccurrencesAvailable(psiElement: PsiElement, isSingleFile: Boolean): Boolean {
         return true
     }

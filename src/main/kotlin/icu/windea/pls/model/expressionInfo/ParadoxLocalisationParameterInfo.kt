@@ -8,6 +8,7 @@ data class ParadoxLocalisationParameterInfo(
     val localisationName: String,
     override val elementOffset: Int,
     override val gameType: ParadoxGameType
-): ParadoxExpressionInfo {
-    @Volatile override var virtualFile: VirtualFile? = null
+) : ParadoxExpressionInfo {
+    @Volatile
+    override var virtualFile: VirtualFile? = null
 }

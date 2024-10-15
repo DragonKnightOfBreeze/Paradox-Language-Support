@@ -14,7 +14,7 @@ interface CwtEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val values: Set<@CaseInsensitive String>
     val valueConfigMap: Map<@CaseInsensitive String, CwtValueConfig>
-    
+
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig): CwtEnumConfig? = doResolve(config)
     }
@@ -28,12 +28,12 @@ private fun doResolve(config: CwtPropertyConfig): CwtEnumConfig? {
     val key = config.key
     val name = key.removeSurroundingOrNull("enum[", "]")?.orNull()?.intern() ?: return null
     val propertyConfigValues = config.values ?: return null
-    if(propertyConfigValues.isEmpty()) {
+    if (propertyConfigValues.isEmpty()) {
         return CwtEnumConfigImpl(config, name, emptySet(), emptyMap())
     }
     val values = caseInsensitiveStringSet() //忽略大小写
     val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() //忽略大小写
-    for(propertyConfigValue in propertyConfigValues) {
+    for (propertyConfigValue in propertyConfigValues) {
         val v = propertyConfigValue.value.intern()
         values.add(v)
         valueConfigMap.put(v, propertyConfigValue)

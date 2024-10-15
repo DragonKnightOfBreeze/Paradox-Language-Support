@@ -11,17 +11,17 @@ interface CwtDataExpressionResolver {
      * 得到解析结果。
      */
     fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression?
-    
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtDataExpressionResolver>("icu.windea.pls.dataExpressionResolver")
-        
+
         /**
          * @see CwtDataExpressionResolver.resolve
          */
         fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
             EP_NAME.extensionList.forEach f@{ ep ->
                 val r = ep.resolve(expressionString, isKey)
-                if(r != null) return r
+                if (r != null) return r
             }
             return null
         }

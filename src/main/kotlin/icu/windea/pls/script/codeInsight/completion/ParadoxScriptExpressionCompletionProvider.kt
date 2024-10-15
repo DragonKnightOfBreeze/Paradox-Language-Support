@@ -15,14 +15,14 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptExpressionCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position.parentOfType<ParadoxScriptStringExpressionElement>() ?: return
-        if(!element.isExpression()) return
-        
+        if (!element.isExpression()) return
+
         val file = parameters.originalFile
         val quoted = element.text.isLeftQuoted()
         val rightQuoted = element.text.isRightQuoted()
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
-        
+
         ParadoxCompletionManager.initializeContext(parameters, context)
         context.contextElement = element
         context.offsetInParent = offsetInParent
@@ -30,35 +30,35 @@ class ParadoxScriptExpressionCompletionProvider : CompletionProvider<CompletionP
         context.quoted = quoted
         context.rightQuoted = rightQuoted
         context.expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
-        
+
         //兼容参数值（包括整行或多行参数值）和内联脚本文件中内容
-        
+
         val parameterValueQuoted = ParadoxExpressionManager.getConfigContext(file)?.parameterValueQuoted
         val mayBeKey = parameterValueQuoted != false && (element is ParadoxScriptPropertyKey || (element is ParadoxScriptValue && element.isBlockMember()))
         val mayBeValue = element is ParadoxScriptString && element.isBlockMember()
         val mayBePropertyValue = parameterValueQuoted != false && (element is ParadoxScriptString && element.isPropertyValue())
-        
+
         val resultToUse = result.withPrefixMatcher(keyword)
-        if(mayBeKey) {
+        if (mayBeKey) {
             //向上得到block或者file
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
             val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
-            if(memberElement != null) {
+            if (memberElement != null) {
                 ParadoxCompletionManager.addKeyCompletions(memberElement, context, resultToUse)
             }
         }
-        if(mayBeValue) {
+        if (mayBeValue) {
             //向上得到block或者file
             val blockElement = element.parentOfType<ParadoxScriptBlockElement>()
             val memberElement = blockElement?.parentOfType<ParadoxScriptMemberElement>(withSelf = true)
-            if(memberElement != null) {
+            if (memberElement != null) {
                 ParadoxCompletionManager.addValueCompletions(memberElement, context, resultToUse)
             }
         }
-        if(mayBePropertyValue) {
+        if (mayBePropertyValue) {
             //向上得到property
             val propertyElement = element.findParentProperty() as? ParadoxScriptProperty
-            if(propertyElement != null) {
+            if (propertyElement != null) {
                 ParadoxCompletionManager.addPropertyValueCompletions(element, propertyElement, context, resultToUse)
             }
         }

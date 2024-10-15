@@ -25,7 +25,7 @@ object CwtConfigManager {
         val filePathPatterns by createKey<Set<String>>(Keys)
         val filePathsForPriority by createKey<Set<String>>(Keys)
     }
-    
+
     /**
      * @param forRepo 是否兼容插件或者规则仓库中的CWT文件（此时将其视为规则文件）。
      */
@@ -34,50 +34,50 @@ object CwtConfigManager {
         val vFile = file.virtualFile ?: return null
         return getContainingConfigGroup(vFile, file.project, forRepo)
     }
-    
+
     /**
      * @param forRepo 是否兼容插件或者规则仓库中的CWT文件（此时将其视为规则文件）。
      */
     fun getContainingConfigGroup(file: VirtualFile, project: Project, forRepo: Boolean = false): CwtConfigGroup? {
-        if(file.fileType != CwtFileType) return null
+        if (file.fileType != CwtFileType) return null
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         val configGroup = fileProviders.firstNotNullOfOrNull { fileProvider ->
             fileProvider.getContainingConfigGroup(file, project)
         }
-        if(configGroup != null) return configGroup
-        
+        if (configGroup != null) return configGroup
+
         runCatchingCancelable r@{
-            if(!forRepo) return@r
+            if (!forRepo) return@r
             val workDirectory = file.toNioPath().toFile().parentFile ?: return@r
             val command = "git remote -v"
             val commandResult = executeCommand(command, CommandType.POWER_SHELL, null, workDirectory)
             val gameTypeId = commandResult.lines()
                 .mapNotNull { it.splitByBlank(3).getOrNull(1) }
                 .firstNotNullOfOrNull t@{
-                    if(it.contains("Paradox-Language-Support")) return@t "core"
+                    if (it.contains("Paradox-Language-Support")) return@t "core"
                     val s = it.substringInLast("cwtools-", "-config", "")
-                    if(s.isNotEmpty()) return@t s
+                    if (s.isNotEmpty()) return@t s
                     null
                 } ?: return@r
             val gameType = ParadoxGameType.resolve(gameTypeId)
             return getConfigGroup(project, gameType)
         }
-        
+
         return null
     }
-    
+
     fun getFilePath(element: PsiElement): String? {
         val file = element.containingFile ?: return null
         val vFile = file.virtualFile ?: return null
         return getFilePath(vFile, file.project)
     }
-    
+
     fun getFilePath(file: VirtualFile, project: Project): String? {
-        if(file.fileType != CwtFileType) return null
+        if (file.fileType != CwtFileType) return null
         val configGroup = getContainingConfigGroup(file, project) ?: return null
         val gameTypeId = configGroup.gameType.id
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        fileProviders.forEach f@{fileProvider ->
+        fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return@f
             val filePath = relativePath.removePrefixOrNull("$gameTypeId/") ?: return@f
@@ -85,13 +85,13 @@ object CwtConfigManager {
         }
         return null
     }
-    
+
     fun getConfigPath(element: PsiElement): CwtConfigPath? {
-        if(element is CwtFile || element is CwtRootBlock) return CwtConfigPath.Empty
-        if(element !is CwtMemberElement) return null
+        if (element is CwtFile || element is CwtRootBlock) return CwtConfigPath.Empty
+        if (element !is CwtMemberElement) return null
         return doGetConfigPathFromCache(element)
     }
-    
+
     private fun doGetConfigPathFromCache(element: CwtMemberElement): CwtConfigPath? {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigPath) {
@@ -100,12 +100,12 @@ object CwtConfigManager {
             CachedValueProvider.Result.create(value, file)
         }
     }
-    
+
     private fun doGetConfigPath(element: CwtMemberElement): CwtConfigPath? {
         var current: PsiElement = element
         var depth = 0
         val subPaths = LinkedList<String>()
-        while(current !is PsiFile) {
+        while (current !is PsiFile) {
             when {
                 current is CwtProperty -> {
                     subPaths.addFirst(current.name)
@@ -118,20 +118,20 @@ object CwtConfigManager {
             }
             current = current.parent ?: break
         }
-        if(current !is CwtFile) return null //unexpected
+        if (current !is CwtFile) return null //unexpected
         return CwtConfigPath.resolve(subPaths)
     }
-    
+
     fun getConfigType(element: PsiElement): CwtConfigType? {
-        if(element !is CwtMemberElement) return null
+        if (element !is CwtMemberElement) return null
         return doGetConfigTypeFromCache(element)
     }
-    
+
     private fun doGetConfigTypeFromCache(element: CwtMemberElement): CwtConfigType? {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigType) {
             val file = element.containingFile ?: return@getCachedValue null
-            val value = when(element) {
+            val value = when (element) {
                 is CwtProperty -> doGetConfigType(element, file)
                 is CwtValue -> doGetConfigType(element, file)
                 else -> null
@@ -139,12 +139,12 @@ object CwtConfigManager {
             CachedValueProvider.Result.create(value, file)
         }
     }
-    
+
     private fun doGetConfigType(element: CwtMemberElement, file: PsiFile): CwtConfigType? {
         val filePath = getFilePath(file) ?: return null
-        if(filePath.startsWith("internal/")) return null //排除内部规则文件
+        if (filePath.startsWith("internal/")) return null //排除内部规则文件
         val configPath = element.configPath
-        if(configPath == null || configPath.isEmpty()) return null
+        if (configPath == null || configPath.isEmpty()) return null
         return when {
             element is CwtProperty && configPath.path.matchesAntPattern("types/type[*]") -> {
                 CwtConfigType.Type
@@ -155,10 +155,10 @@ object CwtConfigManager {
             element is CwtProperty && configPath.path.matchesAntPattern("types/type[*]/modifiers/**") -> {
                 when {
                     configPath.get(3).surroundsWith("subtype[", "]") -> {
-                        if(configPath.length == 5) return CwtConfigType.Modifier
+                        if (configPath.length == 5) return CwtConfigType.Modifier
                     }
                     else -> {
-                        if(configPath.length == 4) return CwtConfigType.Modifier
+                        if (configPath.length == 4) return CwtConfigType.Modifier
                     }
                 }
                 null
@@ -253,20 +253,20 @@ object CwtConfigManager {
             else -> null
         }
     }
-    
+
     fun getFilePathPatterns(config: CwtConfig<*>): Set<String> {
         return config.getOrPutUserData(Keys.filePathPatterns) { doGetFilePathPatterns(config) }
     }
-    
+
     private fun doGetFilePathPatterns(config: CwtConfig<*>): TreeSet<String> {
         val patterns = sortedSetOf<String>()
-        
+
         var pathPatterns: Set<String> = emptySet()
         var paths: Set<String> = emptySet()
         var pathFile: String? = null
         var pathExtension: String? = null
         var pathStrict = false
-        when(config) {
+        when (config) {
             is CwtTypeConfig -> {
                 pathPatterns = config.pathPatterns
                 paths = config.paths
@@ -282,56 +282,56 @@ object CwtConfigManager {
                 pathStrict = config.pathStrict
             }
         }
-        
-        if(pathPatterns.isNotEmpty()) {
+
+        if (pathPatterns.isNotEmpty()) {
             patterns += pathPatterns
         }
-        
+
         val filePattern = when {
             pathFile.isNotNullOrEmpty() -> pathFile
             pathExtension.isNotNullOrEmpty() -> "*.${pathExtension}"
             else -> null
         }
-        if(paths.isNotEmpty()) {
-            for(path in paths) {
-                if(path.isNotEmpty()) {
+        if (paths.isNotEmpty()) {
+            for (path in paths) {
+                if (path.isNotEmpty()) {
                     patterns += buildString {
                         append(path)
-                        if(pathStrict) {
-                            if(filePattern.isNotNullOrEmpty()) {
+                        if (pathStrict) {
+                            if (filePattern.isNotNullOrEmpty()) {
                                 append("/").append(filePattern)
                             } else {
                                 append("/*")
                             }
                         } else {
-                            if(filePattern.isNotNullOrEmpty()) {
+                            if (filePattern.isNotNullOrEmpty()) {
                                 append("/**/").append(filePattern)
                             } else {
                                 append("/**")
                             }
                         }
                     }
-                } else if(filePattern.isNotNullOrEmpty()) {
+                } else if (filePattern.isNotNullOrEmpty()) {
                     patterns += filePattern
                 }
             }
-        } else if(filePattern.isNotNullOrEmpty()) {
+        } else if (filePattern.isNotNullOrEmpty()) {
             patterns += filePattern
         }
-        
+
         return patterns
     }
-    
+
     fun getFilePathsForPriority(config: CwtConfig<*>): Set<String> {
         return config.getOrPutUserData(Keys.filePathsForPriority) { doGetFilePathsForPriority(config) }
     }
-    
+
     private fun doGetFilePathsForPriority(config: CwtConfig<*>): TreeSet<String> {
         var pathPatterns: Set<String> = emptySet()
         var paths: Set<String> = emptySet()
         var pathFile: String? = null
         var pathStrict = false
-        when(config) {
+        when (config) {
             is CwtTypeConfig -> {
                 pathPatterns = config.pathPatterns
                 paths = config.paths
@@ -346,28 +346,28 @@ object CwtConfigManager {
             }
         }
         val filePaths = sortedSetOf<String>()
-        if(pathPatterns.isNotEmpty()) {
+        if (pathPatterns.isNotEmpty()) {
             filePaths += pathPatterns.map { it.substringBefore("/*") }
         }
-        if(paths.isNotEmpty()) {
-            if(pathFile.isNotNullOrEmpty() && pathStrict) {
+        if (paths.isNotEmpty()) {
+            if (pathFile.isNotNullOrEmpty() && pathStrict) {
                 filePaths += paths.map { "$it/$pathFile" }
             } else {
                 filePaths += paths
             }
-        } else if(pathFile.isNotNullOrEmpty()) {
+        } else if (pathFile.isNotNullOrEmpty()) {
             filePaths += pathFile
         }
         return filePaths
     }
-    
+
     fun matchesFilePath(config: CwtConfig<*>, filePath: ParadoxPath): Boolean {
         var pathPatterns: Set<String> = emptySet()
         var paths: Set<String> = emptySet()
         var pathFile: String? = null
         var pathExtension: String? = null
         var pathStrict = false
-        when(config) {
+        when (config) {
             is CwtTypeConfig -> {
                 pathPatterns = config.pathPatterns
                 paths = config.paths
@@ -383,97 +383,97 @@ object CwtConfigManager {
                 pathStrict = config.pathStrict
             }
         }
-        
-        if(pathPatterns.isNotEmpty()) {
-            if(pathPatterns.any { filePath.path.matchesAntPattern(it) }) return true
+
+        if (pathPatterns.isNotEmpty()) {
+            if (pathPatterns.any { filePath.path.matchesAntPattern(it) }) return true
         }
-        
-        if(pathFile.isNotNullOrEmpty()) {
-            if(pathFile != filePath.fileName) return false
-        } else if(pathExtension.isNotNullOrEmpty()) {
-            if(filePath.fileExtension == null || !pathExtension.equals(filePath.fileExtension, true)) return false
+
+        if (pathFile.isNotNullOrEmpty()) {
+            if (pathFile != filePath.fileName) return false
+        } else if (pathExtension.isNotNullOrEmpty()) {
+            if (filePath.fileExtension == null || !pathExtension.equals(filePath.fileExtension, true)) return false
         }
-        if(paths.isNotEmpty()) {
-            for(path in paths) {
-                if(path.matchesPath(filePath.path, strict = pathStrict)) return true
+        if (paths.isNotEmpty()) {
+            for (path in paths) {
+                if (path.matchesPath(filePath.path, strict = pathStrict)) return true
             }
             return false
         } else {
-            if(pathFile.isNullOrEmpty() && pathExtension.isNullOrEmpty()) return false
+            if (pathFile.isNullOrEmpty() && pathExtension.isNullOrEmpty()) return false
             return true
         }
     }
-    
+
     fun getConfigByPathExpression(configGroup: CwtConfigGroup, pathExpression: String): List<CwtMemberConfig<*>> {
         val separatorIndex = pathExpression.indexOf('#')
-        if(separatorIndex == -1) return emptyList()
+        if (separatorIndex == -1) return emptyList()
         val filePath = pathExpression.substring(0, separatorIndex)
-        if(filePath.isEmpty()) return emptyList()
+        if (filePath.isEmpty()) return emptyList()
         val fileConfig = configGroup.files[filePath] ?: return emptyList()
         val configPath = pathExpression.substring(separatorIndex + 1)
-        if(configPath.isEmpty()) return emptyList()
+        if (configPath.isEmpty()) return emptyList()
         val pathList = configPath.split('/')
         var r: List<CwtMemberConfig<*>> = emptyList()
         pathList.forEach { p ->
-            if(p == "-") {
-                if(r.isEmpty()) {
+            if (p == "-") {
+                if (r.isEmpty()) {
                     r = fileConfig.values
                 } else {
                     r = buildList {
                         r.forEach { c1 ->
                             c1.configs?.forEach { c2 ->
-                                if(c2 is CwtValueConfig) this += c2
+                                if (c2 is CwtValueConfig) this += c2
                             }
                         }
                     }
                 }
             } else {
-                if(r.isEmpty()) {
+                if (r.isEmpty()) {
                     r = fileConfig.properties.filter { c -> c.key == p }
                 } else {
                     r = buildList {
                         r.forEach { c1 ->
                             c1.configs?.forEach { c2 ->
-                                if(c2 is CwtPropertyConfig && c2.key == p) this += c2
+                                if (c2 is CwtPropertyConfig && c2.key == p) this += c2
                             }
                         }
                     }
                 }
             }
-            if(r.isEmpty()) return emptyList()
+            if (r.isEmpty()) return emptyList()
         }
         return r
     }
-    
+
     fun getContextConfigs(element: PsiElement, containerElement: PsiElement, schema: CwtSchemaConfig): List<CwtMemberConfig<*>> {
         val configPath = getConfigPath(containerElement) ?: return emptyList()
-        
+
         var contextConfigs = mutableListOf<CwtMemberConfig<*>>()
         contextConfigs += schema.properties
         configPath.forEachIndexed f1@{ i, path ->
             val flatten = i != configPath.length - 1 || !(element is CwtString && element.isPropertyValue())
             val nextContextConfigs = mutableListOf<CwtMemberConfig<*>>()
             contextConfigs.forEach f2@{ config ->
-                when(config) {
+                when (config) {
                     is CwtPropertyConfig -> {
                         val schemaExpression = CwtSchemaExpression.resolve(config.key)
-                        if(!matchesSchemaExpression(path, schemaExpression, schema)) return@f2
+                        if (!matchesSchemaExpression(path, schemaExpression, schema)) return@f2
                         nextContextConfigs += config
                     }
                     is CwtValueConfig -> {
-                        if(path != "-") return@f2
+                        if (path != "-") return@f2
                         nextContextConfigs += config
                     }
                 }
             }
             contextConfigs = nextContextConfigs
-            if(flatten) contextConfigs = contextConfigs.flatMapTo(mutableListOf()) { it.configs.orEmpty() }
+            if (flatten) contextConfigs = contextConfigs.flatMapTo(mutableListOf()) { it.configs.orEmpty() }
         }
         return contextConfigs
     }
-    
+
     fun matchesSchemaExpression(value: String, schemaExpression: CwtSchemaExpression, schema: CwtSchemaConfig): Boolean {
-        return when(schemaExpression) {
+        return when (schemaExpression) {
             is CwtSchemaExpression.Constant -> {
                 schemaExpression.expressionString == value
             }

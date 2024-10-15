@@ -29,7 +29,7 @@ interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     val searchScopeType: String?
     val nameConfig: CwtPropertyConfig
     val enumNameConfigs: List<CwtMemberConfig<*>>
-    
+
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig): CwtComplexEnumConfig? = doResolve(config)
     }
@@ -46,11 +46,11 @@ private fun doResolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
     var pathStrict = false
     var startFromRoot = false
     var nameConfig: CwtPropertyConfig? = null
-    
+
     val props = config.properties.orEmpty()
-    if(props.isEmpty()) return null
-    for(prop in props) {
-        when(prop.key) {
+    if (props.isEmpty()) return null
+    for (prop in props) {
+        when (prop.key) {
             "path_pattern" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { pathPatterns += it }
             "path" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { paths += it }
             "path_file" -> pathFile = prop.stringValue ?: continue
@@ -60,10 +60,10 @@ private fun doResolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
             "name" -> nameConfig = prop
         }
     }
-    
+
     val searchScopeType = config.findOption("search_scope_type")?.stringValue
-    
-    if(nameConfig == null) return null
+
+    if (nameConfig == null) return null
     return CwtComplexEnumConfigImpl(
         config, name, pathPatterns.optimized(), paths.optimized(), pathFile, pathExtension, pathStrict,
         startFromRoot, searchScopeType, nameConfig
@@ -87,10 +87,10 @@ private class CwtComplexEnumConfigImpl(
             nameConfig.processDescendants {
                 when {
                     it is CwtPropertyConfig -> {
-                        if(it.key == "enum_name" || it.stringValue == "enum_name") add(it)
+                        if (it.key == "enum_name" || it.stringValue == "enum_name") add(it)
                     }
                     it is CwtValueConfig -> {
-                        if(it.stringValue == "enum_name") add(it)
+                        if (it.stringValue == "enum_name") add(it)
                     }
                 }
                 true

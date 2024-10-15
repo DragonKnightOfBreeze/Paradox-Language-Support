@@ -11,7 +11,7 @@ class ParadoxLocalisationUnwrapDescriptor : UnwrapDescriptorBase() {
         ParadoxLocalisationColorfulTextRemover(),
         ParadoxLocalisationColorfulTextUnwrapper(),
     )
-    
+
     override fun createUnwrappers(): Array<out Unwrapper> {
         return _unwrappers
     }

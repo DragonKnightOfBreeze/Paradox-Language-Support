@@ -8,7 +8,7 @@ import icu.windea.pls.model.*
  */
 interface ParadoxDefaultGameTypeListener {
     fun onChange(oldGameType: ParadoxGameType, newGameType: ParadoxGameType)
-    
+
     companion object {
         @Topic.AppLevel
         val TOPIC = Topic(ParadoxDefaultGameTypeListener::class.java, Topic.BroadcastDirection.NONE)

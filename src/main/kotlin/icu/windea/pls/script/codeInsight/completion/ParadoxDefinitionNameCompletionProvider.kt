@@ -21,18 +21,18 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if(!getSettings().completion.completeDefinitionNames) return
-        
+        if (!getSettings().completion.completeDefinitionNames) return
+
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
-        if(element.text.isParameterized()) return
+        if (element.text.isParameterized()) return
         val file = parameters.originalFile
         val project = file.project
         val quoted = element.text.isLeftQuoted()
         val rightQuoted = element.text.isRightQuoted()
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
-        
+
         ParadoxCompletionManager.initializeContext(parameters, context)
         context.contextElement = element
         context.offsetInParent = offsetInParent
@@ -40,11 +40,11 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
         context.quoted = quoted
         context.rightQuoted = rightQuoted
         context.expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
-        
+
         val gameType = selectGameType(file) ?: return
         val configGroup = getConfigGroup(project, gameType)
         context.configGroup = configGroup
-        
+
         when {
             //key_
             //key_ = 
@@ -53,26 +53,26 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                 val fileInfo = file.fileInfo ?: return
                 val path = fileInfo.path //这里使用pathToEntry
                 val elementPath = ParadoxExpressionPathManager.get(element, PlsConstants.Settings.maxDefinitionDepth) ?: return
-                if(elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
-                for(typeConfig in configGroup.types.values) {
-                    if(typeConfig.nameField != null) continue
-                    if(ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(path, elementPath, null, typeConfig)) {
+                if (elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
+                for (typeConfig in configGroup.types.values) {
+                    if (typeConfig.nameField != null) continue
+                    if (ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(path, elementPath, null, typeConfig)) {
                         val type = typeConfig.name
                         val declarationConfig = configGroup.declarations.get(type) ?: continue
                         //需要考虑不指定子类型的情况
                         val configContext = CwtDeclarationConfigContextProvider.getContext(element, null, type, null, gameType, configGroup)
                         val config = configContext?.getConfig(declarationConfig) ?: continue
-                        
+
                         context.config = config
                         context.isKey = true
                         context.expressionTailText = ""
-                        
+
                         //排除正在输入的那一个
                         val selector = definitionSelector(project, file).contextSensitive()
                             .notSamePosition(element)
                             .distinctByName()
                         ParadoxDefinitionSearch.search(type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
-                        
+
                         ParadoxCompletionManager.completeExtendedDefinition(context, result)
                     }
                 }
@@ -81,14 +81,14 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
             element is ParadoxScriptString && element.isDefinitionName() -> {
                 val definition = element.findParentDefinition() ?: return
                 val definitionInfo = definition.definitionInfo
-                if(definitionInfo != null) {
+                if (definitionInfo != null) {
                     val type = definitionInfo.type
                     val config = definitionInfo.declaration ?: return
-                    
+
                     context.config = config
                     context.isKey = false
                     context.expressionTailText = ""
-                    
+
                     //这里需要基于rootKey过滤结果
                     //排除正在输入的那一个
                     val selector = definitionSelector(project, file).contextSensitive()
@@ -96,17 +96,17 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                         .notSamePosition(definition)
                         .distinctByName()
                     ParadoxDefinitionSearch.search(type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
-                    
+
                     ParadoxCompletionManager.completeExtendedDefinition(context, result)
                 }
             }
         }
     }
-    
+
     private fun processDefinition(context: ProcessingContext, result: CompletionResultSet, definition: ParadoxScriptDefinitionElement): Boolean {
         ProgressManager.checkCanceled()
         val definitionInfo = definition.definitionInfo ?: return true
-        if(definitionInfo.name.isEmpty()) return true //ignore anonymous definitions
+        if (definitionInfo.name.isEmpty()) return true //ignore anonymous definitions
         val icon = PlsIcons.Nodes.Definition(definitionInfo.type)
         val typeFile = definition.containingFile
         val lookupElement = LookupElementBuilder.create(definition, definitionInfo.name)

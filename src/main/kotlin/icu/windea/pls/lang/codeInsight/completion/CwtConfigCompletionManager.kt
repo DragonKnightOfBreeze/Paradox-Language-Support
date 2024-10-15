@@ -27,68 +27,68 @@ object CwtConfigCompletionManager {
     val yesLookupElement = LookupElementBuilder.create("yes").bold()
         .withPriority(CwtConfigCompletionPriorities.keyword)
         .withCompletionId()
-    
+
     val noLookupElement = LookupElementBuilder.create("no").bold()
         .withPriority(CwtConfigCompletionPriorities.keyword)
         .withCompletionId()
-    
+
     val blockLookupElement = LookupElementBuilder.create("")
         .withPresentableText("{...}")
         .withInsertHandler { c, _ ->
             val editor = c.editor
             val customSettings = CodeStyle.getCustomSettings(c.file, CwtCodeStyleSettings::class.java)
             val spaceWithinBraces = customSettings.SPACE_WITHIN_BRACES
-            val text = if(spaceWithinBraces) "{  }" else "{}"
-            val length = if(spaceWithinBraces) text.length - 2 else text.length - 1
+            val text = if (spaceWithinBraces) "{  }" else "{}"
+            val length = if (spaceWithinBraces) text.length - 2 else text.length - 1
             EditorModificationUtil.insertStringAtCaret(editor, text, false, true, length)
         }
         .withPriority(CwtConfigCompletionPriorities.keyword)
         .withCompletionId()
     //endregion
-    
+
     //region Core Methods
     fun initializeContext(parameters: CompletionParameters, context: ProcessingContext, contextElement: PsiElement): Boolean {
         context.parameters = parameters
         context.completionIds = mutableSetOf<String>().synced()
-        
+
         val configGroup = CwtConfigManager.getContainingConfigGroup(parameters.originalFile, forRepo = true) ?: return false
         context.configGroup = configGroup
-        
+
         val quoted = contextElement.text.isLeftQuoted()
         val rightQuoted = contextElement.text.isRightQuoted()
         val offsetInParent = parameters.offset - contextElement.startOffset
         val keyword = contextElement.getKeyword(offsetInParent)
-        
+
         context.contextElement = contextElement
         context.offsetInParent = offsetInParent
         context.keyword = keyword
         context.quoted = quoted
         context.rightQuoted = rightQuoted
-        
+
         return true
     }
-    
+
     fun addConfigCompletions(context: ProcessingContext, result: CompletionResultSet) {
         val contextElement = context.contextElement ?: return //typing key / value
         val configGroup = context.configGroup ?: return
-        
+
         val containerElement = when {
             contextElement is CwtPropertyKey -> contextElement.parent?.parent
             contextElement is CwtString && contextElement.isPropertyValue() -> contextElement.parent
             contextElement is CwtString/* && contextElement.isBlockValue()*/ -> contextElement.parent
             else -> null
         }
-        if(containerElement !is CwtBlockElement && containerElement !is CwtProperty) return
+        if (containerElement !is CwtBlockElement && containerElement !is CwtProperty) return
         val schema = configGroup.schemas.firstOrNull() ?: return
         val contextConfigs = CwtConfigManager.getContextConfigs(contextElement, containerElement, schema)
-        if(contextConfigs.isEmpty()) return
-        
+        if (contextConfigs.isEmpty()) return
+
         val isKey = contextElement is CwtPropertyKey || contextElement is CwtString && contextElement.isBlockValue()
         val isBlockValue = contextElement is CwtString && contextElement.isBlockValue()
         val isPropertyValue = contextElement is CwtString && contextElement.isPropertyValue()
-        
+
         val contextConfigsGroup = contextConfigs.groupBy { config ->
-            when(config) {
+            when (config) {
                 is CwtPropertyConfig -> config.key
                 is CwtValueConfig -> config.value
             }
@@ -98,20 +98,20 @@ object CwtConfigCompletionManager {
             configs.find { it is CwtValueConfig }?.also { filteredConfigs += it }
             configs.find { it is CwtPropertyConfig && it.valueType != CwtType.Block }?.also { filteredConfigs += it }
             configs.find { it is CwtPropertyConfig && it.valueType == CwtType.Block }?.also { filteredConfigs += it }
-            
+
             filteredConfigs.forEach f2@{ config ->
                 val isBlock = config.valueType == CwtType.Block
-                when(config) {
+                when (config) {
                     is CwtPropertyConfig -> {
-                        if(isKey) {
+                        if (isKey) {
                             val schemaExpression = CwtSchemaExpression.resolve(config.key)
                             completeBySchemaExpression(schemaExpression, schema, config) {
                                 val lookupElement = it.forConfig(context, config, schemaExpression)
                                 result.addElement(lookupElement, context)
                                 true
                             }
-                        } else if(isPropertyValue) {
-                            if(isBlock) {
+                        } else if (isPropertyValue) {
+                            if (isBlock) {
                                 result.addElement(blockLookupElement, context)
                                 return@f2
                             }
@@ -124,8 +124,8 @@ object CwtConfigCompletionManager {
                         }
                     }
                     is CwtValueConfig -> {
-                        if(isBlockValue) {
-                            if(isBlock) {
+                        if (isBlockValue) {
+                            if (isBlock) {
                                 result.addElement(blockLookupElement, context)
                                 return@f2
                             }
@@ -141,7 +141,7 @@ object CwtConfigCompletionManager {
             }
         }
     }
-    
+
     fun completeBySchemaExpression(
         schemaExpression: CwtSchemaExpression,
         schema: CwtSchemaConfig,
@@ -154,7 +154,7 @@ object CwtConfigCompletionManager {
             config is CwtValueConfig -> PlsIcons.Nodes.Value
             else -> null
         }
-        return when(schemaExpression) {
+        return when (schemaExpression) {
             is CwtSchemaExpression.Constant -> {
                 val element = config.pointer
                 val typeFile = element.containingFile
@@ -194,11 +194,11 @@ object CwtConfigCompletionManager {
             }
             is CwtSchemaExpression.Type -> {
                 val typeName = schemaExpression.name
-                if(typeName == "bool" || typeName == "scalar" || typeName == "any") {
+                if (typeName == "bool" || typeName == "scalar" || typeName == "any") {
                     processor.process(yesLookupElement)
                     processor.process(noLookupElement)
                 }
-                if(typeName == "any") {
+                if (typeName == "any") {
                     processor.process(blockLookupElement)
                 }
                 //TODO 1.3.19+
@@ -207,7 +207,7 @@ object CwtConfigCompletionManager {
             is CwtSchemaExpression.Constraint -> true
         }
     }
-    
+
     fun completeByTemplateExpression(
         templateExpression: CwtConfigTemplateExpression,
         context: ExpressionContext,
@@ -217,12 +217,12 @@ object CwtConfigCompletionManager {
             templateExpression is CwtConfigTemplateExpression.Parameter -> AllIcons.Nodes.Parameter
             else -> null
         }
-        
+
         val configGroup = templateExpression.context.configGroup ?: return null
         val schema = configGroup.schemas.firstOrNull() ?: return null
-        
+
         val tailText = " by ${templateExpression.text}"
-        return when(templateExpression) {
+        return when (templateExpression) {
             is CwtConfigTemplateExpression.Enum -> {
                 val enumName = templateExpression.name
                 val enumValueConfigs = schema.enums[enumName]?.values ?: return null
@@ -242,9 +242,9 @@ object CwtConfigCompletionManager {
                         .withIcon(icon)
                         .withTailText(tailText, true)
                 }
-                
+
                 //currently only calculate from configs
-                when(templateExpression.name) {
+                when (templateExpression.name) {
                     "system_scope" -> configGroup.systemScopes.mapToArray { (n, c) -> createLookupItem(n, c) }
                     "localisation_locale" -> configGroup.localisationLocalesById.mapToArray { (n, c) -> createLookupItem(n, c) }
                     "type" -> configGroup.types.mapToArray { (n, c) -> createLookupItem(n, c) }

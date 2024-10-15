@@ -17,15 +17,15 @@ class ParadoxEventIdCompletionProvider : CompletionProvider<CompletionParameters
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val position = parameters.position
         val element = position.parent?.castOrNull<ParadoxScriptString>() ?: return
-        if(element.text.isParameterized()) return
+        if (element.text.isParameterized()) return
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
-        if(keyword.contains('.')) return
+        if (keyword.contains('.')) return
         val event = element.findParentByPath("id", definitionType = "event") //不处理内联的情况
-        if(event !is ParadoxScriptProperty) return
-        
+        if (event !is ParadoxScriptProperty) return
+
         ParadoxCompletionManager.initializeContext(parameters, context)
-        
+
         //仅提示脚本文件中向上查找到的那个合法的事件命名空间
         val eventNamespace = ParadoxEventManager.getMatchedNamespace(event) ?: return //skip
         val name = eventNamespace.value ?: return

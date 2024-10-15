@@ -13,7 +13,7 @@ open class PsiResolvedPolyVariantReference<T : PsiElement>(
     override fun handleElementRename(newElementName: String): PsiElement {
         throw IncorrectOperationException()
     }
-    
+
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         return resolved.mapToArray { PsiElementResolveResult(it) }
     }

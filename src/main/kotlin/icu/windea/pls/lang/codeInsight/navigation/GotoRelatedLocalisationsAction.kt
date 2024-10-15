@@ -16,20 +16,20 @@ import icu.windea.pls.script.psi.*
  */
 class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
     private val handler = GotoRelatedLocalisationsHandler()
-    
+
     override fun getHandler(): CodeInsightActionHandler {
         return handler
     }
-    
+
     override fun update(event: AnActionEvent) {
         val presentation = event.presentation
         presentation.isEnabledAndVisible = false
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if(file !is ParadoxScriptFile) return
+        if (file !is ParadoxScriptFile) return
         presentation.isVisible = true
-        if(file.definitionInfo != null) {
+        if (file.definitionInfo != null) {
             presentation.isEnabled = true
             return
         }
@@ -43,7 +43,7 @@ class GotoRelatedLocalisationsAction : BaseCodeInsightAction() {
         }
         presentation.isEnabled = isEnabled
     }
-    
+
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
         return ParadoxPsiManager.findScriptExpression(file, offset).castOrNull()
     }

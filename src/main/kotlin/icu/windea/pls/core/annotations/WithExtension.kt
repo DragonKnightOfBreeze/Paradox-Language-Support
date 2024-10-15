@@ -7,5 +7,5 @@ package icu.windea.pls.core.annotations
 @MustBeDocumented
 @Target(AnnotationTarget.CLASS)
 annotation class WithExtension(
-	vararg val value: String
+    vararg val value: String
 )

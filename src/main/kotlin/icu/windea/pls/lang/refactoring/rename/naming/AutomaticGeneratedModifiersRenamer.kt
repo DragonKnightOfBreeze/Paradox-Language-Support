@@ -21,26 +21,26 @@ class AutomaticGeneratedModifiersRenamer(element: PsiElement, newName: String) :
         element as ParadoxScriptDefinitionElement
         val allRenames = mutableMapOf<PsiElement, String>()
         prepareRenaming(element, newName, allRenames)
-        for((key, value) in allRenames) {
+        for ((key, value) in allRenames) {
             myElements.add(key as PsiNamedElement)
             suggestAllNames(key.name, value)
         }
     }
-    
+
     override fun isSelectedByDefault() = true
-    
+
     override fun allowChangeSuggestedName() = false
-    
+
     override fun getDialogTitle() = PlsBundle.message("rename.generatedModifiers.title")
-    
+
     override fun getDialogDescription() = PlsBundle.message("rename.generatedModifiers.desc")
-    
+
     override fun entityName() = PlsBundle.message("rename.generatedModifiers.entityName")
-    
+
     private fun prepareRenaming(element: ParadoxScriptDefinitionElement, newName: String, allRenames: MutableMap<PsiElement, String>) {
         val definitionInfo = element.definitionInfo ?: return
         val infos = definitionInfo.modifiers.orNull() ?: return
-        for(info in infos) {
+        for (info in infos) {
             ProgressManager.checkCanceled()
             val modifierName = info.name
             val newModifierName = info.config.template.extract(newName)

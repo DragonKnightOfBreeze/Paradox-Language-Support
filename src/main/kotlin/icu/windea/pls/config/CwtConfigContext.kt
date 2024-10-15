@@ -49,30 +49,30 @@ class CwtConfigContext(
                     }
                 } finally {
                     //use uncached result if there are overridden configs (cannot be cached)
-                    if(PlsStates.overrideConfig.get() == true) cache.invalidate(cachedKey)
+                    if (PlsStates.overrideConfig.get() == true) cache.invalidate(cachedKey)
                     PlsStates.overrideConfig.remove()
                 }
             }
         } ?: emptyList() //unexpected recursion, return empty list
         return cached
     }
-    
+
     private fun doGetCacheKey(matchOptions: Int): String? {
         return provider!!.getCacheKey(this, matchOptions)
     }
-    
+
     private fun doGetConfigs(matchOptions: Int): List<CwtMemberConfig<*>>? {
         return provider!!.getConfigs(this, matchOptions)
     }
-    
+
     fun skipMissingExpressionCheck(): Boolean {
         return provider!!.skipMissingExpressionCheck(this)
     }
-    
+
     fun skipTooManyExpressionCheck(): Boolean {
         return provider!!.skipTooManyExpressionCheck(this)
     }
-    
+
     object Keys : KeyRegistry()
 }
 

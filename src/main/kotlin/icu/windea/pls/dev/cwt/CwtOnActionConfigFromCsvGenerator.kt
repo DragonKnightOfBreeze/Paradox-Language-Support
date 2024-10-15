@@ -31,22 +31,22 @@ class CwtOnActionConfigFromCsvGenerator(
             }
             ParadoxScopeContext.resolve(map)
         }
-        
+
         companion object {
             private val scopesRegex = """(\w+)\s*=\s*(\w+)""".toRegex()
-    
+
             val schema = CsvSchema.builder()
                 .addColumn("key").addColumn("scopes").addColumn("event").addColumn("comment").build()
                 .withHeader()
                 .withQuoteChar('"')
         }
-    } 
-    
+    }
+
     fun generate() {
         val csvFile = File(csvPath)
         val cwtFile = File(cwtPath)
         val infos = csvMapper.readerFor(OnActonInfo::class.java).with(OnActonInfo.schema).readValues<OnActonInfo>(csvFile).readAll()
-        val text = buildString { 
+        val text = buildString {
             append("on_actions = {\n")
             var isFirst = true
             infos.forEach { info ->
@@ -54,8 +54,8 @@ class CwtOnActionConfigFromCsvGenerator(
                 val event = info.event
                 val scopeContext = info.scopeContext
                 val comment = info.comment?.orNull()
-                if(name.isEmpty() || event.isEmpty() || scopeContext == null) return@forEach
-                if(isFirst) {
+                if (name.isEmpty() || event.isEmpty() || scopeContext == null) return@forEach
+                if (isFirst) {
                     isFirst = false
                 } else {
                     append("\n")

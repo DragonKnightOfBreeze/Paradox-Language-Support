@@ -5,16 +5,16 @@ import com.intellij.ide.structureView.impl.common.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptVariableTreeElement(
-	element: ParadoxScriptScriptedVariable
+    element: ParadoxScriptScriptedVariable
 ) : PsiTreeElementBase<ParadoxScriptScriptedVariable>(element) {
-	override fun getChildrenBase(): Collection<StructureViewTreeElement> {
-		return emptyList()
-	}
-	
-	override fun getPresentableText(): String? {
-		val element = element ?: return null
-		val name = element.name
-		val value = element.value
-		return if(value == null) "@$name" else "@$name = $value"
-	}
+    override fun getChildrenBase(): Collection<StructureViewTreeElement> {
+        return emptyList()
+    }
+
+    override fun getPresentableText(): String? {
+        val element = element ?: return null
+        val name = element.name
+        val value = element.value
+        return if (value == null) "@$name" else "@$name = $value"
+    }
 }

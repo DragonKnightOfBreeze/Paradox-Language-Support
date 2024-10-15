@@ -18,7 +18,7 @@ inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlockElement.valueList(
     return findChildren()
 }
 
-fun ParadoxScriptMemberElement.isBlockMember() :Boolean {
+fun ParadoxScriptMemberElement.isBlockMember(): Boolean {
     return parent.let { it is ParadoxScriptBlockElement || it is ParadoxScriptParameterCondition }
 }
 
@@ -59,42 +59,42 @@ fun ParadoxScriptStringExpressionElement.isDefinitionRootKeyOrName(): Boolean {
 
 fun ParadoxScriptPropertyKey.isDefinitionRootKey(): Boolean {
     val definition = this.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
-    if(definition.definitionInfo != null) return true
+    if (definition.definitionInfo != null) return true
     return false
 }
 
 fun ParadoxScriptString.isDefinitionName(): Boolean {
     val nameProperty = this.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
     //def = def_name
-    if(nameProperty.definitionInfo.let { it != null && it.typeConfig.nameField == "" }) return true
+    if (nameProperty.definitionInfo.let { it != null && it.typeConfig.nameField == "" }) return true
     val block = nameProperty.parent?.castOrNull<ParadoxScriptBlock>() ?: return false
     val definition = block.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
     //def = { name_prop = def_name }
-    if(definition.definitionInfo.let { it != null && it.typeConfig.nameField == nameProperty.name }) return true
+    if (definition.definitionInfo.let { it != null && it.typeConfig.nameField == nameProperty.name }) return true
     return false
 }
 
 
 fun ParadoxScriptExpressionElement.value(valid: Boolean = false): String? {
-    if(valid && !this.isValidExpression()) return null
+    if (valid && !this.isValidExpression()) return null
     val resolved = this.resolved() ?: return null
     return resolved.value
 }
 
 fun ParadoxScriptExpressionElement.booleanValue(valid: Boolean = false): Boolean? {
-    if(this !is ParadoxScriptValue) return null
-    if(valid && !this.isValidExpression()) return null
+    if (this !is ParadoxScriptValue) return null
+    if (valid && !this.isValidExpression()) return null
     val resolved = this.resolved() ?: return null
-    return when(resolved) {
+    return when (resolved) {
         is ParadoxScriptBoolean -> resolved.booleanValue
         else -> null
     }
 }
 
 fun ParadoxScriptExpressionElement.intValue(valid: Boolean = false): Int? {
-    if(valid && !this.isValidExpression()) return null
+    if (valid && !this.isValidExpression()) return null
     val resolved = this.resolved() ?: return null
-    return when(resolved) {
+    return when (resolved) {
         is ParadoxScriptPropertyKey -> resolved.value.toIntOrNull()
         is ParadoxScriptInt -> resolved.intValue
         is ParadoxScriptString -> resolved.value.toIntOrNull()
@@ -103,9 +103,9 @@ fun ParadoxScriptExpressionElement.intValue(valid: Boolean = false): Int? {
 }
 
 fun ParadoxScriptExpressionElement.floatValue(valid: Boolean = false): Float? {
-    if(valid && !this.isValidExpression()) return null
+    if (valid && !this.isValidExpression()) return null
     val resolved = this.resolved() ?: return null
-    return when(resolved) {
+    return when (resolved) {
         is ParadoxScriptPropertyKey -> resolved.value.toFloatOrNull()
         is ParadoxScriptFloat -> resolved.floatValue
         is ParadoxScriptString -> resolved.value.toFloatOrNull()
@@ -114,9 +114,9 @@ fun ParadoxScriptExpressionElement.floatValue(valid: Boolean = false): Float? {
 }
 
 fun ParadoxScriptExpressionElement.stringText(valid: Boolean = false): String? {
-    if(valid && !this.isValidExpression()) return null
+    if (valid && !this.isValidExpression()) return null
     val resolved = this.resolved() ?: return null
-    return when(resolved) {
+    return when (resolved) {
         is ParadoxScriptPropertyKey -> resolved.text
         is ParadoxScriptString -> resolved.text
         is ParadoxScriptInt -> resolved.value
@@ -126,9 +126,9 @@ fun ParadoxScriptExpressionElement.stringText(valid: Boolean = false): String? {
 }
 
 fun ParadoxScriptExpressionElement.stringValue(valid: Boolean = false): String? {
-    if(valid && !this.isValidExpression()) return null
+    if (valid && !this.isValidExpression()) return null
     val resolved = this.resolved() ?: return null
-    return when(resolved) {
+    return when (resolved) {
         is ParadoxScriptPropertyKey -> resolved.value
         is ParadoxScriptString -> resolved.value
         is ParadoxScriptInt -> resolved.value
@@ -138,15 +138,15 @@ fun ParadoxScriptExpressionElement.stringValue(valid: Boolean = false): String? 
 }
 
 fun ParadoxScriptValue.colorValue(valid: Boolean = false): Color? {
-    if(valid && !this.isValidExpression()) return null
-    return when(this) {
+    if (valid && !this.isValidExpression()) return null
+    return when (this) {
         is ParadoxScriptColor -> this.color
         else -> null
     }
 }
 
 fun ParadoxScriptExpressionElement.resolved(): ParadoxScriptExpressionElement? {
-    return when(this) {
+    return when (this) {
         is ParadoxScriptScriptedVariableReference -> this.referenceValue
         else -> this
     }

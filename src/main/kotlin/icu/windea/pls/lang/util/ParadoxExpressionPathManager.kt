@@ -22,7 +22,7 @@ object ParadoxExpressionPathManager {
         var current: PsiElement = element
         var depth = 0
         val originalSubPaths = LinkedList<String>()
-        while(current !is PsiFile) {
+        while (current !is PsiFile) {
             when {
                 current is ParadoxScriptProperty -> {
                     val p = current.propertyKey.text
@@ -35,19 +35,19 @@ object ParadoxExpressionPathManager {
                 }
             }
             //如果发现深度超出指定的最大深度，则直接返回null
-            if(maxDepth != -1 && maxDepth < depth) return null
+            if (maxDepth != -1 && maxDepth < depth) return null
             current = current.parent ?: break
         }
-        if(current is PsiFile) {
+        if (current is PsiFile) {
             val virtualFile = selectFile(current)
             val injectedElementPathPrefix = virtualFile?.getUserData(PlsKeys.injectedElementPathPrefix)
-            if(injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
+            if (injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
                 originalSubPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }
         return ParadoxExpressionPath.resolve(originalSubPaths)
     }
-    
+
     /**
      * 解析指定定义相对于所属文件的表达式路径。
      */
@@ -55,7 +55,7 @@ object ParadoxExpressionPathManager {
         var current: LighterASTNode = node
         var depth = 0
         val originalSubPaths = LinkedList<String>()
-        while(current !is PsiFile) {
+        while (current !is PsiFile) {
             when {
                 current.tokenType == PROPERTY -> {
                     val p = current.firstChild(tree, PROPERTY_KEY)
@@ -70,13 +70,13 @@ object ParadoxExpressionPathManager {
                 }
             }
             //如果发现深度超出指定的最大深度，则直接返回null
-            if(maxDepth != -1 && maxDepth < depth) return null
+            if (maxDepth != -1 && maxDepth < depth) return null
             current = tree.getParent(current) ?: break
         }
-        if(current.tokenType == ParadoxScriptStubElementTypes.FILE) {
+        if (current.tokenType == ParadoxScriptStubElementTypes.FILE) {
             val virtualFile = file
             val injectedElementPathPrefix = virtualFile.getUserData(PlsKeys.injectedElementPathPrefix)
-            if(injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
+            if (injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {
                 originalSubPaths.addAll(0, injectedElementPathPrefix.subPaths)
             }
         }

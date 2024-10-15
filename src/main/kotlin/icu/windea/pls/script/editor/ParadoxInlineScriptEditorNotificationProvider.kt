@@ -17,12 +17,12 @@ import javax.swing.*
  */
 class ParadoxInlineScriptEditorNotificationProvider : EditorNotificationProvider {
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
-        if(file.fileType != ParadoxScriptFileType) return null
-        
+        if (file.fileType != ParadoxScriptFileType) return null
+
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return null
-        
+
         return Function f@{ fileEditor ->
-            if(fileEditor !is TextEditor) return@f null
+            if (fileEditor !is TextEditor) return@f null
             val editor = fileEditor.editor
             val psiFile = file.toPsiFile(project) ?: return@f null
             val message = PlsBundle.message("editor.notification.inlineScript", inlineScriptExpression)

@@ -20,42 +20,42 @@ import icu.windea.pls.script.psi.*
 class UnsupportedRecursionInspection : LocalInspectionTool() {
     //目前仅做检查即可，不需要显示递归的装订线图标
     //在定义声明级别进行此项检查
-    
+
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
-        
+        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                when(element) {
+                when (element) {
                     is ParadoxScriptScriptedVariable -> visitScriptedVariable(element)
                     is ParadoxScriptProperty -> visitProperty(element)
                 }
             }
-            
+
             private fun visitScriptedVariable(element: ParadoxScriptScriptedVariable) {
                 val name = element.name
-                if(name.isNullOrEmpty()) return
-                
+                if (name.isNullOrEmpty()) return
+
                 val recursions = mutableSetOf<PsiElement>()
                 ParadoxRecursionManager.isRecursiveScriptedVariable(element, recursions)
-                if(recursions.isEmpty()) return
+                if (recursions.isEmpty()) return
                 val message = PlsBundle.message("inspection.script.unsupportedRecursion.desc.1")
                 val location = element.scriptedVariableName
                 holder.registerProblem(location, message, NavigateToRecursionFix(name, element, recursions))
             }
-            
+
             @Suppress("KotlinConstantConditions")
             private fun visitProperty(element: ParadoxScriptProperty) {
                 val definitionInfo = element.definitionInfo ?: return
                 val name = definitionInfo.name
-                if(name.isEmpty()) return
+                if (name.isEmpty()) return
                 val type = definitionInfo.type
-                if(type != "scripted_trigger" && type != "scripted_effect") return
-                
+                if (type != "scripted_trigger" && type != "scripted_effect") return
+
                 val recursions = mutableSetOf<PsiElement>()
                 ParadoxRecursionManager.isRecursiveDefinition(element, recursions) { _, re -> ParadoxPsiManager.isInvocationReference(element, re) }
-                if(recursions.isEmpty()) return
+                if (recursions.isEmpty()) return
                 val message = when {
                     definitionInfo.type == "scripted_trigger" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.2.1")
                     definitionInfo.type == "scripted_effect" -> PlsBundle.message("inspection.script.unsupportedRecursion.desc.2.2")
@@ -66,22 +66,22 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
             }
         }
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
-        if(selectRootFile(file) == null) return false
+        if (selectRootFile(file) == null) return false
         val fileInfo = file.fileInfo ?: return false
         val filePath = fileInfo.path
-        if(filePath.fileExtension?.lowercase() != "txt") return false
-        if(!"common/scripted_triggers".matchesPath(filePath.path) && !"common/scripted_effects".matchesPath(filePath.path)) return false
+        if (filePath.fileExtension?.lowercase() != "txt") return false
+        if (!"common/scripted_triggers".matchesPath(filePath.path) && !"common/scripted_effects".matchesPath(filePath.path)) return false
         return true
     }
-    
+
     private class NavigateToRecursionFix(key: String, target: PsiElement, recursions: Collection<PsiElement>) : NavigateToFix(key, target, recursions) {
         override fun getText() = PlsBundle.message("inspection.script.unsupportedRecursion.fix.1")
-        
+
         override fun getPopupTitle(editor: Editor) =
             PlsBundle.message("inspection.script.unsupportedRecursion.fix.1.popup.title", key)
-        
+
         override fun getPopupText(editor: Editor, value: PsiElement) =
             PlsBundle.message("inspection.script.unsupportedRecursion.fix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
     }

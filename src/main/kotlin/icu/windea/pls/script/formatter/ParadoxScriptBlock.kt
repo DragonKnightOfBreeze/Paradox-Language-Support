@@ -23,15 +23,15 @@ class ParadoxScriptBlock(
         private val SHOULD_INDENT_PARENT_TYPES = TokenSet.create(BLOCK, PARAMETER_CONDITION)
         private val SHOULD_INDENT_TYPES = TokenSet.create(SCRIPTED_VARIABLE, PROPERTY, BOOLEAN, INT, FLOAT, STRING, COLOR, INLINE_MATH, PARAMETER, BLOCK, PARAMETER_CONDITION, COMMENT)
         private val SHOULD_CHILD_INDENT_TYPES = TokenSet.create(BLOCK, PARAMETER_CONDITION, PARAMETER_CONDITION_EXPRESSION)
-        
+
         private fun createWrap(): Wrap? {
             return null
         }
-        
+
         private fun createAlignment(): Alignment? {
             return null
         }
-        
+
         private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
             //变量声明分隔符周围的空格，属性分隔符周围的空格
             val customSettings = settings.getCustomSettings(ParadoxScriptCodeStyleSettings::class.java)
@@ -51,9 +51,9 @@ class ParadoxScriptBlock(
                 .withinPair(INLINE_MATH_START, INLINE_MATH_END).spaceIf(customSettings.SPACE_WITHIN_INLINE_MATH_BRACKETS, true) //内联数学表达式内侧按情况可能需要空格
         }
     }
-    
+
     private val spacingBuilder = createSpacingBuilder(settings)
-    
+
     override fun buildChildren(): List<Block> {
         val children = mutableListOf<Block>()
         myNode.processChild { node ->
@@ -62,7 +62,7 @@ class ParadoxScriptBlock(
         }
         return children
     }
-    
+
     override fun getIndent(): Indent? {
         //配置缩进
         //block和parameter_condition中的variable、property、value、parameter_condition和comment需要缩进
@@ -73,7 +73,7 @@ class ParadoxScriptBlock(
             else -> Indent.getNoneIndent()
         }
     }
-    
+
     override fun getChildIndent(): Indent? {
         //配置换行时的自动缩进
         //在file和rootBlock中不要缩进
@@ -86,11 +86,11 @@ class ParadoxScriptBlock(
             else -> null
         }
     }
-    
+
     override fun getSpacing(child1: Block?, child2: Block): Spacing? {
         return spacingBuilder.getSpacing(this, child1, child2)
     }
-    
+
     override fun isLeaf(): Boolean {
         //顶级块不是叶子节点
         return myNode.firstChildNode == null

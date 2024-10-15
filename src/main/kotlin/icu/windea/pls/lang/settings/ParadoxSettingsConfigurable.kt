@@ -20,7 +20,7 @@ import java.awt.event.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
     override fun getId() = "pls"
-    
+
     @Suppress("DialogTitleCapitalization")
     override fun createPanel(): DialogPanel {
         val settings = getSettings()
@@ -38,7 +38,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .onApply {
                             val oldDefaultGameType = defaultGameType
                             val newDefaultGameType = settings.defaultGameType
-                            if(oldDefaultGameType != newDefaultGameType) {
+                            if (oldDefaultGameType != newDefaultGameType) {
                                 defaultGameType = newDefaultGameType
                                 val messageBus = ApplicationManager.getApplication().messageBus
                                 messageBus.syncPublisher(ParadoxDefaultGameTypeListener.TOPIC)
@@ -55,14 +55,14 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     var list = defaultGameDirectories.toMutableEntryList().mapTo(mutableListOf()) { it.copy() }
                     val action = { _: ActionEvent ->
                         val dialog = ParadoxGameDirectoriesDialog(list)
-                        if(dialog.showAndGet()) list = dialog.resultList
+                        if (dialog.showAndGet()) list = dialog.resultList
                     }
                     link(PlsBundle.message("settings.general.defaultGameDirectories.link"), action)
                         .onApply {
                             settings.defaultGameDirectories = list.toMutableMap()
                             val oldDefaultGameDirectories = defaultGameDirectories.toMap()
                             val newDefaultGameDirectories = settings.defaultGameDirectories
-                            if(oldDefaultGameDirectories != newDefaultGameDirectories) {
+                            if (oldDefaultGameDirectories != newDefaultGameDirectories) {
                                 defaultGameDirectories = newDefaultGameDirectories
                                 val messageBus = ApplicationManager.getApplication().messageBus
                                 messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC)
@@ -82,7 +82,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .onApply {
                             val oldPreferredLocale = preferredLocale
                             val newPreferredLocale = settings.preferredLocale
-                            if(oldPreferredLocale != newPreferredLocale) {
+                            if (oldPreferredLocale != newPreferredLocale) {
                                 preferredLocale = newPreferredLocale
                                 val openedFiles = ParadoxCoreManager.findOpenedFiles()
                                 ParadoxCoreManager.reparseFiles(openedFiles, reparse = false)
@@ -102,7 +102,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .onApply {
                             val oldIgnoredFileNameSet = ignoredFileNameSet.toSet()
                             val newIgnoredFileNameSet = settings.ignoredFileNameSet
-                            if(oldIgnoredFileNameSet != newIgnoredFileNameSet) {
+                            if (oldIgnoredFileNameSet != newIgnoredFileNameSet) {
                                 ignoredFileNameSet = newIgnoredFileNameSet
                                 val fileNames = mutableSetOf<String>()
                                 fileNames += oldIgnoredFileNameSet
@@ -128,7 +128,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .onApply {
                             val oldLocalConfigDirectory = localConfigDirectory.orEmpty()
                             val newLocalConfigDirectory = settings.localConfigDirectory.orEmpty()
-                            if(oldLocalConfigDirectory != newLocalConfigDirectory) {
+                            if (oldLocalConfigDirectory != newLocalConfigDirectory) {
                                 localConfigDirectory = newLocalConfigDirectory
                                 val messageBus = ApplicationManager.getApplication().messageBus
                                 messageBus.syncPublisher(ParadoxLocalConfigDirectoryListener.TOPIC)
@@ -280,7 +280,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.completion.completeWithClauseTemplate"))
                         .bindSelected(settings.completion::completeWithClauseTemplate)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeWithClauseTemplate.tooltip") }
-                    
+
                     link(PlsBundle.message("settings.completion.clauseTemplate.link")) {
                         val dialog = ParadoxClauseTemplateSettingsDialog()
                         dialog.show()
@@ -345,12 +345,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 row {
                     checkBox(PlsBundle.message("settings.hierarchy.showDefinitionsInCallHierarchy"))
                         .bindSelected(settings.hierarchy::showDefinitionsInCallHierarchy)
-                    
+
                     val defaultList = settings.hierarchy.definitionTypeBindingsInCallHierarchy.toMutableEntryList()
                     var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                     val action = { _: ActionEvent ->
                         val dialog = ParadoxDefinitionTypeBindingsInCallHierarchyDialog(list)
-                        if(dialog.showAndGet()) list = dialog.resultList
+                        if (dialog.showAndGet()) list = dialog.resultList
                     }
                     link(PlsBundle.message("settings.hierarchy.definitionTypeBindings.link"), action)
                         .onApply { settings.hierarchy.definitionTypeBindingsInCallHierarchy = list.toMutableMap() }

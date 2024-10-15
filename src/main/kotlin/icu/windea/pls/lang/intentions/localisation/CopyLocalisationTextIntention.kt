@@ -16,32 +16,32 @@ import java.awt.datatransfer.*
  */
 class CopyLocalisationTextIntention : IntentionAction {
     override fun getText() = PlsBundle.message("intention.copyLocalisationText")
-    
+
     override fun getFamilyName() = text
-    
+
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        if(editor == null || file == null) return false
+        if (editor == null || file == null) return false
         val offset = editor.caretModel.offset
         val element = findElement(file, offset)
         return element != null
     }
-    
+
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        if(editor == null || file == null) return
+        if (editor == null || file == null) return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         val text = element.value
         CopyPasteManager.getInstance().setContents(StringSelection(text))
     }
-    
+
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
         val allOptions = ParadoxPsiManager.FindLocalisationOptions
         val options = allOptions.DEFAULT or allOptions.BY_REFERENCE
         return ParadoxPsiManager.findLocalisation(file, offset, options)
     }
-    
+
     override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
-    
+
     override fun startInWriteAction() = false
 }
 

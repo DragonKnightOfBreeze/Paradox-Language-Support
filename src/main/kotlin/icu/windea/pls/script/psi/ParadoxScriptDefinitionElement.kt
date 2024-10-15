@@ -11,11 +11,11 @@ interface ParadoxScriptDefinitionElement : ParadoxScriptNamedElement, ParadoxScr
      * 注意：如果这个对象是定义，这里得到的是定义的顶级键名（rootKey），而不一定是定义的名字（definitionName）。
      */
     override fun getName(): String
-    
+
     override fun getNameIdentifier(): PsiElement? = null
-    
+
     val block: ParadoxScriptBlockElement?
-    
+
     val variableList: List<ParadoxScriptScriptedVariable> get() = block?.scriptedVariableList.orEmpty()
     val valueList: List<ParadoxScriptValue> get() = block?.valueList.orEmpty()
     val propertyList: List<ParadoxScriptProperty> get() = block?.propertyList.orEmpty()

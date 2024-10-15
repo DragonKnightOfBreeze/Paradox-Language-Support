@@ -23,17 +23,17 @@ class CwtConfigFilesViewProjectNode(
             else -> false
         }
     }
-    
+
     private fun canRepresent(file: VirtualFile): Boolean {
-        if(!file.isDirectory) return false
+        if (!file.isDirectory) return false
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            if(file == rootDirectory) return true
+            if (file == rootDirectory) return true
         }
         return false
     }
-    
+
     override fun contains(file: VirtualFile): Boolean {
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
@@ -44,7 +44,7 @@ class CwtConfigFilesViewProjectNode(
         }
         return false
     }
-    
+
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
         val result = mutableSetOf<AbstractTreeNode<*>>()
         val coreElement = CwtConfigGameElement(project, null)
@@ -57,15 +57,15 @@ class CwtConfigFilesViewProjectNode(
         }
         return result
     }
-    
+
     override fun createModuleGroup(module: Module): AbstractTreeNode<*> {
         return ProjectViewModuleNode(project, module, settings)
     }
-    
+
     override fun createModuleGroupNode(moduleGroup: ModuleGroup): AbstractTreeNode<*> {
         return ProjectViewModuleGroupNode(project, moduleGroup, settings)
     }
-    
+
     override fun someChildContainsFile(file: VirtualFile?): Boolean {
         return true
     }

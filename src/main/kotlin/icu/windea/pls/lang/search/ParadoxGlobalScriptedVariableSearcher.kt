@@ -15,10 +15,10 @@ class ParadoxGlobalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScr
     override fun processQuery(queryParameters: ParadoxGlobalScriptedVariableSearch.SearchParameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
-        if(SearchScope.isEmptyScope(scope)) return
+        if (SearchScope.isEmptyScope(scope)) return
         val project = queryParameters.project
-        
-        if(queryParameters.name == null) {
+
+        if (queryParameters.name == null) {
             //查找所有封装变量
             ParadoxScriptedVariableNameIndex.KEY.processAllElementsByKeys(project, scope) { _, it ->
                 consumer.process(it)

@@ -27,17 +27,17 @@ fun String.matchFromPattern(
     matchOptions: Int = ParadoxExpressionMatcher.Options.Default,
     fromIndex: Int = 0,
 ): Boolean {
-    if(this == key) return true
-    if(key.isEmpty()) return this.isEmpty()
-    if(fromIndex < 0 || fromIndex >= this.length || fromIndex >= key.length) return false //invalid
-    if(fromIndex > 0 ) {
+    if (this == key) return true
+    if (key.isEmpty()) return this.isEmpty()
+    if (fromIndex < 0 || fromIndex >= this.length || fromIndex >= key.length) return false //invalid
+    if (fromIndex > 0) {
         val p1 = this.substring(0, fromIndex)
         val p2 = key.substring(0, fromIndex)
-        if(p1 != p2) return false
+        if (p1 != p2) return false
     }
     val pattern0 = this.substring(fromIndex)
     val configExpression = CwtDataExpression.resolve(pattern0, true)
-    if(configExpression.expressionString.isEmpty()) return false
+    if (configExpression.expressionString.isEmpty()) return false
     val expression = ParadoxDataExpression.resolve(key)
     val matchResult = patternMatchers.firstNotNullOfOrNull { it.matches(contextElement, expression, configExpression, null, configGroup, matchOptions) } ?: return false
     return matchResult.get(matchOptions)
@@ -57,7 +57,7 @@ fun <V> Map<String, V>.findFromPattern(
     fromIndex: Int = 0,
 ): V? {
     val fastResult = get(key)
-    if(fastResult != null) return fastResult
+    if (fastResult != null) return fastResult
     return entries.find { (k) -> k.matchFromPattern(key, contextElement, configGroup, matchOptions, fromIndex) }?.value
 }
 
@@ -75,6 +75,6 @@ fun <V> Map<String, V>.filterByPattern(
     fromIndex: Int = 0,
 ): List<V> {
     val fastResult = get(key)
-    if(fastResult != null) return fastResult.toSingletonList()
+    if (fastResult != null) return fastResult.toSingletonList()
     return entries.filter { (k) -> k.matchFromPattern(key, contextElement, configGroup, matchOptions, fromIndex) }.map { it.value }
 }

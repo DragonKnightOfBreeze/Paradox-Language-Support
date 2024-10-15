@@ -40,7 +40,7 @@ class ParadoxCallerHierarchyTreeStructure(
         }
         return descriptors.values.toTypedArray()
     }
-    
+
     private fun searchElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
         val scopeType = getHierarchySettings().scopeType
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
@@ -48,50 +48,50 @@ class ParadoxCallerHierarchyTreeStructure(
         ReferencesSearch.search(element, scope).processQueryAsync { reference ->
             ProgressManager.checkCanceled()
             val referenceElement = reference.element
-            if(referenceElement.language == ParadoxScriptLanguage) {
+            if (referenceElement.language == ParadoxScriptLanguage) {
                 processScriptReferenceElement(reference, referenceElement, descriptor, descriptors)
-            } else if(referenceElement.language == ParadoxLocalisationLanguage) {
+            } else if (referenceElement.language == ParadoxLocalisationLanguage) {
                 processLocalisationReferenceElement(reference, referenceElement, descriptor, descriptors)
             }
             true
         }
     }
-    
+
     private fun processScriptReferenceElement(reference: PsiReference, referenceElement: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
-        if(!getSettings().hierarchy.showDefinitionsInCallHierarchy) return //不显示
+        if (!getSettings().hierarchy.showDefinitionsInCallHierarchy) return //不显示
         val definition = referenceElement.findParentDefinition()
         val definitionInfo = definition?.definitionInfo
-        if(definition != null && definitionInfo != null) {
+        if (definition != null && definitionInfo != null) {
             ProgressManager.checkCanceled()
-            if(!getSettings().hierarchy.showDefinitionsInCallHierarchy(rootDefinitionInfo, definitionInfo)) return //不显示
+            if (!getSettings().hierarchy.showDefinitionsInCallHierarchy(rootDefinitionInfo, definitionInfo)) return //不显示
             val key = "d:${definitionInfo.name}: ${definitionInfo.type}"
             synchronized(descriptors) {
                 val d = descriptors.getOrPut(key) { ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, definition, false, true) }
-                if(d.references.isNotEmpty() && !d.references.contains(reference)) {
+                if (d.references.isNotEmpty() && !d.references.contains(reference)) {
                     d.usageCount++
                 }
                 d.references.add(reference)
             }
         }
     }
-    
+
     private fun processLocalisationReferenceElement(reference: PsiReference, referenceElement: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
-        if(!getSettings().hierarchy.showLocalisationsInCallHierarchy) return //不显示
+        if (!getSettings().hierarchy.showLocalisationsInCallHierarchy) return //不显示
         //兼容向上内联的情况
         val localisation = referenceElement.parentOfType<ParadoxLocalisationProperty>()
         val localisationInfo = localisation?.localisationInfo
-        if(localisation != null && localisationInfo != null) {
+        if (localisation != null && localisationInfo != null) {
             ProgressManager.checkCanceled()
             val key = "l:${localisationInfo.name}"
             synchronized(descriptors) {
                 val d = descriptors.getOrPut(key) { ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, localisation, false, true) }
-                if(d.references.isNotEmpty() && !d.references.contains(reference)) {
+                if (d.references.isNotEmpty() && !d.references.contains(reference)) {
                     d.usageCount++
                 }
                 d.references.add(reference)
             }
         }
     }
-    
+
     private fun getHierarchySettings() = ParadoxCallHierarchyBrowserSettings.getInstance(myProject)
 }

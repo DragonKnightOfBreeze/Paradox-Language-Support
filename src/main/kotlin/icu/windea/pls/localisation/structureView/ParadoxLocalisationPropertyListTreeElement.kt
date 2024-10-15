@@ -13,16 +13,16 @@ class ParadoxLocalisationPropertyListTreeElement(
         val element = element ?: return emptyList()
         val result = mutableListOf<StructureViewTreeElement>()
         element.forEachChild {
-            if(it is ParadoxLocalisationProperty) result.add(ParadoxLocalisationPropertyTreeElement(it))
+            if (it is ParadoxLocalisationProperty) result.add(ParadoxLocalisationPropertyTreeElement(it))
         }
         return result
     }
-    
+
     override fun getPresentableText(): String? {
         val locale = element?.locale ?: return null
         return locale.name
     }
-    
+
     override fun getLocationString(): String? {
         val localeConfig = element?.let { selectLocale(it) } ?: return null
         return localeConfig.description

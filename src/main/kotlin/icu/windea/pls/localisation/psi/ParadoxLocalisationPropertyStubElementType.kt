@@ -15,40 +15,40 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
     ParadoxLocalisationLanguage
 ) {
     private const val externalId = "paradoxLocalisation.property"
-    
+
     override fun getExternalId() = externalId
-    
+
     override fun createPsi(stub: ParadoxLocalisationPropertyStub): ParadoxLocalisationProperty {
         return ParadoxLocalisationPropertyImpl(stub, this)
     }
-    
+
     override fun createStub(psi: ParadoxLocalisationProperty, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
         return ParadoxLocalisationManager.createStub(psi, parentStub) ?: createDefaultStub(parentStub)
     }
-    
+
     override fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
         return ParadoxLocalisationManager.createStub(tree, node, parentStub) ?: createDefaultStub(parentStub)
     }
-    
+
     private fun createDefaultStub(parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
         return ParadoxLocalisationPropertyStub.Dummy(parentStub)
     }
-    
+
     override fun shouldCreateStub(node: ASTNode): Boolean {
         return ParadoxLocalisationManager.shouldCreateStub(node)
     }
-    
+
     override fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
         return ParadoxLocalisationManager.shouldCreateStub(tree, node, parentStub)
     }
-    
+
     override fun indexStub(stub: ParadoxLocalisationPropertyStub, sink: IndexSink) {
-        when(stub.category) {
+        when (stub.category) {
             ParadoxLocalisationCategory.Localisation -> {
                 //sink.occurrence(ParadoxLocalisationNameIndexKey, stub.name)
                 entries.forEach { constraint ->
-                    if(constraint.predicate(stub.name)) {
-                        val name = if(constraint.ignoreCase) stub.name.lowercase() else stub.name
+                    if (constraint.predicate(stub.name)) {
+                        val name = if (constraint.ignoreCase) stub.name.lowercase() else stub.name
                         sink.occurrence(constraint.indexKey, name)
                     }
                 }
@@ -58,14 +58,14 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
             }
         }
     }
-    
+
     override fun serialize(stub: ParadoxLocalisationPropertyStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name)
         dataStream.writeByte(stub.category.optimizeValue())
         dataStream.writeName(stub.locale)
         dataStream.writeByte(stub.gameType.optimizeValue())
     }
-    
+
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
         val name = dataStream.readNameString().orEmpty()
         val category = dataStream.readByte().deoptimizeValue<ParadoxLocalisationCategory>()
@@ -73,7 +73,7 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
         val gameType = dataStream.readByte().deoptimizeValue<ParadoxGameType>()
         return ParadoxLocalisationPropertyStub.Impl(parentStub, name, category, locale, gameType)
     }
-    
+
     override fun isAlwaysLeaf(root: StubBase<*>): Boolean {
         return true
     }

@@ -14,10 +14,10 @@ class ChainedParadoxSelector<T>(
 ) : ParadoxSelector<T> {
     val file = selectFile(context)
     val rootFile = selectRootFile(file)
-    
+
     val gameType by lazy {
         val selectorGameType = selectors.filterIsInstance<ParadoxWithGameTypeSelector<*>>().lastOrNull()?.gameType
-        if(selectorGameType != null) return@lazy selectorGameType
+        if (selectorGameType != null) return@lazy selectorGameType
         selectGameType(context)
     }
     val settings: ParadoxGameOrModSettingsState? by lazy {
@@ -39,29 +39,29 @@ class ChainedParadoxSelector<T>(
             else -> selectorScopes.reduce { a, b -> a.intersectWith(b) }
         }
     }
-    
+
     val selectors = mutableListOf<ParadoxSelector<T>>()
-    
+
     private var defaultValue: T? = null
     private var defaultValuePriority = 0
     private var defaultValueLock = Any()
-    
+
     override fun selectOne(target: T): Boolean {
-        if(!matchesGameType(target)) return false
-        if(selectors.isEmpty()) return true
+        if (!matchesGameType(target)) return false
+        if (selectors.isEmpty()) return true
         var finalSelectResult = true
         var finalSelectDefaultResult = true
         var finalDefaultValuePriority = 0
         selectors.forEach { selector ->
             val selectResult = selector.selectOne(target)
             finalSelectResult = finalSelectResult && selectResult
-            if(selectResult) finalDefaultValuePriority++
+            if (selectResult) finalDefaultValuePriority++
             finalSelectDefaultResult = finalSelectDefaultResult && (selectResult || selector.select(target))
         }
-        if(finalSelectDefaultResult) {
-            if(defaultValuePriority == 0 || defaultValuePriority < finalDefaultValuePriority) {
+        if (finalSelectDefaultResult) {
+            if (defaultValuePriority == 0 || defaultValuePriority < finalDefaultValuePriority) {
                 synchronized(defaultValueLock) {
-                    if(defaultValuePriority == 0 || defaultValuePriority < finalDefaultValuePriority) {
+                    if (defaultValuePriority == 0 || defaultValuePriority < finalDefaultValuePriority) {
                         defaultValue = target
                         defaultValuePriority = finalDefaultValuePriority
                     }
@@ -70,43 +70,43 @@ class ChainedParadoxSelector<T>(
         }
         return finalSelectResult
     }
-    
+
     fun defaultValue(): T? {
         return defaultValue
     }
-    
+
     fun resetDefaultValue() {
         defaultValue = null
         defaultValuePriority = 0
     }
-    
+
     override fun select(target: T): Boolean {
-        if(!matchesGameType(target)) return false
-        if(selectors.isEmpty()) return true
+        if (!matchesGameType(target)) return false
+        if (selectors.isEmpty()) return true
         selectors.forEach { selector ->
-            if(!selector.select(target)) return false
+            if (!selector.select(target)) return false
         }
         return true
     }
-    
+
     override fun postHandle(targets: Set<T>): Set<T> {
-        if(selectors.isEmpty()) return targets
+        if (selectors.isEmpty()) return targets
         return selectors.fold(targets) { oldTargets, selector -> selector.postHandle(oldTargets) }
     }
-    
+
     override fun comparator(): Comparator<T>? {
-        if(selectors.isEmpty()) return null
+        if (selectors.isEmpty()) return null
         var comparator: Comparator<T>? = null
         selectors.forEach { selector ->
             comparator = comparator thenPossible selector.comparator()
         }
         return comparator
     }
-    
+
     fun matchesGameType(result: T): Boolean {
         //某些情况下，可以直接认为游戏类型是匹配的
-        if(scope is ParadoxSearchScope) return true
-        
+        if (scope is ParadoxSearchScope) return true
+
         return gameType == null || gameType == selectGameType(result)
     }
 }

@@ -9,8 +9,9 @@ fun ParadoxLocalisationCategory.optimizeValue() = fromLocalisationCategory(this)
 fun ReadWriteAccessDetector.Access.optimizeValue() = fromAccess(this)
 
 inline fun <reified T> Byte.deoptimizeValue() = deoptimizeValue(T::class.java)
-@Suppress("UNCHECKED_CAST") fun <T> Byte.deoptimizeValue(type: Class<T>): T {
-    return when(type) {
+@Suppress("UNCHECKED_CAST")
+fun <T> Byte.deoptimizeValue(type: Class<T>): T {
+    return when (type) {
         CwtType::class.java -> toCwtType(this)
         CwtSeparatorType::class.java -> toCwtSeparatorType(this)
         ParadoxGameType::class.java -> toGameType(this)

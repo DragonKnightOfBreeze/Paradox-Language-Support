@@ -15,13 +15,13 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxLocalisationColorCompletionProvider : CompletionProvider<CompletionParameters>() {
     private val insertHandler = InsertHandler<LookupElement> { context, _ ->
         //delete existing colorId after press enter
-        if(context.completionChar == '\n' || context.completionChar == '\r') {
+        if (context.completionChar == '\n' || context.completionChar == '\r') {
             val editor = context.editor
             val offset = editor.caretModel.offset
             editor.document.deleteString(offset, offset + 1)
         }
     }
-    
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val file = parameters.originalFile
         val originalColorId = file.findElementAt(parameters.offset)
@@ -29,7 +29,7 @@ class ParadoxLocalisationColorCompletionProvider : CompletionProvider<Completion
         val project = file.project
         val colorConfigs = ParadoxTextColorManager.getInfos(project, file)
         val lookupElements = mutableListOf<LookupElement>()
-        for(colorConfig in colorConfigs) {
+        for (colorConfig in colorConfigs) {
             ProgressManager.checkCanceled()
             val element = colorConfig.pointer.element ?: continue
             val name = colorConfig.name

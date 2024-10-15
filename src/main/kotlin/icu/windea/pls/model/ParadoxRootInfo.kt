@@ -18,12 +18,12 @@ sealed class ParadoxRootInfo {
     abstract val rootFile: VirtualFile
     abstract val gameRootFile: VirtualFile
     abstract val gameType: ParadoxGameType
-    
+
     abstract val rootPath: Path
     abstract val gameRootPath: Path
-    
+
     val gameEntryPath: String? by lazy { rootPath.relativize(gameRootPath).toString().orNull() }
-    
+
     abstract val qualifiedName: String
 }
 
@@ -34,31 +34,31 @@ class ParadoxGameRootInfo(
 ) : ParadoxRootInfo() {
     override val gameType: ParadoxGameType = doGetGameType()
     override val gameRootFile: VirtualFile = doGetGameRootFile()
-    
+
     private fun doGetGameType(): ParadoxGameType {
         return ParadoxGameType.entries.find { it.gameId == launcherSettingsInfo.gameId } ?: throw IllegalStateException()
     }
-    
+
     private fun doGetGameRootFile(): VirtualFile {
         val dlcPath = launcherSettingsInfo.dlcPath
         val path = launcherSettingsFile.toNioPath().parent.resolve(dlcPath).normalize().toAbsolutePath()
         return VfsUtil.findFile(path, true) ?: throw IllegalStateException()
     }
-    
+
     override val rootPath: Path = rootFile.toNioPath()
     override val gameRootPath: Path = gameRootFile.toNioPath()
-    
+
     override val qualifiedName: String
         get() = buildString {
             append(gameType.title)
             append("@")
             append(launcherSettingsInfo.rawVersion)
         }
-    
+
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxRootInfo && rootFile == other.rootFile
     }
-    
+
     override fun hashCode(): Int {
         return rootFile.hashCode()
     }
@@ -71,33 +71,33 @@ class ParadoxModRootInfo(
 ) : ParadoxRootInfo() {
     val inferredGameType: ParadoxGameType? = doGetInferredGameType()
     override val gameType: ParadoxGameType get() = doGetGameType()
-    
+
     override val gameRootFile: VirtualFile get() = rootFile
-    
+
     private fun doGetInferredGameType(): ParadoxGameType? {
         return ParadoxCoreManager.getInferredGameType(this)
     }
-    
+
     private fun doGetGameType(): ParadoxGameType {
         return inferredGameType
             ?: getProfilesSettings().modDescriptorSettings.get(rootFile.path)?.gameType
             ?: getSettings().defaultGameType
     }
-    
+
     override val rootPath: Path = rootFile.toNioPath()
     override val gameRootPath: Path = rootPath
-    
+
     override val qualifiedName: String
         get() = buildString {
             append(gameType.title).append(" Mod: ")
             append(descriptorInfo.name)
             descriptorInfo.version?.let { version -> append("@").append(version) }
         }
-    
+
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxRootInfo && rootFile == other.rootFile
     }
-    
+
     override fun hashCode(): Int {
         return rootFile.hashCode()
     }

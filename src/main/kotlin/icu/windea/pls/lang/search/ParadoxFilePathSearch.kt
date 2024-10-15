@@ -23,11 +23,13 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         override val selector: ChainedParadoxSelector<VirtualFile>,
         val ignoreLocale: Boolean
     ) : ParadoxSearchParameters<VirtualFile>
-    
+
     companion object {
-        @JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<VirtualFile, SearchParameters>>("icu.windea.pls.search.filePathSearch")
-        @JvmField val INSTANCE = ParadoxFilePathSearch()
-        
+        @JvmField
+        val EP_NAME = ExtensionPointName.create<QueryExecutor<VirtualFile, SearchParameters>>("icu.windea.pls.search.filePathSearch")
+        @JvmField
+        val INSTANCE = ParadoxFilePathSearch()
+
         /**
          *  @see icu.windea.pls.lang.search.ParadoxFilePathSearch.SearchParameters
          */
@@ -40,7 +42,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         ): ParadoxQuery<VirtualFile, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(filePath, configExpression, selector, ignoreLocale))
         }
-        
+
         /**
          *  @see icu.windea.pls.lang.search.ParadoxFilePathSearch.SearchParameters
          */
@@ -52,9 +54,9 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         ): ParadoxQuery<VirtualFile, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(null, configExpression, selector, ignoreLocale))
         }
-        
+
         private val iconExpression = CwtDataExpression.resolve("icon[]", false)
-        
+
         /**
          *  @see icu.windea.pls.lang.search.ParadoxFilePathSearch.SearchParameters
          */
@@ -66,7 +68,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         ): ParadoxQuery<VirtualFile, SearchParameters> {
             return search(filePath, iconExpression, selector, ignoreLocale)
         }
-        
+
         /**
          *  @see icu.windea.pls.lang.search.ParadoxFilePathSearch.SearchParameters
          */

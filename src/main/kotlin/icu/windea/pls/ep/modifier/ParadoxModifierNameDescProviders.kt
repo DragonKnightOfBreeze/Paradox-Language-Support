@@ -8,7 +8,7 @@ class ParadoxBaseModifierNameDescProvider : ParadoxModifierNameDescProvider {
         //mod_$, ALL_UPPER_CASE is ok.
         registry += "mod_${modifierInfo.name}"
     }
-    
+
     override fun addModifierDescKey(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         //mod_$_desc, ALL_UPPER_CASE is ok.
         registry += "mod_${modifierInfo.name}_desc"

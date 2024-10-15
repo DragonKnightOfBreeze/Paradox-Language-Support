@@ -11,22 +11,22 @@ import icu.windea.pls.lang.util.*
 /**
  * 检查内联脚本的使用位置是否存在递归。
  */
-class RecursiveInlineScriptUsageInspection: LocalInspectionTool() {
+class RecursiveInlineScriptUsageInspection : LocalInspectionTool() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if(!shouldCheckFile(file)) return null
-        
+        if (!shouldCheckFile(file)) return null
+
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return null
         val configContext = ParadoxExpressionManager.getConfigContext(file) ?: return null
-        if(configContext.inlineScriptHasRecursion != true) return null
-        
+        if (configContext.inlineScriptHasRecursion != true) return null
+
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val description = PlsBundle.message("script.annotator.inlineScript.recursive", inlineScriptExpression)
         holder.registerProblem(file, description, GotoInlineScriptUsagesFix())
         return holder.resultsArray
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
-        if(selectRootFile(file) == null) return false
+        if (selectRootFile(file) == null) return false
         return true
     }
 }

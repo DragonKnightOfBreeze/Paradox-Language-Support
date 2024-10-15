@@ -44,38 +44,38 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
             ?: return null
-        if(file.isDirectory) return null
-        if(file.fileType != ParadoxScriptFileType) return null
+        if (file.isDirectory) return null
+        if (file.fileType != ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
-        if(fileInfo.path.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
+        if (fileInfo.path.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
         //val gameType = fileInfo.rootInfo.gameType
         //val path = fileInfo.path.path
         return file
     }
-    
+
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptDefinitionElement? {
         return ParadoxPsiManager.findDefinition(file, offset)
     }
-    
+
     private fun findElement(e: AnActionEvent): ParadoxScriptDefinitionElement? {
         val element = e.getData(CommonDataKeys.PSI_ELEMENT)
-        if(element is ParadoxScriptDefinitionElement && element.definitionInfo != null) return element
+        if (element is ParadoxScriptDefinitionElement && element.definitionInfo != null) return element
         return null
     }
-    
+
     override fun update(e: AnActionEvent) {
         //基于插件设置判断是否需要显示在编辑器悬浮工具栏中
-        if(e.place == ActionPlaces.CONTEXT_TOOLBAR && !getSettings().others.showEditorContextToolbar) {
+        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !getSettings().others.showEditorContextToolbar) {
             e.presentation.isEnabledAndVisible = false
             return
         }
-        
+
         //出于性能原因，目前不在update方法中判断是否不存在重载/被重载的情况
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
         var definition = findElement(e)
-        if(definition == null) {
+        if (definition == null) {
             val project = e.project ?: return
             val file = findFile(e) ?: return
             presentation.isVisible = true
@@ -86,10 +86,10 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         }
         presentation.isEnabledAndVisible = definition != null
     }
-    
+
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         var definition = findElement(e)
-        if(definition == null) {
+        if (definition == null) {
             val project = e.project ?: return null
             val file = findFile(e) ?: return null
             val editor = e.editor ?: return null
@@ -97,7 +97,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             val psiFile = file.toPsiFile(project) ?: return null
             definition = findElement(psiFile, offset)
         }
-        if(definition == null) return null
+        if (definition == null) return null
         val psiFile = definition.containingFile
         val file = psiFile.virtualFile
         val project = psiFile.project
@@ -111,22 +111,22 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
                 definitions.addAll(result)
             }
         }, PlsBundle.message("diff.compare.definitions.collect.title"), true, project)
-        if(definitions.size <= 1) {
+        if (definitions.size <= 1) {
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
                 PlsBundle.message("diff.compare.definitions.content.title.info.1"),
                 NotificationType.INFORMATION
             ).notify(project)
             return null
         }
-        
+
         val editor = e.editor
         val contentFactory = DiffContentFactory.getInstance()
-        
+
         val windowTitle = getWindowsTitle(definition, definitionInfo) ?: return null
         val contentTitle = getContentTitle(definition, definitionInfo) ?: return null
         val documentContent = contentFactory.createDocument(project, file) ?: return null
         val content = createContent(contentFactory, project, documentContent, definition)
-        
+
         var index = 0
         var currentIndex = 0
         val producers = runReadAction {
@@ -154,13 +154,13 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
                         createContent(contentFactory, project, otherDocumentContent, otherDefinition)
                     }
                 }
-                if(isCurrent) currentIndex = index
-                if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+                if (isCurrent) currentIndex = index
+                if (readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
                 index++
                 val icon = otherDefinition.icon
                 val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
                 //窗口定位到当前光标位置
-                if(editor != null) {
+                if (editor != null) {
                     val currentLine = editor.caretModel.logicalPosition.line
                     request.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
                 }
@@ -170,12 +170,12 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val defaultIndex = getDefaultIndex(producers, currentIndex)
         return MyDiffRequestChain(producers, defaultIndex)
     }
-    
+
     private fun createContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptDefinitionElement): DocumentContent {
         return createTempContent(contentFactory, project, documentContent, definition)
             ?: createFragment(contentFactory, project, documentContent, definition)
     }
-    
+
     @Suppress("UNUSED_PARAMETER")
     private fun createTempContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptDefinitionElement): DocumentContent? {
         //创建临时文件
@@ -183,24 +183,24 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val text = definition.text
         val tempFile = runWriteAction { ParadoxFileManager.createLightFile(UUID.randomUUID().toString(), text, fileInfo) }
         val elementPath = definition.definitionInfo?.elementPath
-        if(elementPath != null && elementPath.length > 1) {
+        if (elementPath != null && elementPath.length > 1) {
             val elementPathPrefix = ParadoxExpressionPath.resolve(elementPath.originalSubPaths.dropLast(1))
             tempFile.putUserData(PlsKeys.injectedElementPathPrefix, elementPathPrefix)
         }
         //return contentFactory.createDocument(project, tempFile)
         return FileDocumentFragmentContent(project, documentContent, definition.textRange, tempFile)
     }
-    
+
     private fun createFragment(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, definition: ParadoxScriptDefinitionElement): DocumentContent {
         return contentFactory.createFragment(project, documentContent, definition.textRange)
     }
-    
+
     private fun getWindowsTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         val file = definition.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
         return PlsBundle.message("diff.compare.definitions.dialog.title", definitionInfo.name.orAnonymous(), definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
     }
-    
+
     private fun getContentTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, original: Boolean = false): String? {
         val file = definition.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
@@ -209,20 +209,20 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             else -> PlsBundle.message("diff.compare.definitions.content.title", definitionInfo.name.orAnonymous(), definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
         }
     }
-    
+
     class MyDiffRequestChain(
         producers: List<DiffRequestProducer>,
         defaultIndex: Int = 0
     ) : UserDataHolderBase(), DiffRequestSelectionChain, GoToChangePopupBuilder.Chain {
         private val listSelection = ListSelection.createAt(producers, defaultIndex)
-        
+
         override fun getListSelection() = listSelection
-        
+
         override fun createGoToChangeAction(onSelected: Consumer<in Int>, defaultSelection: Int): AnAction {
             return MyGotoChangePopupAction(this, onSelected, defaultSelection)
         }
     }
-    
+
     class MyRequestProducer(
         request: DiffRequest,
         val otherDefinitionInfo: ParadoxDefinitionInfo,
@@ -235,7 +235,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             return PlsBundle.message("diff.compare.definitions.popup.name", otherDefinitionInfo.name.orAnonymous(), otherDefinitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
         }
     }
-    
+
     class MyGotoChangePopupAction(
         val chain: MyDiffRequestChain,
         val onSelected: Consumer<in Int>,
@@ -244,11 +244,11 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         override fun canNavigate(): Boolean {
             return chain.requests.size > 1
         }
-        
+
         override fun createPopup(e: AnActionEvent): JBPopup {
             return JBPopupFactory.getInstance().createListPopup(Popup())
         }
-        
+
         private inner class Popup : BaseListPopupStep<DiffRequestProducer>(
             PlsBundle.message("diff.compare.definitions.popup.title"),
             chain.requests
@@ -256,17 +256,17 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             init {
                 defaultOptionIndex = defaultSelection
             }
-            
+
             override fun getIconFor(value: DiffRequestProducer) = (value as MyRequestProducer).icon
-            
+
             override fun getTextFor(value: DiffRequestProducer) = value.name
-            
+
             //com.intellij.find.actions.ShowUsagesTableCellRenderer.getTableCellRendererComponent L205
             override fun getBackgroundFor(value: DiffRequestProducer) =
-                if((value as MyRequestProducer).isCurrent) Color(0x808080) else null
-            
+                if ((value as MyRequestProducer).isCurrent) Color(0x808080) else null
+
             override fun isSpeedSearchEnabled() = true
-            
+
             override fun onChosen(selectedValue: DiffRequestProducer, finalChoice: Boolean) = doFinalStep {
                 val selectedIndex = chain.requests.indexOf(selectedValue)
                 onSelected.consume(selectedIndex)

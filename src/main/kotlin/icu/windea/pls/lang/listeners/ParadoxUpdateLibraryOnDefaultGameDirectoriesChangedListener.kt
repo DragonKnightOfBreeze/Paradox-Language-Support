@@ -18,14 +18,14 @@ class ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener : ParadoxDefau
         directories.removeAll(oldGameDirectories.values.toSet())
         doUpdateLibrary(directories)
     }
-    
+
     private fun doUpdateLibrary(directories: Set<String>) {
         val roots = directories.mapNotNull { directory -> directory.orNull()?.toVirtualFile(false) }
-        if(roots.isEmpty()) return
-        for(project in ProjectManager.getInstance().openProjects) {
-            if(project.isDisposed) continue
+        if (roots.isEmpty()) return
+        for (project in ProjectManager.getInstance().openProjects) {
+            if (project.isDisposed) continue
             val isInProject = runReadAction { roots.any { root -> ProjectFileIndex.getInstance(project).isInContent(root) } }
-            if(!isInProject) continue
+            if (!isInProject) continue
             val library = project.paradoxLibrary
             library.refreshRoots()
         }

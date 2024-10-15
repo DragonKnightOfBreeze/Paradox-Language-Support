@@ -22,16 +22,16 @@ class EntryListTableModel<K, V>(
             override fun getName(): String {
                 return keyName
             }
-            
+
             override fun valueOf(item: Entry<K, V>): String {
                 return keyGetter(item.key)
             }
-            
+
             override fun setValue(item: Entry<K, V>, value: String) {
-                if(keySetter == null) return
+                if (keySetter == null) return
                 item.key = keySetter(value)
             }
-            
+
             override fun isCellEditable(item: Entry<K, V>?): Boolean {
                 return keySetter != null
             }
@@ -40,16 +40,16 @@ class EntryListTableModel<K, V>(
             override fun getName(): String {
                 return valueName
             }
-            
+
             override fun valueOf(item: Entry<K, V>): String {
                 return valueGetter(item.value)
             }
-            
+
             override fun setValue(item: Entry<K, V>, value: String) {
-                if(valueSetter == null) return
+                if (valueSetter == null) return
                 item.value = valueSetter(value)
             }
-            
+
             override fun isCellEditable(item: Entry<K, V>?): Boolean {
                 return valueSetter != null
             }
@@ -58,10 +58,10 @@ class EntryListTableModel<K, V>(
     list
 ) {
     override fun addRow() {
-        if(valueAdder == null) return
+        if (valueAdder == null) return
         addRow(valueAdder.invoke())
     }
-    
+
     companion object {
         @JvmStatic
         fun createStringMapPanel(
@@ -77,7 +77,7 @@ class EntryListTableModel<K, V>(
         ): JPanel {
             return createMapPanel(list, keyName, valueName, keyGetter, keySetter, valueGetter, valueSetter, valueAdder, customizer)
         }
-        
+
         @JvmStatic
         fun <K, V> createMapPanel(
             list: MutableList<Entry<K, V>>,
@@ -106,7 +106,7 @@ class EntryListTableModel<K, V>(
             }
             speedSearch.setupListeners()
             val decorator = ToolbarDecorator.createDecorator(tableView)
-            if(valueAdder == null) decorator.disableAddAction()
+            if (valueAdder == null) decorator.disableAddAction()
             customizer(decorator)
             val panel = decorator.createPanel()
             return panel

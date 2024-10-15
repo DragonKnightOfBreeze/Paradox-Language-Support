@@ -23,7 +23,7 @@ class ParadoxDefinitionPresentation(
     override fun getIcon(unused: Boolean): Icon {
         return PlsIcons.Nodes.Definition(definitionInfo.type)
     }
-    
+
     override fun getPresentableText(): String {
         return definitionInfo.name.orAnonymous()
     }
@@ -36,7 +36,7 @@ class ParadoxComplexEnumValuePresentation(
     override fun getIcon(unused: Boolean): Icon {
         return PlsIcons.Nodes.ComplexEnumValue
     }
-    
+
     override fun getPresentableText(): String {
         return complexEnumValueInfo.name
     }

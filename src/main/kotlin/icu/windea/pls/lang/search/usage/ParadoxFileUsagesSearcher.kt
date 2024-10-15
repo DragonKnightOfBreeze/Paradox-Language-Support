@@ -18,9 +18,9 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
         //0.7.8 这里不能仅仅用fileName去查找，需要基于CWT规则文件判断
         val target = queryParameters.elementToSearch
-        if(target !is PsiFile) return
+        if (target !is PsiFile) return
         val fileInfo = target.fileInfo
-        if(fileInfo == null) return
+        if (fileInfo == null) return
         val gameType = fileInfo.rootInfo.gameType
         val filePath = fileInfo.path.path
         val project = queryParameters.project
@@ -31,11 +31,11 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
                 ?.extract(configExpression, target, filePath)
                 ?.let { extraWords.add(it) }
         }
-        if(extraWords.isEmpty()) return
+        if (extraWords.isEmpty()) return
         DumbService.getInstance(project).runReadActionInSmartMode {
             //这里不能直接使用target.useScope，否则文件高亮会出现问题
             val useScope = queryParameters.effectiveSearchScope
-            for(extraWord in extraWords) {
+            for (extraWord in extraWords) {
                 val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_STRINGS or UsageSearchContext.IN_COMMENTS
                 queryParameters.optimizer.searchWord(extraWord, useScope, searchContext, true, target)
             }

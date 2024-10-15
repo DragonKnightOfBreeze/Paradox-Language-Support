@@ -32,36 +32,36 @@ interface CwtLocalisationLocationExpression : CwtExpression {
     val placeholder: String?
     val propertyName: String?
     val upperCase: Boolean
-    
+
     fun resolvePlaceholder(name: String): String?
-    
+
     fun resolve(
         definition: ParadoxScriptDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
         selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
     ): ResolveResult?
-    
+
     fun resolveAll(
         definition: ParadoxScriptDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
         selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
     ): ResolveAllResult?
-    
+
     data class ResolveResult(
         val name: String,
         val element: ParadoxLocalisationProperty?,
         val message: String? = null
     )
-    
+
     data class ResolveAllResult(
         val name: String,
         val elements: Set<ParadoxLocalisationProperty>,
         val message: String? = null
     )
-    
+
     companion object Resolver {
         val EmptyExpression: CwtLocalisationLocationExpression = doResolveEmpty()
-        
+
         fun resolve(expressionString: String): CwtLocalisationLocationExpression = cache.get(expressionString)
     }
 }
@@ -92,40 +92,40 @@ private class CwtLocalisationLocationExpressionImpl : CwtLocalisationLocationExp
     override val placeholder: String?
     override val propertyName: String?
     override val upperCase: Boolean
-    
+
     constructor(expressionString: String, placeholder: String? = null, propertyName: String? = null, upperCase: Boolean = false) {
         this.expressionString = expressionString.intern()
         this.placeholder = placeholder?.intern()
         this.propertyName = propertyName?.intern()
         this.upperCase = upperCase
     }
-    
+
     override fun resolvePlaceholder(name: String): String? {
-        if(placeholder == null) return null
-        return buildString { for(c in placeholder) if(c == '$') append(name) else append(c) }
+        if (placeholder == null) return null
+        return buildString { for (c in placeholder) if (c == '$') append(name) else append(c) }
             .letIf(upperCase) { it.uppercase() }
     }
-    
+
     override fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveResult? {
-        if(placeholder != null) {
-            if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
+        if (placeholder != null) {
+            if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             val name = resolvePlaceholder(definitionInfo.name)!!
             val resolved = ParadoxLocalisationSearch.search(name, selector).find()
             return ResolveResult(name, resolved)
-        } else if(propertyName != null) {
+        } else if (propertyName != null) {
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
             val config = ParadoxExpressionManager.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-            if(config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
+            if (config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
                 return ResolveResult("", null, PlsBundle.message("dynamic"))
             }
-            if(propertyValue !is ParadoxScriptString) {
+            if (propertyValue !is ParadoxScriptString) {
                 return null
             }
-            if(propertyValue.text.isParameterized()) {
+            if (propertyValue.text.isParameterized()) {
                 return ResolveResult("", null, PlsBundle.message("parameterized"))
             }
-            if(config.expression.type == CwtDataTypes.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
+            if (config.expression.type == CwtDataTypes.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
                 return ResolveResult("", null, PlsBundle.message("inlined"))
             }
             val name = propertyValue.value
@@ -135,28 +135,28 @@ private class CwtLocalisationLocationExpressionImpl : CwtLocalisationLocationExp
             throw IllegalStateException() //不期望的结果
         }
     }
-    
+
     override fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveAllResult? {
-        if(placeholder != null) {
-            if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
-            
+        if (placeholder != null) {
+            if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
+
             val name = resolvePlaceholder(definitionInfo.name)!!
             val resolved = ParadoxLocalisationSearch.search(name, selector).findAll()
             return ResolveAllResult(name, resolved)
-        } else if(propertyName != null) {
+        } else if (propertyName != null) {
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
             val config = ParadoxExpressionManager.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-            if(config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
+            if (config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
                 return ResolveAllResult("", emptySet(), PlsBundle.message("dynamic"))
             }
-            if(propertyValue !is ParadoxScriptString) {
+            if (propertyValue !is ParadoxScriptString) {
                 return null
             }
-            if(propertyValue.text.isParameterized()) {
+            if (propertyValue.text.isParameterized()) {
                 return ResolveAllResult("", emptySet(), PlsBundle.message("parameterized"))
             }
-            if(config.expression.type == CwtDataTypes.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
+            if (config.expression.type == CwtDataTypes.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
                 return ResolveAllResult("", emptySet(), PlsBundle.message("inlined"))
             }
             val name = propertyValue.value

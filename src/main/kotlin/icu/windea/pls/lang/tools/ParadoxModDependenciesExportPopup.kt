@@ -21,15 +21,15 @@ class ParadoxModDependenciesExportPopup(
     override fun getIconFor(value: ParadoxModExporter): Icon? {
         return value.icon
     }
-    
+
     override fun getTextFor(value: ParadoxModExporter): String {
         return value.text
     }
-    
+
     override fun isSpeedSearchEnabled(): Boolean {
         return true
     }
-    
+
     override fun onChosen(selectedValue: ParadoxModExporter, finalChoice: Boolean): PopupStep<*>? {
         return doFinalStep { selectedValue.execute(project, tableView, tableModel) }
     }

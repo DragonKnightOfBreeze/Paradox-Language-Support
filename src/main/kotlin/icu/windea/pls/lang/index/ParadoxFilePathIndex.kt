@@ -18,9 +18,9 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
     companion object {
         val INSTANCE by lazy { findIndex<ParadoxFilePathIndex>() }
         val NAME = ID.create<String, ParadoxFilePathInfo>("paradox.file.path.index")
-        
+
         private const val VERSION = 54 //1.3.21
-        
+
         private val EXCLUDED_DIRECTORIES = listOf(
             "_CommonRedist",
             "crash_reporter",
@@ -33,11 +33,11 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
             "jomini",
         )
     }
-    
+
     override fun getName() = NAME
-    
+
     override fun getVersion() = VERSION
-    
+
     override fun getIndexer(): DataIndexer<String, ParadoxFilePathInfo, FileContent> {
         return DataIndexer { inputData ->
             //这里索引的路径，使用相对于入口目录的路径
@@ -50,12 +50,12 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
             Collections.singletonMap(path, info)
         }
     }
-    
+
     override fun getKeyDescriptor(): KeyDescriptor<String> {
         return EnumeratorStringDescriptor.INSTANCE
     }
-    
-    
+
+
     override fun getValueExternalizer(): DataExternalizer<ParadoxFilePathInfo> {
         return object : DataExternalizer<ParadoxFilePathInfo> {
             override fun save(storage: DataOutput, value: ParadoxFilePathInfo) {
@@ -63,7 +63,7 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
                 storage.writeByte(value.gameType.optimizeValue())
                 storage.writeBoolean(value.included)
             }
-            
+
             override fun read(storage: DataInput): ParadoxFilePathInfo {
                 val path = storage.readUTFFast()
                 val gameType = storage.readByte().deoptimizeValue<ParadoxGameType>()
@@ -72,31 +72,31 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
             }
         }
     }
-    
+
     override fun getInputFilter(): FileBasedIndex.InputFilter {
         return FileBasedIndex.InputFilter { it.fileInfo != null }
     }
-    
+
     override fun indexDirectories(): Boolean {
         return true
     }
-    
+
     override fun dependsOnFileContent(): Boolean {
         return false
     }
-    
+
     private fun isIncluded(file: VirtualFile): Boolean {
-        if(file.fileInfo == null) return false
+        if (file.fileInfo == null) return false
         val parent = file.parent
-        if(parent != null && parent.fileInfo != null && !isIncluded(parent)) return false
+        if (parent != null && parent.fileInfo != null && !isIncluded(parent)) return false
         val fileName = file.name
-        if(fileName.startsWith('.')) return false //排除隐藏目录或文件
-        if(file.isDirectory) {
-            if(fileName in EXCLUDED_DIRECTORIES) return false //排除一些特定的目录
+        if (fileName.startsWith('.')) return false //排除隐藏目录或文件
+        if (file.isDirectory) {
+            if (fileName in EXCLUDED_DIRECTORIES) return false //排除一些特定的目录
             return true
         }
         val fileExtension = fileName.substringAfterLast('.')
-        if(fileExtension.isEmpty()) return false
+        if (fileExtension.isEmpty()) return false
         return fileExtension in PlsConstants.scriptFileExtensions
             || fileExtension in PlsConstants.localisationFileExtensions
             || fileExtension in PlsConstants.imageFileExtensions

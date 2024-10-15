@@ -18,9 +18,9 @@ import java.lang.invoke.*
 
 object ParadoxDefineManager {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
-    
+
     val definePathExpression = CwtDataExpression.resolve("filepath[common/defines/,.txt]", false)
-    
+
     @Suppress("UNCHECKED_CAST")
     fun <T> getDefineValue(contextElement: PsiElement, project: Project, path: String, type: Class<T>): T? {
         val gameType = selectGameType(contextElement) ?: return null
@@ -30,14 +30,14 @@ object ParadoxDefineManager {
             ParadoxFilePathSearch.search(definePathExpression, selector).findAll().process p@{
                 ProgressManager.checkCanceled()
                 val file = it.toPsiFile(project) ?: return@p true
-                if(file !is ParadoxScriptFile) return@p true
+                if (file !is ParadoxScriptFile) return@p true
                 val defines = getDefinesFromFile(file)
                 val defineValue = defines.getOrPut(path) action@{
                     val property = file.findByPath(path, ParadoxScriptProperty::class.java, ignoreCase = false) ?: return@action null
                     val propertyValue = property.propertyValue ?: return@action null
                     ParadoxScriptDataValueResolver.resolveValue(propertyValue, conditional = false)
                 }
-                if(defineValue != null) {
+                if (defineValue != null) {
                     result = defineValue
                     false
                 } else {
@@ -45,13 +45,13 @@ object ParadoxDefineManager {
                 }
             }
             return result as T?
-        } catch(e: Exception) {
-            if(e is ProcessCanceledException) throw e
+        } catch (e: Exception) {
+            if (e is ProcessCanceledException) throw e
             logger.warn("Cannot get define value of path '$type' for $gameType", e)
             return null
         }
     }
-    
+
     private fun getDefinesFromFile(file: ParadoxScriptFile): MutableMap<String, Any?> {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(file, PlsKeys.cachedDefineValues) {

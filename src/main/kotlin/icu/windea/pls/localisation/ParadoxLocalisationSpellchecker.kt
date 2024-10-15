@@ -9,9 +9,9 @@ class ParadoxLocalisationSpellchecker : SpellcheckingStrategy() {
     private val textTokenizer = TEXT_TOKENIZER
     private val compactTextTokenizer = EMPTY_TOKENIZER
     private val emptyTokenizer = EMPTY_TOKENIZER
-    
+
     override fun getTokenizer(element: PsiElement): Tokenizer<*> {
-        return when(element.elementType) {
+        return when (element.elementType) {
             LOCALE_TOKEN -> emptyTokenizer
             PROPERTY_KEY_TOKEN -> compactTextTokenizer
             PROPERTY_REFERENCE_TOKEN -> emptyTokenizer

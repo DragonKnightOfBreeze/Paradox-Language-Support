@@ -16,12 +16,12 @@ class ParadoxParameterCompletionProvider : CompletionProvider<CompletionParamete
         val element = tokenElement.parent
         val offsetInParent = parameters.offset - tokenElement.startOffset
         val keyword = tokenElement.getKeyword(offsetInParent)
-        
+
         ParadoxCompletionManager.initializeContext(parameters, context)
         context.contextElement = element
         context.offsetInParent = offsetInParent
         context.keyword = keyword
-        
+
         ParadoxParameterManager.completeParameters(element, context, result)
     }
 }

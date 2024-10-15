@@ -8,23 +8,23 @@ import com.intellij.openapi.vfs.newvfs.events.*
  * 如果文件内容发生变化，或者文件被删除或移动，作废对应的PNG文件缓存。
  */
 class DdsFileListener : AsyncFileListener {
-	override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier? {
-		return object : AsyncFileListener.ChangeApplier {
-			override fun afterVfsChange() {
-				val files = mutableSetOf<VirtualFile>()
-				//当DDS文件内容发生变化或者被删除时，需要重新转化
-				for(event in events) {
-					when {
-						event is VFileContentChangeEvent -> files.add(event.file)
-						event is VFileDeleteEvent -> files.add(event.file)
-						event is VFileMoveEvent -> files.add(event.file)
-						event is VFilePropertyChangeEvent -> files.add(event.file)
-					}
-				}
-				for(file in files) {
-					invalidateDdsFile(file)
-				}
-			}
-		}
-	}
+    override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier? {
+        return object : AsyncFileListener.ChangeApplier {
+            override fun afterVfsChange() {
+                val files = mutableSetOf<VirtualFile>()
+                //当DDS文件内容发生变化或者被删除时，需要重新转化
+                for (event in events) {
+                    when {
+                        event is VFileContentChangeEvent -> files.add(event.file)
+                        event is VFileDeleteEvent -> files.add(event.file)
+                        event is VFileMoveEvent -> files.add(event.file)
+                        event is VFilePropertyChangeEvent -> files.add(event.file)
+                    }
+                }
+                for (file in files) {
+                    invalidateDdsFile(file)
+                }
+            }
+        }
+    }
 }

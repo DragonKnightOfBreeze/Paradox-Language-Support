@@ -29,27 +29,27 @@ class ParadoxLocalisationParameterElement(
     override fun getIcon(): Icon {
         return PlsIcons.Nodes.Parameter
     }
-    
+
     override fun getName(): String {
         return name
     }
-    
+
     override fun getTypeName(): String {
         return PlsBundle.message("script.description.parameter")
     }
-    
+
     override fun getText(): String {
         return name
     }
-    
+
     override fun getPresentation(): ItemPresentation {
         return ParadoxLocalisationParameterElementPresentation(this)
     }
-    
+
     override fun getProject(): Project {
         return project
     }
-    
+
     override fun equals(other: Any?): Boolean {
         return other is ParadoxLocalisationParameterElement &&
             name == other.name &&
@@ -57,7 +57,7 @@ class ParadoxLocalisationParameterElement(
             project == other.project &&
             gameType == other.gameType
     }
-    
+
     override fun hashCode(): Int {
         return Objects.hash(name, localisationName, project, gameType)
     }

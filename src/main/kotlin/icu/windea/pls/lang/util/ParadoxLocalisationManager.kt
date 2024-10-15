@@ -17,11 +17,11 @@ import icu.windea.pls.model.*
 object ParadoxLocalisationManager {
     fun getInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         //快速判断
-        if(runCatchingCancelable { element.greenStub }.getOrNull()?.isValid() == false) return null
+        if (runCatchingCancelable { element.greenStub }.getOrNull()?.isValid() == false) return null
         //从缓存中获取
         return doGetInfoFromCache(element)
     }
-    
+
     private fun doGetInfoFromCache(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationInfo) {
             ProgressManager.checkCanceled()
@@ -29,20 +29,20 @@ object ParadoxLocalisationManager {
             CachedValueProvider.Result.create(value, element)
         }
     }
-    
+
     private fun doGetInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         //首先尝试直接基于stub进行解析
         getInfoFromStub(element)?.let { return it }
-        
+
         val name = element.name
         val file = element.containingFile.originalFile.virtualFile ?: return null
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
         val gameType = selectGameType(file) ?: return null
         return ParadoxLocalisationInfo(name, category, gameType)
     }
-    
+
     //stub methods
-    
+
     fun createStub(psi: ParadoxLocalisationProperty, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub? {
         val file = selectFile(psi) ?: return null
         val gameType = selectGameType(file) ?: return null
@@ -51,7 +51,7 @@ object ParadoxLocalisationManager {
         val locale = selectLocale(file)?.id
         return ParadoxLocalisationPropertyStub.Impl(parentStub, name, category, locale, gameType)
     }
-    
+
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub? {
         val psi = parentStub.psi
         val file = selectFile(psi) ?: return null
@@ -61,21 +61,21 @@ object ParadoxLocalisationManager {
         val locale = selectLocale(file)?.id
         return ParadoxLocalisationPropertyStub.Impl(parentStub, name, category, locale, gameType)
     }
-    
+
     private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {
         return node.firstChild(tree, PROPERTY_KEY)?.firstChild(tree, PROPERTY_KEY_TOKEN)?.internNode(tree)?.toString()
     }
-    
+
     @Suppress("UNUSED_PARAMETER")
     fun shouldCreateStub(node: ASTNode): Boolean {
         return true //just true
     }
-    
+
     @Suppress("UNUSED_PARAMETER")
     fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
         return true //just true
     }
-    
+
     fun getInfoFromStub(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         val stub = runCatchingCancelable { element.greenStub }.getOrNull() ?: return null
         //if(!stub.isValid()) return null //这里不用再次判断
@@ -84,12 +84,12 @@ object ParadoxLocalisationManager {
         val gameType = stub.gameType
         return ParadoxLocalisationInfo(name, category, gameType)
     }
-    
+
     fun isSpecialLocalisation(element: ParadoxLocalisationProperty): Boolean {
         //存在一些特殊的本地化，不能直接用来渲染文本
         val file = element.containingFile ?: return false
         val fileName = file.name
-        if(fileName.startsWith("name_system_")) return true //e.g., name_system_l_english.yml
+        if (fileName.startsWith("name_system_")) return true //e.g., name_system_l_english.yml
         return false
     }
 }

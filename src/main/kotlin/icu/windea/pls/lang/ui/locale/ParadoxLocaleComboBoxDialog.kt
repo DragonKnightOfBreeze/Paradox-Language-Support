@@ -12,12 +12,12 @@ class ParadoxLocaleComboBoxDialog(
     val allLocales: Collection<CwtLocalisationLocaleConfig>
 ) : DialogWrapper(null, false) {
     var locale: CwtLocalisationLocaleConfig? = selectedLocale
-    
+
     init {
         title = PlsBundle.message("ui.dialog.selectLocale.title")
         init()
     }
-    
+
     override fun createCenterPanel() = panel {
         row {
             comboBox(allLocales).bindItem(::locale.toNullableProperty()).focused()

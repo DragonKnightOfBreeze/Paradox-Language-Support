@@ -14,21 +14,21 @@ import java.io.*
  */
 interface ParadoxExpressionIndexSupport<T : ParadoxExpressionInfo> {
     fun id(): Byte
-    
+
     fun type(): Class<T>
-    
+
     fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {}
-    
+
     fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {}
-    
+
     fun indexLocalisationCommandText(element: ParadoxLocalisationCommandText, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {}
-    
+
     fun compressData(value: List<T>): List<T> = value
-    
+
     fun writeData(storage: DataOutput, info: T, previousInfo: T?, gameType: ParadoxGameType)
-    
+
     fun readData(storage: DataInput, previousInfo: T?, gameType: ParadoxGameType): T
-    
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxExpressionIndexSupport<*>>("icu.windea.pls.expressionIndexSupport")
     }

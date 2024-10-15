@@ -24,20 +24,20 @@ class CwtConfigDirectoryElementNode(
             else -> false
         }
     }
-    
+
     private fun canRepresent(file: VirtualFile): Boolean {
-        if(!file.isDirectory) return false
+        if (!file.isDirectory) return false
         val gameTypeId = value.gameType.id
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return@f
             val filePath = relativePath.removePrefixOrNull("$gameTypeId/") ?: return@f
-            if(filePath.isNotNullOrEmpty()) return true
+            if (filePath.isNotNullOrEmpty()) return true
         }
         return false
     }
-    
+
     override fun contains(file: VirtualFile): Boolean {
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
@@ -48,9 +48,9 @@ class CwtConfigDirectoryElementNode(
         }
         return false
     }
-    
+
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
-        if(value == null) return emptySet()
+        if (value == null) return emptySet()
         val gameTypeId = value.gameType.id
         val path = value.path
         val children = mutableSetOf<AbstractTreeNode<*>>()
@@ -60,8 +60,8 @@ class CwtConfigDirectoryElementNode(
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val dir = rootDirectory.findChild(gameTypeId)?.let { VfsUtil.findRelativeFile(it, path) } ?: return@f
             dir.children.forEach { file ->
-                if(file.isDirectory) {
-                    if(!directoryNames.add(file.name)) return@f
+                if (file.isDirectory) {
+                    if (!directoryNames.add(file.name)) return@f
                     val element = CwtConfigDirectoryElement(project, "$path/${file.name}", value.gameType)
                     val elementNode = CwtConfigDirectoryElementNode(project, element, settings)
                     children += elementNode
@@ -74,7 +74,7 @@ class CwtConfigDirectoryElementNode(
         }
         return children
     }
-    
+
     override fun isValid(): Boolean {
         val gameTypeId = value.gameType.id
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
@@ -82,38 +82,38 @@ class CwtConfigDirectoryElementNode(
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val dir = rootDirectory.findChild(gameTypeId) ?: return@f
             val relativeFile = VfsUtil.findRelativeFile(dir, value.path)
-            if(relativeFile != null) return true
+            if (relativeFile != null) return true
         }
         return false
     }
-    
+
     override fun update(presentation: PresentationData) {
-        if(value == null) return
+        if (value == null) return
         try {
-            if(isValid) {
+            if (isValid) {
                 presentation.setIcon(PlatformIcons.FOLDER_ICON)
                 presentation.presentableText = value.path.substringAfterLast('/')
                 return
             }
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             //ignored
         }
         value = null
     }
-    
+
     override fun getTitle(): String? {
-        if(value == null) return null
+        if (value == null) return null
         return value.path.substringAfterLast('/')
     }
-    
+
     override fun getSortOrder(settings: NodeSortSettings): NodeSortOrder {
-        return if(settings.isFoldersAlwaysOnTop) NodeSortOrder.FOLDER else super.getSortOrder(settings)
+        return if (settings.isFoldersAlwaysOnTop) NodeSortOrder.FOLDER else super.getSortOrder(settings)
     }
-    
+
     override fun getTypeSortWeight(sortByType: Boolean): Int {
         return 4
     }
-    
+
     override fun isAlwaysShowPlus(): Boolean {
         return true
     }

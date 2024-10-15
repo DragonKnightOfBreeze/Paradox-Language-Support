@@ -28,43 +28,43 @@ class ParadoxComplexEnumValueElement(
 ) : ParadoxFakePsiElement(parent) {
     constructor(parent: PsiElement, info: ParadoxComplexEnumValueInfo, project: Project)
         : this(parent, info.name, info.enumName, info.readWriteAccess, info.gameType, project)
-    
+
     val searchScopeType: ParadoxSearchScopeType
         get() = ParadoxSearchScopeTypes.get(getConfigGroup(project, gameType).complexEnums.get(enumName)?.searchScopeType)
-    
+
     override fun getIcon(): Icon {
         return PlsIcons.Nodes.ComplexEnumValue
     }
-    
+
     override fun getName(): String {
         return name
     }
-    
+
     override fun getTypeName(): String {
         return PlsBundle.message("script.description.complexEnumValue")
     }
-    
+
     override fun getText(): String {
         return name
     }
-    
+
     override fun getPresentation(): ItemPresentation {
         return ParadoxComplexEnumValueElementPresentation(this)
     }
-    
+
     override fun getProject(): Project {
         return project
     }
-    
+
     override fun equals(other: Any?): Boolean {
         return other is ParadoxComplexEnumValueElement &&
             name == other.name &&
             enumName == other.enumName &&
             project == other.project &&
             gameType == other.gameType &&
-            searchScopeType.findRoot(project, parent) == other.searchScopeType.findRoot(other.project, other.parent) 
+            searchScopeType.findRoot(project, parent) == other.searchScopeType.findRoot(other.project, other.parent)
     }
-    
+
     override fun hashCode(): Int {
         return Objects.hash(name, enumName, project, gameType)
     }

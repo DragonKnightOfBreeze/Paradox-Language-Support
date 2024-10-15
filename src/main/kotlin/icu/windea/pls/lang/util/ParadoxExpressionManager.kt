@@ -40,30 +40,30 @@ object ParadoxExpressionManager {
         val cachedConfigContext by createKey<CachedValue<CwtConfigContext>>(Keys)
         val cachedConfigsCache by createKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>(Keys)
         val cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>(Keys)
-        
+
         val inBlockKeys by createKey<Set<String>>(this)
     }
-    
+
     //region Common Methods
     fun isParameterized(text: String): Boolean {
         //快速判断，不检测带参数后的语法是否合法
-        if(text.length < 2) return false
+        if (text.length < 2) return false
         // a_$PARAM$_b - 高级插值语法 A
-        if(text.indexOf('$').let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
+        if (text.indexOf('$').let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
         // a_[[PARAM]b]_c - 高级插值语法 B
-        if(text.indexOf('[').let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
+        if (text.indexOf('[').let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
         return false
     }
-    
+
     fun isFullParameterized(text: String): Boolean {
         //快速判断，不检测带参数后的语法是否合法
-        if(text.length < 2) return false
+        if (text.length < 2) return false
         // $PARAM$ - 仅限 高级插值语法 A
-        if(!text.startsWith('$')) return false
-        if(text.indexOf('$', 1).let { c -> c != text.lastIndex || text.isEscapedCharAt(c) }) return false
+        if (!text.startsWith('$')) return false
+        if (text.indexOf('$', 1).let { c -> c != text.lastIndex || text.isEscapedCharAt(c) }) return false
         return true
     }
-    
+
     fun getParameterRanges(text: String): List<TextRange> {
         //比较复杂的实现逻辑
         val ranges = mutableListOf<TextRange>()
@@ -73,10 +73,10 @@ object ParadoxExpressionManager {
         var depth2 = 0
         var startIndex = -1
         var endIndex = -1
-        for((i, c) in text.withIndex()) {
-            if(c == '$' && !text.isEscapedCharAt(i)) {
-                if(depth2 > 0) continue
-                if(depth1 == 0) {
+        for ((i, c) in text.withIndex()) {
+            if (c == '$' && !text.isEscapedCharAt(i)) {
+                if (depth2 > 0) continue
+                if (depth1 == 0) {
                     startIndex = i
                     endIndex = -1
                     depth1++
@@ -84,34 +84,34 @@ object ParadoxExpressionManager {
                     endIndex = i
                     ranges += TextRange.create(startIndex, endIndex + 1)
                     depth1--
-                    
+
                 }
-            } else if(c == '[' && !text.isEscapedCharAt(i)) {
-                if(depth1 > 0) continue
-                if(depth2 == 0) {
+            } else if (c == '[' && !text.isEscapedCharAt(i)) {
+                if (depth1 > 0) continue
+                if (depth2 == 0) {
                     startIndex = i
                     endIndex = -1
                 }
                 depth2++
-            } else if(c == ']' && !text.isEscapedCharAt(i)) {
-                if(depth1 > 0) continue
-                if(depth2 <= 0) continue
+            } else if (c == ']' && !text.isEscapedCharAt(i)) {
+                if (depth1 > 0) continue
+                if (depth2 <= 0) continue
                 depth2--
-                if(depth2 == 0) {
+                if (depth2 == 0) {
                     endIndex = i
                     ranges += TextRange.create(startIndex, endIndex + 1)
                 }
             }
         }
-        if(startIndex != -1 && endIndex == -1) {
+        if (startIndex != -1 && endIndex == -1) {
             ranges += TextRange.create(startIndex, text.length)
         }
         return ranges
     }
-    
+
     private val regex1 = """(?<!\\)\$.*?\$""".toRegex()
     private val regex2 = """(?<!\\)\[\[.*?](.*?)]""".toRegex()
-    
+
     fun toRegex(text: String): Regex {
         var s = text
         s = """\Q$s\E"""
@@ -126,7 +126,7 @@ object ParadoxExpressionManager {
         s = s.replace("""\Q\E""", "")
         return s.toRegex(RegexOption.IGNORE_CASE)
     }
-    
+
     fun getExpressionText(element: ParadoxExpressionElement, rangeInElement: TextRange? = null): String {
         return when {
             element is ParadoxScriptBlock -> "" //should not be used
@@ -136,7 +136,7 @@ object ParadoxExpressionManager {
             else -> element.text
         }
     }
-    
+
     fun getExpressionTextRange(element: ParadoxExpressionElement): TextRange {
         return when {
             element is ParadoxScriptBlock -> TextRange.create(0, 1) //"{"
@@ -145,54 +145,54 @@ object ParadoxExpressionManager {
             else -> TextRange.create(0, element.text.length)
         }
     }
-    
+
     fun getExpressionOffset(element: ParadoxExpressionElement): Int {
         return when {
             element is ParadoxScriptStringExpressionElement && element.text.isLeftQuoted() -> 1
             else -> 0
         }
     }
-    
+
     fun getParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
         return doGetParameterRangesInExpressionFromCache(element)
     }
-    
+
     private fun doGetParameterRangesInExpressionFromCache(element: ParadoxExpressionElement): List<TextRange> {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParameterRanges) {
             val value = doGetParameterRangesInExpression(element)
             CachedValueProvider.Result.create(value, element)
         }
     }
-    
+
     private fun doGetParameterRangesInExpression(element: ParadoxExpressionElement): List<TextRange> {
         var parameterRanges: MutableList<TextRange>? = null
         element.processChild { e ->
-            if(isParameterElementInExpression(e)) {
-                if(parameterRanges == null) parameterRanges = mutableListOf()
+            if (isParameterElementInExpression(e)) {
+                if (parameterRanges == null) parameterRanges = mutableListOf()
                 parameterRanges?.add(e.textRange)
             }
             true
         }
         return parameterRanges.orEmpty()
     }
-    
+
     fun isParameterElementInExpression(element: PsiElement): Boolean {
         return element is ParadoxParameter || element is ParadoxScriptInlineParameterCondition
             || element is ParadoxLocalisationPropertyReference
     }
-    
+
     fun isUnaryOperatorAwareParameter(text: String, parameterRanges: List<TextRange>): Boolean {
         return text.firstOrNull()?.let { it == '+' || it == '-' } == true
             && parameterRanges.singleOrNull()?.let { it.startOffset == 1 && it.endOffset == text.length } == true
     }
     //endregion
-    
+
     //region Core Methods
     fun getConfigContext(element: PsiElement): CwtConfigContext? {
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return null
         return doGetConfigContextFromCache(memberElement)
     }
-    
+
     private fun doGetConfigContextFromCache(element: ParadoxScriptMemberElement): CwtConfigContext? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigContext) {
             val value = doGetConfigContext(element)
@@ -203,11 +203,11 @@ object ParadoxExpressionManager {
             CachedValueProvider.Result.create(value, element, trackers)
         }
     }
-    
+
     private fun doGetConfigContext(element: ParadoxScriptMemberElement): CwtConfigContext? {
         return CwtConfigContextProvider.getContext(element)
     }
-    
+
     fun getConfigsForConfigContext(
         element: ParadoxScriptMemberElement,
         rootConfigs: List<CwtMemberConfig<*>>,
@@ -218,7 +218,7 @@ object ParadoxExpressionManager {
         val result = doGetConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         return result.sortedByPriority({ it.expression }, { it.configGroup })
     }
-    
+
     private fun doGetConfigsForConfigContext(
         element: ParadoxScriptMemberElement,
         rootConfigs: List<CwtMemberConfig<*>>,
@@ -227,17 +227,17 @@ object ParadoxExpressionManager {
         matchOptions: Int
     ): List<CwtMemberConfig<*>> {
         val isPropertyValue = element is ParadoxScriptValue && element.isPropertyValue()
-        
+
         var result: List<CwtMemberConfig<*>> = rootConfigs
-        
+
         val subPaths = elementPathFromRoot.subPaths
         val originalSubPaths = elementPathFromRoot.originalSubPaths
         subPaths.forEachIndexed f1@{ i, subPath ->
             ProgressManager.checkCanceled()
-            
+
             //如果整个过程中得到的某个propertyConfig的valueExpressionType是single_alias_right或alias_matches_left，则需要内联子规则
             //如果整个过程中的某个key匹配内联规则的名字（如，inline_script），则需要内联此内联规则
-            
+
             val isQuoted = subPath != originalSubPaths[i]
             val isParameterized = subPath.isParameterized()
             val isFullParameterized = subPath.isFullParameterized()
@@ -245,71 +245,71 @@ object ParadoxExpressionManager {
             val matchesKey = isPropertyValue || shift > 0
             val expression = ParadoxDataExpression.resolve(subPath, isQuoted, true)
             val nextResult = mutableListOf<CwtMemberConfig<*>>()
-            
+
             val parameterizedKeyConfigs by lazy {
-                if(!isParameterized) return@lazy null
-                if(!isFullParameterized) return@lazy null //must be full parameterized yet
+                if (!isParameterized) return@lazy null
+                if (!isFullParameterized) return@lazy null //must be full parameterized yet
                 ParadoxParameterManager.getParameterizedKeyConfigs(element, shift)
             }
-            
+
             run r1@{
                 result.forEach f2@{ parentConfig ->
                     val configs = parentConfig.configs
-                    if(configs.isNullOrEmpty()) return@f2
-                    
+                    if (configs.isNullOrEmpty()) return@f2
+
                     var relaxMatchKeyCount = 0
                     configs.forEach f3@{ config ->
-                        if(config is CwtPropertyConfig) {
-                            if(subPath == "-") return@f3
+                        if (config is CwtPropertyConfig) {
+                            if (subPath == "-") return@f3
                             val configKeyExpression = config.keyExpression
-                            if(matchesKey && !ParadoxExpressionMatcher.matches(element, expression, configKeyExpression, config, configGroup, matchOptions).get(matchOptions)) return@f3
+                            if (matchesKey && !ParadoxExpressionMatcher.matches(element, expression, configKeyExpression, config, configGroup, matchOptions).get(matchOptions)) return@f3
                             val nextConfigs = mutableListOf<CwtMemberConfig<*>>()
                             val inlinedConfigs = doInlineConfigForConfigContext(element, subPath, isQuoted, config, matchOptions)
-                            if(inlinedConfigs.isEmpty()) {
+                            if (inlinedConfigs.isEmpty()) {
                                 nextConfigs += config
                             } else {
                                 nextConfigs += inlinedConfigs
                             }
                             nextConfigs.forEach f4@{ nextConfig ->
                                 val m = doMatchParameterizedKeyConfigs(parameterizedKeyConfigs, configKeyExpression)
-                                if(m != true) relaxMatchKeyCount++
+                                if (m != true) relaxMatchKeyCount++
                                 nextResult += nextConfig
                             }
-                        } else if(config is CwtValueConfig) {
-                            if(subPath != "-") return@f3
+                        } else if (config is CwtValueConfig) {
+                            if (subPath != "-") return@f3
                             nextResult += config
                         }
                     }
-                    
+
                     //如果需要匹配键，且匹配带参数的子路径时，初始能够匹配到多个结果，则直接返回空列表
                     //因为参数值可能是任意值，此时实际上并不能确定具体的上下文是什么
-                    
-                    if(matchesKey && isParameterized && relaxMatchKeyCount > 1) {
+
+                    if (matchesKey && isParameterized && relaxMatchKeyCount > 1) {
                         return emptyList()
                     }
                 }
             }
-            
+
             result = nextResult
-            
-            if(matchesKey) result = doOptimizeContextConfigs(element, result, expression, matchOptions)
+
+            if (matchesKey) result = doOptimizeContextConfigs(element, result, expression, matchOptions)
         }
-        
-        if(isPropertyValue) {
-            result = result.mapNotNull { if(it is CwtPropertyConfig) it.valueConfig else null }
+
+        if (isPropertyValue) {
+            result = result.mapNotNull { if (it is CwtPropertyConfig) it.valueConfig else null }
         }
-        
+
         return result
     }
-    
+
     private fun doInlineConfigForConfigContext(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, matchOptions: Int): List<CwtMemberConfig<*>> {
         val configGroup = config.configGroup
         val result = mutableListOf<CwtMemberConfig<*>>()
         run {
             val configValueExpression = config.valueExpression
-            if(configValueExpression.type == CwtDataTypes.SingleAliasRight) {
+            if (configValueExpression.type == CwtDataTypes.SingleAliasRight) {
                 result += CwtConfigManipulator.inlineSingleAlias(config) ?: return@run
-            } else if(configValueExpression.type == CwtDataTypes.AliasMatchLeft) {
+            } else if (configValueExpression.type == CwtDataTypes.AliasMatchLeft) {
                 val aliasName = configValueExpression.value ?: return@run
                 val aliasGroup = configGroup.aliasGroups[aliasName] ?: return@run
                 val aliasSubNames = getAliasSubNames(element, key, isQuoted, aliasName, configGroup, matchOptions)
@@ -317,7 +317,7 @@ object ParadoxExpressionManager {
                     val aliasConfigs = aliasGroup[aliasSubName] ?: return@f1
                     aliasConfigs.forEach f2@{ aliasConfig ->
                         val aliasConfigInlined = aliasConfig.inline(config)
-                        if(aliasConfigInlined.valueExpression.type == CwtDataTypes.SingleAliasRight) {
+                        if (aliasConfigInlined.valueExpression.type == CwtDataTypes.SingleAliasRight) {
                             result += CwtConfigManipulator.inlineSingleAlias(aliasConfigInlined) ?: return@f2
                         } else {
                             result += aliasConfigInlined
@@ -326,12 +326,12 @@ object ParadoxExpressionManager {
                 }
             }
         }
-        if(result.isEmpty()) return emptyList()
+        if (result.isEmpty()) return emptyList()
         val parentConfig = config.parentConfig
-        if(parentConfig != null) CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
+        if (parentConfig != null) CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
         return result
     }
-    
+
     fun getConfigs(
         element: PsiElement,
         orDefault: Boolean = true,
@@ -348,7 +348,7 @@ object ParadoxExpressionManager {
             result.sortedByPriority({ it.expression }, { it.configGroup })
         }
     }
-    
+
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
             val value = doGetConfigsCache()
@@ -359,12 +359,12 @@ object ParadoxExpressionManager {
             CachedValueProvider.Result.create(value, element, trackers)
         }
     }
-    
+
     private fun doGetConfigsCache(): MutableMap<String, List<CwtMemberConfig<*>>> {
         //use soft values to optimize memory
         return ContainerUtil.createConcurrentSoftValueMap()
     }
-    
+
     private fun doGetConfigs(element: PsiElement, orDefault: Boolean, matchOptions: Int): List<CwtMemberConfig<*>> {
         //未填写属性的值 - 匹配所有
         val keyExpression = when {
@@ -379,136 +379,136 @@ object ParadoxExpressionManager {
             element is ParadoxScriptValue -> ParadoxDataExpression.resolve(element, matchOptions)
             else -> return emptyList()
         }
-        
+
         val configContext = getConfigContext(element) ?: return emptyList()
         val isDefinition = configContext.isDefinition()
-        if(isDefinition && element is ParadoxScriptDefinitionElement && !BitUtil.isSet(matchOptions, Options.AcceptDefinition)) return emptyList()
+        if (isDefinition && element is ParadoxScriptDefinitionElement && !BitUtil.isSet(matchOptions, Options.AcceptDefinition)) return emptyList()
         val configGroup = configContext.configGroup
-        
+
         val parameterizedKeyConfigs by lazy {
             val expression = keyExpression ?: return@lazy null
-            if(!expression.isParameterized()) return@lazy null
-            if(!expression.isFullParameterized()) return@lazy null //must be full parameterized yet
+            if (!expression.isParameterized()) return@lazy null
+            if (!expression.isFullParameterized()) return@lazy null //must be full parameterized yet
             ParadoxParameterManager.getParameterizedKeyConfigs(element, 0)
         }
-        
+
         //得到所有待匹配的结果
         ProgressManager.checkCanceled()
         val contextConfigs = configContext.getConfigs(matchOptions)
-        if(contextConfigs.isEmpty()) return emptyList()
+        if (contextConfigs.isEmpty()) return emptyList()
         val contextConfigsToMatch = contextConfigs
             .filter { config ->
                 when {
                     element is ParadoxScriptProperty -> config is CwtPropertyConfig && run {
-                        if(keyExpression == null) return@run true
-                        if(isDefinition) return@run true
+                        if (keyExpression == null) return@run true
+                        if (isDefinition) return@run true
                         val configKeyExpression = config.keyExpression
                         doMatchParameterizedKeyConfigs(parameterizedKeyConfigs, configKeyExpression)?.let { return@run it }
                         ParadoxExpressionMatcher.matches(element, keyExpression, configKeyExpression, config, configGroup, matchOptions).get(matchOptions)
                     }
-                    
+
                     element is ParadoxScriptValue -> config is CwtValueConfig
                     else -> true
                 }
             }
             .let { configs -> doOptimizeContextConfigs(element, configs, keyExpression, matchOptions) }
         //如果无结果，则返回空列表
-        if(contextConfigsToMatch.isEmpty()) return emptyList()
-        
+        if (contextConfigsToMatch.isEmpty()) return emptyList()
+
         //如果无法获取valueExpression，则返回所有可能匹配的规则
-        if(valueExpression == null) return contextConfigsToMatch
-        
+        if (valueExpression == null) return contextConfigsToMatch
+
         //得到所有可能匹配的结果
         ProgressManager.checkCanceled()
         val matchResultValues = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
         contextConfigsToMatch.forEach f@{ config ->
             val configValueExpression = config.valueExpression
             val matchResult = ParadoxExpressionMatcher.matches(element, valueExpression, configValueExpression, config, configGroup, matchOptions)
-            if(matchResult == ParadoxExpressionMatcher.Result.NotMatch) return@f
+            if (matchResult == ParadoxExpressionMatcher.Result.NotMatch) return@f
             matchResultValues.add(ResultValue(config, matchResult))
         }
         //如果无结果且需要使用默认值，则返回所有可能匹配的规则
-        if(matchResultValues.isEmpty() && orDefault) return contextConfigsToMatch
-        
+        if (matchResultValues.isEmpty() && orDefault) return contextConfigsToMatch
+
         //进行进一步的匹配
         ProgressManager.checkCanceled()
         val finalMatchedConfigs = doGetFinalMatchedConfigs(matchResultValues, matchOptions)
-        if(finalMatchedConfigs.isNotEmpty()) return finalMatchedConfigs
-        
+        if (finalMatchedConfigs.isNotEmpty()) return finalMatchedConfigs
+
         //如果仍然无结果且需要使用默认值，则返回所有可能匹配的规则，否则返回空列表
-        if(orDefault) return contextConfigsToMatch
+        if (orDefault) return contextConfigsToMatch
         return emptyList()
     }
-    
+
     private fun doMatchParameterizedKeyConfigs(pkConfigs: List<CwtValueConfig>?, configExpression: CwtDataExpression): Boolean? {
         //如果作为参数的键的规则类型可以（从扩展的CWT规则）推断出来且是匹配的，则需要继续向下匹配
         //目前要求推断结果必须是唯一的
         //目前不支持从使用推断 - 这可能会导致规则上下文的递归解析
-        
-        if(pkConfigs == null) return null
-        if(pkConfigs.size != 1) return null //must be unique yet
+
+        if (pkConfigs == null) return null
+        if (pkConfigs.size != 1) return null //must be unique yet
         return CwtConfigManipulator.mergeAndMatchValueConfig(pkConfigs, configExpression)
     }
-    
+
     private fun doGetFinalMatchedConfigs(matchResultValues: MutableList<ResultValue<CwtMemberConfig<*>>>, matchOptions: Int): List<CwtMemberConfig<*>> {
         //* 首先尝试直接的精确匹配，如果有结果，则直接返回
         //* 然后，尝试需要检测子句的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
         //* 然后，尝试需要检测作用域上下文的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
         //* 然后，尝试非回退的匹配，如果有结果，则直接返回
         //* 最后加入回退的匹配
-        
+
         val exactMatched = matchResultValues.filter { it.result is ParadoxExpressionMatcher.Result.ExactMatch }
-        if(exactMatched.isNotEmpty()) return exactMatched.map { it.value }
-        
+        if (exactMatched.isNotEmpty()) return exactMatched.map { it.value }
+
         val matched = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
-        
+
         fun addLazyMatchedConfigs(predicate: (ResultValue<CwtMemberConfig<*>>) -> Boolean) {
             val lazyMatched = matchResultValues.filter(predicate)
             val lazyMatchedSize = lazyMatched.size
-            if(lazyMatchedSize == 1) {
+            if (lazyMatchedSize == 1) {
                 matched += lazyMatched.first()
-            } else if(lazyMatchedSize > 1) {
+            } else if (lazyMatchedSize > 1) {
                 val oldMatchedSize = matched.size
                 lazyMatched.filterTo(matched) { it.result.get(matchOptions) }
-                if(oldMatchedSize == matched.size) matched += lazyMatched.first()
+                if (oldMatchedSize == matched.size) matched += lazyMatched.first()
             }
         }
-        
+
         addLazyMatchedConfigs { it.result is ParadoxExpressionMatcher.Result.LazyBlockAwareMatch }
         addLazyMatchedConfigs { it.result is ParadoxExpressionMatcher.Result.LazyScopeAwareMatch }
-        
+
         matchResultValues.filterTo(matched) p@{
-            if(it.result is ParadoxExpressionMatcher.Result.LazyBlockAwareMatch) return@p false //已经匹配过
-            if(it.result is ParadoxExpressionMatcher.Result.LazyScopeAwareMatch) return@p false //已经匹配过
-            if(it.result is ParadoxExpressionMatcher.Result.LazySimpleMatch) return@p true //直接认为是匹配的
-            if(it.result is ParadoxExpressionMatcher.Result.FallbackMatch) return@p false //之后再匹配
+            if (it.result is ParadoxExpressionMatcher.Result.LazyBlockAwareMatch) return@p false //已经匹配过
+            if (it.result is ParadoxExpressionMatcher.Result.LazyScopeAwareMatch) return@p false //已经匹配过
+            if (it.result is ParadoxExpressionMatcher.Result.LazySimpleMatch) return@p true //直接认为是匹配的
+            if (it.result is ParadoxExpressionMatcher.Result.FallbackMatch) return@p false //之后再匹配
             it.result.get(matchOptions)
         }
-        if(matched.isNotEmpty()) return matched.map { it.value }
-        
+        if (matched.isNotEmpty()) return matched.map { it.value }
+
         val fallbackMatched = matchResultValues.filter { it.result is ParadoxExpressionMatcher.Result.FallbackMatch }
-        if(fallbackMatched.isNotEmpty()) return fallbackMatched.map { it.value }
-        
+        if (fallbackMatched.isNotEmpty()) return fallbackMatched.map { it.value }
+
         return emptyList()
     }
-    
+
     private fun doOptimizeContextConfigs(element: PsiElement, configs: List<CwtMemberConfig<*>>, expression: ParadoxDataExpression?, matchOptions: Int): List<CwtMemberConfig<*>> {
-        if(configs.isEmpty()) return emptyList()
-        if(expression == null) return configs
-        
+        if (configs.isEmpty()) return emptyList()
+        if (expression == null) return configs
+
         val configGroup = configs.first().configGroup
         var result = configs
-        
+
         //如果结果不为空且结果中存在需要重载的规则，则全部替换成重载后的规则
         run r1@{
-            if(result.isEmpty()) return@r1
+            if (result.isEmpty()) return@r1
             val optimizedResult = mutableListOf<CwtMemberConfig<*>>()
             result.forEach { config ->
                 val overriddenConfigs = CwtOverriddenConfigProvider.getOverriddenConfigs(element, config)
-                if(overriddenConfigs.isNotNullOrEmpty()) {
+                if (overriddenConfigs.isNotNullOrEmpty()) {
                     //这里需要再次进行匹配
                     overriddenConfigs.forEach { overriddenConfig ->
-                        if(ParadoxExpressionMatcher.matches(element, expression, overriddenConfig.expression, overriddenConfig, configGroup, matchOptions).get(matchOptions)) {
+                        if (ParadoxExpressionMatcher.matches(element, expression, overriddenConfig.expression, overriddenConfig, configGroup, matchOptions).get(matchOptions)) {
                             optimizedResult.add(overriddenConfig)
                         }
                     }
@@ -518,38 +518,38 @@ object ParadoxExpressionManager {
                 result = optimizedResult
             }
         }
-        
+
         //如果要匹配的是字符串，且匹配结果中存在作为常量匹配的规则，则仅保留这些规则
         run r1@{
-            if(expression.type != ParadoxType.String) return@r1
-            if(result.size <= 1) return@r1
+            if (expression.type != ParadoxType.String) return@r1
+            if (result.size <= 1) return@r1
             val constantConfigs = result.filter { isConstantMatch(it.expression, expression, configGroup) }
-            if(constantConfigs.isEmpty()) return@r1
+            if (constantConfigs.isEmpty()) return@r1
             val optimizedConfigs = mutableListOf<CwtMemberConfig<*>>()
             optimizedConfigs.addAll(constantConfigs)
             result = optimizedConfigs
         }
-        
+
         return result
     }
-    
+
     //兼容需要考虑内联的情况（如内联脚本）
     //这里需要兼容匹配key的子句规则有多个的情况 - 匹配任意则使用匹配的首个规则，空子句或者都不匹配则使用合并的规则
-    
+
     /**
      * 得到指定的[element]的作为值的子句中的子属性/值的出现次数信息。（先合并子规则）
      */
     fun getChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
-        if(configs.isEmpty()) return emptyMap()
+        if (configs.isEmpty()) return emptyMap()
         val childConfigs = configs.flatMap { it.configs.orEmpty() }
-        if(childConfigs.isEmpty()) return emptyMap()
-        
+        if (childConfigs.isEmpty()) return emptyMap()
+
         val childOccurrenceMap = doGetChildOccurrenceMapCacheFromCache(element) ?: return emptyMap()
         //NOTE cacheKey基于childConfigs即可，key相同而value不同的规则，上面的cardinality应当保证是一样的 
         val cacheKey = childConfigs.joinToString(" ")
         return childOccurrenceMap.getOrPut(cacheKey) { doGetChildOccurrenceMap(element, configs).optimized() }
     }
-    
+
     private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMemberElement): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrenceMapCache) {
             val value = doGetChildOccurrenceMapCache()
@@ -560,27 +560,27 @@ object ParadoxExpressionManager {
             CachedValueProvider.Result.create(value, element, trackers)
         }
     }
-    
+
     private fun doGetChildOccurrenceMapCache(): MutableMap<String, Map<CwtDataExpression, Occurrence>> {
         //use soft values to optimize memory
         return ContainerUtil.createConcurrentSoftValueMap()
     }
-    
+
     private fun doGetChildOccurrenceMap(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, Occurrence> {
-        if(configs.isEmpty()) return emptyMap()
+        if (configs.isEmpty()) return emptyMap()
         val configGroup = configs.first().configGroup
         //这里需要先按优先级排序
         val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority({ it.expression }, { configGroup })
-        if(childConfigs.isEmpty()) return emptyMap()
+        if (childConfigs.isEmpty()) return emptyMap()
         val project = configGroup.project
         val blockElement = when {
             element is ParadoxScriptDefinitionElement -> element.block
             element is ParadoxScriptBlockElement -> element
             else -> null
         }
-        if(blockElement == null) return emptyMap()
+        if (blockElement == null) return emptyMap()
         val occurrenceMap = mutableMapOf<CwtDataExpression, Occurrence>()
-        for(childConfig in childConfigs) {
+        for (childConfig in childConfigs) {
             occurrenceMap.put(childConfig.expression, childConfig.toOccurrence(element, project))
         }
         ProgressManager.checkCanceled()
@@ -593,89 +593,89 @@ object ParadoxExpressionManager {
             }
             val isParameterized = expression.type == ParadoxType.String && expression.text.isParameterized()
             //may contain parameter -> can't and should not get occurrences
-            if(isParameterized) {
+            if (isParameterized) {
                 occurrenceMap.clear()
                 return@p true
             }
             val matched = childConfigs.find { childConfig ->
-                if(childConfig is CwtPropertyConfig && data !is ParadoxScriptProperty) return@find false
-                if(childConfig is CwtValueConfig && data !is ParadoxScriptValue) return@find false
+                if (childConfig is CwtPropertyConfig && data !is ParadoxScriptProperty) return@find false
+                if (childConfig is CwtValueConfig && data !is ParadoxScriptValue) return@find false
                 ParadoxExpressionMatcher.matches(data, expression, childConfig.expression, childConfig, configGroup).get()
             }
-            if(matched == null) return@p true
+            if (matched == null) return@p true
             val occurrence = occurrenceMap[matched.expression]
-            if(occurrence == null) return@p true
+            if (occurrence == null) return@p true
             occurrence.actual += 1
             true
         }
         return occurrenceMap
     }
     //endregion
-    
+
     //region Annotate Methods
     fun annotateExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, holder: AnnotationHolder) {
         val expressionText = getExpressionText(element, rangeInElement)
         ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expressionText, holder, config)
     }
-    
+
     fun annotateExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder) {
         val expressionText = getExpressionText(element, rangeInElement)
         ParadoxLocalisationExpressionSupport.annotate(element, rangeInElement, expressionText, holder)
     }
-    
+
     fun annotateComplexExpression(element: ParadoxExpressionElement, expression: ParadoxComplexExpression, holder: AnnotationHolder, config: CwtConfig<*>? = null) {
         doAnnotateComplexExpression(element, expression, holder, config)
     }
-    
+
     private fun doAnnotateComplexExpression(element: ParadoxExpressionElement, expressionNode: ParadoxComplexExpressionNode, holder: AnnotationHolder, config: CwtConfig<*>? = null) {
         val attributesKey = expressionNode.getAttributesKey(element)
-        
+
         run {
             val mustUseAttributesKey = attributesKey != ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY && attributesKey != ParadoxScriptAttributesKeys.STRING_KEY
-            if(attributesKey != null && mustUseAttributesKey) {
+            if (attributesKey != null && mustUseAttributesKey) {
                 annotateExpressionNodeByAttributesKey(element, expressionNode, attributesKey, holder)
                 return@run
             }
-            if(element is ParadoxScriptStringExpressionElement) {
+            if (element is ParadoxScriptStringExpressionElement) {
                 val attributesKeyConfig = expressionNode.getAttributesKeyConfig(element)
-                if(attributesKeyConfig != null) {
-                    val rangeInElement = expressionNode.rangeInExpression.shiftRight(if(element.text.isLeftQuoted()) 1 else 0)
+                if (attributesKeyConfig != null) {
+                    val rangeInElement = expressionNode.rangeInExpression.shiftRight(if (element.text.isLeftQuoted()) 1 else 0)
                     annotateExpression(element, rangeInElement, attributesKeyConfig, holder)
                     return@run
                 }
             }
-            if(attributesKey != null) {
+            if (attributesKey != null) {
                 annotateExpressionNodeByAttributesKey(element, expressionNode, attributesKey, holder)
             }
         }
-        
-        if(expressionNode.nodes.isNotEmpty()) {
-            for(node in expressionNode.nodes) {
+
+        if (expressionNode.nodes.isNotEmpty()) {
+            for (node in expressionNode.nodes) {
                 doAnnotateComplexExpression(element, node, holder, config)
             }
         }
     }
-    
+
     fun annotateExpressionByAttributesKey(element: ParadoxExpressionElement, range: TextRange, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
-        if(range.isEmpty) return
+        if (range.isEmpty) return
         //skip parameter ranges
         val parameterRanges = getParameterRangesInExpression(element)
-        if(parameterRanges.isEmpty()) {
+        if (parameterRanges.isEmpty()) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(range).textAttributes(attributesKey).create()
             return
         }
         val finalRanges = TextRangeUtil.excludeRanges(range, parameterRanges)
-        for(r in finalRanges) {
-            if(r.isEmpty) continue
+        for (r in finalRanges) {
+            if (r.isEmpty) continue
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(r).textAttributes(attributesKey).create()
         }
     }
-    
+
     private fun annotateExpressionNodeByAttributesKey(element: ParadoxExpressionElement, expressionNode: ParadoxComplexExpressionNode, attributesKey: TextAttributesKey, holder: AnnotationHolder) {
         val rangeToAnnotate = expressionNode.rangeInExpression.shiftRight(element.textRange.unquote(element.text).startOffset)
-        
+
         //merge text attributes from HighlighterColors.TEXT and attributesKey for token nodes (in case foreground is not set)
-        if(expressionNode is ParadoxTokenNode) {
+        if (expressionNode is ParadoxTokenNode) {
             val schema = EditorColorsManager.getInstance().schemeForCurrentUITheme
             val textAttributes1 = schema.getAttributes(HighlighterColors.TEXT)
             val textAttributes2 = schema.getAttributes(attributesKey)
@@ -683,47 +683,47 @@ object ParadoxExpressionManager {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(rangeToAnnotate).enforcedTextAttributes(textAttributes).create()
             return
         }
-        
+
         annotateExpressionByAttributesKey(element, rangeToAnnotate, attributesKey, holder)
     }
     //endregion
-    
+
     //region Resolve Methods
     fun resolveExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
         ProgressManager.checkCanceled()
-        if(configExpression == null) return null
+        if (configExpression == null) return null
         val expressionText = getExpressionText(element, rangeInElement)
-        if(expressionText.isParameterized()) return null //排除引用文本带参数的情况
-        
+        if (expressionText.isParameterized()) return null //排除引用文本带参数的情况
+
         val result = ParadoxScriptExpressionSupport.resolve(element, rangeInElement, expressionText, config, isKey, exact)
-        if(result != null) return result
-        
+        if (result != null) return result
+
         val configGroup = config.configGroup
-        if(configExpression.isKey && configExpression.type in CwtDataTypeGroups.KeyReference) {
+        if (configExpression.isKey && configExpression.type in CwtDataTypeGroups.KeyReference) {
             return getResolvedConfigElement(element, config, configGroup)
         }
         return null
     }
-    
+
     fun multiResolveExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): Collection<PsiElement> {
         ProgressManager.checkCanceled()
-        if(configExpression == null) return emptySet()
+        if (configExpression == null) return emptySet()
         val expressionText = getExpressionText(element, rangeInElement)
-        if(expressionText.isParameterized()) return emptySet() //排除引用文本带参数的情况
-        
+        if (expressionText.isParameterized()) return emptySet() //排除引用文本带参数的情况
+
         val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expressionText, config, isKey)
-        if(result.isNotEmpty()) return result
-        
+        if (result.isNotEmpty()) return result
+
         val configGroup = config.configGroup
-        if(configExpression.isKey && configExpression.type in CwtDataTypeGroups.KeyReference) {
+        if (configExpression.isKey && configExpression.type in CwtDataTypeGroups.KeyReference) {
             return getResolvedConfigElement(element, config, configGroup).toSingletonSetOrEmpty()
         }
         return emptySet()
     }
-    
+
     private fun getResolvedConfigElement(element: ParadoxScriptExpressionElement, config: CwtConfig<*>, configGroup: CwtConfigGroup): PsiElement? {
         val resolvedConfig = config.resolved()
-        if(resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
+        if (resolvedConfig is CwtMemberConfig<*> && resolvedConfig.pointer.isEmpty()) {
             //特殊处理合成的CWT规则
             val gameType = configGroup.gameType ?: return null
             val project = configGroup.project
@@ -731,74 +731,74 @@ object ParadoxExpressionManager {
         }
         return resolvedConfig.pointer.element
     }
-    
+
     fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): Array<out PsiReference>? {
         ProgressManager.checkCanceled()
-        if(configExpression == null) return null
+        if (configExpression == null) return null
         val expressionText = getExpressionText(element, rangeInElement)
-        
+
         val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expressionText, config, isKey)
         return result.orNull()
     }
-    
+
     fun resolveExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): PsiElement? {
         ProgressManager.checkCanceled()
         val expressionText = getExpressionText(element, rangeInElement)
-        if(expressionText.isParameterized()) return null //排除引用文本带参数的情况
-        
+        if (expressionText.isParameterized()) return null //排除引用文本带参数的情况
+
         val result = ParadoxLocalisationExpressionSupport.resolve(element, rangeInElement, expressionText)
         return result
     }
-    
+
     fun multiResolveExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): Collection<PsiElement> {
         ProgressManager.checkCanceled()
         val expressionText = getExpressionText(element, rangeInElement)
-        if(expressionText.isParameterized()) return emptySet() //排除引用文本带参数的情况
-        
+        if (expressionText.isParameterized()) return emptySet() //排除引用文本带参数的情况
+
         val result = ParadoxLocalisationExpressionSupport.multiResolve(element, rangeInElement, expressionText)
         return result
     }
-    
+
     fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): Array<out PsiReference>? {
         ProgressManager.checkCanceled()
         val expressionText = getExpressionText(element, rangeInElement)
-        
+
         val result = ParadoxLocalisationExpressionSupport.getReferences(element, rangeInElement, expressionText)
         return result.orNull()
     }
-    
+
     fun resolveModifier(element: ParadoxScriptExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
-        if(element !is ParadoxScriptStringExpressionElement) return null
+        if (element !is ParadoxScriptStringExpressionElement) return null
         return ParadoxModifierManager.resolveModifier(name, element, configGroup)
     }
-    
+
     fun resolveTemplateExpression(element: ParadoxScriptExpressionElement, text: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
-        if(element !is ParadoxScriptStringExpressionElement) return null
+        if (element !is ParadoxScriptStringExpressionElement) return null
         val templateConfigExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
         return templateConfigExpression.resolve(text, element, configGroup)
     }
-    
+
     fun resolvePredefinedScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val systemScopeConfig = configGroup.systemScopes[name] ?: return null
         val resolved = systemScopeConfig.pointer.element ?: return null
         resolved.putUserData(PlsKeys.bindingConfig, systemScopeConfig)
         return resolved
     }
-    
+
     fun resolveScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.links[name]?.takeIf { it.forScope() && !it.fromData } ?: return null
         val resolved = linkConfig.pointer.element ?: return null
         resolved.putUserData(PlsKeys.bindingConfig, linkConfig)
         return resolved
     }
-    
+
     fun resolveValueField(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.links[name]?.takeIf { it.forValue() && !it.fromData } ?: return null
         val resolved = linkConfig.pointer.element ?: return null
         resolved.putUserData(PlsKeys.bindingConfig, linkConfig)
         return resolved
     }
-    
+
     fun resolvePredefinedEnumValue(name: String, enumName: String, configGroup: CwtConfigGroup): PsiElement? {
         val enumConfig = configGroup.enums[enumName] ?: return null
         val enumValueConfig = enumConfig.valueConfigMap.get(name) ?: return null
@@ -806,14 +806,14 @@ object ParadoxExpressionManager {
         resolved.putUserData(PlsKeys.bindingConfig, enumValueConfig)
         return resolved
     }
-    
+
     fun resolvePredefinedLocalisationScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val linkConfig = configGroup.localisationLinks[name] ?: return null
         val resolved = linkConfig.pointer.element ?: return null
         resolved.putUserData(PlsKeys.bindingConfig, linkConfig)
         return resolved
     }
-    
+
     fun resolvePredefinedLocalisationCommand(name: String, configGroup: CwtConfigGroup): PsiElement? {
         val commandConfig = configGroup.localisationCommands[name] ?: return null
         val resolved = commandConfig.pointer.element ?: return null
@@ -821,43 +821,43 @@ object ParadoxExpressionManager {
         return resolved
     }
     //endregion
-    
+
     //region Misc Methods
     fun isConstantMatch(configExpression: CwtDataExpression, expression: ParadoxDataExpression, configGroup: CwtConfigGroup): Boolean {
         //注意这里可能需要在同一循环中同时检查keyExpression和valueExpression，因此这里需要特殊处理
-        if(configExpression.isKey && expression.isKey == false) return false
-        if(!configExpression.isKey && expression.isKey == true) return false
-        
-        if(configExpression.type == CwtDataTypes.Constant) return true
-        if(configExpression.type == CwtDataTypes.EnumValue && configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.text) } == true) return true
-        if(configExpression.type == CwtDataTypes.Value && configExpression.value?.let { configGroup.dynamicValueTypes[it]?.values?.contains(expression.text) } == true) return true
+        if (configExpression.isKey && expression.isKey == false) return false
+        if (!configExpression.isKey && expression.isKey == true) return false
+
+        if (configExpression.type == CwtDataTypes.Constant) return true
+        if (configExpression.type == CwtDataTypes.EnumValue && configExpression.value?.let { configGroup.enums[it]?.values?.contains(expression.text) } == true) return true
+        if (configExpression.type == CwtDataTypes.Value && configExpression.value?.let { configGroup.dynamicValueTypes[it]?.values?.contains(expression.text) } == true) return true
         return false
     }
-    
+
     fun isAliasEntryConfig(propertyConfig: CwtPropertyConfig): Boolean {
         return propertyConfig.keyExpression.type == CwtDataTypes.AliasName && propertyConfig.valueExpression.type == CwtDataTypes.AliasMatchLeft
     }
-    
+
     fun isSingleAliasEntryConfig(propertyConfig: CwtPropertyConfig): Boolean {
         return propertyConfig.valueExpression.type == CwtDataTypes.SingleAliasRight
     }
-    
+
     fun getAliasSubName(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = Options.Default): String? {
         val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
-        if(constKey != null) return constKey
+        if (constKey != null) return constKey
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
         val expression = ParadoxDataExpression.resolve(key, quoted, true)
         return keys.find { ParadoxExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
     }
-    
+
     fun getAliasSubNames(element: PsiElement, key: String, quoted: Boolean, aliasName: String, configGroup: CwtConfigGroup, matchOptions: Int = Options.Default): List<String> {
         val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
-        if(constKey != null) return listOf(constKey)
+        if (constKey != null) return listOf(constKey)
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptyList()
         val expression = ParadoxDataExpression.resolve(key, quoted, true)
         return keys.filter { ParadoxExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
     }
-    
+
     fun getEntryName(config: CwtConfig<*>): String? {
         return when {
             config is CwtPropertyConfig -> config.key
@@ -867,7 +867,7 @@ object ParadoxExpressionManager {
             else -> null
         }
     }
-    
+
     fun getEntryConfigs(config: CwtConfig<*>): List<CwtMemberConfig<*>> {
         val configGroup = config.configGroup
         return when {
@@ -875,7 +875,7 @@ object ParadoxExpressionManager {
                 config.inlineConfig?.let { return getEntryConfigs(it) }
                 config.aliasConfig?.let { return getEntryConfigs(it) }
                 config.singleAliasConfig?.let { return getEntryConfigs(it) }
-                
+
                 config.parentConfig?.castOrNull<CwtPropertyConfig>()?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }
                     ?: config.toSingletonList()
             }
@@ -900,12 +900,12 @@ object ParadoxExpressionManager {
             }
         }
     }
-    
+
     fun getInBlockKeys(config: CwtMemberConfig<*>): Set<String> {
         return config.getOrPutUserData(Keys.inBlockKeys) {
             val keys = caseInsensitiveStringSet()
             config.configs?.forEach {
-                if(it is CwtPropertyConfig && isInBlockKey(it)) {
+                if (it is CwtPropertyConfig && isInBlockKey(it)) {
                     keys.add(it.key)
                 }
             }
@@ -913,16 +913,16 @@ object ParadoxExpressionManager {
                 config is CwtPropertyConfig -> {
                     val propertyConfig = config
                     propertyConfig.parentConfig?.configs?.forEach { c ->
-                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
-                            c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
+                        if (c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
+                            c.configs?.forEach { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
                         }
                     }
                 }
                 config is CwtValueConfig -> {
                     val propertyConfig = config.propertyConfig
                     propertyConfig?.parentConfig?.configs?.forEach { c ->
-                        if(c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
-                            c.configs?.forEach { if(it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
+                        if (c is CwtPropertyConfig && c.key.equals(propertyConfig.key, true) && c.pointer != propertyConfig.pointer) {
+                            c.configs?.forEach { if (it is CwtPropertyConfig && isInBlockKey(it)) keys.remove(it.key) }
                         }
                     }
                 }
@@ -930,7 +930,7 @@ object ParadoxExpressionManager {
             return keys
         }
     }
-    
+
     private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
         return config.keyExpression.type == CwtDataTypes.Constant && config.cardinality?.isRequired() != false
     }

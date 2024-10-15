@@ -6,7 +6,7 @@ inline fun <reified R> Sequence<*>.findIsInstance(): R? {
 
 @Suppress("UNCHECKED_CAST")
 fun <R> Sequence<*>.findIsInstance(klass: Class<R>): R? {
-    for(element in this) if(klass.isInstance(element)) return element as R
+    for (element in this) if (klass.isInstance(element)) return element as R
     return null
 }
 

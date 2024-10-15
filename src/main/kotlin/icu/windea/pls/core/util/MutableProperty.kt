@@ -10,7 +10,7 @@ interface MutableProperty<T> {
 inline fun <T> mutableProperty(crossinline getter: () -> T, crossinline setter: (T) -> Unit): MutableProperty<T> {
     return object : MutableProperty<T> {
         override fun get() = getter()
-        
+
         override fun set(value: T) = setter(value)
     }
 }

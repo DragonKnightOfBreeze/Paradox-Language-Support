@@ -20,7 +20,7 @@ object ParadoxGameConceptManager {
             .filterBy { it.name == nameOrAlias || it.getData<StellarisGameConceptData>()?.alias.orEmpty().contains(nameOrAlias) }
         return ParadoxDefinitionSearch.search("game_concept", definitionSelector).find()
     }
-    
+
     /**
      * * locationElement: [ParadoxScriptDefinitionElement]
      * * textElement: [ParadoxLocalisationConceptText] or [ParadoxLocalisationProperty]
@@ -29,7 +29,7 @@ object ParadoxGameConceptManager {
         val conceptText = element.conceptText
         run r1@{
             val resolved = element.reference?.resolve() ?: return@r1
-            if(conceptText != null) return resolved to conceptText
+            if (conceptText != null) return resolved to conceptText
             run r2@{
                 val tooltipOverride = resolved.findProperty("tooltip_override", inline = true)
                     ?.propertyValue?.castOrNull<ParadoxScriptString>()
@@ -44,7 +44,7 @@ object ParadoxGameConceptManager {
         }
         run r1@{
             val resolved = element.conceptName?.references?.lastOrNull()?.resolve()?.castOrNull<ParadoxScriptDefinitionElement>() ?: return@r1
-            if(conceptText != null) return resolved to conceptText
+            if (conceptText != null) return resolved to conceptText
             return resolved to ParadoxDefinitionManager.getPrimaryLocalisation(resolved)
         }
         return null to null

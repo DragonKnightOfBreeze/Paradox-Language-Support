@@ -25,44 +25,44 @@ class ParadoxDynamicValueElement(
 ) : ParadoxFakePsiElement(parent) {
     constructor(parent: PsiElement, name: String, dynamicValueType: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)
         : this(parent, name, setOf(dynamicValueType), readWriteAccess, gameType, project)
-    
+
     constructor(parent: PsiElement, info: ParadoxDynamicValueInfo, project: Project)
         : this(parent, info.name, info.dynamicValueType, info.readWriteAccess, info.gameType, project)
-    
+
     val dynamicValueType = when {
         dynamicValueTypes.size == 2 && "event_target" in dynamicValueTypes && "global_event_target" in dynamicValueTypes -> "event_target"
         else -> dynamicValueTypes.joinToString(" | ")
     }
-    
+
     override fun getIcon(): Icon {
         val dynamicValueType = dynamicValueTypes.first() //first is ok
         return PlsIcons.Nodes.DynamicValue(dynamicValueType)
     }
-    
+
     override fun getName(): String {
         return name
     }
-    
+
     override fun getTypeName(): String {
         val dynamicValueType = dynamicValueTypes.first() //first is ok
-        return when(dynamicValueType) {
+        return when (dynamicValueType) {
             "variable" -> PlsBundle.message("script.description.variable")
             else -> PlsBundle.message("script.description.dynamicValue")
         }
     }
-    
+
     override fun getText(): String {
         return name
     }
-    
+
     override fun getPresentation(): ItemPresentation {
         return ParadoxDynamicValueElementPresentation(this)
     }
-    
+
     override fun getProject(): Project {
         return project
     }
-    
+
     override fun equals(other: Any?): Boolean {
         return other is ParadoxDynamicValueElement &&
             name == other.name &&
@@ -70,7 +70,7 @@ class ParadoxDynamicValueElement(
             project == other.project &&
             gameType == other.gameType
     }
-    
+
     override fun hashCode(): Int {
         return Objects.hash(name, project, gameType)
     }

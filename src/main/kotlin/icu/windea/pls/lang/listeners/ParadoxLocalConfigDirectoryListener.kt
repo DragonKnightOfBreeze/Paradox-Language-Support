@@ -7,7 +7,7 @@ import com.intellij.util.messages.*
  */
 interface ParadoxLocalConfigDirectoryListener {
     fun onChange(oldDirectory: String, newDirectory: String)
-    
+
     companion object {
         @Topic.AppLevel
         val TOPIC = Topic(ParadoxLocalConfigDirectoryListener::class.java, Topic.BroadcastDirection.NONE)

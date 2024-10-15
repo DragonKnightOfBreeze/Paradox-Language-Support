@@ -6,17 +6,17 @@ import icu.windea.pls.*
 import icu.windea.pls.cwt.*
 
 class CwtCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
-	override fun getLanguage() = CwtLanguage
-	
-	override fun getConfigurableDisplayName() = PlsBundle.message("options.cwt.displayName")
-	
-	override fun createCustomSettings(settings: CodeStyleSettings) = CwtCodeStyleSettings(settings)
-	
-	override fun createConfigurable(settings: CodeStyleSettings, modelSettings: CodeStyleSettings): CodeStyleConfigurable {
-		return object : CodeStyleAbstractConfigurable(settings, modelSettings, configurableDisplayName) {
-			override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {
-				return CwtCodeStylePanel(currentSettings, settings)
-			}
-		}
-	}
+    override fun getLanguage() = CwtLanguage
+
+    override fun getConfigurableDisplayName() = PlsBundle.message("options.cwt.displayName")
+
+    override fun createCustomSettings(settings: CodeStyleSettings) = CwtCodeStyleSettings(settings)
+
+    override fun createConfigurable(settings: CodeStyleSettings, modelSettings: CodeStyleSettings): CodeStyleConfigurable {
+        return object : CodeStyleAbstractConfigurable(settings, modelSettings, configurableDisplayName) {
+            override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {
+                return CwtCodeStylePanel(currentSettings, settings)
+            }
+        }
+    }
 }

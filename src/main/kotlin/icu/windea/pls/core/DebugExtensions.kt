@@ -12,7 +12,7 @@ inline fun <T> withMeasureMillis(id: String, min: Int = -1, action: () -> T): T 
 }
 
 inline fun <T> withMeasureMillis(idProvider: () -> String, min: Int = -1, action: () -> T): T {
-    if(!isDebug) return action()
+    if (!isDebug) return action()
     val start = System.currentTimeMillis()
     try {
         return action()
@@ -21,9 +21,9 @@ inline fun <T> withMeasureMillis(idProvider: () -> String, min: Int = -1, action
         val end = System.currentTimeMillis()
         val millis = end - start
         val avgMillis = avgMillisMap.compute(id) { _, v ->
-            if(v == null) millis.toDouble() else (v + millis) / 2.0
+            if (v == null) millis.toDouble() else (v + millis) / 2.0
         } ?: 0.0
-        if(millis > min) {
+        if (millis > min) {
             val avg = BigDecimal(avgMillis).setScale(10, RoundingMode.HALF_UP)
             println("${id} - cur: $millis, avg: $avg")
         }

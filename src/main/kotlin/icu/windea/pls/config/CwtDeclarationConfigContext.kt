@@ -31,15 +31,15 @@ class CwtDeclarationConfigContext(
         }
         return cached
     }
-    
+
     private fun ooGetCacheKey(declarationConfig: CwtDeclarationConfig): String {
         return provider!!.getCacheKey(this, declarationConfig)
     }
-    
+
     private fun doGetConfig(declarationConfig: CwtDeclarationConfig): CwtPropertyConfig {
         return provider!!.getConfig(this, declarationConfig)
     }
-    
+
     object Keys : KeyRegistry()
 }
 

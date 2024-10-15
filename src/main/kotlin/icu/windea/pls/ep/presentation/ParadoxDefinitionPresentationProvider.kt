@@ -15,21 +15,21 @@ import javax.swing.*
 @WithGameTypeEP
 interface ParadoxDefinitionPresentationProvider {
     fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
-    
+
     fun getPresentation(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): JComponent?
-    
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxDefinitionPresentationProvider>("icu.windea.pls.definitionPresentationProvider")
-        
+
         fun getPresentation(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): JComponent? {
             val gameType = definitionInfo.gameType
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if(!gameType.supportsByAnnotation(ep)) return@f null
-                if(!ep.supports(definition, definitionInfo)) return@f null
+                if (!gameType.supportsByAnnotation(ep)) return@f null
+                if (!ep.supports(definition, definitionInfo)) return@f null
                 try {
                     ep.getPresentation(definition, definitionInfo)
-                } catch(e: Exception) {
-                    if(e is ProcessCanceledException) throw e
+                } catch (e: Exception) {
+                    if (e is ProcessCanceledException) throw e
                     thisLogger().warn(e)
                     null
                 }

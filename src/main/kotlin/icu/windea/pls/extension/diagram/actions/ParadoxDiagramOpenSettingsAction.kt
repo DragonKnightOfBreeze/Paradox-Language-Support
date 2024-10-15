@@ -10,22 +10,22 @@ import icu.windea.pls.extension.diagram.settings.*
 
 //com.intellij.uml.core.actions.DiagramOpenSettingsAction
 
-class ParadoxDiagramOpenSettingsAction: AnAction(PlsDiagramBundle.message("action.openSettings.name"), null, null), DumbAware {
+class ParadoxDiagramOpenSettingsAction : AnAction(PlsDiagramBundle.message("action.openSettings.name"), null, null), DumbAware {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
-    
+
     override fun update(e: AnActionEvent) {
         val builder = e.getData(DiagramDataKeys.BUILDER) ?: return
         val provider = builder.provider
         e.presentation.isEnabledAndVisible = provider is ParadoxDiagramProvider
     }
-    
+
     override fun actionPerformed(e: AnActionEvent) {
         val builder = e.getData(DiagramDataKeys.BUILDER) ?: return
         val project = builder.project
         val provider = builder.provider
-        if(provider !is ParadoxDiagramProvider) return
+        if (provider !is ParadoxDiagramProvider) return
         val settings = provider.getDiagramSettings(project) ?: return
         ShowSettingsUtil.getInstance().showSettingsDialog(project, ParadoxDiagramSettingsConfigurable::class.java)
     }

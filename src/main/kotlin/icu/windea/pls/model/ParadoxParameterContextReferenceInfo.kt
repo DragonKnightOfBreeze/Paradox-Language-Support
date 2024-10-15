@@ -21,7 +21,7 @@ class ParadoxParameterContextReferenceInfo(
 ) : UserDataHolderBase() {
     val element: PsiElement? get() = elementPointer.element
     val contextNameElement: PsiElement? get() = contextNameElementPointer.element
-    
+
     enum class From {
         /** extraArgs: config, completionOffset? */
         Argument,
@@ -30,7 +30,7 @@ class ParadoxParameterContextReferenceInfo(
         /** extraArgs: offset? */
         InContextReference
     }
-    
+
     /**
      * @param argumentNameRange 表示传入参数名的那段文本在整个文件中的文本范围。
      * @param argumentValueRange 表示传入参数值的那段文本在整个文件中的文本范围。

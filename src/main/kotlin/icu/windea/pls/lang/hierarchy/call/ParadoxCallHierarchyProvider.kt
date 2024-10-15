@@ -18,18 +18,18 @@ class ParadoxCallHierarchyProvider : HierarchyProvider {
     override fun getTarget(dataContext: DataContext): PsiElement? {
         val element = dataContext.getData(CommonDataKeys.PSI_ELEMENT) ?: return null
         //定义
-        if(element is ParadoxScriptDefinitionElement && element.definitionInfo != null) return element
+        if (element is ParadoxScriptDefinitionElement && element.definitionInfo != null) return element
         //封装变量
-        if(element is ParadoxScriptScriptedVariable) return element
+        if (element is ParadoxScriptScriptedVariable) return element
         //本地化
-        if(element is ParadoxLocalisationProperty && element.localisationInfo != null) return element
+        if (element is ParadoxLocalisationProperty && element.localisationInfo != null) return element
         return null
     }
-    
+
     override fun createHierarchyBrowser(target: PsiElement): HierarchyBrowser {
         return ParadoxCallHierarchyBrowser(target.project, target)
     }
-    
+
     override fun browserActivated(hierarchyBrowser: HierarchyBrowser) {
         hierarchyBrowser as ParadoxCallHierarchyBrowser
         hierarchyBrowser.changeView(CallHierarchyBrowserBase.getCallerType())

@@ -15,31 +15,31 @@ import javax.swing.*
 class ParadoxDefinitionNavigationElement(
     element: ParadoxScriptDefinitionElement,
     private val definitionInfo: ParadoxDefinitionInfo
-): ParadoxFakePsiElement(element) {
+) : ParadoxFakePsiElement(element) {
     override fun getIcon(): Icon {
         return PlsIcons.Nodes.Definition(definitionInfo.type)
     }
-    
+
     override fun getName(): String? {
         return definitionInfo.name.orNull()
     }
-    
+
     override fun getTypeName(): String {
         return PlsBundle.message("script.description.definition")
     }
-    
+
     override fun getText(): String? {
         return (parent as ParadoxScriptDefinitionElement).text
     }
-    
+
     override fun getNameIdentifier(): PsiElement? {
         return (parent as ParadoxScriptDefinitionElement).nameIdentifier
     }
-    
+
     override fun getPresentation(): ItemPresentation? {
         return (parent as ParadoxScriptDefinitionElement).presentation
     }
-    
+
     override fun getNavigationElement(): PsiElement {
         return parent
     }

@@ -6,17 +6,17 @@ import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 
 fun <S : ChainedParadoxSelector<T>, T> S.withGameType(gameType: ParadoxGameType?): S {
-    if(gameType != null) selectors += ParadoxWithGameTypeSelector(gameType)
+    if (gameType != null) selectors += ParadoxWithGameTypeSelector(gameType)
     return this
 }
 
 fun <S : ChainedParadoxSelector<T>, T> S.withSearchScope(searchScope: GlobalSearchScope?): S {
-    if(searchScope != null) selectors += ParadoxWithSearchScopeSelector(searchScope)
+    if (searchScope != null) selectors += ParadoxWithSearchScopeSelector(searchScope)
     return this
 }
 
 fun <S : ChainedParadoxSelector<T>, T> S.withSearchScopeType(searchScopeType: String?): S {
-    if(searchScopeType != null) selectors += ParadoxWithSearchScopeTypeSelector(searchScopeType, project, context)
+    if (searchScopeType != null) selectors += ParadoxWithSearchScopeTypeSelector(searchScopeType, project, context)
     return this
 }
 
@@ -24,9 +24,9 @@ fun <S : ChainedParadoxSelector<T>, T> S.withSearchScopeType(searchScopeType: St
  * 首先尝试选用同一根目录下的，然后尝试选用同一文件下的。
  */
 fun <S : ChainedParadoxSelector<T>, T> S.contextSensitive(condition: Boolean = true): S {
-    if(condition) {
-        if(rootFile != null) selectors += ParadoxPreferRootFileSelector(rootFile)
-        if(file != null) selectors += ParadoxPreferFileSelector(file)
+    if (condition) {
+        if (rootFile != null) selectors += ParadoxPreferRootFileSelector(rootFile)
+        if (file != null) selectors += ParadoxPreferFileSelector(file)
     }
     return this
 }

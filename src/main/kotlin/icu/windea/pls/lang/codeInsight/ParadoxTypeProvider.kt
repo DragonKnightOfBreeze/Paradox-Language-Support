@@ -20,24 +20,24 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
     val sectionColor = Gray.get(0x90)
-    
+
     override fun getExpressionsAt(elementAt: PsiElement): List<ParadoxTypedElement> {
         val expressionElement = elementAt.parentOfType<ParadoxTypedElement>() ?: return emptyList()
-        if(expressionElement is ParadoxScriptPropertyKey) {
+        if (expressionElement is ParadoxScriptPropertyKey) {
             val property = expressionElement.parent.castOrNull<ParadoxScriptProperty>()
-            if(property != null) return listOf(expressionElement, property)
+            if (property != null) return listOf(expressionElement, property)
         }
         return listOf(expressionElement)
     }
-    
+
     override fun getErrorHint(): String {
         return PlsBundle.message("no.expression.found")
     }
-    
+
     override fun hasAdvancedInformation(): Boolean {
         return true
     }
-    
+
     /**
      * 显示定义的类型，或者对应的CWT规则表达式（如果存在），或者数据类型。
      */
@@ -48,7 +48,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
         element.type?.let { return it.text.escapeXml() }
         return ParadoxType.Unknown.text
     }
-    
+
     /**
      * 显示定义的类型、数据类型、脚本表达式、对应的CWT规则表达式（如果存在）、作用域上下文信息（如果支持）。
      */
@@ -66,11 +66,11 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
             element.configExpression?.let { configExpression ->
                 add(makeHtmlRow(PlsBundle.message("title.configExpression"), configExpression))
             }
-            
+
             //scope context
             run {
                 val memberElement = getMemberElement(element)
-                if(memberElement != null && ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) {
+                if (memberElement != null && ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) {
                     val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement) ?: return@run
                     val text = scopeContext.toScopeMap().entries.joinToString("\n") { (key, value) -> "$key = $value" }
                     add(makeHtmlRow(PlsBundle.message("title.scopeContext"), text))
@@ -79,7 +79,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
         }
         return HtmlChunk.tag("table").children(children).toString()
     }
-    
+
     private val ParadoxTypedElement.definitionType: String?
         get() {
             val definition = when {
@@ -90,7 +90,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
             val definitionInfo = definition.definitionInfo ?: return null
             return definitionInfo.typesText
         }
-    
+
     private fun getMemberElement(element: ParadoxTypedElement): ParadoxScriptMemberElement? {
         return when {
             element is ParadoxScriptProperty -> element
@@ -99,7 +99,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<ParadoxTypedElement>() {
             else -> null
         }
     }
-    
+
     private fun makeHtmlRow(titleText: String, contentText: String): HtmlChunk {
         val titleCell = HtmlChunk.tag("td")
             .attr("align", "left").attr("valign", "top")

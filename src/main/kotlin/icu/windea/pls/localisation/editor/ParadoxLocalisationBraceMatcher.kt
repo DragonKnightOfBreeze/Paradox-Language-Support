@@ -14,10 +14,10 @@ class ParadoxLocalisationBraceMatcher : PairedBraceMatcher {
         BracePair(LEFT_SINGLE_QUOTE, RIGHT_SINGLE_QUOTE, false),
         BracePair(COLORFUL_TEXT_START, COLORFUL_TEXT_END, false),
     )
-    
+
     override fun getPairs(): Array<BracePair> = _bracePairs
-    
+
     override fun getCodeConstructStart(file: PsiFile?, openingBraceOffset: Int): Int = openingBraceOffset
-    
+
     override fun isPairedBracesAllowedBeforeType(lbraceType: IElementType, contextType: IElementType?): Boolean = true
 }

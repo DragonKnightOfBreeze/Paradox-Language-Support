@@ -24,15 +24,15 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         val hasReceiver: Boolean,
         val hasReturnValue: Boolean
     )
-    
+
     override fun apply(codeInjector: CodeInjector) {
         val targetClass = codeInjector.getUserData(CodeInjectorService.targetClassKey) ?: return
-        
+
         val functions = codeInjector::class.declaredFunctions
-        if(functions.isEmpty()) return
+        if (functions.isEmpty()) return
         val injectMethodInfos = mutableMapOf<String, InjectMethodInfo>()
         var index = 0
-        for(function in functions) {
+        for (function in functions) {
             val injectMethod = function.findAnnotation<InjectMethod>() ?: continue
             val method = function.javaMethod ?: continue
             val methodId = index.toString()
@@ -45,33 +45,33 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             injectMethodInfos.put(methodId, injectMethodInfo)
             index++
         }
-        if(injectMethodInfos.isEmpty()) return
+        if (injectMethodInfos.isEmpty()) return
         codeInjector.putUserData(CodeInjectorService.injectMethodInfosKey, injectMethodInfos)
-        
+
         applyInjectMethods(codeInjector, targetClass, injectMethodInfos)
     }
-    
+
     private fun applyInjectMethods(codeInjector: CodeInjector, targetClass: CtClass, injectMethodInfos: Map<String, InjectMethodInfo>) {
         val application = ApplicationManager.getApplication()
-        if(application.getUserData(CodeInjectorService.invokeInjectMethodKey) == null) {
+        if (application.getUserData(CodeInjectorService.invokeInjectMethodKey) == null) {
             val method = BaseCodeInjectorSupport::class.java.declaredMethods.find { it.name == "invokeInjectMethod" }
             application.putUserData(CodeInjectorService.invokeInjectMethodKey, method)
         }
-        
+
         val fieldCode = """private static volatile Method __invokeInjectMethod__ = (Method) ApplicationManager.getApplication().getUserData(Key.findKeyByName("INVOKE_INJECT_METHOD_BY_WINDEA"));"""
         targetClass.addField(CtField.make(fieldCode, targetClass))
-        
+
         injectMethodInfos.forEach f@{ methodId, injectMethodInfo ->
             val injectMethod = injectMethodInfo.method
             val targetMethod = findCtMethod(targetClass, injectMethod, injectMethodInfo)
-            if(targetMethod == null) {
+            if (targetMethod == null) {
                 thisLogger().warn("Inject method ${injectMethod.name} cannot be applied to any method of ${targetClass.name}")
                 return@f
             }
-            
-            val targetArg = if(Modifier.isStatic(targetMethod.modifiers)) "null" else "$0"
-            val returnValueArg = if(injectMethodInfo.pointer == InjectMethod.Pointer.AFTER || injectMethodInfo.pointer == InjectMethod.Pointer.AFTER_FINALLY) "\$_" else "null"
-            
+
+            val targetArg = if (Modifier.isStatic(targetMethod.modifiers)) "null" else "$0"
+            val returnValueArg = if (injectMethodInfo.pointer == InjectMethod.Pointer.AFTER || injectMethodInfo.pointer == InjectMethod.Pointer.AFTER_FINALLY) "\$_" else "null"
+
             val args = "new Object[] { \"${codeInjector.id}\", \"$methodId\", \$args, (\$w) $targetArg, (\$w) $returnValueArg }"
             val expr = "(\$r) __invokeInjectMethod__.invoke(null, $args)"
             val code = when {
@@ -90,8 +90,8 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
                     """.trimIndent()
                 }
             }
-            
-            when(injectMethodInfo.pointer) {
+
+            when (injectMethodInfo.pointer) {
                 InjectMethod.Pointer.BODY -> targetMethod.setBody(code)
                 InjectMethod.Pointer.BEFORE -> targetMethod.insertBefore(code)
                 InjectMethod.Pointer.AFTER -> targetMethod.insertAfter(code, false, targetMethod.declaringClass.isKotlin)
@@ -99,50 +99,50 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             }
         }
     }
-    
+
     private fun findCtMethod(ctClass: CtClass, method: Method, injectMethodInfo: InjectMethodInfo): CtMethod? {
         val methodName = injectMethodInfo.name
         var argSize = method.parameterCount
-        if(injectMethodInfo.hasReceiver) argSize--
-        if(injectMethodInfo.hasReturnValue) argSize--
-        if(argSize < 0) return null //unexpected
+        if (injectMethodInfo.hasReceiver) argSize--
+        if (injectMethodInfo.hasReturnValue) argSize--
+        if (argSize < 0) return null //unexpected
         var argIndexOffset = 0
-        if(injectMethodInfo.hasReceiver) argIndexOffset++
+        if (injectMethodInfo.hasReceiver) argIndexOffset++
         var ctMethods = ctClass.getDeclaredMethods(methodName).filter f@{ ctMethod ->
             val isStatic = Modifier.isStatic(ctMethod.modifiers)
-            if((injectMethodInfo.static && !isStatic) || (!injectMethodInfo.static && isStatic)) return@f false
+            if ((injectMethodInfo.static && !isStatic) || (!injectMethodInfo.static && isStatic)) return@f false
             ctMethod.parameterTypes.size >= argSize
         }
         run {
-            if(ctMethods.size <= 1) return@run
+            if (ctMethods.size <= 1) return@run
             val classPool = ApplicationManager.getApplication().getUserData(CodeInjectorService.classPoolKey) ?: return@run
             ctMethods = ctMethods.filter { ctMethod ->
                 val size = ctMethod.parameterTypes.size
-                for(i in 0 until size) {
+                for (i in 0 until size) {
                     val r = runCatching {
                         val t1 = ctMethod.parameterTypes[i]
                         val t2 = method.parameterTypes[i + argIndexOffset]
                         val t3 = classPool.get(t2.name)
                         t1.subclassOf(t3)
                     }.getOrElse { true }
-                    if(!r) return@filter false
+                    if (!r) return@filter false
                 }
                 true
             }
         }
         run {
-            if(ctMethods.size <= 1) return@run
+            if (ctMethods.size <= 1) return@run
             ctMethods = ctMethods.filter { ctMethod ->
                 ctMethod.parameterTypes.size == argSize
             }
         }
         return ctMethods.firstOrNull()
     }
-    
+
     @Suppress("CompanionObjectInExtension")
     companion object {
         //method invoked by injected codes
-        
+
         @Suppress("unused")
         @JvmStatic
         fun invokeInjectMethod(codeInjectorId: String, methodId: String, args: Array<out Any?>, target: Any?, returnValue: Any?): Any? {
@@ -154,22 +154,22 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             val injectMethodInfo = codeInjector.getUserData(CodeInjectorService.injectMethodInfosKey)?.get(methodId) ?: throw IllegalStateException()
             val injectMethod = injectMethodInfo.method
             val actualArgsSize = injectMethod.parameterCount
-            val finalArgs = when(actualArgsSize) {
+            val finalArgs = when (actualArgsSize) {
                 args.size -> args
                 else -> {
                     @Suppress("RemoveExplicitTypeArguments")
                     buildList<Any?> {
-                        if(injectMethodInfo.hasReceiver) {
+                        if (injectMethodInfo.hasReceiver) {
                             add(target)
                         }
                         addAll(args)
-                        if(size < actualArgsSize) {
+                        if (size < actualArgsSize) {
                             add(returnValue)
                         }
                     }.toTypedArray()
                 }
             }
-            if(finalArgs.size != actualArgsSize) throw IllegalStateException()
+            if (finalArgs.size != actualArgsSize) throw IllegalStateException()
             return injectMethod.invoke(codeInjector, *finalArgs)
         }
     }

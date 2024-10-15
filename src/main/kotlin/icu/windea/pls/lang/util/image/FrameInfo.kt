@@ -9,19 +9,19 @@ data class FrameInfo(
     val frame: Int,
     val frames: Int
 ) {
-    
+
     companion object {
         fun of(frame: Int? = null, frames: Int? = null): FrameInfo? {
-            val frames0 = if(frames == null || frames <= 0) 0 else frames
-            val frame0 = if(frame == null || frame <= 0 || (frames0 != 0 && frame > frames0)) 0 else frame
-            if(frame0 == 0 && frames0 == 0) return null
+            val frames0 = if (frames == null || frames <= 0) 0 else frames
+            val frame0 = if (frame == null || frame <= 0 || (frames0 != 0 && frame > frames0)) 0 else frame
+            if (frame0 == 0 && frames0 == 0) return null
             return FrameInfo(frame0, frames0)
         }
     }
 }
 
 fun FrameInfo?.merge(other: FrameInfo?): FrameInfo? {
-    val frame0 = if(other == null || other.frame == 0) this?.frame else other.frame
-    val frames0 = if(other == null || other.frames == 0) this?.frames else other.frames
+    val frame0 = if (other == null || other.frame == 0) this?.frame else other.frame
+    val frames0 = if (other == null || other.frames == 0) this?.frames else other.frames
     return FrameInfo.of(frame0, frames0)
 }

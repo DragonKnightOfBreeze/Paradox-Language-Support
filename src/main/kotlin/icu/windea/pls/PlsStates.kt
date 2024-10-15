@@ -6,14 +6,14 @@ object PlsStates {
      * @see icu.windea.pls.lang.index.ParadoxFileBasedIndex
      */
     val indexing = ThreadLocal<Boolean>()
-    
+
     /**
      * 用于标记规则是否需要被重载。（此时不能缓存上下文规则）
      */
     val overrideConfig = ThreadLocal<Boolean>()
-    
-    /** 
-     * 用于标记是否允许不完整的复杂脚本表达式。（用于兼容代码补全） 
+
+    /**
+     * 用于标记是否允许不完整的复杂脚本表达式。（用于兼容代码补全）
      */
     val incompleteComplexExpression = ThreadLocal<Boolean>()
 }

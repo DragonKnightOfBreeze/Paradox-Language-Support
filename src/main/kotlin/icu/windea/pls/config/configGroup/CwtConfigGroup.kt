@@ -18,8 +18,8 @@ class CwtConfigGroup(
 ) : UserDataHolderBase() {
     val changed = AtomicBoolean()
     val modificationTracker = SimpleModificationTracker()
-    
+
     val files: MutableMap<String, CwtFileConfig> = mutableMapOf()
-    
+
     object Keys : KeyRegistry()
 }

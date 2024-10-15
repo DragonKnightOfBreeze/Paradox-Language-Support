@@ -15,34 +15,34 @@ class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
     override fun getType(element: PsiElement): String {
         return getElementDescription(element, UsageViewTypeLocation.INSTANCE).orEmpty()
     }
-    
+
     override fun getDescriptiveName(element: PsiElement): String {
         return getElementDescription(element, UsageViewLongNameLocation.INSTANCE).orEmpty()
     }
-    
+
     override fun getNodeText(element: PsiElement, useFullName: Boolean): String {
         return getElementDescription(element, UsageViewNodeTextLocation.INSTANCE).orEmpty()
     }
-    
+
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
-        if(element is RefactoringDescriptionLocation) return null
-        if(element.elementType == CwtElementTypes.LEFT_BRACE) {
-            return when(location) {
+        if (element is RefactoringDescriptionLocation) return null
+        if (element.elementType == CwtElementTypes.LEFT_BRACE) {
+            return when (location) {
                 UsageViewTypeLocation.INSTANCE -> PlsBundle.message("cwt.description.block")
                 else -> PlsConstants.Folders.block
             }
         }
-        return when(element) {
+        return when (element) {
             is CwtProperty -> {
                 val configType = element.configType?.takeIf { it.isReference }
-                when(location) {
+                when (location) {
                     UsageViewTypeLocation.INSTANCE -> configType?.descriptionText ?: PlsBundle.message("cwt.description.property")
                     else -> element.configType?.getShortName(element.name) ?: element.name
                 }
             }
             is CwtString -> {
                 val configType = element.configType?.takeIf { it.isReference }
-                when(location) {
+                when (location) {
                     UsageViewTypeLocation.INSTANCE -> configType?.descriptionText ?: PlsBundle.message("cwt.description.value")
                     else -> element.configType?.getShortName(element.name) ?: element.name
                 }
@@ -50,19 +50,19 @@ class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
             else -> null
         }
     }
-    
+
     override fun getHelpId(psiElement: PsiElement): String {
         return HelpID.FIND_OTHER_USAGES
     }
-    
+
     override fun canFindUsagesFor(element: PsiElement): Boolean {
-        return when(element) {
+        return when (element) {
             is CwtProperty -> true
             is CwtString -> true
             else -> false
         }
     }
-    
+
     override fun getWordsScanner(): WordsScanner {
         return CwtWordScanner()
     }

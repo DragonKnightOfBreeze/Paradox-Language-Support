@@ -8,7 +8,7 @@ import icu.windea.pls.core.*
 /**
  * 用于在IDE启动时预加载一些服务。（例如，用于初始化缓存）
  */
-class ParadoxPreloadListener: AppLifecycleListener {
+class ParadoxPreloadListener : AppLifecycleListener {
     override fun appFrameCreated(commandLineArgs: MutableList<String>) {
         service<ParadoxDataProvider>().init()
         getDefaultProject().service<CwtConfigGroupService>().init()

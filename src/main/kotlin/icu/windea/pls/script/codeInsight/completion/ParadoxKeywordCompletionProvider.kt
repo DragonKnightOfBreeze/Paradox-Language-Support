@@ -18,21 +18,21 @@ class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters
         ParadoxCompletionManager.noLookupElement,
         ParadoxCompletionManager.blockLookupElement,
     )
-    
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val position = parameters.position
         val element = position.parent?.castOrNull<ParadoxScriptString>() ?: return
-        if(element.text.isLeftQuoted()) return
-        if(element.text.isParameterized()) return
-        
+        if (element.text.isLeftQuoted()) return
+        if (element.text.isParameterized()) return
+
         //判断光标位置是否在定义声明中（这里的代码逻辑更加准确，兼容性更好）
-        if(element.isExpression()) {
+        if (element.isExpression()) {
             val configContext = ParadoxExpressionManager.getConfigContext(element)
-            if(configContext != null && configContext.isRootOrMember()) return
+            if (configContext != null && configContext.isRootOrMember()) return
         }
-        
+
         ParadoxCompletionManager.initializeContext(parameters, context)
-        
+
         lookupElements.forEach { lookupElement ->
             result.addElement(lookupElement, context)
         }

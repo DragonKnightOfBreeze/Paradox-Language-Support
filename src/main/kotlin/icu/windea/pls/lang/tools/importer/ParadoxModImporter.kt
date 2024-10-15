@@ -10,9 +10,9 @@ import javax.swing.*
 interface ParadoxModImporter {
     val icon: Icon? get() = null
     val text: String
-    
+
     fun execute(project: Project, tableView: TableView<ParadoxModDependencySettingsState>, tableModel: ParadoxModDependenciesTableModel)
-    
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxModImporter>("icu.windea.pls.modImporter")
     }

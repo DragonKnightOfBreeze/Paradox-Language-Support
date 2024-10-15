@@ -25,11 +25,11 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("localisation.displayName.validEscape"), ParadoxLocalisationAttributesKeys.VALID_ESCAPE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.invalidEscape"), ParadoxLocalisationAttributesKeys.INVALID_ESCAPE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.badCharacter"), ParadoxLocalisationAttributesKeys.BAD_CHARACTER_KEY),
-        
+
         //unused
         //AttributesDescriptor(PlsBundle.message("localisation.displayName.localisation"), ParadoxLocalisationAttributesKeys.LOCALISATION_KEY),
         //AttributesDescriptor(PlsBundle.message("localisation.displayName.syncedLocalisation"), ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY),
-        
+
         AttributesDescriptor(PlsBundle.message("localisation.displayName.systemCommandScope"), ParadoxLocalisationAttributesKeys.SYSTEM_COMMAND_SCOPE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.commandScope"), ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.commandScopeLinkPrefix"), ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_PREFIX_KEY),
@@ -38,11 +38,11 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("localisation.displayName.dynamicValue"), ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.variable"), ParadoxLocalisationAttributesKeys.VARIABLE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.scriptedLoc"), ParadoxLocalisationAttributesKeys.SCRIPTED_LOC_KEY),
-        
+
         AttributesDescriptor(PlsBundle.message("localisation.displayName.databaseObjectType"), ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.databaseObject"), ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY),
     )
-    
+
     private val _tagToDescriptorMap = mapOf(
         "MARKER" to ParadoxLocalisationAttributesKeys.MARKER_KEY,
         "OPERATOR" to ParadoxLocalisationAttributesKeys.OPERATOR_KEY,
@@ -57,18 +57,18 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         "DATABASE_OBJECT_TYPE" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY,
         "DATABASE_OBJECT" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY,
     )
-    
+
     override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxLocalisationLanguage, null, null)
-    
+
     override fun getAdditionalHighlightingTagToDescriptorMap() = _tagToDescriptorMap
-    
+
     override fun getIcon() = PlsIcons.FileTypes.ParadoxLocalisation
-    
+
     override fun getAttributeDescriptors() = _attributesDescriptors
-    
+
     override fun getColorDescriptors() = ColorDescriptor.EMPTY_ARRAY
-    
+
     override fun getDisplayName() = PlsBundle.message("options.localisation.displayName")
-    
+
     override fun getDemoText() = PlsConstants.Samples.paradoxLocalisationColorSettings
 }

@@ -6,18 +6,18 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptPropertyUnwrapper : ParadoxScriptUnwrapper() {
     override fun getDescription(e: PsiElement): String {
-        val name = if(e is ParadoxScriptProperty) e.name else ""
+        val name = if (e is ParadoxScriptProperty) e.name else ""
         return PlsBundle.message("script.unwrap.property", name)
     }
-    
+
     override fun isApplicableTo(e: PsiElement): Boolean {
         return e is ParadoxScriptProperty && e.propertyValue is ParadoxScriptBlock
     }
-    
+
     override fun doUnwrap(element: PsiElement, context: Context) {
-        if(element !is ParadoxScriptProperty) return
+        if (element !is ParadoxScriptProperty) return
         val block = element.propertyValue
-        if(block !is ParadoxScriptBlock) return
+        if (block !is ParadoxScriptBlock) return
         context.extract(element, block)
         context.delete(element)
     }

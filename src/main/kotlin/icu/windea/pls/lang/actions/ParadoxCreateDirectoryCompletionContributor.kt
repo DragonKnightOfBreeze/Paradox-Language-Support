@@ -23,38 +23,38 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         "interface",
         "localisation",
     )
-    
+
     override fun getDescription(): String {
         return PlsBundle.message("create.directory.completion.description")
     }
-    
+
     //基于已有的包含脚本文件、本地化文件或者DDS/PNG/TGA文件的目录
-    
+
     override fun getVariants(directory: PsiDirectory): Collection<Variant> {
-        if(DumbService.isDumb(directory.project)) return emptySet()
-        
+        if (DumbService.isDumb(directory.project)) return emptySet()
+
         val fileInfo = directory.fileInfo ?: return emptySet()
         val path = fileInfo.path.path //use pathToEntry here
         val gameType = fileInfo.rootInfo.gameType
-        val pathPrefix = if(path.isEmpty()) "" else "$path/"
+        val pathPrefix = if (path.isEmpty()) "" else "$path/"
         val result = sortedSetOf<String>()
-        if(path.isEmpty()) result.addAll(defaultVariants)
+        if (path.isEmpty()) result.addAll(defaultVariants)
         val project = directory.project
         val scope = GlobalSearchScope.allScope(project)
         ProgressManager.checkCanceled()
         val name = ParadoxFilePathIndex.NAME
         FileBasedIndex.getInstance().processAllKeys(name, p@{ key ->
             FileBasedIndex.getInstance().processValues(name, key, null, pp@{ _, info ->
-                if(info.gameType != gameType) return@pp true
-                if(!info.included) return@pp true
+                if (info.gameType != gameType) return@pp true
+                if (!info.included) return@pp true
                 val p = info.directory.removePrefixOrNull(pathPrefix)
-                if(p.isNotNullOrEmpty()) result.add(p)
+                if (p.isNotNullOrEmpty()) result.add(p)
                 true
             }, scope)
             true
         }, project)
         return result.map { it.toVariant() }
     }
-    
+
     private fun String.toVariant() = Variant(this, null)
 }

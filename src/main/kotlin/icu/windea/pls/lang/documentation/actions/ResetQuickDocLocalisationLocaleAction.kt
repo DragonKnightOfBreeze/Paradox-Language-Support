@@ -12,13 +12,13 @@ import icu.windea.pls.lang.util.*
 //cn.yiiguxing.plugin.translate.action.ToggleQuickDocTranslationAction
 //com.intellij.codeInsight.documentation.actions.CopyQuickDocAction
 
-class ResetQuickDocLocalisationLocaleAction: AnAction(), HintManagerImpl.ActionToIgnore {
+class ResetQuickDocLocalisationLocaleAction : AnAction(), HintManagerImpl.ActionToIgnore {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
-    
+
     //use local-cached locale (on documentationTarget.element)
-    
+
     override fun update(e: AnActionEvent) {
         var isVisible = false
         var isEnabled = false
@@ -27,20 +27,20 @@ class ResetQuickDocLocalisationLocaleAction: AnAction(), HintManagerImpl.ActionT
             val target = browser.targetPointer.dereference() ?: return@run
             val targetElement = target.targetElement ?: return@run
             val locale = ParadoxLocaleManager.getLocaleInDocumentation(targetElement)
-            if(locale == null) return@run
+            if (locale == null) return@run
             isVisible = true
             isEnabled = true
         }
         e.presentation.isEnabled = isEnabled
         e.presentation.isVisible = isVisible
     }
-    
+
     override fun actionPerformed(e: AnActionEvent) {
         val browser = e.getData(DOCUMENTATION_BROWSER) ?: return
         val target = browser.targetPointer.dereference() ?: return
         val targetElement = target.targetElement ?: return
         val locale = ParadoxLocaleManager.getLocaleInDocumentation(targetElement)
-        if(locale == null) return
+        if (locale == null) return
         targetElement.putUserData(PlsKeys.documentationLocale, null)
         browser.reload()
     }

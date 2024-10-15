@@ -11,11 +11,11 @@ import icu.windea.pls.model.*
  */
 class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
     override fun decorate(node: ProjectViewNode<*>, data: PresentationData) {
-        if(node is PsiDirectoryNode) {
+        if (node is PsiDirectoryNode) {
             val file = node.virtualFile ?: return
             val rootInfo = file.rootInfo ?: return
-            if(data.locationString != null) return //忽略存在locationString的情况
-            val icon = when(rootInfo) {
+            if (data.locationString != null) return //忽略存在locationString的情况
+            val icon = when (rootInfo) {
                 is ParadoxGameRootInfo -> PlsIcons.GameDirectory
                 is ParadoxModRootInfo -> PlsIcons.ModDirectory
             }

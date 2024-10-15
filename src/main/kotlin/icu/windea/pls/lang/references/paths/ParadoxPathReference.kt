@@ -10,15 +10,15 @@ class ParadoxPathReference(
     element: PsiElement,
     rangeInElement: TextRange,
     val link: String
-): PsiReferenceBase<PsiElement>(element, rangeInElement), EmptyResolveMessageProvider {
+) : PsiReferenceBase<PsiElement>(element, rangeInElement), EmptyResolveMessageProvider {
     override fun handleElementRename(newElementName: String): PsiElement {
         throw IncorrectOperationException() //unsupported yet
     }
-    
+
     override fun resolve(): PsiElement? {
         return ParadoxDocumentationLinkProvider.resolve(link, element)
     }
-    
+
     override fun getUnresolvedMessagePattern(): String {
         return ParadoxDocumentationLinkProvider.getUnresolvedMessage(link)
     }

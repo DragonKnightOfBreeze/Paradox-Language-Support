@@ -15,31 +15,31 @@ import icu.windea.pls.script.psi.*
  */
 class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
-        
+        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
                 checkComparisonOperator(element)
             }
-            
+
             private fun checkComparisonOperator(element: PsiElement) {
                 //不期望的比较操作符（比较操作符的左值或者右值必须能表示一个数字）
-                if(element !is ParadoxScriptProperty) return
+                if (element !is ParadoxScriptProperty) return
                 val token = element.findChild(ParadoxScriptTokenSets.COMPARISON_TOKENS) ?: return
                 val propertyKey = element.propertyKey
-                if(canResolveToNumber(propertyKey)) return
+                if (canResolveToNumber(propertyKey)) return
                 val propertyValue = element.propertyValue ?: return
-                if(canResolveToNumber(propertyValue)) return
+                if (canResolveToNumber(propertyValue)) return
                 val message = PlsBundle.message("inspection.script.incorrectScriptSyntax.desc.1")
                 holder.registerProblem(token, message, ProblemHighlightType.GENERIC_ERROR)
             }
-            
+
             private fun canResolveToNumber(element: ParadoxScriptPropertyKey): Boolean {
                 //number, scalar, parametric
                 return true
             }
-            
+
             private fun canResolveToNumber(element: ParadoxScriptValue): Boolean {
                 return when {
                     element is ParadoxScriptInt -> true
@@ -56,9 +56,9 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
             }
         }
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
-        if(selectRootFile(file) == null) return false
+        if (selectRootFile(file) == null) return false
         return true
     }
 }

@@ -11,7 +11,7 @@ interface ParadoxScriptPropertyStub : ParadoxScriptDefinitionElementStub<Paradox
             return "ParadoxScriptPropertyStub(name=$name, type=$type, subtypes=$subtypes, rootKey=$rootKey, elementPath=$elementPath, gameType=$gameType)"
         }
     }
-    
+
     //12 + 20 + 4 * 6 = 48 -> 56
     class Impl(
         parent: StubElement<*>,
@@ -22,7 +22,7 @@ interface ParadoxScriptPropertyStub : ParadoxScriptDefinitionElementStub<Paradox
         override val elementPath: ParadoxExpressionPath,
         override val gameType: ParadoxGameType,
     ) : Base(parent)
-    
+
     //12 + 20 = 32 -> 32
     class Dummy(
         parent: StubElement<*>,
@@ -33,10 +33,10 @@ interface ParadoxScriptPropertyStub : ParadoxScriptDefinitionElementStub<Paradox
         override val rootKey: String get() = ""
         override val elementPath: ParadoxExpressionPath get() = ParadoxExpressionPath.Empty
         override val gameType: ParadoxGameType get() = ParadoxGameType.placeholder()
-        
+
         override fun toString(): String {
             return "ParadoxScriptPropertyStub.Dummy"
         }
-    } 
+    }
 }
 

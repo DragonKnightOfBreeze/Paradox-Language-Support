@@ -10,14 +10,14 @@ import icu.windea.pls.localisation.psi.*
  * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationLocaleCompletionProvider
  */
 class ParadoxLocalisationLocalePsiReference(
-	element: ParadoxLocalisationLocale,
-	rangeInElement: TextRange
+    element: ParadoxLocalisationLocale,
+    rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationLocale>(element, rangeInElement) {
-	override fun handleElementRename(newElementName: String): PsiElement {
-		throw IncorrectOperationException() //cannot rename locale
-	}
-	
-	override fun resolve(): PsiElement? {
+    override fun handleElementRename(newElementName: String): PsiElement {
+        throw IncorrectOperationException() //cannot rename locale
+    }
+
+    override fun resolve(): PsiElement? {
         return selectLocale(element)?.pointer?.element
-	}
+    }
 }

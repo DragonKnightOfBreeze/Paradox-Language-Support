@@ -7,7 +7,7 @@ fun <R : Any, P : ParadoxSearchParameters<R>> QueryFactory<R, P>.createParadoxQu
 }
 
 fun <T> ParadoxQuery<T, *>.processQuery(onlyMostRelevant: Boolean, consumer: Processor<in T>): Boolean {
-    if(onlyMostRelevant) {
+    if (onlyMostRelevant) {
         find()?.let { consumer.process(it) }
         return true
     }
@@ -15,7 +15,7 @@ fun <T> ParadoxQuery<T, *>.processQuery(onlyMostRelevant: Boolean, consumer: Pro
 }
 
 fun <T> ParadoxQuery<T, *>.processQueryAsync(onlyMostRelevant: Boolean, consumer: Processor<in T>): Boolean {
-    if(onlyMostRelevant) {
+    if (onlyMostRelevant) {
         find()?.let { consumer.process(it) }
         return true
     }

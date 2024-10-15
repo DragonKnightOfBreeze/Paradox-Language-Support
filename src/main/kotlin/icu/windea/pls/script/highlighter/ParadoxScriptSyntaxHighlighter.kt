@@ -37,11 +37,11 @@ class ParadoxScriptSyntaxHighlighter(
         private val INVALID_ESCAPE_KEYS = arrayOf(ParadoxScriptAttributesKeys.INVALID_ESCAPE_KEY)
         private val BAD_CHARACTER_KEYS = arrayOf(ParadoxScriptAttributesKeys.BAD_CHARACTER_KEY)
         private val EMPTY_KEYS = TextAttributesKey.EMPTY_ARRAY
-        
+
         private const val additionalValidEscapes = "$"
     }
-    
-    override fun getTokenHighlights(tokenType: IElementType?) = when(tokenType) {
+
+    override fun getTokenHighlights(tokenType: IElementType?) = when (tokenType) {
         LEFT_BRACE, RIGHT_BRACE -> BRACES_KEYS
         EQUAL_SIGN, NOT_EQUAL_SIGN, LE_SIGN, LT_SIGN, GE_SIGN, GT_SIGN, QUESTION_EQUAL_SIGN -> OPERATOR_KEYS
         PIPE, PARAMETER_START, PARAMETER_END -> MARKER_KEYS
@@ -67,7 +67,7 @@ class ParadoxScriptSyntaxHighlighter(
         BAD_CHARACTER -> BAD_CHARACTER_KEYS
         else -> EMPTY_KEYS
     }
-    
+
     override fun getHighlightingLexer(): Lexer {
         val lexer = LayeredLexer(ParadoxScriptLexer())
         val lexer1 = StringLiteralLexer(NO_QUOTE_CHAR, PROPERTY_KEY_TOKEN, false, additionalValidEscapes, false, false)

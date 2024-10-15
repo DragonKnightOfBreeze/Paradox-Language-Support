@@ -21,18 +21,18 @@ class ParadoxDynamicValueNode(
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         val expression = configs.first().expression!! //first is ok
         val dynamicValueType = expression.value ?: return null
-        return when(dynamicValueType) {
+        return when (dynamicValueType) {
             "variable" -> ParadoxScriptAttributesKeys.VARIABLE_KEY
             else -> ParadoxScriptAttributesKeys.DYNAMIC_VALUE_KEY
         }
     }
-    
+
     override fun getReference(element: ParadoxExpressionElement): Reference? {
-        if(text.isParameterized()) return null
+        if (text.isParameterized()) return null
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         return Reference(element, rangeInElement, text, configs, configGroup)
     }
-    
+
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
@@ -41,21 +41,21 @@ class ParadoxDynamicValueNode(
         val configGroup: CwtConfigGroup
     ) : PsiReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
         val configExpressions = configs.mapNotNull { it.expression }
-        
+
         override fun handleElementRename(newElementName: String): PsiElement {
             return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
         }
-        
+
         override fun resolve(): PsiElement? {
             val configExpressions = configs.mapNotNullTo(mutableSetOf()) { it.expression }
             return ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
         }
     }
-    
+
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueNode? {
             //text may contain parameters
-            if(configs.any { c -> c.expression?.type !in CwtDataTypeGroups.DynamicValue }) return null
+            if (configs.any { c -> c.expression?.type !in CwtDataTypeGroups.DynamicValue }) return null
             return ParadoxDynamicValueNode(text, textRange, configGroup, configs)
         }
     }

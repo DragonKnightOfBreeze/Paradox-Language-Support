@@ -17,11 +17,13 @@ class ParadoxGlobalScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScript
         val name: String?,
         override val selector: ChainedParadoxSelector<ParadoxScriptScriptedVariable>
     ) : ParadoxSearchParameters<ParadoxScriptScriptedVariable>
-    
+
     companion object {
-        @JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxScriptScriptedVariable, SearchParameters>>("icu.windea.pls.search.globalScriptedVariableSearch")
-        @JvmField val INSTANCE = ParadoxGlobalScriptedVariableSearch()
-        
+        @JvmField
+        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxScriptScriptedVariable, SearchParameters>>("icu.windea.pls.search.globalScriptedVariableSearch")
+        @JvmField
+        val INSTANCE = ParadoxGlobalScriptedVariableSearch()
+
         /**
          *  @see icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch.SearchParameters
          */
@@ -32,7 +34,7 @@ class ParadoxGlobalScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScript
         ): ParadoxQuery<ParadoxScriptScriptedVariable, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, selector))
         }
-        
+
         /**
          *  @see icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch.SearchParameters
          */

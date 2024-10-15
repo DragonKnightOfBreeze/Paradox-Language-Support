@@ -8,23 +8,23 @@ import com.intellij.util.*
 abstract class FilteredRequestResultProcessor(private val target: PsiElement) : RequestResultProcessor(target) {
     override fun processTextOccurrence(element: PsiElement, offsetInElement: Int, consumer: Processor<in PsiReference>): Boolean {
         val apply = applyFor(element)
-        if(apply && !acceptElement(element)) return true
-        if(!target.isValid) return false
+        if (apply && !acceptElement(element)) return true
+        if (!target.isValid) return false
         val references = PsiReferenceService.getService().getReferences(element, PsiReferenceService.Hints(target, offsetInElement))
-        for(i in references.indices) {
+        for (i in references.indices) {
             val ref = references[i]
-            if(apply && !acceptReference(ref)) continue
+            if (apply && !acceptReference(ref)) continue
             ProgressManager.checkCanceled()
-            if(ReferenceRange.containsOffsetInElement(ref, offsetInElement) && ref.isReferenceTo(target) && !consumer.process(ref)) {
+            if (ReferenceRange.containsOffsetInElement(ref, offsetInElement) && ref.isReferenceTo(target) && !consumer.process(ref)) {
                 return false
             }
         }
         return true
     }
-    
+
     protected open fun applyFor(element: PsiElement): Boolean = true
-    
+
     protected open fun acceptElement(element: PsiElement): Boolean = true
-    
+
     protected open fun acceptReference(reference: PsiReference): Boolean = true
 }

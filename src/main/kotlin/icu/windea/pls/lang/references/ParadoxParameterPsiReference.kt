@@ -6,14 +6,14 @@ import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.psi.*
 
 class ParadoxParameterPsiReference(
-	element: ParadoxParameter,
-	rangeInElement: TextRange
+    element: ParadoxParameter,
+    rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxParameter>(element, rangeInElement) {
-	override fun handleElementRename(newElementName: String): PsiElement {
-		return element.setName(newElementName)
-	}
-	
-	override fun resolve(): PsiElement? {
-		return ParadoxParameterSupport.resolveParameter(element)
-	}
+    override fun handleElementRename(newElementName: String): PsiElement {
+        return element.setName(newElementName)
+    }
+
+    override fun resolve(): PsiElement? {
+        return ParadoxParameterSupport.resolveParameter(element)
+    }
 }

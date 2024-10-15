@@ -13,24 +13,24 @@ import icu.windea.pls.localisation.psi.*
  */
 class UnsupportedLocaleInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
-        
+        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if(element is ParadoxLocalisationLocale) visitLocale(element)
+                if (element is ParadoxLocalisationLocale) visitLocale(element)
             }
-            
+
             private fun visitLocale(element: ParadoxLocalisationLocale) {
                 ProgressManager.checkCanceled()
                 val localeConfig = selectLocale(element)
-                if(localeConfig != null) return
+                if (localeConfig != null) return
                 val location = element.localeId
                 holder.registerProblem(location, PlsBundle.message("inspection.localisation.unsupportedLocale.desc", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         return ParadoxFilePathManager.inLocalisationPath(fileInfo.path)

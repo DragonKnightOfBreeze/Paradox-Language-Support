@@ -12,7 +12,7 @@ import icu.windea.pls.cwt.psi.*
 interface CwtExtendedScriptedVariableConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
     val hint: String?
-    
+
     companion object Resolver {
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfig? = doResolve(config)
     }
@@ -21,7 +21,7 @@ interface CwtExtendedScriptedVariableConfig : CwtDelegatedConfig<CwtMemberElemen
 //Implementations (interned)
 
 private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfig? {
-    val name = when(config) {
+    val name = when (config) {
         is CwtPropertyConfig -> config.key
         is CwtValueConfig -> config.value
     }

@@ -18,20 +18,20 @@ class ParadoxScriptValueArgumentNode(
     val valueNode: ParadoxScriptValueNode?
 ) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
-        if(text.isEmpty()) return null
+        if (text.isEmpty()) return null
         return ParadoxScriptAttributesKeys.ARGUMENT_KEY
     }
-    
+
     override fun getReference(element: ParadoxExpressionElement): Reference? {
-        if(element !is ParadoxScriptStringExpressionElement) return null //unexpected
-        if(valueNode == null) return null
-        if(text.isEmpty()) return null
+        if (element !is ParadoxScriptStringExpressionElement) return null //unexpected
+        if (valueNode == null) return null
+        if (text.isEmpty()) return null
         val reference = valueNode.getReference(element)
-        if(reference?.resolve() == null) return null //skip if script value cannot be resolved
+        if (reference?.resolve() == null) return null //skip if script value cannot be resolved
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         return Reference(element, rangeInElement, this)
     }
-    
+
     /**
      * @see icu.windea.pls.ep.parameter.ParadoxScriptValueInlineParameterSupport
      */
@@ -43,13 +43,13 @@ class ParadoxScriptValueArgumentNode(
         override fun handleElementRename(newElementName: String): PsiElement {
             return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
         }
-        
+
         override fun resolve(): ParadoxParameterElement? {
             val config = ParadoxExpressionManager.getConfigs(element, orDefault = false).firstOrNull() ?: return null
             return ParadoxParameterSupport.resolveArgument(element, rangeInElement, config)
         }
     }
-    
+
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, valueNode: ParadoxScriptValueNode?): ParadoxScriptValueArgumentNode {
             return ParadoxScriptValueArgumentNode(text, textRange, configGroup, valueNode)

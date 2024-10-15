@@ -8,10 +8,10 @@ import javax.swing.*
 
 object ParadoxLocalisationTextUIRenderer {
     //com.intellij.openapi.actionSystem.impl.ActionToolbarImpl.paintToImage
-    
+
     fun render(element: ParadoxLocalisationProperty, color: Color? = null): JLabel? {
         val text = ParadoxLocalisationTextHtmlRenderer.render(element, color)
-        if(text.isEmpty()) return null
+        if (text.isEmpty()) return null
         val label = JLabel()
         label.text = buildString {
             append("<html>")
@@ -23,13 +23,13 @@ object ParadoxLocalisationTextUIRenderer {
         label.isOpaque = false
         return label
     }
-    
+
     fun render(text: String, color: Color? = null): JLabel? {
-        if(text.isEmpty()) return null
+        if (text.isEmpty()) return null
         val label = JLabel()
         label.text = buildString {
             append("<html>")
-            if(color == null) {
+            if (color == null) {
                 append("<span>")
             } else {
                 append("<span style=\"color: #").append(color.toHex()).append("\">")

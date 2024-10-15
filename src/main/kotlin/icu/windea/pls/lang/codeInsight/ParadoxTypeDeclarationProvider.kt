@@ -26,8 +26,8 @@ class ParadoxTypeDeclarationProvider : TypeDeclarationProvider {
         when {
             symbol is ParadoxScriptProperty -> {
                 val definitionInfo = symbol.definitionInfo
-                if(definitionInfo != null) {
-                    if(definitionInfo.types.size == 1) {
+                if (definitionInfo != null) {
+                    if (definitionInfo.types.size == 1) {
                         return definitionInfo.typeConfig.pointer.element?.toSingletonArray()
                     } else {
                         //这里的element可能是null，以防万一，处理是null的情况
@@ -42,12 +42,12 @@ class ParadoxTypeDeclarationProvider : TypeDeclarationProvider {
                 return null
             }
             symbol is ParadoxScriptStringExpressionElement -> {
-                if(symbol is ParadoxScriptString && symbol.isDefinitionName()) {
+                if (symbol is ParadoxScriptString && symbol.isDefinitionName()) {
                     val definition = symbol.findParentDefinition()
-                    if(definition is ParadoxScriptProperty) return getSymbolTypeDeclarations(definition)
+                    if (definition is ParadoxScriptProperty) return getSymbolTypeDeclarations(definition)
                 }
                 val complexEnumValueInfo = symbol.complexEnumValueInfo
-                if(complexEnumValueInfo != null) {
+                if (complexEnumValueInfo != null) {
                     val gameType = complexEnumValueInfo.gameType
                     val configGroup = getConfigGroup(symbol.project, gameType)
                     val enumName = complexEnumValueInfo.enumName
@@ -55,11 +55,11 @@ class ParadoxTypeDeclarationProvider : TypeDeclarationProvider {
                     val resolved = config.pointer.element ?: return null
                     return arrayOf(resolved)
                 }
-                if(symbol is ParadoxScriptPropertyKey) return getSymbolTypeDeclarations(symbol.parent)
+                if (symbol is ParadoxScriptPropertyKey) return getSymbolTypeDeclarations(symbol.parent)
             }
             symbol is CwtValue -> {
                 val configType = symbol.configType
-                return when(configType) {
+                return when (configType) {
                     CwtConfigType.EnumValue -> symbol.parent?.let { arrayOf(it) }
                     CwtConfigType.DynamicValue -> symbol.parent?.let { arrayOf(it) }
                     else -> return null

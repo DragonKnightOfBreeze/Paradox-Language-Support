@@ -23,19 +23,19 @@ class CwtConfigGameElementNode(
             else -> false
         }
     }
-    
+
     private fun canRepresent(file: VirtualFile): Boolean {
-        if(!file.isDirectory) return false
-        if(file.name != value.gameType.id) return false
+        if (!file.isDirectory) return false
+        if (file.name != value.gameType.id) return false
         val rootDir = file.parent ?: return false
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            if(rootDir == rootDirectory) return true
+            if (rootDir == rootDirectory) return true
         }
         return false
     }
-    
+
     override fun contains(file: VirtualFile): Boolean {
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
@@ -46,9 +46,9 @@ class CwtConfigGameElementNode(
         }
         return false
     }
-    
+
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
-        if(value == null) return emptySet()
+        if (value == null) return emptySet()
         val gameTypeId = value.gameType.id
         val children = mutableSetOf<AbstractTreeNode<*>>()
         val directoryNames = mutableSetOf<String>()
@@ -57,8 +57,8 @@ class CwtConfigGameElementNode(
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val dir = rootDirectory.findChild(gameTypeId) ?: return@f
             dir.children.forEach { file ->
-                if(file.isDirectory) {
-                    if(!directoryNames.add(file.name)) return@f
+                if (file.isDirectory) {
+                    if (!directoryNames.add(file.name)) return@f
                     val element = CwtConfigDirectoryElement(project, file.name, value.gameType)
                     val elementNode = CwtConfigDirectoryElementNode(project, element, settings)
                     children += elementNode
@@ -71,18 +71,18 @@ class CwtConfigGameElementNode(
         }
         return children
     }
-    
+
     override fun update(presentation: PresentationData) {
-        if(value == null) return
+        if (value == null) return
         presentation.setIcon(PlsIcons.GameDirectory)
         presentation.presentableText = value.gameType.title
     }
-    
+
     override fun getTitle(): String? {
-        if(value == null) return null
+        if (value == null) return null
         return value.gameType.title
     }
-    
+
     override fun isAlwaysShowPlus(): Boolean {
         return true
     }

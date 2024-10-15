@@ -26,13 +26,13 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val inputScopes: Set<String>
     val outputScope: String?
     val forDefinitionType: String?
-    
+
     val dataSourceExpression: CwtDataExpression? get() = dataSource?.let { CwtDataExpression.resolve(it, false) }
     override val expression: CwtDataExpression? get() = dataSourceExpression
-    
+
     //output_scope = null -> transfer scope based on data source
     //e.g., for 'event_target', output_scope should be null
-    
+
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig): CwtLinkConfig? = doResolve(config)
     }
@@ -56,8 +56,8 @@ private fun doResolve(config: CwtPropertyConfig): CwtLinkConfig? {
     var outputScope: String? = null
     var forDefinitionType: String? = null
     val props = config.properties ?: return null
-    for(prop in props) {
-        when(prop.key) {
+    for (prop in props) {
+        when (prop.key) {
             "from_data" -> fromData = prop.booleanValue ?: false
             "type" -> type = prop.stringValue
             "prefix" -> prefix = prop.stringValue
@@ -70,7 +70,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtLinkConfig? {
             "for_definition_type" -> forDefinitionType = prop.stringValue
         }
     }
-    if(fromData && dataSource == null) return null //invalid
+    if (fromData && dataSource == null) return null //invalid
     inputScopes = inputScopes.orNull() ?: ParadoxScopeManager.anyScopeIdSet
     return CwtLinkConfigImpl(config, name, fromData, type, prefix, dataSource, inputScopes, outputScope, forDefinitionType)
 }

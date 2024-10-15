@@ -20,39 +20,39 @@ import icu.windea.pls.script.psi.*
 
 object CwtTemplateExpressionManager {
     fun extract(expression: CwtTemplateExpression, referenceName: String): String {
-        if(expression.referenceExpressions.size != 1) throw IllegalStateException()
+        if (expression.referenceExpressions.size != 1) throw IllegalStateException()
         return buildString {
-            for(snippetExpression in expression.snippetExpressions) {
-                when(snippetExpression.type) {
+            for (snippetExpression in expression.snippetExpressions) {
+                when (snippetExpression.type) {
                     CwtDataTypes.Constant -> append(snippetExpression.expressionString)
                     else -> append(referenceName)
                 }
             }
         }
     }
-    
+
     fun extract(templateExpression: CwtTemplateExpression, referenceNames: Map<CwtDataExpression, String>): String {
-        if(templateExpression.referenceExpressions.size != referenceNames.size) throw IllegalStateException()
+        if (templateExpression.referenceExpressions.size != referenceNames.size) throw IllegalStateException()
         return buildString {
-            for(snippetExpression in templateExpression.snippetExpressions) {
-                when(snippetExpression.type) {
+            for (snippetExpression in templateExpression.snippetExpressions) {
+                when (snippetExpression.type) {
                     CwtDataTypes.Constant -> append(snippetExpression.expressionString)
                     else -> append(referenceNames.getValue(snippetExpression))
                 }
             }
         }
     }
-    
+
     private val regexCache = CacheBuilder.newBuilder().buildCache<CwtTemplateExpression, Regex> { doToRegex(it) }
-    
+
     private fun toRegex(configExpression: CwtTemplateExpression): Regex {
         return regexCache.get(configExpression)
     }
-    
+
     private fun doToRegex(configExpression: CwtTemplateExpression): Regex {
         return buildString {
             configExpression.snippetExpressions.forEach {
-                if(it.type == CwtDataTypes.Constant) {
+                if (it.type == CwtDataTypes.Constant) {
                     append("\\Q").append(it.expressionString).append("\\E")
                 } else {
                     append("(.*?)")
@@ -60,51 +60,51 @@ object CwtTemplateExpressionManager {
             }
         }.toRegex(RegexOption.IGNORE_CASE)
     }
-    
+
     fun matches(text: String, contextElement: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): Boolean {
         val snippetExpressions = configExpression.snippetExpressions
-        if(snippetExpressions.isEmpty()) return false
+        if (snippetExpressions.isEmpty()) return false
         val expressionString = text.unquote()
         val regex = toRegex(configExpression)
         val matchResult = regex.matchEntire(expressionString) ?: return false
-        if(configExpression.referenceExpressions.size != matchResult.groups.size - 1) return false
+        if (configExpression.referenceExpressions.size != matchResult.groups.size - 1) return false
         var i = 1
-        for(snippetExpression in snippetExpressions) {
+        for (snippetExpression in snippetExpressions) {
             ProgressManager.checkCanceled()
-            if(snippetExpression.type != CwtDataTypes.Constant) {
+            if (snippetExpression.type != CwtDataTypes.Constant) {
                 val matchGroup = matchResult.groups.get(i++) ?: return false
                 val referenceName = matchGroup.value
                 val expression = ParadoxDataExpression.resolve(referenceName, false)
                 val matched = ParadoxExpressionMatcher.matches(contextElement, expression, snippetExpression, null, configGroup, matchOptions).get(matchOptions)
-                if(!matched) return false
+                if (!matched) return false
             }
         }
         return true
     }
-    
+
     fun resolve(text: String, contextElement: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
         //需要保证里面的每个引用都能解析
         val project = configGroup.project
         val gameType = configGroup.gameType ?: return null
         val references = resolveReferences(text, configExpression, configGroup)
-        if(references.isEmpty()) return null
+        if (references.isEmpty()) return null
         return ParadoxTemplateExpressionElement(contextElement, text, configExpression, gameType, project, references)
     }
-    
+
     fun resolveReferences(text: String, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): List<ParadoxTemplateSnippetExpressionReference> {
         val snippetExpressions = configExpression.snippetExpressions
-        if(snippetExpressions.isEmpty()) return emptyList()
+        if (snippetExpressions.isEmpty()) return emptyList()
         val expressionString = text
         val regex = toRegex(configExpression)
         val matchResult = regex.matchEntire(expressionString) ?: return emptyList()
-        if(configExpression.referenceExpressions.size != matchResult.groups.size - 1) return emptyList()
+        if (configExpression.referenceExpressions.size != matchResult.groups.size - 1) return emptyList()
         //element仅仅表示上下文元素，因此这里需要生成ParadoxScriptStringExpressionElement并传给ParadoxTemplateSnippetExpressionReference
         val templateElement by lazy { ParadoxScriptElementFactory.createString(configGroup.project, text) }
         val templateReferences = mutableListOf<ParadoxTemplateSnippetExpressionReference>()
         var i = 1
-        for(snippetExpression in snippetExpressions) {
+        for (snippetExpression in snippetExpressions) {
             ProgressManager.checkCanceled()
-            if(snippetExpression.type != CwtDataTypes.Constant) {
+            if (snippetExpression.type != CwtDataTypes.Constant) {
                 val matchGroup = matchResult.groups.get(i++) ?: return emptyList()
                 val referenceName = matchGroup.value.intern() //intern to optimize memory
                 val range = TextRange.create(matchGroup.range.first, matchGroup.range.last)
@@ -116,11 +116,11 @@ object CwtTemplateExpressionManager {
         }
         return templateReferences
     }
-    
+
     fun processResolveResult(contextElement: PsiElement, configExpression: CwtTemplateExpression, configGroup: CwtConfigGroup, processor: Processor<String>) {
         doProcessResolveResult(contextElement, configExpression, configGroup, processor, 0, "")
     }
-    
+
     private fun doProcessResolveResult(
         contextElement: PsiElement,
         configExpression: CwtTemplateExpression,
@@ -131,14 +131,14 @@ object CwtTemplateExpressionManager {
     ) {
         ProgressManager.checkCanceled()
         val project = configGroup.project
-        if(index == configExpression.snippetExpressions.size) {
-            if(builder.isNotEmpty()) {
+        if (index == configExpression.snippetExpressions.size) {
+            if (builder.isNotEmpty()) {
                 processor.process(builder)
             }
             return
         }
         val snippetExpression = configExpression.snippetExpressions[index]
-        when(snippetExpression.type) {
+        when (snippetExpression.type) {
             CwtDataTypes.Constant -> {
                 val text = snippetExpression.expressionString
                 doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + text)
@@ -157,18 +157,18 @@ object CwtTemplateExpressionManager {
                 val enumName = snippetExpression.value ?: return
                 //提示简单枚举
                 val enumConfig = configGroup.enums[enumName]
-                if(enumConfig != null) {
+                if (enumConfig != null) {
                     ProgressManager.checkCanceled()
                     val enumValueConfigs = enumConfig.valueConfigMap.values
-                    if(enumValueConfigs.isEmpty()) return
-                    for(enumValueConfig in enumValueConfigs) {
+                    if (enumValueConfigs.isEmpty()) return
+                    for (enumValueConfig in enumValueConfigs) {
                         val name = enumValueConfig.value
                         doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                     }
                 }
                 //提示复杂枚举值
                 val complexEnumConfig = configGroup.complexEnums[enumName]
-                if(complexEnumConfig != null) {
+                if (complexEnumConfig != null) {
                     ProgressManager.checkCanceled()
                     val searchScope = complexEnumConfig.searchScopeType
                     val selector = complexEnumValueSelector(project, contextElement)
@@ -188,8 +188,8 @@ object CwtTemplateExpressionManager {
                 ProgressManager.checkCanceled()
                 val valueConfig = configGroup.dynamicValueTypes[dynamicValueType] ?: return
                 val dynamicValueTypeConfigs = valueConfig.valueConfigMap.values
-                if(dynamicValueTypeConfigs.isEmpty()) return
-                for(dynamicValueTypeConfig in dynamicValueTypeConfigs) {
+                if (dynamicValueTypeConfigs.isEmpty()) return
+                for (dynamicValueTypeConfig in dynamicValueTypeConfigs) {
                     val name = dynamicValueTypeConfig.value
                     doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                 }

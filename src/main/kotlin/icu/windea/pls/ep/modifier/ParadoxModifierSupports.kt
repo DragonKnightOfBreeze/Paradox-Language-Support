@@ -47,12 +47,12 @@ var ParadoxModifierElement.economicCategoryModifierInfo by ParadoxModifierSuppor
 /**
  * 提供对预定义的修正的支持。
  */
-class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
+class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         return configGroup.predefinedModifiers[modifierName] != null
     }
-    
+
     override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
         val modifierName = name
         val modifierConfig = configGroup.predefinedModifiers[modifierName] ?: return null
@@ -62,26 +62,26 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
         modifierInfo.modifierConfig = modifierConfig
         return modifierInfo
     }
-    
+
     override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
         val element = context.contextElement!!
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
-        if(element !is ParadoxScriptStringExpressionElement) return
+        if (element !is ParadoxScriptStringExpressionElement) return
         val modifiers = configGroup.predefinedModifiers
-        if(modifiers.isEmpty()) return
-        
-        for(modifierConfig in modifiers.values) {
+        if (modifiers.isEmpty()) return
+
+        for (modifierConfig in modifiers.values) {
             //排除重复的
-            if(!modifierNames.add(modifierConfig.name)) continue
-            
+            if (!modifierNames.add(modifierConfig.name)) continue
+
             //排除不匹配modifier的supported_scopes的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
-            if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
-            
+            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+
             val tailText = ParadoxCompletionManager.getExpressionTailText(context, modifierConfig.config, withConfigExpression = false)
             val template = modifierConfig.template
-            if(template.expressionString.isNotEmpty()) continue
+            if (template.expressionString.isNotEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
             val name = modifierConfig.name
             val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxPredefinedModifierSupport)
@@ -95,11 +95,11 @@ class ParadoxPredefinedModifierSupport: ParadoxModifierSupport {
             result.addElement(lookupElement, context)
         }
     }
-    
+
     override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
         return ModificationTracker.NEVER_CHANGED
     }
-    
+
     override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
         return modifierElement.modifierConfig?.categoryConfigMap
     }
@@ -115,7 +115,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             config.template.matches(modifierName, element, configGroup)
         }
     }
-    
+
     override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
         val modifierName = name
         val gameType = configGroup.gameType ?: return null
@@ -123,42 +123,42 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         var modifierConfig: CwtModifierConfig? = null
         val templateReferences = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
             ProgressManager.checkCanceled()
-            
+
             val resolvedReferences = config.template.resolveReferences(modifierName, configGroup).orNull()
-            if(resolvedReferences != null) modifierConfig = config
+            if (resolvedReferences != null) modifierConfig = config
             resolvedReferences
         }.orEmpty()
-        if(modifierConfig == null) return null
+        if (modifierConfig == null) return null
         val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
         modifierInfo.modifierConfig = modifierConfig
         modifierInfo.templateReferences = templateReferences
         return modifierInfo
     }
-    
+
     override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
         val element = context.contextElement!!
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
-        if(element !is ParadoxScriptStringExpressionElement) return
+        if (element !is ParadoxScriptStringExpressionElement) return
         val modifiers = configGroup.generatedModifiers
-        if(modifiers.isEmpty()) return
-        
-        for(modifierConfig in modifiers.values) {
+        if (modifiers.isEmpty()) return
+
+        for (modifierConfig in modifiers.values) {
             ProgressManager.checkCanceled()
-            
+
             //排除不匹配modifier的supported_scopes的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
-            if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
-            
+            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+
             val tailText = ParadoxCompletionManager.getExpressionTailText(context, modifierConfig.config, withConfigExpression = true)
             val template = modifierConfig.template
-            if(template.expressionString.isEmpty()) continue
+            if (template.expressionString.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
             //生成的modifier
             template.processResolveResult(element, configGroup) p@{ name ->
                 //排除重复的
-                if(!modifierNames.add(name)) return@p true
-                
+                if (!modifierNames.add(name)) return@p true
+
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
@@ -172,40 +172,40 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             }
         }
     }
-    
+
     override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
         //TODO 可以进一步缩小范围
         return ParadoxModificationTrackers.ScriptFileTracker("**/*.txt")
     }
-    
+
     override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
         return modifierElement.modifierConfig?.categoryConfigMap
     }
-    
+
     override fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: DocumentationBuilder): Boolean = with(builder) {
         val modifierConfig = modifierElement.modifierConfig ?: return false
         val templateReferences = modifierElement.templateReferences ?: return false
-        
+
         //加上名字
         val configGroup = modifierConfig.configGroup
         val name = modifierElement.name
         append(PlsBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上模版信息
         val templateConfigExpression = modifierConfig.template
-        if(templateConfigExpression.expressionString.isNotEmpty()) {
+        if (templateConfigExpression.expressionString.isNotEmpty()) {
             val gameType = modifierElement.gameType
             val templateString = templateConfigExpression.expressionString
-            
+
             appendBr().appendIndent()
             append(PlsBundle.message("byTemplate")).append(" ")
             appendCwtConfigLink("${gameType.prefix}modifiers/$templateString", templateString)
-            
+
             //加上生成源信息
-            if(templateReferences.isNotEmpty()) {
-                for(reference in templateReferences) {
+            if (templateReferences.isNotEmpty()) {
+                for (reference in templateReferences) {
                     appendBr().appendIndent()
                     val configExpression = reference.configExpression
-                    when(configExpression.type) {
+                    when (configExpression.type) {
                         CwtDataTypes.Definition -> {
                             val definitionName = reference.name
                             val definitionType = configExpression.value!!
@@ -214,12 +214,12 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             append(" ")
                             appendDefinitionLink(gameType, definitionName, definitionType, modifierElement)
                             append(": ")
-                            
+
                             val type = definitionTypes.first()
                             val typeLink = "${gameType.prefix}types/${type}"
                             appendCwtConfigLink(typeLink, type)
-                            for((index, t) in definitionTypes.withIndex()) {
-                                if(index == 0) continue
+                            for ((index, t) in definitionTypes.withIndex()) {
+                                if (index == 0) continue
                                 append(", ")
                                 val subtypeLink = "$typeLink/${t}"
                                 appendCwtConfigLink(subtypeLink, t)
@@ -230,11 +230,11 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             val enumName = configExpression.value!!
                             append(PlsBundle.message("generatedFromEnumValue"))
                             append(" ")
-                            if(configGroup.enums.containsKey(enumName)) {
+                            if (configGroup.enums.containsKey(enumName)) {
                                 appendCwtConfigLink("${gameType.prefix}enums/${enumName}/${enumValueName}", enumName, modifierElement)
                                 append(": ")
                                 appendCwtConfigLink("${gameType.prefix}enums/${enumName}", enumName, modifierElement)
-                            } else if(configGroup.complexEnums.containsKey(enumName)) {
+                            } else if (configGroup.complexEnums.containsKey(enumName)) {
                                 append(enumValueName.escapeXml())
                                 append(": ")
                                 appendCwtConfigLink("${gameType.prefix}complex_enums/${enumName}", enumName, modifierElement)
@@ -249,7 +249,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             val dynamicValueType = reference.name
                             val valueName = configExpression.value!!
                             append(PlsBundle.message("generatedFromDynamicValue"))
-                            if(configGroup.dynamicValueTypes.containsKey(valueName)) {
+                            if (configGroup.dynamicValueTypes.containsKey(valueName)) {
                                 appendCwtConfigLink("${gameType.prefix}values/${dynamicValueType}/${valueName}", valueName, modifierElement)
                                 append(": ")
                                 appendCwtConfigLink("${gameType.prefix}values/${dynamicValueType}", valueName, modifierElement)
@@ -264,14 +264,14 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                 }
             }
         }
-        
+
         return true
     }
-    
+
     override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = with(builder) {
         val modifiers = definitionInfo.modifiers
-        if(modifiers.isEmpty()) return false
-        for(modifier in modifiers) {
+        if (modifiers.isEmpty()) return false
+        for (modifier in modifiers) {
             appendBr()
             append(PlsBundle.message("prefix.generatedModifier")).append(" ")
             appendModifierLink(modifier.name)
@@ -298,29 +298,29 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val project = configGroup.project
         val selector = definitionSelector(project, element).contextSensitive().distinctByName()
         val economicCategories = ParadoxDefinitionSearch.search("economic_category", selector).findAll()
-        for(economicCategory in economicCategories) {
+        for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
-            
+
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: continue
-            for(economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
-                if(economicCategoryModifierInfo.name == modifierName) return true
+            for (economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
+                if (economicCategoryModifierInfo.name == modifierName) return true
             }
         }
         return false
     }
-    
+
     override fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): ParadoxModifierInfo? {
         val modifierName = name
         val gameType = configGroup.gameType ?: return null
-        val project = configGroup.project        
+        val project = configGroup.project
         val selector = definitionSelector(project, element).contextSensitive().distinctByName()
         val economicCategories = ParadoxDefinitionSearch.search("economic_category", selector).findAll()
-        for(economicCategory in economicCategories) {
+        for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
-            
+
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: continue
-            for(economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
-                if(economicCategoryModifierInfo.name == modifierName) {
+            for (economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
+                if (economicCategoryModifierInfo.name == modifierName) {
                     val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
                     modifierInfo.economicCategoryInfo = economicCategoryInfo
                     modifierInfo.economicCategoryModifierInfo = economicCategoryModifierInfo
@@ -330,32 +330,32 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         }
         return null
     }
-    
+
     override fun completeModifier(context: ProcessingContext, result: CompletionResultSet, modifierNames: MutableSet<String>) {
         val element = context.contextElement!!
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
-        if(element !is ParadoxScriptStringExpressionElement) return
-        
+        if (element !is ParadoxScriptStringExpressionElement) return
+
         val selector = definitionSelector(configGroup.project, element).contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{ economicCategory ->
             ProgressManager.checkCanceled()
-            
+
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return@p true
             //排除不匹配modifier的supported_scopes的情况
             val modifierCategories = ParadoxEconomicCategoryManager.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
             val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
-            if(!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
-            
+            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
+
             val tailText = " from economic category " + economicCategoryInfo.name
             val typeText = economicCategoryInfo.name
             val typeIcon = PlsIcons.Nodes.Definition("economic_category")
-            for(economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
+            for (economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
                 val name = economicCategoryModifierInfo.name
                 //排除重复的
-                if(!modifierNames.add(name)) continue
-                
+                if (!modifierNames.add(name)) continue
+
                 val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxEconomicCategoryModifierSupport)
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
                     .withTypeText(typeText, typeIcon, true)
@@ -368,23 +368,23 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             true
         }
     }
-    
+
     override fun getModificationTracker(modifierInfo: ParadoxModifierInfo): ModificationTracker {
         return ParadoxModificationTrackers.ScriptFileTracker("common/economic_categories/**/*.txt")
     }
-    
+
     override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
         val economicCategoryInfo = modifierElement.economicCategoryInfo ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory //may be null
         val configGroup = getConfigGroup(modifierElement.project, modifierElement.gameType)
         return ParadoxEconomicCategoryManager.resolveModifierCategory(modifierCategory, configGroup)
     }
-    
+
     override fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: DocumentationBuilder): Boolean = with(builder) {
         val gameType = modifierElement.gameType
         val economicCategoryInfo = modifierElement.economicCategoryInfo ?: return false
         val modifierInfo = modifierElement.economicCategoryModifierInfo ?: return false
-        
+
         //加上名字
         val name = modifierElement.name
         append(PlsBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
@@ -393,7 +393,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         append(PlsBundle.message("generatedFromEconomicCategory"))
         append(" ")
         appendDefinitionLink(gameType, economicCategoryInfo.name, "economic_category", modifierElement)
-        if(modifierInfo.resource != null) {
+        if (modifierInfo.resource != null) {
             appendBr().appendIndent()
             append(PlsBundle.message("generatedFromResource"))
             append(" ")
@@ -402,10 +402,10 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             appendBr().appendIndent()
             append(PlsBundle.message("forAiBudget"))
         }
-        
+
         return true
     }
-    
+
     override fun buildDDocumentationDefinitionForDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, builder: DocumentationBuilder): Boolean = with(builder) {
         val gameType = definitionInfo.gameType
         val configGroup = definitionInfo.configGroup
@@ -415,11 +415,11 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             .find()
             ?: return false
         val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return false
-        for(modifierInfo in economicCategoryInfo.modifiers) {
+        for (modifierInfo in economicCategoryInfo.modifiers) {
             appendBr()
             append(PlsBundle.message("prefix.generatedModifier")).append(" ")
             appendModifierLink(modifierInfo.name)
-            if(modifierInfo.resource != null) {
+            if (modifierInfo.resource != null) {
                 grayed {
                     append(" ")
                     append(PlsBundle.message("fromResource"))

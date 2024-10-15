@@ -16,11 +16,11 @@ inline fun <T, THIS> createKey(name: String, noinline factory: THIS.() -> T) = K
 abstract class KeyRegistry {
     val id = javaClass.name.substringAfterLast(".").replace("\$Keys", "")
     val keys: MutableMap<String, Key<*>> = ConcurrentHashMap()
-    
+
     fun getKeyName(propName: String): String {
         return "${id}.${propName}"
     }
-    
+
     @Suppress("UNCHECKED_CAST")
     fun <T> getKey(name: String): Key<T>? {
         return keys.get(name) as? Key<T>
@@ -28,28 +28,28 @@ abstract class KeyRegistry {
 }
 
 interface KeyProviders {
-    class Normal<T> (val registry: KeyRegistry){
+    class Normal<T>(val registry: KeyRegistry) {
         fun getKey(propName: String): Key<T> {
             val name = registry.getKeyName(propName)
             return registry.keys.getOrPut(name) { createKey<T>(name) }.cast()
         }
     }
-    
+
     class Named<T>(val registry: KeyRegistry, val name: String) {
-        fun getKey(): Key<T>  {
+        fun getKey(): Key<T> {
             return registry.keys.getOrPut(name) { createKey<T>(name) }.cast()
         }
     }
-    
-    class WithFactory<T, THIS>(val registry: KeyRegistry, val factory: THIS.() -> T){
-        fun getKey(propName: String): Key<T>  {
+
+    class WithFactory<T, THIS>(val registry: KeyRegistry, val factory: THIS.() -> T) {
+        fun getKey(propName: String): Key<T> {
             val name = registry.getKeyName(propName)
             return registry.keys.getOrPut(name) { createKey(name, factory) }.cast()
         }
     }
-    
-    class NamedWithFactory<T, THIS>(val registry: KeyRegistry, val name: String, val factory: THIS.() -> T)  {
-        fun getKey(): Key<T>  {
+
+    class NamedWithFactory<T, THIS>(val registry: KeyRegistry, val name: String, val factory: THIS.() -> T) {
+        fun getKey(): Key<T> {
             return registry.keys.getOrPut(name) { createKey(name, factory) }.cast()
         }
     }
@@ -57,11 +57,11 @@ interface KeyProviders {
 
 inline fun <T> createKey(registry: KeyRegistry) = KeyProviders.Normal<T>(registry)
 
-inline fun <T> createKey(registry: KeyRegistry, name: String) = KeyProviders.Named<T>(registry,name)
+inline fun <T> createKey(registry: KeyRegistry, name: String) = KeyProviders.Named<T>(registry, name)
 
-inline fun <T, THIS> createKey(registry: KeyRegistry, noinline factory: THIS.() -> T) = KeyProviders.WithFactory(registry,factory)
+inline fun <T, THIS> createKey(registry: KeyRegistry, noinline factory: THIS.() -> T) = KeyProviders.WithFactory(registry, factory)
 
-inline fun <T, THIS> createKey(registry: KeyRegistry, name: String, noinline factory: THIS.() -> T) = KeyProviders.NamedWithFactory(registry,name, factory)
+inline fun <T, THIS> createKey(registry: KeyRegistry, name: String, noinline factory: THIS.() -> T) = KeyProviders.NamedWithFactory(registry, name, factory)
 
 inline operator fun <T> KeyProviders.Normal<T>.provideDelegate(thisRef: Any?, property: KProperty<*>) = getKey(property.name)
 
@@ -80,20 +80,20 @@ interface KeyDelegates {
             return registry.keys.getOrPut(name) { createKey<T>(name) }.cast()
         }
     }
-    
+
     class Named<T>(val registry: KeyRegistry, val name: String) {
         fun getKey(): Key<T> {
             return registry.keys.getOrPut(name) { createKey<T>(name) }.cast()
         }
     }
-    
+
     class WithFactory<T, THIS>(val registry: KeyRegistry, val factory: THIS.() -> T) {
         fun getKey(propName: String): KeyWithFactory<T, THIS> {
             val name = registry.getKeyName(propName)
             return registry.keys.getOrPut(name) { createKey(name, factory) }.cast()
         }
     }
-    
+
     class NamedWithFactory<T, THIS>(val registry: KeyRegistry, val name: String, val factory: THIS.() -> T) {
         fun getKey(): KeyWithFactory<T, THIS> {
             return registry.keys.getOrPut(name) { createKey(name, factory) }.cast()

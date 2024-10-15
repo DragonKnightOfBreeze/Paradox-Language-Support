@@ -26,43 +26,43 @@ class ParadoxModifierElement(
     private val project: Project,
 ) : ParadoxFakePsiElement(parent) {
     var canRename = false
-    
+
     override fun getIcon(): Icon {
         return PlsIcons.Nodes.Modifier
     }
-    
+
     override fun getName(): String {
         return name
     }
-    
+
     override fun setName(name: String): PsiElement? {
-        if(!canRename) throw IncorrectOperationException() //cannot rename
+        if (!canRename) throw IncorrectOperationException() //cannot rename
         return null
     }
-    
+
     override fun getTypeName(): String {
         return PlsBundle.message("cwt.description.modifier")
     }
-    
+
     override fun getText(): String {
         return name
     }
-    
+
     override fun getPresentation(): ItemPresentation {
         return ParadoxModifierElementPresentation(this)
     }
-    
+
     override fun getProject(): Project {
         return project
     }
-    
+
     override fun equals(other: Any?): Boolean {
         return other is ParadoxModifierElement &&
             name == other.name &&
             project == other.project &&
             gameType == other.gameType
     }
-    
+
     override fun hashCode(): Int {
         return Objects.hash(name, project, gameType)
     }

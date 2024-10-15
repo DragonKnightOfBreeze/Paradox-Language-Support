@@ -7,9 +7,9 @@ import icu.windea.pls.cwt.psi.*
 
 interface CwtSingleAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
-    
+
     fun inline(config: CwtPropertyConfig): CwtPropertyConfig
-    
+
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig): CwtSingleAliasConfig? = doResolve(config)
     }
@@ -26,7 +26,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtSingleAliasConfig? {
 private class CwtSingleAliasConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String
-) : UserDataHolderBase(),  CwtSingleAliasConfig {
+) : UserDataHolderBase(), CwtSingleAliasConfig {
     override fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
         //inline all value and configs
         val other = this.config

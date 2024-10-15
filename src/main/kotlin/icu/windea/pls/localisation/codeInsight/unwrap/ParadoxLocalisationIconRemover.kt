@@ -6,14 +6,14 @@ import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationIconRemover : ParadoxLocalisationUnwrapper() {
     override fun getDescription(e: PsiElement): String {
-        val name = if(e is ParadoxLocalisationIcon) e.name.orEmpty() else ""
+        val name = if (e is ParadoxLocalisationIcon) e.name.orEmpty() else ""
         return PlsBundle.message("localisation.remove.icon", name)
     }
-    
+
     override fun isApplicableTo(e: PsiElement): Boolean {
         return e is ParadoxLocalisationIcon
     }
-    
+
     override fun doUnwrap(element: PsiElement, context: Context) {
         context.delete(element)
     }

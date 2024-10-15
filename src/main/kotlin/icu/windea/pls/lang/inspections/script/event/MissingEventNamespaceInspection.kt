@@ -14,26 +14,26 @@ import icu.windea.pls.script.psi.*
  */
 class MissingEventNamespaceInspection : LocalInspectionTool() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if(!shouldCheckFile(file)) return null
-        
+        if (!shouldCheckFile(file)) return null
+
         var r = false
         file as ParadoxScriptFile
-        file.processProperty(inline = true) p@{ property -> 
+        file.processProperty(inline = true) p@{ property ->
             val definitionInfo = property.definitionInfo ?: return@p true
-            if(definitionInfo.type == "event_namespace") return@p false
+            if (definitionInfo.type == "event_namespace") return@p false
             r = true
             true
         }
-        if(!r) return null
-        
+        if (!r) return null
+
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         holder.registerProblem(file, PlsBundle.message("inspection.script.missingEventNamespace.desc"))
         return holder.resultsArray
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
         //仅检查事件脚本文件
-        if(file !is ParadoxScriptFile) return false
+        if (file !is ParadoxScriptFile) return false
         val fileInfo = file.fileInfo ?: return false
         val filePath = fileInfo.path
         return "txt" == filePath.fileExtension && "events".matchesPath(filePath.path)

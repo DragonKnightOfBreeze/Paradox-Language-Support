@@ -16,15 +16,15 @@ import javax.swing.*
 
 class ParadoxGameDirectoriesDialog(val list: MutableList<Entry<String, String>>) : DialogWrapper(null) {
     val resultList = list.mapTo(mutableListOf()) { it.copy() }
-    
+
     val graph = PropertyGraph()
     val properties = list.associateBy({ it.key }, { graph.property(it.value) })
-    
+
     init {
         title = PlsBundle.message("settings.general.defaultGameDirectories.dialog.title")
         init()
     }
-    
+
     override fun createCenterPanel(): DialogPanel {
         return panel {
             properties.forEach f@{ (gameTypeId, gameDirectoryProperty) ->
@@ -44,7 +44,7 @@ class ParadoxGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
                         .validationOnApply { ParadoxCoreManager.validateGameDirectory(this, gameType, gameDirectory) }
                 }
             }
-            
+
             row {
                 link(PlsBundle.message("gameDirectory.quickSelectAll")) {
                     properties.forEach f@{ (gameTypeId, gameDirectoryProperty) ->
@@ -57,10 +57,10 @@ class ParadoxGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
             }
         }
     }
-    
+
     override fun doOKAction() {
         super.doOKAction()
-        
+
         resultList.clear()
         properties.mapTo(resultList) { (k, p) -> Entry(k, p.get()) }
     }
@@ -68,12 +68,12 @@ class ParadoxGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
 
 class ParadoxDefinitionTypeBindingsInCallHierarchyDialog(val list: MutableList<Entry<String, String>>) : DialogWrapper(null) {
     val resultList = list.mapTo(mutableListOf()) { it.copy() }
-    
+
     init {
         title = PlsBundle.message("settings.hierarchy.definitionTypeBindings.dialog.title")
         init()
     }
-    
+
     override fun createCenterPanel(): JComponent {
         return panel {
             row {
@@ -91,12 +91,12 @@ class ParadoxDefinitionTypeBindingsInCallHierarchyDialog(val list: MutableList<E
     }
 }
 
-class ParadoxClauseTemplateSettingsDialog: DialogWrapper(null) {
+class ParadoxClauseTemplateSettingsDialog : DialogWrapper(null) {
     init {
         title = PlsBundle.message("settings.completion.clauseTemplate.dialog.title")
         init()
     }
-    
+
     override fun createCenterPanel(): JComponent {
         val settings = getSettings().completion.clauseTemplate
         return panel {

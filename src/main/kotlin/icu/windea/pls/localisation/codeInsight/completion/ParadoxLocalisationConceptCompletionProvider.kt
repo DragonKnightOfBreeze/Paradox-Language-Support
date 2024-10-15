@@ -18,14 +18,14 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position.parent?.castOrNull<ParadoxLocalisationConceptName>() ?: return
-        if(element.text.isParameterized()) return
-        if(element.isDatabaseObjectExpression()) return
-        
+        if (element.text.isParameterized()) return
+        if (element.isDatabaseObjectExpression()) return
+
         val file = parameters.originalFile
         val project = file.project
-        
+
         ParadoxCompletionManager.initializeContext(parameters, context)
-        
+
         //提示concept的name或alias
         val conceptSelector = definitionSelector(project, file).contextSensitive().distinctByName()
         val keysToDistinct = mutableSetOf<String>()
@@ -35,7 +35,7 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
             val icon = PlsIcons.LocalisationNodes.Concept
             run action@{
                 val key = concept.name
-                if(!keysToDistinct.add(key)) return@action
+                if (!keysToDistinct.add(key)) return@action
                 val lookupElement = LookupElementBuilder.create(concept, key)
                     .withIcon(icon)
                     .withTailText(tailText, true)
@@ -45,7 +45,7 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
             }
             concept.getData<StellarisGameConceptData>()?.alias?.forEach action@{ alias ->
                 val key = alias
-                if(!keysToDistinct.add(key)) return@action
+                if (!keysToDistinct.add(key)) return@action
                 val lookupElement = LookupElementBuilder.create(concept, key)
                     .withIcon(icon)
                     .withTailText(tailText, true)

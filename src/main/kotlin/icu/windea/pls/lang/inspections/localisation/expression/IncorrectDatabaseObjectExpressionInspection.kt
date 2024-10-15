@@ -18,43 +18,44 @@ import javax.swing.*
  * @property reportsUnresolved 是否报告无法解析的引用。
  */
 class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
-    @JvmField var reportsUnresolved = true
-    
+    @JvmField
+    var reportsUnresolved = true
+
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
-        
+        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+
         val configGroup = getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if(element is ParadoxLocalisationExpressionElement) visitExpressionElement(element)
+                if (element is ParadoxLocalisationExpressionElement) visitExpressionElement(element)
             }
-            
+
             private fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
-                if(!element.isDatabaseObjectExpression()) return
+                if (!element.isDatabaseObjectExpression()) return
                 val value = element.value
                 val textRange = TextRange.create(0, value.length)
                 val expression = ParadoxDatabaseObjectExpression.resolve(value, textRange, configGroup) ?: return
                 handleErrors(element, expression)
             }
-            
+
             private fun handleErrors(element: ParadoxLocalisationExpressionElement, expression: ParadoxComplexExpression) {
                 expression.errors.forEach { error -> handleError(element, error) }
                 expression.processAllNodes { node -> node.getUnresolvedError(element)?.let { error -> handleError(element, error) }.let { true } }
             }
-            
+
             private fun handleError(element: ParadoxLocalisationExpressionElement, error: ParadoxComplexExpressionError) {
-                if(!reportsUnresolved && error.isUnresolvedError()) return
+                if (!reportsUnresolved && error.isUnresolvedError()) return
                 holder.registerExpressionError(error, element)
             }
         }
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         return ParadoxFilePathManager.inLocalisationPath(fileInfo.path)
     }
-    
+
     override fun createOptionsPanel(): JComponent {
         return panel {
             //reportsUnresolved

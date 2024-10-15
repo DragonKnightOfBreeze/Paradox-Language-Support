@@ -11,7 +11,7 @@ class ParadoxLocalisationInfo(
         return this === other || other is ParadoxLocalisationInfo
             && name == other.name && category == other.category && gameType == other.gameType
     }
-    
+
     override fun hashCode(): Int {
         return Objects.hash(name, category, gameType)
     }

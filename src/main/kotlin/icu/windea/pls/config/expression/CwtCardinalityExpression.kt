@@ -22,17 +22,17 @@ interface CwtCardinalityExpression : CwtExpression {
     val min: Int
     val max: Int?
     val relaxMin: Boolean
-    
+
     operator fun component1() = min
     operator fun component2() = max
     operator fun component3() = relaxMin
-    
+
     fun isOptional() = min == 0
     fun isRequired() = min > 0
-    
+
     companion object Resolver {
         val EmptyExpression: CwtCardinalityExpression = doResolveEmpty()
-        
+
         fun resolve(expressionString: String): CwtCardinalityExpression = cache.get(expressionString)
     }
 }
@@ -44,13 +44,13 @@ private val cache = CacheBuilder.newBuilder().buildCache<String, CwtCardinalityE
 private fun doResolveEmpty() = CwtCardinalityExpressionImpl("", 0, null, true)
 
 private fun doResolve(expressionString: String): CwtCardinalityExpression {
-    if(expressionString.isEmpty()) return doResolveEmpty()
+    if (expressionString.isEmpty()) return doResolveEmpty()
     return when {
         expressionString.first() == '~' -> {
             val firstDotIndex = expressionString.indexOf('.')
             val min = expressionString.substring(1, firstDotIndex).toIntOrNull() ?: 0
             val max = expressionString.substring(firstDotIndex + 2)
-                .let { if(it.equals("inf", true)) null else it.toIntOrNull() ?: 0 }
+                .let { if (it.equals("inf", true)) null else it.toIntOrNull() ?: 0 }
             val relaxMin = true
             CwtCardinalityExpressionImpl(expressionString, min, max, relaxMin)
         }
@@ -58,7 +58,7 @@ private fun doResolve(expressionString: String): CwtCardinalityExpression {
             val firstDotIndex = expressionString.indexOf('.')
             val min = expressionString.substring(0, firstDotIndex).toIntOrNull() ?: 0
             val max = expressionString.substring(firstDotIndex + 2)
-                .let { if(it.equals("inf", true)) null else it.toIntOrNull() ?: 0 }
+                .let { if (it.equals("inf", true)) null else it.toIntOrNull() ?: 0 }
             val relaxMin = false
             CwtCardinalityExpressionImpl(expressionString, min, max, relaxMin)
         }
@@ -70,14 +70,14 @@ private class CwtCardinalityExpressionImpl : CwtCardinalityExpression {
     override val min: Int
     override val max: Int?
     override val relaxMin: Boolean
-    
+
     constructor(expressionString: String, min: Int, max: Int?, relaxMin: Boolean) {
         this.expressionString = expressionString.intern()
         this.min = min
         this.max = max
         this.relaxMin = relaxMin
     }
-    
+
     override fun equals(other: Any?) = this === other || other is CwtCardinalityExpression && expressionString == other.expressionString
     override fun hashCode() = expressionString.hashCode()
     override fun toString() = expressionString

@@ -22,20 +22,20 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
         actionGroup.add(AlphaSortAction())
         actionGroup.add(ChangeScopeTypeAction(this, getHierarchySettings()))
     }
-    
+
     override fun createTrees(trees: MutableMap<in String, in JTree>) {
         val tree1 = createTree(false)
         PopupHandler.installPopupMenu(tree1, PlsActions.CallHierarchyPopupMenu, ActionPlaces.CALL_HIERARCHY_VIEW_POPUP)
         val baseOnThisMethodAction = ParadoxCallHierarchyBrowser.BaseOnThisMethodAction()
         baseOnThisMethodAction.registerCustomShortcutSet(ActionManager.getInstance().getAction(IdeActions.ACTION_CALL_HIERARCHY).shortcutSet, tree1)
         trees.put(getCalleeType(), tree1)
-        
+
         val tree2 = createTree(false)
         PopupHandler.installPopupMenu(tree2, PlsActions.CallHierarchyPopupMenu, ActionPlaces.CALL_HIERARCHY_VIEW_POPUP)
         baseOnThisMethodAction.registerCustomShortcutSet(ActionManager.getInstance().getAction(IdeActions.ACTION_CALL_HIERARCHY).shortcutSet, tree2)
         trees.put(getCallerType(), tree2)
     }
-    
+
     override fun getContentDisplayName(typeName: String, element: PsiElement): String? {
         val name = when {
             element is ParadoxScriptScriptedVariable -> element.name
@@ -45,17 +45,17 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
         }
         return MessageFormat.format(typeName, name)
     }
-    
+
     override fun getElementFromDescriptor(descriptor: HierarchyNodeDescriptor): PsiElement? {
         return descriptor.psiElement
     }
-    
+
     override fun isApplicableElement(element: PsiElement): Boolean {
         return element is ParadoxScriptScriptedVariable || element is ParadoxScriptDefinitionElement || element is ParadoxLocalisationProperty
     }
-    
+
     override fun createHierarchyTreeStructure(type: String, psiElement: PsiElement): HierarchyTreeStructure? {
-        return when(type) {
+        return when (type) {
             getCallerType() -> {
                 val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
                 ParadoxCallerHierarchyTreeStructure(myProject, psiElement, definitionInfo)
@@ -67,12 +67,12 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
             else -> null
         }
     }
-    
+
     override fun getComparator(): Comparator<NodeDescriptor<*>>? {
         return ParadoxHierarchyManager.getComparator(myProject)
     }
-    
+
     private fun getHierarchySettings() = ParadoxCallHierarchyBrowserSettings.Companion.getInstance(myProject)
-    
+
     private class BaseOnThisMethodAction : CallHierarchyBrowserBase.BaseOnThisMethodAction()
 }

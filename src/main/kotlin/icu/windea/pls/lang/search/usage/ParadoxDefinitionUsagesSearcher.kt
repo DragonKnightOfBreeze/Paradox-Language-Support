@@ -24,11 +24,11 @@ import kotlin.experimental.*
 class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
         val target = queryParameters.elementToSearch
-        if(target !is ParadoxScriptDefinitionElement) return
+        if (target !is ParadoxScriptDefinitionElement) return
         val definitionInfo = runReadAction { target.definitionInfo }
-        if(definitionInfo == null) return
+        if (definitionInfo == null) return
         val definitionName = definitionInfo.name
-        if(definitionName.isEmpty()) return //ignore anonymous definitions
+        if (definitionName.isEmpty()) return //ignore anonymous definitions
         val type = definitionInfo.type
         val project = queryParameters.project
         val words = mutableSetOf<String>()
@@ -36,11 +36,11 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         when {
             type == "sprite" -> {
                 val gfxTextName = definitionName.removePrefix("GFX_text_")
-                if(gfxTextName.isNotEmpty()) {
+                if (gfxTextName.isNotEmpty()) {
                     words.add(gfxTextName)
                 } else {
                     val gfxName = definitionName.removePrefix("GFX_")
-                    if(gfxTextName.isNotEmpty()) {
+                    if (gfxTextName.isNotEmpty()) {
                         words.add(gfxName)
                     }
                 }
@@ -50,7 +50,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
                 data?.alias?.forEach { words.add(it) }
             }
         }
-        if(words.isEmpty()) return
+        if (words.isEmpty()) return
         DumbService.getInstance(project).runReadActionInSmartMode {
             //这里不能直接使用target.useScope，否则文件高亮会出现问题
             val useScope = queryParameters.effectiveSearchScope
@@ -63,7 +63,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
             words.forEach { word -> queryParameters.optimizer.searchWord(word, useScope, searchContext, true, target, processor) }
         }
     }
-    
+
     private fun getProcessor(target: PsiElement): RequestResultProcessor {
         return ParadoxFilteredRequestResultProcessor(target, ParadoxResolveConstraint.Definition)
     }

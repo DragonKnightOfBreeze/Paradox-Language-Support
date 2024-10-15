@@ -11,12 +11,12 @@ import com.intellij.psi.*
  * * 显示属性的名字，值的截断后文本。
  */
 class CwtStructureViewFactory : PsiStructureViewFactory {
-	override fun getStructureViewBuilder(psiFile: PsiFile): StructureViewBuilder {
-		return object : TreeBasedStructureViewBuilder() {
-			override fun createStructureViewModel(editor: Editor?): StructureViewModel {
-				return CwtStructureViewModel(editor, psiFile)
-			}
-		}
-	}
+    override fun getStructureViewBuilder(psiFile: PsiFile): StructureViewBuilder {
+        return object : TreeBasedStructureViewBuilder() {
+            override fun createStructureViewModel(editor: Editor?): StructureViewModel {
+                return CwtStructureViewModel(editor, psiFile)
+            }
+        }
+    }
 }
 

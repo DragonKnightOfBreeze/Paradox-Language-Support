@@ -28,15 +28,15 @@ class ParadoxDynamicValueLocalizedNameHintsProvider : ParadoxScriptHintsProvider
         var textLengthLimit: Int = 30,
         var iconHeightLimit: Int = 32
     )
-    
+
     private val settingsKey = SettingsKey<Settings>("ParadoxDynamicValueLocalizedNameHintsSettingsKey")
-    
+
     override val name: String get() = PlsBundle.message("script.hints.dynamicValueLocalizedName")
     override val description: String get() = PlsBundle.message("script.hints.dynamicValueLocalizedName.description")
     override val key: SettingsKey<Settings> get() = settingsKey
-    
+
     override fun createSettings() = Settings()
-    
+
     override fun createConfigurable(settings: Settings): ImmediateConfigurable {
         return object : ImmediateConfigurable {
             override fun createComponent(listener: ChangeListener): JComponent = panel {
@@ -45,12 +45,12 @@ class ParadoxDynamicValueLocalizedNameHintsProvider : ParadoxScriptHintsProvider
             }
         }
     }
-    
+
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
         //ignored for value_field or variable_field or other variants
-        
-        if(element !is ParadoxScriptStringExpressionElement) return true
-        if(!element.isExpression()) return true
+
+        if (element !is ParadoxScriptStringExpressionElement) return true
+        if (!element.isExpression()) return true
         val resolveConstraint = ParadoxResolveConstraint.DynamicValueStrictly
         val resolved = element.references.filter { resolveConstraint.canResolve(it) }.mapNotNull { it.resolve() }.lastOrNull()
             ?.castOrNull<ParadoxDynamicValueElement>()
@@ -61,13 +61,13 @@ class ParadoxDynamicValueLocalizedNameHintsProvider : ParadoxScriptHintsProvider
         sink.addInlineElement(endOffset, true, finalPresentation, false)
         return true
     }
-    
+
     private fun PresentationFactory.doCollect(element: ParadoxDynamicValueElement, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
         val name = element.name
-        if(name.isEmpty()) return null
-        if(name.isParameterized()) return null
+        if (name.isEmpty()) return null
+        if (name.isParameterized()) return null
         val configGroup = getConfigGroup(element.project, element.gameType)
-        for(type in element.dynamicValueTypes) {
+        for (type in element.dynamicValueTypes) {
             val configs = configGroup.extendedDynamicValues[type] ?: continue
             val config = configs.findFromPattern(name, element, configGroup) ?: continue
             val hint = config.hint ?: continue

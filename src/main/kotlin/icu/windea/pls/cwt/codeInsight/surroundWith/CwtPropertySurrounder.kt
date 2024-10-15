@@ -14,18 +14,18 @@ class CwtPropertySurrounder : CwtSurrounder() {
     override fun getTemplateDescription(): String {
         return PlsBundle.message("cwt.surroundWith.property.description")
     }
-    
+
     override fun isApplicable(elements: Array<out PsiElement>): Boolean {
         return true
     }
-    
+
     override fun surroundElements(project: Project, editor: Editor, elements: Array<out PsiElement>): TextRange? {
-        if(elements.isEmpty()) return null
+        if (elements.isEmpty()) return null
         val firstElement = elements.first()
         val lastElement = elements.last()
         val replacedRange = TextRange.create(firstElement.startOffset, lastElement.endOffset)
         val replacedText = replacedRange.substring(firstElement.containingFile.text)
-        if(firstElement != lastElement) {
+        if (firstElement != lastElement) {
             firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
         }
         var newElement = CwtElementFactory.createProperty(project, "key = {\n${replacedText}\n}")

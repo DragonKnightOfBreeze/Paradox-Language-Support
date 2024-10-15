@@ -4,9 +4,9 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 
-class BaseCwtDataExpressionPriorityProvider: CwtDataExpressionPriorityProvider {
+class BaseCwtDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider {
     override fun getPriority(expression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
-        return when(expression.type) {
+        return when (expression.type) {
             CwtDataTypes.Block -> 100.0 //highest
             CwtDataTypes.Bool -> 100.0 //highest
             CwtDataTypes.Int -> 90.0 //very high
@@ -18,9 +18,9 @@ class BaseCwtDataExpressionPriorityProvider: CwtDataExpressionPriorityProvider {
     }
 }
 
-class CoreCwtDataExpressionPriorityProvider: CwtDataExpressionPriorityProvider {
+class CoreCwtDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider {
     override fun getPriority(expression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
-        return when(expression.type) {
+        return when (expression.type) {
             CwtDataTypes.Constant -> 100.0 //highest
             CwtDataTypes.Any -> 1.0 //very low
             CwtDataTypes.Parameter -> 10.0
@@ -41,8 +41,8 @@ class CoreCwtDataExpressionPriorityProvider: CwtDataExpressionPriorityProvider {
             CwtDataTypes.Definition -> 70.0
             CwtDataTypes.EnumValue -> {
                 val enumName = expression.value ?: return 0.0 //unexpected
-                if(configGroup.enums.containsKey(enumName)) return 80.0
-                if(configGroup.complexEnums.containsKey(enumName)) return 45.0
+                if (configGroup.enums.containsKey(enumName)) return 80.0
+                if (configGroup.complexEnums.containsKey(enumName)) return 45.0
                 return 0.0 //unexpected
             }
             CwtDataTypes.Value -> 40.0
@@ -62,6 +62,6 @@ class CoreCwtDataExpressionPriorityProvider: CwtDataExpressionPriorityProvider {
             CwtDataTypes.AliasMatchLeft -> 0.0 //unexpected
             CwtDataTypes.TemplateExpression -> 65.0
             else -> 0.0
-        } 
+        }
     }
 }

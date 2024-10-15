@@ -13,21 +13,21 @@ import icu.windea.pls.lang.expression.complex.nodes.*
  */
 interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
     val errors: List<ParadoxComplexExpressionError>
-    
+
     abstract class Base : ParadoxComplexExpression {
         override fun equals(other: Any?): Boolean {
             return this === other || (other is ParadoxComplexExpression && this.javaClass == other.javaClass && text == other.text)
         }
-        
+
         override fun hashCode(): Int {
             return text.hashCode()
         }
-        
+
         override fun toString(): String {
             return text
         }
     }
-    
+
     companion object Resolver {
         fun resolveByConfig(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
             val dataType = config.expression?.type ?: return null

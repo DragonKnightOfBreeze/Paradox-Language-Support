@@ -15,19 +15,19 @@ import kotlin.reflect.full.*
  */
 abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
     final override val id: String = javaClass.name
-    
+
     final override fun inject() {
         val codeInjectorInfo = getCodeInjectorInfo() ?: return
-        
+
         val classPool = ApplicationManager.getApplication().getUserData(CodeInjectorService.classPoolKey) ?: return
         val injectTargetName = codeInjectorInfo.injectTargetName
         val targetClass = classPool.get(injectTargetName)
         putUserData(CodeInjectorService.targetClassKey, targetClass)
-        
+
         applyCodeInjectorSupports()
-        
+
         val pluginId = codeInjectorInfo.injectPluginId
-        if(pluginId.isEmpty()) {
+        if (pluginId.isEmpty()) {
             targetClass.toClass()
         } else {
             val pluginClassLoader = runCatchingCancelable {
@@ -37,10 +37,10 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         }
         targetClass.detach()
     }
-    
+
     private fun getCodeInjectorInfo(): CodeInjectorInfo? {
         val injectTarget = this::class.findAnnotation<InjectTarget>()
-        if(injectTarget == null) {
+        if (injectTarget == null) {
             thisLogger().error("Code injector $id is not annotated with @InjectTarget")
             return null
         }
@@ -48,23 +48,23 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         val injectPluginId = injectTarget.pluginId
         return CodeInjectorInfo(this, injectTargetName, injectPluginId)
     }
-    
+
     private fun applyCodeInjectorSupports() {
         CodeInjectorSupport.EP_NAME.extensionList.forEach { ep ->
             ep.apply(this)
         }
     }
-    
+
     /**
      * 用于在（注入到目标方法之前的）注入方法中使用，让此方法不直接返回而继续执行目标方法中的代码。
      */
     protected fun continueInvocation(): Nothing {
         throw CONTINUE_INVOCATION
     }
-    
+
     companion object {
         private val CONTINUE_INVOCATION = ContinueInvocationException()
     }
-    
-    private class ContinueInvocationException: RuntimeException("CONTINUE_INVOCATION")
+
+    private class ContinueInvocationException : RuntimeException("CONTINUE_INVOCATION")
 }

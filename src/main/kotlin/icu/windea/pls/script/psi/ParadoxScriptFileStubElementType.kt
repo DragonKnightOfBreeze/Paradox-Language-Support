@@ -18,44 +18,44 @@ import icu.windea.pls.script.psi.impl.*
 object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
     private const val ID = "paradoxScript.file"
     private const val VERSION = 54 //1.3.21
-    
+
     override fun getExternalId() = ID
-    
+
     override fun getStubVersion() = VERSION
-    
+
     override fun getBuilder(): LightStubBuilder {
         return Builder()
     }
-    
+
     override fun shouldBuildStubFor(file: VirtualFile): Boolean {
         try {
             //不索引内存中的文件
-            if(ParadoxFileManager.isLightFile(file)) return false
+            if (ParadoxFileManager.isLightFile(file)) return false
             //仅索引有根目录的文件
             val fileInfo = file.fileInfo ?: return false
             val path = fileInfo.path
             //不索引直接在根目录下的文件（除了模组描述符文件）
-            if(path.length == 1) return path.path.equals(PlsConstants.descriptorFileName, true)
+            if (path.length == 1) return path.path.equals(PlsConstants.descriptorFileName, true)
             //不索引内联脚本文件
-            if("common/inline_scripts".matchesPath(path.path)) return false
+            if ("common/inline_scripts".matchesPath(path.path)) return false
             return true
-        } catch(e: Exception) {
-            if(e is ProcessCanceledException) throw e
+        } catch (e: Exception) {
+            if (e is ProcessCanceledException) throw e
             return false
         }
     }
-    
+
     override fun indexStub(stub: PsiFileStub<*>, sink: IndexSink) {
         //尝试在这里进行索引是没有效果的，考虑使用FileTypeIndex
         super.indexStub(stub, sink)
     }
-    
+
     override fun serialize(stub: PsiFileStub<*>, dataStream: StubOutputStream) {
-        if(stub is ParadoxScriptFileStub) {
+        if (stub is ParadoxScriptFileStub) {
             dataStream.writeName(stub.name)
             dataStream.writeName(stub.type)
             val subtypes = stub.subtypes
-            if(subtypes == null) {
+            if (subtypes == null) {
                 dataStream.writeInt(-1)
             } else {
                 dataStream.writeInt(subtypes.size)
@@ -65,21 +65,21 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
         }
         super.serialize(stub, dataStream)
     }
-    
+
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): PsiFileStub<*> {
         val name = dataStream.readNameString().orEmpty()
         val type = dataStream.readNameString().orEmpty()
         val subtypesSize = dataStream.readInt()
-        val subtypes = if(subtypesSize == -1) null else MutableList(subtypesSize) { dataStream.readNameString().orEmpty() }
+        val subtypes = if (subtypesSize == -1) null else MutableList(subtypesSize) { dataStream.readNameString().orEmpty() }
         val gameType = dataStream.readByte().deoptimizeValue<ParadoxGameType>()
         return ParadoxScriptFileStubImpl(null, name, type, subtypes, gameType)
     }
-    
+
     class Builder : LightStubBuilder() {
         override fun createStubForFile(file: PsiFile, tree: LighterAST): StubElement<*> {
             return ParadoxDefinitionManager.createStubForFile(file, tree) ?: super.createStubForFile(file, tree)
         }
-        
+
         override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {
             //包括：顶层的scripted_variable、property
             val type = node.elementType
@@ -92,7 +92,7 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
                 else -> true
             }
         }
-        
+
         override fun skipChildProcessingWhenBuildingStubs(tree: LighterAST, parent: LighterASTNode, node: LighterASTNode): Boolean {
             //包括：顶层的scripted_variable、property
             val type = node.tokenType
@@ -105,16 +105,16 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
                 else -> true
             }
         }
-        
+
         private inline fun <T> skipBlock(node: T, parentProvider: T.() -> T?, typeProvider: T.() -> IElementType): Boolean {
             //优化：跳过深度过高的属性（认为它们不可能是定义）
             var current = node
             var i = 1
             val max = PlsConstants.Settings.maxDefinitionDepth
-            while(true) {
+            while (true) {
                 current = current.parentProvider() ?: break
-                if(current.typeProvider() == BLOCK) i++
-                if(i > max) return true
+                if (current.typeProvider() == BLOCK) i++
+                if (i > max) return true
             }
             return false
         }

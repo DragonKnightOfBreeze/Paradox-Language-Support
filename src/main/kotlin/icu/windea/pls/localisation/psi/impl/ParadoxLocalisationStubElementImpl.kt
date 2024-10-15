@@ -6,8 +6,8 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.localisation.*
 
 open class ParadoxLocalisationStubElementImpl<T : StubElement<*>> : StubBasedPsiElementBase<T> {
-	constructor(stub: T, nodeType: IStubElementType<*, *>?) : super(stub, nodeType!!)
-	constructor(node: ASTNode) : super(node)
-	
-	override fun getLanguage() = ParadoxLocalisationLanguage
+    constructor(stub: T, nodeType: IStubElementType<*, *>?) : super(stub, nodeType!!)
+    constructor(node: ASTNode) : super(node)
+
+    override fun getLanguage() = ParadoxLocalisationLanguage
 }

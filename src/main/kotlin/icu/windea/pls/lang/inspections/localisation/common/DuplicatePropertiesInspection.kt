@@ -21,16 +21,16 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if(element is ParadoxLocalisationPropertyList) visitPropertyList(element)
+                if (element is ParadoxLocalisationPropertyList) visitPropertyList(element)
             }
-            
+
             private fun visitPropertyList(element: ParadoxLocalisationPropertyList) {
                 ProgressManager.checkCanceled()
                 val propertyGroup = element.propertyList.groupBy { it.name }
-                if(propertyGroup.isEmpty()) return
-                for((key, values) in propertyGroup) {
-                    if(values.size <= 1) continue
-                    for(value in values) {
+                if (propertyGroup.isEmpty()) return
+                for ((key, values) in propertyGroup) {
+                    if (values.size <= 1) continue
+                    for (value in values) {
                         //第一个元素指定为file，则是在文档头部弹出，否则从psiElement上通过contextActions显示
                         val location = value.propertyKey
                         val fix = NavigateToDuplicatesFix(key, value, values)
@@ -41,13 +41,13 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
             }
         }
     }
-    
+
     private class NavigateToDuplicatesFix(key: String, element: PsiElement, duplicates: Collection<PsiElement>) : NavigateToFix(key, element, duplicates, true) {
         override fun getText() = PlsBundle.message("inspection.localisation.duplicateProperties.fix.1")
-        
+
         override fun getPopupTitle(editor: Editor) =
             PlsBundle.message("inspection.localisation.duplicateProperties.fix.1.popup.title", key)
-        
+
         override fun getPopupText(editor: Editor, value: PsiElement) =
             PlsBundle.message("inspection.localisation.duplicateProperties.fix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
     }

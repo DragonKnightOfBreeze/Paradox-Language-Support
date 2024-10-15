@@ -13,48 +13,48 @@ import javax.swing.tree.*
 
 //com.intellij.ide.projectView.impl.PackageViewPane
 
-class CwtConfigFilesViewPane(project: Project): AbstractProjectViewPaneWithAsyncSupport(project) {
+class CwtConfigFilesViewPane(project: Project) : AbstractProjectViewPaneWithAsyncSupport(project) {
     companion object {
         const val ID = "CwtConfigFilesPane"
     }
-    
+
     override fun getTitle() = PlsBundle.message("title.cwt.config.files")
-    
+
     override fun getIcon() = AllIcons.Nodes.CopyOfFolder
-    
+
     override fun getId() = ID
-    
+
     override fun getSelectedDirectories(selectedUserObjects: Array<out Any>): Array<PsiDirectory> {
         return super.getSelectedDirectories(selectedUserObjects)
     }
-    
+
     override fun createSelectInTarget(): SelectInTarget {
         return CwtConfigFilesPaneSelectInTarget(myProject)
     }
-    
+
     override fun createStructure(): ProjectAbstractTreeStructureBase {
         return object : ProjectTreeStructure(myProject, ID) {
             override fun createRoot(project: Project, settings: ViewSettings): AbstractTreeNode<*> {
                 return CwtConfigFilesViewProjectNode(project, settings)
             }
-            
+
             override fun isToBuildChildrenInBackground(element: Any): Boolean {
                 return Registry.`is`("ide.projectView.PackageViewTreeStructure.BuildChildrenInBackground")
             }
         }
     }
-    
-        override fun createTree(treeModel: DefaultTreeModel): ProjectViewTree {
+
+    override fun createTree(treeModel: DefaultTreeModel): ProjectViewTree {
         return object : ProjectViewTree(treeModel) {
             override fun toString(): String {
                 return title + " " + super.toString()
             }
         }
     }
-    
+
     //icu.windea.pls.core.projectView.CwtConfigFilesViewProjectNode
     //  icu.windea.pls.core.projectView.CwtConfigGameElementNode
     //    icu.windea.pls.core.projectView.CwtConfigDirectoryElementNode / PsiFiles
-    
+
     override fun getWeight() = 200 //lower than ParadoxFilesViewPane
 }

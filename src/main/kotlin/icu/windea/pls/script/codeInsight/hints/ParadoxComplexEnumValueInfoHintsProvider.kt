@@ -18,25 +18,25 @@ import icu.windea.pls.script.psi.*
  * 复杂枚举值信息的内嵌提示（枚举名）。
  */
 class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
-    
-    
+
+
     private val settingsKey = SettingsKey<NoSettings>("ParadoxComplexEnumValueInfoHintsSettingsKey")
-    
+
     override val name: String get() = PlsBundle.message("script.hints.complexEnumValueInfo")
     override val description: String get() = PlsBundle.message("script.hints.complexEnumValueInfo.description")
     override val key: SettingsKey<NoSettings> get() = settingsKey
-    
+
     override fun createSettings() = NoSettings()
-    
+
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
-        if(element !is ParadoxScriptStringExpressionElement) return true
-        if(!element.isExpression()) return true
+        if (element !is ParadoxScriptStringExpressionElement) return true
+        if (!element.isExpression()) return true
         val name = element.name
-        if(name.isEmpty()) return true
-        if(name.isParameterized()) return true
-        
+        if (name.isEmpty()) return true
+        if (name.isParameterized()) return true
+
         val info = ParadoxComplexEnumValueManager.getInfo(element)
-        if(info != null) {
+        if (info != null) {
             val configGroup = getConfigGroup(file.project, info.gameType)
             val presentation = doCollect(info.enumName, configGroup) ?: return true
             val finalPresentation = presentation.toFinalPresentation(this, file.project)
@@ -44,20 +44,20 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSe
             sink.addInlineElement(endOffset, true, finalPresentation, false)
             return true
         }
-        
+
         val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return true
         val configGroup = config.configGroup
         val type = config.expression.type
-        if(type != CwtDataTypes.EnumValue) return true
+        if (type != CwtDataTypes.EnumValue) return true
         val enumName = config.expression.value ?: return true
         val presentation = doCollect(enumName, configGroup) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
-        
+
         return true
     }
-    
+
     private fun PresentationFactory.doCollect(enumName: String, configGroup: CwtConfigGroup): InlayPresentation? {
         val config = configGroup.complexEnums[enumName] ?: return null
         val presentations = mutableListOf<InlayPresentation>()

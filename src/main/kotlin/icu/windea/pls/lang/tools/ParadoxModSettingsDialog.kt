@@ -19,30 +19,30 @@ class ParadoxModSettingsDialog(
     val settings: ParadoxModSettingsState
 ) : DialogWrapper(project, true) {
     val oldGameType = settings.finalGameType
-    
+
     val defaultGameVersion get() = ParadoxCoreManager.getGameVersionFromGameDirectory(defaultGameDirectory)
     val defaultGameDirectory get() = getSettings().defaultGameDirectories[oldGameType.id]
-    
+
     val graph = PropertyGraph()
     val gameTypeProperty = graph.property(oldGameType)
     val gameVersionProperty = graph.property(settings.gameVersion.orEmpty())
     val gameDirectoryProperty = graph.property(settings.gameDirectory.orEmpty())
-    
+
     init {
         gameVersionProperty.dependsOn(gameDirectoryProperty) { ParadoxCoreManager.getGameVersionFromGameDirectory(gameDirectory).orEmpty() }
     }
-    
+
     var gameType by gameTypeProperty
     var gameVersion by gameVersionProperty
     var gameDirectory by gameDirectoryProperty
     val modDependencies = settings.copyModDependencies()
-    
+
     init {
         title = PlsBundle.message("mod.settings")
         handleModSettings()
         init()
     }
-    
+
     override fun createCenterPanel(): DialogPanel {
         return panel {
             row {
@@ -118,7 +118,7 @@ class ParadoxModSettingsDialog(
                     .align(Align.FILL)
                     .enabled(false)
             }
-            
+
             //modDependencies
             collapsibleGroup(PlsBundle.message("mod.settings.modDependencies"), false) {
                 row {
@@ -131,31 +131,31 @@ class ParadoxModSettingsDialog(
             }.resizableRow()
         }
     }
-    
+
     private fun handleModSettings() {
         //如果需要，加上缺失的模组自身的模组依赖配置
-        if(modDependencies.find { it.modDirectory == settings.modDirectory } == null) {
+        if (modDependencies.find { it.modDirectory == settings.modDirectory } == null) {
             val newSettings = ParadoxModDependencySettingsState()
             newSettings.modDirectory = settings.modDirectory
             modDependencies.add(newSettings)
         }
     }
-    
+
     override fun doOKAction() {
         super.doOKAction()
         doOk()
     }
-    
+
     private fun doOk() {
         settings.gameType = gameType
         settings.gameDirectory = gameDirectory
         settings.modDependencies = modDependencies
         getProfilesSettings().updateSettings()
-        
+
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(settings)
-        
-        if(oldGameType != settings.gameType) {
+
+        if (oldGameType != settings.gameType) {
             messageBus.syncPublisher(ParadoxModGameTypeListener.TOPIC).onChange(settings)
         }
     }

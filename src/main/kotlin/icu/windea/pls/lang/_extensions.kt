@@ -60,10 +60,10 @@ fun String.isParameterAwareIdentifier(vararg extraChars: Char): Boolean {
     val parameterRanges = ParadoxExpressionManager.getParameterRanges(this)
     val ranges = TextRangeUtil.excludeRanges(fullRange, parameterRanges)
     ranges.forEach f@{ range ->
-        for(i in range.startOffset until range.endOffset) {
-            if(i >= this.length) continue
+        for (i in range.startOffset until range.endOffset) {
+            if (i >= this.length) continue
             val c = this[i]
-            if(c.isIdentifierChar() || c in extraChars) continue
+            if (c.isIdentifierChar() || c in extraChars) continue
             return false
         }
     }
@@ -82,11 +82,11 @@ fun String.isInlineUsage(): Boolean {
     return this.equals(ParadoxInlineScriptManager.inlineScriptKey, true)
 }
 
-fun String?.orAnonymous() = if(isNullOrEmpty()) PlsConstants.anonymousString else this
+fun String?.orAnonymous() = if (isNullOrEmpty()) PlsConstants.anonymousString else this
 
-fun String?.orUnknown() = if(isNullOrEmpty()) PlsConstants.unknownString else this
+fun String?.orUnknown() = if (isNullOrEmpty()) PlsConstants.unknownString else this
 
-fun String?.orUnresolved() = if(isNullOrEmpty()) PlsConstants.unresolvedString else this
+fun String?.orUnresolved() = if (isNullOrEmpty()) PlsConstants.unresolvedString else this
 
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
     return when {
@@ -158,7 +158,7 @@ private fun String.toLocale(from: PsiElement): CwtLocalisationLocaleConfig? {
  * 基于注解[WithGameType]判断目标对象是否支持当前游戏类型。
  */
 fun ParadoxGameType?.supportsByAnnotation(target: Any): Boolean {
-    if(this == null) return true
+    if (this == null) return true
     val targetGameType = target.javaClass.getAnnotation(WithGameType::class.java)?.value
     return targetGameType == null || this in targetGameType
 }
@@ -170,10 +170,10 @@ infix fun String.compareGameVersion(otherVersion: String): Int {
     val versionSnippets = this.split('.')
     val otherVersionSnippets = otherVersion.split('.')
     val minSnippetSize = min(versionSnippets.size, otherVersionSnippets.size)
-    for(i in 0 until minSnippetSize) {
+    for (i in 0 until minSnippetSize) {
         val versionSnippet = versionSnippets[i]
         val otherVersionSnippet = otherVersionSnippets[i]
-        if(versionSnippet == otherVersionSnippet || versionSnippet == "*" || otherVersion == "*") continue
+        if (versionSnippet == otherVersionSnippet || versionSnippet == "*" || otherVersion == "*") continue
         return versionSnippet.compareTo(otherVersionSnippet)
     }
     return 0

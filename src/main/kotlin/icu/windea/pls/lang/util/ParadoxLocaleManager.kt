@@ -12,7 +12,7 @@ object ParadoxLocaleManager {
     fun getPreferredLocaleConfig(): CwtLocalisationLocaleConfig {
         return getLocaleConfig(getSettings().preferredLocale.orEmpty())
     }
-    
+
     fun getLocaleInDocumentation(element: PsiElement): CwtLocalisationLocaleConfig? {
         val cache = element.getUserData(PlsKeys.documentationLocale) ?: return null
         val localeFromCache = when {
@@ -21,7 +21,7 @@ object ParadoxLocaleManager {
         }
         return localeFromCache
     }
-    
+
     fun getUsedLocaleInDocumentation(element: PsiElement, defaultLocale: CwtLocalisationLocaleConfig? = null): CwtLocalisationLocaleConfig {
         val cache = element.getOrPutUserData(PlsKeys.documentationLocale) { defaultLocale?.id ?: "auto" }
         val localeFromCache = when {
@@ -30,34 +30,34 @@ object ParadoxLocaleManager {
         }
         return localeFromCache
     }
-    
+
     fun getLocaleConfig(localeString: String): CwtLocalisationLocaleConfig {
         //基于localeString得到对应的语言区域
-        if(localeString.isNotEmpty() && localeString != "auto") {
+        if (localeString.isNotEmpty() && localeString != "auto") {
             val localesById = getConfigGroup(null).localisationLocalesById
             val locale = localesById.get(localeString)
-            if(locale != null) return locale
+            if (locale != null) return locale
         }
         //基于OS得到对应的语言区域，或者使用英文
         val userLanguage = System.getProperty("user.language") ?: "en"
         val localesByCode = getConfigGroup(null).localisationLocalesByCode
         return localesByCode.get(userLanguage) ?: localesByCode.get("en") ?: throw IllegalStateException()
     }
-    
+
     fun getLocaleConfigById(id: String): CwtLocalisationLocaleConfig? {
         return getConfigGroup(null).localisationLocalesById[id]
     }
-    
+
     fun getLocaleConfigs(pingPreferred: Boolean = true, noDefault: Boolean = true): List<CwtLocalisationLocaleConfig> {
         var locales: Collection<CwtLocalisationLocaleConfig> = getConfigGroup(null).localisationLocalesById.values
-        if(pingPreferred) {
+        if (pingPreferred) {
             val preferredLocale = getPreferredLocaleConfig()
             locales = locales.pinned { it == preferredLocale }
         }
-        if(noDefault) {
+        if (noDefault) {
             locales = locales.filter { it.id != "l_default" }
         }
         return locales.toListOrThis()
     }
-    
+
 }

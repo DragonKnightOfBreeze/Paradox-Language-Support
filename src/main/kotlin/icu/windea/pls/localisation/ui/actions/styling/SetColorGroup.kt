@@ -14,21 +14,21 @@ class SetColorGroup : DefaultActionGroup() {
             .weakKeys()
             .build(CacheLoader.from<ParadoxTextColorInfo, SetColorAction> { SetColorAction(it) })
     }
-    
+
     override fun update(e: AnActionEvent) {
         val editor = e.getData(CommonDataKeys.EDITOR)
-        if(editor == null) return
+        if (editor == null) return
         val file = e.getData(CommonDataKeys.PSI_FILE) ?: return
-        if(file !is ParadoxLocalisationFile) return
+        if (file !is ParadoxLocalisationFile) return
         val colorConfigs = ParadoxTextColorManager.getInfos(file.project, file)
-        if(colorConfigs.isEmpty()) return
+        if (colorConfigs.isEmpty()) return
         val actions = colorConfigs.map { setColorActionCache.get(it) }
         synchronized(this) {
             removeAll()
             addAll(actions)
         }
     }
-    
+
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }

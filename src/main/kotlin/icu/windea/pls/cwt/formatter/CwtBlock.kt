@@ -22,15 +22,15 @@ class CwtBlock(
         private val SHOULD_INDENT_PARENT_TYPES = TokenSet.create(BLOCK)
         private val SHOULD_INDENT_TYPES = TokenSet.create(PROPERTY, VALUE, BOOLEAN, INT, FLOAT, STRING, BLOCK, COMMENT, DOCUMENTATION_COMMENT, OPTION_COMMENT)
         private val SHOULD_CHILD_INDENT_TYPES = TokenSet.create(BLOCK)
-        
+
         private fun createWrap(): Wrap? {
             return null
         }
-        
+
         private fun createAlignment(): Alignment? {
             return null
         }
-        
+
         private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
             //变量声明分隔符周围的空格，属性分隔符周围的空格
             val customSettings = settings.getCustomSettings(CwtCodeStyleSettings::class.java)
@@ -42,9 +42,9 @@ class CwtBlock(
                 .withinPair(LEFT_BRACE, RIGHT_BRACE).spaceIf(customSettings.SPACE_WITHIN_BRACES, true) //花括号内侧按情况可能需要空格
         }
     }
-    
+
     private val spacingBuilder = createSpacingBuilder(settings)
-    
+
     override fun buildChildren(): List<Block> {
         val children = mutableListOf<Block>()
         myNode.processChild { node ->
@@ -53,7 +53,7 @@ class CwtBlock(
         }
         return children
     }
-    
+
     override fun getIndent(): Indent? {
         //配置缩进
         //block中的property、value、comment、documentation_comment和option_comment需要缩进
@@ -64,7 +64,7 @@ class CwtBlock(
             else -> Indent.getNoneIndent()
         }
     }
-    
+
     override fun getChildIndent(): Indent? {
         //配置换行时的自动缩进
         //在file和rootBlock中不要缩进
@@ -77,11 +77,11 @@ class CwtBlock(
             else -> null
         }
     }
-    
+
     override fun getSpacing(child1: Block?, child2: Block): Spacing? {
         return spacingBuilder.getSpacing(this, child1, child2)
     }
-    
+
     override fun isLeaf(): Boolean {
         return myNode.firstChildNode == null
     }

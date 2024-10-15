@@ -16,13 +16,13 @@ import javax.swing.*
  */
 class CwtConfigGroupEditorNotificationProvider : EditorNotificationProvider, DumbAware {
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
-        if(file.fileType != CwtFileType) return null
-        
+        if (file.fileType != CwtFileType) return null
+
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         val fileProvider = fileProviders.find { it.getContainingConfigGroup(file, project) != null }
-        if(fileProvider == null) return null
+        if (fileProvider == null) return null
         val message = fileProvider.getNotificationMessage()
-        
+
         return Function { fileEditor ->
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info).text(message)
             panel.createActionLabel(PlsBundle.message("configGroup.config.file.guidance")) {

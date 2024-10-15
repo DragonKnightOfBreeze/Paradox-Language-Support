@@ -8,11 +8,11 @@ import com.intellij.util.xmlb.*
 @State(name = "ParadoxCallHierarchyBrowserSettings", storages = [Storage(StoragePathMacros.WORKSPACE_FILE)])
 class ParadoxCallHierarchyBrowserSettings : PersistentStateComponent<ParadoxCallHierarchyBrowserSettings>, icu.windea.pls.lang.hierarchy.ParadoxHierarchyBrowserSettings {
     override var scopeType: String = "all"
-    
+
     override fun getState() = this
-    
+
     override fun loadState(state: ParadoxCallHierarchyBrowserSettings) = XmlSerializerUtil.copyBean(state, this)
-    
+
     companion object {
         @JvmStatic
         fun getInstance(project: Project) = project.service<ParadoxCallHierarchyBrowserSettings>()

@@ -14,7 +14,7 @@ interface CwtScopeGroupConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfi
     val name: String
     val values: Set<@CaseInsensitive String>
     val valueConfigMap: Map<@CaseInsensitive String, CwtValueConfig>
-    
+
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig): CwtScopeGroupConfig? = doResolve(config)
     }
@@ -24,10 +24,10 @@ interface CwtScopeGroupConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfi
 private fun doResolve(config: CwtPropertyConfig): CwtScopeGroupConfig? {
     val name = config.key
     val propertyConfigValues = config.values ?: return null
-    if(propertyConfigValues.isEmpty()) return CwtScopeGroupConfigImpl(config, name, emptySet(), emptyMap())
+    if (propertyConfigValues.isEmpty()) return CwtScopeGroupConfigImpl(config, name, emptySet(), emptyMap())
     val values = caseInsensitiveStringSet() //忽略大小写
     val valueConfigMap = caseInsensitiveStringKeyMap<CwtValueConfig>() //忽略大小写
-    for(propertyConfigValue in propertyConfigValues) {
+    for (propertyConfigValue in propertyConfigValues) {
         values.add(propertyConfigValue.value)
         valueConfigMap.put(propertyConfigValue.value, propertyConfigValue)
     }

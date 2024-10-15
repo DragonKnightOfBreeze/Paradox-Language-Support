@@ -19,21 +19,21 @@ import icu.windea.pls.script.psi.*
 class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
     // e.g.
     // cwt:stellaris:types/civic_or_origin/civic
-    
+
     companion object {
         const val LINK_PREFIX = "cwt:"
     }
-    
+
     override val linkPrefix = LINK_PREFIX
-    
+
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
         val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
         val tokens = remain.split('/')
         val category = tokens.getOrNull(0) ?: return null
-        return when(category) {
+        return when (category) {
             "types" -> {
-                if(tokens.isEmpty() || tokens.size > 3) return null
+                if (tokens.isEmpty() || tokens.size > 3) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1)
                 val subtypeName = tokens.getOrNull(2)
@@ -45,74 +45,74 @@ class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
                 return config.pointer.element
             }
             "values" -> {
-                if(tokens.isEmpty() || tokens.size > 3) return null
+                if (tokens.isEmpty() || tokens.size > 3) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
                 val valueName = tokens.getOrNull(2)
                 val config = getConfigGroup(project, gameType).dynamicValueTypes[name] ?: return null
-                if(valueName == null) return config.pointer.element
+                if (valueName == null) return config.pointer.element
                 return config.valueConfigMap.get(valueName)?.pointer?.element
             }
             "enums" -> {
-                if(tokens.isEmpty() || tokens.size > 3) return null
+                if (tokens.isEmpty() || tokens.size > 3) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
                 val valueName = tokens.getOrNull(2)
                 val config = getConfigGroup(project, gameType).enums[name] ?: return null
-                if(valueName == null) return config.pointer.element
+                if (valueName == null) return config.pointer.element
                 return config.valueConfigMap.get(valueName)?.pointer?.element
             }
             "complex_enums" -> {
-                if(tokens.isEmpty() || tokens.size > 2) return null
+                if (tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
                 val config = getConfigGroup(project, gameType).complexEnums[name] ?: return null
                 return config.pointer.element
             }
             "scopes" -> {
-                if(tokens.isEmpty() || tokens.size > 2) return null
+                if (tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
                 val config = getConfigGroup(project, gameType).scopeAliasMap[name] ?: return null
                 return config.pointer.element
             }
             "system_scopes" -> {
-                if(tokens.isEmpty() || tokens.size > 2) return null
+                if (tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
                 val config = getConfigGroup(project, gameType).systemScopes[name] ?: return null
                 return config.pointer.element
             }
             "links" -> {
-                if(tokens.isEmpty() || tokens.size > 2) return null
+                if (tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
                 val config = getConfigGroup(project, gameType).links[name] ?: return null
                 return config.pointer.element
             }
             "localisation_links" -> {
-                if(tokens.isEmpty() || tokens.size > 2) return null
+                if (tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
                 val config = getConfigGroup(project, gameType).localisationLinks[name] ?: return null
                 return config.pointer.element
             }
             "localisation_commands" -> {
-                if(tokens.isEmpty() || tokens.size > 2) return null
+                if (tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
                 val config = getConfigGroup(project, gameType).localisationCommands[name] ?: return null
                 return config.pointer.element
             }
             "modifier_categories" -> {
-                if(tokens.isEmpty() || tokens.size > 2) return null
+                if (tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
                 val config = getConfigGroup(project, gameType).modifierCategories[name] ?: return null
                 return config.pointer.element
             }
             "modifiers" -> {
-                if(tokens.isEmpty() || tokens.size > 2) return null
+                if (tokens.isEmpty() || tokens.size > 2) return null
                 val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
                 val config = getConfigGroup(project, gameType).modifiers[name] ?: return null
@@ -121,13 +121,13 @@ class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
             else -> null
         }
     }
-    
+
     override fun getUnresolvedMessage(link: String): String {
         return PlsBundle.message("path.reference.unresolved.cwt", link)
     }
-    
+
     override fun create(element: PsiElement, plainLink: Boolean): String? {
-        if(element !is CwtProperty && element !is CwtValue) return null
+        if (element !is CwtProperty && element !is CwtValue) return null
         val config = element.getUserData(PlsKeys.bindingConfig) ?: return null //retrieve config from user data
         //这里目前仅支持可能用到的那些
         val builder = StringBuilder()
@@ -165,13 +165,13 @@ class ParadoxScriptedVariableLinkProvider : ParadoxDocumentationLinkProvider {
     // e.g.
     // pdx-sv:some_sv
     // pdx-sv:stellaris:some_sv
-    
+
     companion object {
         const val LINK_PREFIX = "pdx-sv:"
     }
-    
+
     override val linkPrefix = LINK_PREFIX
-    
+
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
         val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
@@ -181,13 +181,13 @@ class ParadoxScriptedVariableLinkProvider : ParadoxDocumentationLinkProvider {
             .withGameType(gameType)
         return ParadoxGlobalScriptedVariableSearch.search(name, selector).find() //global scripted variable only
     }
-    
+
     override fun getUnresolvedMessage(link: String): String {
         return PlsBundle.message("path.reference.unresolved.sv", link)
     }
-    
+
     override fun create(element: PsiElement, plainLink: Boolean): String? {
-        if(element !is ParadoxScriptScriptedVariable) return null
+        if (element !is ParadoxScriptScriptedVariable) return null
         val gameType = selectGameType(element)
         val name = element.name
         val link = "${linkPrefix}${gameType.prefix}${name}"
@@ -202,35 +202,35 @@ class ParadoxDefinitionLinkProvider : ParadoxDocumentationLinkProvider {
     // pdx-def:origin_default
     // pdx-def:civic_or_origin.origin/origin_default
     // pdx-def:stellaris:civic_or_origin.origin/origin_default
-    
+
     companion object {
         const val LINK_PREFIX = "pdx-def:"
     }
-    
+
     override val linkPrefix = LINK_PREFIX
-    
+
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
         val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
         val tokens = remain.split('/')
-        if(tokens.isEmpty() || tokens.size > 2) return null
-        val typeExpression = if(tokens.size == 2) tokens.getOrNull(0) else null
-        val name = if(tokens.size == 2) tokens.getOrNull(1) else tokens.getOrNull(0)
-        if(name == null) return null
+        if (tokens.isEmpty() || tokens.size > 2) return null
+        val typeExpression = if (tokens.size == 2) tokens.getOrNull(0) else null
+        val name = if (tokens.size == 2) tokens.getOrNull(1) else tokens.getOrNull(0)
+        if (name == null) return null
         val project = contextElement.project
         val selector = definitionSelector(project, contextElement).contextSensitive()
             .withGameType(gameType)
         return ParadoxDefinitionSearch.search(name, typeExpression, selector).find()
     }
-    
+
     override fun getUnresolvedMessage(link: String): String {
         return PlsBundle.message("path.reference.unresolved.def", link)
     }
-    
+
     override fun create(element: PsiElement, plainLink: Boolean): String? {
-        if(element !is ParadoxScriptDefinitionElement) return null
+        if (element !is ParadoxScriptDefinitionElement) return null
         val definitionInfo = element.definitionInfo ?: return null
-        if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
+        if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
         val gameType = definitionInfo.gameType
         val name = definitionInfo.name
         val typesText = definitionInfo.types.joinToString(".")
@@ -245,13 +245,13 @@ class ParadoxLocalisationLinkProvider : ParadoxDocumentationLinkProvider {
     // e.g.
     // pdx-loc:KEY
     // pdx-loc:stellaris:KEY
-    
+
     companion object {
         const val LINK_PREFIX = "pdx-loc:"
     }
-    
+
     override val linkPrefix = LINK_PREFIX
-    
+
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
         val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
@@ -261,15 +261,15 @@ class ParadoxLocalisationLinkProvider : ParadoxDocumentationLinkProvider {
             .withGameType(gameType)
         return ParadoxLocalisationSearch.search(name, selector).find()
     }
-    
+
     override fun getUnresolvedMessage(link: String): String {
         return PlsBundle.message("path.reference.unresolved.loc", link)
     }
-    
+
     override fun create(element: PsiElement, plainLink: Boolean): String? {
-        if(element !is ParadoxLocalisationProperty) return null
+        if (element !is ParadoxLocalisationProperty) return null
         val localisationInfo = element.localisationInfo ?: return null
-        if(localisationInfo.category != ParadoxLocalisationCategory.Localisation) return null
+        if (localisationInfo.category != ParadoxLocalisationCategory.Localisation) return null
         val name = localisationInfo.name
         val gameType = localisationInfo.gameType
         val link = "${linkPrefix}${gameType.prefix}${name}"
@@ -279,17 +279,17 @@ class ParadoxLocalisationLinkProvider : ParadoxDocumentationLinkProvider {
     }
 }
 
-class ParadoxFilePathLinkProvider: ParadoxDocumentationLinkProvider {
+class ParadoxFilePathLinkProvider : ParadoxDocumentationLinkProvider {
     // e.g. 
     // pdx-path:path
     // pdx-path:stellaris:path
-    
+
     companion object {
         const val LINK_PREFIX = "pdx-path:"
     }
-    
+
     override val linkPrefix = LINK_PREFIX
-    
+
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         //can be resolved to file or directory
         ProgressManager.checkCanceled()
@@ -300,36 +300,36 @@ class ParadoxFilePathLinkProvider: ParadoxDocumentationLinkProvider {
             .withGameType(gameType)
         return ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFileSystemItem(project)
     }
-    
+
     override fun getUnresolvedMessage(link: String): String {
         return PlsBundle.message("path.reference.unresolved.path", link)
     }
-    
+
     override fun create(element: PsiElement, plainLink: Boolean): String? {
         return null //unsupported since unnecessary
     }
 }
 
-class ParadoxModifierLinkProvider: ParadoxDocumentationLinkProvider {
+class ParadoxModifierLinkProvider : ParadoxDocumentationLinkProvider {
     // e.g.
     // modifier:job_researcher_add
-    
+
     companion object {
         const val LINK_PREFIX = "modifier:"
     }
-    
+
     override val linkPrefix = LINK_PREFIX
-    
+
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
         val name = link.drop(LINK_PREFIX.length)
         return ParadoxModifierManager.resolveModifier(name, contextElement)
     }
-    
+
     override fun getUnresolvedMessage(link: String): String {
         return PlsBundle.message("path.reference.unresolved.modifier", link)
     }
-    
+
     override fun create(element: PsiElement, plainLink: Boolean): String? {
         return null //unsupported since unnecessary
     }
@@ -337,6 +337,6 @@ class ParadoxModifierLinkProvider: ParadoxDocumentationLinkProvider {
 
 private fun getGameTypeAndRemain(shortLink: String): Tuple2<ParadoxGameType?, String> {
     val i = shortLink.indexOf(':')
-    if(i == -1) return null to shortLink
+    if (i == -1) return null to shortLink
     return shortLink.substring(0, i).let { ParadoxGameType.resolve(it) } to shortLink.substring(i + 1)
 }

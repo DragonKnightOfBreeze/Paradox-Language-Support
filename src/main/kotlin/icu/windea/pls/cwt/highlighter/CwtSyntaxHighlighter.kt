@@ -26,11 +26,11 @@ class CwtSyntaxHighlighter : SyntaxHighlighter {
         private val INVALID_ESCAPE_KEYS = arrayOf(CwtAttributesKeys.INVALID_ESCAPE_KEY)
         private val BAD_CHARACTER_KEYS = arrayOf(CwtAttributesKeys.BAD_CHARACTER_KEY)
         private val EMPTY_KEYS = TextAttributesKey.EMPTY_ARRAY
-        
+
         private const val additionalValidEscapes = "$"
     }
-    
-    override fun getTokenHighlights(tokenType: IElementType?) = when(tokenType) {
+
+    override fun getTokenHighlights(tokenType: IElementType?) = when (tokenType) {
         LEFT_BRACE, RIGHT_BRACE -> BRACES_KEYS
         EQUAL_SIGN, NOT_EQUAL_SIGN -> OPERATOR_KEYS
         COMMENT -> COMMENT_KEYS
@@ -46,7 +46,7 @@ class CwtSyntaxHighlighter : SyntaxHighlighter {
         BAD_CHARACTER -> BAD_CHARACTER_KEYS
         else -> EMPTY_KEYS
     }
-    
+
     override fun getHighlightingLexer(): Lexer {
         val lexer = LayeredLexer(CwtLexer())
         val lexer1 = StringLiteralLexer(NO_QUOTE_CHAR, PROPERTY_KEY_TOKEN, false, additionalValidEscapes, false, false)

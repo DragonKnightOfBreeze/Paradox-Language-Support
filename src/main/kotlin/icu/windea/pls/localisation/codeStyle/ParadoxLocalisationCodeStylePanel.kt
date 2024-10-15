@@ -5,12 +5,12 @@ import com.intellij.psi.codeStyle.*
 import icu.windea.pls.localisation.*
 
 class ParadoxLocalisationCodeStylePanel(
-	currentSettings: CodeStyleSettings,
-	settings: CodeStyleSettings
+    currentSettings: CodeStyleSettings,
+    settings: CodeStyleSettings
 ) : TabbedLanguageCodeStylePanel(ParadoxLocalisationLanguage, currentSettings, settings) {
-	override fun initTabs(settings: CodeStyleSettings) {
-		addIndentOptionsTab(settings)
-		addBlankLinesTab(settings)
-		addTab(GenerationCodeStylePanel(settings, ParadoxLocalisationLanguage))
-	}
+    override fun initTabs(settings: CodeStyleSettings) {
+        addIndentOptionsTab(settings)
+        addBlankLinesTab(settings)
+        addTab(GenerationCodeStylePanel(settings, ParadoxLocalisationLanguage))
+    }
 }

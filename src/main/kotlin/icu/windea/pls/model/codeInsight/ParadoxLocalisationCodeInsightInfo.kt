@@ -18,7 +18,7 @@ data class ParadoxLocalisationCodeInsightInfo(
         ModifierName, ModifierDesc,
         Reference
     }
-    
+
     val key = when {
         relatedLocalisationInfo != null -> "@${relatedLocalisationInfo.key}@${locale.id}"
         name != null -> "$name@${locale.id}"

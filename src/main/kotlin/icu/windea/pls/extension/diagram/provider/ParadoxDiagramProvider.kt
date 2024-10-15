@@ -18,38 +18,38 @@ abstract class ParadoxDiagramProvider(
         private val EmptyDiagramVisibilityManager: DiagramVisibilityManager = EmptyDiagramVisibilityManager()
         private val VfsResolver = ParadoxRootVfsResolver()
     }
-    
+
     private val _relationshipManager by lazy { ParadoxRelationshipManager() }
     private val _extra by lazy { ParadoxDiagramExtras(this) }
-    
+
     override fun getVfsResolver(): DiagramVfsResolver<PsiElement> {
         return VfsResolver
     }
-    
+
     override fun createVisibilityManager(): DiagramVisibilityManager {
         return EmptyDiagramVisibilityManager
     }
-    
+
     override fun createScopeManager(project: Project): DiagramScopeManager<PsiElement>? {
         return DiagramPsiScopeManager(project)
     }
-    
+
     override fun getRelationshipManager(): DiagramRelationshipManager<PsiElement> {
         return _relationshipManager
     }
-    
+
     override fun getExtras(): DiagramExtras<PsiElement> {
         return _extra
     }
-    
+
     open fun getAdditionalDiagramSettings(): Array<out DiagramConfigGroup> {
         return DiagramConfigGroup.EMPTY
     }
-    
+
     open fun getScopeTypes(project: Project, context: PsiElement?): List<ParadoxSearchScopeType>? {
         return ParadoxSearchScopeTypes.getScopeTypes(project, context)
     }
-    
+
     open fun getDiagramSettings(project: Project): ParadoxDiagramSettings<*>? {
         return null
     }

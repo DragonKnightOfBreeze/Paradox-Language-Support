@@ -30,30 +30,30 @@ enum class ParadoxGameType(
     Hoi4("hoi4", "Hearts of Iron IV", "hoi4", "394360") {
         override val entryPaths = setOf("jomini")
     },
-    Ir("ir", "Imperator: Rome", "ir","859580") {
+    Ir("ir", "Imperator: Rome", "ir", "859580") {
         override val entryPaths = setOf("jomini")
     },
-    Vic2("vic2", "Victoria 2", "victoria2","42960") {
+    Vic2("vic2", "Victoria 2", "victoria2", "42960") {
         override val entryPaths = setOf("jomini")
     },
-    Vic3("vic3", "Victoria 3","victoria3" ,"529340") {
+    Vic3("vic3", "Victoria 3", "victoria3", "529340") {
         override val entryPaths = setOf("jomini")
     },
     ;
-    
+
     open val entryPaths: Set<String> = emptySet()
-    
+
     override fun toString() = title
-    
+
     companion object {
         private val valueMap = entries.associateBy { it.id }
-        
+
         @JvmStatic
         fun resolve(id: String) = valueMap[id]
-        
+
         @JvmStatic
         fun canResolve(id: String) = id == "core" || valueMap.containsKey(id)
-        
+
         @JvmStatic
         fun placeholder() = Stellaris
     }
@@ -63,6 +63,6 @@ val ParadoxGameType?.id get() = this?.id ?: "core"
 
 val ParadoxGameType?.title get() = this?.title ?: "Core"
 
-val ParadoxGameType?.prefix get() = if(this == null) "" else "${id}:"
+val ParadoxGameType?.prefix get() = if (this == null) "" else "${id}:"
 
 fun ParadoxGameType?.orDefault() = this ?: getSettings().defaultGameType

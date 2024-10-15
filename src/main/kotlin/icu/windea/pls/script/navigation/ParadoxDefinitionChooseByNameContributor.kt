@@ -19,7 +19,7 @@ class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         StubIndex.getInstance().processAllKeys(ParadoxDefinitionNameIndex.KEY, processor, scope, filter)
     }
-    
+
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
         StubIndex.getInstance().processElements(
             ParadoxDefinitionNameIndex.KEY, name, parameters.project, parameters.searchScope, parameters.idFilter,

@@ -21,48 +21,48 @@ class CwtMemberConfigElement(
     val config: CwtMemberConfig<*>,
     val gameType: ParadoxGameType,
     private val project: Project
-): ParadoxFakePsiElement(parent) {
+) : ParadoxFakePsiElement(parent) {
     override fun getIcon(): Icon {
-        return when(config) {
+        return when (config) {
             is CwtPropertyConfig -> PlsIcons.CwtNodes.Property
             is CwtValueConfig -> PlsIcons.CwtNodes.Value
         }
     }
-    
+
     override fun getName(): String {
         return config.expression.expressionString
     }
-    
+
     override fun getTypeName(): String {
-        return when(config) {
+        return when (config) {
             is CwtPropertyConfig -> PlsBundle.message("cwt.description.property")
             is CwtValueConfig -> PlsBundle.message("cwt.description.value")
         }
     }
-    
+
     override fun getText(): String {
         return config.toString()
     }
-    
+
     override fun getPresentation(): ItemPresentation {
         return CwtItemPresentation(this)
     }
-    
+
     override fun getLanguage(): Language {
         return CwtLanguage
     }
-    
+
     override fun getProject(): Project {
         return project
     }
-    
+
     override fun equals(other: Any?): Boolean {
         return other is CwtMemberConfigElement &&
             config == other.config &&
             project == other.project &&
             gameType == other.gameType
     }
-    
+
     override fun hashCode(): Int {
         return Objects.hash(config, project, gameType)
     }

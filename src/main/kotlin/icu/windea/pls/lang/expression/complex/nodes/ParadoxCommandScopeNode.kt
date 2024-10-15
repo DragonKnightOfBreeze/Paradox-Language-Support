@@ -22,19 +22,19 @@ class ParadoxCommandScopeNode(
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY
     }
-    
+
     override fun getReference(element: ParadoxExpressionElement): Reference {
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         val resolved = config.pointer.element?.bindConfig(config)
         return Reference(element, rangeInElement, resolved)
     }
-    
+
     class Reference(element: PsiElement, rangeInElement: TextRange, resolved: CwtProperty?) :
         PsiResolvedReference<CwtProperty>(element, rangeInElement, resolved)
-    
+
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxCommandScopeNode? {
-            if(text.isParameterized()) return null
+            if (text.isParameterized()) return null
             val config = configGroup.localisationLinks[text] ?: return null
             return ParadoxCommandScopeNode(text, textRange, configGroup, config)
         }

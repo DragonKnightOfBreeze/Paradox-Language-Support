@@ -19,11 +19,12 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInfo
         val dynamicValueTypes: Set<String>,
         override val selector: ChainedParadoxSelector<ParadoxDynamicValueInfo>
     ) : ParadoxSearchParameters<ParadoxDynamicValueInfo>
-    
+
     companion object {
         val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxDynamicValueInfo, SearchParameters>>("icu.windea.pls.search.dynamicValueSearch")
-        @JvmField val INSTANCE = ParadoxDynamicValueSearch()
-        
+        @JvmField
+        val INSTANCE = ParadoxDynamicValueSearch()
+
         /**
          * @see icu.windea.pls.lang.search.ParadoxDynamicValueSearch.SearchParameters
          */
@@ -33,9 +34,9 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInfo
             dynamicValueType: String,
             selector: ChainedParadoxSelector<ParadoxDynamicValueInfo>
         ): ParadoxQuery<ParadoxDynamicValueInfo, SearchParameters> {
-            return INSTANCE.createParadoxQuery(SearchParameters(name,  setOf(dynamicValueType), selector))
+            return INSTANCE.createParadoxQuery(SearchParameters(name, setOf(dynamicValueType), selector))
         }
-        
+
         /**
          * @see icu.windea.pls.lang.search.ParadoxDynamicValueSearch.SearchParameters
          */
@@ -47,7 +48,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInfo
         ): ParadoxQuery<ParadoxDynamicValueInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, dynamicValueTypes, selector))
         }
-        
+
         /**
          * @see icu.windea.pls.lang.search.ParadoxDynamicValueSearch.SearchParameters
          */
@@ -58,7 +59,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInfo
         ): ParadoxQuery<ParadoxDynamicValueInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(null, setOf(dynamicValueType), selector))
         }
-        
+
         /**
          * @see icu.windea.pls.lang.search.ParadoxDynamicValueSearch.SearchParameters
          */

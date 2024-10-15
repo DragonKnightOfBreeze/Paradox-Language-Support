@@ -20,16 +20,16 @@ class ParadoxValueFieldPrefixNode(
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.VALUE_FIELD_PREFIX_KEY
     }
-    
+
     override fun getReference(element: ParadoxExpressionElement): Reference {
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         val resolved = linkConfigs.mapNotNull { it.pointer.element?.bindConfig(it) }
         return Reference(element, rangeInElement, resolved)
     }
-    
+
     class Reference(element: ParadoxExpressionElement, rangeInElement: TextRange, resolved: List<CwtProperty>) :
         PsiResolvedPolyVariantReference<CwtProperty>(element, rangeInElement, resolved)
-    
+
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxValueFieldPrefixNode {
             return ParadoxValueFieldPrefixNode(text, textRange, configGroup, linkConfigs)

@@ -20,12 +20,12 @@ import icu.windea.pls.lang.navigation.ParadoxGotoRelatedItem.Companion as Parado
  */
 class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("localisation.gutterIcon.localisation")
-    
+
     override fun getIcon() = PlsIcons.Gutter.Localisation
-    
+
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
         //何时显示装订线图标：element是localisation/localisation_synced
-        if(element !is ParadoxLocalisationProperty) return
+        if (element !is ParadoxLocalisationProperty) return
         val locationElement = element.propertyKey.propertyKeyId
         val name = element.name
         val category = element.category ?: return
@@ -36,7 +36,7 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
         val targets by lazy {
             val project = element.project
             val selector = localisationSelector(project, element).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            when(category) {
+            when (category) {
                 Localisation -> ParadoxLocalisationSearch.search(name, selector).findAll()
                 SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll()
             }
@@ -55,7 +55,7 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
         //)
         result.add(lineMarkerInfo)
     }
-    
+
     private fun createGotoRelatedItem(targets: Collection<ParadoxLocalisationProperty>): Collection<GotoRelatedItem> {
         return ParadoxGotoRelatedItem1.createItems(targets, PlsBundle.message("localisation.gutterIcon.localisation.group"))
     }

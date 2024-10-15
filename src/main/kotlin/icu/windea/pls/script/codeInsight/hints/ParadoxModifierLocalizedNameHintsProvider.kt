@@ -29,15 +29,15 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Set
         var textLengthLimit: Int = 30,
         var iconHeightLimit: Int = 32
     )
-    
+
     private val settingsKey = SettingsKey<Settings>("ParadoxModifierLocalizedNameHintsSettingsKey")
-    
+
     override val name: String get() = PlsBundle.message("script.hints.modifierLocalizedName")
     override val description: String get() = PlsBundle.message("script.hints.modifierLocalizedName.description")
     override val key: SettingsKey<Settings> get() = settingsKey
-    
+
     override fun createSettings() = Settings()
-    
+
     override fun createConfigurable(settings: Settings): ImmediateConfigurable {
         return object : ImmediateConfigurable {
             override fun createComponent(listener: ChangeListener): JComponent = panel {
@@ -46,16 +46,16 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Set
             }
         }
     }
-    
+
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-        if(element !is ParadoxScriptStringExpressionElement) return true
-        if(!element.isExpression()) return true
+        if (element !is ParadoxScriptStringExpressionElement) return true
+        if (!element.isExpression()) return true
         val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return true
         val type = config.expression.type
-        if(type == CwtDataTypes.Modifier) {
+        if (type == CwtDataTypes.Modifier) {
             val name = element.value
-            if(name.isEmpty()) return true
-            if(name.isParameterized()) return true
+            if (name.isEmpty()) return true
+            if (name.isParameterized()) return true
             val configGroup = config.configGroup
             val project = configGroup.project
             val keys = ParadoxModifierManager.getModifierNameKeys(name, element)
@@ -72,7 +72,7 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Set
         }
         return true
     }
-    
+
     private fun PresentationFactory.doCollect(localisation: ParadoxLocalisationProperty, editor: Editor, settings: Settings): InlayPresentation? {
         return ParadoxLocalisationTextInlayRenderer.render(localisation, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
     }

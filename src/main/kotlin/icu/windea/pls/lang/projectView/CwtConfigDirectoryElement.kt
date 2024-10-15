@@ -20,16 +20,16 @@ class CwtConfigDirectoryElement(
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val dir = rootDirectory.findChild(gameTypeId) ?: return@f
             val file = VfsUtil.findRelativeFile(dir, path) ?: return@f
-            if(file.isDirectory) roots += file
+            if (file.isDirectory) roots += file
         }
         return roots
     }
-    
+
     override fun equals(other: Any?): Boolean {
-        if(this === other) return true
+        if (this === other) return true
         return other is CwtConfigDirectoryElement && project == other.project && path == other.path && gameType == other.gameType
     }
-    
+
     override fun hashCode(): Int {
         return Objects.hash(project, path, gameType)
     }

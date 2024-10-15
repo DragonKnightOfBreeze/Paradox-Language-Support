@@ -7,14 +7,14 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptInlineParameterConditionUnwrapper : ParadoxScriptUnwrapper() {
     override fun getDescription(e: PsiElement): String {
-        val name = if(e is ParadoxScriptInlineParameterCondition) e.presentationText.orUnresolved() else ""
+        val name = if (e is ParadoxScriptInlineParameterCondition) e.presentationText.orUnresolved() else ""
         return PlsBundle.message("script.unwrap.inlineParameterCondition", name)
     }
-    
+
     override fun isApplicableTo(e: PsiElement): Boolean {
         return e is ParadoxScriptInlineParameterCondition
     }
-    
+
     override fun doUnwrap(element: PsiElement, context: Context) {
         context.extract(element, element)
         context.delete(element)

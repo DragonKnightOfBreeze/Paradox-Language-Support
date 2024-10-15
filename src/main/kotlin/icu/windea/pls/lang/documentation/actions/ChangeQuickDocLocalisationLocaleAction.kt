@@ -19,9 +19,9 @@ class ChangeQuickDocLocalisationLocaleAction : AnAction(), ActionToIgnore {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
-    
+
     //use local-cached locale (on documentationTarget.element)
-    
+
     override fun update(e: AnActionEvent) {
         var isVisible = false
         var isEnabled = false
@@ -30,20 +30,20 @@ class ChangeQuickDocLocalisationLocaleAction : AnAction(), ActionToIgnore {
             val target = browser.targetPointer.dereference() ?: return@run
             val targetElement = target.targetElement ?: return@run
             val locale = ParadoxLocaleManager.getLocaleInDocumentation(targetElement)
-            if(locale == null) return@run
+            if (locale == null) return@run
             isVisible = true
             isEnabled = true
         }
         e.presentation.isEnabled = isEnabled
         e.presentation.isVisible = isVisible
     }
-    
+
     override fun actionPerformed(e: AnActionEvent) {
         val browser = e.getData(DOCUMENTATION_BROWSER) ?: return
         val target = browser.targetPointer.dereference() ?: return
         val targetElement = target.targetElement ?: return
         val locale = ParadoxLocaleManager.getLocaleInDocumentation(targetElement)
-        if(locale == null) return
+        if (locale == null) return
         val allLocales = mutableListOf<CwtLocalisationLocaleConfig>()
         allLocales += CwtLocalisationLocaleConfig.AUTO
         allLocales += ParadoxLocaleManager.getLocaleConfigs()

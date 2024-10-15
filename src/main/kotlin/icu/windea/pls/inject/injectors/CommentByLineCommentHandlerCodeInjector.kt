@@ -13,20 +13,20 @@ import icu.windea.pls.inject.annotations.*
  * @see com.intellij.codeInsight.generation.CommentByLineCommentHandler.isLineCommented
  */
 @InjectTarget("com.intellij.codeInsight.generation.CommentByLineCommentHandler")
-class CommentByLineCommentHandlerCodeInjector: CodeInjectorBase() {
+class CommentByLineCommentHandlerCodeInjector : CodeInjectorBase() {
     //用于兼容CWT语言的各种注释（行注释"# ..."，选项注释"## ..."，文档注释"### ..."）
-    
-    private val Any.editor: Editor by memberProperty("editor", null) 
-    
+
+    private val Any.editor: Editor by memberProperty("editor", null)
+
     @InjectMethod(pointer = InjectMethod.Pointer.BEFORE, static = true)
     fun isLineCommented(block: Any, line: Int, commenter: Commenter): Boolean {
-        if(commenter is CwtCommenter) {
+        if (commenter is CwtCommenter) {
             val document = block.editor.document
             var lineStart: Int = document.getLineStartOffset(line)
             val chars: CharSequence = document.charsSequence
             lineStart = CharArrayUtil.shiftForward(chars, lineStart, " \t")
             val prefix = CwtCommenter.OPTION_COMMENT_PREFIX
-            if(CharArrayUtil.regionMatches(chars, lineStart, prefix)) return false
+            if (CharArrayUtil.regionMatches(chars, lineStart, prefix)) return false
         }
         continueInvocation()
     }

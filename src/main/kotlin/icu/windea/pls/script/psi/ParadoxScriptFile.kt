@@ -13,30 +13,30 @@ import icu.windea.pls.script.navigation.*
 import javax.swing.*
 
 class ParadoxScriptFile(
-	viewProvider: FileViewProvider
+    viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxScriptDefinitionElement {
-	companion object {
-		val ELEMENT_TYPE = ParadoxScriptStubElementTypes.FILE
-	}
-	
-	override val block get() = findChild<ParadoxScriptRootBlock>()
-	
-	override fun getIcon(flags: Int): Icon? {
-		//对模组描述符文件使用特定的图标
-        if(name.equals(PlsConstants.descriptorFileName, true)) return PlsIcons.FileTypes.ModeDescriptor
-		return super.getIcon(flags)
-	}
-	
-	override fun getFileType(): FileType {
+    companion object {
+        val ELEMENT_TYPE = ParadoxScriptStubElementTypes.FILE
+    }
+
+    override val block get() = findChild<ParadoxScriptRootBlock>()
+
+    override fun getIcon(flags: Int): Icon? {
+        //对模组描述符文件使用特定的图标
+        if (name.equals(PlsConstants.descriptorFileName, true)) return PlsIcons.FileTypes.ModeDescriptor
+        return super.getIcon(flags)
+    }
+
+    override fun getFileType(): FileType {
         return ParadoxScriptFileType
     }
-	
-	override fun getPresentation(): ItemPresentation {
-		return ParadoxScriptFilePresentation(this)
-	}
-	
-	override fun isEquivalentTo(another: PsiElement?): Boolean {
-		return super.isEquivalentTo(another) || (another is ParadoxScriptFile && fileInfo == another.fileInfo)
-	}
+
+    override fun getPresentation(): ItemPresentation {
+        return ParadoxScriptFilePresentation(this)
+    }
+
+    override fun isEquivalentTo(another: PsiElement?): Boolean {
+        return super.isEquivalentTo(another) || (another is ParadoxScriptFile && fileInfo == another.fileInfo)
+    }
 }
 

@@ -17,21 +17,21 @@ class CwtLocalisationConfigGenerator(
         val promotions: MutableSet<String> = mutableSetOf(),
         val properties: MutableSet<String> = mutableSetOf(),
     )
-    
+
     enum class Position {
         ScopeName, Promotions, Properties
     }
-    
+
     fun generate() {
         val logFile = File(logPath)
         val infos = mutableListOf<LocalisationInfo>()
         var info = LocalisationInfo()
         var position = Position.ScopeName
         val allLines = logFile.bufferedReader().readLines()
-        for(line in allLines) {
+        for (line in allLines) {
             val l = line.trim()
-            if(l.surroundsWith("--", "--")) {
-                if(info.name.isNotEmpty()) {
+            if (l.surroundsWith("--", "--")) {
+                if (info.name.isNotEmpty()) {
                     infos.add(info)
                     info = LocalisationInfo()
                 }
@@ -39,34 +39,34 @@ class CwtLocalisationConfigGenerator(
                 position = Position.ScopeName
                 continue
             }
-            if(l == "Promotions:") {
+            if (l == "Promotions:") {
                 position = Position.Promotions
                 continue
             }
-            if(l == "Properties") {
+            if (l == "Properties") {
                 position = Position.Properties
                 continue
             }
-            when(position) {
+            when (position) {
                 Position.Promotions -> {
                     val v = l.takeIf { it.isNotEmpty() && it.all { c -> c != '=' } }
-                    if(v != null) info.promotions.add(v)
+                    if (v != null) info.promotions.add(v)
                 }
                 Position.Properties -> {
                     val v = l.takeIf { it.isNotEmpty() && it.all { c -> c != '=' } }
-                    if(v != null) info.properties.add(v)
+                    if (v != null) info.properties.add(v)
                 }
                 else -> {}
             }
         }
-        if(info.name.isNotEmpty()) {
+        if (info.name.isNotEmpty()) {
             infos.add(info)
         }
         val newText = getText(infos)
         val cwtFile = File(cwtPath)
         cwtFile.writeText(newText)
     }
-    
+
     private fun getText(infos: List<LocalisationInfo>): String {
         return buildString {
             run {
@@ -89,7 +89,7 @@ class CwtLocalisationConfigGenerator(
                 }
                 append("}").appendLine()
             }
-            
+
             run {
                 append("localisation_commands = {").appendLine()
                 val map = mutableMapOf<String, MutableSet<String>>()
@@ -112,8 +112,8 @@ class CwtLocalisationConfigGenerator(
             }
         }
     }
-    
-    private fun getScopeIds(text: String):Set<String> {
+
+    private fun getScopeIds(text: String): Set<String> {
         return when {
             text == "Base Scope" -> setOf("any")
             text == "Ship (and Starbase)" -> setOf("ship", "starbase")

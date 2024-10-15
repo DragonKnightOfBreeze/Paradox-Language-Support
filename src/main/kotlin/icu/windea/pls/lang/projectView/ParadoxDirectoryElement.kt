@@ -19,16 +19,16 @@ class ParadoxDirectoryElement(
         val selector = fileSelector(project, preferredRootFile).withGameType(gameType)
         val files = ParadoxFilePathSearch.search(path.path, null, selector).findAll()
         files.forEach { file ->
-            if(file.isDirectory) roots += file
+            if (file.isDirectory) roots += file
         }
         return roots
     }
-    
+
     override fun equals(other: Any?): Boolean {
-        if(this === other) return true
+        if (this === other) return true
         return other is ParadoxDirectoryElement && project == other.project && path == other.path && gameType == other.gameType
     }
-    
+
     override fun hashCode(): Int {
         return Objects.hash(project, path, gameType)
     }

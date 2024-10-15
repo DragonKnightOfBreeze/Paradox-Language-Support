@@ -13,31 +13,31 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage) {
     private const val ID = "paradoxLocalisation.file"
     private const val VERSION = 54 //1.3.21
-    
+
     override fun getExternalId() = ID
-    
+
     override fun getStubVersion() = VERSION
-    
+
     override fun getBuilder(): LightStubBuilder {
         return Builder()
     }
-    
+
     override fun shouldBuildStubFor(file: VirtualFile): Boolean {
         try {
             //不索引内存中的文件
-            if(ParadoxFileManager.isLightFile(file)) return false
+            if (ParadoxFileManager.isLightFile(file)) return false
             //仅索引有根目录的文件
             val fileInfo = file.fileInfo ?: return false
             val path = fileInfo.path
             //不索引直接在根目录下的文件
-            if(path.length == 1) return false
+            if (path.length == 1) return false
             return true
-        } catch(e: Exception) {
-            if(e is ProcessCanceledException) throw e
+        } catch (e: Exception) {
+            if (e is ProcessCanceledException) throw e
             return false
         }
     }
-    
+
     class Builder : LightStubBuilder() {
         override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {
             //包括：propertyList、property
@@ -50,7 +50,7 @@ object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFil
                 else -> true
             }
         }
-        
+
         override fun skipChildProcessingWhenBuildingStubs(tree: LighterAST, parent: LighterASTNode, node: LighterASTNode): Boolean {
             //包括：propertyList、property
             val type = node.tokenType

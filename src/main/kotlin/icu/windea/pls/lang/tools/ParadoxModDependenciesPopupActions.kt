@@ -27,26 +27,26 @@ interface ParadoxModDependenciesPopupActions {
             templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.OpenModPath.text")
             templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.OpenModPath.description")
         }
-        
+
         override fun getActionUpdateThread(): ActionUpdateThread {
             return ActionUpdateThread.EDT
         }
-        
+
         override fun update(e: AnActionEvent) {
             val presentation = e.presentation
-            if(presentation.isVisible) {
+            if (presentation.isVisible) {
                 val targetPath = getTargetPath()
-                if(targetPath != null) {
+                if (targetPath != null) {
                     presentation.description = templatePresentation.description + " (" + targetPath + ")"
                 }
             }
         }
-        
+
         override fun actionPerformed(e: AnActionEvent) {
             val targetPath = getTargetPath() ?: return
             RevealFileAction.openDirectory(targetPath)
         }
-        
+
         private fun getTargetPath(): Path? {
             val selectedRow = tableView.selectedRow
             val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
@@ -54,7 +54,7 @@ interface ParadoxModDependenciesPopupActions {
             return targetDirectory.toPathOrNull()
         }
     }
-    
+
     /**
      * 打开模组的Steam创意工坊页面。（直接在Steam应用中打开）
      */
@@ -66,39 +66,39 @@ interface ParadoxModDependenciesPopupActions {
             templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteam.text")
             templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteam.description")
         }
-        
+
         override fun getActionUpdateThread(): ActionUpdateThread {
             return ActionUpdateThread.EDT
         }
-        
+
         override fun update(e: AnActionEvent) {
             val presentation = e.presentation
             presentation.isEnabled = getSteamId() != null
-            if(presentation.isVisible) {
+            if (presentation.isVisible) {
                 val targetUrl = getTargetUrl()
-                if(targetUrl != null) {
+                if (targetUrl != null) {
                     presentation.description = templatePresentation.description + " (" + targetUrl + ")"
                 }
             }
         }
-        
+
         override fun actionPerformed(e: AnActionEvent) {
             val targetUrl = getTargetUrl() ?: return //ignore
             BrowserUtil.open(targetUrl)
         }
-        
+
         private fun getTargetUrl(): String? {
             val steamId = getSteamId() ?: return null
             return getDataProvider().getSteamWorkshopUrlInSteam(steamId)
         }
-        
+
         private fun getSteamId(): String? {
             val selectedRow = tableView.selectedRow
             val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
             return getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteId
         }
     }
-    
+
     /**
      * 打开模组的Steam创意工坊页面。
      */
@@ -110,39 +110,39 @@ interface ParadoxModDependenciesPopupActions {
             templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteamWebsite.text")
             templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteamWebsite.description")
         }
-        
+
         override fun getActionUpdateThread(): ActionUpdateThread {
             return ActionUpdateThread.EDT
         }
-        
+
         override fun update(e: AnActionEvent) {
             val presentation = e.presentation
             presentation.isEnabled = getSteamId() != null
-            if(presentation.isVisible) {
+            if (presentation.isVisible) {
                 val targetUrl = getTargetUrl()
-                if(targetUrl != null) {
+                if (targetUrl != null) {
                     presentation.description = templatePresentation.description + " (" + targetUrl + ")"
                 }
             }
         }
-        
+
         override fun actionPerformed(e: AnActionEvent) {
             val targetUrl = getTargetUrl() ?: return //ignore
             BrowserUtil.open(targetUrl)
         }
-        
+
         private fun getTargetUrl(): String? {
             val steamId = getSteamId() ?: return null
             return getDataProvider().getSteamWorkshopUrl(steamId)
         }
-        
+
         private fun getSteamId(): String? {
             val selectedRow = tableView.selectedRow
             val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
             return getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteId
         }
     }
-    
+
     /**
      * 复制模组所在路径。
      */
@@ -154,26 +154,26 @@ interface ParadoxModDependenciesPopupActions {
             templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.CopyModPath.text")
             templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.CopyModPath.description")
         }
-        
+
         override fun getActionUpdateThread(): ActionUpdateThread {
             return ActionUpdateThread.EDT
         }
-        
+
         override fun update(e: AnActionEvent) {
             val presentation = e.presentation
-            if(presentation.isVisible) {
+            if (presentation.isVisible) {
                 val targetPath = getTargetPath()
-                if(targetPath != null) {
+                if (targetPath != null) {
                     presentation.description = templatePresentation.description + " (" + targetPath + ")"
                 }
             }
         }
-        
+
         override fun actionPerformed(e: AnActionEvent) {
             val targetPath = getTargetPath() ?: return
             CopyPasteManager.getInstance().setContents(StringSelection(targetPath.toString()))
         }
-        
+
         private fun getTargetPath(): Path? {
             val selectedRow = tableView.selectedRow
             val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
@@ -181,7 +181,7 @@ interface ParadoxModDependenciesPopupActions {
             return targetDirectory.toPathOrNull()
         }
     }
-    
+
     /**
      * 复制模组的Steam创意工坊页面的URL。
      */
@@ -193,31 +193,31 @@ interface ParadoxModDependenciesPopupActions {
             templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.CopyModPageUrl.text")
             templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.CopyModPageUrl.description")
         }
-        
+
         override fun getActionUpdateThread(): ActionUpdateThread {
             return ActionUpdateThread.EDT
         }
-        
+
         override fun update(e: AnActionEvent) {
             val presentation = e.presentation
-            if(presentation.isVisible) {
+            if (presentation.isVisible) {
                 val targetPath = getTargetUrl()
-                if(targetPath != null) {
+                if (targetPath != null) {
                     presentation.description = templatePresentation.description + " (" + targetPath + ")"
                 }
             }
         }
-        
+
         override fun actionPerformed(e: AnActionEvent) {
             val targetPath = getTargetUrl() ?: return
             CopyPasteManager.getInstance().setContents(StringSelection(targetPath))
         }
-        
+
         private fun getTargetUrl(): String? {
             val steamId = getSteamId() ?: return null
             return getDataProvider().getSteamWorkshopUrlInSteam(steamId)
         }
-        
+
         private fun getSteamId(): String? {
             val selectedRow = tableView.selectedRow
             val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))

@@ -15,23 +15,23 @@ import com.intellij.util.xmlb.*
  * @property variableOperationExpressions （基于内置规则文件）是否默认折叠变量操作表达式。折叠为简化形式。默认启用。
  */
 @State(name = "ParadoxFoldingSettings", storages = [Storage("editor.xml")], category = SettingsCategory.CODE)
-class ParadoxFoldingSettings : PersistentStateComponent<ParadoxFoldingSettings>{
-	var parameterConditionBlocks = false
-	var inlineMathBlocks = true
-	var localisationReferencesFully = false
-	var localisationIconsFully = false
-	var localisationCommands = false
-	var localisationConcepts = false
-	var localisationConceptTexts = false
-	var scriptedVariableReferences = true
-	var variableOperationExpressions = true
-	
-	override fun getState() = this
-	
-	override fun loadState(state: ParadoxFoldingSettings) = XmlSerializerUtil.copyBean(state, this)
-	
-	companion object {
-		@JvmStatic
-		fun getInstance() = service<ParadoxFoldingSettings>()
-	}
+class ParadoxFoldingSettings : PersistentStateComponent<ParadoxFoldingSettings> {
+    var parameterConditionBlocks = false
+    var inlineMathBlocks = true
+    var localisationReferencesFully = false
+    var localisationIconsFully = false
+    var localisationCommands = false
+    var localisationConcepts = false
+    var localisationConceptTexts = false
+    var scriptedVariableReferences = true
+    var variableOperationExpressions = true
+
+    override fun getState() = this
+
+    override fun loadState(state: ParadoxFoldingSettings) = XmlSerializerUtil.copyBean(state, this)
+
+    companion object {
+        @JvmStatic
+        fun getInstance() = service<ParadoxFoldingSettings>()
+    }
 }

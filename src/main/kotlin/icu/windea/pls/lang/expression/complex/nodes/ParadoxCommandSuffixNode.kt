@@ -10,11 +10,11 @@ class ParadoxCommandSuffixNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup
-): ParadoxComplexExpressionNode.Base() {
+) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxLocalisationAttributesKeys.STRING_KEY
     }
-    
+
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxCommandSuffixNode {
             return ParadoxCommandSuffixNode(text, textRange, configGroup)

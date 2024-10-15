@@ -17,57 +17,57 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
     object Keys : KeyRegistry() {
         val filePathsForPriority by createKey<Set<String>>(this)
     }
-    
+
     abstract fun getFilePathMap(gameType: ParadoxGameType): Map<String, ParadoxPriority>
-    
+
     override fun getPriority(target: Any): ParadoxPriority? {
         val forcedDefinitionPriority = getForcedDefinitionPriority(target)
-        if(forcedDefinitionPriority != null) return forcedDefinitionPriority
-        
+        if (forcedDefinitionPriority != null) return forcedDefinitionPriority
+
         val filePaths = getFilePaths(target)
-        if(filePaths.isEmpty()) return null
+        if (filePaths.isEmpty()) return null
         val gameType = selectGameType(target) ?: return null
         val filePathMap = getFilePathMap(gameType)
         return filePaths.firstNotNullOfOrNull { filePathMap[it] }
     }
-    
+
     override fun getPriority(searchParameters: ParadoxSearchParameters<*>): ParadoxPriority? {
         val forcedDefinitionPriority = getForcedDefinitionPriority(searchParameters)
-        if(forcedDefinitionPriority != null) return forcedDefinitionPriority
-        
+        if (forcedDefinitionPriority != null) return forcedDefinitionPriority
+
         val filePaths = getFilePaths(searchParameters)
-        if(filePaths.isEmpty()) return null
+        if (filePaths.isEmpty()) return null
         val gameType = searchParameters.selector.gameType ?: return null
         val filePathMap = getFilePathMap(gameType)
         return filePaths.firstNotNullOfOrNull { filePathMap[it] }
     }
-    
+
     private fun getForcedDefinitionPriority(target: Any): ParadoxPriority? {
-        if(target !is ParadoxScriptProperty) return null
+        if (target !is ParadoxScriptProperty) return null
         val definitionInfo = target.definitionInfo ?: return null
         val typeConfig = definitionInfo.typeConfig
         return doGetForcedDefinitionPriority(typeConfig)
     }
-    
+
     private fun getForcedDefinitionPriority(searchParameters: ParadoxSearchParameters<*>): ParadoxPriority? {
-        if(searchParameters !is ParadoxDefinitionSearch.SearchParameters) return null
+        if (searchParameters !is ParadoxDefinitionSearch.SearchParameters) return null
         val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return null
         val gameType = searchParameters.selector.gameType ?: return null
         val configGroup = getConfigGroup(searchParameters.project, gameType)
         val typeConfig = configGroup.types.get(definitionType) ?: return null
         return doGetForcedDefinitionPriority(typeConfig)
     }
-    
+
     private fun doGetForcedDefinitionPriority(typeConfig: CwtTypeConfig): ParadoxPriority? {
         //event namespace -> ORDERED (don't care)
-        if(typeConfig.name == "event_namespace") return ParadoxPriority.ORDERED
+        if (typeConfig.name == "event_namespace") return ParadoxPriority.ORDERED
         //swapped type -> ORDERED (don't care)
-        if(typeConfig.baseType != null) return ParadoxPriority.ORDERED
+        if (typeConfig.baseType != null) return ParadoxPriority.ORDERED
         //anonymous -> ORDERED (don't care)
-        if(typeConfig.typeKeyFilter != null && typeConfig.nameField == null) return ParadoxPriority.ORDERED
+        if (typeConfig.typeKeyFilter != null && typeConfig.nameField == null) return ParadoxPriority.ORDERED
         return null
     }
-    
+
     private fun getFilePaths(target: Any): Set<String> {
         return when {
             target is ParadoxScriptScriptedVariable -> {
@@ -90,7 +90,7 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
             }
             target is ParadoxLocalisationProperty -> {
                 val localisationCategory = target.localisationInfo?.category ?: return emptySet()
-                val filePath = when(localisationCategory) {
+                val filePath = when (localisationCategory) {
                     ParadoxLocalisationCategory.Localisation -> "localisation"
                     ParadoxLocalisationCategory.SyncedLocalisation -> "localisation_synced"
                 }
@@ -99,7 +99,7 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
             else -> emptySet()
         }
     }
-    
+
     private fun getFilePaths(searchParameters: ParadoxSearchParameters<*>): Set<String> {
         return when {
             searchParameters is ParadoxGlobalScriptedVariableSearch.SearchParameters -> {

@@ -21,16 +21,16 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
         val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return
         val category = ParadoxLocalisationCategory.resolve(file) ?: return
         val project = parameters.originalFile.project
-        
+
         //提示parameter
         val localisation = parameters.position.parentOfType<ParadoxLocalisationProperty>()
-        if(localisation != null) {
+        if (localisation != null) {
             ParadoxLocalisationParameterManager.completeParameters(localisation, result)
         }
-        
+
         //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnAnyPrefixChange()
-        
+
         //提示localisation或者synced_localisation
         val selector = localisationSelector(project, file)
             .contextSensitive()
@@ -47,7 +47,7 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
             result.addElement(lookupElement)
             true
         }
-        when(category) {
+        when (category) {
             ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
             ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
         }

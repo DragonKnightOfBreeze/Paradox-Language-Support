@@ -25,36 +25,36 @@ class ParadoxGameElementNode(
             else -> false
         }
     }
-    
+
     private fun canRepresent(file: VirtualFile): Boolean {
-        if(!file.isDirectory) return false
+        if (!file.isDirectory) return false
         val fileInfo = file.fileInfo ?: return false
-        if(value.gameType != fileInfo.rootInfo.gameType) return false
-        if(fileInfo.path.isNotEmpty()) return false
+        if (value.gameType != fileInfo.rootInfo.gameType) return false
+        if (fileInfo.path.isNotEmpty()) return false
         return true
     }
-    
+
     override fun contains(file: VirtualFile): Boolean {
-        if(value == null) return false
+        if (value == null) return false
         val fileInfo = file.fileInfo ?: return false
-        if(value.gameType != fileInfo.rootInfo.gameType) return false
-        if(fileInfo.path.isEmpty()) return false
+        if (value.gameType != fileInfo.rootInfo.gameType) return false
+        if (fileInfo.path.isEmpty()) return false
         return true
     }
-    
+
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
-        if(value == null) return emptySet()
+        if (value == null) return emptySet()
         val selector = fileSelector(project, value.preferredRootFile).withGameType(value.gameType)
         val children = mutableSetOf<AbstractTreeNode<*>>()
         val directoryNames = mutableSetOf<String>()
         ParadoxFilePathSearch.search(null, selector).processQuery p@{ file ->
             val fileInfo = file.fileInfo ?: return@p true
-            if(fileInfo.path.length != 1) return@p true
-            if(file.isDirectory) {
+            if (fileInfo.path.length != 1) return@p true
+            if (file.isDirectory) {
                 //直接位于入口目录中，且未被排除
-                if(!directoryNames.add(file.name)) return@p true
+                if (!directoryNames.add(file.name)) return@p true
                 val fileData = FileBasedIndex.getInstance().getFileData(ParadoxFilePathIndex.NAME, file, project)
-                if(!fileData.values.single().included) return@p true
+                if (!fileData.values.single().included) return@p true
                 val element = ParadoxDirectoryElement(project, fileInfo.path, fileInfo.rootInfo.gameType, value.preferredRootFile)
                 val elementNode = ParadoxDirectoryElementNode(project, element, settings)
                 children += elementNode
@@ -68,18 +68,18 @@ class ParadoxGameElementNode(
         }
         return children
     }
-    
+
     override fun update(presentation: PresentationData) {
-        if(value == null) return
+        if (value == null) return
         presentation.setIcon(PlsIcons.GameDirectory)
         presentation.presentableText = value.gameType.title
     }
-    
+
     override fun getTitle(): String? {
-        if(value == null) return null
+        if (value == null) return null
         return value.gameType.title
     }
-    
+
     override fun isAlwaysShowPlus(): Boolean {
         return true
     }

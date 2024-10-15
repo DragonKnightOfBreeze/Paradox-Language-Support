@@ -11,7 +11,7 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
         title = PlsBundle.message("ui.dialog.selectPreferred.title")
         init()
     }
-    
+
     override fun createCenterPanel() = panel {
         row {
             val settings = getSettings()
@@ -19,7 +19,7 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
             localeComboBox(addAuto = true)
                 .bindItem(settings::preferredLocale.toNullableProperty())
                 .onApply {
-                    if(oldPreferredLocale != settings.preferredLocale) {
+                    if (oldPreferredLocale != settings.preferredLocale) {
                         val openedFiles = ParadoxCoreManager.findOpenedFiles()
                         ParadoxCoreManager.reparseFiles(openedFiles, reparse = false)
                     }

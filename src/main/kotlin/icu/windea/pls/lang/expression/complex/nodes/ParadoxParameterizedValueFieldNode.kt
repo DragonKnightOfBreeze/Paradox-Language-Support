@@ -15,10 +15,10 @@ class ParadoxParameterizedValueFieldNode(
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.VALUE_FIELD_KEY
     }
-    
+
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxParameterizedValueFieldNode? {
-            if(!text.isParameterized()) return null
+            if (!text.isParameterized()) return null
             return ParadoxParameterizedValueFieldNode(text, textRange, configGroup)
         }
     }

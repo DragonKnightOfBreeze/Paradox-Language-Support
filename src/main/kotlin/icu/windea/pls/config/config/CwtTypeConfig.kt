@@ -52,9 +52,9 @@ interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Us
     val subtypes: Map<String, CwtSubtypeConfig>
     val localisation: CwtTypeLocalisationConfig?
     val images: CwtTypeImagesConfig?
-    
-    object Keys: KeyRegistry()
-    
+
+    object Keys : KeyRegistry()
+
     companion object {
         fun resolve(config: CwtPropertyConfig): CwtTypeConfig? = doResolve(config)
     }
@@ -74,7 +74,7 @@ val CwtTypeConfig.possibleSwappedTypeRootKeys: Set<String> by createKeyDelegate(
         configGroup.swappedTypes.values.forEach f@{ swappedTypeConfig ->
             val baseType = swappedTypeConfig.baseType ?: return@f
             val baseTypeName = baseType.substringBefore('.')
-            if(baseTypeName != name) return@f
+            if (baseTypeName != name) return@f
             val rootKey = swappedTypeConfig.typeKeyFilter?.takeIfTrue()?.singleOrNull() ?: return@f
             add(rootKey)
         }
@@ -91,7 +91,7 @@ val CwtTypeConfig.possibleNestedTypeRootKeys: Set<String> by createKeyDelegate(C
 
 private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
     val configGroup = config.configGroup
-    
+
     val name = config.key.removeSurroundingOrNull("type[", "]")?.orNull()?.intern() ?: return null
     var baseType: String? = null
     val pathPatterns = sortedSetOf<String>()
@@ -112,11 +112,11 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
     val subtypes: MutableMap<String, CwtSubtypeConfig> = mutableMapOf()
     var localisation: CwtTypeLocalisationConfig? = null
     var images: CwtTypeImagesConfig? = null
-    
+
     val props = config.properties.orEmpty()
-    if(props.isEmpty()) return null
-    for(prop in props) {
-        when(prop.key) {
+    if (props.isEmpty()) return null
+    for (prop in props) {
+        when (prop.key) {
             "base_type" -> baseType = prop.stringValue
             "path_pattern" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { pathPatterns += it }
             "path" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { paths += it }
@@ -133,7 +133,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
                 val list = prop.stringValue?.let { listOf(it) }
                     ?: prop.values?.mapNotNull { it.stringValue }
                     ?: continue
-                if(skipRootKey == null) skipRootKey = mutableListOf()
+                if (skipRootKey == null) skipRootKey = mutableListOf()
                 skipRootKey.add(list) //出于一点点的性能考虑，这里保留大小写，后面匹配路径时会忽略掉
             }
             "localisation" -> {
@@ -144,11 +144,11 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
             }
             "modifiers" -> {
                 val propProps = prop.properties ?: continue
-                for(p in propProps) {
+                for (p in propProps) {
                     val subtypeName = p.key.removeSurroundingOrNull("subtype[", "]")
-                    if(subtypeName != null) {
+                    if (subtypeName != null) {
                         val pps = p.properties ?: continue
-                        for(pp in pps) {
+                        for (pp in pps) {
                             val typeExpression = "$name.$subtypeName"
                             val modifierConfig = CwtModifierConfig.resolveFromDefinitionModifier(pp, pp.key, typeExpression) ?: continue
                             configGroup.modifiers[modifierConfig.name] = modifierConfig
@@ -163,17 +163,17 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
                 }
             }
         }
-        
+
         run {
             val subtypeConfig = CwtSubtypeConfig.resolve(prop) ?: return@run
             subtypes[subtypeConfig.name] = subtypeConfig
         }
     }
-    
+
     val options = config.optionConfigs.orEmpty()
-    for(option in options) {
-        if(option !is CwtOptionConfig) continue
-        when(option.key) {
+    for (option in options) {
+        if (option !is CwtOptionConfig) continue
+        when (option.key) {
             "type_key_filter" -> {
                 //值可能是string也可能是stringArray
                 val values = option.getOptionValueOrValues() ?: continue
@@ -191,7 +191,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
             }
         }
     }
-    
+
     return CwtTypeConfigImpl(
         config, name, baseType, pathPatterns.optimized(), paths.optimized(), pathStrict, pathFile, pathExtension, nameField, nameFromFile,
         typePerFile, unique, severity, skipRootKey, typeKeyFilter, typeKeyRegex, startsWith, graphRelatedTypes?.optimized(),

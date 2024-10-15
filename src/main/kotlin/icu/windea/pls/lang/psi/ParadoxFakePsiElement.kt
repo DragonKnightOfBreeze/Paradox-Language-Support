@@ -8,31 +8,31 @@ import com.intellij.psi.search.*
 import icu.windea.pls.lang.search.scope.*
 
 @Suppress("UnstableApiUsage")
-abstract class ParadoxFakePsiElement(parent: PsiElement): RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
+abstract class ParadoxFakePsiElement(parent: PsiElement) : RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
     override fun getNameIdentifier(): PsiElement? {
         return this
     }
-    
+
     override fun getTextRange(): TextRange? {
         return null //return null to avoid incorrect highlight at file start
     }
-    
+
     override fun navigationRequest(): NavigationRequest? {
         return null //click to show usages
     }
-    
+
     override fun navigate(requestFocus: Boolean) {
         //click to show usages
     }
-    
+
     override fun canNavigate(): Boolean {
         return false //click to show usages
     }
-    
+
     override fun getResolveScope(): GlobalSearchScope {
         return ParadoxSearchScope.fromElement(this) ?: super.getResolveScope()
     }
-    
+
     override fun getUseScope(): SearchScope {
         return ParadoxSearchScope.fromElement(this) ?: super.getUseScope()
     }

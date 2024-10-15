@@ -19,57 +19,57 @@ import java.awt.datatransfer.*
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
 class CopyLocalisationIntention : IntentionAction, PriorityAction {
-	override fun getPriority() = PriorityAction.Priority.HIGH
-	
-	override fun getText() = PlsBundle.message("intention.copyLocalisation")
-	
-	override fun getFamilyName() = text
-	
-	override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-		if(editor == null || file == null) return false
-		val selectionStart = editor.selectionModel.selectionStart
-		val selectionEnd = editor.selectionModel.selectionEnd
-		if(selectionStart == selectionEnd) {
-			val originalElement = file.findElementAt(selectionStart)
-			return originalElement?.parentOfType<ParadoxLocalisationProperty>() != null
-		} else {
-			val originalStartElement = file.findElementAt(selectionStart) ?: return false
-			val originalEndElement = file.findElementAt(selectionEnd)
-			return hasLocalisationPropertiesBetween(originalStartElement, originalEndElement)
-		}
-	}
-	
-	override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-		if(editor == null || file == null) return
-		val selectionStart = editor.selectionModel.selectionStart
-		val selectionEnd = editor.selectionModel.selectionEnd
-		val keys = mutableSetOf<String>()
-		if(selectionStart == selectionEnd) {
-			val originalElement = file.findElementAt(selectionStart)
-			val element = originalElement?.parentOfType<ParadoxLocalisationProperty>() ?: return
-			keys.add(element.name)
-			val text = element.text
-			CopyPasteManager.getInstance().setContents(StringSelection(text))
-		} else {
-			val originalStartElement = file.findElementAt(selectionStart) ?: return
-			val originalEndElement = file.findElementAt(selectionEnd)
-			val elements = findLocalisationPropertiesBetween(originalStartElement, originalEndElement)
-			if(elements.isEmpty()) return
-			elements.forEach { keys.add(it.name) }
-			val text = elements.joinToString("\n") { it.text }
-			CopyPasteManager.getInstance().setContents(StringSelection(text))
-		}
-		
-		val keysText = keys.truncate(PlsConstants.Settings.itemLimit).joinToString()
-		NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
-			PlsBundle.message("notification.copyLocalisation.success.title"),
-			PlsBundle.message("notification.copyLocalisation.success.content", keysText),
-			NotificationType.INFORMATION
-		).notify(project)
-	}
-	
-	override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
-	
-	override fun startInWriteAction() = false
+    override fun getPriority() = PriorityAction.Priority.HIGH
+
+    override fun getText() = PlsBundle.message("intention.copyLocalisation")
+
+    override fun getFamilyName() = text
+
+    override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
+        if (editor == null || file == null) return false
+        val selectionStart = editor.selectionModel.selectionStart
+        val selectionEnd = editor.selectionModel.selectionEnd
+        if (selectionStart == selectionEnd) {
+            val originalElement = file.findElementAt(selectionStart)
+            return originalElement?.parentOfType<ParadoxLocalisationProperty>() != null
+        } else {
+            val originalStartElement = file.findElementAt(selectionStart) ?: return false
+            val originalEndElement = file.findElementAt(selectionEnd)
+            return hasLocalisationPropertiesBetween(originalStartElement, originalEndElement)
+        }
+    }
+
+    override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
+        if (editor == null || file == null) return
+        val selectionStart = editor.selectionModel.selectionStart
+        val selectionEnd = editor.selectionModel.selectionEnd
+        val keys = mutableSetOf<String>()
+        if (selectionStart == selectionEnd) {
+            val originalElement = file.findElementAt(selectionStart)
+            val element = originalElement?.parentOfType<ParadoxLocalisationProperty>() ?: return
+            keys.add(element.name)
+            val text = element.text
+            CopyPasteManager.getInstance().setContents(StringSelection(text))
+        } else {
+            val originalStartElement = file.findElementAt(selectionStart) ?: return
+            val originalEndElement = file.findElementAt(selectionEnd)
+            val elements = findLocalisationPropertiesBetween(originalStartElement, originalEndElement)
+            if (elements.isEmpty()) return
+            elements.forEach { keys.add(it.name) }
+            val text = elements.joinToString("\n") { it.text }
+            CopyPasteManager.getInstance().setContents(StringSelection(text))
+        }
+
+        val keysText = keys.truncate(PlsConstants.Settings.itemLimit).joinToString()
+        NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
+            PlsBundle.message("notification.copyLocalisation.success.title"),
+            PlsBundle.message("notification.copyLocalisation.success.content", keysText),
+            NotificationType.INFORMATION
+        ).notify(project)
+    }
+
+    override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
+
+    override fun startInWriteAction() = false
 }
 

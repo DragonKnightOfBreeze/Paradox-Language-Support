@@ -8,7 +8,7 @@ interface CwtSystemScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     val baseId: String
     val description: String
     val name: String
-    
+
     companion object {
         fun resolve(config: CwtPropertyConfig): CwtSystemScopeConfig = doResolve(config)
     }
@@ -34,11 +34,11 @@ private class CwtSystemScopeConfigImpl(
     override fun equals(other: Any?): Boolean {
         return this === other || other is CwtSystemScopeConfig && id == other.id
     }
-    
+
     override fun hashCode(): Int {
         return id.hashCode()
     }
-    
+
     override fun toString(): String {
         return description.ifEmpty { id }
     }

@@ -23,7 +23,7 @@ class CwtConfigGroupService(
 ) {
     private val logger = logger<CwtConfigGroupService>()
     private val cache = ConcurrentHashMap<String, CwtConfigGroup>()
-    
+
     fun init() {
         //preload config groups
         coroutineScope.launch {
@@ -37,57 +37,57 @@ class CwtConfigGroupService(
             }
         }
     }
-    
+
     fun getConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
         return cache.computeIfAbsent(gameType.id) { createConfigGroup(gameType) }
     }
-    
+
     fun getConfigGroups(): Map<String, CwtConfigGroup> {
         return cache
     }
-    
+
     fun createConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
         val gameTypeId = gameType.id
-        
+
         logger.info("Initialize config group '$gameTypeId'...")
         val start = System.currentTimeMillis()
-        
+
         val configGroup = doCreateConfigGroup(gameType)
-        
+
         val end = System.currentTimeMillis()
         logger.info("Initialize config group '$gameTypeId' finished in ${end - start} ms.")
-        
+
         return configGroup
     }
-    
+
     @Synchronized
     fun refreshConfigGroups(configGroups: Collection<CwtConfigGroup>) {
         //不替换configGroup，而是替换其中的userData
-        if(configGroups.isEmpty()) return
+        if (configGroups.isEmpty()) return
         val progressTitle = PlsBundle.message("configGroup.refresh.progressTitle")
         val task = object : Task.Backgroundable(project, progressTitle, true) {
             override fun run(indicator: ProgressIndicator) {
                 configGroups.forEach { configGroup ->
                     val gameTypeId = configGroup.gameType.id
-                    
+
                     logger.info("Refresh config group '$gameTypeId'...")
                     val start = System.currentTimeMillis()
-                    
+
                     ReadAction.nonBlocking(Callable {
                         val newConfigGroup = doCreateConfigGroup(configGroup.gameType)
                         newConfigGroup.copyUserDataTo(configGroup)
                         configGroup.modificationTracker.incModificationCount()
                     }).expireWhen { project.isDisposed }.wrapProgress(indicator).executeSynchronously()
-                    
+
                     val end = System.currentTimeMillis()
                     logger.info("Refresh config group '$gameTypeId' finished in ${end - start} ms.")
                 }
-                
+
                 //重新解析已打开的文件
                 val openedFiles = ParadoxCoreManager.findOpenedFiles()
                 ParadoxCoreManager.reparseFiles(openedFiles)
             }
-            
+
             override fun onSuccess() {
                 val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
                     //重新解析文件（IDE之后会自动请求重新索引）
@@ -96,14 +96,14 @@ class CwtConfigGroupService(
                     val files = ParadoxCoreManager.findFilesByRootFilePaths(rootFilePaths)
                     ParadoxCoreManager.reparseFiles(files)
                 }
-                
+
                 NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
                     PlsBundle.message("configGroup.refresh.notification.finished.title"),
                     PlsBundle.message("configGroup.refresh.notification.finished.content"),
                     NotificationType.INFORMATION
                 ).addAction(action).notify(project)
             }
-            
+
             override fun onCancel() {
                 NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
                     PlsBundle.message("configGroup.refresh.notification.cancelled.title"),
@@ -115,7 +115,7 @@ class CwtConfigGroupService(
         val progressIndicator = BackgroundableProcessIndicator(task)
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, progressIndicator)
     }
-    
+
     private fun doCreateConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
         val configGroup = CwtConfigGroup(gameType, project)
         val dataProviders = CwtConfigGroupDataProvider.EP_NAME.extensionList
@@ -124,18 +124,18 @@ class CwtConfigGroupService(
         }
         return configGroup
     }
-    
+
     private fun getRootFilePaths(configGroups: Collection<CwtConfigGroup>): Set<String> {
         val gameTypes = configGroups.mapNotNullTo(mutableSetOf()) { it.gameType }
         val rootFilePaths = mutableSetOf<String>()
         getProfilesSettings().gameDescriptorSettings.values.forEach f@{ settings ->
             val gameType = settings.gameType ?: return@f
-            if(gameType !in gameTypes) return@f
+            if (gameType !in gameTypes) return@f
             settings.gameDirectory?.let { rootFilePaths.add(it) }
         }
         getProfilesSettings().modDescriptorSettings.values.forEach f@{ settings ->
             val gameType = settings.finalGameType
-            if(gameType !in gameTypes) return@f
+            if (gameType !in gameTypes) return@f
             settings.modDirectory?.let { rootFilePaths.add(it) }
         }
         return rootFilePaths

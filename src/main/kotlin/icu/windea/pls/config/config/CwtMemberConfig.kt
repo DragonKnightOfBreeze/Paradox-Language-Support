@@ -18,21 +18,21 @@ sealed interface CwtMemberConfig<out T : CwtMemberElement> : CwtConfig<T> {
     val configs: List<CwtMemberConfig<*>>?
     val optionConfigs: List<CwtOptionMemberConfig<*>>?
     val documentation: String?
-    
+
     var parentConfig: CwtMemberConfig<*>?
-    
-    val valueExpression: CwtDataExpression get() = if(isBlock) CwtDataExpression.BlockExpression else CwtDataExpression.resolve(value, false)
+
+    val valueExpression: CwtDataExpression get() = if (isBlock) CwtDataExpression.BlockExpression else CwtDataExpression.resolve(value, false)
     override val expression: CwtDataExpression get() = valueExpression
-    
+
     override fun toString(): String
-    
+
     object Keys : KeyRegistry()
 }
 
-val CwtMemberConfig<*>.booleanValue: Boolean? get() = if(valueType == CwtType.Boolean) value.toBooleanYesNo() else null
-val CwtMemberConfig<*>.intValue: Int? get() = if(valueType == CwtType.Int) value.toIntOrNull() ?: 0 else null
-val CwtMemberConfig<*>.floatValue: Float? get() = if(valueType == CwtType.Float) value.toFloatOrNull() ?: 0f else null
-val CwtMemberConfig<*>.stringValue: String? get() = if(valueType == CwtType.String) value else null
+val CwtMemberConfig<*>.booleanValue: Boolean? get() = if (valueType == CwtType.Boolean) value.toBooleanYesNo() else null
+val CwtMemberConfig<*>.intValue: Int? get() = if (valueType == CwtType.Int) value.toIntOrNull() ?: 0 else null
+val CwtMemberConfig<*>.floatValue: Float? get() = if (valueType == CwtType.Float) value.toFloatOrNull() ?: 0f else null
+val CwtMemberConfig<*>.stringValue: String? get() = if (valueType == CwtType.String) value else null
 
 val CwtMemberConfig<*>.values: List<CwtValueConfig>? get() = configs?.filterIsInstance<CwtValueConfig>()
 val CwtMemberConfig<*>.properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstance<CwtPropertyConfig>()
@@ -76,13 +76,13 @@ val <T : CwtMemberElement> CwtMemberConfig<T>.isBlock: Boolean
     get() = configs != null
 
 val CwtMemberConfig<*>.isRoot: Boolean
-    get() = when(this) {
+    get() = when (this) {
         is CwtPropertyConfig -> this.parentConfig == null
         is CwtValueConfig -> this.parentConfig == null && this.propertyConfig == null
     }
 
 val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<*>
-    get() = when(this) {
+    get() = when (this) {
         is CwtPropertyConfig -> this
         is CwtValueConfig -> propertyConfig ?: this
     }
@@ -95,16 +95,16 @@ fun <T : CwtMemberElement> CwtMemberConfig<T>.toOccurrence(contextElement: PsiEl
     val cardinalityMinDefine = this.cardinalityMinDefine
     val cardinalityMaxDefine = this.cardinalityMaxDefine
     val occurrence = Occurrence(0, cardinality.min, cardinality.max, cardinality.relaxMin)
-    if(cardinalityMinDefine != null) {
+    if (cardinalityMinDefine != null) {
         val defineValue = ParadoxDefineManager.getDefineValue(contextElement, project, cardinalityMinDefine, Int::class.java)
-        if(defineValue != null) {
+        if (defineValue != null) {
             occurrence.min = defineValue
             occurrence.minDefine = cardinalityMinDefine
         }
     }
-    if(cardinalityMaxDefine != null) {
+    if (cardinalityMaxDefine != null) {
         val defineValue = ParadoxDefineManager.getDefineValue(contextElement, project, cardinalityMaxDefine, Int::class.java)
-        if(defineValue != null) {
+        if (defineValue != null) {
             occurrence.max = defineValue
             occurrence.maxDefine = cardinalityMaxDefine
         }
@@ -129,9 +129,9 @@ val CwtMemberConfig.Keys.supportedScopes by createKey<Set<String>>(CwtMemberConf
 val CwtMemberConfig<*>.cardinality: CwtCardinalityExpression?
     get() = getOrPutUserData(CwtMemberConfig.Keys.cardinality, CwtCardinalityExpression.EmptyExpression) action@{
         val option = findOption("cardinality")
-        if(option == null) {
+        if (option == null) {
             //如果没有注明且类型是常量，则推断为 1..1
-            if(expression.type == CwtDataTypes.Constant) {
+            if (expression.type == CwtDataTypes.Constant) {
                 return@action CwtCardinalityExpression.resolve("1..1")
             }
         }
@@ -167,10 +167,10 @@ val CwtMemberConfig<*>.scopeContext: ParadoxScopeContext?
 val CwtMemberConfig<*>.replaceScopes: Map<String, String>?
     get() = getOrPutUserData(CwtMemberConfig.Keys.replaceScopes, emptyMap()) action@{
         val option = findOption { it.key == "replace_scope" || it.key == "replace_scopes" }
-        if(option == null) return@action null
+        if (option == null) return@action null
         val options1 = option.options ?: return@action null
         buildMap {
-            for(option1 in options1) {
+            for (option1 in options1) {
                 val k = option1.key.lowercase()
                 val v = option1.stringValue?.let { ParadoxScopeManager.getScopeId(it) } ?: continue
                 put(k, v)
@@ -191,7 +191,7 @@ val CwtMemberConfig<*>.supportedScopes: Set<String>
     get() = getOrPutUserData(CwtMemberConfig.Keys.supportedScopes) action@{
         val option = findOption { it.key == "scope" || it.key == "scopes" }
         val r = option?.getOptionValueOrValues()?.mapTo(mutableSetOf()) { ParadoxScopeManager.getScopeId(it) }
-        if(r.isNullOrEmpty()) ParadoxScopeManager.anyScopeIdSet else r
+        if (r.isNullOrEmpty()) ParadoxScopeManager.anyScopeIdSet else r
     }
 
 var CwtPropertyConfig.singleAliasConfig: CwtSingleAliasConfig? by createKeyDelegate(CwtMemberConfig.Keys)
@@ -210,7 +210,7 @@ fun CwtMemberConfig<*>.delegated(
     configs: List<CwtMemberConfig<*>>? = this.configs,
     parentConfig: CwtMemberConfig<*>? = this.parentConfig
 ): CwtMemberConfig<*> {
-    return when(this) {
+    return when (this) {
         is CwtPropertyConfig -> this.delegated(configs, parentConfig)
         is CwtValueConfig -> this.delegated(configs, parentConfig)
     }

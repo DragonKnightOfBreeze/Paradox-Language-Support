@@ -17,12 +17,12 @@ class ParadoxModDependencySettingsDialog(
 ) : DialogWrapper(project, parentComponent, true, IdeModalityType.IDE) {
     val graph = PropertyGraph()
     val gameTypeProperty = graph.property(settings.finalGameType)
-    
+
     init {
         title = PlsBundle.message("mod.dependency.settings")
         init()
     }
-    
+
     override fun createCenterPanel(): DialogPanel {
         return panel {
             row {
@@ -72,7 +72,7 @@ class ParadoxModDependencySettingsDialog(
             }
         }
     }
-    
+
     //override fun createDefaultActions() {
     //    okAction.isEnabled = false
     //    cancelAction.putValue(Action.NAME, IdeBundle.message("action.close"))

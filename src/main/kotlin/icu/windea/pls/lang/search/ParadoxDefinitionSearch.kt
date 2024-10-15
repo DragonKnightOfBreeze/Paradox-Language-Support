@@ -19,11 +19,13 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxScriptDefinitionEl
         val typeExpression: String?,
         override val selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>
     ) : ParadoxSearchParameters<ParadoxScriptDefinitionElement>
-    
+
     companion object {
-        @JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxScriptDefinitionElement, SearchParameters>>("icu.windea.pls.search.definitionSearch")
-        @JvmField val INSTANCE = ParadoxDefinitionSearch()
-        
+        @JvmField
+        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxScriptDefinitionElement, SearchParameters>>("icu.windea.pls.search.definitionSearch")
+        @JvmField
+        val INSTANCE = ParadoxDefinitionSearch()
+
         /**
          *  @see icu.windea.pls.lang.search.ParadoxDefinitionSearch.SearchParameters
          */
@@ -35,7 +37,7 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxScriptDefinitionEl
         ): ParadoxQuery<ParadoxScriptDefinitionElement, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, typeExpression, selector))
         }
-        
+
         /**
          *  @see icu.windea.pls.lang.search.ParadoxDefinitionSearch.SearchParameters
          */

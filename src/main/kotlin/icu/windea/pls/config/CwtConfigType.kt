@@ -107,7 +107,7 @@ enum class CwtConfigType(
         override val descriptionText get() = PlsBundle.message("cwt.description.databaseObjectType")
         override val icon get() = PlsIcons.Nodes.DatabaseObjectType
     },
-    
+
     SystemScope("system scope", true) {
         override val prefix get() = PlsBundle.message("prefix.systemScope")
         override val descriptionText get() = PlsBundle.message("cwt.description.systemScope")
@@ -118,7 +118,7 @@ enum class CwtConfigType(
         override val descriptionText get() = PlsBundle.message("cwt.description.localisationLocale")
         override val icon get() = PlsIcons.LocalisationNodes.Locale
     },
-    
+
     ExtendedScriptedVariable("extended scripted variable") {
         override val prefix get() = PlsBundle.message("prefix.scriptedVariable")
         override val icon get() = PlsIcons.Nodes.ScriptedVariableConfig
@@ -152,14 +152,14 @@ enum class CwtConfigType(
         override val icon get() = PlsIcons.Nodes.ComplexEnumValue
     },
     ;
-    
+
     abstract val prefix: String
     open val descriptionText: String? = null
     open val icon: Icon? = null
-    
+
     fun getShortName(name: String): String {
         //简单判断
-        return when(this) {
+        return when (this) {
             Type, Subtype, Enum, ComplexEnum, DynamicValueType -> name.substringIn('[', ']')
             Inline -> name.substringIn('[', ']')
             SingleAlias -> name.substringIn('[', ']')

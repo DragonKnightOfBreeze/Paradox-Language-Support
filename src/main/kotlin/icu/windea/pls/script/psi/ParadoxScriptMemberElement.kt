@@ -6,4 +6,4 @@ import com.intellij.psi.*
  * @see ParadoxScriptDefinitionElement
  * @see ParadoxScriptValue
  */
-interface ParadoxScriptMemberElement: PsiElement, NavigatablePsiElement
+interface ParadoxScriptMemberElement : PsiElement, NavigatablePsiElement

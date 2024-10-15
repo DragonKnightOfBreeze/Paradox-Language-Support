@@ -15,23 +15,23 @@ abstract class ParadoxExpressionEditablePostfixTemplate(
     provider: PostfixTemplateProvider
 ) : EditablePostfixTemplate(setting.id, setting.key, createTemplate(setting), setting.example.orEmpty(), provider) {
     abstract val groupName: String
-    
+
     override fun isBuiltin(): Boolean {
         return true
     }
-    
+
     override fun addTemplateVariables(element: PsiElement, template: Template) {
         val variables = setting.variables
-        if(variables.isEmpty()) return
-        for(variable in variables) {
+        if (variables.isEmpty()) return
+        for (variable in variables) {
             template.addVariable(variable.key, "", variable.value.quote(), true)
         }
     }
-    
+
     override fun equals(other: Any?): Boolean {
         return this === other || (other is ParadoxExpressionEditablePostfixTemplate && setting == other.setting)
     }
-    
+
     override fun hashCode(): Int {
         return setting.hashCode()
     }

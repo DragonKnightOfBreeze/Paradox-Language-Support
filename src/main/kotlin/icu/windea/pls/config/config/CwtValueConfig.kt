@@ -9,7 +9,7 @@ import icu.windea.pls.model.*
 
 interface CwtValueConfig : CwtMemberConfig<CwtValue> {
     val propertyConfig: CwtPropertyConfig?
-    
+
     companion object
 }
 
@@ -25,14 +25,14 @@ fun CwtValueConfig.Companion.resolve(
     documentation: String? = null,
     propertyConfig: CwtPropertyConfig? = null
 ): CwtValueConfig {
-    return if(configs != null) {
-        if(optionConfigs != null || documentation != null) {
+    return if (configs != null) {
+        if (optionConfigs != null || documentation != null) {
             CwtValueConfigImpl1(pointer, configGroup, value, valueType, configs, optionConfigs, documentation, propertyConfig)
         } else {
             CwtValueConfigImpl2(pointer, configGroup, value, valueType, configs, propertyConfig)
         }
     } else {
-        if(optionConfigs != null || documentation != null) {
+        if (optionConfigs != null || documentation != null) {
             CwtValueConfigImpl3(pointer, configGroup, value, valueType, optionConfigs, documentation, propertyConfig)
         } else {
             CwtValueConfigImpl4(pointer, configGroup, value, valueType, propertyConfig)
@@ -51,7 +51,7 @@ fun CwtValueConfig.delegated(
     configs: List<CwtMemberConfig<*>>? = this.configs,
     parentConfig: CwtMemberConfig<*>? = this.parentConfig,
 ): CwtValueConfig {
-    return if(configs != null) {
+    return if (configs != null) {
         CwtValueConfigDelegate1(this, configs).apply { this.parentConfig = parentConfig }
     } else {
         CwtValueConfigDelegate2(this).apply { this.parentConfig = parentConfig }
@@ -91,11 +91,11 @@ private abstract class CwtValueConfigImpl(
 ) : UserDataHolderBase(), CwtValueConfig {
     private val valueTypeId = valueType.optimizeValue() //use enum id to optimize memory
     override val valueType: CwtType get() = valueTypeId.deoptimizeValue()
-    
+
     override val propertyConfig = propertyConfig
-    
+
     override var parentConfig: CwtMemberConfig<*>? = null
-    
+
     override fun toString(): String = value
 }
 
@@ -139,7 +139,7 @@ private class CwtValueConfigImpl3(
     documentation: String? = null,
     propertyConfig: CwtPropertyConfig? = null,
 ) : CwtValueConfigImpl(pointer, configGroup, value, valueType, propertyConfig) {
-    override val configs: List<CwtMemberConfig<*>>? get() = if(valueType == CwtType.Block) emptyList() else null
+    override val configs: List<CwtMemberConfig<*>>? get() = if (valueType == CwtType.Block) emptyList() else null
     override val optionConfigs = optionConfigs
     override val documentation = documentation
 }
@@ -152,7 +152,7 @@ private class CwtValueConfigImpl4(
     valueType: CwtType = CwtType.String,
     propertyConfig: CwtPropertyConfig? = null,
 ) : CwtValueConfigImpl(pointer, configGroup, value, valueType, propertyConfig) {
-    override val configs: List<CwtMemberConfig<*>>? get() = if(valueType == CwtType.Block) emptyList() else null
+    override val configs: List<CwtMemberConfig<*>>? get() = if (valueType == CwtType.Block) emptyList() else null
     override val optionConfigs get() = null
     override val documentation get() = null
 }
@@ -161,10 +161,10 @@ private abstract class CwtValueConfigDelegate(
     private val delegate: CwtValueConfig,
 ) : UserDataHolderBase(), CwtValueConfig by delegate {
     override var parentConfig: CwtMemberConfig<*>? = null
-    
+
     override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
     override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
-    
+
     override fun toString(): String = value
 }
 
@@ -180,7 +180,7 @@ private class CwtValueConfigDelegate1(
 private class CwtValueConfigDelegate2(
     delegate: CwtValueConfig,
 ) : CwtValueConfigDelegate(delegate) {
-    override val configs: List<CwtMemberConfig<*>>? get() = if(valueType == CwtType.Block) emptyList() else null
+    override val configs: List<CwtMemberConfig<*>>? get() = if (valueType == CwtType.Block) emptyList() else null
 }
 
 //12 + 4 * 4 = 28 -> 32
@@ -189,7 +189,7 @@ private class CwtValueConfigDelegateWith(
     override val value: String,
 ) : CwtValueConfigDelegate(delegate) {
     //configs should be always null here
-    
+
     override fun toString(): String = value
 }
 
@@ -204,8 +204,8 @@ private class CwtValueConfigFromPropertyConfig(
     override val documentation: String? get() = propertyConfig.documentation
     override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = propertyConfig.optionConfigs
     override val configs: List<CwtMemberConfig<*>>? get() = propertyConfig.configs
-    
+
     override var parentConfig: CwtMemberConfig<*>? = null
-    
+
     override fun toString(): String = value
 }

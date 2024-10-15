@@ -20,38 +20,38 @@ import icu.windea.pls.script.psi.*
  */
 class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
-        
+        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+
         val file = holder.file
         val project = holder.project
         val fileInfo = file.fileInfo ?: return PsiElementVisitor.EMPTY_VISITOR
         val isGlobal = "common/scripted_variables".matchesPath(fileInfo.path.path)
-        if(!isGlobal) return PsiElementVisitor.EMPTY_VISITOR //only for global scripted variables
+        if (!isGlobal) return PsiElementVisitor.EMPTY_VISITOR //only for global scripted variables
         val virtualFile = file.virtualFile
         val inProject = virtualFile != null && ProjectFileIndex.getInstance(project).isInContent(virtualFile)
-        if(!inProject) return PsiElementVisitor.EMPTY_VISITOR //only for project files
-        
+        if (!inProject) return PsiElementVisitor.EMPTY_VISITOR //only for project files
+
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if(element is ParadoxScriptScriptedVariable) {
-                    if(element.parent !is ParadoxScriptRootBlock) return
+                if (element is ParadoxScriptScriptedVariable) {
+                    if (element.parent !is ParadoxScriptRootBlock) return
                     visitScriptedVariable(element)
                 }
             }
-            
+
             private fun visitScriptedVariable(element: ParadoxScriptScriptedVariable) {
                 val priority = ParadoxPriorityProvider.getPriority(element)
-                if(priority == ParadoxPriority.ORDERED) return //only for FIOS and LIOS
+                if (priority == ParadoxPriority.ORDERED) return //only for FIOS and LIOS
                 val selector = scriptedVariableSelector(project, file)
                 val name = element.name ?: return
-                if(name.isParameterized()) return ////parameterized -> ignored
+                if (name.isParameterized()) return ////parameterized -> ignored
                 val results = ParadoxGlobalScriptedVariableSearch.search(name, selector).findAll()
-                if(results.size < 2) return //no override -> skip
+                if (results.size < 2) return //no override -> skip
                 val firstResult = results.first()
                 val firstRootInfo = firstResult.fileInfo?.rootInfo ?: return
                 val rootInfo = fileInfo.rootInfo
-                if(firstRootInfo.rootFile != rootInfo.rootFile) {
+                if (firstRootInfo.rootFile != rootInfo.rootFile) {
                     //different root file -> incorrect override
                     val locationElement = element.scriptedVariableName
                     val message = PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.desc", name, priority)
@@ -61,19 +61,19 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
             }
         }
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
-        if(ParadoxFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
-        if(selectRootFile(file) == null) return false
+        if (ParadoxFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (selectRootFile(file) == null) return false
         return true
     }
-    
+
     private class NavigateToOverriddenScriptedVariablesFix(key: String, element: PsiElement, scriptedVariables: Collection<PsiElement>) : NavigateToFix(key, element, scriptedVariables) {
         override fun getText() = PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.fix.1")
-        
+
         override fun getPopupTitle(editor: Editor) =
             PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.fix.1.popup.title", key)
-        
+
         override fun getPopupText(editor: Editor, value: PsiElement) =
             PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.fix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
     }

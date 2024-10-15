@@ -15,26 +15,26 @@ import icu.windea.pls.script.psi.*
  * * 忽略非定义、非定义成员的脚本属性，以及非本地化的本地化属性
  */
 class ParadoxQualifiedNameProvider : QualifiedNameProvider {
-	override fun adjustElementToCopy(element: PsiElement): PsiElement? {
-		return null
-	}
-	
-	override fun getQualifiedName(element: PsiElement): String? {
-		when {
-			element is ParadoxScriptScriptedVariable -> return element.name
-			element is ParadoxScriptProperty -> {
-				val definitionInfo = element.definitionInfo
-				if(definitionInfo != null) return definitionInfo.name
-				return null
-			}
-			element is ParadoxScriptPropertyKey -> return getQualifiedName(element.parent)
-			element is ParadoxLocalisationProperty -> return element.name
-			element is ParadoxLocalisationPropertyKey -> return getQualifiedName(element.parent)
-			else -> return null
-		}
-	}
-	
-	override fun qualifiedNameToElement(fqn: String, project: Project): PsiElement? {
-		return null //不处理
-	}
+    override fun adjustElementToCopy(element: PsiElement): PsiElement? {
+        return null
+    }
+
+    override fun getQualifiedName(element: PsiElement): String? {
+        when {
+            element is ParadoxScriptScriptedVariable -> return element.name
+            element is ParadoxScriptProperty -> {
+                val definitionInfo = element.definitionInfo
+                if (definitionInfo != null) return definitionInfo.name
+                return null
+            }
+            element is ParadoxScriptPropertyKey -> return getQualifiedName(element.parent)
+            element is ParadoxLocalisationProperty -> return element.name
+            element is ParadoxLocalisationPropertyKey -> return getQualifiedName(element.parent)
+            else -> return null
+        }
+    }
+
+    override fun qualifiedNameToElement(fqn: String, project: Project): PsiElement? {
+        return null //不处理
+    }
 }

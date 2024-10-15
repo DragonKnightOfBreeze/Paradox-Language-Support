@@ -14,7 +14,7 @@ class ParadoxScriptUnwrapDescriptor : UnwrapDescriptorBase() {
         ParadoxScriptParameterConditionUnwrapper(),
         ParadoxScriptInlineParameterConditionUnwrapper(),
     )
-    
+
     override fun createUnwrappers(): Array<out Unwrapper> {
         return _unwrappers
     }

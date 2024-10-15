@@ -11,7 +11,7 @@ import icu.windea.pls.cwt.psi.*
 interface CwtExtendedOnActionConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
     val eventType: String
-    
+
     companion object Resolver {
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig? = doResolve(config)
     }
@@ -20,7 +20,7 @@ interface CwtExtendedOnActionConfig : CwtDelegatedConfig<CwtMemberElement, CwtMe
 //Implementations
 
 private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig? {
-    val name = when(config) {
+    val name = when (config) {
         is CwtPropertyConfig -> config.key
         is CwtValueConfig -> config.value
     }

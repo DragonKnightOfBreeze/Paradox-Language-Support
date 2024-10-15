@@ -18,14 +18,14 @@ class ParadoxGameSettingsDialog(
 ) : DialogWrapper(project, true) {
     val graph = PropertyGraph()
     val gameTypeProperty = graph.property(settings.gameType ?: getSettings().defaultGameType)
-    
+
     val modDependencies = settings.copyModDependencies()
-    
+
     init {
         title = PlsBundle.message("game.settings")
         init()
     }
-    
+
     override fun createCenterPanel(): DialogPanel {
         return panel {
             row {
@@ -57,7 +57,7 @@ class ParadoxGameSettingsDialog(
                     .align(Align.FILL)
                     .enabled(false)
             }
-            
+
             //modDependencies
             collapsibleGroup(PlsBundle.message("game.settings.modDependencies"), false) {
                 row {
@@ -70,18 +70,18 @@ class ParadoxGameSettingsDialog(
             }.resizableRow()
         }
     }
-    
+
     override fun doOKAction() {
         super.doOKAction()
         doOk()
     }
-    
+
     private fun doOk() {
         settings.modDependencies = modDependencies
         getProfilesSettings().updateSettings()
-        
+
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onChange(settings)
     }
-    
+
 }

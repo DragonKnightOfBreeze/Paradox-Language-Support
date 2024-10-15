@@ -23,18 +23,18 @@ class CwtColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("cwt.displayName.invalidEscape"), CwtAttributesKeys.INVALID_ESCAPE_KEY),
         AttributesDescriptor(PlsBundle.message("cwt.displayName.badCharacter"), CwtAttributesKeys.BAD_CHARACTER_KEY)
     )
-    
+
     override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(CwtLanguage, null, null)
-    
+
     override fun getAdditionalHighlightingTagToDescriptorMap() = null
-    
+
     override fun getIcon() = PlsIcons.FileTypes.Cwt
-    
+
     override fun getAttributeDescriptors() = _attributesDescriptors
-    
+
     override fun getColorDescriptors() = ColorDescriptor.EMPTY_ARRAY
-    
+
     override fun getDisplayName() = PlsBundle.message("options.cwt.displayName")
-    
+
     override fun getDemoText() = PlsConstants.Samples.cwtColorSettings
 }

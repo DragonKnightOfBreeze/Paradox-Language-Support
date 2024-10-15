@@ -10,18 +10,18 @@ import icu.windea.pls.config.configGroup.*
  */
 interface CwtConfigGroupFileProvider {
     fun getRootDirectory(project: Project): VirtualFile?
-    
+
     /**
      * @return 规则文件[file]所在的规则分组。
      */
     fun getContainingConfigGroup(file: VirtualFile, project: Project): CwtConfigGroup?
-    
+
     fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean
-    
+
     fun getHintMessage(): String
-    
+
     fun getNotificationMessage(): String
-    
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtConfigGroupFileProvider>("icu.windea.pls.configGroupFileProvider")
     }

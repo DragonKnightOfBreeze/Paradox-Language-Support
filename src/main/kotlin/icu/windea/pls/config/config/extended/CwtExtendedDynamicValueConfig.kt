@@ -13,7 +13,7 @@ interface CwtExtendedDynamicValueConfig : CwtDelegatedConfig<CwtMemberElement, C
     val name: String
     val type: String
     val hint: String?
-    
+
     companion object Resolver {
         fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedDynamicValueConfig = doResolve(config, type)
     }
@@ -22,7 +22,7 @@ interface CwtExtendedDynamicValueConfig : CwtDelegatedConfig<CwtMemberElement, C
 //Implementations (interned)
 
 private fun doResolve(config: CwtMemberConfig<*>, type: String): CwtExtendedDynamicValueConfig {
-    val name = when(config) {
+    val name = when (config) {
         is CwtPropertyConfig -> config.key
         is CwtValueConfig -> config.value
     }

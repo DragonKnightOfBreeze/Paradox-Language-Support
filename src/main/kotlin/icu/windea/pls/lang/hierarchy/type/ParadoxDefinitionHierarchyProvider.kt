@@ -17,18 +17,18 @@ class ParadoxDefinitionHierarchyProvider : HierarchyProvider {
         val project = dataContext.getData(CommonDataKeys.PROJECT) ?: return null
         val editor = dataContext.getData(CommonDataKeys.EDITOR) ?: return null
         val file = PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
-        if(file !is ParadoxScriptFile) return null
+        if (file !is ParadoxScriptFile) return null
         val fileInfo = file.fileInfo ?: return null
-        if(fileInfo.path.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
+        if (fileInfo.path.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
         val offset = editor.caretModel.offset
         val definition = ParadoxPsiManager.findDefinition(file, offset) ?: return null
         return definition
     }
-    
+
     override fun createHierarchyBrowser(target: PsiElement): HierarchyBrowser {
         return ParadoxDefinitionHierarchyBrowser(target.project, target)
     }
-    
+
     override fun browserActivated(hierarchyBrowser: HierarchyBrowser) {
         hierarchyBrowser as ParadoxDefinitionHierarchyBrowser
         hierarchyBrowser.changeView(ParadoxDefinitionHierarchyBrowser.getDefinitionHierarchyType())

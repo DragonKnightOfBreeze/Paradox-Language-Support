@@ -13,23 +13,23 @@ import icu.windea.pls.script.psi.*
  */
 class AutomaticRelatedImagesRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
-        if(element !is ParadoxScriptDefinitionElement) return false
+        if (element !is ParadoxScriptDefinitionElement) return false
         val definitionInfo = element.definitionInfo ?: return false
         return definitionInfo.images.isNotEmpty()
     }
-    
+
     override fun getOptionName(): String {
         return PlsBundle.message("rename.relatedImages")
     }
-    
+
     override fun isEnabled(): Boolean {
         return ParadoxRefactoringSettings.getInstance().renameRelatedImages
     }
-    
+
     override fun setEnabled(enabled: Boolean) {
         ParadoxRefactoringSettings.getInstance().renameRelatedImages = enabled
     }
-    
+
     override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {
         return AutomaticRelatedImagesRenamer(element, newName)
     }

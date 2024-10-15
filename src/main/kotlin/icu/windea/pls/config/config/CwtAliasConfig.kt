@@ -21,12 +21,12 @@ interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val subName: String
     val supportedScopes: Set<String>
     val outputScope: String?
-    
+
     val subNameExpression: CwtDataExpression get() = CwtDataExpression.resolve(subName, true)
     override val expression: CwtDataExpression get() = subNameExpression
-    
+
     fun inline(config: CwtPropertyConfig): CwtPropertyConfig
-    
+
     companion object {
         fun resolve(config: CwtPropertyConfig): CwtAliasConfig? = doResolve(config)
     }
@@ -50,7 +50,7 @@ private class CwtAliasConfigImpl(
 ) : UserDataHolderBase(), CwtAliasConfig {
     override val supportedScopes get() = config.supportedScopes
     override val outputScope get() = config.pushScope
-    
+
     override fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
         val other = this.config
         val inlined = config.copy(

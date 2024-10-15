@@ -30,19 +30,19 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxModifierManager {
     object Keys : KeyRegistry() {
-         val modifierNameKeys by createKey<Set<String>>(this)
-         val modifierDescKeys by createKey<Set<String>>(this)
-         val modifierIconPaths by createKey<Set<String>>(this)
+        val modifierNameKeys by createKey<Set<String>>(this)
+        val modifierDescKeys by createKey<Set<String>>(this)
+        val modifierIconPaths by createKey<Set<String>>(this)
     }
-    
+
     //可通过运行游戏后输出的modifiers.log判断到底会生成哪些修正
     //不同的游戏类型存在一些通过不同逻辑生成的修正
     //插件使用的modifiers.cwt中应当去除生成的修正
-    
+
     fun matchesModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         return ParadoxModifierSupport.matchModifier(name, element, configGroup)
     }
-    
+
     fun resolveModifier(element: ParadoxScriptStringExpressionElement): ParadoxModifierElement? {
         val name = element.value
         val gameType = selectGameType(element) ?: return null
@@ -50,27 +50,27 @@ object ParadoxModifierManager {
         val configGroup = getConfigGroup(project, gameType)
         return resolveModifier(name, element, configGroup)
     }
-    
+
     fun resolveModifier(name: String, element: PsiElement): ParadoxModifierElement? {
         val gameType = selectGameType(element) ?: return null
         val project = element.project
         val configGroup = getConfigGroup(project, gameType)
         return resolveModifier(name, element, configGroup)
     }
-    
+
     fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierElement? {
         val modifierInfo = getModifierInfo(name, element, configGroup, useSupport)
         return modifierInfo?.toPsiElement(element)
     }
-    
+
     fun completeModifier(context: ProcessingContext, result: CompletionResultSet) {
         val element = context.contextElement!!
-        if(element !is ParadoxScriptStringExpressionElement) return
-        
+        if (element !is ParadoxScriptStringExpressionElement) return
+
         val modifierNames = mutableSetOf<String>()
         ParadoxModifierSupport.completeModifier(context, result, modifierNames)
     }
-    
+
     fun getModifierInfo(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierInfo? {
         val rootFile = selectRootFile(element) ?: return null
         val cache = configGroup.modifierInfoCache.get(rootFile)
@@ -81,10 +81,10 @@ object ParadoxModifierManager {
                 ?: ParadoxModifierSupport.resolveModifier(name, element, configGroup)
                 ?: ParadoxModifierInfo.EMPTY
         }
-        if(modifierInfo == ParadoxModifierInfo.EMPTY) return null
+        if (modifierInfo == ParadoxModifierInfo.EMPTY) return null
         return modifierInfo
     }
-    
+
     fun getModifierInfo(name: String, element: PsiElement): ParadoxModifierInfo? {
         val gameType = selectGameType(element) ?: return null
         val rootFile = selectRootFile(element) ?: return null
@@ -95,10 +95,10 @@ object ParadoxModifierManager {
         val modifierInfo = cache.get(cacheKey) {
             ParadoxModifierSupport.resolveModifier(name, element, configGroup) ?: ParadoxModifierInfo.EMPTY
         }
-        if(modifierInfo == ParadoxModifierInfo.EMPTY) return null
+        if (modifierInfo == ParadoxModifierInfo.EMPTY) return null
         return modifierInfo
     }
-    
+
     fun getModifierInfo(modifierElement: ParadoxModifierElement): ParadoxModifierInfo? {
         val gameType = modifierElement.gameType
         val rootFile = selectRootFile(modifierElement) ?: return null
@@ -111,28 +111,28 @@ object ParadoxModifierManager {
         }
         return modifierInfo
     }
-    
+
     fun getModifierNameKeys(name: String, element: PsiElement): Set<String> {
         val modifierInfo = getModifierInfo(name, element) ?: return emptySet()
         return modifierInfo.getOrPutUserData(Keys.modifierNameKeys) {
             ParadoxModifierNameDescProvider.getModifierNameKeys(element, modifierInfo)
         }
     }
-    
+
     fun getModifierDescKeys(name: String, element: PsiElement): Set<String> {
         val modifierInfo = getModifierInfo(name, element) ?: return emptySet()
         return modifierInfo.getOrPutUserData(Keys.modifierDescKeys) {
             ParadoxModifierNameDescProvider.getModifierDescKeys(element, modifierInfo)
         }
     }
-    
+
     fun getModifierIconPaths(name: String, element: PsiElement): Set<String> {
         val modifierInfo = getModifierInfo(name, element) ?: return emptySet()
         return modifierInfo.getOrPutUserData(Keys.modifierIconPaths) {
             ParadoxModifierIconProvider.getModifierIconPaths(element, modifierInfo)
         }
     }
-    
+
     fun getModifierLocalizedNames(name: String, element: PsiElement, project: Project): Set<String> {
         ProgressManager.checkCanceled()
         val keys = getModifierNameKeys(name, element)
@@ -144,7 +144,7 @@ object ParadoxModifierManager {
             ParadoxLocalisationSearch.search(key, selector).processQueryAsync { localisation ->
                 ProgressManager.checkCanceled()
                 val r = ParadoxLocalisationTextRenderer.render(localisation).orNull()
-                if(r != null) localizedNames.add(r)
+                if (r != null) localizedNames.add(r)
                 true
             }
             localizedNames.orNull()

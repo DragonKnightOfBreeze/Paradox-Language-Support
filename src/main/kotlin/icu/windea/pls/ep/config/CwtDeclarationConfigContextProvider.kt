@@ -17,17 +17,17 @@ import icu.windea.pls.model.*
 @WithGameTypeEP
 interface CwtDeclarationConfigContextProvider {
     fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext?
-    
+
     fun getCacheKey(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): String
-    
-    fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig) : CwtPropertyConfig
-    
+
+    fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtDeclarationConfigContextProvider>("icu.windea.pls.declarationConfigContextProvider")
-        
+
         fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if(!gameType.supportsByAnnotation(ep)) return@f null
+                if (!gameType.supportsByAnnotation(ep)) return@f null
                 ep.getContext(element, definitionName, definitionType, definitionSubtypes, gameType, configGroup)
                     ?.also { it.provider = ep }
             }

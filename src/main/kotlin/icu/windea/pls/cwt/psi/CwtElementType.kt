@@ -4,5 +4,5 @@ import com.intellij.psi.tree.*
 import icu.windea.pls.cwt.*
 
 class CwtElementType(
-	debugName: String
-): IElementType(debugName, CwtLanguage)
+    debugName: String
+) : IElementType(debugName, CwtLanguage)

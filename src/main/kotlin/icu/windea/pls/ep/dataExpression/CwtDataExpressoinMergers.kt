@@ -8,14 +8,14 @@ class DefaultCwtDataExpressionMerger : CwtDataExpressionMerger {
     override fun merge(expression: CwtDataExpression, otherExpression: CwtDataExpression): String? {
         return mergeExpressionString(expression, otherExpression)
     }
-    
+
     private fun mergeExpressionString(e1: CwtDataExpression, e2: CwtDataExpression): String? {
-        if(e1.type == Types.Constant && e2.type == Types.Constant) {
-            if(e1.expressionString.equals(e2.expressionString, true)) return e1.expressionString.lowercase()
+        if (e1.type == Types.Constant && e2.type == Types.Constant) {
+            if (e1.expressionString.equals(e2.expressionString, true)) return e1.expressionString.lowercase()
         }
         return doMergeExpressionString(e1, e2) ?: doMergeExpressionString(e2, e1)
     }
-    
+
     private fun doMergeExpressionString(e1: CwtDataExpression, e2: CwtDataExpression): String? {
         when {
             e1.type == Types.Any -> {
@@ -39,9 +39,9 @@ class DefaultCwtDataExpressionMerger : CwtDataExpressionMerger {
                 e2.type == Types.Scope && e2.value == null -> return e1.expressionString
             }
             e1.type in TypeGroups.DynamicValue -> when {
-                e2.type in TypeGroups.DynamicValue -> return if(e1.value == e2.value) "dynamic_value[${e1.value}]" else null
+                e2.type in TypeGroups.DynamicValue -> return if (e1.value == e2.value) "dynamic_value[${e1.value}]" else null
                 e2.type in TypeGroups.ValueField -> return "dynamic_value[${e1.value}]"
-                e2.type in TypeGroups.VariableField -> return if(e1.value == "variable") "dynamic_value[${e1.value}]" else null
+                e2.type in TypeGroups.VariableField -> return if (e1.value == "variable") "dynamic_value[${e1.value}]" else null
             }
             e1.type == Types.VariableField -> when {
                 e2.type in TypeGroups.ValueField -> return "variable_field"

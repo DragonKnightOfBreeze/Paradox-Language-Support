@@ -11,7 +11,7 @@ import icu.windea.pls.cwt.psi.*
 interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
     val type: String
-    
+
     companion object Resolver {
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfig? = doResolve(config)
     }
@@ -20,7 +20,7 @@ interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMemberElement, Cwt
 //Implementations (interned)
 
 private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedDefinitionConfig? {
-    val name = when(config) {
+    val name = when (config) {
         is CwtPropertyConfig -> config.key
         is CwtValueConfig -> config.value
     }

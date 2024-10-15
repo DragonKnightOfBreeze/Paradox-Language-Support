@@ -20,19 +20,19 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
         val editor = context.editor
         val caretModel = editor.caretModel
         val suffixChar = editor.document.charsSequence.getOrNull(caretModel.offset)
-        if(suffixChar != '$') {
+        if (suffixChar != '$') {
             EditorModificationUtil.insertStringAtCaret(editor, "$")
             caretModel.moveToOffset(caretModel.offset - 1)
         }
     }
-    
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position
         val project = parameters.originalFile.project
         val selector = scriptedVariableSelector(project, element).contextSensitive().distinctByName()
         ParadoxGlobalScriptedVariableSearch.search(selector = selector).processQueryAsync { processScriptedVariable(it, result) }
     }
-    
+
     @Suppress("SameReturnValue")
     private fun processScriptedVariable(it: ParadoxScriptScriptedVariable, result: CompletionResultSet): Boolean {
         ProgressManager.checkCanceled()
