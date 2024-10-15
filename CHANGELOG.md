@@ -3,6 +3,14 @@
 ## 1.3.22
 
 * [X] #88 新的代码检查：`NonTriggeredEventInspection`
+* [X] BUG修复：修复不正确地缓存了基于扩展的规则推断的参数的上下文规则的问题
+* [X] 其他优化与BUG修复
+
+***
+
+* [X] #88 New code inspection: `NonTriggeredEventInspection`
+* [X] BUG fix: fixed an issue that context configs for parameters inferred based on extended configs were cached incorrectly
+* [X] Other optimizations and bug fixes
 
 ## 1.3.21
 

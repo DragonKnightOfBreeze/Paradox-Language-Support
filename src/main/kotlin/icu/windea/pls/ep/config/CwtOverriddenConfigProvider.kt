@@ -37,7 +37,7 @@ interface CwtOverriddenConfigProvider {
                         it.originalConfig = config
                         it.overriddenProvider = ep
                     }
-                    ?.also { PlsStates.overrideConfig.set(true) } //set overrideConfigStatus
+                    ?.also { PlsStates.dynamicContextConfigs.set(true) }
             }
         }
     }

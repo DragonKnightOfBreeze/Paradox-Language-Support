@@ -37,8 +37,8 @@ import java.util.*
 
 object ParadoxParameterManager {
     object Keys : KeyRegistry() {
-        val parameterInferredContextConfigs by createKey<List<CwtMemberConfig<*>>>(this)
-        val parameterInferredContextConfigsFromConfig by createKey<List<CwtMemberConfig<*>>>(this)
+        val inferredContextConfigsFromConfig by createKey<List<CwtMemberConfig<*>>>(this)
+        val inferredContextConfigsFromUsages by createKey<List<CwtMemberConfig<*>>>(this)
     }
 
     /**
@@ -240,12 +240,16 @@ object ParadoxParameterManager {
      * 尝试推断得到参数对应的上下文CWT规则。
      */
     fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
+        val fromConfig = getInferredContextConfigsFromConfig(parameterElement)
+        if(fromConfig.isNotEmpty()) return fromConfig
+
+        if (!getSettings().inference.configContextForParameters) return emptyList()
         val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
-        return parameterInfo.getOrPutUserData(Keys.parameterInferredContextConfigs) {
+        return parameterInfo.getOrPutUserData(Keys.inferredContextConfigsFromUsages) {
             ProgressManager.checkCanceled()
             withRecursionGuard("ParadoxParameterManager.getInferredContextConfigs") {
                 withRecursionCheck(parameterElement) {
-                    doGetInferredContextConfigs(parameterElement)
+                    doGetInferredContextConfigsFromUsages(parameterElement)
                 }
             } ?: emptyList()
         }
@@ -255,19 +259,7 @@ object ParadoxParameterManager {
      * 尝试（从扩展的CWT规则）推断得到参数对应的上下文CWT规则。
      */
     fun getInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
-        return parameterInfo.getOrPutUserData(Keys.parameterInferredContextConfigsFromConfig) {
-            doGetInferredContextConfigsFromConfig(parameterElement)
-        }
-    }
-
-    private fun doGetInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        val fromConfig = doGetInferredContextConfigsFromConfig(parameterElement)
-        if (fromConfig.isNotEmpty()) return fromConfig
-
-        if (!getSettings().inference.configContextForParameters) return emptyList()
-
-        return doGetInferredContextConfigsFromUsages(parameterElement)
+        return doGetInferredContextConfigsFromConfig(parameterElement)
     }
 
     private fun doGetInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
