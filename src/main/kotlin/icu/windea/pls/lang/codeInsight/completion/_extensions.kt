@@ -26,7 +26,7 @@ import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.cwt.codeStyle.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.ui.*
+import icu.windea.pls.lang.ui.clause.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.codeStyle.*

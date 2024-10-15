@@ -6,6 +6,7 @@ import com.intellij.ui.table.*
 import com.intellij.util.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.ui.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import javax.swing.*
@@ -76,7 +77,7 @@ class ElementsListTable(
                         }
                         is ElementsTableModel.SeparatorColumn -> {
                             if (item is PropertyDescriptor) {
-                                val separatorComboBox = ComboBox(ParadoxSeparatorType.values())
+                                val separatorComboBox = ComboBox(ParadoxSeparatorType.entries.toTypedArray())
                                 separatorComboBox.selectedItem = item.separator
                                 configureSeparatorComboBox(separatorComboBox)
                                 this.separatorComboBox = separatorComboBox
