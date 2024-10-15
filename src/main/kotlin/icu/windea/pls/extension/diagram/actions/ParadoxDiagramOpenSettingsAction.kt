@@ -4,13 +4,12 @@ import com.intellij.diagram.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
-import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
 import icu.windea.pls.extension.diagram.settings.*
 
 //com.intellij.uml.core.actions.DiagramOpenSettingsAction
 
-class ParadoxDiagramOpenSettingsAction : AnAction(PlsDiagramBundle.message("action.openSettings.name"), null, null), DumbAware {
+class ParadoxDiagramOpenSettingsAction : AnAction(), DumbAware {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
@@ -26,7 +25,6 @@ class ParadoxDiagramOpenSettingsAction : AnAction(PlsDiagramBundle.message("acti
         val project = builder.project
         val provider = builder.provider
         if (provider !is ParadoxDiagramProvider) return
-        val settings = provider.getDiagramSettings(project) ?: return
         ShowSettingsUtil.getInstance().showSettingsDialog(project, ParadoxDiagramSettingsConfigurable::class.java)
     }
 }
