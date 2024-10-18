@@ -1675,7 +1675,6 @@ object ParadoxCompletionManager {
             ProgressManager.checkCanceled()
             val name = config0.name
             if (checkExtendedConfigName(name)) return@f
-            if (context.completionIds?.add(name) == false) return@f //排除重复项
             val element = config0.pointer.element ?: return@f
             val typeFile = config0.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)

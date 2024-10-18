@@ -39,7 +39,6 @@ class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<Complet
         //不自动插入后面的等号
         ProgressManager.checkCanceled()
         val name = element.name ?: return true
-        if (context.completionIds?.add(name) == false) return true //排除重复项
         val tailText = element.value?.let { " = $it" }
         val typeFile = element.containingFile
         val lookupElement = LookupElementBuilder.create(element, name)

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.23
+
+* [X] 修复无法补全封装变量（scripted variable）的问题
+
+***
+
+* [X] Fix a problem that cannot complete scripted variables
+
 ## 1.3.22
 
 * [X] #88 新的代码检查：`NonTriggeredEventInspection`
