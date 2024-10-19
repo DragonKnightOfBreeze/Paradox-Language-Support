@@ -22,57 +22,57 @@ class ParadoxScriptedEffectInlineDialog(
         ?.withFileTypes(ParadoxScriptFileType)
         ?.intersectWith(GlobalSearchScope.projectScope(project))
         ?: GlobalSearchScope.projectScope(project)
-    
+
     init {
         title = PlsBundle.message("title.inline.scriptedEffect")
         myInvokedOnReference = reference != null
         init()
         helpAction.isEnabled = false
     }
-    
+
     override fun getNameLabelText(): String {
         val name = element.definitionInfo?.name.orAnonymous()
         return PlsBundle.message("inline.scriptedEffect.label", name)
     }
-    
+
     override fun getBorderTitle(): String {
         return PlsBundle.message("inline.scriptedEffect.border.title")
     }
-    
+
     override fun getInlineThisText(): String {
         return PlsBundle.message("inline.scriptedEffect.inline.this")
     }
-    
+
     override fun getInlineAllText(): String {
-        return if(element.isWritable) PlsBundle.message("inline.scriptedEffect.inline.all.remove")
+        return if (element.isWritable) PlsBundle.message("inline.scriptedEffect.inline.all.remove")
         else PlsBundle.message("inline.scriptedEffect.inline.all")
     }
-    
+
     override fun getKeepTheDeclarationText(): String {
-        return if(element.isWritable) PlsBundle.message("inline.scriptedEffect.inline.all.keep")
+        return if (element.isWritable) PlsBundle.message("inline.scriptedEffect.inline.all.keep")
         else super.getKeepTheDeclarationText()
     }
-    
+
     override fun allowInlineAll(): Boolean {
         return true
     }
-    
+
     override fun isInlineThis(): Boolean {
         return ParadoxRefactoringSettings.getInstance().inlineScriptedEffectThis
     }
-    
+
     override fun isKeepTheDeclarationByDefault(): Boolean {
         return ParadoxRefactoringSettings.getInstance().inlineScriptedEffectKeep
     }
-    
+
     override fun doAction() {
         val processor = ParadoxScriptedEffectInlineProcessor(project, optimizedScope, element, reference, editor, isInlineThisOnly, isKeepTheDeclaration())
         invokeRefactoring(processor)
         val settings = ParadoxRefactoringSettings.getInstance()
-        if(myRbInlineThisOnly.isEnabled && myRbInlineAll.isEnabled) {
+        if (myRbInlineThisOnly.isEnabled && myRbInlineAll.isEnabled) {
             settings.inlineScriptedEffectThis = isInlineThisOnly
         }
-        if(myKeepTheDeclaration != null && myKeepTheDeclaration!!.isEnabled) {
+        if (myKeepTheDeclaration != null && myKeepTheDeclaration!!.isEnabled) {
             settings.inlineScriptedEffectKeep = isKeepTheDeclaration()
         }
     }

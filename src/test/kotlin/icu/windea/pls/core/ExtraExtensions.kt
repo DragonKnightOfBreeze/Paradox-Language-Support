@@ -7,7 +7,7 @@ inline fun <T> withProperties(block: PropertiesContainer.() -> T): T {
     try {
         return container.block()
     } finally {
-        for((property, oldValue) in container.properties2OldValues) {
+        for ((property, oldValue) in container.properties2OldValues) {
             @Suppress("UNCHECKED_CAST")
             (property as KMutableProperty0<Any?>).set(oldValue)
         }
@@ -15,8 +15,8 @@ inline fun <T> withProperties(block: PropertiesContainer.() -> T): T {
 }
 
 class PropertiesContainer {
-    val properties2OldValues : MutableMap<KMutableProperty0<*>, Any?> = mutableMapOf()
-    
+    val properties2OldValues: MutableMap<KMutableProperty0<*>, Any?> = mutableMapOf()
+
     @Suppress("NOTHING_TO_INLINE")
     inline fun <T> KMutableProperty0<T>.register(): T {
         val oldValue = this.get()

@@ -15,10 +15,10 @@ class ParadoxScriptBraceMatcher : PairedBraceMatcher {
         BracePair(LABS_SIGN, RABS_SIGN, false),
         BracePair(LP_SIGN, RP_SIGN, true),
     )
-    
+
     override fun getPairs(): Array<BracePair> = _bracePairs
-    
+
     override fun getCodeConstructStart(file: PsiFile?, openingBraceOffset: Int): Int = openingBraceOffset
-    
+
     override fun isPairedBracesAllowedBeforeType(lbraceType: IElementType, contextType: IElementType?): Boolean = true
 }

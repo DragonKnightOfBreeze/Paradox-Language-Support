@@ -18,12 +18,12 @@ interface CwtModifierConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
     val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig>
     val template: CwtTemplateExpression
     val supportedScopes: Set<String>
-    
+
     companion object {
         fun resolve(config: CwtPropertyConfig, name: String): CwtModifierConfig? = doResolve(config, name)
-        
+
         fun resolveFromAlias(config: CwtAliasConfig): CwtModifierConfig = doResolveFromAlias(config)
-        
+
         fun resolveFromDefinitionModifier(config: CwtPropertyConfig, name: String, typeExpression: String): CwtModifierConfig? =
             doResolveFromDefinitionModifier(config, name, typeExpression)
     }
@@ -58,11 +58,11 @@ private class CwtModifierConfigImpl(
     override val categories: Set<String> = emptySet() //category names
 ) : UserDataHolderBase(), CwtModifierConfig {
     override val categoryConfigMap: MutableMap<String, CwtModifierCategoryConfig> = mutableMapOf()
-    
+
     override val template = CwtTemplateExpression.resolve(name)
-    
+
     override val supportedScopes: Set<String> by lazy {
-        if(categoryConfigMap.isNotEmpty()) {
+        if (categoryConfigMap.isNotEmpty()) {
             ParadoxScopeManager.getSupportedScopes(categoryConfigMap)
         } else {
             //没有注明categories时从scopes选项中获取

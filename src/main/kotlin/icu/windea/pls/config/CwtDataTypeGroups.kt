@@ -20,7 +20,7 @@ object CwtDataTypeGroups {
         CwtDataTypes.FilePath,
         CwtDataTypes.Icon,
     )
-    
+
     val DynamicValue = arrayOf(
         CwtDataTypes.Value,
         CwtDataTypes.ValueSet,
@@ -42,7 +42,7 @@ object CwtDataTypeGroups {
     val DatabaseObject = arrayOf(
         CwtDataTypes.DatabaseObject
     )
-    
+
     val ConstantLike = arrayOf(
         CwtDataTypes.Constant,
         CwtDataTypes.TemplateExpression,
@@ -55,7 +55,7 @@ object CwtDataTypeGroups {
         CwtDataTypes.Constant,
         CwtDataTypes.Any,
     )
-    
+
     val ImageLocationResolved = arrayOf(
         CwtDataTypes.FilePath,
         CwtDataTypes.Icon,
@@ -66,7 +66,7 @@ object CwtDataTypeGroups {
         CwtDataTypes.SyncedLocalisation,
         CwtDataTypes.InlineLocalisation
     )
-    
+
     val DefinitionAware = arrayOf(
         CwtDataTypes.Definition,
         CwtDataTypes.TechnologyWithLevel
@@ -75,7 +75,7 @@ object CwtDataTypeGroups {
         CwtDataTypes.Localisation,
         CwtDataTypes.InlineLocalisation
     )
-    
+
     val PatternAware = arrayOf(
         CwtDataTypes.Constant,
         CwtDataTypes.TemplateExpression,

@@ -10,21 +10,21 @@ import java.util.*
 abstract class OrderedDiagramNodeContentManager : DiagramNodeContentManager {
     var _dataModel: DiagramDataModel<*>? = null
     val _enabledCategories: MutableSet<DiagramCategory> = Collections.synchronizedSet(TreeSet(compareBy { contentCategories.indexOf(it) }))
-    
+
     var dataModel: DiagramDataModel<*>? = _dataModel
-    
+
     override fun isCategoryEnabled(category: DiagramCategory): Boolean {
         return _enabledCategories.contains(category)
     }
-    
+
     override fun setCategoryEnabled(category: DiagramCategory, enabled: Boolean) {
-        if(enabled) {
+        if (enabled) {
             _enabledCategories.add(category)
         } else {
             _enabledCategories.remove(category)
         }
     }
-    
+
     override fun getEnabledCategories(): Array<DiagramCategory> {
         return _enabledCategories.toTypedArray()
     }

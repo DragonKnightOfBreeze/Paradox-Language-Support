@@ -9,8 +9,8 @@ import icu.windea.pls.lang.psi.*
 class ParadoxBaseComplexEnumValueExtendedDocumentationProvider : ParadoxComplexEnumValueExtendedDocumentationProvider {
     override fun getDocumentationContent(element: ParadoxComplexEnumValueElement): String? {
         val name = element.name
-        if(name.isEmpty()) return null
-        if(name.isParameterized()) return null
+        if (name.isEmpty()) return null
+        if (name.isParameterized()) return null
         val configGroup = getConfigGroup(element.project, element.gameType)
         val configs = configGroup.extendedComplexEnumValues[element.enumName] ?: return null
         val config = configs.findFromPattern(name, element, configGroup) ?: return null

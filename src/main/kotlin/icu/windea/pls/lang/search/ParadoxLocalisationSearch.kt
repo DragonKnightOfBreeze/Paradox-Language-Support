@@ -20,11 +20,13 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         val name: String?,
         override val selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
     ) : ParadoxSearchParameters<ParadoxLocalisationProperty>
-    
+
     companion object {
-        @JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxLocalisationProperty, SearchParameters>>("icu.windea.pls.search.localisationSearch")
-        @JvmField val INSTANCE = ParadoxLocalisationSearch()
-        
+        @JvmField
+        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxLocalisationProperty, SearchParameters>>("icu.windea.pls.search.localisationSearch")
+        @JvmField
+        val INSTANCE = ParadoxLocalisationSearch()
+
         /**
          *  @see icu.windea.pls.lang.search.ParadoxLocalisationSearch.SearchParameters
          */
@@ -35,7 +37,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         ): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, selector))
         }
-        
+
         /**
          *  @see icu.windea.pls.lang.search.ParadoxLocalisationSearch.SearchParameters
          */
@@ -45,7 +47,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
         ): ParadoxQuery<ParadoxLocalisationProperty, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(null, selector))
         }
-        
+
         /**
          * 用于优化代码提示的性能。
          */
@@ -61,7 +63,7 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
             return ParadoxLocalisationNameIndex.KEY.processFirstElementByKeys(
                 project, scope,
                 keyPredicate = { key -> prefixMatcher.prefixMatches(key) },
-                predicate = { element -> selector.select(element) },
+                predicate = { element -> selector.selectOne(element) },
                 getDefaultValue = { selector.defaultValue() },
                 resetDefaultValue = { selector.resetDefaultValue() },
                 processor = { processor.process(it) }

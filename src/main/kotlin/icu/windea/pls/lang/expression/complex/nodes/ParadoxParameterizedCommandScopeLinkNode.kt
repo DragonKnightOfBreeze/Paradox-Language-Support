@@ -11,7 +11,7 @@ class ParadoxParameterizedCommandScopeLinkNode(
 ) : ParadoxComplexExpressionNode.Base(), ParadoxCommandScopeLinkNode, ParadoxParameterizedNode {
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxParameterizedCommandScopeLinkNode? {
-            if(!text.isParameterized()) return null
+            if (!text.isParameterized()) return null
             return ParadoxParameterizedCommandScopeLinkNode(text, textRange, configGroup)
         }
     }

@@ -12,14 +12,14 @@ import icu.windea.pls.lang.psi.*
 @WithGameTypeEP
 interface ParadoxDynamicValueExtendedDocumentationProvider {
     fun getDocumentationContent(element: ParadoxDynamicValueElement): String?
-    
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxDynamicValueExtendedDocumentationProvider>("icu.windea.pls.dynamicValueExtendedDocumentationProvider")
-        
+
         fun buildDocumentationContent(element: ParadoxDynamicValueElement, action: (String) -> Unit) {
             val gameType = element.gameType
             EP_NAME.extensionList.forEach f@{ ep ->
-                if(!gameType.supportsByAnnotation(ep)) return@f
+                if (!gameType.supportsByAnnotation(ep)) return@f
                 val content = ep.getDocumentationContent(element)?.orNull() ?: return@f
                 action(content)
             }

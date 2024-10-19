@@ -13,21 +13,21 @@ class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataTypes.Block
     }
-    
+
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         return config.pointer.element
     }
-    
+
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         result.addBlockScriptExpressionElement(context)
     }
 }
 
-class ParadoxScriptBoolExpressionSupport: ParadoxScriptExpressionSupport {
+class ParadoxScriptBoolExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataTypes.Bool
     }
-    
+
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         result.addElement(ParadoxCompletionManager.yesLookupElement, context)
         result.addElement(ParadoxCompletionManager.noLookupElement, context)

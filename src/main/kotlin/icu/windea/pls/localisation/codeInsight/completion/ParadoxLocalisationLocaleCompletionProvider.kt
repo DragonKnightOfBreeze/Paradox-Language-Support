@@ -25,7 +25,7 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
         val editor = context.editor
         val chars = editor.document.charsSequence
         val colonIndex = chars.indexOf(':', context.startOffset)
-        if(colonIndex != -1) {
+        if (colonIndex != -1) {
             editor.caretModel.moveToOffset(colonIndex + 1)
         } else {
             val settings = CodeStyle.getSettings(context.file)
@@ -33,7 +33,7 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
             val insertLineBreak = editor.document.getLineNumber(editor.caretModel.offset) == editor.document.lineCount - 1
             val s = buildString {
                 append(":")
-                if(insertLineBreak) {
+                if (insertLineBreak) {
                     append("\n")
                     repeat(indentOptions.INDENT_SIZE) { append(" ") }
                 }
@@ -41,18 +41,18 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
             EditorModificationUtil.insertStringAtCaret(editor, s)
         }
     }
-    
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val position = parameters.position
-        if(!ParadoxPsiManager.isLocalisationLocaleLike(position)) return
-        
+        if (!ParadoxPsiManager.isLocalisationLocaleLike(position)) return
+
         val file = parameters.originalFile
         val project = file.project
         val localeIdFromFileName = file.castOrNull<ParadoxLocalisationFile>()?.getLocaleIdFromFileName()
         //批量提示
         val lookupElements = mutableSetOf<LookupElement>()
         val locales = getConfigGroup(project, null).localisationLocalesById.values
-        for(locale in locales) {
+        for (locale in locales) {
             ProgressManager.checkCanceled()
             val element = locale.pointer.element ?: continue
             val typeFile = locale.pointer.containingFile

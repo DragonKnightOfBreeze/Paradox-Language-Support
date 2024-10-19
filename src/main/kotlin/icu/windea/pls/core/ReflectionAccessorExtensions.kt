@@ -16,7 +16,7 @@ class SmartProperty<T : Any, V>(
     val property: SmartMemberProperty<T, V>
 ) {
     fun get(): V = property.get(target)
-    
+
     fun set(value: V) = property.set(target, value)
 }
 
@@ -28,24 +28,24 @@ class SmartMemberProperty<T : Any, V>(
         fun get(target: T): V
         fun set(target: T, value: V)
     }
-    
+
     private val targetClass by lazy { targetClassProvider?.invoke() ?: unsupported() }
     private val delegateProperty by lazy { doGetDelegateProperty() }
-    
+
     fun get(target: T): V {
         synchronized(this) {
-            if(targetClassProvider == null) {
+            if (targetClassProvider == null) {
                 val targetClass0 = target::class as KClass<T>
                 targetClassProvider = { targetClass0 }
             }
         }
         return delegateProperty?.get(target) ?: unsupported()
     }
-    
+
     fun set(target: T, value: V) {
         delegateProperty?.set(target, value) ?: unsupported()
     }
-    
+
     private fun doGetDelegateProperty(): DelegateProperty<T, V>? {
         try {
             return object : DelegateProperty<T, V> {
@@ -55,9 +55,9 @@ class SmartMemberProperty<T : Any, V>(
                 private val getter by lazy { memberFunctions.find { it.isGetter(propertyName) }?.also { it.isAccessible = true } }
                 private val setter by lazy { memberFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true } }
                 private val javaField by lazy { targetClass.java.getFieldOptimized(propertyName, static = false) }
-                
+
                 override fun get(target: T): V {
-                    if(!targetClass.isInstance(target)) cannotCast(target, targetClass)
+                    if (!targetClass.isInstance(target)) cannotCast(target, targetClass)
                     return when {
                         property != null -> property!!.get(target) as V
                         getter != null -> getter!!.call(target) as V
@@ -65,9 +65,9 @@ class SmartMemberProperty<T : Any, V>(
                         else -> unsupported()
                     }
                 }
-                
+
                 override fun set(target: T, value: V) {
-                    if(!targetClass.isInstance(target)) cannotCast(target, targetClass)
+                    if (!targetClass.isInstance(target)) cannotCast(target, targetClass)
                     when {
                         property != null && property is KMutableProperty1 -> (property as KMutableProperty1<T, in Any?>).set(target, value)
                         setter != null -> setter!!.call(target, value)
@@ -76,7 +76,7 @@ class SmartMemberProperty<T : Any, V>(
                     }
                 }
             }
-        } catch(e: UnsupportedOperationException) {
+        } catch (e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
             logger.error(e)
             return null
@@ -92,18 +92,18 @@ class SmartStaticProperty<T : Any, V>(
         fun get(): V
         fun set(value: V)
     }
-    
+
     private val targetClass by lazy { targetClassProvider() }
     private val delegateProperty by lazy { doGetDelegateProperty() }
-    
+
     fun get(): V {
         return delegateProperty?.get() ?: unsupported()
     }
-    
+
     fun set(value: V) {
         delegateProperty?.set(value) ?: unsupported()
     }
-    
+
     private fun doGetDelegateProperty(): DelegateProperty<V>? {
         try {
             return object : DelegateProperty<V> {
@@ -113,7 +113,7 @@ class SmartStaticProperty<T : Any, V>(
                 private val getter by lazy { staticFunctions.find { it.isGetter(propertyName) }?.also { it.isAccessible = true } }
                 private val setter by lazy { staticFunctions.find { it.isSetter(propertyName) }?.also { it.isAccessible = true } }
                 private val javaField by lazy { targetClass.java.getFieldOptimized(propertyName, static = true) }
-                
+
                 override fun get(): V {
                     return when {
                         property != null -> property!!.get() as V
@@ -122,7 +122,7 @@ class SmartStaticProperty<T : Any, V>(
                         else -> unsupported()
                     }
                 }
-                
+
                 override fun set(value: V) {
                     when {
                         property != null && property is KMutableProperty0 -> (property as KMutableProperty0<in Any?>).set(value)
@@ -132,7 +132,7 @@ class SmartStaticProperty<T : Any, V>(
                     }
                 }
             }
-        } catch(e: UnsupportedOperationException) {
+        } catch (e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
             logger.error(e)
             return null
@@ -152,50 +152,50 @@ class SmartMemberFunction<T : Any>(
     private var targetClassProvider: (() -> KClass<T>)?
 ) {
     private val targetClass by lazy { targetClassProvider?.invoke() ?: unsupported() }
-    
+
     operator fun invoke(target: T, vararg args: Any?): Any? {
         synchronized(this) {
-            if(targetClassProvider == null) {
+            if (targetClassProvider == null) {
                 val targetClass0 = target::class as KClass<T>
                 targetClassProvider = { targetClass0 }
             }
         }
-        
-        if(!targetClass.isInstance(target)) cannotCast(target, targetClass)
+
+        if (!targetClass.isInstance(target)) cannotCast(target, targetClass)
         val expectedArgsSize = args.size + 1
-        
+
         try {
             val functions = buildSet { addAll(targetClass.declaredFunctions); addAll(targetClass.functions) }
-            for(function in functions) {
-                if(function.name != functionName) continue
-                if(function.parameters.size != expectedArgsSize) continue
+            for (function in functions) {
+                if (function.name != functionName) continue
+                if (function.parameters.size != expectedArgsSize) continue
                 try {
                     function.isAccessible = true
                     return function.call(target, *args)
-                } catch(e: Exception) {
-                    if(e is ProcessCanceledException) throw e
+                } catch (e: Exception) {
+                    if (e is ProcessCanceledException) throw e
                     //ignore
                 }
             }
-        } catch(e: UnsupportedOperationException) {
+        } catch (e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
             logger.error(e)
         }
-        
+
         //fallback to java reflection
-        
+
         val targetJavaClass = targetClass.java
         val methods = targetJavaClass.getMethodsOptimized(functionName, static = false)
-        for(method in methods) {
-            if(method.parameters.size != expectedArgsSize) continue
+        for (method in methods) {
+            if (method.parameters.size != expectedArgsSize) continue
             try {
                 return method.invoke(target, *args)
-            } catch(e: Exception) {
-                if(e is ProcessCanceledException) throw e
+            } catch (e: Exception) {
+                if (e is ProcessCanceledException) throw e
                 //ignore
             }
         }
-        
+
         unsupported()
     }
 }
@@ -205,68 +205,68 @@ class SmartStaticFunction<T : Any>(
     private val targetClassProvider: () -> KClass<T>
 ) {
     private val targetClass by lazy { targetClassProvider() }
-    
+
     operator fun invoke(vararg args: Any?): Any? {
         val expectedArgsSize = args.size
-        
+
         try {
             val staticFunctions = targetClass.staticFunctions
-            for(function in staticFunctions) {
-                if(function.name != functionName) continue
-                if(function.parameters.size != expectedArgsSize) continue
+            for (function in staticFunctions) {
+                if (function.name != functionName) continue
+                if (function.parameters.size != expectedArgsSize) continue
                 try {
                     function.isAccessible = true
                     return function.call(null, *args)
-                } catch(e: Exception) {
-                    if(e is ProcessCanceledException) throw e
+                } catch (e: Exception) {
+                    if (e is ProcessCanceledException) throw e
                     //ignore
                 }
             }
-        } catch(e: UnsupportedOperationException) {
+        } catch (e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
             logger.error(e)
         }
-        
+
         //fallback to java reflection
-        
+
         val targetJavaClass = targetClass.java
         val staticMethods = targetJavaClass.getMethodsOptimized(functionName, static = true)
-        for(method in staticMethods) {
-            if(method.parameters.size != expectedArgsSize) continue
+        for (method in staticMethods) {
+            if (method.parameters.size != expectedArgsSize) continue
             try {
                 return method.invoke(null, *args)
-            } catch(e: Exception) {
-                if(e is ProcessCanceledException) throw e
+            } catch (e: Exception) {
+                if (e is ProcessCanceledException) throw e
                 //ignore
             }
         }
-        
+
         unsupported()
     }
 }
 
 private fun KFunction<*>.isGetter(propertyName: String): Boolean {
-    if(parameters.size != 1) return false
+    if (parameters.size != 1) return false
     val suffix = propertyName.replaceFirstChar { it.uppercaseChar() }
-    if(name == "get$suffix") return true
-    if(returnType.classifier == Boolean::class && name == "is$suffix") return true
+    if (name == "get$suffix") return true
+    if (returnType.classifier == Boolean::class && name == "is$suffix") return true
     return false
 }
 
 private fun KFunction<*>.isSetter(propertyName: String): Boolean {
-    if(parameters.size != 2) return false
+    if (parameters.size != 2) return false
     val suffix = propertyName.replaceFirstChar { it.uppercaseChar() }
-    if(name == "set$suffix") return true
+    if (name == "set$suffix") return true
     return false
 }
 
 private fun Class<*>.getFieldOptimized(name: String, static: Boolean? = null): Field? {
     try {
         val field = tryGetField { getDeclaredField(name) } ?: tryGetField { getField(name) } ?: return null
-        if(static != null && static != Modifier.isStatic(field.modifiers)) return null
+        if (static != null && static != Modifier.isStatic(field.modifiers)) return null
         field.trySetAccessible()
         return field
-    } catch(e: Exception) {
+    } catch (e: Exception) {
         //ignored
         return null
     }
@@ -305,7 +305,7 @@ inline fun <reified T : Any, V> memberProperty(propertyName: String): SmartMembe
 }
 
 inline fun <V> memberProperty(propertyName: String, targetClassName: String?): SmartMemberProperty<Any, V> {
-    if(targetClassName == null) return SmartMemberProperty(propertyName, null)
+    if (targetClassName == null) return SmartMemberProperty(propertyName, null)
     return SmartMemberProperty(propertyName) { targetClassName.toKClass().cast() }
 }
 
@@ -330,7 +330,7 @@ inline fun <reified T : Any> memberFunction(functionName: String): SmartMemberFu
 }
 
 inline fun memberFunction(functionName: String, targetClassName: String?): SmartMemberFunction<Any> {
-    if(targetClassName == null) return SmartMemberFunction(functionName, null)
+    if (targetClassName == null) return SmartMemberFunction(functionName, null)
     return SmartMemberFunction(functionName) { targetClassName.toKClass().cast() }
 }
 

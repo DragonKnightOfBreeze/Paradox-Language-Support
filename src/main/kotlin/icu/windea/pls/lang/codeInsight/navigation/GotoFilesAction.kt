@@ -12,11 +12,11 @@ import icu.windea.pls.lang.actions.*
  */
 class GotoFilesAction : BaseCodeInsightAction() {
     private val handler = GotoFilesHandler()
-    
+
     override fun getHandler(): CodeInsightActionHandler {
         return handler
     }
-    
+
     override fun update(event: AnActionEvent) {
         val presentation = event.presentation
         presentation.isEnabledAndVisible = false
@@ -24,7 +24,7 @@ class GotoFilesAction : BaseCodeInsightAction() {
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
         val fileInfo = file.fileInfo ?: return
-        if(fileInfo.path.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
+        if (fileInfo.path.length <= 1) return //忽略直接位于游戏或模组入口目录下的文件
         presentation.isEnabledAndVisible = true
     }
 }

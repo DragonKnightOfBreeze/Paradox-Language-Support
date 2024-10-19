@@ -30,27 +30,27 @@ class ParadoxCallHierarchyNodeDescriptor(
 ) : HierarchyNodeDescriptor(project, parentDescriptor, element, isBase), Navigatable {
     var usageCount = 1
     val references = mutableListOf<PsiReference>()
-    
+
     companion object {
         @JvmStatic
         fun getLocationAttributes(): TextAttributes? {
             return UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
         }
     }
-    
+
     override fun update(): Boolean {
         var changes = super.update()
         val element = psiElement
-        if(element == null) {
+        if (element == null) {
             return invalidElement()
         }
-        if(changes && myIsBase) {
+        if (changes && myIsBase) {
             icon = getBaseMarkerIcon(icon)
         }
         val oldText = myHighlightedText
         myHighlightedText = CompositeAppearance()
-        val nameAttributes = if(myColor != null) TextAttributes(myColor, null, null, null, Font.PLAIN) else null
-        when(element) {
+        val nameAttributes = if (myColor != null) TextAttributes(myColor, null, null, null, Font.PLAIN) else null
+        when (element) {
             is ParadoxScriptScriptedVariable -> {
                 val fileInfo = element.fileInfo ?: return invalidElement()
                 val name = element.name.orAnonymous()
@@ -81,22 +81,22 @@ class ParadoxCallHierarchyNodeDescriptor(
                 myHighlightedText.ending.addText(location, getLocationAttributes())
             }
         }
-        if(usageCount > 1) {
+        if (usageCount > 1) {
             val text = IdeBundle.message("node.call.hierarchy.N.usages", usageCount)
             myHighlightedText.ending.addText(" $text", getUsageCountPrefixAttributes())
         }
         myName = myHighlightedText.text
-        
-        if(!Comparing.equal(myHighlightedText, oldText)) {
+
+        if (!Comparing.equal(myHighlightedText, oldText)) {
             changes = true
         }
         return changes
     }
-    
+
     override fun navigate(requestFocus: Boolean) {
-        if(!navigateToReference) {
+        if (!navigateToReference) {
             val element = psiElement
-            if(element is Navigatable && (element as Navigatable).canNavigate()) {
+            if (element is Navigatable && (element as Navigatable).canNavigate()) {
                 (element as Navigatable).navigate(requestFocus)
             }
             return
@@ -104,18 +104,18 @@ class ParadoxCallHierarchyNodeDescriptor(
         val firstReference: PsiReference = references.get(0)
         val element = firstReference.element
         val callElement = element.parent
-        if(callElement is Navigatable && (callElement as Navigatable).canNavigate()) {
+        if (callElement is Navigatable && (callElement as Navigatable).canNavigate()) {
             (callElement as Navigatable).navigate(requestFocus)
         } else {
             val psiFile = callElement.containingFile
-            if(psiFile == null || psiFile.virtualFile == null) return
+            if (psiFile == null || psiFile.virtualFile == null) return
             FileEditorManager.getInstance(myProject).openFile(psiFile.virtualFile, requestFocus)
         }
         val editor = PsiEditorUtil.findEditor(callElement)
-        if(editor != null) {
+        if (editor != null) {
             val highlightManager = HighlightManager.getInstance(myProject)
             val highlighters = mutableListOf<RangeHighlighter>()
-            for(psiReference in references) {
+            for (psiReference in references) {
                 val eachElement = psiReference.element
                 val textRange = eachElement.textRange
                 highlightManager.addRangeHighlight(
@@ -125,23 +125,23 @@ class ParadoxCallHierarchyNodeDescriptor(
             }
         }
     }
-    
+
     override fun canNavigate(): Boolean {
-        if(!navigateToReference) {
+        if (!navigateToReference) {
             val element = psiElement
             return element is Navigatable && element.canNavigate()
         }
-        if(references.isEmpty()) return false
+        if (references.isEmpty()) return false
         val firstReference: PsiReference = references.get(0)
         val callElement = firstReference.element.parent
-        if(callElement == null || !callElement.isValid) return false
-        if(callElement !is Navigatable || !(callElement as Navigatable).canNavigate()) {
+        if (callElement == null || !callElement.isValid) return false
+        if (callElement !is Navigatable || !(callElement as Navigatable).canNavigate()) {
             val psiFile = callElement.containingFile
             return psiFile != null
         }
         return true
     }
-    
+
     override fun canNavigateToSource(): Boolean {
         return canNavigate()
     }

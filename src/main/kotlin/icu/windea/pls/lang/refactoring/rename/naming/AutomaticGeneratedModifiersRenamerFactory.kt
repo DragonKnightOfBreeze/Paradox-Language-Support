@@ -13,23 +13,23 @@ import icu.windea.pls.script.psi.*
  */
 class AutomaticGeneratedModifiersRenamerFactory : AutomaticRenamerFactory {
     override fun isApplicable(element: PsiElement): Boolean {
-        if(element !is ParadoxScriptDefinitionElement) return false
+        if (element !is ParadoxScriptDefinitionElement) return false
         val definitionInfo = element.definitionInfo ?: return false
         return definitionInfo.modifiers.isNotEmpty()
     }
-    
+
     override fun getOptionName(): String {
         return PlsBundle.message("rename.generatedModifiers")
     }
-    
+
     override fun isEnabled(): Boolean {
         return ParadoxRefactoringSettings.getInstance().renameGeneratedModifier
     }
-    
+
     override fun setEnabled(enabled: Boolean) {
         ParadoxRefactoringSettings.getInstance().renameGeneratedModifier = enabled
     }
-    
+
     override fun createRenamer(element: PsiElement, newName: String, usages: MutableCollection<UsageInfo>?): AutomaticRenamer {
         return AutomaticGeneratedModifiersRenamer(element, newName)
     }

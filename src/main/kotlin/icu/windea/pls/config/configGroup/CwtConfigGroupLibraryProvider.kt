@@ -12,7 +12,7 @@ class CwtConfigGroupLibraryProvider : AdditionalLibraryRootsProvider() {
     override fun getAdditionalProjectLibraries(project: Project): Collection<SyntheticLibrary> {
         return project.configGroupLibrary.takeIf { it.roots.isNotEmpty() }.toSingletonSetOrEmpty()
     }
-    
+
     override fun getRootsToWatch(project: Project): Collection<VirtualFile> {
         return project.configGroupLibrary.roots
     }

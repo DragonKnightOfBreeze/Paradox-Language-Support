@@ -14,7 +14,7 @@ interface CwtLocationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
     val value: String
     val required: Boolean
     val primary: Boolean
-    
+
     companion object {
         fun resolve(config: CwtPropertyConfig): CwtLocationConfig? = doResolve(config)
     }
@@ -40,4 +40,4 @@ private class CwtLocationConfigImpl(
     override val value: String,
     override val required: Boolean = false,
     override val primary: Boolean = false,
-) : UserDataHolderBase(),  CwtLocationConfig
+) : UserDataHolderBase(), CwtLocationConfig

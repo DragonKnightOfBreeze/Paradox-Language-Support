@@ -17,7 +17,7 @@ class ParadoxComplexEnumValuePsiReference(
     override fun handleElementRename(newElementName: String): PsiElement {
         return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
     }
-    
+
     override fun resolve(): PsiElement {
         return ParadoxComplexEnumValueElement(element, info, project)
     }

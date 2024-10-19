@@ -34,11 +34,11 @@ class ParadoxLocalisationSyntaxHighlighter(
         private val INVALID_ESCAPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.INVALID_ESCAPE_KEY)
         private val BAD_CHARACTER_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.BAD_CHARACTER_KEY)
         private val EMPTY_KEYS = TextAttributesKey.EMPTY_ARRAY
-        
+
         private const val additionalValidEscapes = "\$£§"
     }
-    
-    override fun getTokenHighlights(tokenType: IElementType?) = when(tokenType) {
+
+    override fun getTokenHighlights(tokenType: IElementType?) = when (tokenType) {
         COLON -> OPERATOR_KEYS
         PROPERTY_REFERENCE_START, PROPERTY_REFERENCE_END, ICON_START, ICON_END -> MARKER_KEYS
         COMMAND_START, COMMAND_END, COLORFUL_TEXT_START, COLORFUL_TEXT_END -> MARKER_KEYS
@@ -60,41 +60,41 @@ class ParadoxLocalisationSyntaxHighlighter(
         BAD_CHARACTER -> BAD_CHARACTER_KEYS
         else -> EMPTY_KEYS
     }
-    
+
     override fun getHighlightingLexer(): Lexer {
         val lexer = LayeredLexer(ParadoxLocalisationLexer())
         val lexer1 = object : StringLiteralLexer(NO_QUOTE_CHAR, STRING_TOKEN, false, additionalValidEscapes, false, false) {
             override fun getTokenType(): IElementType? {
-                if(myStart >= myEnd) return null
-                
+                if (myStart >= myEnd) return null
+
                 //handle double left bracket '[['
-                if(myStart < myBufferEnd - 1 && myBuffer[myStart] == '[' && myBuffer[myStart + 1] == '[') {
+                if (myStart < myBufferEnd - 1 && myBuffer[myStart] == '[' && myBuffer[myStart + 1] == '[') {
                     return VALID_STRING_ESCAPE_TOKEN
                 }
                 return super.getTokenType()
             }
-            
+
             override fun start(buffer: CharSequence, startOffset: Int, endOffset: Int, initialState: Int) {
                 super.start(buffer, startOffset, endOffset, initialState)
                 locateToken()
             }
-            
+
             override fun advance() {
                 super.advance()
                 locateToken()
             }
-            
+
             private fun locateToken() {
-                if(myEnd != myBufferEnd) return
-                
+                if (myEnd != myBufferEnd) return
+
                 //handle double left bracket '[['
                 var i = myStart
-                if(i < myBufferEnd - 1 && myBuffer[i] == '[' && myBuffer[i + 1] == '[') {
+                if (i < myBufferEnd - 1 && myBuffer[i] == '[' && myBuffer[i + 1] == '[') {
                     myEnd = i + 2
                     return
                 }
-                while(i < myBufferEnd) {
-                    if(myBuffer[i] == '[') {
+                while (i < myBufferEnd) {
+                    if (myBuffer[i] == '[') {
                         myEnd = i
                         return
                     }

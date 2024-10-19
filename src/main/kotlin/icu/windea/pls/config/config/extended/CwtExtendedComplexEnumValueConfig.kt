@@ -13,7 +13,7 @@ interface CwtExtendedComplexEnumValueConfig : CwtDelegatedConfig<CwtMemberElemen
     val name: String
     val type: String
     val hint: String?
-    
+
     companion object Resolver {
         fun resolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfig = doResolve(config, type)
     }
@@ -22,7 +22,7 @@ interface CwtExtendedComplexEnumValueConfig : CwtDelegatedConfig<CwtMemberElemen
 //Implementations (interned)
 
 private fun doResolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfig {
-    val name = when(config) {
+    val name = when (config) {
         is CwtPropertyConfig -> config.key
         is CwtValueConfig -> config.value
     }

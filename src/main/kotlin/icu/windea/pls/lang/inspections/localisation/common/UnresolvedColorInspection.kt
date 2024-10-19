@@ -13,24 +13,24 @@ import icu.windea.pls.localisation.psi.*
  */
 class UnresolvedColorInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
-        
+        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if(element is ParadoxLocalisationColorfulText) visitColorfulText(element)
+                if (element is ParadoxLocalisationColorfulText) visitColorfulText(element)
             }
-            
+
             private fun visitColorfulText(element: ParadoxLocalisationColorfulText) {
                 val location = element.idElement ?: return
                 val reference = element.reference
-                if(reference == null || reference.resolve() != null) return
+                if (reference == null || reference.resolve() != null) return
                 val name = element.name ?: return
                 holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedColor.desc", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         return ParadoxFilePathManager.inLocalisationPath(fileInfo.path)

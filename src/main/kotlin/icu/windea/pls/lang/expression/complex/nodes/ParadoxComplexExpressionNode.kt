@@ -18,24 +18,24 @@ interface ParadoxComplexExpressionNode {
     val rangeInExpression: TextRange
     val nodes: List<ParadoxComplexExpressionNode> get() = emptyList()
     val configGroup: CwtConfigGroup
-    
+
     fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? = null
-    
+
     fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? = null
-    
+
     fun getReference(element: ParadoxExpressionElement): PsiReference? = null
-    
+
     fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? = null
-    
+
     abstract class Base : ParadoxComplexExpressionNode {
         override fun equals(other: Any?): Boolean {
             return this === other || (other is ParadoxComplexExpressionNode && this.javaClass == other.javaClass && text == other.text)
         }
-        
+
         override fun hashCode(): Int {
             return text.hashCode()
         }
-        
+
         override fun toString(): String {
             return text
         }

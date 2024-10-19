@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxRefactoringElementDescriptorProvider : ElementDescriptionProvider {
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
-        if(location !is RefactoringDescriptionLocation) return null
+        if (location !is RefactoringDescriptionLocation) return null
         return when {
             element is ParadoxLocalisationProperty ->
                 PlsBundle.message("refactoring.localisation.desc", CommonRefactoringUtil.htmlEmphasize(element.name))

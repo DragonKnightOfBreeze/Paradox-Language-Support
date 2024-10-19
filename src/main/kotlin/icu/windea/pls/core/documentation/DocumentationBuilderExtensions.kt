@@ -61,10 +61,10 @@ fun DocumentationBuilder.getSections(index: Int): MutableMap<String, String>? {
 
 fun DocumentationBuilder.buildSections() {
     val sectionsList = this.sectionsList
-    if(sectionsList.isNullOrEmpty()) return
+    if (sectionsList.isNullOrEmpty()) return
     sections {
-        for(sections in sectionsList) {
-            for((key, value) in sections) {
+        for (sections in sectionsList) {
+            for ((key, value) in sections) {
                 section(key, value)
             }
         }

@@ -13,29 +13,29 @@ import icu.windea.pls.script.psi.*
  */
 class ConflictingScopeContextInferenceInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
-        
+        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if(element is ParadoxScriptDefinitionElement) {
+                if (element is ParadoxScriptDefinitionElement) {
                     val definitionInfo = element.definitionInfo
-                    if(definitionInfo != null) visitDefinition(element, definitionInfo)
+                    if (definitionInfo != null) visitDefinition(element, definitionInfo)
                 }
             }
-            
+
             private fun visitDefinition(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
                 val message = ParadoxDefinitionInferredScopeContextProvider.getErrorMessage(element, definitionInfo)
-                if(message != null) {
-                    val location = if(element is ParadoxScriptProperty) element.propertyKey else element
+                if (message != null) {
+                    val location = if (element is ParadoxScriptProperty) element.propertyKey else element
                     holder.registerProblem(location, message)
                 }
             }
         }
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
-        if(selectRootFile(file) == null) return false
+        if (selectRootFile(file) == null) return false
         return true
     }
 }

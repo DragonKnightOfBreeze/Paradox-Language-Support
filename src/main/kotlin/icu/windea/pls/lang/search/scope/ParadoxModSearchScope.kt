@@ -16,24 +16,24 @@ class ParadoxModSearchScope(
     override fun getDisplayName(): String {
         return PlsBundle.message("search.scope.name.mod")
     }
-    
+
     override fun contains(file: VirtualFile): Boolean {
         val contextFile0 = file.findTopHostFileOrThis()
-        if(!ParadoxFileManager.canReference(contextFile, contextFile0)) return false //判断上下文文件能否引用另一个文件中的内容
+        if (!ParadoxFileManager.canReference(contextFile, contextFile0)) return false //判断上下文文件能否引用另一个文件中的内容
         return modDirectory != null && VfsUtilCore.isAncestor(modDirectory, contextFile0, false)
     }
-    
+
     override fun calcHashCode(): Int {
         return modDirectory.hashCode()
     }
-    
+
     override fun equals(other: Any?): Boolean {
-        if(this === other) return true
+        if (this === other) return true
         return other is ParadoxModSearchScope
             && contextFile == other.contextFile
             && modDirectory == other.modDirectory
     }
-    
+
     override fun toString(): String {
         return "Paradox mod directory scope: $modDirectory"
     }

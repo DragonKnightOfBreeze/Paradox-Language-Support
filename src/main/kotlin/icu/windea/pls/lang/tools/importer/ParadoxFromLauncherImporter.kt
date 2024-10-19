@@ -20,34 +20,34 @@ private const val dbPath = "launcher-v2.sqlite"
  */
 open class ParadoxFromLauncherImporter : ParadoxModImporter {
     val defaultSelected: VirtualFile? = null
-    
+
     override val text: String = PlsBundle.message("mod.importer.launcher")
-    
+
     open fun getDbPath(gameDataPath: Path): Path {
         return gameDataPath.resolve(dbPath)
     }
-    
+
     //TODO DO NOT implement this feature since sqlite jar is too large (12M+)
-    
+
     override fun execute(project: Project, tableView: TableView<ParadoxModDependencySettingsState>, tableModel: ParadoxModDependenciesTableModel) {
         val settings = tableModel.settings
         val gameType = settings.gameType.orDefault()
-        val gameDataPath = PathProvider.getGameDataPath(gameType.title)?.toPathOrNull() ?: return
-        if(!gameDataPath.exists()) {
+        val gameDataPath = getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull() ?: return
+        if (!gameDataPath.exists()) {
             notifyWarning(settings, project, PlsBundle.message("mod.importer.error.gameDataDir", gameDataPath))
             return
         }
         val dbPath = getDbPath(gameDataPath)
-        if(!dbPath.exists()) {
+        if (!dbPath.exists()) {
             notifyWarning(settings, project, PlsBundle.message("mod.importer.error.dbFile", dbPath))
             return
         }
-        
+
         //IronyModManager.IO.Mods.Importers.ParadoxLauncherImporter.DatabaseImportAsync
-        
+
         //Sqlite
         //connect jdbc:sqlite:~/Documents/Paradox Interactive/Stellaris/launcher-v2.sqlite
-        
+
         //try {
         //    val collectionName = ""
         //    val count = 0

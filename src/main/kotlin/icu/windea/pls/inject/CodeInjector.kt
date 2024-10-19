@@ -6,11 +6,11 @@ import com.intellij.openapi.util.*
 /**
  * 代码注入器。
  */
-interface CodeInjector: UserDataHolder {
+interface CodeInjector : UserDataHolder {
     val id: String
-    
+
     fun inject()
-    
+
     companion object {
         val EP_NAME = ExtensionPointName.create<CodeInjector>("icu.windea.pls.inject.codeInjector")
     }

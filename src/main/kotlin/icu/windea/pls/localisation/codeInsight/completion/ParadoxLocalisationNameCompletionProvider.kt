@@ -18,19 +18,19 @@ import icu.windea.pls.model.*
  */
 class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if(!getSettings().completion.completeLocalisationNames) return
-        
+        if (!getSettings().completion.completeLocalisationNames) return
+
         val position = parameters.position
-        if(ParadoxPsiManager.isLocalisationLocaleLike(position)) return
-        
+        if (ParadoxPsiManager.isLocalisationLocaleLike(position)) return
+
         val element = position.parent?.parent as? ParadoxLocalisationProperty ?: return
         val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return
         val category = ParadoxLocalisationCategory.resolve(file) ?: return
         val project = parameters.originalFile.project
-        
+
         //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnAnyPrefixChange()
-        
+
         //提示localisation或者synced_localisation
         //排除正在输入的那一个
         val selector = localisationSelector(project, file)
@@ -49,7 +49,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
             result.addElement(lookupElement)
             true
         }
-        when(category) {
+        when (category) {
             ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
             ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
         }

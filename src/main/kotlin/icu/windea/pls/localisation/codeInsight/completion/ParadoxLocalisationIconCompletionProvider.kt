@@ -21,24 +21,24 @@ import icu.windea.pls.script.psi.*
 class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position.parent?.castOrNull<ParadoxLocalisationIcon>() ?: return
-        if(element.text.isParameterized()) return
-        
+        if (element.text.isParameterized()) return
+
         val file = parameters.originalFile
         val project = file.project
-        
+
         ParadoxCompletionManager.initializeContext(parameters, context)
-        
+
         //根据spriteName进行提示
         val spriteSelector = definitionSelector(project, file).contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search("sprite", spriteSelector).processQueryAsync p@{ sprite ->
             ProgressManager.checkCanceled()
             val definitionInfo = sprite.definitionInfo ?: return@p true
-            if(definitionInfo.name.isEmpty()) return@p true //ignore anonymous definitions
+            if (definitionInfo.name.isEmpty()) return@p true //ignore anonymous definitions
             val name = definitionInfo.name.removePrefixOrNull("GFX_")?.removePrefix("text_") ?: return@p true
             addLookupElement(name, sprite, context, result)
             true
         }
-        
+
         //根据ddsFileName进行提示
         val fileSelector = fileSelector(project, file).contextSensitive().distinctByFilePath()
         val ddsFileExpression = CwtDataExpression.resolve("icon[gfx/interface/icons/]", false)
@@ -49,7 +49,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
             addLookupElement(name, ddsPsiFile, context, result)
             true
         }
-        
+
         //作为生成的图标处理（解析为其他类型的定义）
         val definitionSelector = definitionSelector(project, file).contextSensitive().distinctByName()
         //如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
@@ -62,14 +62,14 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
             true
         }
     }
-    
+
     private fun addLookupElement(name: String, element: PsiElement, context: ProcessingContext, result: CompletionResultSet) {
-        when(element) {
+        when (element) {
             //val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
             is ParadoxScriptDefinitionElement -> {
                 val icon = PlsIcons.LocalisationNodes.Icon //使用特定图标
                 val definitionInfo = element.definitionInfo //不应该为null
-                val tailText = if(definitionInfo != null) " from ${definitionInfo.type} ${definitionInfo.name}" else ""
+                val tailText = if (definitionInfo != null) " from ${definitionInfo.type} ${definitionInfo.name}" else ""
                 val typeFile = element.containingFile
                 val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
                     .withTailText(tailText, true)

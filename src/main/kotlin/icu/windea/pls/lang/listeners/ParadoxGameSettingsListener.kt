@@ -8,9 +8,9 @@ import icu.windea.pls.lang.settings.*
  */
 interface ParadoxGameSettingsListener {
     fun onAdd(gameSettings: ParadoxGameSettingsState)
-    
+
     fun onChange(gameSettings: ParadoxGameSettingsState)
-    
+
     companion object {
         @Topic.AppLevel
         val TOPIC = Topic(ParadoxGameSettingsListener::class.java, Topic.BroadcastDirection.NONE)

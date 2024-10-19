@@ -11,15 +11,15 @@ enum class ParadoxSeparatorType(
     GE(">="),
     QUESTION_EQUAL("?="), //same as "=", used in several games, see #86
     ;
-    
+
     override fun toString(): String {
         return text
     }
-    
+
     companion object {
         @JvmStatic
         fun resolve(text: String): ParadoxSeparatorType? {
-            return when(text) {
+            return when (text) {
                 "=" -> EQUAL
                 "!=", "<>" -> NOT_EQUAL
                 "<" -> LT

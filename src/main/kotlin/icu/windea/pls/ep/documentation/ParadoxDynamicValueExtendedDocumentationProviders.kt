@@ -9,14 +9,14 @@ import icu.windea.pls.lang.psi.*
 class ParadoxBaseDynamicValueExtendedDocumentationProvider : ParadoxDynamicValueExtendedDocumentationProvider {
     override fun getDocumentationContent(element: ParadoxDynamicValueElement): String? {
         val name = element.name
-        if(name.isEmpty()) return null
-        if(name.isParameterized()) return null
+        if (name.isEmpty()) return null
+        if (name.isParameterized()) return null
         val configGroup = getConfigGroup(element.project, element.gameType)
-        for(type in element.dynamicValueTypes) {
+        for (type in element.dynamicValueTypes) {
             val configs = configGroup.extendedDynamicValues[type] ?: continue
             val config = configs.findFromPattern(name, element, configGroup) ?: continue
             val documentation = config.config.documentation?.orNull()
-            if(documentation != null) return documentation
+            if (documentation != null) return documentation
         }
         return null
     }

@@ -13,7 +13,7 @@ interface CwtDatabaseObjectTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPrope
     val name: String
     val type: String
     val swapType: String?
-    
+
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfig? = doResolve(config)
     }
@@ -26,14 +26,14 @@ private fun doResolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfig? {
     var type: String? = null
     var swapType: String? = null
     val props = config.properties
-    if(props.isNullOrEmpty()) return null
-    for(prop in props) {
-        when(prop.key) {
+    if (props.isNullOrEmpty()) return null
+    for (prop in props) {
+        when (prop.key) {
             "type" -> type = prop.stringValue
             "swap_type" -> swapType = prop.stringValue
         }
     }
-    if(type == null) return null
+    if (type == null) return null
     return CwtDatabaseObjectTypeConfigImpl(config, name, type, swapType)
 }
 

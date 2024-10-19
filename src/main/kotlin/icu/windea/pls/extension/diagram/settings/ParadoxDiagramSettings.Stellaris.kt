@@ -24,19 +24,19 @@ class StellarisEventTreeDiagramSettings(
     companion object {
         const val ID = "pls.diagram.Stellaris.EventTree"
     }
-    
+
     override val id: String = ID
-    
+
     class State : ParadoxDiagramSettings.State() {
         override var scopeType by string()
-        
+
         @get:XMap
         var type by linkedMap<String, Boolean>()
         @get:XMap
         var eventType by linkedMap<String, Boolean>()
-        
+
         val typeSettings = TypeSettings()
-        
+
         inner class TypeSettings {
             val hidden by type withDefault true
             val triggered by type withDefault true
@@ -44,18 +44,18 @@ class StellarisEventTreeDiagramSettings(
             val diplomatic by type withDefault true
         }
     }
-    
+
     override fun Panel.buildConfigurablePanel(coroutineScope: CoroutineScope) {
         val settings = state
         val eventTypes = ParadoxEventManager.getTypes(project, ParadoxGameType.Stellaris)
         eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
         settings.updateSettings()
-        
+
         collapsibleGroup(PlsDiagramBundle.message("stellaris.eventTree.name")) {
             row {
                 label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
             }
-            if(settings.type.isNotEmpty()) {
+            if (settings.type.isNotEmpty()) {
                 lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.eventTree.settings.type")))
@@ -74,7 +74,7 @@ class StellarisEventTreeDiagramSettings(
                     }
                 }
             }
-            if(settings.eventType.isNotEmpty()) {
+            if (settings.eventType.isNotEmpty()) {
                 lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.eventTree.settings.eventType")))
@@ -106,12 +106,12 @@ class StellarisTechnologyTreeDiagramSettings(
     companion object {
         const val ID = "pls.diagram.Stellaris.TechnologyTree"
     }
-    
+
     override val id: String = ID
-    
+
     class State : ParadoxDiagramSettings.State() {
         override var scopeType by string()
-        
+
         @get:XMap
         var type by linkedMap<String, Boolean>()
         @get:XMap
@@ -120,9 +120,9 @@ class StellarisTechnologyTreeDiagramSettings(
         var area by linkedMap<String, Boolean>()
         @get:XMap
         var category by linkedMap<String, Boolean>()
-        
+
         val typeSettings = TypeSettings()
-        
+
         inner class TypeSettings {
             val start by type withDefault true
             val rare by type withDefault true
@@ -131,7 +131,7 @@ class StellarisTechnologyTreeDiagramSettings(
             val repeatable by type withDefault true
         }
     }
-    
+
     override fun Panel.buildConfigurablePanel(coroutineScope: CoroutineScope) {
         val settings = state
         val tiers = ParadoxTechnologyManager.Stellaris.getTechnologyTiers(project, null)
@@ -141,17 +141,17 @@ class StellarisTechnologyTreeDiagramSettings(
         val categories = ParadoxTechnologyManager.Stellaris.getTechnologyCategories(project, null)
         categories.forEach { settings.category.putIfAbsent(it.name, true) }
         settings.updateSettings()
-        
+
         val areaNameProviders = mutableMapOf<String, () -> String?>()
         areas.forEach { areaNameProviders.put(it) { ParadoxPresentationManager.getText(it.uppercase(), project) } }
         val categoryNameProviders = mutableMapOf<String, () -> String?>()
         categories.forEach { categoryNameProviders.put(it.name) { ParadoxPresentationManager.getNameText(it) } }
-        
+
         collapsibleGroup(PlsDiagramBundle.message("stellaris.technologyTree.name")) {
             row {
                 label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
             }
-            if(settings.type.isNotEmpty()) {
+            if (settings.type.isNotEmpty()) {
                 lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.type")))
@@ -170,7 +170,7 @@ class StellarisTechnologyTreeDiagramSettings(
                     }
                 }
             }
-            if(settings.tier.isNotEmpty()) {
+            if (settings.tier.isNotEmpty()) {
                 lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.tier")))
@@ -189,7 +189,7 @@ class StellarisTechnologyTreeDiagramSettings(
                     }
                 }
             }
-            if(settings.area.isNotEmpty()) {
+            if (settings.area.isNotEmpty()) {
                 lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.area")))
@@ -204,7 +204,7 @@ class StellarisTechnologyTreeDiagramSettings(
                                 .bindSelected(settings.area.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
                                 .smaller()
-                            
+
                             //add related localized name as comment lazily
                             comment("").customize(UnscaledGaps(3, 16, 3, 0)).applyToComponent t@{
                                 val p = areaNameProviders.get(key) ?: return@t
@@ -214,7 +214,7 @@ class StellarisTechnologyTreeDiagramSettings(
                     }
                 }
             }
-            if(settings.category.isNotEmpty()) {
+            if (settings.category.isNotEmpty()) {
                 lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.category")))
@@ -229,7 +229,7 @@ class StellarisTechnologyTreeDiagramSettings(
                                 .bindSelected(settings.category.toMutableProperty(key, true))
                                 .threeStateCheckBox(cb)
                                 .smaller()
-                            
+
                             //add related localized name as comment lazily
                             comment("").customize(UnscaledGaps(3, 16, 3, 0)).applyToComponent t@{
                                 val p = categoryNameProviders.get(key) ?: return@t

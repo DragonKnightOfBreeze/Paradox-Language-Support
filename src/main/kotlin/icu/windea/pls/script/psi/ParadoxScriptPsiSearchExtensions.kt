@@ -13,74 +13,77 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 
 /**
- * 遍历当前代码块中的所有（直接作为子节点的）值和属性。
+ * 遍历当前脚本文件中的所有（直接作为子节点的）成员。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
-fun ParadoxScriptBlockElement.processData(
-    conditional: Boolean = false,
-    inline: Boolean = false,
-    processor: (ParadoxScriptMemberElement) -> Boolean
-): Boolean {
+fun ParadoxScriptFile.processMember(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptMemberElement) -> Boolean): Boolean {
+    return this.block?.processMember(conditional, inline, processor) ?: true
+}
+
+/**
+ * 遍历当前脚本文件中的所有（直接作为子节点的）属性。
+ * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
+ * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
+ */
+fun ParadoxScriptFile.processProperty(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+    return this.block?.processProperty(conditional, inline, processor) ?: true
+}
+
+/**
+ * 遍历当前脚本文件中的所有（直接作为子节点的）值。
+ * @param conditional 是否也包括间接作为其中的参数表达式的子节点的值。
+ * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
+ */
+fun ParadoxScriptFile.processValue(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
+    return this.block?.processValue(conditional, inline, processor) ?: true
+}
+
+/**
+ * 遍历当前脚本块中的所有（直接作为子节点的）成员。
+ * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
+ * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
+ */
+fun ParadoxScriptBlockElement.processMember(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptMemberElement) -> Boolean): Boolean {
     return doProcessData(conditional, inline, processor)
 }
 
 /**
- * 遍历当前代码块中的所有（直接作为子节点的）属性。
+ * 遍历当前脚本块中的所有（直接作为子节点的）属性。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
-fun ParadoxScriptBlockElement.processProperty(
-    conditional: Boolean = false,
-    inline: Boolean = false,
-    processor: (ParadoxScriptProperty) -> Boolean
-): Boolean {
-    return doProcessProperty(conditional,inline, processor)
+fun ParadoxScriptBlockElement.processProperty(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+    return doProcessProperty(conditional, inline, processor)
 }
 
 /**
- * 遍历当前代码块中的所有（直接作为子节点的）值。
+ * 遍历当前脚本块中的所有（直接作为子节点的）值。
  * @param conditional 是否也包括间接作为其中的参数表达式的子节点的值。
  * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
  */
-fun ParadoxScriptBlockElement.processValue(
-    conditional: Boolean = false,
-    inline: Boolean = false,
-    processor: (ParadoxScriptValue) -> Boolean
-): Boolean {
+fun ParadoxScriptBlockElement.processValue(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
     return doProcessValue(conditional, inline, processor)
 }
 
 /**
- * 遍历当前参数表达式中的所有（直接作为子节点的）值或属性。
+ * 遍历当前参数表达式中的所有（直接作为子节点的）成员。
  */
-fun ParadoxScriptParameterCondition.processData(
-    conditional: Boolean = false,
-    inline: Boolean = false,
-    processor: (ParadoxScriptMemberElement) -> Boolean
-): Boolean {
+fun ParadoxScriptParameterCondition.processMember(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptMemberElement) -> Boolean): Boolean {
     return doProcessData(conditional, inline, processor)
 }
 
 /**
  * 遍历当前参数表达式中的所有（直接作为子节点的）属性。
  */
-fun ParadoxScriptParameterCondition.processProperty(
-    conditional: Boolean = false,
-    inline: Boolean = false,
-    processor: (ParadoxScriptProperty) -> Boolean
-): Boolean {
-    return doProcessProperty(conditional,inline, processor)
+fun ParadoxScriptParameterCondition.processProperty(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+    return doProcessProperty(conditional, inline, processor)
 }
 
 /**
  * 遍历当前参数表达式中的所有（直接作为子节点的）值。
  */
-fun ParadoxScriptParameterCondition.processValue(
-    conditional: Boolean = false,
-    inline: Boolean = false,
-    processor: (ParadoxScriptValue) -> Boolean
-): Boolean {
+fun ParadoxScriptParameterCondition.processValue(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
     return doProcessValue(conditional, inline, processor)
 }
 
@@ -96,12 +99,12 @@ private fun PsiElement.doProcessData(conditional: Boolean, inline: Boolean, proc
     }
 }
 
-private fun PsiElement.doProcessProperty(conditional: Boolean,inline: Boolean, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
+private fun PsiElement.doProcessProperty(conditional: Boolean, inline: Boolean, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
     return processChild {
         ProgressManager.checkCanceled()
         when {
             it is ParadoxScriptProperty -> it.doProcessPropertyChild(conditional, inline, processor)
-            conditional && it is ParadoxScriptParameterCondition -> it.doProcessProperty(true, inline,processor)
+            conditional && it is ParadoxScriptParameterCondition -> it.doProcessProperty(true, inline, processor)
             else -> true
         }
     }
@@ -112,7 +115,7 @@ private fun PsiElement.doProcessValue(conditional: Boolean, inline: Boolean, pro
         ProgressManager.checkCanceled()
         when {
             it is ParadoxScriptValue -> it.doProcessValueChild(conditional, inline, processor)
-            conditional && it is ParadoxScriptParameterCondition -> it.doProcessValue(true,inline, processor)
+            conditional && it is ParadoxScriptParameterCondition -> it.doProcessValue(true, inline, processor)
             else -> true
         }
     }
@@ -120,14 +123,14 @@ private fun PsiElement.doProcessValue(conditional: Boolean, inline: Boolean, pro
 
 private fun ParadoxScriptValue.doProcessValueChild(conditional: Boolean, inline: Boolean, processor: (ParadoxScriptValue) -> Boolean): Boolean {
     val r = processor(this)
-    if(!r) return false
-    if(inline) {
+    if (!r) return false
+    if (inline) {
         val inlined = ParadoxInlineSupport.inlineElement(this)
-        if(inlined is ParadoxScriptDefinitionElement) {
+        if (inlined is ParadoxScriptDefinitionElement) {
             val block = inlined.block
-            if(block != null) {
+            if (block != null) {
                 val r1 = block.doProcessValue(conditional, true, processor)
-                if(!r1) return false
+                if (!r1) return false
             }
         }
         //不处理inlined是value的情况
@@ -137,14 +140,14 @@ private fun ParadoxScriptValue.doProcessValueChild(conditional: Boolean, inline:
 
 private fun ParadoxScriptProperty.doProcessPropertyChild(conditional: Boolean, inline: Boolean, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
     val r = processor(this)
-    if(!r) return false
-    if(inline) {
+    if (!r) return false
+    if (inline) {
         val inlined = ParadoxInlineSupport.inlineElement(this)
-        if(inlined is ParadoxScriptDefinitionElement) {
+        if (inlined is ParadoxScriptDefinitionElement) {
             val block = inlined.block
-            if(block != null) {
+            if (block != null) {
                 val r1 = block.doProcessProperty(conditional, true, processor)
-                if(!r1) return false
+                if (!r1) return false
             }
         }
         //不处理inlined是value的情况
@@ -157,11 +160,11 @@ private fun ParadoxScriptProperty.doProcessPropertyChild(conditional: Boolean, i
  * 可能为null，可能为自身。
  */
 fun PsiElement.findParentDefinition(): ParadoxScriptDefinitionElement? {
-    if(language != ParadoxScriptLanguage) return null
+    if (language != ParadoxScriptLanguage) return null
     var current: PsiElement = this
-    while(current !is PsiDirectory) {
+    while (current !is PsiDirectory) {
         ProgressManager.checkCanceled()
-        if(current is ParadoxScriptDefinitionElement && current.definitionInfo != null) return current
+        if (current is ParadoxScriptDefinitionElement && current.definitionInfo != null) return current
         current = current.parent ?: break
     }
     return null
@@ -179,8 +182,8 @@ fun PsiElement.findProperty(
     conditional: Boolean = false,
     inline: Boolean = false
 ): ParadoxScriptProperty? {
-    if(language != ParadoxScriptLanguage) return null
-    if(propertyName != null && propertyName.isEmpty()) return this as? ParadoxScriptProperty
+    if (language != ParadoxScriptLanguage) return null
+    if (propertyName != null && propertyName.isEmpty()) return this as? ParadoxScriptProperty
     val block = when {
         this is ParadoxScriptDefinitionElement -> this.block
         this is ParadoxScriptBlock -> this
@@ -188,7 +191,7 @@ fun PsiElement.findProperty(
     }
     var result: ParadoxScriptProperty? = null
     block?.processProperty(conditional, inline) {
-        if(propertyName == null || propertyName.equals(it.name, ignoreCase)) {
+        if (propertyName == null || propertyName.equals(it.name, ignoreCase)) {
             result = it
             false
         } else {
@@ -208,8 +211,8 @@ fun PsiElement.findProperty(
     inline: Boolean = false,
     propertyPredicate: (String) -> Boolean
 ): ParadoxScriptProperty? {
-    if(language != ParadoxScriptLanguage) return null
-    if(propertyPredicate("")) return this as? ParadoxScriptProperty
+    if (language != ParadoxScriptLanguage) return null
+    if (propertyPredicate("")) return this as? ParadoxScriptProperty
     val block = when {
         this is ParadoxScriptDefinitionElement -> this.block
         this is ParadoxScriptBlock -> this
@@ -217,7 +220,7 @@ fun PsiElement.findProperty(
     }
     var result: ParadoxScriptProperty? = null
     block?.processProperty(conditional, inline) {
-        if(propertyPredicate(it.name)) {
+        if (propertyPredicate(it.name)) {
             result = it
             false
         } else {
@@ -237,21 +240,21 @@ fun PsiElement.findParentProperty(
     ignoreCase: Boolean = true,
     fromParentBlock: Boolean = false
 ): ParadoxScriptDefinitionElement? {
-    if(language != ParadoxScriptLanguage) return null
+    if (language != ParadoxScriptLanguage) return null
     var current: PsiElement = when {
         fromParentBlock -> this.parentOfType<ParadoxScriptBlockElement>() ?: return null
         this is ParadoxScriptProperty -> this.parent
         else -> this
     }
-    while(current !is PsiFile) {
+    while (current !is PsiFile) {
         ProgressManager.checkCanceled()
-        if(current is ParadoxScriptDefinitionElement) {
-            if(propertyName == null || propertyName.equals(current.name, ignoreCase)) return current
+        if (current is ParadoxScriptDefinitionElement) {
+            if (propertyName == null || propertyName.equals(current.name, ignoreCase)) return current
         }
-        if(current is ParadoxScriptBlock && !current.isPropertyValue()) return null
+        if (current is ParadoxScriptBlock && !current.isPropertyValue()) return null
         current = current.parent ?: break
     }
-    if(current is ParadoxScriptFile) return current
+    if (current is ParadoxScriptFile) return current
     return null
 }
 
@@ -263,21 +266,21 @@ fun PsiElement.findParentProperty(
     fromParentBlock: Boolean = false,
     propertyPredicate: (String) -> Boolean
 ): ParadoxScriptDefinitionElement? {
-    if(language != ParadoxScriptLanguage) return null
+    if (language != ParadoxScriptLanguage) return null
     var current: PsiElement = when {
         fromParentBlock -> this.parentOfType<ParadoxScriptBlockElement>() ?: return null
         this is ParadoxScriptProperty -> this.parent
         else -> this
     }
-    while(current !is PsiFile) {
+    while (current !is PsiFile) {
         ProgressManager.checkCanceled()
-        if(current is ParadoxScriptDefinitionElement) {
-            if(propertyPredicate(current.name)) return current
+        if (current is ParadoxScriptDefinitionElement) {
+            if (propertyPredicate(current.name)) return current
         }
-        if(current is ParadoxScriptBlock && !current.isPropertyValue()) return null
+        if (current is ParadoxScriptBlock && !current.isPropertyValue()) return null
         current = current.parent ?: break
     }
-    if(current is ParadoxScriptFile) return current
+    if (current is ParadoxScriptFile) return current
     return null
 }
 
@@ -295,12 +298,12 @@ fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
     conditional: Boolean = false,
     inline: Boolean = false
 ): T? {
-    if(language != ParadoxScriptLanguage) return null
+    if (language != ParadoxScriptLanguage) return null
     var current: ParadoxScriptMemberElement = this
-    if(path.isNotEmpty()) {
+    if (path.isNotEmpty()) {
         val elementPath = ParadoxExpressionPath.resolve(path)
-        for(subPath in elementPath.subPaths) {
-            if(subPath == "-") return null //TODO 暂不支持
+        for (subPath in elementPath.subPaths) {
+            if (subPath == "-") return null //TODO 暂不支持
             current = current.findProperty(subPath, ignoreCase, conditional, inline) ?: return null
         }
     } else {
@@ -329,9 +332,9 @@ fun ParadoxScriptMemberElement.findParentByPath(
     ignoreCase: Boolean = true,
     definitionType: String? = null
 ): ParadoxScriptDefinitionElement? {
-    if(language != ParadoxScriptLanguage) return null
+    if (language != ParadoxScriptLanguage) return null
     var current: ParadoxScriptMemberElement = this
-    if(path.isNotEmpty()) {
+    if (path.isNotEmpty()) {
         val elementPath = ParadoxExpressionPath.resolve(path)
         for(subPath in elementPath.subPaths.reversed()) {
             if(subPath == "-") {
@@ -340,11 +343,11 @@ fun ParadoxScriptMemberElement.findParentByPath(
             current = current.findParentProperty(subPath, ignoreCase) ?: return null
         }
     }
-    if(definitionType != null) {
+    if (definitionType != null) {
         val result = current.findParentProperty(null) ?: return null
         val definitionInfo = result.definitionInfo ?: return null
-        if(definitionType.isNotEmpty()) {
-            if(!ParadoxDefinitionTypeExpression.resolve(definitionType).matches(definitionInfo)) return null
+        if (definitionType.isNotEmpty()) {
+            if (!ParadoxDefinitionTypeExpression.resolve(definitionType).matches(definitionInfo)) return null
         }
         return result
     }

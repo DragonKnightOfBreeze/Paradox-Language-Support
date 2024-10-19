@@ -13,23 +13,23 @@ import icu.windea.pls.model.*
 @WithGameTypeEP
 interface ParadoxDynamicValueInferredScopeContextProvider {
     fun supports(element: ParadoxDynamicValueElement): Boolean
-    
+
     fun getScopeContext(element: ParadoxDynamicValueElement): ParadoxScopeContextInferenceInfo?
-    
+
     //注意：同名的动态值在不同的上下文中完全可能拥有不同的作用域上下文
-    
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxDynamicValueInferredScopeContextProvider>("icu.windea.pls.dynamicValueInferredScopeContextProvider")
-        
+
         fun getScopeContext(dynamicValue: ParadoxDynamicValueElement): ParadoxScopeContext? {
             val gameType = dynamicValue.gameType
             var map: Map<String, String>? = null
             EP_NAME.extensionList.forEach f@{ ep ->
-                if(!gameType.supportsByAnnotation(ep)) return@f
-                if(!ep.supports(dynamicValue)) return@f
+                if (!gameType.supportsByAnnotation(ep)) return@f
+                if (!ep.supports(dynamicValue)) return@f
                 val info = ep.getScopeContext(dynamicValue) ?: return@f
-                if(info.hasConflict) return null //只要任何推断方式的推断结果存在冲突，就不要继续推断scopeContext
-                if(map == null) {
+                if (info.hasConflict) return null //只要任何推断方式的推断结果存在冲突，就不要继续推断scopeContext
+                if (map == null) {
                     map = info.scopeContextMap
                 } else {
                     map = ParadoxScopeManager.mergeScopeContextMap(map!!, info.scopeContextMap)

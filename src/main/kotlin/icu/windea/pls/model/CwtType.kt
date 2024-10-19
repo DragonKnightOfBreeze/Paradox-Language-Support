@@ -10,7 +10,7 @@ enum class CwtType(
     String("string"),
     Block("block"),
     ;
-    
+
     override fun toString(): kotlin.String {
         return text
     }

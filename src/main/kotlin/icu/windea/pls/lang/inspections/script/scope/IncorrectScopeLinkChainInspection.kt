@@ -15,15 +15,15 @@ import icu.windea.pls.script.psi.*
 
 class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
-        
+        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+
         val configGroup = getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if(element is ParadoxScriptStringExpressionElement) visitExpressionElement(element)
+                if (element is ParadoxScriptStringExpressionElement) visitExpressionElement(element)
             }
-            
+
             private fun visitExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return
                 val dataType = config.expression.type
@@ -36,22 +36,22 @@ class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
                     dataType in CwtDataTypeGroups.VariableField -> ParadoxVariableFieldExpression.resolve(value, textRange, configGroup)
                     else -> null
                 }
-                if(complexExpression == null) return
+                if (complexExpression == null) return
                 checkExpression(element, complexExpression)
             }
-            
+
             fun checkExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
                 complexExpression.processAllNodes p1@{ node ->
-                    if(node is ParadoxComplexExpression) doCheckExpression(element, node)
+                    if (node is ParadoxComplexExpression) doCheckExpression(element, node)
                     true
                 }
             }
-            
+
             private fun doCheckExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
                 val scopeNodes = complexExpression.nodes.filterIsInstance<ParadoxScopeLinkNode>()
                 val max = ParadoxScopeManager.maxScopeLinkSize
                 val actual = scopeNodes.size
-                if(actual <= max) return
+                if (actual <= max) return
                 val offset = ParadoxExpressionManager.getExpressionOffset(element)
                 val startOffset = offset + scopeNodes.first().rangeInExpression.startOffset
                 val endOffset = offset + scopeNodes.last().rangeInExpression.endOffset
@@ -61,9 +61,9 @@ class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
             }
         }
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
-        if(selectRootFile(file) == null) return false
+        if (selectRootFile(file) == null) return false
         return true
     }
 }

@@ -12,14 +12,14 @@ import com.intellij.util.io.*
 import java.io.*
 
 inline fun <T, V> DataInput.readOrReadFrom(from: T?, selector: (T) -> V, readAction: () -> V): V {
-    if(from == null) return readAction()
-    if(readBoolean()) return selector(from)
+    if (from == null) return readAction()
+    if (readBoolean()) return selector(from)
     return readAction()
 }
 
 inline fun <T, V> DataOutput.writeOrWriteFrom(value: T, from: T?, selector: (T) -> V, writeAction: (V) -> Unit) {
-    if(from == null) return writeAction(selector(value))
-    if(selector(value) == selector(from)) return writeBoolean(true)
+    if (from == null) return writeAction(selector(value))
+    if (selector(value) == selector(from)) return writeBoolean(true)
     writeBoolean(false)
     writeAction(selector(value))
 }
@@ -60,7 +60,7 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
     scope: GlobalSearchScope,
     crossinline processor: (T) -> Boolean
 ): Boolean {
-    if(DumbService.isDumb(project)) return true
+    if (DumbService.isDumb(project)) return true
     return StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
         ProgressManager.checkCanceled()
         processor(element)
@@ -73,11 +73,11 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
     crossinline keyPredicate: (key: K) -> Boolean = { true },
     crossinline processor: (key: K, element: T) -> Boolean
 ): Boolean {
-    if(DumbService.isDumb(project)) return true
-    
+    if (DumbService.isDumb(project)) return true
+
     return StubIndex.getInstance().processAllKeys(this, p@{ key ->
         ProgressManager.checkCanceled()
-        if(keyPredicate(key)) {
+        if (keyPredicate(key)) {
             StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
                 ProgressManager.checkCanceled()
                 processor(key, element)
@@ -96,26 +96,26 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processFirstElem
     crossinline resetDefaultValue: () -> Unit = {},
     crossinline processor: (element: T) -> Boolean
 ): Boolean {
-    if(DumbService.isDumb(project)) return true
-    
+    if (DumbService.isDumb(project)) return true
+
     var value: T?
     return StubIndex.getInstance().processAllKeys(this, p@{ key ->
         ProgressManager.checkCanceled()
-        if(keyPredicate(key)) {
+        if (keyPredicate(key)) {
             value = null
             resetDefaultValue()
             StubIndex.getInstance().processElements(this, key, project, scope, T::class.java) { element ->
                 ProgressManager.checkCanceled()
-                if(predicate(element)) {
+                if (predicate(element)) {
                     value = element
                     return@processElements false
                 }
                 true
             }
             val finalValue = value ?: getDefaultValue()
-            if(finalValue != null) {
+            if (finalValue != null) {
                 val result = processor(finalValue)
-                if(!result) return@p false
+                if (!result) return@p false
             }
         }
         true

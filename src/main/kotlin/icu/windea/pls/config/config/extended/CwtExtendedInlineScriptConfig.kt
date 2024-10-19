@@ -13,17 +13,17 @@ import icu.windea.pls.cwt.psi.*
 interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
     val contextConfigsType: String
-    
+
     /**
      * 得到处理后的作为上下文规则的容器的规则。
      */
     fun getContainerConfig(): CwtMemberConfig<*>
-    
+
     /**
      * 得到由其声明的上下文规则列表。
      */
     fun getContextConfigs(): List<CwtMemberConfig<*>>
-    
+
     companion object Resolver {
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig = doResolve(config)
     }
@@ -32,7 +32,7 @@ interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMemberElement, C
 //Implementations (interned)
 
 private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig {
-    val name = when(config) {
+    val name = when (config) {
         is CwtPropertyConfig -> config.key
         is CwtValueConfig -> config.value
     }
@@ -47,27 +47,28 @@ private class CwtExtendedInlineScriptConfigImpl(
 ) : UserDataHolderBase(), CwtExtendedInlineScriptConfig {
     private val _containerConfig by lazy { doGetContainerConfig() }
     private val _contextConfigs by lazy { doGetContextConfigs() }
-    
+
     override fun getContainerConfig(): CwtMemberConfig<*> {
         return _containerConfig
     }
-    
+
     override fun getContextConfigs(): List<CwtMemberConfig<*>> {
         return _contextConfigs
     }
-    
+
     private fun doGetContainerConfig(): CwtMemberConfig<*> {
+        if (config !is CwtPropertyConfig) return config
         return CwtConfigManipulator.inlineSingleAlias(config) ?: config // #76
     }
-    
+
     private fun doGetContextConfigs(): List<CwtMemberConfig<*>> {
         val containerConfig = _containerConfig
-        if(containerConfig !is CwtPropertyConfig) return emptyList()
-        val r = when(contextConfigsType) {
+        if (containerConfig !is CwtPropertyConfig) return emptyList()
+        val r = when (contextConfigsType) {
             "multiple" -> containerConfig.configs.orEmpty()
             else -> containerConfig.valueConfig.toSingletonListOrEmpty()
         }
-        if(r.isEmpty()) return emptyList()
+        if (r.isEmpty()) return emptyList()
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(config, r, config.configGroup)
         return listOf(contextConfig)
     }

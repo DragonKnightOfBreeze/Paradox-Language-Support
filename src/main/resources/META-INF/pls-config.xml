@@ -3,8 +3,8 @@
     <iconProvider implementation="icu.windea.pls.config.configGroup.CwtConfigIconProvider" order="first"/>
     <editorNotificationProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupEditorNotificationProvider"/>
     <editorFloatingToolbarProvider implementation="icu.windea.pls.config.configGroup.ConfigGroupRefreshFloatingProvider"/>
-    <psi.treeChangePreprocessor implementation="icu.windea.pls.config.configGroup.CwtConfigGroupPsiTreeChangePreprocessor"/>
     <additionalLibraryRootsProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupLibraryProvider"/>
+    <psi.treeChangePreprocessor implementation="icu.windea.pls.config.configGroup.CwtConfigGroupPsiTreeChangePreprocessor"/>
   </extensions>
 
   <!--ExternalSystem.ProjectRefreshActionGroup-->

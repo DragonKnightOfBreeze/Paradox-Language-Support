@@ -14,23 +14,23 @@ import java.lang.invoke.*
 
 object ParadoxFilePathManager {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
-    
-    object Keys: KeyRegistry() {
+
+    object Keys : KeyRegistry() {
         val fileExtensions by createKey<Set<String>>(this)
     }
-    
+
     const val scriptedVariablesPath = "common/scripted_variables"
-    
+
     fun getRootDirectory(contextFile: VirtualFile): VirtualFile? {
         return contextFile.fileInfo?.rootInfo?.gameRootFile
     }
-    
+
     fun getScriptedVariablesDirectory(contextFile: VirtualFile): VirtualFile? {
         val root = getRootDirectory(contextFile) ?: return null
         VfsUtil.createDirectoryIfMissing(root, scriptedVariablesPath)
         return root.findFileByRelativePath(scriptedVariablesPath)
     }
-    
+
     fun canBeScriptOrLocalisationFile(filePath: FilePath): Boolean {
         val fileName = filePath.name.lowercase()
         val fileExtension = filePath.name.substringAfterLast('.').orNull()?.lowercase() ?: return false
@@ -41,13 +41,13 @@ object ParadoxFilePathManager {
             else -> false
         }
     }
-    
+
     fun canBeScriptOrLocalisationFile(file: VirtualFile): Boolean {
         //require pre-check from user data
         //require further check for VirtualFileWindow (injected PSI)
-        
-        if(file is VirtualFileWithoutContent) return false
-        if(file is VirtualFileWindow) return true
+
+        if (file is VirtualFileWithoutContent) return false
+        if (file is VirtualFileWindow) return true
         val fileName = file.name.lowercase()
         val fileExtension = file.extension?.lowercase() ?: return false
         return when {
@@ -57,33 +57,33 @@ object ParadoxFilePathManager {
             else -> false
         }
     }
-    
+
     fun canBeScriptFilePath(path: ParadoxPath): Boolean {
-        if(inLocalisationPath(path)) return false
+        if (inLocalisationPath(path)) return false
         val fileExtension = path.fileExtension?.lowercase() ?: return false
-        if(fileExtension !in PlsConstants.scriptFileExtensions) return false
+        if (fileExtension !in PlsConstants.scriptFileExtensions) return false
         return true
     }
-    
+
     fun canBeLocalisationFilePath(path: ParadoxPath): Boolean {
-        if(!inLocalisationPath(path)) return false
+        if (!inLocalisationPath(path)) return false
         val fileExtension = path.fileExtension?.lowercase() ?: return false
-        if(fileExtension !in PlsConstants.localisationFileExtensions) return false
+        if (fileExtension !in PlsConstants.localisationFileExtensions) return false
         return true
     }
-    
+
     fun inLocalisationPath(path: ParadoxPath, synced: Boolean? = null): Boolean {
         val root = path.root
-        if(synced != true) {
-            if(root == "localisation" || root == "localization") return true
+        if (synced != true) {
+            if (root == "localisation" || root == "localization") return true
         }
-        if(synced != false) {
-            if(root == "localisation_synced" || root == "localization_synced") return true
+        if (synced != false) {
+            if (root == "localisation_synced" || root == "localization_synced") return true
         }
         return false
     }
-    
-    fun getFileExtensionOptionValues(config: CwtMemberConfig<*>) : Set<String> {
+
+    fun getFileExtensionOptionValues(config: CwtMemberConfig<*>): Set<String> {
         return config.getOrPutUserData(Keys.fileExtensions) {
             config.findOption("file_extensions")?.getOptionValueOrValues().orEmpty()
         }

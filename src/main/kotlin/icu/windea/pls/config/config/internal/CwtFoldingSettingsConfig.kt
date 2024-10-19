@@ -28,7 +28,7 @@ class CwtFoldingSettingsConfig(
                             prop.key == "placeholder" -> placeholder = prop.stringValue
                         }
                     }
-                    if(placeholder != null) {
+                    if (placeholder != null) {
                         val foldingSetting = CwtFoldingSettingsConfig(id, key, keys, placeholder!!)
                         map.put(id, foldingSetting)
                     }

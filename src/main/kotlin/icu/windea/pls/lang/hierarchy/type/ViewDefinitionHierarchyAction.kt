@@ -4,7 +4,7 @@ import com.intellij.ide.hierarchy.*
 import icons.*
 import icu.windea.pls.*
 
-class ViewDefinitionHierarchyAction: ChangeHierarchyViewActionBase(
+class ViewDefinitionHierarchyAction : ChangeHierarchyViewActionBase(
     PlsBundle.message("action.view.definition.hierarchy"),
     PlsBundle.message("action.description.view.definition.hierarchy"),
     PlsIcons.Hierarchy.Definition

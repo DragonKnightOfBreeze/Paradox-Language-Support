@@ -18,7 +18,7 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
     override fun getDisplayName(): String {
         return PlsBundle.message("search.scope.provider.name")
     }
-    
+
     override fun getSearchScopes(project: Project, dataContext: DataContext): List<SearchScope> {
         val file = dataContext.getData(CommonDataKeys.VIRTUAL_FILE) ?: return emptyList()
         val contextFile = file.findTopHostFileOrThis()
@@ -28,25 +28,25 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
         when {
             rootInfo is ParadoxGameRootInfo -> {
                 val settings = getProfilesSettings().gameSettings.get(rootFile.path)
-                if(settings == null) return emptyList()
+                if (settings == null) return emptyList()
                 val gameDirectory = rootFile
                 val modDependencyDirectories = ParadoxSearchScope.getDependencyDirectories(settings)
                 val result = mutableListOf<SearchScope>()
                 result.add(ParadoxGameSearchScope(project, contextFile, rootFile))
-                if(isInProject) {
-                    result.add(ParadoxGameWithDependenciesSearchScope(project, contextFile, gameDirectory, modDependencyDirectories,))
+                if (isInProject) {
+                    result.add(ParadoxGameWithDependenciesSearchScope(project, contextFile, gameDirectory, modDependencyDirectories))
                 }
                 return result
             }
             rootInfo is ParadoxModRootInfo -> {
                 val settings = getProfilesSettings().modSettings.get(rootFile.path)
-                if(settings == null) return emptyList()
+                if (settings == null) return emptyList()
                 val modDirectory = rootFile
                 val gameDirectory = settings.finalGameDirectory?.toVirtualFile(false)
                 val modDependencyDirectories = ParadoxSearchScope.getDependencyDirectories(settings, modDirectory)
                 val result = mutableListOf<SearchScope>()
                 result.add(ParadoxModSearchScope(project, contextFile, modDirectory))
-                if(isInProject) {
+                if (isInProject) {
                     result.add(ParadoxGameSearchScope(project, contextFile, gameDirectory))
                     result.add(ParadoxModAndGameSearchScope(project, contextFile, modDirectory, gameDirectory))
                     result.add(ParadoxModWithDependenciesSearchScope(project, contextFile, modDirectory, gameDirectory, modDependencyDirectories))

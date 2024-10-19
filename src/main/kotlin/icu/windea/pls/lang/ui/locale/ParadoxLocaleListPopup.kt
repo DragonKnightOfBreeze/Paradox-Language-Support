@@ -9,18 +9,18 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 
 class ParadoxLocaleListPopup(
-	val selectedLocale: CwtLocalisationLocaleConfig?,
-	val allLocales: List<CwtLocalisationLocaleConfig>,
-	private val onChosen: (selected: CwtLocalisationLocaleConfig) -> Unit
+    val selectedLocale: CwtLocalisationLocaleConfig?,
+    val allLocales: List<CwtLocalisationLocaleConfig>,
+    private val onChosen: (selected: CwtLocalisationLocaleConfig) -> Unit
 ) : BaseListPopupStep<CwtLocalisationLocaleConfig>(PlsBundle.message("ui.popup.selectLocale.title"), allLocales) {
-	override fun getIconFor(value: CwtLocalisationLocaleConfig) = if(value.id == "auto") null else PlsIcons.LocalisationNodes.Locale
-	
-	override fun getTextFor(value: CwtLocalisationLocaleConfig) = value.text
-	
-	override fun isSpeedSearchEnabled() = true
-	
-	override fun onChosen(selectedValue: CwtLocalisationLocaleConfig, finalChoice: Boolean): PopupStep<*>? {
-		onChosen(selectedValue)
-		return FINAL_CHOICE
-	}
+    override fun getIconFor(value: CwtLocalisationLocaleConfig) = if (value.id == "auto") null else PlsIcons.LocalisationNodes.Locale
+
+    override fun getTextFor(value: CwtLocalisationLocaleConfig) = value.text
+
+    override fun isSpeedSearchEnabled() = true
+
+    override fun onChosen(selectedValue: CwtLocalisationLocaleConfig, finalChoice: Boolean): PopupStep<*>? {
+        onChosen(selectedValue)
+        return FINAL_CHOICE
+    }
 }

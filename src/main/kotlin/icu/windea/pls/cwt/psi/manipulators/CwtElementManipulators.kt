@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
-class CwtOptionKeyManipulator: AbstractElementManipulator<CwtOptionKey>() {
+class CwtOptionKeyManipulator : AbstractElementManipulator<CwtOptionKey>() {
     override fun handleContentChange(element: CwtOptionKey, range: TextRange, newContent: String): CwtOptionKey {
         val text = element.text
         val newText = range.replaceAndQuoteIfNecessary(text, newContent)
@@ -14,7 +14,7 @@ class CwtOptionKeyManipulator: AbstractElementManipulator<CwtOptionKey>() {
     }
 }
 
-class CwtPropertyKeyManipulator: AbstractElementManipulator<CwtPropertyKey>() {
+class CwtPropertyKeyManipulator : AbstractElementManipulator<CwtPropertyKey>() {
     override fun handleContentChange(element: CwtPropertyKey, range: TextRange, newContent: String): CwtPropertyKey {
         val text = element.text
         val newText = range.replaceAndQuoteIfNecessary(text, newContent)
@@ -23,7 +23,7 @@ class CwtPropertyKeyManipulator: AbstractElementManipulator<CwtPropertyKey>() {
     }
 }
 
-class CwtValueManipulator: AbstractElementManipulator<CwtValue>() {
+class CwtValueManipulator : AbstractElementManipulator<CwtValue>() {
     override fun handleContentChange(element: CwtValue, range: TextRange, newContent: String): CwtValue {
         val text = element.text
         val newText = range.replace(text, newContent)
@@ -32,7 +32,7 @@ class CwtValueManipulator: AbstractElementManipulator<CwtValue>() {
     }
 }
 
-class CwtStringManipulator: AbstractElementManipulator<CwtString>() {
+class CwtStringManipulator : AbstractElementManipulator<CwtString>() {
     override fun handleContentChange(element: CwtString, range: TextRange, newContent: String): CwtString {
         val text = element.text
         val newText = range.replaceAndQuoteIfNecessary(text, newContent)

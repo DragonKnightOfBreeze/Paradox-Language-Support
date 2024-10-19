@@ -12,7 +12,7 @@ private const val dbPath = "launcher-v2_openbeta.sqlite"
  */
 class ParadoxFromLauncherBetaImporter : ParadoxFromLauncherImporter() {
     override val text: String = PlsBundle.message("mod.importer.launcherBeta")
-    
+
     override fun getDbPath(gameDataPath: Path): Path {
         return gameDataPath.resolve(dbPath)
     }

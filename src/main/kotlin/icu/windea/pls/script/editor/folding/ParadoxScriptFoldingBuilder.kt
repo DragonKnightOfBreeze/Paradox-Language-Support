@@ -14,33 +14,33 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
-        return when(node.elementType) {
+        return when (node.elementType) {
             BLOCK -> PlsConstants.Folders.block
             PARAMETER_CONDITION -> {
                 val expression = node.psi.castOrNull<ParadoxScriptParameterCondition>()?.conditionExpression
-                if(expression == null) return "..."
+                if (expression == null) return "..."
                 PlsConstants.Folders.parameterCondition(expression)
             }
             INLINE_MATH -> PlsConstants.Folders.inlineMath
             else -> null
         }
     }
-    
+
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
-        return when(node.elementType) {
+        return when (node.elementType) {
             BLOCK -> false
             PARAMETER_CONDITION -> ParadoxFoldingSettings.getInstance().parameterConditionBlocks
             INLINE_MATH -> ParadoxFoldingSettings.getInstance().inlineMathBlocks
             else -> false
         }
     }
-    
+
     override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
         collectDescriptorsRecursively(root.node, document, descriptors)
     }
-    
+
     private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>) {
-        when(node.elementType) {
+        when (node.elementType) {
             COMMENT -> return //optimization
             SCRIPTED_VARIABLE -> return //optimization
             BLOCK -> descriptors.add(FoldingDescriptor(node, node.textRange))
@@ -48,15 +48,15 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             INLINE_MATH -> descriptors.add(FoldingDescriptor(node, node.textRange))
         }
         val children = node.getChildren(null)
-        for(child in children) {
+        for (child in children) {
             collectDescriptorsRecursively(child, document, descriptors)
         }
     }
-    
+
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {
         return node.elementType == ParadoxScriptFile.ELEMENT_TYPE
     }
-    
+
     override fun isCustomFoldingCandidate(node: ASTNode): Boolean {
         return node.elementType == COMMENT
     }

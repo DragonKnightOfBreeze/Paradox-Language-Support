@@ -9,36 +9,36 @@ import icu.windea.pls.*
  */
 interface ParadoxDocumentationLinkProvider {
     val linkPrefix: String
-    
+
     fun resolve(link: String, contextElement: PsiElement): PsiElement?
-    
+
     fun getUnresolvedMessage(link: String): String? = null
-    
+
     fun create(element: PsiElement, plainLink: Boolean = true): String? = null
-    
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxDocumentationLinkProvider>("icu.windea.pls.documentationLinkProvider")
-        
+
         fun supports(link: String): Boolean {
             return EP_NAME.extensionList.any { ep ->
                 link.startsWith(ep.linkPrefix)
             }
         }
-        
+
         fun resolve(link: String, contextElement: PsiElement): PsiElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if(!link.startsWith(ep.linkPrefix)) return@f null
+                if (!link.startsWith(ep.linkPrefix)) return@f null
                 ep.resolve(link, contextElement)
             }
         }
-        
+
         fun getUnresolvedMessage(link: String): String {
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if(!link.startsWith(ep.linkPrefix)) return@f null
+                if (!link.startsWith(ep.linkPrefix)) return@f null
                 ep.getUnresolvedMessage(link)
             } ?: PlsBundle.message("path.reference.unresolved", link)
         }
-        
+
         fun create(element: PsiElement, plainLink: Boolean = true): String? {
             return EP_NAME.extensionList.firstNotNullOfOrNull {
                 it.create(element, plainLink)

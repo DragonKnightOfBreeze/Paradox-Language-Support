@@ -29,22 +29,22 @@ class ConvertDdsToPngDialog(
         private const val MAX_PATH_LENGTH = 70
         private const val RECENT_KEYS = "Pls.ConvertDdsToPng.RECENT_KEYS"
     }
-    
+
     val newName: String? get() = newNameField?.text?.trim()
     var targetDirectory: PsiDirectory? = defaultTargetDirectory
-    
+
     var newNameField: EditorTextField? = null
     var targetDirectoryField: TextFieldWithHistoryWithBrowseButton? = null
-    
+
     init {
         title = PlsBundle.message("dds.dialog.convertDdsToPng.title")
         init()
     }
-    
+
     //（信息标签）
     //（输入框）文件名
     //（文件路径输入框）目标目录
-    
+
     override fun createCenterPanel() = panel {
         row {
             val text = when {
@@ -58,7 +58,7 @@ class ConvertDdsToPngDialog(
             }
             label(text).bold()
         }
-        if(files.size == 1) {
+        if (files.size == 1) {
             row {
                 label(PlsBundle.message("dds.dialog.convertDdsToPng.newName")).widthGroup("left")
                 cell(initNewNameField())
@@ -77,14 +77,14 @@ class ConvertDdsToPngDialog(
             pathCompletionShortcutComment()
         }
     }
-    
+
     private fun initNewNameField(): EditorTextField {
         val newName = defaultNewName.orEmpty()
         val newNameField = EditorTextField()
         newNameField.text = newName
         newNameField.editor.let { editor ->
-            if(editor != null) {
-                val dotIndex = newName.indexOf('.').let { if(it == -1) newName.length else it }
+            if (editor != null) {
+                val dotIndex = newName.indexOf('.').let { if (it == -1) newName.length else it }
                 editor.selectionModel.setSelection(0, dotIndex)
                 editor.caretModel.moveToOffset(dotIndex)
             } else {
@@ -93,14 +93,14 @@ class ConvertDdsToPngDialog(
         }
         return newNameField
     }
-    
+
     private fun initTargetDirectoryField(): TextFieldWithHistoryWithBrowseButton {
         val targetDirectoryField = TextFieldWithHistoryWithBrowseButton().also { this.targetDirectoryField = it }
         targetDirectoryField.setTextFieldPreferredWidth(MAX_PATH_LENGTH)
         val recentEntries = RecentsManager.getInstance(project).getRecentEntries(RECENT_KEYS)
         val targetDirectoryComponent = targetDirectoryField.childComponent
         val targetPath = defaultTargetDirectory.virtualFile.presentableUrl
-        if(recentEntries != null) targetDirectoryComponent.history = recentEntries
+        if (recentEntries != null) targetDirectoryComponent.history = recentEntries
         targetDirectoryComponent.text = targetPath
         val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
         targetDirectoryField.addBrowseFolderListener(
@@ -110,39 +110,39 @@ class ConvertDdsToPngDialog(
         )
         return targetDirectoryField
     }
-    
+
     private fun shortenPath(file: VirtualFile): String {
         return StringUtil.shortenPathWithEllipsis(file.presentableUrl, MAX_PATH_LENGTH)
     }
-    
+
     override fun doOKAction() {
         newNameField?.let {
             val newName = newName
-            if(newName.isNullOrEmpty()) {
+            if (newName.isNullOrEmpty()) {
                 Messages.showErrorDialog(project, PlsBundle.message("dds.dialog.convertDdsToPng.newName.error"), PlsBundle.message("error.title"))
                 return
             }
         }
         targetDirectoryField?.let {
             val targetDirectoryName = targetDirectoryField!!.childComponent.text
-            if(targetDirectoryName.isEmpty()) {
+            if (targetDirectoryName.isEmpty()) {
                 Messages.showErrorDialog(project, PlsBundle.message("dds.dialog.convertDdsToPng.targetDirectory.error"), PlsBundle.message("error.title"))
                 return
             }
-            
+
             RecentsManager.getInstance(project).registerRecentEntry(RECENT_KEYS, targetDirectoryName)
-            
+
             executeCommand(project, PlsBundle.message("create.directory"), null) {
-				runWriteAction {
-					try {
-						val path = FileUtil.toSystemIndependentName(targetDirectoryName)
-						targetDirectory = DirectoryUtil.mkdirs(PsiManager.getInstance(project), path)
-					} catch(e: IncorrectOperationException) {
-						targetDirectory = null
-					}
-				}
-			}
-			if(targetDirectory == null) {
+                runWriteAction {
+                    try {
+                        val path = FileUtil.toSystemIndependentName(targetDirectoryName)
+                        targetDirectory = DirectoryUtil.mkdirs(PsiManager.getInstance(project), path)
+                    } catch (e: IncorrectOperationException) {
+                        targetDirectory = null
+                    }
+                }
+            }
+            if (targetDirectory == null) {
                 Messages.showErrorDialog(project, PlsBundle.message("cannot.create.directory"), PlsBundle.message("error.title"))
                 return
             }
@@ -150,7 +150,7 @@ class ConvertDdsToPngDialog(
                 FileChooserUtil.setLastOpenedFile(project, it.virtualFile.toNioPath())
             }
         }
-        
+
         super.doOKAction()
     }
 }

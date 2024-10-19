@@ -9,7 +9,7 @@ import icu.windea.pls.model.*
  * @property configExpression 对应的规则表达式。基于CWT规则。
  */
 interface ParadoxTypedElement : PsiElement {
-	val type: ParadoxType? get() = null
-	val expression: String? get() = null
-	val configExpression: String? get() = null
+    val type: ParadoxType? get() = null
+    val expression: String? get() = null
+    val configExpression: String? get() = null
 }

@@ -6,7 +6,7 @@ import icu.windea.pls.core.util.*
 
 @Tags(Tag.Computed)
 val CwtConfigGroup.mockVariableConfig: CwtValueConfig
-    by createKeyDelegate(CwtConfigGroup.Keys) { 
+    by createKeyDelegate(CwtConfigGroup.Keys) {
         CwtValueConfig.resolve(emptyPointer(), this, "value[variable]")
     }
 

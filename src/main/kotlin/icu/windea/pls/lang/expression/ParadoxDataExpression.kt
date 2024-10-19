@@ -20,39 +20,39 @@ class ParadoxDataExpression private constructor(
     val isKey: Boolean?
 ) {
     private val regex by lazy { ParadoxExpressionManager.toRegex(text) }
-    
+
     fun isParameterized(): Boolean {
         return type == ParadoxType.String && text.isParameterized()
     }
-    
+
     fun isFullParameterized(): Boolean {
         return type == ParadoxType.String && text.isFullParameterized()
     }
-    
+
     fun matchesConstant(v: String): Boolean {
-        if(text.isParameterized()) {
+        if (text.isParameterized()) {
             //兼容带参数的情况（此时先转化为正则表达式，再进行匹配）
             return regex.matches(v)
         }
         return text.equals(v, true) //忽略大小写
     }
-    
+
     override fun equals(other: Any?): Boolean {
         return other is ParadoxDataExpression && (text == other.text && quoted == other.quoted)
     }
-    
+
     override fun hashCode(): Int {
         return Objects.hash(text, type)
     }
-    
+
     override fun toString(): String {
         return text
     }
-    
+
     companion object Resolver {
         val BlockExpression: ParadoxDataExpression = ParadoxDataExpression(PlsConstants.Folders.block, ParadoxType.Block, false, false)
         val UnknownExpression: ParadoxDataExpression = ParadoxDataExpression(PlsConstants.unknownString, ParadoxType.Unknown, false, false)
-        
+
         fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): ParadoxDataExpression {
             return when {
                 element is ParadoxScriptBlock -> {
@@ -72,12 +72,12 @@ class ParadoxDataExpression private constructor(
                 }
             }
         }
-        
+
         fun resolve(value: String, isQuoted: Boolean, isKey: Boolean? = null): ParadoxDataExpression {
             val expressionType = ParadoxTypeManager.resolve(value)
             return ParadoxDataExpression(value, expressionType, isQuoted, isKey)
         }
-        
+
         fun resolve(text: String, isKey: Boolean? = null): ParadoxDataExpression {
             val value = text.unquote()
             val expressionType = ParadoxTypeManager.resolve(text)

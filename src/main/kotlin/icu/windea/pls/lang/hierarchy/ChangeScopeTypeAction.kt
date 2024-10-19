@@ -7,7 +7,6 @@ import com.intellij.openapi.application.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.scope.type.*
 import java.awt.*
 import javax.swing.*
@@ -21,21 +20,21 @@ class ChangeScopeTypeAction(
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.EDT
     }
-    
+
     override fun update(e: AnActionEvent) {
         val presentation = e.presentation
         val scopeType = settings.scopeType
         presentation.text = ParadoxSearchScopeTypes.get(scopeType).text
     }
-    
+
     override fun createPopupActionGroup(button: JComponent, dataContext: DataContext): DefaultActionGroup {
         val group = DefaultActionGroup()
-        for(scopeType in ParadoxSearchScopeTypes.getScopeTypes(provider.project, provider.element)) {
+        for (scopeType in ParadoxSearchScopeTypes.getScopeTypes(provider.project, provider.element)) {
             group.add(MenuAction(scopeType))
         }
         return group
     }
-    
+
     override fun createCustomComponent(presentation: Presentation, place: String): JComponent {
         val panel = JPanel(GridBagLayout())
         panel.add(
@@ -48,11 +47,11 @@ class ChangeScopeTypeAction(
         )
         return panel
     }
-    
+
     private inner class MenuAction(val scopeType: ParadoxSearchScopeType) : AnAction(scopeType.text) {
         override fun actionPerformed(e: AnActionEvent) {
             settings.scopeType = scopeType.id
-            
+
             // invokeLater is called to update state of button before long tree building operation
             // scope is kept per type so other builders don't need to be refreshed
             ApplicationManager.getApplication().invokeLater({ provider.function("doRefresh")(true) }) { provider.isDisposed }

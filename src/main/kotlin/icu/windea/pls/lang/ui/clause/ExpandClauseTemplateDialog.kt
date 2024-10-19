@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.ui
+package icu.windea.pls.lang.ui.clause
 
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
@@ -8,6 +8,7 @@ import com.intellij.ui.table.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.ui.*
 import java.awt.*
 import javax.swing.*
 import javax.swing.event.*
@@ -25,19 +26,19 @@ class ExpandClauseTemplateDialog(
     val context: ElementsContext
 ) : DialogWithValidation(project) {
     var elementsTableModel: ElementsTableModel
-    
+
     val multipleGroup = context.descriptorsInfoList.size > 1
-    
+
     init {
         title = PlsBundle.message("ui.dialog.expandClauseTemplate.title")
         elementsTableModel = createElementsInfoModel()
         init()
     }
-    
+
     private fun createElementsInfoModel(): ElementsTableModel {
         return ElementsTableModel(context)
     }
-    
+
     override fun createNorthPanel() = panel {
         //(textField) propertyName
         row {
@@ -50,13 +51,13 @@ class ExpandClauseTemplateDialog(
                 .columns(COLUMNS_LARGE)
                 .enabled(false)
         }
-        if(multipleGroup) {
+        if (multipleGroup) {
             row {
                 comment(PlsBundle.message("ui.dialog.expandClauseTemplate.comment.1"))
             }
         }
     }.withPreferredWidth(600)
-    
+
     override fun createCenterPanel(): JComponent {
         val panel = JPanel(BorderLayout())
         with(panel) {
@@ -71,7 +72,7 @@ class ExpandClauseTemplateDialog(
         panel.border = JBUI.Borders.emptyTop(5)
         return panel
     }
-    
+
     private fun createElementsPanel(): JPanel {
         val tableView = object : TableView<ElementDescriptor>(elementsTableModel) {
             override fun editingStopped(e: ChangeEvent?) {

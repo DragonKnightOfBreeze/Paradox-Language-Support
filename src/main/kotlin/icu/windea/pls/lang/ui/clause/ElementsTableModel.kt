@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.ui
+package icu.windea.pls.lang.ui.clause
 
 import com.intellij.openapi.ui.*
 import com.intellij.util.ui.*
@@ -19,93 +19,93 @@ class ElementsTableModel(
     override fun addRow() {
         addRow(PropertyDescriptor())
     }
-    
+
     class NameColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("ui.table.element.column.name.name")) {
         override fun isCellEditable(item: ElementDescriptor): Boolean {
             return true
         }
-        
+
         override fun valueOf(item: ElementDescriptor): String {
             return item.name
         }
-        
+
         override fun setValue(item: ElementDescriptor, value: String?) {
-            return when(item) {
+            return when (item) {
                 is ValueDescriptor -> item.name = value.orEmpty()
                 is PropertyDescriptor -> item.name = value.orEmpty()
             }
         }
-        
+
         override fun getRenderer(item: ElementDescriptor): TableCellRenderer {
-            return when(item) {
+            return when (item) {
                 is ValueDescriptor -> ComboBoxTableRenderer(context.descriptorsInfo.allValues)
                 is PropertyDescriptor -> ComboBoxTableRenderer(context.descriptorsInfo.allKeys)
             }
         }
-        
+
         override fun getEditor(item: ElementDescriptor): TableCellEditor {
-            return when(item) {
+            return when (item) {
                 is ValueDescriptor -> ComboBoxTableRenderer(context.descriptorsInfo.allValues)
                 is PropertyDescriptor -> ComboBoxTableRenderer(context.descriptorsInfo.allKeys)
             }
         }
     }
-    
+
     class SeparatorColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, ParadoxSeparatorType>(PlsBundle.message("ui.table.element.column.name.separator")) {
         override fun isCellEditable(item: ElementDescriptor): Boolean {
             return item is PropertyDescriptor
         }
-        
+
         override fun valueOf(item: ElementDescriptor): ParadoxSeparatorType? {
-            return when(item) {
+            return when (item) {
                 is ValueDescriptor -> null
                 is PropertyDescriptor -> item.separator
             }
         }
-        
+
         override fun setValue(item: ElementDescriptor, value: ParadoxSeparatorType) {
-            when(item) {
+            when (item) {
                 is ValueDescriptor -> pass()
                 is PropertyDescriptor -> item.separator = value
             }
         }
-        
+
         override fun getRenderer(item: ElementDescriptor): TableCellRenderer? {
-            return when(item) {
+            return when (item) {
                 is ValueDescriptor -> null
                 is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparatorType.values())
             }
         }
-        
+
         override fun getEditor(item: ElementDescriptor): TableCellEditor? {
-            return when(item) {
+            return when (item) {
                 is ValueDescriptor -> null
                 is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparatorType.values())
             }
         }
     }
-    
+
     class ValueColumn(private val context: ElementsContext) : ColumnInfo<ElementDescriptor, String>(PlsBundle.message("ui.table.element.column.name.value")) {
         override fun isCellEditable(item: ElementDescriptor): Boolean {
             return item is PropertyDescriptor && item.constantValues.isNotEmpty()
         }
-        
+
         override fun valueOf(item: ElementDescriptor): String? {
-            return when(item) {
+            return when (item) {
                 is ValueDescriptor -> null
                 is PropertyDescriptor -> item.value
             }
         }
-        
+
         override fun setValue(item: ElementDescriptor, value: String?) {
-            when(item) {
+            when (item) {
                 is ValueDescriptor -> pass()
                 is PropertyDescriptor -> item.value = value.orEmpty()
             }
         }
-        
+
         override fun getRenderer(item: ElementDescriptor): TableCellRenderer? {
-            return when(item) {
+            return when (item) {
                 is ValueDescriptor -> null
                 is PropertyDescriptor -> {
                     val constantValues = context.descriptorsInfo.allKeyValuesMap[item.name].orEmpty()
@@ -114,9 +114,9 @@ class ElementsTableModel(
                 }
             }
         }
-        
+
         override fun getEditor(item: ElementDescriptor): TableCellEditor? {
-            return when(item) {
+            return when (item) {
                 is ValueDescriptor -> null
                 is PropertyDescriptor -> {
                     val constantValues = context.descriptorsInfo.allKeyValuesMap[item.name].orEmpty()

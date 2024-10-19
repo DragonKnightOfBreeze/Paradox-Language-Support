@@ -14,37 +14,38 @@ import javax.swing.*
 //each library each project
 
 class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPresentation {
-    @Volatile var roots: Set<VirtualFile> = emptySet()
-    
+    @Volatile
+    var roots: Set<VirtualFile> = emptySet()
+
     override fun getSourceRoots(): Collection<VirtualFile> {
         return roots
     }
-    
+
     override fun isShowInExternalLibrariesNode(): Boolean {
         return true
     }
-    
+
     override fun getIcon(unused: Boolean): Icon {
         return PlsIcons.Library
     }
-    
+
     override fun getPresentableText(): String {
         return PlsBundle.message("configGroup.library.name")
     }
-    
+
     override fun equals(other: Any?): Boolean {
         return this === other || (other is CwtConfigGroupLibrary && project == other.project)
     }
-    
+
     override fun hashCode(): Int {
         return project.hashCode()
     }
-    
+
     @Suppress("UnstableApiUsage")
     fun refreshRoots() {
         val oldRoots = roots
         val newRoots = computeRoots()
-        if(oldRoots == newRoots) return
+        if (oldRoots == newRoots) return
         roots = newRoots
         runInEdt(ModalityState.nonModal()) {
             runWriteAction {
@@ -53,11 +54,11 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
             }
         }
     }
-    
+
     fun computeRoots(): Set<VirtualFile> {
         return runReadAction { doComputeRoots() }
     }
-    
+
     private fun doComputeRoots(): Set<VirtualFile> {
         //这里仅需要收集不在项目中的根目录（规则目录）
         

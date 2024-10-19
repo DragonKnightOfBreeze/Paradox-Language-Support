@@ -17,11 +17,11 @@ data class ParadoxEconomicCategoryInfo(
     override fun equals(other: Any?): Boolean {
         return this === other || (other is ParadoxEconomicCategoryInfo && name == other.name)
     }
-    
+
     override fun hashCode(): Int {
         return name.hashCode()
     }
-    
+
     @WithGameType(ParadoxGameType.Stellaris)
     data class ModifierInfo(
         val key: String,
@@ -32,19 +32,19 @@ data class ParadoxEconomicCategoryInfo(
         val useParentIcon: Boolean = false,
     ) {
         val name = resolveName(key)
-        
+
         fun resolveName(key: String?): String {
             return buildString {
-                if(key != null) append(key).append("_")
-                if(resource != null) append(resource).append("_")
+                if (key != null) append(key).append("_")
+                if (resource != null) append(resource).append("_")
                 append(category).append("_").append(type)
             }
         }
-        
+
         override fun equals(other: Any?): Boolean {
             return this === other || (other is ParadoxEconomicCategoryInfo && name == other.name)
         }
-        
+
         override fun hashCode(): Int {
             return name.hashCode()
         }

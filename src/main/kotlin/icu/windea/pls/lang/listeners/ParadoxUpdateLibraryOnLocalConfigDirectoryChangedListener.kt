@@ -14,10 +14,10 @@ class ParadoxUpdateLibraryOnLocalConfigDirectoryChangedListener : ParadoxLocalCo
     override fun onChange(oldDirectory: String, newDirectory: String) {
         doUpdateLibrary()
     }
-    
+
     private fun doUpdateLibrary() {
-        for(project in ProjectManager.getInstance().openProjects) {
-            if(project.isDisposed) continue
+        for (project in ProjectManager.getInstance().openProjects) {
+            if (project.isDisposed) continue
             val library = project.configGroupLibrary
             library.refreshRoots()
         }

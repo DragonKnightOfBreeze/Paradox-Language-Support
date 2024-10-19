@@ -253,6 +253,12 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.event.group"
                      groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.event.MismatchedEventIdInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptNonTriggeredEvent"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.nonTriggeredEvent"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.event.group"
+                     groupPathKey="inspection.script.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.script.event.NonTriggeredEventInspection"/>
     <!--endregion-->
     <!--region Paradox script/Smart inference-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingInlineScriptUsage"

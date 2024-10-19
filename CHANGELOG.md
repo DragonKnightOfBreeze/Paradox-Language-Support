@@ -2,15 +2,37 @@
 
 ## 1.3.23
 
+* [X] 修复无法补全封装变量（scripted variable）的问题
 * [X] #90 排除特定的根目录以免解析与索引一些意外的文件
 
 ***
 
+* [X] Fix a problem that cannot complete scripted variables
 * [X] #90 Exclude some specific root file paths to avoid parsing and indexing unexpected files
+
+## 1.3.22
+
+* [X] #88 新的代码检查：`NonTriggeredEventInspection`
+* [X] BUG修复：修复不正确地缓存了基于扩展的规则推断的参数的上下文规则的问题
+* [X] 其他优化与BUG修复
+
+***
+
+* [X] #88 New code inspection: `NonTriggeredEventInspection`
+* [X] BUG fix: fixed an issue that context configs for parameters inferred based on extended configs were cached incorrectly
+* [X] Other optimizations and bug fixes
 
 ## 1.3.21
 
-* [ ] 优化性能与内存占用
+* [X] 更新CWT规则文件以适配Stellaris 3.13.0
+* [X] 优化性能与内存占用
+* [X] 其他优化与BUG修复
+
+***
+
+* [X] Update CWT configs files to match Stellaris 3.13.0
+* [X] Optimize performance and memory
+* [X] Other optimizations and bug fixes
 
 ## 1.3.20
 
@@ -201,7 +223,7 @@
 * [X] Optimization: Determine override order for targets (definitions, localisations, etc.) based on CWT configs files (Can be customized, see reference documentation for details)
 * [X] Optimization: For localisation file, it's unnecessary to escape double quotes in localisation text
 * [X] Optimization: It a target cannot be resolved, but related extended CWT configs exist, related code inspection can be configured to be ignored
-* [X] Optimization: If the scope context can be inferred from extended CWT configs, do not continue to be inferred from usages  
+* [X] Optimization: If the scope context can be inferred from extended CWT configs, do not continue to be inferred from usages
 * [X] Other optimizations and bug fixes
 
 ## 1.3.6
@@ -734,8 +756,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 
 * 更新到IDEA版本2023.1
 * 优化索引时的规则匹配逻辑
-*
-修复：[只能读取动态肖像而不能读取静态肖像 #13](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/13)
+* 修复：[只能读取动态肖像而不能读取静态肖像 #13](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/13)
 
 ## 0.9.3
 

@@ -8,9 +8,9 @@ interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationPrope
     val category: ParadoxLocalisationCategory
     val locale: String?
     val gameType: ParadoxGameType
-    
+
     fun isValid() = name.isNotEmpty()
-    
+
     abstract class Base(
         parent: StubElement<*>
     ) : StubBase<ParadoxLocalisationProperty>(parent, ParadoxLocalisationStubElementTypes.PROPERTY), ParadoxLocalisationPropertyStub {
@@ -18,7 +18,7 @@ interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationPrope
             return "ParadoxLocalisationPropertyStub(name=$name, category=$category, locale=$locale, gameType=$gameType)"
         }
     }
-    
+
     //12 + 20 + 4 * 4 = 48 -> 48
     class Impl(
         parent: StubElement<*>,
@@ -27,9 +27,9 @@ interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationPrope
         override val locale: String?,
         override val gameType: ParadoxGameType,
     ) : Base(parent)
-    
+
     //12 + 20 = 32 -> 32
-    
+
     class Dummy(
         parent: StubElement<*>
     ) : Base(parent) {
@@ -37,7 +37,7 @@ interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationPrope
         override val category: ParadoxLocalisationCategory get() = ParadoxLocalisationCategory.placeholder()
         override val locale: String? get() = null
         override val gameType: ParadoxGameType get() = ParadoxGameType.placeholder()
-        
+
         override fun toString(): String {
             return "ParadoxLocalisationPropertyStub.Dummy"
         }

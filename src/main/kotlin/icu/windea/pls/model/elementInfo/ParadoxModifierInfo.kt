@@ -3,6 +3,7 @@ package icu.windea.pls.model.elementInfo
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.core.*
 import icu.windea.pls.ep.modifier.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
@@ -14,7 +15,7 @@ data class ParadoxModifierInfo(
     override val project: Project,
 ) : UserDataHolderBase(), ParadoxElementInfo {
     val modificationTracker by lazy { support?.getModificationTracker(this) }
-    
+
     companion object {
         val EMPTY = ParadoxModifierInfo("", ParadoxGameType.placeholder(), getDefaultProject())
     }
@@ -29,7 +30,7 @@ fun ParadoxModifierElement.toInfo(): ParadoxModifierInfo {
 }
 
 //use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
-private fun syncUserData(from: UserDataHolder, to : UserDataHolder) {
+private fun syncUserData(from: UserDataHolder, to: UserDataHolder) {
     ParadoxModifierSupport.Keys.keysToSync.forEach { key ->
         @Suppress("UNCHECKED_CAST")
         key as Key<Any>

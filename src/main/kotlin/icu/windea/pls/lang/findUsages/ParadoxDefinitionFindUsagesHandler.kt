@@ -11,7 +11,7 @@ class ParadoxDefinitionFindUsagesHandler(
     override fun getFindUsagesDialog(isSingleFile: Boolean, toShowInNewTab: Boolean, mustOpenInNewTab: Boolean): AbstractFindUsagesDialog {
         return ParadoxFindDefinitionUsagesDialog(element, project, factory.findDefinitionOptions, toShowInNewTab, mustOpenInNewTab, isSingleFile, this)
     }
-    
+
     override fun getFindUsagesOptions(dataContext: DataContext?): ParadoxDefinitionFindUsagesOptions {
         return factory.findDefinitionOptions
     }

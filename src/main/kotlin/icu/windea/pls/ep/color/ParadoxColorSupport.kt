@@ -14,18 +14,18 @@ import java.awt.*
  */
 interface ParadoxColorSupport {
     fun getColor(element: PsiElement): Color?
-    
+
     fun setColor(element: PsiElement, color: Color): Boolean
-    
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxColorSupport>("icu.windea.pls.colorSupport")
-        
+
         fun getColor(element: PsiElement): Color? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
                 ep.getColor(element)
             }
         }
-        
+
         fun setColor(element: PsiElement, color: Color) {
             EP_NAME.extensionList.any {
                 it.setColor(element, color)

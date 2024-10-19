@@ -41,6 +41,9 @@
     <projectViewNodeDecorator implementation="icu.windea.pls.lang.projectView.CwtConfigProjectViewDecorator"/>
     <projectViewNodeDecorator implementation="icu.windea.pls.lang.projectView.ParadoxProjectViewDecorator"/>
     
+    <iconProvider implementation="icu.windea.pls.lang.ParadoxIconProvider" order="first"/>
+    <openapi.vcs.changes.ui.filePathIconProvider implementation="icu.windea.pls.lang.ParadoxFilePathIconProvider"/>
+    
     <qualifiedNameProvider implementation="icu.windea.pls.lang.ParadoxQualifiedNameProvider"/>
     <readWriteAccessDetector implementation="icu.windea.pls.lang.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
     <usageTypeProvider implementation="icu.windea.pls.lang.codeInsight.highlight.ParadoxUsageTypeProvider"/>
@@ -77,7 +80,7 @@
     <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedVariableInlineActionHandler"/>
     <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedTriggerInlineActionHandler"/>
     <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxScriptedEffectInlineActionHandler"/>
-    <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxInlineScriptInlineActionHandler" order="first"/>  <!-- order="first" is necessary -->
+    <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxInlineScriptInlineActionHandler" order="first"/>  <!--should be first-->
     <inlineActionHandler implementation="icu.windea.pls.lang.refactoring.inline.ParadoxLocalisationInlineActionHandler"/>
     <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.refactoring.actions.IntroduceLocalScriptedVariableHandler"/>
     <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.refactoring.actions.IntroduceGlobalScriptedVariableHandler"/>
@@ -109,14 +112,13 @@
     <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxParameterUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxLocalisationParameterUsagesSearcher"/>
     
+    <pathReferenceProvider implementation="icu.windea.pls.lang.references.paths.ParadoxPathReferenceProvider" order="first"/>
+    
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
     
     <postStartupActivity implementation="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnProjectOpenedListener"/>
     
     <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.psi.ParadoxPsiTreeChangePreprocessor"/>
-    
-    <!--@HiddenApi-->
-    <pathReferenceProvider implementation="icu.windea.pls.lang.references.paths.ParadoxPathReferenceProvider" order="first"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls">

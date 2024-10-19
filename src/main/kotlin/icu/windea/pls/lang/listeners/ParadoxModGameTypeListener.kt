@@ -8,7 +8,7 @@ import icu.windea.pls.lang.settings.*
  */
 interface ParadoxModGameTypeListener {
     fun onChange(modSettings: ParadoxModSettingsState)
-    
+
     companion object {
         @Topic.AppLevel
         val TOPIC = Topic(ParadoxModGameTypeListener::class.java, Topic.BroadcastDirection.NONE)

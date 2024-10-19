@@ -18,42 +18,42 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
     override fun getUsageType(element: PsiElement): UsageType? {
         return getUsageType(element, UsageTarget.EMPTY_ARRAY)
     }
-    
+
     override fun getUsageType(element: PsiElement, targets: Array<out UsageTarget>): UsageType? {
         when {
             element is ParadoxScriptStringExpressionElement || element is ParadoxScriptInt -> {
                 //尝试解析为复杂枚举值声明
                 val resolvedElements = targets.mapNotNull { it.castOrNull<PsiElementUsageTarget>()?.element }
                 val complexEnumValueElement = resolvedElements.findIsInstance<ParadoxComplexEnumValueElement>()
-                if(complexEnumValueElement != null) {
+                if (complexEnumValueElement != null) {
                     return ParadoxUsageType.COMPLEX_ENUM_VALUE
                 }
-                
+
                 val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
                 val configExpression = config.expression
                 val type = configExpression.type
                 //in invocation expression
-                if(config.expression.type == CwtDataTypes.Parameter) {
+                if (config.expression.type == CwtDataTypes.Parameter) {
                     return ParadoxUsageType.PARAMETER_REFERENCE_4
                 }
                 //in script value expression
-                if(type in CwtDataTypeGroups.ValueField) {
+                if (type in CwtDataTypeGroups.ValueField) {
                     val targetElement = getTargetElement(targets)
-                    if(targetElement is ParadoxParameterElement) {
+                    if (targetElement is ParadoxParameterElement) {
                         return ParadoxUsageType.PARAMETER_REFERENCE_5
                     }
                 }
                 //in invocation expression (for localisation parameters)
-                if(config.expression.type == CwtDataTypes.LocalisationParameter) {
+                if (config.expression.type == CwtDataTypes.LocalisationParameter) {
                     return ParadoxUsageType.PARAMETER_REFERENCE_6
                 }
                 return ParadoxUsageType.FROM_CONFIG_EXPRESSION(configExpression)
             }
-            
+
             element is ParadoxScriptScriptedVariableReference -> return ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
             element is ParadoxScriptInlineMathScriptedVariableReference -> return ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_2
             element is ParadoxLocalisationScriptedVariableReference -> return ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_3
-            
+
             element is ParadoxScriptParameter -> return ParadoxUsageType.PARAMETER_REFERENCE_1
             element is ParadoxScriptInlineMathParameter -> return ParadoxUsageType.PARAMETER_REFERENCE_2
             element is ParadoxScriptParameterConditionParameter -> return ParadoxUsageType.PARAMETER_REFERENCE_3
@@ -65,7 +65,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
             else -> return null
         }
     }
-    
+
     private fun getTargetElement(targets: Array<out UsageTarget>): PsiElement? {
         return targets.firstOrNull()?.castOrNull<PsiElementUsageTarget>()?.element
     }

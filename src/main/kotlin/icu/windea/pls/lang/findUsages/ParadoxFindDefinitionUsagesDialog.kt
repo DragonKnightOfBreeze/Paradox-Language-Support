@@ -17,27 +17,27 @@ class ParadoxFindDefinitionUsagesDialog(
     handler: ParadoxDefinitionFindUsagesHandler
 ) : ParadoxFindUsagesDialog(element, project, findOptions, toShowInNewTab, mustOpenInNewTab, isSingleFile, handler) {
     private val findOptions get() = myFindUsagesOptions as ParadoxDefinitionFindUsagesOptions
-    
+
     private var cbUsages: StateRestoringCheckBox? = null
-    
+
     override fun calcFindUsagesOptions(options: FindUsagesOptions) {
         options as ParadoxDefinitionFindUsagesOptions
         super.calcFindUsagesOptions(options)
-        if(isToChange(cbUsages)) {
+        if (isToChange(cbUsages)) {
             options.isUsages = isSelected(cbUsages)
         }
     }
-    
+
     override fun createFindWhatPanel(): JPanel {
         val panel = JPanel()
         panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
         cbUsages = addCheckboxToPanel(PlsBundle.message("find.what.usages.checkbox"), findOptions.isUsages, panel, true)
         return panel
     }
-    
+
     override fun update() {
-        if(myCbToSearchForTextOccurrences != null) {
-            if(isSelected(cbUsages)) {
+        if (myCbToSearchForTextOccurrences != null) {
+            if (isSelected(cbUsages)) {
                 myCbToSearchForTextOccurrences.makeSelectable()
             } else {
                 myCbToSearchForTextOccurrences.makeUnselectable(false)

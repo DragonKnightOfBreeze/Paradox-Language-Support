@@ -20,24 +20,24 @@ interface CwtOverriddenConfigProvider {
      * 基于指定的上下文PSI元素[contextElement]和原始的CWT规则[config]获取重载后的CWT规则。
      */
     fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>?
-    
+
     fun skipMissingExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression) = false
-    
+
     fun skipTooManyExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression) = false
-    
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtOverriddenConfigProvider>("icu.windea.pls.overriddenConfigProvider")
-        
+
         fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
             val gameType = config.configGroup.gameType ?: return null
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if(!gameType.supportsByAnnotation(ep)) return@f null
+                if (!gameType.supportsByAnnotation(ep)) return@f null
                 ep.getOverriddenConfigs(contextElement, config).orNull()
                     ?.onEach {
                         it.originalConfig = config
                         it.overriddenProvider = ep
                     }
-                    ?.also { PlsStates.overrideConfig.set(true) } //set overrideConfigStatus
+                    ?.also { PlsStates.dynamicContextConfigs.set(true) }
             }
         }
     }

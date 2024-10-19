@@ -15,13 +15,13 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
     override fun processQuery(queryParameters: ParadoxLocalisationSearch.SearchParameters, consumer: Processor<in ParadoxLocalisationProperty>) {
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
-        if(SearchScope.isEmptyScope(scope)) return
+        if (SearchScope.isEmptyScope(scope)) return
         val project = queryParameters.project
-        
+
         val constraint = queryParameters.selector.getConstraint()
         val indexKey = constraint.indexKey
-        val name = if(constraint.ignoreCase) queryParameters.name?.lowercase() else queryParameters.name
-        if(name == null) {
+        val name = if (constraint.ignoreCase) queryParameters.name?.lowercase() else queryParameters.name
+        if (name == null) {
             indexKey.processAllElementsByKeys(project, scope) { _, it ->
                 consumer.process(it)
             }

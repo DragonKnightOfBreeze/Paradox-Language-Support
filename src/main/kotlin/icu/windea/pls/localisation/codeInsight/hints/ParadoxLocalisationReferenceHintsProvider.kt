@@ -23,15 +23,15 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvid
         var textLengthLimit: Int = 30,
         var iconHeightLimit: Int = 32
     )
-    
+
     private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationReferenceHintsSettingsKey")
-    
+
     override val name: String get() = PlsBundle.message("localisation.hints.localisationReference")
     override val description: String get() = PlsBundle.message("localisation.hints.localisationReference.description")
     override val key: SettingsKey<Settings> get() = settingsKey
-    
+
     override fun createSettings() = Settings()
-    
+
     override fun createConfigurable(settings: Settings): ImmediateConfigurable {
         return object : ImmediateConfigurable {
             override fun createComponent(listener: ChangeListener): JComponent = panel {
@@ -40,21 +40,21 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvid
             }
         }
     }
-    
+
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-        if(element !is ParadoxLocalisationPropertyReference) return true
-        if(isIgnored(element)) return true
+        if (element !is ParadoxLocalisationPropertyReference) return true
+        if (isIgnored(element)) return true
         val presentation = doCollect(element, editor, settings)
         val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
         val endOffset = element.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
         return true
     }
-    
+
     private fun isIgnored(element: ParadoxLocalisationPropertyReference): Boolean {
         return element.firstChild.siblings().any { it is ParadoxLocalisationCommand || it is ParadoxLocalisationScriptedVariableReference }
     }
-    
+
     private fun PresentationFactory.doCollect(element: ParadoxLocalisationPropertyReference, editor: Editor, settings: Settings): InlayPresentation? {
         return ParadoxLocalisationTextInlayRenderer.render(element, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
     }

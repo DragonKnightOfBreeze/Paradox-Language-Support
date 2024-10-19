@@ -10,29 +10,29 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptBlockSurrounder: Surrounder {
-	override fun getTemplateDescription(): String {
-		return PlsBundle.message("script.surroundWith.block.description")
-	}
-	
-	override fun isApplicable(elements: Array<out PsiElement>): Boolean {
-		return true
-	}
-	
-	override fun surroundElements(project: Project, editor: Editor, elements: Array<out PsiElement>): TextRange? {
-		if(elements.isEmpty()) return null
-		val firstElement = elements.first()
-		val lastElement = elements.last()
-		val replacedRange = TextRange.create(firstElement.startOffset, lastElement.endOffset)
-		val replacedText = replacedRange.substring(firstElement.containingFile.text)
-		if(firstElement != lastElement) {
-			firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
-		}
-		var newElement = ParadoxScriptElementFactory.createValue(project, "{\n${replacedText}\n}") as ParadoxScriptBlock
-		newElement = firstElement.replace(newElement) as ParadoxScriptBlock
-		newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as ParadoxScriptBlock
-		val endOffset = newElement.endOffset
-		return TextRange.create(endOffset, endOffset)
-	}
+class ParadoxScriptBlockSurrounder : Surrounder {
+    override fun getTemplateDescription(): String {
+        return PlsBundle.message("script.surroundWith.block.description")
+    }
+
+    override fun isApplicable(elements: Array<out PsiElement>): Boolean {
+        return true
+    }
+
+    override fun surroundElements(project: Project, editor: Editor, elements: Array<out PsiElement>): TextRange? {
+        if (elements.isEmpty()) return null
+        val firstElement = elements.first()
+        val lastElement = elements.last()
+        val replacedRange = TextRange.create(firstElement.startOffset, lastElement.endOffset)
+        val replacedText = replacedRange.substring(firstElement.containingFile.text)
+        if (firstElement != lastElement) {
+            firstElement.parent.deleteChildRange(firstElement.nextSibling, lastElement)
+        }
+        var newElement = ParadoxScriptElementFactory.createValue(project, "{\n${replacedText}\n}") as ParadoxScriptBlock
+        newElement = firstElement.replace(newElement) as ParadoxScriptBlock
+        newElement = CodeStyleManager.getInstance(project).reformat(newElement, true) as ParadoxScriptBlock
+        val endOffset = newElement.endOffset
+        return TextRange.create(endOffset, endOffset)
+    }
 }
 

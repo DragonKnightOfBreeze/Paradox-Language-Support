@@ -9,29 +9,29 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptParserDefinition : ParserDefinition {
     override fun getWhitespaceTokens() = ParadoxScriptTokenSets.WHITE_SPACES
-    
+
     override fun getCommentTokens() = ParadoxScriptTokenSets.COMMENTS
-    
+
     override fun getStringLiteralElements() = ParadoxScriptTokenSets.STRING_LITERALS
-    
+
     override fun getFileNodeType() = ParadoxScriptFile.ELEMENT_TYPE
-    
+
     override fun createFile(viewProvider: FileViewProvider): ParadoxScriptFile {
         return ParadoxScriptFile(viewProvider)
     }
-    
+
     override fun createElement(node: ASTNode): PsiElement {
         return Factory.createElement(node)
     }
-    
+
     override fun createParser(project: Project?): ParadoxScriptParser {
         return ParadoxScriptParser()
     }
-    
+
     override fun createLexer(project: Project?): ParadoxScriptLexer {
         return ParadoxScriptLexer()
     }
-    
+
     override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): SpaceRequirements {
         val leftType = left?.elementType
         val rightType = right?.elementType

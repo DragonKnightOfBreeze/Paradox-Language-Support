@@ -15,10 +15,10 @@ class ParadoxSyncedLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationP
     override fun processQuery(queryParameters: ParadoxSyncedLocalisationSearch.SearchParameters, consumer: Processor<in ParadoxLocalisationProperty>) {
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
-        if(SearchScope.isEmptyScope(scope)) return
+        if (SearchScope.isEmptyScope(scope)) return
         val project = queryParameters.project
-        
-        if(queryParameters.name == null) {
+
+        if (queryParameters.name == null) {
             ParadoxSyncedLocalisationNameIndex.KEY.processAllElementsByKeys(project, scope) p@{ _, it ->
                 consumer.process(it)
             }

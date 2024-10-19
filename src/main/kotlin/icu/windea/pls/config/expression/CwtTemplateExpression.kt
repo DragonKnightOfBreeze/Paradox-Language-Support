@@ -12,10 +12,10 @@ interface CwtTemplateExpression : CwtExpression {
     val snippetExpressions: List<CwtDataExpression>
     //allowed: enum[xxx], value[xxx], <xxx>, <modifier>
     val referenceExpressions: Set<CwtDataExpression>
-    
+
     companion object Resolver {
         val EmptyExpression: CwtTemplateExpression = doResolveEmpty()
-        
+
         fun resolve(expressionString: String): CwtTemplateExpression = cache.get(expressionString)
     }
 }
@@ -35,38 +35,38 @@ private fun doResolve(expressionString: String): CwtTemplateExpression {
             var startIndex = 0
             var i1: Int
             var i2: Int
-            while(true) {
+            while (true) {
                 i1 = expressionString.indexOf('[', startIndex)
-                if(i1 != -1) {
+                if (i1 != -1) {
                     //预先排除 - 应当直接使用enum[xxx]
-                    if(expressionString.contains("complex_enum[")) return doResolveEmpty()
-                    
+                    if (expressionString.contains("complex_enum[")) return doResolveEmpty()
+
                     i1 = expressionString.indexOf("enum[", startIndex)
-                    if(i1 != -1) {
+                    if (i1 != -1) {
                         i2 = expressionString.indexOf(']', i1 + 5)
-                        if(i2 == -1) return doResolveEmpty() //error
+                        if (i2 == -1) return doResolveEmpty() //error
                         val nextIndex = i2 + 1
-                        if(i1 == 0 && nextIndex == expressionString.length) return doResolveEmpty()
-                        if(startIndex != i1) {
-                            if(snippets == null) snippets = mutableListOf()
+                        if (i1 == 0 && nextIndex == expressionString.length) return doResolveEmpty()
+                        if (startIndex != i1) {
+                            if (snippets == null) snippets = mutableListOf()
                             snippets.add(CwtDataExpression.resolve(expressionString.substring(startIndex, i1), false))
                         }
-                        if(snippets == null) snippets = mutableListOf()
+                        if (snippets == null) snippets = mutableListOf()
                         snippets.add(CwtDataExpression.resolve(expressionString.substring(i1, nextIndex), false))
                         startIndex = nextIndex
                         continue
                     }
                     i1 = expressionString.indexOf("value[", startIndex)
-                    if(i1 != -1) {
+                    if (i1 != -1) {
                         i2 = expressionString.indexOf(']', i1 + 6)
-                        if(i2 == -1) return doResolveEmpty() //error
+                        if (i2 == -1) return doResolveEmpty() //error
                         val nextIndex = i2 + 1
-                        if(i1 == 0 && nextIndex == expressionString.length) return doResolveEmpty()
-                        if(startIndex != i1) {
-                            if(snippets == null) snippets = mutableListOf()
+                        if (i1 == 0 && nextIndex == expressionString.length) return doResolveEmpty()
+                        if (startIndex != i1) {
+                            if (snippets == null) snippets = mutableListOf()
                             snippets.add(CwtDataExpression.resolve(expressionString.substring(startIndex, i1), false))
                         }
-                        if(snippets == null) snippets = mutableListOf()
+                        if (snippets == null) snippets = mutableListOf()
                         snippets.add(CwtDataExpression.resolve(expressionString.substring(i1, nextIndex), false))
                         startIndex = nextIndex
                         continue
@@ -74,25 +74,25 @@ private fun doResolve(expressionString: String): CwtTemplateExpression {
                     return doResolveEmpty()
                 }
                 i1 = expressionString.indexOf('<', startIndex)
-                if(i1 != -1) {
+                if (i1 != -1) {
                     i2 = expressionString.indexOf('>', i1 + 1)
-                    if(i2 == -1) return doResolveEmpty() //error
+                    if (i2 == -1) return doResolveEmpty() //error
                     val nextIndex = i2 + 1
-                    if(i1 == 0 && nextIndex == expressionString.length) return doResolveEmpty()
-                    if(startIndex != i1) {
-                        if(snippets == null) snippets = mutableListOf()
+                    if (i1 == 0 && nextIndex == expressionString.length) return doResolveEmpty()
+                    if (startIndex != i1) {
+                        if (snippets == null) snippets = mutableListOf()
                         snippets.add(CwtDataExpression.resolve(expressionString.substring(startIndex, i1), false))
                     }
-                    if(snippets == null) snippets = mutableListOf()
+                    if (snippets == null) snippets = mutableListOf()
                     snippets.add(CwtDataExpression.resolve(expressionString.substring(i1, nextIndex), false))
                     startIndex = nextIndex
                     continue
                 }
-                if(startIndex == 0) return doResolveEmpty()
+                if (startIndex == 0) return doResolveEmpty()
                 break
             }
-            if(snippets == null) return doResolveEmpty()
-            if(startIndex != expressionString.length) {
+            if (snippets == null) return doResolveEmpty()
+            if (startIndex != expressionString.length) {
                 snippets.add(CwtDataExpression.resolve(expressionString.substring(startIndex), false))
             }
             CwtTemplateExpressionImpl(expressionString, snippets)
@@ -105,7 +105,7 @@ private class CwtTemplateExpressionImpl(
     override val snippetExpressions: List<CwtDataExpression>
 ) : CwtTemplateExpression {
     override val referenceExpressions: Set<CwtDataExpression> = snippetExpressions.filterTo(mutableSetOf()) { it.type != CwtDataTypes.Constant }
-    
+
     override fun equals(other: Any?) = this === other || other is CwtTemplateExpression && expressionString == other.expressionString
     override fun hashCode() = expressionString.hashCode()
     override fun toString() = expressionString

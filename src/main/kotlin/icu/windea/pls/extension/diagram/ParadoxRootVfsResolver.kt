@@ -9,20 +9,20 @@ import icu.windea.pls.lang.*
 
 class ParadoxRootVfsResolver : DiagramVfsResolver<PsiElement> {
     //based on rootFile
-    
+
     override fun getQualifiedName(element: PsiElement?): String? {
-        if(element == null) return null
+        if (element == null) return null
         val rootInfo = element.fileInfo?.rootInfo ?: return null
         val rootPath = rootInfo.rootFile.path
         return rootPath
     }
-    
+
     override fun resolveElementByFQN(s: String, project: Project): PsiDirectory? {
         val rootPath = s
         return try {
             rootPath.toVirtualFile()?.toPsiDirectory(project)
-        } catch(e: Exception) {
-            if(e is ProcessCanceledException) throw e
+        } catch (e: Exception) {
+            if (e is ProcessCanceledException) throw e
             null
         }
     }

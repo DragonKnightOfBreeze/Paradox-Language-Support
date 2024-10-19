@@ -13,7 +13,7 @@ class ParadoxEscapeManagerTest {
         ParadoxEscapeManager.parseScriptExpressionCharacters(s, out, sourceOffsets)
         println(out)
         println(sourceOffsets.contentToString())
-        
+
         val out1 = StringBuilder()
         val sourceOffsets1 = IntArray(s.length + 1)
         CodeInsightUtilCore.parseStringCharacters(s, out1, sourceOffsets1)

@@ -42,40 +42,40 @@ import javax.swing.*
  */
 class CompareLocalisationsAction : ParadoxShowDiffAction() {
     private fun findFile(e: AnActionEvent): VirtualFile? {
-        val file =  e.getData(CommonDataKeys.VIRTUAL_FILE)
+        val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
             ?: return null
-        if(file.isDirectory) return null
-        if(file.fileType != ParadoxLocalisationFileType) return null
+        if (file.isDirectory) return null
+        if (file.fileType != ParadoxLocalisationFileType) return null
         val fileInfo = file.fileInfo ?: return null
-        if(fileInfo.path.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
+        if (fileInfo.path.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
         //val gameType = fileInfo.rootInfo.gameType
         //val path = fileInfo.path.path
         return file
     }
-    
+
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
         return ParadoxPsiManager.findLocalisation(file, offset)
     }
-    
+
     private fun findElement(e: AnActionEvent): ParadoxLocalisationProperty? {
         val element = e.getData(CommonDataKeys.PSI_ELEMENT)
-        if(element is ParadoxLocalisationProperty && element.localisationInfo != null) return element
+        if (element is ParadoxLocalisationProperty && element.localisationInfo != null) return element
         return null
     }
-    
+
     override fun update(e: AnActionEvent) {
         //基于插件设置判断是否需要显示在编辑器悬浮工具栏中
-        if(e.place == ActionPlaces.CONTEXT_TOOLBAR && !getSettings().others.showEditorContextToolbar) {
+        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !getSettings().others.showEditorContextToolbar) {
             e.presentation.isEnabledAndVisible = false
             return
         }
-        
+
         //出于性能原因，目前不在update方法中判断是否不存在重载/被重载的情况
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
         var localisation = findElement(e)
-        if(localisation == null) {
+        if (localisation == null) {
             val project = e.project ?: return
             val file = findFile(e) ?: return
             presentation.isVisible = true
@@ -86,10 +86,10 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         }
         presentation.isEnabledAndVisible = localisation != null
     }
-    
+
     override fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain? {
         var localisation = findElement(e)
-        if(localisation == null) {
+        if (localisation == null) {
             val project = e.project ?: return null
             val file = findFile(e) ?: return null
             val editor = e.editor ?: return null
@@ -97,7 +97,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             val psiFile = file.toPsiFile(project) ?: return null
             localisation = findElement(psiFile, offset)
         }
-        if(localisation == null) return null
+        if (localisation == null) return null
         val psiFile = localisation.containingFile
         val file = psiFile.virtualFile
         val project = psiFile.project
@@ -110,7 +110,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
                 localisations.addAll(result)
             }
         }, PlsBundle.message("diff.compare.localisations.collect.title"), true, project)
-        if(localisations.size <= 1) {
+        if (localisations.size <= 1) {
             //unexpected, should not be empty here
             NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
                 PlsBundle.message("diff.compare.localisations.content.title.info.1"),
@@ -118,15 +118,15 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             ).notify(project)
             return null
         }
-        
+
         val editor = e.editor
         val contentFactory = DiffContentFactory.getInstance()
-        
+
         val windowTitle = getWindowsTitle(localisation) ?: return null
         val contentTitle = getContentTitle(localisation) ?: return null
         val documentContent = contentFactory.createDocument(project, file) ?: return null
         val content = createContent(contentFactory, project, documentContent, localisation)
-        
+
         var index = 0
         var currentIndex = 0
         val producers = runReadAction {
@@ -154,13 +154,13 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
                         createContent(contentFactory, project, otherDocumentContent, otherLocalisation)
                     }
                 }
-                if(isCurrent) currentIndex = index
-                if(readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
+                if (isCurrent) currentIndex = index
+                if (readonly) otherContent.putUserData(DiffUserDataKeys.FORCE_READ_ONLY, true)
                 index++
                 val icon = otherLocalisation.icon
                 val request = SimpleDiffRequest(windowTitle, content, otherContent, contentTitle, otherContentTitle)
                 //窗口定位到当前光标位置
-                if(editor != null) {
+                if (editor != null) {
                     val currentLine = editor.caretModel.logicalPosition.line
                     request.putUserData(DiffUserDataKeys.SCROLL_TO_LINE, Pair.create(Side.LEFT, currentLine))
                 }
@@ -170,12 +170,12 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val defaultIndex = getDefaultIndex(producers, currentIndex)
         return MyDiffRequestChain(producers, defaultIndex)
     }
-    
+
     private fun createContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, localisation: ParadoxLocalisationProperty): DocumentContent {
         return createTempContent(contentFactory, project, documentContent, localisation)
             ?: createFragment(contentFactory, project, documentContent, localisation)
     }
-    
+
     @Suppress("UNUSED_PARAMETER")
     private fun createTempContent(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, localisation: ParadoxLocalisationProperty): DocumentContent? {
         //创建临时文件
@@ -188,18 +188,18 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         //return contentFactory.createDocument(project, tempFile)
         return FileDocumentFragmentContent(project, documentContent, localisation.textRange, tempFile)
     }
-    
+
     private fun createFragment(contentFactory: DiffContentFactory, project: Project, documentContent: DocumentContent, localisation: ParadoxLocalisationProperty): DocumentContent {
         return contentFactory.createFragment(project, documentContent, localisation.textRange)
     }
-    
+
     private fun getWindowsTitle(localisation: ParadoxLocalisationProperty): String? {
         val name = localisation.name
         val file = localisation.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
         return PlsBundle.message("diff.compare.localisations.dialog.title", name, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
     }
-    
+
     private fun getContentTitle(localisation: ParadoxLocalisationProperty, original: Boolean = false): String? {
         val name = localisation.name
         val file = localisation.containingFile ?: return null
@@ -209,20 +209,20 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             else -> PlsBundle.message("diff.compare.localisations.content.title", name, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
         }
     }
-    
+
     class MyDiffRequestChain(
         producers: List<DiffRequestProducer>,
         defaultIndex: Int = 0
     ) : UserDataHolderBase(), DiffRequestSelectionChain, GoToChangePopupBuilder.Chain {
         private val listSelection = ListSelection.createAt(producers, defaultIndex)
-        
+
         override fun getListSelection() = listSelection
-        
+
         override fun createGoToChangeAction(onSelected: Consumer<in Int>, defaultSelection: Int): AnAction {
             return MyGotoChangePopupAction(this, onSelected, defaultSelection)
         }
     }
-    
+
     class MyRequestProducer(
         request: DiffRequest,
         val otherLocalisationName: String,
@@ -236,7 +236,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
         }
     }
-    
+
     class MyGotoChangePopupAction(
         val chain: MyDiffRequestChain,
         val onSelected: Consumer<in Int>,
@@ -245,11 +245,11 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         override fun canNavigate(): Boolean {
             return chain.requests.size > 1
         }
-        
+
         override fun createPopup(e: AnActionEvent): JBPopup {
             return JBPopupFactory.getInstance().createListPopup(Popup())
         }
-        
+
         private inner class Popup : BaseListPopupStep<DiffRequestProducer>(
             PlsBundle.message("diff.compare.localisations.popup.title"),
             chain.requests
@@ -257,17 +257,17 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             init {
                 defaultOptionIndex = defaultSelection
             }
-            
+
             override fun getIconFor(value: DiffRequestProducer) = (value as MyRequestProducer).icon
-            
+
             override fun getTextFor(value: DiffRequestProducer) = value.name
-            
+
             //com.intellij.find.actions.ShowUsagesTableCellRenderer.getTableCellRendererComponent L205
             override fun getBackgroundFor(value: DiffRequestProducer) =
-                if((value as MyRequestProducer).isCurrent) Color(0x808080) else null
-            
+                if ((value as MyRequestProducer).isCurrent) Color(0x808080) else null
+
             override fun isSpeedSearchEnabled() = true
-            
+
             override fun onChosen(selectedValue: DiffRequestProducer, finalChoice: Boolean) = doFinalStep {
                 val selectedIndex = chain.requests.indexOf(selectedValue)
                 onSelected.consume(selectedIndex)

@@ -11,5 +11,6 @@ data class ParadoxComplexEnumValueInfo(
     override val elementOffset: Int,
     override val gameType: ParadoxGameType
 ) : ParadoxExpressionInfo {
-    @Volatile override var virtualFile: VirtualFile? = null
+    @Volatile
+    override var virtualFile: VirtualFile? = null
 }

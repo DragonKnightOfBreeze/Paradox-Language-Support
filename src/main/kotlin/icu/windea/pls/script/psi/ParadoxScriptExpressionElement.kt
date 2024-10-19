@@ -7,8 +7,8 @@ import icu.windea.pls.model.*
  * @see ParadoxScriptPropertyKey
  * @see ParadoxScriptValue
  */
-interface ParadoxScriptExpressionElement: ParadoxExpressionElement {
-	override fun setValue(value: String): ParadoxScriptExpressionElement
-	
-	override val type: ParadoxType
+interface ParadoxScriptExpressionElement : ParadoxExpressionElement {
+    override fun setValue(value: String): ParadoxScriptExpressionElement
+
+    override val type: ParadoxType
 }

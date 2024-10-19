@@ -5,7 +5,7 @@ import icu.windea.pls.config.configGroup.*
 /**
  * 用于初始规则分组中预先定义的那些数据。
  */
-class PredefinedCwtConfigGroupDataProvider: CwtConfigGroupDataProvider {
+class PredefinedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {
         run {
             with(configGroup.aliasNamesSupportScope) {
@@ -34,7 +34,7 @@ class PredefinedCwtConfigGroupDataProvider: CwtConfigGroupDataProvider {
                 //this += "inline_script" //内联脚本也支持参数（但它不是定义）
             }
         }
-        
+
         return true
     }
 }

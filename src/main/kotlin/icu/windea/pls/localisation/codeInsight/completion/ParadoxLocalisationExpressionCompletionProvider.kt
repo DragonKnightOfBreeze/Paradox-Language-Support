@@ -13,15 +13,15 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxLocalisationExpressionCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position.parentOfType<ParadoxLocalisationExpressionElement>() ?: return
-        if(!element.isComplexExpression()) return
+        if (!element.isComplexExpression()) return
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
-        
+
         ParadoxCompletionManager.initializeContext(parameters, context)
         context.contextElement = element
         context.offsetInParent = offsetInParent
         context.keyword = keyword
-        
+
         ParadoxCompletionManager.completeLocalisationExpression(context, result)
     }
 }

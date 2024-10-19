@@ -12,10 +12,10 @@ private val SUPPRESS_IN_LINE_COMMENT_PATTERN = Pattern.compile("#" + Suppression
 
 fun isSuppressedInComment(element: PsiElement, toolId: String): Boolean {
     val comments = getCommentsForSuppression(element)
-    for(comment in comments) {
+    for (comment in comments) {
         val matcher = SUPPRESS_IN_LINE_COMMENT_PATTERN.matcher(comment.text)
-        if(matcher.matches()) {
-            if(SuppressionUtil.isInspectionToolIdMentioned(matcher.group(1), toolId)) {
+        if (matcher.matches()) {
+            if (SuppressionUtil.isInspectionToolIdMentioned(matcher.group(1), toolId)) {
                 return true
             }
         }
@@ -24,7 +24,7 @@ fun isSuppressedInComment(element: PsiElement, toolId: String): Boolean {
 }
 
 fun getCommentsForSuppression(element: PsiElement): Sequence<PsiElement> {
-    return if(element is PsiFile) {
+    return if (element is PsiFile) {
         val context = element.firstChild ?: return emptySequence()
         context.siblings(forward = true, withSelf = true)
             .takeWhile { it is PsiWhiteSpace || it is PsiComment }
@@ -37,25 +37,25 @@ fun getCommentsForSuppression(element: PsiElement): Sequence<PsiElement> {
     }
 }
 
-fun isSuppressedForDefinition(element: PsiElement, toolId: String) : Boolean {
-    if(element !is ParadoxScriptDefinitionElement) return false
+fun isSuppressedForDefinition(element: PsiElement, toolId: String): Boolean {
+    if (element !is ParadoxScriptDefinitionElement) return false
     val definitionInfo = element.definitionInfo ?: return false
     //1.1.2 TODO 考虑提取成扩展点
     //1.1.2 禁用继承自其他事件的事件的某些检查
-    if(definitionInfo.type == "event" && definitionInfo.subtypes.contains("inherited")) {
-        if(toolId == "ParadoxScriptMissingExpression") return true
-        if(toolId == "ParadoxScriptMissingLocalisation") return true
-        if(toolId == "ParadoxScriptMissingImage") return true
+    if (definitionInfo.type == "event" && definitionInfo.subtypes.contains("inherited")) {
+        if (toolId == "ParadoxScriptMissingExpression") return true
+        if (toolId == "ParadoxScriptMissingLocalisation") return true
+        if (toolId == "ParadoxScriptMissingImage") return true
     }
-    if(definitionInfo.gameType == ParadoxGameType.Stellaris) {
+    if (definitionInfo.gameType == ParadoxGameType.Stellaris) {
         //1.1.2 传统的采纳和完成不需要有对应的图片
-        if((definitionInfo.type == "tradition" || definitionInfo.typeConfig.baseType == "tradition") && definitionInfo.name.let { it.endsWith("_adopt") || it.endsWith("_finish") }) {
-            if(toolId == "ParadoxScriptMissingImage") return true
+        if ((definitionInfo.type == "tradition" || definitionInfo.typeConfig.baseType == "tradition") && definitionInfo.name.let { it.endsWith("_adopt") || it.endsWith("_finish") }) {
+            if (toolId == "ParadoxScriptMissingImage") return true
         }
         //1.1.2 禁用名字以数字结尾的领袖特质的某些检查
-        if(definitionInfo.type == "trait" && definitionInfo.subtypes.contains("leader_trait") && definitionInfo.name.substringAfterLast('_', "").toIntOrNull() != null) {
-            if(toolId == "ParadoxScriptMissingLocalisation") return true
-            if(toolId == "ParadoxScriptMissingImage") return true
+        if (definitionInfo.type == "trait" && definitionInfo.subtypes.contains("leader_trait") && definitionInfo.name.substringAfterLast('_', "").toIntOrNull() != null) {
+            if (toolId == "ParadoxScriptMissingLocalisation") return true
+            if (toolId == "ParadoxScriptMissingImage") return true
         }
     }
     return false

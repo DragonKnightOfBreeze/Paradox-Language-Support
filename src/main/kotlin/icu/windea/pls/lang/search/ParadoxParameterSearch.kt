@@ -6,38 +6,40 @@ import com.intellij.util.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.expressionInfo.*
 
-class ParadoxParameterSearch: ExtensibleQueryFactory<ParadoxParameterInfo, ParadoxParameterSearch.SearchParameters>(EP_NAME) {
-	class SearchParameters(
-		val name: String?,
-		val contextKey: String,
-		override val selector: ChainedParadoxSelector<ParadoxParameterInfo>
-	) : ParadoxSearchParameters<ParadoxParameterInfo>
-	
-	companion object {
-		@JvmField val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxParameterInfo, SearchParameters>>("icu.windea.pls.search.parameterSearch")
-		@JvmField val INSTANCE = ParadoxParameterSearch()
-		
-		/**
-		 * @see icu.windea.pls.lang.search.ParadoxParameterSearch.SearchParameters
-		 */
-		@JvmStatic
-		fun search(
-			name: String,
-			contextKey: String,
-			selector: ChainedParadoxSelector<ParadoxParameterInfo>
-		): ParadoxQuery<ParadoxParameterInfo, SearchParameters> {
-			return INSTANCE.createParadoxQuery(SearchParameters(name, contextKey, selector))
-		}
-		
-		/**
-		 * @see icu.windea.pls.lang.search.ParadoxParameterSearch.SearchParameters
-		 */
-		@JvmStatic
-		fun search(
-			contextKey: String,
-			selector: ChainedParadoxSelector<ParadoxParameterInfo>
-		): ParadoxQuery<ParadoxParameterInfo, SearchParameters> {
-			return INSTANCE.createParadoxQuery(SearchParameters(null, contextKey, selector))
-		}
-	}
+class ParadoxParameterSearch : ExtensibleQueryFactory<ParadoxParameterInfo, ParadoxParameterSearch.SearchParameters>(EP_NAME) {
+    class SearchParameters(
+        val name: String?,
+        val contextKey: String,
+        override val selector: ChainedParadoxSelector<ParadoxParameterInfo>
+    ) : ParadoxSearchParameters<ParadoxParameterInfo>
+
+    companion object {
+        @JvmField
+        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxParameterInfo, SearchParameters>>("icu.windea.pls.search.parameterSearch")
+        @JvmField
+        val INSTANCE = ParadoxParameterSearch()
+
+        /**
+         * @see icu.windea.pls.lang.search.ParadoxParameterSearch.SearchParameters
+         */
+        @JvmStatic
+        fun search(
+            name: String,
+            contextKey: String,
+            selector: ChainedParadoxSelector<ParadoxParameterInfo>
+        ): ParadoxQuery<ParadoxParameterInfo, SearchParameters> {
+            return INSTANCE.createParadoxQuery(SearchParameters(name, contextKey, selector))
+        }
+
+        /**
+         * @see icu.windea.pls.lang.search.ParadoxParameterSearch.SearchParameters
+         */
+        @JvmStatic
+        fun search(
+            contextKey: String,
+            selector: ChainedParadoxSelector<ParadoxParameterInfo>
+        ): ParadoxQuery<ParadoxParameterInfo, SearchParameters> {
+            return INSTANCE.createParadoxQuery(SearchParameters(null, contextKey, selector))
+        }
+    }
 }

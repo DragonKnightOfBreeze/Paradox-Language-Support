@@ -13,14 +13,14 @@ import icu.windea.pls.script.psi.*
 @WithGameTypeEP
 interface ParadoxDefinitionExtendedDocumentationProvider {
     fun getDocumentationContent(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String?
-    
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxDefinitionExtendedDocumentationProvider>("icu.windea.pls.definitionExtendedDocumentationProvider")
-        
+
         fun buildDocumentationContent(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, action: (String) -> Unit) {
             val gameType = definitionInfo.gameType
             EP_NAME.extensionList.forEach f@{ ep ->
-                if(!gameType.supportsByAnnotation(ep)) return@f
+                if (!gameType.supportsByAnnotation(ep)) return@f
                 val content = ep.getDocumentationContent(definition, definitionInfo)?.orNull() ?: return@f
                 action(content)
             }

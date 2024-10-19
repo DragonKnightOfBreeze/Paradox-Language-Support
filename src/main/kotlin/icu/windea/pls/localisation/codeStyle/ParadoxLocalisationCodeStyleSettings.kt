@@ -4,5 +4,5 @@ import com.intellij.psi.codeStyle.*
 import icu.windea.pls.localisation.*
 
 class ParadoxLocalisationCodeStyleSettings(
-	container: CodeStyleSettings
+    container: CodeStyleSettings
 ) : CustomCodeStyleSettings(ParadoxLocalisationLanguage.id, container)

@@ -25,38 +25,38 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
     val type: Type
 ) : HierarchyNodeDescriptor(project, parentDescriptor, element, isBase) {
     enum class Type {
-        Type, Subtype,NoSubtype, Definition
+        Type, Subtype, NoSubtype, Definition
     }
-    
+
     companion object {
         @JvmStatic
         fun getLocationAttributes(): TextAttributes? {
             return UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
         }
     }
-    
+
     override fun update(): Boolean {
         var changes = super.update()
         val element = psiElement
-        if(element == null) {
+        if (element == null) {
             return invalidElement()
         }
-        if(changes && myIsBase) {
+        if (changes && myIsBase) {
             icon = getBaseMarkerIcon(icon)
         }
         val oldText = myHighlightedText
         myHighlightedText = CompositeAppearance()
-        val nameAttributes = if(myColor != null) TextAttributes(myColor, null, null, null, Font.PLAIN) else null
-        when(element) {
+        val nameAttributes = if (myColor != null) TextAttributes(myColor, null, null, null, Font.PLAIN) else null
+        when (element) {
             is CwtProperty -> {
-                if(type == Type.NoSubtype) {
+                if (type == Type.NoSubtype) {
                     val name = PlsBundle.message("hierarchy.definition.descriptor.noSubtype")
                     myHighlightedText.ending.addText(name, getLocationAttributes())
                 } else {
                     val typeName = element.name.substringIn("[", "]")
                     myHighlightedText.ending.addText(typeName, nameAttributes)
                     val fileName = element.containingFile?.name
-                    if(fileName != null) {
+                    if (fileName != null) {
                         val location = " " + PlsBundle.message("hierarchy.definition.descriptor.type.location", fileName)
                         myHighlightedText.ending.addText(location, getLocationAttributes())
                     }
@@ -64,7 +64,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
             }
             is ParadoxScriptDefinitionElement -> {
                 val definitionInfo = element.definitionInfo ?: return invalidElement()
-                val fileInfo = element.fileInfo  ?: return invalidElement()
+                val fileInfo = element.fileInfo ?: return invalidElement()
                 val name = definitionInfo.name.orAnonymous()
                 myHighlightedText.ending.addText(name, nameAttributes)
                 val path = fileInfo.path.path
@@ -74,8 +74,8 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
             }
         }
         myName = myHighlightedText.text
-        
-        if(!Comparing.equal(myHighlightedText, oldText)) {
+
+        if (!Comparing.equal(myHighlightedText, oldText)) {
             changes = true
         }
         return changes

@@ -13,37 +13,37 @@ fun CwtConfigGroupFileProvider.isBuiltIn(): Boolean {
 }
 
 abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
-    override fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean {
-        val gameTypeId = configGroup.gameType.id
-        val rootDirectory = getRootDirectory(configGroup.project) ?: return true
-        if(gameTypeId != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, consumer) }
-        rootDirectory.findChild(gameTypeId)?.let { doProcessFiles(it, consumer) }
-        return true
-    }
-    
-    private fun doProcessFiles(rootDirectory: VirtualFile, consumer: (String, VirtualFile) -> Boolean) {
-        if(!rootDirectory.isDirectory) return
-        VfsUtil.visitChildrenRecursively(rootDirectory, object : VirtualFileVisitor<Void>() {
-            override fun visitFile(file: VirtualFile): Boolean {
-                if(file.extension?.lowercase() == "cwt") {
-                    val path = VfsUtil.getRelativePath(file, rootDirectory) ?: return true
-                    consumer(path, file)
-                }
-                return true
-            }
-        })
-    }
-    
     override fun getContainingConfigGroup(file: VirtualFile, project: Project): CwtConfigGroup? {
         val rootDirectory = getRootDirectory(project) ?: return null
         val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return null
         val gameTypeId = relativePath.substringBefore('/')
-        if(gameTypeId == "core") {
+        if (gameTypeId == "core") {
             return getConfigGroup(project, null)
         } else {
             val gameType = ParadoxGameType.resolve(gameTypeId) ?: return null
             return getConfigGroup(project, gameType)
         }
+    }
+
+    override fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean {
+        val gameTypeId = configGroup.gameType.id
+        val rootDirectory = getRootDirectory(configGroup.project) ?: return true
+        if (gameTypeId != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, consumer) }
+        rootDirectory.findChild(gameTypeId)?.let { doProcessFiles(it, consumer) }
+        return true
+    }
+
+    private fun doProcessFiles(configDirectory: VirtualFile, consumer: (String, VirtualFile) -> Boolean) {
+        if (!configDirectory.isDirectory) return
+        VfsUtil.visitChildrenRecursively(configDirectory, object : VirtualFileVisitor<Void>() {
+            override fun visitFile(file: VirtualFile): Boolean {
+                if (file.extension?.lowercase() == "cwt") {
+                    val filePath = VfsUtil.getRelativePath(file, configDirectory) ?: return true
+                    consumer(filePath, file)
+                }
+                return true
+            }
+        })
     }
 }
 
@@ -59,9 +59,9 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         val file = VfsUtil.findFileByURL(rootUrl)
         return file?.takeIf { it.isDirectory }
     }
-    
+
     override fun getHintMessage() = PlsBundle.message("configGroup.hint.1")
-    
+
     override fun getNotificationMessage() = PlsBundle.message("configGroup.notification.1")
 }
 
@@ -70,7 +70,7 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  *
  * 对应的路径：`{rootPath}/{gameType}`[^1]（可在插件的配置页面中配置`rootPath`对应的文件路径）
  */
-class LocalCwtConfigGroupFileProvider: CwtConfigGroupFileProviderBase() {
+class LocalCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override fun getRootDirectory(project: Project): VirtualFile? {
         val directory = getSettings().localConfigDirectory
         val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
@@ -78,9 +78,9 @@ class LocalCwtConfigGroupFileProvider: CwtConfigGroupFileProviderBase() {
         val file = VfsUtil.findFile(path, true)
         return file?.takeIf { it.isDirectory }
     }
-    
+
     override fun getHintMessage() = PlsBundle.message("configGroup.hint.2")
-    
+
     override fun getNotificationMessage() = PlsBundle.message("configGroup.notification.2")
 }
 
@@ -96,9 +96,9 @@ class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         val file = VfsUtil.findRelativeFile(projectRootDirectory, rootPath)
         return file?.takeIf { it.isDirectory }
     }
-    
+
     override fun getHintMessage() = PlsBundle.message("configGroup.hint.3")
-    
+
     override fun getNotificationMessage() = PlsBundle.message("configGroup.notification.3")
 }
 

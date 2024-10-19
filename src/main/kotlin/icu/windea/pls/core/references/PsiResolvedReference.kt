@@ -12,6 +12,6 @@ open class PsiResolvedReference<T : PsiElement>(
     override fun handleElementRename(newElementName: String): PsiElement {
         throw IncorrectOperationException()
     }
-    
+
     override fun resolve() = resolved
 }

@@ -11,6 +11,7 @@ import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.testFramework.*
+import com.intellij.util.*
 import com.intellij.util.text.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
@@ -18,7 +19,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.ep.data.*
-import icu.windea.pls.lang.io.*
+import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
@@ -29,23 +30,17 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.lang.Integer.*
 
-fun getDefaultProject() = ProjectManager.getInstance().defaultProject
-
-fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
-
 //from official documentation: Never acquire service instances prematurely or store them in fields for later use.
 
 fun getSettings() = service<ParadoxSettings>().state
 
 fun getProfilesSettings() = service<ParadoxProfilesSettings>().state
 
+fun getDataProvider() = service<ParadoxDataProvider>()
+
 fun getConfigGroup(gameType: ParadoxGameType?) = getDefaultProject().service<CwtConfigGroupService>().getConfigGroup(gameType)
 
 fun getConfigGroup(project: Project, gameType: ParadoxGameType?) = project.service<CwtConfigGroupService>().getConfigGroup(gameType)
-
-val PathProvider get() = service<ParadoxPathProvider>()
-
-val UrlProvider get() = service<ParadoxUrlProvider>()
 
 fun FileType.isParadoxFileType() = this == ParadoxScriptFileType || this == ParadoxLocalisationFileType
 
@@ -65,10 +60,10 @@ fun String.isParameterAwareIdentifier(vararg extraChars: Char): Boolean {
     val parameterRanges = ParadoxExpressionManager.getParameterRanges(this)
     val ranges = TextRangeUtil.excludeRanges(fullRange, parameterRanges)
     ranges.forEach f@{ range ->
-        for(i in range.startOffset until range.endOffset) {
-            if(i >= this.length) continue
+        for (i in range.startOffset until range.endOffset) {
+            if (i >= this.length) continue
             val c = this[i]
-            if(c.isIdentifierChar() || c in extraChars) continue
+            if (c.isIdentifierChar() || c in extraChars) continue
             return false
         }
     }
@@ -87,11 +82,11 @@ fun String.isInlineUsage(): Boolean {
     return this.equals(ParadoxInlineScriptManager.inlineScriptKey, true)
 }
 
-fun String?.orAnonymous() = if(isNullOrEmpty()) PlsConstants.anonymousString else this
+fun String?.orAnonymous() = if (isNullOrEmpty()) PlsConstants.anonymousString else this
 
-fun String?.orUnknown() = if(isNullOrEmpty()) PlsConstants.unknownString else this
+fun String?.orUnknown() = if (isNullOrEmpty()) PlsConstants.unknownString else this
 
-fun String?.orUnresolved() = if(isNullOrEmpty()) PlsConstants.unresolvedString else this
+fun String?.orUnresolved() = if (isNullOrEmpty()) PlsConstants.unresolvedString else this
 
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
     return when {
@@ -163,7 +158,7 @@ private fun String.toLocale(from: PsiElement): CwtLocalisationLocaleConfig? {
  * 基于注解[WithGameType]判断目标对象是否支持当前游戏类型。
  */
 fun ParadoxGameType?.supportsByAnnotation(target: Any): Boolean {
-    if(this == null) return true
+    if (this == null) return true
     val targetGameType = target.javaClass.getAnnotation(WithGameType::class.java)?.value
     return targetGameType == null || this in targetGameType
 }
@@ -175,10 +170,10 @@ infix fun String.compareGameVersion(otherVersion: String): Int {
     val versionSnippets = this.split('.')
     val otherVersionSnippets = otherVersion.split('.')
     val minSnippetSize = min(versionSnippets.size, otherVersionSnippets.size)
-    for(i in 0 until minSnippetSize) {
+    for (i in 0 until minSnippetSize) {
         val versionSnippet = versionSnippets[i]
         val otherVersionSnippet = otherVersionSnippets[i]
-        if(versionSnippet == otherVersionSnippet || versionSnippet == "*" || otherVersion == "*") continue
+        if (versionSnippet == otherVersionSnippet || versionSnippet == "*" || otherVersion == "*") continue
         return versionSnippet.compareTo(otherVersionSnippet)
     }
     return 0

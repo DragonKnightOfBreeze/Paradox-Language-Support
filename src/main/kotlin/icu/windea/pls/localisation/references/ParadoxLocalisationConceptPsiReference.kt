@@ -16,25 +16,25 @@ class ParadoxLocalisationConceptPsiReference(
     rangeInElement: TextRange
 ) : PsiReferenceBase<ParadoxLocalisationConcept>(element, rangeInElement) {
     val project by lazy { element.project }
-    
+
     override fun handleElementRename(newElementName: String): PsiElement {
         //cannot rename when use alias
-        if(resolve()?.name != element.name) throw IncorrectOperationException()
+        if (resolve()?.name != element.name) throw IncorrectOperationException()
         return element.setName(rangeInElement.replace(element.text, newElementName))
     }
-    
+
     //缓存解析结果以优化性能
-    
+
     private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationConceptPsiReference, ParadoxScriptDefinitionElement> {
         override fun resolve(ref: ParadoxLocalisationConceptPsiReference, incompleteCode: Boolean): ParadoxScriptDefinitionElement? {
             return ref.doResolve()
         }
     }
-    
+
     override fun resolve(): ParadoxScriptDefinitionElement? {
         return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
     }
-    
+
     private fun doResolve(): ParadoxScriptDefinitionElement? {
         val element = element
         val nameOrAlias = element.name

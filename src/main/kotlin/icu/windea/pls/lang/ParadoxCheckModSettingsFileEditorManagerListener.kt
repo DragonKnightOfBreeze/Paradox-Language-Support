@@ -21,29 +21,29 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
     object Keys : KeyRegistry() {
         val checkedModPaths by createKey<MutableSet<String>>(this)
     }
-    
+
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
         val project = source.project
         val fileInfo = file.fileInfo ?: return
         val rootInfo = fileInfo.rootInfo
         val rootFile = rootInfo.rootFile
-        if(rootInfo !is ParadoxModRootInfo) return
+        if (rootInfo !is ParadoxModRootInfo) return
         val modPaths = project.getOrPutUserData(Keys.checkedModPaths) { mutableSetOf() }
         val modPath = rootFile.path
-        if(!rootFile.isValid) {
+        if (!rootFile.isValid) {
             modPaths.remove(modPath)
             return
         }
         val isInProject = runReadAction { ProjectFileIndex.getInstance(project).isInContent(rootFile) }
-        if(!isInProject) {
+        if (!isInProject) {
             modPaths.remove(modPath)
             return
         }
-        if(modPaths.contains(modPath)) return
+        if (modPaths.contains(modPath)) return
         val modSettings = getProfilesSettings().modSettings.get(modPath) ?: return
-        if(modSettings.finalGameDirectory.isNullOrEmpty()) {
+        if (modSettings.finalGameDirectory.isNullOrEmpty()) {
             val qualifiedName = modSettings.qualifiedName ?: return
-            
+
             //打开模组的配置页面
             val action1 = NotificationAction.createSimple(PlsBundle.message("mod.settings.notification.1.action.1")) {
                 val dialog = ParadoxModSettingsDialog(project, modSettings)
@@ -57,10 +57,10 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
                 val defaultList = oldDefaultGameDirectories.toMutableEntryList()
                 var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                 val dialog = ParadoxGameDirectoriesDialog(list)
-                if(dialog.showAndGet()) {
+                if (dialog.showAndGet()) {
                     list = dialog.resultList
                     settings.defaultGameDirectories = list.toMutableMap()
-                    if(oldDefaultGameDirectories != settings.defaultGameDirectories) {
+                    if (oldDefaultGameDirectories != settings.defaultGameDirectories) {
                         val messageBus = ApplicationManager.getApplication().messageBus
                         messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC)
                             .onChange(oldDefaultGameDirectories, settings.defaultGameDirectories)

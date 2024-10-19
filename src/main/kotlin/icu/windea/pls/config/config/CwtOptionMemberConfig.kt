@@ -11,10 +11,10 @@ sealed interface CwtOptionMemberConfig<out T : PsiElement> : CwtDetachedConfig {
     val optionConfigs: List<CwtOptionMemberConfig<*>>?
 }
 
-val CwtOptionMemberConfig<*>.booleanValue: Boolean? get() = if(valueType == CwtType.Boolean) value.toBooleanYesNo() else null
-val CwtOptionMemberConfig<*>.intValue: Int? get() = if(valueType == CwtType.Int) value.toIntOrNull() ?: 0 else null
-val CwtOptionMemberConfig<*>.floatValue: Float? get() = if(valueType == CwtType.Float) value.toFloatOrNull() ?: 0f else null
-val CwtOptionMemberConfig<*>.stringValue: String? get() = if(valueType == CwtType.String) value else null
+val CwtOptionMemberConfig<*>.booleanValue: Boolean? get() = if (valueType == CwtType.Boolean) value.toBooleanYesNo() else null
+val CwtOptionMemberConfig<*>.intValue: Int? get() = if (valueType == CwtType.Int) value.toIntOrNull() ?: 0 else null
+val CwtOptionMemberConfig<*>.floatValue: Float? get() = if (valueType == CwtType.Float) value.toFloatOrNull() ?: 0f else null
+val CwtOptionMemberConfig<*>.stringValue: String? get() = if (valueType == CwtType.String) value else null
 
 val CwtOptionMemberConfig<*>.options: List<CwtOptionConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionConfig>()
 val CwtOptionMemberConfig<*>.optionValues: List<CwtOptionValueConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionValueConfig>()

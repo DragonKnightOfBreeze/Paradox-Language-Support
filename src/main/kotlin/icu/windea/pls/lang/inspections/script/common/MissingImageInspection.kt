@@ -16,37 +16,43 @@ import javax.swing.*
  * 缺失的图片的检查。
  */
 class MissingImageInspection : LocalInspectionTool() {
-    @JvmField var checkForDefinitions = true
-    @JvmField var checkPrimaryForDefinitions = false
-    @JvmField var checkOptionalForDefinitions = false
-    @JvmField var checkGeneratedModifierIconsForDefinitions = false
-    @JvmField var checkForModifiers = true
-    @JvmField var checkModifierIcons = true
-    
+    @JvmField
+    var checkForDefinitions = true
+    @JvmField
+    var checkPrimaryForDefinitions = false
+    @JvmField
+    var checkOptionalForDefinitions = false
+    @JvmField
+    var checkGeneratedModifierIconsForDefinitions = false
+    @JvmField
+    var checkForModifiers = true
+    @JvmField
+    var checkModifierIcons = true
+
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
-        
+        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                when(element) {
+                when (element) {
                     is ParadoxScriptDefinitionElement -> visitDefinition(element)
                     is ParadoxScriptStringExpressionElement -> visitStringExpressionElement(element)
                 }
             }
-            
+
             private fun visitDefinition(definition: ParadoxScriptDefinitionElement) {
                 val context = ParadoxImageCodeInsightContext.fromDefinition(definition, fromInspection = true)
-                if(context == null || context.infos.isEmpty()) return
+                if (context == null || context.infos.isEmpty()) return
                 registerProblems(context, definition, holder)
             }
-            
+
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 val context = ParadoxImageCodeInsightContext.fromExpression(element, fromInspection = true)
-                if(context == null || context.infos.isEmpty()) return
+                if (context == null || context.infos.isEmpty()) return
                 registerProblems(context, element, holder)
             }
-            
+
             private fun registerProblems(context: ParadoxImageCodeInsightContext, element: PsiElement, holder: ProblemsHolder) {
                 val location = when {
                     element is ParadoxScriptFile -> element
@@ -55,21 +61,21 @@ class MissingImageInspection : LocalInspectionTool() {
                     else -> return
                 }
                 val messages = getMessages(context)
-                if(messages.isEmpty()) return
-                for(message in messages) {
+                if (messages.isEmpty()) return
+                for (message in messages) {
                     //显示为WEAK_WARNING
                     holder.registerProblem(location, message, ProblemHighlightType.WEAK_WARNING)
                 }
             }
-            
+
             private fun getMessages(context: ParadoxImageCodeInsightContext): List<String> {
                 val includeMap = mutableMapOf<String, ParadoxImageCodeInsightInfo>()
                 val excludeKeys = mutableSetOf<String>()
-                for(codeInsightInfo in context.infos) {
-                    if(!codeInsightInfo.check) continue
+                for (codeInsightInfo in context.infos) {
+                    if (!codeInsightInfo.check) continue
                     val key = codeInsightInfo.key ?: continue
-                    if(excludeKeys.contains(key)) continue
-                    if(codeInsightInfo.missing) {
+                    if (excludeKeys.contains(key)) continue
+                    if (codeInsightInfo.missing) {
                         includeMap.putIfAbsent(key, codeInsightInfo)
                     } else {
                         includeMap.remove(key)
@@ -78,7 +84,7 @@ class MissingImageInspection : LocalInspectionTool() {
                 }
                 return includeMap.values.mapNotNull { getMessage(it) }
             }
-            
+
             private fun getMessage(codeInsightInfo: ParadoxImageCodeInsightInfo): String? {
                 val locationExpression = codeInsightInfo.relatedImageInfo?.locationExpression
                 val from = locationExpression?.propertyName?.let { PlsBundle.message("inspection.script.missingImage.from.3", it) }
@@ -89,12 +95,12 @@ class MissingImageInspection : LocalInspectionTool() {
             }
         }
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
-        if(selectRootFile(file) == null) return false
+        if (selectRootFile(file) == null) return false
         return true
     }
-    
+
     override fun createOptionsPanel(): JComponent {
         lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
         lateinit var checkForModifiersCb: Cell<JBCheckBox>
@@ -153,7 +159,7 @@ class MissingImageInspection : LocalInspectionTool() {
             }
         }
     }
-    
+
     data class Context(
         val info: ParadoxDefinitionInfo.RelatedImageInfo,
         val key: String?

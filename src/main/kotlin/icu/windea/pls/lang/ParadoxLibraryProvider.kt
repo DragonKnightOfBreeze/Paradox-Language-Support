@@ -11,7 +11,7 @@ class ParadoxLibraryProvider : AdditionalLibraryRootsProvider() {
     override fun getAdditionalProjectLibraries(project: Project): Collection<SyntheticLibrary> {
         return project.paradoxLibrary.takeIf { it.roots.isNotEmpty() }.toSingletonSetOrEmpty()
     }
-    
+
     override fun getRootsToWatch(project: Project): Collection<VirtualFile> {
         return project.paradoxLibrary.roots
     }

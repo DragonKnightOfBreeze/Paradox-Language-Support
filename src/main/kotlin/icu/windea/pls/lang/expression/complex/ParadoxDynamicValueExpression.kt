@@ -38,40 +38,40 @@ class ParadoxDynamicValueExpression private constructor(
         get() = nodes.get(0).cast()
     val scopeFieldExpression: ParadoxScopeFieldExpression?
         get() = nodes.getOrNull(2)?.cast()
-    
+
     override val errors by lazy { validate() }
-    
+
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
             return resolve(expressionString, range, configGroup, config.toSingletonList())
         }
-        
+
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
-            if(expressionString.isEmpty()) return null
-            
+            if (expressionString.isEmpty()) return null
+
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
-            
+
             val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
-            
+
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val offset = range.startOffset
             var index: Int
             var tokenIndex = -1
             val textLength = expressionString.length
-            while(tokenIndex < textLength) {
+            while (tokenIndex < textLength) {
                 index = tokenIndex + 1
                 tokenIndex = expressionString.indexOf('@', index)
-                if(tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
-                if(tokenIndex == -1) {
+                if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
+                if (tokenIndex == -1) {
                     tokenIndex = textLength
                 }
                 //resolve dynamicValueNode
                 val nodeText = expressionString.substring(0, tokenIndex)
                 val nodeTextRange = TextRange.create(offset, tokenIndex + offset)
                 val node = ParadoxDynamicValueNode.resolve(nodeText, nodeTextRange, configGroup, configs)
-                if(node == null) return null //unexpected
+                if (node == null) return null //unexpected
                 nodes.add(node)
-                if(tokenIndex != textLength) {
+                if (tokenIndex != textLength) {
                     //resolve at token
                     val atNode = ParadoxMarkerNode("@", TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset), configGroup)
                     nodes.add(atNode)
@@ -84,40 +84,40 @@ class ParadoxDynamicValueExpression private constructor(
                 break
             }
             //handle mismatch situation
-            if(!incomplete && nodes.isEmpty()) return null
+            if (!incomplete && nodes.isEmpty()) return null
             return ParadoxDynamicValueExpression(expressionString, range, nodes, configGroup, configs)
         }
-        
+
         private fun ParadoxDynamicValueExpression.validate(): List<ParadoxComplexExpressionError> {
             val errors = mutableListOf<ParadoxComplexExpressionError>()
             var malformed = false
-            for(node in nodes) {
-                when(node) {
+            for (node in nodes) {
+                when (node) {
                     is ParadoxDynamicValueNode -> {
-                        if(!malformed && !node.isValid()) {
+                        if (!malformed && !node.isValid()) {
                             malformed = true
                         }
                     }
                     is ParadoxScopeFieldExpression -> {
-                        if(node.text.isEmpty()) {
+                        if (node.text.isEmpty()) {
                             errors += ParadoxComplexExpressionErrors.missingScopeFieldExpression(rangeInExpression)
                         }
                         errors += node.errors
                     }
                 }
             }
-            if(malformed) {
+            if (malformed) {
                 errors += ParadoxComplexExpressionErrors.malformedDynamicValueExpression(rangeInExpression, text)
             }
             return errors.pinned { it.isMalformedError() }
         }
-        
+
         private fun ParadoxComplexExpressionNode.isValid(): Boolean {
-            return when(this) {
+            return when (this) {
                 is ParadoxDynamicValueNode -> text.isParameterAwareIdentifier('.') //兼容点号
                 else -> text.isParameterAwareIdentifier()
             }
         }
-        
+
     }
 }

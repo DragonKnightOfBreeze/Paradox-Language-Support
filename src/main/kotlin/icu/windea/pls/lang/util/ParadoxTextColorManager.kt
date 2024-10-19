@@ -21,39 +21,39 @@ object ParadoxTextColorManager {
             element is ParadoxLocalisationColorfulText -> element.name
             else -> null
         }
-        if(colorId.isNullOrEmpty()) return null
+        if (colorId.isNullOrEmpty()) return null
         return getInfo(colorId, element.project, element)
     }
-    
+
     fun getInfo(name: String, project: Project, contextElement: PsiElement? = null): ParadoxTextColorInfo? {
         val selector = definitionSelector(project, contextElement).contextSensitive()
         val definition = ParadoxDefinitionSearch.search(name, "textcolor", selector).find()
-        if(definition == null) return null
+        if (definition == null) return null
         return doGetInfoFromCache(definition)
     }
-    
+
     private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
         return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedTextColorInfo) {
             val value = doGetInfo(definition)
             CachedValueProvider.Result.create(value, definition)
         }
     }
-    
+
     private fun doGetInfo(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
-        if(definition !is ParadoxScriptProperty) return null
+        if (definition !is ParadoxScriptProperty) return null
         //要求输入的name必须是单个字母或数字
         val name = definition.name
-        if(name.singleOrNull()?.let { it.isExactLetter() || it.isExactDigit() } != true) return null
+        if (name.singleOrNull()?.let { it.isExactLetter() || it.isExactDigit() } != true) return null
         val gameType = selectGameType(definition) ?: return null
-        val rgbList = definition.valueList.mapNotNull { it.intValue() }
+        val rgbList = definition.block?.valueList?.mapNotNull { it.intValue() } ?: return null
         val value = ParadoxTextColorInfo(name, gameType, definition.createPointer(), rgbList[0], rgbList[1], rgbList[2])
         return value
     }
-    
+
     fun getInfos(project: Project, contextElement: PsiElement? = null): List<ParadoxTextColorInfo> {
         val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
         val definitions = ParadoxDefinitionSearch.search("textcolor", selector).findAll()
-        if(definitions.isEmpty()) return emptyList()
+        if (definitions.isEmpty()) return emptyList()
         return definitions.mapNotNull { definition -> doGetInfoFromCache(definition) } //it.name == it.definitionInfo.name
     }
 }

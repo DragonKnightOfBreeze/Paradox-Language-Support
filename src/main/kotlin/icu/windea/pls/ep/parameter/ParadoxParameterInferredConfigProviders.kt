@@ -22,14 +22,14 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
         return true
     }
-    
+
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val configGroup = getConfigGroup(parameterContextInfo.project, parameterContextInfo.gameType)
         val finalConfigs = getConfig(parameterInfo, configGroup)?.toSingletonList() ?: return null
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(null, finalConfigs, configGroup)
         return listOf(contextConfig)
     }
-    
+
     private fun getConfig(parameterInfo: ParadoxParameterContextInfo.Parameter, configGroup: CwtConfigGroup): CwtMemberConfig<*>? {
         val element = parameterInfo.element ?: return null
         val parentElement = parameterInfo.parentElement ?: return null
@@ -38,11 +38,11 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
                 return CwtValueConfig.resolve(emptyPointer(), configGroup, "scalar") //bool-like
             }
             element is ParadoxScriptParameter -> {
-                if(parentElement.text.isFullParameterized()) return null
+                if (parentElement.text.isFullParameterized()) return null
                 return CwtValueConfig.resolve(emptyPointer(), configGroup, "scalar")
             }
             element is ParadoxScriptInlineMathParameter -> {
-                if(parentElement.text.isFullParameterized()) return CwtValueConfig.resolve(emptyPointer(), configGroup, "float")
+                if (parentElement.text.isFullParameterized()) return CwtValueConfig.resolve(emptyPointer(), configGroup, "float")
                 return CwtValueConfig.resolve(emptyPointer(), configGroup, "scalar")
             }
             else -> return null
@@ -56,27 +56,32 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
 class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfigProvider {
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
         val parentElement = parameterInfo.parentElement
-        if(parentElement !is ParadoxScriptStringExpressionElement) return false
-        if(!parentElement.value.isFullParameterized()) return false
+        if (parentElement !is ParadoxScriptStringExpressionElement) return false
+        if (!parentElement.value.isFullParameterized()) return false
         return true
     }
-    
+
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val expressionContextConfigs = parameterInfo.expressionContextConfigs
-        if(expressionContextConfigs.isEmpty()) return null
+        if (expressionContextConfigs.isEmpty()) return null
         val contextConfigs = getContextConfigsFromExpressionContextConfigs(expressionContextConfigs, parameterInfo)
-        if(contextConfigs.isNullOrEmpty()) return null
+        if (contextConfigs.isNullOrEmpty()) return null
         return contextConfigs
     }
-    
+
     private fun getContextConfigsFromExpressionContextConfigs(expressionContextConfigs: List<CwtMemberConfig<*>>, parameterInfo: ParadoxParameterContextInfo.Parameter): List<CwtMemberConfig<*>>? {
-        val inlinedContextConfigs = expressionContextConfigs.map { CwtConfigManipulator.inlineSingleAlias(it) ?: it }
+        val inlinedContextConfigs = expressionContextConfigs.map { config ->
+            if (config is CwtPropertyConfig) {
+                return@map CwtConfigManipulator.inlineSingleAlias(config) ?: config
+            }
+            config
+        }
         val parentElement = parameterInfo.parentElement
         val configGroup = expressionContextConfigs.first().configGroup
         val passingConfig = inlinedContextConfigs.find { it.expression.type == CwtDataTypes.ParameterValue }
-        if(passingConfig != null) {
+        if (passingConfig != null) {
             //处理参数传递的情况
-            if(passingConfig !is CwtValueConfig) return null
+            if (passingConfig !is CwtValueConfig) return null
             val argumentNameElement = parentElement?.castOrNull<ParadoxScriptValue>()?.propertyKey ?: return null
             val argumentNameConfig = passingConfig.propertyConfig ?: return null
             val passingParameterElement = ParadoxParameterSupport.resolveArgument(argumentNameElement, null, argumentNameConfig) ?: return null
@@ -84,15 +89,15 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
             return passingContextConfigs
         }
         val finalConfigs = inlinedContextConfigs.map { config ->
-            if(parentElement is ParadoxScriptPropertyKey && config is CwtPropertyConfig) {
+            if (config is CwtPropertyConfig && parentElement is ParadoxScriptPropertyKey) {
                 return@map CwtValueConfig.resolve(emptyPointer(), configGroup, config.key)
             }
-            when(config) {
+            when (config) {
                 is CwtPropertyConfig -> config.delegated(CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
                 is CwtValueConfig -> config.delegated(CwtConfigManipulator.deepCopyConfigs(config), config.parentConfig)
             }
         }
-        if(finalConfigs.isEmpty()) return emptyList()
+        if (finalConfigs.isEmpty()) return emptyList()
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(null, finalConfigs, configGroup)
         return listOf(contextConfig)
     }
@@ -106,23 +111,23 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
     //root.$PARAM$.owner -> scope_field
     //root.value:$PARAM$|K|V| -> <script_value>
     //root.value:some_script_value|K|$PARAM$| -> (from parameter K)
-    
+
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
         val parentElement = parameterInfo.parentElement
-        if(parentElement !is ParadoxScriptStringExpressionElement) return false
-        if(parentElement.value.isFullParameterized()) return false
+        if (parentElement !is ParadoxScriptStringExpressionElement) return false
+        if (parentElement.value.isFullParameterized()) return false
         return true
     }
-    
+
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val expressionConfigs = parameterInfo.expressionConfigs
-        if(expressionConfigs.isEmpty()) return null
+        if (expressionConfigs.isEmpty()) return null
         val parentElement = parameterInfo.parentElement
-        if(parentElement !is ParadoxScriptStringExpressionElement) return null
+        if (parentElement !is ParadoxScriptStringExpressionElement) return null
         val contextConfigs = expressionConfigs.mapNotNull { getContextConfigFromExpressionConfig(parentElement, it, parameterInfo) }
         return contextConfigs
     }
-    
+
     private fun getContextConfigFromExpressionConfig(expressionElement: ParadoxScriptStringExpressionElement, expressionConfig: CwtMemberConfig<*>, parameterInfo: ParadoxParameterContextInfo.Parameter): CwtValueConfig? {
         val configGroup = expressionConfig.configGroup
         val value = expressionElement.value
@@ -131,16 +136,16 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
         val rangeInExpressionElement = parameterInfo.element?.textRangeInParent
         var result: List<CwtValueConfig>? = null
         expression.processAllNodes p@{ node ->
-            if(node.rangeInExpression == rangeInExpressionElement) {
+            if (node.rangeInExpression == rangeInExpressionElement) {
                 result = getConfigsFromNode(expressionElement, expressionConfig, node)
-                if(result.isNotNullOrEmpty()) return@p false
+                if (result.isNotNullOrEmpty()) return@p false
             }
             true
         }
-        if(result.isNullOrEmpty()) return null
+        if (result.isNullOrEmpty()) return null
         return CwtConfigManipulator.inlineWithConfigs(null, result, configGroup)
     }
-    
+
     private fun getConfigsFromNode(expressionElement: ParadoxScriptStringExpressionElement, expressionConfig: CwtMemberConfig<*>, node: ParadoxComplexExpressionNode): List<CwtValueConfig> {
         val configGroup = expressionConfig.configGroup
         return when {

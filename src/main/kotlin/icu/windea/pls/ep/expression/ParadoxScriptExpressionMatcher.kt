@@ -33,10 +33,10 @@ interface ParadoxScriptExpressionMatcher {
         configGroup: CwtConfigGroup,
         options: Int = ParadoxExpressionMatcher.Options.Default
     ): ParadoxExpressionMatcher.Result?
-    
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxScriptExpressionMatcher>("icu.windea.pls.scriptExpressionMatcher")
-        
+
         /**
          * @see ParadoxScriptExpressionMatcher.matches
          */
@@ -50,7 +50,7 @@ interface ParadoxScriptExpressionMatcher {
         ): ParadoxExpressionMatcher.Result {
             EP_NAME.extensionList.forEach f@{ ep ->
                 val r = ep.matches(element, expression, configExpression, config, configGroup, options)
-                if(r != null) return r
+                if (r != null) return r
             }
             return ParadoxExpressionMatcher.Result.FallbackMatch
         }

@@ -1,15 +1,15 @@
 package icu.windea.pls.test.misc
 
 import icu.windea.pls.core.*
-import org.junit.Test
+import org.junit.*
 
 class MiscTest {
     @Test
     fun test() {
         foo()
     }
-    
-    
+
+
     private fun foo() {
         val a = Thread.currentThread().stackTrace
         println(a)

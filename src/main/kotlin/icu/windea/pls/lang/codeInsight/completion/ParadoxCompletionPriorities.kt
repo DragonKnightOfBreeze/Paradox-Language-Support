@@ -11,6 +11,6 @@ object ParadoxCompletionPriorities {
     const val scope = 60.0
     const val linkPrefix = 70.0
     const val databaseObjectType = 70.0
-    
+
     const val scopeMismatchOffset = -500
 }

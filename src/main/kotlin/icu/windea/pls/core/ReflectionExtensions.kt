@@ -7,7 +7,7 @@ import java.lang.reflect.*
 inline fun tryGetField(action: () -> Field): Field? {
     try {
         return action()
-    } catch(e: NoSuchFieldException) {
+    } catch (e: NoSuchFieldException) {
         return null
     }
 }
@@ -15,7 +15,7 @@ inline fun tryGetField(action: () -> Field): Field? {
 inline fun tryGetMethod(action: () -> Method): Method? {
     try {
         return action()
-    } catch(e: NoSuchMethodException) {
+    } catch (e: NoSuchMethodException) {
         return null
     }
 }

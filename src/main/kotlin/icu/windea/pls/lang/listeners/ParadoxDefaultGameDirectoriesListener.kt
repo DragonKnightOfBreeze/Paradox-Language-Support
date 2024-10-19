@@ -7,7 +7,7 @@ import com.intellij.util.messages.*
  */
 interface ParadoxDefaultGameDirectoriesListener {
     fun onChange(oldGameDirectories: Map<String, String>, newGameDirectories: Map<String, String>)
-    
+
     companion object {
         @Topic.AppLevel
         val TOPIC = Topic(ParadoxDefaultGameDirectoriesListener::class.java, Topic.BroadcastDirection.NONE)

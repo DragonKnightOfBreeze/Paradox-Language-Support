@@ -16,6 +16,7 @@
 方案1：（对于`PsiElement`）使用`CachedValuesManager.getCachedValue(element, key, provider)`。
 
 注意事项：
+
 * 需要提供方案验证结果的等效性。
 * 避免无限循环调用。
 

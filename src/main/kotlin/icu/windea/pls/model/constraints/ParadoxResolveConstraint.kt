@@ -13,14 +13,14 @@ import icu.windea.pls.script.references.*
 enum class ParadoxResolveConstraint {
     ScriptedVariable {
         override fun canResolveReference(element: PsiElement): Boolean {
-            return when(element) {
+            return when (element) {
                 is ParadoxScriptedVariableReference -> true
                 else -> false
             }
         }
-        
+
         override fun canResolve(reference: PsiReference): Boolean {
-            return when(reference) {
+            return when (reference) {
                 is ParadoxScriptedVariablePsiReference -> true
                 else -> false
             }
@@ -28,7 +28,7 @@ enum class ParadoxResolveConstraint {
     },
     Definition {
         override fun canResolveReference(element: PsiElement): Boolean {
-            return when(element) {
+            return when (element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
                 is ParadoxLocalisationExpressionElement -> element.isComplexExpression()
                 is ParadoxScriptInt -> element.isExpression()
@@ -38,9 +38,9 @@ enum class ParadoxResolveConstraint {
                 else -> false
             }
         }
-        
+
         override fun canResolve(reference: PsiReference): Boolean {
-            return when(reference) {
+            return when (reference) {
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.expression ?: return false
                     val dataType = configExpression.type
@@ -70,15 +70,15 @@ enum class ParadoxResolveConstraint {
     },
     Localisation {
         override fun canResolveReference(element: PsiElement): Boolean {
-            return when(element) {
+            return when (element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
                 is ParadoxLocalisationPropertyReference -> true
                 else -> false
             }
         }
-        
+
         override fun canResolve(reference: PsiReference): Boolean {
-            return when(reference) {
+            return when (reference) {
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.expression ?: return false
                     val dataType = configExpression.type
@@ -91,16 +91,16 @@ enum class ParadoxResolveConstraint {
     },
     Parameter {
         override fun canResolveReference(element: PsiElement): Boolean {
-            return when(element) {
+            return when (element) {
                 is ParadoxParameter -> true
                 is ParadoxConditionParameter -> true
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
                 else -> false
             }
         }
-        
+
         override fun canResolve(reference: PsiReference): Boolean {
-            return when(reference) {
+            return when (reference) {
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.expression ?: return false
                     val dataType = configExpression.type
@@ -115,15 +115,15 @@ enum class ParadoxResolveConstraint {
     },
     LocalisationParameter {
         override fun canResolveReference(element: PsiElement): Boolean {
-            return when(element) {
+            return when (element) {
                 is ParadoxLocalisationPropertyReference -> true
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
                 else -> false
             }
         }
-        
+
         override fun canResolve(reference: PsiReference): Boolean {
-            return when(reference) {
+            return when (reference) {
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.expression ?: return false
                     val dataType = configExpression.type
@@ -136,14 +136,14 @@ enum class ParadoxResolveConstraint {
     },
     ComplexEnumValue {
         override fun canResolveReference(element: PsiElement): Boolean {
-            return when(element) {
+            return when (element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
                 else -> false
             }
         }
-        
+
         override fun canResolve(reference: PsiReference): Boolean {
-            return when(reference) {
+            return when (reference) {
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.expression ?: return false
                     val dataType = configExpression.type
@@ -168,15 +168,15 @@ enum class ParadoxResolveConstraint {
     },
     DynamicValue {
         override fun canResolveReference(element: PsiElement): Boolean {
-            return when(element) {
+            return when (element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
                 is ParadoxLocalisationExpressionElement -> element.isCommandExpression()
                 else -> false
             }
         }
-        
+
         override fun canResolve(reference: PsiReference): Boolean {
-            return when(reference) {
+            return when (reference) {
                 is ParadoxScriptExpressionPsiReference -> {
                     val configExpression = reference.config.expression ?: return false
                     val dataType = configExpression.type
@@ -204,17 +204,17 @@ enum class ParadoxResolveConstraint {
         override fun canResolveReference(element: PsiElement): Boolean {
             return DynamicValue.canResolveReference(element)
         }
-        
+
         override fun canResolve(reference: PsiReference): Boolean {
-            if(reference is ParadoxTemplateSnippetExpressionReference) return false
-            if(reference is ParadoxDataSourceNode.Reference) return false
+            if (reference is ParadoxTemplateSnippetExpressionReference) return false
+            if (reference is ParadoxDataSourceNode.Reference) return false
             return DynamicValue.canResolve(reference)
         }
     },
     ;
-    
+
     open fun canResolveReference(element: PsiElement): Boolean = true
-    
+
     open fun canResolve(reference: PsiReference): Boolean = true
 }
 

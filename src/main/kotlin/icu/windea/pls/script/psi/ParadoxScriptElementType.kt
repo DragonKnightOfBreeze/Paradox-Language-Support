@@ -4,5 +4,5 @@ import com.intellij.psi.tree.*
 import icu.windea.pls.script.*
 
 class ParadoxScriptElementType(
-	debugName: String
+    debugName: String
 ) : IElementType(debugName, ParadoxScriptLanguage)

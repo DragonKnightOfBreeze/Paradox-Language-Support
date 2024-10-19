@@ -14,7 +14,7 @@ class ParadoxParameterizedCommandFieldNode(
 ) : ParadoxComplexExpressionNode.Base(), ParadoxCommandFieldNode, ParadoxParameterizedNode {
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxParameterizedCommandFieldNode? {
-            if(!text.isParameterized()) return null
+            if (!text.isParameterized()) return null
             return ParadoxParameterizedCommandFieldNode(text, textRange, configGroup)
         }
     }

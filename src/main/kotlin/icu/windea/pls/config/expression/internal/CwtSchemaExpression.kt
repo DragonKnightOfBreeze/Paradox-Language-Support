@@ -13,49 +13,49 @@ sealed class CwtSchemaExpression(
     override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
     override fun hashCode() = expressionString.hashCode()
     override fun toString() = expressionString
-    
+
     class Constant(
         expressionString: String
     ) : CwtSchemaExpression(expressionString)
-    
+
     class Template(
         expressionString: String,
         val pattern: String,
         val parameterRanges: List<TextRange>
     ) : CwtSchemaExpression(expressionString)
-    
+
     class Type(
         expressionString: String,
         val name: String
     ) : CwtSchemaExpression(expressionString)
-    
+
     class Enum(
         expressionString: String,
         val name: String
     ) : CwtSchemaExpression(expressionString)
-    
+
     class Constraint(
         expressionString: String,
         val name: String
     ) : CwtSchemaExpression(expressionString)
-    
+
     companion object Resolver {
         private val cache = CacheBuilder.newBuilder().buildCache<String, CwtSchemaExpression> { doResolve(it) }
         private val parameterRegex = """(?<!\\)\$.*?\$""".toRegex()
-        
+
         fun resolve(expressionString: String): CwtSchemaExpression = cache.get(expressionString)
-        
+
         private fun doResolve(expressionString: String): CwtSchemaExpression {
             val indices = expressionString.indicesOf('$')
-            if(indices.isEmpty()) {
+            if (indices.isEmpty()) {
                 return Constant(expressionString)
             }
-            if(indices.size == 1) {
+            if (indices.size == 1) {
                 run {
                     val name = expressionString.removePrefixOrNull("$") ?: return@run
                     return Type(expressionString, name)
                 }
-            } else if(indices.size == 2) {
+            } else if (indices.size == 2) {
                 run {
                     val name = expressionString.removePrefixOrNull("$$") ?: return@run
                     return Constraint(expressionString, name)
@@ -65,7 +65,7 @@ sealed class CwtSchemaExpression(
                     return Enum(expressionString, name)
                 }
             }
-            if(indices.size % 2 == 1) {
+            if (indices.size % 2 == 1) {
                 thisLogger().warn("Invalid schema expression $expressionString, fallback to constant")
                 return Constant(expressionString)
             }

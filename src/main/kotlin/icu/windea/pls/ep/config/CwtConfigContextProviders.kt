@@ -36,12 +36,12 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
         val vFile = selectFile(file) ?: return null
-        if(ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
-        
+        if (ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
+
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         val definition = element.findParentDefinition()
-        if(definition == null) {
+        if (definition == null) {
             val configGroup = getConfigGroup(file.project, gameType)
             val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
             return configContext
@@ -56,18 +56,18 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
             return configContext
         }
     }
-    
+
     override fun getCacheKey(context: CwtConfigContext, matchOptions: Int): String? {
         val gameTypeId = context.gameType.id
         val definitionInfo = context.definitionInfo ?: return null
         val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null
         val declarationConfigCacheKey = declarationConfig.declarationConfigCacheKey ?: return null // null -> unexpected
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
-        val contextElement = context.element ?: return null
+        val contextElement = context.element
         val isPropertyValue = contextElement is ParadoxScriptValue && contextElement.isPropertyValue()
         return "b@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${declarationConfigCacheKey.substringAfterLast('#')}:${elementPathFromRoot}"
     }
-    
+
     override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
@@ -75,7 +75,7 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
         val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null
         val rootConfigs = declarationConfig.toSingletonList()
         val configGroup = context.configGroup
-        val contextElement = context.element ?: return null
+        val contextElement = context.element
         return ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
     }
 }
@@ -87,15 +87,15 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
  */
 class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
     //注意：内联脚本调用可以在定义声明之外
-    
+
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
         val vFile = selectFile(file) ?: return null
-        
+
         //要求当前位置相对于文件的表达式路径中包含子路径"inline_script"
         val rootIndex = elementPath.indexOfFirst { it.equals(ParadoxInlineScriptManager.inlineScriptKey, true) }
-        if(rootIndex == -1) return null
-        
+        if (rootIndex == -1) return null
+
         val gameType = selectGameType(file) ?: return null
         val fileInfo = vFile.fileInfo //注意这里的fileInfo可能为null，例如，在内联脚本参数的多行参数值中
         val elementPathFromRoot = ParadoxExpressionPath.resolve(elementPath.originalSubPaths.let { it.subList(rootIndex + 1, it.size) })
@@ -104,20 +104,20 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
         configContext.elementPathFromRoot = elementPathFromRoot
         return configContext
     }
-    
+
     override fun getCacheKey(context: CwtConfigContext, matchOptions: Int): String? {
         val gameTypeId = context.gameType.id
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
-        val contextElement = context.element ?: return null
+        val contextElement = context.element
         val isPropertyValue = contextElement is ParadoxScriptValue && contextElement.isPropertyValue()
         return "isu@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}:${elementPathFromRoot.path}"
     }
-    
+
     override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
         val configGroup = context.configGroup
         val inlineConfigs = configGroup.inlineConfigGroup[ParadoxInlineScriptManager.inlineScriptKey] ?: return null
-        val contextElement = context.element ?: return null
+        val contextElement = context.element
         val rootConfigs = inlineConfigs.map { it.inline() }
         return ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
     }
@@ -132,68 +132,68 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
  */
 class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
     //注意：内联脚本调用可以在定义声明之外
-    
+
     //TODO 1.1.0+ 支持解析内联脚本文件中的定义声明
-    
+
     //首先推断内联脚本文件的CWT规则上下文：汇总内联脚本调用处的上下文，然后合并得到最终的CWT规则上下文
     //然后再得到当前位置的CWT规则上下文
-    
+
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
-        
+
         val vFile = selectFile(file) ?: return null
-        if(ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
-        
+        if (ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
+
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(vFile)
-        if(inlineScriptExpression == null) return null
-        
+        if (inlineScriptExpression == null) return null
+
         val gameType = selectGameType(file) ?: return null
         val fileInfo = vFile.fileInfo ?: return null
         val elementPathFromRoot = elementPath
         val configGroup = getConfigGroup(file.project, gameType)
         val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
-        if(elementPathFromRoot.isNotEmpty()) {
+        if (elementPathFromRoot.isNotEmpty()) {
             configContext.inlineScriptRootConfigContext = ParadoxExpressionManager.getConfigContext(file) ?: return null
         }
         configContext.inlineScriptExpression = inlineScriptExpression
         configContext.elementPathFromRoot = elementPathFromRoot
         return configContext
     }
-    
+
     override fun getCacheKey(context: CwtConfigContext, matchOptions: Int): String? {
         val gameTypeId = context.gameType.id
         val inlineScriptExpression = context.inlineScriptExpression ?: return null // null -> unexpected
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
-        val contextElement = context.element ?: return null
+        val contextElement = context.element
         val isPropertyValue = contextElement is ParadoxScriptValue && contextElement.isPropertyValue()
         return "is@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${inlineScriptExpression}:${elementPathFromRoot.path}"
     }
-    
+
     //获取CWT规则后才能确定是否存在冲突以及是否存在递归
-    
+
     override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
-        val contextElement = context.element ?: return null
-        
-        if(elementPathFromRoot.isNotEmpty()) {
+        val contextElement = context.element
+
+        if (elementPathFromRoot.isNotEmpty()) {
             val rootConfigContext = context.inlineScriptRootConfigContext ?: return null
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
             val configGroup = context.configGroup
             return ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         }
-        
+
         val inlineScriptExpression = context.inlineScriptExpression ?: return null
         return ParadoxInlineScriptManager.getInferredContextConfigs(contextElement, inlineScriptExpression, context, matchOptions)
     }
-    
+
     //skip MissingExpressionInspection and TooManyExpressionInspection at root level
-    
+
     override fun skipMissingExpressionCheck(context: CwtConfigContext): Boolean {
         val elementPathFromRoot = context.elementPathFromRoot ?: return false
         return elementPathFromRoot.isEmpty()
     }
-    
+
     override fun skipTooManyExpressionCheck(context: CwtConfigContext): Boolean {
         val elementPathFromRoot = context.elementPathFromRoot ?: return false
         return elementPathFromRoot.isEmpty()
@@ -215,25 +215,25 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
 class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
-        
+
         //兼容适用语言注入功能的 VirtualFileWindow
         //兼容通过编辑代码碎片的意向操作打开的 LightVirtualFile
-        
+
         val vFile = selectFile(file) ?: return null
-        if(!ParadoxFileManager.isInjectedFile(vFile)) return null
+        if (!ParadoxFileManager.isInjectedFile(vFile)) return null
         val host = InjectedLanguageManager.getInstance(file.project).getInjectionHost(file)
-        if(host == null) return null
-        
+        if (host == null) return null
+
         val file0 = vFile.toPsiFile(file.project) ?: file //actual PsiFile of VirtualFileWindow
-        val injectionInfo = getInjectionInfo(file0, host) 
-        if(injectionInfo == null) return null
-        
+        val injectionInfo = getInjectionInfo(file0, host)
+        if (injectionInfo == null) return null
+
         val gameType = selectGameType(file) ?: return null
         val parameterElement = injectionInfo.parameterElement ?: return null
         val elementPathFromRoot = elementPath
         val configGroup = getConfigGroup(file.project, gameType)
         val configContext = CwtConfigContext(element, null, elementPath, gameType, configGroup)
-        if(elementPathFromRoot.isNotEmpty()) {
+        if (elementPathFromRoot.isNotEmpty()) {
             configContext.parameterValueRootConfigContext = ParadoxExpressionManager.getConfigContext(file) ?: return null
         }
         configContext.elementPathFromRoot = elementPathFromRoot
@@ -241,17 +241,17 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         configContext.parameterValueQuoted = injectionInfo.parameterValueQuoted
         return configContext
     }
-    
-    private fun getInjectionInfo(file: PsiFile, host: PsiElement) : ParameterValueInjectionInfo? {
+
+    private fun getInjectionInfo(file: PsiFile, host: PsiElement): ParameterValueInjectionInfo? {
         val injectionInfos = host.getUserData(PlsKeys.parameterValueInjectionInfos)
-        if(injectionInfos.isNullOrEmpty()) return null
+        if (injectionInfos.isNullOrEmpty()) return null
         return when {
             host is ParadoxScriptStringExpressionElement -> {
                 val shreds = file.getShreds()
                 val shred = shreds?.singleOrNull()
                 val rangeInsideHost = shred?.rangeInsideHost ?: return null
                 //it.rangeInsideHost may not equal to rangeInsideHost, but inside (e.g., there are escaped double quotes)
-                 injectionInfos.find { it.rangeInsideHost.startOffset in rangeInsideHost }
+                injectionInfos.find { it.rangeInsideHost.startOffset in rangeInsideHost }
             }
             host is ParadoxParameter -> {
                 //just use the only one
@@ -260,39 +260,39 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
             else -> null
         }
     }
-    
+
     override fun getCacheKey(context: CwtConfigContext, matchOptions: Int): String? {
         val gameTypeId = context.gameType.id
         val parameterElement = context.parameterElement ?: return null // null -> unexpected
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
-        val contextElement = context.element ?: return null
+        val contextElement = context.element
         val isPropertyValue = contextElement is ParadoxScriptValue && contextElement.isPropertyValue()
         return "is@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${parameterElement.contextKey}@${parameterElement.name}:${elementPathFromRoot.path}"
     }
-    
+
     override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {
         ProgressManager.checkCanceled()
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
-        val contextElement = context.element ?: return null
-        
-        if(elementPathFromRoot.isNotEmpty()) {
+        val contextElement = context.element
+
+        if (elementPathFromRoot.isNotEmpty()) {
             val rootConfigContext = context.parameterValueRootConfigContext ?: return null
             val rootConfigs = rootConfigContext.getConfigs(matchOptions)
             val configGroup = context.configGroup
             return ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
         }
-        
+
         val parameterElement = context.parameterElement ?: return null
         return ParadoxParameterManager.getInferredContextConfigs(parameterElement)
     }
-    
+
     //skip MissingExpressionInspection and TooManyExpressionInspection at root level
-    
+
     override fun skipMissingExpressionCheck(context: CwtConfigContext): Boolean {
         val elementPathFromRoot = context.elementPathFromRoot ?: return false
         return elementPathFromRoot.isEmpty()
     }
-    
+
     override fun skipTooManyExpressionCheck(context: CwtConfigContext): Boolean {
         val elementPathFromRoot = context.elementPathFromRoot ?: return false
         return elementPathFromRoot.isEmpty()

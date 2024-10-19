@@ -17,10 +17,10 @@ class ParadoxFileImplementationsSearch : QueryExecutor<PsiElement, DefinitionsSc
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
         //得到解析后的PSI元素
         val sourceElement = queryParameters.element
-        if(sourceElement !is PsiFile) return true
+        if (sourceElement !is PsiFile) return true
         val fileInfo = sourceElement.fileInfo ?: return true
         val path = fileInfo.path.path
-        if(path.isEmpty()) return true
+        if (path.isEmpty()) return true
         val project = queryParameters.project
         DumbService.getInstance(project).runReadActionInSmartMode {
             //这里不进行排序

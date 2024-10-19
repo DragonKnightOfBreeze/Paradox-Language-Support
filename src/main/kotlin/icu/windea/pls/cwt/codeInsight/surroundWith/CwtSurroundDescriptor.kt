@@ -10,22 +10,22 @@ import icu.windea.pls.cwt.psi.*
 //com.intellij.json.surroundWith.JsonSurrounderBase
 //com.intellij.json.surroundWith.JsonWithObjectLiteralSurrounder
 
-class CwtSurroundDescriptor: SurroundDescriptor {
+class CwtSurroundDescriptor : SurroundDescriptor {
     private val _surrounders = arrayOf(
         CwtPropertySurrounder(),
         CwtBlockSurrounder(),
     )
-    
+
     override fun getElementsToSurround(file: PsiFile, startOffset: Int, endOffset: Int): Array<PsiElement> {
         return file.findElementsBetween(startOffset, endOffset, { it.parentOfType<CwtBlockElement>() }) {
             it.takeIf { it !is PsiWhiteSpace }
         }.toTypedArray()
     }
-    
+
     override fun getSurrounders(): Array<Surrounder> {
         return _surrounders
     }
-    
+
     override fun isExclusive(): Boolean {
         return false
     }

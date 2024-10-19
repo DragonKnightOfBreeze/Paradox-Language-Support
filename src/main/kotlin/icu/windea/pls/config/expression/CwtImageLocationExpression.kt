@@ -35,40 +35,40 @@ interface CwtImageLocationExpression : CwtExpression {
     val placeholder: String?
     val propertyName: String?
     val framePropertyNames: List<String>?
-    
+
     fun resolvePlaceholder(name: String): String?
-    
+
     fun resolve(
         definition: ParadoxScriptDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
         frameInfo: FrameInfo? = null,
         toFile: Boolean = false
     ): ResolveResult?
-    
+
     fun resolveAll(
         definition: ParadoxScriptDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
         frameInfo: FrameInfo? = null,
         toFile: Boolean = false
     ): ResolveAllResult?
-    
+
     data class ResolveResult(
         val nameOrFilePath: String,
         val element: PsiElement?,
         val frameInfo: FrameInfo? = null,
         val message: String? = null
     )
-    
+
     data class ResolveAllResult(
         val nameOrFilePath: String,
         val elements: Set<PsiElement>,
         val frameInfo: FrameInfo? = null,
         val message: String? = null
     )
-    
+
     companion object Resolver {
         val EmptyExpression: CwtImageLocationExpression = doResolveEmpty()
-        
+
         fun resolve(expressionString: String): CwtImageLocationExpression = cache.get(expressionString)
     }
 }
@@ -100,30 +100,30 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
     override val placeholder: String?
     override val propertyName: String?
     override val framePropertyNames: List<String>?
-    
+
     constructor(expressionString: String, placeholder: String? = null, propertyName: String? = null, framePropertyNames: List<String>? = null) {
         this.expressionString = expressionString.intern()
         this.placeholder = placeholder?.intern()
         this.propertyName = propertyName?.intern()
         this.framePropertyNames = framePropertyNames
     }
-    
+
     override fun resolvePlaceholder(name: String): String? {
-        if(placeholder == null) return null
-        return buildString { for(c in placeholder) if(c == '$') append(name) else append(c) }
+        if (placeholder == null) return null
+        return buildString { for (c in placeholder) if (c == '$') append(name) else append(c) }
     }
-    
+
     override fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: FrameInfo?, toFile: Boolean): ResolveResult? {
         val project = definitionInfo.project
         var newFrameInfo = frameInfo
-        if(definitionInfo.type == "sprite") {
+        if (definitionInfo.type == "sprite") {
             newFrameInfo = newFrameInfo.merge(ParadoxSpriteManager.getFrameInfo(definition))
         }
-        if(placeholder != null) {
-            if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
-            if(placeholder.startsWith("GFX_")) {
+        if (placeholder != null) {
+            if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
+            if (placeholder.startsWith("GFX_")) {
                 val spriteName = resolvePlaceholder(definitionInfo.name)!!
-                if(!toFile) {
+                if (!toFile) {
                     val selector = definitionSelector(project, definition).contextSensitive()
                     val resolved = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find()
                     return ResolveResult(spriteName, resolved, newFrameInfo)
@@ -133,7 +133,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
                 val resolvedDefinition = resolved ?: return null
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
-                if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
+                if (primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
                 return withRecursionGuard("CwtImageLocationExpressionImpl.resolve#1") {
                     withRecursionCheck(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
                         primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
@@ -149,18 +149,18 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
             val selector = fileSelector(project, definition).contextSensitive()
             val file = ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
             return ResolveResult(filePath, file, newFrameInfo)
-        } else if(propertyName != null) {
+        } else if (propertyName != null) {
             //propertyName可以为空字符串，这时直接查找定义的字符串类型的值（如果存在）
             val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
             val config = ParadoxExpressionManager.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-            if(config.expression.type !in CwtDataTypeGroups.ImageLocationResolved) {
+            if (config.expression.type !in CwtDataTypeGroups.ImageLocationResolved) {
                 return ResolveResult("", null, null, PlsBundle.message("dynamic"))
             }
-            if(propertyValue !is ParadoxScriptString) {
+            if (propertyValue !is ParadoxScriptString) {
                 return null
             }
-            if(propertyValue.text.isParameterized()) {
+            if (propertyValue.text.isParameterized()) {
                 return ResolveResult("", null, null, PlsBundle.message("parameterized"))
             }
             val resolved = ParadoxExpressionManager.resolveExpression(propertyValue, null, config, config.expression, false)
@@ -177,14 +177,14 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
                 resolved is ParadoxScriptDefinitionElement -> {
                     val resolvedDefinition = resolved
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
-                    if(!toFile && resolvedDefinitionInfo.type == "sprite") {
+                    if (!toFile && resolvedDefinitionInfo.type == "sprite") {
                         val spriteName = resolvedDefinitionInfo.name
                         val selector = definitionSelector(project, definition).contextSensitive()
                         val r = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
                         return ResolveResult(spriteName, r, newFrameInfo)
                     }
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
-                    if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
+                    if (primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
                     return withRecursionGuard("CwtImageLocationExpressionImpl.resolve#2") {
                         withRecursionCheck(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
                             primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
@@ -201,18 +201,18 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
             throw IllegalStateException() //不期望的结果
         }
     }
-    
+
     override fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: FrameInfo?, toFile: Boolean): ResolveAllResult? {
         val project = definitionInfo.project
         var newFrameInfo = frameInfo
-        if(definitionInfo.type == "sprite") {
+        if (definitionInfo.type == "sprite") {
             newFrameInfo = newFrameInfo.merge(ParadoxSpriteManager.getFrameInfo(definition))
         }
-        if(placeholder != null) {
-            if(definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
-            if(placeholder.startsWith("GFX_")) {
+        if (placeholder != null) {
+            if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
+            if (placeholder.startsWith("GFX_")) {
                 val spriteName = resolvePlaceholder(definitionInfo.name)!!
-                if(!toFile) {
+                if (!toFile) {
                     val selector = definitionSelector(project, definition).contextSensitive()
                     val resolved = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).findAll()
                     return ResolveAllResult(spriteName, resolved, newFrameInfo)
@@ -222,21 +222,21 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
                 val resolvedDefinition = resolved ?: return null
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
-                if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
+                if (primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
                 return withRecursionGuard("CwtImageLocationExpressionImpl.resolveAll#1") {
                     withRecursionCheck(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
                         var resolvedFilePath: String? = null
                         var resolvedElements: MutableSet<PsiElement>? = null
-                        for(primaryImageConfig in primaryImageConfigs) {
+                        for (primaryImageConfig in primaryImageConfigs) {
                             val locationExpression = primaryImageConfig.locationExpression
                             val r = locationExpression.resolveAll(resolvedDefinition, resolvedDefinitionInfo, newFrameInfo, true) ?: continue
-                            if(r.message != null) return r
+                            if (r.message != null) return r
                             val (filePath, elements) = r
-                            if(resolvedFilePath == null) resolvedFilePath = filePath
-                            if(resolvedElements == null) resolvedElements = mutableSetOf()
+                            if (resolvedFilePath == null) resolvedFilePath = filePath
+                            if (resolvedElements == null) resolvedElements = mutableSetOf()
                             resolvedElements.addAll(elements)
                         }
-                        if(resolvedFilePath == null) return null
+                        if (resolvedFilePath == null) return null
                         ResolveAllResult(resolvedFilePath, resolvedElements ?: emptySet(), newFrameInfo)
                     }
                 }
@@ -247,18 +247,18 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
             val files = ParadoxFilePathSearch.search(filePath, null, selector).findAll()
                 .mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
             return ResolveAllResult(filePath, files, newFrameInfo)
-        } else if(propertyName != null) {
+        } else if (propertyName != null) {
             //dynamic -> returns ("", null, 0)
             val property = definition.findProperty(propertyName, inline = true) ?: return null
             val propertyValue = property.propertyValue ?: return null
             val config = ParadoxExpressionManager.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-            if(config.expression.type !in CwtDataTypeGroups.ImageLocationResolved) {
+            if (config.expression.type !in CwtDataTypeGroups.ImageLocationResolved) {
                 return ResolveAllResult("", emptySet(), null, PlsBundle.message("dynamic"))
             }
-            if(propertyValue !is ParadoxScriptString) {
+            if (propertyValue !is ParadoxScriptString) {
                 return null
             }
-            if(propertyValue.text.isParameterized()) {
+            if (propertyValue.text.isParameterized()) {
                 return ResolveAllResult("", emptySet(), null, PlsBundle.message("parameterized"))
             }
             val resolved = ParadoxExpressionManager.resolveExpression(propertyValue, null, config, config.expression, false)
@@ -275,28 +275,28 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
                 resolved is ParadoxScriptDefinitionElement -> {
                     val resolvedDefinition = resolved
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
-                    if(!toFile && resolvedDefinitionInfo.type == "sprite") {
+                    if (!toFile && resolvedDefinitionInfo.type == "sprite") {
                         val spriteName = resolvedDefinitionInfo.name
                         val selector = definitionSelector(project, definition).contextSensitive()
                         val r = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).findAll()
                         return ResolveAllResult(spriteName, r, newFrameInfo)
                     }
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
-                    if(primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
+                    if (primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
                     return withRecursionGuard("CwtImageLocationExpressionImpl.resolveAll#2") {
                         withRecursionCheck(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
                             var resolvedFilePath: String? = null
                             var resolvedElements: MutableSet<PsiElement>? = null
-                            for(primaryImageConfig in primaryImageConfigs) {
+                            for (primaryImageConfig in primaryImageConfigs) {
                                 val locationExpression = primaryImageConfig.locationExpression
                                 val r = locationExpression.resolveAll(resolvedDefinition, resolvedDefinitionInfo, newFrameInfo, toFile) ?: continue
-                                if(r.message != null) return r
+                                if (r.message != null) return r
                                 val (filePath, elements) = r
-                                if(resolvedFilePath == null) resolvedFilePath = filePath
-                                if(resolvedElements == null) resolvedElements = mutableSetOf()
+                                if (resolvedFilePath == null) resolvedFilePath = filePath
+                                if (resolvedElements == null) resolvedElements = mutableSetOf()
                                 resolvedElements!!.addAll(elements)
                             }
-                            if(resolvedFilePath == null) return null
+                            if (resolvedFilePath == null) return null
                             ResolveAllResult(resolvedFilePath!!, resolvedElements ?: emptySet(), newFrameInfo)
                         }
                     }

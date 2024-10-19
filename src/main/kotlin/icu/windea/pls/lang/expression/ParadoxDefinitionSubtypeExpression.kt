@@ -24,28 +24,28 @@ class ParadoxDefinitionSubtypeExpression private constructor(
     val expressionString: String
 ) {
     val subtypes: List<ReversibleValue<String>> = expressionString.split('&').map { ReversibleValue(it) }
-    
+
     fun matches(subtypes: Collection<String>): Boolean {
         //目前仅支持"!"和"&"的组合
         return this.subtypes.all { t -> t.where { subtypes.contains(it) } }
     }
-    
+
     fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean {
         return matches(definitionInfo.subtypes)
     }
-    
+
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxDefinitionSubtypeExpression && expressionString == other.expressionString
     }
-    
+
     override fun hashCode(): Int {
         return expressionString.hashCode()
     }
-    
+
     override fun toString(): String {
         return expressionString
     }
-    
+
     companion object Resolver {
         fun resolve(expressionString: String): ParadoxDefinitionSubtypeExpression {
             return ParadoxDefinitionSubtypeExpression(expressionString)

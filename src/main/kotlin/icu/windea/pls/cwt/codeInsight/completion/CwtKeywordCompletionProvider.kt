@@ -15,19 +15,19 @@ class CwtKeywordCompletionProvider : CompletionProvider<CompletionParameters>() 
         CwtConfigCompletionManager.noLookupElement,
         CwtConfigCompletionManager.blockLookupElement,
     )
-    
+
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val position = parameters.position
         val contextElement = position.parent?.castOrNull<CwtString>() ?: return
-        if(contextElement.text.isLeftQuoted()) return
-        
+        if (contextElement.text.isLeftQuoted()) return
+
         //判断当前文件是否是规则文件
-        
+
         ParadoxCompletionManager.initializeContext(parameters, context)
-        
+
         val r = CwtConfigCompletionManager.initializeContext(parameters, context, contextElement)
-        if(r) return
-        
+        if (r) return
+
         lookupElements.forEach { lookupElement ->
             result.addElement(lookupElement, context)
         }

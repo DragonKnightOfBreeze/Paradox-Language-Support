@@ -6,17 +6,17 @@ import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 
 class ParadoxLocalisationCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
-	override fun getLanguage() = ParadoxLocalisationLanguage
-	
-	override fun getConfigurableDisplayName() = PlsBundle.message("options.localisation.displayName")
-	
-	override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxLocalisationCodeStyleSettings(settings)
-	
-	override fun createConfigurable(settings: CodeStyleSettings, modelSettings: CodeStyleSettings): CodeStyleConfigurable {
-		return object : CodeStyleAbstractConfigurable(settings, modelSettings, configurableDisplayName) {
-			override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {
-				return ParadoxLocalisationCodeStylePanel(currentSettings, settings)
-			}
-		}
-	}
+    override fun getLanguage() = ParadoxLocalisationLanguage
+
+    override fun getConfigurableDisplayName() = PlsBundle.message("options.localisation.displayName")
+
+    override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxLocalisationCodeStyleSettings(settings)
+
+    override fun createConfigurable(settings: CodeStyleSettings, modelSettings: CodeStyleSettings): CodeStyleConfigurable {
+        return object : CodeStyleAbstractConfigurable(settings, modelSettings, configurableDisplayName) {
+            override fun createPanel(settings: CodeStyleSettings): CodeStyleAbstractPanel {
+                return ParadoxLocalisationCodeStylePanel(currentSettings, settings)
+            }
+        }
+    }
 }

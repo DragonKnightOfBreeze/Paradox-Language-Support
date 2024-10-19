@@ -13,32 +13,32 @@ import icu.windea.pls.script.psi.*
  */
 class IncorrectExpressionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
-        
+        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if(element is ParadoxScriptExpressionElement) visitExpressionElement(element)
+                if (element is ParadoxScriptExpressionElement) visitExpressionElement(element)
             }
-            
+
             private fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
-                if(!element.isExpression()) return // skip check if element is not a expression
-                
+                if (!element.isExpression()) return // skip check if element is not a expression
+
                 //跳过一些脚本表达式类型
-                 if(element is ParadoxScriptBlock) return
-                 if(element is ParadoxScriptBoolean) return
-                
+                if (element is ParadoxScriptBlock) return
+                if (element is ParadoxScriptBoolean) return
+
                 //得到完全匹配的CWT规则
                 val config = ParadoxExpressionManager.getConfigs(element, orDefault = false).firstOrNull() ?: return
-                
+
                 //开始检查
                 ParadoxIncorrectExpressionChecker.check(element, config, holder)
             }
         }
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
-        if(selectRootFile(file) == null) return false
+        if (selectRootFile(file) == null) return false
         return true
     }
 }

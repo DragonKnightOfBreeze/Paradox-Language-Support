@@ -14,19 +14,19 @@ class InsertMissingTokenFix(
     private val caretOffset: Int
 ) : IntentionActionWithFixAllOption, LowPriorityAction {
     override fun getText() = IdeBundle.message("quickfix.text.insert.0", token)
-    
+
     override fun getFamilyName() = text
-    
+
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?) = true
-    
+
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        if(editor == null) return
+        if (editor == null) return
         editor.caretModel.moveToOffset(caretOffset)
         editor.document.insertString(caretOffset, token)
     }
-    
+
     override fun startInWriteAction() = true
-    
+
     override fun belongsToMyFamily(action: IntentionActionWithFixAllOption): Boolean {
         return action is InsertMissingTokenFix && action.token == token
     }

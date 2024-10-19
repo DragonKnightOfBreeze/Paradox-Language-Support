@@ -6,15 +6,15 @@ enum class CwtSeparatorType(
     EQUAL("="),
     NOT_EQUAL("!="),
     ;
-    
+
     override fun toString(): String {
         return text
     }
-    
+
     companion object {
         @JvmStatic
         fun resolve(text: String): CwtSeparatorType? {
-            return when(text) {
+            return when (text) {
                 "=", "==" -> EQUAL
                 "<>", "!=" -> NOT_EQUAL
                 else -> null

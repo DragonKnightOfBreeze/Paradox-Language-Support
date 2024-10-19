@@ -20,11 +20,11 @@ class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, Defin
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
         //得到解析后的PSI元素
         val sourceElement = queryParameters.element
-        if(sourceElement !is ParadoxLocalisationProperty) return true
+        if (sourceElement !is ParadoxLocalisationProperty) return true
         val localisationInfo = runReadAction { sourceElement.localisationInfo }
-        if(localisationInfo == null) return true
+        if (localisationInfo == null) return true
         val name = localisationInfo.name
-        if(name.isEmpty()) return true
+        if (name.isEmpty()) return true
         val project = queryParameters.project
         DumbService.getInstance(project).runReadActionInSmartMode {
             val category = localisationInfo.category
@@ -32,7 +32,7 @@ class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, Defin
             val selector = localisationSelector(project, sourceElement)
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig()) //限定语言区域
                 .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
-            val localisations = when(category) {
+            val localisations = when (category) {
                 ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.search(name, selector).findAll()
                 ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll()
             }

@@ -7,7 +7,7 @@ import java.util.concurrent.*
 interface CwtOptionConfig : CwtOptionMemberConfig<CwtOption> {
     val key: String
     val separatorType: CwtSeparatorType
-    
+
     companion object Resolver {
         fun resolve(
             key: String,
@@ -25,7 +25,7 @@ private val cache = ConcurrentHashMap<String, CwtOptionConfig>()
 
 private fun doResolve(key: String, value: String, valueType: CwtType, separatorType: CwtSeparatorType, optionConfigs: List<CwtOptionMemberConfig<*>>?): CwtOptionConfig {
     //use cache if possible to optimize memory
-    if(optionConfigs.isNullOrEmpty()) {
+    if (optionConfigs.isNullOrEmpty()) {
         val cacheKey = "${valueType.ordinal}#${separatorType.ordinal}#${key}#${value}"
         return cache.getOrPut(cacheKey) {
             CwtOptionConfigImpl(key, value, valueType, separatorType, optionConfigs)
@@ -43,7 +43,7 @@ private class CwtOptionConfigImpl(
 ) : CwtOptionConfig {
     private val valueTypeId: Byte = valueType.optimizeValue() //use enum id as field to optimize memory 
     override val valueType: CwtType get() = valueTypeId.deoptimizeValue()
-    
+
     private val separatorTypeId: Byte = separatorType.optimizeValue() //use enum id as field to optimize memory
     override val separatorType: CwtSeparatorType get() = separatorTypeId.deoptimizeValue()
 }

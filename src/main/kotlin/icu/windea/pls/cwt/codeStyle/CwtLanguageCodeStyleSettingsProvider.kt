@@ -10,16 +10,16 @@ import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings as Settings
 
 class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     override fun getLanguage() = CwtLanguage
-    
+
     override fun getConfigurableDisplayName() = PlsBundle.message("options.cwt.displayName")
-    
+
     override fun getCodeSample(settingsType: SettingsType) = PlsConstants.Samples.cwtCodeStyleSettings
-    
+
     override fun createCustomSettings(settings: CodeStyleSettings) = Settings(settings)
-    
+
     //需要重载这个方法以显示indentOptions设置页面
     override fun getIndentOptionsEditor() = IndentOptionsEditor(this)
-    
+
     override fun customizeDefaults(commonSettings: CommonCodeStyleSettings, indentOptions: CommonCodeStyleSettings.IndentOptions) {
         indentOptions.INDENT_SIZE = 4
         indentOptions.CONTINUATION_INDENT_SIZE = 4
@@ -28,9 +28,9 @@ class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
         commonSettings.LINE_COMMENT_AT_FIRST_COLUMN = false
         commonSettings.LINE_COMMENT_ADD_SPACE = true
     }
-    
+
     override fun customizeSettings(consumer: CodeStyleSettingsCustomizable, settingsType: SettingsType) {
-        when(settingsType) {
+        when (settingsType) {
             SettingsType.INDENT_SETTINGS -> customizeIndentSettings(consumer)
             SettingsType.SPACING_SETTINGS -> customizeSpacingSettings(consumer)
             SettingsType.BLANK_LINES_SETTINGS -> customizeBlankLinesSettings(consumer)
@@ -38,7 +38,7 @@ class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
             else -> pass()
         }
     }
-    
+
     private fun customizeIndentSettings(consumer: CodeStyleSettingsCustomizable) {
         consumer.showStandardOptions(
             IndentOption.INDENT_SIZE.name,
@@ -47,22 +47,22 @@ class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
             IndentOption.USE_TAB_CHARACTER.name
         )
     }
-    
+
     private fun customizeSpacingSettings(consumer: CodeStyleSettingsCustomizable) {
         val spacesAroundOperatorsGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_AROUND_OPERATORS
         consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_OPTION_SEPARATOR.name, PlsBundle.message("cwt.codeStyleSettings.spacing.around.optionSeparator"), spacesAroundOperatorsGroup)
         consumer.showCustomOption(Settings::class.java, Settings::SPACE_AROUND_PROPERTY_SEPARATOR.name, PlsBundle.message("cwt.codeStyleSettings.spacing.around.propertySeparator"), spacesAroundOperatorsGroup)
-        
+
         val spacesWithinGroup = CodeStyleSettingsCustomizableOptions.getInstance().SPACES_WITHIN
         consumer.showCustomOption(Settings::class.java, Settings::SPACE_WITHIN_BRACES.name, PlsBundle.message("cwt.codeStyleSettings.spacing.withIn.braces"), spacesWithinGroup)
     }
-    
+
     private fun customizeBlankLinesSettings(consumer: CodeStyleSettingsCustomizable) {
         consumer.showStandardOptions(
             BlankLinesOption.KEEP_BLANK_LINES_IN_CODE.name
         )
     }
-    
+
     private fun customizeCommenterSettings(consumer: CodeStyleSettingsCustomizable) {
         consumer.showStandardOptions(
             CommenterOption.LINE_COMMENT_AT_FIRST_COLUMN.name,
@@ -72,7 +72,7 @@ class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
         consumer.showCustomOption(Settings::class.java, Settings::OPTION_COMMENT_ADD_SPACE.name, PlsBundle.message("cwt.codeStyleSettings.commenter.optionComment.addSpace"), commentsGroup)
         consumer.showCustomOption(Settings::class.java, Settings::DOCUMENTATION_COMMENT_ADD_SPACE.name, PlsBundle.message("cwt.codeStyleSettings.commenter.documentationComment.addSpace"), commentsGroup)
     }
-    
+
     class IndentOptionsEditor(
         provider: LanguageCodeStyleSettingsProvider
     ) : SmartIndentOptionsEditor(provider)

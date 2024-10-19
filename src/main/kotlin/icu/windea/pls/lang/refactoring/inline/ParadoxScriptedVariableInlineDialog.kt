@@ -27,57 +27,57 @@ class ParadoxScriptedVariableInlineDialog(
             ?: GlobalSearchScope.projectScope(project)
         else -> GlobalSearchScope.fileScope(element.containingFile)
     }
-    
+
     init {
         title = PlsBundle.message("title.inline.scriptedVariable")
         myInvokedOnReference = reference != null
         init()
         helpAction.isEnabled = false
     }
-    
+
     override fun getNameLabelText(): String {
         val name = element.name.orAnonymous()
         return PlsBundle.message("inline.scriptedVariable.label", name)
     }
-    
+
     override fun getBorderTitle(): String {
         return PlsBundle.message("inline.scriptedVariable.border.title")
     }
-    
+
     override fun getInlineThisText(): String {
         return PlsBundle.message("inline.scriptedVariable.inline.this")
     }
-    
+
     override fun getInlineAllText(): String {
-        return if(element.isWritable) PlsBundle.message("inline.scriptedVariable.inline.all.remove")
+        return if (element.isWritable) PlsBundle.message("inline.scriptedVariable.inline.all.remove")
         else PlsBundle.message("inline.scriptedVariable.inline.all")
     }
-    
+
     override fun getKeepTheDeclarationText(): String {
-        return if(element.isWritable) PlsBundle.message("inline.scriptedVariable.inline.all.keep")
+        return if (element.isWritable) PlsBundle.message("inline.scriptedVariable.inline.all.keep")
         else super.getKeepTheDeclarationText()
     }
-    
+
     override fun allowInlineAll(): Boolean {
         return true
     }
-    
+
     override fun isInlineThis(): Boolean {
         return ParadoxRefactoringSettings.getInstance().inlineScriptedVariableThis
     }
-    
+
     override fun isKeepTheDeclarationByDefault(): Boolean {
         return ParadoxRefactoringSettings.getInstance().inlineScriptedVariableKeep
     }
-    
+
     override fun doAction() {
         val processor = ParadoxScriptedVariableInlineProcessor(project, optimizedScope, element, reference, editor, isInlineThisOnly, isKeepTheDeclaration())
         invokeRefactoring(processor)
         val settings = ParadoxRefactoringSettings.getInstance()
-        if(myRbInlineThisOnly.isEnabled && myRbInlineAll.isEnabled) {
+        if (myRbInlineThisOnly.isEnabled && myRbInlineAll.isEnabled) {
             settings.inlineScriptedVariableThis = isInlineThisOnly
         }
-        if(myKeepTheDeclaration != null && myKeepTheDeclaration!!.isEnabled) {
+        if (myKeepTheDeclaration != null && myKeepTheDeclaration!!.isEnabled) {
             settings.inlineScriptedVariableKeep = isKeepTheDeclaration()
         }
     }

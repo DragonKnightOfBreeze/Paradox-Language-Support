@@ -8,7 +8,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createString
 import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createValue
 
-class ParadoxScriptPropertyKeyManipulator: AbstractElementManipulator<ParadoxScriptPropertyKey>() {
+class ParadoxScriptPropertyKeyManipulator : AbstractElementManipulator<ParadoxScriptPropertyKey>() {
     override fun handleContentChange(element: ParadoxScriptPropertyKey, range: TextRange, newContent: String): ParadoxScriptPropertyKey {
         val text = element.text
         val newText = range.replaceAndQuoteIfNecessary(text, newContent)
@@ -17,7 +17,7 @@ class ParadoxScriptPropertyKeyManipulator: AbstractElementManipulator<ParadoxScr
     }
 }
 
-class ParadoxScriptValueManipulator: AbstractElementManipulator<ParadoxScriptValue>() {
+class ParadoxScriptValueManipulator : AbstractElementManipulator<ParadoxScriptValue>() {
     override fun handleContentChange(element: ParadoxScriptValue, range: TextRange, newContent: String): ParadoxScriptValue {
         val text = element.text
         val newText = range.replace(text, newContent)
@@ -26,7 +26,7 @@ class ParadoxScriptValueManipulator: AbstractElementManipulator<ParadoxScriptVal
     }
 }
 
-class ParadoxScriptStringManipulator: AbstractElementManipulator<ParadoxScriptString>() {
+class ParadoxScriptStringManipulator : AbstractElementManipulator<ParadoxScriptString>() {
     override fun handleContentChange(element: ParadoxScriptString, range: TextRange, newContent: String): ParadoxScriptString {
         val text = element.text
         val newText = range.replaceAndQuoteIfNecessary(text, newContent)
@@ -35,7 +35,7 @@ class ParadoxScriptStringManipulator: AbstractElementManipulator<ParadoxScriptSt
     }
 }
 
-class ParadoxScriptParameterManipulator: AbstractElementManipulator<ParadoxScriptParameter>() {
+class ParadoxScriptParameterManipulator : AbstractElementManipulator<ParadoxScriptParameter>() {
     override fun handleContentChange(element: ParadoxScriptParameter, range: TextRange, newContent: String): ParadoxScriptParameter {
         val text = element.text
         val newText = range.replaceAndQuoteIfNecessary(text, newContent)
@@ -44,7 +44,7 @@ class ParadoxScriptParameterManipulator: AbstractElementManipulator<ParadoxScrip
     }
 }
 
-class ParadoxScriptInlineMathParameterManipulator: AbstractElementManipulator<ParadoxScriptInlineMathParameter>() {
+class ParadoxScriptInlineMathParameterManipulator : AbstractElementManipulator<ParadoxScriptInlineMathParameter>() {
     override fun handleContentChange(element: ParadoxScriptInlineMathParameter, range: TextRange, newContent: String): ParadoxScriptInlineMathParameter {
         val text = element.text
         val newText = range.replaceAndQuoteIfNecessary(text, newContent)

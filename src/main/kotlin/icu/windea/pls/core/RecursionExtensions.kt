@@ -6,7 +6,7 @@ import com.intellij.openapi.util.*
 
 class SmartRecursionGuard(val name: Any) {
     val stackTrace = ArrayDeque<Any>()
-    
+
     companion object {
         val cache: ThreadLocal<MutableMap<String, SmartRecursionGuard>> by lazy { ThreadLocal.withInitial { mutableMapOf() } }
     }
@@ -21,12 +21,12 @@ inline fun <T> withRecursionGuard(name: String, action: SmartRecursionGuard.() -
     try {
         val recursionGuard = cached ?: SmartRecursionGuard(name).also { recursionGuardCache.put(name, it) }
         return recursionGuard.action()
-    } catch(e1: StackOverflowError) {
+    } catch (e1: StackOverflowError) {
         return null
-    } catch(e2: StackOverflowPreventedException) {
+    } catch (e2: StackOverflowPreventedException) {
         return null
     } finally {
-        if(cached == null) {
+        if (cached == null) {
             recursionGuardCache.remove(name)
         }
     }
@@ -36,7 +36,7 @@ inline fun <T> withRecursionGuard(name: String, action: SmartRecursionGuard.() -
  * 如果指定的[key]未存在于[SmartRecursionGuard.stackTrace]中，则入栈并执行指定的一段代码[action]，否则直接返回null。
  */
 inline fun <T> SmartRecursionGuard.withRecursionCheck(key: Any, action: () -> T): T? {
-    if(stackTrace.contains(key)) {
+    if (stackTrace.contains(key)) {
         return null
     }
     stackTrace.addLast(key)
@@ -61,9 +61,9 @@ fun checkMethodRecursion(): Boolean {
     val currentStackTrace = getCurrentStackTrace()
     val currentStack = currentStackTrace.firstOrNull() ?: return false
     var i = 1
-    while(i < currentStackTrace.size) {
+    while (i < currentStackTrace.size) {
         val stack = currentStackTrace[i]
-        if(currentStack.className == stack.className && currentStack.methodName == stack.methodName) return true
+        if (currentStack.className == stack.className && currentStack.methodName == stack.methodName) return true
         i++
     }
     return false

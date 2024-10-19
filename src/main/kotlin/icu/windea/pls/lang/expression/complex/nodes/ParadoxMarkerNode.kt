@@ -14,7 +14,7 @@ class ParadoxMarkerNode(
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNode.Base(), ParadoxTokenNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
-        return when(element.language) {
+        return when (element.language) {
             ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.MARKER_KEY
             else -> ParadoxScriptAttributesKeys.MARKER_KEY
         }

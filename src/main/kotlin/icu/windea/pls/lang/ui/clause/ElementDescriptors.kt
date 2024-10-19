@@ -1,11 +1,11 @@
-package icu.windea.pls.lang.ui
+package icu.windea.pls.lang.ui.clause
 
 import icu.windea.pls.model.*
 
 sealed interface ElementDescriptor {
     val name: String
     val editInTemplate: Boolean
-    
+
     fun copyDescriptor(): ElementDescriptor
 }
 
@@ -13,7 +13,7 @@ data class ValueDescriptor(
     override var name: String = ""
 ) : ElementDescriptor {
     override val editInTemplate: Boolean get() = false
-    
+
     override fun copyDescriptor(): ElementDescriptor = copy()
 }
 
@@ -24,8 +24,8 @@ data class PropertyDescriptor(
     val constantValues: List<String> = emptyList()
 ) : ElementDescriptor {
     val constantValueArray = constantValues.toTypedArray()
-    
+
     override val editInTemplate get() = value.isEmpty()
-    
+
     override fun copyDescriptor(): ElementDescriptor = copy()
 }

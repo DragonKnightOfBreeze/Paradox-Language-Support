@@ -27,7 +27,7 @@ interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> 
     val displayName: String?
     val abbreviation: String?
     val onlyIfNot: Set<String>?
-    
+
     companion object {
         fun resolve(config: CwtPropertyConfig): CwtSubtypeConfig? = doResolve(config)
     }
@@ -44,16 +44,16 @@ private fun doResolve(config: CwtPropertyConfig): CwtSubtypeConfig? {
     var displayName: String? = null
     var abbreviation: String? = null
     var onlyIfNot: Set<String>? = null
-    
+
     val options = config.optionConfigs.orEmpty()
-    for(option in options) {
-        if(option !is CwtOptionConfig) continue
+    for (option in options) {
+        if (option !is CwtOptionConfig) continue
         val key = option.key
-        when(key) {
+        when (key) {
             "type_key_filter" -> {
                 //值可能是string也可能是stringArray
                 val values = option.getOptionValueOrValues()
-                if(values == null) continue
+                if (values == null) continue
                 val set = caseInsensitiveStringSet() //忽略大小写
                 set.addAll(values)
                 val o = option.separatorType == CwtSeparatorType.EQUAL

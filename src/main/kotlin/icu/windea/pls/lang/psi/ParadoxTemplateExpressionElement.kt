@@ -22,36 +22,36 @@ class ParadoxTemplateExpressionElement(
     val references: List<ParadoxTemplateSnippetExpressionReference>,
 ) : ParadoxFakePsiElement(parent) {
     var canRename = false
-    
+
     override fun getIcon(): Icon {
         return PlsIcons.Nodes.TemplateExpression
     }
-    
+
     override fun getName(): String {
         return name
     }
-    
+
     override fun setName(name: String): PsiElement? {
-        if(!canRename) throw IncorrectOperationException() //cannot rename
+        if (!canRename) throw IncorrectOperationException() //cannot rename
         return null
     }
-    
+
     override fun getTypeName(): String {
         return PlsBundle.message("script.description.templateExpression")
     }
-    
+
     override fun getText(): String {
         return name
     }
-    
+
     override fun getPresentation(): ItemPresentation {
         return ParadoxTemplateExpressionElementPresentation(this)
     }
-    
+
     override fun getProject(): Project {
         return project
     }
-    
+
     override fun equals(other: Any?): Boolean {
         return other is ParadoxTemplateExpressionElement &&
             name == other.name &&
@@ -59,7 +59,7 @@ class ParadoxTemplateExpressionElement(
             project == other.project &&
             gameType == other.gameType
     }
-    
+
     override fun hashCode(): Int {
         return Objects.hash(name, configExpression, project, gameType)
     }

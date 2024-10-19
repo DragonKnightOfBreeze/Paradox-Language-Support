@@ -19,15 +19,15 @@ class ParadoxLocalisationBlock(
         private val SHOULD_INDENT_PARENT_TYPES = TokenSet.create(PROPERTY_LIST)
         private val SHOULD_INDENT_TYPES = TokenSet.create(PROPERTY, COMMENT)
         private val SHOULD_CHILD_INDENT_TYPES = TokenSet.create(PROPERTY_LIST)
-        
+
         private fun createWrap(): Wrap? {
             return null
         }
-        
+
         private fun createAlignment(): Alignment? {
             return null
         }
-        
+
         private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
             //属性数字和属性值之间有一个空格，冒号和属性值之间也有
             return SpacingBuilder(settings, ParadoxLocalisationLanguage)
@@ -35,9 +35,9 @@ class ParadoxLocalisationBlock(
                 .between(PROPERTY_NUMBER, PROPERTY_VALUE).spaces(1)
         }
     }
-    
+
     private val spacingBuilder = createSpacingBuilder(settings)
-    
+
     //收集所有节点
     override fun buildChildren(): List<Block> {
         val children = mutableListOf<Block>()
@@ -47,7 +47,7 @@ class ParadoxLocalisationBlock(
         }
         return children
     }
-    
+
     override fun getIndent(): Indent? {
         //配置缩进
         //property_list中的property和comment需要缩进
@@ -59,7 +59,7 @@ class ParadoxLocalisationBlock(
             else -> Indent.getNoneIndent()
         }
     }
-    
+
     override fun getChildIndent(): Indent? {
         //配置换行时的自动缩进
         //在file中不要缩进
@@ -71,11 +71,11 @@ class ParadoxLocalisationBlock(
             else -> null
         }
     }
-    
+
     override fun getSpacing(child1: Block?, child2: Block): Spacing? {
         return spacingBuilder.getSpacing(this, child1, child2)
     }
-    
+
     override fun isLeaf(): Boolean {
         return myNode.firstChildNode == null
     }

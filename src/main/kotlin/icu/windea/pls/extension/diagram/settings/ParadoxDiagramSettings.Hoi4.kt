@@ -22,35 +22,35 @@ class Hoi4EventTreeDiagramSettings(
     companion object {
         const val ID = "pls.diagram.Hoi4.EventTree"
     }
-    
+
     override val id: String = ID
-    
+
     class State : ParadoxDiagramSettings.State() {
         override var scopeType by string()
-        
+
         @get:XMap
         var type by linkedMap<String, Boolean>()
         @get:XMap
         var eventType by linkedMap<String, Boolean>()
-        
+
         val typeSettings = TypeSettings()
-        
+
         inner class TypeSettings {
-            val hidden  by type withDefault true
+            val hidden by type withDefault true
         }
     }
-    
+
     override fun Panel.buildConfigurablePanel(coroutineScope: CoroutineScope) {
         val settings = state
         val eventTypes = ParadoxEventManager.getTypes(project, ParadoxGameType.Hoi4)
         eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
         settings.updateSettings()
-        
+
         collapsibleGroup(PlsDiagramBundle.message("hoi4.eventTree.name")) {
             row {
                 label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
             }
-            if(settings.type.isNotEmpty()) {
+            if (settings.type.isNotEmpty()) {
                 lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("hoi4.eventTree.settings.type")))
@@ -69,7 +69,7 @@ class Hoi4EventTreeDiagramSettings(
                     }
                 }
             }
-            if(settings.eventType.isNotEmpty()) {
+            if (settings.eventType.isNotEmpty()) {
                 lateinit var cb: Cell<ThreeStateCheckBox>
                 row {
                     cell(ThreeStateCheckBox(PlsDiagramBundle.message("hoi4.eventTree.settings.eventType")))

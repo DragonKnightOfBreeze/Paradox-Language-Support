@@ -35,10 +35,10 @@ fun ChainedParadoxSelector<ParadoxScriptDefinitionElement>.distinctByName() =
 fun localisationSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxLocalisationProperty>(project, context)
 
 fun ChainedParadoxSelector<ParadoxLocalisationProperty>.locale(locale: CwtLocalisationLocaleConfig?) =
-    apply { if(locale != null) selectors += ParadoxLocaleSelector(locale) }
+    apply { if (locale != null) selectors += ParadoxLocaleSelector(locale) }
 
 fun ChainedParadoxSelector<ParadoxLocalisationProperty>.preferLocale(locale: CwtLocalisationLocaleConfig?, condition: Boolean = true) =
-    apply { if(locale != null && condition) selectors += ParadoxPreferLocaleSelector(locale) }
+    apply { if (locale != null && condition) selectors += ParadoxPreferLocaleSelector(locale) }
 
 fun ChainedParadoxSelector<ParadoxLocalisationProperty>.distinctByName() =
     distinctBy { it.name }
@@ -56,7 +56,7 @@ fun ChainedParadoxSelector<ParadoxLocalisationProperty>.getConstraint(): Paradox
 fun fileSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<VirtualFile>(project, context)
 
 fun ChainedParadoxSelector<VirtualFile>.withFileExtensions(fileExtensions: Set<String>) =
-    if(fileExtensions.isNotEmpty()) filterBy { it.extension?.let { e -> ".$e" }.orEmpty() in fileExtensions } else this
+    if (fileExtensions.isNotEmpty()) filterBy { it.extension?.let { e -> ".$e" }.orEmpty() in fileExtensions } else this
 
 fun ChainedParadoxSelector<VirtualFile>.distinctByFilePath() =
     distinctBy { it.fileInfo?.path }

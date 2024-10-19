@@ -23,34 +23,30 @@ val Project.configGroupLibrary: CwtConfigGroupLibrary
  * 解析为被内联的CWT规则，或者返回自身。
  */
 @Suppress("UNCHECKED_CAST")
-fun <T: CwtConfig<*>> T.resolved(): T {
+fun <T : CwtConfig<*>> T.resolved(): T {
     return when {
-        this is CwtMemberConfig<*> -> inlineableConfig?.takeIf { it !is CwtSingleAliasConfig }?.config as? T ?: this
+        this is CwtPropertyConfig -> inlineConfig?.config ?: aliasConfig?.config ?: this
         else -> this
-    }
+    } as T
 }
 
 /**
  * 解析为被内联的规则，或者返回null。
  */
 @Suppress("UNCHECKED_CAST")
-fun <T: CwtConfig<*>> T.resolvedOrNull(): T? {
+fun <T : CwtConfig<*>> T.resolvedOrNull(): T? {
     return when {
-        this is CwtMemberConfig<*> -> inlineableConfig?.takeIf { it !is CwtSingleAliasConfig }?.config as? T
+        this is CwtPropertyConfig -> inlineConfig?.config ?: aliasConfig?.config
         else -> this
-    }
+    } as? T
 }
 
-inline fun CwtMemberConfig<*>.processParent(inline: Boolean = false, processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
+inline fun CwtMemberConfig<*>.processParent(processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
     var parent = this.parentConfig
-    while(parent != null) {
+    while (parent != null) {
         val result = processor(parent)
-        if(!result) return false
-        if(inline) {
-            parent = parent.inlineableConfig?.config ?: parent.parentConfig
-        } else {
-            parent = parent.parentConfig
-        }
+        if (!result) return false
+        parent = parent.parentConfig
     }
     return true
 }
@@ -60,13 +56,13 @@ fun CwtMemberConfig<*>.processDescendants(processor: (CwtMemberConfig<*>) -> Boo
 }
 
 private fun CwtMemberConfig<*>.doProcessDescendants(processor: (CwtMemberConfig<*>) -> Boolean): Boolean {
-    processor(this).also { if(!it) return false }
-    this.configs?.process { it.doProcessDescendants(processor) }?.also { if(!it) return false }
+    processor(this).also { if (!it) return false }
+    this.configs?.process { it.doProcessDescendants(processor) }?.also { if (!it) return false }
     return true
 }
 
 inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T) -> CwtDataExpression?, crossinline configGroupProvider: (T) -> CwtConfigGroup): List<T> {
-    if(size <= 1) return toListOrThis()
+    if (size <= 1) return toListOrThis()
     return sortedByDescending s@{
         val expression = expressionProvider(it) ?: return@s Double.MAX_VALUE
         val configGroup = configGroupProvider(it)

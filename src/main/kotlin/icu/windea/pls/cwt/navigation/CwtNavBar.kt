@@ -9,20 +9,20 @@ import icu.windea.pls.cwt.psi.*
 import javax.swing.*
 
 class CwtNavBar : StructureAwareNavBarModelExtension() {
-	override val language: Language = CwtLanguage
-	
-	override fun getIcon(o: Any?): Icon? {
-		return when {
-			o is PsiElement -> o.icon
-			else -> null
-		}
-	}
-	
-	override fun getPresentableText(o: Any?): String? {
-		return when {
-			o is CwtProperty -> o.name
-			o is CwtValue && o.isBlockValue() -> o.value
-			else -> null
-		}
-	}
+    override val language: Language = CwtLanguage
+
+    override fun getIcon(o: Any?): Icon? {
+        return when {
+            o is PsiElement -> o.icon
+            else -> null
+        }
+    }
+
+    override fun getPresentableText(o: Any?): String? {
+        return when {
+            o is CwtProperty -> o.name
+            o is CwtValue && o.isBlockValue() -> o.value
+            else -> null
+        }
+    }
 }

@@ -17,12 +17,12 @@ class ParadoxCommandScopeLinkValueNode(
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_VALUE_KEY
     }
-    
+
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxCommandScopeLinkValueNode {
             //text may contain parameters
             //child node can be ParadoxDataSourceNode
-            
+
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             run {
                 val node = ParadoxDataSourceNode.resolve(text, textRange, configGroup, linkConfigs)

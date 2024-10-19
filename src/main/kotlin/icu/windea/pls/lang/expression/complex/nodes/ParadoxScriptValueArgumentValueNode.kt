@@ -24,10 +24,10 @@ class ParadoxScriptValueArgumentValueNode(
             else -> ParadoxScriptAttributesKeys.STRING_KEY
         }
     }
-    
+
     //相关高级语言功能（代码高亮、引用解析等）改为使用语言注入实现
     //see: icu.windea.pls.script.injection.ParadoxScriptLanguageInjector
-    
+
     //region
     //override fun getAttributesKeyConfig(element: ParadoxScriptStringExpressionElement): CwtConfig<*>? {
     //    if(!getSettings().inference.parameterConfig) return null
@@ -59,7 +59,7 @@ class ParadoxScriptValueArgumentValueNode(
     //    }
     //}
     //endregion
-    
+
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, valueNode: ParadoxScriptValueNode?, argumentNode: ParadoxScriptValueArgumentNode?): ParadoxScriptValueArgumentValueNode {
             return ParadoxScriptValueArgumentValueNode(text, textRange, configGroup, valueNode, argumentNode)

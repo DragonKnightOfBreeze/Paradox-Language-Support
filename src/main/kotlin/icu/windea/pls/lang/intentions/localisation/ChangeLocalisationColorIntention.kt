@@ -18,46 +18,46 @@ import icu.windea.pls.model.*
  */
 class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH
-    
+
     override fun getText() = PlsBundle.message("intention.changeLocalisationColor")
-    
+
     override fun getFamilyName() = text
-    
+
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        if(editor == null || file == null) return false
+        if (editor == null || file == null) return false
         val offset = editor.caretModel.offset
         val element = findElement(file, offset)
         return element != null
     }
-    
+
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        if(editor == null || file == null) return
+        if (editor == null || file == null) return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         val colorConfigs = ParadoxTextColorManager.getInfos(project, file)
         JBPopupFactory.getInstance().createListPopup(Popup(element, colorConfigs.toTypedArray())).showInBestPositionFor(editor)
     }
-    
+
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationColorfulText? {
         return ParadoxPsiManager.findLocalisationColorfulText(file, offset, true)
     }
-    
+
     override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
-    
+
     override fun startInWriteAction() = false
-    
+
     private class Popup(
         private val value: ParadoxLocalisationColorfulText,
         values: Array<ParadoxTextColorInfo>
     ) : BaseListPopupStep<ParadoxTextColorInfo>(PlsBundle.message("intention.changeLocalisationColor.title"), *values) {
         override fun getIconFor(value: ParadoxTextColorInfo) = value.icon
-        
+
         override fun getTextFor(value: ParadoxTextColorInfo) = value.text
-        
+
         override fun getDefaultOptionIndex() = 0
-        
+
         override fun isSpeedSearchEnabled(): Boolean = true
-        
+
         override fun onChosen(selectedValue: ParadoxTextColorInfo, finalChoice: Boolean): PopupStep<*>? {
             runUndoTransparentWriteAction { value.setName(selectedValue.name) }
             return PopupStep.FINAL_CHOICE

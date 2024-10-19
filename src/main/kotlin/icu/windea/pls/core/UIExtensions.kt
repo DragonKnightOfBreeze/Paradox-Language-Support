@@ -94,7 +94,7 @@ fun JBTable.setFixedColumnWidth(columnIndex: Int, sampleText: String) {
 
 fun MutableMap<*, Boolean>.toThreeStateProperty() = object : ReadWriteProperty<Any?, ThreeStateCheckBox.State> {
     val map = this@toThreeStateProperty
-    
+
     override fun getValue(thisRef: Any?, property: KProperty<*>): ThreeStateCheckBox.State {
         return when {
             map.all { (_, v) -> v } -> ThreeStateCheckBox.State.SELECTED
@@ -102,9 +102,9 @@ fun MutableMap<*, Boolean>.toThreeStateProperty() = object : ReadWriteProperty<A
             else -> ThreeStateCheckBox.State.DONT_CARE
         }
     }
-    
+
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: ThreeStateCheckBox.State) {
-        when(value) {
+        when (value) {
             ThreeStateCheckBox.State.SELECTED -> map.entries.forEach { it.setValue(true) }
             ThreeStateCheckBox.State.NOT_SELECTED -> map.entries.forEach { it.setValue(false) }
             else -> pass()
@@ -152,9 +152,9 @@ fun <T : Cell<JBCheckBox>> T.threeStateCheckBox(threeStateCheckBox: Cell<ThreeSt
             else -> ThreeStateCheckBox.State.DONT_CARE
         }
     }
-    if(checkBoxList.isEmpty()) {
+    if (checkBoxList.isEmpty()) {
         threeStateCheckBox.component.addActionListener {
-            when(threeStateCheckBox.component.state) {
+            when (threeStateCheckBox.component.state) {
                 ThreeStateCheckBox.State.SELECTED -> checkBoxList.forEach { it.isSelected = true }
                 ThreeStateCheckBox.State.NOT_SELECTED -> checkBoxList.forEach { it.isSelected = false }
                 else -> pass()
@@ -170,7 +170,7 @@ fun Cell<JBTextField>.bindWhenTextChanged(property: KMutableProperty0<String>): 
         whenTextChanged {
             val document = it.document
             val text = document.getText(0, document.length)
-            if(text != property.get()) property.set(text)
+            if (text != property.get()) property.set(text)
         }
     }
 }
@@ -180,7 +180,7 @@ fun Cell<JBTextField>.bindIntWhenTextChanged(property: KMutableProperty0<Int>): 
         whenTextChanged {
             val document = it.document
             val text = document.getText(0, document.length).toIntOrNull() ?: 0
-            if(text != property.get()) property.set(text)
+            if (text != property.get()) property.set(text)
         }
     }
 }

@@ -17,7 +17,7 @@ class ParadoxLocalisationExpressionPsiReference(
     rangeInElement: TextRange
 ) : PsiPolyVariantReferenceBase<ParadoxLocalisationExpressionElement>(element, rangeInElement), PsiReferencesAware {
     val project by lazy { element.project }
-    
+
     override fun handleElementRename(newElementName: String): PsiElement {
         val resolved = resolve()
         return when {
@@ -27,38 +27,38 @@ class ParadoxLocalisationExpressionPsiReference(
             else -> throw IncorrectOperationException()
         }
     }
-    
+
     override fun getReferences(): Array<out PsiReference>? {
         return ParadoxExpressionManager.getReferences(element, rangeInElement)
     }
-    
+
     //缓存解析结果以优化性能
-    
+
     private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationExpressionPsiReference, PsiElement> {
         override fun resolve(ref: ParadoxLocalisationExpressionPsiReference, incompleteCode: Boolean): PsiElement? {
             return ref.doResolve()
         }
     }
-    
+
     private object MultiResolver : ResolveCache.PolyVariantResolver<ParadoxLocalisationExpressionPsiReference> {
         override fun resolve(ref: ParadoxLocalisationExpressionPsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
             return ref.doMultiResolve()
         }
     }
-    
+
     override fun resolve(): PsiElement? {
         return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
     }
-    
+
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
     }
-    
+
     private fun doResolve(): PsiElement? {
         //根据对应的expression进行解析
         return ParadoxExpressionManager.resolveExpression(element, rangeInElement)
     }
-    
+
     private fun doMultiResolve(): Array<out ResolveResult> {
         //根据对应的expression进行解析
         return ParadoxExpressionManager.multiResolveExpression(element, rangeInElement)

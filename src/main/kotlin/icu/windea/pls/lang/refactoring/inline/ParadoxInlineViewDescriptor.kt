@@ -15,7 +15,7 @@ class ParadoxInlineViewDescriptor(
     override fun getElements(): Array<PsiElement> {
         return arrayOf(element)
     }
-    
+
     override fun getProcessedElementsHeader(): String {
         return when {
             element is ParadoxScriptScriptedVariable -> PlsBundle.message("inline.scriptedVariable.elements.header")
@@ -34,11 +34,11 @@ class ParadoxInlineViewDescriptor(
             else -> null
         } ?: PlsBundle.message("inline.element.unknown.header")
     }
-    
+
     override fun getCodeReferencesText(usagesCount: Int, filesCount: Int): String {
         return PlsBundle.message("invocations.to.be.inlined", UsageViewBundle.getReferencesString(usagesCount, filesCount))
     }
-    
+
     override fun getCommentReferencesText(usagesCount: Int, filesCount: Int): String {
         return PlsBundle.message("comments.elements.header", UsageViewBundle.getOccurencesString(usagesCount, filesCount))
     }

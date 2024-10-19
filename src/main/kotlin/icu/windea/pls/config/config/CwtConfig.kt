@@ -5,9 +5,9 @@ import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 
-interface CwtConfig<out T : PsiElement>: UserDataHolder {
+interface CwtConfig<out T : PsiElement> : UserDataHolder {
     val pointer: SmartPsiElementPointer<out T>
     val configGroup: CwtConfigGroup
-    
+
     val expression: CwtDataExpression? get() = null
 }

@@ -55,7 +55,6 @@ This says that ship_size:
 - May contain a `upkeep_override` clause, which must contain an `energy` `int` value and a `mineral` `int` value.
 - Must contain a `class` field, which a value that is in the `shipsize_class` enum (see enums below)
 
-
 ### Simple rules
 
 Simple rules check the right hand value against several common datatypes. These are:
@@ -83,7 +82,6 @@ Simple rules check the right hand value against several common datatypes. These 
 - `value_field`: matches a number or other reference to a value (in Jomini games). Accepts `value_field[min..max]` to limit the range of numbers.
 - `int_value_field`: same as `value_field`, but restricted to integers.
 - `alias_keys_field[trigger]`: matches a string that is a key in a rule alias (this is mainly used for `switch`
-
 
 ### Enums
 
@@ -137,7 +135,6 @@ has_country_flag = value[country_flag]
 
 The rule `value[key]` will accept any value that has been used in a matching `value_set[key]`. Completion will also be provided for these values.
 
-
 ### Types
 
 Types are the top level entities that are used to connect files to config rules. This roughly lines up with folders, and examples are things like "ship_size", "army" or "event" in Stellaris.
@@ -168,7 +165,6 @@ A simple type is just a type name and a path to the folder that type's files are
 - `severity`: `severity = warning` will reduce the errors in this type to warnings
 - `unique`: `unique = yes` will show errors if the same type name is defined multiple times
 - `## graph_related_types = { special_project anomaly_category }`: This comment option enables the graph view for this type, and will include the listed types in the graph
-
 
 ### Subtypes
 
@@ -240,7 +236,6 @@ Subtype can also take a number of options:
 - `## display_name = "Fancy name"`: The pretty name for the subtype
 - `## abbreviation = ST`: The short form for this subtype in graph displays
 
-
 ### Localisation
 
 Types can also be used to define localisation that must be provided for each entry of that type. By default these are only checked when a type is referenced (as an unused type doesn't need localisation). However, the `## required` option can be used to mark validation as mandatory.
@@ -282,7 +277,6 @@ my_ship_mk_2_required
 my_ship_mk_2_advanced
 ```
 
-
 ### Aliases
 
 Aliases allow the grouping of rules for reuse across many rules. The obvious example for this is effects. A simple event rule definition like the following allows any number of `effect` alias rules inside the immediate clause.
@@ -321,7 +315,6 @@ alias[effect:THIS] = {
 }
 ```
 
-
 ### Single-alias
 
 A single-alias allows re-use of a section of rules in multiple places. Defined in this way:
@@ -352,7 +345,6 @@ any_country = {
 }
 ```
 
-
 ### Options
 
 There are a number of options that can be applied to rules by placing them in a comment above the rule
@@ -372,7 +364,7 @@ Like pdxscript files, the `#` character is used to comment out lines. In `.cwt` 
 - `##` is used for options `## cardinality = 0..1`
 - `###` is used for documentation `### This text will be displayed in the completion info`
 
-### Special files 
+### Special files
 
 In addition to types, enums and validation in .cwt files, there are several "magic" files used for defining core game concepts.
 
@@ -434,4 +426,3 @@ This file contains a block `values` that contains multiple lists of hardcoded cw
 #### localisation.cwt
 
 This file contains a block `localisation_commands `that contains a list of localistaion commands and what scope they can be used in. E.g. `GetMotherFather = { monarch heir consort advisor }`. This is only used in pre-jomini games.
-

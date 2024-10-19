@@ -14,42 +14,42 @@ import icu.windea.pls.localisation.psi.*
 
 class IncorrectScopeSwitchInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
-        
+        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+
         val configGroup = getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if(element is ParadoxLocalisationExpressionElement) visitExpressionElement(element)
+                if (element is ParadoxLocalisationExpressionElement) visitExpressionElement(element)
             }
-            
+
             private fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
-                if(!element.isCommandExpression()) return
+                if (!element.isCommandExpression()) return
                 val value = element.value
                 val textRange = TextRange.create(0, value.length)
                 val commandExpression = ParadoxCommandExpression.resolve(value, textRange, configGroup)
-                if(commandExpression == null) return
+                if (commandExpression == null) return
                 checkExpression(element, commandExpression)
             }
-            
+
             fun checkExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
                 doCheckExpression(element, complexExpression)
             }
-            
+
             private fun doCheckExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
                 var inputScopeContext = ParadoxScopeManager.getAnyScopeContext()
-                when(complexExpression) {
+                when (complexExpression) {
                     is ParadoxCommandExpression -> {
-                        for(node in complexExpression.nodes) {
-                            when(node) {
+                        for (node in complexExpression.nodes) {
+                            when (node) {
                                 is ParadoxCommandScopeLinkNode -> {
                                     val supportedScopes = ParadoxScopeManager.getSupportedScopesOfNode(element, node, inputScopeContext)
                                     val matched = ParadoxScopeManager.matchesScope(inputScopeContext, supportedScopes, configGroup)
                                     val outputScopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, inputScopeContext)
                                     inputScopeContext = outputScopeContext
-                                    
-                                    if(supportedScopes.isNullOrEmpty()) continue
-                                    if(matched) continue
+
+                                    if (supportedScopes.isNullOrEmpty()) continue
+                                    if (matched) continue
                                     val offset = ParadoxExpressionManager.getExpressionOffset(element)
                                     val startOffset = offset + node.rangeInExpression.startOffset
                                     val endOffset = offset + node.rangeInExpression.endOffset
@@ -66,7 +66,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
             }
         }
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         return ParadoxFilePathManager.inLocalisationPath(fileInfo.path)

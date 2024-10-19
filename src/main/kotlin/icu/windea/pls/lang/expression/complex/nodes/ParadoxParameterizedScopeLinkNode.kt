@@ -15,10 +15,10 @@ class ParadoxParameterizedScopeLinkNode(
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxScriptAttributesKeys.SCOPE_KEY
     }
-    
+
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxParameterizedScopeLinkNode? {
-            if(!text.isParameterized()) return null
+            if (!text.isParameterized()) return null
             return ParadoxParameterizedScopeLinkNode(text, textRange, configGroup)
         }
     }

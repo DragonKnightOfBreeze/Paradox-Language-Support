@@ -11,6 +11,6 @@ import kotlin.reflect.*
 @MustBeDocumented
 @Target(AnnotationTarget.CLASS)
 annotation class WithBuiltInConfig(
-	val filePath: String,
-	val configClass: KClass<out CwtDetachedConfig>
+    val filePath: String,
+    val configClass: KClass<out CwtDetachedConfig>
 )

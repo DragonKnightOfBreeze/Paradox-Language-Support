@@ -27,9 +27,9 @@ class ParadoxSettingsState : BaseState() {
     var preferredLocale by string("auto")
     var ignoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
     var localConfigDirectory by string()
-    
+
     val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet(caseInsensitiveStringSet()).orEmpty() }
-    
+
     @get:Property(surroundWithTag = false)
     var documentation by property(DocumentationState())
     @get:Property(surroundWithTag = false)
@@ -42,7 +42,7 @@ class ParadoxSettingsState : BaseState() {
     var hierarchy by property(HierarchyState())
     @get:Property(surroundWithTag = false)
     var others by property(OthersState())
-    
+
     /**
      * @property renderLineComment 是否需要渲染之前的单行注释文本到文档中。
      * @property renderRelatedLocalisationsForDefinitions 是否需要为定义渲染相关本地化文本到文档中。
@@ -66,7 +66,7 @@ class ParadoxSettingsState : BaseState() {
         var showScopeContext by property(true)
         var showParameters by property(true)
     }
-    
+
     /**
      * @property completeInlineScriptInvocations 进行代码补全时，是否需要提供对内联脚本调用的代码补全。
      * @property completeVariableNames 进行代码补全时，是否需要在效果的子句中提示变量名。
@@ -88,19 +88,19 @@ class ParadoxSettingsState : BaseState() {
         var completeOnlyScopeIsMatched by property(true)
         var completeByLocalizedName by property(false)
         var completeByExtendedConfigs by property(false)
-        
+
         @get:Property(surroundWithTag = false)
         var clauseTemplate by property(ClauseTemplateState())
-        
+
         /**
          * @property maxMemberCountInOneLine 当插入从句模版时，当要插入的从句中的属性的个数不超过时，会把所有属性放到同一行。
          */
         @Tag("clauseTemplate")
-        class ClauseTemplateState: BaseState() {
+        class ClauseTemplateState : BaseState() {
             var maxMemberCountInOneLine by property(2)
         }
     }
-    
+
     /**
      * @property localisationStrategy 生成本地化时如何生成本地化文本。
      * @property localisationStrategyText 生成本地化时如果使用特定文本填充本地化文本，这个特定文本是什么。
@@ -113,29 +113,29 @@ class ParadoxSettingsState : BaseState() {
         var localisationStrategyText by string("REPLACE_ME")
         var localisationStrategyLocale by string("auto")
     }
-    
+
     @Tag("hierarchy")
     class HierarchyState : BaseState() {
         var showScriptedVariablesInCallHierarchy by property(true)
         var showDefinitionsInCallHierarchy by property(true)
         var showLocalisationsInCallHierarchy by property(true)
         var definitionTypeBindingsInCallHierarchy by map<String, String>()
-        
+
         fun showDefinitionsInCallHierarchy(rootDefinitionInfo: ParadoxDefinitionInfo?, definitionInfo: ParadoxDefinitionInfo?): Boolean {
-            if(rootDefinitionInfo == null || definitionInfo == null) return true
+            if (rootDefinitionInfo == null || definitionInfo == null) return true
             val bindings = definitionTypeBindingsInCallHierarchy
-            if(bindings.isEmpty()) return true
+            if (bindings.isEmpty()) return true
             val matchedBindings = bindings.filterKeys { k -> ParadoxDefinitionTypeExpression.resolve(k).matches(rootDefinitionInfo) }
-            if(matchedBindings.isEmpty()) return true
+            if (matchedBindings.isEmpty()) return true
             return matchedBindings.values.any { v ->
                 v.toCommaDelimitedStringSet().any { e -> ParadoxDefinitionTypeExpression.resolve(e).matches(definitionInfo) }
             }
         }
     }
-    
+
     /**
      * 注意：仅可配置是否启用基于使用的推断，基于自定义规则的推断是始终启用的。
-     * 
+     *
      * @property configContextForParameters 是否推断参数对应的脚本表达式。
      * @property configContextForInlineScripts 是否推断内联脚本的使用位置。
      * @property scopeContext 是否推断scripted_trigger、scripted_effect等的作用域上下文。
@@ -150,7 +150,7 @@ class ParadoxSettingsState : BaseState() {
         var scopeContextForEvents by property(false)
         var scopeContextForOnActions by property(false)
     }
-    
+
     /**
      * @property showEditorContextToolbar 是否在编辑器右上角显示上下文工具栏。
      * @property showLocalisationFloatingToolbar 是否在选中本地化文本时显示悬浮工具栏。

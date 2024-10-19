@@ -1,11 +1,14 @@
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.openapi.util.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
+import kotlin.collections.Set
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.forEach
 
 /**
  * @property name string
@@ -13,17 +16,17 @@ import icu.windea.pls.cwt.psi.*
  * @property supportedScopes (option) scope/scopes: string | string[]
  * @property outputScope (option) push_scope: string?
  */
-interface CwtAliasConfig : CwtInlineableConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val subName: String
     val supportedScopes: Set<String>
     val outputScope: String?
-    
+
     val subNameExpression: CwtDataExpression get() = CwtDataExpression.resolve(subName, true)
     override val expression: CwtDataExpression get() = subNameExpression
-    
+
     fun inline(config: CwtPropertyConfig): CwtPropertyConfig
-    
+
     companion object {
         fun resolve(config: CwtPropertyConfig): CwtAliasConfig? = doResolve(config)
     }
@@ -47,19 +50,22 @@ private class CwtAliasConfigImpl(
 ) : UserDataHolderBase(), CwtAliasConfig {
     override val supportedScopes get() = config.supportedScopes
     override val outputScope get() = config.pushScope
-    
+
     override fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
         val other = this.config
         val inlined = config.copy(
             key = subName,
             value = other.value,
+            valueType = other.valueType,
             configs = CwtConfigManipulator.deepCopyConfigs(other),
+            optionConfigs = other.optionConfigs,
             documentation = other.documentation,
-            optionConfigs = other.optionConfigs
         )
         inlined.parentConfig = config.parentConfig
         inlined.configs?.forEach { it.parentConfig = inlined }
-        inlined.inlineableConfig = this
+        inlined.inlineConfig = config.inlineConfig
+        inlined.aliasConfig = this
+        inlined.singleAliasConfig = config.singleAliasConfig
         return inlined
     }
 }

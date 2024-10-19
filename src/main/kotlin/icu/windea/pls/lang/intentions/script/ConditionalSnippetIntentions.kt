@@ -17,21 +17,21 @@ private val blockTemplate = { p: String -> "[[$p] $p = \$$p\$ ]" }
 
 class ConditionalSnippetToPropertyFormatIntention : IntentionAction {
     override fun getText() = PlsBundle.message("intention.conditionalSnippetToPropertyFormat")
-    
+
     override fun getFamilyName() = text
-    
+
     override fun startInWriteAction() = true
-    
+
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        if(editor == null || file == null) return false
+        if (editor == null || file == null) return false
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return false
         val text = element.text
         return blockFormatRegex.matches(text)
     }
-    
+
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        if(editor == null || file == null) return
+        if (editor == null || file == null) return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         val text = element.text
@@ -44,7 +44,7 @@ class ConditionalSnippetToPropertyFormatIntention : IntentionAction {
             ?: return
         element.replace(newElement)
     }
-    
+
     private fun findElement(file: PsiFile, offset: Int): PsiElement? {
         return file.findElementAt(offset) { it.parentOfType<ParadoxScriptParameterCondition>() }
     }
@@ -52,21 +52,21 @@ class ConditionalSnippetToPropertyFormatIntention : IntentionAction {
 
 class ConditionalSnippetToBlockFormatIntention : IntentionAction {
     override fun getText() = PlsBundle.message("intention.conditionalSnippetToBlockFormat")
-    
+
     override fun getFamilyName() = text
-    
+
     override fun startInWriteAction() = true
-    
+
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        if(editor == null || file == null) return false
+        if (editor == null || file == null) return false
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return false
         val text = element.text
         return propertyFormatRegex.matches(text)
     }
-    
+
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        if(editor == null || file == null) return
+        if (editor == null || file == null) return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         val text = element.text
@@ -79,7 +79,7 @@ class ConditionalSnippetToBlockFormatIntention : IntentionAction {
             ?: return
         element.replace(newElement)
     }
-    
+
     private fun findElement(file: PsiFile, offset: Int): PsiElement? {
         return file.findElementAt(offset) { it.parentOfType<ParadoxScriptProperty>() }
     }

@@ -14,33 +14,33 @@ class ParadoxScriptedVariablePsiReference(
     rangeInElement: TextRange
 ) : PsiPolyVariantReferenceBase<ParadoxScriptedVariableReference>(element, rangeInElement) {
     val project by lazy { element.project }
-    
+
     override fun handleElementRename(newElementName: String): PsiElement {
         return element.setName(newElementName)
     }
-    
+
     //缓存解析结果以优化性能
-    
+
     private object Resolver : ResolveCache.AbstractResolver<ParadoxScriptedVariablePsiReference, ParadoxScriptScriptedVariable> {
         override fun resolve(ref: ParadoxScriptedVariablePsiReference, incompleteCode: Boolean): ParadoxScriptScriptedVariable? {
             return ref.doResolve()
         }
     }
-    
+
     private object MultiResolver : ResolveCache.PolyVariantResolver<ParadoxScriptedVariablePsiReference> {
         override fun resolve(ref: ParadoxScriptedVariablePsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
             return ref.doMultiResolve()
         }
     }
-    
+
     override fun resolve(): ParadoxScriptScriptedVariable? {
         return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
     }
-    
+
     override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
         return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
     }
-    
+
     private fun doResolve(): ParadoxScriptScriptedVariable? {
         //首先尝试从当前文件中查找引用，然后从全局范围中查找引用
         val element = element
@@ -50,7 +50,7 @@ class ParadoxScriptedVariablePsiReference(
         ParadoxGlobalScriptedVariableSearch.search(name, selector).find()?.let { return it }
         return null
     }
-    
+
     private fun doMultiResolve(): Array<out ResolveResult> {
         //首先尝试从当前文件中查找引用，然后从全局范围中查找引用
         val element = element

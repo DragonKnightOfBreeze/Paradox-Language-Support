@@ -63,15 +63,7 @@ import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.ep.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.psi.impl.*
 import icu.windea.pls.model.*
 import it.unimi.dsi.fastutil.*
 import it.unimi.dsi.fastutil.objects.*
@@ -93,69 +85,16 @@ import kotlin.collections.isNullOrEmpty
 import kotlin.properties.*
 import kotlin.reflect.*
 
-//region Stdlib Extensions
+//region Common Extensions
 fun String.compareToIgnoreCase(other: String): Int {
     return String.CASE_INSENSITIVE_ORDER.compare(this, other)
-}
-//endregion
-
-//region Common Extensions
-inline fun <T> cancelable(block: () -> T): T {
-    try {
-        return block()
-    } catch(e: ExecutionException) {
-        val cause = e.cause
-        if(cause is ProcessCanceledException) throw cause
-        throw cause ?: e
-    } catch(e: UncheckedExecutionException) {
-        val cause = e.cause
-        if(cause is ProcessCanceledException) throw cause
-        throw cause ?: e
-    } catch(e: ProcessCanceledException) {
-        throw e
-    }
-}
-
-inline fun <T> cancelable(defaultValueOnException: (Throwable) -> T, block: () -> T): T {
-    try {
-        return block()
-    } catch(e: ExecutionException) {
-        val cause = e.cause
-        if(cause is ProcessCanceledException) throw cause
-        return defaultValueOnException(cause ?: e)
-    } catch(e: UncheckedExecutionException) {
-        val cause = e.cause
-        if(cause is ProcessCanceledException) throw cause
-        return defaultValueOnException(cause ?: e)
-    } catch(e: ProcessCanceledException) {
-        throw e
-    }
-}
-
-inline fun <R> runCatchingCancelable(block: () -> R): Result<R> {
-    return runCatching(block).onFailure { if(it is ProcessCanceledException) throw it }
-}
-
-inline fun <T, R> T.runCatchingCancelable(block: T.() -> R): Result<R> {
-    return runCatching(block).onFailure { if(it is ProcessCanceledException) throw it }
-}
-
-inline fun <R> disableLogger(block: () -> R): R {
-    val globalLogger = Logger.getLogger("") //DO NOT use Logger.getGlobalLogger(), it's incorrect
-    val loggerLevel = globalLogger.level
-    try {
-        globalLogger.level = Level.OFF
-        return block()
-    } finally {
-        globalLogger.level = loggerLevel
-    }
 }
 
 object CaseInsensitiveStringHashingStrategy : Hash.Strategy<String?> {
     override fun hashCode(s: String?): Int {
-        return if(s == null) 0 else StringUtilRt.stringHashCodeInsensitive(s)
+        return if (s == null) 0 else StringUtilRt.stringHashCodeInsensitive(s)
     }
-    
+
     override fun equals(s1: String?, s2: String?): Boolean {
         return s1.equals(s2, ignoreCase = true)
     }
@@ -174,9 +113,9 @@ fun <V> caseInsensitiveStringKeyMap(): MutableMap<@CaseInsensitive String, V> {
 inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {
     val oldValue = this.get()
     val newValue = value
-    if(newValue == null) {
+    if (newValue == null) {
         return true
-    } else if(oldValue == null) {
+    } else if (oldValue == null) {
         this.set(newValue)
         return true
     } else {
@@ -186,20 +125,71 @@ inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): B
     }
 }
 
+inline fun <T> cancelable(block: () -> T): T {
+    try {
+        return block()
+    } catch (e: ExecutionException) {
+        val cause = e.cause
+        if (cause is ProcessCanceledException) throw cause
+        throw cause ?: e
+    } catch (e: UncheckedExecutionException) {
+        val cause = e.cause
+        if (cause is ProcessCanceledException) throw cause
+        throw cause ?: e
+    } catch (e: ProcessCanceledException) {
+        throw e
+    }
+}
+
+inline fun <T> cancelable(defaultValueOnException: (Throwable) -> T, block: () -> T): T {
+    try {
+        return block()
+    } catch (e: ExecutionException) {
+        val cause = e.cause
+        if (cause is ProcessCanceledException) throw cause
+        return defaultValueOnException(cause ?: e)
+    } catch (e: UncheckedExecutionException) {
+        val cause = e.cause
+        if (cause is ProcessCanceledException) throw cause
+        return defaultValueOnException(cause ?: e)
+    } catch (e: ProcessCanceledException) {
+        throw e
+    }
+}
+
+inline fun <R> runCatchingCancelable(block: () -> R): Result<R> {
+    return runCatching(block).onFailure { if (it is ProcessCanceledException) throw it }
+}
+
+inline fun <T, R> T.runCatchingCancelable(block: T.() -> R): Result<R> {
+    return runCatching(block).onFailure { if (it is ProcessCanceledException) throw it }
+}
+
+inline fun <R> disableLogger(block: () -> R): R {
+    val globalLogger = Logger.getLogger("") //DO NOT use Logger.getGlobalLogger(), it's incorrect
+    val loggerLevel = globalLogger.level
+    try {
+        globalLogger.level = Level.OFF
+        return block()
+    } finally {
+        globalLogger.level = loggerLevel
+    }
+}
+
 fun TextRange.unquote(text: String): TextRange {
     val leftQuoted = text.isLeftQuoted()
     val rightQuoted = text.isRightQuoted()
-    val startOffset = if(leftQuoted) this.startOffset + 1 else this.startOffset
-    val endOffset = if(rightQuoted) this.endOffset - 1 else this.endOffset
+    val startOffset = if (leftQuoted) this.startOffset + 1 else this.startOffset
+    val endOffset = if (rightQuoted) this.endOffset - 1 else this.endOffset
     return TextRange.create(startOffset, endOffset)
 }
 
 fun TextRange.replaceAndQuoteIfNecessary(original: String, replacement: String): String {
-    if(this.length >= original.length - 1) {
+    if (this.length >= original.length - 1) {
         return replacement.quoteIfNecessary()
     } else {
         var replacement0 = replacement.quoteIfNecessary()
-        if(replacement0.isLeftQuoted() && replacement0.isRightQuoted()) {
+        if (replacement0.isLeftQuoted() && replacement0.isRightQuoted()) {
             replacement0 = replacement0.substring(1, replacement0.length - 1)
         }
         val prefix = original.substring(0, startOffset)
@@ -212,12 +202,12 @@ fun String.getTextFragments(offset: Int = 0): List<Tuple2<TextRange, String>> {
     val result = mutableListOf<Tuple2<TextRange, String>>()
     var startIndex = 0
     var index = 0
-    while(index < this.length) {
+    while (index < this.length) {
         val c = this[index++]
-        if(c != '\\') continue
-        if(index == this.length) break
+        if (c != '\\') continue
+        if (index == this.length) break
         val c1 = this[index++]
-        if(c1 != '\\' && c1 != '"') continue
+        if (c1 != '\\' && c1 != '"') continue
         result += TextRange.create(offset + startIndex, offset + index - 2) to this.substring(startIndex, index - 2)
         startIndex = index - 1
     }
@@ -228,14 +218,14 @@ fun String.getTextFragments(offset: Int = 0): List<Tuple2<TextRange, String>> {
 //com.intellij.refactoring.actions.BaseRefactoringAction.findRefactoringTargetInEditor
 fun DataContext.findElement(): PsiElement? {
     var element = this.getData(CommonDataKeys.PSI_ELEMENT)
-    if(element == null) {
+    if (element == null) {
         val editor = this.getData(CommonDataKeys.EDITOR)
         val file = this.getData(CommonDataKeys.PSI_FILE)
-        if(editor != null && file != null) {
+        if (editor != null && file != null) {
             element = getElementAtCaret(editor, file)
         }
         val languages = this.getData(LangDataKeys.CONTEXT_LANGUAGES)
-        if(element == null || element is SyntheticElement || languages == null) {
+        if (element == null || element is SyntheticElement || languages == null) {
             return null
         }
     }
@@ -247,7 +237,7 @@ fun DataContext.findElement(): PsiElement? {
  */
 fun isSpanMultipleLines(node: ASTNode, document: Document): Boolean {
     val range = node.textRange
-    val limit = if(range.endOffset < document.textLength) document.getLineNumber(range.endOffset) else document.lineCount - 1
+    val limit = if (range.endOffset < document.textLength) document.getLineNumber(range.endOffset) else document.lineCount - 1
     return document.getLineNumber(range.startOffset) < limit
 }
 
@@ -263,34 +253,26 @@ fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiE
     return NavigationGutterIconBuilder.create(icon, DEFAULT_PSI_CONVERTOR, gotoRelatedItemProvider)
 }
 
-@Suppress("UNCHECKED_CAST")
-inline fun <T> Query<T>.processQuery(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
-    if(onlyMostRelevant && this is ParadoxQuery<*, *>) {
-        find()?.let { consumer.process(it as T) }
-        return true
-    }
-    return this.forEach(consumer)
-}
+fun getDefaultProject() = ProjectManager.getInstance().defaultProject
 
-@Suppress("UNCHECKED_CAST")
-inline fun <T> Query<T>.processQueryAsync(onlyMostRelevant: Boolean = false, consumer: Processor<in T>): Boolean {
-    if(onlyMostRelevant && this is ParadoxQuery<*, *>) {
-        find()?.let { consumer.process(it as T) }
-        return true
-    }
-    return allowParallelProcessing().forEach(consumer)
-}
-
+fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
 
 fun <T> createCachedValue(project: Project = getDefaultProject(), trackValue: Boolean = false, provider: CachedValueProvider<T>): CachedValue<T> {
     return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
 }
 
 fun <T> T.withDependencyItems(vararg dependencyItems: Any): CachedValueProvider.Result<T> {
-    if(dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
+    if (dependencyItems.isEmpty()) return CachedValueProvider.Result.create(this, ModificationTracker.NEVER_CHANGED)
     return CachedValueProvider.Result.create(this, *dependencyItems)
 }
 
+fun <T> Query<T>.processQuery(consumer: Processor<in T>): Boolean {
+    return this.forEach(consumer)
+}
+
+fun <T> Query<T>.processQueryAsync(consumer: Processor<in T>): Boolean {
+    return allowParallelProcessing().forEach(consumer)
+}
 //endregion
 
 //region Key & DataKey Related Extensions
@@ -300,17 +282,17 @@ inline fun <T> UserDataHolder.tryPutUserData(key: Key<T>, value: T?) {
 
 inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, action: () -> T): T {
     val data = this.getUserData(key)
-    if(data != null) return data
+    if (data != null) return data
     val newValue = action()
-    if(newValue != null) putUserData(key, newValue)
+    if (newValue != null) putUserData(key, newValue)
     return newValue
 }
 
 inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, nullValue: T, action: () -> T?): T? {
     val data = this.getUserData(key)
-    if(data != null) return data.takeUnless { it == nullValue }
+    if (data != null) return data.takeUnless { it == nullValue }
     val newValue = action()
-    if(newValue != null) putUserData(key, newValue) else putUserData(key, nullValue)
+    if (newValue != null) putUserData(key, newValue) else putUserData(key, nullValue)
     return newValue
 }
 
@@ -381,12 +363,12 @@ fun CompletionContributor.extend(place: ElementPattern<out PsiElement>, provider
 
 //region Editor & Document Extensions
 fun Document.isAtLineStart(offset: Int, skipWhitespace: Boolean = false): Boolean {
-    if(!skipWhitespace) return DocumentUtil.isAtLineStart(offset, this)
+    if (!skipWhitespace) return DocumentUtil.isAtLineStart(offset, this)
     val lineStartOffset = DocumentUtil.getLineStartOffset(offset, this)
     val charsSequence = charsSequence
-    for(i in offset..lineStartOffset) {
+    for (i in offset..lineStartOffset) {
         val c = charsSequence[i]
-        if(!c.isWhitespace()) {
+        if (!c.isWhitespace()) {
             return false
         }
     }
@@ -394,13 +376,13 @@ fun Document.isAtLineStart(offset: Int, skipWhitespace: Boolean = false): Boolea
 }
 
 fun Document.isAtLineEnd(offset: Int, skipWhitespace: Boolean = false): Boolean {
-    if(!skipWhitespace) return DocumentUtil.isAtLineEnd(offset, this)
+    if (!skipWhitespace) return DocumentUtil.isAtLineEnd(offset, this)
     val lineEndOffset = DocumentUtil.getLineEndOffset(offset, this)
     val charsSequence = charsSequence
-    for(i in offset..lineEndOffset) {
-        if(i >= charsSequence.length) return true
+    for (i in offset..lineEndOffset) {
+        if (i >= charsSequence.length) return true
         val c = charsSequence[i]
-        if(!c.isWhitespace()) {
+        if (!c.isWhitespace()) {
             return false
         }
     }
@@ -410,10 +392,10 @@ fun Document.isAtLineEnd(offset: Int, skipWhitespace: Boolean = false): Boolean 
 inline fun Document.getCharToLineStart(offset: Int, skipWhitespaceOnly: Boolean = false, predicate: (Char) -> Boolean): Int {
     val lineStartOffset = DocumentUtil.getLineStartOffset(offset, this)
     val charsSequence = charsSequence
-    for(i in offset..lineStartOffset) {
+    for (i in offset..lineStartOffset) {
         val c = charsSequence[i]
-        if(predicate(c)) return i
-        if(skipWhitespaceOnly && !c.isWhitespace()) return -1
+        if (predicate(c)) return i
+        if (skipWhitespaceOnly && !c.isWhitespace()) return -1
     }
     return -1
 }
@@ -462,7 +444,7 @@ inline fun VirtualFile.toPsiDirectory(project: Project): PsiDirectory? {
 
 /** 将VirtualFile转化为指定类型的PsiFile或者PsiDirectory。 */
 inline fun VirtualFile.toPsiFileSystemItem(project: Project): PsiFileSystemItem? {
-    return if(this.isFile) PsiManager.getInstance(project).findFile(this) else PsiManager.getInstance(project).findDirectory(this)
+    return if (this.isFile) PsiManager.getInstance(project).findFile(this) else PsiManager.getInstance(project).findDirectory(this)
 }
 
 /** （物理层面上）判断虚拟文件是否拥有BOM。 */
@@ -476,7 +458,7 @@ fun VirtualFile.addBom(bom: ByteArray, wait: Boolean = true) {
     this.bom = bom
     val bytes = this.contentsToByteArray()
     val contentWithAddedBom = ArrayUtil.mergeArrays(bom, bytes)
-    if(wait) {
+    if (wait) {
         WriteAction.runAndWait<IOException> { this.setBinaryContent(contentWithAddedBom) }
     } else {
         WriteAction.run<IOException> { this.setBinaryContent(contentWithAddedBom) }
@@ -489,7 +471,7 @@ fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
     this.bom = null
     val bytes = this.contentsToByteArray()
     val contentWithStrippedBom = Arrays.copyOfRange(bytes, bom.size, bytes.size)
-    if(wait) {
+    if (wait) {
         WriteAction.runAndWait<IOException> { this.setBinaryContent(contentWithStrippedBom) }
     } else {
         WriteAction.run<IOException> { this.setBinaryContent(contentWithStrippedBom) }
@@ -509,9 +491,9 @@ fun <T : ASTNode> T.takeUnless(elementType: IElementType): T? {
 
 inline fun ASTNode.processChild(processor: (ASTNode) -> Boolean): Boolean {
     var child: ASTNode? = this.firstChildNode
-    while(child != null) {
+    while (child != null) {
         val result = processor(child)
-        if(!result) return false
+        if (!result) return false
         child = child.treeNext
     }
     return true
@@ -519,7 +501,7 @@ inline fun ASTNode.processChild(processor: (ASTNode) -> Boolean): Boolean {
 
 inline fun ASTNode.forEachChild(action: (ASTNode) -> Unit) {
     var child: ASTNode? = this.firstChildNode
-    while(child != null) {
+    while (child != null) {
         action(child)
         child = child.treeNext
     }
@@ -535,8 +517,8 @@ fun ASTNode.isEndOfLine(): Boolean {
 
 fun ASTNode.firstChild(type: IElementType): ASTNode? {
     var child: ASTNode? = this.firstChildNode
-    while(child != null) {
-        if(child.elementType == type) return child
+    while (child != null) {
+        if (child.elementType == type) return child
         child = child.treeNext
     }
     return null
@@ -544,8 +526,8 @@ fun ASTNode.firstChild(type: IElementType): ASTNode? {
 
 fun ASTNode.firstChild(types: TokenSet): ASTNode? {
     var child: ASTNode? = this.firstChildNode
-    while(child != null) {
-        if(child.elementType in types) return child
+    while (child != null) {
+        if (child.elementType in types) return child
         child = child.treeNext
     }
     return null
@@ -553,8 +535,8 @@ fun ASTNode.firstChild(types: TokenSet): ASTNode? {
 
 fun ASTNode.firstChild(predicate: (ASTNode) -> Boolean): ASTNode? {
     var child: ASTNode? = this.firstChildNode
-    while(child != null) {
-        if(predicate(child)) return child
+    while (child != null) {
+        if (predicate(child)) return child
         child = child.treeNext
     }
     return null
@@ -570,9 +552,9 @@ fun LighterASTNode.firstChild(tree: LighterAST, types: TokenSet): LighterASTNode
 
 inline fun LighterASTNode.firstChild(tree: LighterAST, predicate: (LighterASTNode) -> Boolean): LighterASTNode? {
     val children = tree.getChildren(this)
-    for(i in children.indices) {
+    for (i in children.indices) {
         val child = children[i]
-        if(predicate(child)) return child
+        if (predicate(child)) return child
     }
     return null
 }
@@ -590,15 +572,15 @@ fun LighterASTNode.childrenOfType(tree: LighterAST, types: TokenSet): List<Light
 }
 
 fun LighterASTNode.internNode(tree: LighterAST): CharSequence? {
-    if(this !is LighterASTTokenNode) return null
+    if (this !is LighterASTTokenNode) return null
     return tree.charTable.intern(this.text).toString()
 }
 //endregion
 
 //region PSI Extensions
-val PsiElement.startOffset get() = if(this is ASTDelegatePsiElement) this.node.startOffset else this.textRange.startOffset
+val PsiElement.startOffset get() = if (this is ASTDelegatePsiElement) this.node.startOffset else this.textRange.startOffset
 
-val PsiElement.endOffset get() = if(this is ASTDelegatePsiElement) this.node.let { it.startOffset + it.textLength } else this.textRange.endOffset
+val PsiElement.endOffset get() = if (this is ASTDelegatePsiElement) this.node.let { it.startOffset + it.textLength } else this.textRange.endOffset
 
 fun PsiElement.hasSyntaxError(): Boolean {
     return this.lastChild is PsiErrorElement
@@ -609,21 +591,21 @@ fun PsiElement.hasSyntaxError(): Boolean {
  */
 fun <T : PsiElement> PsiFile.findElementAt(offset: Int, forward: Boolean? = null, transform: (element: PsiElement) -> T?): T? {
     var element0: PsiElement? = null
-    if(forward != false) {
+    if (forward != false) {
         val element = findElementAt(offset)
-        if(element != null) {
+        if (element != null) {
             element0 = element
             val result = transform(element)
-            if(result != null) {
+            if (result != null) {
                 return result
             }
         }
     }
-    if(forward != true && offset > 0) {
+    if (forward != true && offset > 0) {
         val leftElement = findElementAt(offset - 1)
-        if(leftElement != null && leftElement !== element0) {
+        if (leftElement != null && leftElement !== element0) {
             val leftResult = transform(leftElement)
-            if(leftResult != null) {
+            if (leftResult != null) {
                 return leftResult
             }
         }
@@ -634,14 +616,14 @@ fun <T : PsiElement> PsiFile.findElementAt(offset: Int, forward: Boolean? = null
 fun <T : PsiElement> PsiFile.findElementsBetween(startOffset: Int, endOffset: Int, rootTransform: (element: PsiElement) -> PsiElement?, transform: (element: PsiElement) -> T?): List<T> {
     val startRoot = findElementAt(startOffset, true, rootTransform) ?: return emptyList()
     val endRoot = findElementAt(endOffset, true, rootTransform) ?: return emptyList()
-    val root = if(startRoot.isAncestor(endRoot)) startRoot else endRoot
+    val root = if (startRoot.isAncestor(endRoot)) startRoot else endRoot
     val elements = mutableListOf<T>()
     root.processChild {
         val textRange = it.textRange
-        if(textRange.endOffset > startOffset && textRange.startOffset < endOffset) {
+        if (textRange.endOffset > startOffset && textRange.startOffset < endOffset) {
             val isLast = textRange.endOffset >= endOffset
             val result = transform(it)
-            if(result != null) elements.add(result)
+            if (result != null) elements.add(result)
             !isLast
         } else {
             true
@@ -653,15 +635,15 @@ fun <T : PsiElement> PsiFile.findElementsBetween(startOffset: Int, endOffset: In
 fun PsiFile.findAllElementsBetween(startOffset: Int, endOffset: Int, rootTransform: (element: PsiElement) -> PsiElement?): List<PsiElement> {
     val startRoot = findElementAt(startOffset, true, rootTransform) ?: return emptyList()
     val endRoot = findElementAt(endOffset, true, rootTransform) ?: return emptyList()
-    val root = if(startRoot.isAncestor(endRoot)) startRoot else endRoot
+    val root = if (startRoot.isAncestor(endRoot)) startRoot else endRoot
     val elements = mutableListOf<PsiElement>()
     root.processChild {
         val textRange = it.textRange
-        if(textRange.endOffset > startOffset) {
+        if (textRange.endOffset > startOffset) {
             elements.add(it)
             true
         } else {
-            if(textRange.startOffset < endOffset) {
+            if (textRange.startOffset < endOffset) {
                 val isLast = textRange.endOffset >= endOffset
                 elements.add(it)
                 !isLast
@@ -676,15 +658,15 @@ fun PsiFile.findAllElementsBetween(startOffset: Int, endOffset: Int, rootTransfo
  * @param forward 查找偏移之前还是之后的PSI引用，默认为null，表示同时考虑。
  */
 fun PsiFile.findReferenceAt(offset: Int, forward: Boolean? = null, predicate: (reference: PsiReference) -> Boolean): PsiReference? {
-    if(forward != false) {
+    if (forward != false) {
         val reference = findReferenceAt(offset)
-        if(reference != null && predicate(reference)) {
+        if (reference != null && predicate(reference)) {
             return reference
         }
     }
-    if(forward != true && offset > 0) {
+    if (forward != true && offset > 0) {
         val reference = findReferenceAt(offset - 1)
-        if(reference != null && predicate(reference)) {
+        if (reference != null && predicate(reference)) {
             return reference
         }
     }
@@ -692,7 +674,7 @@ fun PsiFile.findReferenceAt(offset: Int, forward: Boolean? = null, predicate: (r
 }
 
 fun PsiReference.resolveFirst(): PsiElement? {
-    return if(this is PsiPolyVariantReference) {
+    return if (this is PsiPolyVariantReference) {
         this.multiResolve(false).firstNotNullOfOrNull { it.element }
     } else {
         this.resolve()
@@ -700,7 +682,7 @@ fun PsiReference.resolveFirst(): PsiElement? {
 }
 
 fun PsiReference.collectReferences(): Array<out PsiReference> {
-    if(this is PsiReferencesAware) {
+    if (this is PsiReferencesAware) {
         val result = mutableListOf<PsiReference>()
         doCollectReferences(this, result)
         return result.toTypedArray()
@@ -709,9 +691,9 @@ fun PsiReference.collectReferences(): Array<out PsiReference> {
 }
 
 private fun doCollectReferences(sourceReference: PsiReference, result: MutableList<PsiReference>) {
-    if(sourceReference is PsiReferencesAware) {
+    if (sourceReference is PsiReferencesAware) {
         val references = sourceReference.getReferences()
-        if(references.isNotNullOrEmpty()) {
+        if (references.isNotNullOrEmpty()) {
             references.forEach { reference ->
                 doCollectReferences(reference, result)
             }
@@ -725,8 +707,8 @@ private fun doCollectReferences(sourceReference: PsiReference, result: MutableLi
  * 判断两个[PsiElement]是否在同一[VirtualFile]的同一位置。
  */
 infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean {
-    if(this == other) return true
-    if(this == null || other == null) return false
+    if (this == other) return true
+    if (this == null || other == null) return false
     return startOffset == other.startOffset
         && containingFile.originalFile.virtualFile == other.containingFile.originalFile.virtualFile
 }
@@ -765,23 +747,23 @@ inline fun PsiElement.findChildren(forward: Boolean = true, predicate: (PsiEleme
 
 inline fun PsiElement.processChild(forward: Boolean = true, processor: (PsiElement) -> Boolean): Boolean {
     //不会忽略某些特定类型的子元素
-    var child: PsiElement? = if(forward) this.firstChild else this.lastChild
-    while(child != null) {
+    var child: PsiElement? = if (forward) this.firstChild else this.lastChild
+    while (child != null) {
         val result = processor(child)
-        if(!result) return false
-        child = if(forward) child.nextSibling else child.prevSibling
+        if (!result) return false
+        child = if (forward) child.nextSibling else child.prevSibling
     }
     return true
 }
 
 inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward: Boolean = true, element: T): Int {
-    var child = if(forward) this.firstChild else this.lastChild
+    var child = if (forward) this.firstChild else this.lastChild
     var index = 0
-    while(child != null) {
-        when(child) {
+    while (child != null) {
+        when (child) {
             element -> return index
             is T -> index++
-            else -> child = if(forward) child.nextSibling else child.prevSibling
+            else -> child = if (forward) child.nextSibling else child.prevSibling
         }
     }
     return -1
@@ -789,32 +771,32 @@ inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward: Boolean = t
 
 inline fun PsiElement.forEachChild(forward: Boolean = true, action: (PsiElement) -> Unit) {
     //不会忽略某些特定类型的子元素
-    var child: PsiElement? = if(forward) this.firstChild else this.lastChild
-    while(child != null) {
+    var child: PsiElement? = if (forward) this.firstChild else this.lastChild
+    while (child != null) {
         action(child)
-        child = if(forward) child.nextSibling else child.prevSibling
+        child = if (forward) child.nextSibling else child.prevSibling
     }
 }
 
 inline fun <reified T : PsiElement> PsiElement.processChildrenOfType(forward: Boolean = true, processor: (T) -> Boolean): Boolean {
     //不会忽略某些特定类型的子元素
-    var child: PsiElement? = if(forward) this.firstChild else this.lastChild
-    while(child != null) {
-        if(child is T) {
+    var child: PsiElement? = if (forward) this.firstChild else this.lastChild
+    while (child != null) {
+        if (child is T) {
             val result = processor(child)
-            if(!result) return false
+            if (!result) return false
         }
-        child = if(forward) child.nextSibling else child.prevSibling
+        child = if (forward) child.nextSibling else child.prevSibling
     }
     return true
 }
 
 inline fun <reified T : PsiElement> PsiElement.findChildOfType(forward: Boolean = true, predicate: (T) -> Boolean = { true }): T? {
     //不会忽略某些特定类型的子元素
-    var child: PsiElement? = if(forward) this.firstChild else this.lastChild
-    while(child != null) {
-        if(child is T && predicate(child)) return child
-        child = if(forward) child.nextSibling else child.prevSibling
+    var child: PsiElement? = if (forward) this.firstChild else this.lastChild
+    while (child != null) {
+        if (child is T && predicate(child)) return child
+        child = if (forward) child.nextSibling else child.prevSibling
     }
     return null
 }
@@ -822,13 +804,13 @@ inline fun <reified T : PsiElement> PsiElement.findChildOfType(forward: Boolean 
 inline fun <reified T> PsiElement.findChildrenOfType(forward: Boolean = true, predicate: (T) -> Boolean = { true }): List<T> {
     //不会忽略某些特定类型的子元素
     var result: MutableList<T>? = null
-    var child: PsiElement? = if(forward) this.firstChild else this.lastChild
-    while(child != null) {
-        if(child is T && predicate(child)) {
-            if(result == null) result = mutableListOf()
+    var child: PsiElement? = if (forward) this.firstChild else this.lastChild
+    while (child != null) {
+        if (child is T && predicate(child)) {
+            if (result == null) result = mutableListOf()
             result.add(child)
         }
-        child = if(forward) child.nextSibling else child.prevSibling
+        child = if (forward) child.nextSibling else child.prevSibling
     }
     return result ?: emptyList()
 }
@@ -861,15 +843,15 @@ fun PsiFile.setNameWithoutExtension(name: String): PsiElement {
 
 object EmptyPointer : SmartPsiElementPointer<PsiElement> {
     override fun getElement() = null
-    
+
     override fun getContainingFile() = null
-    
+
     override fun getProject() = ProjectManager.getInstance().defaultProject
-    
+
     override fun getVirtualFile() = null
-    
+
     override fun getRange() = null
-    
+
     override fun getPsiRange() = null
 }
 
@@ -884,7 +866,7 @@ fun <E : PsiElement> E.createPointer(project: Project = this.project): SmartPsiE
 fun <E : PsiElement> E.createPointer(file: PsiFile?, project: Project = this.project): SmartPsiElementPointer<E> {
     return try {
         SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this, file)
-    } catch(e: IllegalArgumentException) {
+    } catch (e: IllegalArgumentException) {
         //Element from alien project - use empty pointer
         emptyPointer()
     }
@@ -893,13 +875,13 @@ fun <E : PsiElement> E.createPointer(file: PsiFile?, project: Project = this.pro
 fun PsiElement.isIncomplete(): Boolean {
     val file = containingFile
     val originalFile = file.originalFile
-    if(originalFile === file) return false
+    if (originalFile === file) return false
     val startOffset = startOffset
     file.findElementAt(startOffset)
     val e1 = file.findElementAt(startOffset) ?: return false
     val e2 = originalFile.findElementAt(startOffset) ?: return true
-    if(e1.elementType != e2.elementType) return true
-    if(e1.textLength != e2.textLength) return true
+    if (e1.elementType != e2.elementType) return true
+    if (e1.textLength != e2.textLength) return true
     return false
 }
 
@@ -912,23 +894,11 @@ fun PsiElement.isSingleLineBreak(): Boolean {
     return this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) == 1
 }
 
-///**
-// * 搭配[com.intellij.psi.util.PsiUtilCore.getElementAtOffset]使用。
-// */
-//fun PsiElement.getSelfOrPrevSiblingNotWhitespace(): PsiElement {
-//	if(this !is PsiWhiteSpace) return this
-//	var current = this.prevSibling ?: return this
-//	while(current is PsiWhiteSpace){
-//		current = current.prevSibling ?: return this
-//	}
-//	return current
-//}
-
 inline fun findAcceptableElementIncludeComment(element: PsiElement?, predicate: (PsiElement) -> Boolean): Any? {
     var current: PsiElement? = element ?: return null
-    while(current != null && current !is PsiFile) {
-        if(predicate(current)) return current
-        if(current is PsiComment) return current.siblings().find { it is CwtProperty }
+    while (current != null && current !is PsiFile) {
+        if (predicate(current)) return current
+        if (current is PsiComment) return current.siblings().find { predicate(it) }
             ?.takeIf { it.prevSibling.isSpaceOrSingleLineBreak() }
         current = current.parent
     }
@@ -937,10 +907,10 @@ inline fun findAcceptableElementIncludeComment(element: PsiElement?, predicate: 
 
 inline fun findTextStartOffsetIncludeComment(element: PsiElement, findUpPredicate: (PsiElement) -> Boolean): Int {
     //找到直到没有空行为止的最后一个注释，返回它的开始位移，或者输入元素的开始位移
-    val target: PsiElement = if(element.prevSibling == null && findUpPredicate(element)) element.parent else element
+    val target: PsiElement = if (element.prevSibling == null && findUpPredicate(element)) element.parent else element
     var current: PsiElement? = target
     var comment: PsiComment? = null
-    while(current != null) {
+    while (current != null) {
         current = current.prevSibling ?: break
         when {
             current is PsiWhiteSpace && current.isSpaceOrSingleLineBreak() -> continue
@@ -948,7 +918,7 @@ inline fun findTextStartOffsetIncludeComment(element: PsiElement, findUpPredicat
             else -> break
         }
     }
-    if(comment != null) return comment.startOffset
+    if (comment != null) return comment.startOffset
     return target.startOffset
 }
 
@@ -956,15 +926,15 @@ fun getLineCommentDocText(element: PsiElement): String? {
     //认为当前元素之前，之间没有空行的非行尾行注释，可以视为文档注释的一部分
     var lines: LinkedList<String>? = null
     var prevElement = element.prevSibling ?: element.parent?.prevSibling
-    while(prevElement != null) {
+    while (prevElement != null) {
         val text = prevElement.text
-        if(prevElement !is PsiWhiteSpace) {
-            if(prevElement !is PsiComment) break
+        if (prevElement !is PsiWhiteSpace) {
+            if (prevElement !is PsiComment) break
             val docText = text.trimStart('#').trim().escapeXml()
-            if(lines == null) lines = LinkedList()
+            if (lines == null) lines = LinkedList()
             lines.addFirst(docText)
         } else {
-            if(text.containsBlankLine()) break
+            if (text.containsBlankLine()) break
         }
         // 兼容comment在rootBlock之外的特殊情况
         prevElement = prevElement.prevSibling
@@ -985,20 +955,20 @@ fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
 }
 
 fun getDocumentation(documentationLines: List<String>?, html: Boolean): String? {
-    if(documentationLines.isNullOrEmpty()) return null
+    if (documentationLines.isNullOrEmpty()) return null
     return buildString {
         var isLineBreak = false
-        for(line in documentationLines) {
-            if(!isLineBreak) {
+        for (line in documentationLines) {
+            if (!isLineBreak) {
                 isLineBreak = true
             } else {
                 append("<br>")
             }
-            if(line.endsWith('\\')) {
+            if (line.endsWith('\\')) {
                 isLineBreak = false
             }
             val l = line.trimEnd('\\')
-            if(html) append(l) else append(l.escapeXml())
+            if (html) append(l) else append(l.escapeXml())
         }
     }
 }
@@ -1013,7 +983,7 @@ fun VirtualFile.findTopHostFileOrThis(): VirtualFile {
 }
 
 private tailrec fun doFindTopHostFileOrThis(file: VirtualFile): VirtualFile {
-    if(file is VirtualFileWindow) return doFindTopHostFileOrThis(file.delegate)
+    if (file is VirtualFileWindow) return doFindTopHostFileOrThis(file.delegate)
     return file
 }
 
@@ -1026,7 +996,7 @@ fun PsiElement.findTopHostElementOrThis(project: Project): PsiElement {
 
 private tailrec fun doFindTopHostElementOrThis(element: PsiElement, project: Project): PsiElement {
     val host = InjectedLanguageManager.getInstance(project).getInjectionHost(element)
-    if(host == null) return element
+    if (host == null) return element
     return doFindTopHostElementOrThis(host, project)
 }
 
@@ -1034,7 +1004,7 @@ fun PsiFile.getShreds(): Place? {
     //why it's deprecated and internal???
     //@Suppress("UnstableApiUsage", "DEPRECATION")
     //return InjectedLanguageUtilBase.getShreds(this)
-    
+
     return viewProvider.document.castOrNull<DocumentWindow>()?.getShreds()
 }
 //endregion
@@ -1046,5 +1016,5 @@ fun getInspectionToolState(shortName: String, element: PsiElement?, project: Pro
     return tools.getState(element)
 }
 
-val ScopeToolState.enabledTool: InspectionProfileEntry? get() = if(isEnabled) tool.tool else null
+val ScopeToolState.enabledTool: InspectionProfileEntry? get() = if (isEnabled) tool.tool else null
 //endregion

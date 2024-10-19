@@ -12,9 +12,9 @@ class ParadoxErrorCommandScopeLinkNode(
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpressionNode.Base(), ParadoxCommandScopeLinkNode, ParadoxErrorNode {
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
-        if(nodes.isNotEmpty()) return null
-        if(text.isEmpty()) return null
-        if(text.isParameterized()) return null
+        if (nodes.isNotEmpty()) return null
+        if (text.isEmpty()) return null
+        if (text.isParameterized()) return null
         return ParadoxComplexExpressionErrors.unresolvedCommandScope(rangeInExpression, text)
     }
 }

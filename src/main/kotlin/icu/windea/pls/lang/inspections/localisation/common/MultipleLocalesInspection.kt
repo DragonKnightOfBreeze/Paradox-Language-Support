@@ -15,41 +15,42 @@ import javax.swing.*
  * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。默认为"languages.yml"。
  */
 class MultipleLocalesInspection : LocalInspectionTool() {
-	@JvmField var ignoredFileNames = "languages.yml"
-	
-	override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
-        if(file !is ParadoxLocalisationFile) return null
-        if(!shouldCheckFile(file)) return null
-        
-		val fileName = file.name
-		ignoredFileNames.splitOptimized(';').forEach {
-			if(fileName.matchesPattern(it, true)) return null //忽略
-		}
-		if(file.propertyLists.size <= 1) return null //不存在多个语言区域，忽略
-		val holder = ProblemsHolder(manager, file, isOnTheFly)
-		holder.registerProblem(file, PlsBundle.message("inspection.localisation.multipleLocales.desc"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
-		return holder.resultsArray
-	}
-    
+    @JvmField
+    var ignoredFileNames = "languages.yml"
+
+    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
+        if (file !is ParadoxLocalisationFile) return null
+        if (!shouldCheckFile(file)) return null
+
+        val fileName = file.name
+        ignoredFileNames.splitOptimized(';').forEach {
+            if (fileName.matchesPattern(it, true)) return null //忽略
+        }
+        if (file.propertyLists.size <= 1) return null //不存在多个语言区域，忽略
+        val holder = ProblemsHolder(manager, file, isOnTheFly)
+        holder.registerProblem(file, PlsBundle.message("inspection.localisation.multipleLocales.desc"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+        return holder.resultsArray
+    }
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
-        if(ParadoxFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (ParadoxFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
         return true
     }
-	
-	override fun createOptionsPanel(): JComponent {
-		return panel {
-			row {
-				label(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames"))
-					.applyToComponent { toolTipText = PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.tooltip") }
-			}
-			row {
-				expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
-					.bindText(::ignoredFileNames)
-					.bindWhenTextChanged(::ignoredFileNames)
-					.comment(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.comment"))
-					.align(Align.FILL)
-					.resizableColumn()
-			}
-		}
-	}
+
+    override fun createOptionsPanel(): JComponent {
+        return panel {
+            row {
+                label(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames"))
+                    .applyToComponent { toolTipText = PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.tooltip") }
+            }
+            row {
+                expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
+                    .bindText(::ignoredFileNames)
+                    .bindWhenTextChanged(::ignoredFileNames)
+                    .comment(PlsBundle.message("inspection.localisation.multipleLocales.option.ignoredFileNames.comment"))
+                    .align(Align.FILL)
+                    .resizableColumn()
+            }
+        }
+    }
 }

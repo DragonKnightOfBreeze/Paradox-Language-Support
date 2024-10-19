@@ -5,11 +5,11 @@ import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
-interface CwtInlineConfig : CwtInlineableConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtInlineConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
-    
+
     fun inline(): CwtPropertyConfig
-    
+
     companion object {
         fun resolve(config: CwtPropertyConfig): CwtInlineConfig? = doResolve(config)
     }
@@ -28,13 +28,13 @@ private class CwtInlineConfigImpl(
     override val name: String
 ) : UserDataHolderBase(), CwtInlineConfig {
     override fun inline(): CwtPropertyConfig {
-        val other = config
+        val other = this.config
         val inlined = other.copy(
             key = name,
             configs = CwtConfigManipulator.deepCopyConfigs(other)
         )
         inlined.configs?.forEach { it.parentConfig = inlined }
-        inlined.inlineableConfig = this
+        inlined.inlineConfig = this
         return inlined
     }
 }

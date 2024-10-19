@@ -42,48 +42,48 @@ class ParadoxLocalisationFloatingToolbar(
     private val mouseListener = MouseListener()
     private val keyboardListener = KeyboardListener()
     private val mouseMotionListener = MouseMotionListener()
-    
+
     private var hint: LightweightHint? = null
     private var buttonSize: Int by Delegates.notNull()
     private var lastSelection: String? = null
-    
+
     private val editor: Editor get() = textEditor.editor
-    
+
     init {
         registerListeners()
     }
-    
+
     fun isShown() = hint != null
-    
+
     fun hideIfShown() {
         hint?.hide()
     }
-    
+
     fun showIfHidden() {
-        if(hint != null || !canBeShownAtCurrentSelection()) {
+        if (hint != null || !canBeShownAtCurrentSelection()) {
             return
         }
         val toolbar = createActionToolbar(editor.contentComponent)
         buttonSize = toolbar.maxButtonHeight
-        
+
         val newHint = LightweightHint(toolbar.component)
         newHint.setForceShowAsPopup(true)
-        
+
         showOrUpdateLocation(newHint)
         newHint.addHintListener { this.hint = null }
         this.hint = newHint
     }
-    
+
     fun updateLocationIfShown() {
         showOrUpdateLocation(hint ?: return)
     }
-    
+
     override fun dispose() {
         unregisterListeners()
         hideIfShown()
         hint = null
     }
-    
+
     private fun createActionToolbar(targetComponent: JComponent): ActionToolbar {
         val group = CustomActionsSchema.getInstance().getCorrectedAction(actionGroupId) as ActionGroup
         val toolbar = object : ActionToolbarImpl(ActionPlaces.EDITOR_TOOLBAR, group, true) {
@@ -99,7 +99,7 @@ class ParadoxLocalisationFloatingToolbar(
         toolbar.setReservePlaceAutoPopupIcon(false)
         return toolbar
     }
-    
+
     private fun showOrUpdateLocation(hint: LightweightHint) {
         HintManagerImpl.getInstanceImpl().showEditorHint(
             hint,
@@ -110,19 +110,19 @@ class ParadoxLocalisationFloatingToolbar(
             true
         )
     }
-    
+
     private fun registerListeners() {
         editor.addEditorMouseListener(mouseListener)
         editor.addEditorMouseMotionListener(mouseMotionListener)
         editor.contentComponent.addKeyListener(keyboardListener)
     }
-    
+
     private fun unregisterListeners() {
         editor.removeEditorMouseListener(mouseListener)
         editor.removeEditorMouseMotionListener(mouseMotionListener)
         editor.contentComponent.removeKeyListener(keyboardListener)
     }
-    
+
     private fun canBeShownAtCurrentSelection(): Boolean {
         val file = PsiEditorUtil.getPsiFile(editor)
         PsiDocumentManager.getInstance(file.project).commitDocument(editor.document)
@@ -130,25 +130,25 @@ class ParadoxLocalisationFloatingToolbar(
         val selectionStart = selectionModel.selectionStart
         val selectionEnd = selectionModel.selectionEnd
         //忽略没有选择文本的情况
-        if(selectionStart == selectionEnd) return false
+        if (selectionStart == selectionEnd) return false
         //忽略跨行的情况
-        if(editor.document.getLineNumber(selectionStart) != editor.document.getLineNumber(selectionEnd)) return false
+        if (editor.document.getLineNumber(selectionStart) != editor.document.getLineNumber(selectionEnd)) return false
         val elementAtStart = file.findElementAt(selectionStart)
         val elementAtEnd = file.findElementAt(selectionEnd - 1)
         //开始位置和结束位置的左边或右边是STRING_TOKEN，向上能查找到同一个ParadoxLocalisationPropertyValue，且选择文本的范围在引号之间
-        if(elementAtStart == null || elementAtEnd == null) return false
-        if(elementAtStart.elementType != STRING_TOKEN && elementAtStart.prevLeaf(false).elementType != STRING_TOKEN) return false
-        if(elementAtEnd.elementType != STRING_TOKEN && elementAtEnd.nextLeaf(false).elementType != STRING_TOKEN) return false
+        if (elementAtStart == null || elementAtEnd == null) return false
+        if (elementAtStart.elementType != STRING_TOKEN && elementAtStart.prevLeaf(false).elementType != STRING_TOKEN) return false
+        if (elementAtEnd.elementType != STRING_TOKEN && elementAtEnd.nextLeaf(false).elementType != STRING_TOKEN) return false
         val propertyValueAtStart = elementAtStart.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
         val propertyValueAtEnd = elementAtEnd.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
-        if(propertyValueAtStart !== propertyValueAtEnd) return false
+        if (propertyValueAtStart !== propertyValueAtEnd) return false
         val propertyValue = propertyValueAtStart
         val textRange = propertyValue.textRange
-        val start = if(propertyValue.firstChild.elementType == LEFT_QUOTE) textRange.startOffset + 1 else textRange.startOffset
-        val end = if(propertyValue.lastChild.elementType == RIGHT_QUOTE) textRange.endOffset - 1 else textRange.endOffset
+        val start = if (propertyValue.firstChild.elementType == LEFT_QUOTE) textRange.startOffset + 1 else textRange.startOffset
+        val end = if (propertyValue.lastChild.elementType == RIGHT_QUOTE) textRange.endOffset - 1 else textRange.endOffset
         return selectionStart >= start && selectionEnd <= end
     }
-    
+
     private fun getHintPosition(hint: LightweightHint): Point {
         val hintPos = HintManagerImpl.getInstanceImpl().getHintPosition(hint, editor, HintManager.DEFAULT)
         // because of `hint.setForceShowAsPopup(true)`, HintManager.ABOVE does not place the hint above
@@ -158,25 +158,25 @@ class ParadoxLocalisationFloatingToolbar(
         hintPos.translate(dx, dy)
         return hintPos
     }
-    
+
     private fun updateOnProbablyChangedSelection(onSelectionChanged: (String) -> Unit) {
         val newSelection = editor.selectionModel.selectedText
-        
-        when(newSelection) {
+
+        when (newSelection) {
             null -> hideIfShown()
             lastSelection -> Unit
             else -> onSelectionChanged(newSelection)
         }
-        
+
         lastSelection = newSelection
     }
-    
+
     private inner class MouseListener : EditorMouseListener {
         override fun mouseReleased(e: EditorMouseEvent) {
             //仅当文档可编辑时才进行处理
-            if(editor.document.isWritable) {
+            if (editor.document.isWritable) {
                 updateOnProbablyChangedSelection {
-                    if(isShown()) {
+                    if (isShown()) {
                         updateLocationIfShown()
                     } else {
                         showIfHidden()
@@ -185,13 +185,13 @@ class ParadoxLocalisationFloatingToolbar(
             }
         }
     }
-    
+
     private inner class KeyboardListener : KeyAdapter() {
         override fun keyReleased(e: KeyEvent) {
             //仅当文档可编辑时才进行处理
-            if(editor.document.isWritable) {
+            if (editor.document.isWritable) {
                 super.keyReleased(e)
-                if(e.source != editor.contentComponent) {
+                if (e.source != editor.contentComponent) {
                     return
                 }
                 updateOnProbablyChangedSelection {
@@ -200,24 +200,24 @@ class ParadoxLocalisationFloatingToolbar(
             }
         }
     }
-    
+
     private inner class MouseMotionListener : EditorMouseMotionListener {
         override fun mouseMoved(e: EditorMouseEvent) {
             //仅当文档可编辑时才进行处理
-            if(editor.document.isWritable) {
+            if (editor.document.isWritable) {
                 val visualPosition = e.visualPosition
                 val hoverSelected = editor.caretModel.allCarets.any {
                     val beforeSelectionEnd = it.selectionEndPosition.after(visualPosition)
                     val afterSelectionStart = visualPosition.after(it.selectionStartPosition)
                     beforeSelectionEnd && afterSelectionStart
                 }
-                if(hoverSelected) {
+                if (hoverSelected) {
                     showIfHidden()
                 }
             }
         }
     }
-    
+
     companion object {
         const val EDITOR_FLOATING_TOOLBAR = "ParadoxLocalisationEditorFloatingToolbar"
     }

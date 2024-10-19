@@ -16,7 +16,7 @@ class CwtSchemaConfig(
             val constraints = mutableMapOf<String, CwtPropertyConfig>()
             fileConfig.properties.forEach { prop ->
                 val keyExpression = CwtSchemaExpression.resolve(prop.key)
-                when(keyExpression) {
+                when (keyExpression) {
                     is CwtSchemaExpression.Enum -> enums[keyExpression.name] = prop
                     is CwtSchemaExpression.Constraint -> constraints[keyExpression.name] = prop
                     else -> properties += prop

@@ -21,19 +21,19 @@ import javax.swing.*
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationProvider {
     val backgroundColor = Gray._34
-    
+
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
         return definitionInfo.type == "technology"
     }
-    
+
     override fun getPresentation(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): JComponent? {
         //GFX_technology_unknown 52*52
         //GFX_technology_xxx 52*52
-        
+
         //GFX_bottom_line_physics 533*1
         //GFX_bottom_line_society 533*1
         //GFX_bottom_line_engineering 533*1
-        
+
         //背景
         //GFX_tech_entry_physics_bg 452*96
         //GFX_tech_entry_society_bg 452*96
@@ -41,13 +41,13 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
         //GFX_tech_entry_rare_bg 452*96
         //GFX_tech_entry_dangerous_bg 452*96
         //GFX_tech_entry_dangerous_rare_bg 452*96
-        
+
         //突破图标
         //GFX_tech_gateway 24*24
-        
+
         //标题 - 左上 - 白色
         //费用 - 右上 - 绿色
-        
+
         val data = definition.getData<StellarisTechnologyData>() ?: return null
         val backgroundIcon = getBackgroundIcon(definition, definitionInfo, data) ?: return null
         val bottomLineIcon = getBottomLineIcon(definition, definitionInfo, data) ?: return null
@@ -71,32 +71,32 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
         panel.add(nameLabel.withLocation(6, 2)) //6, 2
         panel.add(costLabel.withLocation(452 - 6 - costLabel.width, 2)) //452 - 6 - width, 2
         panel.add(icon.toLabel().withLocation(4, 32)) // (60 - 52) / 2, 20 + ((76 - 52) / 2)
-        if(categoryIcon != null) {
+        if (categoryIcon != null) {
             panel.add(categoryIcon.toLabel().withLocation(452 - 6 - categoryIcon.iconWidth, 26)) //452 - 6 - width, 20 + 6
         }
         return panel
     }
-    
+
     private fun getNameLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): JLabel? {
         return ParadoxPresentationManager.getNameLabel(definition, JBColor.WHITE)
     }
-    
+
     private fun getCostLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): JLabel? {
         val cost = definition.getData<StellarisTechnologyData>()?.cost ?: 0
         val color = ParadoxTextColorManager.getInfo("G", definitionInfo.project, definition)?.color //Green
         return ParadoxLocalisationTextUIRenderer.render(cost.toString(), color)
     }
-    
+
     private fun getIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): Icon? {
         return ParadoxPresentationManager.getIcon(definition) ?: getUnknownIcon(definition, definitionInfo)
     }
-    
+
     private fun getUnknownIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Icon? {
         val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()
         val sprite = ParadoxDefinitionSearch.search("GFX_technology_unknown", "sprite", selector).find() ?: return null
         return ParadoxPresentationManager.getIcon(sprite)
     }
-    
+
     private fun getBackgroundIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): Icon? {
         val area = data.area ?: return null
         val types = definitionInfo.subtypes
@@ -110,7 +110,7 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
         val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
         return ParadoxPresentationManager.getIcon(sprite)
     }
-    
+
     private fun getBottomLineIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): Icon? {
         val area = data.area ?: return null
         val spriteName = "GFX_bottom_line_${area}"
@@ -118,14 +118,14 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
         val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
         return ParadoxPresentationManager.getIcon(sprite)
     }
-    
+
     private fun getCategoryIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): Icon? {
         val category = data.category?.firstOrNull() ?: return null
         val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()
         val categoryDef = ParadoxDefinitionSearch.search(category, "technology_category", selector).find() ?: return null
         return ParadoxPresentationManager.getIcon(categoryDef)
     }
-    
+
     private fun getGatewayIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Icon? {
         val spriteName = "GFX_tech_gateway"
         val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()

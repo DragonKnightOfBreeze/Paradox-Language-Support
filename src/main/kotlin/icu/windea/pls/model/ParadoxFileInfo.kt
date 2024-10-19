@@ -1,9 +1,6 @@
 package icu.windea.pls.model
 
-import icons.*
-import icu.windea.pls.*
 import java.util.*
-import javax.swing.*
 
 /**
  * @property path 相对于入口目录的路径。用于匹配规则。
@@ -16,14 +13,14 @@ class ParadoxFileInfo(
     val rootInfo: ParadoxRootInfo
 ) {
     override fun equals(other: Any?): Boolean {
-        return this === other || other is ParadoxFileInfo 
+        return this === other || other is ParadoxFileInfo
             && relPath == other.relPath && fileType == other.fileType && rootInfo == other.rootInfo
     }
-    
+
     override fun hashCode(): Int {
         return Objects.hash(relPath, fileType, rootInfo)
     }
-    
+
     fun inMainEntry(): Boolean {
         return relPath == path || relPath.root == "game"
     }

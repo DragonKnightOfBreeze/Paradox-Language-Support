@@ -6,7 +6,7 @@ import icu.windea.pls.*
 
 class ParadoxFoldingOptionsProvider : BeanConfigurable<ParadoxFoldingSettings>, CodeFoldingOptionsProvider {
     constructor() : super(ParadoxFoldingSettings.getInstance(), PlsBundle.message("settings"))
-    
+
     init {
         val settings = instance
         checkBox(PlsBundle.message("settings.folding.parameterConditionBlocks"), settings::parameterConditionBlocks)

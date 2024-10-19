@@ -1,7 +1,7 @@
 package icu.windea.pls.core
 
 infix fun <T> Comparator<T>?.thenPossible(comparator: Comparator<T>?): Comparator<T>? {
-    if(this == null || comparator == null) return this ?: comparator
+    if (this == null || comparator == null) return this ?: comparator
     return this.then(comparator)
 }
 
@@ -22,7 +22,7 @@ inline fun <T, R, C : Comparable<C>> complexCompareBy(
             a1 == b1 -> 0
             a1 == null -> 1
             b1 == null -> -1
-            pinPredicate(b1) -> if(pinPredicate(a1)) 0 else 1
+            pinPredicate(b1) -> if (pinPredicate(a1)) 0 else 1
             pinPredicate(a1) -> -1
             else -> {
                 val a2 = comparableSelector(a1) ?: return@Comparator 0
@@ -50,7 +50,7 @@ inline fun <T, R, C : Comparable<C>> complexCompareByDescending(
             a1 == b1 -> 1
             a1 == null -> 1
             b1 == null -> -1
-            pinPredicate(b1) -> if(pinPredicate(a1)) 0 else 1
+            pinPredicate(b1) -> if (pinPredicate(a1)) 0 else 1
             pinPredicate(a1) -> -1
             else -> {
                 val a2 = comparableSelector(a1) ?: return@Comparator 0

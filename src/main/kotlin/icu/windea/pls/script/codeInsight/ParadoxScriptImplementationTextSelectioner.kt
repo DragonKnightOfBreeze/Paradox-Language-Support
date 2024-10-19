@@ -12,39 +12,39 @@ import icu.windea.pls.script.psi.*
  * * 其他：从目标元素开始，到目标元素结束
  */
 class ParadoxScriptImplementationTextSelectioner : ImplementationTextSelectioner {
-	override fun getTextStartOffset(element: PsiElement): Int {
-		return when {
-			element is ParadoxScriptProperty -> {
-				findTextStartOffsetIncludeComment(element) { it.parent is ParadoxScriptRootBlock }
-			}
-			element is ParadoxScriptPropertyKey -> {
-				//处理对应的property是定义的特殊情况
-				val parent = element.parent
-				val isDefinition = parent?.castOrNull<ParadoxScriptProperty>()?.definitionInfo != null
-				if(isDefinition) return getTextStartOffset(parent)
-				findTextStartOffsetIncludeComment(element) { it.parent is ParadoxScriptRootBlock }
-			}
+    override fun getTextStartOffset(element: PsiElement): Int {
+        return when {
+            element is ParadoxScriptProperty -> {
+                findTextStartOffsetIncludeComment(element) { it.parent is ParadoxScriptRootBlock }
+            }
+            element is ParadoxScriptPropertyKey -> {
+                //处理对应的property是定义的特殊情况
+                val parent = element.parent
+                val isDefinition = parent?.castOrNull<ParadoxScriptProperty>()?.definitionInfo != null
+                if (isDefinition) return getTextStartOffset(parent)
+                findTextStartOffsetIncludeComment(element) { it.parent is ParadoxScriptRootBlock }
+            }
             element is ParadoxScriptString && element.isBlockMember() -> {
                 findTextStartOffsetIncludeComment(element) { it.parent is ParadoxScriptRootBlock }
             }
-			else -> {
-				element.startOffset
-			}
-		}
-	}
-	
-	override fun getTextEndOffset(element: PsiElement): Int {
-		return when {
-			element is ParadoxScriptPropertyKey -> {
-				//处理对应的property是定义的特殊情况
-				val parent = element.parent
-				val isDefinition = parent?.castOrNull<ParadoxScriptProperty>()?.definitionInfo != null
-				if(isDefinition) return getTextEndOffset(parent)
-				element.endOffset
-			}
-			else -> {
-				element.endOffset
-			}
-		}
-	}
+            else -> {
+                element.startOffset
+            }
+        }
+    }
+
+    override fun getTextEndOffset(element: PsiElement): Int {
+        return when {
+            element is ParadoxScriptPropertyKey -> {
+                //处理对应的property是定义的特殊情况
+                val parent = element.parent
+                val isDefinition = parent?.castOrNull<ParadoxScriptProperty>()?.definitionInfo != null
+                if (isDefinition) return getTextEndOffset(parent)
+                element.endOffset
+            }
+            else -> {
+                element.endOffset
+            }
+        }
+    }
 }

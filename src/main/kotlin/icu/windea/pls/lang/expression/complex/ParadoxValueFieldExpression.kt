@@ -53,23 +53,23 @@ class ParadoxValueFieldExpression private constructor(
     val scriptValueExpression: ParadoxScriptValueExpression?
         get() = this.valueFieldNode.castOrNull<ParadoxDynamicValueFieldNode>()
             ?.dataSourceNode?.nodes?.findIsInstance<ParadoxScriptValueExpression>()
-    
+
     override val errors by lazy { validate() }
-    
+
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? {
-            if(expressionString.isEmpty()) return null
-            
+            if (expressionString.isEmpty()) return null
+
             //skip if text is a number
-            if(isNumber(expressionString)) return null
-            
+            if (isNumber(expressionString)) return null
+
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
-            
+
             //skip if text is a parameter with unary operator prefix
-            if(ParadoxExpressionManager.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
-            
+            if (ParadoxExpressionManager.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
+
             val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
-            
+
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val offset = range.startOffset
             var isLast = false
@@ -77,19 +77,19 @@ class ParadoxValueFieldExpression private constructor(
             var tokenIndex = -1
             var startIndex = 0
             val textLength = expressionString.length
-            while(tokenIndex < textLength) {
+            while (tokenIndex < textLength) {
                 index = tokenIndex + 1
                 tokenIndex = expressionString.indexOf('.', index)
-                if(tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
-                if(tokenIndex != -1 && expressionString.indexOf('@', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
-                if(tokenIndex != -1 && expressionString.indexOf('|', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
-                val dotNode = if(tokenIndex != -1) {
+                if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
+                if (tokenIndex != -1 && expressionString.indexOf('@', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
+                if (tokenIndex != -1 && expressionString.indexOf('|', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
+                val dotNode = if (tokenIndex != -1) {
                     val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
                     ParadoxOperatorNode(".", dotRange, configGroup)
                 } else {
                     null
                 }
-                if(tokenIndex == -1) {
+                if (tokenIndex == -1) {
                     tokenIndex = textLength
                     isLast = true
                 }
@@ -102,63 +102,63 @@ class ParadoxValueFieldExpression private constructor(
                     else -> ParadoxScopeLinkNode.resolve(nodeText, nodeTextRange, configGroup)
                 }
                 //handle mismatch situation
-                if(!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
+                if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
                 nodes.add(node)
-                if(dotNode != null) nodes.add(dotNode)
+                if (dotNode != null) nodes.add(dotNode)
             }
             return ParadoxValueFieldExpression(expressionString, range, nodes, configGroup)
         }
-        
+
         private fun isNumber(text: String): Boolean {
             return ParadoxDataExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
         }
-        
+
         private fun ParadoxValueFieldExpression.validate(): List<ParadoxComplexExpressionError> {
             val errors = mutableListOf<ParadoxComplexExpressionError>()
             var malformed = false
-            for((i, node) in nodes.withIndex()) {
+            for ((i, node) in nodes.withIndex()) {
                 val isLast = i == nodes.lastIndex
-                when(node) {
+                when (node) {
                     is ParadoxScopeLinkNode -> {
-                        if(node.text.isEmpty()) {
-                            if(!malformed) {
+                        if (node.text.isEmpty()) {
+                            if (!malformed) {
                                 malformed = true
                             }
                         } else {
-                            if(node is ParadoxDynamicScopeLinkNode) {
+                            if (node is ParadoxDynamicScopeLinkNode) {
                                 val dataSourceNode = node.dataSourceNode
-                                for(dataSourceChildNode in dataSourceNode.nodes) {
-                                    when(dataSourceChildNode) {
+                                for (dataSourceChildNode in dataSourceNode.nodes) {
+                                    when (dataSourceChildNode) {
                                         is ParadoxDataSourceNode -> {
-                                            if(dataSourceChildNode.text.isEmpty()) {
-                                                if(!malformed) {
+                                            if (dataSourceChildNode.text.isEmpty()) {
+                                                if (!malformed) {
                                                     malformed = true
                                                 }
-                                            } else if(!malformed && !dataSourceChildNode.isValid()) {
+                                            } else if (!malformed && !dataSourceChildNode.isValid()) {
                                                 malformed = true
                                             }
                                         }
                                         is ParadoxScopeLinkNode -> {
-                                            if(dataSourceChildNode.text.isEmpty()) {
-                                                if(isLast) {
+                                            if (dataSourceChildNode.text.isEmpty()) {
+                                                if (isLast) {
                                                     errors += ParadoxComplexExpressionErrors.missingScopeLink(rangeInExpression)
-                                                } else if(!malformed) {
+                                                } else if (!malformed) {
                                                     malformed = true
                                                 }
                                             } else {
-                                                if(dataSourceChildNode is ParadoxDynamicScopeLinkNode) {
+                                                if (dataSourceChildNode is ParadoxDynamicScopeLinkNode) {
                                                     val nestedDataSourceNode = dataSourceChildNode.dataSourceNode
-                                                    for(nestedDataSourceChildNode in nestedDataSourceNode.nodes) {
-                                                        when(nestedDataSourceChildNode) {
+                                                    for (nestedDataSourceChildNode in nestedDataSourceNode.nodes) {
+                                                        when (nestedDataSourceChildNode) {
                                                             is ParadoxDataSourceNode -> {
-                                                                if(nestedDataSourceChildNode.text.isEmpty()) {
-                                                                    if(isLast) {
+                                                                if (nestedDataSourceChildNode.text.isEmpty()) {
+                                                                    if (isLast) {
                                                                         val expect = nestedDataSourceChildNode.linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
                                                                         errors += ParadoxComplexExpressionErrors.missingScopeLinkValue(rangeInExpression, expect)
-                                                                    } else if(!malformed) {
+                                                                    } else if (!malformed) {
                                                                         malformed = true
                                                                     }
-                                                                } else if(!malformed && !nestedDataSourceChildNode.isValid()) {
+                                                                } else if (!malformed && !nestedDataSourceChildNode.isValid()) {
                                                                     malformed = true
                                                                 }
                                                             }
@@ -185,26 +185,26 @@ class ParadoxValueFieldExpression private constructor(
                         }
                     }
                     is ParadoxValueFieldNode -> {
-                        if(node.text.isEmpty()) {
-                            if(isLast) {
+                        if (node.text.isEmpty()) {
+                            if (isLast) {
                                 errors += ParadoxComplexExpressionErrors.missingValueField(rangeInExpression)
-                            } else if(!malformed) {
+                            } else if (!malformed) {
                                 malformed = true
                             }
                         } else {
-                            if(node is ParadoxDynamicValueFieldNode) {
+                            if (node is ParadoxDynamicValueFieldNode) {
                                 val dataSourceNode = node.dataSourceNode
-                                for(dataSourceChildNode in dataSourceNode.nodes) {
-                                    when(dataSourceChildNode) {
+                                for (dataSourceChildNode in dataSourceNode.nodes) {
+                                    when (dataSourceChildNode) {
                                         is ParadoxDataSourceNode -> {
-                                            if(dataSourceChildNode.text.isEmpty()) {
-                                                if(isLast) {
+                                            if (dataSourceChildNode.text.isEmpty()) {
+                                                if (isLast) {
                                                     val expect = dataSourceChildNode.linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }.joinToString()
                                                     errors += ParadoxComplexExpressionErrors.missingValueFieldValue(rangeInExpression, expect)
-                                                } else if(!malformed) {
+                                                } else if (!malformed) {
                                                     malformed = true
                                                 }
-                                            } else if(!malformed && !dataSourceChildNode.isValid()) {
+                                            } else if (!malformed && !dataSourceChildNode.isValid()) {
                                                 malformed = true
                                             }
                                         }
@@ -221,12 +221,12 @@ class ParadoxValueFieldExpression private constructor(
                     }
                 }
             }
-            if(malformed) {
+            if (malformed) {
                 errors += ParadoxComplexExpressionErrors.malformedValueFieldExpression(rangeInExpression, text)
             }
             return errors.pinned { it.isMalformedError() }
         }
-        
+
         private fun ParadoxComplexExpressionNode.isValid(): Boolean {
             return text.isParameterAwareIdentifier()
         }

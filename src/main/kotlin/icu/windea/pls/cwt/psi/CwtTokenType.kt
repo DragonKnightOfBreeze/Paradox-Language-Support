@@ -4,6 +4,6 @@ import com.intellij.psi.tree.*
 import icu.windea.pls.cwt.*
 
 class CwtTokenType(
-	debugName:String
-):IElementType(debugName,CwtLanguage)
+    debugName: String
+) : IElementType(debugName, CwtLanguage)
 

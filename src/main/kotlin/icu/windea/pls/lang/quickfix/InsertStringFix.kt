@@ -12,21 +12,21 @@ class InsertStringFix(
     private val moveCaretToOffset: Boolean = false
 ) : IntentionActionWithFixAllOption {
     override fun getText() = name
-    
+
     override fun getFamilyName() = text
-    
+
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?) = true
-    
+
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        if(editor == null) return
-        if(moveCaretToOffset) {
+        if (editor == null) return
+        if (moveCaretToOffset) {
             editor.caretModel.moveToOffset(caretOffset)
         }
         editor.document.insertString(caretOffset, string)
     }
-    
+
     override fun startInWriteAction() = true
-    
+
     override fun belongsToMyFamily(action: IntentionActionWithFixAllOption): Boolean {
         return action is InsertStringFix && action.string == string
     }

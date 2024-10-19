@@ -15,23 +15,23 @@ import icu.windea.pls.lang.settings.*
  */
 class ParadoxUpdateLibraryOnGameSettingsChangedListener : ParadoxGameSettingsListener {
     //目前不考虑onRemove的情况
-    
+
     override fun onAdd(gameSettings: ParadoxGameSettingsState) {
         doUpdateLibrary(gameSettings.gameDirectory)
     }
-    
+
     override fun onChange(gameSettings: ParadoxGameSettingsState) {
         doUpdateLibrary(gameSettings.gameDirectory)
     }
-    
+
     //org.jetbrains.kotlin.idea.core.script.ucache.ScriptClassRootsUpdater.doUpdate
-    
+
     private fun doUpdateLibrary(directory: String?) {
         val root = directory?.orNull()?.toVirtualFile(false) ?: return
-        for(project in ProjectManager.getInstance().openProjects) {
-            if(project.isDisposed) continue
+        for (project in ProjectManager.getInstance().openProjects) {
+            if (project.isDisposed) continue
             val isInProject = runReadAction { ProjectFileIndex.getInstance(project).isInContent(root) }
-            if(!isInProject) continue
+            if (!isInProject) continue
             val paradoxLibrary = project.paradoxLibrary
             paradoxLibrary.refreshRoots()
         }

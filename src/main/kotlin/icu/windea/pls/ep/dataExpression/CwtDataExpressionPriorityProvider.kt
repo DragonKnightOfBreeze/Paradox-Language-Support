@@ -14,17 +14,17 @@ interface CwtDataExpressionPriorityProvider {
      * 得到小数表示的优先级。数值越大，优先级越高。数值不为正数时表示此扩展点不适用。
      */
     fun getPriority(expression: CwtDataExpression, configGroup: CwtConfigGroup): Double
-    
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtDataExpressionPriorityProvider>("icu.windea.pls.dataExpressionPriorityProvider")
-        
+
         /**
          * @see CwtDataExpressionPriorityProvider.getPriority
          */
         fun getPriority(expression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
             EP_NAME.extensionList.forEach f@{ ep ->
                 val r = ep.getPriority(expression, configGroup)
-                if(r > 0) return r
+                if (r > 0) return r
             }
             return 0.0
         }

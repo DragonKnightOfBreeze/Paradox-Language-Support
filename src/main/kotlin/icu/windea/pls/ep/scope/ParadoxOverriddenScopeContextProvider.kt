@@ -17,15 +17,15 @@ interface ParadoxOverriddenScopeContextProvider {
     /**
      * 基于指定的上下文PSI元素[contextElement]和对应的CWT规则[config]获取重载后的作用域上下文。
      */
-    fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>,parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext?
-    
+    fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext?
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxOverriddenScopeContextProvider>("icu.windea.pls.overriddenScopeContextProvider")
-        
+
         fun getOverriddenScopeContext(contextElement: PsiElement, config: CwtMemberConfig<*>, parentScopeContext: ParadoxScopeContext?): ParadoxScopeContext? {
             val gameType = config.configGroup.gameType ?: return null
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
-                if(!gameType.supportsByAnnotation(ep)) return@f null
+                if (!gameType.supportsByAnnotation(ep)) return@f null
                 ep.getOverriddenScopeContext(contextElement, config, parentScopeContext)
                     ?.also { it.overriddenProvider = ep }
             }

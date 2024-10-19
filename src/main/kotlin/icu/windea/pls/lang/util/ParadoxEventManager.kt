@@ -23,49 +23,49 @@ object ParadoxEventManager {
         val eventEventType by createKey<String>(this)
         val eventEventScope by createKey<String>(this)
     }
-    
+
     fun isValidEventNamespace(eventNamespace: String): Boolean {
-        if(eventNamespace.isEmpty()) return false
+        if (eventNamespace.isEmpty()) return false
         return eventNamespace.isIdentifier()
     }
-    
+
     fun isValidEventId(eventId: String): Boolean {
-        if(eventId.isEmpty()) return false
+        if (eventId.isEmpty()) return false
         val dotIndex = eventId.indexOf('.')
-        if(dotIndex == -1) return false
+        if (dotIndex == -1) return false
         val prefix = eventId.substring(0, dotIndex)
         val no = eventId.substring(dotIndex + 1)
         return prefix.isNotEmpty() && prefix.isIdentifier() && no.isNotEmpty() && no.all { it.isExactDigit() }
     }
-    
+
     fun isMatchedEventId(eventId: String, eventNamespace: String): Boolean {
         val dotIndex = eventId.indexOf('.')
-        if(dotIndex == -1) return true //忽略
+        if (dotIndex == -1) return true //忽略
         val prefix = eventId.substring(0, dotIndex)
-        if(prefix.isEmpty()) return true //忽略
+        if (prefix.isEmpty()) return true //忽略
         return prefix == eventNamespace
     }
-    
+
     fun getEvents(selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {
         return ParadoxDefinitionSearch.search("events", selector).findAll()
     }
-    
+
     fun getName(element: ParadoxScriptDefinitionElement): String {
         return element.definitionInfo?.name.orAnonymous()
     }
-    
+
     fun getNamespace(element: ParadoxScriptDefinitionElement): String {
         return getName(element).substringBefore(".") //enough
     }
-    
+
     /**
      * 得到event的需要匹配的namespace。
      */
     fun getMatchedNamespace(event: ParadoxScriptDefinitionElement): ParadoxScriptProperty? {
         var current = event.prevSibling ?: return null
-        while(true) {
-            if(current is ParadoxScriptProperty && current.name.equals("namespace", true)) {
-                if(current.propertyValue is ParadoxScriptString) {
+        while (true) {
+            if (current is ParadoxScriptProperty && current.name.equals("namespace", true)) {
+                if (current.propertyValue is ParadoxScriptString) {
                     return current
                 } else {
                     return null //invalid
@@ -74,38 +74,38 @@ object ParadoxEventManager {
             current = current.prevSibling ?: return null
         }
     }
-    
+
     /**
      * 得到指定事件的所有事件类型（注有"## group = event_type"，拥有特定的作用域，一般拥有特定的type或者rootKey）。
      */
     fun getTypes(project: Project, gameType: ParadoxGameType): Set<String> {
         val eventConfig = getConfigGroup(project, gameType).types["event"] ?: return emptySet()
         return eventConfig.config.getOrPutUserData(Keys.eventEventTypes) {
-            eventConfig.subtypes.mapNotNullTo(mutableSetOf()) { (k, v) -> if(v.config.findOption("group")?.stringValue == "event_type") k else null }
+            eventConfig.subtypes.mapNotNullTo(mutableSetOf()) { (k, v) -> if (v.config.findOption("group")?.stringValue == "event_type") k else null }
         }
     }
-    
+
     fun getType(definitionInfo: ParadoxDefinitionInfo): String? {
         return definitionInfo.getOrPutUserData(Keys.eventEventType, "") {
             definitionInfo.subtypeConfigs.find { it.config.findOption("group")?.stringValue == "event_type" }?.name
         }
     }
-    
+
     fun getScope(definitionInfo: ParadoxDefinitionInfo): String {
         return definitionInfo.getOrPutUserData(Keys.eventEventScope) {
             definitionInfo.subtypeConfigs.firstNotNullOfOrNull { it.pushScope } ?: ParadoxScopeManager.anyScopeId
         }
     }
-    
+
     fun getLocalizedName(definition: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
         return ParadoxDefinitionManager.getPrimaryLocalisation(definition)
     }
-    
+
     fun getIconFile(definition: ParadoxScriptDefinitionElement): PsiFile? {
         return ParadoxDefinitionManager.getPrimaryImage(definition)
     }
-    
-    
+
+
     /**
      * 得到指定事件可能调用的所有事件。
      *
@@ -117,27 +117,27 @@ object ParadoxEventManager {
             CachedValueProvider.Result(value, definition)
         }
     }
-    
+
     private fun doGetInvocations(definition: ParadoxScriptDefinitionElement): Set<String> {
         val result = mutableSetOf<String>()
         definition.block?.acceptChildren(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                if(element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
-                if(element.isExpressionOrMemberContext()) super.visitElement(element)
+                if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
+                if (element.isExpressionOrMemberContext()) super.visitElement(element)
             }
-            
+
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 ProgressManager.checkCanceled()
                 val value = element.value
-                if(result.contains(value)) return
-                if(!isValidEventId(value)) return //排除非法的事件ID
+                if (result.contains(value)) return
+                if (!isValidEventId(value)) return //排除非法的事件ID
                 val configs = ParadoxExpressionManager.getConfigs(element)
                 val isEventConfig = configs.any { isEventConfig(it) }
-                if(isEventConfig) {
+                if (isEventConfig) {
                     result.add(value)
                 }
             }
-            
+
             private fun isEventConfig(config: CwtMemberConfig<*>): Boolean {
                 return config.expression.type == CwtDataTypes.Definition
                     && config.expression.value?.substringBefore('.') == "event"

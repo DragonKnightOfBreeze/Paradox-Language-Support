@@ -39,40 +39,40 @@ class ParadoxDatabaseObjectExpression private constructor(
         get() = nodes.getOrNull(2)?.cast()
     val swapValueNode: ParadoxDatabaseObjectNode?
         get() = nodes.getOrNull(4)?.cast()
-    
+
     override val errors by lazy { validate() }
-    
+
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
-            if(expressionString.isEmpty()) return null
-            
+            if (expressionString.isEmpty()) return null
+
             val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
-            
+
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val expression = ParadoxDatabaseObjectExpression(expressionString, range, nodes, configGroup)
             run r1@{
                 val offset = range.startOffset
                 val colonIndex1 = expressionString.indexOf(':')
-                if(colonIndex1 == -1 && !incomplete) return null
+                if (colonIndex1 == -1 && !incomplete) return null
                 run r2@{
-                    val nodeText = if(colonIndex1 == -1) expressionString else expressionString.substring(0, colonIndex1)
+                    val nodeText = if (colonIndex1 == -1) expressionString else expressionString.substring(0, colonIndex1)
                     val nodeTextRange = TextRange.from(offset, nodeText.length)
                     val node = ParadoxDatabaseObjectTypeNode.resolve(nodeText, nodeTextRange, configGroup)
                     nodes += node
                 }
-                if(colonIndex1 == -1) return@r1
+                if (colonIndex1 == -1) return@r1
                 run r2@{
                     val node = ParadoxMarkerNode(":", TextRange.from(colonIndex1, 1), configGroup)
                     nodes += node
                 }
                 val colonIndex2 = expressionString.indexOf(':', colonIndex1 + 1)
                 run r2@{
-                    val nodeText = if(colonIndex2 == -1) expressionString.substring(colonIndex1 + 1) else expressionString.substring(colonIndex1 + 1, colonIndex2)
+                    val nodeText = if (colonIndex2 == -1) expressionString.substring(colonIndex1 + 1) else expressionString.substring(colonIndex1 + 1, colonIndex2)
                     val nodeTextRange = TextRange.from(colonIndex1 + 1, nodeText.length)
                     val node = ParadoxDatabaseObjectNode.resolve(nodeText, nodeTextRange, configGroup, expression, isBase = true)
                     nodes += node
                 }
-                if(colonIndex2 == -1) return@r1
+                if (colonIndex2 == -1) return@r1
                 run r2@{
                     val node = ParadoxMarkerNode(":", TextRange.from(colonIndex2, 1), configGroup)
                     nodes += node
@@ -86,17 +86,17 @@ class ParadoxDatabaseObjectExpression private constructor(
             }
             return expression
         }
-        
+
         private fun ParadoxDatabaseObjectExpression.validate(): List<ParadoxComplexExpressionError> {
             val errors = mutableListOf<ParadoxComplexExpressionError>()
             var malformed = false
-            for(node in nodes) {
-                if(node.text.isEmpty()) {
+            for (node in nodes) {
+                if (node.text.isEmpty()) {
                     malformed = true
                     break
                 }
             }
-            if(malformed) {
+            if (malformed) {
                 errors += ParadoxComplexExpressionErrors.malformedGameObjectExpression(rangeInExpression, text)
             }
             return errors.pinned { it.isMalformedError() }

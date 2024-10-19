@@ -25,7 +25,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val resolved = ParadoxLocalisationParameterElement(localisationElement, name, localisationName, null, readWriteAccess, gameType, project)
         return resolved
     }
-    
+
     override fun resolveParameter(element: ParadoxLocalisationPropertyReference): ParadoxLocalisationParameterElement? {
         val localisationElement = element.parentOfType<ParadoxLocalisationProperty>(withSelf = false) ?: return null
         val name = element.name
@@ -34,15 +34,15 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val gameType = selectGameType(file) ?: return null
         val project = file.project
         val parameterNames = ParadoxLocalisationParameterManager.getParameterNames(localisationElement)
-        if(name !in parameterNames) return null
+        if (name !in parameterNames) return null
         val rangeInParent = TextRange.create(0, element.textLength)
         val readWriteAccess = ReadWriteAccessDetector.Access.Read
         val resolved = ParadoxLocalisationParameterElement(element, name, localisationName, rangeInParent, readWriteAccess, gameType, project)
         return resolved
     }
-    
+
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxLocalisationParameterElement? {
-        if(config !is CwtPropertyConfig || config.expression.type != CwtDataTypes.LocalisationParameter) return null
+        if (config !is CwtPropertyConfig || config.expression.type != CwtDataTypes.LocalisationParameter) return null
         val localisationReferenceElement = ParadoxLocalisationParameterManager.getLocalisationReferenceElement(element, config) ?: return null
         val name = rangeInElement?.substring(element.text) ?: element.name
         val localisationName = localisationReferenceElement.name
@@ -54,14 +54,14 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val resolved = ParadoxLocalisationParameterElement(element, name, localisationName, rangeInParent, readWriteAccess, gameType, project)
         return resolved
     }
-    
+
     override fun buildDocumentationDefinition(element: ParadoxLocalisationParameterElement, builder: DocumentationBuilder): Boolean = with(builder) {
         //不加上文件信息
-        
+
         //加上名字
         val name = element.name
         append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-        
+
         //加上所属本地化信息
         val gameType = element.gameType
         appendBr().appendIndent()

@@ -13,7 +13,7 @@ import icu.windea.pls.script.*
  */
 class ParadoxScriptErrorQuickFixProvider : ErrorQuickFixProvider {
     override fun registerErrorQuickFix(errorElement: PsiErrorElement, builder: HighlightInfo.Builder) {
-        if(errorElement.language != ParadoxScriptLanguage) return
+        if (errorElement.language != ParadoxScriptLanguage) return
         when {
             errorElement.nextSibling == null && errorElement.parent is ParadoxParameter -> {
                 //PARAMETER_END

@@ -20,11 +20,11 @@ class ParadoxDefinitionImplementationsSearch : QueryExecutor<PsiElement, Definit
     override fun execute(queryParameters: DefinitionsScopedSearch.SearchParameters, consumer: Processor<in PsiElement>): Boolean {
         //得到解析后的PSI元素
         val sourceElement = queryParameters.element
-        if(sourceElement !is ParadoxScriptDefinitionElement) return true
+        if (sourceElement !is ParadoxScriptDefinitionElement) return true
         val definitionInfo = runReadAction { sourceElement.definitionInfo }
-        if(definitionInfo == null) return true
+        if (definitionInfo == null) return true
         val name = definitionInfo.name
-        if(name.isEmpty()) return true
+        if (name.isEmpty()) return true
         val type = definitionInfo.type
         val project = queryParameters.project
         DumbService.getInstance(project).runReadActionInSmartMode {

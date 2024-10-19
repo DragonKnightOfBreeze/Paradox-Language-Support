@@ -11,7 +11,7 @@ class ParadoxFilePathInfo(
         return this === other || other is ParadoxFilePathInfo
             && directory == other.directory && gameType == other.gameType && included == other.included
     }
-    
+
     override fun hashCode(): Int {
         return Objects.hash(directory, gameType, included)
     }

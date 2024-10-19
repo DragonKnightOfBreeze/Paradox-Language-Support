@@ -11,11 +11,11 @@ fun ParadoxComplexExpression.processAllNodes(processor: Processor<ParadoxComplex
 
 private fun ParadoxComplexExpressionNode.doProcessAllNodes(processor: Processor<ParadoxComplexExpressionNode>): Boolean {
     val r = processor.process(this)
-    if(!r) return false
-    if(nodes.isNotEmpty()) {
-        for(node in nodes) {
+    if (!r) return false
+    if (nodes.isNotEmpty()) {
+        for (node in nodes) {
             val r1 = node.doProcessAllNodes(processor)
-            if(!r1) return false
+            if (!r1) return false
         }
     }
     return true
@@ -26,10 +26,10 @@ fun ParadoxComplexExpression.processAllLeafNodes(processor: Processor<ParadoxCom
 }
 
 private fun ParadoxComplexExpressionNode.doProcessAllLeafNodes(processor: Processor<ParadoxComplexExpressionNode>): Boolean {
-    if(nodes.isNotEmpty()) {
-        for(node in nodes) {
+    if (nodes.isNotEmpty()) {
+        for (node in nodes) {
             val r1 = node.doProcessAllLeafNodes(processor)
-            if(!r1) return false
+            if (!r1) return false
         }
         return true
     } else {
@@ -45,11 +45,11 @@ fun ParadoxComplexExpression.getReferences(element: ParadoxExpressionElement): A
 
 private fun ParadoxComplexExpressionNode.doGetReferences(element: ParadoxExpressionElement, references: MutableList<PsiReference>) {
     val reference = this.getReference(element)
-    if(reference != null) {
+    if (reference != null) {
         references.add(reference)
     }
-    if(nodes.isNotEmpty()) {
-        for(node in nodes) {
+    if (nodes.isNotEmpty()) {
+        for (node in nodes) {
             node.doGetReferences(element, references)
         }
     }

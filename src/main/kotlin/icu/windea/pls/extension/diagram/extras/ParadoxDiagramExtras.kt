@@ -8,6 +8,7 @@ import com.intellij.openapi.graph.*
 import com.intellij.openapi.graph.layout.*
 import com.intellij.openapi.graph.settings.*
 import com.intellij.openapi.project.*
+import icu.windea.pls.core.*
 import icu.windea.pls.extension.diagram.actions.*
 import icu.windea.pls.extension.diagram.provider.*
 import icu.windea.pls.lang.*
@@ -23,11 +24,11 @@ open class ParadoxDiagramExtras(
         layouter.minimalEdgeDistance = 40.0
         return layouter
     }
-    
+
     override fun getAdditionalDiagramSettings(): Array<out DiagramConfigGroup> {
         return provider.getAdditionalDiagramSettings()
     }
-    
+
     override fun getToolbarActionsProvider(): DiagramToolbarActionsProvider {
         return object : DiagramToolbarActionsProvider by super.getToolbarActionsProvider() {
             override fun createToolbarActions(builder: DiagramBuilder): DefaultActionGroup {
@@ -35,7 +36,7 @@ open class ParadoxDiagramExtras(
                 //before first separator
                 val children = actionGroup.children
                 val separatorIndex = children.indexOfFirst { it is SeparatorAction }
-                val index = if(separatorIndex == -1) children.size else separatorIndex
+                val index = if (separatorIndex == -1) children.size else separatorIndex
                 children.add(index, ParadoxDiagramScopeTypesActionGroup(builder))
                 return actionGroup
             }

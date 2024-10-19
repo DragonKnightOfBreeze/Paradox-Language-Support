@@ -27,7 +27,7 @@ class ParadoxScriptDataDelegateProvider<T>(
 ) {
     @Suppress("UNCHECKED_CAST")
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
-        if(delegate == null) return defaultValue
+        if (delegate == null) return defaultValue
         return getValueOfType(delegate, type) as? T? ?: defaultValue
     }
 }
@@ -38,14 +38,14 @@ class ParadoxScriptAllDataDelegateProvider<T>(
 ) {
     @Suppress("UNCHECKED_CAST")
     operator fun getValue(thisRef: Any?, property: KProperty<*>): List<T> {
-        if(delegate.isEmpty()) return emptyList()
+        if (delegate.isEmpty()) return emptyList()
         return delegate.mapNotNull { getValueOfType(it, type) as? T? }
     }
 }
 
 private val ParadoxScriptData.Keys.propertyValues by createKey<MutableMap<KType, Any?>>(ParadoxScriptData.Keys)
 
-private fun getValueOfTypeFromCache(data: ParadoxScriptData, type: KType) : Any? {
+private fun getValueOfTypeFromCache(data: ParadoxScriptData, type: KType): Any? {
     val propertyValues = data.getUserData(ParadoxScriptData.Keys.propertyValues)!!
     return propertyValues.getOrPut(type) { getValueOfType(data, type) ?: EMPTY_OBJECT }.takeUnless { it == EMPTY_OBJECT }
 }

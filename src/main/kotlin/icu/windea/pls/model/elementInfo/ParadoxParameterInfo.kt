@@ -4,7 +4,7 @@ import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.ep.modifier.*
+import icu.windea.pls.core.*
 import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
@@ -20,7 +20,7 @@ data class ParadoxParameterInfo(
     override val project: Project,
 ) : UserDataHolderBase(), ParadoxElementInfo {
     val modificationTracker by lazy { support?.getModificationTracker(this) }
-    
+
     companion object {
         val EMPTY = ParadoxParameterInfo("", "", null, "", ParadoxGameType.placeholder(), getDefaultProject())
     }
@@ -35,7 +35,7 @@ fun ParadoxParameterElement.toInfo(): ParadoxParameterInfo {
 }
 
 //use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
-private fun syncUserData(from: UserDataHolder, to : UserDataHolder) {
+private fun syncUserData(from: UserDataHolder, to: UserDataHolder) {
     ParadoxParameterSupport.Keys.keysToSync.forEach { key ->
         @Suppress("UNCHECKED_CAST")
         key as Key<Any>

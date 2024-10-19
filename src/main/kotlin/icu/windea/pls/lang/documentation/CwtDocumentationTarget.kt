@@ -44,18 +44,18 @@ class CwtDocumentationTarget(
             CwtDocumentationTarget(element, originalElementPtr?.dereference())
         }
     }
-    
+
     override val navigatable: Navigatable?
         get() = element as? Navigatable
-    
+
     override fun computePresentation(): TargetPresentation {
         return getTargetPresentation(element)
     }
-    
+
     override fun computeDocumentationHint(): String? {
         return computeLocalDocumentation(element, originalElement, true)
     }
-    
+
     override fun computeDocumentation(): DocumentationResult {
         return DocumentationResult.asyncDocumentation {
             val html = computeLocalDocumentation(element, originalElement, false) ?: return@asyncDocumentation null
@@ -69,7 +69,7 @@ private const val SECTIONS_IMAGES = 1
 private const val SECTIONS_LOC = 2
 
 private fun computeLocalDocumentation(element: PsiElement, originalElement: PsiElement?, quickNavigation: Boolean): String? {
-    return when(element) {
+    return when (element) {
         is CwtProperty -> getPropertyDoc(element, originalElement, quickNavigation)
         is CwtString -> getStringDoc(element, originalElement, quickNavigation)
         is CwtMemberConfigElement -> getMemberConfigDoc(element, originalElement, quickNavigation)
@@ -83,9 +83,9 @@ private fun getPropertyDoc(element: CwtProperty, originalElement: PsiElement?, q
         val configType = element.configType
         val project = element.project
         val configGroup = getConfigGroup(element, originalElement, project)
-        if(!quickNavigation) initSections(3)
+        if (!quickNavigation) initSections(3)
         buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup)
-        if(quickNavigation) return@buildDocumentation
+        if (quickNavigation) return@buildDocumentation
         buildDocumentationContent(element)
         buildSections()
     }
@@ -93,16 +93,16 @@ private fun getPropertyDoc(element: CwtProperty, originalElement: PsiElement?, q
 
 private fun getStringDoc(element: CwtString, originalElement: PsiElement?, quickNavigation: Boolean): String? {
     //only for property value or block value
-    if(!element.isPropertyValue() && !element.isBlockValue()) return null
-    
+    if (!element.isPropertyValue() && !element.isBlockValue()) return null
+
     return buildDocumentation {
         val name = element.name
         val configType = element.configType
         val project = element.project
         val configGroup = getConfigGroup(element, originalElement, project)
-        if(!quickNavigation) initSections(3)
+        if (!quickNavigation) initSections(3)
         buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup)
-        if(quickNavigation) return@buildDocumentation
+        if (quickNavigation) return@buildDocumentation
         buildDocumentationContent(element)
         buildSections()
     }
@@ -114,9 +114,9 @@ private fun getMemberConfigDoc(element: CwtMemberConfigElement, originalElement:
         val configType = null
         val project = element.project
         val configGroup = getConfigGroup(project, element.gameType)
-        if(!quickNavigation) initSections(3)
+        if (!quickNavigation) initSections(3)
         buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup)
-        if(quickNavigation) return@buildDocumentation
+        if (quickNavigation) return@buildDocumentation
         buildDocumentationContent(element)
         buildSections()
     }
@@ -125,10 +125,10 @@ private fun getMemberConfigDoc(element: CwtMemberConfigElement, originalElement:
 private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup?) {
     definition {
         appendCwtConfigFileInfoHeader(element)
-        
+
         val referenceElement = getReferenceElement(originalElement)
         val shortName = configType?.getShortName(name) ?: name
-        val byName = if(shortName == name) null else name
+        val byName = if (shortName == name) null else name
         val prefix = when {
             configType?.isReference == true -> configType.prefix
             referenceElement is ParadoxScriptPropertyKey -> PlsBundle.message("prefix.definitionProperty")
@@ -138,17 +138,17 @@ private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiEle
             else -> configType?.prefix
         }
         val typeCategory = configType?.category
-        
-        if(prefix != null) {
+
+        if (prefix != null) {
             append(prefix).append(" ")
         }
         append("<b>").append(shortName.escapeXml().orAnonymous()).append("</b>")
-        if(typeCategory != null) {
+        if (typeCategory != null) {
             val typeElement = element.parentOfType<CwtProperty>()
             val typeName = typeElement?.name?.substringIn('[', ']')?.orNull()
-            if(typeName.isNotNullOrEmpty()) {
+            if (typeName.isNotNullOrEmpty()) {
                 //在脚本文件中显示为链接
-                if(configGroup != null) {
+                if (configGroup != null) {
                     val gameType = configGroup.gameType
                     val typeLink = "${gameType.prefix}${typeCategory}/${typeName}"
                     append(": ").appendCwtConfigLink(typeLink, typeName, typeElement)
@@ -157,21 +157,21 @@ private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiEle
                 }
             }
         }
-        if(byName != null) {
+        if (byName != null) {
             grayed {
                 append(" by ").append(byName.escapeXml().orAnonymous())
             }
         }
-        
-        if(configGroup != null) {
-            if(referenceElement != null && configType == CwtConfigType.Modifier) {
+
+        if (configGroup != null) {
+            if (referenceElement != null && configType == CwtConfigType.Modifier) {
                 addModifierRelatedLocalisations(element, referenceElement, name, configGroup)
                 addModifierIcon(element, referenceElement, name, configGroup)
             }
-            if(element is CwtProperty || (element is CwtMemberConfigElement && element.config is CwtPropertyConfig)) {
+            if (element is CwtProperty || (element is CwtMemberConfigElement && element.config is CwtPropertyConfig)) {
                 addScope(element, name, configType, configGroup)
             }
-            if(referenceElement != null) {
+            if (referenceElement != null) {
                 addScopeContext(element, referenceElement, configGroup)
             }
         }
@@ -203,23 +203,23 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
         }
     }
     //如果没找到的话，不要在文档中显示相关信息
-    if(nameLocalisation != null) {
+    if (nameLocalisation != null) {
         appendBr()
         append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
         append("name = ").appendLocalisationLink(gameType, nameLocalisation.name, contextElement)
     }
-    if(descLocalisation != null) {
+    if (descLocalisation != null) {
         appendBr()
         append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
         append("desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement)
     }
     val sections = getSections(SECTIONS_LOC)
-    if(sections != null && render) {
-        if(nameLocalisation != null) {
+    if (sections != null && render) {
+        if (nameLocalisation != null) {
             val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
             sections.put("name", richText)
         }
-        if(descLocalisation != null) {
+        if (descLocalisation != null) {
             val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation, forDoc = true)
             sections.put("desc", richText)
         }
@@ -239,15 +239,15 @@ private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceE
         }
     }
     //如果没找到的话，不要在文档中显示相关信息
-    if(iconFile != null) {
+    if (iconFile != null) {
         val iconPath = iconFile.fileInfo?.path?.path ?: return
         appendBr()
         append(PlsBundle.message("prefix.relatedImage")).append(" ")
         append("icon = ").appendFilePathLink(gameType, iconPath, iconPath, contextElement)
     }
     val sections = getSections(SECTIONS_IMAGES)
-    if(sections != null && render) {
-        if(iconFile != null) {
+    if (sections != null && render) {
+        if (iconFile != null) {
             val url = ParadoxImageResolver.resolveUrlByFile(iconFile) ?: ParadoxImageResolver.getDefaultUrl()
             sections.put("icon", buildDocumentation { appendImgTag(url) })
         }
@@ -256,65 +256,65 @@ private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceE
 
 private fun DocumentationBuilder.addScope(element: PsiElement, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup) {
     //即使是在CWT文件中，如果可以推断得到CWT规则组，也显示作用域信息
-    
-    if(!getSettings().documentation.showScopes) return
-    
+
+    if (!getSettings().documentation.showScopes) return
+
     //为link提示名字、描述、输入作用域、输出作用域的文档注释
     //为alias modifier localisation_command等提供分类、支持的作用域的文档注释
     //仅为脚本文件和本地化文件中的引用提供
     val sections = getSections(SECTIONS_INFO)
     val gameType = configGroup.gameType ?: return
     val contextElement = element
-    when(configType) {
+    when (configType) {
         CwtConfigType.Link -> {
             val linkConfig = configGroup.links[name] ?: return
-            if(sections != null) {
+            if (sections != null) {
                 val inputScopes = linkConfig.inputScopes
                 sections.put(PlsBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
-                
+
                 val outputScope = linkConfig.outputScope ?: ParadoxScopeManager.anyScopeId
                 sections.put(PlsBundle.message("sectionTitle.outputScope"), getScopeText(outputScope, gameType, contextElement))
             }
         }
         CwtConfigType.LocalisationLink -> {
             val linkConfig = configGroup.localisationLinks[name] ?: return
-            if(sections != null) {
+            if (sections != null) {
                 val inputScopes = linkConfig.inputScopes
                 sections.put(PlsBundle.message("sectionTitle.inputScopes"), getScopesText(inputScopes, gameType, contextElement))
-                
+
                 val outputScope = linkConfig.outputScope ?: ParadoxScopeManager.anyScopeId
                 sections.put(PlsBundle.message("sectionTitle.outputScope"), getScopeText(outputScope, gameType, contextElement))
             }
         }
         CwtConfigType.Modifier -> {
             val modifierConfig = configGroup.modifiers[name] ?: return
-            if(sections != null) {
+            if (sections != null) {
                 val categoryNames = modifierConfig.categoryConfigMap.keys
-                if(categoryNames.isNotEmpty()) {
+                if (categoryNames.isNotEmpty()) {
                     sections.put(PlsBundle.message("sectionTitle.categories"), getModifierCategoriesText(categoryNames, gameType, contextElement))
                 }
-                
+
                 val supportedScopes = modifierConfig.supportedScopes
                 sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
             }
         }
         CwtConfigType.ModifierCategory -> {
             val modifierCategoryConfig = configGroup.modifierCategories[name] ?: return
-            if(sections != null) {
+            if (sections != null) {
                 val supportedScopes = modifierCategoryConfig.supportedScopes
                 sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
             }
         }
         CwtConfigType.LocalisationPromotion -> {
             val localisationPromotionConfig = configGroup.localisationPromotions[name] ?: return
-            if(sections != null) {
+            if (sections != null) {
                 val supportedScopes = localisationPromotionConfig.supportedScopes
                 sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
             }
         }
         CwtConfigType.LocalisationCommand -> {
             val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
-            if(sections != null) {
+            if (sections != null) {
                 val supportedScopes = localisationCommandConfig.supportedScopes
                 sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
             }
@@ -326,13 +326,13 @@ private fun DocumentationBuilder.addScope(element: PsiElement, name: String, con
             val aliasConfig = aliasConfigs.singleOrNull()
                 ?: aliasConfigs.find { element.isSamePosition(it.pointer.element) }
                 ?: return
-            if(aliasConfig.name !in configGroup.aliasNamesSupportScope) return
-            if(sections != null) {
+            if (aliasConfig.name !in configGroup.aliasNamesSupportScope) return
+            if (sections != null) {
                 val supportedScopes = aliasConfig.supportedScopes
                 sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
-                
+
                 val outputScope = aliasConfig.outputScope
-                if(outputScope != null) {
+                if (outputScope != null) {
                     sections.put(PlsBundle.message("sectionTitle.outputScope"), getScopeText(outputScope, gameType, contextElement))
                 }
             }
@@ -345,15 +345,15 @@ private fun DocumentationBuilder.addScopeContext(element: PsiElement, referenceE
     //进行代码提示时也显示作用域上下文信息
     //@Suppress("DEPRECATION")
     //if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
-    
-    if(!getSettings().documentation.showScopeContext) return
-    
+
+    if (!getSettings().documentation.showScopeContext) return
+
     val sections = getSections(0) ?: return
     val gameType = configGroup.gameType ?: return
     val memberElement = referenceElement.parentOfType<ParadoxScriptMemberElement>(true) ?: return
-    if(!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return
+    if (!ParadoxScopeManager.isScopeContextSupported(memberElement, indirect = true)) return
     val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
-    if(scopeContext == null) return
+    if (scopeContext == null) return
     //TODO 如果作用域引用位于脚本表达式中，应当使用那个位置的作用域上下文，但是目前实现不了
     // 因为这里的referenceElement是整个stringExpression，得到的作用域上下文会是脚本表达式最终的作用域上下文
     sections.put(PlsBundle.message("sectionTitle.scopeContext"), getScopeContextText(scopeContext, gameType, element))
@@ -364,28 +364,28 @@ private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) 
     var current: PsiElement = element
     var documentationLines: LinkedList<String>? = null
     var html = false
-    while(true) {
+    while (true) {
         current = current.prevSibling ?: break
         when {
             current is CwtDocumentationComment -> {
                 val documentationText = current.documentationText
-                if(documentationText != null) {
-                    if(documentationLines == null) documentationLines = LinkedList()
+                if (documentationText != null) {
+                    if (documentationLines == null) documentationLines = LinkedList()
                     val docText = documentationText.text.trimStart('#').trim() //这里接受HTML
                     documentationLines.addFirst(docText)
                 }
             }
             current is CwtOptionComment -> {
                 val option = current.option
-                if(option != null) {
-                    if(option.name == "format" && option.value == "html") html = true
+                if (option != null) {
+                    if (option.name == "format" && option.value == "html") html = true
                 }
             }
             current is PsiWhiteSpace || current is PsiComment -> continue
             else -> break
         }
     }
-    if(documentationLines.isNullOrEmpty()) return
+    if (documentationLines.isNullOrEmpty()) return
     //如果CWT规则文件中的一行文档注释以`\`结束，则解析时不在这里换行
     val documentation = getDocumentation(documentationLines, html)
     content {
@@ -394,11 +394,11 @@ private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) 
 }
 
 private fun getConfigGroup(element: PsiElement, originalElement: PsiElement?, project: Project): CwtConfigGroup? {
-    if(originalElement != null && originalElement.language.isParadoxLanguage()) {
+    if (originalElement != null && originalElement.language.isParadoxLanguage()) {
         val gameType = selectGameType(originalElement)
-        if(gameType != null) return getConfigGroup(project, gameType)
+        if (gameType != null) return getConfigGroup(project, gameType)
     }
-    if(element.language == CwtLanguage) {
+    if (element.language == CwtLanguage) {
         return CwtConfigManager.getContainingConfigGroup(element, forRepo = true)
     }
     return null

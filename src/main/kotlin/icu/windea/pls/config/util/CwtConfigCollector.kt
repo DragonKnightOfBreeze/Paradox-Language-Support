@@ -9,7 +9,7 @@ import icu.windea.pls.core.*
 object CwtConfigCollector {
     fun processConfigWithConfigExpression(config: CwtConfig<*>, configExpression: CwtDataExpression) {
         val configGroup = config.configGroup
-        when(configExpression.type) {
+        when (configExpression.type) {
             CwtDataTypes.FilePath -> {
                 configExpression.value?.let { configGroup.filePathExpressions.add(configExpression) }
             }
@@ -17,7 +17,7 @@ object CwtConfigCollector {
                 configExpression.value?.let { configGroup.filePathExpressions.add(configExpression) }
             }
             CwtDataTypes.Parameter -> {
-                if(config is CwtPropertyConfig) {
+                if (config is CwtPropertyConfig) {
                     configGroup.parameterConfigs.add(config)
                 }
             }

@@ -11,7 +11,7 @@ import icu.windea.pls.cwt.psi.*
 interface CwtExtendedGameRuleConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
     val configForDeclaration: CwtPropertyConfig?
-    
+
     companion object Resolver {
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedGameRuleConfig = doResolve(config)
     }
@@ -20,7 +20,7 @@ interface CwtExtendedGameRuleConfig : CwtDelegatedConfig<CwtMemberElement, CwtMe
 //Implementations
 
 private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedGameRuleConfig {
-    val name = when(config) {
+    val name = when (config) {
         is CwtPropertyConfig -> config.key
         is CwtValueConfig -> config.value
     }
@@ -32,7 +32,7 @@ private class CwtExtendedGameRuleConfigImpl(
     override val name: String
 ) : UserDataHolderBase(), CwtExtendedGameRuleConfig {
     override val configForDeclaration: CwtPropertyConfig? by lazy {
-        if(config !is CwtPropertyConfig) return@lazy null
+        if (config !is CwtPropertyConfig) return@lazy null
         CwtConfigManipulator.inlineSingleAlias(config) ?: config
     }
 }

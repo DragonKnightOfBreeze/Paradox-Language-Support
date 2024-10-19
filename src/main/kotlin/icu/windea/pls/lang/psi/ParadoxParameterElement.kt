@@ -15,7 +15,7 @@ import javax.swing.*
 
 /**
  * 定义的参数并不存在一个真正意义上的声明处，用这个模拟。
- * 
+ *
  * [contextKey] 用于判断参数是否拥有相同的上下文，格式如下：
  * * 对于定义的参数：`<typeExpression>@<definitionName>`
  * * 对于内联脚本的参数：`inline_script@<inline_script_expression>`
@@ -35,27 +35,27 @@ class ParadoxParameterElement(
     override fun getIcon(): Icon {
         return PlsIcons.Nodes.Parameter
     }
-    
+
     override fun getName(): String {
         return name
     }
-    
+
     override fun getTypeName(): String {
         return PlsBundle.message("script.description.parameter")
     }
-    
+
     override fun getText(): String {
         return name
     }
-    
+
     override fun getPresentation(): ItemPresentation {
         return ParadoxParameterElementPresentation(this)
     }
-    
+
     override fun getProject(): Project {
         return project
     }
-    
+
     override fun equals(other: Any?): Boolean {
         return other is ParadoxParameterElement &&
             name == other.name &&
@@ -63,7 +63,7 @@ class ParadoxParameterElement(
             project == other.project &&
             gameType == other.gameType
     }
-    
+
     override fun hashCode(): Int {
         return Objects.hash(name, contextKey, project, gameType)
     }

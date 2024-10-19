@@ -17,8 +17,8 @@ val ParadoxLocalisationIcon.iconId: PsiElement? get() = findChild(ICON_TOKEN)
 val ParadoxLocalisationIcon.iconIdReference: ParadoxLocalisationPropertyReference?
     get() {
         forEachChild {
-            if(it is ParadoxLocalisationPropertyReference) return it
-            if(it.elementType == PIPE) return null
+            if (it is ParadoxLocalisationPropertyReference) return it
+            if (it.elementType == PIPE) return null
         }
         return null
     }
@@ -27,8 +27,8 @@ val ParadoxLocalisationIcon.iconFrameReference: ParadoxLocalisationPropertyRefer
     get() {
         var afterPipe = false
         forEachChild {
-            if(afterPipe && it is ParadoxLocalisationPropertyReference) return it
-            if(it.elementType == PIPE) afterPipe = true
+            if (afterPipe && it is ParadoxLocalisationPropertyReference) return it
+            if (it.elementType == PIPE) afterPipe = true
         }
         return null
     }

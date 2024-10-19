@@ -22,36 +22,36 @@ class ParadoxGenerateLocalisationsHandler(
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
         val onChosen = action@{ selected: CwtLocalisationLocaleConfig ->
             val context = getFinalContext(file)
-            if(context == null) {
+            if (context == null) {
                 HintManager.getInstance().showErrorHint(editor, PlsBundle.message("generation.localisation.noMembersHint"))
                 return@action
             }
             val members = ParadoxLocalisationGenerator.getMembers(context, selected)
-            if(members.isEmpty()) {
+            if (members.isEmpty()) {
                 HintManager.getInstance().showErrorHint(editor, PlsBundle.message("generation.localisation.noMembersHint"))
                 return@action
             }
             val chooser = ParadoxLocalisationGenerator.showChooser(context, members, project) ?: return@action
             val selectedElements = chooser.selectedElements ?: return@action
-            if(selectedElements.isEmpty()) return@action
+            if (selectedElements.isEmpty()) return@action
             PsiDocumentManager.getInstance(project).commitAllDocuments()
             ParadoxLocalisationGenerator.generate(context, selectedElements, project, file, selected)
         }
-        
+
         val selectedLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         val allLocales = ParadoxLocaleManager.getLocaleConfigs()
         val localePopup = ParadoxLocaleListPopup(selectedLocale, allLocales, onChosen)
         JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
     }
-    
+
     private fun getFinalContext(file: PsiFile): ParadoxLocalisationCodeInsightContext? {
-        if(forFile) {
+        if (forFile) {
             val locales = ParadoxLocaleManager.getLocaleConfigs()
             return ParadoxLocalisationCodeInsightContext.fromFile(file, locales, fromInspection = fromInspection)
         }
         return context
     }
-    
+
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
         return ParadoxPsiManager.findScriptExpression(file, offset).castOrNull()
     }

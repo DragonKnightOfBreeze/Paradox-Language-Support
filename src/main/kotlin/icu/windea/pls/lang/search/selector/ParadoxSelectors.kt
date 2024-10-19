@@ -15,11 +15,11 @@ import icu.windea.pls.model.*
 class ParadoxWithGameTypeSelector<T>(
     val gameType: ParadoxGameType
 ) : ParadoxSelector<T> {
-    override fun select(target: T): Boolean {
+    override fun selectOne(target: T): Boolean {
         return selectGameType(target) == gameType
     }
-    
-    override fun selectAll(target: T): Boolean {
+
+    override fun select(target: T): Boolean {
         return selectGameType(target) == gameType
     }
 }
@@ -42,23 +42,23 @@ class ParadoxWithSearchScopeTypeSelector<T>(
     val context: Any?,
 ) : ParadoxSearchScopeAwareSelector<T> {
     val searchScopeType = ParadoxSearchScopeTypes.get(searchScopeType)
-    
+
     private val root by lazy { this.searchScopeType.findRoot(project, context) }
-    
-    override fun select(target: T): Boolean {
+
+    override fun selectOne(target: T): Boolean {
         val root1 = root
         val root2 = findRoot(target)
         return root1 isSamePosition root2
     }
-    
-    override fun selectAll(target: T): Boolean {
-        return select(target)
+
+    override fun select(target: T): Boolean {
+        return selectOne(target)
     }
-    
-    fun findRoot(context: Any?): PsiElement? {
+
+    private fun findRoot(context: Any?): PsiElement? {
         return searchScopeType.findRoot(project, context)
     }
-    
+
     override fun getGlobalSearchScope(): GlobalSearchScope? {
         return searchScopeType.getGlobalSearchScope(project, context)
     }
@@ -67,14 +67,14 @@ class ParadoxWithSearchScopeTypeSelector<T>(
 class ParadoxPreferFileSelector<T>(
     val file: VirtualFile
 ) : ParadoxSelector<T> {
-    override fun select(target: T): Boolean {
+    override fun selectOne(target: T): Boolean {
         return file == selectFile(target)
     }
-    
-    override fun selectAll(target: T): Boolean {
+
+    override fun select(target: T): Boolean {
         return true
     }
-    
+
     override fun comparator(): Comparator<T> {
         return complexCompareBy({ it }, { null }, { file == selectFile(it) })
     }
@@ -83,14 +83,14 @@ class ParadoxPreferFileSelector<T>(
 class ParadoxPreferRootFileSelector<T>(
     val rootFile: VirtualFile
 ) : ParadoxSelector<T> {
-    override fun select(target: T): Boolean {
+    override fun selectOne(target: T): Boolean {
         return rootFile == selectRootFile(target)
     }
-    
-    override fun selectAll(target: T): Boolean {
+
+    override fun select(target: T): Boolean {
         return true
     }
-    
+
     override fun comparator(): Comparator<T> {
         return complexCompareBy({ it }, { null }, { rootFile == selectRootFile(it) })
     }
@@ -99,11 +99,11 @@ class ParadoxPreferRootFileSelector<T>(
 class ParadoxFilterSelector<T>(
     val predicate: (T) -> Boolean
 ) : ParadoxSelector<T> {
-    override fun select(target: T): Boolean {
+    override fun selectOne(target: T): Boolean {
         return predicate(target)
     }
-    
-    override fun selectAll(target: T): Boolean {
+
+    override fun select(target: T): Boolean {
         return predicate(target)
     }
 }
@@ -112,12 +112,12 @@ class ParadoxDistinctSelector<T, K>(
     val keySelector: (T) -> K
 ) : ParadoxSelector<T> {
     override fun postHandle(targets: Set<T>): Set<T> {
-        if(targets.size <= 1) return targets
+        if (targets.size <= 1) return targets
         val keys = mutableSetOf<K>().synced()
         val newTargets = mutableSetOf<T>()
-        targets.forEach { target -> 
+        targets.forEach { target ->
             val key = keySelector(target)
-            if(keys.add(key)) newTargets.add(target)
+            if (keys.add(key)) newTargets.add(target)
         }
         return newTargets
     }
@@ -126,26 +126,26 @@ class ParadoxDistinctSelector<T, K>(
 class ParadoxLocaleSelector(
     val locale: CwtLocalisationLocaleConfig
 ) : ParadoxSelector<ParadoxLocalisationProperty> {
-    override fun select(target: ParadoxLocalisationProperty): Boolean {
+    override fun selectOne(target: ParadoxLocalisationProperty): Boolean {
         return locale == selectLocale(target)
     }
-    
-    override fun selectAll(target: ParadoxLocalisationProperty): Boolean {
-        return select(target)
+
+    override fun select(target: ParadoxLocalisationProperty): Boolean {
+        return selectOne(target)
     }
 }
 
 class ParadoxPreferLocaleSelector(
     val locale: CwtLocalisationLocaleConfig
 ) : ParadoxSelector<ParadoxLocalisationProperty> {
-    override fun select(target: ParadoxLocalisationProperty): Boolean {
+    override fun selectOne(target: ParadoxLocalisationProperty): Boolean {
         return locale == selectLocale(target)
     }
-    
-    override fun selectAll(target: ParadoxLocalisationProperty): Boolean {
+
+    override fun select(target: ParadoxLocalisationProperty): Boolean {
         return true
     }
-    
+
     override fun comparator(): Comparator<ParadoxLocalisationProperty> {
         return complexCompareBy({ selectLocale(it) }, { it.id }, { locale == it }) //同时也按照localeId来进行排序
     }

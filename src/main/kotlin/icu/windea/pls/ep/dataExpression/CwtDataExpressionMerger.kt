@@ -13,18 +13,18 @@ interface CwtDataExpressionMerger {
      * 得到合并后的CWT数据表达式的字符串。如果不能合并则返回null。
      */
     fun merge(expression: CwtDataExpression, otherExpression: CwtDataExpression): String?
-    
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtDataExpressionMerger>("icu.windea.pls.dataExpressionMerger")
-        
+
         /**
          * @see icu.windea.pls.ep.dataExpression.CwtDataExpressionMerger.merge
          */
         fun merge(expression: CwtDataExpression, otherExpression: CwtDataExpression): String? {
-            if(expression == otherExpression) return expression.expressionString
+            if (expression == otherExpression) return expression.expressionString
             EP_NAME.extensionList.forEach f@{ ep ->
                 val r = ep.merge(expression, otherExpression)
-                if(r != null) return r
+                if (r != null) return r
             }
             return null
         }

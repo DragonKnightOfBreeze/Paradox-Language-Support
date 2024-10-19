@@ -17,26 +17,26 @@ import icu.windea.pls.lang.quickfix.*
  * * 导入游戏目录或模组目录
  */
 class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
-	override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-		return object : PsiElementVisitor() {
-			override fun visitElement(element: PsiElement) {
-				ProgressManager.checkCanceled()
-				if(element is ParadoxScriptedVariableReference) visitScriptedVariableReference(element)
-			}
-			
-			private fun visitScriptedVariableReference(element: ParadoxScriptedVariableReference) {
-				val name = element.name ?: return
-				if(name.isParameterized()) return //skip if name is parameterized
-				val reference = element.reference ?: return
-				if(reference.resolve() != null) return
-				val quickFixes = listOf(
-					IntroduceLocalVariableFix(name, element),
-					IntroduceGlobalVariableFix(name, element)
-				)
-				val message = PlsBundle.message("inspection.script.unresolvedScriptedVariable.desc", name)
-				holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *quickFixes.toTypedArray())
-			}
-		}
-	}
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        return object : PsiElementVisitor() {
+            override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
+                if (element is ParadoxScriptedVariableReference) visitScriptedVariableReference(element)
+            }
+
+            private fun visitScriptedVariableReference(element: ParadoxScriptedVariableReference) {
+                val name = element.name ?: return
+                if (name.isParameterized()) return //skip if name is parameterized
+                val reference = element.reference ?: return
+                if (reference.resolve() != null) return
+                val quickFixes = listOf(
+                    IntroduceLocalVariableFix(name, element),
+                    IntroduceGlobalVariableFix(name, element)
+                )
+                val message = PlsBundle.message("inspection.script.unresolvedScriptedVariable.desc", name)
+                holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *quickFixes.toTypedArray())
+            }
+        }
+    }
 }
 

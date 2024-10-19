@@ -13,23 +13,23 @@ import icu.windea.pls.lang.util.*
  */
 class UnusedInlineScriptInspection : LocalInspectionTool() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if(!shouldCheckFile(file)) return null
-        
+        if (!shouldCheckFile(file)) return null
+
         //still check if inference.inlineScriptConfig is not checked
         //if(!getSettings().inference.inlineScriptConfig) return null
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return null
         val selector = inlineScriptSelector(file.project, file)
         val hasUsages = ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).find() != null
-        if(hasUsages) return null
-        
+        if (hasUsages) return null
+
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val description = PlsBundle.message("inspection.script.unusedInlineScript.desc", inlineScriptExpression)
         holder.registerProblem(file, description, ProblemHighlightType.LIKE_UNUSED_SYMBOL)
         return holder.resultsArray
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
-        if(selectRootFile(file) == null) return false
+        if (selectRootFile(file) == null) return false
         return true
     }
 }

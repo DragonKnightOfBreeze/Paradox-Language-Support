@@ -17,15 +17,15 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if(!getSettings().completion.completeVariableNames) return
-        
+        if (!getSettings().completion.completeVariableNames) return
+
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptString>() ?: return
-        if(element.text.isParameterized()) return
-        if(!element.isBlockMember()) return
+        if (element.text.isParameterized()) return
+        if (!element.isBlockMember()) return
         val parentProperty = element.findParentProperty() ?: return
         val configs = ParadoxExpressionManager.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
-        if(configs.isEmpty()) return
+        if (configs.isEmpty()) return
         val configGroup = configs.first().configGroup
         context.configGroup = configGroup
         val matched = configs.any { config ->
@@ -33,13 +33,13 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
                 childConfig is CwtPropertyConfig && childConfig.key == "alias_name[effect]"
             } ?: false
         }
-        if(!matched) return
-        
+        if (!matched) return
+
         val quoted = element.text.isLeftQuoted()
         val rightQuoted = element.text.isRightQuoted()
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)
-        
+
         ParadoxCompletionManager.initializeContext(parameters, context)
         context.contextElement = element
         context.offsetInParent = offsetInParent
@@ -47,9 +47,9 @@ class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParam
         context.quoted = quoted
         context.rightQuoted = rightQuoted
         context.expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
-        
+
         context.config = configGroup.mockVariableConfig
-        
+
         ParadoxCompletionManager.completeDynamicValueExpression(context, result)
     }
 }

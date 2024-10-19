@@ -16,9 +16,9 @@ import icu.windea.pls.lang.expression.*
 interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val configForDeclaration: CwtPropertyConfig
-    
+
     object Keys : KeyRegistry()
-    
+
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig, name: String? = null): CwtDeclarationConfig? = doResolve(config, name)
     }
@@ -30,9 +30,9 @@ val CwtDeclarationConfig.subtypesUsedInDeclaration: Set<String>
     by createKeyDelegate(CwtDeclarationConfig.Keys) {
         val result = sortedSetOf<String>()
         config.processDescendants {
-            if(it is CwtPropertyConfig) {
+            if (it is CwtPropertyConfig) {
                 val subtypeExpression = it.key.removeSurroundingOrNull("subtype[", "]")
-                if(subtypeExpression != null) {
+                if (subtypeExpression != null) {
                     val resolved = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression)
                     resolved.subtypes.forEach { (_, subtype) -> result.add(subtype) }
                 }

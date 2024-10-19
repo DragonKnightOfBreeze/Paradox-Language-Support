@@ -45,15 +45,15 @@ class ParadoxCommandExpression private constructor(
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpression.Base() {
     override val errors by lazy { validate() }
-    
+
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
-            if(expressionString.isEmpty()) return null
-            
+            if (expressionString.isEmpty()) return null
+
             //val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
-            
+
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
-            
+
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val expression = ParadoxCommandExpression(expressionString, range, nodes, configGroup)
             val suffixNodes = mutableListOf<ParadoxComplexExpressionNode>()
@@ -61,7 +61,7 @@ class ParadoxCommandExpression private constructor(
             run r1@{
                 run r2@{
                     suffixStartIndex = expressionString.indexOf('&')
-                    if(suffixStartIndex == -1) return@r2
+                    if (suffixStartIndex == -1) return@r2
                     run r3@{
                         val node = ParadoxMarkerNode("&", TextRange.from(suffixStartIndex, 1), configGroup)
                         suffixNodes += node
@@ -75,7 +75,7 @@ class ParadoxCommandExpression private constructor(
                 }
                 run r2@{
                     suffixStartIndex = expressionString.indexOf("::")
-                    if(suffixStartIndex == -1) return@r2
+                    if (suffixStartIndex == -1) return@r2
                     run r3@{
                         val node = ParadoxMarkerNode("::", TextRange.from(suffixStartIndex, 2), configGroup)
                         suffixNodes += node
@@ -92,13 +92,13 @@ class ParadoxCommandExpression private constructor(
                 var index: Int
                 var tokenIndex = -1
                 var startIndex = 0
-                val expressionString0 = if(suffixStartIndex == -1) expressionString else expressionString.substring(0, suffixStartIndex)
+                val expressionString0 = if (suffixStartIndex == -1) expressionString else expressionString.substring(0, suffixStartIndex)
                 val textLength = expressionString0.length
-                while(tokenIndex < textLength) {
+                while (tokenIndex < textLength) {
                     index = tokenIndex + 1
                     tokenIndex = expressionString0.indexOf('.', index)
-                    if(tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
-                    if(tokenIndex == -1) tokenIndex = textLength
+                    if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
+                    if (tokenIndex == -1) tokenIndex = textLength
                     run r2@{
                         val nodeText = expressionString0.substring(startIndex, tokenIndex)
                         val nodeTextRange = TextRange.create(startIndex + offset, tokenIndex + offset)
@@ -110,7 +110,7 @@ class ParadoxCommandExpression private constructor(
                         nodes += node
                     }
                     run r2@{
-                        if(tokenIndex == textLength) return@r2
+                        if (tokenIndex == textLength) return@r2
                         val node = ParadoxOperatorNode(".", TextRange.from(tokenIndex, 1), configGroup)
                         nodes += node
                     }
@@ -119,17 +119,17 @@ class ParadoxCommandExpression private constructor(
             nodes += suffixNodes
             return expression
         }
-        
+
         private fun ParadoxCommandExpression.validate(): List<ParadoxComplexExpressionError> {
             val errors = mutableListOf<ParadoxComplexExpressionError>()
             var malformed = false
-            for(node in nodes) {
-                if(node.text.isEmpty()) {
+            for (node in nodes) {
+                if (node.text.isEmpty()) {
                     malformed = true
                     break
                 }
             }
-            if(malformed) {
+            if (malformed) {
                 errors += ParadoxComplexExpressionErrors.malformedLocalisationCommandExpression(rangeInExpression, text)
             }
             return errors.pinned { it.isMalformedError() }

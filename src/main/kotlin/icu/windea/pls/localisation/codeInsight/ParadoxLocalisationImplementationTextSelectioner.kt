@@ -11,19 +11,19 @@ import icu.windea.pls.script.psi.*
  * * 属性：从目标元素向前直到没有空行为止的最后一个注释开始，到目标元素结束
  * * 其他：从目标元素开始，到目标元素结束
  */
-class ParadoxLocalisationImplementationTextSelectioner: ImplementationTextSelectioner {
-	override fun getTextStartOffset(element: PsiElement): Int {
-		return when {
-			element is ParadoxLocalisationProperty -> {
-				findTextStartOffsetIncludeComment(element) { it.parent is ParadoxScriptRootBlock }
-			}
-			else -> {
-				element.startOffset
-			}
-		}
-	}
-	
-	override fun getTextEndOffset(element: PsiElement): Int {
-		return element.endOffset
-	}
+class ParadoxLocalisationImplementationTextSelectioner : ImplementationTextSelectioner {
+    override fun getTextStartOffset(element: PsiElement): Int {
+        return when {
+            element is ParadoxLocalisationProperty -> {
+                findTextStartOffsetIncludeComment(element) { it.parent is ParadoxScriptRootBlock }
+            }
+            else -> {
+                element.startOffset
+            }
+        }
+    }
+
+    override fun getTextEndOffset(element: PsiElement): Int {
+        return element.endOffset
+    }
 }

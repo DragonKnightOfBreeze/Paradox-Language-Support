@@ -12,7 +12,7 @@ import icu.windea.pls.lang.util.*
 interface CwtModifierCategoryConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val supportedScopes: Set<String>
-    
+
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig): CwtModifierCategoryConfig? = doResolve(config)
     }
@@ -24,9 +24,9 @@ private fun doResolve(config: CwtPropertyConfig): CwtModifierCategoryConfig? {
     val name = config.key
     var supportedScopes: Set<String>? = null
     val props = config.properties
-    if(props.isNullOrEmpty()) return null
-    for(prop in props) {
-        when(prop.key) {
+    if (props.isNullOrEmpty()) return null
+    for (prop in props) {
+        when (prop.key) {
             //may be empty here (e.g., "AI Economy")
             "supported_scopes" -> supportedScopes = buildSet {
                 prop.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }

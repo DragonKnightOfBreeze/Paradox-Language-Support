@@ -11,17 +11,17 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
     companion object {
         val INSTANCE by lazy { findStubIndex<ParadoxLocalisationNameIndex>() }
         val KEY = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
-        
+
         private const val VERSION = 54 //1.3.21
         private const val CACHE_SIZE = 100 * 1024 //98000+ in stellaris@3.6
     }
-    
+
     override fun getKey() = KEY
-    
+
     override fun getVersion() = VERSION
-    
+
     override fun getCacheSize() = CACHE_SIZE
-    
+
     /**
      * 用于快速索引修正的名字和描述。它们是忽略大小写的。
      */
@@ -30,15 +30,15 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
         companion object {
             val INSTANCE by lazy { findStubIndex<ModifierIndex>() }
             val KEY = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.modifier")
-            
+
             private const val VERSION = 54 //1.3.21
             private const val CACHE_SIZE = 2 * 1024
         }
-        
+
         override fun getKey() = KEY
-        
+
         override fun getVersion() = VERSION
-        
+
         override fun getCacheSize() = CACHE_SIZE
     }
 }

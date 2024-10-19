@@ -2,6 +2,7 @@ package icu.windea.pls.config.config.extended
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.collections.*
@@ -22,17 +23,17 @@ interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMemberElement, CwtM
     val contextKey: String
     val contextConfigsType: String
     val inherit: Boolean
-    
+
     /**
      * 得到处理后的作为上下文规则的容器的规则。
      */
     fun getContainerConfig(parameterElement: ParadoxParameterElement): CwtMemberConfig<*>
-    
+
     /**
      * 得到由其声明的上下文规则列表。
      */
     fun getContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>>
-    
+
     companion object Resolver {
         fun resolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? {
             return doResolve(config)
@@ -43,7 +44,7 @@ interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMemberElement, CwtM
 //Implementations (interned)
 
 private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? {
-    val name = when(config) {
+    val name = when (config) {
         is CwtPropertyConfig -> config.key
         is CwtValueConfig -> config.value
     }
@@ -62,36 +63,38 @@ private class CwtExtendedParameterConfigImpl(
 ) : UserDataHolderBase(), CwtExtendedParameterConfig {
     private val _containerConfig by lazy { doGetContainerConfig() }
     private val _contextConfigs by lazy { doGetContextConfigs() }
-    
+
     override fun getContainerConfig(parameterElement: ParadoxParameterElement): CwtMemberConfig<*> {
         return _containerConfig
     }
-    
+
     override fun getContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        if(inherit) {
+        if (inherit) {
             run {
                 val contextReferenceElement = parameterElement.containingContextReference?.element ?: return@run
                 val parentElement = contextReferenceElement.parentOfType<ParadoxScriptMemberElement>(false) ?: return@run
                 val contextConfigs = ParadoxExpressionManager.getConfigContext(parentElement)?.getConfigs().orEmpty()
+                PlsStates.dynamicContextConfigs.set(true)
                 return contextConfigs
             }
             return emptyList()
         }
         return _contextConfigs
     }
-    
+
     private fun doGetContainerConfig(): CwtMemberConfig<*> {
+        if (config !is CwtPropertyConfig) return config
         return CwtConfigManipulator.inlineSingleAlias(config) ?: config // #76
     }
-    
+
     private fun doGetContextConfigs(): List<CwtMemberConfig<*>> {
         val containerConfig = _containerConfig
-        if(containerConfig !is CwtPropertyConfig) return emptyList()
-        val r = when(contextConfigsType) {
+        if (containerConfig !is CwtPropertyConfig) return emptyList()
+        val r = when (contextConfigsType) {
             "multiple" -> containerConfig.configs.orEmpty()
             else -> containerConfig.valueConfig.toSingletonListOrEmpty()
         }
-        if(r.isEmpty()) return emptyList()
+        if (r.isEmpty()) return emptyList()
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(config, r, config.configGroup)
         return listOf(contextConfig)
     }

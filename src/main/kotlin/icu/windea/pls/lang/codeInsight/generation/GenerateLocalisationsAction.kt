@@ -19,21 +19,21 @@ import icu.windea.pls.script.psi.*
  */
 class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopupTemplateInjector {
     private val handler = ParadoxGenerateLocalisationsHandler()
-    
+
     override fun getHandler(): CodeInsightActionHandler {
         return handler
     }
-    
+
     override fun update(event: AnActionEvent) {
         val presentation = event.presentation
         presentation.isEnabledAndVisible = false
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if(file !is ParadoxScriptFile) return
-        if(file.fileInfo == null) return
+        if (file !is ParadoxScriptFile) return
+        if (file.fileInfo == null) return
         presentation.isVisible = true
-        if(file.definitionInfo != null) {
+        if (file.definitionInfo != null) {
             presentation.isEnabled = true
             return
         }
@@ -42,7 +42,7 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
         val isEnabled = context != null
         presentation.isEnabled = isEnabled
     }
-    
+
     private fun getContext(file: PsiFile, editor: Editor): ParadoxLocalisationCodeInsightContext? {
         val locales = ParadoxLocaleManager.getLocaleConfigs()
         val element = findElement(file, editor.caretModel.offset)
@@ -59,11 +59,11 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
         }
         return context
     }
-    
+
     private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
         return ParadoxPsiManager.findScriptExpression(file, offset).castOrNull()
     }
-    
+
     override fun createEditTemplateAction(dataContext: DataContext?): AnAction? {
         return null
     }

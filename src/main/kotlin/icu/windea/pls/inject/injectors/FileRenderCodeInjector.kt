@@ -15,20 +15,20 @@ import icu.windea.pls.lang.*
 @InjectTarget("com.intellij.openapi.fileChooser.tree.FileRenderer")
 class FileRenderCodeInjector : CodeInjectorBase() {
     //渲染文件节点时，为游戏或模组目录提供提供额外的信息文本
-    
+
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER, static = true)
     fun customize(renderer: SimpleColoredComponent, value: Any) {
         doCustomizeCatching(value, renderer)
     }
-    
+
     private fun doCustomizeCatching(value: Any, renderer: SimpleColoredComponent) {
         disableLogger {
             runCatchingCancelable {
-                if(doCustomize(value, renderer)) return
+                if (doCustomize(value, renderer)) return
             }
         }
     }
-    
+
     private fun doCustomize(value: Any, renderer: SimpleColoredComponent): Boolean {
         val file = when {
             value is FileNode -> value.file
@@ -36,7 +36,7 @@ class FileRenderCodeInjector : CodeInjectorBase() {
             else -> return true
         }
         val rootInfo = file.rootInfo
-        if(rootInfo != null && rootInfo.rootFile == file) {
+        if (rootInfo != null && rootInfo.rootFile == file) {
             val comment = rootInfo.qualifiedName
             renderer.append(" $comment", SimpleTextAttributes.GRAYED_ATTRIBUTES)
         }

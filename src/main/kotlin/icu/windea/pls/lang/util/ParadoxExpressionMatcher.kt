@@ -35,44 +35,45 @@ object ParadoxExpressionMatcher {
         const val SkipIndex = 0x02
         /** 对于[Result.LazyScopeAwareMatch]，匹配结果直接返回true。 */
         const val SkipScope = 0x04
-        
+
         /** 对于最终匹配得到的那个结果，不需要再次判断是否精确匹配。 */
         const val Fast = 0x08
         /** 允许匹配定义自身。（当要匹配表达式的是一个键时） */
         const val AcceptDefinition = 0x10
     }
-    
+
     sealed class Result {
         abstract fun get(options: Int = Options.Default): Boolean
-        
+
         data object NotMatch : Result() {
             override fun get(options: Int) = false
         }
-        
+
         data object ExactMatch : Result() {
             override fun get(options: Int) = true
         }
-        
+
         data object FallbackMatch : Result() {
             override fun get(options: Int) = true
         }
-        
+
         data object ParameterizedMatch : Result() {
             override fun get(options: Int) = true
         }
-        
+
         sealed class LazyMatch(predicate: () -> Boolean) : Result() {
             //use manual lazy implementation instead of kotlin Lazy to optimize memory
-            @Volatile private var value: Any = predicate
-            
+            @Volatile
+            private var value: Any = predicate
+
             override fun get(options: Int): Boolean {
-                if(skip(options)) return true
-                if(value is Boolean) return value as Boolean
+                if (skip(options)) return true
+                if (value is Boolean) return value as Boolean
                 val r = doGetCatching()
                 value = r
                 return r
             }
-            
+
             private fun skip(options: Int): Boolean {
                 return when {
                     this is LazySimpleMatch -> BitUtil.isSet(options, Options.Relax)
@@ -82,14 +83,14 @@ object ParadoxExpressionMatcher {
                     else -> false
                 }
             }
-            
+
             private fun doGetCatching(): Boolean {
                 //it's necessary to suppress outputting error logs and throwing exceptions here
-                
+
                 //java.lang.Throwable: Indexing process should not rely on non-indexed file data.
                 //java.lang.AssertionError: Reentrant indexing
                 //com.intellij.openapi.project.IndexNotReadyException
-                
+
                 return disableLogger {
                     runCatchingCancelable {
                         @Suppress("UNCHECKED_CAST")
@@ -98,26 +99,26 @@ object ParadoxExpressionMatcher {
                 }
             }
         }
-        
+
         class LazySimpleMatch(predicate: () -> Boolean) : LazyMatch(predicate)
-        
+
         class LazyBlockAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
-        
+
         class LazyIndexAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
-        
+
         class LazyScopeAwareMatch(predicate: () -> Boolean) : LazyMatch(predicate)
-        
+
         companion object {
-            fun of(value: Boolean) = if(value) ExactMatch else NotMatch
-            
-            fun ofFallback(value: Boolean) = if(value) FallbackMatch else NotMatch
+            fun of(value: Boolean) = if (value) ExactMatch else NotMatch
+
+            fun ofFallback(value: Boolean) = if (value) FallbackMatch else NotMatch
         }
     }
-    
+
     data class ResultValue<out T>(val value: T, val result: Result)
-    
+
     //兼容scriptedVariableReference inlineMath parameter
-    
+
     fun matches(
         element: PsiElement,
         expression: ParadoxDataExpression,
@@ -128,11 +129,11 @@ object ParadoxExpressionMatcher {
     ): Result {
         return ParadoxScriptExpressionMatcher.matches(element, expression, configExpression, config, configGroup, options)
     }
-    
+
     object Impls {
         fun getCachedMatchResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
             ProgressManager.checkCanceled()
-            if(PlsStates.indexing.get() == true) return Result.ExactMatch // indexing -> should not visit indices -> treat as exact match
+            if (PlsStates.indexing.get() == true) return Result.ExactMatch // indexing -> should not visit indices -> treat as exact match
             val psiFile = element.containingFile ?: return Result.NotMatch
             val project = psiFile.project
             val rootFile = selectRootFile(psiFile) ?: return Result.NotMatch
@@ -140,7 +141,7 @@ object ParadoxExpressionMatcher {
             val cache = configGroup.configMatchResultCache.value.get(rootFile)
             return cache.get(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
         }
-        
+
         fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {
             val name = expression.text
             val cacheKey = "l#$name"
@@ -149,7 +150,7 @@ object ParadoxExpressionMatcher {
                 ParadoxLocalisationSearch.search(name, selector).findFirst() != null
             }
         }
-        
+
         fun getSyncedLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {
             val name = expression.text
             val cacheKey = "ls#$name"
@@ -158,7 +159,7 @@ object ParadoxExpressionMatcher {
                 ParadoxSyncedLocalisationSearch.search(name, selector).findFirst() != null
             }
         }
-        
+
         fun getDefinitionMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, project: Project): Result {
             val name = expression.text
             val typeExpression = configExpression.value ?: return Result.NotMatch //invalid cwt config
@@ -168,7 +169,7 @@ object ParadoxExpressionMatcher {
                 ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null
             }
         }
-        
+
         fun getPathReferenceMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, project: Project): Result {
             val pathReference = expression.text.normalizePath()
             val cacheKey = "p#${pathReference}#${configExpression}"
@@ -177,10 +178,10 @@ object ParadoxExpressionMatcher {
                 ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null
             }
         }
-        
+
         fun getComplexEnumValueMatchResult(element: PsiElement, name: String, enumName: String, complexEnumConfig: CwtComplexEnumConfig, project: Project): Result {
             val searchScope = complexEnumConfig.searchScopeType
-            if(searchScope == null) {
+            if (searchScope == null) {
                 val cacheKey = "ce#${enumName}#${name}"
                 return getCachedMatchResult(element, cacheKey) {
                     val selector = complexEnumValueSelector(project, element)
@@ -192,18 +193,18 @@ object ParadoxExpressionMatcher {
                 ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
             }
         }
-        
+
         @Suppress("UNUSED_PARAMETER")
         fun getDynamicValueMatchResult(element: PsiElement, name: String, dynamicValueType: String, project: Project): Result {
             //总是认为匹配
             return Result.FallbackMatch
         }
-        
+
         fun getScopeFieldMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
             val textRange = TextRange.create(0, expression.text.length)
             val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup)
-            if(scopeFieldExpression == null) return Result.NotMatch
-            when(configExpression.type) {
+            if (scopeFieldExpression == null) return Result.NotMatch
+            when (configExpression.type) {
                 CwtDataTypes.ScopeField -> return Result.ExactMatch
                 CwtDataTypes.Scope -> {
                     val expectedScope = configExpression.value ?: return Result.ExactMatch
@@ -222,7 +223,7 @@ object ParadoxExpressionMatcher {
                 else -> return Result.NotMatch
             }
         }
-        
+
         private fun getSwitchedScopeContext(element: PsiElement, configExpression: CwtDataExpression, scopeFieldExpression: ParadoxScopeFieldExpression): ParadoxScopeContext? {
             val memberElement = ParadoxScopeManager.findParentMember(element, withSelf = true)
             val parentMemberElement = ParadoxScopeManager.findParentMember(element, withSelf = false)
@@ -231,13 +232,13 @@ object ParadoxExpressionMatcher {
                 else -> ParadoxScopeManager.getAnyScopeContext()
             }
             val expressionElement = when {
-                memberElement is ParadoxScriptProperty -> if(configExpression.isKey) memberElement.propertyKey else memberElement.propertyValue
+                memberElement is ParadoxScriptProperty -> if (configExpression.isKey) memberElement.propertyKey else memberElement.propertyValue
                 memberElement is ParadoxScriptValue -> memberElement
                 else -> return null
             } ?: return null
             return ParadoxScopeManager.getSwitchedScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
         }
-        
+
         fun getModifierMatchResult(element: PsiElement, expression: ParadoxDataExpression, configGroup: CwtConfigGroup): Result {
             val name = expression.text
             val cacheKey = "m#${name}"
@@ -245,7 +246,7 @@ object ParadoxExpressionMatcher {
                 ParadoxModifierManager.matchesModifier(name, element, configGroup)
             }
         }
-        
+
         fun getTemplateMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
             val exp = expression.text
             val template = configExpression.expressionString

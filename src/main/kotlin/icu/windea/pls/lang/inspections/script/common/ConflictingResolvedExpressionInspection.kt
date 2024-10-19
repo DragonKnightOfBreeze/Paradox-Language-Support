@@ -17,32 +17,32 @@ import icu.windea.pls.script.psi.*
 @Suppress("UNUSED_PARAMETER")
 class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if(!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
-        
+        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if(element is ParadoxScriptBlock) visitBlock(element)
+                if (element is ParadoxScriptBlock) visitBlock(element)
             }
-            
+
             private fun visitBlock(element: ParadoxScriptBlock) {
-                if(!element.isExpression()) return // skip check if element is not a expression
-                
+                if (!element.isExpression()) return // skip check if element is not a expression
+
                 //skip checking property if its property key may contain parameters
                 //position: (in property) property key / (standalone) left curly brace
                 val property = element.parent
                     ?.castOrNull<ParadoxScriptProperty>()
                 val position = property?.propertyKey
-                    ?.also { if(it.text.isParameterized()) return }
+                    ?.also { if (it.text.isParameterized()) return }
                     ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
                     ?: return
                 val expression = property?.expression ?: element.expression
                 val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
                 doCheck(element, position, configs, expression)
             }
-            
+
             private fun doCheck(element: ParadoxScriptMemberElement, position: PsiElement, configs: List<CwtMemberConfig<*>>, expression: String) {
-                if(skipCheck(element, configs)) return
+                if (skipCheck(element, configs)) return
                 val isKey = position is ParadoxScriptPropertyKey
                 val description = when {
                     isKey -> PlsBundle.message("inspection.script.conflictingResolvedExpression.desc.1", expression)
@@ -50,23 +50,23 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                 }
                 holder.registerProblem(position, description)
             }
-            
+
             private fun skipCheck(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Boolean {
                 //子句可以精确匹配多个子句规则时，适用此检查
-                if(configs.isEmpty()) return true
-                if(configs.size == 1) return true
+                if (configs.isEmpty()) return true
+                if (configs.size == 1) return true
                 //如果是重载后提供的规则，跳过此检查
-                if(isOverriddenConfigs(configs)) return true
+                if (isOverriddenConfigs(configs)) return true
                 //如果存在规则，规则的子句中的所有key和value都可以分别被另一个规则的子句中的所有key和value包含，则仅使用这些规则
                 val configsToCheck = filterConfigs(element, configs)
-                if(configsToCheck.size == 1) return true
+                if (configsToCheck.size == 1) return true
                 return false
             }
-            
+
             private fun isOverriddenConfigs(configs: List<CwtMemberConfig<*>>): Boolean {
                 return configs.any { it.memberConfig.castOrNull<CwtPropertyConfig>()?.overriddenProvider != null }
             }
-            
+
             private fun filterConfigs(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
                 val configsToCheck = configs.filter { config ->
                     val childConfigs = config.configs
@@ -79,9 +79,9 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
             }
         }
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
-        if(selectRootFile(file) == null) return false
+        if (selectRootFile(file) == null) return false
         return true
     }
 }

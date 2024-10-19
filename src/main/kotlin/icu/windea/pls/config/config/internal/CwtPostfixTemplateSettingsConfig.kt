@@ -33,7 +33,7 @@ class CwtPostfixTemplateSettingsConfig(
                             prop.key == "expression" -> expression = prop.stringValue
                         }
                     }
-                    if(key != null && expression != null) {
+                    if (key != null && expression != null) {
                         val foldingSetting = CwtPostfixTemplateSettingsConfig(id, key!!, example, variables.orEmpty(), expression!!)
                         map.put(id, foldingSetting)
                     }

@@ -14,22 +14,22 @@ import icu.windea.pls.script.psi.*
  */
 class GenerateLocalisationsInFileAction : BaseCodeInsightAction(), GenerateActionPopupTemplateInjector {
     private val handler = ParadoxGenerateLocalisationsHandler(forFile = true)
-    
+
     override fun getHandler(): CodeInsightActionHandler {
         return handler
     }
-    
+
     override fun update(event: AnActionEvent) {
         val presentation = event.presentation
         presentation.isEnabledAndVisible = false
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if(file !is ParadoxScriptFile) return
-        if(file.fileInfo == null) return
+        if (file !is ParadoxScriptFile) return
+        if (file.fileInfo == null) return
         presentation.isEnabledAndVisible = true
     }
-    
+
     override fun createEditTemplateAction(dataContext: DataContext?): AnAction? {
         return null
     }
