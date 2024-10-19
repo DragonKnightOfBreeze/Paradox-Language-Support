@@ -60,6 +60,31 @@ interface ParadoxModDependenciesToolbarActions {
         }
     }
     
+    class EditAction(
+        private val project: Project,
+        private val tableView: TableView<ParadoxModDependencySettingsState>,
+        private val tableModel: ParadoxModDependenciesTableModel
+    ) : AnAction(AllIcons.Actions.Edit) {
+        init {
+            templatePresentation.text = PlsBundle.message("mod.dependencies.toolbar.action.edit")
+            registerCustomShortcutSet(CustomShortcutSet.fromString("ENTER"), null)
+        }
+        
+        override fun getActionUpdateThread(): ActionUpdateThread {
+            return ActionUpdateThread.EDT
+        }
+        
+        override fun update(e: AnActionEvent) {
+            e.presentation.isEnabled = tableView.selectedRowCount == 1
+        }
+        
+        override fun actionPerformed(e: AnActionEvent) {
+            val selectedRow = tableView.selectedRow
+            val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
+            ParadoxModDependencySettingsDialog(project, item, tableView).show()
+        }
+    }
+    
     class EnableAllAction(
         private val project: Project,
         private val tableView: TableView<ParadoxModDependencySettingsState>,
@@ -113,31 +138,6 @@ interface ParadoxModDependenciesToolbarActions {
                     item.enabled = false
                 }
             }
-        }
-    }
-    
-    class EditAction(
-        private val project: Project,
-        private val tableView: TableView<ParadoxModDependencySettingsState>,
-        private val tableModel: ParadoxModDependenciesTableModel
-    ) : AnAction(AllIcons.Actions.Edit) {
-        init {
-            templatePresentation.text = PlsBundle.message("mod.dependencies.toolbar.action.edit")
-            registerCustomShortcutSet(CustomShortcutSet.fromString("ENTER"), null)
-        }
-        
-        override fun getActionUpdateThread(): ActionUpdateThread {
-            return ActionUpdateThread.EDT
-        }
-        
-        override fun update(e: AnActionEvent) {
-            e.presentation.isEnabled = tableView.selectedRowCount == 1
-        }
-        
-        override fun actionPerformed(e: AnActionEvent) {
-            val selectedRow = tableView.selectedRow
-            val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
-            ParadoxModDependencySettingsDialog(project, item, tableView).show()
         }
     }
     

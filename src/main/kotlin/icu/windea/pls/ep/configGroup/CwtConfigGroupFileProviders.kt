@@ -73,8 +73,8 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 class LocalCwtConfigGroupFileProvider: CwtConfigGroupFileProviderBase() {
     override fun getRootDirectory(project: Project): VirtualFile? {
         val directory = getSettings().localConfigDirectory
-        val directory0 = directory?.normalizeAbsolutePath()?.orNull() ?: return null
-        val path = directory0.toPathOrNull() ?: return null
+        val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
+        val path = absoluteDirectory.toPathOrNull() ?: return null
         val file = VfsUtil.findFile(path, true)
         return file?.takeIf { it.isDirectory }
     }

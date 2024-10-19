@@ -9,6 +9,7 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.util.*
 import javax.swing.*
 
 //each library each project
@@ -54,53 +55,41 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
         }
     }
     
-    fun computeRoots(): MutableSet<VirtualFile> {
+    fun computeRoots(): Set<VirtualFile> {
         return runReadAction { doComputeRoots() }
     }
     
-    private fun doComputeRoots(): MutableSet<VirtualFile> {
-        //这里仅需要收集不在项目中的游戏目录和模组目录
+    private fun doComputeRoots(): Set<VirtualFile> {
+        //这里仅需要收集不在项目中的根目录（游戏目录与模组目录）
+        
         val newPaths = mutableSetOf<String>()
-        val newRoots = mutableSetOf<VirtualFile>()
-        val projectFileIndex = ProjectFileIndex.getInstance(project)
-        val allModSettings = getProfilesSettings()
-        for(modSettings in allModSettings.modSettings.values) {
-            val modDirectory = modSettings.modDirectory ?: continue
-            val modFile = modDirectory.toVirtualFile(false) ?: continue
-            if(!modFile.exists()) continue
-            if(!projectFileIndex.isInContent(modFile)) continue
+        val profilesSettings = getProfilesSettings()
+        profilesSettings.modSettings.values.forEach f@{ modSettings ->
+            val modDirectory = modSettings.modDirectory ?: return@f
+            newPaths += modDirectory
             run {
                 val gameDirectory = modSettings.finalGameDirectory ?: return@run
-                if(newPaths.contains(gameDirectory)) return@run
-                val gameFile = gameDirectory.toVirtualFile(false) ?: return@run
-                if(!gameFile.exists()) return@run
-                if(projectFileIndex.isInContent(gameFile)) return@run
-                newRoots.add(gameFile)
+                newPaths += gameDirectory
             }
-            for(modDependencySettings in modSettings.modDependencies) {
-                val modDependencyDirectory = modDependencySettings.modDirectory ?: continue
-                if(newPaths.contains(modDependencyDirectory)) continue
-                if(modDependencyDirectory == modDirectory) continue //需要排除这种情况
-                val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: continue
-                if(!modDependencyFile.exists()) continue
-                if(projectFileIndex.isInContent(modDependencyFile)) continue
-                newRoots.add(modDependencyFile)
+            modSettings.modDependencies.forEach f1@{ modDependencySettings ->
+                val modDependencyDirectory = modDependencySettings.modDirectory ?: return@f1
+                newPaths += modDependencyDirectory
             }
         }
-        for(gameSettings in allModSettings.gameSettings.values) {
-            val gameDirectory = gameSettings.gameDirectory ?: continue
-            val gameFile = gameDirectory.toVirtualFile(false) ?: continue
-            if(!gameFile.exists()) continue
-            if(!projectFileIndex.isInContent(gameFile)) continue
-            for(modDependencySettings in gameSettings.modDependencies) {
-                val modDependencyDirectory = modDependencySettings.modDirectory ?: continue
-                if(newPaths.contains(modDependencyDirectory)) continue
-                val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: continue
-                if(!modDependencyFile.exists()) continue
-                if(projectFileIndex.isInContent(modDependencyFile)) continue
-                newRoots.add(modDependencyFile)
+        profilesSettings.gameSettings.values.forEach f@{ gameSettings ->
+            val gameDirectory = gameSettings.gameDirectory ?: return@f
+            newPaths += gameDirectory
+            gameSettings.modDependencies.forEach f1@{ modDependencySettings ->
+                val modDependencyDirectory = modDependencySettings.modDirectory ?: return@f1
+                newPaths += modDependencyDirectory
             }
         }
-        return newRoots
+        val newRoots = newPaths.mapNotNull { it.toVirtualFile(false) }
+        val projectFileIndex = ProjectFileIndex.getInstance(project)
+        val result = newRoots
+            .filter { !ParadoxCoreManager.isExcludedRootFilePath(it.path) }
+            .filter { it.exists() && !projectFileIndex.isInContent(it) }
+            .toSet()
+        return result
     }
 }

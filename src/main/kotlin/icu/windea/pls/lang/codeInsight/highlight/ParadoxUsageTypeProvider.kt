@@ -20,7 +20,6 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
     }
     
     override fun getUsageType(element: PsiElement, targets: Array<out UsageTarget>): UsageType? {
-        //TODO
         when {
             element is ParadoxScriptStringExpressionElement || element is ParadoxScriptInt -> {
                 //尝试解析为复杂枚举值声明

@@ -2,7 +2,7 @@ package icu.windea.pls.lang.util
 
 import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.daemon.*
-import com.intellij.injected.editor.VirtualFileWindow
+import com.intellij.injected.editor.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileEditor.*
@@ -303,10 +303,17 @@ object ParadoxCoreManager {
         return null
     }
     
+    fun isExcludedRootFilePath(rootFilePath: String): Boolean {
+        //https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90
+        //exclude some specific root file paths to avoid parsing and indexing unexpected files
+        return rootFilePath.isEmpty() || rootFilePath == "/"
+    }
+    
     fun findFilesByRootFilePaths(rootFilePaths: Set<String>): MutableSet<VirtualFile> {
         val files = mutableSetOf<VirtualFile>()
         runReadAction {
             rootFilePaths.forEach f@{ rootFilePath ->
+                if(isExcludedRootFilePath(rootFilePath)) return@f
                 val rootFile = VfsUtil.findFile(rootFilePath.toPathOrNull() ?: return@f, true) ?: return@f
                 VfsUtil.visitChildrenRecursively(rootFile, object : VirtualFileVisitor<Void>() {
                     override fun visitFile(file: VirtualFile): Boolean {
@@ -392,7 +399,7 @@ object ParadoxCoreManager {
         //* 路径合法
         //* 路径对应的目录存在
         //* 路径是游戏目录（可以查找到对应的launcher-settings.json）
-        val gameDirectory0 = gameDirectory?.normalizeAbsolutePath()?.orNull() ?: return null
+        val gameDirectory0 = gameDirectory?.normalizePath()?.orNull() ?: return null
         val path = gameDirectory0.toPathOrNull()
         if(path == null) return builder.error(PlsBundle.message("gameDirectory.error.1"))
         val rootFile = VfsUtil.findFile(path, true)?.takeIf { it.exists() }
@@ -409,7 +416,7 @@ object ParadoxCoreManager {
     }
     
     fun getGameVersionFromGameDirectory(gameDirectory: String?): String? {
-        val gameDirectory0 = gameDirectory?.normalizeAbsolutePath()?.orNull() ?: return null
+        val gameDirectory0 = gameDirectory?.normalizePath()?.orNull() ?: return null
         val rootFile = gameDirectory0.toVirtualFile(true)?.takeIf { it.exists() } ?: return null
         val rootInfo = rootFile.rootInfo
         if(rootInfo !is ParadoxGameRootInfo) return null

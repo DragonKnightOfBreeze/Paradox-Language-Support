@@ -108,7 +108,9 @@ interface ParadoxGameOrModSettingsState {
 interface ParadoxGameDescriptorAwareSettingsState {
     val gameDirectory: String?
     
-    val gameDescriptorSettings: ParadoxGameDescriptorSettingsState? get() = getProfilesSettings().gameDescriptorSettings.get(gameDirectory.orEmpty())
+    val gameDescriptorSettings: ParadoxGameDescriptorSettingsState?
+        get() = gameDirectory?.let { getProfilesSettings().gameDescriptorSettings.get(it) }
+    
     val gameType: ParadoxGameType? get() = gameDescriptorSettings?.gameType
     val gameVersion: String? get() = gameDescriptorSettings?.gameVersion
 }
@@ -116,16 +118,18 @@ interface ParadoxGameDescriptorAwareSettingsState {
 interface ParadoxModDescriptorAwareSettingsState {
     val modDirectory: String?
     
-    val modDescriptorSettings: ParadoxModDescriptorSettingsState? get() = getProfilesSettings().modDescriptorSettings.get(modDirectory.orEmpty())
-    val name get() = modDescriptorSettings?.name
-    val version get() = modDescriptorSettings?.version
-    val supportedVersion get() = modDescriptorSettings?.supportedVersion
-    val picture get() = modDescriptorSettings?.picture
-    val tags get() = modDescriptorSettings?.tags
-    val remoteId get() = modDescriptorSettings?.remoteId
-    val inferredGameType get() = modDescriptorSettings?.inferredGameType
-    val gameType get() = modDescriptorSettings?.gameType
-    val source get() = modDescriptorSettings?.source
+    val modDescriptorSettings: ParadoxModDescriptorSettingsState?
+        get() = modDirectory?.orNull()?.let { getProfilesSettings().modDescriptorSettings.get(it) }
+    
+    val name: String? get() = modDescriptorSettings?.name
+    val version: String? get() = modDescriptorSettings?.version
+    val supportedVersion: String? get() = modDescriptorSettings?.supportedVersion
+    val picture: String? get() = modDescriptorSettings?.picture
+    val tags: MutableSet<String>? get() = modDescriptorSettings?.tags
+    val remoteId: String? get() = modDescriptorSettings?.remoteId
+    val inferredGameType: ParadoxGameType? get() = modDescriptorSettings?.inferredGameType
+    val gameType: ParadoxGameType? get() = modDescriptorSettings?.gameType
+    val source: ParadoxModSource? get() = modDescriptorSettings?.source
 }
 
 @Tag("settings")
@@ -136,7 +140,7 @@ class ParadoxGameSettingsState : BaseState(), ParadoxGameDescriptorAwareSettings
     @get:XCollection(style = XCollection.Style.v2)
     override var modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
     
-    override val qualifiedName get() = gameDescriptorSettings?.qualifiedName
+    override val qualifiedName: String? get() = gameDescriptorSettings?.qualifiedName
 }
 
 /**
@@ -152,7 +156,7 @@ class ParadoxModSettingsState : BaseState(), ParadoxGameDescriptorAwareSettingsS
     @get:XCollection(style = XCollection.Style.v2)
     override var modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
     
-    override val qualifiedName get() = modDescriptorSettings?.qualifiedName
+    override val qualifiedName: String? get() = modDescriptorSettings?.qualifiedName
 }
 
 /**
@@ -170,10 +174,10 @@ class ParadoxModDependencySettingsState : BaseState(), ParadoxModDescriptorAware
 }
 
 val ParadoxModDescriptorSettingsState.finalGameType: ParadoxGameType
-    get() =  inferredGameType ?: gameType ?: getSettings().defaultGameType
+    get() = inferredGameType ?: gameType ?: getSettings().defaultGameType
 
 val ParadoxModDescriptorAwareSettingsState.finalGameType: ParadoxGameType
-    get() =  inferredGameType ?: gameType ?: getSettings().defaultGameType
+    get() = inferredGameType ?: gameType ?: getSettings().defaultGameType
 
 val ParadoxModSettingsState.finalGameDirectory: String?
-    get() = gameDirectory ?: getSettings().defaultGameDirectories[finalGameType.id]
+    get() = gameDirectory?.orNull() ?: getSettings().defaultGameDirectories[finalGameType.id]?.orNull()

@@ -145,9 +145,9 @@ class ParadoxModDependenciesTableModel(
             }.installOn(tableView)
             
             val addButtonRunnable = ParadoxModDependenciesToolbarActions.AddAction(project, tableView, tableModel)
+            val editButton = ParadoxModDependenciesToolbarActions.EditAction(project, tableView, tableModel)
             val enableAllButton = ParadoxModDependenciesToolbarActions.EnableAllAction(project, tableView, tableModel)
             val disableAllButton = ParadoxModDependenciesToolbarActions.DisableAllAction(project, tableView, tableModel)
-            val editButton = ParadoxModDependenciesToolbarActions.EditAction(project, tableView, tableModel)
             val importButton = ParadoxModDependenciesToolbarActions.ImportAction(project, tableView, tableModel)
             val exportButton = ParadoxModDependenciesToolbarActions.ExportAction(project, tableView, tableModel)
             
@@ -161,9 +161,9 @@ class ParadoxModDependenciesTableModel(
                     val selectedRow = tableView.selectedRows.singleOrNull() ?: return@updater true
                     tableModel.canRemoveRow(tableView.convertRowIndexToModel(selectedRow))
                 }
+                .addExtraAction(editButton)
                 .addExtraAction(enableAllButton)
                 .addExtraAction(disableAllButton)
-                .addExtraAction(editButton)
                 .addExtraAction(importButton)
                 .addExtraAction(exportButton)
                 .createPanel()

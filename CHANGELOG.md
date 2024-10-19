@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.23
+
+* [X] #90 排除特定的根目录以免解析与索引一些意外的文件
+
+***
+
+* [X] #90 Exclude some specific root file paths to avoid parsing and indexing unexpected files
+
 ## 1.3.21
 
 * [ ] 优化性能与内存占用

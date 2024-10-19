@@ -12,15 +12,17 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
     override fun onChange(modSettings: ParadoxModSettingsState) {
         val gameType = modSettings.gameType
         
-        //更新游戏类型信息缓存
         modSettings.modDirectory?.let { modDirectory -> refreshGameType(modDirectory, gameType) }
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> refreshGameType(modDirectory, gameType) } }
+        
+        //更新游戏类型信息缓存
         getProfilesSettings().updateSettings()
         
-        //重新解析文件（IDE之后会自动请求重新索引）
         val modDirectories = mutableSetOf<String>()
         modSettings.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) }
         modSettings.modDependencies.forEach { it.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) } }
+        
+        //重新解析文件（IDE之后会自动请求重新索引）
         val files = ParadoxCoreManager.findFilesByRootFilePaths(modDirectories)
         ParadoxCoreManager.reparseFiles(files)
         

@@ -13,8 +13,7 @@ class ParadoxRefreshOnDefaultGameTypeChangedListener : ParadoxDefaultGameTypeLis
         getProfilesSettings().modDescriptorSettings.values.forEach { settings ->
             if(settings.gameType == null) {
                 //这里可能包含不在项目中（以及库中）的根目录
-                val modDirectory = settings.modDirectory
-                if(modDirectory != null) modDirectories.add(modDirectory)
+                settings.modDirectory?.let { modDirectory -> modDirectories.add(modDirectory) }
             }
         }
         

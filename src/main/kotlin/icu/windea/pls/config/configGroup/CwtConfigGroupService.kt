@@ -131,12 +131,12 @@ class CwtConfigGroupService(
         getProfilesSettings().gameDescriptorSettings.values.forEach f@{ settings ->
             val gameType = settings.gameType ?: return@f
             if(gameType !in gameTypes) return@f
-            settings.gameDirectory?.let { rootFilePaths.add(it) }
+            settings.gameDirectory?.let { gameDirectory -> rootFilePaths.add(gameDirectory) }
         }
         getProfilesSettings().modDescriptorSettings.values.forEach f@{ settings ->
             val gameType = settings.finalGameType
             if(gameType !in gameTypes) return@f
-            settings.modDirectory?.let { rootFilePaths.add(it) }
+            settings.modDirectory?.let { modDirectory -> rootFilePaths.add(modDirectory) }
         }
         return rootFilePaths
     }
