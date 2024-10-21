@@ -57,9 +57,9 @@ class ParadoxLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisationProp
             selector: ChainedParadoxSelector<ParadoxLocalisationProperty>,
             processor: Processor<ParadoxLocalisationProperty>
         ): Boolean {
-            //保证返回结果的名字的唯一性
             val project = selector.project
             val scope = selector.scope
+            //保证返回结果的名字的唯一性
             return ParadoxLocalisationNameIndex.KEY.processFirstElementByKeys(
                 project, scope,
                 keyPredicate = { key -> prefixMatcher.prefixMatches(key) },

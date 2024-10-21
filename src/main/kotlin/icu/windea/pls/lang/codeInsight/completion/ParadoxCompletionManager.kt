@@ -5,6 +5,7 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.patterns.*
 import com.intellij.psi.*
@@ -31,6 +32,7 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
@@ -384,9 +386,11 @@ object ParadoxCompletionManager {
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
-        //这里selector不需要指定去重
-        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-        ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, LimitedCompletionProcessor { localisation ->
+        val selector = localisationSelector(project, contextElement)
+            .contextSensitive()
+            .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+        //.distinctByName() //这里selector不需要指定去重
+        val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> { localisation ->
             val name = localisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = localisation.containingFile
             val lookupElement = LookupElementBuilder.create(localisation, name)
@@ -396,12 +400,19 @@ object ParadoxCompletionManager {
                 .forScriptExpression(context)
             result.addElement(lookupElement, context)
             true
-        })
+        }
+        //保证索引在此readAction中可用
+        DumbService.getInstance(project).runReadActionInSmartMode {
+            ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
+        }
     }
 
     fun completeSyncedLocalisation(context: ProcessingContext, result: CompletionResultSet) {
         val config = context.config ?: return
         val keyword = context.keyword
+
+        //优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
+        if (keyword.isNotEmpty() && !PlsConstants.Patterns.localisationPropertyNameRegex.matches(keyword)) return
 
         //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
@@ -410,9 +421,11 @@ object ParadoxCompletionManager {
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
-        //这里selector不需要指定去重
-        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-        ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector) { syncedLocalisation ->
+        val selector = localisationSelector(project, contextElement)
+            .contextSensitive()
+            .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+        //.distinctByName() //这里selector不需要指定去重
+        val processor = LimitedCompletionProcessor<ParadoxLocalisationProperty> { syncedLocalisation ->
             val name = syncedLocalisation.name //=localisation.paradoxLocalisationInfo?.name
             val typeFile = syncedLocalisation.containingFile
             val lookupElement = LookupElementBuilder.create(syncedLocalisation, name)
@@ -422,6 +435,10 @@ object ParadoxCompletionManager {
                 .forScriptExpression(context)
             result.addElement(lookupElement, context)
             true
+        }
+        //保证索引在此readAction中可用
+        DumbService.getInstance(project).runReadActionInSmartMode {
+            ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
         }
     }
 

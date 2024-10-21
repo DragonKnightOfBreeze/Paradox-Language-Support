@@ -3,6 +3,7 @@ package icu.windea.pls.localisation.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
@@ -47,9 +48,12 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
             result.addElement(lookupElement)
             true
         }
-        when (category) {
-            ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
-            ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
+        //保证索引在此readAction中可用
+        DumbService.getInstance(project).runReadActionInSmartMode {
+            when (category) {
+                ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
+                ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
+            }
         }
     }
 }
