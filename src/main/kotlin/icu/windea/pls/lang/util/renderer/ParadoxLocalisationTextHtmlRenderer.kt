@@ -86,12 +86,15 @@ object ParadoxLocalisationTextHtmlRenderer {
         when {
             resolved is ParadoxLocalisationProperty -> {
                 if (ParadoxLocalisationManager.isSpecialLocalisation(resolved)) {
-                    getElementText(element, context)
+                    context.builder.append("<code>")
+                    renderElementText(element, context)
+                    context.builder.append("</code>")
                 } else {
                     val resolvedName = resolved.name
                     if (context.guardStack.contains(resolvedName)) {
-                        //infinite recursion, do not render context
-                        context.builder.append("<code>").append(element.text.escapeXml()).append("</code>")
+                        context.builder.append("<code>")
+                        renderElementText(element, context)
+                        context.builder.append("</code>")
                     } else {
                         context.guardStack.addLast(resolvedName)
                         try {
@@ -109,7 +112,9 @@ object ParadoxLocalisationTextHtmlRenderer {
                 context.builder.append(resolved.value?.escapeXml() ?: PlsConstants.unresolvedString)
             }
             else -> {
-                context.builder.append("<code>").append(element.text.escapeXml()).append("</code>")
+                context.builder.append("<code>")
+                context.builder.append(element.text.escapeXml())
+                context.builder.append("</code>")
             }
         }
         if (color != null) {
@@ -180,7 +185,15 @@ object ParadoxLocalisationTextHtmlRenderer {
 
         //直接显示命令文本，适用对应的颜色高亮
         //（仅限快速文档）点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc），但不显示为超链接
-        getElementText(element, context)
+        context.builder.append("<code>")
+        element.forEachChild { c ->
+            if(c is ParadoxLocalisationCommandText) {
+                renderElementText(c, context)
+            } else {
+                context.builder.append(c.text.escapeXml())
+            }
+        }
+        context.builder.append("</code>")
     }
 
     private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context) {
@@ -201,34 +214,20 @@ object ParadoxLocalisationTextHtmlRenderer {
             context.builder.append("</span>")
         }
     }
-
-    private fun getElementText(element: PsiElement, context: Context) {
-        context.builder.append("<code>")
-        if (context.forDoc) {
-            val r = getElementTextForDoc(element, context)
-            if (!r) {
-                element.forEachChild { e ->
-                    ProgressManager.checkCanceled()
-                    getElementTextForDoc(e, context)
-                }
-            }
-        } else {
-            context.builder.append(element.text)
+    
+    private fun renderElementText(element: PsiElement, context: Context) {
+        if(!context.forDoc) {
+            context.builder.append(element.text.escapeXml())
+            return
         }
-        context.builder.append("</code>")
-    }
-
-    /**
-     * 获取嵌入PSI链接的PSI元素的HTML文本。
-     */
-    private fun getElementTextForDoc(element: PsiElement, context: Context): Boolean {
+        
         val defaultColor = UIManager.getColor("EditorPane.foreground")
 
         val text = element.text
         val references = element.references
         if (references.isEmpty()) {
             context.builder.append(text.escapeXml())
-            return false
+            return
         }
         var i = 0
         for (reference in references) {
@@ -267,6 +266,5 @@ object ParadoxLocalisationTextHtmlRenderer {
             val s = text.substring(endOffset)
             context.builder.append(s.escapeXml())
         }
-        return true
     }
 }

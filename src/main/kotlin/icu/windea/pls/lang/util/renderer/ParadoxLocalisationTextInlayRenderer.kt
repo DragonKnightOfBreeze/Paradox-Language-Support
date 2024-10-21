@@ -108,8 +108,7 @@ object ParadoxLocalisationTextInlayRenderer {
                 } else {
                     val resolvedName = resolved.name
                     if (context.guardStack.contains(resolvedName)) {
-                        //infinite recursion, do not render context
-                        truncatedSmallText(element.text, context)
+                        getElementPresentation(element, context)
                     } else {
                         context.guardStack.addLast(resolvedName)
                         try {
@@ -217,8 +216,16 @@ object ParadoxLocalisationTextInlayRenderer {
 
         //直接显示命令文本，适用对应的颜色高亮
         //点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）
-        val presentation = getElementPresentation(element, context)
-        if (presentation != null) context.builder.add(presentation)
+        val presentations = mutableListOf<InlayPresentation>()
+        element.forEachChild { c ->
+            if(c is ParadoxLocalisationCommandText) {
+                getElementPresentation(c, context)?.let { presentations.add(it) }
+            } else {
+                presentations.add(smallText(c.text))
+            }
+        }
+        val mergedPresentation = mergePresentation(presentations) ?: return true
+        context.builder.add(mergedPresentation)
         return continueProcess(context)
     }
 
@@ -271,26 +278,15 @@ object ParadoxLocalisationTextInlayRenderer {
     private fun continueProcess(context: Context): Boolean {
         return context.truncateLimit <= 0 || context.truncateRemain.get() >= 0
     }
-
-    private fun getElementPresentation(element: PsiElement, context: Context): InlayPresentation? {
+    
+    private fun getElementPresentation(element: PsiElement, context: Context): InlayPresentation? = with(context.factory) {
         val presentations = mutableListOf<InlayPresentation>()
-        ProgressManager.checkCanceled()
-        val r = collectElementPresentation(element, context, presentations)
-        if (!r) {
-            element.forEachChild { e ->
-                ProgressManager.checkCanceled()
-                collectElementPresentation(e, context, presentations)
-            }
-        }
-        return mergePresentation(presentations)
-    }
-
-    private fun collectElementPresentation(element: PsiElement, context: Context, presentations: MutableList<InlayPresentation>): Boolean = with(context.factory) {
+        
         val text = element.text
         val references = element.references
         if (references.isEmpty()) {
             presentations.add(smallText(element.text))
-            return false
+            return mergePresentation(presentations)
         }
         var i = 0
         for (reference in references) {
@@ -315,6 +311,6 @@ object ParadoxLocalisationTextInlayRenderer {
             val s = text.substring(endOffset)
             presentations.add(smallText(s))
         }
-        return true
+        return mergePresentation(presentations)
     }
 }

@@ -4,11 +4,13 @@
 
 * [X] 修复无法补全封装变量（scripted variable）的问题
 * [X] #90 排除特定的根目录以免解析与索引一些意外的文件
+* [X] 修复渲染本地化文本时某些文本会被重复渲染的问题
 
 ***
 
 * [X] Fix a problem that cannot complete scripted variables
 * [X] #90 Exclude some specific root file paths to avoid parsing and indexing unexpected files
+* [X] Fixed a problem that some text will be rendered repeatedly when rendering localisation text
 
 ## 1.3.22
 
@@ -149,7 +151,7 @@
 
 ***
 
-* [X] BUG fix: Fixes a problem that diagrams (e.g., Technology Tree Diagram) cannot be opened correctly
+* [X] BUG fix: Fix a problem that diagrams (e.g., Technology Tree Diagram) cannot be opened correctly
 * [X] Optimization: Optimize the logic to determine game directory
 
 ## 1.3.10
