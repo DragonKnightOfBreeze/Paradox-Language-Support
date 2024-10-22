@@ -61,36 +61,46 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
     }
 
     private fun doComputeRoots(): Set<VirtualFile> {
-        //这里仅需要收集不在项目中的根目录（游戏目录与模组目录）
+        //这里仅需要收集不在项目中的游戏目录和模组目录
         
-        val newPaths = mutableSetOf<String>()
+        val newRoots = mutableSetOf<VirtualFile>()
+        val projectFileIndex = ProjectFileIndex.getInstance(project)
         val profilesSettings = getProfilesSettings()
         profilesSettings.modSettings.values.forEach f@{ modSettings ->
             val modDirectory = modSettings.modDirectory ?: return@f
-            newPaths += modDirectory
+            val modFile = modDirectory.toVirtualFile(false) ?: return@f
+            if(!modFile.exists()) return@f
+            if(!projectFileIndex.isInContent(modFile)) return@f
             run {
                 val gameDirectory = modSettings.finalGameDirectory ?: return@run
-                newPaths += gameDirectory
+                val gameFile = gameDirectory.toVirtualFile(false) ?: return@run
+                if(!gameFile.exists()) return@run
+                if(projectFileIndex.isInContent(gameFile)) return@run
+                newRoots += gameFile
             }
             modSettings.modDependencies.forEach f1@{ modDependencySettings ->
                 val modDependencyDirectory = modDependencySettings.modDirectory ?: return@f1
-                newPaths += modDependencyDirectory
+                if(modDependencyDirectory == modDirectory) return@f1 //需要排除这种情况
+                val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: return@f1
+                if(!modDependencyFile.exists()) return@f1
+                if(projectFileIndex.isInContent(modDependencyFile)) return@f1
+                newRoots += modDependencyFile
             }
         }
         profilesSettings.gameSettings.values.forEach f@{ gameSettings ->
             val gameDirectory = gameSettings.gameDirectory ?: return@f
-            newPaths += gameDirectory
+            val gameFile = gameDirectory.toVirtualFile(false) ?: return@f
+            if(!gameFile.exists()) return@f
+            if(!projectFileIndex.isInContent(gameFile)) return@f
             gameSettings.modDependencies.forEach f1@{ modDependencySettings ->
                 val modDependencyDirectory = modDependencySettings.modDirectory ?: return@f1
-                newPaths += modDependencyDirectory
+                val modDependencyFile = modDependencyDirectory.toVirtualFile(false) ?: return@f1
+                if(!modDependencyFile.exists()) return@f1
+                if(projectFileIndex.isInContent(modDependencyFile)) return@f1
+                newRoots += modDependencyFile
             }
         }
-        val newRoots = newPaths.mapNotNull { it.toVirtualFile(false) }
-        val projectFileIndex = ProjectFileIndex.getInstance(project)
-        val result = newRoots
-            .filter { !ParadoxCoreManager.isExcludedRootFilePath(it.path) }
-            .filter { it.exists() && !projectFileIndex.isInContent(it) }
-            .toSet()
-        return result
+        newRoots.removeIf { ParadoxCoreManager.isExcludedRootFilePath(it.path) }
+        return newRoots
     }
 }

@@ -63,16 +63,15 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
         //这里仅需要收集不在项目中的根目录（规则目录）
         
         val newRoots = mutableSetOf<VirtualFile>()
+        val projectFileIndex = ProjectFileIndex.getInstance(project)
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
+            if(!rootDirectory.exists()) return@f
+            if(projectFileIndex.isInContent(rootDirectory)) return@f
             newRoots += rootDirectory
         }
-        val projectFileIndex = ProjectFileIndex.getInstance(project)
-        val result = newRoots
-            .filter { !ParadoxCoreManager.isExcludedRootFilePath(it.path) }
-            .filter { it.exists() && !projectFileIndex.isInContent(it) }
-            .toSet()
-        return result
+        newRoots.removeIf { ParadoxCoreManager.isExcludedRootFilePath(it.path) }
+        return newRoots
     }
 }
