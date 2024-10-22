@@ -433,6 +433,11 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.others.showLocalisationFloatingToolbar"))
                         .bindSelected(settings.others::showLocalisationFloatingToolbar)
                 }
+                //highlightLocalisationColorId
+                row {
+                    checkBox(PlsBundle.message("settings.others.highlightLocalisationColorId"))
+                        .bindSelected(settings.others::highlightLocalisationColorId)
+                }
                 //defaultDiffGroup
                 buttonsGroup(PlsBundle.message("settings.others.defaultDiffGroup"), indent = false) {
                     row {

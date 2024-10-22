@@ -77,7 +77,7 @@ object ParadoxLocalisationTextHtmlRenderer {
 
     private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {
         //如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
-        val color = element.colorConfig?.color
+        val color = if (getSettings().others.highlightLocalisationColorId) element.colorConfig?.color else null
         if (color != null) {
             context.builder.append("<span style=\"color: #").append(color.toHex()).append("\">")
         }
@@ -187,7 +187,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         //（仅限快速文档）点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc），但不显示为超链接
         context.builder.append("<code>")
         element.forEachChild { c ->
-            if(c is ParadoxLocalisationCommandText) {
+            if (c is ParadoxLocalisationCommandText) {
                 renderElementText(c, context)
             } else {
                 context.builder.append(c.text.escapeXml())
@@ -200,7 +200,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         //如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if (richTextList.isEmpty()) return
-        val color = element.colorConfig?.color
+        val color = if (getSettings().others.highlightLocalisationColorId) element.colorConfig?.color else null
         if (color != null) {
             context.colorStack.addLast(color)
             context.builder.append("<span style=\"color: #").append(color.toHex()).append("\">")
@@ -214,13 +214,13 @@ object ParadoxLocalisationTextHtmlRenderer {
             context.builder.append("</span>")
         }
     }
-    
+
     private fun renderElementText(element: PsiElement, context: Context) {
-        if(!context.forDoc) {
+        if (!context.forDoc) {
             context.builder.append(element.text.escapeXml())
             return
         }
-        
+
         val defaultColor = UIManager.getColor("EditorPane.foreground")
 
         val text = element.text

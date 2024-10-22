@@ -9,6 +9,7 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import com.intellij.openapi.editor.markup.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.script.highlighter.*
 import java.awt.*
 
@@ -82,17 +83,19 @@ object ParadoxLocalisationAttributesKeys {
 
     @JvmStatic
     fun getColorKey(color: Color): TextAttributesKey? {
+        if(!getSettings().others.highlightLocalisationColorId) return null
         return colorKeyCache.get(color)
     }
 
     private val colorOnlyKeyCache = CacheBuilder.newBuilder().buildCache { color: Color ->
-        createTextAttributesKey("PARADOX_LOCALISATION.COLOR_${color.rgb}", TextAttributes().apply {
+        createTextAttributesKey("PARADOX_LOCALISATION.COLOR_ONLY_${color.rgb}", TextAttributes().apply {
             foregroundColor = color
         })
     }
 
     @JvmStatic
     fun getColorOnlyKey(color: Color): TextAttributesKey? {
+        if(!getSettings().others.highlightLocalisationColorId) return null
         return colorOnlyKeyCache.get(color)
     }
 }

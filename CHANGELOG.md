@@ -4,6 +4,7 @@
 
 * [X] 修复无法补全封装变量（scripted variable）的问题
 * [X] #90 排除特定的根目录以免解析与索引一些意外的文件
+* [X] #92 可以配置是否用对应的颜色高亮本地化颜色ID（默认启用）
 * [X] 修复渲染本地化文本时某些文本会被重复渲染的问题
 * [X] 其他优化与BUG修复
 
@@ -11,6 +12,7 @@
 
 * [X] Fix a problem that cannot complete scripted variables
 * [X] #90 Exclude some specific root file paths to avoid parsing and indexing unexpected files
+* [X] #92 Provide the configuration that whether to highlight localisation color ids by corresponding color (enabled by default)
 * [X] Fixed a problem that some text will be rendered repeatedly when rendering localisation text
 * [X] Other optimizations and bug fixes
 

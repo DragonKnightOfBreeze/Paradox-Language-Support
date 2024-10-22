@@ -98,7 +98,8 @@ object ParadoxLocalisationTextInlayRenderer {
 
     private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context): Boolean = with(context.factory) {
         //如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
-        val colorConfig = element.colorConfig
+        val color = if (getSettings().others.highlightLocalisationColorId) element.colorConfig?.color else null
+        val textAttributesKey = if (color != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(color) else null
         val resolved = element.reference?.resolve()
             ?: element.scriptedVariableReference?.reference?.resolve()
         val presentation = when {
@@ -134,7 +135,6 @@ object ParadoxLocalisationTextInlayRenderer {
                 truncatedSmallText(element.text, context)
             }
         } ?: return true
-        val textAttributesKey = if (colorConfig != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(colorConfig.color) else null
         val finalPresentation = when {
             textAttributesKey != null -> WithAttributesPresentation(presentation, textAttributesKey, context.editor)
             else -> presentation
@@ -218,7 +218,7 @@ object ParadoxLocalisationTextInlayRenderer {
         //点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）
         val presentations = mutableListOf<InlayPresentation>()
         element.forEachChild { c ->
-            if(c is ParadoxLocalisationCommandText) {
+            if (c is ParadoxLocalisationCommandText) {
                 getElementPresentation(c, context)?.let { presentations.add(it) }
             } else {
                 presentations.add(smallText(c.text))
@@ -233,8 +233,8 @@ object ParadoxLocalisationTextInlayRenderer {
         //如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if (richTextList.isEmpty()) return true
-        val colorConfig = element.colorConfig
-        val textAttributesKey = if (colorConfig != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(colorConfig.color) else null
+        val color = if (getSettings().others.highlightLocalisationColorId) element.colorConfig?.color else null
+        val textAttributesKey = if (color != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(color) else null
         val oldBuilder = context.builder
         context.builder = mutableListOf()
         var continueProcess = true
@@ -278,10 +278,10 @@ object ParadoxLocalisationTextInlayRenderer {
     private fun continueProcess(context: Context): Boolean {
         return context.truncateLimit <= 0 || context.truncateRemain.get() >= 0
     }
-    
+
     private fun getElementPresentation(element: PsiElement, context: Context): InlayPresentation? = with(context.factory) {
         val presentations = mutableListOf<InlayPresentation>()
-        
+
         val text = element.text
         val references = element.references
         if (references.isEmpty()) {
