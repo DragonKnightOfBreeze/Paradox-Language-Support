@@ -77,7 +77,7 @@ object ParadoxLocalisationTextHtmlRenderer {
 
     private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {
         //如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
-        val color = element.colorConfig?.color
+        val color = if (getSettings().others.renderLocalisationColorfulText) element.colorConfig?.color else null
         if (color != null) {
             context.builder.append("<span style=\"color: #").append(color.toHex()).append("\">")
         }
@@ -200,7 +200,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         //如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if (richTextList.isEmpty()) return
-        val color = element.colorConfig?.color
+        val color = if (getSettings().others.renderLocalisationColorfulText) element.colorConfig?.color else null
         if (color != null) {
             context.colorStack.addLast(color)
             context.builder.append("<span style=\"color: #").append(color.toHex()).append("\">")

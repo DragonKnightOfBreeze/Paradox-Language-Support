@@ -155,6 +155,7 @@ class ParadoxSettingsState : BaseState() {
      * @property showEditorContextToolbar 是否在编辑器右上角显示上下文工具栏。
      * @property showLocalisationFloatingToolbar 是否在选中本地化文本时显示悬浮工具栏。
      * @property highlightLocalisationColorId 是否用对应的颜色高亮本地化颜色ID。
+     * @property renderLocalisationColorfulText 是否用对应的颜色渲染本地化彩色文本。
      * @property defaultDiffGroup 进行DIFF时，初始打开的DIFF分组。默认初始打开VS副本的DIFF分组。
      */
     @Tag("others")
@@ -162,6 +163,7 @@ class ParadoxSettingsState : BaseState() {
         var showEditorContextToolbar by property(true)
         var showLocalisationFloatingToolbar by property(true)
         var highlightLocalisationColorId by property(true)
+        var renderLocalisationColorfulText by property(true)
         var defaultDiffGroup by enum(DiffGroupStrategy.VsCopy)
     }
 }
