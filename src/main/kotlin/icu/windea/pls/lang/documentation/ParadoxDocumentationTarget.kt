@@ -8,7 +8,6 @@ import com.intellij.platform.backend.presentation.*
 import com.intellij.pom.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.refactoring.suggested.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
@@ -37,8 +36,8 @@ class ParadoxDocumentationTarget(
     val originalElement: PsiElement?
 ) : DocumentationTarget {
     override fun createPointer(): Pointer<out DocumentationTarget> {
-        val elementPtr = element.createSmartPointer()
-        val originalElementPtr = originalElement?.createSmartPointer()
+        val elementPtr = element.createPointer()
+        val originalElementPtr = originalElement?.createPointer()
         return Pointer {
             val element = elementPtr.dereference() ?: return@Pointer null
             ParadoxDocumentationTarget(element, originalElementPtr?.dereference())

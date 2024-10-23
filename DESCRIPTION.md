@@ -38,6 +38,6 @@ Besides, <a href="https://windea.icu/Paradox-Language-Support/en/config.md#writi
   <a href="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support">GitHub</a> |
   <a href="https://windea.icu/Paradox-Language-Support">Reference Documentation</a> |
   <a href="https://plugins.jetbrains.com/plugin/16825-paradox-language-support">Plugin Marketplace Page</a> |
-  <a href="https://discord.gg/pbPYSK4n">Discord</a> |
+  <a href="https://discord.gg/vBpbET2bXT">Discord</a> |
   QQ群：653824651
 </p>

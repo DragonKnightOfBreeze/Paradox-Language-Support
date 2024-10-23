@@ -7,7 +7,7 @@
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
 [Reference Documentation](https://windea.icu/Paradox-Language-Support) |
 [Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
-[Discord](https://discord.gg/pbPYSK4n)
+[Discord](https://discord.gg/vBpbET2bXT)
 
 IDEA plugin: Support for Paradox language.
 

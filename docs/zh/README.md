@@ -4,7 +4,7 @@
 
 [GitHub](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support) |
 [Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
-[Discord](https://discord.gg/pbPYSK4n) |
+[Discord](https://discord.gg/vBpbET2bXT) |
 QQ群：653824651
 
 IDEA插件：Paradox语言支持。

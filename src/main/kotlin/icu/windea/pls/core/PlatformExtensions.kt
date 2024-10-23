@@ -837,10 +837,6 @@ inline fun <reified T> PsiElement.findChildrenOfType(forward: Boolean = true, pr
 val PsiElement.icon
     get() = getIcon(0)
 
-fun PsiFile.setNameWithoutExtension(name: String): PsiElement {
-    return setName(name + "." + this.name.substringAfterLast('.', ""))
-}
-
 object EmptyPointer : SmartPsiElementPointer<PsiElement> {
     override fun getElement() = null
 
@@ -860,7 +856,12 @@ fun <T : PsiElement> emptyPointer(): SmartPsiElementPointer<T> = EmptyPointer.ca
 fun SmartPsiElementPointer<*>.isEmpty() = this === EmptyPointer
 
 fun <E : PsiElement> E.createPointer(project: Project = this.project): SmartPsiElementPointer<E> {
-    return SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this)
+    return try {
+        SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this)
+    } catch (e: IllegalArgumentException) {
+        //Element from alien project - use empty pointer
+        emptyPointer()
+    }
 }
 
 fun <E : PsiElement> E.createPointer(file: PsiFile?, project: Project = this.project): SmartPsiElementPointer<E> {
@@ -884,7 +885,6 @@ fun PsiElement.isIncomplete(): Boolean {
     if (e1.textLength != e2.textLength) return true
     return false
 }
-
 
 fun PsiElement.isSpaceOrSingleLineBreak(): Boolean {
     return this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) <= 1
