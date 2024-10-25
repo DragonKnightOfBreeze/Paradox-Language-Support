@@ -147,7 +147,7 @@ class ParadoxCoreFileListener : AsyncFileListener {
     private fun reparseOpenedFiles() {
         //重新解析所有项目的所有已打开的文件
         val openedFiles = ParadoxCoreManager.findOpenedFiles()
-        ParadoxCoreManager.reparseFiles(openedFiles)
+        ParadoxCoreManager.reparseAndRefreshFiles(openedFiles)
     }
 
     private fun refreshInlineScripts() {
@@ -155,6 +155,6 @@ class ParadoxCoreFileListener : AsyncFileListener {
         ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
         //重新解析内联脚本文件
         val files = ParadoxCoreManager.findOpenedFiles { file, _ -> ParadoxInlineScriptManager.getInlineScriptExpression(file) != null }
-        ParadoxCoreManager.reparseFiles(files)
+        ParadoxCoreManager.reparseAndRefreshFiles(files)
     }
 }

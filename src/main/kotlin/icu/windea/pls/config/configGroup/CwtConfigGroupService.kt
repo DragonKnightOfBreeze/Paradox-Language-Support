@@ -85,7 +85,7 @@ class CwtConfigGroupService(
 
                 //重新解析已打开的文件
                 val openedFiles = ParadoxCoreManager.findOpenedFiles()
-                ParadoxCoreManager.reparseFiles(openedFiles)
+                ParadoxCoreManager.reparseAndRefreshFiles(openedFiles)
             }
 
             override fun onSuccess() {
@@ -94,7 +94,7 @@ class CwtConfigGroupService(
                     //TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
                     val rootFilePaths = getRootFilePaths(configGroups)
                     val files = ParadoxCoreManager.findFilesByRootFilePaths(rootFilePaths)
-                    ParadoxCoreManager.reparseFiles(files)
+                    ParadoxCoreManager.reparseAndRefreshFiles(files)
                 }
 
                 NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(

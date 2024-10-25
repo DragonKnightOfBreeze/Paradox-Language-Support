@@ -21,7 +21,7 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
                 .onApply {
                     if (oldPreferredLocale != settings.preferredLocale) {
                         val openedFiles = ParadoxCoreManager.findOpenedFiles()
-                        ParadoxCoreManager.reparseFiles(openedFiles, reparse = false)
+                        ParadoxCoreManager.reparseAndRefreshFiles(openedFiles, reparse = false)
                     }
                 }
         }

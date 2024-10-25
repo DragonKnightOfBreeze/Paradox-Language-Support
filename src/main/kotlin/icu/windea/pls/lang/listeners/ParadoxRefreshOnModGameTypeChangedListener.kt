@@ -24,7 +24,7 @@ class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
         
         //重新解析文件（IDE之后会自动请求重新索引）
         val files = ParadoxCoreManager.findFilesByRootFilePaths(modDirectories)
-        ParadoxCoreManager.reparseFiles(files)
+        ParadoxCoreManager.reparseAndRefreshFiles(files)
 
         //此时不需要刷新内嵌提示
     }

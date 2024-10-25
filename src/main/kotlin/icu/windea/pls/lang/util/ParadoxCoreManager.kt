@@ -2,9 +2,11 @@ package icu.windea.pls.lang.util
 
 import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.daemon.*
+import com.intellij.codeInsight.daemon.impl.*
 import com.intellij.injected.editor.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
@@ -341,55 +343,40 @@ object ParadoxCoreManager {
     fun findOpenedFiles(onlyParadoxFiles: Boolean = true, predicate: ((VirtualFile, Project) -> Boolean)? = null): Set<VirtualFile> {
         val files = mutableSetOf<VirtualFile>()
         runReadAction {
-            val openProjects = ProjectManager.getInstance().openProjects
-            for (project in openProjects) {
-                val allEditors = FileEditorManager.getInstance(project).allEditors
-                for (fileEditor in allEditors) {
-                    if (fileEditor is TextEditor) {
-                        val file = fileEditor.file
-                        if (onlyParadoxFiles && !file.fileType.isParadoxFileType()) continue
-                        if (predicate == null || predicate(file, project)) {
-                            files.add(file)
-                        }
-                    }
+            val allEditors = EditorFactory.getInstance().allEditors
+            for (editor in allEditors) {
+                val file = editor.virtualFile ?: continue
+                val project = editor.project ?: continue
+                if (onlyParadoxFiles && !file.fileType.isParadoxFileType()) continue
+                if (predicate == null || predicate(file, project)) {
+                    files.add(file)
                 }
             }
         }
         return files
     }
 
-    fun reparseFiles(files: Set<VirtualFile>, reparse: Boolean = true, restartDaemon: Boolean = true) {
+    fun reparseAndRefreshFiles(files: Set<VirtualFile>, reparse: Boolean = true, refresh: Boolean = true) {
         if (files.isEmpty()) return
-
         runInEdt {
-            try {
-                //重新解析文件
-                if (reparse) {
-                    FileContentUtilCore.reparseFiles(files)
+            if (reparse) {
+                FileContentUtilCore.reparseFiles(files)
+            }
+
+            if (refresh) {
+                val allEditors = EditorFactory.getInstance().allEditors
+                for (editor in allEditors) {
+                    val file = editor.virtualFile ?: continue
+                    val project = editor.project ?: continue
+                    if (file !in files) continue
+
+                    //refresh code highlighting
+                    val psiFile = file.toPsiFile(project)
+                    if(psiFile != null) DaemonCodeAnalyzer.getInstance(project).restart(psiFile)
+
+                    //refresh inlay hints
+                    InlayHintsPassFactoryInternal.clearModificationStamp(editor)
                 }
-
-                //刷新内嵌提示
-                if (restartDaemon) {
-                    val openProjects = ProjectManager.getInstance().openProjects
-                    for (project in openProjects) {
-                        val allEditors = FileEditorManager.getInstance(project).allEditors
-                        for (fileEditor in allEditors) {
-                            if (fileEditor is TextEditor) {
-                                val file = fileEditor.file
-                                if (file !in files) continue
-
-                                val psiFile = file.toPsiFile(project) ?: continue
-                                DaemonCodeAnalyzer.getInstance(project).restart(psiFile)
-
-                                //removed in IU-233
-                                //InlayHintsPassFactory.clearModificationStamp(fileEditor.editor)
-                            }
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                if (e is ProcessCanceledException) throw e
-                thisLogger().warn(e.message)
             }
         }
     }
