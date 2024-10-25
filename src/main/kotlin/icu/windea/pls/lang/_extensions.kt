@@ -11,7 +11,6 @@ import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.testFramework.*
-import com.intellij.util.*
 import com.intellij.util.text.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
@@ -19,7 +18,6 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.ep.data.*
-import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*

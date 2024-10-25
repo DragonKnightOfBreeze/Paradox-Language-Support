@@ -11,7 +11,6 @@ import com.intellij.openapi.project.*
 import icu.windea.pls.core.*
 import icu.windea.pls.extension.diagram.actions.*
 import icu.windea.pls.extension.diagram.provider.*
-import icu.windea.pls.lang.*
 
 open class ParadoxDiagramExtras(
     val provider: ParadoxDiagramProvider
