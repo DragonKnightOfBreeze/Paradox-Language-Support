@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.3.24
+
+* [ ] 更新CWT规则文件以适配Stellaris 3.14.1
+* [X] #93 允许在内联脚本文件中引用其使用位置的本地封装变量
+* [ ] 优化插件性能
+
+***
+
+* [ ] Update CWT configs files to match Stellaris 3.14.1
+* [X] #93 Allow to use local scripted variables from usage locations in inline script files
+* [ ] Optimize plugin performance
+
 ## 1.3.23
 
 * [X] 修复无法补全封装变量（scripted variable）的问题

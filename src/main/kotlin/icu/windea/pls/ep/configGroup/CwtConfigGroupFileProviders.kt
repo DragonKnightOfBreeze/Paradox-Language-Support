@@ -53,7 +53,13 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
  * 对应的路径：`config/${gameType}`（位于插件jar包中）
  */
 class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
+    private val rootDirectory by lazy { doGetRootDirectory() }
+
     override fun getRootDirectory(project: Project): VirtualFile? {
+        return rootDirectory
+    }
+
+    private fun doGetRootDirectory(): VirtualFile? {
         val rootPath = "/config"
         val rootUrl = rootPath.toClasspathUrl()
         val file = VfsUtil.findFileByURL(rootUrl)
