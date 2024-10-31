@@ -34,11 +34,11 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     }
 
     override fun shouldCreateStub(node: ASTNode): Boolean {
-        return ParadoxDefinitionManager.shouldCreateStub(node)
+        return true //always true
     }
 
     override fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
-        return ParadoxDefinitionManager.shouldCreateStub(tree, node, parentStub)
+        return true //always true
     }
 
     override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {

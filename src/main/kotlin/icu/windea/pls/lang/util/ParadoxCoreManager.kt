@@ -305,7 +305,7 @@ object ParadoxCoreManager {
     }
     
     fun isExcludedRootFilePath(rootFilePath: String): Boolean {
-        //https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90
+        //see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90
         //exclude some specific root file paths to avoid parsing and indexing unexpected files
         return rootFilePath.isEmpty() || rootFilePath == "/"
     }

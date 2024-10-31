@@ -34,11 +34,11 @@ object ParadoxScriptScriptedVariableStubElementType : ILightStubElementType<Para
     }
 
     override fun shouldCreateStub(node: ASTNode): Boolean {
-        return ParadoxScriptedVariableManager.shouldCreateStub(node)
+        return true //always true (since 1.3.24, also index local scripted variables, not only global scripted variables)
     }
 
     override fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
-        return ParadoxScriptedVariableManager.shouldCreateStub(tree, node, parentStub)
+        return true //always true (since 1.3.24, also index local scripted variables, not only global scripted variables)
     }
 
     override fun indexStub(stub: ParadoxScriptScriptedVariableStub, sink: IndexSink) {

@@ -75,34 +75,28 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         consumer: Processor<in ParadoxScriptDefinitionElement>
     ) {
         if (typeExpression == null) {
-            if (name == null) {
-                ParadoxDefinitionNameIndex.KEY.processAllElementsByKeys(project, scope) { _, it ->
-                    consumer.process(it)
-                }
-            } else {
-                ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) {
-                    consumer.process(it)
-                }
+            doProcessAllElements(name, project, scope) { element ->
+                consumer.process(element)
             }
         } else {
             if (name == null) {
-                ParadoxDefinitionTypeIndex.KEY.processAllElements(typeExpression.type, project, scope) p@{
-                    if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(it, typeExpression.subtypes)) return@p true
-                    consumer.process(it)
+                ParadoxDefinitionTypeIndex.KEY.processAllElements(typeExpression.type, project, scope) p@{ element ->
+                    if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(element, typeExpression.subtypes)) return@p true
+                    consumer.process(element)
                 }
             } else {
-                ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) p@{
-                    if (!matchesType(it, typeExpression.type)) return@p true
-                    if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(it, typeExpression.subtypes)) return@p true
-                    consumer.process(it)
+                ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) p@{ element ->
+                    if (!matchesType(element, typeExpression.type)) return@p true
+                    if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(element, typeExpression.subtypes)) return@p true
+                    consumer.process(element)
                 }
             }
         }
     }
 
-    private fun matchesName(element: ParadoxScriptDefinitionElement, name: String): Boolean {
-        return ParadoxDefinitionManager.getName(element) == name
-    }
+    //private fun matchesName(element: ParadoxScriptDefinitionElement, name: String): Boolean {
+    //    return ParadoxDefinitionManager.getName(element) == name
+    //}
 
     private fun matchesType(element: ParadoxScriptDefinitionElement, type: String): Boolean {
         return ParadoxDefinitionManager.getType(element) == type
@@ -110,5 +104,13 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
 
     private fun matchesSubtypes(element: ParadoxScriptDefinitionElement, subtypes: List<String>): Boolean {
         return ParadoxDefinitionManager.getSubtypes(element)?.containsAll(subtypes) == true
+    }
+
+    private fun doProcessAllElements(name: String?, project: Project, scope: GlobalSearchScope, processor: Processor<ParadoxScriptDefinitionElement>): Boolean {
+        if (name == null) {
+            return ParadoxDefinitionNameIndex.KEY.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
+        } else {
+            return ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) { element -> processor.process(element) }
+        }
     }
 }

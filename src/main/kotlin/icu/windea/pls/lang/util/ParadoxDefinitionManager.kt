@@ -612,16 +612,6 @@ object ParadoxDefinitionManager {
         return node.firstChild(tree, STRING)?.firstChild(tree, ParadoxScriptTokenSets.STRING_TOKENS)?.internNode(tree)?.toString()?.unquote()
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun shouldCreateStub(node: ASTNode): Boolean {
-        return true //just true
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
-        return true //just true
-    }
-
     fun getInfoFromStub(element: ParadoxScriptDefinitionElement, project: Project): ParadoxDefinitionInfo? {
         val stub = runCatchingCancelable { element.greenStub }.getOrNull() ?: return null
         //if(!stub.isValid()) return null //这里不用再次判断

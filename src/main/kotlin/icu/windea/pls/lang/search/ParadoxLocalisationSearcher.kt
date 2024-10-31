@@ -2,10 +2,11 @@ package icu.windea.pls.lang.search
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.index.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -17,18 +18,17 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
         val project = queryParameters.project
+        val name = queryParameters.name
+        doProcessAllElements(name, project, scope) { element ->
+            consumer.process(element)
+        }
+    }
 
-        val constraint = queryParameters.selector.getConstraint()
-        val indexKey = constraint.indexKey
-        val name = if (constraint.ignoreCase) queryParameters.name?.lowercase() else queryParameters.name
+    private fun doProcessAllElements(name: String?, project: Project, scope: GlobalSearchScope, processor: Processor<ParadoxLocalisationProperty>): Boolean {
         if (name == null) {
-            indexKey.processAllElementsByKeys(project, scope) { _, it ->
-                consumer.process(it)
-            }
+            return ParadoxLocalisationNameIndex.KEY.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
         } else {
-            indexKey.processAllElements(name, project, scope) {
-                consumer.process(it)
-            }
+            return ParadoxLocalisationNameIndex.KEY.processAllElements(name, project, scope) { element -> processor.process(element) }
         }
     }
 }

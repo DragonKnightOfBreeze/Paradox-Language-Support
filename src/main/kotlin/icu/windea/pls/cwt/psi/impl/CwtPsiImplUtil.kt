@@ -107,8 +107,7 @@ object CwtPsiImplUtil {
     //region CwtProperty
     @JvmStatic
     fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
-        val type = element.configType
-        return type?.icon ?: PlsIcons.CwtNodes.Property
+        return PlsIcons.CwtNodes.Property
     }
 
     @JvmStatic
@@ -170,8 +169,7 @@ object CwtPsiImplUtil {
     //region CwtValue
     @JvmStatic
     fun getIcon(element: CwtValue, @Iconable.IconFlags flags: Int): Icon {
-        val type = element.configType
-        return type?.icon ?: PlsIcons.CwtNodes.Value
+        return PlsIcons.CwtNodes.Value
     }
 
     @JvmStatic

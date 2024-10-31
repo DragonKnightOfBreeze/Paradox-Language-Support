@@ -64,21 +64,4 @@ object ParadoxScriptedVariableManager {
             ?.internNode(tree)?.toString()
     }
 
-    fun shouldCreateStub(node: ASTNode): Boolean {
-        //仅当是全局的scripted_variable时才创建stub
-        val parentType = node.treeParent.elementType
-        if (parentType != ROOT_BLOCK) return false
-        val file = selectFile(node.psi) ?: return false
-        val pathToEntry = file.fileInfo?.path?.path ?: return false
-        return "common/scripted_variables".matchesPath(pathToEntry, acceptSelf = false)
-    }
-
-    fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
-        //仅当是全局的scripted_variable时才创建stub
-        val parentType = tree.getParent(node)?.tokenType
-        if (parentType != ROOT_BLOCK) return false
-        val file = selectFile(parentStub.psi) ?: return false
-        val pathToEntry = file.fileInfo?.path?.path ?: return false
-        return "common/scripted_variables".matchesPath(pathToEntry, acceptSelf = false)
-    }
 }

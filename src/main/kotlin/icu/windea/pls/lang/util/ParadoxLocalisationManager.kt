@@ -66,16 +66,6 @@ object ParadoxLocalisationManager {
         return node.firstChild(tree, PROPERTY_KEY)?.firstChild(tree, PROPERTY_KEY_TOKEN)?.internNode(tree)?.toString()
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun shouldCreateStub(node: ASTNode): Boolean {
-        return true //just true
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
-        return true //just true
-    }
-
     fun getInfoFromStub(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         val stub = runCatchingCancelable { element.greenStub }.getOrNull() ?: return null
         //if(!stub.isValid()) return null //这里不用再次判断

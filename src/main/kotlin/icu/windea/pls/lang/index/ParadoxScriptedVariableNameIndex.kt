@@ -12,8 +12,8 @@ class ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScriptS
         val INSTANCE by lazy { findStubIndex<ParadoxScriptedVariableNameIndex>() }
         val KEY = StubIndexKey.createIndexKey<String, ParadoxScriptScriptedVariable>("paradox.scriptedVariable.name.index")
 
-        private const val VERSION = 54 //1.3.21
-        private const val CACHE_SIZE = 2 * 1024 //700+ in stellaris@3.6
+        private const val VERSION = 55 //1.3.24
+        private const val CACHE_SIZE = 2 * 1024
     }
 
     override fun getKey() = KEY

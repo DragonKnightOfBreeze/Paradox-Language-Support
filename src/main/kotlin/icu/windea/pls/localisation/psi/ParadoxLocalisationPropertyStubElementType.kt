@@ -35,11 +35,11 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
     }
 
     override fun shouldCreateStub(node: ASTNode): Boolean {
-        return ParadoxLocalisationManager.shouldCreateStub(node)
+        return true //always true
     }
 
     override fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
-        return ParadoxLocalisationManager.shouldCreateStub(tree, node, parentStub)
+        return true //always true
     }
 
     override fun indexStub(stub: ParadoxLocalisationPropertyStub, sink: IndexSink) {
