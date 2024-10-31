@@ -109,7 +109,7 @@ object ParadoxEventManager {
     /**
      * 得到指定事件可能调用的所有事件。
      *
-     * TODO 兼容内联和事件继承的情况。
+     * TODO 兼容需要内联和事件继承的情况。
      */
     fun getInvocations(definition: ParadoxScriptDefinitionElement): Set<String> {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEventInvocations) {

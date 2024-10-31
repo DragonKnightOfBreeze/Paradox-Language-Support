@@ -16,7 +16,9 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 本地封装变量的查询器。（本地：同一脚本文件）
+ * 本地封装变量的查询器。
+ * 
+ * 本地封装变量：位于同一脚本文件中，且在当前位置之前的封装变量。兼容需要内联的情况。
  */
 class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxLocalScriptedVariableSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxLocalScriptedVariableSearch.SearchParameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {
