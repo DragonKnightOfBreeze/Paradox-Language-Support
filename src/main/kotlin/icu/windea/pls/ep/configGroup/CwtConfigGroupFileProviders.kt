@@ -61,7 +61,7 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 
     private fun doGetRootDirectory(): VirtualFile? {
         val rootPath = "/config"
-        val rootUrl = rootPath.toClasspathUrl()
+        val rootUrl = rootPath.toClasspathUrl(PlsConstants.locationClass)
         val file = VfsUtil.findFileByURL(rootUrl)
         return file?.takeIf { it.isDirectory }
     }

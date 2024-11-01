@@ -34,14 +34,14 @@ object PlsConstants {
     }
 
     object Samples {
-        val cwtColorSettings = "/samples/Cwt.colorSettings.txt".toClasspathUrl().readText()
-        val cwtCodeStyleSettings = "/samples/Cwt.codeStyleSettings.txt".toClasspathUrl().readText()
+        val cwtColorSettings = "/samples/Cwt.colorSettings.txt".toClasspathUrl(locationClass).readText()
+        val cwtCodeStyleSettings = "/samples/Cwt.codeStyleSettings.txt".toClasspathUrl(locationClass).readText()
 
-        val paradoxLocalisationColorSettings = "/samples/ParadoxLocalisation.colorSettings.txt".toClasspathUrl().readText()
-        val paradoxLocalisationCodeStyleSettings = "/samples/ParadoxLocalisation.codeStyleSettings.txt".toClasspathUrl().readText()
+        val paradoxLocalisationColorSettings = "/samples/ParadoxLocalisation.colorSettings.txt".toClasspathUrl(locationClass).readText()
+        val paradoxLocalisationCodeStyleSettings = "/samples/ParadoxLocalisation.codeStyleSettings.txt".toClasspathUrl(locationClass).readText()
 
-        val paradoxScriptColorSettings = "/samples/ParadoxScript.colorSettings.txt".toClasspathUrl().readText()
-        val paradoxScriptCodeStyleSettings = "/samples/ParadoxScript.codeStyleSettings.txt".toClasspathUrl().readText()
+        val paradoxScriptColorSettings = "/samples/ParadoxScript.colorSettings.txt".toClasspathUrl(locationClass).readText()
+        val paradoxScriptCodeStyleSettings = "/samples/ParadoxScript.codeStyleSettings.txt".toClasspathUrl(locationClass).readText()
     }
 
     object Folders {
@@ -76,6 +76,6 @@ object PlsConstants {
 
         const val unknownPng = "unknown.png"
         val unknownPngPath = imagesDirectoryPath.resolve(unknownPng)
-        val unknownPngClasspathUrl = "/images/$unknownPng".toClasspathUrl()
+        val unknownPngClasspathUrl = "/images/$unknownPng".toClasspathUrl(locationClass)
     }
 }

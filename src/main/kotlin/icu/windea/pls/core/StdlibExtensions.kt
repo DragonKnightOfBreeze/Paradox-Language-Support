@@ -4,7 +4,6 @@ package icu.windea.pls.core
 
 import com.google.common.cache.*
 import com.intellij.openapi.util.text.*
-import icu.windea.pls.*
 import icu.windea.pls.core.util.*
 import java.io.*
 import java.net.*
@@ -634,15 +633,9 @@ fun String.toPath() = Path.of(this)
 
 fun String.toPathOrNull() = runCatchingCancelable { Path.of(this) }.getOrNull()
 
-/**
- * 得到当前文件绝对路径对应的URL。
- */
 fun String.toFileUrl() = File(this).toURI().toURL()
 
-/**
- * 得到当前相对于classpath的绝对路径对应的URL。
- */
-fun String.toClasspathUrl() = PlsConstants.locationClass.getResource(this)!!
+fun String.toClasspathUrl(locationClass: Class<*>) = locationClass.getResource(this)!!
 
 fun String.toClass() = Class.forName(this)
 
