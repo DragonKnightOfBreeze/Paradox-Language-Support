@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.dataExpression
 
 import com.intellij.openapi.extensions.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 
 /**
@@ -10,9 +11,9 @@ import icu.windea.pls.config.expression.*
  */
 interface CwtDataExpressionMerger {
     /**
-     * 得到合并后的CWT数据表达式的字符串。如果不能合并则返回null。
+     * 得到合并后的表达式的字符串。如果不能合并则返回null。
      */
-    fun merge(expression: CwtDataExpression, otherExpression: CwtDataExpression): String?
+    fun merge(expression: CwtDataExpression, otherExpression: CwtDataExpression, configGroup: CwtConfigGroup): String?
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtDataExpressionMerger>("icu.windea.pls.dataExpressionMerger")
@@ -20,10 +21,10 @@ interface CwtDataExpressionMerger {
         /**
          * @see icu.windea.pls.ep.dataExpression.CwtDataExpressionMerger.merge
          */
-        fun merge(expression: CwtDataExpression, otherExpression: CwtDataExpression): String? {
+        fun merge(expression: CwtDataExpression, otherExpression: CwtDataExpression, configGroup: CwtConfigGroup): String? {
             if (expression == otherExpression) return expression.expressionString
             EP_NAME.extensionList.forEach f@{ ep ->
-                val r = ep.merge(expression, otherExpression)
+                val r = ep.merge(expression, otherExpression, configGroup)
                 if (r != null) return r
             }
             return null

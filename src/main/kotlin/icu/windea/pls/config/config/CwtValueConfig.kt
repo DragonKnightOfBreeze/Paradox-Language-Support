@@ -3,12 +3,15 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
 interface CwtValueConfig : CwtMemberConfig<CwtValue> {
     val propertyConfig: CwtPropertyConfig?
+
+    override val expression: CwtDataExpression get() = valueExpression
 
     companion object
 }
@@ -90,11 +93,14 @@ private abstract class CwtValueConfigImpl(
     propertyConfig: CwtPropertyConfig? = null,
 ) : UserDataHolderBase(), CwtValueConfig {
     private val valueTypeId = valueType.optimizeValue() //use enum id to optimize memory
-    override val valueType: CwtType get() = valueTypeId.deoptimizeValue()
+    override val valueType get() = valueTypeId.deoptimizeValue<CwtType>()
 
     override val propertyConfig = propertyConfig
 
     override var parentConfig: CwtMemberConfig<*>? = null
+
+    //not cached to optimize memory
+    override val valueExpression get() = if (isBlock) CwtDataExpression.BlockExpression else CwtDataExpression.resolve(value, false)
 
     override fun toString(): String = value
 }
@@ -139,7 +145,7 @@ private class CwtValueConfigImpl3(
     documentation: String? = null,
     propertyConfig: CwtPropertyConfig? = null,
 ) : CwtValueConfigImpl(pointer, configGroup, value, valueType, propertyConfig) {
-    override val configs: List<CwtMemberConfig<*>>? get() = if (valueType == CwtType.Block) emptyList() else null
+    override val configs get() = if (valueType == CwtType.Block) emptyList<CwtMemberConfig<*>>() else null
     override val optionConfigs = optionConfigs
     override val documentation = documentation
 }
@@ -152,7 +158,7 @@ private class CwtValueConfigImpl4(
     valueType: CwtType = CwtType.String,
     propertyConfig: CwtPropertyConfig? = null,
 ) : CwtValueConfigImpl(pointer, configGroup, value, valueType, propertyConfig) {
-    override val configs: List<CwtMemberConfig<*>>? get() = if (valueType == CwtType.Block) emptyList() else null
+    override val configs get() = if (valueType == CwtType.Block) emptyList<CwtMemberConfig<*>>() else null
     override val optionConfigs get() = null
     override val documentation get() = null
 }
@@ -161,6 +167,9 @@ private abstract class CwtValueConfigDelegate(
     private val delegate: CwtValueConfig,
 ) : UserDataHolderBase(), CwtValueConfig by delegate {
     override var parentConfig: CwtMemberConfig<*>? = null
+
+    //not cached to optimize memory
+    override val valueExpression get() = if (isBlock) CwtDataExpression.BlockExpression else CwtDataExpression.resolve(value, false)
 
     override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
     override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
@@ -180,32 +189,32 @@ private class CwtValueConfigDelegate1(
 private class CwtValueConfigDelegate2(
     delegate: CwtValueConfig,
 ) : CwtValueConfigDelegate(delegate) {
-    override val configs: List<CwtMemberConfig<*>>? get() = if (valueType == CwtType.Block) emptyList() else null
+    override val configs get() = if (valueType == CwtType.Block) emptyList<CwtMemberConfig<*>>() else null
 }
 
 //12 + 4 * 4 = 28 -> 32
 private class CwtValueConfigDelegateWith(
     delegate: CwtValueConfig,
     override val value: String,
-) : CwtValueConfigDelegate(delegate) {
     //configs should be always null here
-
-    override fun toString(): String = value
-}
+) : CwtValueConfigDelegate(delegate)
 
 //12 + 4 * 4 = 28 -> 32 
 private class CwtValueConfigFromPropertyConfig(
     override val pointer: SmartPsiElementPointer<out CwtValue>,
     override val propertyConfig: CwtPropertyConfig,
 ) : UserDataHolderBase(), CwtValueConfig {
-    override val configGroup: CwtConfigGroup get() = propertyConfig.configGroup
-    override val value: String get() = propertyConfig.value
-    override val valueType: CwtType get() = propertyConfig.valueType
-    override val documentation: String? get() = propertyConfig.documentation
-    override val optionConfigs: List<CwtOptionMemberConfig<*>>? get() = propertyConfig.optionConfigs
-    override val configs: List<CwtMemberConfig<*>>? get() = propertyConfig.configs
+    override val configGroup get() = propertyConfig.configGroup
+    override val value get() = propertyConfig.value
+    override val valueType get() = propertyConfig.valueType
+    override val configs get() = propertyConfig.configs
+    override val optionConfigs get() = propertyConfig.optionConfigs
+    override val documentation get() = propertyConfig.documentation
 
     override var parentConfig: CwtMemberConfig<*>? = null
+
+    //not cached to optimize memory
+    override val valueExpression get() = if (isBlock) CwtDataExpression.BlockExpression else CwtDataExpression.resolve(value, false)
 
     override fun toString(): String = value
 }

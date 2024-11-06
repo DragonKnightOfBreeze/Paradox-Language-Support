@@ -20,7 +20,7 @@ interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val supportedScopes: Set<String>
     val outputScope: String?
 
-    val subNameExpression: CwtDataExpression get() = CwtDataExpression.resolve(subName, true)
+    val subNameExpression: CwtDataExpression
     override val expression: CwtDataExpression get() = subNameExpression
 
     fun inline(config: CwtPropertyConfig): CwtPropertyConfig
@@ -48,6 +48,9 @@ private class CwtAliasConfigImpl(
 ) : UserDataHolderBase(), CwtAliasConfig {
     override val supportedScopes get() = config.supportedScopes
     override val outputScope get() = config.pushScope
+
+    //not much memory will be used, so cached
+    override val subNameExpression: CwtDataExpression = CwtDataExpression.resolve(subName, true)
 
     override fun inline(config: CwtPropertyConfig): CwtPropertyConfig {
         val other = this.config

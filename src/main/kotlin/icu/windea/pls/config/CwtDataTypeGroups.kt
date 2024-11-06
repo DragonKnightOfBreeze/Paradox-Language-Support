@@ -47,6 +47,10 @@ object CwtDataTypeGroups {
         CwtDataTypes.Constant,
         CwtDataTypes.TemplateExpression,
     )
+    val AliasNameLike = arrayOf(
+        CwtDataTypes.AliasName,
+        CwtDataTypes.AliasKeysField,
+    )
     val KeyReference = arrayOf(
         CwtDataTypes.Bool,
         CwtDataTypes.Int,

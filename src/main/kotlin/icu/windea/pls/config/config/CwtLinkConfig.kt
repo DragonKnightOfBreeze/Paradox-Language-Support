@@ -27,7 +27,7 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val outputScope: String?
     val forDefinitionType: String?
 
-    val dataSourceExpression: CwtDataExpression? get() = dataSource?.let { CwtDataExpression.resolve(it, false) }
+    val dataSourceExpression: CwtDataExpression?
     override val expression: CwtDataExpression? get() = dataSourceExpression
 
     //output_scope = null -> transfer scope based on data source
@@ -85,4 +85,7 @@ private class CwtLinkConfigImpl(
     override val inputScopes: Set<String>,
     override val outputScope: String?,
     override val forDefinitionType: String?
-) : UserDataHolderBase(), CwtLinkConfig
+) : UserDataHolderBase(), CwtLinkConfig {
+    //not much memory will be used, so cached
+    override val dataSourceExpression: CwtDataExpression? = dataSource?.let { CwtDataExpression.resolve(it, false) }
+}

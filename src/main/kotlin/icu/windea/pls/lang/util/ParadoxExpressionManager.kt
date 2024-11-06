@@ -443,7 +443,7 @@ object ParadoxExpressionManager {
     private fun doMatchParameterizedKeyConfigs(pkConfigs: List<CwtValueConfig>?, configExpression: CwtDataExpression): Boolean? {
         //如果作为参数的键的规则类型可以（从扩展的CWT规则）推断出来且是匹配的，则需要继续向下匹配
         //目前要求推断结果必须是唯一的
-        //目前不支持从使用推断 - 这可能会导致规则上下文的递归解析
+        //目前不支持从参数的使用处推断 - 这可能会导致规则上下文的递归解析
 
         if (pkConfigs == null) return null
         if (pkConfigs.size != 1) return null //must be unique yet
