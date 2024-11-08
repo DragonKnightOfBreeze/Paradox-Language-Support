@@ -89,11 +89,6 @@ class ChainedParadoxSelector<T>(
         return true
     }
 
-    override fun postHandle(targets: Set<T>): Set<T> {
-        if (selectors.isEmpty()) return targets
-        return selectors.fold(targets) { oldTargets, selector -> selector.postHandle(oldTargets) }
-    }
-
     override fun comparator(): Comparator<T>? {
         if (selectors.isEmpty()) return null
         var comparator: Comparator<T>? = null

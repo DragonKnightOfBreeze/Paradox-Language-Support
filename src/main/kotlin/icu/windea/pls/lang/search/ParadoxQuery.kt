@@ -2,7 +2,6 @@ package icu.windea.pls.lang.search
 
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.priority.*
 import icu.windea.pls.lang.search.selector.*
 
@@ -67,13 +66,17 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
             }
             true
         }
-        return selector.postHandle(result)
+        return result
     }
 
     override fun forEach(consumer: Processor<in T>): Boolean {
-        //TODO 1.3.8+ 需要检查这里的改动（适用排序）是否会显著影响性能
-        val result = findAll()
-        return result.process { consumer.process(it) }
+        val selector = searchParameters.selector
+        return delegateProcessResults(original) {
+            if (selector.select(it)) {
+                consumer.process(it)
+            }
+            true
+        }
     }
 
     fun getFinalComparator(): Comparator<T> {

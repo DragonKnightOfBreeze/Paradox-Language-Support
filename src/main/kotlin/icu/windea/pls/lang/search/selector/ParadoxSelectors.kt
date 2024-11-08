@@ -111,15 +111,14 @@ class ParadoxFilterSelector<T>(
 class ParadoxDistinctSelector<T, K>(
     val keySelector: (T) -> K
 ) : ParadoxSelector<T> {
-    override fun postHandle(targets: Set<T>): Set<T> {
-        if (targets.size <= 1) return targets
-        val keys = mutableSetOf<K>().synced()
-        val newTargets = mutableSetOf<T>()
-        targets.forEach { target ->
-            val key = keySelector(target)
-            if (keys.add(key)) newTargets.add(target)
-        }
-        return newTargets
+    val keysToDistinct = mutableSetOf<K>().synced()
+
+    override fun selectOne(target: T): Boolean {
+        return keysToDistinct.add(keySelector(target))
+    }
+    
+    override fun select(target: T): Boolean {
+        return keysToDistinct.add(keySelector(target))
     }
 }
 
