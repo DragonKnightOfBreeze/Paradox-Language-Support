@@ -31,7 +31,7 @@ class ParadoxScriptExpressionPsiReference(
         return when {
             resolved == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
             resolved is PsiFileSystemItem -> {
-                // #33
+                //https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/#33
                 val configExpression = config.expression ?: throw IncorrectOperationException()
                 val ep = get(configExpression) ?: throw IncorrectOperationException()
                 val fileInfo = resolved.fileInfo ?: throw IncorrectOperationException()

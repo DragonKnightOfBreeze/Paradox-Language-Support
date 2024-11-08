@@ -57,15 +57,16 @@ class DefaultCwtDataExpressionMerger : CwtDataExpressionMerger {
             e1.type == Types.IntValueField -> when {
                 e2.type == Types.ValueField -> return "int_value_field"
             }
-            //e1.type in TypeGroups.AliasNameLike -> {
-            //    val aliasName = e1.value ?: return null
-            //    val aliasConfigs = configGroup.aliasGroups[aliasName].orNull() ?: return null
-            //    aliasConfigs.keys.forEach { aliasSubName ->
-            //        val e = CwtDataExpression.resolve(aliasSubName, true)
-            //        val r = merge(e, e2,configGroup)
-            //        if(r != null) return null
-            //    }
-            //}
+            e1.type in TypeGroups.AliasNameLike -> {
+                //https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/95
+                val aliasName = e1.value ?: return null
+                val aliasConfigs = configGroup.aliasGroups[aliasName].orNull() ?: return null
+                aliasConfigs.keys.forEach { aliasSubName ->
+                    val e = CwtDataExpression.resolve(aliasSubName, true)
+                    val r = merge(e, e2,configGroup)
+                    if(r != null) return null
+                }
+            }
         }
         return null
     }

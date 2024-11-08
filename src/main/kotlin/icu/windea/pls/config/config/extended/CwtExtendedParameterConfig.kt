@@ -84,7 +84,8 @@ private class CwtExtendedParameterConfigImpl(
 
     private fun doGetContainerConfig(): CwtMemberConfig<*> {
         if (config !is CwtPropertyConfig) return config
-        return CwtConfigManipulator.inlineSingleAlias(config) ?: config // #76
+        //https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/#76
+        return CwtConfigManipulator.inlineSingleAlias(config) ?: config
     }
 
     private fun doGetContextConfigs(): List<CwtMemberConfig<*>> {
