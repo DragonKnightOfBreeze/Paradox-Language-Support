@@ -39,7 +39,7 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
             consumer.process(element)
         }.let { if (!it) return }
 
-        val processedFiles = mutableSetOf(file)
+        //val processedFiles = mutableSetOf(file)
         //processQueryForInlineScriptUsageFiles(queryParameters, file, processedFiles, consumer)
     }
 

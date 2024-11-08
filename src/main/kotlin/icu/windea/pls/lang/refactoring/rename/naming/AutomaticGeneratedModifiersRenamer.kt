@@ -4,10 +4,10 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.refactoring.rename.naming.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -43,7 +43,7 @@ class AutomaticGeneratedModifiersRenamer(element: PsiElement, newName: String) :
         for (info in infos) {
             ProgressManager.checkCanceled()
             val modifierName = info.name
-            val newModifierName = info.config.template.extract(newName)
+            val newModifierName = CwtTemplateExpressionManager.extract(info.config.template, newName)
             val modifierElement = ParadoxModifierElement(element, modifierName, definitionInfo.gameType, definitionInfo.project)
             modifierElement.canRename = true
             allRenames[modifierElement] = newModifierName

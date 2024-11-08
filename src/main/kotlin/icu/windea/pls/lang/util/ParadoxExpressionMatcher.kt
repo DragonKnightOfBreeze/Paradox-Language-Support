@@ -252,7 +252,7 @@ object ParadoxExpressionMatcher {
             val template = configExpression.expressionString
             val cacheKey = "t#${template}#${exp}"
             return getCachedMatchResult(element, cacheKey) {
-                CwtTemplateExpression.resolve(template).matches(exp, element, configGroup)
+                CwtTemplateExpressionManager.matches(exp, element, CwtTemplateExpression.resolve(template), configGroup)
             }
         }
     }

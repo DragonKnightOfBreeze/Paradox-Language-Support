@@ -112,7 +112,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         return configGroup.generatedModifiers.values.any { config ->
-            config.template.matches(modifierName, element, configGroup)
+            CwtTemplateExpressionManager.matches(modifierName, element, config.template, configGroup)
         }
     }
 
@@ -124,7 +124,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val templateReferences = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
             ProgressManager.checkCanceled()
 
-            val resolvedReferences = config.template.resolveReferences(modifierName, configGroup).orNull()
+            val resolvedReferences = CwtTemplateExpressionManager.resolveReferences(modifierName, config.template, configGroup).orNull()
             if (resolvedReferences != null) modifierConfig = config
             resolvedReferences
         }.orEmpty()
@@ -155,21 +155,21 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             if (template.expressionString.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
             //生成的modifier
-            template.processResolveResult(element, configGroup) p@{ name ->
-                //排除重复的
-                if (!modifierNames.add(name)) return@p true
-
-                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
-                val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
-                    .withTypeText(typeFile?.name, typeFile?.icon, true)
-                    .withPatchableIcon(PlsIcons.Nodes.Modifier)
-                    .withPatchableTailText(tailText)
-                    .withScopeMatched(scopeMatched)
-                    .withModifierLocalizedNamesIfNecessary(name, element)
-                    .forScriptExpression(context)
-                result.addElement(lookupElement, context)
-                true
-            }
+            CwtTemplateExpressionManager.processResolveResult(element, template, configGroup, p@{ name ->
+                        //排除重复的
+                        if (!modifierNames.add(name)) return@p true
+        
+                        val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
+                        val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
+                            .withTypeText(typeFile?.name, typeFile?.icon, true)
+                            .withPatchableIcon(PlsIcons.Nodes.Modifier)
+                            .withPatchableTailText(tailText)
+                            .withScopeMatched(scopeMatched)
+                            .withModifierLocalizedNamesIfNecessary(name, element)
+                            .forScriptExpression(context)
+                        result.addElement(lookupElement, context)
+                        true
+                    })
         }
     }
 

@@ -4,7 +4,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.refactoring.rename.naming.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
@@ -47,7 +46,7 @@ class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: S
         for (info in infos) {
             ProgressManager.checkCanceled()
             val modifierName = info.name
-            val newModifierName = info.config.template.extract(newName)
+            val newModifierName = CwtTemplateExpressionManager.extract(info.config.template, newName)
             run {
                 //use first key only -> $_name
                 val key = ParadoxModifierManager.getModifierNameKeys(modifierName, element).firstOrNull() ?: return@run

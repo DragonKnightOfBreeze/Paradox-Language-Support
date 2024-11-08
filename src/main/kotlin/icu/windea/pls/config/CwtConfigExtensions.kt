@@ -1,8 +1,6 @@
 package icu.windea.pls.config
 
 import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -11,8 +9,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.dataExpression.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
@@ -79,28 +75,4 @@ val CwtMemberElement.configType: CwtConfigType?
 fun <T : CwtMemberElement> T.bindConfig(config: CwtConfig<*>): T {
     this.putUserData(PlsKeys.bindingConfig, config)
     return this
-}
-
-fun CwtTemplateExpression.extract(referenceName: String): String {
-    return CwtTemplateExpressionManager.extract(this, referenceName)
-}
-
-fun CwtTemplateExpression.extract(referenceNames: Map<CwtDataExpression, String>): String {
-    return CwtTemplateExpressionManager.extract(this, referenceNames)
-}
-
-fun CwtTemplateExpression.matches(text: String, contextElement: PsiElement, configGroup: CwtConfigGroup, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): Boolean {
-    return CwtTemplateExpressionManager.matches(text, contextElement, this, configGroup, matchOptions)
-}
-
-fun CwtTemplateExpression.resolve(text: String, contextElement: PsiElement, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
-    return CwtTemplateExpressionManager.resolve(text, contextElement, this, configGroup)
-}
-
-fun CwtTemplateExpression.resolveReferences(text: String, configGroup: CwtConfigGroup): List<ParadoxTemplateSnippetExpressionReference> {
-    return CwtTemplateExpressionManager.resolveReferences(text, this, configGroup)
-}
-
-fun CwtTemplateExpression.processResolveResult(contextElement: PsiElement, configGroup: CwtConfigGroup, processor: Processor<String>) {
-    CwtTemplateExpressionManager.processResolveResult(contextElement, this, configGroup, processor)
 }

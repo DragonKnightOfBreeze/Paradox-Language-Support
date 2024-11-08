@@ -7,6 +7,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
@@ -36,7 +37,7 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
             val property = definition.findProperty("icon", inline = true) ?: return@p true
             val propertyValue = property.propertyValue ?: return@p true
             if (propertyValue !is ParadoxScriptString) return@p true
-            val name = modifierConfig.template.extract(propertyValue.value)
+            val name = CwtTemplateExpressionManager.extract(modifierConfig.template, propertyValue.value)
             registry += "gfx/interface/icons/modifiers/mod_${name}"
             true
         }

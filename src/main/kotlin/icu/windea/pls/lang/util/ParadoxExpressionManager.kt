@@ -787,7 +787,7 @@ object ParadoxExpressionManager {
     fun resolveTemplateExpression(element: ParadoxScriptExpressionElement, text: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
         if (element !is ParadoxScriptStringExpressionElement) return null
         val templateConfigExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
-        return templateConfigExpression.resolve(text, element, configGroup)
+        return CwtTemplateExpressionManager.resolve(text, element, templateConfigExpression, configGroup)
     }
 
     fun resolvePredefinedScope(name: String, configGroup: CwtConfigGroup): PsiElement? {

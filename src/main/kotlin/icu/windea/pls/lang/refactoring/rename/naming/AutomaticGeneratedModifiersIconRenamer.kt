@@ -4,7 +4,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.refactoring.rename.naming.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
@@ -44,7 +43,7 @@ class AutomaticGeneratedModifiersIconRenamer(element: PsiElement, newName: Strin
         for (info in infos) {
             ProgressManager.checkCanceled()
             val modifierName = info.name
-            val newModifierName = info.config.template.extract(newName)
+            val newModifierName = CwtTemplateExpressionManager.extract(info.config.template, newName)
             run {
                 //use first key only -> gfx/interface/icons/modifiers/mod_$
                 val iconPath = ParadoxModifierManager.getModifierIconPaths(modifierName, element).firstOrNull() ?: return@run

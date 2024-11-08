@@ -1,7 +1,6 @@
 package icu.windea.pls.model
 
 import com.intellij.openapi.util.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
@@ -89,9 +88,9 @@ class ParadoxDefinitionInfo(
 
     val modifiers: List<ModifierInfo> by lazy {
         buildList {
-            configGroup.type2ModifiersMap.get(type)?.forEach { (_, v) -> add(ModifierInfo(v.template.extract(name), v)) }
+            configGroup.type2ModifiersMap.get(type)?.forEach { (_, v) -> add(ModifierInfo(CwtTemplateExpressionManager.extract(v.template, name), v)) }
             for (subtype in subtypes) {
-                configGroup.type2ModifiersMap.get("$type.$subtype")?.forEach { (_, v) -> add(ModifierInfo(v.template.extract(name), v)) }
+                configGroup.type2ModifiersMap.get("$type.$subtype")?.forEach { (_, v) -> add(ModifierInfo(CwtTemplateExpressionManager.extract(v.template, name), v)) }
             }
         }
     }

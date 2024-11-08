@@ -645,7 +645,7 @@ object ParadoxCompletionManager {
         val configExpression = config.expression ?: return
         val template = CwtTemplateExpression.resolve(configExpression.expressionString)
         val tailText = getExpressionTailText(context, config)
-        template.processResolveResult(contextElement, configGroup) { expression ->
+        CwtTemplateExpressionManager.processResolveResult(contextElement, template, configGroup) { expression: String? ->
             val templateExpressionElement = ParadoxExpressionManager.resolveTemplateExpression(contextElement, expression, configExpression, configGroup)
             val lookupElement = LookupElementBuilder.create(expression).withPsiElement(templateExpressionElement)
                 .withCaseSensitivity(false)
