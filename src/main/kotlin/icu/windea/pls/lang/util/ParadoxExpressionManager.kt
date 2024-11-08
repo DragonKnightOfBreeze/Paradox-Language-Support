@@ -257,36 +257,48 @@ object ParadoxExpressionManager {
                     val configs = parentConfig.configs
                     if (configs.isNullOrEmpty()) return@f2
 
-                    var relaxMatchKeyCount = 0
+                    val exactMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
+                    val relaxMatchedConfigs = mutableListOf<CwtMemberConfig<*>>()
+
+                    fun addToMatchedConfigs(config: CwtMemberConfig<*>) {
+                        if (config is CwtPropertyConfig) {
+                            val m = doMatchParameterizedKeyConfigs(parameterizedKeyConfigs, config.keyExpression)
+                            when (m) {
+                                null -> nextResult += config
+                                true -> exactMatchedConfigs += config
+                                false -> relaxMatchedConfigs += config
+                            }
+                        } else if (config is CwtValueConfig) {
+                            nextResult += config
+                        }
+                    }
+                    
+                    fun collectMatchedConfigs() {
+                        if (exactMatchedConfigs.isNotEmpty()) {
+                            nextResult += exactMatchedConfigs
+                        } else if (relaxMatchedConfigs.size == 1) {
+                            nextResult += relaxMatchedConfigs
+                        }
+                    }
+                    
                     configs.forEach f3@{ config ->
                         if (config is CwtPropertyConfig) {
                             if (subPath == "-") return@f3
                             val configKeyExpression = config.keyExpression
                             if (matchesKey && !ParadoxExpressionMatcher.matches(element, expression, configKeyExpression, config, configGroup, matchOptions).get(matchOptions)) return@f3
-                            val nextConfigs = mutableListOf<CwtMemberConfig<*>>()
                             val inlinedConfigs = doInlineConfigForConfigContext(element, subPath, isQuoted, config, matchOptions)
                             if (inlinedConfigs.isEmpty()) {
-                                nextConfigs += config
+                                addToMatchedConfigs(config)
                             } else {
-                                nextConfigs += inlinedConfigs
-                            }
-                            nextConfigs.forEach f4@{ nextConfig ->
-                                val m = doMatchParameterizedKeyConfigs(parameterizedKeyConfigs, configKeyExpression)
-                                if (m != true) relaxMatchKeyCount++
-                                nextResult += nextConfig
+                                inlinedConfigs.forEach { inlinedConfig -> addToMatchedConfigs(inlinedConfig) }
                             }
                         } else if (config is CwtValueConfig) {
                             if (subPath != "-") return@f3
-                            nextResult += config
+                            addToMatchedConfigs(config)
                         }
                     }
-
-                    //如果需要匹配键，且匹配带参数的子路径时，初始能够匹配到多个结果，则直接返回空列表
-                    //因为参数值可能是任意值，此时实际上并不能确定具体的上下文是什么
-
-                    if (matchesKey && isParameterized && relaxMatchKeyCount > 1) {
-                        return emptyList()
-                    }
+                    
+                    collectMatchedConfigs()
                 }
             }
 
