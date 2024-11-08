@@ -68,8 +68,10 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
         }
         return result
     }
-
+    
     override fun forEach(consumer: Processor<in T>): Boolean {
+        //为了优化性能，目前不再先得到排序后的结果再遍历，而是直接遍历并进行必要的过滤与去重
+
         val selector = searchParameters.selector
         return delegateProcessResults(original) {
             if (selector.select(it)) {
@@ -77,6 +79,9 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
             }
             true
         }
+
+        //val result = findAll()
+        //return result.process { consumer.process(it) }
     }
 
     fun getFinalComparator(): Comparator<T> {
