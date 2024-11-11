@@ -75,6 +75,7 @@ Tips:
 
 Known Issues:
 
+* Support for some of Stellaris' black-magic-like language features is not perfect.
 * Support for games exclude Stellaris is not yet perfect.
 
 ## References
