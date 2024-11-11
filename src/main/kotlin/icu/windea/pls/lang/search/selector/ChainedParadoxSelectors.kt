@@ -8,7 +8,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.constraints.*
-import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.usageInfo.*
 import icu.windea.pls.script.psi.*
 
 //region nopSelector
@@ -63,37 +63,37 @@ fun ChainedParadoxSelector<VirtualFile>.distinctByFilePath() =
 //endregion
 
 //region complexEnumValueSelector
-fun complexEnumValueSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxComplexEnumValueInfo>(project, context)
+fun complexEnumValueSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxComplexEnumValueUsageInfo>(project, context)
 
 @JvmName("distinctByName_complexEnumValueSelector")
-fun ChainedParadoxSelector<ParadoxComplexEnumValueInfo>.distinctByName() =
+fun ChainedParadoxSelector<ParadoxComplexEnumValueUsageInfo>.distinctByName() =
     distinctBy { it.name }
 //endregion
 
 //region dynamicValueSelector
-fun dynamicValueSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxDynamicValueInfo>(project, context)
+fun dynamicValueSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxDynamicValueUsageInfo>(project, context)
 
 @JvmName("distinctByName_dynamicValueSelector")
-fun ChainedParadoxSelector<ParadoxDynamicValueInfo>.distinctByName() =
+fun ChainedParadoxSelector<ParadoxDynamicValueUsageInfo>.distinctByName() =
     distinctBy { it.name }
 //endregion
 
 //region inlineScriptSelector
-fun inlineScriptSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxInlineScriptUsageInfo>(project, context)
+fun inlineScriptSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxInlineScriptUsageInfo.Compact>(project, context)
 //endregion
 
 //region dynamicValueSelector
-fun parameterSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxParameterInfo>(project, context)
+fun parameterSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxParameterUsageInfo>(project, context)
 
 @JvmName("distinctByName_parameterSelector")
-fun ChainedParadoxSelector<ParadoxParameterInfo>.distinctByName() =
+fun ChainedParadoxSelector<ParadoxParameterUsageInfo>.distinctByName() =
     distinctBy { it.name }
 //endregion
 
 //region localisationParameterSelector
-fun localisationParameterSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxLocalisationParameterInfo>(project, context)
+fun localisationParameterSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxLocalisationParameterUsageInfo>(project, context)
 
 @JvmName("distinctByName_localisationParameterSelector")
-fun ChainedParadoxSelector<ParadoxLocalisationParameterInfo>.distinctByName() =
+fun ChainedParadoxSelector<ParadoxLocalisationParameterUsageInfo>.distinctByName() =
     distinctBy { it.name }
 //endregion

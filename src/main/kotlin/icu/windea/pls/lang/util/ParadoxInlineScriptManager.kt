@@ -22,7 +22,7 @@ import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.usageInfo.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxInlineScriptManager {
@@ -183,17 +183,20 @@ object ParadoxInlineScriptManager {
         ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQueryAsync p@{ info ->
             ProgressManager.checkCanceled()
             val file = info.virtualFile?.toPsiFile(project) ?: return@p true
-            val e = file.findElementAt(info.elementOffset) ?: return@p true
-            val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p true
-            if (!p.name.equals(inlineScriptKey, true)) return@p true
-            val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p true
-            val usageConfigContext = ParadoxExpressionManager.getConfigContext(memberElement) ?: return@p true
-            val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
-            // merge
-            result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
-                if (it) return@also
-                context.inlineScriptHasConflict = true
-                result.set(null)
+            val elementOffsets = info.elementOffsets.orNull() ?: return@p true
+            elementOffsets.process p1@{ elementOffset ->
+                val e = file.findElementAt(elementOffset) ?: return@p1 true
+                val p = e.parentOfType<ParadoxScriptProperty>() ?: return@p1 true
+                if (!p.name.equals(inlineScriptKey, true)) return@p1 true
+                val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p1 true
+                val usageConfigContext = ParadoxExpressionManager.getConfigContext(memberElement) ?: return@p1 true
+                val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
+                // merge
+                result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
+                    if (it) return@also
+                    context.inlineScriptHasConflict = true
+                    result.set(null)
+                }
             }
         }
         return result.get().orEmpty()

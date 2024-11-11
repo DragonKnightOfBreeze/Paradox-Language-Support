@@ -4,7 +4,7 @@ import icons.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.usageInfo.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -31,7 +31,7 @@ class ParadoxDefinitionPresentation(
 
 class ParadoxComplexEnumValuePresentation(
     element: ParadoxScriptStringExpressionElement,
-    private val complexEnumValueInfo: ParadoxComplexEnumValueInfo
+    private val complexEnumValueInfo: ParadoxComplexEnumValueUsageInfo
 ) : ParadoxItemPresentation<ParadoxScriptStringExpressionElement>(element) {
     override fun getIcon(unused: Boolean): Icon {
         return PlsIcons.Nodes.ComplexEnumValue

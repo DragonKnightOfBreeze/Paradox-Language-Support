@@ -10,7 +10,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.usageInfo.*
 import icu.windea.pls.script.injection.*
 import java.awt.*
 
@@ -39,8 +39,8 @@ val PlsKeys.cachedDefinitionPrimaryLocalisations by createKey<CachedValue<Set<Pa
 val PlsKeys.cachedDefinitionLocalizedNames by createKey<CachedValue<Set<String>>>(PlsKeys)
 val PlsKeys.cachedDefinitionPrimaryImage by createKey<CachedValue<PsiFile>>(PlsKeys)
 val PlsKeys.cachedLocalisationInfo by createKey<CachedValue<ParadoxLocalisationInfo>>(PlsKeys)
-val PlsKeys.cachedComplexEnumValueInfo by createKey<CachedValue<ParadoxComplexEnumValueInfo>>(PlsKeys)
-val PlsKeys.cachedDynamicValueInfos by createKey<CachedValue<List<ParadoxDynamicValueInfo>>>(PlsKeys)
+val PlsKeys.cachedComplexEnumValueInfo by createKey<CachedValue<ParadoxComplexEnumValueUsageInfo>>(PlsKeys)
+val PlsKeys.cachedDynamicValueInfos by createKey<CachedValue<List<ParadoxDynamicValueUsageInfo>>>(PlsKeys)
 val PlsKeys.cachedElementPath by createKey<CachedValue<ParadoxExpressionPath>>(PlsKeys)
 val PlsKeys.cachedScopeContext by createKey<CachedValue<ParadoxScopeContext>>(PlsKeys)
 val PlsKeys.cachedTextColorInfo by createKey<CachedValue<ParadoxTextColorInfo>>(PlsKeys)

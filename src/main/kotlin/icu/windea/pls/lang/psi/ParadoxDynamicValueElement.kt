@@ -8,7 +8,7 @@ import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.usageInfo.*
 import java.util.*
 import javax.swing.*
 
@@ -26,7 +26,7 @@ class ParadoxDynamicValueElement(
     constructor(parent: PsiElement, name: String, dynamicValueType: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)
         : this(parent, name, setOf(dynamicValueType), readWriteAccess, gameType, project)
 
-    constructor(parent: PsiElement, info: ParadoxDynamicValueInfo, project: Project)
+    constructor(parent: PsiElement, info: ParadoxDynamicValueUsageInfo, project: Project)
         : this(parent, info.name, info.dynamicValueType, info.readWriteAccess, info.gameType, project)
 
     val dynamicValueType = when {

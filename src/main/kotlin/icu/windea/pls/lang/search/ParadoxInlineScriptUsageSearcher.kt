@@ -5,18 +5,17 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
-import icu.windea.pls.ep.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.usageInfo.*
 import icu.windea.pls.script.*
 
 /**
  * 内联脚本使用的查询器。
  */
-class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUsageInfo, ParadoxInlineScriptUsageSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxInlineScriptUsageSearch.SearchParameters, consumer: Processor<in ParadoxInlineScriptUsageInfo>) {
+class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUsageInfo.Compact, ParadoxInlineScriptUsageSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxInlineScriptUsageSearch.SearchParameters, consumer: Processor<in ParadoxInlineScriptUsageInfo.Compact>) {
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
@@ -30,15 +29,21 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
             ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
             if (selectGameType(file) != gameType) return@p true //check game type at file level
 
-            val fileData = ParadoxExpressionIndex.INSTANCE.getFileData(file, project, ParadoxExpressionIndexId.InlineScriptUsage)
+            val fileData = ParadoxInlineScriptUsageIndex.INSTANCE.getFileData(file, project)
             if (fileData.isEmpty()) return@p true
-            fileData.forEach f@{ info ->
-                if (expression != info.expression) return@f
-                info.virtualFile = file
-                val r = consumer.process(info)
+            if(expression.isNotEmpty()) {
+                val compactInfo = fileData[expression] ?: return@p true
+                compactInfo.virtualFile = file
+                val r = consumer.process(compactInfo)
                 if (!r) return@p false
+            } else {
+                fileData.values.forEach { compactInfo ->
+                    compactInfo.virtualFile = file
+                    val r = consumer.process(compactInfo)
+                    if (!r) return@p false
+                }
             }
-
+            
             true
         }
     }

@@ -15,7 +15,7 @@ import java.util.*
 class ParadoxFileLocaleIndex : ScalarIndexExtension<String>() {
     @Suppress("CompanionObjectInExtension")
     companion object {
-        val INSTANCE by lazy { findIndex<ParadoxFileLocaleIndex>() }
+        val INSTANCE by lazy { findFileBasedIndex<ParadoxFileLocaleIndex>() }
         val NAME = ID.create<String, Void>("paradox.file.locale.index")
 
         private const val VERSION = 54 //1.3.21

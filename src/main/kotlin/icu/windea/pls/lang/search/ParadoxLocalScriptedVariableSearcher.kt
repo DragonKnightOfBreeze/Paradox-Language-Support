@@ -56,7 +56,8 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
             ProgressManager.checkCanceled()
             val uFile = info.virtualFile ?: return@p true
             if (!processedFiles.add(uFile)) return@p true
-            uFile2StartOffsetMap.merge(uFile, info.elementOffset) { a, b -> maxOf(a, b) }
+            val startOffset = info.elementOffsets.lastOrNull() ?: return@p true
+            uFile2StartOffsetMap.merge(uFile, startOffset) { a, b -> maxOf(a, b) }
             true
         }
         if (uFile2StartOffsetMap.isEmpty()) return true

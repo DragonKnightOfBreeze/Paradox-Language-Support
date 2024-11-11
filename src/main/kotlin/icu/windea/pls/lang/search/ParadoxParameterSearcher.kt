@@ -9,11 +9,11 @@ import icu.windea.pls.ep.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.usageInfo.*
 import icu.windea.pls.script.*
 
-class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterInfo, ParadoxParameterSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxParameterSearch.SearchParameters, consumer: Processor<in ParadoxParameterInfo>) {
+class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterUsageInfo, ParadoxParameterSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxParameterSearch.SearchParameters, consumer: Processor<in ParadoxParameterUsageInfo>) {
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
@@ -28,7 +28,7 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterInfo, Paradox
             ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
             if (selectGameType(file) != gameType) return@p true //check game type at file level
 
-            val fileData = ParadoxExpressionIndex.INSTANCE.getFileData(file, project, ParadoxExpressionIndexId.Parameter)
+            val fileData = ParadoxMergedUsageIndex.INSTANCE.getFileData(file, project, ParadoxUsageIndexType.Parameter)
             if (fileData.isEmpty()) return@p true
             fileData.forEach f@{ info ->
                 if (contextKey != info.contextKey) return@f

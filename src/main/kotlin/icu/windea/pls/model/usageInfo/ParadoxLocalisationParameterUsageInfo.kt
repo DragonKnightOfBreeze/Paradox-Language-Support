@@ -1,14 +1,14 @@
-package icu.windea.pls.model.expressionInfo
+package icu.windea.pls.model.usageInfo
 
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.model.*
 
-data class ParadoxLocalisationParameterInfo(
+data class ParadoxLocalisationParameterUsageInfo(
     val name: String,
     val localisationName: String,
     override val elementOffset: Int,
-    override val gameType: ParadoxGameType
-) : ParadoxExpressionInfo {
+    override val gameType: ParadoxGameType,
+) : ParadoxUsageInfo {
     @Volatile
     override var virtualFile: VirtualFile? = null
 }

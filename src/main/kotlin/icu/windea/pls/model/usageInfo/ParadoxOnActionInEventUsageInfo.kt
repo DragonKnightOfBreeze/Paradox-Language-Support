@@ -1,16 +1,16 @@
-package icu.windea.pls.model.expressionInfo
+package icu.windea.pls.model.usageInfo
 
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.model.*
 
-data class ParadoxOnActionInEventInfo(
+data class ParadoxOnActionInEventUsageInfo(
     val onActionName: String,
     val containingEventName: String,
     val containingEventScope: String?,
     val scopesElementOffset: Int,
     override val elementOffset: Int,
-    override val gameType: ParadoxGameType
-) : ParadoxExpressionInfo {
+    override val gameType: ParadoxGameType,
+) : ParadoxUsageInfo {
     @Volatile
     override var virtualFile: VirtualFile? = null
 }

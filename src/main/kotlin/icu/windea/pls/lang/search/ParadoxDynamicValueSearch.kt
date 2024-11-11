@@ -4,12 +4,12 @@ import com.intellij.openapi.extensions.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.usageInfo.*
 
 /**
  * 动态值的查询。（不涉及CWT规则文件中预定义的值）
  */
-class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInfo, ParadoxDynamicValueSearch.SearchParameters>(EP_NAME) {
+class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueUsageInfo, ParadoxDynamicValueSearch.SearchParameters>(EP_NAME) {
     /**
      * @property name 名字。
      * @property dynamicValueTypes 值集的名字。
@@ -17,11 +17,11 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInfo
     class SearchParameters(
         val name: String?,
         val dynamicValueTypes: Set<String>,
-        override val selector: ChainedParadoxSelector<ParadoxDynamicValueInfo>
-    ) : ParadoxSearchParameters<ParadoxDynamicValueInfo>
+        override val selector: ChainedParadoxSelector<ParadoxDynamicValueUsageInfo>
+    ) : ParadoxSearchParameters<ParadoxDynamicValueUsageInfo>
 
     companion object {
-        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxDynamicValueInfo, SearchParameters>>("icu.windea.pls.search.dynamicValueSearch")
+        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxDynamicValueUsageInfo, SearchParameters>>("icu.windea.pls.search.dynamicValueSearch")
         @JvmField
         val INSTANCE = ParadoxDynamicValueSearch()
 
@@ -32,8 +32,8 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInfo
         fun search(
             name: String,
             dynamicValueType: String,
-            selector: ChainedParadoxSelector<ParadoxDynamicValueInfo>
-        ): ParadoxQuery<ParadoxDynamicValueInfo, SearchParameters> {
+            selector: ChainedParadoxSelector<ParadoxDynamicValueUsageInfo>
+        ): ParadoxQuery<ParadoxDynamicValueUsageInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, setOf(dynamicValueType), selector))
         }
 
@@ -44,8 +44,8 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInfo
         fun search(
             name: String,
             dynamicValueTypes: Set<String>,
-            selector: ChainedParadoxSelector<ParadoxDynamicValueInfo>
-        ): ParadoxQuery<ParadoxDynamicValueInfo, SearchParameters> {
+            selector: ChainedParadoxSelector<ParadoxDynamicValueUsageInfo>
+        ): ParadoxQuery<ParadoxDynamicValueUsageInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, dynamicValueTypes, selector))
         }
 
@@ -55,8 +55,8 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInfo
         @JvmStatic
         fun search(
             dynamicValueType: String,
-            selector: ChainedParadoxSelector<ParadoxDynamicValueInfo>
-        ): ParadoxQuery<ParadoxDynamicValueInfo, SearchParameters> {
+            selector: ChainedParadoxSelector<ParadoxDynamicValueUsageInfo>
+        ): ParadoxQuery<ParadoxDynamicValueUsageInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(null, setOf(dynamicValueType), selector))
         }
 
@@ -66,8 +66,8 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInfo
         @JvmStatic
         fun search(
             dynamicValueTypes: Set<String>,
-            selector: ChainedParadoxSelector<ParadoxDynamicValueInfo>
-        ): ParadoxQuery<ParadoxDynamicValueInfo, SearchParameters> {
+            selector: ChainedParadoxSelector<ParadoxDynamicValueUsageInfo>
+        ): ParadoxQuery<ParadoxDynamicValueUsageInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(null, dynamicValueTypes, selector))
         }
     }

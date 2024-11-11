@@ -9,14 +9,14 @@ import icu.windea.pls.ep.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.usageInfo.*
 import icu.windea.pls.script.*
 
 /**
  * 复杂枚举值的查询器。
  */
-class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValueInfo, ParadoxComplexEnumValueSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxComplexEnumValueSearch.SearchParameters, consumer: Processor<in ParadoxComplexEnumValueInfo>) {
+class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValueUsageInfo, ParadoxComplexEnumValueSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxComplexEnumValueSearch.SearchParameters, consumer: Processor<in ParadoxComplexEnumValueUsageInfo>) {
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
@@ -31,7 +31,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
             ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
             if (selectGameType(file) != gameType) return@p true //check game type at file level
 
-            val fileData = ParadoxExpressionIndex.INSTANCE.getFileData(file, project, ParadoxExpressionIndexId.ComplexEnumValue)
+            val fileData = ParadoxMergedUsageIndex.INSTANCE.getFileData(file, project, ParadoxUsageIndexType.ComplexEnumValue)
             if (fileData.isEmpty()) return@p true
             fileData.forEach f@{ info ->
                 if (enumName != info.enumName) return@f

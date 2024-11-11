@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
-import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
@@ -15,30 +15,31 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.usageInfo.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
 /**
- * 用于基于文件层级索引各种表达式信息。
+ * 用于索引各种使用信息。
+ * 
+ * 兼容需要内联的情况（此时使用懒加载的索引）。
  *
- * * 这个索引兼容需要内联的情况（此时使用懒加载的索引）。
- *
- * @see ParadoxExpressionInfo
- * @see ParadoxExpressionIndexSupport
+ * @see ParadoxUsageInfo
+ * @see ParadoxUsageIndexSupport
  */
-class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>>() {
+class ParadoxMergedUsageIndex : ParadoxFileBasedIndex<List<ParadoxUsageInfo>>() {
     @Suppress("CompanionObjectInExtension")
     companion object {
-        val INSTANCE by lazy { findIndex<ParadoxExpressionIndex>() }
-        val NAME = ID.create<String, List<ParadoxExpressionInfo>>("paradox.expression.index")
+        val INSTANCE by lazy { findFileBasedIndex<ParadoxMergedUsageIndex>() }
+        val NAME = ID.create<String, List<ParadoxUsageInfo>>("paradox.merged.usage.index")
 
-        private const val VERSION = 54 //1.3.21
+        private const val VERSION = 55 //1.3.24
 
-        private val markerKey = createKey<Boolean>("paradox.expression.index.marker")
+        private val markerKey = createKey<Boolean>("paradox.merged.usage.index.marker")
 
-        fun <ID : ParadoxExpressionIndexId<T>, T : ParadoxExpressionInfo> processQuery(
+        fun <ID : ParadoxUsageIndexType<T>, T : ParadoxUsageInfo> processQuery(
+            fileType: LanguageFileType,
             id: ID,
             project: Project,
             gameType: ParadoxGameType,
@@ -48,18 +49,14 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
             ProgressManager.checkCanceled()
             if (SearchScope.isEmptyScope(scope)) return true
 
-            return doProcessFiles(scope) p@{ file ->
+            return FileTypeIndex.processFiles(fileType, p@{ file ->
                 ProgressManager.checkCanceled()
                 if (selectGameType(file) != gameType) return@p true //check game type at file level
 
                 val fileData = INSTANCE.getFileData(file, project, id)
                 if (fileData.isEmpty()) return@p true
                 processor(file, fileData)
-            }
-        }
-
-        private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
-            return FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
+            }, scope)
         }
     }
 
@@ -67,7 +64,7 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
 
     override fun getVersion() = VERSION
 
-    override fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+    override fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
         when (file) {
             is ParadoxScriptFile -> indexDataForScriptFile(file, fileData)
             is ParadoxLocalisationFile -> indexDataForLocalisationFile(file, fileData)
@@ -75,8 +72,8 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         compressData(fileData)
     }
 
-    private fun indexDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
-        val extensionList = ParadoxExpressionIndexSupport.EP_NAME.extensionList
+    private fun indexDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
+        val extensionList = ParadoxUsageIndexSupport.EP_NAME.extensionList
         val definitionInfoStack = ArrayDeque<ParadoxDefinitionInfo>()
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -120,8 +117,8 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         })
     }
 
-    private fun indexDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
-        val extensionList = ParadoxExpressionIndexSupport.EP_NAME.extensionList
+    private fun indexDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
+        val extensionList = ParadoxUsageIndexSupport.EP_NAME.extensionList
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxLocalisationCommandText) {
@@ -134,47 +131,47 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         })
     }
 
-    private fun compressData(fileData: MutableMap<String, List<ParadoxExpressionInfo>>) {
+    private fun compressData(fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
         if (fileData.isEmpty()) return
-        val extensionList = ParadoxExpressionIndexSupport.EP_NAME.extensionList
+        val extensionList = ParadoxUsageIndexSupport.EP_NAME.extensionList
         fileData.mapValues { (k, v) ->
             val id = k.toByte()
             val support = extensionList.find { it.id() == id }
-                ?.castOrNull<ParadoxExpressionIndexSupport<ParadoxExpressionInfo>>()
+                ?.castOrNull<ParadoxUsageIndexSupport<ParadoxUsageInfo>>()
                 ?: throw UnsupportedOperationException()
             support.compressData(v)
         }
     }
 
-    override fun writeData(storage: DataOutput, value: List<ParadoxExpressionInfo>) {
+    override fun writeData(storage: DataOutput, value: List<ParadoxUsageInfo>) {
         val size = value.size
         storage.writeIntFast(size)
         if (value.isEmpty()) return
 
         val type = value.first().javaClass
-        val support = ParadoxExpressionIndexSupport.EP_NAME.extensionList.find { it.type() == type }
-            ?.castOrNull<ParadoxExpressionIndexSupport<ParadoxExpressionInfo>>()
+        val support = ParadoxUsageIndexSupport.EP_NAME.extensionList.find { it.type() == type }
+            ?.castOrNull<ParadoxUsageIndexSupport<ParadoxUsageInfo>>()
             ?: throw UnsupportedOperationException()
         storage.writeByte(support.id())
         val gameType = value.first().gameType
         storage.writeByte(gameType.optimizeValue())
-        var previousInfo: ParadoxExpressionInfo? = null
+        var previousInfo: ParadoxUsageInfo? = null
         value.forEach { info ->
             support.writeData(storage, info, previousInfo, gameType)
             previousInfo = info
         }
     }
 
-    override fun readData(storage: DataInput): List<ParadoxExpressionInfo> {
+    override fun readData(storage: DataInput): List<ParadoxUsageInfo> {
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 
         val id = storage.readByte()
-        val support = ParadoxExpressionIndexSupport.EP_NAME.extensionList.find { it.id() == id }
-            ?.castOrNull<ParadoxExpressionIndexSupport<ParadoxExpressionInfo>>()
+        val support = ParadoxUsageIndexSupport.EP_NAME.extensionList.find { it.id() == id }
+            ?.castOrNull<ParadoxUsageIndexSupport<ParadoxUsageInfo>>()
             ?: throw UnsupportedOperationException()
         val gameType = storage.readByte().deoptimizeValue<ParadoxGameType>()
-        var previousInfo: ParadoxExpressionInfo? = null
+        var previousInfo: ParadoxUsageInfo? = null
         return MutableList(size) {
             support.readData(storage, previousInfo, gameType)
                 .also { previousInfo = it }
@@ -194,8 +191,8 @@ class ParadoxExpressionIndex : ParadoxFileBasedIndex<List<ParadoxExpressionInfo>
         return false
     }
 
-    fun <T : ParadoxExpressionInfo> getFileData(file: VirtualFile, project: Project, id: ParadoxExpressionIndexId<T>): List<T> {
+    fun <T : ParadoxUsageInfo> getFileData(file: VirtualFile, project: Project, id: ParadoxUsageIndexType<T>): List<T> {
         val allFileData = getFileData(file, project)
-        return allFileData.get(id.code.toString())?.castOrNull<List<T>>().orEmpty()
+        return allFileData.get(id.id.toString())?.castOrNull<List<T>>().orEmpty()
     }
 }

@@ -12,20 +12,20 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.usageInfo.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxComplexEnumValueManager {
-    fun getInfo(element: ParadoxComplexEnumValueElement): ParadoxComplexEnumValueInfo {
-        return ParadoxComplexEnumValueInfo(element.name, element.enumName, element.readWriteAccess, element.startOffset, element.gameType)
+    fun getInfo(element: ParadoxComplexEnumValueElement): ParadoxComplexEnumValueUsageInfo {
+        return ParadoxComplexEnumValueUsageInfo(element.name, element.enumName, element.readWriteAccess, element.startOffset, element.gameType)
     }
 
-    fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
+    fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueUsageInfo? {
         return doGetInfoFromCache(element)
     }
 
-    private fun doGetInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueInfo? {
+    private fun doGetInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueUsageInfo? {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedComplexEnumValueInfo) {
             ProgressManager.checkCanceled()
@@ -35,7 +35,7 @@ object ParadoxComplexEnumValueManager {
         }
     }
 
-    private fun doGetInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile): ParadoxComplexEnumValueInfo? {
+    private fun doGetInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile): ParadoxComplexEnumValueUsageInfo? {
         if (element.text.isParameterized()) return null //排除可能带参数的情况
         if (element.text.isInlineUsage()) return null //排除是内联调用的情况
         val project = file.project
@@ -50,7 +50,7 @@ object ParadoxComplexEnumValueManager {
                     val enumName = complexEnumConfig.name
                     val readWriteAccess = Access.Write //write (declaration)
                     val elementOffset = element.startOffset
-                    return ParadoxComplexEnumValueInfo(name, enumName, readWriteAccess, elementOffset, gameType)
+                    return ParadoxComplexEnumValueUsageInfo(name, enumName, readWriteAccess, elementOffset, gameType)
                 }
             }
         }

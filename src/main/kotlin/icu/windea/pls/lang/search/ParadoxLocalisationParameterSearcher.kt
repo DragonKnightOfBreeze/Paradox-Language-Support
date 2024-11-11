@@ -9,11 +9,11 @@ import icu.windea.pls.ep.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.usageInfo.*
 import icu.windea.pls.script.*
 
-class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisationParameterInfo, ParadoxLocalisationParameterSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxLocalisationParameterSearch.SearchParameters, consumer: Processor<in ParadoxLocalisationParameterInfo>) {
+class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisationParameterUsageInfo, ParadoxLocalisationParameterSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxLocalisationParameterSearch.SearchParameters, consumer: Processor<in ParadoxLocalisationParameterUsageInfo>) {
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
@@ -28,7 +28,7 @@ class ParadoxLocalisationParameterSearcher : QueryExecutorBase<ParadoxLocalisati
             ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
             if (selectGameType(file) != gameType) return@p true //check game type at file level
 
-            val fileData = ParadoxExpressionIndex.INSTANCE.getFileData(file, project, ParadoxExpressionIndexId.LocalisationParameter)
+            val fileData = ParadoxMergedUsageIndex.INSTANCE.getFileData(file, project, ParadoxUsageIndexType.LocalisationParameter)
             if (fileData.isEmpty()) return@p true
             fileData.forEach f@{ info ->
                 if (localisationName != info.localisationName) return@f

@@ -23,7 +23,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.usageInfo.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.lang.Integer.*
@@ -106,7 +106,7 @@ tailrec fun selectFile(from: Any?): VirtualFile? {
         from is PsiFile -> selectFile(from.originalFile.virtualFile)
         from is StubBasedPsiElementBase<*> -> selectFile(from.containingFileStub?.psi ?: from.containingFile)
         from is PsiElement -> selectFile(from.containingFile)
-        from is ParadoxExpressionInfo -> selectFile(from.virtualFile)
+        from is ParadoxUsageInfo -> selectFile(from.virtualFile)
         else -> null
     }
 }
@@ -126,7 +126,7 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
             ?: selectGameType(from.containingFile)
         from is StubBasedPsiElementBase<*> -> selectGameType(from.containingFile)
         from is PsiElement -> selectGameType(from.parent)
-        from is ParadoxExpressionInfo -> selectGameType(from.virtualFile)
+        from is ParadoxUsageInfo -> selectGameType(from.virtualFile)
         else -> null
     }
 }
@@ -198,7 +198,7 @@ val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
     get() = ParadoxLocalisationManager.getInfo(this)
 
-val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueInfo?
+val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueUsageInfo?
     get() = ParadoxComplexEnumValueManager.getInfo(this)
 
 val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorInfo?

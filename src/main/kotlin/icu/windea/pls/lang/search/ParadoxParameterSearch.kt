@@ -4,18 +4,18 @@ import com.intellij.openapi.extensions.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.usageInfo.*
 
-class ParadoxParameterSearch : ExtensibleQueryFactory<ParadoxParameterInfo, ParadoxParameterSearch.SearchParameters>(EP_NAME) {
+class ParadoxParameterSearch : ExtensibleQueryFactory<ParadoxParameterUsageInfo, ParadoxParameterSearch.SearchParameters>(EP_NAME) {
     class SearchParameters(
         val name: String?,
         val contextKey: String,
-        override val selector: ChainedParadoxSelector<ParadoxParameterInfo>
-    ) : ParadoxSearchParameters<ParadoxParameterInfo>
+        override val selector: ChainedParadoxSelector<ParadoxParameterUsageInfo>
+    ) : ParadoxSearchParameters<ParadoxParameterUsageInfo>
 
     companion object {
         @JvmField
-        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxParameterInfo, SearchParameters>>("icu.windea.pls.search.parameterSearch")
+        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxParameterUsageInfo, SearchParameters>>("icu.windea.pls.search.parameterSearch")
         @JvmField
         val INSTANCE = ParadoxParameterSearch()
 
@@ -26,8 +26,8 @@ class ParadoxParameterSearch : ExtensibleQueryFactory<ParadoxParameterInfo, Para
         fun search(
             name: String,
             contextKey: String,
-            selector: ChainedParadoxSelector<ParadoxParameterInfo>
-        ): ParadoxQuery<ParadoxParameterInfo, SearchParameters> {
+            selector: ChainedParadoxSelector<ParadoxParameterUsageInfo>
+        ): ParadoxQuery<ParadoxParameterUsageInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(name, contextKey, selector))
         }
 
@@ -37,8 +37,8 @@ class ParadoxParameterSearch : ExtensibleQueryFactory<ParadoxParameterInfo, Para
         @JvmStatic
         fun search(
             contextKey: String,
-            selector: ChainedParadoxSelector<ParadoxParameterInfo>
-        ): ParadoxQuery<ParadoxParameterInfo, SearchParameters> {
+            selector: ChainedParadoxSelector<ParadoxParameterUsageInfo>
+        ): ParadoxQuery<ParadoxParameterUsageInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(null, contextKey, selector))
         }
     }

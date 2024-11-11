@@ -11,7 +11,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.expressionInfo.*
+import icu.windea.pls.model.usageInfo.*
 import java.util.*
 import javax.swing.*
 
@@ -26,7 +26,7 @@ class ParadoxComplexEnumValueElement(
     val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxFakePsiElement(parent) {
-    constructor(parent: PsiElement, info: ParadoxComplexEnumValueInfo, project: Project)
+    constructor(parent: PsiElement, info: ParadoxComplexEnumValueUsageInfo, project: Project)
         : this(parent, info.name, info.enumName, info.readWriteAccess, info.gameType, project)
 
     val searchScopeType: ParadoxSearchScopeType

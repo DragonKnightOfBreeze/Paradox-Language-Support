@@ -8,6 +8,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
+import com.intellij.util.indexing.*
 import com.intellij.util.io.*
 import java.io.*
 
@@ -53,6 +54,14 @@ val StubBasedPsiElementBase<*>.containingFileStub: PsiFileStub<*>?
         val stub = this.greenStub ?: return null
         return stub.containingFileStub
     }
+
+inline fun <reified T : StubIndexExtension<*, *>> findStubIndex(): T {
+    return StubIndexExtension.EP_NAME.findExtensionOrFail(T::class.java)
+}
+
+inline fun <reified T : FileBasedIndexExtension<*, *>> findFileBasedIndex(): T {
+    return FileBasedIndexExtension.EXTENSION_POINT_NAME.findExtensionOrFail(T::class.java)
+}
 
 inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElements(
     key: K,
