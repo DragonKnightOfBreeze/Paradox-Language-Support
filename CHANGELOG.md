@@ -2,14 +2,14 @@
 
 ## 1.3.24
 
-* [ ] 更新CWT规则文件以适配Stellaris 3.14.1
+* [X] 更新CWT规则文件以适配Stellaris 3.14.1
 * [X] #93 允许在内联脚本文件中引用其使用位置的本地封装变量
 * [X] #95 合并规则表达式时兼容`alias_name[x]`和`alias_keys_field[x]`
 * [X] 其他优化与BUG修复
 
 ***
 
-* [ ] Update CWT configs files to match Stellaris 3.14.1
+* [X] Update CWT configs files to match Stellaris 3.14.1
 * [X] #93 Allow to use local scripted variables from usage locations in inline script files
 * [X] #95 When merge config expressions, support merge `alias_name[x]` and `alias_keys_field[x]`
 * [X] Other optimizations and bug fixes
