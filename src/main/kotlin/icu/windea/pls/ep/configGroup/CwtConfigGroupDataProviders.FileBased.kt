@@ -28,7 +28,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         fileProviders.all f@{ fileProvider ->
             fileProvider.processFiles(configGroup) p@{ filePath, file ->
                 if (filePath.startsWith("internal/")) {
-                    if (fileProvider.isBuiltIn()) return@p true //不允许覆盖内部规则文件
+                    if (!fileProvider.isBuiltIn()) return@p true //不允许覆盖内部规则文件
                     allInternalFiles.putIfAbsent(filePath, file)
                     return@p true
                 }
