@@ -11,7 +11,7 @@
 
 * [ ] Update CWT configs files to match Stellaris 3.14.1
 * [X] #93 Allow to use local scripted variables from usage locations in inline script files
-* [X] #95 When merge config expressions, 
+* [X] #95 When merge config expressions, support merge `alias_name[x]` and `alias_keys_field[x]`
 * [ ] Optimize plugin performance
 
 ## 1.3.23
