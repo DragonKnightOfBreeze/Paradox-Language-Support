@@ -92,7 +92,7 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   }
 
   @Override
-  @Nullable
+  @NotNull
   public ParadoxType getType() {
     return ParadoxScriptPsiImplUtil.getType(this);
   }

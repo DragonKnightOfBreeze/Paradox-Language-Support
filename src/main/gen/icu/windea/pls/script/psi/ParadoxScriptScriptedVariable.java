@@ -41,7 +41,7 @@ public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement
   @Nullable
   String getUnquotedValue();
 
-  @Nullable
+  @NotNull
   ParadoxType getType();
 
   boolean isEquivalentTo(@NotNull PsiElement another);

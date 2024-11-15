@@ -1,0 +1,6 @@
+test = {
+    OR = {
+        has_ethic = ethic_[[fanatic]fanatic_]pacifist
+        has_ethic = ethic_[[fanatic]fanatic_]materialist
+    }
+}

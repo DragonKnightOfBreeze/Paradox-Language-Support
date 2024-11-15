@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.25
+
+* [X] 兼容脚本文件中的内联模版表达式（如，`has_ethic = ethic_[[fanatic]fanatic_]pacifist`）
+
+***
+
+* [X] Compatible with inline template expressions in script files (e.g., `has_ethic = ethic_[[fanatic]fanatic_]pacifist`)
+
 ## 1.3.24
 
 * [X] 更新CWT规则文件以适配Stellaris 3.14.1

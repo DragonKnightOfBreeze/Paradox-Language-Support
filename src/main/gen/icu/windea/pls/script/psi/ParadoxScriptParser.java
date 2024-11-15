@@ -440,9 +440,16 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // inline_parameter_condition_snippet
+  // <<processSnippet>> inline_parameter_condition_snippet <<postProcessSnippet>>
   static boolean inline_parameter_condition_item(PsiBuilder b, int l) {
-    return inline_parameter_condition_snippet(b, l + 1);
+    if (!recursion_guard_(b, l, "inline_parameter_condition_item")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = processSnippet(b, l + 1);
+    r = r && inline_parameter_condition_snippet(b, l + 1);
+    r = r && postProcessSnippet(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */

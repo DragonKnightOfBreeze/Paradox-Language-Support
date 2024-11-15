@@ -241,7 +241,7 @@ inline_parameter_condition ::= LEFT_BRACKET <<processInlineParameterCondition>> 
   pin=2
   methods=[getIcon getConditionExpression getPresentationText]
 }
-private inline_parameter_condition_item ::= inline_parameter_condition_snippet
+private inline_parameter_condition_item ::= <<processSnippet>> inline_parameter_condition_snippet <<postProcessSnippet>>
 private inline_parameter_condition_snippet ::= inline_parameter_condition_item_part (<<processTemplate>> inline_parameter_condition_item_part) *
 private inline_parameter_condition_item_part ::= SNIPPET_TOKEN | parameter | inline_parameter_condition
 
