@@ -21,4 +21,6 @@ object ParadoxLocalisationTokenSets {
 
     @JvmField
     val EXPRESSION_TOKENS = TokenSet.create(COMMAND_TEXT_TOKEN, CONCEPT_NAME_TOKEN)
+    @JvmField
+    val STRING_TOKEN_OR_QUOTE = TokenSet.create(STRING_TOKEN, LEFT_QUOTE, RIGHT_QUOTE)
 }

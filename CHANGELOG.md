@@ -3,10 +3,12 @@
 ## 1.3.25
 
 * [X] 兼容脚本文件中的内联模版表达式（如，`has_ethic = ethic_[[fanatic]fanatic_]pacifist`）
+* [X] #96
 
 ***
 
 * [X] Compatible with inline template expressions in script files (e.g., `has_ethic = ethic_[[fanatic]fanatic_]pacifist`)
+* [X] #96
 
 ## 1.3.24
 

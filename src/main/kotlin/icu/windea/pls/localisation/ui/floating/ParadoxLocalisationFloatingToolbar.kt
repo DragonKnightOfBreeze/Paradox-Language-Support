@@ -96,7 +96,7 @@ class ParadoxLocalisationFloatingToolbar(
             }
         }
         toolbar.targetComponent = targetComponent
-        toolbar.setReservePlaceAutoPopupIcon(false)
+        toolbar.isReservePlaceAutoPopupIcon = false
         return toolbar
     }
 
@@ -135,15 +135,17 @@ class ParadoxLocalisationFloatingToolbar(
         if (editor.document.getLineNumber(selectionStart) != editor.document.getLineNumber(selectionEnd)) return false
         val elementAtStart = file.findElementAt(selectionStart)
         val elementAtEnd = file.findElementAt(selectionEnd - 1)
-        //开始位置和结束位置的左边或右边是STRING_TOKEN，向上能查找到同一个ParadoxLocalisationPropertyValue，且选择文本的范围在引号之间
+        //要求开始位置和结束位置的左边或右边是STRING_TOKEN/LEFT_QUOTE/RIGHT_QUOTE，向上能查找到同一个ParadoxLocalisationPropertyValue
         if (elementAtStart == null || elementAtEnd == null) return false
-        if (elementAtStart.elementType != STRING_TOKEN && elementAtStart.prevLeaf(false).elementType != STRING_TOKEN) return false
-        if (elementAtEnd.elementType != STRING_TOKEN && elementAtEnd.nextLeaf(false).elementType != STRING_TOKEN) return false
+        val stringTokenOrQuote = ParadoxLocalisationTokenSets.STRING_TOKEN_OR_QUOTE
+        if (elementAtStart.elementType !in stringTokenOrQuote && elementAtStart.prevLeaf(false).elementType !in stringTokenOrQuote) return false
+        if (elementAtEnd.elementType !in stringTokenOrQuote && elementAtEnd.nextLeaf(false).elementType !in stringTokenOrQuote) return false
         val propertyValueAtStart = elementAtStart.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
         val propertyValueAtEnd = elementAtEnd.parentOfType<ParadoxLocalisationPropertyValue>() ?: return false
         if (propertyValueAtStart !== propertyValueAtEnd) return false
         val propertyValue = propertyValueAtStart
         val textRange = propertyValue.textRange
+        //要求选择文本的范围在引号之间
         val start = if (propertyValue.firstChild.elementType == LEFT_QUOTE) textRange.startOffset + 1 else textRange.startOffset
         val end = if (propertyValue.lastChild.elementType == RIGHT_QUOTE) textRange.endOffset - 1 else textRange.endOffset
         return selectionStart >= start && selectionEnd <= end
