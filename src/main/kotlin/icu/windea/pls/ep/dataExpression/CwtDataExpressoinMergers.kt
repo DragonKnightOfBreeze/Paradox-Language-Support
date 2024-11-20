@@ -21,6 +21,7 @@ class DefaultCwtDataExpressionMerger : CwtDataExpressionMerger {
         return mergeExpressionStringTo(e1, e2, configGroup) ?: mergeExpressionStringTo(e2, e1, configGroup)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun mergeExpressionStringTo(e1: CwtDataExpression, e2: CwtDataExpression, configGroup: CwtConfigGroup): String? {
         when {
             e1.type == Types.Any -> {

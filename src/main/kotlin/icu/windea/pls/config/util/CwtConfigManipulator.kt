@@ -171,7 +171,24 @@ object CwtConfigManipulator {
                 return emptyList()
             }
         }
-
+        
+        if(configs.all { it is CwtValueConfig } && otherConfigs.all { it is CwtValueConfig }) {
+            val c1 = when {
+                configs.size == 1 -> configs.single()
+                otherConfigs.size == 1 -> otherConfigs.single()
+                else -> null
+            }?.castOrNull<CwtValueConfig>()
+            val cs2 = when {
+                configs.size == 1 -> otherConfigs
+                otherConfigs.size == 1 -> configs
+                else -> null
+            }?.castOrNull<List<CwtValueConfig>>()
+            if(c1 != null && cs2.isNotNullOrEmpty()) {
+                val mergedConfigs = cs2.mapNotNull { c2 -> mergeValueConfig(c1, c2) }
+                return mergedConfigs
+            }
+        }
+        
         val m1 = configs.associateBy { getDistinctKey(it) }
         val m2 = otherConfigs.associateBy { getDistinctKey(it) }
         val sameKeys = m1.keys intersect m2.keys
