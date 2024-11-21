@@ -21,7 +21,7 @@ interface ParadoxScriptExpressionMatcher {
      * @param configExpression CWT规则表达式。
      * @param config 上下文CWT规则。
      * @param configGroup 规则分组。
-     * @return 匹配结果，类型必须为[ParadoxExpressionMatcher.Result]或者[Boolean]，否则视为不匹配。
+     * @return 匹配结果，
      * @see ParadoxExpressionMatcher
      * @see ParadoxExpressionMatcher.Result
      */
