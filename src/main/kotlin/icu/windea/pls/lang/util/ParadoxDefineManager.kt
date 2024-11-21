@@ -15,6 +15,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.data.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.lang.invoke.*
 
