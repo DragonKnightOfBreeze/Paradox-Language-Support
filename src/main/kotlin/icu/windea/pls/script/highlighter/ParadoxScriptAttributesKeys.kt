@@ -37,11 +37,11 @@ object ParadoxScriptAttributesKeys {
     @JvmField
     val PROPERTY_KEY_KEY = createTextAttributesKey("PARADOX_SCRIPT.PROPERTY_KEY", INSTANCE_FIELD)
     @JvmField
-    val COLOR_KEY = createTextAttributesKey("PARADOX_SCRIPT.COLOR", KEYWORD) //HTML > Tag name
-    @JvmField
     val NUMBER_KEY = createTextAttributesKey("PARADOX_SCRIPT.NUMBER", NUMBER)
     @JvmField
     val STRING_KEY = createTextAttributesKey("PARADOX_SCRIPT.STRING", STRING)
+    @JvmField
+    val COLOR_KEY = createTextAttributesKey("PARADOX_SCRIPT.COLOR", KEYWORD) //HTML > Tag name
     @JvmField
     val VALID_ESCAPE_KEY = createTextAttributesKey("Paradox_Script.VALID_ESCAPE", VALID_STRING_ESCAPE)
     @JvmField
@@ -67,6 +67,15 @@ object ParadoxScriptAttributesKeys {
     val COMPLEX_ENUM_VALUE_KEY = createTextAttributesKey("PARADOX_SCRIPT.COMPLEX_ENUM_VALUE", INSTANCE_FIELD) //dotted line #707D95, italic
 
     @JvmField
+    val MODIFIER_KEY = createTextAttributesKey("PARADOX_SCRIPT.MODIFIER", CUSTOM_KEYWORD2_ATTRIBUTES)
+    @JvmField
+    val TRIGGER_KEY = createTextAttributesKey("PARADOX_SCRIPT.TRIGGER", CUSTOM_KEYWORD3_ATTRIBUTES)
+    @JvmField
+    val EFFECT_KEY = createTextAttributesKey("PARADOX_SCRIPT.EFFECT", CUSTOM_KEYWORD4_ATTRIBUTES)
+    @JvmField
+    val TAG_KEY = createTextAttributesKey("PARADOX_SCRIPT.TAG", METADATA)
+
+    @JvmField
     val SYSTEM_SCOPE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SYSTEM_SCOPE", STATIC_METHOD)
     @JvmField
     val SCOPE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SCOPE", INSTANCE_METHOD)
@@ -88,13 +97,10 @@ object ParadoxScriptAttributesKeys {
     val DATABASE_OBJECT_TYPE_KEY = createTextAttributesKey("PARADOX_SCRIPT.DATABASE_OBJECT_TYPE", KEYWORD)
     @JvmField
     val DATABASE_OBJECT_KEY = createTextAttributesKey("PARADOX_SCRIPT.DATABASE_OBJECT", DEFINITION_REFERENCE_KEY)
-
     @JvmField
-    val MODIFIER_KEY = createTextAttributesKey("PARADOX_SCRIPT.MODIFIER", CUSTOM_KEYWORD2_ATTRIBUTES)
+    val DEFINE_PREFIX_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINE_PREFIX", KEYWORD)
     @JvmField
-    val TRIGGER_KEY = createTextAttributesKey("PARADOX_SCRIPT.TRIGGER", CUSTOM_KEYWORD3_ATTRIBUTES)
+    val DEFINE_NAMESPACE_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINE_NAMESPACE", INSTANCE_METHOD)
     @JvmField
-    val EFFECT_KEY = createTextAttributesKey("PARADOX_SCRIPT.EFFECT", CUSTOM_KEYWORD4_ATTRIBUTES)
-    @JvmField
-    val TAG_KEY = createTextAttributesKey("PARADOX_SCRIPT.TAG", METADATA)
+    val DEFINE_VARIABLE_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINE_VARIABLE", GLOBAL_VARIABLE)
 }

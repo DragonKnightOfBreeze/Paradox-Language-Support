@@ -62,24 +62,26 @@ class ParadoxDatabaseObjectExpression private constructor(
                 }
                 if (colonIndex1 == -1) return@r1
                 run r2@{
-                    val node = ParadoxMarkerNode(":", TextRange.from(colonIndex1, 1), configGroup)
+                    val nodeTextRange = TextRange.from(offset + colonIndex1, 1)
+                    val node = ParadoxMarkerNode(":", nodeTextRange, configGroup)
                     nodes += node
                 }
                 val colonIndex2 = expressionString.indexOf(':', colonIndex1 + 1)
                 run r2@{
                     val nodeText = if (colonIndex2 == -1) expressionString.substring(colonIndex1 + 1) else expressionString.substring(colonIndex1 + 1, colonIndex2)
-                    val nodeTextRange = TextRange.from(colonIndex1 + 1, nodeText.length)
+                    val nodeTextRange = TextRange.from(offset + colonIndex1 + 1, nodeText.length)
                     val node = ParadoxDatabaseObjectNode.resolve(nodeText, nodeTextRange, configGroup, expression, isBase = true)
                     nodes += node
                 }
                 if (colonIndex2 == -1) return@r1
                 run r2@{
-                    val node = ParadoxMarkerNode(":", TextRange.from(colonIndex2, 1), configGroup)
+                    val nodeTextRange = TextRange.from(offset + colonIndex2, 1)
+                    val node = ParadoxMarkerNode(":", nodeTextRange, configGroup)
                     nodes += node
                 }
                 run r2@{
                     val nodeText = expressionString.substring(colonIndex2 + 1)
-                    val nodeTextRange = TextRange.from(colonIndex2 + 1, nodeText.length)
+                    val nodeTextRange = TextRange.from(offset + colonIndex2 + 1, nodeText.length)
                     val node = ParadoxDatabaseObjectNode.resolve(nodeText, nodeTextRange, configGroup, expression, isBase = false)
                     nodes += node
                 }
@@ -89,13 +91,7 @@ class ParadoxDatabaseObjectExpression private constructor(
 
         private fun ParadoxDatabaseObjectExpression.validate(): List<ParadoxComplexExpressionError> {
             val errors = mutableListOf<ParadoxComplexExpressionError>()
-            var malformed = false
-            for (node in nodes) {
-                if (node.text.isEmpty()) {
-                    malformed = true
-                    break
-                }
-            }
+            val malformed = (nodes.size != 3 && nodes.size != 5) ||  nodes.any { it.text.isEmpty() }
             if (malformed) {
                 errors += ParadoxComplexExpressionErrors.malformedDatabaseObjectExpression(rangeInExpression, text)
             }

@@ -2,8 +2,9 @@ package icu.windea.pls.lang.expression.complex
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 
@@ -13,10 +14,9 @@ import icu.windea.pls.lang.expression.complex.nodes.*
  * 语法：
  *
  * ```bnf
- * database_object_expression ::= database_object_type ":" database_object (":" swapped_database_object)?
- * database_object_type ::= TOKEN //predefined by CWT Config (see database_object_types.cwt)
- * database_object ::= TOKEN //predefined by CWT Config (see database_object_types.cwt)
- * swapped_database_object ::= TOKEN //predefined by CWT Config (see database_object_types.cwt)
+ * define_reference_expression ::= "define:" define_namespace "|" define_variable
+ * define_namespace ::= TOKEN //level 1 property keys in .txt files in common/defines
+ * define_variable ::= TOKEN //level 2 property keys in .txt files in common/defines
  * ```
  *
  * 示例：
@@ -30,7 +30,12 @@ class ParadoxDefineReferenceExpression private constructor(
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpression.Base() {
     override val errors by lazy { validate() }
-    
+
+    val namespaceNode: ParadoxDefineNamespaceNode?
+        get() = nodes.getOrNull(1)?.cast()
+    val variableNode: ParadoxDefineVariableNode?
+        get() = nodes.getOrNull(3)?.cast()
+
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression? {
             if (expressionString.isEmpty()) return null
@@ -39,19 +44,46 @@ class ParadoxDefineReferenceExpression private constructor(
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val expression = ParadoxDefineReferenceExpression(expressionString, range, nodes, configGroup)
-            ////TODO 1.3.25
+            run r1@{
+                val offset = range.startOffset
+                val prefix = "define:"
+                val prefixLength = expressionString.length
+                if (expressionString.startsWith(prefix)) {
+                    val node = ParadoxDefinePrefixNode(prefix, TextRange.from(offset, prefix.length), configGroup)
+                    nodes += node
+                } else {
+                    if (!incomplete) return null
+                    val nodeTextRange = TextRange.from(offset, expressionString.length)
+                    val node = ParadoxErrorTokenNode(expressionString, nodeTextRange, configGroup)
+                    nodes += node
+                    return@r1
+                }
+                val pipeIndex = expressionString.indexOf('|', prefix.length)
+                run r2@{
+                    val nodeText = if (pipeIndex == -1) expressionString.substring(prefixLength) else expressionString.substring(prefixLength, pipeIndex)
+                    val nodeTextRange = TextRange.from(offset + prefixLength, nodeText.length)
+                    val node = ParadoxDefineNamespaceNode.resolve(nodeText, nodeTextRange, configGroup, expression)
+                    nodes += node
+                }
+                if (pipeIndex == -1) return@r1
+                run r2@{
+                    val nodeTextRange = TextRange.from(offset + pipeIndex, 1)
+                    val node = ParadoxMarkerNode("|", nodeTextRange, configGroup)
+                    nodes += node
+                }
+                run r2@{
+                    val nodeText = expressionString.substring(pipeIndex + 1)
+                    val nodeTextRange = TextRange.from(offset + pipeIndex + 1, nodeText.length)
+                    val node = ParadoxDefineVariableNode.resolve(nodeText, nodeTextRange, configGroup, expression)
+                    nodes += node
+                }
+            }
             return expression
         }
 
         private fun ParadoxDefineReferenceExpression.validate(): List<ParadoxComplexExpressionError> {
             val errors = mutableListOf<ParadoxComplexExpressionError>()
-            var malformed = false
-            for (node in nodes) {
-                if (node.text.isEmpty()) {
-                    malformed = true
-                    break
-                }
-            }
+            val malformed = nodes.size != 4 || nodes.any { it.text.isEmpty() }
             if (malformed) {
                 errors += ParadoxComplexExpressionErrors.malformedDefineReferenceExpression(rangeInExpression, text)
             }

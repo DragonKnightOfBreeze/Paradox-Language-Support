@@ -29,8 +29,10 @@ object ParadoxComplexExpressionErrorCodes {
     const val UnresolvedScriptValue = 203
     const val UnresolvedDatabaseObjectType = 204
     const val UnresolvedDatabaseObject = 205
-    const val UnresolvedCommandScope = 206
-    const val UnresolvedCommandField = 207
+    const val UnresolvedDefineNamespace = 206
+    const val UnresolvedDefineVariable = 207
+    const val UnresolvedCommandScope = 250
+    const val UnresolvedCommandField = 251
 
     const val MissingScopeLink = 300
     const val MissingValueField = 301
@@ -137,6 +139,16 @@ object ParadoxComplexExpressionErrors {
         return ParadoxComplexExpressionError(code, rangeInExpression, description)
     }
 
+    fun unresolvedDefineNamespace(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.UnresolvedDefineNamespace
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.unresolvedDefineNamespace", value))
+    }
+
+    fun unresolvedDefineVariable(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.UnresolvedDefineVariable
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.unresolvedDefineVariable", value))
+    }
+    
     fun unresolvedCommandScope(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
         val code = ParadoxComplexExpressionErrorCodes.UnresolvedCommandScope
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.unresolvedCommandScope", value))

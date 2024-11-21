@@ -1058,8 +1058,32 @@ object ParadoxCompletionManager {
         val offset = context.offsetInParent!! - context.expressionOffset
         if (offset < 0) return //unexpected
         for (node in expression.nodes) {
+            if (node is ParadoxErrorNode && expression.nodes.size == 1) {
+                completeDefinePrefix(context, result)
+                break
+            }
             val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
-            //TODO 1.3.25
+            if (node is ParadoxDefineNamespaceNode) {
+                if (inRange) {
+                    val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+                    val resultToUse = result.withPrefixMatcher(keywordToUse)
+                    context.keyword = keywordToUse
+                    context.keywordOffset = node.rangeInExpression.startOffset
+                    context.node = node
+                    completeDefineNamespace(context, resultToUse)
+                    break
+                }
+            } else if (node is ParadoxDefineVariableNode) {
+                if (inRange) {
+                    val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+                    val resultToUse = result.withPrefixMatcher(keywordToUse)
+                    context.keyword = keywordToUse
+                    context.keywordOffset = node.rangeInExpression.startOffset
+                    context.node = node
+                    completeDefineVariable(context, resultToUse)
+                    break
+                }
+            }
         }
 
         context.keyword = keyword
@@ -1542,6 +1566,18 @@ object ParadoxCompletionManager {
         context.expressionTailText = oldTailText
     }
 
+    fun completeDefinePrefix(context: ProcessingContext, result: CompletionResultSet) {
+        //TODO 1.3.25
+    }
+    
+    fun completeDefineNamespace(context: ProcessingContext, result: CompletionResultSet) {
+        //TODO 1.3.25
+    }
+
+    fun completeDefineVariable(context: ProcessingContext, result: CompletionResultSet) {
+        //TODO 1.3.25
+    }
+    
     fun completeDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val config = context.config
