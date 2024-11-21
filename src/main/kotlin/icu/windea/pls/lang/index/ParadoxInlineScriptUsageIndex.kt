@@ -66,7 +66,7 @@ class ParadoxInlineScriptUsageIndex : ParadoxFileBasedIndex<ParadoxInlineScriptU
             
             private fun visitProperty(element: ParadoxScriptProperty): Boolean {
                 val info = ParadoxInlineScriptManager.getUsageInfo(element) ?: return false
-                val compactInfo = fileData.getOrPut(info.expression) { ParadoxInlineScriptUsageInfo.Compact(info.expression, sortedSetOf(), info.gameType) }
+                val compactInfo = fileData.getOrPut(info.expression) { ParadoxInlineScriptUsageInfo.Compact(info.expression, sortedSetOf()) }
                 compactInfo.elementOffsets.castOrNull<MutableSet<Int>>()?.let { it += info.elementOffset }
                 return true
             }
@@ -76,14 +76,12 @@ class ParadoxInlineScriptUsageIndex : ParadoxFileBasedIndex<ParadoxInlineScriptU
     override fun writeData(storage: DataOutput, value: ParadoxInlineScriptUsageInfo.Compact) {
         storage.writeUTFFast(value.expression)
         storage.writeList(value.elementOffsets) { storage.writeIntFast(it) }
-        storage.writeByte(value.gameType.optimizeValue())
     }
 
     override fun readData(storage: DataInput): ParadoxInlineScriptUsageInfo.Compact {
         val expression = storage.readUTFFast()
         val elementOffsets = storage.readList { storage.readIntFast() }
-        val gameType = storage.readByte().deoptimizeValue<ParadoxGameType>()
-        return ParadoxInlineScriptUsageInfo.Compact(expression, elementOffsets, gameType)
+        return ParadoxInlineScriptUsageInfo.Compact(expression, elementOffsets)
     }
 
     override fun filterFile(file: VirtualFile): Boolean {

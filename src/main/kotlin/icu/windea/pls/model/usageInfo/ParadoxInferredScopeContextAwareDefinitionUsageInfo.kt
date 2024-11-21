@@ -7,7 +7,6 @@ data class ParadoxInferredScopeContextAwareDefinitionUsageInfo(
     val definitionName: String,
     val typeExpression: String,
     override val elementOffset: Int,
-    override val gameType: ParadoxGameType,
 ) : ParadoxUsageInfo {
     @Volatile
     override var virtualFile: VirtualFile? = null

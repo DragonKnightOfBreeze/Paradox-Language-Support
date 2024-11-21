@@ -9,7 +9,6 @@ data class ParadoxParameterUsageInfo(
     val contextKey: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
     override val elementOffset: Int,
-    override val gameType: ParadoxGameType,
 ) : ParadoxUsageInfo {
     @Volatile
     override var virtualFile: VirtualFile? = null

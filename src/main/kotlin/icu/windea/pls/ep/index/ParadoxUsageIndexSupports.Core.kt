@@ -30,19 +30,19 @@ class ParadoxComplexEnumValueUsageIndexSupport : ParadoxUsageIndexSupport<Parado
         return value.sortedWith(compressComparator)
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxComplexEnumValueUsageInfo, previousInfo: ParadoxComplexEnumValueUsageInfo?, gameType: ParadoxGameType) {
+    override fun writeData(storage: DataOutput, info: ParadoxComplexEnumValueUsageInfo, previousInfo: ParadoxComplexEnumValueUsageInfo?) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.enumName }, { storage.writeUTFFast(it) })
         storage.writeByte(info.readWriteAccess.optimizeValue())
         storage.writeIntFast(info.elementOffset)
     }
 
-    override fun readData(storage: DataInput, previousInfo: ParadoxComplexEnumValueUsageInfo?, gameType: ParadoxGameType): ParadoxComplexEnumValueUsageInfo {
+    override fun readData(storage: DataInput, previousInfo: ParadoxComplexEnumValueUsageInfo?): ParadoxComplexEnumValueUsageInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
         val enumName = storage.readOrReadFrom(previousInfo, { it.enumName }, { storage.readUTFFast() })
         val readWriteAccess = storage.readByte().deoptimizeValue<ReadWriteAccessDetector.Access>()
         val elementOffset = storage.readIntFast()
-        return ParadoxComplexEnumValueUsageInfo(name, enumName, readWriteAccess, elementOffset, gameType)
+        return ParadoxComplexEnumValueUsageInfo(name, enumName, readWriteAccess, elementOffset)
     }
 }
 
@@ -61,7 +61,7 @@ class ParadoxDynamicValueUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxDyn
             val resolved = reference.resolve()
             if (resolved !is ParadoxDynamicValueElement) return@f
             resolved.dynamicValueTypes.forEach { dynamicValueType ->
-                val info = ParadoxDynamicValueUsageInfo(resolved.name, dynamicValueType, resolved.readWriteAccess, resolved.parent.startOffset, resolved.gameType)
+                val info = ParadoxDynamicValueUsageInfo(resolved.name, dynamicValueType, resolved.readWriteAccess, resolved.parent.startOffset)
                 addToFileData(info, fileData)
             }
         }
@@ -75,7 +75,7 @@ class ParadoxDynamicValueUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxDyn
             val resolved = reference.resolve()
             if (resolved !is ParadoxDynamicValueElement) return@f
             resolved.dynamicValueTypes.forEach { dynamicValueType ->
-                val info = ParadoxDynamicValueUsageInfo(resolved.name, dynamicValueType, resolved.readWriteAccess, resolved.parent.startOffset, resolved.gameType)
+                val info = ParadoxDynamicValueUsageInfo(resolved.name, dynamicValueType, resolved.readWriteAccess, resolved.parent.startOffset)
                 addToFileData(info, fileData)
             }
         }
@@ -85,19 +85,19 @@ class ParadoxDynamicValueUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxDyn
         return value.sortedWith(compressComparator)
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxDynamicValueUsageInfo, previousInfo: ParadoxDynamicValueUsageInfo?, gameType: ParadoxGameType) {
+    override fun writeData(storage: DataOutput, info: ParadoxDynamicValueUsageInfo, previousInfo: ParadoxDynamicValueUsageInfo?) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.dynamicValueType }, { storage.writeUTFFast(it) })
         storage.writeByte(info.readWriteAccess.optimizeValue())
         storage.writeIntFast(info.elementOffset)
     }
 
-    override fun readData(storage: DataInput, previousInfo: ParadoxDynamicValueUsageInfo?, gameType: ParadoxGameType): ParadoxDynamicValueUsageInfo {
+    override fun readData(storage: DataInput, previousInfo: ParadoxDynamicValueUsageInfo?): ParadoxDynamicValueUsageInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
         val dynamicValueType = storage.readOrReadFrom(previousInfo, { it.dynamicValueType }, { storage.readUTFFast() })
         val readWriteAccess = storage.readByte().deoptimizeValue<ReadWriteAccessDetector.Access>()
         val elementOffset = storage.readIntFast()
-        return ParadoxDynamicValueUsageInfo(name, dynamicValueType, readWriteAccess, elementOffset, gameType)
+        return ParadoxDynamicValueUsageInfo(name, dynamicValueType, readWriteAccess, elementOffset)
     }
 }
 
@@ -116,7 +116,7 @@ class ParadoxParameterUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxParame
             val resolved = reference.resolve()
             if (resolved !is ParadoxParameterElement) return@f
             //note that element.startOffset may not equal to actual parameterElement.startOffset (e.g. in a script value expression)
-            val info = ParadoxParameterUsageInfo(resolved.name, resolved.contextKey, resolved.readWriteAccess, element.startOffset, resolved.gameType)
+            val info = ParadoxParameterUsageInfo(resolved.name, resolved.contextKey, resolved.readWriteAccess, element.startOffset)
             addToFileData(info, fileData)
         }
     }
@@ -125,19 +125,19 @@ class ParadoxParameterUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxParame
         return value.sortedWith(compressComparator)
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxParameterUsageInfo, previousInfo: ParadoxParameterUsageInfo?, gameType: ParadoxGameType) {
+    override fun writeData(storage: DataOutput, info: ParadoxParameterUsageInfo, previousInfo: ParadoxParameterUsageInfo?) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.contextKey }, { storage.writeUTFFast(it) })
         storage.writeByte(info.readWriteAccess.optimizeValue())
         storage.writeIntFast(info.elementOffset)
     }
 
-    override fun readData(storage: DataInput, previousInfo: ParadoxParameterUsageInfo?, gameType: ParadoxGameType): ParadoxParameterUsageInfo {
+    override fun readData(storage: DataInput, previousInfo: ParadoxParameterUsageInfo?): ParadoxParameterUsageInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
         val contextKey = storage.readOrReadFrom(previousInfo, { it.contextKey }, { storage.readUTFFast() })
         val readWriteAccess = storage.readByte().deoptimizeValue<ReadWriteAccessDetector.Access>()
         val elementOffset = storage.readIntFast()
-        return ParadoxParameterUsageInfo(name, contextKey, readWriteAccess, elementOffset, gameType)
+        return ParadoxParameterUsageInfo(name, contextKey, readWriteAccess, elementOffset)
     }
 }
 
@@ -155,7 +155,7 @@ class ParadoxLocalisationParameterUsageIndexSupport : ParadoxUsageIndexSupport<P
             if (!constraint.canResolve(reference)) return@f
             val resolved = reference.resolve()
             if (resolved !is ParadoxLocalisationParameterElement) return@f
-            val info = ParadoxLocalisationParameterUsageInfo(resolved.name, resolved.localisationName, element.startOffset, resolved.gameType)
+            val info = ParadoxLocalisationParameterUsageInfo(resolved.name, resolved.localisationName, element.startOffset)
             addToFileData(info, fileData)
         }
     }
@@ -164,16 +164,16 @@ class ParadoxLocalisationParameterUsageIndexSupport : ParadoxUsageIndexSupport<P
         return value.sortedWith(compressComparator)
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxLocalisationParameterUsageInfo, previousInfo: ParadoxLocalisationParameterUsageInfo?, gameType: ParadoxGameType) {
+    override fun writeData(storage: DataOutput, info: ParadoxLocalisationParameterUsageInfo, previousInfo: ParadoxLocalisationParameterUsageInfo?) {
         storage.writeOrWriteFrom(info, previousInfo, { it.name }, { storage.writeUTFFast(it) })
         storage.writeOrWriteFrom(info, previousInfo, { it.localisationName }, { storage.writeUTFFast(it) })
         storage.writeIntFast(info.elementOffset)
     }
 
-    override fun readData(storage: DataInput, previousInfo: ParadoxLocalisationParameterUsageInfo?, gameType: ParadoxGameType): ParadoxLocalisationParameterUsageInfo {
+    override fun readData(storage: DataInput, previousInfo: ParadoxLocalisationParameterUsageInfo?): ParadoxLocalisationParameterUsageInfo {
         val name = storage.readOrReadFrom(previousInfo, { it.name }, { storage.readUTFFast() })
         val localisationName = storage.readOrReadFrom(previousInfo, { it.localisationName }, { storage.readUTFFast() })
         val elementOffset = storage.readIntFast()
-        return ParadoxLocalisationParameterUsageInfo(name, localisationName, elementOffset, gameType)
+        return ParadoxLocalisationParameterUsageInfo(name, localisationName, elementOffset)
     }
 }

@@ -8,7 +8,6 @@ data class ParadoxEventInOnActionUsageInfo(
     val typeExpression: String,
     val containingOnActionName: String,
     override val elementOffset: Int,
-    override val gameType: ParadoxGameType,
 ) : ParadoxUsageInfo {
     @Volatile
     override var virtualFile: VirtualFile? = null

@@ -153,11 +153,9 @@ class ParadoxMergedUsageIndex : ParadoxFileBasedIndex<List<ParadoxUsageInfo>>() 
             ?.castOrNull<ParadoxUsageIndexSupport<ParadoxUsageInfo>>()
             ?: throw UnsupportedOperationException()
         storage.writeByte(support.id())
-        val gameType = value.first().gameType
-        storage.writeByte(gameType.optimizeValue())
         var previousInfo: ParadoxUsageInfo? = null
         value.forEach { info ->
-            support.writeData(storage, info, previousInfo, gameType)
+            support.writeData(storage, info, previousInfo)
             previousInfo = info
         }
     }
@@ -170,10 +168,9 @@ class ParadoxMergedUsageIndex : ParadoxFileBasedIndex<List<ParadoxUsageInfo>>() 
         val support = ParadoxUsageIndexSupport.EP_NAME.extensionList.find { it.id() == id }
             ?.castOrNull<ParadoxUsageIndexSupport<ParadoxUsageInfo>>()
             ?: throw UnsupportedOperationException()
-        val gameType = storage.readByte().deoptimizeValue<ParadoxGameType>()
         var previousInfo: ParadoxUsageInfo? = null
         return MutableList(size) {
-            support.readData(storage, previousInfo, gameType)
+            support.readData(storage, previousInfo)
                 .also { previousInfo = it }
         }
     }

@@ -22,9 +22,9 @@ interface ParadoxUsageIndexSupport<T : ParadoxUsageInfo> {
 
     fun compressData(value: List<T>): List<T> = value
 
-    fun writeData(storage: DataOutput, info: T, previousInfo: T?, gameType: ParadoxGameType)
+    fun writeData(storage: DataOutput, info: T, previousInfo: T?)
 
-    fun readData(storage: DataInput, previousInfo: T?, gameType: ParadoxGameType): T
+    fun readData(storage: DataInput, previousInfo: T?): T
 
     fun <T : ParadoxUsageInfo> addToFileData(info: T, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
         val list = fileData.getOrPut(id().toString()) { mutableListOf() } as MutableList
