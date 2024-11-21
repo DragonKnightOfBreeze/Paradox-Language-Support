@@ -1,4 +1,4 @@
-package icu.windea.pls.cwt.highlighter
+package icu.windea.pls.cwt.editor
 
 import com.intellij.lexer.*
 import com.intellij.lexer.StringLiteralLexer.*

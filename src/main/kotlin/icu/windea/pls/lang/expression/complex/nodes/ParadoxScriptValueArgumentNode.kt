@@ -8,7 +8,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.highlighter.*
+import icu.windea.pls.script.editor.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptValueArgumentNode(

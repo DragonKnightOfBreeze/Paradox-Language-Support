@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.highlighter
+package icu.windea.pls.localisation.editor
 
 import com.intellij.lexer.*
 import com.intellij.openapi.editor.colors.*

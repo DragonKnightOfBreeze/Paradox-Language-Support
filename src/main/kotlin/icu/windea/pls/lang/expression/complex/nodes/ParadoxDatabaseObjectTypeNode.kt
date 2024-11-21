@@ -14,8 +14,8 @@ import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.highlighter.*
-import icu.windea.pls.script.highlighter.*
+import icu.windea.pls.localisation.editor.*
+import icu.windea.pls.script.editor.*
 
 class ParadoxDatabaseObjectTypeNode(
     override val text: String,

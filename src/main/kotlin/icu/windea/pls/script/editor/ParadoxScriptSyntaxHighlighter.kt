@@ -1,4 +1,4 @@
-package icu.windea.pls.script.highlighter
+package icu.windea.pls.script.editor
 
 import com.intellij.lexer.*
 import com.intellij.lexer.StringLiteralLexer.*

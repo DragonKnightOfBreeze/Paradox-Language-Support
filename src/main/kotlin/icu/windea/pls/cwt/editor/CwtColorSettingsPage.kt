@@ -5,7 +5,6 @@ import com.intellij.openapi.options.colors.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.*
-import icu.windea.pls.cwt.highlighter.*
 
 class CwtColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(

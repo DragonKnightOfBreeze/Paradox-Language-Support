@@ -7,7 +7,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.script.highlighter.*
+import icu.windea.pls.script.editor.*
 
 class ParadoxScopeLinkValueNode(
     override val text: String,

@@ -4,18 +4,13 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
-import icu.windea.pls.lang.expression.complex.nodes.ParadoxDatabaseObjectTypeNode.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.highlighter.*
+import icu.windea.pls.script.editor.*
 
 class ParadoxDefineNamespaceNode(
     override val text: String,

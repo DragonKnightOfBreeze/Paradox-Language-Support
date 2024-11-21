@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package icu.windea.pls.localisation.highlighter
+package icu.windea.pls.localisation.editor
 
 import com.google.common.cache.*
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
@@ -10,7 +10,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import com.intellij.openapi.editor.markup.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.highlighter.*
+import icu.windea.pls.script.editor.*
 import java.awt.*
 
 object ParadoxLocalisationAttributesKeys {

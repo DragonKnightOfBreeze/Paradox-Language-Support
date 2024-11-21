@@ -12,7 +12,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.highlighter.*
+import icu.windea.pls.script.editor.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptValueNode(

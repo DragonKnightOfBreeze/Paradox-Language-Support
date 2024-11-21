@@ -5,7 +5,6 @@ import com.intellij.openapi.options.colors.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.highlighter.*
 
 class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(

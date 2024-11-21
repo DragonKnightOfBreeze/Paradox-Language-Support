@@ -5,7 +5,7 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.script.highlighter.*
+import icu.windea.pls.script.editor.*
 
 class ParadoxParameterizedScopeLinkNode(
     override val text: String,

@@ -5,7 +5,6 @@ import com.intellij.openapi.options.colors.*
 import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.script.*
-import icu.windea.pls.script.highlighter.*
 
 class ParadoxScriptColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(

@@ -31,7 +31,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.ResultValue
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.highlighter.*
+import icu.windea.pls.script.editor.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.isNullOrEmpty
 

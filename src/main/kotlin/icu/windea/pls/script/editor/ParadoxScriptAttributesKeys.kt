@@ -1,11 +1,11 @@
-package icu.windea.pls.script.highlighter
+package icu.windea.pls.script.editor
 
 import com.intellij.ide.highlighter.custom.CustomHighlighterColors.*
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
-import icu.windea.pls.localisation.highlighter.*
+import icu.windea.pls.localisation.editor.*
 
 object ParadoxScriptAttributesKeys {
     @JvmField

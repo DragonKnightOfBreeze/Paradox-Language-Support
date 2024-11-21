@@ -5,8 +5,8 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.highlighter.*
-import icu.windea.pls.script.highlighter.*
+import icu.windea.pls.localisation.editor.*
+import icu.windea.pls.script.editor.*
 
 class ParadoxOperatorNode(
     override val text: String,

@@ -1,4 +1,4 @@
-package icu.windea.pls.cwt.highlighter
+package icu.windea.pls.cwt.editor
 
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*

@@ -13,7 +13,7 @@ import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.highlighter.ParadoxScriptAttributesKeys as Keys
+import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys as Keys
 
 /**
  * 脚本文件的注解器。

@@ -11,7 +11,7 @@ import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.localisation.highlighter.ParadoxLocalisationAttributesKeys as Keys
+import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys as Keys
 
 @Suppress("UNUSED_PARAMETER")
 class ParadoxLocalisationAnnotator : Annotator {

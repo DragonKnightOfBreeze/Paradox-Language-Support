@@ -5,7 +5,7 @@
     <lang.parserDefinition language="CWT" implementationClass="icu.windea.pls.cwt.psi.CwtParserDefinition"/>
 
     <spellchecker.support language="CWT" implementationClass="icu.windea.pls.cwt.CwtSpellchecker"/>
-    <lang.syntaxHighlighterFactory language="CWT" implementationClass="icu.windea.pls.cwt.highlighter.CwtSyntaxHighlighterFactory"/>
+    <lang.syntaxHighlighterFactory language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.cwt.editor.CwtColorSettingsPage"/>
     <lang.braceMatcher language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtBraceMatcher"/>
     <lang.foldingBuilder language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtFoldingBuilder"/>

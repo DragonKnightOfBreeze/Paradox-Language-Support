@@ -12,7 +12,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.highlighter.*
+import icu.windea.pls.script.editor.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
 

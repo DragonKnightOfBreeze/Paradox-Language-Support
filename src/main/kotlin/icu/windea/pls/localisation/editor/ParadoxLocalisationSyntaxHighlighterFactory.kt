@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.highlighter
+package icu.windea.pls.localisation.editor
 
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*

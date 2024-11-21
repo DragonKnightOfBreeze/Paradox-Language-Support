@@ -15,8 +15,8 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.highlighter.*
-import icu.windea.pls.script.highlighter.*
+import icu.windea.pls.localisation.editor.*
+import icu.windea.pls.script.editor.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxDatabaseObjectNode(
