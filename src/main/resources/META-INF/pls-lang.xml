@@ -97,8 +97,8 @@
     
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFilePathIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFileLocaleIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptUsageIndex"/>
-    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxMergedUsageIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxMergedInfoIndex"/>
+    <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxInlineScriptUsageInfoIndex"/>
     
     <searchScopesProvider implementation="icu.windea.pls.lang.search.ParadoxSearchScopeProvider"/>
     <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxScriptedVariableImplementationsSearch"/>

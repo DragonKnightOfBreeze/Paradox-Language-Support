@@ -3,12 +3,14 @@ package icu.windea.pls.lang.util
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -57,5 +59,18 @@ object ParadoxDefineManager {
         return CachedValuesManager.getCachedValue(file, PlsKeys.cachedDefineValues) {
             CachedValueProvider.Result.create(mutableMapOf(), file)
         }
+    }
+
+    fun isDefineFile(file: VirtualFile): Boolean {
+        val fileInfo = file.fileInfo ?: return false
+        val filePath = fileInfo.path.path
+        val configExpression = definePathExpression
+        return ParadoxPathReferenceExpressionSupport.get(configExpression)?.extract(configExpression, null, filePath)?.orNull() != null
+    }
+
+    fun isDefineFile(file: PsiFile): Boolean {
+        if (file !is ParadoxScriptFile) return false
+        val vFile = selectFile(file) ?: return false
+        return isDefineFile(vFile)
     }
 }

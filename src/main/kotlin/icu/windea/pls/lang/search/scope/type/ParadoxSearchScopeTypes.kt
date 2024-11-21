@@ -9,7 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.usageInfo.*
+import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxSearchScopeTypes {
@@ -58,7 +58,7 @@ object ParadoxSearchScopeTypes {
         override fun findRoot(project: Project, context: Any?): PsiElement? {
             return when {
                 context is PsiElement -> context.findParentDefinition()
-                context is ParadoxUsageInfo -> context.virtualFile?.toPsiFile(project)?.findElementAt(context.elementOffset)?.findParentDefinition()
+                context is ParadoxIndexInfo -> context.virtualFile?.toPsiFile(project)?.findElementAt(context.elementOffset)?.findParentDefinition()
                 else -> null
             }
         }

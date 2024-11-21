@@ -6,22 +6,22 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.usageInfo.*
+import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-class ParadoxInferredScopeContextAwareDefinitionUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxInferredScopeContextAwareDefinitionUsageInfo> {
+class ParadoxInferredScopeContextAwareDefinitionUsageInfoIndexSupport : ParadoxInfoIndexSupport<ParadoxInferredScopeContextAwareDefinitionUsageInfo> {
     object Constants {
         val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect")
     }
 
     private val compressComparator = compareBy<ParadoxInferredScopeContextAwareDefinitionUsageInfo> { it.typeExpression }
 
-    override fun id() = ParadoxUsageIndexType.InferredScopeContextAwareDefinition.id
+    override fun id() = ParadoxInfoIndexType.InferredScopeContextAwareDefinitionUsage.id
 
     override fun type() = ParadoxInferredScopeContextAwareDefinitionUsageInfo::class.java
 
-    override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
+    override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         run {
             val expression = element.value
             if (expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
@@ -55,14 +55,14 @@ class ParadoxInferredScopeContextAwareDefinitionUsageIndexSupport : ParadoxUsage
     }
 }
 
-class ParadoxEventInOnActionUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxEventInOnActionUsageInfo> {
+class ParadoxEventInOnActionUsageInfoIndexSupport : ParadoxInfoIndexSupport<ParadoxEventInOnActionUsageInfo> {
     private val compressComparator = compareBy<ParadoxEventInOnActionUsageInfo> { it.containingOnActionName }
 
-    override fun id() = ParadoxUsageIndexType.EventInOnAction.id
+    override fun id() = ParadoxInfoIndexType.EventInOnActionUsage.id
 
     override fun type() = ParadoxEventInOnActionUsageInfo::class.java
 
-    override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
+    override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         run {
             if (definitionInfo.type != "on_action") return
             val expression = element.value
@@ -100,14 +100,14 @@ class ParadoxEventInOnActionUsageIndexSupport : ParadoxUsageIndexSupport<Paradox
     }
 }
 
-class ParadoxEventInEventUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxEventInEventUsageInfo> {
+class ParadoxEventInEventUsageInfoIndexSupport : ParadoxInfoIndexSupport<ParadoxEventInEventUsageInfo> {
     private val compressComparator = compareBy<ParadoxEventInEventUsageInfo> { it.containingEventName }
 
-    override fun id() = ParadoxUsageIndexType.EventInEvent.id
+    override fun id() = ParadoxInfoIndexType.EventInEventUsage.id
 
     override fun type() = ParadoxEventInEventUsageInfo::class.java
 
-    override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
+    override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         run {
             if (definitionInfo.type != "event") return
             val expression = element.value
@@ -166,14 +166,14 @@ class ParadoxEventInEventUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxEve
     }
 }
 
-class ParadoxOnActionInEventUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxOnActionInEventUsageInfo> {
+class ParadoxOnActionInEventUsageInfoIndexSupport : ParadoxInfoIndexSupport<ParadoxOnActionInEventUsageInfo> {
     private val compressComparator = compareBy<ParadoxOnActionInEventUsageInfo> { it.containingEventName }
 
-    override fun id() = ParadoxUsageIndexType.OnActionInEvent.id
+    override fun id() = ParadoxInfoIndexType.OnActionInEventUsage.id
 
     override fun type() = ParadoxOnActionInEventUsageInfo::class.java
 
-    override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
+    override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         run {
             if (definitionInfo.type != "event") return
             val expression = element.value

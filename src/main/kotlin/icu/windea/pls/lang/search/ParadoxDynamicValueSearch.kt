@@ -4,7 +4,7 @@ import com.intellij.openapi.extensions.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.model.usageInfo.*
+import icu.windea.pls.model.indexInfo.*
 
 /**
  * 动态值的查询。（不涉及CWT规则文件中预定义的值）

@@ -8,18 +8,18 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
-import icu.windea.pls.model.usageInfo.*
+import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-class ParadoxComplexEnumValueUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxComplexEnumValueUsageInfo> {
+class ParadoxComplexEnumValueUsageInfoIndexSupport : ParadoxInfoIndexSupport<ParadoxComplexEnumValueUsageInfo> {
     private val compressComparator = compareBy<ParadoxComplexEnumValueUsageInfo>({ it.enumName }, { it.name })
 
-    override fun id() = ParadoxUsageIndexType.ComplexEnumValue.id
+    override fun id() = ParadoxInfoIndexType.ComplexEnumValueUsage.id
 
     override fun type() = ParadoxComplexEnumValueUsageInfo::class.java
 
-    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
+    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         if (element !is ParadoxScriptStringExpressionElement) return
         if (!element.isExpression()) return
         val info = ParadoxComplexEnumValueManager.getInfo(element) ?: return
@@ -46,14 +46,14 @@ class ParadoxComplexEnumValueUsageIndexSupport : ParadoxUsageIndexSupport<Parado
     }
 }
 
-class ParadoxDynamicValueUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxDynamicValueUsageInfo> {
+class ParadoxDynamicValueUsageInfoIndexSupport : ParadoxInfoIndexSupport<ParadoxDynamicValueUsageInfo> {
     private val compressComparator = compareBy<ParadoxDynamicValueUsageInfo>({ it.dynamicValueType }, { it.name })
 
-    override fun id() = ParadoxUsageIndexType.DynamicValue.id
+    override fun id() = ParadoxInfoIndexType.DynamicValueUsage.id
 
     override fun type() = ParadoxDynamicValueUsageInfo::class.java
 
-    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
+    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.DynamicValue
         if (!constraint.canResolveReference(element)) return
         element.references.forEach f@{ reference ->
@@ -67,7 +67,7 @@ class ParadoxDynamicValueUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxDyn
         }
     }
 
-    override fun indexLocalisationCommandText(element: ParadoxLocalisationCommandText, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
+    override fun indexLocalisationCommandText(element: ParadoxLocalisationCommandText, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.DynamicValue
         if (!constraint.canResolveReference(element)) return
         element.references.forEach f@{ reference ->
@@ -101,14 +101,14 @@ class ParadoxDynamicValueUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxDyn
     }
 }
 
-class ParadoxParameterUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxParameterUsageInfo> {
+class ParadoxParameterUsageInfoIndexSupport : ParadoxInfoIndexSupport<ParadoxParameterUsageInfo> {
     private val compressComparator = compareBy<ParadoxParameterUsageInfo>({ it.contextKey }, { it.name })
 
-    override fun id() = ParadoxUsageIndexType.Parameter.id
+    override fun id() = ParadoxInfoIndexType.ParameterUsage.id
 
     override fun type() = ParadoxParameterUsageInfo::class.java
 
-    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
+    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.Parameter
         if (!constraint.canResolveReference(element)) return
         element.references.forEach f@{ reference ->
@@ -141,14 +141,14 @@ class ParadoxParameterUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxParame
     }
 }
 
-class ParadoxLocalisationParameterUsageIndexSupport : ParadoxUsageIndexSupport<ParadoxLocalisationParameterUsageInfo> {
+class ParadoxLocalisationParameterUsageInfoIndexSupport : ParadoxInfoIndexSupport<ParadoxLocalisationParameterUsageInfo> {
     private val compressComparator = compareBy<ParadoxLocalisationParameterUsageInfo>({ it.localisationName }, { it.name })
 
-    override fun id() = ParadoxUsageIndexType.LocalisationParameter.id
+    override fun id() = ParadoxInfoIndexType.LocalisationParameterUsage.id
 
     override fun type() = ParadoxLocalisationParameterUsageInfo::class.java
 
-    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
+    override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.LocalisationParameter
         if (!constraint.canResolveReference(element)) return
         element.references.forEach f@{ reference ->

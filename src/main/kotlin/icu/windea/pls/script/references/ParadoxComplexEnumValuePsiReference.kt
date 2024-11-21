@@ -5,7 +5,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.model.usageInfo.*
+import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxComplexEnumValuePsiReference(

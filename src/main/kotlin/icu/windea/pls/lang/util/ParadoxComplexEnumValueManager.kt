@@ -12,13 +12,13 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.model.usageInfo.*
+import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxComplexEnumValueManager {
     fun getInfo(element: ParadoxComplexEnumValueElement): ParadoxComplexEnumValueUsageInfo {
-        return ParadoxComplexEnumValueUsageInfo(element.name, element.enumName, element.readWriteAccess, element.startOffset, element.gameType)
+        return ParadoxComplexEnumValueUsageInfo(element.name, element.enumName, element.readWriteAccess, element.startOffset)
     }
 
     fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueUsageInfo? {
@@ -50,7 +50,7 @@ object ParadoxComplexEnumValueManager {
                     val enumName = complexEnumConfig.name
                     val readWriteAccess = Access.Write //write (declaration)
                     val elementOffset = element.startOffset
-                    return ParadoxComplexEnumValueUsageInfo(name, enumName, readWriteAccess, elementOffset, gameType)
+                    return ParadoxComplexEnumValueUsageInfo(name, enumName, readWriteAccess, elementOffset)
                 }
             }
         }

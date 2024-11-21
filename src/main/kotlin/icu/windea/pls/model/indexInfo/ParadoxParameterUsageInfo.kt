@@ -1,15 +1,14 @@
-package icu.windea.pls.model.usageInfo
+package icu.windea.pls.model.indexInfo
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.model.*
 
-data class ParadoxComplexEnumValueUsageInfo(
+data class ParadoxParameterUsageInfo(
     val name: String,
-    val enumName: String,
+    val contextKey: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
     override val elementOffset: Int,
-) : ParadoxUsageInfo {
+) : ParadoxIndexInfo {
     @Volatile
     override var virtualFile: VirtualFile? = null
 }

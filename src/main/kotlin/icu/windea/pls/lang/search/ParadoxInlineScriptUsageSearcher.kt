@@ -8,7 +8,7 @@ import com.intellij.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.usageInfo.*
+import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.*
 
 /**
@@ -29,7 +29,7 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
             ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
             if (selectGameType(file) != gameType) return@p true //check game type at file level
 
-            val fileData = ParadoxInlineScriptUsageIndex.INSTANCE.getFileData(file, project)
+            val fileData = ParadoxInlineScriptUsageInfoIndex.INSTANCE.getFileData(file, project)
             if (fileData.isEmpty()) return@p true
             if(expression.isNotEmpty()) {
                 val compactInfo = fileData[expression] ?: return@p true

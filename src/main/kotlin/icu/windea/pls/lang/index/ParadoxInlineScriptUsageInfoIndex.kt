@@ -1,52 +1,26 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.psi.search.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.usageInfo.*
+import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.*
 import java.io.*
 
 /**
  * 用于索引内联脚本的使用信息。
  */
-class ParadoxInlineScriptUsageIndex : ParadoxFileBasedIndex<ParadoxInlineScriptUsageInfo.Compact>() {
+class ParadoxInlineScriptUsageInfoIndex : ParadoxFileBasedIndex<ParadoxInlineScriptUsageInfo.Compact>() {
     @Suppress("CompanionObjectInExtension")
     companion object {
-        val INSTANCE by lazy { findFileBasedIndex<ParadoxInlineScriptUsageIndex>() }
-        val NAME = ID.create<String, ParadoxInlineScriptUsageInfo.Compact>("paradox.inlineScript.usage.index")
+        val INSTANCE by lazy { findFileBasedIndex<ParadoxInlineScriptUsageInfoIndex>() }
+        val NAME = ID.create<String, ParadoxInlineScriptUsageInfo.Compact>("paradox.inlineScriptUsage.info.index")
 
-        private const val VERSION = 55 //1.3.24
-
-        private val markerKey = createKey<Boolean>("paradox.expression.index.marker")
-
-        fun processQuery(
-            project: Project,
-            gameType: ParadoxGameType,
-            scope: GlobalSearchScope,
-            processor: (file: VirtualFile, fileData: Map<String, ParadoxInlineScriptUsageInfo.Compact>) -> Boolean
-        ): Boolean {
-            ProgressManager.checkCanceled()
-            if (SearchScope.isEmptyScope(scope)) return true
-
-            return FileTypeIndex.processFiles(ParadoxScriptFileType, p@{ file ->
-                ProgressManager.checkCanceled()
-                if (selectGameType(file) != gameType) return@p true //check game type at file level
-
-                val fileData = INSTANCE.getFileData(file, project)
-                if (fileData.isEmpty()) return@p true
-                processor(file, fileData)
-            }, scope)
-        }
+        private const val VERSION = 56 //1.3.25
     }
 
     override fun getName() = NAME

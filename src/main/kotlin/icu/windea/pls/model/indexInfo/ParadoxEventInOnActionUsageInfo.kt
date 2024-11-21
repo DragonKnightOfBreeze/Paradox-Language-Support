@@ -1,14 +1,13 @@
-package icu.windea.pls.model.usageInfo
+package icu.windea.pls.model.indexInfo
 
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.model.*
 
 data class ParadoxEventInOnActionUsageInfo(
     val eventName: String,
     val typeExpression: String,
     val containingOnActionName: String,
     override val elementOffset: Int,
-) : ParadoxUsageInfo {
+) : ParadoxIndexInfo {
     @Volatile
     override var virtualFile: VirtualFile? = null
 }

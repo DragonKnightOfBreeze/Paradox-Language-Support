@@ -10,7 +10,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
-import icu.windea.pls.model.usageInfo.*
+import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.*
 
 /**
@@ -33,7 +33,7 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueUsageIn
             ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
             if (selectGameType(file) != gameType) return@p true //check game type at file level
 
-            val fileData = ParadoxMergedUsageIndex.INSTANCE.getFileData(file, project, ParadoxUsageIndexType.DynamicValue)
+            val fileData = ParadoxMergedInfoIndex.INSTANCE.getFileData(file, project, ParadoxInfoIndexType.DynamicValueUsage)
             if (fileData.isEmpty()) return@p true
             fileData.forEach f@{ info ->
                 if (info.dynamicValueType !in dynamicValueTypes) return@f

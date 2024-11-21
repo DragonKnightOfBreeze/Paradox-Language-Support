@@ -15,30 +15,30 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.usageInfo.*
+import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
 /**
- * 用于索引各种使用信息。
+ * 用于索引各种信息。
  * 
  * 兼容需要内联的情况（此时使用懒加载的索引）。
  *
- * @see ParadoxUsageInfo
- * @see ParadoxUsageIndexSupport
+ * @see ParadoxIndexInfo
+ * @see ParadoxInfoIndexSupport
  */
-class ParadoxMergedUsageIndex : ParadoxFileBasedIndex<List<ParadoxUsageInfo>>() {
+class ParadoxMergedInfoIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
     @Suppress("CompanionObjectInExtension")
     companion object {
-        val INSTANCE by lazy { findFileBasedIndex<ParadoxMergedUsageIndex>() }
-        val NAME = ID.create<String, List<ParadoxUsageInfo>>("paradox.merged.usage.index")
+        val INSTANCE by lazy { findFileBasedIndex<ParadoxMergedInfoIndex>() }
+        val NAME = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.info.index")
 
-        private const val VERSION = 55 //1.3.24
+        private const val VERSION = 56 //1.3.25
 
-        private val markerKey = createKey<Boolean>("paradox.merged.usage.index.marker")
+        private val markerKey = createKey<Boolean>("paradox.merged.info.index.marker")
 
-        fun <ID : ParadoxUsageIndexType<T>, T : ParadoxUsageInfo> processQuery(
+        fun <ID : ParadoxInfoIndexType<T>, T : ParadoxIndexInfo> processQuery(
             fileType: LanguageFileType,
             id: ID,
             project: Project,
@@ -64,7 +64,7 @@ class ParadoxMergedUsageIndex : ParadoxFileBasedIndex<List<ParadoxUsageInfo>>() 
 
     override fun getVersion() = VERSION
 
-    override fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
+    override fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         when (file) {
             is ParadoxScriptFile -> indexDataForScriptFile(file, fileData)
             is ParadoxLocalisationFile -> indexDataForLocalisationFile(file, fileData)
@@ -72,8 +72,8 @@ class ParadoxMergedUsageIndex : ParadoxFileBasedIndex<List<ParadoxUsageInfo>>() 
         compressData(fileData)
     }
 
-    private fun indexDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
-        val extensionList = ParadoxUsageIndexSupport.EP_NAME.extensionList
+    private fun indexDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+        val extensionList = ParadoxInfoIndexSupport.EP_NAME.extensionList
         val definitionInfoStack = ArrayDeque<ParadoxDefinitionInfo>()
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -117,8 +117,8 @@ class ParadoxMergedUsageIndex : ParadoxFileBasedIndex<List<ParadoxUsageInfo>>() 
         })
     }
 
-    private fun indexDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
-        val extensionList = ParadoxUsageIndexSupport.EP_NAME.extensionList
+    private fun indexDataForLocalisationFile(file: ParadoxLocalisationFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
+        val extensionList = ParadoxInfoIndexSupport.EP_NAME.extensionList
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxLocalisationCommandText) {
@@ -131,44 +131,44 @@ class ParadoxMergedUsageIndex : ParadoxFileBasedIndex<List<ParadoxUsageInfo>>() 
         })
     }
 
-    private fun compressData(fileData: MutableMap<String, List<ParadoxUsageInfo>>) {
+    private fun compressData(fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         if (fileData.isEmpty()) return
-        val extensionList = ParadoxUsageIndexSupport.EP_NAME.extensionList
+        val extensionList = ParadoxInfoIndexSupport.EP_NAME.extensionList
         fileData.mapValues { (k, v) ->
             val id = k.toByte()
             val support = extensionList.find { it.id() == id }
-                ?.castOrNull<ParadoxUsageIndexSupport<ParadoxUsageInfo>>()
+                ?.castOrNull<ParadoxInfoIndexSupport<ParadoxIndexInfo>>()
                 ?: throw UnsupportedOperationException()
             support.compressData(v)
         }
     }
 
-    override fun writeData(storage: DataOutput, value: List<ParadoxUsageInfo>) {
+    override fun writeData(storage: DataOutput, value: List<ParadoxIndexInfo>) {
         val size = value.size
         storage.writeIntFast(size)
         if (value.isEmpty()) return
 
         val type = value.first().javaClass
-        val support = ParadoxUsageIndexSupport.EP_NAME.extensionList.find { it.type() == type }
-            ?.castOrNull<ParadoxUsageIndexSupport<ParadoxUsageInfo>>()
+        val support = ParadoxInfoIndexSupport.EP_NAME.extensionList.find { it.type() == type }
+            ?.castOrNull<ParadoxInfoIndexSupport<ParadoxIndexInfo>>()
             ?: throw UnsupportedOperationException()
         storage.writeByte(support.id())
-        var previousInfo: ParadoxUsageInfo? = null
+        var previousInfo: ParadoxIndexInfo? = null
         value.forEach { info ->
             support.writeData(storage, info, previousInfo)
             previousInfo = info
         }
     }
 
-    override fun readData(storage: DataInput): List<ParadoxUsageInfo> {
+    override fun readData(storage: DataInput): List<ParadoxIndexInfo> {
         val size = storage.readIntFast()
         if (size == 0) return emptyList()
 
         val id = storage.readByte()
-        val support = ParadoxUsageIndexSupport.EP_NAME.extensionList.find { it.id() == id }
-            ?.castOrNull<ParadoxUsageIndexSupport<ParadoxUsageInfo>>()
+        val support = ParadoxInfoIndexSupport.EP_NAME.extensionList.find { it.id() == id }
+            ?.castOrNull<ParadoxInfoIndexSupport<ParadoxIndexInfo>>()
             ?: throw UnsupportedOperationException()
-        var previousInfo: ParadoxUsageInfo? = null
+        var previousInfo: ParadoxIndexInfo? = null
         return MutableList(size) {
             support.readData(storage, previousInfo)
                 .also { previousInfo = it }
@@ -188,7 +188,7 @@ class ParadoxMergedUsageIndex : ParadoxFileBasedIndex<List<ParadoxUsageInfo>>() 
         return false
     }
 
-    fun <T : ParadoxUsageInfo> getFileData(file: VirtualFile, project: Project, id: ParadoxUsageIndexType<T>): List<T> {
+    fun <T : ParadoxIndexInfo> getFileData(file: VirtualFile, project: Project, id: ParadoxInfoIndexType<T>): List<T> {
         val allFileData = getFileData(file, project)
         return allFileData.get(id.id.toString())?.castOrNull<List<T>>().orEmpty()
     }

@@ -22,7 +22,7 @@ import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
-import icu.windea.pls.model.usageInfo.*
+import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxInlineScriptManager {
@@ -70,7 +70,7 @@ object ParadoxInlineScriptManager {
         val expression = getInlineScriptExpressionFromInlineConfig(element, inlineConfig) ?: return null
         if (expression.isParameterized()) return null
         val elementOffset = element.startOffset
-        return ParadoxInlineScriptUsageInfo(expression, elementOffset, gameType)
+        return ParadoxInlineScriptUsageInfo(expression, elementOffset)
     }
 
     fun getInlineScriptFile(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptFile? {
