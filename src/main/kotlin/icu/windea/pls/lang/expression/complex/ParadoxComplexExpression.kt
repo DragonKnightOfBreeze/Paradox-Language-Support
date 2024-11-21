@@ -36,7 +36,8 @@ interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
                 dataType in CwtDataTypeGroups.ScopeField -> ParadoxScopeFieldExpression.resolve(expressionString, range, configGroup)
                 dataType in CwtDataTypeGroups.ValueField -> ParadoxValueFieldExpression.resolve(expressionString, range, configGroup)
                 dataType in CwtDataTypeGroups.VariableField -> ParadoxVariableFieldExpression.resolve(expressionString, range, configGroup)
-                dataType in CwtDataTypeGroups.DatabaseObject -> ParadoxDatabaseObjectExpression.resolve(expressionString, range, configGroup)
+                dataType == CwtDataTypes.DatabaseObject -> ParadoxDatabaseObjectExpression.resolve(expressionString, range, configGroup)
+                dataType == CwtDataTypes.DefineReference -> ParadoxDefineReferenceExpression.resolve(expressionString, range, configGroup)
                 else -> null
             }
         }

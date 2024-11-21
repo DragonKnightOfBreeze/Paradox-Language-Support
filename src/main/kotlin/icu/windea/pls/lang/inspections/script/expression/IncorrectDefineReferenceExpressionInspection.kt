@@ -14,11 +14,11 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 不正确的[ParadoxDatabaseObjectExpression]的检查。
+ * 不正确的[ParadoxDefineReferenceExpression]的检查。
  *
  * @property reportsUnresolved 是否报告无法解析的引用。
  */
-class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
+class IncorrectDefineReferenceExpressionInspection : LocalInspectionTool() {
     @JvmField
     var reportsUnresolved = true
 
@@ -34,14 +34,14 @@ class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return
                 val dataType = config.expression.type
-                if (dataType != CwtDataTypes.DatabaseObject) return
+                if (dataType != CwtDataTypes.DefineReference) return
                 val value = element.value
                 val textRange = TextRange.create(0, value.length)
-                val expression = ParadoxDatabaseObjectExpression.resolve(value, textRange, configGroup) ?: return
+                val expression = ParadoxDefineReferenceExpression.resolve(value, textRange, configGroup) ?: return
                 handleErrors(element, expression)
             }
 
-            private fun handleErrors(element: ParadoxScriptStringExpressionElement, expression: ParadoxDatabaseObjectExpression) {
+            private fun handleErrors(element: ParadoxScriptStringExpressionElement, expression: ParadoxDefineReferenceExpression) {
                 expression.errors.forEach { error -> handleError(element, error) }
                 expression.processAllNodes { node -> node.getUnresolvedError(element)?.let { error -> handleError(element, error) }.let { true } }
             }

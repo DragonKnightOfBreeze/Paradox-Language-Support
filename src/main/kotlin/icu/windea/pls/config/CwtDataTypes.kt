@@ -44,7 +44,13 @@ object CwtDataTypes {
     val ParameterValue = CwtDataType("ParameterValue")
     val LocalisationParameter = CwtDataType("LocalisationParameter")
     val ShaderEffect = CwtDataType("ShaderEffect") //effects in .shader files
-    val DatabaseObject = CwtDataType("DatabaseObject")
+
+    /** @since 1.3.9 */
+    //@WithGameType(ParadoxGameType.Stellaris) //not limited yet
+    val DatabaseObject = CwtDataType("DatabaseObject") //e.g. civic:xxx:xxx
+    /** @since 1.3.25 */
+    //@WithGameType(ParadoxGameType.Vic3) //not limited yet
+    val DefineReference = CwtDataType("DefineReference") //e.g. define:NPortrait|GRACEFUL_AGING_START
 
     @WithGameType(ParadoxGameType.Stellaris)
     val StellarisNameFormat = CwtDataType("StellarisNameFormat")
@@ -52,7 +58,7 @@ object CwtDataTypes {
     val TechnologyWithLevel = CwtDataType("TechnologyWithLevel")
 
     val Constant = CwtDataType("Constant")
-    val TemplateExpression = CwtDataType("TemplateExpression") //e.g a_<b>_enum[c]_value[]
+    val TemplateExpression = CwtDataType("TemplateExpression") //e.g. a_<b>_enum[c]_value[]
     /** @since 1.3.6 */
     val AntExpression = CwtDataType("AntExpression") //e.g. /foo/bar?/*
     /** @since 1.3.6 */

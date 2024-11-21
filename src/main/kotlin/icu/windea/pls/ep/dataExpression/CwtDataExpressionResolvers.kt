@@ -220,6 +220,10 @@ class CoreCwtDataExpressionResolver : CwtDataExpressionResolver {
             return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.DatabaseObject)
         }
 
+        if (expressionString == "\$define_reference") {
+            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.DefineReference)
+        }
+
         expressionString.removeSurroundingOrNull("stellaris_name_format[", "]")?.let { v ->
             val value = v.orNull()
             return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.StellarisNameFormat, value)

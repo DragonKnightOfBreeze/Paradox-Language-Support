@@ -231,12 +231,7 @@ object ParadoxCompletionManager {
         return maxCount == null || actualCount < maxCount
     }
 
-    fun getExpressionTailText(
-        context: ProcessingContext,
-        config: CwtConfig<*>?,
-        withConfigExpression: Boolean = true,
-        withFileName: Boolean = true,
-    ): String {
+    fun getExpressionTailText(context: ProcessingContext, config: CwtConfig<*>?, withConfigExpression: Boolean = true, withFileName: Boolean = true): String {
         context.expressionTailText?.let { return it }
 
         return buildString {
@@ -1039,6 +1034,32 @@ object ParadoxCompletionManager {
                     break
                 }
             }
+        }
+
+        context.keyword = keyword
+        context.keywordOffset = keywordOffset
+        context.node = oldNode
+        context.isKey = isKey
+    }
+
+    fun completeDefineReferenceExpression(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val keyword = context.keyword
+        val keywordOffset = context.keywordOffset
+        val configGroup = context.configGroup ?: return
+
+        val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
+        val expression = markIncomplete { ParadoxDefineReferenceExpression.resolve(keyword, textRange, configGroup) } ?: return
+
+        val oldNode = context.node
+        val isKey = context.isKey
+        context.isKey = null
+
+        val offset = context.offsetInParent!! - context.expressionOffset
+        if (offset < 0) return //unexpected
+        for (node in expression.nodes) {
+            val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
+            //TODO 1.3.25
         }
 
         context.keyword = keyword

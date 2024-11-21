@@ -167,7 +167,7 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSuppo
 
 class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type in CwtDataTypeGroups.DatabaseObject
+        return config.expression?.type == CwtDataTypes.DatabaseObject
     }
 
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -189,5 +189,32 @@ class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptExpressionSupp
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         ParadoxCompletionManager.completeDatabaseObjectExpression(context, result)
+    }
+}
+
+class ParadoxScriptDefineReferenceExpressionSupport : ParadoxScriptExpressionSupport {
+    override fun supports(config: CwtConfig<*>): Boolean {
+        return config.expression?.type == CwtDataTypes.DefineReference
+    }
+
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+        if (element !is ParadoxScriptStringExpressionElement) return
+        val configGroup = config.configGroup
+        val range = TextRange.create(0, expressionText.length)
+        val defineReferenceExpression = ParadoxDefineReferenceExpression.resolve(expressionText, range, configGroup) ?: return
+        ParadoxExpressionManager.annotateComplexExpression(element, defineReferenceExpression, holder, config)
+    }
+
+    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+        if (element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
+        val configGroup = config.configGroup
+        val range = TextRange.create(0, expressionText.length)
+        val defineReferenceExpression = ParadoxDefineReferenceExpression.resolve(expressionText, range, configGroup)
+        if (defineReferenceExpression == null) return PsiReference.EMPTY_ARRAY
+        return defineReferenceExpression.getReferences(element)
+    }
+
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        ParadoxCompletionManager.completeDefineReferenceExpression(context, result)
     }
 }

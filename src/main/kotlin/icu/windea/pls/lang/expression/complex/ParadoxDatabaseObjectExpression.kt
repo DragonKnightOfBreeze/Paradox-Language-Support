@@ -9,7 +9,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 
 /**
- * 数据库对象表达式。对应的CWT规则类型为[CwtDataTypeGroups.DatabaseObject]。
+ * 数据库对象表达式。对应的CWT规则类型为[CwtDataTypes.DatabaseObject]。
  *
  * 也可以在本地化文件中作为概念名称使用。（如，`['civic:some_civic', ...]`）
  *
@@ -97,10 +97,9 @@ class ParadoxDatabaseObjectExpression private constructor(
                 }
             }
             if (malformed) {
-                errors += ParadoxComplexExpressionErrors.malformedGameObjectExpression(rangeInExpression, text)
+                errors += ParadoxComplexExpressionErrors.malformedDatabaseObjectExpression(rangeInExpression, text)
             }
             return errors.pinned { it.isMalformedError() }
         }
     }
 }
-

@@ -209,12 +209,20 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 val r = variableFieldExpression != null
                 Result.of(r)
             }
-            configExpression.type in CwtDataTypeGroups.DatabaseObject -> {
+            configExpression.type == CwtDataTypes.DatabaseObject -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 val textRange = TextRange.create(0, expression.text.length)
                 val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(expression.text, textRange, configGroup)
                 val r = databaseObjectExpression != null
+                Result.of(r)
+            }
+            configExpression.type == CwtDataTypes.DefineReference -> {
+                if (!expression.type.isStringType()) return Result.NotMatch
+                if (expression.isParameterized()) return Result.ParameterizedMatch
+                val textRange = TextRange.create(0, expression.text.length)
+                val defineReferenceExpression = ParadoxDefineReferenceExpression.resolve(expression.text, textRange, configGroup)
+                val r = defineReferenceExpression != null
                 Result.of(r)
             }
             configExpression.type == CwtDataTypes.Modifier -> {

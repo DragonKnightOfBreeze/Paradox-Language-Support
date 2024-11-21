@@ -19,8 +19,9 @@ object ParadoxComplexExpressionErrorCodes {
     const val MalformedVariableFieldExpression = 102
     const val MalformedDynamicValueExpression = 103
     const val MalformedScriptValueExpression = 104
-    const val MalformedGameObjectExpression = 105
-    const val MalformedLocalisationCommandExpression = 106
+    const val MalformedDatabaseObjectExpression = 105
+    const val MalformedDefineReferenceExpression = 106
+    const val MalformedLocalisationCommandExpression = 150
 
     const val UnresolvedScopeLink = 200
     const val UnresolvedValueField = 201
@@ -85,9 +86,14 @@ object ParadoxComplexExpressionErrors {
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedScriptValueExpression", text))
     }
 
-    fun malformedGameObjectExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MalformedGameObjectExpression
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedGameObjectExpression", text))
+    fun malformedDatabaseObjectExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.MalformedDatabaseObjectExpression
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedDatabaseObjectExpression", text))
+    }
+
+    fun malformedDefineReferenceExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.MalformedDefineReferenceExpression
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedDefineReferenceExpression", text))
     }
 
     fun malformedLocalisationCommandExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {

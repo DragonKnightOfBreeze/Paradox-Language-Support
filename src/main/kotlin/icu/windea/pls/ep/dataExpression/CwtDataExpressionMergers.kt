@@ -2,7 +2,6 @@ package icu.windea.pls.ep.dataExpression
 
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.config.CwtDataTypeGroups as TypeGroups
 import icu.windea.pls.config.CwtDataTypes as Types
 
