@@ -70,22 +70,22 @@ fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.distinctByName()
 }
 
 @JvmName("distinctByName_complexEnumValue")
-fun <S : ChainedParadoxSelector<ParadoxComplexEnumValueUsageInfo>> S.distinctByName(): S {
+fun <S : ChainedParadoxSelector<ParadoxComplexEnumValueIndexInfo>> S.distinctByName(): S {
     return distinctBy { it.name }
 }
 
 @JvmName("distinctByName_dynamicValue")
-fun <S : ChainedParadoxSelector<ParadoxDynamicValueUsageInfo>> S.distinctByName(): S {
+fun <S : ChainedParadoxSelector<ParadoxDynamicValueIndexInfo>> S.distinctByName(): S {
     return distinctBy { it.name }
 }
 
 @JvmName("distinctByName_parameter")
-fun <S : ChainedParadoxSelector<ParadoxParameterUsageInfo>> S.distinctByName(): S {
+fun <S : ChainedParadoxSelector<ParadoxParameterIndexInfo>> S.distinctByName(): S {
     return distinctBy { it.name }
 }
 
 @JvmName("distinctByName_localisationParameter")
-fun <S : ChainedParadoxSelector<ParadoxLocalisationParameterUsageInfo>> S.distinctByName(): S {
+fun <S : ChainedParadoxSelector<ParadoxLocalisationParameterIndexInfo>> S.distinctByName(): S {
     return distinctBy { it.name }
 }
 

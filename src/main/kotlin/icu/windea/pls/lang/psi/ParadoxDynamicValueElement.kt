@@ -26,7 +26,7 @@ class ParadoxDynamicValueElement(
     constructor(parent: PsiElement, name: String, dynamicValueType: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)
         : this(parent, name, setOf(dynamicValueType), readWriteAccess, gameType, project)
 
-    constructor(parent: PsiElement, info: ParadoxDynamicValueUsageInfo, project: Project)
+    constructor(parent: PsiElement, info: ParadoxDynamicValueIndexInfo, project: Project)
         : this(parent, info.name, info.dynamicValueType, info.readWriteAccess, info.gameType, project)
 
     val dynamicValueType = when {

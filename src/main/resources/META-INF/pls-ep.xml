@@ -23,7 +23,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.localisationExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.pathReferenceExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.infoIndexSupport" interface="icu.windea.pls.ep.index.ParadoxInfoIndexSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.infoIndexSupport" interface="icu.windea.pls.ep.index.ParadoxIndexInfoSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionInheritSupport" interface="icu.windea.pls.ep.inherit.ParadoxDefinitionInheritSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inlineSupport" interface="icu.windea.pls.ep.inline.ParadoxInlineSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modifierSupport" interface="icu.windea.pls.ep.modifier.ParadoxModifierSupport" dynamic="true"/>
@@ -160,15 +160,15 @@
     <pathReferenceExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxFilePathReferenceExpressionSupport"/>
     <pathReferenceExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxFileNameReferenceExpressionSupport"/>
 
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxComplexEnumValueUsageInfoIndexSupport"/>
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxDynamicValueUsageInfoIndexSupport"/>
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterUsageInfoIndexSupport"/>
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxLocalisationParameterUsageInfoIndexSupport"/>
+    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxComplexEnumValueIndexInfoSupport"/>
+    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxDynamicValueIndexInfoSupport"/>
+    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterIndexInfoSupport"/>
+    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxLocalisationParameterIndexInfoSupport"/>
     
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionUsageInfoIndexSupport"/>
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInOnActionUsageInfoIndexSupport"/>
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInEventUsageInfoIndexSupport"/>
-    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxOnActionInEventUsageInfoIndexSupport"/>
+    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport"/>
+    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInOnActionIndexInfoSupport"/>
+    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInEventIndexInfoSupport"/>
+    <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxOnActionInEventIndexInfoSupport"/>
     
     <definitionInheritSupport implementation="icu.windea.pls.ep.inherit.ParadoxSwappedTypeInheritSupport"/>
     <definitionInheritSupport implementation="icu.windea.pls.ep.inherit.StellarisEventInheritSupport"/>

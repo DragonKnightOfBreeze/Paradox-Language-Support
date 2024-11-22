@@ -21,14 +21,14 @@ fun ChainedParadoxSelectorHolder.localisation() = ChainedParadoxSelector<Paradox
 
 fun ChainedParadoxSelectorHolder.file() = ChainedParadoxSelector<VirtualFile>(project, context)
 
-fun ChainedParadoxSelectorHolder.complexEnumValue() = ChainedParadoxSelector<ParadoxComplexEnumValueUsageInfo>(project, context)
+fun ChainedParadoxSelectorHolder.complexEnumValue() = ChainedParadoxSelector<ParadoxComplexEnumValueIndexInfo>(project, context)
 
-fun ChainedParadoxSelectorHolder.dynamicValue() = ChainedParadoxSelector<ParadoxDynamicValueUsageInfo>(project, context)
+fun ChainedParadoxSelectorHolder.dynamicValue() = ChainedParadoxSelector<ParadoxDynamicValueIndexInfo>(project, context)
 
-fun ChainedParadoxSelectorHolder.define() = ChainedParadoxSelector<ParadoxDefineInfo.Compact>(project, context)
+fun ChainedParadoxSelectorHolder.define() = ChainedParadoxSelector<ParadoxDefineIndexInfo.Compact>(project, context)
 
-fun ChainedParadoxSelectorHolder.inlineScriptUsage() = ChainedParadoxSelector<ParadoxInlineScriptUsageInfo.Compact>(project, context)
+fun ChainedParadoxSelectorHolder.inlineScriptUsage() = ChainedParadoxSelector<ParadoxInlineScriptUsageIndexInfo.Compact>(project, context)
 
-fun ChainedParadoxSelectorHolder.parameter() = ChainedParadoxSelector<ParadoxParameterUsageInfo>(project, context)
+fun ChainedParadoxSelectorHolder.parameter() = ChainedParadoxSelector<ParadoxParameterIndexInfo>(project, context)
 
-fun ChainedParadoxSelectorHolder.localisationParameter() = ChainedParadoxSelector<ParadoxLocalisationParameterUsageInfo>(project, context)
+fun ChainedParadoxSelectorHolder.localisationParameter() = ChainedParadoxSelector<ParadoxLocalisationParameterIndexInfo>(project, context)

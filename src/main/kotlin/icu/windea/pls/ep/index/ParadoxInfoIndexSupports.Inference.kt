@@ -10,16 +10,16 @@ import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-class ParadoxInferredScopeContextAwareDefinitionUsageInfoIndexSupport : ParadoxInfoIndexSupport<ParadoxInferredScopeContextAwareDefinitionUsageInfo> {
+class ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
     object Constants {
         val DEFINITION_TYPES = arrayOf("scripted_trigger", "scripted_effect")
     }
 
-    private val compressComparator = compareBy<ParadoxInferredScopeContextAwareDefinitionUsageInfo> { it.typeExpression }
+    private val compressComparator = compareBy<ParadoxInferredScopeContextAwareDefinitionIndexInfo> { it.typeExpression }
 
     override fun id() = ParadoxInfoIndexType.InferredScopeContextAwareDefinitionUsage.id
 
-    override fun type() = ParadoxInferredScopeContextAwareDefinitionUsageInfo::class.java
+    override fun type() = ParadoxInferredScopeContextAwareDefinitionIndexInfo::class.java
 
     override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         run {
@@ -33,34 +33,34 @@ class ParadoxInferredScopeContextAwareDefinitionUsageInfoIndexSupport : ParadoxI
 
         val definitionName = element.value
         val typeExpression = config.expression.value ?: return
-        val info = ParadoxInferredScopeContextAwareDefinitionUsageInfo(definitionName, typeExpression, element.startOffset)
+        val info = ParadoxInferredScopeContextAwareDefinitionIndexInfo(definitionName, typeExpression, element.startOffset, definitionInfo.gameType)
         addToFileData(info, fileData)
     }
 
-    override fun compressData(value: List<ParadoxInferredScopeContextAwareDefinitionUsageInfo>): List<ParadoxInferredScopeContextAwareDefinitionUsageInfo> {
+    override fun compressData(value: List<ParadoxInferredScopeContextAwareDefinitionIndexInfo>): List<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
         return value
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxInferredScopeContextAwareDefinitionUsageInfo, previousInfo: ParadoxInferredScopeContextAwareDefinitionUsageInfo?) {
+    override fun writeData(storage: DataOutput, info: ParadoxInferredScopeContextAwareDefinitionIndexInfo, previousInfo: ParadoxInferredScopeContextAwareDefinitionIndexInfo?, gameType: ParadoxGameType) {
         storage.writeUTFFast(info.definitionName)
         storage.writeOrWriteFrom(info, previousInfo, { it.typeExpression }, { storage.writeUTFFast(it) })
         storage.writeIntFast(info.elementOffset)
     }
 
-    override fun readData(storage: DataInput, previousInfo: ParadoxInferredScopeContextAwareDefinitionUsageInfo?): ParadoxInferredScopeContextAwareDefinitionUsageInfo {
+    override fun readData(storage: DataInput, previousInfo: ParadoxInferredScopeContextAwareDefinitionIndexInfo?, gameType: ParadoxGameType): ParadoxInferredScopeContextAwareDefinitionIndexInfo {
         val definitionName = storage.readUTFFast()
         val typeExpression = storage.readOrReadFrom(previousInfo, { it.typeExpression }, { storage.readUTFFast() })
         val elementOffset = storage.readIntFast()
-        return ParadoxInferredScopeContextAwareDefinitionUsageInfo(definitionName, typeExpression, elementOffset)
+        return ParadoxInferredScopeContextAwareDefinitionIndexInfo(definitionName, typeExpression, elementOffset, gameType)
     }
 }
 
-class ParadoxEventInOnActionUsageInfoIndexSupport : ParadoxInfoIndexSupport<ParadoxEventInOnActionUsageInfo> {
-    private val compressComparator = compareBy<ParadoxEventInOnActionUsageInfo> { it.containingOnActionName }
+class ParadoxEventInOnActionIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEventInOnActionIndexInfo> {
+    private val compressComparator = compareBy<ParadoxEventInOnActionIndexInfo> { it.containingOnActionName }
 
     override fun id() = ParadoxInfoIndexType.EventInOnActionUsage.id
 
-    override fun type() = ParadoxEventInOnActionUsageInfo::class.java
+    override fun type() = ParadoxEventInOnActionIndexInfo::class.java
 
     override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         run {
@@ -76,36 +76,36 @@ class ParadoxEventInOnActionUsageInfoIndexSupport : ParadoxInfoIndexSupport<Para
         val eventName = element.value
         val typeExpression = config.expression.value ?: return
         val containingOnActionName = definitionInfo.name
-        val info = ParadoxEventInOnActionUsageInfo(eventName, typeExpression, containingOnActionName, element.startOffset)
+        val info = ParadoxEventInOnActionIndexInfo(eventName, typeExpression, containingOnActionName, element.startOffset, definitionInfo.gameType)
         addToFileData(info, fileData)
     }
 
-    override fun compressData(value: List<ParadoxEventInOnActionUsageInfo>): List<ParadoxEventInOnActionUsageInfo> {
+    override fun compressData(value: List<ParadoxEventInOnActionIndexInfo>): List<ParadoxEventInOnActionIndexInfo> {
         return value.sortedWith(compressComparator)
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxEventInOnActionUsageInfo, previousInfo: ParadoxEventInOnActionUsageInfo?) {
+    override fun writeData(storage: DataOutput, info: ParadoxEventInOnActionIndexInfo, previousInfo: ParadoxEventInOnActionIndexInfo?, gameType: ParadoxGameType) {
         storage.writeUTFFast(info.eventName)
         storage.writeUTFFast(info.typeExpression)
         storage.writeOrWriteFrom(info, previousInfo, { it.containingOnActionName }, { storage.writeUTFFast(it) })
         storage.writeIntFast(info.elementOffset)
     }
 
-    override fun readData(storage: DataInput, previousInfo: ParadoxEventInOnActionUsageInfo?): ParadoxEventInOnActionUsageInfo {
+    override fun readData(storage: DataInput, previousInfo: ParadoxEventInOnActionIndexInfo?, gameType: ParadoxGameType): ParadoxEventInOnActionIndexInfo {
         val eventName = storage.readUTFFast()
         val typeExpression = storage.readUTFFast()
         val containingOnActionName = storage.readOrReadFrom(previousInfo, { it.containingOnActionName }, { storage.readUTFFast() })
         val elementOffset = storage.readIntFast()
-        return ParadoxEventInOnActionUsageInfo(eventName, typeExpression, containingOnActionName, elementOffset)
+        return ParadoxEventInOnActionIndexInfo(eventName, typeExpression, containingOnActionName, elementOffset, gameType)
     }
 }
 
-class ParadoxEventInEventUsageInfoIndexSupport : ParadoxInfoIndexSupport<ParadoxEventInEventUsageInfo> {
-    private val compressComparator = compareBy<ParadoxEventInEventUsageInfo> { it.containingEventName }
+class ParadoxEventInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEventInEventIndexInfo> {
+    private val compressComparator = compareBy<ParadoxEventInEventIndexInfo> { it.containingEventName }
 
     override fun id() = ParadoxInfoIndexType.EventInEventUsage.id
 
-    override fun type() = ParadoxEventInEventUsageInfo::class.java
+    override fun type() = ParadoxEventInEventIndexInfo::class.java
 
     override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         run {
@@ -122,7 +122,7 @@ class ParadoxEventInEventUsageInfoIndexSupport : ParadoxInfoIndexSupport<Paradox
         val containingEventName = definitionInfo.name
         val containingEventScope = ParadoxEventManager.getScope(definitionInfo)
         val scopesElementOffset = getScopesElementOffset(element, config) ?: return
-        val info = ParadoxEventInEventUsageInfo(eventName, containingEventName, containingEventScope, scopesElementOffset, element.startOffset)
+        val info = ParadoxEventInEventIndexInfo(eventName, containingEventName, containingEventScope, scopesElementOffset, element.startOffset, definitionInfo.gameType)
         addToFileData(info, fileData)
     }
 
@@ -144,11 +144,11 @@ class ParadoxEventInEventUsageInfoIndexSupport : ParadoxInfoIndexSupport<Paradox
         return scopesElement.startOffset
     }
 
-    override fun compressData(value: List<ParadoxEventInEventUsageInfo>): List<ParadoxEventInEventUsageInfo> {
+    override fun compressData(value: List<ParadoxEventInEventIndexInfo>): List<ParadoxEventInEventIndexInfo> {
         return value.sortedWith(compressComparator)
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxEventInEventUsageInfo, previousInfo: ParadoxEventInEventUsageInfo?) {
+    override fun writeData(storage: DataOutput, info: ParadoxEventInEventIndexInfo, previousInfo: ParadoxEventInEventIndexInfo?, gameType: ParadoxGameType) {
         storage.writeUTFFast(info.eventName)
         storage.writeOrWriteFrom(info, previousInfo, { it.containingEventName }, { storage.writeUTFFast(it) })
         storage.writeUTFFast(info.containingEventScope.orEmpty())
@@ -156,22 +156,22 @@ class ParadoxEventInEventUsageInfoIndexSupport : ParadoxInfoIndexSupport<Paradox
         storage.writeIntFast(info.elementOffset)
     }
 
-    override fun readData(storage: DataInput, previousInfo: ParadoxEventInEventUsageInfo?): ParadoxEventInEventUsageInfo {
+    override fun readData(storage: DataInput, previousInfo: ParadoxEventInEventIndexInfo?, gameType: ParadoxGameType): ParadoxEventInEventIndexInfo {
         val eventName = storage.readUTFFast()
         val containingEventName = storage.readOrReadFrom(previousInfo, { it.containingEventName }, { storage.readUTFFast() })
         val containingEventScope = storage.readUTFFast().orNull()
         val scopesElementOffset = storage.readIntFast()
         val elementOffset = storage.readIntFast()
-        return ParadoxEventInEventUsageInfo(eventName, containingEventName, containingEventScope, scopesElementOffset, elementOffset)
+        return ParadoxEventInEventIndexInfo(eventName, containingEventName, containingEventScope, scopesElementOffset, elementOffset, gameType)
     }
 }
 
-class ParadoxOnActionInEventUsageInfoIndexSupport : ParadoxInfoIndexSupport<ParadoxOnActionInEventUsageInfo> {
-    private val compressComparator = compareBy<ParadoxOnActionInEventUsageInfo> { it.containingEventName }
+class ParadoxOnActionInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxOnActionInEventIndexInfo> {
+    private val compressComparator = compareBy<ParadoxOnActionInEventIndexInfo> { it.containingEventName }
 
     override fun id() = ParadoxInfoIndexType.OnActionInEventUsage.id
 
-    override fun type() = ParadoxOnActionInEventUsageInfo::class.java
+    override fun type() = ParadoxOnActionInEventIndexInfo::class.java
 
     override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         run {
@@ -188,7 +188,7 @@ class ParadoxOnActionInEventUsageInfoIndexSupport : ParadoxInfoIndexSupport<Para
         val containingEventName = definitionInfo.name
         val containingEventScope = ParadoxEventManager.getScope(definitionInfo)
         val scopesElementOffset = getScopesElementOffset(element, config) ?: return
-        val info = ParadoxOnActionInEventUsageInfo(onActionName, containingEventName, containingEventScope, scopesElementOffset, element.startOffset)
+        val info = ParadoxOnActionInEventIndexInfo(onActionName, containingEventName, containingEventScope, scopesElementOffset, element.startOffset, definitionInfo.gameType)
         addToFileData(info, fileData)
     }
 
@@ -210,11 +210,11 @@ class ParadoxOnActionInEventUsageInfoIndexSupport : ParadoxInfoIndexSupport<Para
         return scopesElement.startOffset
     }
 
-    override fun compressData(value: List<ParadoxOnActionInEventUsageInfo>): List<ParadoxOnActionInEventUsageInfo> {
+    override fun compressData(value: List<ParadoxOnActionInEventIndexInfo>): List<ParadoxOnActionInEventIndexInfo> {
         return value.sortedWith(compressComparator)
     }
 
-    override fun writeData(storage: DataOutput, info: ParadoxOnActionInEventUsageInfo, previousInfo: ParadoxOnActionInEventUsageInfo?) {
+    override fun writeData(storage: DataOutput, info: ParadoxOnActionInEventIndexInfo, previousInfo: ParadoxOnActionInEventIndexInfo?, gameType: ParadoxGameType) {
         storage.writeUTFFast(info.onActionName)
         storage.writeOrWriteFrom(info, previousInfo, { it.containingEventName }, { storage.writeUTFFast(it) })
         storage.writeUTFFast(info.containingEventScope.orEmpty())
@@ -222,12 +222,12 @@ class ParadoxOnActionInEventUsageInfoIndexSupport : ParadoxInfoIndexSupport<Para
         storage.writeIntFast(info.elementOffset)
     }
 
-    override fun readData(storage: DataInput, previousInfo: ParadoxOnActionInEventUsageInfo?): ParadoxOnActionInEventUsageInfo {
+    override fun readData(storage: DataInput, previousInfo: ParadoxOnActionInEventIndexInfo?, gameType: ParadoxGameType): ParadoxOnActionInEventIndexInfo {
         val onActionName = storage.readUTFFast()
         val containingEventName = storage.readOrReadFrom(previousInfo, { it.containingEventName }, { storage.readUTFFast() })
         val containingEventScope = storage.readUTFFast().orNull()
         val scopesElementOffset = storage.readIntFast()
         val elementOffset = storage.readIntFast()
-        return ParadoxOnActionInEventUsageInfo(onActionName, containingEventName, containingEventScope, scopesElementOffset, elementOffset)
+        return ParadoxOnActionInEventIndexInfo(onActionName, containingEventName, containingEventScope, scopesElementOffset, elementOffset, gameType)
     }
 }

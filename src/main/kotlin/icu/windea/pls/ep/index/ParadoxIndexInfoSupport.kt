@@ -9,7 +9,7 @@ import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
-interface ParadoxInfoIndexSupport<T : ParadoxIndexInfo> {
+interface ParadoxIndexInfoSupport<T : ParadoxIndexInfo> {
     fun id(): Byte
 
     fun type(): Class<T>
@@ -22,9 +22,9 @@ interface ParadoxInfoIndexSupport<T : ParadoxIndexInfo> {
 
     fun compressData(value: List<T>): List<T> = value
 
-    fun writeData(storage: DataOutput, info: T, previousInfo: T?)
+    fun writeData(storage: DataOutput, info: T, previousInfo: T?, gameType: ParadoxGameType)
 
-    fun readData(storage: DataInput, previousInfo: T?): T
+    fun readData(storage: DataInput, previousInfo: T?, gameType: ParadoxGameType): T
 
     fun <T : ParadoxIndexInfo> addToFileData(info: T, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val list = fileData.getOrPut(id().toString()) { mutableListOf() } as MutableList
@@ -32,6 +32,6 @@ interface ParadoxInfoIndexSupport<T : ParadoxIndexInfo> {
     }
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxInfoIndexSupport<*>>("icu.windea.pls.infoIndexSupport")
+        val EP_NAME = ExtensionPointName.create<ParadoxIndexInfoSupport<*>>("icu.windea.pls.infoIndexSupport")
     }
 }

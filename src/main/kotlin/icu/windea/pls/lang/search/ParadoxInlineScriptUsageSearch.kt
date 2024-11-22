@@ -9,18 +9,18 @@ import icu.windea.pls.model.indexInfo.*
 /**
  * 内联脚本使用的查询。
  */
-class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxInlineScriptUsageInfo.Compact, ParadoxInlineScriptUsageSearch.SearchParameters>(EP_NAME) {
+class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxInlineScriptUsageIndexInfo.Compact, ParadoxInlineScriptUsageSearch.SearchParameters>(EP_NAME) {
     /**
      * @property expression 内联脚本的路径表达式。
      */
     class SearchParameters(
         val expression: String,
-        override val selector: ChainedParadoxSelector<ParadoxInlineScriptUsageInfo.Compact>
-    ) : ParadoxSearchParameters<ParadoxInlineScriptUsageInfo.Compact>
+        override val selector: ChainedParadoxSelector<ParadoxInlineScriptUsageIndexInfo.Compact>
+    ) : ParadoxSearchParameters<ParadoxInlineScriptUsageIndexInfo.Compact>
 
     companion object {
         @JvmField
-        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxInlineScriptUsageInfo.Compact, SearchParameters>>("icu.windea.pls.search.inlineScriptUsageSearch")
+        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxInlineScriptUsageIndexInfo.Compact, SearchParameters>>("icu.windea.pls.search.inlineScriptUsageSearch")
         @JvmField
         val INSTANCE = ParadoxInlineScriptUsageSearch()
 
@@ -30,8 +30,8 @@ class ParadoxInlineScriptUsageSearch : ExtensibleQueryFactory<ParadoxInlineScrip
         @JvmStatic
         fun search(
             expression: String,
-            selector: ChainedParadoxSelector<ParadoxInlineScriptUsageInfo.Compact>
-        ): ParadoxQuery<ParadoxInlineScriptUsageInfo.Compact, SearchParameters> {
+            selector: ChainedParadoxSelector<ParadoxInlineScriptUsageIndexInfo.Compact>
+        ): ParadoxQuery<ParadoxInlineScriptUsageIndexInfo.Compact, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(expression, selector))
         }
     }

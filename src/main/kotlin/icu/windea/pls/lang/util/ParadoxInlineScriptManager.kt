@@ -27,7 +27,7 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxInlineScriptManager {
     object Keys : KeyRegistry() {
-        val cachedInlineScriptUsageInfo by createKey<CachedValue<ParadoxInlineScriptUsageInfo>>(this)
+        val cachedInlineScriptUsageInfo by createKey<CachedValue<ParadoxInlineScriptUsageIndexInfo>>(this)
     }
 
     const val inlineScriptKey = "inline_script"
@@ -36,13 +36,13 @@ object ParadoxInlineScriptManager {
 
     val inlineScriptPathExpression = CwtDataExpression.resolve(inlineScriptPathExpressionString, false)
 
-    fun getUsageInfo(element: ParadoxScriptProperty): ParadoxInlineScriptUsageInfo? {
+    fun getUsageInfo(element: ParadoxScriptProperty): ParadoxInlineScriptUsageIndexInfo? {
         val name = element.name.lowercase()
         if (name != inlineScriptKey) return null
         return doGetUsageInfoFromCache(element)
     }
 
-    private fun doGetUsageInfoFromCache(element: ParadoxScriptProperty): ParadoxInlineScriptUsageInfo? {
+    private fun doGetUsageInfoFromCache(element: ParadoxScriptProperty): ParadoxInlineScriptUsageIndexInfo? {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedInlineScriptUsageInfo) {
             ProgressManager.checkCanceled()
@@ -52,7 +52,7 @@ object ParadoxInlineScriptManager {
         }
     }
 
-    private fun doGetUsageInfo(element: ParadoxScriptProperty, file: PsiFile = element.containingFile): ParadoxInlineScriptUsageInfo? {
+    private fun doGetUsageInfo(element: ParadoxScriptProperty, file: PsiFile = element.containingFile): ParadoxInlineScriptUsageIndexInfo? {
         //这里不能调用ParadoxExpressionHandler.getConfigs，因为是需要处理内联的情况，可能会导致StackOverflow
 
         val fileInfo = file.fileInfo ?: return null
@@ -70,7 +70,7 @@ object ParadoxInlineScriptManager {
         val expression = getInlineScriptExpressionFromInlineConfig(element, inlineConfig) ?: return null
         if (expression.isParameterized()) return null
         val elementOffset = element.startOffset
-        return ParadoxInlineScriptUsageInfo(expression, elementOffset)
+        return ParadoxInlineScriptUsageIndexInfo(expression, elementOffset, gameType)
     }
 
     fun getInlineScriptFile(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptFile? {

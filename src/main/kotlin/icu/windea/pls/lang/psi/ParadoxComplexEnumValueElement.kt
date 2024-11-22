@@ -26,7 +26,7 @@ class ParadoxComplexEnumValueElement(
     val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxFakePsiElement(parent) {
-    constructor(parent: PsiElement, info: ParadoxComplexEnumValueUsageInfo, project: Project)
+    constructor(parent: PsiElement, info: ParadoxComplexEnumValueIndexInfo, project: Project)
         : this(parent, info.name, info.enumName, info.readWriteAccess, info.gameType, project)
 
     val searchScopeType: ParadoxSearchScopeType

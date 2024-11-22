@@ -16,8 +16,8 @@ import icu.windea.pls.script.*
 /**
  * 动态值的查询器。
  */
-class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueUsageInfo, ParadoxDynamicValueSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxDynamicValueSearch.SearchParameters, consumer: Processor<in ParadoxDynamicValueUsageInfo>) {
+class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexInfo, ParadoxDynamicValueSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxDynamicValueSearch.SearchParameters, consumer: Processor<in ParadoxDynamicValueIndexInfo>) {
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
@@ -33,7 +33,7 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueUsageIn
             ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
             if (selectGameType(file) != gameType) return@p true //check game type at file level
 
-            val fileData = ParadoxMergedInfoIndex.INSTANCE.getFileData(file, project, ParadoxInfoIndexType.DynamicValueUsage)
+            val fileData = ParadoxMergedIndex.INSTANCE.getFileData(file, project, ParadoxInfoIndexType.DynamicValueUsage)
             if (fileData.isEmpty()) return@p true
             fileData.forEach f@{ info ->
                 if (info.dynamicValueType !in dynamicValueTypes) return@f

@@ -16,8 +16,8 @@ import icu.windea.pls.script.*
 /**
  * 预定义的命名空间与变量的查询器。
  */
-class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineInfo.Compact, ParadoxDefineSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxDefineSearch.SearchParameters, consumer: Processor<in ParadoxDefineInfo.Compact>) {
+class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo.Compact, ParadoxDefineSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxDefineSearch.SearchParameters, consumer: Processor<in ParadoxDefineIndexInfo.Compact>) {
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
             .withFilePath("common/scripted_variables", "txt")
@@ -33,7 +33,7 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineInfo.Compact, Parad
             ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
             if (selectGameType(file) != gameType) return@p true //check game type at file level
 
-            val fileData = ParadoxDefineInfoIndex.INSTANCE.getFileData(file, project)
+            val fileData = ParadoxDefineIndex.INSTANCE.getFileData(file, project)
             if (fileData.isEmpty()) return@p true
             if(namespace.isNotNullOrEmpty()) {
                 val map = fileData[namespace]?: return@p true

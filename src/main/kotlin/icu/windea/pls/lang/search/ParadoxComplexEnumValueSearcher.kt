@@ -15,8 +15,8 @@ import icu.windea.pls.script.*
 /**
  * 复杂枚举值的查询器。
  */
-class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValueUsageInfo, ParadoxComplexEnumValueSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxComplexEnumValueSearch.SearchParameters, consumer: Processor<in ParadoxComplexEnumValueUsageInfo>) {
+class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValueIndexInfo, ParadoxComplexEnumValueSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxComplexEnumValueSearch.SearchParameters, consumer: Processor<in ParadoxComplexEnumValueIndexInfo>) {
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
@@ -31,7 +31,7 @@ class ParadoxComplexEnumValueSearcher : QueryExecutorBase<ParadoxComplexEnumValu
             ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
             if (selectGameType(file) != gameType) return@p true //check game type at file level
 
-            val fileData = ParadoxMergedInfoIndex.INSTANCE.getFileData(file, project, ParadoxInfoIndexType.ComplexEnumValueUsage)
+            val fileData = ParadoxMergedIndex.INSTANCE.getFileData(file, project, ParadoxInfoIndexType.ComplexEnumValueUsage)
             if (fileData.isEmpty()) return@p true
             fileData.forEach f@{ info ->
                 if (enumName != info.enumName) return@f

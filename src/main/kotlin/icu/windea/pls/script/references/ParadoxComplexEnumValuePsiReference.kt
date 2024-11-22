@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxComplexEnumValuePsiReference(
     element: ParadoxScriptStringExpressionElement,
     rangeInElement: TextRange,
-    val info: ParadoxComplexEnumValueUsageInfo,
+    val info: ParadoxComplexEnumValueIndexInfo,
     val project: Project
 ) : PsiReferenceBase<ParadoxScriptStringExpressionElement>(element, rangeInElement) {
     override fun handleElementRename(newElementName: String): PsiElement {

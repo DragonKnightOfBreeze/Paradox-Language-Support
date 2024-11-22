@@ -88,7 +88,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         return withRecursionGuard("ParadoxBaseDefinitionInferredScopeContextProvider.doProcessQuery") {
             withRecursionCheck(definitionInfo.name + "@" + definitionInfo.type) {
                 val indexId = ParadoxInfoIndexType.InferredScopeContextAwareDefinitionUsage
-                ParadoxMergedInfoIndex.processQuery(ParadoxScriptFileType, indexId, project, gameType, searchScope) p@{ file, infos ->
+                ParadoxMergedIndex.processQuery(ParadoxScriptFileType, indexId, project, gameType, searchScope) p@{ file, infos ->
                     val psiFile = file.toPsiFile(project) ?: return@p true
                     infos.forEach f@{ info ->
                         ProgressManager.checkCanceled()
@@ -196,7 +196,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
             if (depth == 1) stackTrace.addLast(thisEventName)
 
             val indexId = ParadoxInfoIndexType.EventInOnActionUsage
-            ParadoxMergedInfoIndex.processQuery(ParadoxScriptFileType, indexId, project, gameType, searchScope) p@{ file, infos ->
+            ParadoxMergedIndex.processQuery(ParadoxScriptFileType, indexId, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()
@@ -305,7 +305,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
 
             val toRef = "from".repeat(depth)
             val indexId = ParadoxInfoIndexType.EventInEventUsage
-            ParadoxMergedInfoIndex.processQuery(ParadoxScriptFileType, indexId, project, gameType, searchScope) p@{ file, infos ->
+            ParadoxMergedIndex.processQuery(ParadoxScriptFileType, indexId, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()
@@ -458,7 +458,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
 
             val toRef = "from".repeat(depth)
             val indexId = ParadoxInfoIndexType.OnActionInEventUsage
-            ParadoxMergedInfoIndex.processQuery(ParadoxScriptFileType, indexId, project, gameType, searchScope) p@{ file, infos ->
+            ParadoxMergedIndex.processQuery(ParadoxScriptFileType, indexId, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
                     ProgressManager.checkCanceled()

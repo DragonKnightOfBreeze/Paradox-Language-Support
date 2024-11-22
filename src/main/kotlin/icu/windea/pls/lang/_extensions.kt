@@ -198,7 +198,7 @@ val ParadoxScriptDefinitionElement.definitionInfo: ParadoxDefinitionInfo?
 val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
     get() = ParadoxLocalisationManager.getInfo(this)
 
-val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueUsageInfo?
+val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueIndexInfo?
     get() = ParadoxComplexEnumValueManager.getInfo(this)
 
 val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorInfo?

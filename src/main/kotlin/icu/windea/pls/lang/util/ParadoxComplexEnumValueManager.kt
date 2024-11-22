@@ -17,15 +17,15 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxComplexEnumValueManager {
-    fun getInfo(element: ParadoxComplexEnumValueElement): ParadoxComplexEnumValueUsageInfo {
-        return ParadoxComplexEnumValueUsageInfo(element.name, element.enumName, element.readWriteAccess, element.startOffset)
+    fun getInfo(element: ParadoxComplexEnumValueElement): ParadoxComplexEnumValueIndexInfo {
+        return ParadoxComplexEnumValueIndexInfo(element.name, element.enumName, element.readWriteAccess, element.startOffset, element.gameType)
     }
 
-    fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueUsageInfo? {
+    fun getInfo(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueIndexInfo? {
         return doGetInfoFromCache(element)
     }
 
-    private fun doGetInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueUsageInfo? {
+    private fun doGetInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueIndexInfo? {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedComplexEnumValueInfo) {
             ProgressManager.checkCanceled()
@@ -35,7 +35,7 @@ object ParadoxComplexEnumValueManager {
         }
     }
 
-    private fun doGetInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile): ParadoxComplexEnumValueUsageInfo? {
+    private fun doGetInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile): ParadoxComplexEnumValueIndexInfo? {
         if (element.text.isParameterized()) return null //排除可能带参数的情况
         if (element.text.isInlineUsage()) return null //排除是内联调用的情况
         val project = file.project
@@ -50,7 +50,7 @@ object ParadoxComplexEnumValueManager {
                     val enumName = complexEnumConfig.name
                     val readWriteAccess = Access.Write //write (declaration)
                     val elementOffset = element.startOffset
-                    return ParadoxComplexEnumValueUsageInfo(name, enumName, readWriteAccess, elementOffset)
+                    return ParadoxComplexEnumValueIndexInfo(name, enumName, readWriteAccess, elementOffset, gameType)
                 }
             }
         }
