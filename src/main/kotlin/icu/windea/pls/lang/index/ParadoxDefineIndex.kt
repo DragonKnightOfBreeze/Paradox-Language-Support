@@ -18,9 +18,9 @@ class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexI
     @Suppress("CompanionObjectInExtension")
     companion object {
         val INSTANCE by lazy { findFileBasedIndex<ParadoxDefineIndex>() }
-        val NAME = ID.create<String, Map<String, ParadoxDefineIndexInfo.Compact>>("paradox.define.info.index")
+        val NAME = ID.create<String, Map<String, ParadoxDefineIndexInfo.Compact>>("paradox.define.index")
 
-        private const val VERSION = 56 //1.3.25
+        private const val VERSION = 57 //1.3.25
     }
 
     override fun getName() = NAME
@@ -39,7 +39,7 @@ class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexI
 
             prop1Block.processProperty(conditional = false, inline = false) p2@{ prop2 ->
                 val variable = prop2.name.takeIf { it.isNotEmpty() && !it.isParameterized() } ?: return@p2 true
-                val info2 = map.getOrPut(variable) { ParadoxDefineIndexInfo.Compact(namespace, null, sortedSetOf(), gameType) }
+                val info2 = map.getOrPut(variable) { ParadoxDefineIndexInfo.Compact(namespace, variable, sortedSetOf(), gameType) }
                 (info2.elementOffsets as MutableSet) += prop2.startOffset
                 true
             }

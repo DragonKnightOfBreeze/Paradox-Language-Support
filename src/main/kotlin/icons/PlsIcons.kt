@@ -98,6 +98,10 @@ object PlsIcons {
         val InlineScript = loadIcon("/icons/nodes/inlineScript.svg")
         @JvmField
         val DatabaseObjectType = loadIcon("/icons/nodes/gameObjectType.svg")
+        @JvmField
+        val DefineNamespace = loadIcon("/icons/nodes/defineNamespace.svg")
+        @JvmField
+        val DefineVariable = loadIcon("/icons/nodes/defineVariable.svg")
 
         @JvmField
         val ScriptedVariableConfig = loadIcon("/icons/nodes/scriptedVariableConfig.svg")

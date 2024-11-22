@@ -57,12 +57,11 @@ class ParadoxScriptValueExpression private constructor(
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
-            if (expressionString.isEmpty()) return null
+            val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+            if (!incomplete && expressionString.isEmpty()) return null
 
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
-
-            val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
-
+            
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val offset = range.startOffset
             var n = 0
@@ -108,6 +107,7 @@ class ParadoxScriptValueExpression private constructor(
                 if (pipeNode != null) nodes.add(pipeNode)
                 n++
             }
+            if (!incomplete && nodes.isEmpty()) return null
             return ParadoxScriptValueExpression(expressionString, range, nodes, configGroup, config)
         }
 

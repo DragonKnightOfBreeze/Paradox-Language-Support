@@ -38,16 +38,14 @@ class ParadoxDefineReferenceExpression private constructor(
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression? {
-            if (expressionString.isEmpty()) return null
-
             val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
-
+            if (!incomplete && expressionString.isEmpty()) return null
+            
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val expression = ParadoxDefineReferenceExpression(expressionString, range, nodes, configGroup)
             run r1@{
                 val offset = range.startOffset
                 val prefix = "define:"
-                val prefixLength = expressionString.length
                 if (expressionString.startsWith(prefix)) {
                     val node = ParadoxDefinePrefixNode(prefix, TextRange.from(offset, prefix.length), configGroup)
                     nodes += node
@@ -60,8 +58,8 @@ class ParadoxDefineReferenceExpression private constructor(
                 }
                 val pipeIndex = expressionString.indexOf('|', prefix.length)
                 run r2@{
-                    val nodeText = if (pipeIndex == -1) expressionString.substring(prefixLength) else expressionString.substring(prefixLength, pipeIndex)
-                    val nodeTextRange = TextRange.from(offset + prefixLength, nodeText.length)
+                    val nodeText = if (pipeIndex == -1) expressionString.substring(prefix.length) else expressionString.substring(prefix.length, pipeIndex)
+                    val nodeTextRange = TextRange.from(offset + prefix.length, nodeText.length)
                     val node = ParadoxDefineNamespaceNode.resolve(nodeText, nodeTextRange, configGroup, expression)
                     nodes += node
                 }
@@ -78,6 +76,7 @@ class ParadoxDefineReferenceExpression private constructor(
                     nodes += node
                 }
             }
+            if (!incomplete && nodes.isEmpty()) return null
             return expression
         }
 

@@ -21,7 +21,7 @@ class ParadoxInlineScriptUsageIndex : ParadoxFileBasedIndex<ParadoxInlineScriptU
         val INSTANCE by lazy { findFileBasedIndex<ParadoxInlineScriptUsageIndex>() }
         val NAME = ID.create<String, ParadoxInlineScriptUsageIndexInfo.Compact>("paradox.inlineScriptUsage.index")
 
-        private const val VERSION = 56 //1.3.25
+        private const val VERSION = 57 //1.3.25
     }
 
     override fun getName() = NAME

@@ -4,11 +4,15 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
+import com.intellij.util.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.search.*
+import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.editor.*
 
@@ -44,9 +48,11 @@ class ParadoxDefineVariableNode(
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
         val expression = node.expression
         val project = expression.configGroup.project
+        val namespace = expression.namespaceNode?.text
+        val variableName = node.text
 
         override fun handleElementRename(newElementName: String): PsiElement {
-            return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+            throw IncorrectOperationException()
         }
 
         //缓存解析结果以优化性能
@@ -72,11 +78,17 @@ class ParadoxDefineVariableNode(
         }
 
         private fun doResolve(): PsiElement? {
-            TODO() //TODO 1.3.25
+            if(namespace == null) return null
+            val selector = selector(project, element).define().contextSensitive()
+            val defineInfo = ParadoxDefineSearch.search(namespace, variableName, selector).find() ?: return null
+            return ParadoxDefineManager.getDefineElement(defineInfo, project)
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
-            TODO() //TODO 1.3.25
+            if(namespace == null) return ResolveResult.EMPTY_ARRAY
+            val selector = selector(project, element).define().contextSensitive()
+            val defineInfos = ParadoxDefineSearch.search(namespace, variableName, selector).findAll()
+            return ParadoxDefineManager.getDefineElements(defineInfos, project).mapToArray { PsiElementResolveResult(it) }
         }
     }
     companion object Resolver {

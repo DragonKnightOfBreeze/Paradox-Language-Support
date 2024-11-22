@@ -44,11 +44,10 @@ class ParadoxScopeFieldExpression private constructor(
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
-            if (expressionString.isEmpty()) return null
+            val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+            if (!incomplete && expressionString.isEmpty()) return null
 
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
-
-            val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val offset = range.startOffset
@@ -81,6 +80,7 @@ class ParadoxScopeFieldExpression private constructor(
                 nodes.add(node)
                 if (dotNode != null) nodes.add(dotNode)
             }
+            if (!incomplete && nodes.isEmpty()) return null
             return ParadoxScopeFieldExpression(expressionString, range, nodes, configGroup)
         }
 

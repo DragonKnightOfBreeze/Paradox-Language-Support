@@ -47,11 +47,10 @@ class ParadoxDynamicValueExpression private constructor(
         }
 
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
-            if (expressionString.isEmpty()) return null
+            val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+            if (!incomplete && expressionString.isEmpty()) return null
 
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
-
-            val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val offset = range.startOffset
@@ -83,7 +82,6 @@ class ParadoxDynamicValueExpression private constructor(
                 }
                 break
             }
-            //handle mismatch situation
             if (!incomplete && nodes.isEmpty()) return null
             return ParadoxDynamicValueExpression(expressionString, range, nodes, configGroup, configs)
         }

@@ -34,7 +34,8 @@ class ParadoxVariableFieldExpression(
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {
-            if (expressionString.isEmpty()) return null
+            val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+            if (!incomplete && expressionString.isEmpty()) return null
 
             //skip if text is a number
             if (isNumber(expressionString)) return null
@@ -43,9 +44,7 @@ class ParadoxVariableFieldExpression(
 
             //skip if text is a parameter with unary operator prefix
             if (ParadoxExpressionManager.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
-
-            val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
-
+            
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val expression = ParadoxVariableFieldExpression(expressionString, range, nodes, configGroup)
             val offset = range.startOffset
@@ -83,6 +82,7 @@ class ParadoxVariableFieldExpression(
                 nodes.add(node)
                 if (dotNode != null) nodes.add(dotNode)
             }
+            if (!incomplete && nodes.isEmpty()) return null
             return expression
         }
 

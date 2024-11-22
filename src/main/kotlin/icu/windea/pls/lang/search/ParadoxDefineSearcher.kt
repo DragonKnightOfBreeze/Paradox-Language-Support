@@ -5,7 +5,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.search.scope.*
@@ -20,7 +19,7 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo.Compact, 
     override fun processQuery(queryParameters: ParadoxDefineSearch.SearchParameters, consumer: Processor<in ParadoxDefineIndexInfo.Compact>) {
         ProgressManager.checkCanceled()
         val scope = queryParameters.selector.scope
-            .withFilePath("common/scripted_variables", "txt")
+            .withFilePath("common/defines", "txt")
         if (SearchScope.isEmptyScope(scope)) return
         val namespace = queryParameters.namespace
         val variable = queryParameters.variable
@@ -35,9 +34,9 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo.Compact, 
 
             val fileData = ParadoxDefineIndex.INSTANCE.getFileData(file, project)
             if (fileData.isEmpty()) return@p true
-            if(namespace.isNotNullOrEmpty()) {
+            if(namespace != null) {
                 val map = fileData[namespace]?: return@p true
-                if(variable.isNotNullOrEmpty()) {
+                if(variable != null) {
                     val info = map[variable] ?: return@p true
                     info.virtualFile = file
                     val r = consumer.process(info)
@@ -51,7 +50,7 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo.Compact, 
                 }
             } else {
                 fileData.values.forEach { map ->
-                    if(variable.isNotNullOrEmpty()) {
+                    if(variable != null) {
                         val info = map[variable] ?: return@p true
                         info.virtualFile = file
                         val r = consumer.process(info)

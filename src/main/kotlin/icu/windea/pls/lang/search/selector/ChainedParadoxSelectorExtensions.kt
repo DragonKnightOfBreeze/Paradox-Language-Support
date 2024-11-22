@@ -93,6 +93,10 @@ fun <S : ChainedParadoxSelector<VirtualFile>> S.distinctByFilePath(): S {
     return distinctBy { it.fileInfo?.path }
 }
 
+fun <S : ChainedParadoxSelector<ParadoxDefineIndexInfo.Compact>> S.distinctByExpression(): S {
+    return distinctBy { if (it.variable == null) it.namespace else it.namespace + "." + it.variable }
+}
+
 fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.locale(locale: CwtLocalisationLocaleConfig?): S {
     if (locale != null) selectors += ParadoxLocaleSelector(locale)
     return this

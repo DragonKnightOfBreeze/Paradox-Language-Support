@@ -1330,7 +1330,7 @@ object ParadoxCompletionManager {
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withScopeMatched(scopeMatched)
-                .withPriority(ParadoxCompletionPriorities.linkPrefix)
+                .withPriority(ParadoxCompletionPriorities.prefix)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -1408,7 +1408,7 @@ object ParadoxCompletionManager {
                 .withBoldness(true)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(ParadoxCompletionPriorities.linkPrefix)
+                .withPriority(ParadoxCompletionPriorities.prefix)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }
@@ -1506,7 +1506,7 @@ object ParadoxCompletionManager {
             val typeFile = config.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withPriority(ParadoxCompletionPriorities.databaseObjectType)
+                .withPriority(ParadoxCompletionPriorities.prefix)
                 .withPatchableIcon(PlsIcons.Nodes.DynamicValue)
                 .withPatchableTailText(tailText)
                 .forScriptExpression(context)
@@ -1567,15 +1567,51 @@ object ParadoxCompletionManager {
     }
 
     fun completeDefinePrefix(context: ProcessingContext, result: CompletionResultSet) {
-        //TODO 1.3.25
+        val name = "define:"
+        val lookupElement = LookupElementBuilder.create(name)
+            .withBoldness(true)
+            .withPriority(ParadoxCompletionPriorities.prefix)
+            .withCompletionId()
+        result.addElement(lookupElement, context)
     }
     
     fun completeDefineNamespace(context: ProcessingContext, result: CompletionResultSet) {
-        //TODO 1.3.25
+        val project = context.parameters!!.originalFile.project
+        val contextElement = context.contextElement
+        val tailText = " from define namespaces"
+        val selector = selector(project, contextElement).define().distinctByExpression()
+        ParadoxDefineSearch.search(null, "", selector).processQueryAsync p@{ info ->
+            ProgressManager.checkCanceled()
+            val namespace = info.namespace
+            val element = ParadoxDefineManager.getDefineElement(info, project) ?: return@p true
+            val lookupElement = LookupElementBuilder.create(element, namespace)
+                .withPatchableIcon(PlsIcons.Nodes.DefineNamespace)
+                .withPatchableTailText(tailText)
+                .forScriptExpression(context)
+            result.addElement(lookupElement, context)
+            true
+        }
     }
 
     fun completeDefineVariable(context: ProcessingContext, result: CompletionResultSet) {
-        //TODO 1.3.25
+        val project = context.parameters!!.originalFile.project
+        val contextElement = context.contextElement
+        val node = context.node?.castOrNull<ParadoxDefineVariableNode>() ?: return
+        val namespaceNode = node.expression.namespaceNode ?: return
+        val namespace = namespaceNode.text
+        val tailText = " from define namespace ${namespace}"
+        val selector = selector(project, contextElement).define().distinctByExpression()
+        ParadoxDefineSearch.search(namespace, null, selector).processQueryAsync p@{ info ->
+            ProgressManager.checkCanceled()
+            val variable = info.variable ?: return@p true
+            val element = ParadoxDefineManager.getDefineElement(info, project) ?: return@p true
+            val lookupElement = LookupElementBuilder.create(element, variable)
+                .withPatchableIcon(PlsIcons.Nodes.DefineVariable)
+                .withPatchableTailText(tailText)
+                .forScriptExpression(context)
+            result.addElement(lookupElement, context)
+            true
+        }
     }
     
     fun completeDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
@@ -1671,7 +1707,7 @@ object ParadoxCompletionManager {
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withScopeMatched(scopeMatched)
-                .withPriority(ParadoxCompletionPriorities.linkPrefix)
+                .withPriority(ParadoxCompletionPriorities.prefix)
                 .withCompletionId()
             result.addElement(lookupElement, context)
         }

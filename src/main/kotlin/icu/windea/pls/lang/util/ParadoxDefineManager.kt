@@ -1,20 +1,18 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.data.*
+import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
 import java.lang.invoke.*
 
@@ -22,45 +20,47 @@ object ParadoxDefineManager {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
 
     val definePathExpression = CwtDataExpression.resolve("filepath[common/defines/,.txt]", false)
+    
+    fun isDefineElement(define: ParadoxDefineIndexInfo.Compact, defineElement: ParadoxScriptProperty): Boolean {
+        if(define.variable == null) return defineElement.propertyValue is ParadoxScriptBlock
+        return true
+    }
+    
+    fun getDefineElement(define: ParadoxDefineIndexInfo.Compact, project: Project): ParadoxScriptProperty? {
+        val file = define.virtualFile?.toPsiFile(project) ?: return null
+        val elementOffset = define.elementOffsets.lastOrNull() ?: return null
+        return file.findElementAt(elementOffset)?.parentOfType<ParadoxScriptProperty>()?.takeIf { isDefineElement(define, it) }
+    }
 
-    @Suppress("UNCHECKED_CAST")
-    fun <T> getDefineValue(contextElement: PsiElement, project: Project, path: String, type: Class<T>): T? {
-        val gameType = selectGameType(contextElement) ?: return null
-        try {
-            val selector = selector(project, contextElement).file().contextSensitive()
-            var result: Any? = null
-            ParadoxFilePathSearch.search(definePathExpression, selector).findAll().process p@{
-                ProgressManager.checkCanceled()
-                val file = it.toPsiFile(project) ?: return@p true
-                if (file !is ParadoxScriptFile) return@p true
-                val defines = getDefinesFromFile(file)
-                val defineValue = defines.getOrPut(path) action@{
-                    val property = file.findByPath(path, ParadoxScriptProperty::class.java, ignoreCase = false) ?: return@action null
-                    val propertyValue = property.propertyValue ?: return@action null
-                    ParadoxScriptDataValueResolver.resolveValue(propertyValue, conditional = false)
-                }
-                if (defineValue != null) {
-                    result = defineValue
-                    false
-                } else {
-                    true
-                }
-            }
-            return result as T?
-        } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
-            logger.warn("Cannot get define value of path '$type' for $gameType", e)
-            return null
+    fun getDefineElements(define: ParadoxDefineIndexInfo.Compact, project: Project): List<ParadoxScriptProperty> {
+        val file = define.virtualFile?.toPsiFile(project) ?: return emptyList()
+        val elementOffsets = define.elementOffsets
+        return elementOffsets.mapNotNull { elementOffset ->
+            file.findElementAt(elementOffset)?.parentOfType<ParadoxScriptProperty>()?.takeIf { isDefineElement(define, it) }
         }
     }
 
-    private fun getDefinesFromFile(file: ParadoxScriptFile): MutableMap<String, Any?> {
-        //invalidated on file modification
-        return CachedValuesManager.getCachedValue(file, PlsKeys.cachedDefineValues) {
-            CachedValueProvider.Result.create(mutableMapOf(), file)
-        }
+    fun getDefineElements(defines: Collection<ParadoxDefineIndexInfo.Compact>, project: Project): List<ParadoxScriptProperty> {
+        return defines.flatMap { define -> getDefineElements(define, project) }
+    }
+    
+    fun getDefineValue(expression: String, contextElement: PsiElement, project: Project): Any? {
+        val defineSelector = selector(project, contextElement).define().contextSensitive()
+        val define = ParadoxDefineSearch.search(expression, defineSelector).find() ?: return null
+        return getDefineValue(define, project)
+    }
+    
+    fun getDefineValue(defineInfo: ParadoxDefineIndexInfo.Compact, project: Project): Any? {
+        val defineProperty = getDefineElement(defineInfo, project) ?: return null
+        val definePropertyValue = defineProperty.propertyValue ?: return null
+        return ParadoxScriptDataValueResolver.resolveValue(definePropertyValue, conditional = false)
     }
 
+    fun getDefineValue(define: ParadoxScriptProperty): Any? {
+        val definePropertyValue = define.propertyValue ?: return null
+        return ParadoxScriptDataValueResolver.resolveValue(definePropertyValue, conditional = false)
+    }
+    
     fun isDefineFile(file: VirtualFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         val filePath = fileInfo.path.path

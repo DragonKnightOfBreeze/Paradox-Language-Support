@@ -95,19 +95,17 @@ fun <T : CwtMemberElement> CwtMemberConfig<T>.toOccurrence(contextElement: PsiEl
     val cardinalityMinDefine = this.cardinalityMinDefine
     val cardinalityMaxDefine = this.cardinalityMaxDefine
     val occurrence = Occurrence(0, cardinality.min, cardinality.max, cardinality.relaxMin)
-    if (cardinalityMinDefine != null) {
-        val defineValue = ParadoxDefineManager.getDefineValue(contextElement, project, cardinalityMinDefine, Int::class.java)
-        if (defineValue != null) {
-            occurrence.min = defineValue
-            occurrence.minDefine = cardinalityMinDefine
-        }
+    run {
+        if (cardinalityMinDefine == null) return@run
+        val defineValue = ParadoxDefineManager.getDefineValue(cardinalityMinDefine, contextElement, project)?.castOrNull<Int>() ?: return@run
+        occurrence.min = defineValue
+        occurrence.minDefine = cardinalityMinDefine
     }
-    if (cardinalityMaxDefine != null) {
-        val defineValue = ParadoxDefineManager.getDefineValue(contextElement, project, cardinalityMaxDefine, Int::class.java)
-        if (defineValue != null) {
-            occurrence.max = defineValue
-            occurrence.maxDefine = cardinalityMaxDefine
-        }
+    run {
+        if (cardinalityMaxDefine == null) return@run
+        val defineValue = ParadoxDefineManager.getDefineValue(cardinalityMaxDefine, contextElement, project)?.castOrNull<Int>() ?: return@run
+        occurrence.max = defineValue
+        occurrence.maxDefine = cardinalityMaxDefine
     }
     return occurrence
 }
