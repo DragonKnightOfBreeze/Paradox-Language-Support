@@ -57,7 +57,7 @@ class UnsetDynamicValueInspection : LocalInspectionTool() {
                     val cachedStatus = statusMap[resolved]
                     val status = if (cachedStatus == null) {
                         ProgressManager.checkCanceled()
-                        val selector = dynamicValueSelector(project, file).withSearchScope(searchScope) //use file as context
+                        val selector = selector(project, file).dynamicValue().withSearchScope(searchScope) //use file as context
                         val r = ParadoxDynamicValueSearch.search(resolved.name, resolved.dynamicValueTypes, selector).processQueryAsync p@{
                             ProgressManager.checkCanceled()
                             if (it.readWriteAccess == Access.Write) {

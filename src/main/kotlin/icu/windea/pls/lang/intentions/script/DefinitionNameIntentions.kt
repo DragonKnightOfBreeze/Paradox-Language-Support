@@ -72,7 +72,7 @@ class DefinitionNameGotoImplementationsIntention : DefinitionNameIntention() {
     override fun getText() = PlsBundle.message("intention.definitionName.gotoImplementations")
 
     override fun doInvoke(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, editor: Editor, project: Project) {
-        val selector = definitionSelector(project, definition).contextSensitive()
+        val selector = selector(project, definition).definition().contextSensitive()
         val result = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
         if (result.isEmpty()) return
         getPsiElementPopup(result.toTypedArray(), PlsBundle.message("intention.definitionName.gotoImplementations.title", definitionInfo.name))

@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.*
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxGameConceptManager {
     fun get(nameOrAlias: String, project: Project, contextElement: PsiElement? = null): ParadoxScriptDefinitionElement? {
-        val definitionSelector = definitionSelector(project, contextElement)
+        val definitionSelector = selector(project, contextElement).definition()
             .contextSensitive()
             .filterBy { it.name == nameOrAlias || it.getData<StellarisGameConceptData>()?.alias.orEmpty().contains(nameOrAlias) }
         return ParadoxDefinitionSearch.search("game_concept", definitionSelector).find()

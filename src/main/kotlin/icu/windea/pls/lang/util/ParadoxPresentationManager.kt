@@ -28,7 +28,7 @@ object ParadoxPresentationManager {
     }
 
     fun getText(localisationKey: String, project: Project, contextElement: PsiElement? = null): String? {
-        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+        val selector = selector(project, contextElement).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         val localisation = ParadoxLocalisationSearch.search(localisationKey, selector).find() ?: return null
         return ParadoxLocalisationTextHtmlRenderer.render(localisation)
     }
@@ -47,7 +47,7 @@ object ParadoxPresentationManager {
     }
 
     fun getLabel(localisationKey: String, project: Project, contextElement: PsiElement? = null): JLabel? {
-        val selector = localisationSelector(project, contextElement).contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
+        val selector = selector(project, contextElement).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         val localisation = ParadoxLocalisationSearch.search(localisationKey, selector).find() ?: return null
         return ParadoxLocalisationTextUIRenderer.render(localisation)
     }

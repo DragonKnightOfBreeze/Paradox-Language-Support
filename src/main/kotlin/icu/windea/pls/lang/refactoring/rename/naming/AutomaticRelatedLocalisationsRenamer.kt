@@ -41,7 +41,7 @@ class AutomaticRelatedLocalisationsRenamer(element: PsiElement, newName: String)
         val infos = definitionInfo.localisations.orNull() ?: return
         for (info in infos) {
             ProgressManager.checkCanceled()
-            val result = info.locationExpression.resolveAll(element, definitionInfo, localisationSelector(definitionInfo.project, element)) ?: continue
+            val result = info.locationExpression.resolveAll(element, definitionInfo, selector(definitionInfo.project, element).localisation()) ?: continue
             val rename = info.locationExpression.resolvePlaceholder(newName) ?: continue
             result.elements.forEach { allRenames[it] = rename }
         }

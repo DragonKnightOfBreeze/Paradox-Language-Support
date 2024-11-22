@@ -38,7 +38,7 @@ class StellarisEventInheritSupport : ParadoxDefinitionInheritSupport {
         if (definitionInfo.type != "event" || !definitionInfo.subtypes.contains("inherited")) return null
         val data = definition.getData<StellarisEventData>() ?: return null
         val parentDefinitionName = data.base ?: return null
-        val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()
+        val selector = selector(definitionInfo.project, definition).definition().contextSensitive()
         val parentDefinition = ParadoxDefinitionSearch.search(parentDefinitionName, "event", selector).find() ?: return null
         val parentDefinitionInfo = parentDefinition.definitionInfo ?: return null
         //事件类型不匹配 - 不处理

@@ -179,7 +179,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         if (definitionName.isParameterized()) return false //skip if context name is parameterized
         val definitionType = definitionTypes.joinToString(".")
         val project = parameterElement.project
-        val selector = definitionSelector(project, parameterElement).contextSensitive()
+        val selector = selector(project, parameterElement).definition().contextSensitive()
         ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync(onlyMostRelevant, processor)
         return true
     }
@@ -190,7 +190,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         if (definitionName.isParameterized()) return false //skip if context name is parameterized
         val definitionType = definitionTypes.joinToString(".")
         val project = contextReferenceInfo.project
-        val selector = definitionSelector(project, element).contextSensitive()
+        val selector = selector(project, element).definition().contextSensitive()
         ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQueryAsync(onlyMostRelevant, processor)
         return true
     }

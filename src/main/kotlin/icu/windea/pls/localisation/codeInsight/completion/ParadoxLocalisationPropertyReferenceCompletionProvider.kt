@@ -33,7 +33,7 @@ class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvide
         result.restartCompletionOnAnyPrefixChange()
 
         //提示localisation或者synced_localisation
-        val selector = localisationSelector(project, file)
+        val selector = selector(project, file).localisation()
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         //.distinctByName() //这里selector不需要指定去重

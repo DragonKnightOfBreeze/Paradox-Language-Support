@@ -10,7 +10,7 @@ import icu.windea.pls.model.*
 
 class ChainedParadoxSelector<T>(
     val project: Project,
-    val context: Any? = null,
+    val context: Any? = null
 ) : ParadoxSelector<T> {
     val file = selectFile(context)
     val rootFile = selectRootFile(file)

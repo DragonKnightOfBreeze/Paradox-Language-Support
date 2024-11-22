@@ -68,7 +68,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                         context.expressionTailText = ""
 
                         //排除正在输入的那一个
-                        val selector = definitionSelector(project, file).contextSensitive()
+                        val selector = selector(project, file).definition().contextSensitive()
                             .notSamePosition(element)
                             .distinctByName()
                         ParadoxDefinitionSearch.search(type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
@@ -91,7 +91,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 
                     //这里需要基于rootKey过滤结果
                     //排除正在输入的那一个
-                    val selector = definitionSelector(project, file).contextSensitive()
+                    val selector = selector(project, file).definition().contextSensitive()
                         .filterBy { it is ParadoxScriptProperty && it.name.equals(definitionInfo.rootKey, true) }
                         .notSamePosition(definition)
                         .distinctByName()

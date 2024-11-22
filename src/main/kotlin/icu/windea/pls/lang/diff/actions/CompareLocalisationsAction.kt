@@ -105,7 +105,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val localisations = Collections.synchronizedList(mutableListOf<ParadoxLocalisationProperty>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
             runReadAction {
-                val selector = localisationSelector(project, file)
+                val selector = selector(project, file).localisation()
                 val result = ParadoxLocalisationSearch.search(localisationName, selector).findAll()
                 localisations.addAll(result)
             }

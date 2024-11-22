@@ -36,7 +36,7 @@ class OverriddenForDefinitionInspection : LocalInspectionTool() {
             }
 
             private fun visitDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-                val selector = definitionSelector(project, file)
+                val selector = selector(project, file).definition()
                 val name = definitionInfo.name
                 val type = definitionInfo.type
                 if (name.isParameterized()) return //parameterized -> ignored

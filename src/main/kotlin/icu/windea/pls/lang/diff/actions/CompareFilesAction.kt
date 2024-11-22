@@ -69,7 +69,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
         val virtualFiles = Collections.synchronizedList(mutableListOf<VirtualFile>())
         ProgressManager.getInstance().runProcessWithProgressSynchronously({
             runReadAction {
-                val selector = fileSelector(project, file)
+                val selector = selector(project, file).file()
                 val result = ParadoxFilePathSearch.search(path, null, selector, ignoreLocale = true).findAll()
                 virtualFiles.addAll(result)
             }

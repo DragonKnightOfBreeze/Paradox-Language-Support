@@ -39,7 +39,7 @@ class OverriddenForScriptedVariableInspection : LocalInspectionTool() {
             }
 
             private fun visitScriptedVariable(element: ParadoxScriptScriptedVariable) {
-                val selector = scriptedVariableSelector(project, file)
+                val selector = selector(project, file).scriptedVariable()
                 val name = element.name ?: return
                 if (name.isParameterized()) return //parameterized -> ignored
                 val results = ParadoxGlobalScriptedVariableSearch.search(name, selector).findAll()

@@ -41,7 +41,7 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
                     val descriptors = mutableListOf<HierarchyNodeDescriptor>()
                     val type = typeConfig.name
                     val contextElement = elementPointer.element
-                    val selector = definitionSelector(myProject, contextElement).withSearchScopeType(getHierarchySettings().scopeType)
+                    val selector = selector(myProject, contextElement).definition().withSearchScopeType(getHierarchySettings().scopeType)
                     val definitions = ParadoxDefinitionSearch.search(type, selector).findAll()
                     val element = elementPointer.element
                     definitions.forEach { definition ->
@@ -55,7 +55,7 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
                 val descriptors = mutableListOf<HierarchyNodeDescriptor>()
                 val type = "${typeConfig.name}.${descriptor.name}"
                 val contextElement = elementPointer.element
-                val selector = definitionSelector(myProject, contextElement).withSearchScopeType(getHierarchySettings().scopeType)
+                val selector = selector(myProject, contextElement).definition().withSearchScopeType(getHierarchySettings().scopeType)
                 val definitions = ParadoxDefinitionSearch.search(type, selector).findAll()
                 val element = elementPointer.element
                 definitions.forEach { definition ->
@@ -68,7 +68,7 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
                 val descriptors = mutableListOf<HierarchyNodeDescriptor>()
                 val type = typeConfig.name
                 val contextElement = elementPointer.element
-                val selector = definitionSelector(myProject, contextElement).withSearchScopeType(getHierarchySettings().scopeType)
+                val selector = selector(myProject, contextElement).definition().withSearchScopeType(getHierarchySettings().scopeType)
                 val definitions = ParadoxDefinitionSearch.search(type, selector).findAll()
                 val element = elementPointer.element
                 definitions.forEach { definition ->

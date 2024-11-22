@@ -24,8 +24,7 @@ class ParadoxScriptedVariableImplementationsSearch : QueryExecutor<PsiElement, D
         DumbService.getInstance(project).runReadActionInSmartMode {
             //这里不进行排序
             //使用全部作用域
-            val selector = scriptedVariableSelector(project, sourceElement)
-                .withSearchScope(GlobalSearchScope.allScope(project))
+            val selector = selector(project, sourceElement).scriptedVariable().withSearchScope(GlobalSearchScope.allScope(project))
             ParadoxLocalScriptedVariableSearch.search(name, selector).forEach(consumer)
             ParadoxGlobalScriptedVariableSearch.search(name, selector).forEach(consumer)
         }

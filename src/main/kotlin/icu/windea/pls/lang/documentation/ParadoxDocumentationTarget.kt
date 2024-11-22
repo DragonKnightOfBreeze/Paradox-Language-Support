@@ -293,7 +293,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: Parado
     val nameLocalisation = run {
         val keys = ParadoxModifierManager.getModifierNameKeys(name, element)
         keys.firstNotNullOfOrNull { key ->
-            val selector = localisationSelector(project, element).contextSensitive()
+            val selector = selector(project, element).localisation().contextSensitive()
                 .preferLocale(usedLocale)
                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
@@ -302,7 +302,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: Parado
     val descLocalisation = run {
         val keys = ParadoxModifierManager.getModifierDescKeys(name, element)
         keys.firstNotNullOfOrNull { key ->
-            val selector = localisationSelector(project, element).contextSensitive()
+            val selector = selector(project, element).localisation().contextSensitive()
                 .preferLocale(usedLocale)
                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
@@ -339,7 +339,7 @@ private fun DocumentationBuilder.addModifierIcon(element: ParadoxModifierElement
     val iconFile = run {
         val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
         paths.firstNotNullOfOrNull { path ->
-            val iconSelector = fileSelector(project, element).contextSensitive()
+            val iconSelector = selector(project, element).file().contextSensitive()
             ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
         }
     }
@@ -511,7 +511,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: P
     val sectionKeys = mutableSetOf<String>()
     for ((key, locationExpression, required) in localisationInfos) {
         if (sectionKeys.contains(key)) continue
-        val selector = localisationSelector(project, element).contextSensitive().preferLocale(usedLocale)
+        val selector = selector(project, element).localisation().contextSensitive().preferLocale(usedLocale)
         val resolved = locationExpression.resolve(element, definitionInfo, selector) ?: continue //发生意外，直接跳过
         if (resolved.message != null) {
             map.put(key, resolved.message)
@@ -694,7 +694,7 @@ private fun DocumentationBuilder.buildLocalisationSections(element: ParadoxLocal
     val usedElement = when {
         usedLocale == locale -> element
         else -> {
-            val selector = localisationSelector(element.project, element).contextSensitive().preferLocale(usedLocale)
+            val selector = selector(element.project, element).localisation().contextSensitive().preferLocale(usedLocale)
             val category = element.category
             when (category) {
                 ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.search(element.name, selector).find()

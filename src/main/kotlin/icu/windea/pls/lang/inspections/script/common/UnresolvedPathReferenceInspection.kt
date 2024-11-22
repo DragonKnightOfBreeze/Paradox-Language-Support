@@ -65,7 +65,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                             if (fileNames.any { fileName -> fileName.matchesPattern(it, true) }) return
                         }
                     }
-                    val selector = fileSelector(project, file) //use file as context
+                    val selector = selector(project, file).file() //use file as context
                     if (ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return
                     val message = pathReferenceExpressionSupport.getUnresolvedMessage(configExpression, pathReference)
                     holder.registerProblem(location, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)

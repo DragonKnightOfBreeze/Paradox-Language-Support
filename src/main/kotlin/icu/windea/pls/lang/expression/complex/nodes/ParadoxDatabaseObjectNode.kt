@@ -124,7 +124,7 @@ class ParadoxDatabaseObjectNode(
             val name = node.text
             val typeToSearch = if (node.isBase || node.isForcedBase()) config.type else config.swapType
             if (typeToSearch == null) return null
-            val selector = definitionSelector(project, element).contextSensitive()
+            val selector = selector(project, element).definition().contextSensitive()
             return ParadoxDefinitionSearch.search(name, typeToSearch, selector).find()
                 ?.takeIf { node.isValidDatabaseObject(it, typeToSearch) }
         }
@@ -134,7 +134,7 @@ class ParadoxDatabaseObjectNode(
             val name = node.text
             val typeToSearch = if (node.isBase || node.isForcedBase()) config.type else config.swapType
             if (typeToSearch == null) return ResolveResult.EMPTY_ARRAY
-            val selector = definitionSelector(project, element).contextSensitive()
+            val selector = selector(project, element).definition().contextSensitive()
             return ParadoxDefinitionSearch.search(name, typeToSearch, selector).findAll()
                 .filter { node.isValidDatabaseObject(it, typeToSearch) }
                 .mapToArray { PsiElementResolveResult(it) }

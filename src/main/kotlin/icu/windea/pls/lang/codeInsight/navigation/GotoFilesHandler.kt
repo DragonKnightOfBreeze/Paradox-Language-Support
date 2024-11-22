@@ -28,7 +28,7 @@ class GotoFilesHandler : GotoTargetHandler() {
         val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
             //need read action here
             runReadAction {
-                val selector = fileSelector(project, file).contextSensitive()
+                val selector = selector(project, file).file().contextSensitive()
                 val resolved = ParadoxFilePathSearch.search(path, null, selector, ignoreLocale = true).findAll()
                 resolved.forEach { targets.add(it.toPsiFile(project)) }
             }

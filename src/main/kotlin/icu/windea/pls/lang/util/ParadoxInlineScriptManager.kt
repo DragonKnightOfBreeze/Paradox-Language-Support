@@ -75,13 +75,13 @@ object ParadoxInlineScriptManager {
 
     fun getInlineScriptFile(expression: String, contextElement: PsiElement, project: Project): ParadoxScriptFile? {
         val filePath = getInlineScriptFilePath(expression)
-        val selector = fileSelector(project, contextElement).contextSensitive()
+        val selector = selector(project, contextElement).file().contextSensitive()
         return ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)?.castOrNull()
     }
 
     fun processInlineScriptFile(expression: String, contextElement: PsiElement, project: Project, onlyMostRelevant: Boolean = false, processor: (ParadoxScriptFile) -> Boolean): Boolean {
         val filePath = getInlineScriptFilePath(expression)
-        val selector = fileSelector(project, contextElement).contextSensitive()
+        val selector = selector(project, contextElement).file().contextSensitive()
         return ParadoxFilePathSearch.search(filePath, null, selector).processQueryAsync(onlyMostRelevant) p@{
             ProgressManager.checkCanceled()
             val file = it.toPsiFile(project)?.castOrNull<ParadoxScriptFile>() ?: return@p true
@@ -179,7 +179,7 @@ object ParadoxInlineScriptManager {
         // infer & merge
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         val project = context.configGroup.project
-        val selector = inlineScriptUsageSelector(project, contextElement)
+        val selector = selector(project, contextElement).inlineScriptUsage()
         ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQueryAsync p@{ info ->
             ProgressManager.checkCanceled()
             val file = info.virtualFile?.toPsiFile(project) ?: return@p true

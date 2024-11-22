@@ -78,7 +78,7 @@ data class ParadoxLocalisationCodeInsightContext(
                 val expression = info.locationExpression
                 for (locale in locales) {
                     ProgressManager.checkCanceled()
-                    val selector = localisationSelector(project, definition).locale(locale) //use file as context
+                    val selector = selector(project, definition).localisation().locale(locale) //use file as context
                     val resolved = expression.resolve(definition, definitionInfo, selector)
                     val type = when {
                         info.required -> ParadoxLocalisationCodeInsightInfo.Type.Required
@@ -221,7 +221,7 @@ data class ParadoxLocalisationCodeInsightContext(
         }
 
         private fun isMissing(name: String, project: Project, context: PsiElement, locale: CwtLocalisationLocaleConfig): Boolean {
-            val selector = localisationSelector(project, context).locale(locale)
+            val selector = selector(project, context).localisation().locale(locale)
             val missing = ParadoxLocalisationSearch.search(name, selector).findFirst() == null
             return missing
         }

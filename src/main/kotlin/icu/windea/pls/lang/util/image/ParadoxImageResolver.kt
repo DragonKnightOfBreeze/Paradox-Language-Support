@@ -116,7 +116,7 @@ object ParadoxImageResolver {
     }
 
     private fun doResolveUrlByFilePath(filePath: String, project: Project, frameInfo: FrameInfo?): String? {
-        val file = ParadoxFilePathSearch.search(filePath, null, nopSelector(project)).find() ?: return null
+        val file = ParadoxFilePathSearch.search(filePath, null, selector(project).file()).find() ?: return null
         return doResolveUrlByFile(file, frameInfo)
     }
 

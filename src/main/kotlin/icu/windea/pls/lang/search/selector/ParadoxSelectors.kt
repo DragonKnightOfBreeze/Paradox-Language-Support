@@ -11,6 +11,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constraints.*
 
 class ParadoxWithGameTypeSelector<T>(
     val gameType: ParadoxGameType
@@ -150,6 +151,5 @@ class ParadoxPreferLocaleSelector(
     }
 }
 
-//class ParadoxWithIndexKeySelector<T: PsiElement> (
-//    val indexKey: StubIndexKey<String, T>
-//): ParadoxSelector<T>
+class ParadoxWithConstraintSelector(val constraint: ParadoxLocalisationConstraint) : ParadoxSelector<ParadoxLocalisationProperty>
+

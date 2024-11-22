@@ -44,7 +44,7 @@ object ParadoxLocalisationParameterManager {
     private fun doGetParametersFromDefinitionHierarchyIndex(element: ParadoxLocalisationProperty): Set<String> {
         val targetLocalisationName = element.name
         val result = mutableSetOf<String>().synced()
-        val selector = localisationParameterSelector(element.project, element)
+        val selector = selector(element.project, element).localisationParameter()
         ParadoxLocalisationParameterSearch.search(targetLocalisationName, selector).processQueryAsync p@{ info ->
             result.add(info.name)
             true

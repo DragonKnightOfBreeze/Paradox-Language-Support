@@ -33,7 +33,7 @@ class ParadoxScriptedVariableLineMarkerProvider : RelatedItemLineMarkerProvider(
         }
         val targets by lazy {
             val project = element.project
-            val selector = scriptedVariableSelector(project, element).contextSensitive()
+            val selector = selector(project, element).scriptedVariable().contextSensitive()
             val targets = mutableSetOf<ParadoxScriptScriptedVariable>()
             //这里一般来说只会带上当前封装变量自身
             ParadoxLocalScriptedVariableSearch.search(name, selector).findAll().let { targets.addAll(it) }

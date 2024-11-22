@@ -38,7 +38,7 @@ class ParadoxFilesViewPane(project: Project) : AbstractProjectViewPaneWithAsyncS
                     if (directoryElement != null) {
                         val path = directoryElement.path.path
                         val preferredRootFile = directoryElement.preferredRootFile
-                        val selector = fileSelector(myProject, preferredRootFile).withGameType(directoryElement.gameType)
+                        val selector = selector(myProject, preferredRootFile).file().withGameType(directoryElement.gameType)
                         val files = ParadoxFilePathSearch.search(path, null, selector).findAll()
                         files.forEach { file ->
                             if (file.isDirectory) {
@@ -52,7 +52,7 @@ class ParadoxFilesViewPane(project: Project) : AbstractProjectViewPaneWithAsyncS
                     val directoryElement = obj.value
                     if (directoryElement != null) {
                         val preferredRootFile = directoryElement.preferredRootFile
-                        val selector = fileSelector(myProject, preferredRootFile).withGameType(directoryElement.gameType)
+                        val selector = selector(myProject, preferredRootFile).file().withGameType(directoryElement.gameType)
                         val files = ParadoxFilePathSearch.search("", null, selector).findAll()
                         files.forEach { file ->
                             if (file.isDirectory) {

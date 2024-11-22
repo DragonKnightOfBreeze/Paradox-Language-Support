@@ -27,7 +27,7 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
         ParadoxCompletionManager.initializeContext(parameters, context)
 
         //提示concept的name或alias
-        val conceptSelector = definitionSelector(project, file).contextSensitive().distinctByName()
+        val conceptSelector = selector(project, file).definition().contextSensitive().distinctByName()
         val keysToDistinct = mutableSetOf<String>()
         ParadoxDefinitionSearch.search("game_concept", conceptSelector).processQueryAsync p@{ concept ->
             val tailText = " from concepts"

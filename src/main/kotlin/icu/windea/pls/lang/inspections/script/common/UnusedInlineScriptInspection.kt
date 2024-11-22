@@ -17,9 +17,9 @@ class UnusedInlineScriptInspection : LocalInspectionTool() {
 
         //still check if inference.inlineScriptConfig is not checked
         //if(!getSettings().inference.inlineScriptConfig) return null
-        
+
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return null
-        val selector = inlineScriptUsageSelector(file.project, file)
+        val selector = selector(file.project, file).inlineScriptUsage()
         val hasUsages = ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).findFirst() != null
         if (hasUsages) return null
 

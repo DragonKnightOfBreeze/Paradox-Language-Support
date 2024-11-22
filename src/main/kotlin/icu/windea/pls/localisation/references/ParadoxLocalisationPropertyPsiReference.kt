@@ -63,7 +63,7 @@ class ParadoxLocalisationPropertyPsiReference(
         val name = element.name
 
         //尝试解析成localisation或者synced_localisation
-        val selector = localisationSelector(project, file).contextSensitive().preferLocale(locale)
+        val selector = selector(project, file).localisation().contextSensitive().preferLocale(locale)
         val resolved = when (category) {
             Localisation -> ParadoxLocalisationSearch.search(name, selector).find()
             SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector).find()
@@ -85,7 +85,7 @@ class ParadoxLocalisationPropertyPsiReference(
         val name = element.name
 
         //尝试解析成localisation或者synced_localisation
-        val selector = localisationSelector(project, file).contextSensitive().preferLocale(locale)
+        val selector = selector(project, file).localisation().contextSensitive().preferLocale(locale)
         val resolved = when (category) {
             Localisation -> ParadoxLocalisationSearch.search(name, selector).findAll() //查找所有语言区域的
             SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll() //查找所有语言区域的

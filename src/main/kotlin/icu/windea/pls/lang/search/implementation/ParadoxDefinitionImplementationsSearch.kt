@@ -29,7 +29,7 @@ class ParadoxDefinitionImplementationsSearch : QueryExecutor<PsiElement, Definit
         val project = queryParameters.project
         DumbService.getInstance(project).runReadActionInSmartMode {
             //这里不进行排序
-            val selector = definitionSelector(project, sourceElement)
+            val selector = selector(project, sourceElement).definition()
                 .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
             ParadoxDefinitionSearch.search(name, type, selector).forEach(consumer)
         }

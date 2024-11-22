@@ -46,7 +46,7 @@ class ParadoxDirectoryElementNode(
 
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
         if (value == null) return emptySet()
-        val selector = fileSelector(project, value.preferredRootFile).withGameType(value.gameType)
+        val selector = selector(project, value.preferredRootFile).file().withGameType(value.gameType)
         val directoryNames = mutableSetOf<String>()
         val query = ParadoxFilePathSearch.search(null, selector)
         val files = sortedSetOf(query.getPriorityComparator()) //按照覆盖顺序进行排序
@@ -79,7 +79,7 @@ class ParadoxDirectoryElementNode(
 
     override fun isValid(): Boolean {
         if (value == null) return false
-        val selector = fileSelector(project, value.preferredRootFile).withGameType(value.gameType)
+        val selector = selector(project, value.preferredRootFile).file().withGameType(value.gameType)
         return ParadoxFilePathSearch.search(value.path.path, null, selector).findFirst() != null
     }
 

@@ -15,7 +15,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.data.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.lang.invoke.*
 
@@ -28,7 +27,7 @@ object ParadoxDefineManager {
     fun <T> getDefineValue(contextElement: PsiElement, project: Project, path: String, type: Class<T>): T? {
         val gameType = selectGameType(contextElement) ?: return null
         try {
-            val selector = fileSelector(project, contextElement).contextSensitive()
+            val selector = selector(project, contextElement).file().contextSensitive()
             var result: Any? = null
             ParadoxFilePathSearch.search(definePathExpression, selector).findAll().process p@{
                 ProgressManager.checkCanceled()

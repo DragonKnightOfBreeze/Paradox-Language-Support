@@ -296,7 +296,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         val project = configGroup.project
-        val selector = definitionSelector(project, element).contextSensitive().distinctByName()
+        val selector = selector(project, element).definition().contextSensitive().distinctByName()
         val economicCategories = ParadoxDefinitionSearch.search("economic_category", selector).findAll()
         for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
@@ -313,7 +313,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val modifierName = name
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
-        val selector = definitionSelector(project, element).contextSensitive().distinctByName()
+        val selector = selector(project, element).definition().contextSensitive().distinctByName()
         val economicCategories = ParadoxDefinitionSearch.search("economic_category", selector).findAll()
         for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
@@ -337,7 +337,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val scopeContext = context.scopeContext
         if (element !is ParadoxScriptStringExpressionElement) return
 
-        val selector = definitionSelector(configGroup.project, element).contextSensitive().distinctByName()
+        val selector = selector(configGroup.project, element).definition().contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{ economicCategory ->
             ProgressManager.checkCanceled()
 
@@ -410,7 +410,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val gameType = definitionInfo.gameType
         val configGroup = definitionInfo.configGroup
         val project = configGroup.project
-        val selector = definitionSelector(project, definition).contextSensitive()
+        val selector = selector(project, definition).definition().contextSensitive()
         val economicCategory = ParadoxDefinitionSearch.search(definitionInfo.name, "economic_category", selector)
             .find()
             ?: return false

@@ -57,7 +57,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
                     val cachedStatus = statusMap[resolved]
                     val status = if (cachedStatus == null) {
                         ProgressManager.checkCanceled()
-                        val selector = parameterSelector(project, file).withSearchScope(searchScope) //use file as context
+                        val selector = selector(project, file).parameter().withSearchScope(searchScope) //use file as context
                         val r = ParadoxParameterSearch.search(resolved.name, resolved.contextKey, selector).processQueryAsync p@{
                             ProgressManager.checkCanceled()
                             if (it.readWriteAccess == Access.Read) {

@@ -24,7 +24,7 @@ class ParadoxFileImplementationsSearch : QueryExecutor<PsiElement, DefinitionsSc
         val project = queryParameters.project
         DumbService.getInstance(project).runReadActionInSmartMode {
             //这里不进行排序
-            val selector = fileSelector(project, sourceElement)
+            val selector = selector(project, sourceElement).file()
                 .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
             ParadoxFilePathSearch.search(path, null, selector).forEach(Processor {
                 consumer.process(it.toPsiFile(project))

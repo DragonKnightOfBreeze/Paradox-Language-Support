@@ -124,11 +124,11 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
             if (placeholder.startsWith("GFX_")) {
                 val spriteName = resolvePlaceholder(definitionInfo.name)!!
                 if (!toFile) {
-                    val selector = definitionSelector(project, definition).contextSensitive()
+                    val selector = selector(project, definition).definition().contextSensitive()
                     val resolved = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find()
                     return ResolveResult(spriteName, resolved, newFrameInfo)
                 }
-                val selector = definitionSelector(project, definition).contextSensitive()
+                val selector = selector(project, definition).definition().contextSensitive()
                 val resolved = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find()
                 val resolvedDefinition = resolved ?: return null
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
@@ -146,7 +146,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
             }
             //假定这里的filePath以.dds结尾
             val filePath = resolvePlaceholder(definitionInfo.name)!!
-            val selector = fileSelector(project, definition).contextSensitive()
+            val selector = selector(project, definition).file().contextSensitive()
             val file = ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
             return ResolveResult(filePath, file, newFrameInfo)
         } else if (propertyName != null) {
@@ -168,7 +168,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
                 //由filePath解析为图片文件
                 resolved is PsiFile && resolved.fileType == DdsFileType -> {
                     val filePath = resolved.fileInfo?.path?.path ?: return null
-                    val selector = fileSelector(project, definition).contextSensitive()
+                    val selector = selector(project, definition).file().contextSensitive()
                     val file = ParadoxFilePathSearch.search(filePath, null, selector).find()
                         ?.toPsiFile(project)
                     return ResolveResult(filePath, file, newFrameInfo)
@@ -179,7 +179,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                     if (!toFile && resolvedDefinitionInfo.type == "sprite") {
                         val spriteName = resolvedDefinitionInfo.name
-                        val selector = definitionSelector(project, definition).contextSensitive()
+                        val selector = selector(project, definition).definition().contextSensitive()
                         val r = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
                         return ResolveResult(spriteName, r, newFrameInfo)
                     }
@@ -213,11 +213,11 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
             if (placeholder.startsWith("GFX_")) {
                 val spriteName = resolvePlaceholder(definitionInfo.name)!!
                 if (!toFile) {
-                    val selector = definitionSelector(project, definition).contextSensitive()
+                    val selector = selector(project, definition).definition().contextSensitive()
                     val resolved = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).findAll()
                     return ResolveAllResult(spriteName, resolved, newFrameInfo)
                 }
-                val selector = definitionSelector(project, definition).contextSensitive()
+                val selector = selector(project, definition).definition().contextSensitive()
                 val resolved = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find()
                 val resolvedDefinition = resolved ?: return null
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
@@ -243,7 +243,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
             }
             //假定这里的filePath以.dds结尾
             val filePath = resolvePlaceholder(definitionInfo.name)!!
-            val selector = fileSelector(project, definition).contextSensitive()
+            val selector = selector(project, definition).file().contextSensitive()
             val files = ParadoxFilePathSearch.search(filePath, null, selector).findAll()
                 .mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
             return ResolveAllResult(filePath, files, newFrameInfo)
@@ -266,7 +266,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
                 //由filePath解析为图片文件
                 resolved is PsiFile && resolved.fileType == DdsFileType -> {
                     val filePath = resolved.fileInfo?.path?.path ?: return null
-                    val selector = fileSelector(project, definition).contextSensitive()
+                    val selector = selector(project, definition).file().contextSensitive()
                     val files = ParadoxFilePathSearch.search(filePath, null, selector).findAll()
                         .mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
                     return ResolveAllResult(filePath, files, newFrameInfo)
@@ -277,7 +277,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
                     val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                     if (!toFile && resolvedDefinitionInfo.type == "sprite") {
                         val spriteName = resolvedDefinitionInfo.name
-                        val selector = definitionSelector(project, definition).contextSensitive()
+                        val selector = selector(project, definition).definition().contextSensitive()
                         val r = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).findAll()
                         return ResolveAllResult(spriteName, r, newFrameInfo)
                     }

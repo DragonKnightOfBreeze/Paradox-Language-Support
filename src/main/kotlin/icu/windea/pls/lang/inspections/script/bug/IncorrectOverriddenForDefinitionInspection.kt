@@ -41,7 +41,7 @@ class IncorrectOverriddenForDefinitionInspection : LocalInspectionTool() {
             private fun visitDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
                 val priority = ParadoxPriorityProvider.getPriority(element)
                 if (priority == ParadoxPriority.ORDERED) return //only for FIOS and LIOS
-                val selector = definitionSelector(project, file)
+                val selector = selector(project, file).definition()
                 val name = definitionInfo.name
                 val type = definitionInfo.type
                 if (name.isParameterized()) return ////parameterized -> ignored

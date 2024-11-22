@@ -1,9 +1,18 @@
 package icu.windea.pls.lang.search.selector
 
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constraints.*
+import icu.windea.pls.model.indexInfo.*
+import icu.windea.pls.script.psi.*
 
 fun <S : ChainedParadoxSelector<T>, T> S.withGameType(gameType: ParadoxGameType?): S {
     if (gameType != null) selectors += ParadoxWithGameTypeSelector(gameType)
@@ -42,15 +51,68 @@ fun <S : ChainedParadoxSelector<T>, T, K> S.distinctBy(keySelector: (T) -> K): S
 }
 
 fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.notSamePosition(element: PsiElement?): S {
-    filterBy { element == null || !element.isSamePosition(it) }
+    return filterBy { element == null || !element.isSamePosition(it) }
+}
+
+@JvmName("distinctByName_scriptedVariable")
+fun <S : ChainedParadoxSelector<ParadoxScriptScriptedVariable>> S.distinctByName(): S {
+    return distinctBy { it.name }
+}
+
+@JvmName("distinctByName_definition")
+fun <S : ChainedParadoxSelector<ParadoxScriptDefinitionElement>> S.distinctByName(): S {
+    return distinctBy { ParadoxDefinitionManager.getName(it) }
+}
+
+@JvmName("distinctByName_localisation")
+fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.distinctByName(): S {
+    return distinctBy { it.name }
+}
+
+@JvmName("distinctByName_complexEnumValue")
+fun <S : ChainedParadoxSelector<ParadoxComplexEnumValueUsageInfo>> S.distinctByName(): S {
+    return distinctBy { it.name }
+}
+
+@JvmName("distinctByName_dynamicValue")
+fun <S : ChainedParadoxSelector<ParadoxDynamicValueUsageInfo>> S.distinctByName(): S {
+    return distinctBy { it.name }
+}
+
+@JvmName("distinctByName_parameter")
+fun <S : ChainedParadoxSelector<ParadoxParameterUsageInfo>> S.distinctByName(): S {
+    return distinctBy { it.name }
+}
+
+@JvmName("distinctByName_localisationParameter")
+fun <S : ChainedParadoxSelector<ParadoxLocalisationParameterUsageInfo>> S.distinctByName(): S {
+    return distinctBy { it.name }
+}
+
+fun <S : ChainedParadoxSelector<VirtualFile>> S.distinctByFilePath(): S {
+    return distinctBy { it.fileInfo?.path }
+}
+
+fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.locale(locale: CwtLocalisationLocaleConfig?): S {
+    if (locale != null) selectors += ParadoxLocaleSelector(locale)
     return this
 }
 
-//fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.useIndexKey(indexKey: StubIndexKey<String, T>): S {
-//    selectors += ParadoxWithIndexKeySelector(indexKey)
-//    return this
-//}
-//
-//fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.getIndexKey(): StubIndexKey<String, T>? {
-//    return selectors.findIsInstance<ParadoxWithIndexKeySelector<T>>()?.indexKey
-//}
+fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.preferLocale(locale: CwtLocalisationLocaleConfig?, condition: Boolean = true): S {
+    if (locale != null && condition) selectors += ParadoxPreferLocaleSelector(locale)
+    return this
+}
+
+fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.withConstraint(constraint: ParadoxLocalisationConstraint): S {
+    selectors += ParadoxWithConstraintSelector(constraint)
+    return this
+}
+
+fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.getConstraint(): ParadoxLocalisationConstraint {
+    return selectors.findIsInstance<ParadoxWithConstraintSelector>()?.constraint ?: ParadoxLocalisationConstraint.Default
+}
+
+fun <S : ChainedParadoxSelector<VirtualFile>> S.withFileExtensions(fileExtensions: Set<String>): S {
+    if (fileExtensions.isEmpty()) return this
+    return filterBy { it.extension?.let { e -> ".$e" }.orEmpty() in fileExtensions }
+}

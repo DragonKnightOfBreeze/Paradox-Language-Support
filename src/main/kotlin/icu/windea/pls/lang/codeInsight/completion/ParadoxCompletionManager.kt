@@ -381,7 +381,7 @@ object ParadoxCompletionManager {
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
-        val selector = localisationSelector(project, contextElement)
+        val selector = selector(project, contextElement).localisation()
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         //.distinctByName() //这里selector不需要指定去重
@@ -416,7 +416,7 @@ object ParadoxCompletionManager {
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
-        val selector = localisationSelector(project, contextElement)
+        val selector = selector(project, contextElement).localisation()
             .contextSensitive()
             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
         //.distinctByName() //这里selector不需要指定去重
@@ -445,7 +445,7 @@ object ParadoxCompletionManager {
         val project = configGroup.project
         val contextElement = context.contextElement
         val tailText = getExpressionTailText(context, config)
-        val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
+        val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search(typeExpression, selector).processQueryAsync p@{ definition ->
             ProgressManager.checkCanceled()
             val definitionInfo = definition.definitionInfo ?: return@p true
@@ -489,7 +489,7 @@ object ParadoxCompletionManager {
                 else -> emptySet()
             }
             //仅提示匹配file_extensions选项指定的扩展名的，如果存在
-            val selector = fileSelector(project, contextElement).contextSensitive()
+            val selector = selector(project, contextElement).file().contextSensitive()
                 .withFileExtensions(fileExtensions)
                 .distinctByFilePath()
             ParadoxFilePathSearch.search(configExpression, selector).processQueryAsync p@{ virtualFile ->
@@ -549,7 +549,7 @@ object ParadoxCompletionManager {
             ProgressManager.checkCanceled()
             val typeFile = complexEnumConfig.pointer.containingFile
             val searchScope = complexEnumConfig.searchScopeType
-            val selector = complexEnumValueSelector(project, contextElement)
+            val selector = selector(project, contextElement).complexEnumValue()
                 .withSearchScopeType(searchScope)
                 .contextSensitive()
                 .distinctByName()
@@ -1530,7 +1530,7 @@ object ParadoxCompletionManager {
             val valueNode = node.expression.valueNode ?: return@run
             val project = configGroup.project
             val contextElement = context.contextElement
-            val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
+            val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
             ParadoxDefinitionSearch.search(valueNode.text, config.type, selector).processQueryAsync p@{ definition ->
                 ProgressManager.checkCanceled()
                 val definitionInfo = definition.definitionInfo ?: return@p true
@@ -1602,7 +1602,7 @@ object ParadoxCompletionManager {
             run {
                 ProgressManager.checkCanceled()
                 val tailText = " by $configExpression"
-                val selector = dynamicValueSelector(project, contextElement).distinctByName()
+                val selector = selector(project, contextElement).dynamicValue().distinctByName()
                 ParadoxDynamicValueSearch.search(dynamicValueType, selector).processQueryAsync p@{ info ->
                     ProgressManager.checkCanceled()
                     if (info.name == keyword) return@p true //排除和当前输入的同名的
@@ -1697,7 +1697,7 @@ object ParadoxCompletionManager {
         val file = context.parameters?.originalFile ?: return
         val project = file.project
 
-        val scriptedLocSelector = definitionSelector(project, file).contextSensitive().distinctByName()
+        val scriptedLocSelector = selector(project, file).definition().contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search("scripted_loc", scriptedLocSelector).processQueryAsync p@{ scriptedLoc ->
             ProgressManager.checkCanceled()
             val name = scriptedLoc.definitionInfo?.name ?: return@p true //不应该为空
@@ -1721,7 +1721,7 @@ object ParadoxCompletionManager {
         val contextElement = context.contextElement!!
         val keyword = context.keyword
 
-        val variableSelector = dynamicValueSelector(project, file).contextSensitive().distinctByName()
+        val variableSelector = selector(project, file).dynamicValue().contextSensitive().distinctByName()
         ParadoxDynamicValueSearch.search("variable", variableSelector).processQueryAsync p@{ info ->
             ProgressManager.checkCanceled()
             if (info.name == keyword) return@p true //排除和当前输入的同名的

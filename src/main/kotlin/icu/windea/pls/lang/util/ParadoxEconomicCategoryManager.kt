@@ -107,7 +107,7 @@ object ParadoxEconomicCategoryManager {
     }
 
     private fun getResources(contextElement: PsiElement): Set<String> {
-        val selector = definitionSelector(contextElement.project, contextElement)
+        val selector = selector(contextElement.project, contextElement).definition()
         return ParadoxDefinitionSearch.search("resource", selector).findAll()
             .mapTo(mutableSetOf()) { it.name }  //it.name is ok
     }
@@ -116,7 +116,7 @@ object ParadoxEconomicCategoryManager {
         val parent = data.parent ?: return map
         withRecursionGuard("ParadoxEconomicCategoryManager.collectParentData") {
             withRecursionCheck(parent) {
-                val selector = definitionSelector(contextElement.project, contextElement).contextSensitive()
+                val selector = selector(contextElement.project, contextElement).definition().contextSensitive()
                 ParadoxDefinitionSearch.search(parent, "economic_category", selector).processQuery p@{
                     ProgressManager.checkCanceled()
                     val parentData = it.getData<StellarisEconomicCategoryData>() ?: return@p true

@@ -69,7 +69,7 @@ class ParadoxDynamicCommandFieldNode(
 
         private fun doResolve(): PsiElement? {
             run {
-                val selector = definitionSelector(project, element).contextSensitive()
+                val selector = selector(project, element).definition().contextSensitive()
                 ParadoxDefinitionSearch.search(name, "scripted_loc", selector).find()?.let { return it }
             }
             run {
@@ -81,7 +81,7 @@ class ParadoxDynamicCommandFieldNode(
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             run {
-                val selector = definitionSelector(project, element).contextSensitive()
+                val selector = selector(project, element).definition().contextSensitive()
                 ParadoxDefinitionSearch.search(name, "scripted_loc", selector).findAll().orNull()
                     ?.let { return it.mapToArray { e -> PsiElementResolveResult(e) } }
             }

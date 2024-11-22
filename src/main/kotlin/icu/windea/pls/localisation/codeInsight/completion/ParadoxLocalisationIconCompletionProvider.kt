@@ -29,7 +29,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
         ParadoxCompletionManager.initializeContext(parameters, context)
 
         //根据spriteName进行提示
-        val spriteSelector = definitionSelector(project, file).contextSensitive().distinctByName()
+        val spriteSelector = selector(project, file).definition().contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search("sprite", spriteSelector).processQueryAsync p@{ sprite ->
             ProgressManager.checkCanceled()
             val definitionInfo = sprite.definitionInfo ?: return@p true
@@ -40,7 +40,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
         }
 
         //根据ddsFileName进行提示
-        val fileSelector = fileSelector(project, file).contextSensitive().distinctByFilePath()
+        val fileSelector = selector(project, file).file().contextSensitive().distinctByFilePath()
         val ddsFileExpression = CwtDataExpression.resolve("icon[gfx/interface/icons/]", false)
         ParadoxFilePathSearch.search(ddsFileExpression, fileSelector).processQueryAsync p@{ ddsFile ->
             ProgressManager.checkCanceled()
@@ -51,7 +51,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
         }
 
         //作为生成的图标处理（解析为其他类型的定义）
-        val definitionSelector = definitionSelector(project, file).contextSensitive().distinctByName()
+        val definitionSelector = selector(project, file).definition().contextSensitive().distinctByName()
         //如果iconName为job_head_researcher，定义head_researcher包含定义属性`icon = researcher`，则解析为该定义属性
         ParadoxDefinitionSearch.search("job", definitionSelector).processQueryAsync p@{ definition ->
             ProgressManager.checkCanceled()

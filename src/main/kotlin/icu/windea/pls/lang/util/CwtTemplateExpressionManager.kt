@@ -138,7 +138,7 @@ object CwtTemplateExpressionManager {
             }
             CwtDataTypes.Definition -> {
                 val typeExpression = snippetExpression.value ?: return
-                val selector = definitionSelector(project, contextElement).contextSensitive().distinctByName()
+                val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
                 ParadoxDefinitionSearch.search(typeExpression, selector).processQueryAsync p@{ definition ->
                     ProgressManager.checkCanceled()
                     val name = definition.definitionInfo?.name ?: return@p true
@@ -164,7 +164,7 @@ object CwtTemplateExpressionManager {
                 if (complexEnumConfig != null) {
                     ProgressManager.checkCanceled()
                     val searchScope = complexEnumConfig.searchScopeType
-                    val selector = complexEnumValueSelector(project, contextElement)
+                    val selector = selector(project, contextElement).complexEnumValue()
                         .withSearchScopeType(searchScope)
                         .contextSensitive()
                         .distinctByName()
@@ -187,7 +187,7 @@ object CwtTemplateExpressionManager {
                     doProcessResolveResult(contextElement, configExpression, configGroup, processor, index + 1, builder + name)
                 }
                 ProgressManager.checkCanceled()
-                val selector = dynamicValueSelector(project, contextElement).distinctByName()
+                val selector = selector(project, contextElement).dynamicValue().distinctByName()
                 ParadoxDynamicValueSearch.search(dynamicValueType, selector).processQueryAsync p@{ info ->
                     ProgressManager.checkCanceled()
                     //去除后面的作用域信息

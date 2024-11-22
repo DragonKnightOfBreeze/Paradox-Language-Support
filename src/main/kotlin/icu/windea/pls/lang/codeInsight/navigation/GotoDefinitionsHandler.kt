@@ -33,7 +33,7 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
         val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
             //need read action here
             runReadAction {
-                val selector = definitionSelector(project, definition).contextSensitive()
+                val selector = selector(project, definition).definition().contextSensitive()
                 val resolved = ParadoxDefinitionSearch.search(definitionInfo.name, definitionInfo.type, selector).findAll()
                 targets.addAll(resolved)
             }

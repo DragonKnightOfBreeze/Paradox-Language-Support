@@ -186,7 +186,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
     val nameLocalisation = run {
         val keys = ParadoxModifierManager.getModifierNameKeys(name, contextElement)
         keys.firstNotNullOfOrNull { key ->
-            val selector = localisationSelector(project, contextElement).contextSensitive()
+            val selector = selector(project, contextElement).localisation().contextSensitive()
                 .preferLocale(usedLocale)
                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
@@ -195,7 +195,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
     val descLocalisation = run {
         val keys = ParadoxModifierManager.getModifierDescKeys(name, contextElement)
         keys.firstNotNullOfOrNull { key ->
-            val selector = localisationSelector(project, contextElement).contextSensitive()
+            val selector = selector(project, contextElement).localisation().contextSensitive()
                 .preferLocale(usedLocale)
                 .withConstraint(ParadoxLocalisationConstraint.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
@@ -233,7 +233,7 @@ private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceE
     val iconFile = run {
         val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
         paths.firstNotNullOfOrNull { path ->
-            val iconSelector = fileSelector(project, element).contextSensitive()
+            val iconSelector = selector(project, element).file().contextSensitive()
             ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
         }
     }

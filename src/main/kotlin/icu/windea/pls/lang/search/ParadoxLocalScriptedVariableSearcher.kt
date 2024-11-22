@@ -49,7 +49,7 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return true
         val name = queryParameters.name
         val project = queryParameters.project
-        val selector = inlineScriptUsageSelector(project, file)
+        val selector = selector(project, file).inlineScriptUsage()
         val uFile2StartOffsetMap = mutableMapOf<VirtualFile, Int>()
         ProgressManager.checkCanceled()
         ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQuery p@{ info ->

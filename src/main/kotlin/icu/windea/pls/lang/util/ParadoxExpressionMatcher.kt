@@ -146,7 +146,7 @@ object ParadoxExpressionMatcher {
             val name = expression.text
             val cacheKey = "l#$name"
             return getCachedMatchResult(element, cacheKey) {
-                val selector = localisationSelector(project, element)
+                val selector = selector(project, element).localisation()
                 ParadoxLocalisationSearch.search(name, selector).findFirst() != null
             }
         }
@@ -155,7 +155,7 @@ object ParadoxExpressionMatcher {
             val name = expression.text
             val cacheKey = "ls#$name"
             return getCachedMatchResult(element, cacheKey) {
-                val selector = localisationSelector(project, element)
+                val selector = selector(project, element).localisation()
                 ParadoxSyncedLocalisationSearch.search(name, selector).findFirst() != null
             }
         }
@@ -165,7 +165,7 @@ object ParadoxExpressionMatcher {
             val typeExpression = configExpression.value ?: return Result.NotMatch //invalid cwt config
             val cacheKey = "d#${typeExpression}#${name}"
             return getCachedMatchResult(element, cacheKey) {
-                val selector = definitionSelector(project, element)
+                val selector = selector(project, element).definition()
                 ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null
             }
         }
@@ -174,7 +174,7 @@ object ParadoxExpressionMatcher {
             val pathReference = expression.text.normalizePath()
             val cacheKey = "p#${pathReference}#${configExpression}"
             return getCachedMatchResult(element, cacheKey) {
-                val selector = fileSelector(project, element)
+                val selector = selector(project, element).file()
                 ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null
             }
         }
@@ -184,12 +184,12 @@ object ParadoxExpressionMatcher {
             if (searchScope == null) {
                 val cacheKey = "ce#${enumName}#${name}"
                 return getCachedMatchResult(element, cacheKey) {
-                    val selector = complexEnumValueSelector(project, element)
+                    val selector = selector(project, element).complexEnumValue()
                     ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
                 }
             }
             return Result.LazyIndexAwareMatch {
-                val selector = complexEnumValueSelector(project, element).withSearchScopeType(searchScope)
+                val selector = selector(project, element).complexEnumValue().withSearchScopeType(searchScope)
                 ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
             }
         }

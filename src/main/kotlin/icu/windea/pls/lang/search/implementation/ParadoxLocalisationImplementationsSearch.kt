@@ -29,7 +29,7 @@ class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, Defin
         DumbService.getInstance(project).runReadActionInSmartMode {
             val category = localisationInfo.category
             //这里不需要也无法进行排序
-            val selector = localisationSelector(project, sourceElement)
+            val selector = selector(project, sourceElement).localisation()
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig()) //限定语言区域
                 .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
             val localisations = when (category) {

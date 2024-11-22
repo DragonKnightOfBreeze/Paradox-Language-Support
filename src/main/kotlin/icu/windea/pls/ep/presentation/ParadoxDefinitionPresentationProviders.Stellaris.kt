@@ -92,7 +92,7 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
     }
 
     private fun getUnknownIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Icon? {
-        val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()
+        val selector = selector(definitionInfo.project, definition).definition().contextSensitive()
         val sprite = ParadoxDefinitionSearch.search("GFX_technology_unknown", "sprite", selector).find() ?: return null
         return ParadoxPresentationManager.getIcon(sprite)
     }
@@ -106,7 +106,7 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
             types.contains("rare") -> "GFX_tech_entry_rare_bg"
             else -> "GFX_tech_entry_${area}_bg"
         }
-        val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()
+        val selector = selector(definitionInfo.project, definition).definition().contextSensitive()
         val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
         return ParadoxPresentationManager.getIcon(sprite)
     }
@@ -114,21 +114,21 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
     private fun getBottomLineIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): Icon? {
         val area = data.area ?: return null
         val spriteName = "GFX_bottom_line_${area}"
-        val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()
+        val selector = selector(definitionInfo.project, definition).definition().contextSensitive()
         val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
         return ParadoxPresentationManager.getIcon(sprite)
     }
 
     private fun getCategoryIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): Icon? {
         val category = data.category?.firstOrNull() ?: return null
-        val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()
+        val selector = selector(definitionInfo.project, definition).definition().contextSensitive()
         val categoryDef = ParadoxDefinitionSearch.search(category, "technology_category", selector).find() ?: return null
         return ParadoxPresentationManager.getIcon(categoryDef)
     }
 
     private fun getGatewayIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Icon? {
         val spriteName = "GFX_tech_gateway"
-        val selector = definitionSelector(definitionInfo.project, definition).contextSensitive()
+        val selector = selector(definitionInfo.project, definition).definition().contextSensitive()
         val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite", selector).find() ?: return null
         return ParadoxPresentationManager.getIcon(sprite)
     }

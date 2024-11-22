@@ -31,7 +31,7 @@ class ParadoxEventNamespacePsiReference(
         if (preferredEventNamespace != null) return preferredEventNamespace
 
         val name = element.value.substringBefore('.')
-        val selector = definitionSelector(project, event).contextSensitive()
+        val selector = selector(project, event).definition().contextSensitive()
         val eventNamespace = ParadoxDefinitionSearch.search(name, "event_namespace", selector).find()
         return eventNamespace
     }
@@ -45,7 +45,7 @@ class ParadoxEventNamespacePsiReference(
         if (preferredEventNamespace != null) result.add(preferredEventNamespace)
 
         val name = element.value.substringBefore('.')
-        val selector = definitionSelector(project, event).contextSensitive()
+        val selector = selector(project, event).definition().contextSensitive()
         val eventNamespaces = ParadoxDefinitionSearch.search(name, "event_namespace", selector).findAll()
         result.addAll(eventNamespaces)
         return result.mapToArray { PsiElementResolveResult(it) }
