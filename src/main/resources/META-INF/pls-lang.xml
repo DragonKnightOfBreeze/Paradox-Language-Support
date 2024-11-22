@@ -15,6 +15,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.search.filePathSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.dynamicValueSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.complexEnumValueSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.search.defineSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.inlineScriptUsageSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.parameterSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.localisationParameterSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
@@ -147,6 +148,7 @@
     <filePathSearch implementation="icu.windea.pls.lang.search.ParadoxFilePathSearcher"/>
     <complexEnumValueSearch implementation="icu.windea.pls.lang.search.ParadoxComplexEnumValueSearcher"/>
     <dynamicValueSearch implementation="icu.windea.pls.lang.search.ParadoxDynamicValueSearcher"/>
+    <defineSearch implementation="icu.windea.pls.lang.search.ParadoxDefineSearcher"/>
     <inlineScriptUsageSearch implementation="icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearcher"/>
     <parameterSearch implementation="icu.windea.pls.lang.search.ParadoxParameterSearcher"/>
     <localisationParameterSearch implementation="icu.windea.pls.lang.search.ParadoxLocalisationParameterSearcher"/>

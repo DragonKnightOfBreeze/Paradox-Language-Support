@@ -32,14 +32,14 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
             val fileData = ParadoxInlineScriptUsageInfoIndex.INSTANCE.getFileData(file, project)
             if (fileData.isEmpty()) return@p true
             if(expression.isNotEmpty()) {
-                val compactInfo = fileData[expression] ?: return@p true
-                compactInfo.virtualFile = file
-                val r = consumer.process(compactInfo)
+                val info = fileData[expression] ?: return@p true
+                info.virtualFile = file
+                val r = consumer.process(info)
                 if (!r) return@p false
             } else {
-                fileData.values.forEach { compactInfo ->
-                    compactInfo.virtualFile = file
-                    val r = consumer.process(compactInfo)
+                fileData.values.forEach { info ->
+                    info.virtualFile = file
+                    val r = consumer.process(info)
                     if (!r) return@p false
                 }
             }

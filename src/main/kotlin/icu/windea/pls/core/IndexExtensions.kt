@@ -35,16 +35,11 @@ inline fun DataInput.readUTFFast(): String = IOUtil.readUTF(this)
 
 inline fun DataOutput.writeUTFFast(value: String) = IOUtil.writeUTF(this, value)
 
-inline fun <T> DataInput.readList(action: () -> T): MutableList<T> {
+inline fun <T> DataInput.readList(action: () -> T): List<T> {
     return MutableList(readIntFast()) { action() }
 }
 
 inline fun <T> DataOutput.writeList(collection: Collection<T>, action: (T) -> Unit) {
-    writeIntFast(collection.size)
-    collection.forEach { action(it) }
-}
-
-inline fun <T> DataOutput.writeList(collection: List<T>, action: (T) -> Unit) {
     writeIntFast(collection.size)
     collection.forEach { action(it) }
 }

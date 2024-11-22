@@ -179,7 +179,7 @@ object ParadoxInlineScriptManager {
         // infer & merge
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         val project = context.configGroup.project
-        val selector = inlineScriptSelector(project, contextElement)
+        val selector = inlineScriptUsageSelector(project, contextElement)
         ParadoxInlineScriptUsageSearch.search(inlineScriptExpression, selector).processQueryAsync p@{ info ->
             ProgressManager.checkCanceled()
             val file = info.virtualFile?.toPsiFile(project) ?: return@p true

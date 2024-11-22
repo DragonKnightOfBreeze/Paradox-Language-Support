@@ -78,8 +78,12 @@ fun ChainedParadoxSelector<ParadoxDynamicValueUsageInfo>.distinctByName() =
     distinctBy { it.name }
 //endregion
 
-//region inlineScriptSelector
-fun inlineScriptSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxInlineScriptUsageInfo.Compact>(project, context)
+//region defineSelector 
+fun defineSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxDefineInfo.Compact>(project, context)
+//endregion
+
+//region inlineScriptUsageSelector
+fun inlineScriptUsageSelector(project: Project, context: Any? = null) = ChainedParadoxSelector<ParadoxInlineScriptUsageInfo.Compact>(project, context)
 //endregion
 
 //region dynamicValueSelector

@@ -41,7 +41,7 @@ class ParadoxInlineScriptUsageInfoIndex : ParadoxFileBasedIndex<ParadoxInlineScr
             private fun visitProperty(element: ParadoxScriptProperty): Boolean {
                 val info = ParadoxInlineScriptManager.getUsageInfo(element) ?: return false
                 val compactInfo = fileData.getOrPut(info.expression) { ParadoxInlineScriptUsageInfo.Compact(info.expression, sortedSetOf()) }
-                compactInfo.elementOffsets.castOrNull<MutableSet<Int>>()?.let { it += info.elementOffset }
+                (compactInfo.elementOffsets as MutableSet) += info.elementOffset
                 return true
             }
         })
