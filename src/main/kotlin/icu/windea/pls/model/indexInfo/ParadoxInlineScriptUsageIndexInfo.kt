@@ -13,7 +13,7 @@ data class ParadoxInlineScriptUsageIndexInfo(
 
     data class Compact(
         val expression: String,
-        override val elementOffsets: Collection<Int>,
+        override val elementOffsets: Set<Int>,
         override val gameType: ParadoxGameType,
     ) : ParadoxIndexInfo.Compact {
         @Volatile

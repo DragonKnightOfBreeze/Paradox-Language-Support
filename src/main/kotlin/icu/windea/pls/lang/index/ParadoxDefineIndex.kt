@@ -51,7 +51,8 @@ class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexI
         value.forEach { (_, info) ->
             storage.writeUTFFast(info.namespace)
             storage.writeUTFFast(info.variable.orEmpty())
-            storage.writeList(info.elementOffsets) { storage.writeIntFast(it) }
+            storage.writeIntFast(info.elementOffsets.size)
+            info.elementOffsets.forEach { storage.writeIntFast(it) }
             storage.writeByte(info.gameType.optimizeValue())
         }
     }
@@ -62,7 +63,8 @@ class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexI
         repeat(size) {
             val namespace = storage.readUTFFast()
             val variable = storage.readUTFFast().orNull()
-            val elementOffsets = storage.readList { storage.readIntFast() }
+            val elementOffsets = sortedSetOf<Int>()
+            repeat(storage.readIntFast()) { elementOffsets += storage.readIntFast() }
             val gameType = storage.readByte().deoptimizeValue<ParadoxGameType>()
             map.put(variable.orEmpty(), ParadoxDefineIndexInfo.Compact(namespace, variable, elementOffsets, gameType))
         }

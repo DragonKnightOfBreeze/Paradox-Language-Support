@@ -15,7 +15,7 @@ data class ParadoxDefineIndexInfo(
     data class Compact(
         val namespace: String,
         val variable: String?,
-        override val elementOffsets: Collection<Int>,
+        override val elementOffsets: Set<Int>,
         override val gameType: ParadoxGameType,
     ) : ParadoxIndexInfo.Compact {
         @Volatile

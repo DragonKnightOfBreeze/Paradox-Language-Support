@@ -50,13 +50,15 @@ class ParadoxInlineScriptUsageIndex : ParadoxFileBasedIndex<ParadoxInlineScriptU
 
     override fun writeData(storage: DataOutput, value: ParadoxInlineScriptUsageIndexInfo.Compact) {
         storage.writeUTFFast(value.expression)
-        storage.writeList(value.elementOffsets) { storage.writeIntFast(it) }
+        storage.writeIntFast(value.elementOffsets.size)
+        value.elementOffsets.forEach { storage.writeIntFast(it) }
         storage.writeByte(value.gameType.optimizeValue())
     }
 
     override fun readData(storage: DataInput): ParadoxInlineScriptUsageIndexInfo.Compact {
         val expression = storage.readUTFFast()
-        val elementOffsets = storage.readList { storage.readIntFast() }
+        val elementOffsets = sortedSetOf<Int>()
+        repeat(storage.readIntFast()) { elementOffsets += storage.readIntFast() }
         val gameType = storage.readByte().deoptimizeValue<ParadoxGameType>()
         return ParadoxInlineScriptUsageIndexInfo.Compact(expression, elementOffsets, gameType)
     }

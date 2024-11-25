@@ -20,7 +20,7 @@ interface ParadoxIndexInfo {
      * @property virtualFile 对应的虚拟文件。仅使用[QueryExecutor]进行查询时才能获取。
      */
     interface Compact {
-        val elementOffsets: Collection<Int>
+        val elementOffsets: Set<Int>
         val gameType: ParadoxGameType
         var virtualFile: VirtualFile?
     }
