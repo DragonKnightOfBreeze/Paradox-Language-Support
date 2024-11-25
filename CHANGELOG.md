@@ -4,6 +4,8 @@
 
 * [X] #103
 * [X] #104
+* [X] 优化`IncorrectFileEncodingInspection` (参见 #102)
+* [ ] #101
 
 ## 1.3.25
 
