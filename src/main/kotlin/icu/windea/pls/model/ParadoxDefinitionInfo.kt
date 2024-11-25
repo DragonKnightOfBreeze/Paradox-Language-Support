@@ -6,6 +6,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.util.*
@@ -71,7 +72,7 @@ class ParadoxDefinitionInfo(
             val info = RelatedLocalisationInfo(config.key, locationExpression, config.required, config.primary)
             result.add(info)
         }
-        result
+        result.optimized()
     }
 
     val images: List<RelatedImageInfo> by lazy {
@@ -83,7 +84,7 @@ class ParadoxDefinitionInfo(
             val info = RelatedImageInfo(config.key, locationExpression, config.required, config.primary)
             result.add(info)
         }
-        result
+        result.optimized()
     }
 
     val modifiers: List<ModifierInfo> by lazy {
@@ -92,15 +93,15 @@ class ParadoxDefinitionInfo(
             for (subtype in subtypes) {
                 configGroup.type2ModifiersMap.get("$type.$subtype")?.forEach { (_, v) -> add(ModifierInfo(CwtTemplateExpressionManager.extract(v.template, name), v)) }
             }
-        }
+        }.optimized()
     }
 
     val primaryLocalisations: List<RelatedLocalisationInfo> by lazy {
-        localisations.filter { it.primary || it.primaryByInference }
+        localisations.filter { it.primary || it.primaryByInference }.optimized()
     }
 
     val primaryImages: List<RelatedImageInfo> by lazy {
-        images.filter { it.primary || it.primaryByInference }
+        images.filter { it.primary || it.primaryByInference }.optimized()
     }
 
     val localisationConfig get() = typeConfig.localisation
@@ -125,14 +126,14 @@ class ParadoxDefinitionInfo(
                 result.add(subtypeConfig)
             }
         }
-        return result
+        return result.optimized()
     }
 
     fun getDeclaration(matchOptions: Int = ParadoxExpressionMatcher.Options.Default): CwtPropertyConfig? {
-        return declarationConfigsCache.getOrPut(matchOptions) { doGetDeclaration(matchOptions) }
+        return declarationConfigsCache.getOrPut(matchOptions) { doGetDeclaration(matchOptions) ?: EMPTY_OBJECT }.castOrNull()
     }
 
-    private val declarationConfigsCache = ConcurrentHashMap<Int, CwtPropertyConfig?>()
+    private val declarationConfigsCache = ConcurrentHashMap<Int, Any>()
 
     private fun doGetDeclaration(matchOptions: Int): CwtPropertyConfig? {
         val declarationConfig = configGroup.declarations.get(type) ?: return null
