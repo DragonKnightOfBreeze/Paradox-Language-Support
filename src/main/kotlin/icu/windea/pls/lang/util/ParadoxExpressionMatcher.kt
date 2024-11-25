@@ -85,18 +85,16 @@ object ParadoxExpressionMatcher {
             }
 
             private fun doGetCatching(): Boolean {
-                //it's necessary to suppress outputting error logs and throwing exceptions here
+                //it should be necessary to suppress outputting error logs and throwing exceptions here
 
                 //java.lang.Throwable: Indexing process should not rely on non-indexed file data.
                 //java.lang.AssertionError: Reentrant indexing
                 //com.intellij.openapi.project.IndexNotReadyException
 
-                return disableLogger {
-                    runCatchingCancelable {
-                        @Suppress("UNCHECKED_CAST")
-                        (value as () -> Boolean)()
-                    }.getOrDefault(true)
-                }
+                return runCatchingCancelable {
+                    @Suppress("UNCHECKED_CAST")
+                    (value as () -> Boolean)()
+                }.getOrDefault(true)
             }
         }
 

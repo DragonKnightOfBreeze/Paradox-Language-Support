@@ -18,18 +18,12 @@ class FileRenderCodeInjector : CodeInjectorBase() {
 
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER, static = true)
     fun customize(renderer: SimpleColoredComponent, value: Any) {
-        doCustomizeCatching(value, renderer)
-    }
-
-    private fun doCustomizeCatching(value: Any, renderer: SimpleColoredComponent) {
-        disableLogger {
-            runCatchingCancelable {
-                if (doCustomize(value, renderer)) return
-            }
+        runCatchingCancelable {
+            if (doCustomize(renderer, value)) return
         }
     }
-
-    private fun doCustomize(value: Any, renderer: SimpleColoredComponent): Boolean {
+    
+    private fun doCustomize(renderer: SimpleColoredComponent, value: Any): Boolean {
         val file = when {
             value is FileNode -> value.file
             value is VirtualFile -> value

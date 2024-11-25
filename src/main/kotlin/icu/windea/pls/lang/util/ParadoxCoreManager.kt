@@ -72,7 +72,7 @@ object ParadoxCoreManager {
     private fun doGetRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         //尝试从此目录向下查找descriptor.mod
         run {
-            val descriptorFile = disableLogger { getDescriptorFile(rootFile) } ?: return@run
+            val descriptorFile = runReadAction { getDescriptorFile(rootFile) } ?: return@run
             val descriptorInfo = getDescriptorInfo(descriptorFile) ?: return null
             return ParadoxModRootInfo(rootFile, descriptorFile, descriptorInfo)
         }
@@ -80,7 +80,7 @@ object ParadoxCoreManager {
         //尝试从此目录向下查找launcher-settings.json，如果找到，再根据"dlcPath"的值获取游戏文件的根目录
         //注意游戏文件的根目录可能是此目录的game子目录，而非此目录自身
         run {
-            val launcherSettingsFile = disableLogger { getLauncherSettingsFile(rootFile) } ?: return@run
+            val launcherSettingsFile = runReadAction { getLauncherSettingsFile(rootFile) } ?: return@run
             val launcherSettingsInfo = getLauncherSettingsInfo(launcherSettingsFile) ?: return null
             return ParadoxGameRootInfo(rootFile, launcherSettingsFile, launcherSettingsInfo)
         }
@@ -141,9 +141,7 @@ object ParadoxCoreManager {
         //尝试兼容某些file是LightVirtualFile的情况（例如，file位于VCS DIFF视图中）
         if (file is LightVirtualFile) {
             file.originalFile?.let { return it }
-            //since 223-EAP, call 'VfsUtil.findFile(Path, boolean)' may cause:
-            //java.lang.Throwable: Slow operations are prohibited on EDT. See SlowOperations.assertSlowOperationsAreAllowed javadoc.
-            disableLogger { VfsUtil.findFile(filePath, false) }?.let { return it }
+            runReadAction { VfsUtil.findFile(filePath, false) }?.let { return it }
             return null
         }
         return file

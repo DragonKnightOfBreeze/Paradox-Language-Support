@@ -5,12 +5,14 @@
 * [X] 兼容脚本文件中的内联模版表达式（如，`has_ethic = ethic_[[fanatic]fanatic_]pacifist`）
 * [X] #96
 * [X] #97 兼容VIC3中的定义（define）引用（对应新的规则类型`$define_reference`）
+* [X] #100 删除`disableLogger`以免忽略某些重要的报错
 
 ***
 
 * [X] Compatible with inline template expressions in script files (e.g., `has_ethic = ethic_[[fanatic]fanatic_]pacifist`)
 * [X] #96
 * [X] #97 Support Vic3 define references (corresponding to new data type `$define_reference`)
+* [X] #100 Remove `disableLogger` to avoid ignoring some important errors.
 
 ## 1.3.24
 
