@@ -63,8 +63,8 @@ class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexI
         repeat(size) {
             val namespace = storage.readUTFFast()
             val variable = storage.readUTFFast().orNull()
-            val elementOffsets = sortedSetOf<Int>()
-            repeat(storage.readIntFast()) { elementOffsets += storage.readIntFast() }
+            val elementOffsetsSize = storage.readIntFast()
+            val elementOffsets = if (elementOffsetsSize != 0) sortedSetOf<Int>().apply { repeat(elementOffsetsSize) { this += storage.readIntFast() } } else emptySet()
             val gameType = storage.readByte().deoptimizeValue<ParadoxGameType>()
             map.put(variable.orEmpty(), ParadoxDefineIndexInfo.Compact(namespace, variable, elementOffsets, gameType))
         }

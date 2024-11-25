@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -30,7 +31,7 @@ object CwtConfigManager {
      * @param forRepo 是否兼容插件或者规则仓库中的CWT文件（此时将其视为规则文件）。
      */
     fun getContainingConfigGroup(element: PsiElement, forRepo: Boolean = false): CwtConfigGroup? {
-        val file = element.containingFile ?: return null
+        val file = runReadAction { element.containingFile } ?: return null
         val vFile = file.virtualFile ?: return null
         return getContainingConfigGroup(vFile, file.project, forRepo)
     }
@@ -67,7 +68,7 @@ object CwtConfigManager {
     }
 
     fun getFilePath(element: PsiElement): String? {
-        val file = element.containingFile ?: return null
+        val file = runReadAction { element.containingFile } ?: return null
         val vFile = file.virtualFile ?: return null
         return getFilePath(vFile, file.project)
     }
@@ -95,7 +96,7 @@ object CwtConfigManager {
     private fun doGetConfigPathFromCache(element: CwtMemberElement): CwtConfigPath? {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigPath) {
-            val file = element.containingFile ?: return@getCachedValue null
+            val file = runReadAction { element.containingFile } ?: return@getCachedValue null
             val value = doGetConfigPath(element)
             CachedValueProvider.Result.create(value, file)
         }
@@ -116,7 +117,7 @@ object CwtConfigManager {
                     depth++
                 }
             }
-            current = current.parent ?: break
+            current = runReadAction { current.parent } ?: break
         }
         if (current !is CwtFile) return null //unexpected
         return CwtConfigPath.resolve(subPaths)
@@ -130,7 +131,7 @@ object CwtConfigManager {
     private fun doGetConfigTypeFromCache(element: CwtMemberElement): CwtConfigType? {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigType) {
-            val file = element.containingFile ?: return@getCachedValue null
+            val file = runReadAction { element.containingFile } ?: return@getCachedValue null
             val value = when (element) {
                 is CwtProperty -> doGetConfigType(element, file)
                 is CwtValue -> doGetConfigType(element, file)
