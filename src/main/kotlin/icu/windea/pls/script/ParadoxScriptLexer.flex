@@ -132,7 +132,7 @@ INT_NUMBER_TOKEN=[0-9]+ //leading zero is permitted
 INT_TOKEN=[+-]?{INT_NUMBER_TOKEN}
 FLOAT_NUMBER_TOKEN=[0-9]*(\.[0-9]+) //leading zero is permitted
 FLOAT_TOKEN=[+-]?{FLOAT_NUMBER_TOKEN}
-COLOR_TOKEN=(rgb|hsv)[ \t]*\{[\d.\s&&[^\r\n]]*}
+COLOR_TOKEN=(rgb|hsv|hsv360)[ \t]*\{[\d.\s&&[^\r\n]]*} //#103 hsv360 (from vic3)
 
 CHECK_STRING={WILDCARD_STRING_TOKEN}|{WILDCARD_QUOTED_STRING_TOKEN}
 WILDCARD_STRING_TOKEN=[^@#={}\s\"][^#={}\s\"]*\"?
