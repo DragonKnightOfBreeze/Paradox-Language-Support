@@ -135,12 +135,12 @@ FLOAT_TOKEN=[+-]?{FLOAT_NUMBER_TOKEN}
 COLOR_TOKEN=(rgb|hsv|hsv360)[ \t]*\{[\d.\s&&[^\r\n]]*} //#103 hsv360 (from vic3)
 
 CHECK_STRING={WILDCARD_STRING_TOKEN}|{WILDCARD_QUOTED_STRING_TOKEN}
-WILDCARD_STRING_TOKEN=[^@#={}\s\"][^#={}\s\"]*\"?
+WILDCARD_STRING_TOKEN=[^@#=<>?{}\s\"][^#=<>?{}\s\"]*\"?
 WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\[\s\S])*\"?
-STRING_TOKEN=[^@#$={}\[\]\s\"][^#$={}\[\]\s\"]*\"?
+STRING_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
 QUOTED_STRING_TOKEN=([^\"\\$]|\\[\s\S])+
 
-SNIPPET_TOKEN=[^#$={}\[\]\s]+ //compatible with leading "@"
+SNIPPET_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
 
 %%
 
