@@ -9,18 +9,18 @@ import icu.windea.pls.lang.util.*
 
 /**
  * @property name string
- * @property fromData (property) from_data: boolean
  * @property type (property) type: string?
+ * @property fromData (property) from_data: boolean
  * @property prefix (property) prefix: string?
  * @property dataSource (property) data_source: expression?
- * @property forDefinitionType (property) for_definition_type: string?
  * @property inputScopes (property) input_scopes: string[]
  * @property outputScope (property) output_scope: string?
+ * @property forDefinitionType (property) for_definition_type: string?
  */
 interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
-    val fromData: Boolean
     val type: String?
+    val fromData: Boolean
     val prefix: String?
     val dataSource: String?
     val inputScopes: Set<String>
@@ -30,17 +30,19 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val dataSourceExpression: CwtDataExpression?
     override val expression: CwtDataExpression? get() = dataSourceExpression
 
+    //type = null -> default to "scope"
+    
     //output_scope = null -> transfer scope based on data source
-    //e.g., for 'event_target', output_scope should be null
+    //e.g., for event_target, output_scope should be null
 
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig): CwtLinkConfig? = doResolve(config)
     }
 }
 
-fun CwtLinkConfig.forScope() = type.isNullOrEmpty() || type == "both" || type == "scope"
+fun CwtLinkConfig.forScope() = type != "value" /* type.isNullOrEmpty() || type == "both" || type == "scope" */
 
-fun CwtLinkConfig.forValue() = type.isNullOrEmpty() || type == "both" || type == "value"
+fun CwtLinkConfig.forValue() = type == "both" || type == "value"
 
 fun CwtLinkConfig.withPrefix() = prefix.isNotNullOrEmpty()
 
@@ -48,8 +50,8 @@ fun CwtLinkConfig.withPrefix() = prefix.isNotNullOrEmpty()
 
 private fun doResolve(config: CwtPropertyConfig): CwtLinkConfig? {
     val name = config.key
-    var fromData = false
     var type: String? = null
+    var fromData = false
     var prefix: String? = null
     var dataSource: String? = null
     var inputScopes: Set<String>? = null
@@ -58,8 +60,8 @@ private fun doResolve(config: CwtPropertyConfig): CwtLinkConfig? {
     val props = config.properties ?: return null
     for (prop in props) {
         when (prop.key) {
-            "from_data" -> fromData = prop.booleanValue ?: false
             "type" -> type = prop.stringValue
+            "from_data" -> fromData = prop.booleanValue ?: false
             "prefix" -> prefix = prop.stringValue
             "data_source" -> dataSource = prop.value
             "input_scopes" -> inputScopes = buildSet {
@@ -72,14 +74,14 @@ private fun doResolve(config: CwtPropertyConfig): CwtLinkConfig? {
     }
     if (fromData && dataSource == null) return null //invalid
     inputScopes = inputScopes.orNull() ?: ParadoxScopeManager.anyScopeIdSet
-    return CwtLinkConfigImpl(config, name, fromData, type, prefix, dataSource, inputScopes, outputScope, forDefinitionType)
+    return CwtLinkConfigImpl(config, name, type, fromData, prefix, dataSource, inputScopes, outputScope, forDefinitionType)
 }
 
 private class CwtLinkConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
-    override val fromData: Boolean = false,
     override val type: String? = null,
+    override val fromData: Boolean = false,
     override val prefix: String?,
     override val dataSource: String?,
     override val inputScopes: Set<String>,
