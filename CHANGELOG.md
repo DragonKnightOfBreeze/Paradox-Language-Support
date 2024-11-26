@@ -2,10 +2,11 @@
 
 ## 1.3.26
 
-* [X] #103
-* [X] #104
+* [X] #103 Victoria 3 has one more type of color: hsv360
+* [X] #104 There is a problem with the new ?= operator when it is directly on a value.
 * [X] 优化`IncorrectFileEncodingInspection` (参见 #102)
-* [ ] #101
+* [ ] 优化规则匹配逻辑，以更准确地匹配与区分`scope_field`与`value_field`
+* [ ] #101 Victoria 3 link Comparisons
 
 ## 1.3.25
 
