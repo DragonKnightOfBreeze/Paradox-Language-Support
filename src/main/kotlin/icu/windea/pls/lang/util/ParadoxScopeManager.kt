@@ -8,6 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.scope.*
@@ -283,6 +284,21 @@ object ParadoxScopeManager {
         return scopeContext ?: getAnyScopeContext()
     }
 
+    fun getSwitchedScopeContext(element: PsiElement, scopeFieldExpression: ParadoxScopeFieldExpression, configExpression: CwtDataExpression): ParadoxScopeContext? {
+        val memberElement = findParentMember(element, withSelf = true)
+        val parentMemberElement = findParentMember(element, withSelf = false)
+        val parentScopeContext = when {
+            parentMemberElement != null -> getSwitchedScopeContext(parentMemberElement) ?: getAnyScopeContext()
+            else -> getAnyScopeContext()
+        }
+        val expressionElement = when {
+            memberElement is ParadoxScriptProperty -> if (configExpression.isKey) memberElement.propertyKey else memberElement.propertyValue
+            memberElement is ParadoxScriptValue -> memberElement
+            else -> return null
+        } ?: return null
+        return getSwitchedScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
+    }
+    
     fun getSwitchedScopeContext(element: ParadoxExpressionElement, scopeFieldExpression: ParadoxScopeFieldExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val scopeNodes = scopeFieldExpression.scopeNodes
         if (scopeNodes.isEmpty()) return inputScopeContext //unexpected -> unchanged

@@ -467,7 +467,9 @@ object ParadoxExpressionManager {
         //* 然后，尝试需要检测子句的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
         //* 然后，尝试需要检测作用域上下文的匹配，如果存在匹配项，则保留所有匹配的结果或者第一个匹配项
         //* 然后，尝试非回退的匹配，如果有结果，则直接返回
-        //* 最后加入回退的匹配
+        //* 然后，尝试复杂表达式的回退的匹配（可以解析，但存在错误），如果有结果，则直接返回
+        //* 然后，尝试回退的匹配，如果有结果，则直接返回
+        //* 如果到这里仍然无法匹配，则直接返回空列表
 
         val exactMatched = matchResultValues.filter { it.result is ParadoxExpressionMatcher.Result.ExactMatch }
         if (exactMatched.isNotEmpty()) return exactMatched.map { it.value }
@@ -493,13 +495,17 @@ object ParadoxExpressionManager {
             if (it.result is ParadoxExpressionMatcher.Result.LazyBlockAwareMatch) return@p false //已经匹配过
             if (it.result is ParadoxExpressionMatcher.Result.LazyScopeAwareMatch) return@p false //已经匹配过
             if (it.result is ParadoxExpressionMatcher.Result.LazySimpleMatch) return@p true //直接认为是匹配的
+            if (it.result is ParadoxExpressionMatcher.Result.ComplexExpressionFallbackMatch) return@p false //之后再匹配
             if (it.result is ParadoxExpressionMatcher.Result.FallbackMatch) return@p false //之后再匹配
             it.result.get(matchOptions)
         }
         if (matched.isNotEmpty()) return matched.map { it.value }
 
-        val fallbackMatched = matchResultValues.filter { it.result is ParadoxExpressionMatcher.Result.FallbackMatch }
-        if (fallbackMatched.isNotEmpty()) return fallbackMatched.map { it.value }
+        matchResultValues.filterTo(matched) { it.result is ParadoxExpressionMatcher.Result.ComplexExpressionFallbackMatch }
+        if (matched.isNotEmpty()) return matched.map { it.value }
+        
+        matchResultValues.filterTo(matched) { it.result is ParadoxExpressionMatcher.Result.FallbackMatch }
+        if (matched.isNotEmpty()) return matched.map { it.value }
 
         return emptyList()
     }
