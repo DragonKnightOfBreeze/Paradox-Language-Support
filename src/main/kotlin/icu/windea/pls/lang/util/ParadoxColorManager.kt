@@ -81,25 +81,27 @@ object ParadoxColorManager {
     }
 
     fun getNewColorArgs(colorType: String, colorArgs: List<String>, newColor: Color): List<String>? {
+        //保留3位小数
+        val precision = -3
         return when (colorType) {
             "rgb" -> {
                 if (colorArgs.size != 3 && colorArgs.size != 4) return null
                 val useFloat = colorArgs.all { it.toFloat() in 0f..1f } && colorArgs.any { it.contains('.') }
                 val addAlpha = colorArgs.size == 4
                 val (r, g, b, a) = newColor
-                listOf(r, g, b, a).let { if (addAlpha) it else it.take(3) }.map { if (useFloat) it / 255.0 else it }.map { it.toString() }
+                listOf(r, g, b, a).let { if (addAlpha) it else it.take(3) }.map { if (useFloat) (it / 255.0).format(precision) else it.toString() }
             }
             "hsv" -> {
                 if (colorArgs.size != 3) return null
                 val (r, g, b) = newColor
                 val (h, s, v) = Color.RGBtoHSB(r, g, b, null)
-                listOf(h,s,v).map { it.format(-4) }
+                listOf(h,s,v).map { it.format(precision) }
             }
             "hsv360" -> {
                 if (colorArgs.size != 3) return null
                 val (r, g, b) = newColor
                 val (h, s, v) = Color.RGBtoHSB(r, g, b, null)
-                listOf(h,s,v).map { (it * 360).toInt() }.map { it.toString() }
+                listOf(h,s,v).map { (it * 360).toInt().toString() }
             }
             else -> null
         }
