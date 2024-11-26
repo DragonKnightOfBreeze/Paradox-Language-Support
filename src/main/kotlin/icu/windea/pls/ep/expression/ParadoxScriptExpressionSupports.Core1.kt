@@ -31,7 +31,7 @@ class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptExpressionSuppor
         val range = TextRange.create(0, expressionText.length)
         val dynamicValueExpression = ParadoxDynamicValueExpression.resolve(expressionText, range, configGroup, config)
         if (dynamicValueExpression == null) return PsiReference.EMPTY_ARRAY
-        return dynamicValueExpression.getReferences(element)
+        return dynamicValueExpression.getAllReferences(element).toTypedArray()
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -58,7 +58,7 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport 
         val range = TextRange.create(0, expressionText.length)
         val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionText, range, configGroup)
         if (scopeFieldExpression == null) return PsiReference.EMPTY_ARRAY
-        return scopeFieldExpression.getReferences(element)
+        return scopeFieldExpression.getAllReferences(element).toTypedArray()
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -104,7 +104,7 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport 
         val range = TextRange.create(0, expressionText.length)
         val valueFieldExpression = ParadoxValueFieldExpression.resolve(expressionText, range, configGroup)
         if (valueFieldExpression == null) return PsiReference.EMPTY_ARRAY
-        return valueFieldExpression.getReferences(element)
+        return valueFieldExpression.getAllReferences(element).toTypedArray()
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -144,7 +144,7 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSuppo
         val range = TextRange.create(0, expressionText.length)
         val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expressionText, range, configGroup)
         if (variableFieldExpression == null) return PsiReference.EMPTY_ARRAY
-        return variableFieldExpression.getReferences(element)
+        return variableFieldExpression.getAllReferences(element).toTypedArray()
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -184,7 +184,7 @@ class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptExpressionSupp
         val range = TextRange.create(0, expressionText.length)
         val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(expressionText, range, configGroup)
         if (databaseObjectExpression == null) return PsiReference.EMPTY_ARRAY
-        return databaseObjectExpression.getReferences(element)
+        return databaseObjectExpression.getAllReferences(element).toTypedArray()
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -211,7 +211,7 @@ class ParadoxScriptDefineReferenceExpressionSupport : ParadoxScriptExpressionSup
         val range = TextRange.create(0, expressionText.length)
         val defineReferenceExpression = ParadoxDefineReferenceExpression.resolve(expressionText, range, configGroup)
         if (defineReferenceExpression == null) return PsiReference.EMPTY_ARRAY
-        return defineReferenceExpression.getReferences(element)
+        return defineReferenceExpression.getAllReferences(element).toTypedArray()
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {

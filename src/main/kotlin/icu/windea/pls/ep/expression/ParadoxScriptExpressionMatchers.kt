@@ -180,7 +180,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 val textRange = TextRange.create(0, expression.text.length)
                 val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.text, textRange, configGroup)
                 if (scopeFieldExpression == null) return Result.NotMatch
-                if (scopeFieldExpression.errors.isNotEmpty()) return Result.ComplexExpressionFallbackMatch
+                if (scopeFieldExpression.getAllErrors(null).isNotEmpty()) return Result.ComplexExpressionFallbackMatch
                 ParadoxExpressionMatcher.Impls.getScopeFieldMatchResult(element, scopeFieldExpression, configExpression, configGroup)
             }
             configExpression.type in CwtDataTypeGroups.ValueField -> {
@@ -196,7 +196,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 val textRange = TextRange.create(0, expression.text.length)
                 val valueFieldExpression = ParadoxValueFieldExpression.resolve(expression.text, textRange, configGroup)
                 if (valueFieldExpression == null) return Result.NotMatch
-                if (valueFieldExpression.errors.isNotEmpty()) return Result.ComplexExpressionFallbackMatch
+                if (valueFieldExpression.getAllErrors(null).isNotEmpty()) return Result.ComplexExpressionFallbackMatch
                 Result.ExactMatch
             }
             configExpression.type in CwtDataTypeGroups.VariableField -> {
@@ -212,7 +212,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 val textRange = TextRange.create(0, expression.text.length)
                 val variableFieldExpression = ParadoxVariableFieldExpression.resolve(expression.text, textRange, configGroup)
                 if (variableFieldExpression == null) return Result.NotMatch
-                if (variableFieldExpression.errors.isNotEmpty()) return Result.ComplexExpressionFallbackMatch
+                if (variableFieldExpression.getAllErrors(null).isNotEmpty()) return Result.ComplexExpressionFallbackMatch
                 Result.ExactMatch
             }
             configExpression.type == CwtDataTypes.DatabaseObject -> {
@@ -221,7 +221,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 val textRange = TextRange.create(0, expression.text.length)
                 val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(expression.text, textRange, configGroup)
                 if (databaseObjectExpression == null) return Result.NotMatch
-                if (databaseObjectExpression.errors.isNotEmpty()) return Result.ComplexExpressionFallbackMatch
+                if (databaseObjectExpression.getAllErrors(null).isNotEmpty()) return Result.ComplexExpressionFallbackMatch
                 Result.ExactMatch
             }
             configExpression.type == CwtDataTypes.DefineReference -> {
@@ -230,7 +230,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 val textRange = TextRange.create(0, expression.text.length)
                 val defineReferenceExpression = ParadoxDefineReferenceExpression.resolve(expression.text, textRange, configGroup)
                 if (defineReferenceExpression == null) return Result.NotMatch
-                if (defineReferenceExpression.errors.isNotEmpty()) return Result.ComplexExpressionFallbackMatch
+                if (defineReferenceExpression.getAllErrors(null).isNotEmpty()) return Result.ComplexExpressionFallbackMatch
                 Result.ExactMatch
             }
             configExpression.type == CwtDataTypes.Modifier -> {

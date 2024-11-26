@@ -25,6 +25,8 @@ interface ParadoxComplexExpressionNode {
 
     fun getReference(element: ParadoxExpressionElement): PsiReference? = null
 
+    fun getUnresolvedError(): ParadoxComplexExpressionError? = null
+    
     fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? = null
 
     abstract class Base : ParadoxComplexExpressionNode {

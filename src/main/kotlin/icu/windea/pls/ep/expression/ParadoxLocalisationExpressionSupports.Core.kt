@@ -29,7 +29,7 @@ class ParadoxLocalisationCommandExpressionSupport : ParadoxLocalisationExpressio
         val range = TextRange.create(0, expressionText.length)
         val commandExpression = ParadoxCommandExpression.resolve(expressionText, range, configGroup)
         if (commandExpression == null) return PsiReference.EMPTY_ARRAY
-        return commandExpression.getReferences(element)
+        return commandExpression.getAllReferences(element).toTypedArray()
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
@@ -55,7 +55,7 @@ class ParadoxLocalisationDatabaseObjectExpressionSupport : ParadoxLocalisationEx
         val range = TextRange.create(0, expressionText.length)
         val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(expressionText, range, configGroup)
         if (databaseObjectExpression == null) return PsiReference.EMPTY_ARRAY
-        return databaseObjectExpression.getReferences(element)
+        return databaseObjectExpression.getAllReferences(element).toTypedArray()
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {

@@ -4,24 +4,16 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
-import javax.swing.*
 
 /**
  * 不正确的[ParadoxValueFieldExpression]的检查。
- *
- * @property reportsUnresolved 是否报告无法解析的引用。
  */
 class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
-    @JvmField
-    var reportsUnresolved = true
-
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
@@ -39,17 +31,8 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
                 val value = element.value
                 val textRange = TextRange.create(0, value.length)
                 val expression = ParadoxValueFieldExpression.resolve(value, textRange, configGroup) ?: return
-                handleErrors(element, expression)
-            }
-
-            private fun handleErrors(element: ParadoxScriptStringExpressionElement, expression: ParadoxValueFieldExpression) {
-                expression.errors.forEach { error -> handleError(element, error) }
-                expression.processAllNodes { node -> node.getUnresolvedError(element)?.let { error -> handleError(element, error) }.let { true } }
-            }
-
-            private fun handleError(element: ParadoxScriptStringExpressionElement, error: ParadoxComplexExpressionError) {
-                if (!reportsUnresolved && error.isUnresolvedError()) return
-                holder.registerExpressionError(error, element)
+                val errors = expression.getAllErrors(element)
+                errors.forEach { error -> holder.registerExpressionError(error, element) }
             }
         }
     }
@@ -58,16 +41,4 @@ class IncorrectValueFieldExpressionInspection : LocalInspectionTool() {
         if (selectRootFile(file) == null) return false
         return true
     }
-
-    override fun createOptionsPanel(): JComponent {
-        return panel {
-            //reportsUnresolved
-            row {
-                checkBox(PlsBundle.message("inspection.script.incorrectExpression.option.reportsUnresolved"))
-                    .bindSelected(::reportsUnresolved)
-                    .actionListener { _, component -> reportsUnresolved = component.isSelected }
-            }
-        }
-    }
 }
-
