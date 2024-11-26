@@ -53,9 +53,9 @@
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.checker.ParadoxTriggerInSwitchChecker"/>
     <incorrectExpressionChecker implementation="icu.windea.pls.ep.checker.ParadoxTriggerInTriggerWithParametersAwareChecker"/>
     
-    <colorSupport implementation="icu.windea.pls.ep.color.ParadoxScriptColorColorSupport"/>
     <colorSupport implementation="icu.windea.pls.ep.color.ParadoxScriptStringColorSupport"/>
     <colorSupport implementation="icu.windea.pls.ep.color.ParadoxScriptBlockColorSupport"/>
+    <colorSupport implementation="icu.windea.pls.ep.color.ParadoxScriptColorColorSupport"/>
     
     <configContextProvider implementation="icu.windea.pls.ep.config.CwtBaseConfigContextProvider" order="last"/>
     <configContextProvider implementation="icu.windea.pls.ep.config.CwtInlineScriptUsageConfigContextProvider"/>
