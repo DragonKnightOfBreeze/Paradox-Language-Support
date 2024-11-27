@@ -295,18 +295,18 @@ object ParadoxParameterManager {
     /**
      * @param shift 从[element]开始向上的偏移，偏移量与[ParadoxExpressionPath]的长度的判定方式是一致的。
      */
-    fun getParameterizedKeyConfigs(element: PsiElement, shift: Int): List<CwtValueConfig>? {
+    fun getParameterizedKeyConfigs(element: PsiElement, shift: Int): List<CwtValueConfig> {
         val parameterizedProperty = element.parentsOfType<ParadoxScriptMemberElement>()
             .filter { it.isBlockMember() }
             .elementAtOrNull(shift)
-            ?: return null
-        val propertyKey = parameterizedProperty.castOrNull<ParadoxScriptProperty>()?.propertyKey ?: return null
-        val parameter = propertyKey.findChild<ParadoxParameter>() ?: return null
-        val parameterElement = getParameterElement(parameter) ?: return null
+            ?: return emptyList()
+        val propertyKey = parameterizedProperty.castOrNull<ParadoxScriptProperty>()?.propertyKey ?: return emptyList()
+        val parameter = propertyKey.findChild<ParadoxParameter>() ?: return emptyList()
+        val parameterElement = getParameterElement(parameter) ?: return emptyList()
         val contextConfigs = getInferredContextConfigsFromConfig(parameterElement)
         val configs = contextConfigs.singleOrNull()?.configs
             ?.filterNot { it !is CwtValueConfig || it.isBlock }
-        if (configs.isNullOrEmpty()) return null
+        if (configs.isNullOrEmpty()) return emptyList()
         return configs.cast()
     }
 }

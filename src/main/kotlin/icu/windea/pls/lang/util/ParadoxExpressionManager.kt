@@ -248,7 +248,7 @@ object ParadoxExpressionManager {
 
             val parameterizedKeyConfigs by lazy {
                 if (!isParameterized) return@lazy null
-                if (!isFullParameterized) return@lazy null //must be full parameterized yet
+                if (!isFullParameterized) return@lazy emptyList() //must be full parameterized yet
                 ParadoxParameterManager.getParameterizedKeyConfigs(element, shift)
             }
 
@@ -452,8 +452,8 @@ object ParadoxExpressionManager {
         //目前要求推断结果必须是唯一的
         //目前不支持从参数的使用处推断 - 这可能会导致规则上下文的递归解析
 
-        if (pkConfigs == null) return null
-        if (pkConfigs.size != 1) return null //must be unique yet
+        if (pkConfigs == null) return null //不是作为参数的键，不作特殊处理
+        if (pkConfigs.size != 1) return false //推断结果不是唯一的，要求后续宽松匹配的结果是唯一的，否则认为没有最终匹配的结果
         return CwtConfigManipulator.mergeAndMatchValueConfig(pkConfigs, configExpression)
     }
 
