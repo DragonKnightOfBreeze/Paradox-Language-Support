@@ -42,4 +42,4 @@ val ParadoxLocalisationConceptName.idElement: PsiElement? get() = findChildren(C
 val ParadoxLocalisationScriptedVariableReference.idElement: PsiElement? get() = findChildren(SCRIPTED_VARIABLE_REFERENCE_TOKEN).singleOrNull()
 
 val ParadoxLocalisationProperty.greenStub: ParadoxLocalisationPropertyStub?
-    get() = this.castOrNull<ParadoxLocalisationPropertyImpl>()?.greenStub ?: this.stub
+    get() = this.castOrNull<ParadoxLocalisationPropertyImpl>()?.greenStub

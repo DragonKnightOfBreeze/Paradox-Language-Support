@@ -50,4 +50,4 @@ val <T : ParadoxScriptDefinitionElement> T.greenStub: ParadoxScriptDefinitionEle
     } as? ParadoxScriptDefinitionElementStub<T>?
 
 val ParadoxScriptProperty.greenStub: ParadoxScriptPropertyStub?
-    get() = this.castOrNull<ParadoxScriptPropertyImpl>()?.greenStub ?: this.stub
+    get() = this.castOrNull<ParadoxScriptPropertyImpl>()?.greenStub

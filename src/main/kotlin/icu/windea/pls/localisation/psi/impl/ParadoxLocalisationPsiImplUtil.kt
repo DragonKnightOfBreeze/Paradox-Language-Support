@@ -68,7 +68,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxLocalisationProperty): String {
-        runReadAction { element.stub?.name }?.let { return it }
+        runReadAction { element.stub }?.name?.let { return it }
         return element.propertyKey.propertyKeyId.text
     }
 

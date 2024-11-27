@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.lang.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
@@ -17,7 +18,7 @@ import icu.windea.pls.model.*
 object ParadoxLocalisationManager {
     fun getInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         //快速判断
-        if (runCatchingCancelable { element.greenStub }.getOrNull()?.isValid() == false) return null
+        if (runReadAction { element.greenStub }?.isValid() == false) return null
         //从缓存中获取
         return doGetInfoFromCache(element)
     }
@@ -67,7 +68,7 @@ object ParadoxLocalisationManager {
     }
 
     fun getInfoFromStub(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        val stub = runCatchingCancelable { element.greenStub }.getOrNull() ?: return null
+        val stub = runReadAction { element.greenStub } ?: return null
         //if(!stub.isValid()) return null //这里不用再次判断
         val name = stub.name
         val category = stub.category

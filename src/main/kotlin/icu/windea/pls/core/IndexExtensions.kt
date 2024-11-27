@@ -2,7 +2,6 @@
 
 package icu.windea.pls.core
 
-import com.intellij.extapi.psi.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
@@ -34,12 +33,6 @@ inline fun DataOutput.writeIntFast(value: Int) = DataInputOutputUtil.writeINT(th
 inline fun DataInput.readUTFFast(): String = IOUtil.readUTF(this)
 
 inline fun DataOutput.writeUTFFast(value: String) = IOUtil.writeUTF(this, value)
-
-val StubBasedPsiElementBase<*>.containingFileStub: PsiFileStub<*>?
-    get() {
-        val stub = this.greenStub ?: return null
-        return stub.containingFileStub
-    }
 
 inline fun <reified T : StubIndexExtension<*, *>> findStubIndex(): T {
     return StubIndexExtension.EP_NAME.findExtensionOrFail(T::class.java)

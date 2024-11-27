@@ -7,6 +7,7 @@
 * [X] 优化`IncorrectFileEncodingInspection` (参见 #102)
 * [ ] 优化规则匹配逻辑，以更准确地匹配与区分`scope_field`与`value_field`
 * [ ] #101 Victoria 3 link Comparisons
+* [ ] #105 Read access is allowed from inside read-action only - 相关优化
 
 ## 1.3.25
 

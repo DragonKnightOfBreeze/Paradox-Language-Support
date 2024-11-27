@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.lang.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
@@ -33,7 +34,7 @@ object ParadoxDefinitionManager {
 
     fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
         //快速判断
-        if (runCatchingCancelable { element.greenStub }.getOrNull()?.isValidDefinition == false) return null
+        if (runReadAction { element.greenStub }?.isValidDefinition == false) return null
         //从缓存中获取
         return doGetInfoFromCache(element)
     }
@@ -481,11 +482,11 @@ object ParadoxDefinitionManager {
     }
 
     fun getName(element: ParadoxScriptDefinitionElement): String? {
-        return runCatchingCancelable { element.greenStub }.getOrNull()?.name ?: element.definitionInfo?.name
+        return runReadAction { element.greenStub }?.name ?: element.definitionInfo?.name
     }
 
     fun getType(element: ParadoxScriptDefinitionElement): String? {
-        return runCatchingCancelable { element.greenStub }.getOrNull()?.type ?: element.definitionInfo?.type
+        return runReadAction { element.greenStub }?.type ?: element.definitionInfo?.type
     }
 
     fun getSubtypes(element: ParadoxScriptDefinitionElement): List<String>? {
@@ -613,7 +614,7 @@ object ParadoxDefinitionManager {
     }
 
     fun getInfoFromStub(element: ParadoxScriptDefinitionElement, project: Project): ParadoxDefinitionInfo? {
-        val stub = runCatchingCancelable { element.greenStub }.getOrNull() ?: return null
+        val stub = runReadAction { element.greenStub } ?: return null
         //if(!stub.isValid()) return null //这里不用再次判断
         val name = stub.name
         val type = stub.type

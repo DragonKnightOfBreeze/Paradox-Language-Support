@@ -3,6 +3,7 @@ package icu.windea.pls.lang
 import com.intellij.extapi.psi.*
 import com.intellij.injected.editor.*
 import com.intellij.lang.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
@@ -104,7 +105,6 @@ tailrec fun selectFile(from: Any?): VirtualFile? {
         from is VirtualFile -> from
         from is PsiDirectory -> selectFile(from.virtualFile)
         from is PsiFile -> selectFile(from.originalFile.virtualFile)
-        from is StubBasedPsiElementBase<*> -> selectFile(from.containingFileStub?.psi ?: from.containingFile)
         from is PsiElement -> selectFile(from.containingFile)
         from is ParadoxIndexInfo -> selectFile(from.virtualFile)
         else -> null
@@ -120,9 +120,9 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
         from is PsiDirectory -> selectGameType(selectFile(from))
         from is PsiFile -> selectGameType(selectFile(from))
-        from is ParadoxScriptScriptedVariable -> runCatchingCancelable { from.greenStub }.getOrNull()?.gameType
+        from is ParadoxScriptScriptedVariable -> runReadAction { from.greenStub }?.gameType
             ?: selectGameType(from.containingFile)
-        from is ParadoxScriptDefinitionElement -> runCatchingCancelable { from.greenStub }.getOrNull()?.gameType
+        from is ParadoxScriptDefinitionElement -> runReadAction { from.greenStub }?.gameType
             ?: selectGameType(from.containingFile)
         from is StubBasedPsiElementBase<*> -> selectGameType(from.containingFile)
         from is PsiElement -> selectGameType(from.parent)
@@ -140,7 +140,7 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
         from is PsiFile -> ParadoxCoreManager.getLocaleConfig(from.virtualFile ?: return null, from.project)
         from is ParadoxLocalisationLocale -> from.name.toLocale(from)
         from is ParadoxLocalisationPropertyList -> selectLocale(from.locale)
-        from is ParadoxLocalisationProperty -> runCatchingCancelable { from.greenStub }.getOrNull()?.locale?.toLocale(from)
+        from is ParadoxLocalisationProperty -> runReadAction { from.greenStub }?.locale?.toLocale(from)
             ?: selectLocale(from.containingFile)
         from is StubBasedPsiElementBase<*> && from.language == ParadoxLocalisationLanguage -> selectLocale(from.containingFile)
         from is PsiElement && from.language == ParadoxLocalisationLanguage -> selectLocale(from.parent)
