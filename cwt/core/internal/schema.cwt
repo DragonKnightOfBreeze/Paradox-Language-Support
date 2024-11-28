@@ -69,6 +69,7 @@ links = {
 	$link$ = {
 		desc = $scalar
 		from_data = $bool
+		from_argument = $bool
 		type = $enum:link_type$
 		prefix = $scalar
 		data_source = $data_expression

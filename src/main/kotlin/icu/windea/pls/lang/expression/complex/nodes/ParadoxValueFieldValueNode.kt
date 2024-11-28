@@ -24,18 +24,30 @@ class ParadoxValueFieldValueNode(
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxValueFieldValueNode {
             //text may contain parameters
-            //child node can be ParadoxDynamicValueExpression / ParadoxScriptValueExpression / ParadoxDataSourceNode
+            //child node can be:
+            //* ParadoxDynamicValueExpression
+            //* ParadoxScopeFieldExpression
+            //* ParadoxScriptValueExpression
+            //* ParadoxDataSourceNode
 
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(text)
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
-            run {
+            run r1@{
                 val configs = linkConfigs.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.DynamicValue }
-                if (configs.isEmpty()) return@run
-                val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
-                nodes += node
+                if (configs.isEmpty()) return@r1
+                val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)
+                if(node != null) nodes += node
             }
-            run {
-                if (nodes.isNotEmpty()) return@run
+            run r1@{
+                if (nodes.isNotEmpty()) return@r1
+                val configs = linkConfigs.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.ScopeField }
+                if (configs.isEmpty()) return@r1
+                val node = ParadoxScopeFieldExpression.resolve(text, textRange, configGroup)
+                if(node != null) nodes += node
+            }
+            run r1@{
+                if (nodes.isNotEmpty()) return@r1
+                if (!text.contains('|')) return@r1
                 val offset = textRange.startOffset
                 var index: Int
                 var tokenIndex = -1
@@ -62,8 +74,8 @@ class ParadoxValueFieldValueNode(
                     break
                 }
             }
-            run {
-                if (nodes.isNotEmpty()) return@run
+            run r1@{
+                if (nodes.isNotEmpty()) return@r1
                 val node = ParadoxDataSourceNode.resolve(text, textRange, configGroup, linkConfigs)
                 nodes += node
             }

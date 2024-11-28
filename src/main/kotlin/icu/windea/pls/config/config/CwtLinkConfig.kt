@@ -11,6 +11,7 @@ import icu.windea.pls.lang.util.*
  * @property name string
  * @property type (property) type: string?
  * @property fromData (property) from_data: boolean
+ * @property fromArgument (property) from_argument: boolean
  * @property prefix (property) prefix: string?
  * @property dataSource (property) data_source: expression?
  * @property inputScopes (property) input_scopes: string[]
@@ -21,6 +22,7 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val type: String?
     val fromData: Boolean
+    val fromArgument: Boolean
     val prefix: String?
     val dataSource: String?
     val inputScopes: Set<String>
@@ -31,7 +33,7 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     override val expression: CwtDataExpression? get() = dataSourceExpression
 
     //type = null -> default to "scope"
-    
+
     //output_scope = null -> transfer scope based on data source
     //e.g., for event_target, output_scope should be null
 
@@ -52,6 +54,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtLinkConfig? {
     val name = config.key
     var type: String? = null
     var fromData = false
+    var fromArgument = false
     var prefix: String? = null
     var dataSource: String? = null
     var inputScopes: Set<String>? = null
@@ -62,6 +65,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtLinkConfig? {
         when (prop.key) {
             "type" -> type = prop.stringValue
             "from_data" -> fromData = prop.booleanValue ?: false
+            "from_argument" -> fromArgument = prop.booleanValue ?: false
             "prefix" -> prefix = prop.stringValue
             "data_source" -> dataSource = prop.value
             "input_scopes" -> inputScopes = buildSet {
@@ -74,7 +78,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtLinkConfig? {
     }
     if (fromData && dataSource == null) return null //invalid
     inputScopes = inputScopes.orNull() ?: ParadoxScopeManager.anyScopeIdSet
-    return CwtLinkConfigImpl(config, name, type, fromData, prefix, dataSource, inputScopes, outputScope, forDefinitionType)
+    return CwtLinkConfigImpl(config, name, type, fromData, fromArgument, prefix, dataSource, inputScopes, outputScope, forDefinitionType)
 }
 
 private class CwtLinkConfigImpl(
@@ -82,6 +86,7 @@ private class CwtLinkConfigImpl(
     override val name: String,
     override val type: String? = null,
     override val fromData: Boolean = false,
+    override val fromArgument: Boolean = false,
     override val prefix: String?,
     override val dataSource: String?,
     override val inputScopes: Set<String>,

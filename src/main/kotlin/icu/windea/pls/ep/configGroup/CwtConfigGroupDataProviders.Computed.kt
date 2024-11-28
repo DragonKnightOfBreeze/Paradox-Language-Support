@@ -53,8 +53,10 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
 
         //bind specific links and localisation links
         run {
-            configGroup.linksOfVariable += configGroup.links.values.filter { it.forValue() && it.fromData && it.name == "variable" }
-            configGroup.localisationLinksOfEventTarget += configGroup.localisationLinks.values.filter { it.forScope() && it.fromData && it.prefix == "event_target:" }
+            configGroup.linksOfVariable += configGroup.links.values
+                .filter { it.forValue() && it.fromData && it.name == "variable" }
+            configGroup.localisationLinksOfEventTarget += configGroup.localisationLinks.values
+                .filter { it.forScope() && it.fromData && it.prefix == "event_target:" }
         }
 
         run {
