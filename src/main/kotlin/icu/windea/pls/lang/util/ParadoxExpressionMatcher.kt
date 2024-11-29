@@ -57,7 +57,7 @@ object ParadoxExpressionMatcher {
             override fun get(options: Int) = true
         }
 
-        data object ComplexExpressionFallbackMatch : Result() {
+        data object PartialMatch : Result() {
             override fun get(options: Int) = true
         }
 

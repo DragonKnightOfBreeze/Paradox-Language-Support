@@ -501,13 +501,13 @@ object ParadoxExpressionManager {
                 if (it.result is ParadoxExpressionMatcher.Result.LazyBlockAwareMatch) return@p false //已经匹配过
                 if (it.result is ParadoxExpressionMatcher.Result.LazyScopeAwareMatch) return@p false //已经匹配过
                 if (it.result is ParadoxExpressionMatcher.Result.LazySimpleMatch) return@p true //直接认为是匹配的
-                if (it.result is ParadoxExpressionMatcher.Result.ComplexExpressionFallbackMatch) return@p false //之后再匹配
+                if (it.result is ParadoxExpressionMatcher.Result.PartialMatch) return@p false //之后再匹配
                 if (it.result is ParadoxExpressionMatcher.Result.FallbackMatch) return@p false //之后再匹配
                 it.result.get(matchOptions)
             }
             if (matched.isNotEmpty()) return matched.map { it.value }
 
-            resultValues.filterTo(matched) { it.result is ParadoxExpressionMatcher.Result.ComplexExpressionFallbackMatch }
+            resultValues.filterTo(matched) { it.result is ParadoxExpressionMatcher.Result.PartialMatch }
             if (matched.isNotEmpty()) return matched.map { it.value }
 
             resultValues.filterTo(matched) { it.result is ParadoxExpressionMatcher.Result.FallbackMatch }
