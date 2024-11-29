@@ -1096,6 +1096,7 @@ object ParadoxCompletionManager {
      * @return 是否已经输入了前缀。
      */
     private fun completeForScopeLinkNode(node: ParadoxScopeLinkNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
+        if(node.text.contains('(')) return false //scope link node cannot use argument format (but value field node can)
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return false
         val offsetInParent = context.offsetInParent!!
         val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
@@ -1144,11 +1145,9 @@ object ParadoxCompletionManager {
      * @return 是否已经输入了前缀。
      */
     private fun completeForValueFieldNode(node: ParadoxValueFieldNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
-        val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return false
         val keyword = context.keyword
         val keywordOffset = context.keywordOffset
         val offsetInParent = context.offsetInParent!!
-        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
         val nodeRange = node.rangeInExpression
         val valueFieldNode = node.castOrNull<ParadoxDynamicValueFieldNode>()
         val prefixNode = valueFieldNode?.prefixNode
@@ -1156,8 +1155,8 @@ object ParadoxCompletionManager {
         val inDsNode = dsNode?.nodes?.first()
         val endOffset = dsNode?.rangeInExpression?.startOffset ?: -1
         if (prefixNode != null && dsNode != null && offsetInParent >= dsNode.rangeInExpression.startOffset) {
-            context.scopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContext)
-
+            //unlike scope link node, there is unnecessary to switch scope context
+            
             val keywordToUse = dsNode.text.substring(0, offsetInParent - endOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
             context.keyword = keywordToUse
@@ -1165,7 +1164,6 @@ object ParadoxCompletionManager {
             completeValueFieldValue(context, resultToUse, prefixNode.text, inDsNode)
             context.keyword = keyword
             context.keywordOffset = keywordOffset
-            context.scopeContext = scopeContext
             return true
         } else {
             val inFirstNode = dsNode == null || dsNode.nodes.isEmpty()
@@ -1449,6 +1447,10 @@ object ParadoxCompletionManager {
 
         if (inDsNode is ParadoxDynamicValueExpression) {
             completeDynamicValueExpression(context, result)
+            return
+        }
+        if (inDsNode is ParadoxScopeFieldExpression) {
+            completeScopeFieldExpression(context, result)
             return
         }
         if (inDsNode is ParadoxScriptValueExpression) {
