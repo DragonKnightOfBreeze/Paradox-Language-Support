@@ -77,6 +77,9 @@ private fun doResolve(config: CwtPropertyConfig): CwtLinkConfig? {
         }
     }
     if (fromData && dataSource == null) return null //invalid
+    if (fromArgument && dataSource == null) return null //invalid
+    if(prefix == "") prefix = null
+    if(prefix != null && !prefix.endsWith(':')) prefix += ":" //ensure prefix ends with ':'
     inputScopes = inputScopes.orNull() ?: ParadoxScopeManager.anyScopeIdSet
     return CwtLinkConfigImpl(config, name, type, fromData, fromArgument, prefix, dataSource, inputScopes, outputScope, forDefinitionType)
 }

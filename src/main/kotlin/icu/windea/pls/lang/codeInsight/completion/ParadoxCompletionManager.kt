@@ -1290,7 +1290,7 @@ object ParadoxCompletionManager {
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
 
-        val linksConfigs = configGroup.links.values.filter { it.forScope() && !it.fromData }
+        val linksConfigs = configGroup.links.values.filter { it.forScope() && !it.fromData && !it.fromArgument }
         for (linkConfig in linksConfigs) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
@@ -1316,8 +1316,8 @@ object ParadoxCompletionManager {
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
 
-        val linkConfigs = configGroup.links.values.filter { it.forScope() && it.fromData && it.prefix != null }
-        for (linkConfig in linkConfigs) {
+        val linkConfigsFromData = configGroup.links.values.filter { it.forScope() && it.prefix != null && it.fromData }
+        for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 
@@ -1369,7 +1369,7 @@ object ParadoxCompletionManager {
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
 
-        val linkConfigs = configGroup.links.values.filter { it.forValue() && !it.fromData }
+        val linkConfigs = configGroup.links.values.filter { it.forValue() && !it.fromData && !it.fromArgument }
         for (linkConfig in linkConfigs) {
             //排除input_scopes不匹配前一个scope的output_scope的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
@@ -1394,9 +1394,31 @@ object ParadoxCompletionManager {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
+        
+        val linkConfigsFromArgument = configGroup.links.values.filter { it.forValue() && it.prefix != null && it.fromArgument }
+        for (linkConfig in linkConfigsFromArgument) {
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 
-        val linkConfigs = configGroup.links.values.filter { it.forValue() && it.fromData && it.prefix != null }
-        for (linkConfig in linkConfigs) {
+            val name = linkConfig.prefix?.dropLast(1) ?: continue
+            val element = linkConfig.pointer.element ?: continue
+            val tailText = "(...) from value link ${linkConfig.name}"
+            val typeFile = linkConfig.pointer.containingFile
+            val lookupElement = LookupElementBuilder.create(element, name)
+                .withBoldness(true)
+                .withTailText(tailText, true)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withPriority(ParadoxCompletionPriorities.prefix)
+                .withCompletionId()
+                .withInsertHandler { c, _ ->
+                    val editor = c.editor
+                    EditorModificationUtil.insertStringAtCaret(editor, "()", false, true, 1)
+                }
+            result.addElement(lookupElement, context)
+        }
+        
+        val linkConfigsFromData = configGroup.links.values.filter { it.forValue() && it.prefix != null && it.fromData && !it.fromArgument }
+        for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 
@@ -1574,7 +1596,7 @@ object ParadoxCompletionManager {
             .withCompletionId()
         result.addElement(lookupElement, context)
     }
-    
+
     fun completeDefineNamespace(context: ProcessingContext, result: CompletionResultSet) {
         val project = context.parameters!!.originalFile.project
         val contextElement = context.contextElement
@@ -1613,7 +1635,7 @@ object ParadoxCompletionManager {
             true
         }
     }
-    
+
     fun completeDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val config = context.config
@@ -1693,8 +1715,8 @@ object ParadoxCompletionManager {
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
 
-        val linkConfigs = configGroup.localisationLinks.values.filter { it.forScope() && it.fromData && it.prefix != null }
-        for (linkConfig in linkConfigs) {
+        val linkConfigsFromData = configGroup.localisationLinks.values.filter { it.forScope() && it.prefix != null && it.fromData }
+        for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 

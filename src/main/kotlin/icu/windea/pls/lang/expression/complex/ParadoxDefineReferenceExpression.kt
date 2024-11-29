@@ -5,7 +5,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 
 /**
@@ -40,7 +40,7 @@ class ParadoxDefineReferenceExpression private constructor(
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression? {
             val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
             if (!incomplete && expressionString.isEmpty()) return null
-            
+
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val expression = ParadoxDefineReferenceExpression(expressionString, range, nodes, configGroup)
             run r1@{
@@ -82,11 +82,17 @@ class ParadoxDefineReferenceExpression private constructor(
 
         private fun ParadoxDefineReferenceExpression.validate(): List<ParadoxComplexExpressionError> {
             val errors = mutableListOf<ParadoxComplexExpressionError>()
-            val malformed = nodes.size != 4 || nodes.any { it.text.isEmpty() }
-            if (malformed) {
-                errors += ParadoxComplexExpressionErrors.malformedDefineReferenceExpression(rangeInExpression, text)
+            val context = ParadoxComplexExpressionProcessContext()
+            val result = processAllNodesToValidate(errors, context) {
+                when {
+                    it is ParadoxDefineNamespaceNode -> it.text.isParameterAwareIdentifier()
+                    it is ParadoxDefineVariableNode -> it.text.isParameterAwareIdentifier()
+                    else -> true
+                }
             }
-            return errors.pinned { it.isMalformedError() }
+            val malformed = !result || nodes.size != 4
+            if (malformed) errors += ParadoxComplexExpressionErrors.malformedDefineReferenceExpression(rangeInExpression, text)
+            return errors
         }
     }
 }

@@ -5,8 +5,9 @@
 * [X] #103 Victoria 3 has one more type of color: hsv360
 * [X] #104 There is a problem with the new ?= operator when it is directly on a value.
 * [X] 优化`IncorrectFileEncodingInspection` (参见 #102)
-* [ ] 优化规则匹配逻辑，以更准确地匹配与区分`scope_field`与`value_field`
-* [ ] #101 Victoria 3 link Comparisons
+* [X] 优化规则匹配逻辑，以更准确地匹配与区分`scope_field`与`value_field`
+* [ ] 兼容在复杂表达式中使用内联的参数条件表达式（如，`value:xxx|P|[[P1]$V$]V|`）
+* [ ] #101 Victoria 3 link Comparisons - 兼容传参格式的值字段表达式（如，`relations(root.owner)`）
 * [ ] #105 Read access is allowed from inside read-action only - 相关优化
 
 ## 1.3.25

@@ -88,34 +88,16 @@ class ParadoxDynamicValueExpression private constructor(
 
         private fun ParadoxDynamicValueExpression.validate(): List<ParadoxComplexExpressionError> {
             val errors = mutableListOf<ParadoxComplexExpressionError>()
-            var malformed = false
-            for (node in nodes) {
-                when (node) {
-                    is ParadoxDynamicValueNode -> {
-                        if (!malformed && !node.isValid()) {
-                            malformed = true
-                        }
-                    }
-                    is ParadoxScopeFieldExpression -> {
-                        if (node.text.isEmpty()) {
-                            errors += ParadoxComplexExpressionErrors.missingScopeFieldExpression(rangeInExpression)
-                        }
-                        errors += node.errors
-                    }
+            val context = ParadoxComplexExpressionProcessContext()
+            val result = processAllNodesToValidate(errors, context) {
+                when {
+                    it is ParadoxDynamicValueNode -> it.text.isParameterAwareIdentifier('.') //兼容点号
+                    else -> true
                 }
             }
-            if (malformed) {
-                errors += ParadoxComplexExpressionErrors.malformedDynamicValueExpression(rangeInExpression, text)
-            }
-            return errors.pinned { it.isMalformedError() }
+            val malformed = !result
+            if (malformed) errors += ParadoxComplexExpressionErrors.malformedDynamicValueExpression(rangeInExpression, text)
+            return errors
         }
-
-        private fun ParadoxComplexExpressionNode.isValid(): Boolean {
-            return when (this) {
-                is ParadoxDynamicValueNode -> text.isParameterAwareIdentifier('.') //兼容点号
-                else -> text.isParameterAwareIdentifier()
-            }
-        }
-
     }
 }

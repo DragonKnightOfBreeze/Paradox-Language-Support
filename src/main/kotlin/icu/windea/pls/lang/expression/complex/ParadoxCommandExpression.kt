@@ -122,17 +122,16 @@ class ParadoxCommandExpression private constructor(
 
         private fun ParadoxCommandExpression.validate(): List<ParadoxComplexExpressionError> {
             val errors = mutableListOf<ParadoxComplexExpressionError>()
-            var malformed = false
-            for (node in nodes) {
-                if (node.text.isEmpty()) {
-                    malformed = true
-                    break
+            val context = ParadoxComplexExpressionProcessContext()
+            val result = processAllNodesToValidate(errors, context) {
+                when {
+                    it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
+                    else -> true
                 }
             }
-            if (malformed) {
-                errors += ParadoxComplexExpressionErrors.malformedLocalisationCommandExpression(rangeInExpression, text)
-            }
-            return errors.pinned { it.isMalformedError() }
+            val malformed = !result
+            if (malformed) errors += ParadoxComplexExpressionErrors.malformedCommandExpression(rangeInExpression, text)
+            return errors
         }
     }
 }

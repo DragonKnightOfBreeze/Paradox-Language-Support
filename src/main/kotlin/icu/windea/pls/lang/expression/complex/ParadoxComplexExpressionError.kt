@@ -14,40 +14,28 @@ data class ParadoxComplexExpressionError(
 )
 
 object ParadoxComplexExpressionErrorCodes {
-    const val MalformedScopeFieldExpression = 100
-    const val MalformedValueFieldExpression = 101
-    const val MalformedVariableFieldExpression = 102
-    const val MalformedDynamicValueExpression = 103
-    const val MalformedScriptValueExpression = 104
-    const val MalformedDatabaseObjectExpression = 105
-    const val MalformedDefineReferenceExpression = 106
-    const val MalformedLocalisationCommandExpression = 150
+    const val UnresolvedScopeLink = 1
+    const val UnresolvedValueField = 2
+    const val UnresolvedDataSource = 3
+    const val UnresolvedScriptValue = 4
+    const val UnresolvedDatabaseObjectType = 5
+    const val UnresolvedDatabaseObject = 6
+    const val UnresolvedDefineNamespace = 7
+    const val UnresolvedDefineVariable = 8
+    const val UnresolvedCommandScope = 9
+    const val UnresolvedCommandField = 10
 
-    const val UnresolvedScopeLink = 200
-    const val UnresolvedValueField = 201
-    const val UnresolvedDataSource = 202
-    const val UnresolvedScriptValue = 203
-    const val UnresolvedDatabaseObjectType = 204
-    const val UnresolvedDatabaseObject = 205
-    const val UnresolvedDefineNamespace = 206
-    const val UnresolvedDefineVariable = 207
-    const val UnresolvedCommandScope = 250
-    const val UnresolvedCommandField = 251
-
-    const val MissingScopeLink = 300
-    const val MissingValueField = 301
-    const val MissingVariable = 302
-    const val MissingScopeLinkValue = 303
-    const val MissingValueFieldValue = 304
-    const val MissingScopeFieldExpression = 305
-    const val MissingParameterValue = 306
+    const val MalformedScopeFieldExpression = 101
+    const val MalformedValueFieldExpression = 102
+    const val MalformedVariableFieldExpression = 103
+    const val MalformedDynamicValueExpression = 104
+    const val MalformedScriptValueExpression = 105
+    const val MalformedDatabaseObjectExpression = 106
+    const val MalformedDefineReferenceExpression = 107
+    const val MalformedCommandExpression = 108
 }
 
-fun ParadoxComplexExpressionError.isMalformedError() = this.code in 100..199
-
-fun ParadoxComplexExpressionError.isUnresolvedError() = this.code in 200..299
-
-fun ParadoxComplexExpressionError.isMissingError() = this.code in 300..399
+fun ParadoxComplexExpressionError.isUnresolvedError() = this.code in 1..100
 
 fun ProblemsHolder.registerExpressionError(error: ParadoxComplexExpressionError, element: ParadoxExpressionElement) {
     val description = error.description
@@ -61,49 +49,7 @@ fun ProblemsHolder.registerExpressionError(error: ParadoxComplexExpressionError,
 }
 
 object ParadoxComplexExpressionErrors {
-    //malformed
-
-    fun malformedScopeFieldExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MalformedScopeFieldExpression
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedScopeFieldExpression", text))
-    }
-
-    fun malformedValueFieldExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MalformedValueFieldExpression
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedValueFieldExpression", text))
-    }
-
-    fun malformedVariableFieldExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MalformedVariableFieldExpression
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedVariableFieldExpression", text))
-    }
-
-    fun malformedDynamicValueExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MalformedDynamicValueExpression
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedDynamicValueExpression", text))
-    }
-
-    fun malformedScriptValueExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MalformedScriptValueExpression
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedScriptValueExpression", text))
-    }
-
-    fun malformedDatabaseObjectExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MalformedDatabaseObjectExpression
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedDatabaseObjectExpression", text))
-    }
-
-    fun malformedDefineReferenceExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MalformedDefineReferenceExpression
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedDefineReferenceExpression", text))
-    }
-
-    fun malformedLocalisationCommandExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MalformedLocalisationCommandExpression
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedLocalisationCommandExpression", text))
-    }
-
-    //unresolved
+    //region unresolved
 
     fun unresolvedScopeLink(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
         val code = ParadoxComplexExpressionErrorCodes.UnresolvedScopeLink
@@ -148,7 +94,7 @@ object ParadoxComplexExpressionErrors {
         val code = ParadoxComplexExpressionErrorCodes.UnresolvedDefineVariable
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.unresolvedDefineVariable", value))
     }
-    
+
     fun unresolvedCommandScope(rangeInExpression: TextRange, value: String): ParadoxComplexExpressionError {
         val code = ParadoxComplexExpressionErrorCodes.UnresolvedCommandScope
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.unresolvedCommandScope", value))
@@ -159,40 +105,49 @@ object ParadoxComplexExpressionErrors {
         return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.unresolvedCommandField", value))
     }
 
-    //missing
+    //endregion
 
-    fun missingScopeLink(rangeInExpression: TextRange): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MissingScopeLink
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingScopeLink"))
+    //region malformed
+
+    fun malformedScopeFieldExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.MalformedScopeFieldExpression
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedScopeFieldExpression", text))
     }
 
-    fun missingValueField(rangeInExpression: TextRange): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MissingValueField
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingValueField"))
+    fun malformedValueFieldExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.MalformedValueFieldExpression
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedValueFieldExpression", text))
     }
 
-    fun missingVariable(rangeInExpression: TextRange): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MissingVariable
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingVariable"))
+    fun malformedVariableFieldExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.MalformedVariableFieldExpression
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedVariableFieldExpression", text))
     }
 
-    fun missingScopeLinkValue(rangeInExpression: TextRange, type: String): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MissingScopeLinkValue
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingScopeLinkValue", type))
+    fun malformedDynamicValueExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.MalformedDynamicValueExpression
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedDynamicValueExpression", text))
     }
 
-    fun missingValueFieldValue(rangeInExpression: TextRange, type: String): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MissingValueFieldValue
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingValueFieldValue", type))
+    fun malformedScriptValueExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.MalformedScriptValueExpression
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedScriptValueExpression", text))
     }
 
-    fun missingScopeFieldExpression(rangeInExpression: TextRange): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MissingScopeFieldExpression
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingScopeFieldExpression"))
+    fun malformedDatabaseObjectExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.MalformedDatabaseObjectExpression
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedDatabaseObjectExpression", text))
     }
 
-    fun missingParameterValue(rangeInExpression: TextRange): ParadoxComplexExpressionError {
-        val code = ParadoxComplexExpressionErrorCodes.MissingParameterValue
-        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.missingParameterValue"))
+    fun malformedDefineReferenceExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.MalformedDefineReferenceExpression
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedDefineReferenceExpression", text))
     }
+
+    fun malformedCommandExpression(rangeInExpression: TextRange, text: String): ParadoxComplexExpressionError {
+        val code = ParadoxComplexExpressionErrorCodes.MalformedCommandExpression
+        return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.malformedCommandExpression", text))
+    }
+
+    //endregion
 }

@@ -5,7 +5,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.util.*
@@ -61,7 +60,7 @@ class ParadoxScriptValueExpression private constructor(
             if (!incomplete && expressionString.isEmpty()) return null
 
             val parameterRanges = ParadoxExpressionManager.getParameterRanges(expressionString)
-            
+
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val offset = range.startOffset
             var n = 0
@@ -112,43 +111,26 @@ class ParadoxScriptValueExpression private constructor(
         }
 
         private fun ParadoxScriptValueExpression.validate(): List<ParadoxComplexExpressionError> {
-            var malformed = false
             val errors = mutableListOf<ParadoxComplexExpressionError>()
-            var pipeCount = 0
-            var lastIsParameter = false
-            for (node in nodes) {
-                if (node is ParadoxTokenNode) {
-                    pipeCount++
-                } else {
-                    if (!malformed && (node.text.isEmpty() || !node.isValid())) {
-                        malformed = true
-                    }
-                    when (node) {
-                        is ParadoxScriptValueArgumentNode -> lastIsParameter = true
-                        is ParadoxScriptValueArgumentValueNode -> lastIsParameter = false
-                    }
+            val context = ParadoxComplexExpressionProcessContext()
+            val result = processAllNodesToValidate(errors, context) {
+                when {
+                    it is ParadoxScriptValueNode -> it.text.isParameterAwareIdentifier()
+                    it is ParadoxScriptValueArgumentNode -> it.text.isIdentifier()
+                    it is ParadoxScriptValueArgumentValueNode -> true
+                    else -> true
                 }
             }
-            //0, 1, 3, 5, ...
-            if (!malformed && pipeCount != 0 && pipeCount % 2 == 0) {
-                malformed = true
+            var malformed = !result
+            if (!malformed) {
+                //check whether pipe count is valid
+                val pipeNodeCount = nodes.count { it is ParadoxTokenNode && it.text == "|" }
+                if (pipeNodeCount == 1 || (pipeNodeCount != 0 && pipeNodeCount % 2 == 0)) {
+                    malformed = true
+                }
             }
-            if (malformed) {
-                errors += ParadoxComplexExpressionErrors.malformedScriptValueExpression(rangeInExpression, text)
-            }
-            if (lastIsParameter) {
-                errors += ParadoxComplexExpressionErrors.missingParameterValue(rangeInExpression)
-            }
-            return errors.pinned { it.isMalformedError() }
-        }
-
-        private fun ParadoxComplexExpressionNode.isValid(): Boolean {
-            return when (this) {
-                is ParadoxScriptValueArgumentNode -> text.isIdentifier()
-                is ParadoxScriptValueArgumentValueNode -> true //兼容数字文本、字符串文本、封装变量引用等，这里直接返回true
-                else -> text.isParameterAwareIdentifier()
-            }
+            if (malformed) errors += ParadoxComplexExpressionErrors.malformedScriptValueExpression(rangeInExpression, text)
+            return errors
         }
     }
 }
-

@@ -96,6 +96,7 @@ class ParadoxDynamicCommandFieldNode(
 
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandFieldNode? {
+            if (text.isParameterized()) return null
             if (!text.isIdentifier()) return null
             return ParadoxDynamicCommandFieldNode(text, textRange, configGroup)
         }
