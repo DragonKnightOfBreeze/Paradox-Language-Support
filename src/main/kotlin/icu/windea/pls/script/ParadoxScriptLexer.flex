@@ -122,7 +122,7 @@ CHECK_SCRIPTED_VARIABLE_REFERENCE=[a-zA-Z_$\[][^@#={}\s\"]*
 
 CHECK_PROPERTY_SEPARTOR=[=<>!?]
 CHECK_PROPERTY_KEY=({WILDCARD_PROPERTY_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_TOKEN})\s*{CHECK_PROPERTY_SEPARTOR}
-WILDCARD_PROPERTY_KEY_TOKEN=[^@#={}\s\"][^#={}\s\"]*\"?
+WILDCARD_PROPERTY_KEY_TOKEN=[^@#={}\[\s\"][^#={}\s\"]*\"?
 WILDCARD_QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\r\n\\]|\\.)*\"?
 PROPERTY_KEY_TOKEN=[^@#$={}\[\]\s\"][^#$={}\[\]\s\"]*\"?
 QUOTED_PROPERTY_KEY_TOKEN=([^\"\r\n\\$]|\\.)+
@@ -140,7 +140,7 @@ WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\[\s\S])*\"?
 STRING_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
 QUOTED_STRING_TOKEN=([^\"\\$]|\\[\s\S])+
 
-SNIPPET_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
+PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
 
 %%
 
@@ -247,7 +247,7 @@ SNIPPET_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
     "$" { exitState(parameterStateRef); return PARAMETER_END; }
-    {SNIPPET_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return SNIPPET_TOKEN; } 
+    {PARAMETER_VALUE_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return PARAMETER_VALUE_TOKEN; } 
 }
 <IN_PARAMETER_DEFAULT_VALUE_END> {
     \s|"#" { yypushback(yylength()); exitState(parameterStateRef); }

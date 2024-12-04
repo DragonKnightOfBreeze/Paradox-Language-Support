@@ -24,7 +24,7 @@ val ParadoxScriptParameter.idElement: PsiElement? get() = findChild(PARAMETER_TO
 
 val ParadoxScriptInlineMathParameter.idElement: PsiElement? get() = findChild(PARAMETER_TOKEN)
 
-val ParadoxParameter.defaultValueToken: PsiElement? get() = findChild(ParadoxScriptTokenSets.PARAMETER_VALUE_TOKENS)
+val ParadoxParameter.defaultValueToken: PsiElement? get() = findChild(PARAMETER_VALUE_TOKEN)
 
 val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptValue? get() = siblings(forward = true, withSelf = false).findIsInstance()
 

@@ -1,0 +1,1 @@
+mult = value:gpm_random_normal|MEAN|$MEAN$|STDEV|$STDEV$|P|[[P]$P$]|[!P]event_target:global_event_country.gpm_ndist][[MIN]MIN|$MIN$][[MAX]|MAX|$MAX$]|

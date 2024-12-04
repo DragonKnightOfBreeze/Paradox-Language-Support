@@ -25,8 +25,6 @@ object ParadoxScriptTokenSets {
     val SCRIPTED_VARIABLE_VALUE_TOKENS = TokenSet.create(BOOLEAN_TOKEN, INT_TOKEN, FLOAT_TOKEN, STRING_TOKEN)
     @JvmField
     val VARIABLE_VALUE_TOKENS = TokenSet.create(INT_TOKEN, FLOAT_TOKEN, STRING_TOKEN)
-    @JvmField
-    val PARAMETER_VALUE_TOKENS = TokenSet.create(SNIPPET_TOKEN)
 
     @JvmField
     val SCRIPTED_VARIABLE_NAME_TOKENS = TokenSet.create(SCRIPTED_VARIABLE_NAME_TOKEN)
@@ -52,6 +50,8 @@ object ParadoxScriptTokenSets {
     val LEFT_SNIPPET_TYPES = TokenSet.create(AT, SCRIPTED_VARIABLE_NAME_TOKEN, PROPERTY_KEY_TOKEN)
     @JvmField
     val RIGHT_SNIPPET_TYPES = TokenSet.create(STRING_TOKEN, SCRIPTED_VARIABLE_REFERENCE_TOKEN)
+    @JvmField
+    val BREAK_SNIPPET_TYPES = TokenSet.create(TokenType.WHITE_SPACE, COMMENT)
 
     @JvmField
     val SCRIPTED_VARIABLE_SEPARATOR_TOKENS = TokenSet.create(EQUAL_SIGN)

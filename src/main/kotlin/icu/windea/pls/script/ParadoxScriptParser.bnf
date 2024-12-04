@@ -51,7 +51,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   ]
 }
 //can be parameterized
-scripted_variable_name ::= AT scripted_variable_name_part (<<processTemplate>> scripted_variable_name_part) * {
+scripted_variable_name ::= AT scripted_variable_name_part (<<processSnippet>> scripted_variable_name_part) * {
   pin=1;
   implements=[
     "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
@@ -80,7 +80,7 @@ property ::= property_key property_separator property_value {
   ]
 }
 //can be parameterized
-property_key ::= property_key_part (<<processTemplate>> property_key_part) * {
+property_key ::= property_key_part (<<processSnippet>> property_key_part) * {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
@@ -107,7 +107,7 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
   ]
 }
 //can be parameterized
-scripted_variable_reference ::= AT scripted_variable_reference_part <<checkRightTemplate>> (<<processTemplate>> scripted_variable_reference_part) * {
+scripted_variable_reference ::= AT scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> scripted_variable_reference_part) * {
   extends=value
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
@@ -140,7 +140,7 @@ float ::= FLOAT_TOKEN {
   methods=[getValue getFloatValue getType getReference getReferences]
 }
 //can be parameterized
-string ::= string_part <<checkRightTemplate>> (<<processTemplate>> string_part) * {
+string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_part) * {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
@@ -208,7 +208,7 @@ inline_math_parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_defaul
   implements="icu.windea.pls.lang.psi.ParadoxParameter"
   methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
 }
-private parameter_default_value ::= SNIPPET_TOKEN
+private parameter_default_value ::= PARAMETER_VALUE_TOKEN
 
 //parameter condition rules
 
@@ -241,9 +241,9 @@ inline_parameter_condition ::= LEFT_BRACKET <<processInlineParameterCondition>> 
   pin=2
   methods=[getIcon getConditionExpression getPresentationText]
 }
-private inline_parameter_condition_item ::= <<processSnippet>> inline_parameter_condition_snippet <<postProcessSnippet>>
-private inline_parameter_condition_snippet ::= inline_parameter_condition_item_part (<<processTemplate>> inline_parameter_condition_item_part) *
-private inline_parameter_condition_item_part ::= SNIPPET_TOKEN | parameter | inline_parameter_condition
+private inline_parameter_condition_item ::= <<processInlineParameterConditionItem>> inline_parameter_condition_snippet <<postProcessInlineParameterConditionItem>>
+private inline_parameter_condition_snippet ::= inline_parameter_condition_item_part (<<processSnippet>> inline_parameter_condition_item_part) *
+private inline_parameter_condition_item_part ::= PARAMETER_VALUE_TOKEN | parameter | inline_parameter_condition
 
 // inline math rules
 
@@ -295,7 +295,7 @@ inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
   methods=[getValue getType getExpression]
 }
 //without prefix "@", can be parameterized
-inline_math_scripted_variable_reference ::= inline_math_scripted_variable_reference_part <<checkRightTemplate>> (<<processTemplate>> inline_math_scripted_variable_reference_part) * {
+inline_math_scripted_variable_reference ::= inline_math_scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> inline_math_scripted_variable_reference_part) * {
   extends=inline_math_factor
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"

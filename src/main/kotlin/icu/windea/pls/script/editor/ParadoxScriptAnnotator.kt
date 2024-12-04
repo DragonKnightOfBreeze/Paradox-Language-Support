@@ -25,9 +25,8 @@ import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys as Keys
 class ParadoxScriptAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         checkSyntax(element, holder)
-
-        val elementType = element.elementType
-        if (elementType == ParadoxScriptElementTypes.SNIPPET_TOKEN) return annotateSnippetToken(element, holder)
+        
+        annotateParameterValue(element, holder)
 
         when (element) {
             is ParadoxScriptFile -> annotateFile(element, holder)
@@ -61,7 +60,9 @@ class ParadoxScriptAnnotator : Annotator {
 
     private fun PsiElement?.isQuoteAware() = this is ParadoxScriptStringExpressionElement
 
-    private fun annotateSnippetToken(element: PsiElement, holder: AnnotationHolder) {
+    private fun annotateParameterValue(element: PsiElement, holder: AnnotationHolder) {
+        val elementType = element.elementType
+        if (elementType != ParadoxScriptElementTypes.PARAMETER_VALUE_TOKEN) return
         val templateElement = element.parent?.parent ?: return
         val attributesKey = when {
             element.text.startsWith("@") -> Keys.SCRIPTED_VARIABLE_KEY
