@@ -11,6 +11,17 @@
 * [X] #101 Victoria 3 link Comparisons - 兼容传参格式的值字段表达式（如，`relations(root.owner)`）
 * [X] #105 Read access is allowed from inside read-action only - 相关优化
 
+***
+
+* [X] #103 Victoria 3 has one more type of color: hsv360
+* [X] #104 There is a problem with the new ?= operator when it is directly on a value.
+* [X] Optimize `IncorrectFileEncodingInspection` (See #102)
+* [X] Optimize rule match logic to match and differ `scope_field` and `value_field` more exactly
+* [X] Compatible with inline parameter condition expressions in complex expressions (e.g., `value:xxx|P|[[P1]$V$]V|`)
+* [X] Fixed the issue that case was not ignored when searching modifier-related localisations
+* [X] #101 Victoria 3 link Comparisons - Compatible with argument-style value field expression (如，`relations(root.owner)`)
+* [X] #105 Read access is allowed from inside read-action only - Related optimizations
+
 ## 1.3.25
 
 * [X] 兼容脚本文件中的内联模版表达式（如，`has_ethic = ethic_[[fanatic]fanatic_]pacifist`）
