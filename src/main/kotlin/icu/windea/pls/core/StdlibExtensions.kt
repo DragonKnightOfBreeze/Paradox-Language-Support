@@ -564,13 +564,15 @@ fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolea
 }
 
 /**
- * 规范化当前路径。将路径分隔符统一替换成"/"，并去除所有作为前后缀的分隔符。
+ * 规范化当前路径。
+ * 
+ * 将分隔符统一替换成"/"，将连续的分隔符替换为单个分隔符，并去除所有作为后缀的分隔符。
  */
 fun String.normalizePath(): String {
     if(this.isEmpty()) return ""
     val builder = StringBuilder()
     var separatorFlag = false
-    this.trimEnd('/', '\\').forEach { c ->
+    this.forEach { c ->
         if (c == '/' || c == '\\') {
             separatorFlag = true
         } else if (separatorFlag) {
@@ -580,7 +582,8 @@ fun String.normalizePath(): String {
             builder.append(c)
         }
     }
-    return builder.toString().intern()
+    val s = builder.toString()
+    return s.trimEnd('/').intern()
 }
 
 fun Path.exists(): Boolean {
