@@ -60,6 +60,7 @@ class ParadoxScopeFieldExpression private constructor(
                 if (tokenIndex != -1 && parameterRanges.any { tokenIndex in it }) continue //skip parameter text
                 if (tokenIndex != -1 && expressionString.indexOf('@', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
                 if (tokenIndex != -1 && expressionString.indexOf('|', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
+                if (tokenIndex != -1 && expressionString.indexOf('(', index).let { i -> i != -1 && i < tokenIndex && !parameterRanges.any { r -> i in r } }) tokenIndex = -1
                 val dotNode = if (tokenIndex != -1) {
                     val dotRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
                     ParadoxOperatorNode(".", dotRange, configGroup)

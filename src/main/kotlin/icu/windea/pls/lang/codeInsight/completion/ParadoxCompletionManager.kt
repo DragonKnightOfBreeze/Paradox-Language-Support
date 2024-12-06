@@ -1096,7 +1096,6 @@ object ParadoxCompletionManager {
      * @return 是否已经输入了前缀。
      */
     private fun completeForScopeLinkNode(node: ParadoxScopeLinkNode, context: ProcessingContext, result: CompletionResultSet): Boolean {
-        if(node.text.contains('(')) return false //scope link node cannot use argument format (but value field node can)
         val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return false
         val offsetInParent = context.offsetInParent!!
         val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
@@ -1314,6 +1313,28 @@ object ParadoxCompletionManager {
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
 
+        val linkConfigsFromArgument = configGroup.links.values.filter { it.forScope() && it.prefix != null && it.fromArgument }
+        for (linkConfig in linkConfigsFromArgument) {
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+
+            val name = linkConfig.prefix?.dropLast(1) ?: continue
+            val element = linkConfig.pointer.element ?: continue
+            val tailText = "(...) from scope link ${linkConfig.name}"
+            val typeFile = linkConfig.pointer.containingFile
+            val lookupElement = LookupElementBuilder.create(element, name)
+                .withBoldness(true)
+                .withTailText(tailText, true)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withPriority(ParadoxCompletionPriorities.prefix)
+                .withCompletionId()
+                .withInsertHandler { c, _ ->
+                    val editor = c.editor
+                    EditorModificationUtil.insertStringAtCaret(editor, "()", false, true, 1)
+                }
+            result.addElement(lookupElement, context)
+        }
+
         val linkConfigsFromData = configGroup.links.values.filter { it.forScope() && it.prefix != null && it.fromData }
         for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
@@ -1350,6 +1371,10 @@ object ParadoxCompletionManager {
         }
         if (inDsNode is ParadoxDynamicValueExpression) {
             completeDynamicValueExpression(context, result)
+            return
+        }
+        if (inDsNode is ParadoxScopeFieldExpression) {
+            completeScopeFieldExpression(context, result)
             return
         }
 
@@ -1415,7 +1440,7 @@ object ParadoxCompletionManager {
             result.addElement(lookupElement, context)
         }
         
-        val linkConfigsFromData = configGroup.links.values.filter { it.forValue() && it.prefix != null && it.fromData && !it.fromArgument }
+        val linkConfigsFromData = configGroup.links.values.filter { it.forValue() && it.prefix != null && it.fromData }
         for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
