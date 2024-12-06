@@ -570,7 +570,7 @@ fun String.normalizePath(): String {
     if(this.isEmpty()) return ""
     val builder = StringBuilder()
     var separatorFlag = false
-    this.trim('/', '\\').forEach { c ->
+    this.trimEnd('/', '\\').forEach { c ->
         if (c == '/' || c == '\\') {
             separatorFlag = true
         } else if (separatorFlag) {
