@@ -47,7 +47,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             if (localisationLinksNotFromData.isNotEmpty()) return@run
             val linksNotFromData = configGroup.links.values.filter { !it.fromData }
             for (linkConfig in linksNotFromData) {
-                configGroup.localisationLinks[linkConfig.name] = linkConfig
+                configGroup.localisationLinks[linkConfig.name] = CwtLinkConfig.resolveForLocalisation(linkConfig)
             }
         }
 

@@ -31,91 +31,82 @@ class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
         val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
         val tokens = remain.split('/')
         val category = tokens.getOrNull(0) ?: return null
+        val project = contextElement.project
+        val configGroup = getConfigGroup(project, gameType)
         return when (category) {
             "types" -> {
                 if (tokens.isEmpty() || tokens.size > 3) return null
-                val project = contextElement.project
                 val name = tokens.getOrNull(1)
                 val subtypeName = tokens.getOrNull(2)
                 val config = when {
                     name == null -> null
-                    subtypeName == null -> getConfigGroup(project, gameType).types[name]
-                    else -> getConfigGroup(project, gameType).types.getValue(name).subtypes[subtypeName]
+                    subtypeName == null -> configGroup.types[name]
+                    else -> configGroup.types.getValue(name).subtypes[subtypeName]
                 } ?: return null
                 return config.pointer.element
             }
             "values" -> {
                 if (tokens.isEmpty() || tokens.size > 3) return null
-                val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
                 val valueName = tokens.getOrNull(2)
-                val config = getConfigGroup(project, gameType).dynamicValueTypes[name] ?: return null
+                val config = configGroup.dynamicValueTypes[name] ?: return null
                 if (valueName == null) return config.pointer.element
                 return config.valueConfigMap.get(valueName)?.pointer?.element
             }
             "enums" -> {
                 if (tokens.isEmpty() || tokens.size > 3) return null
-                val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
                 val valueName = tokens.getOrNull(2)
-                val config = getConfigGroup(project, gameType).enums[name] ?: return null
+                val config = configGroup.enums[name] ?: return null
                 if (valueName == null) return config.pointer.element
                 return config.valueConfigMap.get(valueName)?.pointer?.element
             }
             "complex_enums" -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
-                val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroup(project, gameType).complexEnums[name] ?: return null
+                val config = configGroup.complexEnums[name] ?: return null
                 return config.pointer.element
             }
             "scopes" -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
-                val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroup(project, gameType).scopeAliasMap[name] ?: return null
+                val config = configGroup.scopeAliasMap[name] ?: return null
                 return config.pointer.element
             }
             "system_scopes" -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
-                val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroup(project, gameType).systemScopes[name] ?: return null
+                val config = configGroup.systemScopes[name] ?: return null
                 return config.pointer.element
             }
             "links" -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
-                val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroup(project, gameType).links[name] ?: return null
+                val config = configGroup.links[name] ?: return null
                 return config.pointer.element
             }
             "localisation_links" -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
-                val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroup(project, gameType).localisationLinks[name] ?: return null
+                val config = configGroup.localisationLinks[name] ?: return null
                 return config.pointer.element
             }
             "localisation_commands" -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
-                val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroup(project, gameType).localisationCommands[name] ?: return null
+                val config = configGroup.localisationCommands[name] ?: return null
                 return config.pointer.element
             }
             "modifier_categories" -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
-                val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroup(project, gameType).modifierCategories[name] ?: return null
+                val config = configGroup.modifierCategories[name] ?: return null
                 return config.pointer.element
             }
             "modifiers" -> {
                 if (tokens.isEmpty() || tokens.size > 2) return null
-                val project = contextElement.project
                 val name = tokens.getOrNull(1) ?: return null
-                val config = getConfigGroup(project, gameType).modifiers[name] ?: return null
+                val config = configGroup.modifiers[name] ?: return null
                 return config.pointer.element
             }
             else -> null
@@ -141,13 +132,8 @@ class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
             config is CwtLinkConfig -> {
                 val gameType = config.configGroup.gameType
                 val name = config.name
-                val link = "${linkPrefix}${gameType.prefix}links/${name}"
-                DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
-            }
-            config is CwtLinkConfig -> {
-                val gameType = config.configGroup.gameType
-                val name = config.name
-                val link = "${linkPrefix}${gameType.prefix}localisation_links/${name}"
+                val category = if(config.forLocalisation) "localisation_links" else "links"
+                val link = "${linkPrefix}${gameType.prefix}${category}/${name}"
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
             config is CwtLocalisationCommandConfig -> {

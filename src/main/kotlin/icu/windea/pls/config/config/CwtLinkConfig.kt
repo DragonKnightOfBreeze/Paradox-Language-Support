@@ -28,6 +28,7 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val inputScopes: Set<String>
     val outputScope: String?
     val forDefinitionType: String?
+    val forLocalisation: Boolean
 
     val dataSourceExpression: CwtDataExpression?
     override val expression: CwtDataExpression? get() = dataSourceExpression
@@ -39,6 +40,10 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
 
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig): CwtLinkConfig? = doResolve(config)
+
+        fun resolveForLocalisation(config: CwtPropertyConfig): CwtLinkConfig? = doResolve(config, true)
+        
+        fun resolveForLocalisation(linkConfig: CwtLinkConfig): CwtLinkConfig = doResolve(linkConfig, true)
     }
 }
 
@@ -50,7 +55,7 @@ fun CwtLinkConfig.withPrefix() = prefix.isNotNullOrEmpty()
 
 //Implementations (interned)
 
-private fun doResolve(config: CwtPropertyConfig): CwtLinkConfig? {
+private fun doResolve(config: CwtPropertyConfig, forLocalisation: Boolean = false): CwtLinkConfig? {
     val name = config.key
     var type: String? = null
     var fromData = false
@@ -78,23 +83,36 @@ private fun doResolve(config: CwtPropertyConfig): CwtLinkConfig? {
     }
     if (fromData && dataSource == null) return null //invalid
     if (fromArgument && dataSource == null) return null //invalid
-    if(prefix == "") prefix = null
-    if(prefix != null && !prefix.endsWith(':')) prefix += ":" //ensure prefix ends with ':'
+    if (prefix == "") prefix = null
+    if (prefix != null && !prefix.endsWith(':')) prefix += ":" //ensure prefix ends with ':'
     inputScopes = inputScopes.orNull() ?: ParadoxScopeManager.anyScopeIdSet
-    return CwtLinkConfigImpl(config, name, type, fromData, fromArgument, prefix, dataSource, inputScopes, outputScope, forDefinitionType)
+    return CwtLinkConfigImpl(
+        config, name, type, fromData, fromArgument, prefix, dataSource, inputScopes, outputScope,
+        forDefinitionType, forLocalisation
+    )
+}
+
+private fun doResolve(linkConfig: CwtLinkConfig, forLocalisation: Boolean = false): CwtLinkConfig {
+    return linkConfig.apply {
+        CwtLinkConfigImpl(
+            config, name, type, fromData, fromArgument, prefix, dataSource, inputScopes, outputScope,
+            forDefinitionType, forLocalisation
+        )
+    }
 }
 
 private class CwtLinkConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
-    override val type: String? = null,
-    override val fromData: Boolean = false,
-    override val fromArgument: Boolean = false,
+    override val type: String?,
+    override val fromData: Boolean,
+    override val fromArgument: Boolean,
     override val prefix: String?,
     override val dataSource: String?,
     override val inputScopes: Set<String>,
     override val outputScope: String?,
-    override val forDefinitionType: String?
+    override val forDefinitionType: String?,
+    override val forLocalisation: Boolean
 ) : UserDataHolderBase(), CwtLinkConfig {
     //not much memory will be used, so cached
     override val dataSourceExpression: CwtDataExpression? = dataSource?.let { CwtDataExpression.resolve(it, false) }

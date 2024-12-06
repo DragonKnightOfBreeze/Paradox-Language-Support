@@ -125,7 +125,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 key == "localisation_links" -> {
                     val configs = property.properties ?: continue
                     for (config in configs) {
-                        val linkConfig = CwtLinkConfig.resolve(config) ?: continue
+                        val linkConfig = CwtLinkConfig.resolveForLocalisation(config) ?: continue
                         configGroup.localisationLinks[linkConfig.name] = linkConfig
                     }
                 }
