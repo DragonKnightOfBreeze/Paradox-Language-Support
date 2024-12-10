@@ -187,7 +187,6 @@ PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
-    "@["|"@\\[" { enterState(stack, yystate()); yybegin(IN_INLINE_MATH); return INLINE_MATH_START; }
     {COMMENT} { return COMMENT; }
 }
 
@@ -316,6 +315,13 @@ PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
 }
 
 <IN_SCRIPTED_VARIABLE_VALUE> {
+    "@["|"@\\[" {
+        enterState(stack, yystate());
+        enterState(templateStateRef, yystate());
+        leftAbsSign = true;
+        yybegin(IN_INLINE_MATH);
+        return INLINE_MATH_START;
+    }
     {BOOLEAN_TOKEN} { enterState(templateStateRef, yystate()); return BOOLEAN_TOKEN; }
     {INT_TOKEN} { enterState(templateStateRef, yystate()); return INT_TOKEN; }
     {FLOAT_TOKEN} { enterState(templateStateRef, yystate()); return FLOAT_TOKEN; }
@@ -335,7 +341,13 @@ PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
 }
 
 <YYINITIAL, IN_PROPERTY_OR_VALUE, IN_PROPERTY_VALUE, IN_PARAMETER_CONDITION_BODY> {
-    "@["|"@\\[" { enterState(stack, yystate()); leftAbsSign = true; yybegin(IN_INLINE_MATH); return INLINE_MATH_START; }
+    "@["|"@\\[" {
+        enterState(stack, yystate());
+        enterState(templateStateRef, yystate());
+        leftAbsSign = true;
+        yybegin(IN_INLINE_MATH);
+        return INLINE_MATH_START;
+    }
     {CHECK_PROPERTY_KEY} {
         boolean leftQuoted = yycharat(0) == '"';
         if(leftQuoted) {

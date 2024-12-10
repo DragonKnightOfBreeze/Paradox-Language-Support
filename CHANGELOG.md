@@ -1,4 +1,12 @@
 # Changelog
+  
+## 1.3.27
+
+* [X] #108 支持使用内联数学块作为封装变量的值
+
+***
+
+* [X] #108 Support using inline math block as scripted variable value
 
 ## 1.3.26
 
