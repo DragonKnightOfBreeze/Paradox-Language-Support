@@ -5,7 +5,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
@@ -19,7 +18,7 @@ import icu.windea.pls.script.psi.*
  */
 class UnsupportedRecursionInspection : LocalInspectionTool() {
     //目前仅做检查即可，不需要显示递归的装订线图标
-    //在定义声明级别进行此项检查
+    //在封装变量声明/定义声明级别进行此项检查
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
@@ -48,10 +47,8 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
             @Suppress("KotlinConstantConditions")
             private fun visitProperty(element: ParadoxScriptProperty) {
                 val definitionInfo = element.definitionInfo ?: return
-                val name = definitionInfo.name
-                if (name.isEmpty()) return
-                val type = definitionInfo.type
-                if (type != "scripted_trigger" && type != "scripted_effect") return
+                if (definitionInfo.name.isEmpty()) return //ignored for anonymous definitions
+                if (definitionInfo.type != "scripted_trigger" && definitionInfo.type != "scripted_effect") return
 
                 val recursions = mutableSetOf<PsiElement>()
                 ParadoxRecursionManager.isRecursiveDefinition(element, recursions) { _, re -> ParadoxPsiManager.isInvocationReference(element, re) }
@@ -62,17 +59,13 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                     else -> return
                 }
                 val location = element.propertyKey
-                holder.registerProblem(location, message, NavigateToRecursionFix(name, element, recursions))
+                holder.registerProblem(location, message, NavigateToRecursionFix(definitionInfo.name, element, recursions))
             }
         }
     }
 
     private fun shouldCheckFile(file: PsiFile): Boolean {
         if (selectRootFile(file) == null) return false
-        val fileInfo = file.fileInfo ?: return false
-        val filePath = fileInfo.path
-        if (filePath.fileExtension?.lowercase() != "txt") return false
-        if (!"common/scripted_triggers".matchesPath(filePath.path) && !"common/scripted_effects".matchesPath(filePath.path)) return false
         return true
     }
 
