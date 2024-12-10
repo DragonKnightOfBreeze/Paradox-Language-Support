@@ -3,10 +3,12 @@
 ## 1.3.27
 
 * [X] #108 支持使用内联数学块作为封装变量的值
+* [X] 优化脚本文件的索引逻辑，修复未索引不在顶层的封装变量的BUG
 
 ***
 
 * [X] #108 Support using inline math block as scripted variable value
+* [X] Optimize indexing logic for script files, fix a bug that non-root level local scripted variable are not indexed
 
 ## 1.3.26
 

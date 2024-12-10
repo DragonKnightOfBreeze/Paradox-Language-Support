@@ -544,7 +544,7 @@ object ParadoxDefinitionManager {
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.path //这里使用pathToEntry
-        val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile) ?: return null
+        val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile, PlsConstants.Settings.maxDefinitionDepth) ?: return null
         val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
         if (typeConfig == null) return null

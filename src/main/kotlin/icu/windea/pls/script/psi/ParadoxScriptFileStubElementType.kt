@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.impl.*
 
 object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage) {
     private const val ID = "paradoxScript.file"
-    private const val VERSION = 54 //1.3.21
+    private const val VERSION = 58 //1.3.27
 
     override fun getExternalId() = ID
 
@@ -81,42 +81,31 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
         }
 
         override fun skipChildProcessingWhenBuildingStubs(parent: ASTNode, node: ASTNode): Boolean {
-            //包括：顶层的scripted_variable、property
+            //包括：scripted_variable、property
             val type = node.elementType
             val parentType = parent.elementType
             return when {
                 type == ROOT_BLOCK -> false
-                type == SCRIPTED_VARIABLE -> parentType != ROOT_BLOCK
+                type == SCRIPTED_VARIABLE -> false
+                parentType == SCRIPTED_VARIABLE -> true
                 type == PROPERTY -> false
-                type == BLOCK -> skipBlock(node, { this.treeParent }, { this.elementType })
+                type == BLOCK -> false
                 else -> true
             }
         }
 
         override fun skipChildProcessingWhenBuildingStubs(tree: LighterAST, parent: LighterASTNode, node: LighterASTNode): Boolean {
-            //包括：顶层的scripted_variable、property
+            //包括：scripted_variable、property
             val type = node.tokenType
             val parentType = parent.tokenType
             return when {
                 type == ROOT_BLOCK -> false
-                type == SCRIPTED_VARIABLE -> parentType != ROOT_BLOCK
+                type == SCRIPTED_VARIABLE -> false
+                parentType == SCRIPTED_VARIABLE -> true
                 type == PROPERTY -> false
-                type == BLOCK -> skipBlock(node, { tree.getParent(this) }, { this.tokenType })
+                type == BLOCK -> false
                 else -> true
             }
-        }
-
-        private inline fun <T> skipBlock(node: T, parentProvider: T.() -> T?, typeProvider: T.() -> IElementType): Boolean {
-            //优化：跳过深度过高的属性（认为它们不可能是定义）
-            var current = node
-            var i = 1
-            val max = PlsConstants.Settings.maxDefinitionDepth
-            while (true) {
-                current = current.parentProvider() ?: break
-                if (current.typeProvider() == BLOCK) i++
-                if (i > max) return true
-            }
-            return false
         }
     }
 }
