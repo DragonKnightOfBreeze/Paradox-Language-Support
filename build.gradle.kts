@@ -157,7 +157,7 @@ tasks {
             )
         }
     }
-    withType<Jar> {
+    jar {
         //添加项目文档和许可证
         from("README.md", "README_en.md", "LICENSE")
         //排除特定文件
@@ -179,6 +179,10 @@ tasks {
         into("config") {
             from("cwt/README.md", "cwt/LICENSE")
         }
+    }
+    instrumentedJar {
+        //排除特定文件
+        excludesInJar.forEach { exclude(it) }
     }
     buildPlugin {
         //排除特定文件
