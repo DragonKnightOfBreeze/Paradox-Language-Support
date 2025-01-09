@@ -131,23 +131,23 @@ interface ParadoxParameterSupport {
     }
 
     object Keys : KeyRegistry() {
-        val keysToSync: Set<Key<*>> = _keysToSync
+        val keysToSync: MutableSet<Key<*>> = mutableSetOf()
     }
 }
 
-private val _keysToSync = mutableSetOf<Key<*>>()
+private fun <T: KeyProvider<*>> T.synced() = apply { callback { ParadoxParameterSupport.Keys.keysToSync += it } }
 
-val ParadoxParameterSupport.Keys.support by createKey<ParadoxParameterSupport>(ParadoxParameterSupport.Keys)
-val ParadoxParameterSupport.Keys.containingContext by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys)
-val ParadoxParameterSupport.Keys.containingContextReference by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys)
-val ParadoxParameterSupport.Keys.definitionName by createKey<String>(ParadoxParameterSupport.Keys)
-val ParadoxParameterSupport.Keys.definitionTypes by createKey<List<String>>(ParadoxParameterSupport.Keys)
-val ParadoxParameterSupport.Keys.inlineScriptExpression by createKey<String>(ParadoxParameterSupport.Keys)
+val ParadoxParameterSupport.Keys.support by createKey<ParadoxParameterSupport>(ParadoxParameterSupport.Keys).synced()
+val ParadoxParameterSupport.Keys.containingContext by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys).synced()
+val ParadoxParameterSupport.Keys.containingContextReference by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys).synced()
+val ParadoxParameterSupport.Keys.definitionName by createKey<String>(ParadoxParameterSupport.Keys).synced()
+val ParadoxParameterSupport.Keys.definitionTypes by createKey<List<String>>(ParadoxParameterSupport.Keys).synced()
+val ParadoxParameterSupport.Keys.inlineScriptExpression by createKey<String>(ParadoxParameterSupport.Keys).synced()
 
-var ParadoxParameterInfo.support by ParadoxParameterSupport.Keys.support.also { _keysToSync += it }
-var ParadoxParameterInfo.definitionName by ParadoxParameterSupport.Keys.definitionName.also { _keysToSync += it }
-var ParadoxParameterInfo.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes.also { _keysToSync += it }
-var ParadoxParameterInfo.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression.also { _keysToSync += it }
+var ParadoxParameterInfo.support by ParadoxParameterSupport.Keys.support
+var ParadoxParameterInfo.definitionName by ParadoxParameterSupport.Keys.definitionName
+var ParadoxParameterInfo.definitionTypes by ParadoxParameterSupport.Keys.definitionTypes
+var ParadoxParameterInfo.inlineScriptExpression by ParadoxParameterSupport.Keys.inlineScriptExpression
 
 var ParadoxParameterElement.support by ParadoxParameterSupport.Keys.support
 var ParadoxParameterElement.containingContext by ParadoxParameterSupport.Keys.containingContext

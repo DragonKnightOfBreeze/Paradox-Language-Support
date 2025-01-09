@@ -62,14 +62,14 @@ interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Us
 
 //Accessors
 
-val CwtTypeConfig.possibleRootKeys: Set<String> by createKeyDelegate(CwtTypeConfig.Keys) {
+val CwtTypeConfig.possibleRootKeys: Set<String> by createKey(CwtTypeConfig.Keys) {
     caseInsensitiveStringSet().apply {
         typeKeyFilter?.takeIfTrue()?.let { addAll(it) }
         subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeIfTrue()?.let { addAll(it) } }
     }
 }
 
-val CwtTypeConfig.possibleSwappedTypeRootKeys: Set<String> by createKeyDelegate(CwtTypeConfig.Keys) {
+val CwtTypeConfig.possibleSwappedTypeRootKeys: Set<String> by createKey(CwtTypeConfig.Keys) {
     caseInsensitiveStringSet().apply {
         configGroup.swappedTypes.values.forEach f@{ swappedTypeConfig ->
             val baseType = swappedTypeConfig.baseType ?: return@f
@@ -81,7 +81,7 @@ val CwtTypeConfig.possibleSwappedTypeRootKeys: Set<String> by createKeyDelegate(
     }
 }
 
-val CwtTypeConfig.possibleNestedTypeRootKeys: Set<String> by createKeyDelegate(CwtTypeConfig.Keys) {
+val CwtTypeConfig.possibleNestedTypeRootKeys: Set<String> by createKey(CwtTypeConfig.Keys) {
     caseInsensitiveStringSet().apply {
         addAll(possibleSwappedTypeRootKeys)
     }
@@ -221,4 +221,4 @@ private class CwtTypeConfigImpl(
     override val subtypes: Map<String, CwtSubtypeConfig>,
     override val localisation: CwtTypeLocalisationConfig?,
     override val images: CwtTypeImagesConfig?,
-) : UserDataHolderBase(), CwtTypeConfig 
+) : UserDataHolderBase(), CwtTypeConfig

@@ -19,13 +19,13 @@ import icu.windea.pls.script.psi.*
 
 //region Extensions
 
-var CwtConfigContext.inlineScriptRootConfigContext: CwtConfigContext? by createKeyDelegate(CwtConfigContext.Keys)
-var CwtConfigContext.inlineScriptExpression: String? by createKeyDelegate(CwtConfigContext.Keys)
-var CwtConfigContext.inlineScriptHasConflict: Boolean? by createKeyDelegate(CwtConfigContext.Keys)
-var CwtConfigContext.inlineScriptHasRecursion: Boolean? by createKeyDelegate(CwtConfigContext.Keys)
-var CwtConfigContext.parameterValueRootConfigContext: CwtConfigContext? by createKeyDelegate(CwtConfigContext.Keys)
-var CwtConfigContext.parameterElement: ParadoxParameterElement? by createKeyDelegate(CwtConfigContext.Keys)
-var CwtConfigContext.parameterValueQuoted: Boolean? by createKeyDelegate(CwtConfigContext.Keys)
+var CwtConfigContext.inlineScriptRootConfigContext: CwtConfigContext? by createKey(CwtConfigContext.Keys)
+var CwtConfigContext.inlineScriptExpression: String? by createKey(CwtConfigContext.Keys)
+var CwtConfigContext.inlineScriptHasConflict: Boolean? by createKey(CwtConfigContext.Keys)
+var CwtConfigContext.inlineScriptHasRecursion: Boolean? by createKey(CwtConfigContext.Keys)
+var CwtConfigContext.parameterValueRootConfigContext: CwtConfigContext? by createKey(CwtConfigContext.Keys)
+var CwtConfigContext.parameterElement: ParadoxParameterElement? by createKey(CwtConfigContext.Keys)
+var CwtConfigContext.parameterValueQuoted: Boolean? by createKey(CwtConfigContext.Keys)
 
 //endregion
 

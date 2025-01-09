@@ -313,7 +313,7 @@ object ParadoxParameterManager {
 
 //rootFile -> cacheKey -> parameterInfo
 //depends on config group
-private val CwtConfigGroup.parameterInfoCache by createKeyDelegate(CwtConfigContext.Keys) {
+private val CwtConfigGroup.parameterInfoCache by createKey(CwtConfigContext.Keys) {
     createNestedCache<VirtualFile, _, _, _> {
         CacheBuilder.newBuilder().buildCache<String, ParadoxParameterInfo>().trackedBy { it.modificationTracker }
     }

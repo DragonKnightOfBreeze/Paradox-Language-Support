@@ -30,12 +30,12 @@ interface ParadoxScopeContext : UserDataHolder {
 }
 
 /** 需要提升的作用域的ID列表。 */
-var ParadoxScopeContext.promotions: Set<String> by createKeyDelegate(ParadoxScopeContext.Keys) { emptySet() }
+var ParadoxScopeContext.promotions: Set<String> by createKey(ParadoxScopeContext.Keys) { emptySet() }
 
 /** 当前作用域上下文是否是精确的 - 这意味着不需要再进一步推断其中的各个作用域。 */
-var ParadoxScopeContext.isExact: Boolean by createKeyDelegate(ParadoxScopeContext.Keys) { true }
+var ParadoxScopeContext.isExact: Boolean by createKey(ParadoxScopeContext.Keys) { true }
 
-var ParadoxScopeContext.overriddenProvider: ParadoxOverriddenScopeContextProvider? by createKeyDelegate(ParadoxScopeContext.Keys)
+var ParadoxScopeContext.overriddenProvider: ParadoxOverriddenScopeContextProvider? by createKey(ParadoxScopeContext.Keys)
 
 fun ParadoxScopeContext.toScopeMap(showFrom: Boolean = true, showPrev: Boolean = true): Map<String, ParadoxScope> {
     return buildMap {

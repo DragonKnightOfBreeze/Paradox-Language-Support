@@ -11,6 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
@@ -104,17 +105,19 @@ interface ParadoxModifierSupport {
     }
 
     object Keys : KeyRegistry() {
-        val keysToSync: Set<Key<*>> = _keysToSync
+        val keysToSync: MutableSet<Key<*>> = mutableSetOf()
     }
 }
 
 private val _keysToSync = mutableSetOf<Key<*>>()
 
-val ParadoxModifierSupport.Keys.support by createKey<ParadoxModifierSupport>(ParadoxModifierSupport.Keys)
-val ParadoxModifierSupport.Keys.modifierConfig by createKey<CwtModifierConfig>(ParadoxModifierSupport.Keys)
+private fun <T: KeyProvider<*>> T.synced() = apply { callback { ParadoxParameterSupport.Keys.keysToSync += it } }
 
-var ParadoxModifierInfo.support by ParadoxModifierSupport.Keys.support.also { _keysToSync += it }
-var ParadoxModifierInfo.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig.also { _keysToSync += it }
+val ParadoxModifierSupport.Keys.support by createKey<ParadoxModifierSupport>(ParadoxModifierSupport.Keys).synced()
+val ParadoxModifierSupport.Keys.modifierConfig by createKey<CwtModifierConfig>(ParadoxModifierSupport.Keys).synced()
+
+var ParadoxModifierInfo.support by ParadoxModifierSupport.Keys.support
+var ParadoxModifierInfo.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig
 
 var ParadoxModifierElement.support by ParadoxModifierSupport.Keys.support
 var ParadoxModifierElement.modifierConfig by ParadoxModifierSupport.Keys.modifierConfig

@@ -27,7 +27,7 @@ interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
 //Accessors
 
 val CwtDeclarationConfig.subtypesUsedInDeclaration: Set<String>
-    by createKeyDelegate(CwtDeclarationConfig.Keys) {
+    by createKey(CwtDeclarationConfig.Keys) {
         val result = sortedSetOf<String>()
         config.processDescendants {
             if (it is CwtPropertyConfig) {

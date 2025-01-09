@@ -44,7 +44,6 @@ import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.refactoring.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
-import com.intellij.testFramework.common.*
 import com.intellij.ui.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
@@ -77,7 +76,6 @@ import java.util.Arrays
 import java.util.concurrent.*
 import java.util.function.*
 import java.util.logging.*
-import java.util.logging.Logger
 import javax.swing.*
 import javax.swing.table.*
 import javax.swing.text.*
@@ -579,14 +577,6 @@ fun LighterASTNode.internNode(tree: LighterAST): CharSequence? {
 //endregion
 
 //region PSI Extensions
-val PsiElement.startOffset get() = if (this is ASTDelegatePsiElement) this.node.startOffset else this.textRange.startOffset
-
-val PsiElement.endOffset get() = if (this is ASTDelegatePsiElement) this.node.let { it.startOffset + it.textLength } else this.textRange.endOffset
-
-fun PsiElement.hasSyntaxError(): Boolean {
-    return this.lastChild is PsiErrorElement
-}
-
 /**
  * @param forward 查找偏移之前还是之后的PSI元素，默认为null，表示同时考虑。
  */

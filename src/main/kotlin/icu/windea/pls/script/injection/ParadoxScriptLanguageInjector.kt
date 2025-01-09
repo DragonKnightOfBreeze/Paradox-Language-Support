@@ -50,7 +50,7 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
     }
 
     private fun doGetLanguageToInject(host: PsiLanguageInjectionHost, registrar: MultiHostRegistrar): Boolean {
-        if (host.hasSyntaxError()) return true //skip if host has syntax error 
+        if (host.lastChild is PsiErrorElement) return true //skip if host has syntax error
 
         val allInjectionInfos = mutableListOf<ParameterValueInjectionInfo>()
 

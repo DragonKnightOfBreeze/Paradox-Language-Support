@@ -80,7 +80,7 @@ class CwtConfigContext(
 //rootFile -> cacheKey -> configs
 //use soft values to optimize memory
 //depends on config group, indices and inference statuses
-private val CwtConfigGroup.configsCache by createKeyDelegate(CwtConfigContext.Keys) {
+private val CwtConfigGroup.configsCache by createKey(CwtConfigContext.Keys) {
     createCachedValue(project) {
         val trackerProvider = ParadoxModificationTrackers
         createNestedCache<VirtualFile, _, _, _> {
@@ -94,9 +94,9 @@ private val CwtConfigGroup.configsCache by createKeyDelegate(CwtConfigContext.Ke
     }
 }
 
-var CwtConfigContext.definitionInfo: ParadoxDefinitionInfo? by createKeyDelegate(CwtConfigContext.Keys)
-var CwtConfigContext.elementPathFromRoot: ParadoxExpressionPath? by createKeyDelegate(CwtConfigContext.Keys)
-var CwtConfigContext.provider: CwtConfigContextProvider? by createKeyDelegate(CwtConfigContext.Keys)
+var CwtConfigContext.definitionInfo: ParadoxDefinitionInfo? by createKey(CwtConfigContext.Keys)
+var CwtConfigContext.elementPathFromRoot: ParadoxExpressionPath? by createKey(CwtConfigContext.Keys)
+var CwtConfigContext.provider: CwtConfigContextProvider? by createKey(CwtConfigContext.Keys)
 
 fun CwtConfigContext.isDefinition(): Boolean {
     return definitionInfo != null && elementPathFromRoot.let { it != null && it.isEmpty() }

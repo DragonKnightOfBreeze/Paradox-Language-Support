@@ -49,7 +49,7 @@ inline fun DocumentationBuilder.grayed(block: DocumentationBuilder.() -> Unit): 
     return this
 }
 
-var DocumentationBuilder.sectionsList: List<MutableMap<String, String>>? by createKeyDelegate(DocumentationBuilder.Keys)
+var DocumentationBuilder.sectionsList: List<MutableMap<String, String>>? by createKey(DocumentationBuilder.Keys)
 
 fun DocumentationBuilder.initSections(listSize: Int) {
     sectionsList = List(listSize) { mutableMapOf() }

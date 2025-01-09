@@ -192,15 +192,15 @@ val CwtMemberConfig<*>.supportedScopes: Set<String>
         if (r.isNullOrEmpty()) ParadoxScopeManager.anyScopeIdSet else r
     }
 
-var CwtPropertyConfig.singleAliasConfig: CwtSingleAliasConfig? by createKeyDelegate(CwtMemberConfig.Keys)
-var CwtPropertyConfig.aliasConfig: CwtAliasConfig? by createKeyDelegate(CwtMemberConfig.Keys)
-var CwtPropertyConfig.inlineConfig: CwtInlineConfig? by createKeyDelegate(CwtMemberConfig.Keys)
+var CwtPropertyConfig.singleAliasConfig: CwtSingleAliasConfig? by createKey(CwtMemberConfig.Keys)
+var CwtPropertyConfig.aliasConfig: CwtAliasConfig? by createKey(CwtMemberConfig.Keys)
+var CwtPropertyConfig.inlineConfig: CwtInlineConfig? by createKey(CwtMemberConfig.Keys)
 
-var CwtMemberConfig<*>.originalConfig: CwtMemberConfig<CwtMemberElement>? by createKeyDelegate(CwtMemberConfig.Keys)
-var CwtMemberConfig<*>.overriddenProvider: CwtOverriddenConfigProvider? by createKeyDelegate(CwtMemberConfig.Keys)
+var CwtMemberConfig<*>.originalConfig: CwtMemberConfig<CwtMemberElement>? by createKey(CwtMemberConfig.Keys)
+var CwtMemberConfig<*>.overriddenProvider: CwtOverriddenConfigProvider? by createKey(CwtMemberConfig.Keys)
 
-var CwtMemberConfig<*>.declarationConfigContext: CwtDeclarationConfigContext? by createKeyDelegate(CwtMemberConfig.Keys)
-var CwtMemberConfig<*>.declarationConfigCacheKey: String? by createKeyDelegate(CwtMemberConfig.Keys)
+var CwtMemberConfig<*>.declarationConfigContext: CwtDeclarationConfigContext? by createKey(CwtMemberConfig.Keys)
+var CwtMemberConfig<*>.declarationConfigCacheKey: String? by createKey(CwtMemberConfig.Keys)
 
 //Resolve Methods
 

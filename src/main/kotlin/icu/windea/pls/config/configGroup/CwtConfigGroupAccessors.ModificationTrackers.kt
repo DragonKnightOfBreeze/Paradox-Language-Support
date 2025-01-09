@@ -9,7 +9,7 @@ import icu.windea.pls.lang.util.*
 
 @Tags(Tag.Computed)
 val CwtConfigGroup.definitionParameterModificationTracker: ModificationTracker
-    by createKeyDelegate(CwtConfigGroup.Keys) {
+    by createKey(CwtConfigGroup.Keys) {
         val definitionTypes = definitionTypesSupportParameters
         val configs = definitionTypes.mapNotNull { types[it] }
         val patterns = configs.flatMapTo(sortedSetOf()) { CwtConfigManager.getFilePathPatterns(it) }
@@ -18,7 +18,7 @@ val CwtConfigGroup.definitionParameterModificationTracker: ModificationTracker
 
 @Tags(Tag.Computed)
 val CwtConfigGroup.definitionScopeContextModificationTracker: ModificationTracker
-    by createKeyDelegate(CwtConfigGroup.Keys) {
+    by createKey(CwtConfigGroup.Keys) {
         val definitionTypes = ParadoxBaseDefinitionInferredScopeContextProvider.Constants.DEFINITION_TYPES
         val configs = definitionTypes.mapNotNull { types[it] }
         val patterns = configs.flatMapTo(sortedSetOf()) { CwtConfigManager.getFilePathPatterns(it) }

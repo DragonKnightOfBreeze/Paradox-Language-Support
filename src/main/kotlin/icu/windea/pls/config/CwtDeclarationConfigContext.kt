@@ -46,11 +46,11 @@ class CwtDeclarationConfigContext(
 //cacheKey -> declarationConfig
 //use soft values to optimize memory
 //depends on config group
-private val CwtConfigGroup.declarationConfigCache by createKeyDelegate(CwtConfigContext.Keys) {
+private val CwtConfigGroup.declarationConfigCache by createKey(CwtConfigContext.Keys) {
     createCachedValue(project) {
         CacheBuilder.newBuilder().softValues().buildCache<String, CwtPropertyConfig>().withDependencyItems()
     }
 }
 
-var CwtDeclarationConfigContext.provider: CwtDeclarationConfigContextProvider? by createKeyDelegate(CwtDeclarationConfigContext.Keys)
+var CwtDeclarationConfigContext.provider: CwtDeclarationConfigContextProvider? by createKey(CwtDeclarationConfigContext.Keys)
 

@@ -12,8 +12,8 @@ import icu.windea.pls.model.*
 
 //region Extensions
 
-var CwtDeclarationConfigContext.gameRuleConfig: CwtExtendedGameRuleConfig? by createKeyDelegate(CwtDeclarationConfigContext.Keys)
-var CwtDeclarationConfigContext.onActionConfig: CwtExtendedOnActionConfig? by createKeyDelegate(CwtDeclarationConfigContext.Keys)
+var CwtDeclarationConfigContext.gameRuleConfig: CwtExtendedGameRuleConfig? by createKey(CwtDeclarationConfigContext.Keys)
+var CwtDeclarationConfigContext.onActionConfig: CwtExtendedOnActionConfig? by createKey(CwtDeclarationConfigContext.Keys)
 
 //endregion
 

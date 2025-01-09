@@ -154,7 +154,7 @@ object ParadoxModifierManager {
 
 //rootFile -> cacheKey -> modifierInfo
 //depends on config group
-private val CwtConfigGroup.modifierInfoCache by createKeyDelegate(CwtConfigContext.Keys) {
+private val CwtConfigGroup.modifierInfoCache by createKey(CwtConfigContext.Keys) {
     createNestedCache<VirtualFile, _, _, _> {
         CacheBuilder.newBuilder().buildCache<String, ParadoxModifierInfo>().trackedBy { it.modificationTracker }
     }
