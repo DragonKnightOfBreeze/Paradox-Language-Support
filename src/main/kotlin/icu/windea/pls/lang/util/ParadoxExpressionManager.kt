@@ -9,7 +9,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
-import com.intellij.util.containers.ContainerUtil
+import com.intellij.util.containers.*
 import com.intellij.util.text.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
@@ -404,7 +404,7 @@ object ParadoxExpressionManager {
         val isDefinition = configContext.isDefinition()
         if (isDefinition && element is ParadoxScriptDefinitionElement && !BitUtil.isSet(matchOptions, Options.AcceptDefinition)) return emptyList()
         val configGroup = configContext.configGroup
-        
+
         ProgressManager.checkCanceled()
         val contextConfigs = configContext.getConfigs(matchOptions)
         if (contextConfigs.isEmpty()) return emptyList()
@@ -413,7 +413,7 @@ object ParadoxExpressionManager {
         val resultMatchKey = when {
             keyExpression != null -> {
                 val resultValuesMatchKey = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
-                contextConfigs.forEach f@{config -> 
+                contextConfigs.forEach f@{config ->
                     if(config !is CwtPropertyConfig) return@f
                     val matchResult = ParadoxExpressionMatcher.matches(element, keyExpression, config.keyExpression, config, configGroup, matchOptions)
                     if (matchResult == ParadoxExpressionMatcher.Result.NotMatch) return@f
@@ -566,7 +566,7 @@ object ParadoxExpressionManager {
         if (childConfigs.isEmpty()) return emptyMap()
 
         val childOccurrenceMap = doGetChildOccurrenceMapCacheFromCache(element) ?: return emptyMap()
-        //NOTE cacheKey基于childConfigs即可，key相同而value不同的规则，上面的cardinality应当保证是一样的 
+        //NOTE cacheKey基于childConfigs即可，key相同而value不同的规则，上面的cardinality应当保证是一样的
         val cacheKey = childConfigs.joinToString(" ")
         return childOccurrenceMap.getOrPut(cacheKey) { doGetChildOccurrenceMap(element, configs).optimized() }
     }

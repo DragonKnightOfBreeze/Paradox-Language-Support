@@ -4,7 +4,6 @@ import com.intellij.codeInsight.daemon.impl.*
 import com.intellij.codeInsight.daemon.impl.analysis.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*

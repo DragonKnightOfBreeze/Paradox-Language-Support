@@ -8,7 +8,6 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 同步本地化的查询器。

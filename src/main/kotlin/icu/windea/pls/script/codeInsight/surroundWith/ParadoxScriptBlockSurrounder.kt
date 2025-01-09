@@ -8,7 +8,6 @@ import com.intellij.psi.*
 import com.intellij.psi.codeStyle.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptBlockSurrounder : Surrounder {
