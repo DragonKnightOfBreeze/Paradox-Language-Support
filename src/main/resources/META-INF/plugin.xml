@@ -1,6 +1,4 @@
 <idea-plugin url="https://github.com/DragonKnightOfBreeze/Paradox-Language-Support" xmlns:xi="http://www.w3.org/2001/XInclude">
-  <id>icu.windea.pls</id>
-  <name>Paradox Language Support</name>
   <category>Languages</category>
   <resource-bundle>messages.PlsBundle</resource-bundle>
 
@@ -10,7 +8,7 @@
   <depends>com.intellij.platform.images</depends>
   <depends optional="true" config-file="pls-extension-diagram.xml">com.intellij.diagram</depends>
   <depends optional="true" config-file="pls-extension-translation.xml">cn.yiiguxing.plugin.translate</depends>
-  
+
   <xi:include href="/META-INF/pls-inject.xml" xpointer="xpointer(/idea-plugin/*)"/>  <!--should be first-->
   <xi:include href="/META-INF/pls-cwt.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/pls-script.xml" xpointer="xpointer(/idea-plugin/*)"/>
