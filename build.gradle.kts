@@ -71,6 +71,9 @@ dependencies {
 
         bundledPlugins("com.intellij.platform.images")
         bundledPlugins("com.intellij.diagram")
+        //bundledPlugins("com.intellij.java")
+        //bundledPlugins("org.jetbrains.kotlin")
+        //bundledPlugins("org.intellij.plugins.markdown")
 
         plugin("cn.yiiguxing.plugin.translate:3.5.2") //https://github.com/YiiGuxing/TranslationPlugin
     }

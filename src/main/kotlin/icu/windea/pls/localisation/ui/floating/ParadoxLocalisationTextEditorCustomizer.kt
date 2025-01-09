@@ -7,14 +7,18 @@ import com.intellij.openapi.fileEditor.impl.text.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
+import kotlinx.coroutines.*
 
 //org.intellij.plugins.markdown.ui.floating.AddFloatingToolbarTextEditorCustomizer
 
+@Suppress("UnstableApiUsage")
 class ParadoxLocalisationTextEditorCustomizer : TextEditorCustomizer {
-    override fun customize(textEditor: TextEditor) {
+    override suspend fun execute(textEditor: TextEditor) {
         if (shouldAcceptEditor(textEditor) && shouldShowFloatingToolbar()) {
-            val toolbar = ParadoxLocalisationFloatingToolbar(textEditor, "Pls.ParadoxLocalisation.Toolbar.Floating")
-            Disposer.register(textEditor, toolbar)
+            coroutineScope {
+                val toolbar = ParadoxLocalisationFloatingToolbar(textEditor, "Pls.ParadoxLocalisation.Toolbar.Floating")
+                Disposer.register(textEditor, toolbar)
+            }
         }
     }
 
