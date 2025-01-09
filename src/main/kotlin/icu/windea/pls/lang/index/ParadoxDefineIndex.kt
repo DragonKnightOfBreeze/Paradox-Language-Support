@@ -2,6 +2,7 @@ package icu.windea.pls.lang.index
 
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*

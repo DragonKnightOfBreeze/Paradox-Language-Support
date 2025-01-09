@@ -3,6 +3,7 @@ package icu.windea.pls.cwt.editor
 import com.intellij.lang.annotation.*
 import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*

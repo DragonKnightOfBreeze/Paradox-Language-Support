@@ -12,6 +12,7 @@ import com.intellij.openapi.command.impl.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.intellij.ui.*
 import com.intellij.util.*
 import icons.*

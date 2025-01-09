@@ -2,6 +2,7 @@ package icu.windea.pls.script.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.core.*

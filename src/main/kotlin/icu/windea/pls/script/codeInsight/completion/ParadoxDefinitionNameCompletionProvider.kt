@@ -3,6 +3,7 @@ package icu.windea.pls.script.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
@@ -47,7 +48,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
 
         when {
             //key_
-            //key_ = 
+            //key_ =
             //key_ = { ... }
             element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockMember()) -> {
                 val fileInfo = file.fileInfo ?: return

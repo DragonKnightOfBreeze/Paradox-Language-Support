@@ -1,5 +1,6 @@
 package icu.windea.pls.ep.index
 
+import com.intellij.psi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*

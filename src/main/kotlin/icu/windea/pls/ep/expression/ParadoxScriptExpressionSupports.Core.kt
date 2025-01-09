@@ -5,6 +5,7 @@ import com.intellij.codeInsight.highlighting.*
 import com.intellij.lang.annotation.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*

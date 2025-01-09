@@ -3,6 +3,7 @@ package icu.windea.pls.localisation.editor.editorActions.smartEnter
 import com.intellij.lang.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*

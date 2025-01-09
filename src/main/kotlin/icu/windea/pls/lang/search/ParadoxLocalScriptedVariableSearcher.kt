@@ -6,6 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -17,7 +18,7 @@ import icu.windea.pls.script.psi.*
 
 /**
  * 本地封装变量的查询器。
- * 
+ *
  * 本地封装变量：位于同一脚本文件中，且在当前位置之前的封装变量。兼容需要内联的情况。
  */
 class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxLocalScriptedVariableSearch.SearchParameters>() {
