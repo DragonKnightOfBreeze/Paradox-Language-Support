@@ -87,7 +87,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         val gameType = configGroup.gameType ?: return true
         return withRecursionGuard("ParadoxBaseDefinitionInferredScopeContextProvider.doProcessQuery") {
             withRecursionCheck(definitionInfo.name + "@" + definitionInfo.type) {
-                val indexId = ParadoxInfoIndexType.InferredScopeContextAwareDefinitionUsage
+                val indexId = ParadoxIndexInfoType.InferredScopeContextAwareDefinition
                 ParadoxMergedIndex.processQuery(ParadoxScriptFileType, indexId, project, gameType, searchScope) p@{ file, infos ->
                     val psiFile = file.toPsiFile(project) ?: return@p true
                     infos.forEach f@{ info ->
@@ -195,7 +195,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         return withRecursionGuard("ParadoxEventInOnActionInferredScopeContextProvider.doProcessQuery") {
             if (depth == 1) stackTrace.addLast(thisEventName)
 
-            val indexId = ParadoxInfoIndexType.EventInOnActionUsage
+            val indexId = ParadoxIndexInfoType.EventInOnAction
             ParadoxMergedIndex.processQuery(ParadoxScriptFileType, indexId, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
@@ -304,7 +304,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
             if (depth == 1) stackTrace.addLast(thisEventName)
 
             val toRef = "from".repeat(depth)
-            val indexId = ParadoxInfoIndexType.EventInEventUsage
+            val indexId = ParadoxIndexInfoType.EventInEvent
             ParadoxMergedIndex.processQuery(ParadoxScriptFileType, indexId, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->
@@ -457,7 +457,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
             if (depth == 1) stackTrace.addLast(thisOnActionName)
 
             val toRef = "from".repeat(depth)
-            val indexId = ParadoxInfoIndexType.OnActionInEventUsage
+            val indexId = ParadoxIndexInfoType.OnActionInEvent
             ParadoxMergedIndex.processQuery(ParadoxScriptFileType, indexId, project, gameType, searchScope) p@{ file, infos ->
                 val psiFile = file.toPsiFile(project) ?: return@p true
                 infos.forEach f@{ info ->

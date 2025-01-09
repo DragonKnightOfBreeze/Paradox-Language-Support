@@ -17,7 +17,7 @@ class ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport : ParadoxIndexI
 
     private val compressComparator = compareBy<ParadoxInferredScopeContextAwareDefinitionIndexInfo> { it.typeExpression }
 
-    override fun id() = ParadoxInfoIndexType.InferredScopeContextAwareDefinitionUsage.id
+    override fun id() = ParadoxIndexInfoType.InferredScopeContextAwareDefinition.id
 
     override fun type() = ParadoxInferredScopeContextAwareDefinitionIndexInfo::class.java
 
@@ -58,7 +58,7 @@ class ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport : ParadoxIndexI
 class ParadoxEventInOnActionIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEventInOnActionIndexInfo> {
     private val compressComparator = compareBy<ParadoxEventInOnActionIndexInfo> { it.containingOnActionName }
 
-    override fun id() = ParadoxInfoIndexType.EventInOnActionUsage.id
+    override fun id() = ParadoxIndexInfoType.EventInOnAction.id
 
     override fun type() = ParadoxEventInOnActionIndexInfo::class.java
 
@@ -103,7 +103,7 @@ class ParadoxEventInOnActionIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEv
 class ParadoxEventInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEventInEventIndexInfo> {
     private val compressComparator = compareBy<ParadoxEventInEventIndexInfo> { it.containingEventName }
 
-    override fun id() = ParadoxInfoIndexType.EventInEventUsage.id
+    override fun id() = ParadoxIndexInfoType.EventInEvent.id
 
     override fun type() = ParadoxEventInEventIndexInfo::class.java
 
@@ -169,7 +169,7 @@ class ParadoxEventInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEvent
 class ParadoxOnActionInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxOnActionInEventIndexInfo> {
     private val compressComparator = compareBy<ParadoxOnActionInEventIndexInfo> { it.containingEventName }
 
-    override fun id() = ParadoxInfoIndexType.OnActionInEventUsage.id
+    override fun id() = ParadoxIndexInfoType.OnActionInEvent.id
 
     override fun type() = ParadoxOnActionInEventIndexInfo::class.java
 

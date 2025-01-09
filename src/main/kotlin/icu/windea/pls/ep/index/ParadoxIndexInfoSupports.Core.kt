@@ -15,7 +15,7 @@ import java.io.*
 class ParadoxComplexEnumValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxComplexEnumValueIndexInfo> {
     private val compressComparator = compareBy<ParadoxComplexEnumValueIndexInfo>({ it.enumName }, { it.name })
 
-    override fun id() = ParadoxInfoIndexType.ComplexEnumValueUsage.id
+    override fun id() = ParadoxIndexInfoType.ComplexEnumValue.id
 
     override fun type() = ParadoxComplexEnumValueIndexInfo::class.java
 
@@ -49,7 +49,7 @@ class ParadoxComplexEnumValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxC
 class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynamicValueIndexInfo> {
     private val compressComparator = compareBy<ParadoxDynamicValueIndexInfo>({ it.dynamicValueType }, { it.name })
 
-    override fun id() = ParadoxInfoIndexType.DynamicValueUsage.id
+    override fun id() = ParadoxIndexInfoType.DynamicValue.id
 
     override fun type() = ParadoxDynamicValueIndexInfo::class.java
 
@@ -104,7 +104,7 @@ class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynam
 class ParadoxParameterIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxParameterIndexInfo> {
     private val compressComparator = compareBy<ParadoxParameterIndexInfo>({ it.contextKey }, { it.name })
 
-    override fun id() = ParadoxInfoIndexType.ParameterUsage.id
+    override fun id() = ParadoxIndexInfoType.Parameter.id
 
     override fun type() = ParadoxParameterIndexInfo::class.java
 
@@ -144,7 +144,7 @@ class ParadoxParameterIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxParamete
 class ParadoxLocalisationParameterIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxLocalisationParameterIndexInfo> {
     private val compressComparator = compareBy<ParadoxLocalisationParameterIndexInfo>({ it.localisationName }, { it.name })
 
-    override fun id() = ParadoxInfoIndexType.LocalisationParameterUsage.id
+    override fun id() = ParadoxIndexInfoType.LocalisationParameter.id
 
     override fun type() = ParadoxLocalisationParameterIndexInfo::class.java
 

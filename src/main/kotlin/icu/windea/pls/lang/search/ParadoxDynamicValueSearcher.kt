@@ -33,7 +33,7 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexIn
             ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
             if (selectGameType(file) != gameType) return@p true //check game type at file level
 
-            val fileData = ParadoxMergedIndex.INSTANCE.getFileData(file, project, ParadoxInfoIndexType.DynamicValueUsage)
+            val fileData = ParadoxMergedIndex.INSTANCE.getFileData(file, project, ParadoxIndexInfoType.DynamicValue)
             if (fileData.isEmpty()) return@p true
             fileData.forEach f@{ info ->
                 if (info.dynamicValueType !in dynamicValueTypes) return@f

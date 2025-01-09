@@ -22,7 +22,7 @@ import java.io.*
 
 /**
  * 用于索引各种信息。
- * 
+ *
  * 兼容需要内联的情况（此时使用懒加载的索引）。
  *
  * @see ParadoxIndexInfo
@@ -38,7 +38,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
 
         private val markerKey = createKey<Boolean>("paradox.merged.info.index.marker")
 
-        fun <ID : ParadoxInfoIndexType<T>, T : ParadoxIndexInfo> processQuery(
+        fun <ID : ParadoxIndexInfoType<T>, T : ParadoxIndexInfo> processQuery(
             fileType: LanguageFileType,
             id: ID,
             project: Project,
@@ -191,7 +191,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
         return false
     }
 
-    fun <T : ParadoxIndexInfo> getFileData(file: VirtualFile, project: Project, id: ParadoxInfoIndexType<T>): List<T> {
+    fun <T : ParadoxIndexInfo> getFileData(file: VirtualFile, project: Project, id: ParadoxIndexInfoType<T>): List<T> {
         val allFileData = getFileData(file, project)
         return allFileData.get(id.id.toString())?.castOrNull<List<T>>().orEmpty()
     }
