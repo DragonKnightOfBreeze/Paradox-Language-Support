@@ -43,6 +43,7 @@ intellijPlatform {
         changeNotes.set(projectDir.resolve("CHANGELOG.md").readText().toChangeLogText())
         ideaVersion {
             sinceBuild.set(providers.gradleProperty("sinceBuild"))
+            untilBuild.set(provider { null })
         }
     }
     publishing {
