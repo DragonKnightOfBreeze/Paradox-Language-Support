@@ -3,10 +3,12 @@
 ## 1.3.28
 
 * [ ] 提供扩展点以更好地识别各种来源的游戏目录和模组目录（参见 #111）
+* [X] 其他优化与BUG修复
 
 ***
 
 * [ ] Provides EP to better identify game directories and mod directories from various sources (See #111)
+* [X] Other optimizations and bug fixes
 
 ## 1.3.27
 

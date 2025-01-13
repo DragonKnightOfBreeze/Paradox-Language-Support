@@ -6,12 +6,12 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
+import java.util.function.Function
 
 class ParadoxWithGameTypeSelector<T>(
     val gameType: ParadoxGameType
@@ -112,14 +112,8 @@ class ParadoxFilterSelector<T>(
 class ParadoxDistinctSelector<T, K>(
     val keySelector: (T) -> K
 ) : ParadoxSelector<T> {
-    val keysToDistinct = mutableSetOf<K>().synced()
-
-    override fun selectOne(target: T): Boolean {
-        return keysToDistinct.add(keySelector(target))
-    }
-    
-    override fun select(target: T): Boolean {
-        return keysToDistinct.add(keySelector(target))
+    override fun keySelector(): Function<T, Any?> {
+        return Function { keySelector.invoke(it) }
     }
 }
 

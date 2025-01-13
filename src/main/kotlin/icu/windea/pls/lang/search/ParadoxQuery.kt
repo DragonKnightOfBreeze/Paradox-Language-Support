@@ -2,6 +2,7 @@ package icu.windea.pls.lang.search
 
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.priority.*
 import icu.windea.pls.lang.search.selector.*
 
@@ -53,6 +54,8 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
         //* 懒加载真正的finalComparator
         //* 尽可能少地调用排序逻辑（当result中的元素小于等于1个时，不需要调用）
 
+        //首先遍历并进行必要的过滤和排序，得到排序结果后再进行最后的去重
+
         val selector = searchParameters.selector
         val finalComparator by lazy { getFinalComparator() }
         val comparator = Comparator<T> c@{ o1, o2 ->
@@ -66,15 +69,21 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
             }
             true
         }
-        return result
+        if (result.size <= 1) return result
+        val keySelector = selector.keySelector()
+        if (keySelector == null) return result
+        val keysToDistinct = mutableSetOf<Any?>().synced()
+        return result.filterTo(mutableSetOf()) { keysToDistinct.add(keySelector.apply(it)) }
     }
-    
+
     override fun forEach(consumer: Processor<in T>): Boolean {
-        //为了优化性能，目前不再先得到排序后的结果再遍历，而是直接遍历并进行必要的过滤与去重
+        //为了优化性能，目前不再先得到处理后的最终结果再遍历，而是直接遍历并进行必要的过滤与去重（不进行排序）
 
         val selector = searchParameters.selector
+        val keySelector = selector.keySelector()
+        val keysToDistinct = mutableSetOf<Any?>().synced()
         return delegateProcessResults(original) {
-            if (selector.select(it)) {
+            if (selector.select(it) && (keySelector == null || keysToDistinct.add(keySelector.apply(it)))) {
                 consumer.process(it)
             }
             true
@@ -84,16 +93,17 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
         //return result.process { consumer.process(it) }
     }
 
+    fun getPriorityComparator(): Comparator<T> {
+        return ParadoxPriorityProvider.getComparator(searchParameters)
+    }
+
     fun getFinalComparator(): Comparator<T> {
         //注意：最终使用的排序器需要将比较结果为0的项按照原有顺序进行排序，除非它们值相等
+
         var comparator = searchParameters.selector.comparator()
         comparator = comparator thenPossible getPriorityComparator()
         comparator = comparator thenPossible Comparator { o1, o2 -> if (o1 == o2) 0 else 1 }
         return comparator!!
-    }
-
-    fun getPriorityComparator(): Comparator<T> {
-        return ParadoxPriorityProvider.getComparator(searchParameters)
     }
 
     override fun toString(): String {

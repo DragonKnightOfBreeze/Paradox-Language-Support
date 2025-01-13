@@ -7,6 +7,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.*
+import java.util.function.Function
 
 class ChainedParadoxSelector<T>(
     val project: Project,
@@ -89,8 +90,20 @@ class ChainedParadoxSelector<T>(
         return true
     }
 
+    override fun keySelector(): Function<T, Any?>? {
+        if (selectors.isEmpty()) return null
+        //use merged key selector
+        val selectors = selectors.mapNotNull { s -> s.keySelector() }
+        return when (selectors.size) {
+            0 -> null
+            1 -> selectors.first()
+            else -> Function { selectors.map { s -> s.apply(it) } }
+        }
+    }
+
     override fun comparator(): Comparator<T>? {
         if (selectors.isEmpty()) return null
+        //use merged comparator
         var comparator: Comparator<T>? = null
         selectors.forEach { selector ->
             comparator = comparator thenPossible selector.comparator()
