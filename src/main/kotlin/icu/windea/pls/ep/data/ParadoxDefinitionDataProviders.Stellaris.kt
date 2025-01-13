@@ -40,13 +40,13 @@ class StellarisTechnologyData(data: ParadoxScriptData) : ParadoxDefinitionData {
     val category: Set<String>? by data.get("category")
 
     val cost: Int? by data.get("cost")
-    val cost_per_level: Int? by data.get("cost_per_level")
+    val costPerLevel: Int? by data.get("cost_per_level")
     val levels: Int? by data.get("levels")
 
-    val start_tech: Boolean by data.get("start_tech", false)
-    val is_rare: Boolean by data.get("is_rare", false)
-    val is_dangerous: Boolean by data.get("is_dangerous", false)
-    val is_insight: Boolean by data.get("is_insight", false)
+    val startTech: Boolean by data.get("start_tech", false)
+    val isRare: Boolean by data.get("is_rare", false)
+    val isDangerous: Boolean by data.get("is_dangerous", false)
+    val isInsight: Boolean by data.get("is_insight", false)
 
     val gateway: String? by data.get("gateway")
     val prerequisites: Set<String> by data.get("prerequisites", emptySet())
@@ -57,10 +57,10 @@ class StellarisTechnologyData(data: ParadoxScriptData) : ParadoxDefinitionData {
 
 class StellarisEventData(data: ParadoxScriptData) : ParadoxDefinitionData {
     val base: String? by data.get("base")
-    val desc_clear: Boolean by data.get("desc_clear", false)
-    val option_clear: Boolean by data.get("option_clear", false)
-    val picture_clear: Boolean by data.get("picture_clear", false)
-    val show_sound_clear: Boolean by data.get("show_sound_clear", false)
+    val descClear: Boolean by data.get("desc_clear", false)
+    val optionClear: Boolean by data.get("option_clear", false)
+    val pictureClear: Boolean by data.get("picture_clear", false)
+    val showSoundClear: Boolean by data.get("show_sound_clear", false)
 
     @WithGameType(ParadoxGameType.Stellaris)
     class Provider : ParadoxDefinitionDataProviderBase<StellarisEventData>("event")
