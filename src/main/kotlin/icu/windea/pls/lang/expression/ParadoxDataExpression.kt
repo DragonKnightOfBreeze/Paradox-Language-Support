@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.expression
 
-import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -13,76 +12,97 @@ import java.util.*
 /**
  * 数据表达式，对应脚本语言中的某处键/值。
  */
-class ParadoxDataExpression private constructor(
-    val text: String,
-    val type: ParadoxType,
-    val quoted: Boolean,
+interface ParadoxDataExpression {
+    val value: String
+    val type: ParadoxType
+    val quoted: Boolean
     val isKey: Boolean?
-) {
-    private val regex by lazy { ParadoxExpressionManager.toRegex(text) }
 
-    fun isParameterized(): Boolean {
-        return type == ParadoxType.String && text.isParameterized()
-    }
+    fun isParameterized(): Boolean
 
-    fun isFullParameterized(): Boolean {
-        return type == ParadoxType.String && text.isFullParameterized()
-    }
+    fun isFullParameterized(): Boolean
 
-    fun matchesConstant(v: String): Boolean {
-        if (text.isParameterized()) {
-            //兼容带参数的情况（此时先转化为正则表达式，再进行匹配）
-            return regex.matches(v)
-        }
-        return text.equals(v, true) //忽略大小写
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return other is ParadoxDataExpression && (text == other.text && quoted == other.quoted)
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(text, type)
-    }
-
-    override fun toString(): String {
-        return text
-    }
+    fun matchesConstant(v: String): Boolean
 
     companion object Resolver {
-        val BlockExpression: ParadoxDataExpression = ParadoxDataExpression(PlsConstants.Folders.block, ParadoxType.Block, false, false)
-        val UnknownExpression: ParadoxDataExpression = ParadoxDataExpression(PlsConstants.unknownString, ParadoxType.Unknown, false, false)
+        val BlockExpression: ParadoxDataExpression = Impl(PlsConstants.Folders.block, ParadoxType.Block, false, false)
+        val UnknownExpression: ParadoxDataExpression = Impl(PlsConstants.unknownString, ParadoxType.Unknown, false, false)
 
-        fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): ParadoxDataExpression {
-            return when {
-                element is ParadoxScriptBlock -> {
-                    ParadoxDataExpression(PlsConstants.Folders.block, ParadoxType.Block, false, false)
-                }
-                element is ParadoxScriptScriptedVariableReference -> {
-                    ProgressManager.checkCanceled()
-                    val valueElement = when {
-                        BitUtil.isSet(matchOptions, ParadoxExpressionMatcher.Options.SkipIndex) -> return ParadoxDataExpression(PlsConstants.unknownString, ParadoxType.Unknown, false, false)
-                        else -> element.referenceValue ?: return ParadoxDataExpression(PlsConstants.unknownString, ParadoxType.Unknown, false, false)
-                    }
-                    ParadoxDataExpression(valueElement.value, valueElement.type, valueElement.text.isLeftQuoted(), false)
-                }
-                else -> {
-                    val isKey = element is ParadoxScriptPropertyKey
-                    ParadoxDataExpression(element.value, element.type, element.text.isLeftQuoted(), isKey)
-                }
-            }
-        }
-
-        fun resolve(value: String, isQuoted: Boolean, isKey: Boolean? = null): ParadoxDataExpression {
-            val expressionType = ParadoxTypeManager.resolve(value)
-            return ParadoxDataExpression(value, expressionType, isQuoted, isKey)
+        fun resolve(value: String, quoted: Boolean, isKey: Boolean? = null): ParadoxDataExpression {
+            return Impl(value, ParadoxTypeManager.resolve(value), quoted, isKey)
         }
 
         fun resolve(text: String, isKey: Boolean? = null): ParadoxDataExpression {
-            val value = text.unquote()
-            val expressionType = ParadoxTypeManager.resolve(text)
-            val quoted = text.isLeftQuoted()
-            return ParadoxDataExpression(value, expressionType, quoted, isKey)
+            return Impl(text.unquote(), ParadoxTypeManager.resolve(text), text.isLeftQuoted(), isKey)
+        }
+
+        fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): ParadoxDataExpression {
+            return when {
+                element is ParadoxScriptBlock -> Impl(PlsConstants.Folders.block, ParadoxType.Block, false, false)
+                element is ParadoxScriptScriptedVariableReference -> LazyImpl(element, matchOptions, false)
+                else -> Impl(element.value, element.type, element.text.isLeftQuoted(), element is ParadoxScriptPropertyKey)
+            }
         }
     }
+
+    //region Implementations
+
+    private sealed class Base : ParadoxDataExpression {
+        private val regex by lazy { ParadoxExpressionManager.toRegex(value) }
+
+        override fun isParameterized(): Boolean {
+            return type == ParadoxType.String && value.isParameterized()
+        }
+
+        override fun isFullParameterized(): Boolean {
+            return type == ParadoxType.String && value.isFullParameterized()
+        }
+
+        override fun matchesConstant(v: String): Boolean {
+            if (value.isParameterized()) {
+                //兼容带参数的情况（此时先转化为正则表达式，再进行匹配）
+                return regex.matches(v)
+            }
+            return value.equals(v, true) //忽略大小写
+        }
+
+        override fun equals(other: Any?): Boolean {
+            return other is ParadoxDataExpression && (value == other.value && quoted == other.quoted)
+        }
+
+        override fun hashCode(): Int {
+            return Objects.hash(value, type)
+        }
+
+        override fun toString(): String {
+            return value
+        }
+    }
+
+    private class Impl(
+        override val value: String,
+        override val type: ParadoxType,
+        override val quoted: Boolean,
+        override val isKey: Boolean?
+    ) : Base()
+
+    private class LazyImpl(
+        private val element: ParadoxScriptScriptedVariableReference,
+        private val matchOptions: Int,
+        override val isKey: Boolean?
+    ) : Base() {
+        //1.3.28 lazy resolve scripted variable value for data expressions to optimize config resolving (and also indexing) logic
+        val valueElement by lazy {
+            when {
+                BitUtil.isSet(matchOptions, ParadoxExpressionMatcher.Options.SkipIndex) -> null
+                else -> element.referenceValue
+            }
+        }
+
+        override val value get() = valueElement?.value ?: PlsConstants.unknownString
+        override val type get() = valueElement?.type ?: ParadoxType.Unknown
+        override val quoted get() = valueElement?.text?.isLeftQuoted() ?: false
+    }
+
+    //endregion
 }
