@@ -17,7 +17,7 @@ Reference Links:
 
 #### Built-in Config Groups {#builtin-config-groups}
 
-* Path: `config/{gameType}`[^1] (in the plugin jar)
+* Path: `config/{gameType}`[^1] (in the built-in configs jar, which is inside the plugin's zip package)
 * Enabled: Always
 * Customizable ：No
 

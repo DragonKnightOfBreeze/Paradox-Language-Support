@@ -3,11 +3,13 @@
 ## 1.3.28
 
 * [ ] 提供扩展点以更好地识别各种来源的游戏目录和模组目录（参见 #111）
+* [X] 将内置规则统一移到插件压缩包中的单独的jar包中
 * [X] 其他优化与BUG修复
 
 ***
 
 * [ ] Provides EP to better identify game directories and mod directories from various sources (See #111)
+* [X] Move built-in configs into individual jar package which is inside which is inside the plugin's zip package
 * [X] Other optimizations and bug fixes
 
 ## 1.3.27

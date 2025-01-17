@@ -36,23 +36,23 @@ fun String.toChangeLogText(): String {
 
 intellijPlatform {
     pluginConfiguration {
-        id.set(providers.gradleProperty("pluginId"))
-        name.set(providers.gradleProperty("pluginName"))
-        version.set(providers.gradleProperty("pluginVersion"))
-        description.set(projectDir.resolve("DESCRIPTION.md").readText())
-        changeNotes.set(projectDir.resolve("CHANGELOG.md").readText().toChangeLogText())
+        id = providers.gradleProperty("pluginId")
+        name = providers.gradleProperty("pluginName")
+        version = providers.gradleProperty("pluginVersion")
+        description = provider { projectDir.resolve("DESCRIPTION.md").readText() }
+        changeNotes = provider { projectDir.resolve("CHANGELOG.md").readText().toChangeLogText() }
         ideaVersion {
-            sinceBuild.set(providers.gradleProperty("sinceBuild"))
-            untilBuild.set(provider { null })
+            sinceBuild = providers.gradleProperty("sinceBuild")
+            untilBuild = provider { null }
         }
     }
     publishing {
-        token.set(providers.environmentVariable("IDEA_TOKEN"))
+        token = providers.environmentVariable("IDEA_TOKEN")
     }
 }
 
 grammarKit {
-    jflexRelease.set("1.7.0-2")
+    jflexRelease = provider { "1.7.0-2" }
 }
 
 repositories {
@@ -125,22 +125,11 @@ kotlin {
 }
 
 val excludesInJar = listOf(
-	"icu/windea/pls/dev",
-	"icu/windea/pls/core/data/CsvExtensions*.class",
+    "icu/windea/pls/dev",
+    "icu/windea/pls/core/data/CsvExtensions*.class",
 )
 val excludesInZip = listOf(
-	"lib/jackson-dataformat-csv-*.jar",
-)
-val cwtConfigDirs = listOf(
-	"core" to "core",
-	"cwtools-ck2-config" to "ck2",
-	"cwtools-ck3-config" to "ck3",
-	"cwtools-eu4-config" to "eu4",
-	"cwtools-hoi4-config" to "hoi4",
-	"cwtools-ir-config" to "ir",
-	"cwtools-stellaris-config" to "stellaris",
-	"cwtools-vic2-config" to "vic2",
-	"cwtools-vic3-config" to "vic3",
+    "lib/jackson-dataformat-csv-*.jar",
 )
 
 tasks {
@@ -158,12 +147,23 @@ tasks {
             )
         }
     }
-    jar {
-        //添加项目文档和许可证
-        from("README.md", "README_en.md", "LICENSE")
-        //排除特定文件
-        excludesInJar.forEach { exclude(it) }
-        //添加CWT规则文件
+    val configJar by register<Jar>("configJar") {
+        archiveBaseName = providers.gradleProperty("configPackageName")
+        archiveVersion = provider { "" }
+
+        val cwtConfigDirs = listOf(
+            "core" to "core",
+            "cwtools-ck2-config" to "ck2",
+            "cwtools-ck3-config" to "ck3",
+            "cwtools-eu4-config" to "eu4",
+            "cwtools-hoi4-config" to "hoi4",
+            "cwtools-ir-config" to "ir",
+            "cwtools-stellaris-config" to "stellaris",
+            "cwtools-vic2-config" to "vic2",
+            "cwtools-vic3-config" to "vic3",
+        )
+
+        //添加规则文件
         cwtConfigDirs.forEach { (cwtConfigDir, toDir) ->
             into("config/$toDir") {
                 from("$rootDir/cwt/$cwtConfigDir") {
@@ -172,24 +172,36 @@ tasks {
                     //打平config子目录中的文件
                     eachFile {
                         val i = path.indexOf("/config", ignoreCase = true)
-                        if(i != -1) path = path.removeRange(i, i + 7)
+                        if (i != -1) path = path.removeRange(i, i + 7)
                     }
                 }
             }
         }
+        //添加文档和许可证
         into("config") {
             from("cwt/README.md", "cwt/LICENSE")
         }
+    }
+    jar {
+        dependsOn(configJar)
+
+        //添加项目文档和许可证
+        from("README.md", "README_en.md", "LICENSE")
+        //排除特定文件
+        excludesInJar.forEach { exclude(it) }
     }
     instrumentedJar {
         //排除特定文件
         excludesInJar.forEach { exclude(it) }
     }
     buildPlugin {
+        into("lib") {
+            from(configJar.outputs.files.singleFile)
+        }
         //排除特定文件
         excludesInZip.forEach { exclude(it) }
         //重命名插件包
-        archiveBaseName.set(providers.gradleProperty("pluginPackageName"))
+        archiveBaseName = providers.gradleProperty("pluginPackageName")
     }
     runIde {
         jvmArgumentProviders += CommandLineArgumentProvider {

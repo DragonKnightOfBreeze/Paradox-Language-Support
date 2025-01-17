@@ -50,7 +50,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
 /**
  * 用于提供插件内置的规则分组。
  *
- * 对应的路径：`config/${gameType}`（位于插件jar包中）
+ * 对应的路径：`config/${gameType}`（位于插件压缩包中的内置规则jar包中）
  */
 class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     private val rootDirectory by lazy { doGetRootDirectory() }
