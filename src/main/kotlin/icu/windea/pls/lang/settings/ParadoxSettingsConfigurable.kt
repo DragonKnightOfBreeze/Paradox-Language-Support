@@ -298,9 +298,9 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.completion::completeByLocalizedName)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeByLocalizedName.tooltip") }
                 }
-                //completeByExtendedCwtConfigs
+                //completeByExtendedConfigs
                 row {
-                    checkBox(PlsBundle.message("settings.completion.completeByExtendedCwtConfigs"))
+                    checkBox(PlsBundle.message("settings.completion.completeByExtendedConfigs"))
                         .bindSelected(settings.completion::completeByExtendedConfigs)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeByExtendedCwtConfigs.tooltip") }
                 }
