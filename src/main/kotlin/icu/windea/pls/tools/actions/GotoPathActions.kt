@@ -14,6 +14,7 @@ import java.nio.file.*
 /**
  * 用于在文件选择页面中跳转到一个路径。
  */
+@Suppress("UnstableApiUsage")
 abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
     abstract val targetPath: Path?
 
@@ -57,67 +58,68 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
             fileChooser.select(file, if (expand) Runnable { fileChooser.expand(file, null) } else null)
         }
     }
-}
 
-class GoToSteamPathAction : GoToPathAction() {
-    override var targetPath: Path? = null
 
-    override fun setVisible(e: AnActionEvent): Boolean {
-        val gameType = e.gameTypeProperty?.get() ?: e.gameType
-        if (gameType == null) return false
-        if (targetPath == null) {
-            targetPath = getDataProvider().getSteamPath()?.toPathOrNull()
+    class Steam : GoToPathAction() {
+        override var targetPath: Path? = null
+
+        override fun setVisible(e: AnActionEvent): Boolean {
+            val gameType = e.gameTypeProperty?.get() ?: e.gameType
+            if (gameType == null) return false
+            if (targetPath == null) {
+                targetPath = getDataProvider().getSteamPath()?.toPathOrNull()
+            }
+            return true
         }
-        return true
     }
-}
 
-class GoToSteamGamePathAction : GoToPathAction() {
-    private var gameType: ParadoxGameType? = null
+    class SteamGame : GoToPathAction() {
+        private var gameType: ParadoxGameType? = null
 
-    override var targetPath: Path? = null
+        override var targetPath: Path? = null
 
-    override fun setVisible(e: AnActionEvent): Boolean {
-        val gameType = e.gameTypeProperty?.get() ?: e.gameType
-        if (gameType == null) return false
-        if (this.targetPath == null || this.gameType != gameType) {
-            this.gameType = gameType
-            this.targetPath = getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)?.toPathOrNull()
+        override fun setVisible(e: AnActionEvent): Boolean {
+            val gameType = e.gameTypeProperty?.get() ?: e.gameType
+            if (gameType == null) return false
+            if (this.targetPath == null || this.gameType != gameType) {
+                this.gameType = gameType
+                this.targetPath = getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)?.toPathOrNull()
+            }
+            return true
         }
-        return true
     }
-}
 
-class GoToSteamWorkshopPathAction : GoToPathAction() {
-    private var gameType: ParadoxGameType? = null
+    class SteamWorkshop : GoToPathAction() {
+        private var gameType: ParadoxGameType? = null
 
-    override var targetPath: Path? = null
-    override val expand: Boolean = true
+        override var targetPath: Path? = null
+        override val expand: Boolean = true
 
-    override fun setVisible(e: AnActionEvent): Boolean {
-        val gameType = e.gameTypeProperty?.get() ?: e.gameType
-        if (gameType == null) return false
-        if (this.targetPath == null || this.gameType != gameType) {
-            this.gameType = gameType
-            this.targetPath = getDataProvider().getSteamWorkshopPath(gameType.steamId)?.toPathOrNull()
+        override fun setVisible(e: AnActionEvent): Boolean {
+            val gameType = e.gameTypeProperty?.get() ?: e.gameType
+            if (gameType == null) return false
+            if (this.targetPath == null || this.gameType != gameType) {
+                this.gameType = gameType
+                this.targetPath = getDataProvider().getSteamWorkshopPath(gameType.steamId)?.toPathOrNull()
+            }
+            return true
         }
-        return true
     }
-}
 
-class GoToGameDataPathAction : GoToPathAction() {
-    private var gameType: ParadoxGameType? = null
+    class GameData : GoToPathAction() {
+        private var gameType: ParadoxGameType? = null
 
-    override var targetPath: Path? = null
-    override val expand: Boolean = true
+        override var targetPath: Path? = null
+        override val expand: Boolean = true
 
-    override fun setVisible(e: AnActionEvent): Boolean {
-        val gameType = e.gameTypeProperty?.get() ?: e.gameType
-        if (gameType == null) return false
-        if (this.targetPath == null || this.gameType != gameType) {
-            this.gameType = gameType
-            this.targetPath = getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull()
+        override fun setVisible(e: AnActionEvent): Boolean {
+            val gameType = e.gameTypeProperty?.get() ?: e.gameType
+            if (gameType == null) return false
+            if (this.targetPath == null || this.gameType != gameType) {
+                this.gameType = gameType
+                this.targetPath = getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull()
+            }
+            return true
         }
-        return true
     }
 }

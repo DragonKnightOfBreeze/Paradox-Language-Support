@@ -21,62 +21,56 @@
       <add-to-group group-id="ProjectViewPopupMenu"/>
     </group>
 
-    <action id="Pls.OpenGameSettings" class="icu.windea.pls.tools.actions.OpenGameSettingsAction"
-            icon="PlsIcons.Actions.GameSettings">
+    <action id="Pls.OpenGameSettings" class="icu.windea.pls.tools.actions.OpenGameSettingsAction" icon="PlsIcons.Actions.GameSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="Pls.Tools" anchor="first"/>
       <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
     </action>
-    <action id="Pls.OpenModSettings" class="icu.windea.pls.tools.actions.OpenModSettingsAction"
-            icon="PlsIcons.Actions.ModSettings">
+    <action id="Pls.OpenModSettings" class="icu.windea.pls.tools.actions.OpenModSettingsAction" icon="PlsIcons.Actions.ModSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="Pls.Tools" anchor="first"/>
       <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
     </action>
 
     <group id="Pls.OpenPath" popup="true">
-      <action id="Pls.OpenPath.OpenSteamPath" class="icu.windea.pls.tools.actions.OpenSteamPathAction"/>
-      <action id="Pls.OpenPath.OpenSteamGamePath" class="icu.windea.pls.tools.actions.OpenSteamGamePathAction"/>
-      <action id="Pls.OpenPath.OpenSteamWorkshopPath" class="icu.windea.pls.tools.actions.OpenSteamWorkshopPathAction"/>
-      <action id="Pls.OpenPath.OpenGameDataPath" class="icu.windea.pls.tools.actions.OpenGameDataPathAction"/>
-      <action id="Pls.OpenPath.OpenGamePath" class="icu.windea.pls.tools.actions.OpenGamePathAction"/>
-      <action id="Pls.OpenPath.OpenModPath" class="icu.windea.pls.tools.actions.OpenModPathAction"/>
+      <action id="Pls.OpenPath.OpenSteamPath" class="icu.windea.pls.tools.actions.OpenPathAction$Steam"/>
+      <action id="Pls.OpenPath.OpenSteamGamePath" class="icu.windea.pls.tools.actions.OpenPathAction$SteamGame"/>
+      <action id="Pls.OpenPath.OpenSteamWorkshopPath" class="icu.windea.pls.tools.actions.OpenPathAction$SteamWorkshop"/>
+      <action id="Pls.OpenPath.OpenGameDataPath" class="icu.windea.pls.tools.actions.OpenPathAction$GameData"/>
+      <action id="Pls.OpenPath.OpenGamePath" class="icu.windea.pls.tools.actions.OpenPathAction$Game"/>
+      <action id="Pls.OpenPath.OpenModPath" class="icu.windea.pls.tools.actions.OpenPathAction$Mod"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.OpenUrl" popup="true">
-      <action id="Pls.OpenUrl.OpenGameStorePageInSteam" class="icu.windea.pls.tools.actions.OpenGameStorePageInSteamAction" icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenGameStorePageInSteamWebsite" class="icu.windea.pls.tools.actions.OpenGameStorePageInSteamWebsiteAction" icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenGameWorkshopPageInSteam" class="icu.windea.pls.tools.actions.OpenGameWorkshopPageInSteamAction" icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenGameWorkshopPageInSteamWebsite" class="icu.windea.pls.tools.actions.OpenGameWorkshopPageInSteamWebsiteAction" icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenModPageInSteam" class="icu.windea.pls.tools.actions.OpenModPageInSteamAction" icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenModPageInSteamWebsite" class="icu.windea.pls.tools.actions.OpenModPageInSteamWebsiteAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameStorePageInSteam" class="icu.windea.pls.tools.actions.OpenUrlAction$GameStorePageInSteam" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameStorePageInSteamWebsite" class="icu.windea.pls.tools.actions.OpenUrlAction$GameStorePageInSteamWebsite" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameWorkshopPageInSteam" class="icu.windea.pls.tools.actions.OpenUrlAction$GameWorkshopPageInSteam" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameWorkshopPageInSteamWebsite" class="icu.windea.pls.tools.actions.OpenUrlAction$GameWorkshopPageInSteamWebsite" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenModPageInSteam" class="icu.windea.pls.tools.actions.OpenUrlAction$ModPageInSteam" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenModPageInSteamWebsite" class="icu.windea.pls.tools.actions.OpenUrlAction$ModPageInSteamWebsite" icon="PlsIcons.Steam"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.CopyPath" popup="true">
-      <action id="Pls.CopyPath.CopySteamPath" class="icu.windea.pls.tools.actions.CopySteamPathAction"/>
-      <action id="Pls.CopyPath.CopySteamGamePath" class="icu.windea.pls.tools.actions.CopySteamGamePathAction"/>
-      <action id="Pls.CopyPath.CopySteamWorkshopPath" class="icu.windea.pls.tools.actions.CopySteamWorkshopPathAction"/>
-      <action id="Pls.CopyPath.CopyGameDataPath" class="icu.windea.pls.tools.actions.CopyGameDataPathAction"/>
-      <action id="Pls.CopyPath.CopyGamePath" class="icu.windea.pls.tools.actions.CopyGamePathAction"/>
-      <action id="Pls.CopyPath.CopyModPath" class="icu.windea.pls.tools.actions.CopyModPathAction"/>
+      <action id="Pls.CopyPath.CopySteamPath" class="icu.windea.pls.tools.actions.CopyPathAction$Steam"/>
+      <action id="Pls.CopyPath.CopySteamGamePath" class="icu.windea.pls.tools.actions.CopyPathAction$SteamGame"/>
+      <action id="Pls.CopyPath.CopySteamWorkshopPath" class="icu.windea.pls.tools.actions.CopyPathAction$SteamWorkshop"/>
+      <action id="Pls.CopyPath.CopyGameDataPath" class="icu.windea.pls.tools.actions.CopyPathAction$GameData"/>
+      <action id="Pls.CopyPath.CopyGamePath" class="icu.windea.pls.tools.actions.CopyPathAction$Game"/>
+      <action id="Pls.CopyPath.CopyModPath" class="icu.windea.pls.tools.actions.CopyPathAction$Mod"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.CopyUrl" popup="true">
-      <action id="Pls.CopyUrl.CopyGameStorePageUrl" class="icu.windea.pls.tools.actions.CopyGameStorePageUrlAction" icon="PlsIcons.Steam"/>
-      <action id="Pls.CopyUrl.CopyGameWorkshopPageUrl" class="icu.windea.pls.tools.actions.CopyGameWorkshopPageUrlAction" icon="PlsIcons.Steam"/>
-      <action id="Pls.CopyUrl.CopyModPageUrl" class="icu.windea.pls.tools.actions.CopyModPageUrlAction" icon="PlsIcons.Steam"/>
+      <action id="Pls.CopyUrl.CopyGameStorePageUrl" class="icu.windea.pls.tools.actions.CopyUrlAction$GameStorePage" icon="PlsIcons.Steam"/>
+      <action id="Pls.CopyUrl.CopyGameWorkshopPageUrl" class="icu.windea.pls.tools.actions.CopyUrlAction$GameWorkshopPage" icon="PlsIcons.Steam"/>
+      <action id="Pls.CopyUrl.CopyModPageUrl" class="icu.windea.pls.tools.actions.CopyUrlAction$ModPage" icon="PlsIcons.Steam"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
 
     <group id="Pls.GotoPath">
-      <action id="Pls.FileChooser.GoToSteamPath" class="icu.windea.pls.tools.actions.GoToSteamPathAction"
-              icon="PlsIcons.Actions.SteamDirectory"/>
-      <action id="Pls.FileChooser.GoToSteamGamePath" class="icu.windea.pls.tools.actions.GoToSteamGamePathAction"
-              icon="PlsIcons.Actions.SteamGameDirectory"/>
-      <action id="Pls.FileChooser.GoToSteamWorkshopPath" class="icu.windea.pls.tools.actions.GoToSteamWorkshopPathAction"
-              icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
-      <action id="Pls.FileChooser.GoToGameDataPath" class="icu.windea.pls.tools.actions.GoToGameDataPathAction"
-              icon="PlsIcons.Actions.GameDataDirectory"/>
+      <action id="Pls.FileChooser.GoToSteamPath" class="icu.windea.pls.tools.actions.GoToPathAction$Steam" icon="PlsIcons.Actions.SteamDirectory"/>
+      <action id="Pls.FileChooser.GoToSteamGamePath" class="icu.windea.pls.tools.actions.GoToPathAction$SteamGame" icon="PlsIcons.Actions.SteamGameDirectory"/>
+      <action id="Pls.FileChooser.GoToSteamWorkshopPath" class="icu.windea.pls.tools.actions.GoToPathAction$SteamWorkshop" icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
+      <action id="Pls.FileChooser.GoToGameDataPath" class="icu.windea.pls.tools.actions.GoToPathAction$GameData" icon="PlsIcons.Actions.GameDataDirectory"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.GotoPath.WithSeparator">

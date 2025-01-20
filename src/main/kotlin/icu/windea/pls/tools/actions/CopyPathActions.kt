@@ -42,53 +42,53 @@ abstract class CopyPathAction : DumbAwareAction() {
     protected open fun isEnabled(fileInfo: ParadoxFileInfo): Boolean = true
 
     protected abstract fun getTargetPath(fileInfo: ParadoxFileInfo): Path?
-}
 
-class CopySteamPathAction : CopyPathAction() {
-    override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
-        return getDataProvider().getSteamPath()?.toPathOrNull()
-    }
-}
-
-class CopySteamGamePathAction : CopyPathAction() {
-    override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
-        val gameType = fileInfo.rootInfo.gameType
-        return getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)?.toPathOrNull()
-    }
-}
-
-class CopySteamWorkshopPathAction : CopyPathAction() {
-    override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
-        val gameType = fileInfo.rootInfo.gameType
-        return getDataProvider().getSteamWorkshopPath(gameType.steamId)?.toPathOrNull()
-    }
-}
-
-class CopyGameDataPathAction : CopyPathAction() {
-    override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
-        val gameType = fileInfo.rootInfo.gameType
-        return getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull()
-    }
-}
-
-class CopyGamePathAction : CopyPathAction() {
-    override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
-        return fileInfo.rootInfo is ParadoxModRootInfo
+    class Steam : CopyPathAction() {
+        override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
+            return getDataProvider().getSteamPath()?.toPathOrNull()
+        }
     }
 
-    override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
-        if (fileInfo.rootInfo !is ParadoxGameRootInfo) return null
-        return fileInfo.rootInfo.gameRootPath
-    }
-}
-
-class CopyModPathAction : CopyPathAction() {
-    override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
-        return fileInfo.rootInfo is ParadoxModRootInfo
+    class SteamGame : CopyPathAction() {
+        override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
+            val gameType = fileInfo.rootInfo.gameType
+            return getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)?.toPathOrNull()
+        }
     }
 
-    override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
-        if (fileInfo.rootInfo !is ParadoxModRootInfo) return null
-        return fileInfo.rootInfo.gameRootPath
+    class SteamWorkshop : CopyPathAction() {
+        override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
+            val gameType = fileInfo.rootInfo.gameType
+            return getDataProvider().getSteamWorkshopPath(gameType.steamId)?.toPathOrNull()
+        }
+    }
+
+    class GameData : CopyPathAction() {
+        override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
+            val gameType = fileInfo.rootInfo.gameType
+            return getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull()
+        }
+    }
+
+    class Game : CopyPathAction() {
+        override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
+            return fileInfo.rootInfo is ParadoxModRootInfo
+        }
+
+        override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
+            if (fileInfo.rootInfo !is ParadoxGameRootInfo) return null
+            return fileInfo.rootInfo.gameRootPath
+        }
+    }
+
+    class Mod : CopyPathAction() {
+        override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
+            return fileInfo.rootInfo is ParadoxModRootInfo
+        }
+
+        override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
+            if (fileInfo.rootInfo !is ParadoxModRootInfo) return null
+            return fileInfo.rootInfo.gameRootPath
+        }
     }
 }
