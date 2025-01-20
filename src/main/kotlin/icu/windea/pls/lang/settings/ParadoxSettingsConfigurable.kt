@@ -12,10 +12,11 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.editor.folding.*
 import icu.windea.pls.lang.listeners.*
-import icu.windea.pls.tools.*
+import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.ParadoxGameType.*
+import icu.windea.pls.model.*
+import icu.windea.pls.tools.ui.*
 import java.awt.event.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
@@ -33,7 +34,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     label(PlsBundle.message("settings.general.defaultGameType")).widthGroup("general")
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameType.tooltip") }
                     var defaultGameType = settings.defaultGameType
-                    comboBox(entries)
+                    comboBox(ParadoxGameType.entries)
                         .bindItem(settings::defaultGameType.toNullableProperty())
                         .onApply {
                             val oldDefaultGameType = defaultGameType
@@ -51,7 +52,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     label(PlsBundle.message("settings.general.defaultGameDirectories")).widthGroup("general")
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameDirectories.tooltip") }
                     var defaultGameDirectories = settings.defaultGameDirectories
-                    entries.forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
+                    ParadoxGameType.entries.forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
                     var list = defaultGameDirectories.toMutableEntryList().mapTo(mutableListOf()) { it.copy() }
                     val action = { _: ActionEvent ->
                         val dialog = ParadoxGameDirectoriesDialog(list)

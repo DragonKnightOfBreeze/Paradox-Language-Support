@@ -1,5 +1,6 @@
 package icu.windea.pls.tools.importer
 
+import com.intellij.notification.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.ui.table.*
@@ -7,8 +8,8 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.tools.*
 import icu.windea.pls.model.*
+import icu.windea.pls.tools.ui.*
 import java.nio.file.*
 
 private const val dbPath = "launcher-v2.sqlite"
@@ -34,12 +35,20 @@ open class ParadoxFromLauncherImporter : ParadoxModImporter {
         val gameType = settings.gameType.orDefault()
         val gameDataPath = getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull() ?: return
         if (!gameDataPath.exists()) {
-            notifyWarning(settings, project, PlsBundle.message("mod.importer.error.gameDataDir", gameDataPath))
+            run {
+                val title = settings.qualifiedName ?: return@run
+                val message = PlsBundle.message("mod.importer.error.gameDataDir", gameDataPath)
+                createNotification(title, message, NotificationType.WARNING).notify(project)
+            }
             return
         }
         val dbPath = getDbPath(gameDataPath)
         if (!dbPath.exists()) {
-            notifyWarning(settings, project, PlsBundle.message("mod.importer.error.dbFile", dbPath))
+            run {
+                val title = settings.qualifiedName ?: return@run
+                val content = PlsBundle.message("mod.importer.error.dbFile", dbPath)
+                createNotification(title, content, NotificationType.WARNING).notify(project)
+            }
             return
         }
 

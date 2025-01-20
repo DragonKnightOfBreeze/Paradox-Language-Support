@@ -4,7 +4,7 @@ import com.intellij.openapi.extensions.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.table.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.tools.*
+import icu.windea.pls.tools.ui.*
 import javax.swing.*
 
 interface ParadoxModExporter {

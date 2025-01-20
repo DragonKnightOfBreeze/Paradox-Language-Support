@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.ui
+package icu.windea.pls.core.ui
 
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
@@ -15,4 +15,3 @@ abstract class DialogWithValidation(project: Project) : DialogWrapper(project) {
         }
     }
 }
-

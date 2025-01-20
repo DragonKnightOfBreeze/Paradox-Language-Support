@@ -1,6 +1,7 @@
 package icu.windea.pls.tools.importer
 
 import com.fasterxml.jackson.module.kotlin.*
+import com.intellij.notification.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
@@ -10,10 +11,10 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.data.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.tools.*
-import icu.windea.pls.tools.model.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.tools.model.*
+import icu.windea.pls.tools.ui.*
 
 private const val dlcLoadJsonPath = "dlc_load.json"
 private const val collectionName = "Paradox"
@@ -31,12 +32,20 @@ class ParadoxFromGameImporter : ParadoxModImporter {
         val gameType = settings.gameType.orDefault()
         val gameDataPath = getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull() ?: return
         if (!gameDataPath.exists()) {
-            notifyWarning(settings, project, PlsBundle.message("mod.importer.error.gameDataDir", gameDataPath))
+            run {
+                val title = settings.qualifiedName ?: return@run
+                val content = PlsBundle.message("mod.importer.error.gameDataDir", gameDataPath)
+                createNotification(title, content, NotificationType.WARNING).notify(project)
+            }
             return
         }
         val jsonPath = gameDataPath.resolve(dlcLoadJsonPath) ?: return
         if (!jsonPath.exists()) {
-            notifyWarning(settings, project, PlsBundle.message("mod.importer.error.file", jsonPath))
+            run {
+                val title = settings.qualifiedName ?: return@run
+                val content = PlsBundle.message("mod.importer.error.file", jsonPath)
+                createNotification(title, content, NotificationType.WARNING).notify(project)
+            }
             return
         }
         val file = jsonPath.toVirtualFile(true) ?: return
@@ -69,11 +78,20 @@ class ParadoxFromGameImporter : ParadoxModImporter {
             //选中刚刚添加的所有模组依赖
             tableView.setRowSelectionInterval(position, position + newSettingsList.size - 1)
 
-            notify(settings, project, PlsBundle.message("mod.importer.info", collectionName, count))
+            run {
+                val title = settings.qualifiedName ?: return@run
+                val content = PlsBundle.message("mod.importer.info", collectionName, count)
+                createNotification(title, content, NotificationType.INFORMATION).notify(project)
+            }
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
-            thisLogger().info(e)
-            notifyWarning(settings, project, PlsBundle.message("mod.importer.error"))
+            thisLogger().warn(e)
+
+            run {
+                val title = settings.qualifiedName ?: return@run
+                val content = PlsBundle.message("mod.importer.error")
+                createNotification(title, content, NotificationType.WARNING).notify(project)
+            }
         }
     }
 }

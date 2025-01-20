@@ -1,4 +1,4 @@
-package icu.windea.pls.tools
+package icu.windea.pls.tools.ui
 
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.project.*
@@ -7,7 +7,8 @@ import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDe
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.model.ParadoxGameType.*
+import icu.windea.pls.lang.ui.*
+import icu.windea.pls.model.*
 import java.awt.*
 
 class ParadoxModDependencySettingsDialog(
@@ -52,7 +53,7 @@ class ParadoxModDependencySettingsDialog(
             row {
                 //gameType
                 label(PlsBundle.message("mod.dependency.settings.gameType")).widthGroup("left")
-                comboBox(entries)
+                comboBox(ParadoxGameType.entries)
                     .bindItem(gameTypeProperty)
                     .columns(18)
                     .enabled(false)

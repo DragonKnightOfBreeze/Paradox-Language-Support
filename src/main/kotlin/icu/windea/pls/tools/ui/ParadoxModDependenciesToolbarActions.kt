@@ -1,6 +1,7 @@
-package icu.windea.pls.tools
+package icu.windea.pls.tools.ui
 
 import com.intellij.icons.*
+import com.intellij.notification.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileChooser.*
@@ -12,6 +13,7 @@ import com.intellij.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.ui.*
 import icu.windea.pls.model.*
 
 interface ParadoxModDependenciesToolbarActions {
@@ -50,11 +52,20 @@ interface ParadoxModDependenciesToolbarActions {
                     //选中刚刚添加的所有模组依赖
                     tableView.setRowSelectionInterval(position, position + newSettingsList.size - 1)
 
-                    notify(settings, project, PlsBundle.message("mod.dependencies.add.info", count))
+                    run n@{
+                        val title = settings.qualifiedName ?: return@n
+                        val content = PlsBundle.message("mod.dependencies.add.info", count)
+                        createNotification(title, content, NotificationType.INFORMATION).notify(project)
+                    }
                 } catch (e: Exception) {
                     if (e is ProcessCanceledException) throw e
-                    thisLogger().info(e)
-                    notifyWarning(settings, project, PlsBundle.message("mod.dependencies.add.error"))
+                    thisLogger().warn(e)
+
+                    run n@{
+                        val title = settings.qualifiedName ?: return@n
+                        val content = PlsBundle.message("mod.dependencies.add.error")
+                        createNotification(title, content, NotificationType.WARNING).notify(project)
+                    }
                 }
             }
         }

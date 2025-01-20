@@ -10,6 +10,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
 
@@ -60,12 +61,12 @@ class CopyLocalisationIntention : IntentionAction, PriorityAction {
             CopyPasteManager.getInstance().setContents(StringSelection(text))
         }
 
-        val keysText = keys.truncate(PlsConstants.Settings.itemLimit).joinToString()
-        NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
-            PlsBundle.message("notification.copyLocalisation.success.title"),
-            PlsBundle.message("notification.copyLocalisation.success.content", keysText),
-            NotificationType.INFORMATION
-        ).notify(project)
+        run {
+            val keysText = keys.truncate(PlsConstants.Settings.itemLimit).joinToString()
+            val title = PlsBundle.message("notification.copyLocalisation.success.title")
+            val content = PlsBundle.message("notification.copyLocalisation.success.content", keysText)
+            createNotification(title, content, NotificationType.INFORMATION).notify(project)
+        }
     }
 
     override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY

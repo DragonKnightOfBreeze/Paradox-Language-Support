@@ -1,6 +1,7 @@
 package icu.windea.pls.tools.importer
 
 import com.fasterxml.jackson.module.kotlin.*
+import com.intellij.notification.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.progress.*
@@ -12,9 +13,9 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.data.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.tools.*
-import icu.windea.pls.tools.model.*
 import icu.windea.pls.model.*
+import icu.windea.pls.tools.model.*
+import icu.windea.pls.tools.ui.*
 
 /**
  * 从启动器JSON配置文件导入模组配置。
@@ -35,7 +36,11 @@ class ParadoxFromLauncherJsonV3Importer : ParadoxModImporter {
         }
         val workshopDirPath = getDataProvider().getSteamWorkshopPath(gameType.steamId)?.toPathOrNull() ?: return
         if (!workshopDirPath.exists()) {
-            notifyWarning(settings, project, PlsBundle.message("mod.importer.error.steamWorkshopDir", workshopDirPath))
+            run {
+                val title = settings.qualifiedName ?: return@run
+                val content = PlsBundle.message("mod.importer.error.steamWorkshopDir", workshopDirPath)
+                createNotification(title, content, NotificationType.WARNING).notify(project)
+            }
             return
         }
         val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor("json")
@@ -45,7 +50,11 @@ class ParadoxFromLauncherJsonV3Importer : ParadoxModImporter {
             try {
                 val data = jsonMapper.readValue<ParadoxLauncherJsonV3>(file.inputStream)
                 if (data.game != gameType.id) {
-                    notifyWarning(settings, project, PlsBundle.message("mod.importer.error.gameType"))
+                    run {
+                        val title = settings.qualifiedName ?: return@run
+                        val content = PlsBundle.message("mod.importer.error.gameType")
+                        createNotification(title, content, NotificationType.WARNING).notify(project)
+                    }
                     return@chooseFile
                 }
 
@@ -75,11 +84,20 @@ class ParadoxFromLauncherJsonV3Importer : ParadoxModImporter {
                 //选中刚刚添加的所有模组依赖
                 tableView.setRowSelectionInterval(position, position + newSettingsList.size - 1)
 
-                notify(settings, project, PlsBundle.message("mod.importer.info", collectionName, count))
+                run {
+                    val title = settings.qualifiedName ?: return@run
+                    val content = PlsBundle.message("mod.importer.info", collectionName, count)
+                    createNotification(title, content, NotificationType.INFORMATION).notify(project)
+                }
             } catch (e: Exception) {
                 if (e is ProcessCanceledException) throw e
-                thisLogger().info(e)
-                notifyWarning(settings, project, PlsBundle.message("mod.importer.error"))
+                thisLogger().warn(e)
+
+                run {
+                    val title = settings.qualifiedName ?: return@run
+                    val content = PlsBundle.message("mod.importer.error")
+                    createNotification(title, content, NotificationType.WARNING).notify(project)
+                }
             }
         }
     }

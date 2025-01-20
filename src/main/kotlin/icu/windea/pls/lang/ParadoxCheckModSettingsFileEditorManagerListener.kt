@@ -10,9 +10,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.tools.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.ParadoxGameType.*
+import icu.windea.pls.tools.ui.*
 
 /**
  * 当打开项目中的模组文件时，检查模组的游戏目录是否已配置。如果未配置则弹出通知。
@@ -53,7 +52,7 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
             val action2 = NotificationAction.createSimple(PlsBundle.message("mod.settings.notification.1.action.2")) {
                 val settings = getSettings()
                 val oldDefaultGameDirectories = settings.defaultGameDirectories
-                entries.forEach { oldDefaultGameDirectories.putIfAbsent(it.id, "") }
+                ParadoxGameType.entries.forEach { oldDefaultGameDirectories.putIfAbsent(it.id, "") }
                 val defaultList = oldDefaultGameDirectories.toMutableEntryList()
                 var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                 val dialog = ParadoxGameDirectoriesDialog(list)
@@ -67,12 +66,14 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
                     }
                 }
             }
-            val notification = NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
-                qualifiedName,
-                PlsBundle.message("mod.settings.notification.1.content"),
-                NotificationType.INFORMATION
-            )
-            notification.addAction(action1).addAction(action2).setImportant(true).notify(project)
+
+            run {
+                val title = qualifiedName
+                val content = PlsBundle.message("mod.settings.notification.1.content")
+                createNotification(title, content, NotificationType.INFORMATION)
+                    .addAction(action1).addAction(action2).setImportant(true)
+                    .notify(project)
+            }
         }
         modPaths.add(modPath)
     }

@@ -3,6 +3,7 @@ package icu.windea.pls.lang
 import com.intellij.extapi.psi.*
 import com.intellij.injected.editor.*
 import com.intellij.lang.*
+import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.fileTypes.*
@@ -212,4 +213,14 @@ val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorInfo?
  */
 inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.getData(): T? {
     return ParadoxDefinitionDataProvider.getData(T::class.java, this)
+}
+
+fun createNotification(content: String, notificationType: NotificationType): Notification {
+    return NotificationGroupManager.getInstance().getNotificationGroup("pls")
+        .createNotification(content, notificationType)
+}
+
+fun createNotification(title: String, content: String, notificationType: NotificationType): Notification {
+    return NotificationGroupManager.getInstance().getNotificationGroup("pls")
+        .createNotification(title, content, notificationType)
 }

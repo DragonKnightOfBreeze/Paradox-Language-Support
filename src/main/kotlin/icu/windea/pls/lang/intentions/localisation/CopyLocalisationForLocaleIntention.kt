@@ -126,13 +126,13 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
             val finalText = textList.joinToString("\n")
             CopyPasteManager.getInstance().setContents(StringSelection(finalText))
 
-            val keys = elements.mapTo(mutableSetOf()) { it.name }
-            val keysText = keys.truncate(PlsConstants.Settings.itemLimit).joinToString()
-            NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
-                PlsBundle.message("notification.copyLocalisationForLocale.success.title"),
-                PlsBundle.message("notification.copyLocalisationForLocale.success.content", keysText, targetLocale),
-                NotificationType.INFORMATION
-            ).notify(project)
+            run {
+                val keys = elements.mapTo(mutableSetOf()) { it.name }
+                val keysText = keys.truncate(PlsConstants.Settings.itemLimit).joinToString()
+                val title = PlsBundle.message("notification.copyLocalisationForLocale.success.title")
+                val content = PlsBundle.message("notification.copyLocalisationForLocale.success.content", keysText, targetLocale)
+                createNotification(title, content, NotificationType.INFORMATION).notify(project)
+            }
         }
 
         val selectedLocale = ParadoxLocaleManager.getPreferredLocaleConfig()

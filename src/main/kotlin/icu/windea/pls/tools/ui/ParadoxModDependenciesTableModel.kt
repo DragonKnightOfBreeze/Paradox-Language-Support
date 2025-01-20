@@ -1,4 +1,4 @@
-package icu.windea.pls.tools
+package icu.windea.pls.tools.ui
 
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*

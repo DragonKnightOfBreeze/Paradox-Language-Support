@@ -97,19 +97,18 @@ class CwtConfigGroupService(
                     ParadoxCoreManager.reparseAndRefreshFiles(files)
                 }
 
-                NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
-                    PlsBundle.message("configGroup.refresh.notification.finished.title"),
-                    PlsBundle.message("configGroup.refresh.notification.finished.content"),
-                    NotificationType.INFORMATION
-                ).addAction(action).notify(project)
+                run {
+                    val title = PlsBundle.message("configGroup.refresh.notification.finished.title")
+                    val content = PlsBundle.message("configGroup.refresh.notification.finished.content")
+                    createNotification(title, content, NotificationType.INFORMATION).addAction(action).notify(project)
+                }
             }
 
             override fun onCancel() {
-                NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
-                    PlsBundle.message("configGroup.refresh.notification.cancelled.title"),
-                    "",
-                    NotificationType.INFORMATION
-                ).notify(project)
+                run {
+                   val title = PlsBundle.message("configGroup.refresh.notification.cancelled.title")
+                    createNotification(title, "", NotificationType.INFORMATION).notify(project)
+                }
             }
         }
         val progressIndicator = BackgroundableProcessIndicator(task)

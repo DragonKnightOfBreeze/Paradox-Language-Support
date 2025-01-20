@@ -1,4 +1,4 @@
-package icu.windea.pls.tools
+package icu.windea.pls.lang.ui
 
 import com.intellij.openapi.fileChooser.*
 

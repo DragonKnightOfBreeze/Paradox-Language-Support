@@ -1,4 +1,4 @@
-package icu.windea.pls.tools
+package icu.windea.pls.tools.ui
 
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*

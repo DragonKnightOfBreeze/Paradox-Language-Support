@@ -1,5 +1,6 @@
 package icu.windea.pls.tools.exporter
 
+import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileChooser.*
@@ -12,9 +13,9 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.data.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.tools.*
-import icu.windea.pls.tools.model.*
 import icu.windea.pls.model.*
+import icu.windea.pls.tools.model.*
+import icu.windea.pls.tools.ui.*
 
 private const val pos = 4096
 private const val defaultSavedName = "playlist.json"
@@ -69,11 +70,21 @@ class ParadoxToLauncherJsonV2Exporter : ParadoxModExporter {
                 jsonMapper.writeValue(savedFile.getOutputStream(this), json)
             }
             val count = validModDependencies.size
-            notify(settings, project, PlsBundle.message("mod.exporter.info", savedFile.nameWithoutExtension, count))
+
+            run {
+                val title = settings.qualifiedName ?: return@run
+                val content = PlsBundle.message("mod.exporter.info", savedFile.nameWithoutExtension, count)
+                createNotification(title, content, NotificationType.INFORMATION).notify(project)
+            }
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
-            thisLogger().info(e)
-            notifyWarning(settings, project, PlsBundle.message("mod.exporter.error"))
+            thisLogger().warn(e)
+
+            run {
+                val title = settings.qualifiedName ?: return@run
+                val content = PlsBundle.message("mod.exporter.error")
+                createNotification(title, content, NotificationType.WARNING).notify(project)
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-package icu.windea.pls.tools
+package icu.windea.pls.tools.ui
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.observable.properties.*
@@ -10,7 +10,8 @@ import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.model.ParadoxGameType.*
+import icu.windea.pls.lang.ui.*
+import icu.windea.pls.model.*
 
 class ParadoxGameSettingsDialog(
     val project: Project,
@@ -31,7 +32,7 @@ class ParadoxGameSettingsDialog(
             row {
                 //gameType
                 label(PlsBundle.message("game.settings.gameType")).widthGroup("left")
-                comboBox(entries)
+                comboBox(ParadoxGameType.entries)
                     .bindItem(gameTypeProperty)
                     .align(Align.FILL)
                     .columns(18)

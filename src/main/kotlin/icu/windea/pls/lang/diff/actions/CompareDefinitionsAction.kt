@@ -112,10 +112,11 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             }
         }, PlsBundle.message("diff.compare.definitions.collect.title"), true, project)
         if (definitions.size <= 1) {
-            NotificationGroupManager.getInstance().getNotificationGroup("pls").createNotification(
-                PlsBundle.message("diff.compare.definitions.content.title.info.1"),
-                NotificationType.INFORMATION
-            ).notify(project)
+            //unexpected, should not be empty here
+            run {
+                val content = PlsBundle.message("diff.compare.definitions.content.title.info.1")
+                createNotification(content, NotificationType.INFORMATION).notify(project)
+            }
             return null
         }
 

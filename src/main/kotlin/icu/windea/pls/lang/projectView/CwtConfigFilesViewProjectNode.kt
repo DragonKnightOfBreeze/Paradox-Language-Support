@@ -10,7 +10,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.ParadoxGameType.*
 
 class CwtConfigFilesViewProjectNode(
     project: Project,
@@ -50,7 +49,7 @@ class CwtConfigFilesViewProjectNode(
         val coreElement = CwtConfigGameElement(project, null)
         val coreElementNode = CwtConfigGameElementNode(project, coreElement, settings)
         result += coreElementNode
-        entries.forEach { gameType ->
+        ParadoxGameType.entries.forEach { gameType ->
             val element = CwtConfigGameElement(project, gameType)
             val elementNode = CwtConfigGameElementNode(project, element, settings)
             result += elementNode

@@ -1,4 +1,4 @@
-package icu.windea.pls.tools
+package icu.windea.pls.tools.ui
 
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
@@ -6,23 +6,25 @@ import com.intellij.openapi.ui.popup.util.*
 import com.intellij.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.tools.importer.*
+import icu.windea.pls.tools.exporter.*
 import javax.swing.*
 
-private fun getTitle() = PlsBundle.message("mod.dependencies.toolbar.action.import.popup.title")
-
-private fun getValues() = ParadoxModImporter.EP_NAME.extensions
-
-class ParadoxModDependenciesImportPopup(
+class ParadoxModDependenciesExportPopup(
     private val project: Project,
     private val tableView: TableView<ParadoxModDependencySettingsState>,
     private val tableModel: ParadoxModDependenciesTableModel
-) : BaseListPopupStep<ParadoxModImporter>(getTitle(), *getValues()) {
-    override fun getIconFor(value: ParadoxModImporter): Icon? {
+) : BaseListPopupStep<ParadoxModExporter>(getTitle(), *getValues()) {
+    companion object {
+        private fun getTitle() = PlsBundle.message("mod.dependencies.toolbar.action.export.popup.title")
+
+        private fun getValues() = ParadoxModExporter.EP_NAME.extensions
+    }
+
+    override fun getIconFor(value: ParadoxModExporter): Icon? {
         return value.icon
     }
 
-    override fun getTextFor(value: ParadoxModImporter): String {
+    override fun getTextFor(value: ParadoxModExporter): String {
         return value.text
     }
 
@@ -30,7 +32,7 @@ class ParadoxModDependenciesImportPopup(
         return true
     }
 
-    override fun onChosen(selectedValue: ParadoxModImporter, finalChoice: Boolean): PopupStep<*>? {
+    override fun onChosen(selectedValue: ParadoxModExporter, finalChoice: Boolean): PopupStep<*>? {
         return doFinalStep { selectedValue.execute(project, tableView, tableModel) }
     }
 }
