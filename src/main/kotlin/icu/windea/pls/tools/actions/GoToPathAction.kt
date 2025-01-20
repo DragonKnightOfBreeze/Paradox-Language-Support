@@ -59,7 +59,6 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
         }
     }
 
-
     class Steam : GoToPathAction() {
         override var targetPath: Path? = null
 
