@@ -4,6 +4,7 @@ import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.ep.metadata.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
@@ -30,7 +31,7 @@ class ParadoxProfilesSettingsState : BaseState() {
 }
 
 /**
- * @see ParadoxGameRootInfo
+ * @see ParadoxRootInfo.Game
  */
 @Tag("settings")
 class ParadoxGameDescriptorSettingsState : BaseState() {
@@ -38,24 +39,15 @@ class ParadoxGameDescriptorSettingsState : BaseState() {
     var gameVersion: String? by string()
     var gameDirectory: String? by string()
 
-    val qualifiedName: String
-        get() = buildString {
-            append(gameType.orDefault().title)
-            append("@")
-            append(gameVersion)
-        }
-
-    fun fromRootInfo(rootInfo: ParadoxGameRootInfo) {
+    fun fromRootInfo(rootInfo: ParadoxRootInfo.Game) {
         gameDirectory = rootInfo.rootFile.path
         gameType = rootInfo.gameType
-
-        val launcherSettingsInfo = rootInfo.launcherSettingsInfo
-        gameVersion = launcherSettingsInfo.rawVersion
+        gameVersion = rootInfo.version
     }
 }
 
 /**
- * @see ParadoxModRootInfo
+ * @see ParadoxRootInfo.Mod
  */
 @Tag("settings")
 class ParadoxModDescriptorSettingsState : BaseState() {
@@ -70,21 +62,15 @@ class ParadoxModDescriptorSettingsState : BaseState() {
     var source: ParadoxModSource by enum(ParadoxModSource.Local)
     var modDirectory: String? by string()
 
-    val qualifiedName: String
-        get() = buildString {
-            append(gameType.orDefault().title).append(" Mod: ")
-            append(name)
-            version?.let { version -> append("@").append(version) }
-        }
-
-    fun fromRootInfo(rootInfo: ParadoxModRootInfo) {
+    fun fromRootInfo(rootInfo: ParadoxRootInfo.Mod) {
         modDirectory = rootInfo.rootFile.path
         inferredGameType = rootInfo.inferredGameType
         if (inferredGameType != null) gameType = inferredGameType
 
-        val descriptorInfo = rootInfo.descriptorInfo
-        name = descriptorInfo.name.orNull() ?: PlsBundle.message("mod.name.unnamed")
-        version = descriptorInfo.version
+        name = rootInfo.name.orNull() ?: PlsBundle.message("mod.name.unnamed")
+        version = rootInfo.version
+
+        val descriptorInfo = rootInfo.metadata.castOrNull<ParadoxModDescriptorBasedMetadataProvider.Metadata>()?.descriptorInfo ?: return
         supportedVersion = descriptorInfo.supportedVersion
         picture = descriptorInfo.picture
         tags = descriptorInfo.tags.orEmpty().toMutableSet()
@@ -96,7 +82,6 @@ class ParadoxModDescriptorSettingsState : BaseState() {
 interface ParadoxGameOrModSettingsState {
     val gameType: ParadoxGameType?
     val gameDirectory: String?
-    val qualifiedName: String?
 
     var modDependencies: MutableList<ParadoxModDependencySettingsState>
 
@@ -110,7 +95,7 @@ interface ParadoxGameDescriptorAwareSettingsState {
 
     val gameDescriptorSettings: ParadoxGameDescriptorSettingsState?
         get() = gameDirectory?.let { getProfilesSettings().gameDescriptorSettings.get(it) }
-    
+
     val gameType: ParadoxGameType? get() = gameDescriptorSettings?.gameType
     val gameVersion: String? get() = gameDescriptorSettings?.gameVersion
 }
@@ -120,7 +105,7 @@ interface ParadoxModDescriptorAwareSettingsState {
 
     val modDescriptorSettings: ParadoxModDescriptorSettingsState?
         get() = modDirectory?.orNull()?.let { getProfilesSettings().modDescriptorSettings.get(it) }
-    
+
     val name: String? get() = modDescriptorSettings?.name
     val version: String? get() = modDescriptorSettings?.version
     val supportedVersion: String? get() = modDescriptorSettings?.supportedVersion
@@ -139,8 +124,6 @@ class ParadoxGameSettingsState : BaseState(), ParadoxGameDescriptorAwareSettings
 
     @get:XCollection(style = XCollection.Style.v2)
     override var modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
-
-    override val qualifiedName: String? get() = gameDescriptorSettings?.qualifiedName
 }
 
 /**
@@ -155,8 +138,6 @@ class ParadoxModSettingsState : BaseState(), ParadoxGameDescriptorAwareSettingsS
 
     @get:XCollection(style = XCollection.Style.v2)
     override var modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
-
-    override val qualifiedName: String? get() = modDescriptorSettings?.qualifiedName
 }
 
 /**
@@ -181,4 +162,22 @@ val ParadoxModDescriptorAwareSettingsState.finalGameType: ParadoxGameType
 
 val ParadoxModSettingsState.finalGameDirectory: String?
     get() = gameDirectory?.orNull() ?: getSettings().defaultGameDirectories[finalGameType.id]
-?.orNull()
+        ?.orNull()
+
+val ParadoxGameOrModSettingsState.qualifiedName: String?
+    get() = when (this) {
+        is ParadoxGameSettingsState -> buildString {
+            append(gameType.orDefault().title)
+            if (gameVersion.isNotNullOrEmpty()) {
+                append("@").append(gameVersion)
+            }
+        }
+        is ParadoxModSettingsState -> buildString {
+            append(gameType.orDefault().title).append(" Mod: ")
+            append(name?.orNull() ?: PlsBundle.message("mod.name.unnamed"))
+            if (version.isNotNullOrEmpty()) {
+                append("@").append(version)
+            }
+        }
+        else -> null
+    }

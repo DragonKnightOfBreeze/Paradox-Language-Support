@@ -3,7 +3,6 @@ package icu.windea.pls.tools.actions
 import com.intellij.ide.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
@@ -71,7 +70,7 @@ abstract class OpenUrlAction : DumbAwareAction() {
 
     class ModPageInSteam : OpenUrlAction() {
         override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
-            return fileInfo.rootInfo is ParadoxModRootInfo
+            return fileInfo.rootInfo is ParadoxRootInfo.Mod
         }
 
         override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {
@@ -79,14 +78,14 @@ abstract class OpenUrlAction : DumbAwareAction() {
         }
 
         override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
-            val steamId = fileInfo.rootInfo.castOrNull<ParadoxModRootInfo>()?.descriptorInfo?.remoteFileId ?: return null
+            val steamId = fileInfo.rootInfo.steamId ?: return null
             return getDataProvider().getSteamWorkshopUrlInSteam(steamId)
         }
     }
 
     class ModPageInSteamWebsite : OpenUrlAction() {
         override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
-            return fileInfo.rootInfo is ParadoxModRootInfo
+            return fileInfo.rootInfo is ParadoxRootInfo.Mod
         }
 
         override fun isEnabled(fileInfo: ParadoxFileInfo): Boolean {
@@ -94,7 +93,7 @@ abstract class OpenUrlAction : DumbAwareAction() {
         }
 
         override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
-            val steamId = fileInfo.rootInfo.castOrNull<ParadoxModRootInfo>()?.descriptorInfo?.remoteFileId ?: return null
+            val steamId = fileInfo.rootInfo.steamId ?: return null
             return getDataProvider().getSteamWorkshopUrl(steamId)
         }
     }

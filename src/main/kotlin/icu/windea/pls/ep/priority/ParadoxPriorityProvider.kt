@@ -45,8 +45,8 @@ interface ParadoxPriorityProvider {
             val rootInfo = rootFile?.fileInfo?.rootInfo
             val rootPath = rootFile?.path
             val settings = when (rootInfo) {
-                is ParadoxGameRootInfo -> getProfilesSettings().gameSettings.get(rootPath)
-                is ParadoxModRootInfo -> getProfilesSettings().modSettings.get(rootPath)
+                is ParadoxRootInfo.Game -> getProfilesSettings().gameSettings.get(rootPath)
+                is ParadoxRootInfo.Mod -> getProfilesSettings().modSettings.get(rootPath)
                 else -> null
             }
             return Comparator c@{ o1, o2 ->

@@ -26,7 +26,7 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
         val fileInfo = file.fileInfo ?: return
         val rootInfo = fileInfo.rootInfo
         val rootFile = rootInfo.rootFile
-        if (rootInfo !is ParadoxModRootInfo) return
+        if (rootInfo !is ParadoxRootInfo.Mod) return
         val modPaths = project.getOrPutUserData(Keys.checkedModPaths) { mutableSetOf() }
         val modPath = rootFile.path
         if (!rootFile.isValid) {

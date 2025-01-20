@@ -23,9 +23,9 @@ class ChainedParadoxSelector<T>(
     }
     val settings: ParadoxGameOrModSettingsState? by lazy {
         val rootInfo = file?.fileInfo?.rootInfo
-        when {
-            rootInfo is ParadoxGameRootInfo -> getProfilesSettings().gameSettings.get(rootInfo.rootFile.path)
-            rootInfo is ParadoxModRootInfo -> getProfilesSettings().modSettings.get(rootInfo.rootFile.path)
+        when (rootInfo) {
+            is ParadoxRootInfo.Game -> getProfilesSettings().gameSettings.get(rootInfo.rootFile.path)
+            is ParadoxRootInfo.Mod -> getProfilesSettings().modSettings.get(rootInfo.rootFile.path)
             else -> null
         }
     }

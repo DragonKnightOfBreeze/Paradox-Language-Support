@@ -37,7 +37,7 @@ class OpenGameSettingsAction : DumbAwareAction() {
         presentation.isEnabledAndVisible = false
         //这里需要兼容直接从项目根目录右键打开菜单的情况
         val file = getFile(e) ?: return
-        if (file.fileInfo?.rootInfo !is ParadoxGameRootInfo) return
+        if (file.fileInfo?.rootInfo !is ParadoxRootInfo.Game) return
         //必须位于当前项目中
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
@@ -56,7 +56,7 @@ class OpenGameSettingsAction : DumbAwareAction() {
         val file = getFile(e)
         val fileInfo = file?.fileInfo ?: return
         val rootInfo = fileInfo.rootInfo
-        if (rootInfo !is ParadoxGameRootInfo) return
+        if (rootInfo !is ParadoxRootInfo.Game) return
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
         if (!isInProject) return

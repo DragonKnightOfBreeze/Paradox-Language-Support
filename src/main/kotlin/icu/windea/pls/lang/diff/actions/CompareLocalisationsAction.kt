@@ -30,6 +30,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
 import java.awt.*
 import java.util.*
 import javax.swing.*
@@ -197,7 +198,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val name = localisation.name
         val file = localisation.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
-        return PlsBundle.message("diff.compare.localisations.dialog.title", name, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
+        return PlsBundle.message("diff.compare.localisations.dialog.title", name, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
     }
 
     private fun getContentTitle(localisation: ParadoxLocalisationProperty, original: Boolean = false): String? {
@@ -205,8 +206,8 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val file = localisation.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
         return when {
-            original -> PlsBundle.message("diff.compare.localisations.originalContent.title", name, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
-            else -> PlsBundle.message("diff.compare.localisations.content.title", name, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
+            original -> PlsBundle.message("diff.compare.localisations.originalContent.title", name, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
+            else -> PlsBundle.message("diff.compare.localisations.content.title", name, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
         }
     }
 
@@ -233,7 +234,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
-            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
+            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
         }
     }
 

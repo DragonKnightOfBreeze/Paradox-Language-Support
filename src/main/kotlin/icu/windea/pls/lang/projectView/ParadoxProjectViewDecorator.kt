@@ -16,8 +16,8 @@ class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
             val rootInfo = file.rootInfo ?: return
             if (data.locationString != null) return //忽略存在locationString的情况
             val icon = when (rootInfo) {
-                is ParadoxGameRootInfo -> PlsIcons.GameDirectory
-                is ParadoxModRootInfo -> PlsIcons.ModDirectory
+                is ParadoxRootInfo.Game -> PlsIcons.GameDirectory
+                is ParadoxRootInfo.Mod -> PlsIcons.ModDirectory
             }
             data.setIcon(icon)
             data.locationString = rootInfo.qualifiedName

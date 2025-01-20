@@ -18,16 +18,10 @@ class CopySteamPageProvider : DumbAwareCopyPathProvider() {
 
     private fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
         val rootInfo = fileInfo.rootInfo
-        return when {
-            rootInfo is ParadoxGameRootInfo -> {
-                val steamId = rootInfo.gameType.steamId
-                getDataProvider().getSteamGameStoreUrl(steamId)
-            }
-            rootInfo is ParadoxModRootInfo -> {
-                val steamId = rootInfo.descriptorInfo.remoteFileId ?: return null
-                getDataProvider().getSteamWorkshopUrl(steamId)
-            }
-            else -> null
+        val steamId = rootInfo.steamId ?: return null
+        return when (rootInfo) {
+            is ParadoxRootInfo.Game -> getDataProvider().getSteamGameStoreUrl(steamId)
+            is ParadoxRootInfo.Mod -> getDataProvider().getSteamWorkshopUrl(steamId)
         }
     }
 }

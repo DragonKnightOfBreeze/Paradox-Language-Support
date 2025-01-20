@@ -21,14 +21,12 @@ object ParadoxFilePathManager {
 
     const val scriptedVariablesPath = "common/scripted_variables"
 
-    fun getRootDirectory(contextFile: VirtualFile): VirtualFile? {
-        return contextFile.fileInfo?.rootInfo?.gameRootFile
-    }
-
     fun getScriptedVariablesDirectory(contextFile: VirtualFile): VirtualFile? {
-        val root = getRootDirectory(contextFile) ?: return null
-        VfsUtil.createDirectoryIfMissing(root, scriptedVariablesPath)
-        return root.findFileByRelativePath(scriptedVariablesPath)
+        val rootInfo = contextFile.fileInfo?.rootInfo ?: return null
+        val entryFile = rootInfo.entryFile
+        val path = scriptedVariablesPath
+        VfsUtil.createDirectoryIfMissing(entryFile, path)
+        return entryFile.findFileByRelativePath(path)
     }
 
     fun canBeScriptOrLocalisationFile(filePath: FilePath): Boolean {

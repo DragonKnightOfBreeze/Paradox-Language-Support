@@ -28,12 +28,8 @@ class ParadoxModuleRenderFactory : ModuleRendererFactory() {
         val rootFile = selectRootFile(element) ?: return null
         val rootInfo = rootFile.rootInfo ?: return null
         return when (rootInfo) {
-            is ParadoxGameRootInfo -> {
-                TextWithIcon(rootInfo.qualifiedName, PlsIcons.GameDirectory)
-            }
-            is ParadoxModRootInfo -> {
-                TextWithIcon(rootInfo.qualifiedName, PlsIcons.ModDirectory)
-            }
+            is ParadoxRootInfo.Game -> TextWithIcon(rootInfo.qualifiedName, PlsIcons.GameDirectory)
+            is ParadoxRootInfo.Mod -> TextWithIcon(rootInfo.qualifiedName, PlsIcons.ModDirectory)
         }
     }
 }

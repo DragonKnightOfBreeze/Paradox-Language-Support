@@ -77,22 +77,19 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
     append(rootInfo.qualifiedName.escapeXml())
     append("]")
     grayed {
-        val remoteFileId = (rootInfo as? ParadoxModRootInfo)?.descriptorInfo?.remoteFileId
-        //remoteFileId（暂不显示）
-        //if(remoteFileId != null) {
-        //	append(" ").append(PlsBundle.message("name.core.remoteFileId")).append(": ").append(remoteFileId).append(" )
-        //}
         //相关链接
         //通过这种方式获取需要的url，使用rootPath而非gameRootPath
         val rootUri = fileInfo.rootInfo.rootPath.toUri().toString()
         append(" ")
         appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
-        if (remoteFileId != null) {
+
+        val steamId = fileInfo.rootInfo.steamId
+        if (steamId != null) {
             append(" | ")
-            appendLink(getDataProvider().getSteamWorkshopUrlInSteam(remoteFileId), PlsBundle.message("text.steamLinkLabel"))
+            appendLink(getDataProvider().getSteamWorkshopUrlInSteam(steamId), PlsBundle.message("text.steamLinkLabel"))
             appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
             append(" | ")
-            appendLink(getDataProvider().getSteamWorkshopUrl(remoteFileId), PlsBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标
+            appendLink(getDataProvider().getSteamWorkshopUrl(steamId), PlsBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标
         }
     }
     append("</span>")

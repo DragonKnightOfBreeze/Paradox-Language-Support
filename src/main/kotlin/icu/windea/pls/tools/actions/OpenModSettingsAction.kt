@@ -37,7 +37,7 @@ class OpenModSettingsAction : DumbAwareAction() {
         presentation.isEnabledAndVisible = false
         //这里需要兼容直接从项目根目录右键打开菜单的情况
         val file = getFile(e) ?: return
-        if (file.fileInfo?.rootInfo !is ParadoxModRootInfo) return
+        if (file.fileInfo?.rootInfo !is ParadoxRootInfo.Mod) return
         //必须位于当前项目中
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
@@ -56,7 +56,7 @@ class OpenModSettingsAction : DumbAwareAction() {
         val file = getFile(e)
         val fileInfo = file?.fileInfo ?: return
         val rootInfo = fileInfo.rootInfo
-        if (rootInfo !is ParadoxModRootInfo) return
+        if (rootInfo !is ParadoxRootInfo.Mod) return
         //必须位于当前项目中
         val project = e.project ?: return
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)

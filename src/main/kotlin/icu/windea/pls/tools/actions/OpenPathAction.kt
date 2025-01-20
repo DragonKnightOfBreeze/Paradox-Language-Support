@@ -75,23 +75,23 @@ abstract class OpenPathAction : DumbAwareAction() {
 
     class Game : OpenPathAction() {
         override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
-            return fileInfo.rootInfo is ParadoxModRootInfo
+            return fileInfo.rootInfo is ParadoxRootInfo.Mod
         }
 
         override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
-            if (fileInfo.rootInfo !is ParadoxGameRootInfo) return null
-            return fileInfo.rootInfo.gameRootPath
+            if (fileInfo.rootInfo !is ParadoxRootInfo.Game) return null
+            return fileInfo.rootInfo.rootPath
         }
     }
 
     class Mod : OpenPathAction() {
         override fun isVisible(fileInfo: ParadoxFileInfo): Boolean {
-            return fileInfo.rootInfo is ParadoxModRootInfo
+            return fileInfo.rootInfo is ParadoxRootInfo.Mod
         }
 
         override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
-            if (fileInfo.rootInfo !is ParadoxModRootInfo) return null
-            return fileInfo.rootInfo.gameRootPath
+            if (fileInfo.rootInfo !is ParadoxRootInfo.Mod) return null
+            return fileInfo.rootInfo.rootPath
         }
     }
 }

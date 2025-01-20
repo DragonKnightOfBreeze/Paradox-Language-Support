@@ -34,18 +34,18 @@ object ParadoxSearchScopeTypes {
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
         val rootInfo = fileInfo.rootInfo
         when (rootInfo) {
-            is ParadoxModRootInfo -> {
+            is ParadoxRootInfo.Game -> {
+                result.add(Game)
+                if (isInProject) {
+                    result.add(GameWithDependencies)
+                }
+            }
+            is ParadoxRootInfo.Mod -> {
                 result.add(Mod)
                 if (isInProject) {
                     result.add(Game)
                     result.add(ModAndGame)
                     result.add(ModWithDependencies)
-                }
-            }
-            is ParadoxGameRootInfo -> {
-                result.add(Game)
-                if (isInProject) {
-                    result.add(GameWithDependencies)
                 }
             }
         }

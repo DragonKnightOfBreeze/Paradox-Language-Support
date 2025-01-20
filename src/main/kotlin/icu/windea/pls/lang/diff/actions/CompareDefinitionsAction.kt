@@ -199,15 +199,15 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     private fun getWindowsTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         val file = definition.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
-        return PlsBundle.message("diff.compare.definitions.dialog.title", definitionInfo.name.orAnonymous(), definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
+        return PlsBundle.message("diff.compare.definitions.dialog.title", definitionInfo.name.orAnonymous(), definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
     }
 
     private fun getContentTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, original: Boolean = false): String? {
         val file = definition.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
         return when {
-            original -> PlsBundle.message("diff.compare.definitions.originalContent.title", definitionInfo.name.orAnonymous(), definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
-            else -> PlsBundle.message("diff.compare.definitions.content.title", definitionInfo.name.orAnonymous(), definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
+            original -> PlsBundle.message("diff.compare.definitions.originalContent.title", definitionInfo.name.orAnonymous(), definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
+            else -> PlsBundle.message("diff.compare.definitions.content.title", definitionInfo.name.orAnonymous(), definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
         }
     }
 
@@ -233,7 +233,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
-            return PlsBundle.message("diff.compare.definitions.popup.name", otherDefinitionInfo.name.orAnonymous(), otherDefinitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
+            return PlsBundle.message("diff.compare.definitions.popup.name", otherDefinitionInfo.name.orAnonymous(), otherDefinitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
         }
     }
 

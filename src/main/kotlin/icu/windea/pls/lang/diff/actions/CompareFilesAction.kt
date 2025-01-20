@@ -25,6 +25,7 @@ import icu.windea.pls.lang.diff.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.*
 import java.awt.*
 import java.util.*
 import javax.swing.*
@@ -157,14 +158,14 @@ class CompareFilesAction : ParadoxShowDiffAction() {
 
     private fun getWindowsTitle(file: VirtualFile): String? {
         val fileInfo = file.fileInfo ?: return null
-        return PlsBundle.message("diff.compare.files.dialog.title", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
+        return PlsBundle.message("diff.compare.files.dialog.title", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
     }
 
     private fun getContentTitle(file: VirtualFile, original: Boolean = false): String? {
         val fileInfo = file.fileInfo ?: return null
         return when {
-            original -> PlsBundle.message("diff.compare.files.originalContent.title", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
-            else -> PlsBundle.message("diff.compare.files.content.title", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
+            original -> PlsBundle.message("diff.compare.files.originalContent.title", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
+            else -> PlsBundle.message("diff.compare.files.content.title", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
         }
     }
 
@@ -189,7 +190,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
-            return PlsBundle.message("diff.compare.files.popup.name", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.gameRootPath)
+            return PlsBundle.message("diff.compare.files.popup.name", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
         }
     }
 

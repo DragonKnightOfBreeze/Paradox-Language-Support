@@ -7,6 +7,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.model.*
 
 /**
  * @see com.intellij.openapi.fileChooser.tree.FileRenderer
@@ -22,7 +23,7 @@ class FileRenderCodeInjector : CodeInjectorBase() {
             if (doCustomize(renderer, value)) return
         }
     }
-    
+
     private fun doCustomize(renderer: SimpleColoredComponent, value: Any): Boolean {
         val file = when {
             value is FileNode -> value.file

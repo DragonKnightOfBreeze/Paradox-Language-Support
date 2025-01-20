@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.util
 
-import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.codeInsight.daemon.*
 import com.intellij.codeInsight.daemon.impl.*
 import com.intellij.injected.editor.*
@@ -22,13 +21,11 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.data.*
+import icu.windea.pls.ep.metadata.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.listeners.*
-import icu.windea.pls.lang.util.data.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
 import java.nio.file.*
 import kotlin.io.path.*
 
@@ -70,22 +67,8 @@ object ParadoxCoreManager {
     }
 
     private fun doGetRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        //尝试从此目录向下查找descriptor.mod
-        run {
-            val descriptorFile = runReadAction { getDescriptorFile(rootFile) } ?: return@run
-            val descriptorInfo = getDescriptorInfo(descriptorFile) ?: return null
-            return ParadoxModRootInfo(rootFile, descriptorFile, descriptorInfo)
-        }
-
-        //尝试从此目录向下查找launcher-settings.json，如果找到，再根据"dlcPath"的值获取游戏文件的根目录
-        //注意游戏文件的根目录可能是此目录的game子目录，而非此目录自身
-        run {
-            val launcherSettingsFile = runReadAction { getLauncherSettingsFile(rootFile) } ?: return@run
-            val launcherSettingsInfo = getLauncherSettingsInfo(launcherSettingsFile) ?: return null
-            return ParadoxGameRootInfo(rootFile, launcherSettingsFile, launcherSettingsInfo)
-        }
-
-        return null
+        val metadata = ParadoxMetadataProvider.getMetadata(rootFile) ?: return null
+        return ParadoxRootInfo.from(metadata)
     }
 
     fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
@@ -186,74 +169,12 @@ object ParadoxCoreManager {
     }
 
     private fun resolvePathAndEntryName(relPath: ParadoxPath, rootInfo: ParadoxRootInfo): Tuple2<ParadoxPath, String> {
-        if (rootInfo is ParadoxModRootInfo) return relPath to ""
+        if (rootInfo is ParadoxRootInfo.Mod) return relPath to ""
         relPath.path.removePrefixOrNull("game/")?.let { return ParadoxPath.resolve(it) to "game" }
         rootInfo.gameType.entryNames.forEach { entryName ->
             relPath.path.removePrefixOrNull("$entryName/")?.let { return ParadoxPath.resolve(it) to entryName }
         }
         return relPath to ""
-    }
-
-    fun getLauncherSettingsFile(root: VirtualFile): VirtualFile? {
-        if (root.name == "launcher") return null
-        //launcher-settings.json
-        root.findChild(PlsConstants.launcherSettingsFileName)
-            ?.takeIf { !it.isDirectory }
-            ?.let { return it }
-        //launcher/launcher-settings.json
-        root.findChild("launcher")
-            ?.takeIf { it.isDirectory }
-            ?.findChild(PlsConstants.launcherSettingsFileName)
-            ?.takeIf { !it.isDirectory }
-            ?.let { return it }
-        return null
-    }
-
-    fun getDescriptorFile(rootFile: VirtualFile): VirtualFile? {
-        //descriptor.mod
-        rootFile.findChild(PlsConstants.descriptorFileName)
-            ?.takeIf { !it.isDirectory }
-            ?.let { return it }
-        return null
-    }
-
-    fun getLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
-        try {
-            return doGetLauncherSettingsInfo(file)
-        } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
-            thisLogger().warn(e)
-            return null
-        }
-    }
-
-    private fun doGetLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo {
-        return jsonMapper.readValue(file.inputStream)
-    }
-
-    fun getDescriptorInfo(file: VirtualFile): ParadoxModDescriptorInfo? {
-        //descriptor.mod
-        try {
-            return runReadAction { doGetDescriptorInfo(file) }
-        } catch (e: Exception) {
-            if (e is ProcessCanceledException) throw e
-            thisLogger().warn(e)
-            return null
-        }
-    }
-
-    private fun doGetDescriptorInfo(file: VirtualFile): ParadoxModDescriptorInfo {
-        //val psiFile = file.toPsiFile<ParadoxScriptFile>(getDefaultProject()) ?: return null //会导致StackOverflowError
-        val psiFile = ParadoxScriptElementFactory.createDummyFile(getDefaultProject(), file.inputStream.reader().readText())
-        val data = ParadoxScriptDataResolver.resolve(psiFile)
-        val name = data?.getData("name")?.value?.stringValue() ?: file.parent?.name ?: "" //如果没有name属性，则使用根目录名
-        val version = data?.getData("version")?.value?.stringValue()
-        val picture = data?.getData("picture")?.value?.stringValue()
-        val tags = data?.getAllData("tags")?.mapNotNull { it.value?.stringValue() }?.toSet()
-        val supportedVersion = data?.getData("supported_version")?.value?.stringValue()
-        val remoteFileId = data?.getData("remote_file_id")?.value?.stringValue()
-        val path = data?.getData("path")?.value?.stringValue()
-        return ParadoxModDescriptorInfo(name, version, picture, tags, supportedVersion, remoteFileId, path)
     }
 
     fun getLocaleConfig(file: VirtualFile, project: Project): CwtLocalisationLocaleConfig? {
@@ -278,8 +199,8 @@ object ParadoxCoreManager {
         }
     }
 
-    fun getInferredGameType(rootInfo: ParadoxModRootInfo): ParadoxGameType? {
-        val parentDir = rootInfo.rootFile.parent
+    fun getInferredGameType(rootFile: VirtualFile): ParadoxGameType? {
+        val parentDir = rootFile.parent
         runCatchingCancelable r@{
             //如果模组目录直接位于游戏创意工坊目录下，直接推断为对应的游戏类型
             val steamWorkshopDir = parentDir ?: return@r
@@ -387,7 +308,7 @@ object ParadoxCoreManager {
         val rootFile = VfsUtil.findFile(path, true)?.takeIf { it.exists() }
         if (rootFile == null) return builder.error(PlsBundle.message("gameDirectory.error.2"))
         val rootInfo = rootFile.rootInfo
-        if (rootInfo !is ParadoxGameRootInfo) return builder.error(PlsBundle.message("gameDirectory.error.3", gameType.title))
+        if (rootInfo !is ParadoxRootInfo.Game) return builder.error(PlsBundle.message("gameDirectory.error.3", gameType.title))
         return null
     }
 
@@ -401,7 +322,7 @@ object ParadoxCoreManager {
         val gameDirectory0 = gameDirectory?.normalizePath()?.orNull() ?: return null
         val rootFile = gameDirectory0.toVirtualFile(true)?.takeIf { it.exists() } ?: return null
         val rootInfo = rootFile.rootInfo
-        if (rootInfo !is ParadoxGameRootInfo) return null
-        return rootInfo.launcherSettingsInfo.rawVersion
+        if (rootInfo !is ParadoxRootInfo.Game) return null
+        return rootInfo.version
     }
 }

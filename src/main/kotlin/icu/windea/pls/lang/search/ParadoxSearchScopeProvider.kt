@@ -26,7 +26,7 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
         val rootInfo = rootFile.rootInfo ?: return emptyList()
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(contextFile)
         when {
-            rootInfo is ParadoxGameRootInfo -> {
+            rootInfo is ParadoxRootInfo.Game -> {
                 val settings = getProfilesSettings().gameSettings.get(rootFile.path)
                 if (settings == null) return emptyList()
                 val gameDirectory = rootFile
@@ -38,7 +38,7 @@ class ParadoxSearchScopeProvider : SearchScopeProvider {
                 }
                 return result
             }
-            rootInfo is ParadoxModRootInfo -> {
+            rootInfo is ParadoxRootInfo.Mod -> {
                 val settings = getProfilesSettings().modSettings.get(rootFile.path)
                 if (settings == null) return emptyList()
                 val modDirectory = rootFile

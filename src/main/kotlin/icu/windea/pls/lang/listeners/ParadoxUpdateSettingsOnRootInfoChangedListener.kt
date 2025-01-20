@@ -11,12 +11,12 @@ import icu.windea.pls.model.*
 class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
     override fun onAdd(rootInfo: ParadoxRootInfo) {
         when (rootInfo) {
-            is ParadoxGameRootInfo -> addGameSettings(rootInfo)
-            is ParadoxModRootInfo -> addModSettings(rootInfo)
+            is ParadoxRootInfo.Game -> addGameSettings(rootInfo)
+            is ParadoxRootInfo.Mod -> addModSettings(rootInfo)
         }
     }
 
-    private fun addGameSettings(rootInfo: ParadoxGameRootInfo) {
+    private fun addGameSettings(rootInfo: ParadoxRootInfo.Game) {
         val settings = getProfilesSettings()
         val gameFile = rootInfo.rootFile
         val gameDirectory = gameFile.path
@@ -43,7 +43,7 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
         }
     }
 
-    private fun addModSettings(rootInfo: ParadoxModRootInfo) {
+    private fun addModSettings(rootInfo: ParadoxRootInfo.Mod) {
         val settings = getProfilesSettings()
         val modFile = rootInfo.rootFile
         val modDirectory = modFile.path

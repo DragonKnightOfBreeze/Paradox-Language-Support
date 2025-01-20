@@ -1,5 +1,6 @@
 package icu.windea.pls.tools.importer
 
+import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.module.kotlin.*
 import com.intellij.notification.*
 import com.intellij.openapi.diagnostic.*
@@ -13,7 +14,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import icu.windea.pls.tools.model.*
 import icu.windea.pls.tools.ui.*
 
 private const val dlcLoadJsonPath = "dlc_load.json"
@@ -50,7 +50,7 @@ class ParadoxFromGameImporter : ParadoxModImporter {
         }
         val file = jsonPath.toVirtualFile(true) ?: return
         try {
-            val data = jsonMapper.readValue<ParadoxDlcLoadJson>(file.inputStream)
+            val data = jsonMapper.readValue<DlcLoad>(file.inputStream)
 
             var count = 0
             val newSettingsList = mutableListOf<ParadoxModDependencySettingsState>()
@@ -58,7 +58,7 @@ class ParadoxFromGameImporter : ParadoxModImporter {
                 val descriptorPath = gameDataPath.resolve(mod)
                 if (!descriptorPath.exists()) continue
                 val descriptorFile = descriptorPath.toVirtualFile(true) ?: continue
-                val descriptorInfo = ParadoxCoreManager.getDescriptorInfo(descriptorFile) ?: continue
+                val descriptorInfo = ParadoxMetadataManager.getDescriptorInfo(descriptorFile) ?: continue
                 val modPath = descriptorInfo.path ?: continue
                 val modDir = modPath.toVirtualFile() ?: continue
                 val rootInfo = modDir.rootInfo
@@ -94,4 +94,11 @@ class ParadoxFromGameImporter : ParadoxModImporter {
             }
         }
     }
+
+    data class DlcLoad(
+        @JsonProperty("disabled_dlcs")
+        val disabledDlcs: List<String>,
+        @JsonProperty("enabled_mods")
+        val enabledMods: List<String>
+    )
 }
