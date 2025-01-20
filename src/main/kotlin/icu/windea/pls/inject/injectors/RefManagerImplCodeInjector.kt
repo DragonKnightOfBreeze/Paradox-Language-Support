@@ -22,7 +22,7 @@ class RefManagerImplCodeInjector : CodeInjectorBase() {
             val file = selectFile(element)
             val contextFile = file?.findTopHostFileOrThis()
             val fileInfo = contextFile?.fileInfo
-            if (fileInfo != null) return fileInfo.relPath.parent.orNull()
+            if (fileInfo != null) return fileInfo.path.parent.orNull()
         }
         continueInvocation()
     }

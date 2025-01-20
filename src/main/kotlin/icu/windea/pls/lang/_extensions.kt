@@ -93,7 +93,7 @@ tailrec fun selectRootFile(from: Any?): VirtualFile? {
         from == null -> null
         from is VirtualFileWindow -> selectRootFile(from.delegate) //for injected PSI
         from is LightVirtualFileBase && from.originalFile != null -> selectRootFile(from.originalFile)
-        from is VirtualFile -> from.fileInfo?.rootInfo?.gameRootFile
+        from is VirtualFile -> from.fileInfo?.rootInfo?.rootFile
         else -> selectRootFile(selectFile(from))
     }
 }

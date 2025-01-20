@@ -2,6 +2,8 @@ package icu.windea.pls.dds
 
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
+import icu.windea.pls.lang.util.image.*
+import kotlin.io.path.*
 
 /**
  * 监听DDS文件。
@@ -22,7 +24,9 @@ class DdsFileListener : AsyncFileListener {
                     }
                 }
                 for (file in files) {
-                    invalidateDdsFile(file)
+                    if (file.fileType != DdsFileType) continue
+                    val ddsAbsPath = file.toNioPath().absolutePathString()
+                    ParadoxDdsResolver.invalidateUrl(ddsAbsPath)
                 }
             }
         }

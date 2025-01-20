@@ -7,11 +7,13 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.*
 import icu.windea.pls.dds.*
+import icu.windea.pls.lang.util.image.*
 import org.intellij.images.editor.*
 import org.intellij.images.thumbnail.actionSystem.*
 import org.intellij.images.vfs.*
 import java.awt.*
 import javax.swing.*
+import kotlin.io.path.*
 
 //org.intellij.images.editor.impl.ImageEditorImpl
 
@@ -131,30 +133,34 @@ class DdsEditorImpl(
     }
 
     fun propertyChanged(event: VirtualFilePropertyEvent) {
-        if (file == event.file) {
-            invalidateDdsFile(file)
+        if (file != event.file) return
+        if (file.fileType != DdsFileType) return
 
-            // Change document
-            file.refresh(true, false) {
-                if (file.fileType == DdsFileType) {
-                    setValue(file)
-                } else {
-                    setValue(null)
-                    // Close editor
-                    val editorManager = FileEditorManager.getInstance(project)
-                    editorManager.closeFile(file)
-                }
+        val ddsAbsPath = file.toNioPath().absolutePathString()
+        ParadoxDdsResolver.invalidateUrl(ddsAbsPath)
+
+        // Change document
+        file.refresh(true, false) {
+            if (file.fileType == DdsFileType) {
+                setValue(file)
+            } else {
+                setValue(null)
+                // Close editor
+                val editorManager = FileEditorManager.getInstance(project)
+                editorManager.closeFile(file)
             }
         }
     }
 
     fun contentsChanged(event: VirtualFileEvent) {
-        if (file == event.file) {
-            invalidateDdsFile(file)
+        if (file != event.file) return
+        if (file.fileType != DdsFileType) return
 
-            // Change document
-            refreshFile()
-        }
+        val ddsAbsPath = file.toNioPath().absolutePathString()
+        ParadoxDdsResolver.invalidateUrl(ddsAbsPath)
+
+        // Change document
+        refreshFile()
     }
 
     fun refreshFile() {

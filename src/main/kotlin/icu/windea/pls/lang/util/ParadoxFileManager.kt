@@ -27,8 +27,8 @@ object ParadoxFileManager {
     fun canReference(targetFile: VirtualFile?, otherFile: VirtualFile?): Boolean {
         val target = targetFile?.fileInfo ?: return true
         val other = otherFile?.fileInfo ?: return true
-        if (target.inMainEntry()) {
-            if (!other.inMainEntry()) return false
+        if (target.entryName.isEmpty() || target.entryName == "game") {
+            if (!(other.entryName.isEmpty() || other.entryName == "game")) return false
         }
         return true
     }

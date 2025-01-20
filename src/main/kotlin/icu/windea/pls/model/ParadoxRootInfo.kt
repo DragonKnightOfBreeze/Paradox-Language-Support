@@ -1,7 +1,6 @@
 package icu.windea.pls.model
 
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import java.nio.file.*
@@ -12,7 +11,6 @@ import java.nio.file.*
  * @property gameType 游戏类型。
  * @property rootPath 游戏根目录。
  * @property gameRootPath 作为主要入口的根目录。
- * @property gameEntryPath 作为主要入口的根目录相对于游戏根目录的路径。如果与游戏根目录相同，则为null。
  */
 sealed class ParadoxRootInfo {
     abstract val rootFile: VirtualFile
@@ -21,8 +19,6 @@ sealed class ParadoxRootInfo {
 
     abstract val rootPath: Path
     abstract val gameRootPath: Path
-
-    val gameEntryPath: String? by lazy { rootPath.relativize(gameRootPath).toString().orNull() }
 
     abstract val qualifiedName: String
 }
