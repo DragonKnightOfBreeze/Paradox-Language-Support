@@ -12,12 +12,13 @@ import icu.windea.pls.script.psi.*
 
 /**
  * 全局封装变量的查询器。
- * 
+ *
  * 全局封装变量：位于`common/scripted_variables`目录中的脚本文件中的封装变量。
  */
 class ParadoxGlobalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxGlobalScriptedVariableSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxGlobalScriptedVariableSearch.SearchParameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {
         ProgressManager.checkCanceled()
+        if(queryParameters.project.isDefault) return
         val scope = queryParameters.selector.scope
             .withFilePath("common/scripted_variables", "txt") //limit to global scripted variables
         if (SearchScope.isEmptyScope(scope)) return

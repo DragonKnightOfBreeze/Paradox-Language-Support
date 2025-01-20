@@ -17,6 +17,7 @@ import icu.windea.pls.script.*
 class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUsageIndexInfo.Compact, ParadoxInlineScriptUsageSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxInlineScriptUsageSearch.SearchParameters, consumer: Processor<in ParadoxInlineScriptUsageIndexInfo.Compact>) {
         ProgressManager.checkCanceled()
+        if(queryParameters.project.isDefault) return
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
         val expression = queryParameters.expression
@@ -43,7 +44,7 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
                     if (!r) return@p false
                 }
             }
-            
+
             true
         }
     }

@@ -194,6 +194,9 @@ tasks {
         //排除特定文件
         excludesInJar.forEach { exclude(it) }
     }
+    buildSearchableOptions {
+        classpath += configJar.outputs.files
+    }
     buildPlugin {
         into("lib") {
             from(configJar.outputs.files.singleFile)

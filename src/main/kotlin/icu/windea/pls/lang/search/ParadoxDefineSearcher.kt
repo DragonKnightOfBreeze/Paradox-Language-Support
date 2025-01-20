@@ -18,6 +18,7 @@ import icu.windea.pls.script.*
 class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo.Compact, ParadoxDefineSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxDefineSearch.SearchParameters, consumer: Processor<in ParadoxDefineIndexInfo.Compact>) {
         ProgressManager.checkCanceled()
+        if(queryParameters.project.isDefault) return
         val scope = queryParameters.selector.scope
             .withFilePath("common/defines", "txt")
         if (SearchScope.isEmptyScope(scope)) return
