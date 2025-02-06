@@ -33,7 +33,7 @@ object ParadoxFilePathManager {
         val fileName = filePath.name.lowercase()
         val fileExtension = filePath.name.substringAfterLast('.').orNull()?.lowercase() ?: return false
         return when {
-            fileName == PlsConstants.descriptorFileName -> true
+            fileName == PlsConstants.modDescriptorFileName -> true
             fileExtension in PlsConstants.scriptFileExtensions -> true
             fileExtension in PlsConstants.localisationFileExtensions -> true
             else -> false
@@ -49,7 +49,7 @@ object ParadoxFilePathManager {
         val fileName = file.name.lowercase()
         val fileExtension = file.extension?.lowercase() ?: return false
         return when {
-            fileName == PlsConstants.descriptorFileName -> true
+            fileName == PlsConstants.modDescriptorFileName -> true
             fileExtension in PlsConstants.scriptFileExtensions -> true
             fileExtension in PlsConstants.localisationFileExtensions -> true
             else -> false

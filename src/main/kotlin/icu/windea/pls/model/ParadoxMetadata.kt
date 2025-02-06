@@ -10,12 +10,21 @@ import icu.windea.pls.ep.metadata.*
  *
  * @see ParadoxMetadataProvider
  */
-interface ParadoxMetadata {
-    val forGame: Boolean
+sealed interface ParadoxMetadata {
     val name: String
     val version: String?
     val inferredGameType: ParadoxGameType?
     val gameType: ParadoxGameType
     val rootFile: VirtualFile
     val entryFile: VirtualFile
+
+    interface Game : ParadoxMetadata
+
+    interface Mod : ParadoxMetadata {
+        val supportedVersion: String?
+        val picture: String?
+        val tags: Set<String>
+        val remoteId: String?
+        val source: ParadoxModSource
+    }
 }

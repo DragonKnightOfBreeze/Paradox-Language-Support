@@ -3,7 +3,6 @@ package icu.windea.pls.model
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.ep.metadata.*
 import java.nio.file.*
 
 /**
@@ -15,7 +14,7 @@ import java.nio.file.*
  * @property entryPath 作为主要入口的根目录。
  */
 sealed class ParadoxRootInfo(
-    val metadata: ParadoxMetadata
+    open val metadata: ParadoxMetadata
 ) {
     val name: String get() = metadata.name
     val version: String? get() = metadata.version
@@ -27,20 +26,27 @@ sealed class ParadoxRootInfo(
     val rootPath: Path = rootFile.toNioPath()
     val entryPath: Path = entryFile.toNioPath()
 
-    class Game(metadata: ParadoxMetadata) : ParadoxRootInfo(metadata)
+    class Game(override val metadata: ParadoxMetadata.Game) : ParadoxRootInfo(metadata)
 
-    class Mod(metadata: ParadoxMetadata) : ParadoxRootInfo(metadata)
+    class Mod(override val metadata: ParadoxMetadata.Mod) : ParadoxRootInfo(metadata) {
+        val supportedVersion: String? get() = metadata.supportedVersion
+        val picture: String? get() = metadata.picture
+        val tags: Set<String> get() = metadata.tags
+        val remoteId: String? get() = metadata.remoteId
+        val source: ParadoxModSource get() = metadata.source
+    }
+}
 
-    companion object {
-        fun from(metadata: ParadoxMetadata): ParadoxRootInfo {
-            return if (metadata.forGame) Game(metadata) else Mod(metadata)
-        }
+fun ParadoxMetadata.toRootInfo(): ParadoxRootInfo {
+    return when (this) {
+        is ParadoxMetadata.Game -> ParadoxRootInfo.Game(this)
+        is ParadoxMetadata.Mod -> ParadoxRootInfo.Mod(this)
     }
 }
 
 val ParadoxRootInfo.qualifiedName: String
     get() = buildString {
-        if (metadata.forGame) {
+        if (metadata is ParadoxMetadata.Game) {
             append(gameType.title)
         } else {
             append(gameType.title).append(" Mod: ")
@@ -52,8 +58,7 @@ val ParadoxRootInfo.qualifiedName: String
     }
 
 val ParadoxRootInfo.steamId: String?
-    get() = when {
-        this is ParadoxRootInfo.Game -> gameType.steamId
-        metadata is ParadoxModDescriptorBasedMetadataProvider.Metadata -> metadata.descriptorInfo.remoteFileId
-        else -> null
+    get() = when (this) {
+        is ParadoxRootInfo.Game -> gameType.steamId
+        is ParadoxRootInfo.Mod -> if (metadata.source == ParadoxModSource.Steam) metadata.remoteId else null
     }

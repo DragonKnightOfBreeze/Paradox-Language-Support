@@ -29,7 +29,7 @@ enum class ParadoxFileType {
         private fun doResolve(path: ParadoxPath, rootInfo: ParadoxRootInfo): ParadoxFileType {
             val fileName = path.fileName.lowercase()
             return when {
-                fileName == PlsConstants.descriptorFileName -> ModDescriptor
+                fileName == PlsConstants.modDescriptorFileName -> ModDescriptor
                 path.length == 1 && rootInfo is ParadoxRootInfo.Game -> Other
                 isIgnored(fileName) -> Other
                 ParadoxFilePathManager.canBeScriptFilePath(path) -> Script

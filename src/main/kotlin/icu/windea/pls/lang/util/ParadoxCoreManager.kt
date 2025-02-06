@@ -68,7 +68,7 @@ object ParadoxCoreManager {
 
     private fun doGetRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         val metadata = ParadoxMetadataProvider.getMetadata(rootFile) ?: return null
-        return ParadoxRootInfo.from(metadata)
+        return metadata.toRootInfo()
     }
 
     fun getFileInfo(element: PsiElement): ParadoxFileInfo? {

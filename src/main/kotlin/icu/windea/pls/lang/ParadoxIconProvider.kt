@@ -32,7 +32,7 @@ class ParadoxIconProvider : IconProvider(), DumbAware {
             element is ParadoxScriptFile -> {
                 val file = element.virtualFile ?: return null
                 if (file.fileInfo == null) return null
-                if (file.name.equals(PlsConstants.descriptorFileName, true)) return PlsIcons.FileTypes.ModeDescriptor
+                if (file.name.equals(PlsConstants.modDescriptorFileName, true)) return PlsIcons.FileTypes.ModeDescriptor
                 return null
             }
             else -> return null

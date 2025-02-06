@@ -70,12 +70,11 @@ class ParadoxModDescriptorSettingsState : BaseState() {
         name = rootInfo.name.orNull() ?: PlsBundle.message("mod.name.unnamed")
         version = rootInfo.version
 
-        val descriptorInfo = rootInfo.metadata.castOrNull<ParadoxModDescriptorBasedMetadataProvider.Metadata>()?.descriptorInfo ?: return
-        supportedVersion = descriptorInfo.supportedVersion
-        picture = descriptorInfo.picture
-        tags = descriptorInfo.tags.orEmpty().toMutableSet()
-        remoteId = descriptorInfo.remoteFileId
-        if (remoteId != null) source = ParadoxModSource.Steam
+        supportedVersion = rootInfo.supportedVersion
+        picture = rootInfo.picture
+        tags = rootInfo.tags.toMutableSet()
+        remoteId = rootInfo.remoteId
+        source = rootInfo.source
     }
 }
 

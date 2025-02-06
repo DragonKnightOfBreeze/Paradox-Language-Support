@@ -23,7 +23,7 @@ class ParadoxScriptFile(
 
     override fun getIcon(flags: Int): Icon? {
         //对模组描述符文件使用特定的图标
-        if (name.equals(PlsConstants.descriptorFileName, true)) return PlsIcons.FileTypes.ModeDescriptor
+        if (name.equals(PlsConstants.modDescriptorFileName, true)) return PlsIcons.FileTypes.ModeDescriptor
         return super.getIcon(flags)
     }
 

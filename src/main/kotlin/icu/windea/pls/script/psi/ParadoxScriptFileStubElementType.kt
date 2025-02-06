@@ -35,7 +35,7 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
             val fileInfo = file.fileInfo ?: return false
             val path = fileInfo.path
             //不索引直接在根目录下的文件（除了模组描述符文件）
-            if (path.length == 1) return path.path.equals(PlsConstants.descriptorFileName, true)
+            if (path.length == 1) return path.path.equals(PlsConstants.modDescriptorFileName, true)
             //不索引内联脚本文件
             if ("common/inline_scripts".matchesPath(path.path)) return false
             return true

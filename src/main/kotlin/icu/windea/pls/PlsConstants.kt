@@ -12,8 +12,7 @@ object PlsConstants {
     val localisationFileExtensions = arrayOf("yml")
     val imageFileExtensions = arrayOf("dds", "png", "tga")
 
-    const val launcherSettingsFileName = "launcher-settings.json"
-    const val descriptorFileName = "descriptor.mod"
+    const val modDescriptorFileName = "descriptor.mod"
 
     const val anonymousString = "(anonymous)"
     const val unknownString = "(unknown)"

@@ -23,27 +23,27 @@ class ParadoxCoreFileListener : AsyncFileListener {
             events.forEach { event ->
                 when (event) {
                     is VFileCreateEvent -> {
-                        if (event.childName.equals(PlsConstants.descriptorFileName, true)) {
+                        if (event.childName.equals(PlsConstants.modDescriptorFileName, true)) {
                             event.parent.let { filesToClearRootInfo.add(it) }
                             reparseOpenedFiles = true
                         }
                     }
                     is VFileDeleteEvent -> {
                         event.file.let { filesToClearFileInfo.add(it) }
-                        if (event.file.name.equals(PlsConstants.descriptorFileName, true)) {
+                        if (event.file.name.equals(PlsConstants.modDescriptorFileName, true)) {
                             event.file.parent.let { filesToClearRootInfo.add(it) }
                             reparseOpenedFiles = true
                         }
                     }
                     is VFileCopyEvent -> {
-                        if (event.newChildName.equals(PlsConstants.descriptorFileName, true)) {
+                        if (event.newChildName.equals(PlsConstants.modDescriptorFileName, true)) {
                             event.newParent.let { filesToClearRootInfo.add(it) }
                             reparseOpenedFiles = true
                         }
                     }
                     is VFileMoveEvent -> {
                         event.file.let { filesToClearFileInfo.add(it) }
-                        if (event.file.name.equals(PlsConstants.descriptorFileName, true)) {
+                        if (event.file.name.equals(PlsConstants.modDescriptorFileName, true)) {
                             event.oldParent?.let { filesToClearRootInfo.add(it) }
                             event.newParent.let { filesToClearRootInfo.add(it) }
                             reparseOpenedFiles = true
@@ -52,10 +52,10 @@ class ParadoxCoreFileListener : AsyncFileListener {
                     is VFilePropertyChangeEvent -> {
                         if (event.propertyName == VirtualFile.PROP_NAME) {
                             event.file.let { filesToClearFileInfo.add(it) }
-                            if (event.newValue.toString().equals(PlsConstants.descriptorFileName, true)) {
+                            if (event.newValue.toString().equals(PlsConstants.modDescriptorFileName, true)) {
                                 event.file.parent?.let { filesToClearRootInfo.add(it) }
                                 reparseOpenedFiles = true
-                            } else if (event.oldValue.toString().equals(PlsConstants.descriptorFileName, true)) {
+                            } else if (event.oldValue.toString().equals(PlsConstants.modDescriptorFileName, true)) {
                                 event.file.parent?.let { filesToClearRootInfo.add(it) }
                                 reparseOpenedFiles = true
                             }
@@ -63,9 +63,7 @@ class ParadoxCoreFileListener : AsyncFileListener {
                     }
                     is VFileContentChangeEvent -> {
                         val fileName = event.file.name
-                        if (fileName.equals(PlsConstants.descriptorFileName, true)) {
-                            selectRootFile(event.file)?.let { filesToClearRootInfo.add(it) }
-                        } else if (fileName.equals(PlsConstants.launcherSettingsFileName, true)) {
+                        if (ParadoxMetadataManager.metadataFileNames.any { fileName.equals(it, true) }) {
                             selectRootFile(event.file)?.let { filesToClearRootInfo.add(it) }
                         }
                     }

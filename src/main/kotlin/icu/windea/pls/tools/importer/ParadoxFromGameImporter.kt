@@ -58,7 +58,7 @@ class ParadoxFromGameImporter : ParadoxModImporter {
                 val descriptorPath = gameDataPath.resolve(mod)
                 if (!descriptorPath.exists()) continue
                 val descriptorFile = descriptorPath.toVirtualFile(true) ?: continue
-                val descriptorInfo = ParadoxMetadataManager.getDescriptorInfo(descriptorFile) ?: continue
+                val descriptorInfo = ParadoxMetadataManager.getModDescriptorInfo(descriptorFile) ?: continue
                 val modPath = descriptorInfo.path ?: continue
                 val modDir = modPath.toVirtualFile() ?: continue
                 val rootInfo = modDir.rootInfo
