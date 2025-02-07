@@ -3,15 +3,13 @@ package icu.windea.pls.tools.ui
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
-import com.intellij.ui.table.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.tools.exporter.*
 import javax.swing.*
 
 class ParadoxModDependenciesExportPopup(
     private val project: Project,
-    private val tableView: TableView<ParadoxModDependencySettingsState>,
+    private val table: ParadoxModDependenciesTable,
     private val tableModel: ParadoxModDependenciesTableModel
 ) : BaseListPopupStep<ParadoxModExporter>(getTitle(), *getValues()) {
     companion object {
@@ -33,6 +31,6 @@ class ParadoxModDependenciesExportPopup(
     }
 
     override fun onChosen(selectedValue: ParadoxModExporter, finalChoice: Boolean): PopupStep<*>? {
-        return doFinalStep { selectedValue.execute(project, tableView, tableModel) }
+        return doFinalStep { selectedValue.execute(project, table, tableModel) }
     }
 }

@@ -123,13 +123,12 @@ class ParadoxModSettingsDialog(
             //modDependencies
             collapsibleGroup(PlsBundle.message("mod.settings.modDependencies"), false) {
                 row {
-                    cell(ParadoxModDependenciesTableModel.createPanel(project, settings, modDependencies))
-                        .align(Align.FILL)
-                }.resizableRow()
+                    cell(ParadoxModDependenciesTableModel.createPanel(project, settings, modDependencies)).align(Align.FILL)
+                }
                 row {
                     comment(PlsBundle.message("mod.dependencies.comment.1"))
                 }
-            }.resizableRow()
+            }
         }
     }
 

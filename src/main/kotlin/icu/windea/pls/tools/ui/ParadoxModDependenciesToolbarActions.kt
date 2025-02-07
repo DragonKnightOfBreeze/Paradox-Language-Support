@@ -9,7 +9,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.ui.*
-import com.intellij.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
@@ -19,7 +18,7 @@ import icu.windea.pls.model.*
 interface ParadoxModDependenciesToolbarActions {
     class AddAction(
         private val project: Project,
-        private val tableView: TableView<ParadoxModDependencySettingsState>,
+        private val table: ParadoxModDependenciesTable,
         private val tableModel: ParadoxModDependenciesTableModel
     ) : AnActionButtonRunnable {
         override fun run(e: AnActionButton) {
@@ -29,7 +28,7 @@ interface ParadoxModDependenciesToolbarActions {
             val descriptor = ParadoxDirectoryDescriptor(chooseMultiple = true)
                 .withTitle(PlsBundle.message("mod.dependencies.add.title"))
                 .apply { putUserData(PlsDataKeys.gameType, gameType) }
-            FileChooser.chooseFiles(descriptor, project, tableView, null) { files ->
+            FileChooser.chooseFiles(descriptor, project, table, null) { files ->
                 try {
                     var count = 0
                     val newSettingsList = mutableListOf<ParadoxModDependencySettingsState>()
@@ -50,7 +49,7 @@ interface ParadoxModDependenciesToolbarActions {
                     val position = if (isCurrentAtLast) tableModel.rowCount - 1 else tableModel.rowCount
                     tableModel.insertRows(position, newSettingsList)
                     //选中刚刚添加的所有模组依赖
-                    tableView.setRowSelectionInterval(position, position + newSettingsList.size - 1)
+                    table.setRowSelectionInterval(position, position + newSettingsList.size - 1)
 
                     run n@{
                         val title = settings.qualifiedName ?: return@n
@@ -73,7 +72,7 @@ interface ParadoxModDependenciesToolbarActions {
 
     class EditAction(
         private val project: Project,
-        private val tableView: TableView<ParadoxModDependencySettingsState>,
+        private val table: ParadoxModDependenciesTable,
         private val tableModel: ParadoxModDependenciesTableModel
     ) : AnAction(AllIcons.Actions.Edit) {
         init {
@@ -86,19 +85,19 @@ interface ParadoxModDependenciesToolbarActions {
         }
 
         override fun update(e: AnActionEvent) {
-            e.presentation.isEnabled = tableView.selectedRowCount == 1
+            e.presentation.isEnabled = table.selectedRowCount == 1
         }
 
         override fun actionPerformed(e: AnActionEvent) {
-            val selectedRow = tableView.selectedRow
-            val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
-            ParadoxModDependencySettingsDialog(project, item, tableView).show()
+            val selectedRow = table.selectedRow
+            val item = tableModel.getItem(table.convertRowIndexToModel(selectedRow))
+            ParadoxModDependencySettingsDialog(project, item, table).show()
         }
     }
 
     class EnableAllAction(
         private val project: Project,
-        private val tableView: TableView<ParadoxModDependencySettingsState>,
+        private val table: ParadoxModDependenciesTable,
         private val tableModel: ParadoxModDependenciesTableModel
     ) : AnAction(AllIcons.Actions.Selectall) {
         init {
@@ -110,10 +109,10 @@ interface ParadoxModDependenciesToolbarActions {
         }
 
         override fun actionPerformed(e: AnActionEvent) {
-            val selectedRows = tableView.selectedRows
+            val selectedRows = table.selectedRows
             if (selectedRows.isNotEmpty()) {
                 for (selectedRow in selectedRows) {
-                    val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
+                    val item = tableModel.getItem(table.convertRowIndexToModel(selectedRow))
                     item.enabled = true
                 }
             } else {
@@ -126,7 +125,7 @@ interface ParadoxModDependenciesToolbarActions {
 
     class DisableAllAction(
         private val project: Project,
-        private val tableView: TableView<ParadoxModDependencySettingsState>,
+        private val table: ParadoxModDependenciesTable,
         private val tableModel: ParadoxModDependenciesTableModel
     ) : AnAction(AllIcons.Actions.Unselectall) {
         init {
@@ -138,10 +137,10 @@ interface ParadoxModDependenciesToolbarActions {
         }
 
         override fun actionPerformed(e: AnActionEvent) {
-            val selectedRows = tableView.selectedRows
+            val selectedRows = table.selectedRows
             if (selectedRows.isNotEmpty()) {
                 for (selectedRow in selectedRows) {
-                    val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
+                    val item = tableModel.getItem(table.convertRowIndexToModel(selectedRow))
                     item.enabled = false
                 }
             } else {
@@ -154,7 +153,7 @@ interface ParadoxModDependenciesToolbarActions {
 
     class ImportAction(
         private val project: Project,
-        private val tableView: TableView<ParadoxModDependencySettingsState>,
+        private val table: ParadoxModDependenciesTable,
         private val tableModel: ParadoxModDependenciesTableModel
     ) : AnAction(AllIcons.ToolbarDecorator.Import) {
         init {
@@ -167,14 +166,14 @@ interface ParadoxModDependenciesToolbarActions {
         }
 
         override fun actionPerformed(e: AnActionEvent) {
-            val popup = ParadoxModDependenciesImportPopup(project, tableView, tableModel)
+            val popup = ParadoxModDependenciesImportPopup(project, table, tableModel)
             JBPopupFactory.getInstance().createListPopup(popup).showInBestPositionFor(e.dataContext)
         }
     }
 
     class ExportAction(
         private val project: Project,
-        private val tableView: TableView<ParadoxModDependencySettingsState>,
+        private val table: ParadoxModDependenciesTable,
         private val tableModel: ParadoxModDependenciesTableModel
     ) : AnAction(AllIcons.ToolbarDecorator.Export) {
         init {
@@ -188,7 +187,7 @@ interface ParadoxModDependenciesToolbarActions {
 
         override fun actionPerformed(e: AnActionEvent) {
             //导出全部，而非当前选中的行
-            val popup = ParadoxModDependenciesExportPopup(project, tableView, tableModel)
+            val popup = ParadoxModDependenciesExportPopup(project, table, tableModel)
             JBPopupFactory.getInstance().createListPopup(popup).showInBestPositionFor(e.dataContext)
         }
     }

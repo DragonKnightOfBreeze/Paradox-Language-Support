@@ -123,43 +123,42 @@ class ParadoxModDependenciesTableModel(
         @JvmStatic
         fun createPanel(project: Project, settings: ParadoxGameOrModSettingsState, modDependencies: MutableList<ParadoxModDependencySettingsState>): JPanel {
             val tableModel = ParadoxModDependenciesTableModel(settings, modDependencies)
-            val tableView = ParadoxModDependenciesTableView(tableModel)
+            val table = ParadoxModDependenciesTable(tableModel)
+
             //快速搜索
-            val speedSearch = object : TableViewSpeedSearch<ParadoxModDependencySettingsState>(tableView, null) {
-                override fun getItemText(element: ParadoxModDependencySettingsState): String {
-                    val modDirectory = element.modDirectory.orEmpty()
-                    val modDescriptorSettings = getProfilesSettings().modDescriptorSettings.getValue(modDirectory)
-                    return modDescriptorSettings.name.orEmpty()
-                }
+            TableSpeedSearch.installOn(table) { e ->
+                val element = e as ParadoxModDependencySettingsState
+                val modDirectory = element.modDirectory.orEmpty()
+                val modDescriptorSettings = getProfilesSettings().modDescriptorSettings.getValue(modDirectory)
+                modDescriptorSettings.name.orEmpty()
             }
-            speedSearch.setupListeners()
             //双击打开模组依赖信息对话框
             object : DoubleClickListener() {
                 override fun onDoubleClick(event: MouseEvent): Boolean {
-                    if (tableView.selectedRowCount != 1) return true
-                    val selectedRow = tableView.selectedRow
-                    val item = tableModel.getItem(tableView.convertRowIndexToModel(selectedRow))
-                    ParadoxModDependencySettingsDialog(project, item, tableView).show()
+                    if (table.selectedRowCount != 1) return true
+                    val selectedRow = table.selectedRow
+                    val item = tableModel.getItem(table.convertRowIndexToModel(selectedRow))
+                    ParadoxModDependencySettingsDialog(project, item, table).show()
                     return true
                 }
-            }.installOn(tableView)
+            }.installOn(table)
 
-            val addButtonRunnable = ParadoxModDependenciesToolbarActions.AddAction(project, tableView, tableModel)
-            val editButton = ParadoxModDependenciesToolbarActions.EditAction(project, tableView, tableModel)
-            val enableAllButton = ParadoxModDependenciesToolbarActions.EnableAllAction(project, tableView, tableModel)
-            val disableAllButton = ParadoxModDependenciesToolbarActions.DisableAllAction(project, tableView, tableModel)
-            val importButton = ParadoxModDependenciesToolbarActions.ImportAction(project, tableView, tableModel)
-            val exportButton = ParadoxModDependenciesToolbarActions.ExportAction(project, tableView, tableModel)
+            val addButtonRunnable = ParadoxModDependenciesToolbarActions.AddAction(project, table, tableModel)
+            val editButton = ParadoxModDependenciesToolbarActions.EditAction(project, table, tableModel)
+            val enableAllButton = ParadoxModDependenciesToolbarActions.EnableAllAction(project, table, tableModel)
+            val disableAllButton = ParadoxModDependenciesToolbarActions.DisableAllAction(project, table, tableModel)
+            val importButton = ParadoxModDependenciesToolbarActions.ImportAction(project, table, tableModel)
+            val exportButton = ParadoxModDependenciesToolbarActions.ExportAction(project, table, tableModel)
 
             //这里我们需要保证排序正确（基于表格中的顺序）
             //始终将模组放到自身的模组依赖列表中，其排序可以调整
             //add, remove, move up, move down, edit, import, export
-            val panel = ToolbarDecorator.createDecorator(tableView)
+            val panel = ToolbarDecorator.createDecorator(table)
                 .setAddAction(addButtonRunnable)
                 .setRemoveActionUpdater updater@{
                     //不允许移除模组自身对应的模组依赖配置
-                    val selectedRow = tableView.selectedRows.singleOrNull() ?: return@updater true
-                    tableModel.canRemoveRow(tableView.convertRowIndexToModel(selectedRow))
+                    val selectedRow = table.selectedRows.singleOrNull() ?: return@updater true
+                    tableModel.canRemoveRow(table.convertRowIndexToModel(selectedRow))
                 }
                 .addExtraAction(editButton)
                 .addExtraAction(enableAllButton)
@@ -180,12 +179,12 @@ class ParadoxModDependenciesTableModel(
             actionGroup.addAction(importButton)
             actionGroup.addAction(exportButton)
             actionGroup.addSeparator()
-            actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPathAction(tableView, tableModel))
-            actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPageInSteamAction(tableView, tableModel))
-            actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPageInSteamWebsiteAction(tableView, tableModel))
-            actionGroup.addAction(ParadoxModDependenciesPopupActions.CopyModPathAction(tableView, tableModel))
-            actionGroup.addAction(ParadoxModDependenciesPopupActions.CopyModPageUrlAction(tableView, tableModel))
-            PopupHandler.installPopupMenu(tableView, actionGroup, PlsToolsActions.MOD_DEPENDENCIES_POPUP)
+            actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPathAction(table, tableModel))
+            actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPageInSteamAction(table, tableModel))
+            actionGroup.addAction(ParadoxModDependenciesPopupActions.OpenModPageInSteamWebsiteAction(table, tableModel))
+            actionGroup.addAction(ParadoxModDependenciesPopupActions.CopyModPathAction(table, tableModel))
+            actionGroup.addAction(ParadoxModDependenciesPopupActions.CopyModPageUrlAction(table, tableModel))
+            PopupHandler.installPopupMenu(table, actionGroup, PlsToolsActions.MOD_DEPENDENCIES_POPUP)
             return panel
         }
     }

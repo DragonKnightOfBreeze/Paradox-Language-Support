@@ -30,7 +30,7 @@ open class ParadoxFromLauncherImporter : ParadoxModImporter {
 
     //TODO DO NOT implement this feature since sqlite jar is too large (12M+)
 
-    override fun execute(project: Project, tableView: TableView<ParadoxModDependencySettingsState>, tableModel: ParadoxModDependenciesTableModel) {
+    override fun execute(project: Project, table: ParadoxModDependenciesTable, tableModel: ParadoxModDependenciesTableModel) {
         val settings = tableModel.settings
         val gameType = settings.gameType.orDefault()
         val gameDataPath = getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull() ?: return

@@ -7,7 +7,6 @@ import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import com.intellij.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.data.*
@@ -25,7 +24,7 @@ class ParadoxFromLauncherJsonV3Importer : ParadoxModImporter {
 
     override val text: String = PlsBundle.message("mod.importer.launcherJson")
 
-    override fun execute(project: Project, tableView: TableView<ParadoxModDependencySettingsState>, tableModel: ParadoxModDependenciesTableModel) {
+    override fun execute(project: Project, table: ParadoxModDependenciesTable, tableModel: ParadoxModDependenciesTableModel) {
         val settings = tableModel.settings
         val gameType = settings.gameType.orDefault()
         if (defaultSelected == null) {
@@ -46,7 +45,7 @@ class ParadoxFromLauncherJsonV3Importer : ParadoxModImporter {
         val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor("json")
             .withTitle(PlsBundle.message("mod.importer.launcherJson.title"))
             .apply { putUserData(PlsDataKeys.gameType, gameType) }
-        FileChooser.chooseFile(descriptor, project, tableView, defaultSelected) { file ->
+        FileChooser.chooseFile(descriptor, project, table, defaultSelected) { file ->
             try {
                 val data = jsonMapper.readValue<ParadoxLauncherJsonV3>(file.inputStream)
                 if (data.game != gameType.id) {
@@ -82,7 +81,7 @@ class ParadoxFromLauncherJsonV3Importer : ParadoxModImporter {
                 val position = if (isCurrentAtLast) tableModel.rowCount - 1 else tableModel.rowCount
                 tableModel.insertRows(position, newSettingsList)
                 //选中刚刚添加的所有模组依赖
-                tableView.setRowSelectionInterval(position, position + newSettingsList.size - 1)
+                table.setRowSelectionInterval(position, position + newSettingsList.size - 1)
 
                 run {
                     val title = settings.qualifiedName ?: return@run

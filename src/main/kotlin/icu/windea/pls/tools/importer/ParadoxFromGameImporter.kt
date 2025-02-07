@@ -6,7 +6,6 @@ import com.intellij.notification.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
-import com.intellij.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.data.*
@@ -27,7 +26,7 @@ private const val collectionName = "Paradox"
 class ParadoxFromGameImporter : ParadoxModImporter {
     override val text: String = PlsBundle.message("mod.importer.game")
 
-    override fun execute(project: Project, tableView: TableView<ParadoxModDependencySettingsState>, tableModel: ParadoxModDependenciesTableModel) {
+    override fun execute(project: Project, table: ParadoxModDependenciesTable, tableModel: ParadoxModDependenciesTableModel) {
         val settings = tableModel.settings
         val gameType = settings.gameType.orDefault()
         val gameDataPath = getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull() ?: return
@@ -76,7 +75,7 @@ class ParadoxFromGameImporter : ParadoxModImporter {
             val position = if (isCurrentAtLast) tableModel.rowCount - 1 else tableModel.rowCount
             tableModel.insertRows(position, newSettingsList)
             //选中刚刚添加的所有模组依赖
-            tableView.setRowSelectionInterval(position, position + newSettingsList.size - 1)
+            table.setRowSelectionInterval(position, position + newSettingsList.size - 1)
 
             run {
                 val title = settings.qualifiedName ?: return@run

@@ -8,9 +8,9 @@ import java.awt.*
 import javax.swing.*
 import javax.swing.event.*
 
-class ParadoxModDependenciesTableView(
+class ParadoxModDependenciesTable(
     tableModel: ListTableModel<ParadoxModDependencySettingsState>
-) : TableView<ParadoxModDependencySettingsState>(tableModel) {
+) : JBTable(tableModel) {
     init {
         setShowGrid(false)
         rowSelectionAllowed = true
@@ -30,6 +30,6 @@ class ParadoxModDependenciesTableView(
         setFixedColumnWidth(ParadoxModDependenciesTableModel.EnabledItem.columnIndex, ParadoxModDependenciesTableModel.EnabledItem.name)
         setFixedColumnWidth(ParadoxModDependenciesTableModel.VersionItem.columnIndex, ParadoxModDependenciesTableModel.VersionItem.name)
         setFixedColumnWidth(ParadoxModDependenciesTableModel.SupportedVersionItem.columnIndex, ParadoxModDependenciesTableModel.SupportedVersionItem.name)
-        tableHeader.columnModel.getColumn(ParadoxModDependenciesTableModel.NameItem.columnIndex).preferredWidth = 10000 // consume all available space
+        tableHeader.columnModel.getColumn(ParadoxModDependenciesTableModel.NameItem.columnIndex).preferredWidth = 600 // consume all available space
     }
 }

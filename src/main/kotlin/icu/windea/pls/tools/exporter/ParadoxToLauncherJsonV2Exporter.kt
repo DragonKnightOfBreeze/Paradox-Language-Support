@@ -7,7 +7,6 @@ import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import com.intellij.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.data.*
@@ -36,7 +35,7 @@ class ParadoxToLauncherJsonV2Exporter : ParadoxModExporter {
 
     override val text: String = PlsBundle.message("mod.exporter.launcherJson.v2")
 
-    override fun execute(project: Project, tableView: TableView<ParadoxModDependencySettingsState>, tableModel: ParadoxModDependenciesTableModel) {
+    override fun execute(project: Project, table: ParadoxModDependenciesTable, tableModel: ParadoxModDependenciesTableModel) {
         val settings = tableModel.settings
         val gameType = settings.gameType.orDefault()
         if (defaultSelected == null) {
@@ -47,7 +46,7 @@ class ParadoxToLauncherJsonV2Exporter : ParadoxModExporter {
         }
         val descriptor = FileSaverDescriptor(PlsBundle.message("mod.exporter.launcherJson.v2.title"), "", "json")
             .apply { putUserData(PlsDataKeys.gameType, gameType) }
-        val saved = FileChooserFactory.getInstance().createSaveFileDialog(descriptor, tableView).save(defaultSavedName)
+        val saved = FileChooserFactory.getInstance().createSaveFileDialog(descriptor, table).save(defaultSavedName)
         val savedFile = saved?.getVirtualFile(true) ?: return
 
         try {//使用正在编辑的模组依赖
