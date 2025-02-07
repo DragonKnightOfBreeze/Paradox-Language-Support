@@ -12,7 +12,7 @@ import kotlin.io.path.*
 class DdsFileListener : AsyncFileListener {
     override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier? {
         return object : AsyncFileListener.ChangeApplier {
-            override fun afterVfsChange() {
+            override fun beforeVfsChange() {
                 val files = mutableSetOf<VirtualFile>()
                 //当DDS文件内容发生变化或者被删除时，需要重新转化
                 for (event in events) {

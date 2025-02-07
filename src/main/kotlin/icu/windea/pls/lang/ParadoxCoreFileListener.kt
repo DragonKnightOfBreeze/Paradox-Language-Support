@@ -107,7 +107,7 @@ class ParadoxCoreFileListener : AsyncFileListener {
         }
 
         return object : AsyncFileListener.ChangeApplier {
-            override fun afterVfsChange() {
+            override fun beforeVfsChange() {
                 if (filesToClearRootInfo.isNotEmpty()) {
                     filesToClearRootInfo.forEach { clearRootInfo(it) }
                 }
