@@ -79,6 +79,9 @@ dependencies {
         plugin("cn.yiiguxing.plugin.translate:3.5.2") //https://github.com/YiiGuxing/TranslationPlugin
     }
 
+    //built-in configs
+    implementation(files("build/libs/builtin-configs.jar"))
+
     //from dds4j
     implementation("ar.com.hjg:pngj:2.1.0")
     //jackson-csv
@@ -166,7 +169,7 @@ tasks {
         //添加规则文件
         cwtConfigDirs.forEach { (cwtConfigDir, toDir) ->
             into("config/$toDir") {
-                from("$rootDir/cwt/$cwtConfigDir") {
+                from("cwt/$cwtConfigDir") {
                     includeEmptyDirs = false
                     include("**/*.cwt", "**/LICENSE", "**/*.md")
                     //打平config子目录中的文件
@@ -183,8 +186,6 @@ tasks {
         }
     }
     jar {
-        dependsOn(configJar)
-
         //添加项目文档和许可证
         from("README.md", "README_en.md", "LICENSE")
         //排除特定文件
@@ -194,13 +195,7 @@ tasks {
         //排除特定文件
         excludesInJar.forEach { exclude(it) }
     }
-    buildSearchableOptions {
-        classpath += configJar.outputs.files
-    }
     buildPlugin {
-        into("lib") {
-            from(configJar.outputs.files.singleFile)
-        }
         //排除特定文件
         excludesInZip.forEach { exclude(it) }
         //重命名插件包
