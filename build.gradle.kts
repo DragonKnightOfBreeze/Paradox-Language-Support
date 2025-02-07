@@ -76,7 +76,7 @@ dependencies {
         //bundledPlugins("org.jetbrains.kotlin")
         bundledPlugins("org.intellij.plugins.markdown")
 
-        plugin("cn.yiiguxing.plugin.translate:3.5.2") //https://github.com/YiiGuxing/TranslationPlugin
+        plugin("cn.yiiguxing.plugin.translate:3.6.8") //https://github.com/YiiGuxing/TranslationPlugin
     }
 
     //built-in configs
