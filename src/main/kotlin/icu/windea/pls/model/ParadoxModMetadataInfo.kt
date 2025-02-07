@@ -8,6 +8,7 @@ data class ParadoxModMetadataInfo(
     val version: String? = null,
     @JsonProperty("game_id")
     val gameId: String? = null,
+    val picture: String? = null,
     @JsonProperty("supported_game_version")
     val supportedGameVersion: String? = null,
     @JsonProperty("short_description")

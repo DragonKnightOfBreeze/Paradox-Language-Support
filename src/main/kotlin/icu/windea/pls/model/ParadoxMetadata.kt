@@ -22,7 +22,7 @@ sealed interface ParadoxMetadata {
 
     interface Mod : ParadoxMetadata {
         val supportedVersion: String?
-        val picture: String?
+        val picture: String? //相对于模组目录的路径
         val tags: Set<String>
         val remoteId: String?
         val source: ParadoxModSource

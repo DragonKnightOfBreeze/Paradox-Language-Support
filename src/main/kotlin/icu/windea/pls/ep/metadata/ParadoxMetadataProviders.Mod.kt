@@ -2,6 +2,7 @@ package icu.windea.pls.ep.metadata
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -27,7 +28,7 @@ class ParadoxModDescriptorBasedMetadataProvider : ParadoxMetadataProvider {
         override val entryFile: VirtualFile get() = rootFile
 
         override val supportedVersion: String? get() = info.supportedVersion
-        override val picture: String? get() = info.picture
+        override val picture: String? get() = info.picture?.orNull()
         override val tags: Set<String> get() = info.tags
         override val remoteId: String? get() = info.remoteFileId
         override val source: ParadoxModSource get() = if (remoteId != null) ParadoxModSource.Steam else ParadoxModSource.Local
@@ -68,7 +69,7 @@ class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
         override val entryFile: VirtualFile get() = rootFile
 
         override val supportedVersion: String? get() = info.supportedGameVersion
-        override val picture: String? get() = null
+        override val picture: String? get() = info.picture?.orNull()?.let { ".metadata/$it" }
         override val tags: Set<String> get() = info.tags
         override val remoteId: String? get() = null
         override val source: ParadoxModSource get() = ParadoxModSource.Local
@@ -79,6 +80,7 @@ class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
 
         private fun doGetGameType(): ParadoxGameType {
             return inferredGameType
+                ?: doGetGameTypeFromInfo()
                 ?: getProfilesSettings().modDescriptorSettings.get(rootFile.path)?.gameType
                 ?: getSettings().defaultGameType
         }
