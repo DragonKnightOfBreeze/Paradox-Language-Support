@@ -16,7 +16,7 @@ Features:
 * Supports rendering scope context, localisation text, DDS images and other useful information via quick documentation and inlay hints.
 * Supports most advanced features of script & localisation languages (such as parameters, scopes, inline scripts and various complex expressions).
 * Supports customizing extended config files, allowing plugin to provide more perfect language features (such as code navigation, code completion, quick documentation and inlay hints).
-* Automatically recognizes the game directory (containing the launcher settings file `launcher-settings.json`) and mod directory (containing the mod descriptor file `descriptor.mod`).
+* Automatically recognizes game directories and mod directories.
 
 This plugin has implemented various advanced language features based on [config groups](config.md#config-group), which consists of CWT config files.
 The latest-version config files are already built into this plugin, make it works right out of the box.

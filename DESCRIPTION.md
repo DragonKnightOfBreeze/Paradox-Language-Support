@@ -7,7 +7,7 @@
 <li>Supports rendering scope context, localisation text, DDS images and other useful information via quick documentation and inlay hints.</li>
 <li>Supports most advanced features of script &amp; localisation languages (such as parameters, scopes, inline scripts and various complex expressions).</li>
 <li>Supports customizing extended config files, allowing plugin to provide more perfect language features (such as code navigation, code completion, quick documentation and inlay hints).</li>
-<li>Automatically recognizes the game directory (containing the launcher settings file <code>launcher-settings.json</code>) and mod directory (containing the mod descriptor file <code>descriptor.mod</code>).</li>
+<li>Automatically recognizes game directories and mod directories.</li>
 </ul>
 <p>This plugin has implemented various advanced language features based on <a href="https://windea.icu/Paradox-Language-Support/en/config.md#config-group">config groups</a>, which consists of CWT config files.
 The latest-version config files are already built into this plugin, make it works right out of the box.
@@ -25,7 +25,7 @@ Besides, <a href="https://windea.icu/Paradox-Language-Support/en/config.md#writi
 <li>支持通过快速文档与内嵌提示等方式，渲染作用域上下文、本地化文本、DDS图片以及其他有用的信息。</li>
 <li>支持脚本语言与本地化语言的多数高级特性（例如参数、作用域、内联脚本和各种复杂表达式）。</li>
 <li>支持自定义扩展的规则文件，从而允许插件提供更加完善的语言功能（例如代码导航、代码补全、快速文档和内嵌提示）。</li>
-<li>自动识别游戏目录（包含启动器配置文件<code>launcher-settings.json</code>）和模组目录（包含模组描述符文件<code>descriptor.mod</code>）。</li>
+<li>自动识别游戏目录和模组目录。</li>
 </ul>
 <p>此插件基于由CWT规则文件组成的<a href="https://windea.icu/Paradox-Language-Support/zh/config.md#config-group">规则分组</a>，实现了诸多语言功能。
 插件已经内置了最新版本的规则文件，以便开箱即用。
