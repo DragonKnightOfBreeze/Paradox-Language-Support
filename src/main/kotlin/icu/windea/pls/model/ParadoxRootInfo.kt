@@ -23,8 +23,8 @@ sealed class ParadoxRootInfo(
     val inferredGameType: ParadoxGameType? get() = metadata.inferredGameType
     val gameType: ParadoxGameType get() = metadata.gameType
 
-    val rootPath: Path = rootFile.toNioPath()
-    val entryPath: Path = entryFile.toNioPath()
+    val rootPath: Path by lazy { rootFile.toNioPath() }
+    val entryPath: Path by lazy { entryFile.toNioPath() }
 
     class Game(override val metadata: ParadoxMetadata.Game) : ParadoxRootInfo(metadata)
 
