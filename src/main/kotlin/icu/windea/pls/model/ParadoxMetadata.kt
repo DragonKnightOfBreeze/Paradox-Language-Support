@@ -13,7 +13,6 @@ import icu.windea.pls.ep.metadata.*
 sealed interface ParadoxMetadata {
     val name: String
     val version: String?
-    val inferredGameType: ParadoxGameType?
     val gameType: ParadoxGameType
     val rootFile: VirtualFile
     val entryFile: VirtualFile
@@ -21,6 +20,7 @@ sealed interface ParadoxMetadata {
     interface Game : ParadoxMetadata
 
     interface Mod : ParadoxMetadata {
+        val inferredGameType: ParadoxGameType?
         val supportedVersion: String?
         val picture: String? //相对于模组目录的路径
         val tags: Set<String>

@@ -29,6 +29,7 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
         if (rootInfo !is ParadoxRootInfo.Mod) return
         val modPaths = project.getOrPutUserData(Keys.checkedModPaths) { mutableSetOf() }
         val modPath = rootFile.path
+        if (modPaths.contains(modPath)) return
         if (!rootFile.isValid) {
             modPaths.remove(modPath)
             return
@@ -38,7 +39,6 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
             modPaths.remove(modPath)
             return
         }
-        if (modPaths.contains(modPath)) return
         val modSettings = getProfilesSettings().modSettings.get(modPath) ?: return
         if (modSettings.finalGameDirectory.isNullOrEmpty()) {
             val qualifiedName = modSettings.qualifiedName ?: return

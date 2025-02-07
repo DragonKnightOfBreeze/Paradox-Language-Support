@@ -16,15 +16,13 @@ class ParadoxLauncherSettingsBasedMetadataProvider : ParadoxMetadataProvider {
     }
 
     class Metadata(
-        rootFile: VirtualFile,
+        override val rootFile: VirtualFile,
         val infoFile: VirtualFile,
         val info: ParadoxLauncherSettingsInfo,
     ) : ParadoxMetadata.Game {
         override val name: String get() = gameType.title
-        override val version: String get() = info.version
-        override val inferredGameType: ParadoxGameType? get() = null
+        override val version: String? get() = info.rawVersion ?: info.version
         override val gameType: ParadoxGameType = doGetGameType()
-        override val rootFile: VirtualFile = rootFile
         override val entryFile: VirtualFile = doGetEntryFile()
 
         private fun doGetGameType(): ParadoxGameType {

@@ -33,7 +33,7 @@ object ParadoxMetadataManager {
 
     fun getLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo? {
         try {
-            return doGetLauncherSettingsInfo(file)
+            return runReadAction { doGetLauncherSettingsInfo(file) }
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             thisLogger().warn(e)
@@ -89,7 +89,7 @@ object ParadoxMetadataManager {
 
     fun getModMetadataInfo(file: VirtualFile): ParadoxModMetadataInfo? {
         try {
-            return doGetModMetadataInfo(file)
+            return runReadAction { doGetModMetadataInfo(file) }
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             thisLogger().warn(e)

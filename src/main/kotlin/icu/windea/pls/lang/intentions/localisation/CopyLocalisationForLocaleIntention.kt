@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.intentions.localisation
 
 import cn.yiiguxing.plugin.translate.trans.*
-import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInsight.intention.*
 import com.intellij.codeInsight.intention.preview.*
 import com.intellij.notification.*
@@ -94,7 +93,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
                 val snippets = element.toTranslatableStringSnippets() ?: return@map element.text
                 snippets.forEach { snippet ->
                     if (!snippet.shouldTranslate) return@forEach
-                    TranslateService.translate(snippet.text, sourceLang, targetLang, object : TranslateListener {
+                    TranslateService.getInstance().translate(snippet.text, sourceLang, targetLang, object : TranslateListener {
                         override fun onSuccess(translation: Translation) {
                             if (checkProcessCanceledAndEditorDisposed(progressIndicator, project, editor)) return
 

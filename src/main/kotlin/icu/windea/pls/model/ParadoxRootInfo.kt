@@ -20,7 +20,6 @@ sealed class ParadoxRootInfo(
     val version: String? get() = metadata.version
     val rootFile: VirtualFile get() = metadata.rootFile
     val entryFile: VirtualFile get() = metadata.entryFile
-    val inferredGameType: ParadoxGameType? get() = metadata.inferredGameType
     val gameType: ParadoxGameType get() = metadata.gameType
 
     val rootPath: Path by lazy { rootFile.toNioPath() }
@@ -29,6 +28,7 @@ sealed class ParadoxRootInfo(
     class Game(override val metadata: ParadoxMetadata.Game) : ParadoxRootInfo(metadata)
 
     class Mod(override val metadata: ParadoxMetadata.Mod) : ParadoxRootInfo(metadata) {
+        val inferredGameType: ParadoxGameType? get() = metadata.inferredGameType
         val supportedVersion: String? get() = metadata.supportedVersion
         val picture: String? get() = metadata.picture //相对于模组目录的路径
         val tags: Set<String> get() = metadata.tags
