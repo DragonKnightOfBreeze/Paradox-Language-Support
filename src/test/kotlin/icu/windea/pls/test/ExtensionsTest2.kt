@@ -29,11 +29,11 @@ class ExtensionsTest2 {
 
     @Test
     fun isFullParameterizedTest() {
-        Assert.assertTrue("\$abc$".isFullParameterized())
-        Assert.assertFalse("aaa\$abc\$bbb".isFullParameterized())
-        Assert.assertFalse("\$abc\\$".isFullParameterized())
-        Assert.assertFalse("\\\$abc$".isFullParameterized())
-        Assert.assertFalse("\$abc\$def\$gh\$".isFullParameterized())
+        Assert.assertTrue("\$abc$".isParameterized(full = true))
+        Assert.assertFalse("aaa\$abc\$bbb".isParameterized(full = true))
+        Assert.assertFalse("\$abc\\$".isParameterized(full = true))
+        Assert.assertFalse("\\\$abc$".isParameterized(full = true))
+        Assert.assertFalse("\$abc\$def\$gh\$".isParameterized(full = true))
     }
 
     @Test

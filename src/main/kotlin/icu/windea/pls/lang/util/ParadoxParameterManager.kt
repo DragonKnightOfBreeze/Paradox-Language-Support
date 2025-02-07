@@ -29,6 +29,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.ParadoxPsiManager.findMemberElementsToInline
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.codeStyle.*
@@ -39,6 +40,76 @@ object ParadoxParameterManager {
     object Keys : KeyRegistry() {
         val inferredContextConfigsFromConfig by createKey<List<CwtMemberConfig<*>>>(this)
         val inferredContextConfigsFromUsages by createKey<List<CwtMemberConfig<*>>>(this)
+    }
+
+    private val regex1 = """(?<!\\)\$(.*?)\|[^$]*\$""".toRegex()
+
+    /**
+     * 得到[element]的文本，然后使用指定的一组[args]替换其中的占位符。
+     *
+     * 如果[direct]为true，则直接将占位符`$P$`替换成传入参数`P`的值。此时：
+     *
+     * * 值可以是多行字符串。
+     * * 如果值是用双引号括起时，替换时会被忽略。
+     * * 允许重复的传入参数，按顺序进行替换。
+     *
+     * @param element 用于得到原始文本的PSI。
+     * @param args 传入参数的键值对。如果值是用双引号括起的，需要保留。
+     */
+    fun replaceTextWithArgs(element: PsiElement, args: List<Tuple2<String, String>>, direct: Boolean): String {
+        if (direct) {
+            val oldText = element.text
+            var newText = oldText
+            args.forEach { (k,v) ->
+                newText = newText.replace("\$$k\$", v.unquote())
+            }
+            return newText
+        } else {
+            val offset = element.startOffset
+            val argMap = args.toMap()
+            val replacements = mutableListOf<Tuple2<TextRange, String>>()
+
+            element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+                override fun elementFinished(element: PsiElement) {
+                    run {
+                        if (element !is ParadoxScriptParameterCondition) return@run
+                        val conditionExpression = element.parameterConditionExpression ?: return@run
+                        val parameter = conditionExpression.parameterConditionParameter
+                        val name = parameter.name
+                        val v = argMap[name] ?: return@run
+                        val revert = v.equals("no", true)
+                        val operator = conditionExpression.findChild { it.elementType == ParadoxScriptElementTypes.NOT_SIGN } == null
+                        if ((!revert && operator) || (revert && !operator)) {
+                            val (start, end) = findMemberElementsToInline(element)
+                            if (start != null && end != null) {
+                                element.parent.addRangeAfter(start, end, element)
+                            }
+                        }
+                        element.delete()
+                    }
+                }
+            })
+
+            element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
+                override fun visitElement(element: PsiElement) {
+                    run {
+                        if (element !is ParadoxParameter) return@run
+                        val n = element.name ?: return@run
+                        val v0 = argMap[n] ?: return@run
+                        val v = v0
+                        replacements.add(tupleOf(element.textRange.shiftLeft(offset), v))
+                        return
+                    }
+                    super.visitElement(element)
+                }
+            })
+
+            var newText = element.text
+            replacements.reversed().forEach { (range, v) ->
+                newText = newText.replaceRange(range.startOffset, range.endOffset, v)
+            }
+            return newText
+        }
     }
 
     /**
@@ -241,7 +312,7 @@ object ParadoxParameterManager {
      */
     fun getInferredContextConfigs(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
         val fromConfig = getInferredContextConfigsFromConfig(parameterElement)
-        if(fromConfig.isNotEmpty()) return fromConfig
+        if (fromConfig.isNotEmpty()) return fromConfig
 
         if (!getSettings().inference.configContextForParameters) return emptyList()
         val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()

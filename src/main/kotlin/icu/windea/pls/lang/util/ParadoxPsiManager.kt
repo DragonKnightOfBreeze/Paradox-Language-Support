@@ -182,7 +182,7 @@ object ParadoxPsiManager {
                 //这里会把newText识别为一个字符串，但是实际上newText可以是任何文本，目前不进行额外的处理
                 newText = newText.unquote() //内联到本地化文本中时，需要先尝试去除周围的双引号
                 val newRef = ParadoxLocalisationElementFactory.createString(project, newText)
-                //element.parent should be something like "$@var$"  
+                //element.parent should be something like "$@var$"
                 element.parent.replace(newRef)
             }
             else -> return //unexpected
@@ -216,24 +216,29 @@ object ParadoxPsiManager {
                 val args = getArgs(valueElement)
                 if (args.isNotEmpty()) {
                     val newRef = ParadoxScriptElementFactory.createBlock(project, newText)
-                    newText = inlineWithArgs(newRef, args)
+                    newText = ParadoxParameterManager.replaceTextWithArgs(newRef, args, direct = false)
                 }
             }
             else -> return
         }
         if (reverse) {
             val newRef = ParadoxScriptElementFactory.createPropertyFromText(project, newText)
-            newRef.block?.let { handleBlockToInline(it, "scripted_trigger") }
+            newRef.block?.let { handleInlinedScriptedTrigger(it) }
             property.parent.addAfter(newRef, property)
         } else {
             val newRef = ParadoxScriptElementFactory.createBlock(project, newText)
-            handleBlockToInline(newRef, "scripted_trigger")
+            handleInlinedScriptedTrigger(newRef)
             val (start, end) = findMemberElementsToInline(newRef)
             if (start != null && end != null) {
                 property.parent.addRangeAfter(start, end, property)
             }
         }
         property.delete()
+    }
+
+    fun handleInlinedScriptedTrigger(element: PsiElement) {
+        //特殊处理
+        element.findChildren { it is ParadoxScriptString && it.value.lowercase() == "optimize_memory" }.forEach { it.delete() }
     }
 
     fun inlineScriptedEffect(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptProperty, project: Project) {
@@ -256,18 +261,23 @@ object ParadoxPsiManager {
                 val args = getArgs(valueElement)
                 if (args.isNotEmpty()) {
                     val newRef = ParadoxScriptElementFactory.createBlock(project, newText)
-                    newText = inlineWithArgs(newRef, args)
+                    newText = ParadoxParameterManager.replaceTextWithArgs(newRef, args, direct = false)
                 }
             }
             else -> return
         }
         val newRef = ParadoxScriptElementFactory.createBlock(project, newText)
-        handleBlockToInline(newRef, "scripted_effect")
+        handleInlinedScriptedEffect(newRef)
         val (start, end) = findMemberElementsToInline(newRef)
         if (start != null && end != null) {
             property.parent.addRangeAfter(start, end, property)
         }
         property.delete()
+    }
+
+    fun handleInlinedScriptedEffect(element: PsiElement) {
+        //特殊处理
+        element.findChildren { it is ParadoxScriptString && it.value.lowercase() == "optimize_memory" }.forEach { it.delete() }
     }
 
     fun inlineInlineScript(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxScriptFile, project: Project) {
@@ -282,7 +292,7 @@ object ParadoxPsiManager {
                 val args = getArgs(valueElement, "script")
                 if (args.isNotEmpty()) {
                     val newRef = ParadoxScriptElementFactory.createRootBlock(project, newText)
-                    newText = inlineWithArgs(newRef, args, unquoteValue = true)
+                    newText = ParadoxParameterManager.replaceTextWithArgs(newRef, args, direct = true)
                 }
             }
             else -> return
@@ -308,70 +318,14 @@ object ParadoxPsiManager {
         element.delete()
     }
 
-    private fun getArgs(element: ParadoxScriptBlockElement, vararg excludeArgNames: String): Map<String, String> {
-        return buildMap {
+    private fun getArgs(element: ParadoxScriptBlock, vararg excludeArgNames: String): List<Tuple2<String, String>> {
+        return buildList {
             element.propertyList.forEach f@{ p ->
                 val pk = p.propertyKey.text
                 if (excludeArgNames.isNotEmpty() && pk.lowercase() in excludeArgNames) return@f
                 val pv = p.propertyValue?.text ?: return@f
                 this += tupleOf(pk, pv)
             }
-        }
-    }
-
-    private fun inlineWithArgs(element: ParadoxScriptBlockElement, args: Map<String, String>, unquoteValue: Boolean = false): String {
-        //参数实际上可以被替换成任何文本（而不仅仅是严格意义上的字符串）
-        //如果必要，也处理条件代码块
-
-        val offset = element.startOffset
-        val replacements = mutableListOf<Tuple2<TextRange, String>>()
-
-        element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
-            override fun elementFinished(element: PsiElement) {
-                run {
-                    if (element !is ParadoxScriptParameterCondition) return@run
-                    val conditionExpression = element.parameterConditionExpression ?: return@run
-                    val parameter = conditionExpression.parameterConditionParameter
-                    val name = parameter.name
-                    if (!args.containsKey(name)) return@run
-                    val operator = conditionExpression.findChild { it.elementType == ParadoxScriptElementTypes.NOT_SIGN } == null
-                    if (operator) {
-                        val (start, end) = findMemberElementsToInline(element)
-                        if (start != null && end != null) {
-                            element.parent.addRangeAfter(start, end, element)
-                        }
-                    }
-                    element.delete()
-                }
-            }
-        })
-
-        element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
-            override fun visitElement(element: PsiElement) {
-                run {
-                    //TODO 1.2.2+ 目前不确定这里是否需要在内联后去除参数值周围的双引号（对于内联脚本来说，应当需要）
-                    if (element !is ParadoxParameter) return@run
-                    val n = element.name ?: return@run
-                    val v0 = args[n] ?: return@run
-                    val v = if (unquoteValue) v0.unquote() else v0
-                    replacements.add(tupleOf(element.textRange.shiftLeft(offset), v))
-                    return
-                }
-                super.visitElement(element)
-            }
-        })
-
-        var newText = element.text
-        replacements.reversed().forEach { (range, v) ->
-            newText = newText.replaceRange(range.startOffset, range.endOffset, v)
-        }
-        return newText
-    }
-
-    private fun handleBlockToInline(element: ParadoxScriptBlock, type: String) {
-        if (type == "scripted_trigger" || type == "scripted_effect") {
-            //特殊处理
-            element.findChildren { it is ParadoxScriptString && it.value.lowercase() == "optimize_memory" }.forEach { it.delete() }
         }
     }
 

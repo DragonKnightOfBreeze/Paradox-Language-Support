@@ -36,7 +36,7 @@ class ParadoxParameterContextInfo(
             get() {
                 val expressionElement = parentElement?.castOrNull<ParadoxScriptStringExpressionElement>()
                 if (expressionElement == null) return emptyList()
-                if (!expressionElement.value.isFullParameterized()) return emptyList()
+                if (!expressionElement.value.isParameterized(full = true)) return emptyList()
                 val expressionContextConfigs = ParadoxExpressionManager.getConfigContext(expressionElement)?.getConfigs()
                 return expressionContextConfigs.orEmpty()
             }

@@ -70,12 +70,8 @@ fun String.isParameterAwareIdentifier(vararg extraChars: Char): Boolean {
     return true
 }
 
-fun String.isParameterized(): Boolean {
-    return ParadoxExpressionManager.isParameterized(this)
-}
-
-fun String.isFullParameterized(): Boolean {
-    return ParadoxExpressionManager.isFullParameterized(this)
+fun String.isParameterized(conditionBlock: Boolean = true, full: Boolean = false): Boolean {
+    return ParadoxExpressionManager.isParameterized(this, conditionBlock, full)
 }
 
 fun String.isInlineUsage(): Boolean {

@@ -565,7 +565,7 @@ fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolea
 
 /**
  * 规范化当前路径。
- * 
+ *
  * 将分隔符统一替换成"/"，将连续的分隔符替换为单个分隔符，并去除所有作为后缀的分隔符。
  */
 fun String.normalizePath(): String {
@@ -620,9 +620,9 @@ fun Boolean.toInt() = if (this) 1 else 0
 
 fun Any?.toStringOrEmpty() = this?.toString() ?: ""
 
-fun String.toBooleanYesNo() = this == "yes"
+fun String?.toBooleanYesNo() = this.equals("yes", true)
 
-fun String.toBooleanYesNoOrNull() = if (this == "yes") true else if (this == "no") false else null
+fun String?.toBooleanYesNoOrNull() = if (this == "yes") true else if (this == "no") false else null
 
 fun String.toUUID() = UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8))
 

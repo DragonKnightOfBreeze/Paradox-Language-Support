@@ -55,7 +55,7 @@ interface ParadoxDataExpression {
         }
 
         override fun isFullParameterized(): Boolean {
-            return type == ParadoxType.String && value.isFullParameterized()
+            return type == ParadoxType.String && value.isParameterized(full = true)
         }
 
         override fun matchesConstant(v: String): Boolean {

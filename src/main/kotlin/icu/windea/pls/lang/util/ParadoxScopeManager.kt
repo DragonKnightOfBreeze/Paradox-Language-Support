@@ -48,7 +48,7 @@ object ParadoxScopeManager {
      * 得到作用域的名字。
      */
     fun getScopeName(scope: String, configGroup: CwtConfigGroup): String {
-        //handle "any" and "all" scope 
+        //handle "any" and "all" scope
         if (scope.equals(anyScopeId, true)) return "Any"
         if (scope.equals(allScopeId, true)) return "All"
         //a scope may not have aliases, or not defined in scopes.cwt
@@ -298,7 +298,7 @@ object ParadoxScopeManager {
         } ?: return null
         return getSwitchedScopeContext(expressionElement, scopeFieldExpression, parentScopeContext)
     }
-    
+
     fun getSwitchedScopeContext(element: ParadoxExpressionElement, scopeFieldExpression: ParadoxScopeFieldExpression, inputScopeContext: ParadoxScopeContext): ParadoxScopeContext {
         val scopeNodes = scopeFieldExpression.scopeNodes
         if (scopeNodes.isEmpty()) return inputScopeContext //unexpected -> unchanged
@@ -378,7 +378,7 @@ object ParadoxScopeManager {
         if (node !is ParadoxParameterizedNode) return getUnknownScopeContext(inputScopeContext)
         run r1@{
             //only support full parameterized node
-            if (!node.text.isFullParameterized()) return@r1
+            if (!node.text.isParameterized(full = true)) return@r1
 
             val offset = node.rangeInExpression.startOffset
             val parameter = element.findElementAt(offset)?.parentOfType<ParadoxParameter>() ?: return@r1

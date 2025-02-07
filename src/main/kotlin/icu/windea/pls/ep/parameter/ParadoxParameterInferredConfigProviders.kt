@@ -38,11 +38,11 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
                 return CwtValueConfig.resolve(emptyPointer(), configGroup, "scalar") //bool-like
             }
             element is ParadoxScriptParameter -> {
-                if (parentElement.text.isFullParameterized()) return null
+                if (parentElement.text.isParameterized(full = true)) return null
                 return CwtValueConfig.resolve(emptyPointer(), configGroup, "scalar")
             }
             element is ParadoxScriptInlineMathParameter -> {
-                if (parentElement.text.isFullParameterized()) return CwtValueConfig.resolve(emptyPointer(), configGroup, "float")
+                if (parentElement.text.isParameterized(full = true)) return CwtValueConfig.resolve(emptyPointer(), configGroup, "float")
                 return CwtValueConfig.resolve(emptyPointer(), configGroup, "scalar")
             }
             else -> return null
@@ -57,7 +57,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
         val parentElement = parameterInfo.parentElement
         if (parentElement !is ParadoxScriptStringExpressionElement) return false
-        if (!parentElement.value.isFullParameterized()) return false
+        if (!parentElement.value.isParameterized(full = true)) return false
         return true
     }
 
@@ -115,7 +115,7 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
     override fun supports(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): Boolean {
         val parentElement = parameterInfo.parentElement
         if (parentElement !is ParadoxScriptStringExpressionElement) return false
-        if (parentElement.value.isFullParameterized()) return false
+        if (parentElement.value.isParameterized(full = true)) return false
         return true
     }
 

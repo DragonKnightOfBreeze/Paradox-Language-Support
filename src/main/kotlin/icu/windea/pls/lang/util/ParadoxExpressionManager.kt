@@ -45,26 +45,29 @@ object ParadoxExpressionManager {
     }
 
     //region Common Methods
-    fun isParameterized(text: String): Boolean {
+    fun isParameterized(text: String, conditionBlock: Boolean = true, full: Boolean = false): Boolean {
         //快速判断，不检测带参数后的语法是否合法
         if (text.length < 2) return false
+        if (full) {
+            // $PARAM$ - 仅限 高级插值语法 A
+            if (!text.startsWith('$')) return false
+            if (text.indexOf('$', 1).let { c -> c != text.lastIndex || text.isEscapedCharAt(c) }) return false
+            return true
+        }
         // a_$PARAM$_b - 高级插值语法 A
         if (text.indexOf('$').let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
         // a_[[PARAM]b]_c - 高级插值语法 B
-        if (text.indexOf('[').let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
+        if (conditionBlock && text.indexOf('[').let { c -> c != -1 && !text.isEscapedCharAt(c) }) return true
         return false
     }
 
-    fun isFullParameterized(text: String): Boolean {
-        //快速判断，不检测带参数后的语法是否合法
-        if (text.length < 2) return false
-        // $PARAM$ - 仅限 高级插值语法 A
-        if (!text.startsWith('$')) return false
-        if (text.indexOf('$', 1).let { c -> c != text.lastIndex || text.isEscapedCharAt(c) }) return false
-        return true
+    fun getParameterName(text: String): String? {
+        //$PARAM$ - 仅限 高级插值语法 A
+        if (!isParameterized(text, full = true)) return null
+        return text.substring(1, text.length - 1).substringBefore('|')
     }
 
-    fun getParameterRanges(text: String): List<TextRange> {
+    fun getParameterRanges(text: String, conditionBlock: Boolean = true): List<TextRange> {
         //比较复杂的实现逻辑
         val ranges = mutableListOf<TextRange>()
         // a_$PARAM$_b - 高级插值语法 A - 深度计数
@@ -86,14 +89,14 @@ object ParadoxExpressionManager {
                     depth1--
 
                 }
-            } else if (c == '[' && !text.isEscapedCharAt(i)) {
+            } else if (conditionBlock && c == '[' && !text.isEscapedCharAt(i)) {
                 if (depth1 > 0) continue
                 if (depth2 == 0) {
                     startIndex = i
                     endIndex = -1
                 }
                 depth2++
-            } else if (c == ']' && !text.isEscapedCharAt(i)) {
+            } else if (conditionBlock && c == ']' && !text.isEscapedCharAt(i)) {
                 if (depth1 > 0) continue
                 if (depth2 <= 0) continue
                 depth2--
@@ -112,15 +115,17 @@ object ParadoxExpressionManager {
     private val regex1 = """(?<!\\)\$.*?\$""".toRegex()
     private val regex2 = """(?<!\\)\[\[.*?](.*?)]""".toRegex()
 
-    fun toRegex(text: String): Regex {
+    fun toRegex(text: String, conditionBlock: Boolean = true): Regex {
         var s = text
         s = """\Q$s\E"""
         s = s.replace(regex1, """\\E.*\\Q""")
-        s = s.replace(regex2) { g ->
-            val dv = g.groupValues[1]
-            when {
-                dv == """\E.*\Q""" -> """\E.*\Q"""
-                else -> """\E(?:\Q$dv\E)?\Q"""
+        if (conditionBlock) {
+            s = s.replace(regex2) { g ->
+                val dv = g.groupValues[1]
+                when {
+                    dv == """\E.*\Q""" -> """\E.*\Q"""
+                    else -> """\E(?:\Q$dv\E)?\Q"""
+                }
             }
         }
         s = s.replace("""\Q\E""", "")
@@ -240,7 +245,7 @@ object ParadoxExpressionManager {
 
             val isQuoted = subPath != originalSubPaths[i]
             val isParameterized = subPath.isParameterized()
-            val isFullParameterized = subPath.isFullParameterized()
+            val isFullParameterized = subPath.isParameterized(full = true)
             val shift = subPaths.lastIndex - i
             val matchesKey = isPropertyValue || shift > 0
             val expression = ParadoxDataExpression.resolve(subPath, isQuoted, true)
@@ -413,8 +418,8 @@ object ParadoxExpressionManager {
         val resultMatchKey = when {
             keyExpression != null -> {
                 val resultValuesMatchKey = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
-                contextConfigs.forEach f@{config ->
-                    if(config !is CwtPropertyConfig) return@f
+                contextConfigs.forEach f@{ config ->
+                    if (config !is CwtPropertyConfig) return@f
                     val matchResult = ParadoxExpressionMatcher.matches(element, keyExpression, config.keyExpression, config, configGroup, matchOptions)
                     if (matchResult == ParadoxExpressionMatcher.Result.NotMatch) return@f
                     resultValuesMatchKey += ResultValue(config, matchResult)
@@ -517,7 +522,7 @@ object ParadoxExpressionManager {
         }
 
         var newResult = result
-        if(!postHandle) return newResult.optimized()
+        if (!postHandle) return newResult.optimized()
 
         //后续处理
 
