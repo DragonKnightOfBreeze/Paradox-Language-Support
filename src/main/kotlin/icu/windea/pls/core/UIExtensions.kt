@@ -1,5 +1,6 @@
 package icu.windea.pls.core
 
+import com.intellij.ide.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.keymap.*
 import com.intellij.openapi.observable.properties.*
@@ -13,8 +14,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.MutableProperty
 import com.intellij.ui.dsl.gridLayout.*
-import com.intellij.ui.scale.*
-import com.intellij.ui.table.*
+import com.intellij.ui.table.JBTable
 import com.intellij.util.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
@@ -23,7 +23,6 @@ import java.awt.*
 import java.awt.image.*
 import java.net.*
 import javax.swing.*
-import javax.swing.table.*
 import javax.swing.text.*
 import kotlin.properties.*
 import kotlin.reflect.*
@@ -37,12 +36,15 @@ fun URL.toIconOrNull(): Icon? {
     return IconLoader.findIcon(this)
 }
 
+fun Color.toHex(withAlpha: Boolean = true) = ColorUtil.toHex(this, withAlpha)
+
+operator fun Color.component1() = red
+operator fun Color.component2() = green
+operator fun Color.component3() = blue
+operator fun Color.component4() = alpha
+
 fun Icon.resize(width: Int, height: Int): Icon {
     return IconUtil.toSize(this, width, height)
-}
-
-fun Image.toIcon(): Icon {
-    return IconUtil.createImageIcon(this)
 }
 
 fun Icon.toImage(): Image {
@@ -57,6 +59,10 @@ fun Icon.toLabel(): JLabel {
     return label
 }
 
+fun Image.toIcon(): Icon {
+    return IconUtil.createImageIcon(this)
+}
+
 fun JComponent.toImage(width: Int = this.width, height: Int = this.height, type: Int = BufferedImage.TYPE_INT_ARGB_PRE): Image {
     val image = UIUtil.createImage(this, width, height, type)
     UIUtil.useSafely(image.graphics) { this.paint(it) }
@@ -68,29 +74,20 @@ fun <T : JComponent> T.withLocation(x: Int, y: Int): T {
     return this
 }
 
-fun Color.toHex(withAlpha: Boolean = true) = ColorUtil.toHex(this, withAlpha)
+fun <T: JComponent> T.registerClickListener(clickListener: ClickListener, allowDragWhileClicking: Boolean = false) {
+    clickListener.installOn(this, allowDragWhileClicking)
+}
 
-operator fun Color.component1() = red
-operator fun Color.component2() = green
-operator fun Color.component3() = blue
-operator fun Color.component4() = alpha
+fun <T: JComponent> T.registerCopyProvider(copyProvider: CopyProvider) {
+    DataManager.registerDataProvider(this) { dataId ->
+        if (PlatformDataKeys.COPY_PROVIDER.`is`(dataId)) copyProvider else null
+    }
+}
 
 fun Row.pathCompletionShortcutComment() {
     val shortcutText = KeymapUtil.getFirstKeyboardShortcutText(ActionManager.getInstance().getAction(IdeActions.ACTION_CODE_COMPLETION))
     comment(RefactoringBundle.message("path.completion.shortcut", shortcutText))
 }
-
-//com.intellij.openapi.roots.ui.configuration.classpath.ClasspathPanelImpl.setFixedColumnWidth
-fun JBTable.setFixedColumnWidth(columnIndex: Int, sampleText: String) {
-    val table = this
-    val column: TableColumn = table.tableHeader.columnModel.getColumn(columnIndex)
-    val fontMetrics: FontMetrics = table.getFontMetrics(table.font)
-    val width = fontMetrics.stringWidth("  $sampleText  ") + JBUIScale.scale(4)
-    column.preferredWidth = width
-    column.minWidth = width
-    column.resizable = false
-}
-
 
 fun MutableMap<*, Boolean>.toThreeStateProperty() = object : ReadWriteProperty<Any?, ThreeStateCheckBox.State> {
     val map = this@toThreeStateProperty

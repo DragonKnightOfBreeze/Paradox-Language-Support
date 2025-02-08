@@ -9,8 +9,7 @@ import javax.swing.*
 
 class ParadoxModDependenciesImportPopup(
     private val project: Project,
-    private val table: ParadoxModDependenciesTable,
-    private val tableModel: ParadoxModDependenciesTableModel
+    private val table: ParadoxModDependenciesTable
 ) : BaseListPopupStep<ParadoxModImporter>(getTitle(), *getValues()) {
     companion object {
         private fun getTitle() = PlsBundle.message("mod.dependencies.toolbar.action.import.popup.title")
@@ -31,6 +30,6 @@ class ParadoxModDependenciesImportPopup(
     }
 
     override fun onChosen(selectedValue: ParadoxModImporter, finalChoice: Boolean): PopupStep<*>? {
-        return doFinalStep { selectedValue.execute(project, table, tableModel) }
+        return doFinalStep { selectedValue.execute(project, table) }
     }
 }

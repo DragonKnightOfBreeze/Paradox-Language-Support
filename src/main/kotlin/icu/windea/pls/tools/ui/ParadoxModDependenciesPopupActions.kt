@@ -18,8 +18,7 @@ interface ParadoxModDependenciesPopupActions {
      * 打开模组所在路径。
      */
     class OpenModPathAction(
-        private val table: ParadoxModDependenciesTable,
-        private val tableModel: ParadoxModDependenciesTableModel
+        private val table: ParadoxModDependenciesTable
     ) : DumbAwareAction(PlsIcons.Actions.ModDirectory) {
         init {
             templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.OpenModPath.text")
@@ -47,7 +46,7 @@ interface ParadoxModDependenciesPopupActions {
 
         private fun getTargetPath(): Path? {
             val selectedRow = table.selectedRow
-            val item = tableModel.getItem(table.convertRowIndexToModel(selectedRow))
+            val item = table.model.getItem(table.convertRowIndexToModel(selectedRow))
             val targetDirectory = item.modDirectory ?: return null
             return targetDirectory.toPathOrNull()
         }
@@ -57,8 +56,7 @@ interface ParadoxModDependenciesPopupActions {
      * 打开模组的Steam创意工坊页面。（直接在Steam应用中打开）
      */
     class OpenModPageInSteamAction(
-        private val table: ParadoxModDependenciesTable,
-        private val tableModel: ParadoxModDependenciesTableModel
+        private val table: ParadoxModDependenciesTable
     ) : DumbAwareAction(PlsIcons.Steam) {
         init {
             templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteam.text")
@@ -92,7 +90,7 @@ interface ParadoxModDependenciesPopupActions {
 
         private fun getSteamId(): String? {
             val selectedRow = table.selectedRow
-            val item = tableModel.getItem(table.convertRowIndexToModel(selectedRow))
+            val item = table.model.getItem(table.convertRowIndexToModel(selectedRow))
             return getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteId
         }
     }
@@ -101,8 +99,7 @@ interface ParadoxModDependenciesPopupActions {
      * 打开模组的Steam创意工坊页面。
      */
     class OpenModPageInSteamWebsiteAction(
-        private val table: ParadoxModDependenciesTable,
-        private val tableModel: ParadoxModDependenciesTableModel
+        private val table: ParadoxModDependenciesTable
     ) : DumbAwareAction(PlsIcons.Steam) {
         init {
             templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteamWebsite.text")
@@ -136,7 +133,7 @@ interface ParadoxModDependenciesPopupActions {
 
         private fun getSteamId(): String? {
             val selectedRow = table.selectedRow
-            val item = tableModel.getItem(table.convertRowIndexToModel(selectedRow))
+            val item = table.model.getItem(table.convertRowIndexToModel(selectedRow))
             return getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteId
         }
     }
@@ -145,8 +142,7 @@ interface ParadoxModDependenciesPopupActions {
      * 复制模组所在路径。
      */
     class CopyModPathAction(
-        private val table: ParadoxModDependenciesTable,
-        private val tableModel: ParadoxModDependenciesTableModel
+        private val table: ParadoxModDependenciesTable
     ) : DumbAwareAction(AllIcons.Actions.Copy) {
         init {
             templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.CopyModPath.text")
@@ -174,7 +170,7 @@ interface ParadoxModDependenciesPopupActions {
 
         private fun getTargetPath(): Path? {
             val selectedRow = table.selectedRow
-            val item = tableModel.getItem(table.convertRowIndexToModel(selectedRow))
+            val item = table.model.getItem(table.convertRowIndexToModel(selectedRow))
             val targetDirectory = item.modDirectory ?: return null
             return targetDirectory.toPathOrNull()
         }
@@ -184,8 +180,7 @@ interface ParadoxModDependenciesPopupActions {
      * 复制模组的Steam创意工坊页面的URL。
      */
     class CopyModPageUrlAction(
-        private val table: ParadoxModDependenciesTable,
-        private val tableModel: ParadoxModDependenciesTableModel
+        private val table: ParadoxModDependenciesTable
     ) : DumbAwareAction(AllIcons.Actions.Copy) {
         init {
             templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.CopyModPageUrl.text")
@@ -218,7 +213,7 @@ interface ParadoxModDependenciesPopupActions {
 
         private fun getSteamId(): String? {
             val selectedRow = table.selectedRow
-            val item = tableModel.getItem(table.convertRowIndexToModel(selectedRow))
+            val item = table.model.getItem(table.convertRowIndexToModel(selectedRow))
             return getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteId
         }
     }

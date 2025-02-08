@@ -9,8 +9,7 @@ import javax.swing.*
 
 class ParadoxModDependenciesExportPopup(
     private val project: Project,
-    private val table: ParadoxModDependenciesTable,
-    private val tableModel: ParadoxModDependenciesTableModel
+    private val table: ParadoxModDependenciesTable
 ) : BaseListPopupStep<ParadoxModExporter>(getTitle(), *getValues()) {
     companion object {
         private fun getTitle() = PlsBundle.message("mod.dependencies.toolbar.action.export.popup.title")
@@ -31,6 +30,6 @@ class ParadoxModDependenciesExportPopup(
     }
 
     override fun onChosen(selectedValue: ParadoxModExporter, finalChoice: Boolean): PopupStep<*>? {
-        return doFinalStep { selectedValue.execute(project, table, tableModel) }
+        return doFinalStep { selectedValue.execute(project, table) }
     }
 }

@@ -26,8 +26,8 @@ private const val collectionName = "Paradox"
 class ParadoxFromGameImporter : ParadoxModImporter {
     override val text: String = PlsBundle.message("mod.importer.game")
 
-    override fun execute(project: Project, table: ParadoxModDependenciesTable, tableModel: ParadoxModDependenciesTableModel) {
-        val settings = tableModel.settings
+    override fun execute(project: Project, table: ParadoxModDependenciesTable) {
+        val settings = table.model.settings
         val gameType = settings.gameType.orDefault()
         val gameDataPath = getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull() ?: return
         if (!gameDataPath.exists()) {
@@ -63,7 +63,7 @@ class ParadoxFromGameImporter : ParadoxModImporter {
                 val rootInfo = modDir.rootInfo
                 if (rootInfo == null) continue //NOTE 目前要求这里的模组目录下必须有模组描述符文件
                 count++
-                if (!tableModel.modDependencyDirectories.add(modPath)) continue //忽略已有的
+                if (!table.model.modDependencyDirectories.add(modPath)) continue //忽略已有的
                 val newSettings = ParadoxModDependencySettingsState()
                 newSettings.enabled = true
                 newSettings.modDirectory = modPath
@@ -71,9 +71,9 @@ class ParadoxFromGameImporter : ParadoxModImporter {
             }
 
             //如果最后一个模组依赖是当前模组自身，需要插入到它之前，否则直接添加到最后
-            val isCurrentAtLast = tableModel.isCurrentAtLast()
-            val position = if (isCurrentAtLast) tableModel.rowCount - 1 else tableModel.rowCount
-            tableModel.insertRows(position, newSettingsList)
+            val isCurrentAtLast = table.model.isCurrentAtLast()
+            val position = if (isCurrentAtLast) table.model.rowCount - 1 else table.model.rowCount
+            table.model.insertRows(position, newSettingsList)
             //选中刚刚添加的所有模组依赖
             table.setRowSelectionInterval(position, position + newSettingsList.size - 1)
 

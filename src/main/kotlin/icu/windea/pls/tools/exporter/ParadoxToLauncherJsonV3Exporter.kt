@@ -28,8 +28,8 @@ class ParadoxToLauncherJsonV3Exporter : ParadoxModExporter {
 
     override val text: String = PlsBundle.message("mod.exporter.launcherJson.v3")
 
-    override fun execute(project: Project, table: ParadoxModDependenciesTable, tableModel: ParadoxModDependenciesTableModel) {
-        val settings = tableModel.settings
+    override fun execute(project: Project, table: ParadoxModDependenciesTable) {
+        val settings = table.model.settings
         val gameType = settings.gameType.orDefault()
         if (defaultSelected == null) {
             val gameDataPath = getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull()
@@ -44,7 +44,7 @@ class ParadoxToLauncherJsonV3Exporter : ParadoxModExporter {
 
         try {//使用正在编辑的模组依赖
             //不导出本地模组
-            val validModDependencies = tableModel.modDependencies.filter { it.source != ParadoxModSource.Local }
+            val validModDependencies = table.model.modDependencies.filter { it.source != ParadoxModSource.Local }
             val json = ParadoxLauncherJsonV3(
                 game = gameType.id,
                 mods = validModDependencies.mapIndexed t@{ i, s ->

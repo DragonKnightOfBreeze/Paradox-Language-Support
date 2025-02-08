@@ -73,14 +73,14 @@ class ElementsTableModel(
         override fun getRenderer(item: ElementDescriptor): TableCellRenderer? {
             return when (item) {
                 is ValueDescriptor -> null
-                is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparatorType.values())
+                is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparatorType.entries.toTypedArray())
             }
         }
 
         override fun getEditor(item: ElementDescriptor): TableCellEditor? {
             return when (item) {
                 is ValueDescriptor -> null
-                is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparatorType.values())
+                is PropertyDescriptor -> ComboBoxTableRenderer(ParadoxSeparatorType.entries.toTypedArray())
             }
         }
     }

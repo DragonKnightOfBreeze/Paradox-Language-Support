@@ -9,7 +9,7 @@ interface ParadoxModExporter {
     val icon: Icon? get() = null
     val text: String
 
-    fun execute(project: Project, table: ParadoxModDependenciesTable, tableModel: ParadoxModDependenciesTableModel)
+    fun execute(project: Project, table: ParadoxModDependenciesTable)
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxModExporter>("icu.windea.pls.tools.modExporter")
