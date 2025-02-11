@@ -15,7 +15,8 @@ version = providers.gradleProperty("pluginVersion").get()
 
 fun String.toChangeLogText(): String {
     val regex1 = """[-*] \[ ].*""".toRegex()
-    val regex2 = """[-*] \[X].*""".toRegex(RegexOption.IGNORE_CASE)
+    val regex2 = """[-*] \[[xX]].*""".toRegex()
+    val regex3 = """[-*]{3,}""".toRegex()
     return lines()
         .run {
             val start = indexOfFirst { it.startsWith("## $version") }
@@ -24,6 +25,7 @@ fun String.toChangeLogText(): String {
         }
         .mapNotNull {
             when {
+                it.matches(regex3) -> null //horizontal line
                 it.contains("(HIDDEN)") -> null //hidden
                 it.matches(regex1) -> null //undo
                 it.matches(regex2) -> "*" + it.substring(5) //done
