@@ -1,5 +1,13 @@
 # Changelog
-  
+
+## 1.3.29
+
+* [X] #113 修复本地化悬浮工具栏不再显示的问题
+
+***
+
+* [X] #113 Fixed a bug that the localisation floating toolbar was no longer displayed
+
 ## 1.3.28
 
 * [X] 提供扩展点以更好地识别各种来源的游戏目录和模组目录（参见 #111）

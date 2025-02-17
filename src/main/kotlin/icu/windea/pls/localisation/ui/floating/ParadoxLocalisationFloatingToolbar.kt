@@ -35,8 +35,11 @@ class ParadoxLocalisationFloatingToolbar(
     coroutineScope: CoroutineScope
 ) : FloatingToolbar(editor, coroutineScope) {
     override fun canBeShownAtCurrentSelection(): Boolean {
-        val file = PsiEditorUtil.getPsiFile(editor)
-        PsiDocumentManager.getInstance(file.project).commitDocument(editor.document)
+        if (!isEnabled()) return false
+        val project = editor.project ?: return false
+        val file = PsiDocumentManager.getInstance(project).getPsiFile(editor.document) ?: return false
+        if (!PsiDocumentManager.getInstance(file.project).isCommitted(editor.document)) return false
+
         val selectionModel = editor.selectionModel
         val selectionStart = selectionModel.selectionStart
         val selectionEnd = selectionModel.selectionEnd
