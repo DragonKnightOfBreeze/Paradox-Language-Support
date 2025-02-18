@@ -16,6 +16,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.ep.modifier.ParadoxModifierSupport.Keys.synced
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.documentation.*
@@ -30,9 +31,9 @@ import icu.windea.pls.script.psi.*
 
 //region Extensions
 
-val ParadoxModifierSupport.Keys.templateReferences by createKey<List<ParadoxTemplateSnippetExpressionReference>>(ParadoxModifierSupport.Keys)
-val ParadoxModifierSupport.Keys.economicCategoryInfo by createKey<ParadoxEconomicCategoryInfo>(ParadoxModifierSupport.Keys)
-val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by createKey<ParadoxEconomicCategoryInfo.ModifierInfo>(ParadoxModifierSupport.Keys)
+val ParadoxModifierSupport.Keys.templateReferences by createKey<List<ParadoxTemplateSnippetExpressionReference>>(ParadoxModifierSupport.Keys).synced()
+val ParadoxModifierSupport.Keys.economicCategoryInfo by createKey<ParadoxEconomicCategoryInfo>(ParadoxModifierSupport.Keys).synced()
+val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by createKey<ParadoxEconomicCategoryInfo.ModifierInfo>(ParadoxModifierSupport.Keys).synced()
 
 var ParadoxModifierInfo.templateReferences by ParadoxModifierSupport.Keys.templateReferences
 var ParadoxModifierInfo.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
@@ -155,21 +156,21 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             if (template.expressionString.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
             //生成的modifier
-            CwtTemplateExpressionManager.processResolveResult(element, template, configGroup, p@{ name ->
-                        //排除重复的
-                        if (!modifierNames.add(name)) return@p true
-        
-                        val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
-                        val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
-                            .withTypeText(typeFile?.name, typeFile?.icon, true)
-                            .withPatchableIcon(PlsIcons.Nodes.Modifier)
-                            .withPatchableTailText(tailText)
-                            .withScopeMatched(scopeMatched)
-                            .withModifierLocalizedNamesIfNecessary(name, element)
-                            .forScriptExpression(context)
-                        result.addElement(lookupElement, context)
-                        true
-                    })
+            CwtTemplateExpressionManager.processResolveResult(element, template, configGroup) p@{ name ->
+                //排除重复的
+                if (!modifierNames.add(name)) return@p true
+
+                val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup, this@ParadoxTemplateModifierSupport)
+                val lookupElement = LookupElementBuilder.create(name).withPsiElement(modifierElement)
+                    .withTypeText(typeFile?.name, typeFile?.icon, true)
+                    .withPatchableIcon(PlsIcons.Nodes.Modifier)
+                    .withPatchableTailText(tailText)
+                    .withScopeMatched(scopeMatched)
+                    .withModifierLocalizedNamesIfNecessary(name, element)
+                    .forScriptExpression(context)
+                result.addElement(lookupElement, context)
+                true
+            }
         }
     }
 

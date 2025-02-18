@@ -26,19 +26,11 @@ data class ParadoxParameterInfo(
 }
 
 fun ParadoxParameterInfo.toPsiElement(parent: PsiElement, rangeInParent: TextRange?, readWriteAccess: ReadWriteAccessDetector.Access): ParadoxParameterElement {
-    return ParadoxParameterElement(parent, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project).also { syncUserData(this, it) }
+    return ParadoxParameterElement(parent, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
+        .also { ParadoxParameterSupport.Keys.syncUserData(this, it) }
 }
 
 fun ParadoxParameterElement.toInfo(): ParadoxParameterInfo {
-    return ParadoxParameterInfo(name, contextName, contextIcon, contextKey, gameType, project).also { syncUserData(this, it) }
+    return ParadoxParameterInfo(name, contextName, contextIcon, contextKey, gameType, project)
+        .also { ParadoxParameterSupport.Keys.syncUserData(this, it) }
 }
-
-//use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
-private fun syncUserData(from: UserDataHolder, to: UserDataHolder) {
-    ParadoxParameterSupport.Keys.keysToSync.forEach { key ->
-        @Suppress("UNCHECKED_CAST")
-        key as Key<Any>
-        to.putUserData(key, from.getUserData(key))
-    }
-}
-

@@ -3,10 +3,12 @@
 ## 1.3.29
 
 * [X] #113 修复本地化悬浮工具栏不再显示的问题
+* [X] #114 修复存在多个模组依赖时的一个有关解析作用域的问题
 
 ***
 
 * [X] #113 Fixed a bug that the localisation floating toolbar was no longer displayed
+* [X] #114 Fixed a bug about resolving scope when there are multiple mod dependencies
 
 ## 1.3.28
 

@@ -7,6 +7,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.ep.parameter.ParadoxParameterSupport.Keys.synced
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
@@ -132,10 +133,19 @@ interface ParadoxParameterSupport {
 
     object Keys : KeyRegistry() {
         val keysToSync: MutableSet<Key<*>> = mutableSetOf()
+
+        //use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
+        fun syncUserData(from: UserDataHolder, to: UserDataHolder) {
+            keysToSync.forEach { key ->
+                @Suppress("UNCHECKED_CAST")
+                key as Key<Any>
+                to.putUserData(key, from.getUserData(key))
+            }
+        }
+
+        fun <T : KeyProvider<*>> T.synced() = apply { callback { keysToSync += it } }
     }
 }
-
-private fun <T: KeyProvider<*>> T.synced() = apply { callback { ParadoxParameterSupport.Keys.keysToSync += it } }
 
 val ParadoxParameterSupport.Keys.support by createKey<ParadoxParameterSupport>(ParadoxParameterSupport.Keys).synced()
 val ParadoxParameterSupport.Keys.containingContext by createKey<SmartPsiElementPointer<ParadoxScriptDefinitionElement>>(ParadoxParameterSupport.Keys).synced()

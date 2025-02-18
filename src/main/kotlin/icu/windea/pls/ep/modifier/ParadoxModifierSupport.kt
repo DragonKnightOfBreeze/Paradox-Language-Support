@@ -11,7 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.parameter.*
+import icu.windea.pls.ep.modifier.ParadoxModifierSupport.Keys.synced
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
@@ -106,12 +106,19 @@ interface ParadoxModifierSupport {
 
     object Keys : KeyRegistry() {
         val keysToSync: MutableSet<Key<*>> = mutableSetOf()
+
+        //use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
+        fun syncUserData(from: UserDataHolder, to: UserDataHolder) {
+            keysToSync.forEach { key ->
+                @Suppress("UNCHECKED_CAST")
+                key as Key<Any>
+                to.putUserData(key, from.getUserData(key))
+            }
+        }
+
+        fun <T : KeyProvider<*>> T.synced() = apply { callback { keysToSync += it } }
     }
 }
-
-private val _keysToSync = mutableSetOf<Key<*>>()
-
-private fun <T: KeyProvider<*>> T.synced() = apply { callback { ParadoxParameterSupport.Keys.keysToSync += it } }
 
 val ParadoxModifierSupport.Keys.support by createKey<ParadoxModifierSupport>(ParadoxModifierSupport.Keys).synced()
 val ParadoxModifierSupport.Keys.modifierConfig by createKey<CwtModifierConfig>(ParadoxModifierSupport.Keys).synced()

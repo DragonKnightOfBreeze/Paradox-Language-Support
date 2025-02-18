@@ -21,18 +21,11 @@ data class ParadoxModifierInfo(
 }
 
 fun ParadoxModifierInfo.toPsiElement(parent: PsiElement): ParadoxModifierElement {
-    return ParadoxModifierElement(parent, name, gameType, project).also { syncUserData(this, it) }
+    return ParadoxModifierElement(parent, name, gameType, project)
+        .also { ParadoxModifierSupport.Keys.syncUserData(this, it) }
 }
 
 fun ParadoxModifierElement.toInfo(): ParadoxModifierInfo {
-    return ParadoxModifierInfo(name, gameType, project).also { syncUserData(this, it) }
-}
-
-//use optimized method rather than UserDataHolderBase.copyUserDataTo to reduce memory usage
-private fun syncUserData(from: UserDataHolder, to: UserDataHolder) {
-    ParadoxModifierSupport.Keys.keysToSync.forEach { key ->
-        @Suppress("UNCHECKED_CAST")
-        key as Key<Any>
-        to.putUserData(key, from.getUserData(key))
-    }
+    return ParadoxModifierInfo(name, gameType, project)
+        .also { ParadoxModifierSupport.Keys.syncUserData(this, it) }
 }

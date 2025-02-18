@@ -30,13 +30,13 @@ abstract class KeyRegistry {
 abstract class KeyProvider<T> {
     protected var callback: ((Key<T>) -> Unit)? = null
 
-    fun callback(action: (Key<T>) -> Unit) {
-        this.callback = action
-    }
-
     protected fun Key<T>.runCallback(): Key<T> {
         callback?.invoke(this)
         return this
+    }
+
+    fun callback(action: (Key<T>) -> Unit) {
+        this.callback = action
     }
 }
 
@@ -44,7 +44,7 @@ interface KeyProviders {
     class Normal<T>(val registry: KeyRegistry): KeyProvider<T>() {
         fun getKey(propName: String): Key<T> {
             val name = registry.getKeyName(propName)
-            return registry.keys.getOrPut(name) { createKey<T>(name).also { callback?.invoke(it) } }.cast()
+            return registry.keys.getOrPut(name) { createKey<T>(name).runCallback() }.cast()
         }
     }
 
