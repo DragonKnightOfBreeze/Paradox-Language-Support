@@ -587,6 +587,8 @@ private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxS
 }
 
 private fun DocumentationBuilder.addGeneratedModifiersForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
+    if(!getSettings().documentation.showGeneratedModifiers) return
+
     ParadoxModifierSupport.buildDDocumentationDefinitionForDefinition(element, definitionInfo, this)
 }
 

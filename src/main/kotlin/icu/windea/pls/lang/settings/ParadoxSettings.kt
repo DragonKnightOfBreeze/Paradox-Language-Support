@@ -53,6 +53,7 @@ class ParadoxSettingsState : BaseState() {
      * @property showScopes 是否需要在文档中显示作用域信息（如果支持且存在）。
      * @property showScopeContext 是否需要在文档中显示作用域上下文（如果支持且存在）。
      * @property showParameters 是否需要在文档中显示参数信息（如果支持且存在。）
+     * @property showGeneratedModifiers 是否需要在文档中显示生成的修正的信息（如果支持且存在）。
      */
     @Tag("documentation")
     class DocumentationState : BaseState() {
@@ -65,6 +66,7 @@ class ParadoxSettingsState : BaseState() {
         var showScopes by property(true)
         var showScopeContext by property(true)
         var showParameters by property(true)
+        var showGeneratedModifiers by property(true)
     }
 
     /**

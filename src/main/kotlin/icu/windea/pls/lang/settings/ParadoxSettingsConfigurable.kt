@@ -194,6 +194,12 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.documentation::showParameters)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showParameters.tooltip") }
                 }
+                //showGeneratedModifiers
+                row {
+                    checkBox(PlsBundle.message("settings.documentation.showGeneratedModifiers"))
+                        .bindSelected(settings.documentation::showGeneratedModifiers)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showGeneratedModifiers.tooltip") }
+                }
             }
             //folding
             collapsibleGroup(PlsBundle.message("settings.folding")) {
