@@ -13,8 +13,6 @@ import kotlinx.coroutines.*
 
 //org.intellij.plugins.markdown.ui.floating.MarkdownFloatingToolbar
 
-//TODO 1.3.28+ 需要调试验证代码重构后功能是否仍然正常
-
 /**
  * 当用户鼠标选中本地化文本（的其中一部分）时,将会显示的悬浮工具栏栏。
  *
