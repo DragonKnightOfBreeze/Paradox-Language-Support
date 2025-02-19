@@ -177,7 +177,7 @@
     <inlineSupport implementation="icu.windea.pls.ep.inline.ParadoxInlineScriptInlineSupport"/>
 
     <metadataProvider implementation="icu.windea.pls.ep.metadata.ParadoxLauncherSettingsBasedMetadataProvider"/>
-    <metadataProvider implementation="icu.windea.pls.ep.metadata.ParadoxModDescriptorBasedMetadataProvider"/>
+    <metadataProvider implementation="icu.windea.pls.ep.metadata.ParadoxModDescriptorBasedMetadataProvider" order="last"/>
     <metadataProvider implementation="icu.windea.pls.ep.metadata.ParadoxModMetadataBasedMetadataProvider"/>
 
     <modifierSupport implementation="icu.windea.pls.ep.modifier.ParadoxPredefinedModifierSupport"/>

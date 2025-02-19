@@ -52,13 +52,23 @@ class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
         //尝试在根目录的.metadata子目录中中查找metadata.json
         val descriptorFile = runReadAction { ParadoxMetadataManager.getModMetadataFile(rootFile) } ?: return null
         val descriptorInfo = ParadoxMetadataManager.getModMetadataInfo(descriptorFile) ?: return null
-        return Metadata(rootFile, descriptorFile, descriptorInfo)
+        //NOTE 1.3.29 skip if game_id in metadata.json is invalid or unavailable
+        val gameTypeFromInfo = getGameTypeFromInfo(descriptorInfo) ?: return null
+        return Metadata(rootFile, descriptorFile, descriptorInfo, gameTypeFromInfo)
+    }
+
+    private fun getGameTypeFromInfo(info: ParadoxModMetadataInfo): ParadoxGameType? {
+        return when(info.gameId) {
+            "victoria3" -> ParadoxGameType.Vic3
+            else -> null
+        }
     }
 
     class Metadata(
         override val rootFile: VirtualFile,
         val infoFile: VirtualFile,
-        val info: ParadoxModMetadataInfo
+        val info: ParadoxModMetadataInfo,
+        val gameTypeFromInfo: ParadoxGameType?
     ) : ParadoxMetadata.Mod {
         override val name: String get() = info.name
         override val version: String? get() = info.version
@@ -73,7 +83,7 @@ class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
         override val source: ParadoxModSource get() = ParadoxModSource.Local
 
         private fun doGetInferredGameType(): ParadoxGameType? {
-            if (info.gameId == "victoria3") return ParadoxGameType.Vic3
+            if(gameTypeFromInfo != null) return gameTypeFromInfo
             return ParadoxCoreManager.getInferredGameType(rootFile)
         }
 
