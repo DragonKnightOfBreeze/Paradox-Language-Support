@@ -78,7 +78,8 @@ dependencies {
         //bundledPlugins("org.jetbrains.kotlin")
         bundledPlugins("org.intellij.plugins.markdown")
 
-        plugin("cn.yiiguxing.plugin.translate:3.6.8") //https://github.com/YiiGuxing/TranslationPlugin
+        //TranslationPlugin - https://github.com/YiiGuxing/TranslationPlugin
+        plugin("cn.yiiguxing.plugin.translate:3.6.8")
     }
 
     //built-in configs
@@ -86,6 +87,9 @@ dependencies {
 
     //from dds4j
     implementation("ar.com.hjg:pngj:2.1.0")
+    //dds - https://github.com/iTitus/dds
+    implementation("io.github.ititus:dds:3.1.0")
+    implementation("io.github.ititus:ddsiio:3.1.0")
     //jackson-csv
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.17.2") {
         exclude(module = "jackson-annotations")
@@ -103,15 +107,11 @@ dependencies {
 
     //sqlite
     testImplementation("org.xerial:sqlite-jdbc:3.46.0.0")
+    //javassist
+    testImplementation("org.javassist:javassist:3.30.2-GA")
     //byte-buddy
     testImplementation("net.bytebuddy:byte-buddy:1.14.17")
     testImplementation("net.bytebuddy:byte-buddy-agent:1.15.0")
-    //javassist
-    testImplementation("org.javassist:javassist:3.30.2-GA")
-    ////jogl
-    //testImplementation("org.jogamp.jogl:jogl-all:2.3.2")
-    ////openrndr
-    //testImplementation("org.openrndr:openrndr-dds:0.4.4-alpha2")
 }
 
 sourceSets {
