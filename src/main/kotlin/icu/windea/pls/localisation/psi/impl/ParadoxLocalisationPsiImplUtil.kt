@@ -9,6 +9,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
@@ -216,7 +217,7 @@ object ParadoxLocalisationPsiImplUtil {
     }
     //endregion
 
-    //region ParadoxLocalisationIcon	
+    //region ParadoxLocalisationIcon
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationIcon, @IconFlags flags: Int): Icon {
         return PlsIcons.LocalisationNodes.Icon

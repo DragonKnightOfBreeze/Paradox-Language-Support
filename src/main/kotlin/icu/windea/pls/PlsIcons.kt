@@ -1,4 +1,4 @@
-package icons
+package icu.windea.pls
 
 import com.intellij.icons.*
 import com.intellij.ui.*
