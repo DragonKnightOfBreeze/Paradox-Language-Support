@@ -652,10 +652,18 @@ typealias FloatRange = ClosedRange<Float>
 
 operator fun FloatRange.contains(element: Float?) = element != null && contains(element)
 
+object OS {
+    val name by lazy { System.getProperty("os.name") }
+
+    val isWindows by lazy { name.isNotNullOrEmpty() && name.contains("windows", true) }
+    val isLinux by lazy { name.isNotNullOrEmpty() && name.contains("linux", true) }
+}
+
 enum class CommandType {
+    AUTO,
+    SHELL,
     CMD,
     POWER_SHELL,
-    SHELL,
     ;
 }
 
@@ -668,15 +676,9 @@ fun executeCommand(
     timeout: Long? = null,
 ): String {
     if (commandType == CommandType.CMD || commandType == CommandType.POWER_SHELL) {
-        if (System.getProperty("os.name")?.contains("windows", true) != true) throw UnsupportedOperationException()
+        if (!OS.isWindows) throw UnsupportedOperationException()
     }
-
-    val commandArray = when (commandType) {
-        CommandType.CMD -> arrayOf("cmd", "/c", command)
-        CommandType.POWER_SHELL -> arrayOf("powershell", "-command", command)
-        CommandType.SHELL -> arrayOf("/bin/sh", "-c", command)
-        else -> arrayOf(command)
-    }
+    val commandArray = getCommandArray(command, commandType)
     val process = Runtime.getRuntime().exec(commandArray, environmentVariables, workDirectory)
     if (timeout == null) {
         process.waitFor()
@@ -684,4 +686,18 @@ fun executeCommand(
         process.waitFor(timeout, TimeUnit.MILLISECONDS)
     }
     return process.inputStream.bufferedReader().readText().trim()
+}
+
+private fun getCommandArray(command: String, commandType: CommandType?): Array<String> {
+    val commandType0 = when {
+        commandType == CommandType.AUTO && OS.isWindows -> CommandType.CMD
+        commandType == CommandType.AUTO && !OS.isWindows -> CommandType.SHELL
+        else -> commandType
+    }
+    return when (commandType0) {
+        CommandType.CMD -> arrayOf("cmd", "/c", command)
+        CommandType.SHELL -> arrayOf("/bin/sh", "-c", command)
+        CommandType.POWER_SHELL -> arrayOf("powershell", "-command", command)
+        else -> arrayOf(command)
+    }
 }

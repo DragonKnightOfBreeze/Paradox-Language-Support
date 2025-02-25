@@ -139,8 +139,8 @@ class ConvertDdsToPngAction : DumbAwareAction() {
             existingFiles.putValue(targetDirectory, file)
             return
         }
-        targetDirectory.cast<PsiDirectoryImpl>().executeWithUpdatingAddedFilesDisabled<Throwable> {
-            val backendPngPsiFile = backendPngFile.toPsiFile(targetDirectory.project) ?: return@executeWithUpdatingAddedFilesDisabled
+        targetDirectory.cast<PsiDirectoryImpl>().executeWithUpdatingAddedFilesDisabled<Throwable> action@{
+            val backendPngPsiFile = backendPngFile.toPsiFile(targetDirectory.project) ?: return@action
             val savedPsiFile = targetDirectory.copyFileFrom(name, backendPngPsiFile)
             added.add(savedPsiFile)
         }

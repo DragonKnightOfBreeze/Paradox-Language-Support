@@ -49,22 +49,26 @@ object CwtConfigManager {
 
         runCatchingCancelable r@{
             if (!forRepo) return@r
-            val workDirectory = file.toNioPath().toFile().parentFile ?: return@r
-            val command = "git remote -v"
-            val commandResult = executeCommand(command, CommandType.POWER_SHELL, null, workDirectory)
-            val gameTypeId = commandResult.lines()
-                .mapNotNull { it.splitByBlank(3).getOrNull(1) }
-                .firstNotNullOfOrNull t@{
-                    if (it.contains("Paradox-Language-Support")) return@t "core"
-                    val s = it.substringInLast("cwtools-", "-config", "")
-                    if (s.isNotEmpty()) return@t s
-                    null
-                } ?: return@r
-            val gameType = ParadoxGameType.resolve(gameTypeId)
-            return getConfigGroup(project, gameType)
+            doGetContainingConfigGroupForRepo(file, project)
         }
 
         return null
+    }
+
+    private fun doGetContainingConfigGroupForRepo(file: VirtualFile, project: Project): CwtConfigGroup? {
+        val workDirectory = file.toNioPath().toFile().parentFile ?: return null
+        val command = "git remote -v"
+        val commandResult = executeCommand(command, CommandType.AUTO, null, workDirectory)
+        val gameTypeId = commandResult.lines()
+            .mapNotNull { it.splitByBlank(3).getOrNull(1) }
+            .firstNotNullOfOrNull t@{
+                if (it.contains("Paradox-Language-Support")) return@t "core"
+                val s = it.substringInLast("cwtools-", "-config", "")
+                if (s.isNotEmpty()) return@t s
+                null
+            } ?: return null
+        val gameType = ParadoxGameType.resolve(gameTypeId)
+        return getConfigGroup(project, gameType)
     }
 
     fun getFilePath(element: PsiElement): String? {
@@ -488,7 +492,7 @@ object CwtConfigManager {
                 true //fast check
             }
             is CwtSchemaExpression.Constraint -> {
-                false //fast check 
+                false //fast check
             }
         }
     }

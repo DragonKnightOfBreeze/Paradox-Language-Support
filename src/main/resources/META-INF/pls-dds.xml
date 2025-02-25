@@ -1,10 +1,19 @@
 <idea-plugin>
+  <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.dds.support" interface="icu.windea.pls.dds.support.DdsSupport" dynamic="true"/>
+  </extensionPoints>
+
+  <extensions defaultExtensionNs="icu.windea.pls.dds">
+    <support implementation="icu.windea.pls.dds.support.DefaultDdsSupport" order="last"/>
+    <support implementation="icu.windea.pls.dds.support.DirectXTexBasedDdsSupport"/>
+  </extensions>
+
   <extensions defaultExtensionNs="com.intellij">
     <fileType name="DDS" implementationClass="icu.windea.pls.dds.DdsFileType" fieldName="INSTANCE" extensions="dds"/>
     <fileLookupInfoProvider implementation="icu.windea.pls.dds.DdsLookupInfoProvider"/>
     <documentationProvider implementation="icu.windea.pls.dds.DdsDocumentationProvider"/>
     <fileEditorProvider implementation="icu.windea.pls.dds.editor.DdsFileEditorProvider"/>
-    
+
     <vfs.asyncListener implementation="icu.windea.pls.dds.DdsFileListener"/>
   </extensions>
 
@@ -15,7 +24,7 @@
               use-shortcut-of="Images.EditExternally">
         <add-to-group anchor="after" group-id="ProjectViewPopupMenu" relative-to-action="EditSource"/>
       </action>
-      <action id="Dds.EditExternalEditorPath" class="org.intellij.images.actions.EditExternalImageEditorAction" 
+      <action id="Dds.EditExternalEditorPath" class="org.intellij.images.actions.EditExternalImageEditorAction"
               use-shortcut-of="Images.EditExternalEditorPath">
         <!--Do not show always-->
         <!--<add-to-group anchor="after" group-id="ProjectViewPopupMenu" relative-to-action="EditSource"/>-->

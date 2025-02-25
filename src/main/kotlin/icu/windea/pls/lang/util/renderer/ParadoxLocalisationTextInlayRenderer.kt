@@ -14,6 +14,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.localisation.editor.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 import java.awt.event.*
@@ -146,7 +147,7 @@ object ParadoxLocalisationTextInlayRenderer {
     private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context): Boolean = with(context.factory) {
         val resolved = element.reference?.resolve()
         val iconFrame = element.frame
-        val frameInfo = FrameInfo.of(iconFrame)
+        val frameInfo = ImageFrameInfo.of(iconFrame)
         val iconUrl = when {
             resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, frameInfo)
             resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, frameInfo)

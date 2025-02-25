@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util.image
 
 import co.phoenixlab.dds.*
+import icu.windea.pls.model.*
 import java.io.*
 
 object ImageManager {
@@ -14,13 +15,13 @@ object ImageManager {
 
     private val ddsImageDecoder: DdsImageDecoder by lazy { DdsImageDecoder() }
 
-    fun convertDdsToPng(inputStream: InputStream, frameInfo: FrameInfo? = null): ByteArray? {
+    fun convertDdsToPng(inputStream: InputStream, frameInfo: ImageFrameInfo? = null): ByteArray? {
         val dds = Dds()
         dds.read(inputStream)
         return ddsImageDecoder.convertToPNG(dds, frameInfo)
     }
 
-    fun convertDdsToPng(inputStream: InputStream, outputStream: OutputStream, frameInfo: FrameInfo? = null) {
+    fun convertDdsToPng(inputStream: InputStream, outputStream: OutputStream, frameInfo: ImageFrameInfo? = null) {
         val dds = Dds()
         dds.read(inputStream)
         ddsImageDecoder.convertToPNG(dds, outputStream, frameInfo)

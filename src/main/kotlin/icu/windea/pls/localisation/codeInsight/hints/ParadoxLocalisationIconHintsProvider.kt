@@ -13,6 +13,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationIconHintsProvider.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -46,7 +47,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
         if (element is ParadoxLocalisationIcon) {
             val resolved = element.reference?.resolve()
             val iconFrame = element.frame
-            val frameInfo = FrameInfo.of(iconFrame)
+            val frameInfo = ImageFrameInfo.of(iconFrame)
             val iconUrl = when {
                 resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, frameInfo)
                 resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, frameInfo)

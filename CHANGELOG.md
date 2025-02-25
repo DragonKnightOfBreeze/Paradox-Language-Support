@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.30
+
+* [ ] 优化对DDS图片的支持（基于[iTitus/dds](https://github.com/iTitus/dds)和[Texconv](https://github.com/microsoft/DirectXTex/wiki/Texconv)）
+
+***
+
+* [ ] Optimize support for DDS images (Based on [iTitus/dds](https://github.com/iTitus/dds) and [Texconv](https://github.com/microsoft/DirectXTex/wiki/Texconv))
+
 ## 1.3.29
 
 * [X] #113 修复本地化悬浮工具栏不再显示的问题

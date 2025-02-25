@@ -314,7 +314,7 @@ effect（效果）：
   * png文件保存在`~/dds2png/tmp`这个目录中
 * 未知图标（`unknown.png`，44x44）需要保存到`~/dds2png/tmp`的顶级目录下，以便必要时直接使用
 
-#### 方案2（选用）
+#### 方案2
 
 使用`DDS4J`（高效，但仍然不兼容某些dds图片）
 
@@ -325,3 +325,16 @@ effect（效果）：
 * 根据文件名为`${iconName}.dds`（不区分大小写），位于游戏或模组根目录中的DDS文件解析：得到对应的DDS文件路径。
 * 得到DDS文件路径后，将其转化为PNG文件，然后保存到`~/.pls/images`目录中，保留相对路径，并在文件名中加上UUID后缀。
 * 渲染图标时，使用PNG文件的绝对路径。
+
+### 方案3（计划选用）
+
+使用来自iTitus的dds支持库，以及来自官方的Texconv工具
+
+相关链接：
+
+* [GitHub: iTitus/dds](https://github.com/iTitus/dds)
+* [Texconv · microsoft/DirectXTex Wiki](https://github.com/microsoft/DirectXTex/wiki/Texconv)
+
+* 如果需要DDS图片的元数据，可以直接通过dds支持库获取
+* 如果需要将DDS图片转化为PNG图片，或者转换成其他格式的图片，或者进行其他图片处理操作，在Windows操作系统下，可以使用Texconv工具，以提供更好的支持
+* 尽管dds支持库提供了对`ImageIO`，如果可行，仍然先使用Texconv工具将DDS图片转化为PNG图片，接着再基于PNG图片进行渲染

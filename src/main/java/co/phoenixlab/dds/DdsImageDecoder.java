@@ -3,6 +3,7 @@ package co.phoenixlab.dds;
 import ar.com.hjg.pngj.*;
 import co.phoenixlab.dds.decoder.*;
 import icu.windea.pls.lang.util.image.*;
+import icu.windea.pls.model.ImageFrameInfo;
 
 import java.io.*;
 import java.util.*;
@@ -131,7 +132,7 @@ public class DdsImageDecoder {
         return convertToPNG(dds, "");
     }
 
-    public byte[] convertToPNG(Dds dds, FrameInfo frame) {
+    public byte[] convertToPNG(Dds dds, ImageFrameInfo frame) {
         return convertToPNG(dds, "", frame);
     }
 
@@ -145,7 +146,7 @@ public class DdsImageDecoder {
         return byteArrayOutputStream.toByteArray();
     }
 
-    public byte[] convertToPNG(Dds dds, String swizzle, FrameInfo frame) {
+    public byte[] convertToPNG(Dds dds, String swizzle, ImageFrameInfo frame) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
             convertToPNG(dds, byteArrayOutputStream, swizzle, frame);
@@ -159,15 +160,15 @@ public class DdsImageDecoder {
         convertToPNG(dds, outputStream, "");
     }
 
-    public void convertToPNG(Dds dds, OutputStream outputStream, FrameInfo frame) throws IOException {
+    public void convertToPNG(Dds dds, OutputStream outputStream, ImageFrameInfo frame) throws IOException {
         convertToPNG(dds, outputStream, "", frame);
     }
-    
+
     public void convertToPNG(Dds dds, OutputStream outputStream, String swizzle) throws IOException {
         convertToPNG(dds, outputStream, swizzle, null);
     }
-    
-    public void convertToPNG(Dds dds, OutputStream outputStream, String swizzle, FrameInfo frameInfo) throws IOException {
+
+    public void convertToPNG(Dds dds, OutputStream outputStream, String swizzle, ImageFrameInfo frameInfo) throws IOException {
         DdsHeader header = dds.getHeader();
         FormatDecoder decoder = Decoders.getDecoder(dds);
         int frame = frameInfo != null ? frameInfo.getFrame() : 0;
