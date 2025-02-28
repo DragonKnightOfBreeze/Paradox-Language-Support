@@ -37,7 +37,7 @@ object ParadoxFileManager {
     @Deprecated("Use createLightFile()")
     fun createTempFile(file: VirtualFile): VirtualFile? {
         try {
-            val diffDirPath = PlsConstants.Paths.diffDirectoryPath
+            val diffDirPath = PlsConstants.Paths.diff
             val fileName = UUID.randomUUID().toString()
             Files.createDirectories(diffDirPath)
             val diffDirFile = VfsUtil.findFile(diffDirPath, false) ?: return null
@@ -57,7 +57,7 @@ object ParadoxFileManager {
     @Deprecated("Use createLightFile()")
     fun createTempFile(text: String, fileInfo: ParadoxFileInfo): VirtualFile? {
         try {
-            val diffDirPath = PlsConstants.Paths.diffDirectoryPath
+            val diffDirPath = PlsConstants.Paths.diff
             val fileName = UUID.randomUUID().toString()
             val path = diffDirPath.resolve(fileName)
             Files.writeString(path, text)

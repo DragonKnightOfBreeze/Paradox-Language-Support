@@ -87,7 +87,7 @@ object ParadoxCompletionManager {
         val configContext = ParadoxExpressionManager.getConfigContext(memberElement)
         if (configContext == null) return
         if (!configContext.isRootOrMember()) {
-            //仅提示不在定义声明中的rootKey    
+            //仅提示不在定义声明中的rootKey
             addRootKeyCompletions(memberElement, context, result)
             return
         }
@@ -372,7 +372,7 @@ object ParadoxCompletionManager {
         val keyword = context.keyword
 
         //优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
-        if (keyword.isNotEmpty() && !PlsConstants.Patterns.localisationPropertyNameRegex.matches(keyword)) return
+        if (keyword.isNotEmpty() && !PlsConstants.Patterns.localisationPropertyName.matches(keyword)) return
 
         //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
@@ -407,7 +407,7 @@ object ParadoxCompletionManager {
         val keyword = context.keyword
 
         //优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
-        if (keyword.isNotEmpty() && !PlsConstants.Patterns.localisationPropertyNameRegex.matches(keyword)) return
+        if (keyword.isNotEmpty() && !PlsConstants.Patterns.localisationPropertyName.matches(keyword)) return
 
         //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
@@ -1155,7 +1155,7 @@ object ParadoxCompletionManager {
         val endOffset = dsNode?.rangeInExpression?.startOffset ?: -1
         if (prefixNode != null && dsNode != null && offsetInParent >= dsNode.rangeInExpression.startOffset) {
             //unlike scope link node, there is unnecessary to switch scope context
-            
+
             val keywordToUse = dsNode.text.substring(0, offsetInParent - endOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
             context.keyword = keywordToUse
@@ -1417,7 +1417,7 @@ object ParadoxCompletionManager {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
-        
+
         val linkConfigsFromArgument = configGroup.links.values.filter { it.forValue() && it.prefix != null && it.fromArgument }
         for (linkConfig in linkConfigsFromArgument) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
@@ -1439,7 +1439,7 @@ object ParadoxCompletionManager {
                 }
             result.addElement(lookupElement, context)
         }
-        
+
         val linkConfigsFromData = configGroup.links.values.filter { it.forValue() && it.prefix != null && it.fromData }
         for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)

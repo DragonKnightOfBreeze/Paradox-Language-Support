@@ -28,7 +28,7 @@ object DdsMetadataIndex {
     private val gist: VirtualFileGist<DdsMetadata> = GistManager.getInstance().newVirtualFileGist("DdsMetadata", 1, valueExternalizer) { _, file ->
         if (!file.isInLocalFileSystem) return@newVirtualFileGist null
         if (file.fileType != DdsFileType) return@newVirtualFileGist null
-        DdsSupport.getMetadata(file)
+        DdsManager.getMetadata(file)
     }
 
     fun getMetadata(file: VirtualFile, project: Project): DdsMetadata? {

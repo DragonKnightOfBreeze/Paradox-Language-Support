@@ -2,18 +2,16 @@ package icu.windea.pls.lang.util.image
 
 import com.google.common.cache.*
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.progress.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.dds.support.*
 import icu.windea.pls.model.*
-import java.lang.invoke.*
 import java.nio.file.*
-import java.util.concurrent.atomic.*
 import kotlin.io.path.*
 
 object ParadoxDdsResolver {
-    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
-
     private val ddsCache: Cache<String, Path> by lazy { CacheBuilder.newBuilder().buildCache() } //absPath - pngAbsPath
     private val externalDdsCache: Cache<String, Path> by lazy { CacheBuilder.newBuilder().buildCache() } //absPath - pngAbsPath
 
@@ -33,7 +31,8 @@ object ParadoxDdsResolver {
             }
             return pngAbsPath.absolutePathString()
         } catch (e: Exception) {
-            logger.warn("Convert dds image to png image failed. (dds absolute path: $absPath, dds relative path: $relPath, frame info: $finalFrameInfo)", e)
+            if (e is ProcessCanceledException) throw e
+            thisLogger().warn("Convert dds image to png image failed. (dds absolute path: $absPath, dds relative path: $relPath, frame info: $finalFrameInfo)", e)
             return null
         }
     }
@@ -66,7 +65,7 @@ object ParadoxDdsResolver {
             val uuid = absPath.removeSuffix(relPath).trim('/').toUUID().toString()
             val frameText = if (frameInfo != null) "@${frameInfo.frame}_${frameInfo.frames}" else ""
             val finalPath = "${relPathWithoutExtension}${frameText}@${uuid}.png"
-            return PlsConstants.Paths.imagesDirectoryPath.resolve(finalPath)
+            return PlsConstants.Paths.images.resolve(finalPath)
         } else {
             //路径：~/.pls/images/_external/{fileNameWithoutExtension}@${frame}_${frames}@${uuid}.png
             //UUID：基于DDS文件所在目录
@@ -77,7 +76,7 @@ object ParadoxDdsResolver {
             val uuid = if (parent.isEmpty()) "" else parent.toUUID().toString()
             val frameText = if (frameInfo != null) "@${frameInfo.frame}_${frameInfo.frames}" else ""
             val finalPath = "_external/${fileNameWithoutExtension}${frameText}@${uuid}.png"
-            return PlsConstants.Paths.imagesDirectoryPath.resolve(finalPath)
+            return PlsConstants.Paths.images.resolve(finalPath)
         }
     }
 
@@ -86,7 +85,7 @@ object ParadoxDdsResolver {
         pngAbsPath.create()
         Files.newOutputStream(pngAbsPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING).use { outputStream ->
             val inputStream = absPath.toPath().inputStream()
-            ImageManager.convertDdsToPng(inputStream, outputStream, frameInfo)
+            DdsManager.convertDdsToPng(inputStream, outputStream, frameInfo)
             outputStream.flush()
         }
     }

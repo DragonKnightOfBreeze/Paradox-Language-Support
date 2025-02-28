@@ -108,7 +108,7 @@ class IntroduceGlobalScriptedVariableDialog(
     private fun ValidationInfoBuilder.validateScriptedVariableName(): ValidationInfo? {
         if (variableName.isEmpty()) {
             return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.0"))
-        } else if (!PlsConstants.Patterns.scriptedVariableNameRegex.matches(variableName)) {
+        } else if (!PlsConstants.Patterns.scriptedVariableName.matches(variableName)) {
             return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableName.invalid.1"))
         }
         return null

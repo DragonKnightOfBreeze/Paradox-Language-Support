@@ -16,12 +16,13 @@ import icu.windea.pls.model.*
 import kotlinx.coroutines.*
 import java.util.concurrent.*
 
+private val logger = logger<CwtConfigGroupService>()
+
 @Service(Service.Level.PROJECT)
 class CwtConfigGroupService(
     private val project: Project,
     private val coroutineScope: CoroutineScope
 ) {
-    private val logger = logger<CwtConfigGroupService>()
     private val cache = ConcurrentHashMap<String, CwtConfigGroup>()
 
     fun init() {

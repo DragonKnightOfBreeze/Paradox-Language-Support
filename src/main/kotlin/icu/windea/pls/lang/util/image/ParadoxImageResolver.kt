@@ -22,8 +22,6 @@ import java.util.concurrent.atomic.*
 import kotlin.io.path.*
 
 object ParadoxImageResolver {
-    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
-
     //支持切分PNG图片
     //切分数量由sprite声明中的属性noOfFrames的值确定
 
@@ -48,7 +46,7 @@ object ParadoxImageResolver {
         } catch (e: Exception) {
             //如果出现异常，那么返回默认图标
             if (e is ProcessCanceledException) throw e
-            logger.warn("Resolve dds url failed. (definition name: ${definitionInfo.name.orAnonymous()})", e)
+            thisLogger().warn("Resolve dds url failed. (definition name: ${definitionInfo.name.orAnonymous()})", e)
             return null
         }
     }
@@ -65,7 +63,7 @@ object ParadoxImageResolver {
         } catch (e: Exception) {
             //如果出现异常，那么返回默认图标
             if (e is ProcessCanceledException) throw e
-            logger.warn("Resolve dds url failed. (dds file path: ${file.path})", e)
+            thisLogger().warn("Resolve dds url failed. (dds file path: ${file.path})", e)
             return null
         }
     }
@@ -82,7 +80,7 @@ object ParadoxImageResolver {
         } catch (e: Exception) {
             //如果出现异常，那么返回默认图标
             if (e is ProcessCanceledException) throw e
-            logger.warn("Resolve dds url failed. (dds file path: ${filePath})", e)
+            thisLogger().warn("Resolve dds url failed. (dds file path: ${filePath})", e)
             return null
         }
     }
@@ -131,11 +129,11 @@ object ParadoxImageResolver {
 
     fun getUnknownPngUrl(): String {
         //如果首次获取或者图片路径不存在，则将jar包中的unknown.png复制到~/.pls/images中
-        if (clearUnknownPng.getAndSet(false) || PlsConstants.Paths.unknownPngPath.notExists()) {
+        if (clearUnknownPng.getAndSet(false) || PlsConstants.Paths.unknownPng.notExists()) {
             PlsConstants.Paths.unknownPngClasspathUrl.openStream().use { inputStream ->
-                Files.copy(inputStream, PlsConstants.Paths.unknownPngPath, StandardCopyOption.REPLACE_EXISTING)
+                Files.copy(inputStream, PlsConstants.Paths.unknownPng, StandardCopyOption.REPLACE_EXISTING)
             }
         }
-        return PlsConstants.Paths.unknownPngPath.toString()
+        return PlsConstants.Paths.unknownPng.toString()
     }
 }

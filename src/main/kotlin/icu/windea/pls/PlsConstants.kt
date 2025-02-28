@@ -1,6 +1,5 @@
 package icu.windea.pls
 
-import icons.*
 import icu.windea.pls.core.*
 
 object PlsConstants {
@@ -53,28 +52,21 @@ object PlsConstants {
     }
 
     object Patterns {
-        val scriptedVariableNameRegex = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
-        val localisationPropertyNameRegex = """[a-zA-Z0-9_.\-']+""".toRegex()
-        val parameterNameRegex = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
+        val scriptedVariableName = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
+        val localisationPropertyName = """[a-zA-Z0-9_.\-']+""".toRegex()
+        val parameterName = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
     }
 
     object Paths {
-        val userHome = System.getProperty("user.home")
+        val userHome = System.getProperty("user.home").toPath()
+        val data = userHome.resolve(".pls")
+        val images = data.resolve("images")
+        val diff = data.resolve("diff")
 
-        const val dataDirectory = ".pls"
-        val dataDirectoryPath = userHome.toPath().resolve(dataDirectory)
+        val unknownPng = data.resolve("unknown.png")
+        val unknownPngClasspathUrl = "/tools/unknown.png".toClasspathUrl(locationClass)
 
-        const val imagesDirectory = "images"
-        val imagesDirectoryPath = dataDirectoryPath.resolve(imagesDirectory)
-
-        const val diffDirectory = "diff"
-        val diffDirectoryPath = dataDirectoryPath.resolve(diffDirectory)
-
-        const val configDirectory = "config"
-        val configDirectoryPath = dataDirectoryPath.resolve(configDirectory)
-
-        const val unknownPng = "unknown.png"
-        val unknownPngPath = imagesDirectoryPath.resolve(unknownPng)
-        val unknownPngClasspathUrl = "/images/$unknownPng".toClasspathUrl(locationClass)
+        val texconvExe = data.resolve("texconv.exe")
+        val texconvExeClasspathUrl = "/tools/texconv.exe".toClasspathUrl(locationClass)
     }
 }

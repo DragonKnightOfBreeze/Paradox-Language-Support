@@ -7,6 +7,8 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 
+private val logger = logger<CwtSchemaExpression>()
+
 sealed class CwtSchemaExpression(
     override val expressionString: String
 ) : CwtExpression {
@@ -66,7 +68,7 @@ sealed class CwtSchemaExpression(
                 }
             }
             if (indices.size % 2 == 1) {
-                thisLogger().warn("Invalid schema expression $expressionString, fallback to constant")
+                logger.warn("Invalid schema expression $expressionString, fallback to constant")
                 return Constant(expressionString)
             }
             val pattern = expressionString.replace(parameterRegex, "*")

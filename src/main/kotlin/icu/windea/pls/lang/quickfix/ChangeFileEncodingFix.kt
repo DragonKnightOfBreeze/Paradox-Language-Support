@@ -27,17 +27,13 @@ class ChangeFileEncodingFix(
         val changeCharset = virtualFile.charset != charset
         val hasBom = virtualFile.hasBom(PlsConstants.utf8Bom)
         if (addBom == true && !hasBom) {
-            try {
+            runCatchingCancelable {
                 virtualFile.addBom(PlsConstants.utf8Bom)
-            } catch (e: Exception) {
-                thisLogger().warn("Unexpected exception occurred on attempt to add BOM from file $this", e)
-            }
+            }.onFailure { e -> thisLogger().warn("Unexpected exception occurred on attempt to add BOM from file $this", e) }
         } else if (addBom == false && hasBom) {
-            try {
+            runCatchingCancelable {
                 virtualFile.removeBom(PlsConstants.utf8Bom)
-            } catch (e: Exception) {
-                thisLogger().warn("Unexpected exception occurred on attempt to remove BOM from file $this", e)
-            }
+            }.onFailure { e -> thisLogger().warn("Unexpected exception occurred on attempt to remove BOM from file $this", e) }
         }
         if (changeCharset) virtualFile.charset = charset
         val fileDocumentManager = FileDocumentManager.getInstance()

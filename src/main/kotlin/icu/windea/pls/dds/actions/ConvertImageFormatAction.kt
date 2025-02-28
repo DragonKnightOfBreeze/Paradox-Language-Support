@@ -28,16 +28,15 @@ import java.util.function.Consumer
  */
 @Suppress("UnstableApiUsage")
 abstract class ConvertImageFormatAction(
-    val sourceFormatName: String,
     val targetFormatName: String,
 ) : DumbAwareAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
 
-    protected abstract fun isSourceFileType(file: VirtualFile): Boolean
+    protected abstract fun isAvailableForFile(file: VirtualFile): Boolean
 
-    protected abstract fun getNewFileName(name: String): String
+    protected abstract fun getNewFileName(fileName: String): String
 
     protected abstract fun convertImageFormat(file: PsiFile, targetDirectory: PsiDirectory): PsiFile?
 
@@ -46,8 +45,8 @@ abstract class ConvertImageFormatAction(
         val editor = e.getData(CommonDataKeys.EDITOR)
         val enabled = when {
             project == null -> false
-            editor != null -> e.getData(LangDataKeys.VIRTUAL_FILE)?.let { isSourceFileType(it) } == true
-            else -> e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)?.any { isSourceFileType(it) } == true
+            editor != null -> e.getData(LangDataKeys.VIRTUAL_FILE)?.let { isAvailableForFile(it) } == true
+            else -> e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)?.any { isAvailableForFile(it) } == true
         }
         e.presentation.isEnabledAndVisible = enabled
     }
@@ -56,10 +55,10 @@ abstract class ConvertImageFormatAction(
         val project = e.project ?: return
         val editor = e.getData(CommonDataKeys.EDITOR)
         val files = if (editor != null) {
-            val file = e.getData(LangDataKeys.VIRTUAL_FILE)?.takeIf { isSourceFileType(it) }?.toPsiFile(project) ?: return
+            val file = e.getData(LangDataKeys.VIRTUAL_FILE)?.takeIf { isAvailableForFile(it) }?.toPsiFile(project) ?: return
             listOf(file)
         } else {
-            e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)?.filter { isSourceFileType(it) }?.mapNotNull { it.toPsiFile(project) } ?: return
+            e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)?.filter { isAvailableForFile(it) }?.mapNotNull { it.toPsiFile(project) } ?: return
         }
         if (files.isEmpty()) return
         convert(files, project)
@@ -70,7 +69,7 @@ abstract class ConvertImageFormatAction(
 
         val newName: String?
         val targetDirectory: PsiDirectory?
-        val dialog = ConvertImageFormatDialog(sourceFormatName, targetFormatName, files, project, defaultNewFileName)
+        val dialog = ConvertImageFormatDialog(files, project, defaultNewFileName, targetFormatName)
         if (dialog.showAndGet()) {
             newName = if (files.size == 1) dialog.newFileName else null
             targetDirectory = dialog.targetDirectory
@@ -79,7 +78,7 @@ abstract class ConvertImageFormatAction(
         }
         if (targetDirectory != null) {
             val command = { doConvert(files, newName, targetDirectory) }
-            val title = PlsBundle.message("dds.command.convertImageFormat.name", sourceFormatName, targetFormatName)
+            val title = PlsBundle.message("dds.command.convertImageFormat.name", targetFormatName)
             CommandProcessor.getInstance().executeCommand(project, command, title, null)
         }
     }
@@ -91,7 +90,7 @@ abstract class ConvertImageFormatAction(
         }
 
         try {
-            val title = PlsBundle.message("dds.command.convertImageFormat.name", sourceFormatName, targetFormatName)
+            val title = PlsBundle.message("dds.command.convertImageFormat.name", targetFormatName)
             val choice = if (files.size > 1 || files[0].isDirectory) intArrayOf(-1) else null
             val added = mutableListOf<PsiFile>()
             saveToDirectory(files, newName, targetDirectory, choice, title, added)

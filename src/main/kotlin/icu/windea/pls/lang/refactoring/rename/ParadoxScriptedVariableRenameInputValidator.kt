@@ -12,7 +12,7 @@ class ParadoxScriptedVariableRenameInputValidator : RenameInputValidator {
     private val elementPattern = psiElement(ParadoxScriptScriptedVariable::class.java)
 
     override fun isInputValid(newName: String, element: PsiElement, context: ProcessingContext): Boolean {
-        return PlsConstants.Patterns.scriptedVariableNameRegex.matches(newName)
+        return PlsConstants.Patterns.scriptedVariableName.matches(newName)
     }
 
     override fun getPattern(): ElementPattern<out PsiElement> {

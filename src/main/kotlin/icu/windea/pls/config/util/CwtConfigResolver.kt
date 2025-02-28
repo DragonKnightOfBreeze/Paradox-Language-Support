@@ -11,9 +11,9 @@ import icu.windea.pls.model.*
 import java.lang.invoke.*
 import java.util.*
 
-object CwtConfigResolver {
-    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
+private val logger = logger<CwtConfigResolver>()
 
+object CwtConfigResolver {
     fun resolve(file: CwtFile, configGroup: CwtConfigGroup): CwtFileConfig {
         val rootBlock = file.block
         val properties = mutableListOf<CwtPropertyConfig>()

@@ -12,7 +12,7 @@ class ParadoxLocalisationPropertyRenameInputValidator : RenameInputValidator {
     private val elementPattern = psiElement(ParadoxLocalisationProperty::class.java)
 
     override fun isInputValid(newName: String, element: PsiElement, context: ProcessingContext): Boolean {
-        return PlsConstants.Patterns.localisationPropertyNameRegex.matches(newName)
+        return PlsConstants.Patterns.localisationPropertyName.matches(newName)
     }
 
     override fun getPattern(): ElementPattern<out PsiElement> {

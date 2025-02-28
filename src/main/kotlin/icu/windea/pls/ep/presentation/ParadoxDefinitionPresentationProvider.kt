@@ -9,6 +9,8 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
+private val logger = logger<ParadoxDefinitionPresentationProvider>()
+
 /**
  * 用于绘制定义的UI表示。
  */
@@ -30,7 +32,7 @@ interface ParadoxDefinitionPresentationProvider {
                     ep.getPresentation(definition, definitionInfo)
                 } catch (e: Exception) {
                     if (e is ProcessCanceledException) throw e
-                    thisLogger().warn(e)
+                    logger.warn(e)
                     null
                 }
             }

@@ -4,10 +4,13 @@ import com.intellij.ide.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.progress.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.inject.support.*
 import javassist.*
 import java.lang.reflect.*
+
+private val logger = logger<CodeInjectorService>()
 
 @Service
 class CodeInjectorService {
@@ -56,7 +59,7 @@ class CodeInjectorService {
                 codeInjector.inject()
             } catch (e: Exception) {
                 //NOTE IDE更新到新版本后，某些代码注入器可能已不再兼容，因而需要进行必要的验证和代码更改
-                thisLogger().warn(e.message, e)
+                logger.warn(e.message, e)
             }
             codeInjectors.put(codeInjector.id, codeInjector)
         }

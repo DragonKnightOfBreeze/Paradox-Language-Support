@@ -4,6 +4,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
+import icu.windea.pls.dds.support.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*
 import icu.windea.pls.lang.util.image.*
@@ -40,7 +41,7 @@ class IfsUtilCodeInjector : CodeInjectorBase() {
                 file.putUserData(IMAGE_PROVIDER_REF_KEY, null)
 
                 //convert dds bytes to png bytes
-                val bytes = ImageManager.convertDdsToPng(file.inputStream) ?: return false
+                val bytes = DdsManager.convertDdsToPng(file.inputStream) ?: return false
                 val inputStream = ByteArrayInputStream(bytes)
                 val imageInputStream = ImageIO.createImageInputStream(inputStream)
                 imageInputStream.use {

@@ -60,7 +60,7 @@ class ParadoxGameSettingsDialog(
             }
 
             //modDependencies
-            collapsibleGroup(PlsBundle.message("mod.settings.modDependencies"), false) {
+            collapsibleGroup(PlsBundle.message("mod.dependencies"), false) {
                 row {
                     cell(ParadoxModDependenciesTable.createPanel(project, settings, modDependencies)).align(Align.FILL)
                 }

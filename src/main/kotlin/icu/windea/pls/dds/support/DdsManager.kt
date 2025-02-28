@@ -1,10 +1,20 @@
-package icu.windea.pls.lang.util.image
+package icu.windea.pls.dds.support
 
 import co.phoenixlab.dds.*
+import com.intellij.openapi.vfs.*
+import icu.windea.pls.dds.*
 import icu.windea.pls.model.*
 import java.io.*
 
-object ImageManager {
+object DdsManager {
+    fun getMetadata(file: VirtualFile): DdsMetadata? {
+        return DdsSupport.EP_NAME.extensionList.firstNotNullOfOrNull { it.getMetadata(file) }
+    }
+
+    fun convertImageFormat(file: VirtualFile, targetDirectory: VirtualFile, targetFormat: String): VirtualFile? {
+        return DdsSupport.EP_NAME.extensionList.firstNotNullOfOrNull { it.convertImageFormat(file, targetDirectory, targetFormat) }
+    }
+
     //可选方案：
     //DDS4J (https://github.com/vincentzhang96/DDS4J)
     //JOGL (https://jogamp.org/jogl/www/)
@@ -27,4 +37,3 @@ object ImageManager {
         ddsImageDecoder.convertToPNG(dds, outputStream, frameInfo)
     }
 }
-

@@ -14,13 +14,6 @@ interface DdsSupport {
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<DdsSupport>("icu.windea.pls.dds.support")
-
-        fun getMetadata(file: VirtualFile): DdsMetadata? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.getMetadata(file) }
-        }
-
-        fun convertImageFormat(file: VirtualFile, targetDirectory: VirtualFile, targetFormat: String): VirtualFile? {
-            return EP_NAME.extensionList.firstNotNullOfOrNull { it.convertImageFormat(file, targetDirectory, targetFormat) }
-        }
     }
 }
+

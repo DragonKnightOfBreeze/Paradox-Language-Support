@@ -19,16 +19,14 @@ import icu.windea.pls.core.*
 
 //com.intellij.refactoring.copy.CopyFilesOrDirectoriesDialog
 
-@Suppress("CanBeParameter")
 class ConvertImageFormatDialog(
-    private val sourceFormatName: String,
-    private val targetFormatName: String,
     private val files: List<PsiFile>,
     private val project: Project,
     private val defaultNewFileName: String?,
+    private val targetFormatName: String,
 ) : DialogWrapper(project, true) {
     private val maxPathLength = 70
-    private val recentKeys = "Pls.ConvertImageFormat.RECENT_KEYS.$sourceFormatName.$targetFormatName"
+    private val recentKeys = "Pls.ConvertImageFormat.RECENT_KEYS.$targetFormatName"
 
     private val defaultTargetDirectory = files.first().parent
 
@@ -39,7 +37,7 @@ class ConvertImageFormatDialog(
     private var targetDirectoryField: TextFieldWithHistoryWithBrowseButton? = null
 
     init {
-        title = PlsBundle.message("dds.dialog.convertImageFormat.title", sourceFormatName, targetFormatName)
+        title = PlsBundle.message("dds.dialog.convertImageFormat.title", targetFormatName)
         init()
     }
 
@@ -52,10 +50,10 @@ class ConvertImageFormatDialog(
             val text = when {
                 files.size == 1 -> {
                     val virtualFile = files.first().virtualFile
-                    PlsBundle.message("dds.dialog.convertImageFormat.info", sourceFormatName, shortenPath(virtualFile))
+                    PlsBundle.message("dds.dialog.convertImageFormat.info", shortenPath(virtualFile), targetFormatName)
                 }
                 else -> {
-                    PlsBundle.message("dds.dialog.convertImageFormat.info.1", sourceFormatName)
+                    PlsBundle.message("dds.dialog.convertImageFormat.info.1", targetFormatName)
                 }
             }
             label(text).bold()
