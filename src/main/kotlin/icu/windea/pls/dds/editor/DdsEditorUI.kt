@@ -154,8 +154,12 @@ class DdsEditorUI(
                 infoLabel.text = buildString {
                     append(metadata.width).append("x").append(metadata.height)
                     append(" ").append(format)
-                    metadata.dxgiFormat?.orNull()?.let { append(" (").append(it).append(")") }
-                    fileSize?.orNull()?.let { append(" (").append(it) }
+                    append(" (")
+                    append(metadata.d3dFormat?.orNull() ?: "UNKNOWN")
+                    append(", ")
+                    append(metadata.dxgiFormat?.orNull() ?: "UNKNOWN")
+                    append(")")
+                    fileSize?.orNull()?.let { append(" ").append(it) }
                 }
             } else if (image != null) {
                 infoLabel.text = buildString {

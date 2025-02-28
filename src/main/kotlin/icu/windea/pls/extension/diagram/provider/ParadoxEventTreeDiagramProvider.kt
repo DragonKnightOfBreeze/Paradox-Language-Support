@@ -141,7 +141,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                         }
                         nodeItem is PsiFile -> {
                             //事件图片
-                            val frameInfo = nodeElement.getUserData(PlsKeys.frameInfo)
+                            val frameInfo = nodeElement.getUserData(PlsKeys.imageFrameInfo)
                             val iconUrl = ParadoxImageResolver.resolveUrlByFile(nodeItem.virtualFile, frameInfo) ?: return null
                             val icon = iconUrl.toFileUrl().toIconOrNull()
                             icon?.toLabel()
@@ -219,7 +219,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
 
     abstract class DataModel(
         project: Project,
-        file: VirtualFile?, //umlFile   
+        file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
         override fun getModificationTracker(): FilePathBasedModificationTracker {

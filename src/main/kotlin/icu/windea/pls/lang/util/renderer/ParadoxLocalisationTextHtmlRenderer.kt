@@ -125,7 +125,7 @@ object ParadoxLocalisationTextHtmlRenderer {
     private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context) {
         val resolved = element.reference?.resolve()
         val iconFrame = element.frame
-        val frameInfo = FrameInfo.of(iconFrame)
+        val frameInfo = ImageFrameInfo.of(iconFrame)
         val iconUrl = when {
             resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, frameInfo)
             resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, frameInfo)

@@ -732,7 +732,7 @@ object ParadoxDefinitionManager {
             val resolved = primaryImage.locationExpression.resolve(element, definitionInfo, toFile = true)
             val file = resolved?.element?.castOrNull<PsiFile>()
             if (file == null) continue
-            element.putUserData(PlsKeys.frameInfo, resolved.frameInfo)
+            element.putUserData(PlsKeys.imageFrameInfo, resolved.frameInfo)
             return file
         }
         return null

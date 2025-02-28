@@ -67,7 +67,7 @@ object ParadoxPresentationManager {
 
     fun getIcon(definition: ParadoxScriptDefinitionElement, ddsFile: PsiFile): Icon? {
         val iconFile = ddsFile.virtualFile ?: return null
-        val frameInfo = definition.getUserData(PlsKeys.frameInfo)
+        val frameInfo = definition.getUserData(PlsKeys.imageFrameInfo)
         val iconUrl = ParadoxImageResolver.resolveUrlByFile(iconFile, frameInfo) ?: return null
         return iconUrl.toFileUrl().toIconOrNull()
     }

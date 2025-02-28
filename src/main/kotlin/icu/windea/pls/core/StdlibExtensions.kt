@@ -244,12 +244,12 @@ fun Char.isExactDigit(): Boolean {
     return this in '0'..'9'
 }
 
-fun String.isLeftQuoted(): Boolean {
-    return startsWith('"')
+fun String.isLeftQuoted(quote: Char = '"'): Boolean {
+    return startsWith(quote)
 }
 
-fun String.isRightQuoted(): Boolean {
-    return length > 1 && endsWith('"') && run {
+fun String.isRightQuoted(quote: Char = '"'): Boolean {
+    return length > 1 && endsWith(quote) && run {
         var n = 0
         for (i in (lastIndex - 1) downTo 0) {
             if (this[i] == '\\') n++ else break
@@ -258,34 +258,34 @@ fun String.isRightQuoted(): Boolean {
     }
 }
 
-fun String.isQuoted(): Boolean {
-    return isLeftQuoted() || isRightQuoted()
+fun String.isQuoted(quote: Char = '"'): Boolean {
+    return isLeftQuoted(quote) || isRightQuoted(quote)
 }
 
-fun String.quote(): String {
+fun String.quote(quote: Char = '"'): String {
     val s = this
-    if (s.isEmpty() || s == "\"") return "\"\""
-    val start = isLeftQuoted()
-    val end = isRightQuoted()
+    if (s.isEmpty() || s == quote.toString()) return "$quote$quote"
+    val start = isLeftQuoted(quote)
+    val end = isRightQuoted(quote)
     if (start && end) return s
     return buildString {
-        append("\"")
+        append(quote)
         s.forEach { c ->
             when (c) {
-                '"' -> append("\\\"")
+                quote -> append("\\$quote")
                 '\\' -> append("\\\\")
                 else -> append(c)
             }
         }
-        append("\"")
+        append(quote)
     }
 }
 
-fun String.unquote(): String {
+fun String.unquote(quote: Char = '"'): String {
     val s = this
-    if (s.isEmpty() || s == "\"") return ""
-    val start = isLeftQuoted()
-    val end = isRightQuoted()
+    if (s.isEmpty() || s == quote.toString()) return ""
+    val start = isLeftQuoted(quote)
+    val end = isRightQuoted(quote)
     return buildString {
         var escape = false
         s.forEachIndexed f@{ i, c ->
@@ -294,7 +294,7 @@ fun String.unquote(): String {
             if (escape) {
                 escape = false
                 when (c) {
-                    '\"' -> append(c)
+                    quote -> append(c)
                     '\\' -> append(c)
                     else -> append('\\').append(c)
                 }
@@ -307,9 +307,9 @@ fun String.unquote(): String {
     }
 }
 
-fun String.quoteIfNecessary(): String {
+fun String.quoteIfNecessary(quote: Char = '"'): String {
     //如果包含空白或者双引号的话要使用双引号括起
-    if (any { it.isWhitespace() || it == '"' }) return this.quote()
+    if (any { it.isWhitespace() || it == quote }) return this.quote(quote)
     return this
 }
 

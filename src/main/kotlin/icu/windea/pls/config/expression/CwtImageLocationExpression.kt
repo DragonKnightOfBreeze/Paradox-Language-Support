@@ -14,7 +14,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
@@ -41,28 +40,28 @@ interface CwtImageLocationExpression : CwtExpression {
     fun resolve(
         definition: ParadoxScriptDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
-        frameInfo: FrameInfo? = null,
+        frameInfo: ImageFrameInfo? = null,
         toFile: Boolean = false
     ): ResolveResult?
 
     fun resolveAll(
         definition: ParadoxScriptDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
-        frameInfo: FrameInfo? = null,
+        frameInfo: ImageFrameInfo? = null,
         toFile: Boolean = false
     ): ResolveAllResult?
 
     data class ResolveResult(
         val nameOrFilePath: String,
         val element: PsiElement?,
-        val frameInfo: FrameInfo? = null,
+        val frameInfo: ImageFrameInfo? = null,
         val message: String? = null
     )
 
     data class ResolveAllResult(
         val nameOrFilePath: String,
         val elements: Set<PsiElement>,
-        val frameInfo: FrameInfo? = null,
+        val frameInfo: ImageFrameInfo? = null,
         val message: String? = null
     )
 
@@ -113,7 +112,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
         return buildString { for (c in placeholder) if (c == '$') append(name) else append(c) }
     }
 
-    override fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: FrameInfo?, toFile: Boolean): ResolveResult? {
+    override fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: ImageFrameInfo?, toFile: Boolean): ResolveResult? {
         val project = definitionInfo.project
         var newFrameInfo = frameInfo
         if (definitionInfo.type == "sprite") {
@@ -202,7 +201,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
         }
     }
 
-    override fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: FrameInfo?, toFile: Boolean): ResolveAllResult? {
+    override fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, frameInfo: ImageFrameInfo?, toFile: Boolean): ResolveAllResult? {
         val project = definitionInfo.project
         var newFrameInfo = frameInfo
         if (definitionInfo.type == "sprite") {

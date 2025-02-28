@@ -23,7 +23,8 @@ class DdsDocumentationProvider : AbstractDocumentationProvider() {
             if (metadata != null) {
                 val info = buildString {
                     append(metadata.width).append("x").append(metadata.height)
-                    metadata.dxgiFormat?.orNull()?.let { append(", ").append(it) }
+                    append(", ").append(metadata.d3dFormat?.orNull() ?: "UNKNOWN")
+                    append(", ").append(metadata.dxgiFormat?.orNull() ?: "UNKNOWN")
                 }
                 append(HtmlChunk.p().addText(info))
             }

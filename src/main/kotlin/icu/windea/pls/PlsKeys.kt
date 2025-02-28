@@ -57,4 +57,4 @@ val PlsKeys.bindingConfig by createKey<CwtConfig<*>>(PlsKeys)
 //用于标记快速文档使用的本地化语言区域
 val PlsKeys.documentationLocale by createKey<String>(PlsKeys)
 //用于标记图片的帧数信息以便后续进行切分
-val PlsKeys.frameInfo by createKey<FrameInfo>(PlsKeys)
+val PlsKeys.imageFrameInfo by createKey<ImageFrameInfo>(PlsKeys)
