@@ -7,8 +7,6 @@ import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
 import com.intellij.util.concurrency.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.*
@@ -16,33 +14,46 @@ import icu.windea.pls.model.*
 import icu.windea.pls.tools.ui.*
 
 /**
- * 当打开项目中的模组文件时，检查模组的游戏目录是否已配置。如果未配置则弹出通知。
+ * 当打开模组文件时，检查模组的游戏目录是否已配置。如果未配置则弹出通知。
  */
 class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListener {
     object Keys : KeyRegistry() {
-        val checkedModPaths by createKey<MutableSet<String>>(this)
+        val checked by createKey<Boolean>(this)
     }
 
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
-        val project = source.project
-        val fileInfo = file.fileInfo ?: return
-        val rootInfo = fileInfo.rootInfo
-        if (rootInfo !is ParadoxRootInfo.Mod) return
-        val rootFile = rootInfo.rootFile
-        if (!rootFile.isValid) return
-        val modPaths = project.getOrPutUserData(Keys.checkedModPaths) { mutableSetOf<String>().synced() }
-        val modPath = rootFile.path
-        if (!modPaths.add(modPath)) return
+        //For whole application (and never reset check status), not for each project
+
+        val parent = file.parent ?: return
+        if (parent.getUserData(Keys.checked) == true) return
+        var dir = parent
+        while (true) {
+            dir = dir.parent ?: break
+            if (dir.getUserData(Keys.checked) == true) {
+                parent.putUserData(Keys.checked, true)
+                return
+            }
+        }
+
+        parent.putUserData(Keys.checked, true)
+
+        //Slow operations are prohibited on EDT, so these code must be done in a background thread.
 
         ReadAction.nonBlocking<Boolean> action@{
-            //Slow operations are prohibited on EDT, so this must be done in a background thread.
+            val project = source.project
+            val fileInfo = file.fileInfo ?: return@action false
+            val rootInfo = fileInfo.rootInfo
+            if (rootInfo !is ParadoxRootInfo.Mod) return@action false
+            val rootFile = rootInfo.rootFile
+            if (!rootFile.isValid) return@action false
+
             val isInProject = ProjectFileIndex.getInstance(project).isInContent(rootFile)
             if (!isInProject) return@action false
 
-            val modSettings = getProfilesSettings().modSettings.get(modPath) ?: return@action false
-            if (!modSettings.finalGameDirectory.isNullOrEmpty()) return@action false
-
             run {
+                val modSettings = getProfilesSettings().modSettings.get(rootFile.path) ?: return@action false
+                if (!modSettings.finalGameDirectory.isNullOrEmpty()) return@action false
+
                 val title = modSettings.qualifiedName ?: return@action false
                 val content = PlsBundle.message("mod.settings.notification.1.content")
 
