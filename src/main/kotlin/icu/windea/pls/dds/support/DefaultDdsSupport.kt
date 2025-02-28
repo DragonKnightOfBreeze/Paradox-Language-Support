@@ -1,6 +1,7 @@
 package icu.windea.pls.dds.support
 
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.dds.*
 import io.github.ititus.dds.*
 
 /**
@@ -24,5 +25,9 @@ class DefaultDdsSupport: DdsSupport {
             dxgiFormat = ddsFile.dxgiFormat()?.toString(),
         )
         return ddsMetadata
+    }
+
+    override fun convertImageFormat(file: VirtualFile, targetDirectory: VirtualFile, targetFormat: String): VirtualFile? {
+        return null //unsupported
     }
 }

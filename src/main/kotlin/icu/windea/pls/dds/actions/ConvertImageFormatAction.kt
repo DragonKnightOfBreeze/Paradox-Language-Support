@@ -1,7 +1,6 @@
 package icu.windea.pls.dds.actions
 
 import com.intellij.codeInspection.*
-import com.intellij.ide.scratch.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ex.*
 import com.intellij.openapi.command.*
@@ -9,6 +8,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.openapi.util.registry.*
+import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.file.*
 import com.intellij.refactoring.*
@@ -17,8 +17,6 @@ import com.intellij.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.dds.*
-import icu.windea.pls.lang.util.image.*
 import java.io.*
 import java.util.concurrent.atomic.*
 import java.util.function.Consumer
@@ -26,21 +24,30 @@ import java.util.function.Consumer
 //com.intellij.refactoring.copy.CopyFilesOrDirectoriesHandler
 
 /**
- * 将DDS图片转化为PNG图片。保存到指定的路径。可以批量转化。
+ * 将选中的图片转化为指定的图片格式，并保存到指定的路径。可以批量转化。
  */
 @Suppress("UnstableApiUsage")
-class ConvertDdsToPngAction : DumbAwareAction() {
+abstract class ConvertImageFormatAction(
+    val sourceFormatName: String,
+    val targetFormatName: String,
+) : DumbAwareAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
     }
+
+    protected abstract fun isSourceFileType(file: VirtualFile): Boolean
+
+    protected abstract fun getNewFileName(name: String): String
+
+    protected abstract fun convertImageFormat(file: PsiFile, targetDirectory: PsiDirectory): PsiFile?
 
     override fun update(e: AnActionEvent) {
         val project = e.project
         val editor = e.getData(CommonDataKeys.EDITOR)
         val enabled = when {
             project == null -> false
-            editor != null -> e.getData(LangDataKeys.VIRTUAL_FILE)?.let { it.fileType == DdsFileType } == true
-            else -> e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)?.any { it.fileType == DdsFileType } == true
+            editor != null -> e.getData(LangDataKeys.VIRTUAL_FILE)?.let { isSourceFileType(it) } == true
+            else -> e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)?.any { isSourceFileType(it) } == true
         }
         e.presentation.isEnabledAndVisible = enabled
     }
@@ -49,31 +56,31 @@ class ConvertDdsToPngAction : DumbAwareAction() {
         val project = e.project ?: return
         val editor = e.getData(CommonDataKeys.EDITOR)
         val files = if (editor != null) {
-            val file = e.getData(LangDataKeys.VIRTUAL_FILE)?.takeIf { it.fileType == DdsFileType }?.toPsiFile(project) ?: return
+            val file = e.getData(LangDataKeys.VIRTUAL_FILE)?.takeIf { isSourceFileType(it) }?.toPsiFile(project) ?: return
             listOf(file)
         } else {
-            e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)?.filter { it.fileType == DdsFileType }?.mapNotNull { it.toPsiFile(project) } ?: return
+            e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)?.filter { isSourceFileType(it) }?.mapNotNull { it.toPsiFile(project) } ?: return
         }
         if (files.isEmpty()) return
         convert(files, project)
     }
 
     private fun convert(files: List<PsiFile>, project: Project) {
-        val defaultNewName = if (files.size == 1) getNewName(files.first().name) else null
-        val defaultTargetDirectory = files.first().parent?.takeUnless { ScratchUtil.isScratch(it.virtualFile) } ?: return
+        val defaultNewFileName = if (files.size == 1) getNewFileName(files.first().name) else null
 
         val newName: String?
         val targetDirectory: PsiDirectory?
-        val dialog = ConvertDdsToPngDialog(files, defaultNewName, defaultTargetDirectory, project)
+        val dialog = ConvertImageFormatDialog(sourceFormatName, targetFormatName, files, project, defaultNewFileName)
         if (dialog.showAndGet()) {
-            newName = if (files.size == 1) dialog.newName else null
+            newName = if (files.size == 1) dialog.newFileName else null
             targetDirectory = dialog.targetDirectory
         } else {
             return
         }
         if (targetDirectory != null) {
             val command = { doConvert(files, newName, targetDirectory) }
-            CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("dds.command.convertDdsToPng.name"), null)
+            val title = PlsBundle.message("dds.command.convertImageFormat.name", sourceFormatName, targetFormatName)
+            CommandProcessor.getInstance().executeCommand(project, command, title, null)
         }
     }
 
@@ -84,7 +91,7 @@ class ConvertDdsToPngAction : DumbAwareAction() {
         }
 
         try {
-            val title = PlsBundle.message("dds.command.convertDdsToPng.name")
+            val title = PlsBundle.message("dds.command.convertImageFormat.name", sourceFormatName, targetFormatName)
             val choice = if (files.size > 1 || files[0].isDirectory) intArrayOf(-1) else null
             val added = mutableListOf<PsiFile>()
             saveToDirectory(files, newName, targetDirectory, choice, title, added)
@@ -109,7 +116,7 @@ class ConvertDdsToPngAction : DumbAwareAction() {
                     thrown.set(e)
                 }
             }
-            CommandProcessor.getInstance().executeCommand(targetDirectory.project, { app.runWriteActionWithCancellableProgressInDispatchThread(ObjectUtils.notNull(title, PlsBundle.message("dds.command.convert.name")), targetDirectory.project, null, action) }, title, null)
+            CommandProcessor.getInstance().executeCommand(targetDirectory.project, { app.runWriteActionWithCancellableProgressInDispatchThread(title, targetDirectory.project, null, action) }, title, null)
             val throwable = thrown.get()
             if (throwable is ProcessCanceledException) {
                 //process was canceled, don't proceed with existing files
@@ -127,21 +134,20 @@ class ConvertDdsToPngAction : DumbAwareAction() {
         handleExistingFiles(newName, targetDirectory, choice, title, existingFiles, added)
     }
 
-    private fun saveToDirectoryUnderProgress(file: PsiFile, newName: String?, targetDirectory: PsiDirectory, added: MutableList<PsiFile>, existingFiles: MultiMap<PsiDirectory, PsiFile>, pi: ProgressIndicator?) {
+    private fun saveToDirectoryUnderProgress(file: PsiFile, newFileName: String?, targetDirectory: PsiDirectory, added: MutableList<PsiFile>, existingFiles: MultiMap<PsiDirectory, PsiFile>, pi: ProgressIndicator?) {
         if (pi != null) {
             pi.text2 = InspectionsBundle.message("processing.progress.text", file.name)
         }
 
-        val backendPngFile = ParadoxImageResolver.getPngFile(file.virtualFile) ?: return
-        val name = newName ?: getNewName(file.name)
+        val name = newFileName ?: getNewFileName(file.name)
         val existing = targetDirectory.findFile(name)
         if (existing != null && existing != file) {
             existingFiles.putValue(targetDirectory, file)
             return
         }
+
         targetDirectory.cast<PsiDirectoryImpl>().executeWithUpdatingAddedFilesDisabled<Throwable> action@{
-            val backendPngPsiFile = backendPngFile.toPsiFile(targetDirectory.project) ?: return@action
-            val savedPsiFile = targetDirectory.copyFileFrom(name, backendPngPsiFile)
+            val savedPsiFile = convertImageFormat(file, targetDirectory) ?: return@action
             added.add(savedPsiFile)
         }
     }
@@ -156,12 +162,8 @@ class ConvertDdsToPngAction : DumbAwareAction() {
         }
     }
 
-    private fun getNewName(name: String): String {
-        return if (name.takeLast(4).equals(".dds", true)) name.dropLast(4) + ".png" else "$name.png"
-    }
-
     private fun handleExistingFiles(newName: String?, targetDirectory: PsiDirectory, choice: IntArray?, title: String, existingFiles: MultiMap<PsiDirectory, PsiFile>, added: MutableList<PsiFile>) {
-        var defaultChoice = if (choice != null && choice[0] > -1) SkipOverwriteChoice.values()[choice[0]] else null
+        var defaultChoice = if (choice != null && choice[0] > -1) SkipOverwriteChoice.entries[choice[0]] else null
         try {
             defaultChoice = handleExistingFiles(defaultChoice, choice, newName, targetDirectory, title, existingFiles, added, null)
         } finally {
@@ -194,7 +196,8 @@ class ConvertDdsToPngAction : DumbAwareAction() {
                             handleExistingFiles(SkipOverwriteChoice.OVERWRITE_ALL, choice, newName, targetDirectory, title, existingFiles, added, pi)
                         }
                         if (Registry.`is`("run.refactorings.under.progress")) {
-                            CommandProcessor.getInstance().executeCommand(project, { ApplicationManagerEx.getApplicationEx().runWriteActionWithCancellableProgressInDispatchThread(title, project, null, r) }, title, null)
+                            val action = Runnable { ApplicationManagerEx.getApplicationEx().runWriteActionWithCancellableProgressInDispatchThread(title, project, null, r) }
+                            CommandProcessor.getInstance().executeCommand(project, action, title, null)
                         } else {
                             r.accept(null)
                         }

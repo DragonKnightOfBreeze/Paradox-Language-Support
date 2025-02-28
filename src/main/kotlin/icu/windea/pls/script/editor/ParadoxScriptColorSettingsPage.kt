@@ -53,6 +53,7 @@ class ParadoxScriptColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("script.displayName.variable"), ParadoxScriptAttributesKeys.VARIABLE_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.dynamicValue"), ParadoxScriptAttributesKeys.DYNAMIC_VALUE_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.databaseObjectType"), ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE_KEY),
+        AttributesDescriptor(PlsBundle.message("script.displayName.databaseObject"), ParadoxScriptAttributesKeys.DATABASE_OBJECT_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.definePrefix"), ParadoxScriptAttributesKeys.DEFINE_PREFIX_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.defineNamespace"), ParadoxScriptAttributesKeys.DEFINE_NAMESPACE_KEY),
         AttributesDescriptor(PlsBundle.message("script.displayName.defineVariable"), ParadoxScriptAttributesKeys.DEFINE_VARIABLE_KEY),

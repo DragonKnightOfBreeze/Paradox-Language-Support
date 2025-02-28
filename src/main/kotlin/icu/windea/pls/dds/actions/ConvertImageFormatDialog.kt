@@ -19,25 +19,27 @@ import icu.windea.pls.core.*
 
 //com.intellij.refactoring.copy.CopyFilesOrDirectoriesDialog
 
-class ConvertDdsToPngDialog(
+@Suppress("CanBeParameter")
+class ConvertImageFormatDialog(
+    private val sourceFormatName: String,
+    private val targetFormatName: String,
     private val files: List<PsiFile>,
-    private val defaultNewName: String?,
-    private val defaultTargetDirectory: PsiDirectory,
-    private val project: Project
+    private val project: Project,
+    private val defaultNewFileName: String?,
 ) : DialogWrapper(project, true) {
-    companion object {
-        private const val MAX_PATH_LENGTH = 70
-        private const val RECENT_KEYS = "Pls.ConvertDdsToPng.RECENT_KEYS"
-    }
+    private val maxPathLength = 70
+    private val recentKeys = "Pls.ConvertImageFormat.RECENT_KEYS.$sourceFormatName.$targetFormatName"
 
-    val newName: String? get() = newNameField?.text?.trim()
+    private val defaultTargetDirectory = files.first().parent
+
+    val newFileName: String? get() = newFileNameField?.text?.trim()
     var targetDirectory: PsiDirectory? = defaultTargetDirectory
 
-    var newNameField: EditorTextField? = null
-    var targetDirectoryField: TextFieldWithHistoryWithBrowseButton? = null
+    private var newFileNameField: EditorTextField? = null
+    private var targetDirectoryField: TextFieldWithHistoryWithBrowseButton? = null
 
     init {
-        title = PlsBundle.message("dds.dialog.convertDdsToPng.title")
+        title = PlsBundle.message("dds.dialog.convertImageFormat.title", sourceFormatName, targetFormatName)
         init()
     }
 
@@ -50,25 +52,25 @@ class ConvertDdsToPngDialog(
             val text = when {
                 files.size == 1 -> {
                     val virtualFile = files.first().virtualFile
-                    PlsBundle.message("dds.dialog.convertDdsToPng.info", shortenPath(virtualFile))
+                    PlsBundle.message("dds.dialog.convertImageFormat.info", sourceFormatName, shortenPath(virtualFile))
                 }
                 else -> {
-                    PlsBundle.message("dds.dialog.convertDdsToPng.info.1")
+                    PlsBundle.message("dds.dialog.convertImageFormat.info.1", sourceFormatName)
                 }
             }
             label(text).bold()
         }
         if (files.size == 1) {
             row {
-                label(PlsBundle.message("dds.dialog.convertDdsToPng.newName")).widthGroup("left")
-                cell(initNewNameField())
+                label(PlsBundle.message("dds.dialog.convertImageFormat.newFileName")).widthGroup("left")
+                cell(initNewFileNameField())
                     .align(Align.FILL)
                     .resizableColumn()
                     .focused()
             }
         }
         row {
-            label(PlsBundle.message("dds.dialog.convertDdsToPng.targetDirectory")).widthGroup("left")
+            label(PlsBundle.message("dds.dialog.convertImageFormat.targetDirectory")).widthGroup("left")
             cell(initTargetDirectoryField())
                 .align(Align.FILL)
                 .resizableColumn()
@@ -78,59 +80,59 @@ class ConvertDdsToPngDialog(
         }
     }
 
-    private fun initNewNameField(): EditorTextField {
-        val newName = defaultNewName.orEmpty()
-        val newNameField = EditorTextField()
-        newNameField.text = newName
-        newNameField.editor.let { editor ->
+    private fun initNewFileNameField(): EditorTextField {
+        val newFileName = defaultNewFileName.orEmpty()
+        val newFileNameField = EditorTextField()
+        newFileNameField.text = newFileName
+        newFileNameField.editor.let { editor ->
             if (editor != null) {
-                val dotIndex = newName.indexOf('.').let { if (it == -1) newName.length else it }
+                val dotIndex = newFileName.indexOf('.').let { if (it == -1) newFileName.length else it }
                 editor.selectionModel.setSelection(0, dotIndex)
                 editor.caretModel.moveToOffset(dotIndex)
             } else {
-                newNameField.selectAll()
+                newFileNameField.selectAll()
             }
         }
-        return newNameField
+        return newFileNameField
     }
 
     private fun initTargetDirectoryField(): TextFieldWithHistoryWithBrowseButton {
         val targetDirectoryField = TextFieldWithHistoryWithBrowseButton().also { this.targetDirectoryField = it }
-        targetDirectoryField.setTextFieldPreferredWidth(MAX_PATH_LENGTH)
-        val recentEntries = RecentsManager.getInstance(project).getRecentEntries(RECENT_KEYS)
+        targetDirectoryField.setTextFieldPreferredWidth(maxPathLength)
+        val recentEntries = RecentsManager.getInstance(project).getRecentEntries(recentKeys)
         val targetDirectoryComponent = targetDirectoryField.childComponent
-        val targetPath = defaultTargetDirectory.virtualFile.presentableUrl
+        val targetPath = defaultTargetDirectory?.virtualFile?.presentableUrl
         if (recentEntries != null) targetDirectoryComponent.history = recentEntries
         targetDirectoryComponent.text = targetPath
         val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
         targetDirectoryField.addBrowseFolderListener(
-            PlsBundle.message("dds.dialog.convertDdsToPng.targetDirectory.title"),
-            PlsBundle.message("dds.dialog.convertDdsToPng.targetDirectory.description"),
+            PlsBundle.message("dds.dialog.convertImageFormat.targetDirectory.title"),
+            PlsBundle.message("dds.dialog.convertImageFormat.targetDirectory.description"),
             project, descriptor, TextComponentAccessors.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT
         )
         return targetDirectoryField
     }
 
     private fun shortenPath(file: VirtualFile): String {
-        return StringUtil.shortenPathWithEllipsis(file.presentableUrl, MAX_PATH_LENGTH)
+        return StringUtil.shortenPathWithEllipsis(file.presentableUrl, maxPathLength)
     }
 
     override fun doOKAction() {
-        newNameField?.let {
-            val newName = newName
-            if (newName.isNullOrEmpty()) {
-                Messages.showErrorDialog(project, PlsBundle.message("dds.dialog.convertDdsToPng.newName.error"), PlsBundle.message("error.title"))
+        newFileNameField?.let {
+            val newFileName = newFileName
+            if (newFileName.isNullOrEmpty()) {
+                Messages.showErrorDialog(project, PlsBundle.message("dds.dialog.convertImageFormat.newFileName.error"), PlsBundle.message("error.title"))
                 return
             }
         }
         targetDirectoryField?.let {
             val targetDirectoryName = targetDirectoryField!!.childComponent.text
             if (targetDirectoryName.isEmpty()) {
-                Messages.showErrorDialog(project, PlsBundle.message("dds.dialog.convertDdsToPng.targetDirectory.error"), PlsBundle.message("error.title"))
+                Messages.showErrorDialog(project, PlsBundle.message("dds.dialog.convertImageFormat.targetDirectory.error"), PlsBundle.message("error.title"))
                 return
             }
 
-            RecentsManager.getInstance(project).registerRecentEntry(RECENT_KEYS, targetDirectoryName)
+            RecentsManager.getInstance(project).registerRecentEntry(recentKeys, targetDirectoryName)
 
             executeCommand(project, PlsBundle.message("create.directory"), null) {
                 runWriteAction {

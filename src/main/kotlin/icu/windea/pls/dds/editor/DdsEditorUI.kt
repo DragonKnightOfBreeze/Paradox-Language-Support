@@ -15,7 +15,9 @@ import com.intellij.ui.components.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.dds.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -44,7 +46,7 @@ class DdsEditorUI(
     private val editor: ImageEditor?,
     private val isEmbedded: Boolean = false,
     isOpaque: Boolean = true
-) : JPanel(), DataProvider, CopyProvider, ImageComponentDecorator, Disposable {
+) : JPanel(), UiDataProvider, CopyProvider, ImageComponentDecorator, Disposable {
     private val deleteProvider: DeleteProvider
     private val copyPasteSupport: CopyPasteSupport?
     private val zoomModel: ImageZoomModel = ImageZoomModelImpl()
@@ -139,22 +141,29 @@ class DdsEditorUI(
 
     private fun updateInfo() {
         if (isEmbedded) return
-        val document = imageComponent.document
-        val image = document.value
-        if (image != null) {
-            var format = document.format
-            format = if (format == null) {
-                if (editor != null) PlsBundle.message("unknown.format") else ""
-            } else {
-                StringUtil.toUpperCase(format)
-            }
+        val infoLabel = infoLabel
+        if (infoLabel != null) {
+            val document = imageComponent.document
             val file = editor?.file
-            infoLabel?.let { infoLabel ->
-                val fileSize = if (file != null) StringUtil.formatFileSize(file.length) else ""
-                infoLabel.text = PlsBundle.message("dds.info", image.width, image.height, format, fileSize)
-            }
-        } else {
-            infoLabel?.let { infoLabel ->
+            val project = editor?.project
+            val metadata = if (file != null && project != null) DdsMetadataIndex.getMetadata(file, project) else null
+            val image = document.value
+            val format = document.format?.orNull().let { if (it != null) StringUtil.toUpperCase(it) else PlsBundle.message("unknown.format") }
+            val fileSize = if (file != null) StringUtil.formatFileSize(file.length) else null
+            if (metadata != null) {
+                infoLabel.text = buildString {
+                    append(metadata.width).append("x").append(metadata.height)
+                    append(" ").append(format)
+                    metadata.dxgiFormat?.orNull()?.let { append(" (").append(it).append(")") }
+                    fileSize?.orNull()?.let { append(" (").append(it) }
+                }
+            } else if (image != null) {
+                infoLabel.text = buildString {
+                    append(image.width).append("x").append(image.height)
+                    append(" ").append(format)
+                    fileSize?.orNull()?.let { append(" (").append(it) }
+                }
+            } else {
                 infoLabel.text = null
             }
         }
@@ -475,37 +484,24 @@ class DdsEditorUI(
         }
     }
 
-    override fun getData(dataId: String): Any? {
-        if (CommonDataKeys.PROJECT.`is`(dataId)) {
-            return editor?.project
-        } else if (CommonDataKeys.VIRTUAL_FILE.`is`(dataId)) {
-            return editor?.file
-        } else if (CommonDataKeys.VIRTUAL_FILE_ARRAY.`is`(dataId)) {
-            return if (editor != null) arrayOf(editor.file) else VirtualFile.EMPTY_ARRAY
-        } else if (PlatformDataKeys.COPY_PROVIDER.`is`(dataId)) {
-            return this
-        } else if (PlatformDataKeys.CUT_PROVIDER.`is`(dataId) && copyPasteSupport != null) {
-            return copyPasteSupport.cutProvider
-        } else if (PlatformDataKeys.DELETE_ELEMENT_PROVIDER.`is`(dataId)) {
-            return deleteProvider
-        } else if (ImageComponentDecorator.DATA_KEY.`is`(dataId)) {
-            return editor ?: this
-        } else if (PlatformCoreDataKeys.BGT_DATA_PROVIDER.`is`(dataId)) {
-            return DataProvider { slowId: String -> getSlowData(slowId) }
-        }
-        return null
+    override fun uiDataSnapshot(sink: DataSink) {
+        sink[CommonDataKeys.PROJECT] = editor?.project
+        sink[CommonDataKeys.VIRTUAL_FILE] = editor?.file
+        sink[CommonDataKeys.VIRTUAL_FILE_ARRAY] = if (editor != null) arrayOf(editor.file) else VirtualFile.EMPTY_ARRAY
+        sink[PlatformDataKeys.COPY_PROVIDER] = this
+        sink[PlatformDataKeys.CUT_PROVIDER] = copyPasteSupport?.cutProvider
+        sink[PlatformDataKeys.DELETE_ELEMENT_PROVIDER] = deleteProvider
+        sink[ImageComponentDecorator.DATA_KEY] = editor ?: this
+        sink[PlatformCoreDataKeys.BGT_DATA_PROVIDER] = DataProvider { slowId: String -> getSlowData(slowId) }
     }
 
     private fun getSlowData(dataId: String): Any? {
-        if (CommonDataKeys.PSI_FILE.`is`(dataId)) {
-            return findPsiFile()
-        } else if (CommonDataKeys.PSI_ELEMENT.`is`(dataId)) {
-            return findPsiFile()
-        } else if (PlatformCoreDataKeys.PSI_ELEMENT_ARRAY.`is`(dataId)) {
-            val psi: PsiElement? = findPsiFile()
-            return if (psi != null) arrayOf(psi) else PsiElement.EMPTY_ARRAY
+        return when (dataId) {
+            CommonDataKeys.PSI_FILE.name -> findPsiFile()
+            CommonDataKeys.PSI_ELEMENT.name -> findPsiFile()
+            PlatformCoreDataKeys.PSI_ELEMENT_ARRAY.name -> findPsiFile()?.toSingletonArray() ?: PsiElement.EMPTY_ARRAY
+            else -> null
         }
-        return null
     }
 
     private fun findPsiFile(): PsiFile? {

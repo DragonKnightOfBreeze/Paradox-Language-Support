@@ -10,6 +10,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\actionsUsagesV3.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\actionsUsagesV4.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\cwt\cwtools-ck2-config\on_actions.csv">
           <value>
             <Attribute>

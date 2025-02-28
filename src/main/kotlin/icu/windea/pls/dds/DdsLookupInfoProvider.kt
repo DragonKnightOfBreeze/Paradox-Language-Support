@@ -17,7 +17,7 @@ class DdsLookupInfoProvider : FileLookupInfoProvider() {
 
     override fun getLookupInfo(file: VirtualFile, project: Project?): Pair<String, String>? {
         if (project == null) return null
-        val info = DdsInfoIndex.getInfo(file, project) ?: return null
+        val info = DdsMetadataIndex.getMetadata(file, project) ?: return null
         return Couple.of(file.name, "${info.width}x${info.height}")
     }
 }

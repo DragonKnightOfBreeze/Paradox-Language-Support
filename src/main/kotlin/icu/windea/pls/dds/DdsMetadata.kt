@@ -1,4 +1,4 @@
-package icu.windea.pls.dds.support
+package icu.windea.pls.dds
 
 data class DdsMetadata(
     val width: Int,
