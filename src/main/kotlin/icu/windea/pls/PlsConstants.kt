@@ -1,6 +1,8 @@
 package icu.windea.pls
 
+import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.io.*
 
 object PlsConstants {
     val locationClass = PlsIcons::class.java
@@ -65,8 +67,10 @@ object PlsConstants {
 
         val unknownPng = data.resolve("unknown.png")
         val unknownPngClasspathUrl = "/tools/unknown.png".toClasspathUrl(locationClass)
+        val unknownPngFile by FileSynchronizer(unknownPng) { VfsUtil.findFileByURL(unknownPngClasspathUrl)!! }
 
         val texconvExe = data.resolve("texconv.exe")
         val texconvExeClasspathUrl = "/tools/texconv.exe".toClasspathUrl(locationClass)
+        val texconvExeFile by FileSynchronizer(texconvExe) { VfsUtil.findFileByURL(texconvExeClasspathUrl)!! }
     }
 }

@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.utils.*
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.9.25"
-    id("org.jetbrains.intellij.platform") version "2.2.0"
+    id("org.jetbrains.intellij.platform") version "2.3.0"
     id("org.jetbrains.grammarkit") version "2022.3.2.2"
     id("org.jetbrains.changelog") version "2.0.0"
 }
@@ -76,7 +76,7 @@ dependencies {
         bundledPlugins("com.intellij.diagram")
         //bundledPlugins("com.intellij.java")
         //bundledPlugins("org.jetbrains.kotlin")
-        bundledPlugins("org.intellij.plugins.markdown")
+        //bundledPlugins("org.intellij.plugins.markdown")
 
         //TranslationPlugin - https://github.com/YiiGuxing/TranslationPlugin
         plugin("cn.yiiguxing.plugin.translate:3.6.8")

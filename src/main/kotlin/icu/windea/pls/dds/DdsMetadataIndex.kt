@@ -56,7 +56,7 @@ object DdsMetadataIndex {
         GistManager.getInstance().newVirtualFileGist("DdsMetadata", 2, valueExternalizer) { _, file ->
             if (!file.isInLocalFileSystem) return@newVirtualFileGist null
             if (file.fileType != DdsFileType) return@newVirtualFileGist null
-            DdsManager.getMetadata(file)
+            DdsSupport.getMetadata(file)
         }
     }
 

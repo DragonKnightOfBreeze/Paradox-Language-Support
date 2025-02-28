@@ -203,23 +203,28 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
         }
     }
     //如果没找到的话，不要在文档中显示相关信息
-    if (nameLocalisation != null) {
+    run {
+        if (nameLocalisation == null) return@run
         appendBr()
         append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
         append("name = ").appendLocalisationLink(gameType, nameLocalisation.name, contextElement)
     }
-    if (descLocalisation != null) {
+    run {
+        if (descLocalisation == null) return@run
         appendBr()
         append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
         append("desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement)
     }
-    val sections = getSections(SECTIONS_LOC)
-    if (sections != null && render) {
-        if (nameLocalisation != null) {
+    run rs@{
+        val sections = getSections(SECTIONS_LOC)
+        if (sections == null || render) return@rs
+        run {
+            if (nameLocalisation == null) return@run
             val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
             sections.put("name", richText)
         }
-        if (descLocalisation != null) {
+        run {
+            if (descLocalisation == null) return@run
             val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation, forDoc = true)
             sections.put("desc", richText)
         }
@@ -239,16 +244,19 @@ private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceE
         }
     }
     //如果没找到的话，不要在文档中显示相关信息
-    if (iconFile != null) {
-        val iconPath = iconFile.fileInfo?.path?.path ?: return
+    run {
+        if (iconFile == null) return@run
+        val iconPath = iconFile.fileInfo?.path?.path ?: return@run
         appendBr()
         append(PlsBundle.message("prefix.relatedImage")).append(" ")
         append("icon = ").appendFilePathLink(gameType, iconPath, iconPath, contextElement)
     }
-    val sections = getSections(SECTIONS_IMAGES)
-    if (sections != null && render) {
-        if (iconFile != null) {
-            val url = ParadoxImageResolver.resolveUrlByFile(iconFile) ?: ParadoxImageResolver.getDefaultUrl()
+    run rs@{
+        val sections = getSections(SECTIONS_IMAGES)
+        if (sections == null || render) return@rs
+        run {
+            if (iconFile == null) return@run
+            val url = ParadoxImageResolver.resolveUrlByFile(iconFile) ?: return@run
             sections.put("icon", buildDocumentation { appendImgTag(url) })
         }
     }

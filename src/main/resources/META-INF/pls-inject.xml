@@ -3,28 +3,27 @@
     <extensionPoint qualifiedName="icu.windea.pls.inject.codeInjectorSupport" interface="icu.windea.pls.inject.CodeInjectorSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inject.codeInjector" interface="icu.windea.pls.inject.CodeInjector" dynamic="true"/>
   </extensionPoints>
-  
+
   <applicationListeners>
     <listener class="icu.windea.pls.inject.CodeInjectorService$Listener" topic="com.intellij.ide.AppLifecycleListener"/>
   </applicationListeners>
-  
+
   <extensions defaultExtensionNs="icu.windea.pls.inject">
     <codeInjectorSupport implementation="icu.windea.pls.inject.support.BaseCodeInjectorSupport"/>
     <codeInjectorSupport implementation="icu.windea.pls.inject.support.FieldBasedCacheCodeInjectorSupport"/>
   </extensions>
-  
+
   <extensions defaultExtensionNs="icu.windea.pls.inject">
     <!--core code injectors-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.LowLevelSearchUtilCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.IfsUtilCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.RefManagerImplCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.SymbolNavigationServiceImplCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.LineCommentCopyPastePreProcessorCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.CommentByLineCommentHandlerCodeInjector"/>
-    
+
     <!--code injectors to provide additional features-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
-    
+
     <!--code injectors to optimize performance-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptPropertyCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptPropertyKeyCodeInjector"/>

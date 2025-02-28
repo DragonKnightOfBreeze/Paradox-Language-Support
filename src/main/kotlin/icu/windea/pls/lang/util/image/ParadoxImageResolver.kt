@@ -16,9 +16,6 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import org.intellij.images.fileTypes.impl.*
-import java.lang.invoke.*
-import java.nio.file.*
-import java.util.concurrent.atomic.*
 import kotlin.io.path.*
 
 object ParadoxImageResolver {
@@ -97,17 +94,20 @@ object ParadoxImageResolver {
     }
 
     private fun doResolveUrlByFile(file: VirtualFile, frameInfo: ImageFrameInfo?): String? {
-        val fileType = file.fileType
-        if (fileType == ImageFileType.INSTANCE && file.extension?.lowercase().let { it == "png" }) {
-            //accept png file
-            return file.toNioPath().absolutePathString()
+        return when (file.fileType) {
+            ImageFileType.INSTANCE -> {
+                //accept normal image files (e.g., png file)
+                file.toNioPath().absolutePathString()
+            }
+            DdsFileType -> {
+                //convert dds file to png file and then return png file's actual url
+                val fileInfo = file.fileInfo
+                val ddsRelPath = fileInfo?.let { it.rootInfo.gameType.id + "/" + it.path.path }
+                val ddsAbsPath = file.toNioPath().absolutePathString()
+                ParadoxDdsImageResolver.resolveUrl(ddsAbsPath, ddsRelPath, frameInfo)
+            }
+            else -> null
         }
-        if (fileType != DdsFileType) return null
-
-        val fileInfo = file.fileInfo
-        val ddsRelPath = fileInfo?.path?.path
-        val ddsAbsPath = file.toNioPath().absolutePathString()
-        return ParadoxDdsResolver.resolveUrl(ddsAbsPath, ddsRelPath, frameInfo)
     }
 
     private fun doResolveUrlByFilePath(filePath: String, project: Project, frameInfo: ImageFrameInfo?): String? {
@@ -115,25 +115,11 @@ object ParadoxImageResolver {
         return doResolveUrlByFile(file, frameInfo)
     }
 
-    fun getPngFile(ddsFile: VirtualFile, frameInfo: ImageFrameInfo? = null): VirtualFile? {
-        if (ddsFile.fileType != DdsFileType) return null // input file must be a dds file
-        val absPngPath = doResolveUrlByFile(ddsFile, frameInfo) ?: return null
-        return VfsUtil.findFile(absPngPath.toPath(), true)
-    }
-
     fun getDefaultUrl(): String {
         return getUnknownPngUrl()
     }
 
-    private val clearUnknownPng = AtomicBoolean(true)
-
-    fun getUnknownPngUrl(): String {
-        //如果首次获取或者图片路径不存在，则将jar包中的unknown.png复制到~/.pls/images中
-        if (clearUnknownPng.getAndSet(false) || PlsConstants.Paths.unknownPng.notExists()) {
-            PlsConstants.Paths.unknownPngClasspathUrl.openStream().use { inputStream ->
-                Files.copy(inputStream, PlsConstants.Paths.unknownPng, StandardCopyOption.REPLACE_EXISTING)
-            }
-        }
-        return PlsConstants.Paths.unknownPng.toString()
+    private fun getUnknownPngUrl(): String {
+        return PlsConstants.Paths.unknownPngFile.path
     }
 }

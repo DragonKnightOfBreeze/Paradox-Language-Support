@@ -37,7 +37,7 @@ class ConvertImageFormatDialog(
     private var targetDirectoryField: TextFieldWithHistoryWithBrowseButton? = null
 
     init {
-        title = PlsBundle.message("dds.dialog.convertImageFormat.title", targetFormatName)
+        title = PlsBundle.message("dds.convertImageFormat.dialog.title", targetFormatName)
         init()
     }
 
@@ -50,17 +50,17 @@ class ConvertImageFormatDialog(
             val text = when {
                 files.size == 1 -> {
                     val virtualFile = files.first().virtualFile
-                    PlsBundle.message("dds.dialog.convertImageFormat.info", shortenPath(virtualFile), targetFormatName)
+                    PlsBundle.message("dds.convertImageFormat.dialog.info.0", shortenPath(virtualFile), targetFormatName)
                 }
                 else -> {
-                    PlsBundle.message("dds.dialog.convertImageFormat.info.1", targetFormatName)
+                    PlsBundle.message("dds.convertImageFormat.dialog.info.1", targetFormatName)
                 }
             }
             label(text).bold()
         }
         if (files.size == 1) {
             row {
-                label(PlsBundle.message("dds.dialog.convertImageFormat.newFileName")).widthGroup("left")
+                label(PlsBundle.message("dds.convertImageFormat.dialog.newFileName")).widthGroup("left")
                 cell(initNewFileNameField())
                     .align(Align.FILL)
                     .resizableColumn()
@@ -68,7 +68,7 @@ class ConvertImageFormatDialog(
             }
         }
         row {
-            label(PlsBundle.message("dds.dialog.convertImageFormat.targetDirectory")).widthGroup("left")
+            label(PlsBundle.message("dds.convertImageFormat.dialog.targetDirectory")).widthGroup("left")
             cell(initTargetDirectoryField())
                 .align(Align.FILL)
                 .resizableColumn()
@@ -104,8 +104,8 @@ class ConvertImageFormatDialog(
         targetDirectoryComponent.text = targetPath
         val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
         targetDirectoryField.addBrowseFolderListener(
-            PlsBundle.message("dds.dialog.convertImageFormat.targetDirectory.title"),
-            PlsBundle.message("dds.dialog.convertImageFormat.targetDirectory.description"),
+            PlsBundle.message("dds.convertImageFormat.dialog.targetDirectory.title"),
+            PlsBundle.message("dds.convertImageFormat.dialog.targetDirectory.description"),
             project, descriptor, TextComponentAccessors.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT
         )
         return targetDirectoryField
@@ -119,14 +119,14 @@ class ConvertImageFormatDialog(
         newFileNameField?.let {
             val newFileName = newFileName
             if (newFileName.isNullOrEmpty()) {
-                Messages.showErrorDialog(project, PlsBundle.message("dds.dialog.convertImageFormat.newFileName.error"), PlsBundle.message("error.title"))
+                Messages.showErrorDialog(project, PlsBundle.message("dds.convertImageFormat.dialog.newFileName.error"), PlsBundle.message("error.title"))
                 return
             }
         }
         targetDirectoryField?.let {
             val targetDirectoryName = targetDirectoryField!!.childComponent.text
             if (targetDirectoryName.isEmpty()) {
-                Messages.showErrorDialog(project, PlsBundle.message("dds.dialog.convertImageFormat.targetDirectory.error"), PlsBundle.message("error.title"))
+                Messages.showErrorDialog(project, PlsBundle.message("dds.convertImageFormat.dialog.targetDirectory.error"), PlsBundle.message("error.title"))
                 return
             }
 

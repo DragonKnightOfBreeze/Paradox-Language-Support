@@ -16,27 +16,28 @@ class ConvertToPngAction : ConvertImageFormatAction("PNG") {
         return fileName.dropLast(4) + ".png"
     }
 
-    override fun convertImageFormat(file: PsiFile, targetDirectory: PsiDirectory): PsiFile? {
+    override fun convertImageFormat(file: PsiFile, targetDirectory: PsiDirectory, fileName: String): PsiFile? {
         val s = file.virtualFile ?: return null
         val td = targetDirectory.virtualFile
-        val t = DdsManager.convertImageFormat(s, td, "png")
+        val t = DdsSupport.convertImageFormat(s, td, fileName, "dds", "png")
         return t?.toPsiFile(file.project)
     }
 }
 
 class ConvertToDdsAction : ConvertImageFormatAction("DDS") {
     override fun isAvailableForFile(file: VirtualFile): Boolean {
-        return file.fileType == ImageFileType.INSTANCE
+        return file.fileType == ImageFileType.INSTANCE && file.extension?.orNull() != null
     }
 
     override fun getNewFileName(fileName: String): String {
         return fileName.dropLast(4) + ".dds"
     }
 
-    override fun convertImageFormat(file: PsiFile, targetDirectory: PsiDirectory): PsiFile? {
+    override fun convertImageFormat(file: PsiFile, targetDirectory: PsiDirectory, fileName: String): PsiFile? {
         val s = file.virtualFile ?: return null
         val td = targetDirectory.virtualFile
-        val t = DdsManager.convertImageFormat(s, td, "dds")
+        val sf = s.extension?.orNull() ?: return null
+        val t = DdsSupport.convertImageFormat(s, td, fileName, sf.lowercase(), "dds")
         return t?.toPsiFile(file.project)
     }
 }

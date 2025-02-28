@@ -137,7 +137,7 @@ class DdsEditorImpl(
         if (file.fileType != DdsFileType) return
 
         val ddsAbsPath = file.toNioPath().absolutePathString()
-        ParadoxDdsResolver.invalidateUrl(ddsAbsPath)
+        ParadoxDdsImageResolver.invalidateUrl(ddsAbsPath)
 
         // Change document
         file.refresh(true, false) {
@@ -157,7 +157,7 @@ class DdsEditorImpl(
         if (file.fileType != DdsFileType) return
 
         val ddsAbsPath = file.toNioPath().absolutePathString()
-        ParadoxDdsResolver.invalidateUrl(ddsAbsPath)
+        ParadoxDdsImageResolver.invalidateUrl(ddsAbsPath)
 
         // Change document
         refreshFile()

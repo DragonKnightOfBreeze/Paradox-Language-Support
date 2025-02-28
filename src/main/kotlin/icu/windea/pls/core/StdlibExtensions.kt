@@ -667,6 +667,8 @@ enum class CommandType {
     ;
 }
 
+class CommandExecutionException(message: String) : IllegalStateException(message)
+
 @Throws(IOException::class, InterruptedException::class)
 fun executeCommand(
     command: String,
@@ -685,7 +687,10 @@ fun executeCommand(
     } else {
         process.waitFor(timeout, TimeUnit.MILLISECONDS)
     }
-    return process.inputStream.bufferedReader().readText().trim()
+    val result = process.inputStream.bufferedReader().readText().trim()
+    if(result.isNotEmpty() || process.exitValue() == 0) return result
+    val errorResult = process.errorStream.bufferedReader().readText().trim()
+    throw CommandExecutionException(errorResult)
 }
 
 private fun getCommandArray(command: String, commandType: CommandType?): Array<String> {

@@ -7,6 +7,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.testFramework.*
+import com.intellij.util.io.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
@@ -38,8 +39,8 @@ object ParadoxFileManager {
     fun createTempFile(file: VirtualFile): VirtualFile? {
         try {
             val diffDirPath = PlsConstants.Paths.diff
+            diffDirPath.createDirectories()
             val fileName = UUID.randomUUID().toString()
-            Files.createDirectories(diffDirPath)
             val diffDirFile = VfsUtil.findFile(diffDirPath, false) ?: return null
             val tempFile = VfsUtil.copyFile(ParadoxFileManager, file, diffDirFile, fileName)
             tempFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
@@ -58,6 +59,7 @@ object ParadoxFileManager {
     fun createTempFile(text: String, fileInfo: ParadoxFileInfo): VirtualFile? {
         try {
             val diffDirPath = PlsConstants.Paths.diff
+            diffDirPath.createDirectories()
             val fileName = UUID.randomUUID().toString()
             val path = diffDirPath.resolve(fileName)
             Files.writeString(path, text)
