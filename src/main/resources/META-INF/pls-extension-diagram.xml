@@ -1,7 +1,6 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <projectConfigurable id="pls.diagram" parentId="pls" bundle="messages.PlsDiagramBundle" key="settings.diagram"
-                         instance="icu.windea.pls.extension.diagram.settings.ParadoxDiagramSettingsConfigurable"/>
+    <projectConfigurable id="pls.diagram" parentId="pls" bundle="messages.PlsDiagramBundle" key="settings.diagram" instance="icu.windea.pls.extension.diagram.settings.ParadoxDiagramSettingsConfigurable"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij.diagram">
@@ -21,9 +20,7 @@
       <add-to-group group-id="Uml.SourceActionsGroup.GoTo" relative-to-action="GotoRelated" anchor="after"/>
       <add-to-group group-id="Uml.NodeCellEditorPopup.GoTo" relative-to-action="GotoRelated" anchor="after"/>
     </reference>
-    <action id="Pls.Diagram.OpenSettings"
-            class="icu.windea.pls.extension.diagram.actions.ParadoxDiagramOpenSettingsAction"
-            icon="AllIcons.General.GearPlain">
+    <action id="Pls.Diagram.OpenSettings" class="icu.windea.pls.extension.diagram.actions.ParadoxDiagramOpenSettingsAction" icon="AllIcons.General.GearPlain">
       <add-to-group group-id="Diagram.DefaultGraphToolbar" relative-to-action="Diagram.OpenSettings" anchor="after"/>
     </action>
     <reference id="UML.Group">

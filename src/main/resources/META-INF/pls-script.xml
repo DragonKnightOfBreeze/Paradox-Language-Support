@@ -41,7 +41,7 @@
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDynamicValueInfoHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDynamicValueLocalizedNameHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxScopeContextInfoHintsProvider"/>
-    <liveTemplateContext contextId="PARADOX_SCRIPT" 
+    <liveTemplateContext contextId="PARADOX_SCRIPT"
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$Base"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT_MEMBER" baseContextId="PARADOX_SCRIPT"
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$Member"/>
@@ -63,7 +63,7 @@
     <lang.surroundDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.surroundWith.ParadoxScriptSurroundDescriptor"/>
     <lang.unwrapDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.unwrap.ParadoxScriptUnwrapDescriptor"/>
     <codeInsight.gotoSuper language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptGotoSuperActionHandler"/>
-    
+
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKey"
                              implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptPropertyKeyManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptValue"
@@ -74,7 +74,7 @@
                              implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptParameterManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter"
                              implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptInlineMathParameterManipulator"/>
-    
+
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
     <additionalTextAttributes scheme="High contrast" file="colorSchemes/ParadoxScriptHighContrast.xml"/>

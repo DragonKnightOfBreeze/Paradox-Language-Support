@@ -15,18 +15,18 @@
   </extensions>
 
   <actions>
-    <group id="Pls.Tools" popup="true" class="icu.windea.pls.tools.actions.PlsToolsActionGroup">
+    <group id="Pls.Tools" class="icu.windea.pls.tools.actions.PlsToolsActionGroup" popup="true">
       <add-to-group group-id="ToolsMenu"/>
       <add-to-group group-id="EditorPopupMenu"/>
       <add-to-group group-id="ProjectViewPopupMenu"/>
     </group>
 
-    <action id="Pls.OpenGameSettings" class="icu.windea.pls.tools.actions.OpenGameSettingsAction" icon="PlsIcons.Actions.GameSettings">
+    <action id="Pls.OpenGameSettings" class="icu.windea.pls.tools.actions.OpenGameSettingsAction" icon="icu.windea.pls.PlsIcons.Actions.GameSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="Pls.Tools" anchor="first"/>
       <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
     </action>
-    <action id="Pls.OpenModSettings" class="icu.windea.pls.tools.actions.OpenModSettingsAction" icon="PlsIcons.Actions.ModSettings">
+    <action id="Pls.OpenModSettings" class="icu.windea.pls.tools.actions.OpenModSettingsAction" icon="icu.windea.pls.PlsIcons.Actions.ModSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="Pls.Tools" anchor="first"/>
       <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
@@ -42,12 +42,12 @@
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.OpenUrl" popup="true">
-      <action id="Pls.OpenUrl.OpenGameStorePageInSteam" class="icu.windea.pls.tools.actions.OpenUrlAction$GameStorePageInSteam" icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenGameStorePageInSteamWebsite" class="icu.windea.pls.tools.actions.OpenUrlAction$GameStorePageInSteamWebsite" icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenGameWorkshopPageInSteam" class="icu.windea.pls.tools.actions.OpenUrlAction$GameWorkshopPageInSteam" icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenGameWorkshopPageInSteamWebsite" class="icu.windea.pls.tools.actions.OpenUrlAction$GameWorkshopPageInSteamWebsite" icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenModPageInSteam" class="icu.windea.pls.tools.actions.OpenUrlAction$ModPageInSteam" icon="PlsIcons.Steam"/>
-      <action id="Pls.OpenUrl.OpenModPageInSteamWebsite" class="icu.windea.pls.tools.actions.OpenUrlAction$ModPageInSteamWebsite" icon="PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameStorePageInSteam" class="icu.windea.pls.tools.actions.OpenUrlAction$GameStorePageInSteam" icon="icu.windea.pls.PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameStorePageInSteamWebsite" class="icu.windea.pls.tools.actions.OpenUrlAction$GameStorePageInSteamWebsite" icon="icu.windea.pls.PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameWorkshopPageInSteam" class="icu.windea.pls.tools.actions.OpenUrlAction$GameWorkshopPageInSteam" icon="icu.windea.pls.PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenGameWorkshopPageInSteamWebsite" class="icu.windea.pls.tools.actions.OpenUrlAction$GameWorkshopPageInSteamWebsite" icon="icu.windea.pls.PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenModPageInSteam" class="icu.windea.pls.tools.actions.OpenUrlAction$ModPageInSteam" icon="icu.windea.pls.PlsIcons.Steam"/>
+      <action id="Pls.OpenUrl.OpenModPageInSteamWebsite" class="icu.windea.pls.tools.actions.OpenUrlAction$ModPageInSteamWebsite" icon="icu.windea.pls.PlsIcons.Steam"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.CopyPath" popup="true">
@@ -60,17 +60,17 @@
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.CopyUrl" popup="true">
-      <action id="Pls.CopyUrl.CopyGameStorePageUrl" class="icu.windea.pls.tools.actions.CopyUrlAction$GameStorePage" icon="PlsIcons.Steam"/>
-      <action id="Pls.CopyUrl.CopyGameWorkshopPageUrl" class="icu.windea.pls.tools.actions.CopyUrlAction$GameWorkshopPage" icon="PlsIcons.Steam"/>
-      <action id="Pls.CopyUrl.CopyModPageUrl" class="icu.windea.pls.tools.actions.CopyUrlAction$ModPage" icon="PlsIcons.Steam"/>
+      <action id="Pls.CopyUrl.CopyGameStorePageUrl" class="icu.windea.pls.tools.actions.CopyUrlAction$GameStorePage" icon="icu.windea.pls.PlsIcons.Steam"/>
+      <action id="Pls.CopyUrl.CopyGameWorkshopPageUrl" class="icu.windea.pls.tools.actions.CopyUrlAction$GameWorkshopPage" icon="icu.windea.pls.PlsIcons.Steam"/>
+      <action id="Pls.CopyUrl.CopyModPageUrl" class="icu.windea.pls.tools.actions.CopyUrlAction$ModPage" icon="icu.windea.pls.PlsIcons.Steam"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
 
     <group id="Pls.GotoPath">
-      <action id="Pls.FileChooser.GoToSteamPath" class="icu.windea.pls.tools.actions.GoToPathAction$Steam" icon="PlsIcons.Actions.SteamDirectory"/>
-      <action id="Pls.FileChooser.GoToSteamGamePath" class="icu.windea.pls.tools.actions.GoToPathAction$SteamGame" icon="PlsIcons.Actions.SteamGameDirectory"/>
-      <action id="Pls.FileChooser.GoToSteamWorkshopPath" class="icu.windea.pls.tools.actions.GoToPathAction$SteamWorkshop" icon="PlsIcons.Actions.SteamWorkshopDirectory"/>
-      <action id="Pls.FileChooser.GoToGameDataPath" class="icu.windea.pls.tools.actions.GoToPathAction$GameData" icon="PlsIcons.Actions.GameDataDirectory"/>
+      <action id="Pls.FileChooser.GoToSteamPath" class="icu.windea.pls.tools.actions.GoToPathAction$Steam" icon="icu.windea.pls.PlsIcons.Actions.SteamDirectory"/>
+      <action id="Pls.FileChooser.GoToSteamGamePath" class="icu.windea.pls.tools.actions.GoToPathAction$SteamGame" icon="icu.windea.pls.PlsIcons.Actions.SteamGameDirectory"/>
+      <action id="Pls.FileChooser.GoToSteamWorkshopPath" class="icu.windea.pls.tools.actions.GoToPathAction$SteamWorkshop" icon="icu.windea.pls.PlsIcons.Actions.SteamWorkshopDirectory"/>
+      <action id="Pls.FileChooser.GoToGameDataPath" class="icu.windea.pls.tools.actions.GoToPathAction$GameData" icon="icu.windea.pls.PlsIcons.Actions.GameDataDirectory"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
     <group id="Pls.GotoPath.WithSeparator">
