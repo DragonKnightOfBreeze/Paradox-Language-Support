@@ -5,7 +5,6 @@ import com.intellij.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*

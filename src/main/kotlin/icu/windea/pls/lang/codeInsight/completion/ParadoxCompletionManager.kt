@@ -10,7 +10,6 @@ import com.intellij.openapi.util.*
 import com.intellij.patterns.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*

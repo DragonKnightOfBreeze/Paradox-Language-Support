@@ -16,7 +16,6 @@ import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import icu.windea.pls.tools.ui.*
 import java.awt.event.*
 
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {

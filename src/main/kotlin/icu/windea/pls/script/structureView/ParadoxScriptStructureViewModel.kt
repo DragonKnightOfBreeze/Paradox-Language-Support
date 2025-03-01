@@ -4,7 +4,6 @@ import com.intellij.ide.structureView.*
 import com.intellij.ide.util.treeView.smartTree.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*

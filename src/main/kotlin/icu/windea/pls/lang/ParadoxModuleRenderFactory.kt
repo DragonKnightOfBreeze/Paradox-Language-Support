@@ -3,7 +3,6 @@ package icu.windea.pls.lang
 import com.intellij.ide.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.util.*

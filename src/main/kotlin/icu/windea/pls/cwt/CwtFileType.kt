@@ -1,7 +1,6 @@
 package icu.windea.pls.cwt
 
 import com.intellij.openapi.fileTypes.*
-import icons.*
 import icu.windea.pls.*
 
 object CwtFileType : LanguageFileType(CwtLanguage) {

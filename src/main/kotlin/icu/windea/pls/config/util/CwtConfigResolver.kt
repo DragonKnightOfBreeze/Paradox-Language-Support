@@ -8,7 +8,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
-import java.lang.invoke.*
 import java.util.*
 
 private val logger = logger<CwtConfigResolver>()

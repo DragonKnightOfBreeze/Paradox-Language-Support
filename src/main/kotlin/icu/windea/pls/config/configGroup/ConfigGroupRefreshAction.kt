@@ -5,7 +5,6 @@ import com.intellij.openapi.actionSystem.ex.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.openapi.project.*
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 

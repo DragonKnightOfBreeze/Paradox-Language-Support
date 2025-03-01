@@ -4,7 +4,6 @@ import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.lang.navigation.*

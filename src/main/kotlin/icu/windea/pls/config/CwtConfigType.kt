@@ -1,6 +1,5 @@
 package icu.windea.pls.config
 
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import javax.swing.*

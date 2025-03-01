@@ -5,7 +5,6 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.settings.*
@@ -62,7 +61,7 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
 
     private fun doComputeRoots(): Set<VirtualFile> {
         //这里仅需要收集不在项目中的游戏目录和模组目录
-        
+
         val newRoots = mutableSetOf<VirtualFile>()
         val projectFileIndex = ProjectFileIndex.getInstance(project)
         val profilesSettings = getProfilesSettings()

@@ -14,7 +14,6 @@ import com.intellij.ui.*
 import com.intellij.util.concurrency.annotations.*
 import com.intellij.util.ui.components.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.channels.*
 import kotlinx.coroutines.flow.*
 import java.awt.*

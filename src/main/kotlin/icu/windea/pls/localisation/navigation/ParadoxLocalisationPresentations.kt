@@ -1,6 +1,5 @@
 package icu.windea.pls.localisation.navigation
 
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.localisation.psi.*

@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.hierarchy.type
 
 import com.intellij.ide.hierarchy.*
-import icons.*
 import icu.windea.pls.*
 
 class ViewDefinitionHierarchyAction : ChangeHierarchyViewActionBase(

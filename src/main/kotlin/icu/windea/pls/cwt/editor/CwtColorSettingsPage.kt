@@ -2,7 +2,6 @@ package icu.windea.pls.cwt.editor
 
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.options.colors.*
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.*
 

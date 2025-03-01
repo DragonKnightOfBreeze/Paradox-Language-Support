@@ -11,7 +11,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import kotlinx.coroutines.*
 
 @WithGameType(ParadoxGameType.Vic3)
 @Service(Service.Level.PROJECT)

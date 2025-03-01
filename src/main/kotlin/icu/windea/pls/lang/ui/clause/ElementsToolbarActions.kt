@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.ui.clause
 
 import com.intellij.openapi.actionSystem.*
-import icons.*
 import icu.windea.pls.*
 
 interface ElementsToolbarActions {

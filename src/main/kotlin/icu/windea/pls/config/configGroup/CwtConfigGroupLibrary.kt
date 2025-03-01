@@ -5,7 +5,6 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
-import icons.*
 import icu.windea.pls.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.lang.util.*
@@ -61,7 +60,7 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
 
     private fun doComputeRoots(): Set<VirtualFile> {
         //这里仅需要收集不在项目中的根目录（规则目录）
-        
+
         val newRoots = mutableSetOf<VirtualFile>()
         val projectFileIndex = ProjectFileIndex.getInstance(project)
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
