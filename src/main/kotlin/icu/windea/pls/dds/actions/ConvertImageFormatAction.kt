@@ -40,7 +40,7 @@ abstract class ConvertImageFormatAction(
 
     protected abstract fun getNewFileName(fileName: String): String
 
-    protected abstract fun convertImageFormat(file: PsiFile, targetDirectory: PsiDirectory, fileName: String): PsiFile?
+    protected abstract fun convertImageFormat(file: PsiFile, targetDirectory: PsiDirectory, targetFileName: String): PsiFile?
 
     override fun update(e: AnActionEvent) {
         val project = e.project

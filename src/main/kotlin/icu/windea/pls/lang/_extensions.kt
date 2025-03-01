@@ -28,9 +28,20 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import kotlinx.coroutines.*
 import java.lang.Integer.*
 
 //from official documentation: Never acquire service instances prematurely or store them in fields for later use.
+
+@Service(Service.Level.PROJECT)
+private class PlsProjectService(val project: Project, val coroutineScope: CoroutineScope)
+
+@Service(Service.Level.APP)
+private class PlsApplicationService(val coroutineScope: CoroutineScope)
+
+fun getCoroutineScope(project: Project) = project.service<PlsProjectService>().coroutineScope
+
+fun getCoroutineScope() = service<PlsApplicationService>().coroutineScope
 
 fun getSettings() = service<ParadoxSettings>().state
 

@@ -7,11 +7,9 @@ import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
-import kotlinx.coroutines.*
 
 class ParadoxDiagramSettingsConfigurable(
-    private val project: Project,
-    private val coroutineScope: CoroutineScope
+    private val project: Project
 ) : BoundConfigurable(PlsDiagramBundle.message("settings.diagram")), SearchableConfigurable {
     override fun getId() = "pls.diagram"
 
@@ -21,7 +19,7 @@ class ParadoxDiagramSettingsConfigurable(
                 label(PlsDiagramBundle.message("settings.diagram.tooltip.selectSettings"))
             }
             for (diagramSettings in getDiagramSettingsList()) {
-                diagramSettings.buildConfigurablePanel(coroutineScope, this)
+                diagramSettings.buildConfigurablePanel(this)
             }
         }
     }

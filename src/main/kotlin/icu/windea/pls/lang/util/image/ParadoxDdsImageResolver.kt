@@ -6,8 +6,10 @@ import com.intellij.openapi.progress.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.dds.support.*
 import icu.windea.pls.model.*
 import java.nio.file.*
+import javax.imageio.*
 import kotlin.io.path.*
 
 object ParadoxDdsImageResolver {
@@ -25,7 +27,7 @@ object ParadoxDdsImageResolver {
             val finalAbsPath = absPath.normalizePath()
             val pngAbsPath = getPngAbsPath(finalAbsPath, relPath, frameInfo)
             if (pngAbsPath.notExists()) {
-                doConvertDdsToPng(absPath, pngAbsPath, frameInfo)
+                doConvertDdsToPng(finalAbsPath.toPath(), pngAbsPath, frameInfo)
             }
             return pngAbsPath.toString()
         } catch (e: Exception) {
@@ -50,7 +52,7 @@ object ParadoxDdsImageResolver {
 
     private fun doGetPngAbsPath(absPath: String, relPath: String?, frameInfo: ImageFrameInfo?): Path {
         val pngAbsPath = doResolvePngAbsPath(absPath, relPath, frameInfo)
-        doConvertDdsToPng(absPath, pngAbsPath, frameInfo)
+        doConvertDdsToPng(absPath.toPath(), pngAbsPath, frameInfo)
         return pngAbsPath
     }
 
@@ -79,14 +81,18 @@ object ParadoxDdsImageResolver {
         }
     }
 
-    private fun doConvertDdsToPng(absPath: String, pngAbsPath: Path, frameInfo: ImageFrameInfo?) {
+    private fun doConvertDdsToPng(absPath: Path, pngAbsPath: Path, frameInfo: ImageFrameInfo?) {
         pngAbsPath.deleteIfExists()
         pngAbsPath.create()
         Files.newOutputStream(pngAbsPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING).use { outputStream ->
-            val inputStream = absPath.toPath().inputStream()
-            ImageManager.convertDdsToPng(inputStream, outputStream, frameInfo)
+            val inputStream = absPath.inputStream()
+            DdsManager.convertImageFormat(inputStream, outputStream, "dds", "png")
             outputStream.flush()
         }
+        if(frameInfo == null) return
+        val image = ImageIO.read(pngAbsPath.toFile())
+        val newImage = image.sliceBy(frameInfo) ?: return
+        ImageIO.write(newImage, "png", pngAbsPath.toFile())
     }
 
     /**

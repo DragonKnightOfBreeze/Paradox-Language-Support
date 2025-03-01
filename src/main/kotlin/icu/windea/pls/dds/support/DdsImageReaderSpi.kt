@@ -7,6 +7,6 @@ import javax.imageio.*
  */
 class DdsImageReaderSpi: io.github.ititus.ddsiio.DdsImageReaderSpi() {
     override fun createReaderInstance(extension: Any?): ImageReader {
-        return DdsSupport.createImageReader(this, this) ?: super.createReaderInstance(extension)
+        return DdsManager.createImageReader(this, this) ?: super.createReaderInstance(extension)
     }
 }

@@ -40,7 +40,7 @@ class Vic3EventTreeDiagramSettings(
         }
     }
 
-    override fun Panel.buildConfigurablePanel(coroutineScope: CoroutineScope) {
+    override fun buildConfigurablePanel(panel: Panel): Unit = with(panel) {
         val settings = state
         val eventTypes = ParadoxEventManager.getTypes(project, ParadoxGameType.Vic3)
         eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }

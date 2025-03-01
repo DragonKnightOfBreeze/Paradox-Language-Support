@@ -6,9 +6,10 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
-import icu.windea.pls.lang.util.image.*
 import io.github.ititus.ddsiio.*
 import org.apache.commons.io.*
+import org.apache.commons.io.file.*
+import org.apache.xmlgraphics.image.loader.util.*
 import java.awt.image.*
 import java.io.*
 import java.nio.file.*
@@ -26,7 +27,7 @@ import kotlin.io.path.*
 class DirectXTexBasedDdsSupport : DdsSupport {
     private val texconvExe get() = PlsConstants.Paths.texconvExeFile
     private val texconvExeWd by lazy { PlsConstants.Paths.texconvExe.parent?.toFile() }
-    private val tempParentPath get() = PlsConstants.Paths.images
+    private val tempParentPath get() = PlsConstants.Paths.imagesTemp
 
     override fun getMetadata(file: VirtualFile): DdsMetadata? {
         return null //unnecessary to implement
@@ -34,35 +35,51 @@ class DirectXTexBasedDdsSupport : DdsSupport {
 
     override fun createImageReader(extension: Any?, spi: DdsImageReaderSpi): ImageReader? {
         if (!OS.isWindows) return null //only available on windows
-        return ImageReader(spi)
+        return ImageReader(spi, this)
     }
 
-    class ImageReader(spi: DdsImageReaderSpi) : DdsImageReader(spi) {
-        val stream: ImageInputStream? by memberProperty("stream")
+    class ImageReader(
+        spi: DdsImageReaderSpi,
+        private val support: DirectXTexBasedDdsSupport
+    ) : DdsImageReader(spi) {
+        val stream: ImageInputStream? by memberProperty<DdsImageReader, _>("stream")
 
         override fun read(imageIndex: Int, param: ImageReadParam?): BufferedImage {
-            val stream = stream ?: return super.read(imageIndex, param)
-            val r = try {
-                ImageManager.convertDdsToPng(stream)
+            val stream = stream
+            val image = try {
+                doRead(stream)
             } catch (e: Exception) {
                 if (e is ProcessCanceledException) throw e
                 thisLogger().warn(e)
                 null
             }
-            return r ?: super.read(imageIndex, param)
+            return image ?: super.read(imageIndex, param)
+        }
+
+        private fun doRead(stream: ImageInputStream?): BufferedImage? {
+            if (stream == null) return null
+            val inputStream = ImageInputStreamAdapter(stream)
+            val outputStream = ByteArrayOutputStream()
+            val r = support.convertImageFormat(inputStream, outputStream, "dds", "png")
+            if (!r) return null
+            val input = ByteArrayInputStream(outputStream.toByteArray())
+            return ImageIO.read(input)
         }
     }
 
     /**
      * @param targetFormat 参见：[File and pixel format options](https://github.com/microsoft/DirectXTex/wiki/Texconv#file-and-pixel-format-options)
      */
-    override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): OutputStream? {
+    override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
+        if (!OS.isWindows) return false //only available on windows
         try {
-            val filePath = tempParentPath.resolve(UUID.randomUUID().toString() + "." + sourceFormat)
-            val targetDirectoryPath = tempParentPath
-            val targetFilePath = doConvertImageFormat(filePath, targetDirectoryPath, null, targetFormat, useTemp = false) ?: return null
-            IOUtils.copy(targetFilePath.inputStream(READ), outputStream)
-            return outputStream
+            tempParentPath.createDirectories()
+            val path = tempParentPath.resolve(UUID.randomUUID().toString() + "." + sourceFormat)
+            path.outputStream(WRITE, CREATE, TRUNCATE_EXISTING).use { IOUtils.copy(inputStream, it) }
+            val targetPath = doConvertImageFormat(path, null, null, targetFormat)
+            targetPath.inputStream(READ).use { IOUtils.copy(it, outputStream) }
+            path.deleteIfExists()
+            return true
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             thisLogger().warn(e)
@@ -70,15 +87,11 @@ class DirectXTexBasedDdsSupport : DdsSupport {
         }
     }
 
-    /**
-     * @param targetFormat 参见：[File and pixel format options](https://github.com/microsoft/DirectXTex/wiki/Texconv#file-and-pixel-format-options)
-     */
-    override fun convertImageFormat(file: VirtualFile, targetDirectory: VirtualFile, targetFileName: String, sourceFormat: String, targetFormat: String): VirtualFile? {
+    override fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
+        if (!OS.isWindows) return false //only available on windows
         try {
-            val filePath = file.toNioPath()
-            val targetDirectoryPath = targetDirectory.toNioPath()
-            val targetFilePath = doConvertImageFormat(filePath, targetDirectoryPath, targetFileName, targetFormat, useTemp = true) ?: return null
-            return VfsUtil.findFile(targetFilePath, true)
+            doConvertImageFormat(path, targetPath.parent, targetPath.name, targetFormat)
+            return true
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             thisLogger().warn(e)
@@ -86,26 +99,35 @@ class DirectXTexBasedDdsSupport : DdsSupport {
         }
     }
 
-    private fun doConvertImageFormat(filePath: Path, targetDirectoryPath: Path, targetFileName: String?, targetFormat: String, useTemp: Boolean): Path? {
-        if (!OS.isWindows) return null //only available on windows
-
-        val outputPath = if (useTemp) tempParentPath.resolve(UUID.randomUUID().toString()) else targetDirectoryPath
-        outputPath.createDirectories()
+    private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
+        val outputDirectoryPath = tempParentPath.resolve(UUID.randomUUID().toString())
+        outputDirectoryPath.createDirectories()
 
         val exe = texconvExe.name
-        val s = filePath.toString().quote()
-        val o = outputPath.toString().quote()
+        val s = path.toString().quote()
+        val o = outputDirectoryPath.toString().quote()
         val ft = targetFormat
         val command = "$exe $s -ft $ft -o $o -y" // -y: overwrite existing files
         val wd = texconvExeWd
 
         val r = executeCommand(command, CommandType.CMD, workDirectory = wd)
-        val outputFilePath = r.lines().lastOrNull()?.removePrefix("writing ")?.trim()?.toPathOrNull() ?: throw IllegalStateException()
+        val outputPath = r.lines().lastOrNull()?.removePrefix("writing ")?.trim()?.toPathOrNull() ?: throw IllegalStateException()
 
-        val targetFilePath = targetDirectoryPath.resolve(targetFileName ?: outputFilePath.name)
-        if (targetFilePath != outputFilePath) {
-            Files.move(outputFilePath, targetFilePath, StandardCopyOption.REPLACE_EXISTING)
+        if (targetDirectoryPath == null) {
+            if (targetFileName == null) return outputPath
+            val targetPath = outputDirectoryPath.resolve(targetFileName)
+            if (targetPath != outputPath) {
+                Files.move(outputPath, targetPath, StandardCopyOption.REPLACE_EXISTING)
+            }
+            return targetPath
         }
-        return targetFilePath
+        val targetPath = targetDirectoryPath.resolve(targetFileName ?: outputPath.name)
+        if (targetPath != outputPath) {
+            Files.move(outputPath, targetPath, StandardCopyOption.REPLACE_EXISTING)
+        }
+        if (targetDirectoryPath != outputDirectoryPath) {
+            PathUtils.deleteDirectory(outputDirectoryPath)
+        }
+        return targetPath
     }
 }

@@ -1,10 +1,15 @@
 package icu.windea.pls.core.io
 
+import com.intellij.openapi.application.*
+import com.intellij.openapi.application.ex.*
 import com.intellij.openapi.vfs.*
 import com.intellij.util.io.*
+import icu.windea.pls.lang.*
+import kotlinx.coroutines.*
 import java.nio.file.*
 import kotlin.reflect.*
 
+@Suppress("UnstableApiUsage")
 class FileSynchronizer(
     val filePath: Path,
     val sourceFileProvider: () -> VirtualFile,
@@ -14,21 +19,34 @@ class FileSynchronizer(
     private val sourceFile by lazy { sourceFileProvider() }
     private val sourceFileSize by lazy { calculateFileSize(sourceFile) }
 
+    init {
+        val coroutineScope = getCoroutineScope()
+        coroutineScope.launch {
+            writeAction { get() }
+        }
+    }
+
     fun get(): VirtualFile {
         return synchronized(this) { doSync() }
     }
 
     private fun doSync(): VirtualFile {
+        //NOTE: Do not perform a synchronous refresh under read lock (causes deadlocks if there are events to fire)
+        val refresh = ApplicationManagerEx.getApplicationEx().isDispatchThread || !ApplicationManagerEx.getApplicationEx().holdsReadLock()
+
+        var file = file
         if (file == null) {
-            file = VfsUtil.findFile(filePath, true)
+            file = VfsUtil.findFile(filePath, refresh)
+            this.file = file
         }
-        val file = file
         if (file == null || !file.exists()) {
             filePath.createParentDirectories()
             Files.copy(sourceFile.inputStream, filePath, StandardCopyOption.REPLACE_EXISTING)
-            this.file = VfsUtil.findFile(filePath, true) ?: throw IllegalStateException()
-            this.timeStamp = this.file!!.timeStamp
-            return this.file!!
+            file = VfsUtil.findFile(filePath, refresh)
+            if (file == null) throw IllegalStateException()
+            this.file = file
+            this.timeStamp = file.timeStamp
+            return file
         }
         if (timeStamp != -1L && timeStamp < file.timeStamp) {
             Files.copy(sourceFile.inputStream, filePath, StandardCopyOption.REPLACE_EXISTING)

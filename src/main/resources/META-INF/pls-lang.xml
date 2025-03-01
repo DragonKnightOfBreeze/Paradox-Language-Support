@@ -139,7 +139,8 @@
   </extensions>
 
   <applicationListeners>
-    <listener class="icu.windea.pls.lang.ParadoxPreloadListener" topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="icu.windea.pls.lang.ParadoxCoreLifecycleListener" topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="icu.windea.pls.lang.ParadoxCoreLifecycleListener" topic="com.intellij.ide.plugins.DynamicPluginListener"/>
   </applicationListeners>
 
   <projectListeners>

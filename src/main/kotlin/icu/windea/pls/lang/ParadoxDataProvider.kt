@@ -7,9 +7,7 @@ import kotlinx.coroutines.*
 import java.util.concurrent.*
 
 @Service
-class ParadoxDataProvider(
-    private val coroutineScope: CoroutineScope
-) {
+class ParadoxDataProvider{
     fun init() {
         //preload cached values
         initForPaths()
@@ -33,6 +31,7 @@ class ParadoxDataProvider(
     private val steamPathCache = ConcurrentHashMap<String, String>()
 
     private fun initForPaths() {
+        val coroutineScope = getCoroutineScope()
         coroutineScope.launch {
             launch {
                 getSteamPath()

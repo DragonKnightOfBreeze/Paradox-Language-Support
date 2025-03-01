@@ -116,7 +116,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
         val project = definitionInfo.project
         var newFrameInfo = frameInfo
         if (definitionInfo.type == "sprite") {
-            newFrameInfo = newFrameInfo.merge(ParadoxSpriteManager.getFrameInfo(definition))
+            newFrameInfo = newFrameInfo merge ParadoxSpriteManager.getFrameInfo(definition)
         }
         if (placeholder != null) {
             if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
@@ -205,7 +205,7 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
         val project = definitionInfo.project
         var newFrameInfo = frameInfo
         if (definitionInfo.type == "sprite") {
-            newFrameInfo = newFrameInfo.merge(ParadoxSpriteManager.getFrameInfo(definition))
+            newFrameInfo = newFrameInfo merge ParadoxSpriteManager.getFrameInfo(definition)
         }
         if (placeholder != null) {
             if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions

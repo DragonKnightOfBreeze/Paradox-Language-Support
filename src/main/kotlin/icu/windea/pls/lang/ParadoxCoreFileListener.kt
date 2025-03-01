@@ -8,7 +8,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 
 /**
- * 监听文件更改以更新相关信息缓存。
+ * 用于监听文件更改以更新相关信息缓存。
  */
 class ParadoxCoreFileListener : AsyncFileListener {
     override fun prepareChange(events: MutableList<out VFileEvent>): AsyncFileListener.ChangeApplier {

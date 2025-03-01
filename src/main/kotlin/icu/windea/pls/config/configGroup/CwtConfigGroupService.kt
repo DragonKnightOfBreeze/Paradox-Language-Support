@@ -19,14 +19,12 @@ import java.util.concurrent.*
 private val logger = logger<CwtConfigGroupService>()
 
 @Service(Service.Level.PROJECT)
-class CwtConfigGroupService(
-    private val project: Project,
-    private val coroutineScope: CoroutineScope
-) {
+class CwtConfigGroupService(private val project: Project) {
     private val cache = ConcurrentHashMap<String, CwtConfigGroup>()
 
     fun init() {
         //preload config groups
+        val coroutineScope = getCoroutineScope(project)
         coroutineScope.launch {
             launch {
                 runReadAction { getConfigGroup(null) }
@@ -107,7 +105,7 @@ class CwtConfigGroupService(
 
             override fun onCancel() {
                 run {
-                   val title = PlsBundle.message("configGroup.refresh.notification.cancelled.title")
+                    val title = PlsBundle.message("configGroup.refresh.notification.cancelled.title")
                     createNotification(title, "", NotificationType.INFORMATION).notify(project)
                 }
             }

@@ -5,6 +5,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.io.*
 
 object PlsConstants {
+    const val pluginId = "icu.windea.pls"
+
     val locationClass = PlsIcons::class.java
 
     val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
@@ -63,7 +65,7 @@ object PlsConstants {
         val userHome = System.getProperty("user.home").toPath()
         val data = userHome.resolve(".pls")
         val images = data.resolve("images")
-        val diff = data.resolve("diff")
+        val imagesTemp = images.resolve("_temp")
 
         val unknownPng = data.resolve("unknown.png")
         val unknownPngClasspathUrl = "/tools/unknown.png".toClasspathUrl(locationClass)

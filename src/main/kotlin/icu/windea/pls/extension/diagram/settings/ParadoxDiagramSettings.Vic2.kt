@@ -11,7 +11,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import kotlinx.coroutines.*
 
 @WithGameType(ParadoxGameType.Vic2)
 @Service(Service.Level.PROJECT)
@@ -41,7 +40,7 @@ class Vic2EventTreeDiagramSettings(
         }
     }
 
-    override fun Panel.buildConfigurablePanel(coroutineScope: CoroutineScope) {
+    override fun buildConfigurablePanel(panel: Panel): Unit = with(panel) {
         val settings = state
         val eventTypes = ParadoxEventManager.getTypes(project, ParadoxGameType.Vic2)
         eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }

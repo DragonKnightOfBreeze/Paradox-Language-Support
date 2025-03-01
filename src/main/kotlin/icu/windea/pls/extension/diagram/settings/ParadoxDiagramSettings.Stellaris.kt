@@ -11,6 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import kotlinx.coroutines.*
@@ -45,7 +46,7 @@ class StellarisEventTreeDiagramSettings(
         }
     }
 
-    override fun Panel.buildConfigurablePanel(coroutineScope: CoroutineScope) {
+    override fun buildConfigurablePanel(panel: Panel): Unit = with(panel) {
         val settings = state
         val eventTypes = ParadoxEventManager.getTypes(project, ParadoxGameType.Stellaris)
         eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
@@ -132,7 +133,7 @@ class StellarisTechnologyTreeDiagramSettings(
         }
     }
 
-    override fun Panel.buildConfigurablePanel(coroutineScope: CoroutineScope) {
+    override fun buildConfigurablePanel(panel: Panel): Unit = with(panel) {
         val settings = state
         val tiers = ParadoxTechnologyManager.Stellaris.getTechnologyTiers(project, null)
         tiers.forEach { settings.tier.putIfAbsent(it.name, true) }
@@ -146,6 +147,8 @@ class StellarisTechnologyTreeDiagramSettings(
         areas.forEach { areaNameProviders.put(it) { ParadoxPresentationManager.getText(it.uppercase(), project) } }
         val categoryNameProviders = mutableMapOf<String, () -> String?>()
         categories.forEach { categoryNameProviders.put(it.name) { ParadoxPresentationManager.getNameText(it) } }
+
+        val coroutineScope = getCoroutineScope(project)
 
         collapsibleGroup(PlsDiagramBundle.message("stellaris.technologyTree.name")) {
             row {

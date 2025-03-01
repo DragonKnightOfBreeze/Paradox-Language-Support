@@ -2,12 +2,14 @@ package icu.windea.pls.dds.support
 
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
 import io.github.ititus.dds.*
 import java.io.*
 import java.nio.file.*
 import java.nio.file.StandardOpenOption.*
 import javax.imageio.*
+import kotlin.io.path.*
 
 /**
  * 用于获取DDS图片的元数据，以及在没有更好的方案的情况下渲染与转化DDS图片。
@@ -16,7 +18,7 @@ import javax.imageio.*
  */
 class DefaultDdsSupport : DdsSupport {
     override fun getMetadata(file: VirtualFile): DdsMetadata? {
-        val ddsFile = DdsFile.load(file.toNioPath())
+        val ddsFile = runCatchingCancelable { DdsFile.load(file.toNioPath()) }.getOrNull()
         if (ddsFile == null) return null
         val ddsMetadata = DdsMetadata(
             width = ddsFile.width(),
@@ -36,24 +38,22 @@ class DefaultDdsSupport : DdsSupport {
         return null //unnecessary to implement
     }
 
-    override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): OutputStream {
+    override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
         try {
-            return doConvertImageFormat(inputStream, outputStream, targetFormat)
+            doConvertImageFormat(inputStream, outputStream, targetFormat)
+            return true
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             throw UnsupportedOperationException(e)
         }
     }
 
-    override fun convertImageFormat(file: VirtualFile, targetDirectory: VirtualFile, targetFileName: String, sourceFormat: String, targetFormat: String): VirtualFile? {
+    override fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
         try {
-            val path = file.toNioPath()
-            val inputStream = Files.newInputStream(path, READ)
-            val newFileName = targetFileName
-            val newPath = targetDirectory.toNioPath().resolve(newFileName)
-            val outputStream by lazy { Files.newOutputStream(newPath, WRITE, CREATE, TRUNCATE_EXISTING) }
+            val inputStream = path.inputStream(READ)
+            val outputStream by lazy { targetPath.outputStream(WRITE, CREATE, TRUNCATE_EXISTING) }
             doConvertImageFormat(inputStream, outputStream, targetFormat)
-            return VfsUtil.findFile(newPath, true)
+            return targetPath.exists()
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             throw UnsupportedOperationException(e)
@@ -68,9 +68,9 @@ class DefaultDdsSupport : DdsSupport {
             imageReader.input = imageInputStream
             val numImages = imageReader.getNumImages(false)
             if (numImages == 0) throw IllegalStateException()
-            repeat(numImages) { i ->
-                val image0 = imageReader.read(i)
-                outputStream.use { outputStream ->
+            outputStream.use { outputStream ->
+                repeat(numImages) { i ->
+                    val image0 = imageReader.read(i)
                     ImageIO.write(image0, targetFormat, outputStream)
                     outputStream.flush()
                 }

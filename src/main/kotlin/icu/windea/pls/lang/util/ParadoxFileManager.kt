@@ -36,12 +36,11 @@ object ParadoxFileManager {
      * 基于指定的虚拟文件创建一个临时文件。
      */
     @Deprecated("Use createLightFile()")
-    fun createTempFile(file: VirtualFile): VirtualFile? {
+    fun createTempFile(file: VirtualFile, directoryPath: Path): VirtualFile? {
         try {
-            val diffDirPath = PlsConstants.Paths.diff
-            diffDirPath.createDirectories()
+            directoryPath.createDirectories()
             val fileName = UUID.randomUUID().toString()
-            val diffDirFile = VfsUtil.findFile(diffDirPath, false) ?: return null
+            val diffDirFile = VfsUtil.findFile(directoryPath, false) ?: return null
             val tempFile = VfsUtil.copyFile(ParadoxFileManager, file, diffDirFile, fileName)
             tempFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
             return tempFile
@@ -56,12 +55,11 @@ object ParadoxFileManager {
      * 基于指定的文本和文件信息创建一个临时文件。
      */
     @Deprecated("Use createLightFile()")
-    fun createTempFile(text: String, fileInfo: ParadoxFileInfo): VirtualFile? {
+    fun createTempFile(text: String, fileInfo: ParadoxFileInfo, directoryPath: Path): VirtualFile? {
         try {
-            val diffDirPath = PlsConstants.Paths.diff
-            diffDirPath.createDirectories()
+            directoryPath.createDirectories()
             val fileName = UUID.randomUUID().toString()
-            val path = diffDirPath.resolve(fileName)
+            val path = directoryPath.resolve(fileName)
             Files.writeString(path, text)
             val tempFile = VfsUtil.findFile(path, true) ?: return null
             tempFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
@@ -74,7 +72,7 @@ object ParadoxFileManager {
     }
 
     /**
-     * 基于指定的虚拟文件创建一个临时文件。
+     * 基于指定的虚拟文件创建一个内存中的临时文件。
      */
     fun createLightFile(name: String, file: VirtualFile, project: Project): VirtualFile {
         //为了兼容不同的lineSeparator，这里不能直接使用document.charSequence
@@ -85,14 +83,16 @@ object ParadoxFileManager {
     }
 
     /**
-     * 基于指定的文本和文件信息创建一个临时文件。
+     * 基于指定的文本和文件信息创建一个内存中的临时文件。
      */
     fun createLightFile(name: String, text: CharSequence, fileInfo: ParadoxFileInfo): VirtualFile {
         val lightFile = LightVirtualFile(name, text)
         lightFile.putUserData(PlsKeys.injectedFileInfo, fileInfo)
         return lightFile
     }
-
+    /**
+     * 基于指定的文本和文件信息创建一个内存中的临时文件。
+     */
     fun createLightFile(name: String, text: CharSequence, language: Language): VirtualFile {
         val lightFile = LightVirtualFile(name, language, text)
         return lightFile
