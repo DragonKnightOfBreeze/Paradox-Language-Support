@@ -85,8 +85,6 @@ dependencies {
     //built-in configs
     implementation(files("build/libs/builtin-configs.jar"))
 
-    //from dds4j
-    implementation("ar.com.hjg:pngj:2.1.0")
     //dds - https://github.com/iTitus/dds
     implementation("io.github.ititus:dds:3.1.0")
     implementation("io.github.ititus:ddsiio:3.1.0")
