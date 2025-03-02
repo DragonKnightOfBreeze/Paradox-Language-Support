@@ -12,7 +12,7 @@ data class ParadoxEconomicCategoryInfo(
     val useForAiBudget: Boolean = false,
     val modifierCategory: String? = null,
     val parents: Set<String> = emptySet(),
-    val modifiers: Set<ParadoxEconomicCategoryInfo.ModifierInfo> = emptySet(),
+    val modifiers: Set<ModifierInfo> = emptySet(),
 ) {
     override fun equals(other: Any?): Boolean {
         return this === other || (other is ParadoxEconomicCategoryInfo && name == other.name)

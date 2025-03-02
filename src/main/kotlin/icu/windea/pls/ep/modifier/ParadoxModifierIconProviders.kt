@@ -12,6 +12,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
 
+@WithGameType(ParadoxGameType.Stellaris)
 class ParadoxBaseModifierIconProvider : ParadoxModifierIconProvider {
     override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         //gfx/interface/icons/modifiers/mod_$

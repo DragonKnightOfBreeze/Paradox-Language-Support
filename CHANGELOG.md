@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.31
+
+* [x] #122 Non-Stellaris games raise warning if modifier icon doesn't exist
+
 ## 1.3.30
 
 * [X] #115 优化对DDS图片的支持（基于[iTitus/dds](https://github.com/iTitus/dds)和[Texconv](https://github.com/microsoft/DirectXTex/wiki/Texconv)）
