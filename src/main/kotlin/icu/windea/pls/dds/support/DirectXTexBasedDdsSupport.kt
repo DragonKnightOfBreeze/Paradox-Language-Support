@@ -5,11 +5,11 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.io.*
 import icu.windea.pls.dds.*
 import io.github.ititus.ddsiio.*
 import org.apache.commons.io.*
 import org.apache.commons.io.file.*
-import org.apache.xmlgraphics.image.loader.util.*
 import java.awt.image.*
 import java.io.*
 import java.nio.file.*
