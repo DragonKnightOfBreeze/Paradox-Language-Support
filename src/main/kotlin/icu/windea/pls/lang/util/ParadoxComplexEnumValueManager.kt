@@ -95,7 +95,7 @@ object ParadoxComplexEnumValueManager {
             if (element !is ParadoxScriptProperty) return false
             if (!doMatchKey(complexEnumConfig, config, element)) return false
         } else if (config is CwtValueConfig) {
-            //blockConfig vs blockElement 
+            //blockConfig vs blockElement
             if (element !is ParadoxScriptBlockElement) return false
         } else {
             return false
@@ -150,7 +150,10 @@ object ParadoxComplexEnumValueManager {
 
     private fun doMatchKey(complexEnumConfig: CwtComplexEnumConfig, config: CwtPropertyConfig, propertyElement: ParadoxScriptProperty): Boolean {
         val key = config.key
-        if (key == "scalar" || key == "enum_name") return true
+        when (key) {
+            "enum_name" -> return true
+            "scalar" -> return true
+        }
         return key.equals(propertyElement.name, true)
     }
 
@@ -160,27 +163,27 @@ object ParadoxComplexEnumValueManager {
             if (!doMatchBlock(complexEnumConfig, config, blockElement)) return false
             return true
         } else if (config.stringValue != null) {
+            when (config.stringValue) {
+                "enum_name" -> return true
+                "scalar" -> return true
+                "float" -> return valueElement is ParadoxScriptFloat
+                "int" -> return valueElement is ParadoxScriptInt
+                "bool" -> return valueElement is ParadoxScriptBoolean
+            }
             val stringElement = valueElement.castOrNull<ParadoxScriptString>() ?: return false
-            if (!doMatchString(complexEnumConfig, config, stringElement)) return false
-            return true
+            return stringElement.value.equals(config.stringValue, true)
+        } else if (config.floatValue != null) {
+            val floatElement = valueElement.castOrNull<ParadoxScriptFloat>() ?: return false
+            return floatElement.floatValue == config.floatValue
+        } else if (config.intValue != null) {
+            val intElement = valueElement.castOrNull<ParadoxScriptInt>() ?: return false
+            return intElement.intValue == config.intValue
         } else if (config.booleanValue != null) {
             val booleanElement = valueElement.castOrNull<ParadoxScriptBoolean>() ?: return false
-            if (!doMatchBoolean(complexEnumConfig, config, booleanElement)) return false
-            return true
+            return booleanElement.booleanValue == config.booleanValue
         } else {
             return false
         }
-    }
-
-    private fun doMatchString(complexEnumConfig: CwtComplexEnumConfig, config: CwtMemberConfig<*>, stringElement: ParadoxScriptString): Boolean {
-        val stringValue = config.stringValue!!
-        if (stringValue == "scalar" || stringValue == "enum_name") return true
-        return stringValue.equals(stringElement.value, true)
-    }
-
-    private fun doMatchBoolean(complexEnumConfig: CwtComplexEnumConfig, config: CwtMemberConfig<*>, booleanElement: ParadoxScriptBoolean): Boolean {
-        val booleanValue = config.booleanValue!!
-        return booleanValue == booleanElement.booleanValue
     }
 
     private fun doMatchBlock(complexEnumConfig: CwtComplexEnumConfig, config: CwtMemberConfig<*>, blockElement: ParadoxScriptBlockElement): Boolean {
