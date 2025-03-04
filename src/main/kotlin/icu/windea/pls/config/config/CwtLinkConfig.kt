@@ -42,7 +42,7 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
         fun resolve(config: CwtPropertyConfig): CwtLinkConfig? = doResolve(config)
 
         fun resolveForLocalisation(config: CwtPropertyConfig): CwtLinkConfig? = doResolve(config, true)
-        
+
         fun resolveForLocalisation(linkConfig: CwtLinkConfig): CwtLinkConfig = doResolve(linkConfig, true)
     }
 }
@@ -73,7 +73,7 @@ private fun doResolve(config: CwtPropertyConfig, forLocalisation: Boolean = fals
             "from_argument" -> fromArgument = prop.booleanValue ?: false
             "prefix" -> prefix = prop.stringValue
             "data_source" -> dataSource = prop.value
-            "input_scopes" -> inputScopes = buildSet {
+            "input_scopes", "input_scope" -> inputScopes = buildSet {
                 prop.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) }
                 prop.values?.forEach { it.stringValue?.let { v -> add(ParadoxScopeManager.getScopeId(v)) } }
             }
