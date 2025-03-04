@@ -24,6 +24,7 @@ import icu.windea.pls.model.*
 
 object CwtConfigCompletionManager {
     //region Predefined Lookup Elements
+
     val yesLookupElement = LookupElementBuilder.create("yes").bold()
         .withPriority(CwtConfigCompletionPriorities.keyword)
         .withCompletionId()
@@ -44,9 +45,11 @@ object CwtConfigCompletionManager {
         }
         .withPriority(CwtConfigCompletionPriorities.keyword)
         .withCompletionId()
+
     //endregion
 
     //region Core Methods
+
     fun initializeContext(parameters: CompletionParameters, context: ProcessingContext, contextElement: PsiElement): Boolean {
         context.parameters = parameters
         context.completionIds = mutableSetOf<String>().synced()
@@ -304,5 +307,6 @@ object CwtConfigCompletionManager {
             }
         }
     }
+
     //endregion
 }

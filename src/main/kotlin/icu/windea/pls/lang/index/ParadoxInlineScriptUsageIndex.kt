@@ -35,10 +35,10 @@ class ParadoxInlineScriptUsageIndex : ParadoxFileBasedIndex<ParadoxInlineScriptU
                     val r = visitProperty(element)
                     if(r) return
                 }
-                
+
                 super.visitElement(element)
             }
-            
+
             private fun visitProperty(element: ParadoxScriptProperty): Boolean {
                 val info = ParadoxInlineScriptManager.getUsageInfo(element) ?: return false
                 val compactInfo = fileData.getOrPut(info.expression) { ParadoxInlineScriptUsageIndexInfo.Compact(info.expression, sortedSetOf(), info.gameType) }

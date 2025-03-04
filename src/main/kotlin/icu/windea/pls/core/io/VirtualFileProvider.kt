@@ -1,16 +1,12 @@
 package icu.windea.pls.core.io
 
-import com.intellij.openapi.application.*
 import com.intellij.openapi.application.ex.*
 import com.intellij.openapi.vfs.*
 import com.intellij.util.io.*
-import icu.windea.pls.lang.*
-import kotlinx.coroutines.*
 import java.nio.file.*
 import kotlin.reflect.*
 
-@Suppress("UnstableApiUsage")
-class FileSynchronizer(
+class VirtualFileProvider(
     val filePath: Path,
     val sourceFileProvider: () -> VirtualFile,
 ) {
@@ -19,18 +15,11 @@ class FileSynchronizer(
     private val sourceFile by lazy { sourceFileProvider() }
     private val sourceFileSize by lazy { calculateFileSize(sourceFile) }
 
-    init {
-        val coroutineScope = getCoroutineScope()
-        coroutineScope.launch {
-            writeAction { get() }
-        }
-    }
-
     fun get(): VirtualFile {
-        return synchronized(this) { doSync() }
+        return synchronized(this) { doGet() }
     }
 
-    private fun doSync(): VirtualFile {
+    private fun doGet(): VirtualFile {
         //NOTE: Do not perform a synchronous refresh under read lock (causes deadlocks if there are events to fire)
         val refresh = ApplicationManagerEx.getApplicationEx().isDispatchThread || !ApplicationManagerEx.getApplicationEx().holdsReadLock()
 
@@ -74,4 +63,4 @@ class FileSynchronizer(
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline operator fun FileSynchronizer.getValue(thisRef: Any?, property: KProperty<*>): VirtualFile = get()
+inline operator fun VirtualFileProvider.getValue(thisRef: Any?, property: KProperty<*>): VirtualFile = get()

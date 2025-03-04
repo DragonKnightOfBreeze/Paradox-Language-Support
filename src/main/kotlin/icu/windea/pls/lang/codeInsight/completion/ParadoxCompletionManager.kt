@@ -38,6 +38,7 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxCompletionManager {
     //region Predefined Lookup Elements
+
     val yesLookupElement = LookupElementBuilder.create("yes").bold()
         .withPriority(ParadoxCompletionPriorities.keyword)
         .withCompletionId()
@@ -58,9 +59,11 @@ object ParadoxCompletionManager {
         }
         .withPriority(ParadoxCompletionPriorities.keyword)
         .withCompletionId()
+
     //endregion
 
     //region Core Methods
+
     fun initializeContext(parameters: CompletionParameters, context: ProcessingContext) {
         context.parameters = parameters
         context.completionIds = mutableSetOf<String>().synced()
@@ -248,9 +251,11 @@ object ParadoxCompletionManager {
             }
         }
     }
+
     //endregion
 
     //region Base Completion Methods
+
     fun completeRootKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxExpressionPath) {
         val originalFile = context.parameters?.originalFile ?: return
         val fileInfo = originalFile.fileInfo ?: return
@@ -679,15 +684,17 @@ object ParadoxCompletionManager {
             result.addElement(lookupElement, context)
         }
     }
+
     //endregion
 
     //region Complex Expression Completion Methods
+
     inline fun <T> markIncomplete(action: () -> T): T {
         try {
-            PlsStates.incompleteComplexExpression.set(true)
+            PlsManager.incompleteComplexExpression.set(true)
             return action()
         } finally {
-            PlsStates.incompleteComplexExpression.remove()
+            PlsManager.incompleteComplexExpression.remove()
         }
     }
 
@@ -1821,9 +1828,11 @@ object ParadoxCompletionManager {
             true
         }
     }
+
     //endregion
 
     //region Extended Completion Methods
+
     fun completeExtendedScriptedVariable(context: ProcessingContext, result: CompletionResultSet) {
         if (!getSettings().completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
@@ -2021,5 +2030,6 @@ object ParadoxCompletionManager {
         if (text.any { it in ignoredCharsForExtendedConfigName }) return true
         return false
     }
+
     //endregion
 }

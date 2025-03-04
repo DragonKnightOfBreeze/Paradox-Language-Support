@@ -6,8 +6,11 @@ import icu.windea.pls.model.*
 import kotlinx.coroutines.*
 import java.util.concurrent.*
 
+/**
+ * 用于提供一些需要动态获取的数据。
+ */
 @Service
-class ParadoxDataProvider{
+class PlsDataProvider {
     fun init() {
         //preload cached values
         initForPaths()

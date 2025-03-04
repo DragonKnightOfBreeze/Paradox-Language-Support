@@ -1,21 +1,16 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.codeInsight.daemon.*
-import com.intellij.codeInsight.daemon.impl.*
 import com.intellij.injected.editor.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.openapi.vcs.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.psi.search.*
 import com.intellij.testFramework.*
 import com.intellij.ui.layout.*
-import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
@@ -221,80 +216,18 @@ object ParadoxCoreManager {
         return null
     }
 
-    fun isExcludedRootFilePath(rootFilePath: String): Boolean {
-        //see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90
-        //exclude some specific root file paths to avoid parsing and indexing unexpected files
-        return rootFilePath.isEmpty() || rootFilePath == "/"
+    fun getQuickGameDirectory(gameType: ParadoxGameType): String? {
+        val path = getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)
+        if (path == null || path.toPathOrNull()?.takeIf { it.exists() } == null) return null
+        return path
     }
 
-    fun findFilesByRootFilePaths(rootFilePaths: Set<String>): MutableSet<VirtualFile> {
-        val files = mutableSetOf<VirtualFile>()
-        runReadAction {
-            rootFilePaths.forEach f@{ rootFilePath ->
-                if(isExcludedRootFilePath(rootFilePath)) return@f
-                val rootFile = VfsUtil.findFile(rootFilePath.toPathOrNull() ?: return@f, true) ?: return@f
-                VfsUtil.visitChildrenRecursively(rootFile, object : VirtualFileVisitor<Void>() {
-                    override fun visitFile(file: VirtualFile): Boolean {
-                        if (file.isFile) files.add(file)
-                        return true
-                    }
-                })
-            }
-        }
-        return files
-    }
-
-    fun findFilesByFileNames(fileNames: Set<String>): Set<VirtualFile> {
-        val files = mutableSetOf<VirtualFile>()
-        runReadAction {
-            val project = getTheOnlyOpenOrDefaultProject()
-            FilenameIndex.processFilesByNames(fileNames, false, GlobalSearchScope.allScope(project), null) { file ->
-                if (file.isFile) files.add(file)
-                true
-            }
-        }
-        return files
-    }
-
-    fun findOpenedFiles(onlyParadoxFiles: Boolean = true, predicate: ((VirtualFile, Project) -> Boolean)? = null): Set<VirtualFile> {
-        val files = mutableSetOf<VirtualFile>()
-        runReadAction {
-            val allEditors = EditorFactory.getInstance().allEditors
-            for (editor in allEditors) {
-                val file = editor.virtualFile ?: continue
-                val project = editor.project ?: continue
-                if (onlyParadoxFiles && !file.fileType.isParadoxFileType()) continue
-                if (predicate == null || predicate(file, project)) {
-                    files.add(file)
-                }
-            }
-        }
-        return files
-    }
-
-    fun reparseAndRefreshFiles(files: Set<VirtualFile>, reparse: Boolean = true, refresh: Boolean = true) {
-        if (files.isEmpty()) return
-        runInEdt {
-            if (reparse) {
-                FileContentUtilCore.reparseFiles(files)
-            }
-
-            if (refresh) {
-                val allEditors = EditorFactory.getInstance().allEditors
-                for (editor in allEditors) {
-                    val file = editor.virtualFile ?: continue
-                    val project = editor.project ?: continue
-                    if (file !in files) continue
-
-                    //refresh code highlighting
-                    val psiFile = file.toPsiFile(project)
-                    if(psiFile != null) DaemonCodeAnalyzer.getInstance(project).restart(psiFile)
-
-                    //refresh inlay hints
-                    InlayHintsPassFactoryInternal.clearModificationStamp(editor)
-                }
-            }
-        }
+    fun getGameVersionFromGameDirectory(gameDirectory: String?): String? {
+        val gameDirectory0 = gameDirectory?.normalizePath()?.orNull() ?: return null
+        val rootFile = gameDirectory0.toVirtualFile(true)?.takeIf { it.exists() } ?: return null
+        val rootInfo = rootFile.rootInfo
+        if (rootInfo !is ParadoxRootInfo.Game) return null
+        return rootInfo.version
     }
 
     fun validateGameDirectory(builder: ValidationInfoBuilder, gameType: ParadoxGameType, gameDirectory: String?): ValidationInfo? {
@@ -310,19 +243,5 @@ object ParadoxCoreManager {
         val rootInfo = rootFile.rootInfo
         if (rootInfo !is ParadoxRootInfo.Game) return builder.error(PlsBundle.message("gameDirectory.error.3", gameType.title))
         return null
-    }
-
-    fun getQuickGameDirectory(gameType: ParadoxGameType): String? {
-        val path = getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)
-        if (path == null || path.toPathOrNull()?.takeIf { it.exists() } == null) return null
-        return path
-    }
-
-    fun getGameVersionFromGameDirectory(gameDirectory: String?): String? {
-        val gameDirectory0 = gameDirectory?.normalizePath()?.orNull() ?: return null
-        val rootFile = gameDirectory0.toVirtualFile(true)?.takeIf { it.exists() } ?: return null
-        val rootInfo = rootFile.rootInfo
-        if (rootInfo !is ParadoxRootInfo.Game) return null
-        return rootInfo.version
     }
 }

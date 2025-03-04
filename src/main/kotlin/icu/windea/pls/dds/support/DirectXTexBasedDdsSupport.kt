@@ -27,7 +27,6 @@ import kotlin.io.path.*
 class DirectXTexBasedDdsSupport : DdsSupport {
     private val texconvExe get() = PlsConstants.Paths.texconvExeFile
     private val texconvExeWd by lazy { PlsConstants.Paths.texconvExe.parent?.toFile() }
-    private val tempParentPath get() = PlsConstants.Paths.imagesTemp
 
     override fun getMetadata(file: VirtualFile): DdsMetadata? {
         return null //unnecessary to implement
@@ -73,6 +72,7 @@ class DirectXTexBasedDdsSupport : DdsSupport {
     override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
         if (!OS.isWindows) return false //only available on windows
         try {
+            val tempParentPath = PlsConstants.Paths.imagesTemp
             tempParentPath.createDirectories()
             val path = tempParentPath.resolve(UUID.randomUUID().toString() + "." + sourceFormat)
             path.outputStream(WRITE, CREATE, TRUNCATE_EXISTING).use { IOUtils.copy(inputStream, it) }
@@ -100,6 +100,7 @@ class DirectXTexBasedDdsSupport : DdsSupport {
     }
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
+        val tempParentPath = PlsConstants.Paths.imagesTemp
         val outputDirectoryPath = tempParentPath.resolve(UUID.randomUUID().toString())
         outputDirectoryPath.createDirectories()
 

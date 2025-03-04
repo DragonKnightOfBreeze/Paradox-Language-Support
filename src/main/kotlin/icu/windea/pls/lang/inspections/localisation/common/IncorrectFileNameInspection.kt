@@ -114,9 +114,9 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
     //	override fun getText() = PlsBundle.message("inspection.localisation.incorrectFileName.fix.3")
     //
     //  override fun getFamilyName() = text
-    //	
+    //
     //	override fun getPriority() = PriorityAction.Priority.NORMAL
-    //	
+    //
     //	override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
     //		PsiElementRenameHandler.invoke(file, project, file, editor) //不限制更改文件扩展名
     //	}

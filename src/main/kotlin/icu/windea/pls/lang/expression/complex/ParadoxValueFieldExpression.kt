@@ -58,7 +58,7 @@ class ParadoxValueFieldExpression private constructor(
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? {
-            val incomplete = PlsStates.incompleteComplexExpression.get() ?: false
+            val incomplete = PlsManager.incompleteComplexExpression.get() ?: false
             if (!incomplete && expressionString.isEmpty()) return null
 
             //skip if text is a number
@@ -68,7 +68,7 @@ class ParadoxValueFieldExpression private constructor(
 
             //skip if text is a parameter with unary operator prefix
             if (ParadoxExpressionManager.isUnaryOperatorAwareParameter(expressionString, parameterRanges)) return null
-            
+
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             val offset = range.startOffset
             var isLast = false

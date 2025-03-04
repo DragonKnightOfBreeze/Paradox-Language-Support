@@ -49,7 +49,7 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
         holder.registerProblem(file, message, fix)
         return holder.resultsArray
     }
-    
+
     private fun shouldCheckFile(file: PsiFile): Boolean {
         if (ParadoxFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
         if (selectRootFile(file) == null) return false

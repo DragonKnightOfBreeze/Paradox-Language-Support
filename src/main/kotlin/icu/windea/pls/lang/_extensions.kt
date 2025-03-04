@@ -47,7 +47,7 @@ fun getSettings() = service<ParadoxSettings>().state
 
 fun getProfilesSettings() = service<ParadoxProfilesSettings>().state
 
-fun getDataProvider() = service<ParadoxDataProvider>()
+fun getDataProvider() = service<PlsDataProvider>()
 
 fun getConfigGroup(gameType: ParadoxGameType?) = getDefaultProject().service<CwtConfigGroupService>().getConfigGroup(gameType)
 

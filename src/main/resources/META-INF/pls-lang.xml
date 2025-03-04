@@ -29,7 +29,7 @@
     <fileTypeOverrider implementation="icu.windea.pls.lang.ParadoxFileTypeOverrider" order="first"/>
     <utf8BomOptionProvider implementation="icu.windea.pls.lang.ParadoxUtf8BomOptionProvider"/>
 
-    <vfs.asyncListener implementation="icu.windea.pls.lang.ParadoxCoreFileListener"/>
+    <vfs.asyncListener implementation="icu.windea.pls.lang.PlsFileListener"/>
 
     <projectViewPane implementation="icu.windea.pls.lang.projectView.CwtConfigFilesViewPane"/>
     <projectViewPane implementation="icu.windea.pls.lang.projectView.ParadoxFilesViewPane"/>
@@ -139,8 +139,8 @@
   </extensions>
 
   <applicationListeners>
-    <listener class="icu.windea.pls.lang.ParadoxCoreLifecycleListener" topic="com.intellij.ide.AppLifecycleListener"/>
-    <listener class="icu.windea.pls.lang.ParadoxCoreLifecycleListener" topic="com.intellij.ide.plugins.DynamicPluginListener"/>
+    <listener class="icu.windea.pls.lang.PlsLifecycleListener" topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="icu.windea.pls.lang.PlsLifecycleListener" topic="com.intellij.ide.plugins.DynamicPluginListener"/>
   </applicationListeners>
 
   <projectListeners>

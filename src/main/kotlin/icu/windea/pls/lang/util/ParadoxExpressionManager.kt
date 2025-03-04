@@ -45,6 +45,7 @@ object ParadoxExpressionManager {
     }
 
     //region Common Methods
+
     fun isParameterized(text: String, conditionBlock: Boolean = true, full: Boolean = false): Boolean {
         //快速判断，不检测带参数后的语法是否合法
         if (text.length < 2) return false
@@ -190,9 +191,11 @@ object ParadoxExpressionManager {
         return text.firstOrNull()?.let { it == '+' || it == '-' } == true
             && parameterRanges.singleOrNull()?.let { it.startOffset == 1 && it.endOffset == text.length } == true
     }
+
     //endregion
 
     //region Core Methods
+
     fun getConfigContext(element: PsiElement): CwtConfigContext? {
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return null
         return doGetConfigContextFromCache(memberElement)
@@ -636,9 +639,11 @@ object ParadoxExpressionManager {
         }
         return occurrenceMap
     }
+
     //endregion
 
     //region Annotate Methods
+
     fun annotateExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, holder: AnnotationHolder) {
         val expressionText = getExpressionText(element, rangeInElement)
         ParadoxScriptExpressionSupport.annotate(element, rangeInElement, expressionText, holder, config)
@@ -712,9 +717,11 @@ object ParadoxExpressionManager {
 
         annotateExpressionByAttributesKey(element, rangeToAnnotate, attributesKey, holder)
     }
+
     //endregion
 
     //region Resolve Methods
+
     fun resolveExpression(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
         ProgressManager.checkCanceled()
         if (configExpression == null) return null
@@ -846,9 +853,11 @@ object ParadoxExpressionManager {
         resolved.putUserData(PlsKeys.bindingConfig, commandConfig)
         return resolved
     }
+
     //endregion
 
     //region Misc Methods
+
     fun isConstantMatch(expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
         //注意这里可能需要在同一循环中同时检查keyExpression和valueExpression，因此这里需要特殊处理
         if (configExpression.isKey && expression.isKey == false) return false
@@ -960,5 +969,6 @@ object ParadoxExpressionManager {
     private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
         return config.keyExpression.type == CwtDataTypes.Constant && config.cardinality?.isRequired() != false
     }
+
     //endregion
 }

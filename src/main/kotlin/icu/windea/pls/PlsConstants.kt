@@ -3,11 +3,12 @@ package icu.windea.pls
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.io.*
+import org.apache.commons.io.file.*
 
 object PlsConstants {
     const val pluginId = "icu.windea.pls"
 
-    val locationClass = PlsIcons::class.java
+    val locationClass = PlsBundle::class.java
 
     val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
 
@@ -65,14 +66,15 @@ object PlsConstants {
         val userHome = System.getProperty("user.home").toPath()
         val data = userHome.resolve(".pls")
         val images = data.resolve("images")
-        val imagesTemp = images.resolve("_temp")
+
+        val imagesTemp by PathAdapter(images.resolve("_temp")) { PathUtils.cleanDirectory(it) }
 
         val unknownPng = data.resolve("unknown.png")
         val unknownPngClasspathUrl = "/tools/unknown.png".toClasspathUrl(locationClass)
-        val unknownPngFile by FileSynchronizer(unknownPng) { VfsUtil.findFileByURL(unknownPngClasspathUrl)!! }
+        val unknownPngFile by VirtualFileProvider(unknownPng) { VfsUtil.findFileByURL(unknownPngClasspathUrl)!! }
 
         val texconvExe = data.resolve("texconv.exe")
         val texconvExeClasspathUrl = "/tools/texconv.exe".toClasspathUrl(locationClass)
-        val texconvExeFile by FileSynchronizer(texconvExe) { VfsUtil.findFileByURL(texconvExeClasspathUrl)!! }
+        val texconvExeFile by VirtualFileProvider(texconvExe) { VfsUtil.findFileByURL(texconvExeClasspathUrl)!! }
     }
 }

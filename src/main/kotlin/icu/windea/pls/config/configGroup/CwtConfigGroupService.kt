@@ -7,6 +7,7 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.progress.impl.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.lang.*
@@ -83,8 +84,8 @@ class CwtConfigGroupService(private val project: Project) {
                 }
 
                 //重新解析已打开的文件
-                val openedFiles = ParadoxCoreManager.findOpenedFiles()
-                ParadoxCoreManager.reparseAndRefreshFiles(openedFiles)
+                val openedFiles = PlsManager.findOpenedFiles()
+                PlsManager.reparseAndRefreshFiles(openedFiles)
             }
 
             override fun onSuccess() {
@@ -92,8 +93,8 @@ class CwtConfigGroupService(private val project: Project) {
                     //重新解析文件（IDE之后会自动请求重新索引）
                     //TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
                     val rootFilePaths = getRootFilePaths(configGroups)
-                    val files = ParadoxCoreManager.findFilesByRootFilePaths(rootFilePaths)
-                    ParadoxCoreManager.reparseAndRefreshFiles(files)
+                    val files = PlsManager.findFilesByRootFilePaths(rootFilePaths)
+                    PlsManager.reparseAndRefreshFiles(files)
                 }
 
                 run {

@@ -7,6 +7,7 @@ import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.ep.configGroup.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import javax.swing.*
 
@@ -70,7 +71,7 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
             if(projectFileIndex.isInContent(rootDirectory)) return@f
             newRoots += rootDirectory
         }
-        newRoots.removeIf { ParadoxCoreManager.isExcludedRootFilePath(it.path) }
+        newRoots.removeIf { PlsManager.isExcludedRootFilePath(it.path) }
         return newRoots
     }
 }

@@ -27,6 +27,7 @@ import javax.swing.*
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptPsiImplUtil {
     //region ParadoxScriptRootBlock
+
     @JvmStatic
     fun getValue(element: ParadoxScriptRootBlock): String {
         return PlsConstants.Folders.block
@@ -63,9 +64,11 @@ object ParadoxScriptPsiImplUtil {
     private fun isRootBlockComponent(element: PsiElement): Boolean {
         return element is ParadoxScriptScriptedVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
     }
+
     //endregion
 
     //region ParadoxScriptScriptedVariable
+
     @JvmStatic
     fun getIcon(element: ParadoxScriptScriptedVariable, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.ScriptedVariable
@@ -124,9 +127,11 @@ object ParadoxScriptPsiImplUtil {
     fun toString(element: ParadoxScriptScriptedVariable): String {
         return "ParadoxScriptScriptedVariable(name=${element.name})"
     }
+
     //endregion
 
     //region ParadoxScriptScriptedVariableName
+
     @JvmStatic
     fun getName(element: ParadoxScriptScriptedVariableName): String? {
         // 不包含作为前缀的"@"
@@ -137,9 +142,11 @@ object ParadoxScriptPsiImplUtil {
     fun getValue(element: ParadoxScriptScriptedVariableName): String? {
         return element.name
     }
+
     //endregion
 
     //region ParadoxScriptProperty
+
     @JvmStatic
     fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
         val definitionInfo = element.definitionInfo
@@ -186,9 +193,9 @@ object ParadoxScriptPsiImplUtil {
         return element.propertyValue?.value
     }
 
-    //得到相对于rootBlock的深度，最大为1（element.parent is ParadoxScriptRootBlock）
     @JvmStatic
     fun getDepth(element: ParadoxScriptProperty): Int {
+        //得到相对于rootBlock的深度，最大为1（element.parent is ParadoxScriptRootBlock）
         var current: PsiElement? = element
         var depth = 0
         while (true) {
@@ -224,9 +231,11 @@ object ParadoxScriptPsiImplUtil {
     fun toString(element: ParadoxScriptProperty): String {
         return "ParadoxScriptProperty(name=${element.name})"
     }
+
     //endregion
 
     //region ParadoxScriptPropertyKey
+
     @JvmStatic
     fun getIcon(element: ParadoxScriptPropertyKey, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.ScriptNodes.Property
@@ -252,9 +261,11 @@ object ParadoxScriptPsiImplUtil {
     fun toString(element: ParadoxScriptPropertyKey): String {
         return "ParadoxScriptPropertyKey(value=${element.value})"
     }
+
     //endregion
 
     //region ParadoxScriptScriptedVariableReference
+
     @JvmStatic
     fun getIcon(element: ParadoxScriptScriptedVariableReference, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.ScriptedVariable
@@ -287,9 +298,11 @@ object ParadoxScriptPsiImplUtil {
             CachedValueProvider.Result.create(value, element)
         }
     }
+
     //endregion
 
     //region ParadoxScriptValue
+
     @JvmStatic
     fun getIcon(element: ParadoxScriptValue, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.ScriptNodes.Value
@@ -310,31 +323,39 @@ object ParadoxScriptPsiImplUtil {
         val newElement = ParadoxScriptElementFactory.createValue(element.project, value)
         return element.replace(newElement).cast()
     }
+
     //endregion
 
     //region ParadoxScriptBoolean
+
     @JvmStatic
     fun getBooleanValue(element: ParadoxScriptBoolean): Boolean {
         return element.value.toBooleanYesNo()
     }
+
     //endregion
 
     //region ParadoxScriptInt
+
     @JvmStatic
     fun getIntValue(element: ParadoxScriptInt): Int {
         return element.value.toIntOrNull() ?: 0
     }
 
+
     //endregion
 
     //region ParadoxScriptFloat
+
     @JvmStatic
     fun getFloatValue(element: ParadoxScriptFloat): Float {
         return element.value.toFloatOrNull() ?: 0f
     }
+
     //endregion
 
     //region ParadoxScriptString
+
     @JvmStatic
     fun getIcon(element: ParadoxScriptString, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.ScriptNodes.Value
@@ -361,9 +382,11 @@ object ParadoxScriptPsiImplUtil {
     fun toString(element: ParadoxScriptString): String {
         return "ParadoxScriptString(value=${element.value})"
     }
+
     //endregion
 
     //region ParadoxScriptColor
+
     @JvmStatic
     fun getValue(element: ParadoxScriptColor): String {
         return element.text
@@ -390,9 +413,11 @@ object ParadoxScriptPsiImplUtil {
     fun setColor(element: ParadoxScriptColor, color: Color) {
         colorSupport.setColor(element, color)
     }
+
     //endregion
 
     //region ParadoxScriptBlock
+
     @JvmStatic
     fun getIcon(element: ParadoxScriptBlock, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.ScriptNodes.Block
@@ -449,9 +474,11 @@ object ParadoxScriptPsiImplUtil {
             || element is ParadoxScriptValue
             || element is ParadoxScriptParameterCondition
     }
+
     //endregion
 
     //region ParadoxScriptParameterCondition
+
     @JvmStatic
     fun getIcon(element: ParadoxScriptParameterCondition, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.ScriptNodes.ParameterCondition
@@ -517,9 +544,11 @@ object ParadoxScriptPsiImplUtil {
     fun getPresentationText(element: ParadoxScriptParameterCondition): String? {
         return element.conditionExpression?.let { PlsConstants.Folders.parameterCondition(it) }
     }
+
     //endregion
 
     //region ParadoxScriptInlineParameterCondition
+
     @JvmStatic
     fun getIcon(element: ParadoxScriptInlineParameterCondition, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.ScriptNodes.ParameterCondition
@@ -551,9 +580,11 @@ object ParadoxScriptPsiImplUtil {
     fun getPresentationText(element: ParadoxScriptInlineParameterCondition): String? {
         return element.conditionExpression?.let { PlsConstants.Folders.parameterCondition(it) }
     }
+
     //endregion
 
     //region ParadoxScriptParameterConditionParameter
+
     @JvmStatic
     fun getIcon(element: ParadoxScriptParameterConditionParameter, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.Parameter
@@ -585,23 +616,29 @@ object ParadoxScriptPsiImplUtil {
         val nameElement = element.idElement
         return ParadoxConditionParameterPsiReference(element, nameElement.textRangeInParent)
     }
+
     //endregion
 
     //region ParadoxScriptInlineMath
+
     @JvmStatic
     fun getValue(element: ParadoxScriptInlineMath): String {
         return PlsConstants.Folders.inlineMath
     }
+
     //endregion
 
     //region ParadoxScriptInlineMathNumber
+
     @JvmStatic
     fun getValue(element: ParadoxScriptInlineMathNumber): String {
         return element.text
     }
+
     //endregion
 
     //region ParadoxScriptInlineMathVariableReference
+
     @JvmStatic
     fun getIcon(element: ParadoxScriptInlineMathScriptedVariableReference, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.ScriptedVariable
@@ -634,9 +671,11 @@ object ParadoxScriptPsiImplUtil {
             CachedValueProvider.Result.create(value, element)
         }
     }
+
     //endregion
 
     //region ParadoxScriptParameter
+
     @JvmStatic
     fun getIcon(element: ParadoxScriptParameter, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.Parameter
@@ -676,9 +715,11 @@ object ParadoxScriptPsiImplUtil {
         val nameElement = element.idElement ?: return null
         return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
     }
+
     //endregion
 
     //region ParadoxScriptInlineMathParameter
+
     @JvmStatic
     fun getIcon(element: ParadoxScriptInlineMathParameter, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.Parameter
@@ -718,6 +759,7 @@ object ParadoxScriptPsiImplUtil {
         val nameElement = element.idElement ?: return null
         return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
     }
+
     //endregion
 
     @JvmStatic

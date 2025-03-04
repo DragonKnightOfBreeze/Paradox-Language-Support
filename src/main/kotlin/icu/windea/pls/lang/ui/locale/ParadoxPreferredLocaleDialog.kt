@@ -1,6 +1,8 @@
 package icu.windea.pls.lang.ui.locale
 
+import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
+import com.intellij.openapi.vfs.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
@@ -20,8 +22,8 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
                 .bindItem(settings::preferredLocale.toNullableProperty())
                 .onApply {
                     if (oldPreferredLocale != settings.preferredLocale) {
-                        val openedFiles = ParadoxCoreManager.findOpenedFiles()
-                        ParadoxCoreManager.reparseAndRefreshFiles(openedFiles, reparse = false)
+                        val openedFiles = PlsManager.findOpenedFiles()
+                        PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
                     }
                 }
         }

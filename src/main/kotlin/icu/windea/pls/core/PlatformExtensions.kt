@@ -84,6 +84,7 @@ import kotlin.properties.*
 import kotlin.reflect.*
 
 //region Common Extensions
+
 fun String.compareToIgnoreCase(other: String): Int {
     return String.CASE_INSENSITIVE_ORDER.compare(this, other)
 }
@@ -272,9 +273,11 @@ fun <T> Query<T>.processQuery(consumer: Processor<in T>): Boolean {
 fun <T> Query<T>.processQueryAsync(consumer: Processor<in T>): Boolean {
     return allowParallelProcessing().forEach(consumer)
 }
+
 //endregion
 
 //region Key & DataKey Related Extensions
+
 inline fun <T> UserDataHolder.tryPutUserData(key: Key<T>, value: T?) {
     runCatchingCancelable { putUserData(key, value) }
 }
@@ -336,9 +339,11 @@ inline operator fun <T> Key<T>.setValue(thisRef: ProcessingContext, property: KP
 inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)
 
 inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.dataContext.getData(this)
+
 //endregion
 
 //region Code Insight Extensions
+
 fun TemplateBuilder.buildTemplate() = cast<TemplateBuilderImpl>().buildTemplate()
 
 fun TemplateBuilder.buildInlineTemplate() = cast<TemplateBuilderImpl>().buildInlineTemplate()
@@ -358,9 +363,11 @@ fun CompletionContributor.extend(place: ElementPattern<out PsiElement>, provider
     extend(CompletionType.BASIC, place, provider)
     extend(CompletionType.SMART, place, provider)
 }
+
 //endregion
 
 //region Editor & Document Extensions
+
 fun Document.isAtLineStart(offset: Int, skipWhitespace: Boolean = false): Boolean {
     if (!skipWhitespace) return DocumentUtil.isAtLineStart(offset, this)
     val lineStartOffset = DocumentUtil.getLineStartOffset(offset, this)
@@ -398,9 +405,11 @@ inline fun Document.getCharToLineStart(offset: Int, skipWhitespaceOnly: Boolean 
     }
     return -1
 }
+
 //endregion
 
 //region VFS Extensions
+
 ///**查找当前项目中指定语言文件类型和作用域的VirtualFile。*/
 //fun findVirtualFiles(project: Project, type: LanguageFileType): Collection<VirtualFile> {
 //	return FileTypeIndex.getFiles(type, GlobalSearchScope.projectScope(project))
@@ -480,6 +489,7 @@ fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
 //endregion
 
 //region AST Extensions
+
 fun <T : ASTNode> T.takeIf(elementType: IElementType): T? {
     return takeIf { it.elementType == elementType }
 }
@@ -574,9 +584,11 @@ fun LighterASTNode.internNode(tree: LighterAST): CharSequence? {
     if (this !is LighterASTTokenNode) return null
     return tree.charTable.intern(this.text).toString()
 }
+
 //endregion
 
 //region PSI Extensions
+
 /**
  * @param forward 查找偏移之前还是之后的PSI元素，默认为null，表示同时考虑。
  */
@@ -963,9 +975,11 @@ fun getDocumentation(documentationLines: List<String>?, html: Boolean): String? 
         }
     }
 }
+
 //endregion
 
 //region Language Injection Extensions
+
 /**
  * 向上找到最顶层的作为语言注入宿主的虚拟文件，或者返回自身。
  */
@@ -998,9 +1012,11 @@ fun PsiFile.getShreds(): Place? {
 
     return viewProvider.document.castOrNull<DocumentWindow>()?.getShreds()
 }
+
 //endregion
 
 //region Inspection Extensions
+
 fun getInspectionToolState(shortName: String, element: PsiElement?, project: Project): ScopeToolState? {
     val currentProfile = InspectionProfileManager.getInstance(project).currentProfile
     val tools = currentProfile.getToolsOrNull(shortName, project) ?: return null
@@ -1008,4 +1024,5 @@ fun getInspectionToolState(shortName: String, element: PsiElement?, project: Pro
 }
 
 val ScopeToolState.enabledTool: InspectionProfileEntry? get() = if (isEnabled) tool.tool else null
+
 //endregion

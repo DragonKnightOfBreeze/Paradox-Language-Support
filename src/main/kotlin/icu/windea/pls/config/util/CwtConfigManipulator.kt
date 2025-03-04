@@ -14,6 +14,7 @@ import icu.windea.pls.model.*
 
 object CwtConfigManipulator {
     //region Core Methods
+
     fun getDistinctKey(config: CwtMemberConfig<*>): String {
         return doGetDistinctKey(config)
     }
@@ -51,9 +52,11 @@ object CwtConfigManipulator {
             }
         }
     }
+
     //endregion
 
     //region Deep Copy Methods
+
     fun deepCopyConfigs(config: CwtMemberConfig<*>, parentConfig: CwtMemberConfig<*> = config): List<CwtMemberConfig<*>>? {
         val cs1 = config.configs
         if (cs1.isNullOrEmpty()) return cs1
@@ -88,9 +91,11 @@ object CwtConfigManipulator {
         CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
         return result
     }
+
     //endregion
 
     //region Inline Methods
+
     enum class InlineMode {
         KEY_TO_KEY, KEY_TO_VALUE, VALUE_TO_KEY, VALUE_TO_VALUE
     }
@@ -146,9 +151,11 @@ object CwtConfigManipulator {
         val singleAliasConfig = configGroup.singleAliases[singleAliasName] ?: return null
         return singleAliasConfig.inline(config)
     }
+
     //endregion
 
     //region Merge Methods
+
     fun mergeConfigs(configs: List<CwtMemberConfig<*>>, otherConfigs: List<CwtMemberConfig<*>>): List<CwtMemberConfig<*>> {
         if (configs.isEmpty() && otherConfigs.isEmpty()) return emptyList()
         if (configs.isEmpty()) return otherConfigs
@@ -171,8 +178,8 @@ object CwtConfigManipulator {
                 return emptyList()
             }
         }
-        
-        if(configs.all { it is CwtValueConfig } && otherConfigs.all { it is CwtValueConfig }) {
+
+        if (configs.all { it is CwtValueConfig } && otherConfigs.all { it is CwtValueConfig }) {
             val c1 = when {
                 configs.size == 1 -> configs.single()
                 otherConfigs.size == 1 -> otherConfigs.single()
@@ -183,12 +190,12 @@ object CwtConfigManipulator {
                 otherConfigs.size == 1 -> configs
                 else -> null
             }?.castOrNull<List<CwtValueConfig>>()
-            if(c1 != null && cs2.isNotNullOrEmpty()) {
+            if (c1 != null && cs2.isNotNullOrEmpty()) {
                 val mergedConfigs = cs2.mapNotNull { c2 -> mergeValueConfig(c1, c2) }
                 return mergedConfigs
             }
         }
-        
+
         val m1 = configs.associateBy { getDistinctKey(it) }
         val m2 = otherConfigs.associateBy { getDistinctKey(it) }
         val sameKeys = m1.keys intersect m2.keys
@@ -205,7 +212,7 @@ object CwtConfigManipulator {
 
     fun mergeValueConfig(c1: CwtValueConfig, c2: CwtValueConfig): CwtValueConfig? {
         if (c1 === c2) return c1 //reference equality
-        if (c1.pointer == c2.pointer) return c1 //value equality (should be) 
+        if (c1.pointer == c2.pointer) return c1 //value equality (should be)
         if (c1.expression.type == CwtDataTypes.Block || c2.expression.type == CwtDataTypes.Block) return null //cannot merge non-same clauses
         val expressionString = CwtDataExpressionMerger.merge(c1.expression, c2.expression, c1.configGroup)
         if (expressionString == null) return null
@@ -241,5 +248,6 @@ object CwtConfigManipulator {
         if (d1 == d2) return d1
         return "$d1\n<br><br>\n$d2"
     }
+
     //endregion
 }

@@ -8,6 +8,7 @@ import icu.windea.pls.config.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.parameter.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
@@ -74,7 +75,7 @@ private class CwtExtendedParameterConfigImpl(
                 val contextReferenceElement = parameterElement.containingContextReference?.element ?: return@run
                 val parentElement = contextReferenceElement.parentOfType<ParadoxScriptMemberElement>(false) ?: return@run
                 val contextConfigs = ParadoxExpressionManager.getConfigContext(parentElement)?.getConfigs().orEmpty()
-                PlsStates.dynamicContextConfigs.set(true)
+                PlsManager.dynamicContextConfigs.set(true)
                 return contextConfigs
             }
             return emptyList()

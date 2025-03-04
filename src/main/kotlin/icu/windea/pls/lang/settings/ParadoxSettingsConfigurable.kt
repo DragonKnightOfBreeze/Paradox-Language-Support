@@ -84,8 +84,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                             val newPreferredLocale = settings.preferredLocale
                             if (oldPreferredLocale != newPreferredLocale) {
                                 preferredLocale = newPreferredLocale
-                                val openedFiles = ParadoxCoreManager.findOpenedFiles()
-                                ParadoxCoreManager.reparseAndRefreshFiles(openedFiles, reparse = false)
+                                val openedFiles = PlsManager.findOpenedFiles()
+                                PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
                             }
                         }
                 }
@@ -108,8 +108,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                                 fileNames += oldIgnoredFileNameSet
                                 fileNames += newIgnoredFileNameSet
                                 //设置中的被忽略文件名被更改时，需要重新解析相关文件（IDE之后会自动请求重新索引）
-                                val files = ParadoxCoreManager.findFilesByFileNames(fileNames)
-                                ParadoxCoreManager.reparseAndRefreshFiles(files)
+                                val files = PlsManager.findFilesByFileNames(fileNames)
+                                PlsManager.reparseAndRefreshFiles(files)
                             }
                         }
                 }
@@ -389,8 +389,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                             ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
                             ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
                             ParadoxModificationTrackers.InlineScriptConfigInferenceTracker.incModificationCount()
-                            val openedFiles = ParadoxCoreManager.findOpenedFiles { file, _ -> ParadoxInlineScriptManager.getInlineScriptExpression(file) != null }
-                            ParadoxCoreManager.reparseAndRefreshFiles(openedFiles)
+                            val openedFiles = PlsManager.findOpenedFiles { file, _ -> ParadoxInlineScriptManager.getInlineScriptExpression(file) != null }
+                            PlsManager.reparseAndRefreshFiles(openedFiles)
                         }
                 }
                 //scopeContext
@@ -400,8 +400,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContext.tooltip") }
                         .onApply {
                             ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
-                            val openedFiles = ParadoxCoreManager.findOpenedFiles()
-                            ParadoxCoreManager.reparseAndRefreshFiles(openedFiles, reparse = false)
+                            val openedFiles = PlsManager.findOpenedFiles()
+                            PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
                         }
                 }
                 //scopeContextForEvents
@@ -411,8 +411,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContextForEvents.tooltip") }
                         .onApply {
                             ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
-                            val openedFiles = ParadoxCoreManager.findOpenedFiles()
-                            ParadoxCoreManager.reparseAndRefreshFiles(openedFiles, reparse = false)
+                            val openedFiles = PlsManager.findOpenedFiles()
+                            PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
                         }
                 }
                 //scopeContextForOnActions
@@ -422,8 +422,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContextForOnActions.tooltip") }
                         .onApply {
                             ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
-                            val openedFiles = ParadoxCoreManager.findOpenedFiles()
-                            ParadoxCoreManager.reparseAndRefreshFiles(openedFiles, reparse = false)
+                            val openedFiles = PlsManager.findOpenedFiles()
+                            PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
                         }
                 }
             }
@@ -444,8 +444,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.others.highlightLocalisationColorId"))
                         .bindSelected(settings.others::highlightLocalisationColorId)
                         .onApply {
-                            val openedFiles = ParadoxCoreManager.findOpenedFiles()
-                            ParadoxCoreManager.reparseAndRefreshFiles(openedFiles, reparse = false)
+                            val openedFiles = PlsManager.findOpenedFiles()
+                            PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
                         }
                 }
                 //renderLocalisationColorfulText
@@ -453,8 +453,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.others.renderLocalisationColorfulText"))
                         .bindSelected(settings.others::renderLocalisationColorfulText)
                         .onApply {
-                            val openedFiles = ParadoxCoreManager.findOpenedFiles()
-                            ParadoxCoreManager.reparseAndRefreshFiles(openedFiles, reparse = false)
+                            val openedFiles = PlsManager.findOpenedFiles()
+                            PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
                         }
                 }
                 //defaultDiffGroup

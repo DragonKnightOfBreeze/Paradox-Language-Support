@@ -24,6 +24,7 @@ import javax.swing.*
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationPsiImplUtil {
     //region ParadoxLocalisationPropertyList
+
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationPropertyList, @IconFlags flags: Int): Icon {
         return PlsIcons.LocalisationNodes.Locale
@@ -33,9 +34,11 @@ object ParadoxLocalisationPsiImplUtil {
     fun getComponents(element: ParadoxLocalisationPropertyList): List<ParadoxLocalisationProperty> {
         return element.propertyList
     }
+
     //endregion
 
     //region ParadoxLocalisationLocale
+
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationLocale, @IconFlags flags: Int): Icon {
         return PlsIcons.LocalisationNodes.Locale
@@ -57,9 +60,11 @@ object ParadoxLocalisationPsiImplUtil {
         val rangeInElement = element.localeId.textRangeInParent
         return ParadoxLocalisationLocalePsiReference(element, rangeInElement)
     }
+
     //endregion
 
     //region ParadoxLocalisationProperty
+
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationProperty, @IconFlags flags: Int): Icon {
         if (element.localisationInfo != null) return PlsIcons.Nodes.Localisation
@@ -132,16 +137,20 @@ object ParadoxLocalisationPsiImplUtil {
     fun toString(element: ParadoxLocalisationProperty): String {
         return "ParadoxLocalisationProperty(name=${element.name})"
     }
+
     //endregion
 
     //region ParadoxLocalisationPropertyKey
+
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationPropertyKey, @IconFlags flags: Int): Icon {
         return PlsIcons.LocalisationNodes.Property
     }
+
     //endregion
 
     //region ParadoxLocalisationPropertyReference
+
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationPropertyReference, @IconFlags flags: Int): Icon {
         val resolved = element.reference?.resolve()
@@ -174,9 +183,11 @@ object ParadoxLocalisationPsiImplUtil {
             CachedValueProvider.Result.create(value, element)
         }
     }
+
     //endregion
 
     //region ParadoxLocalisationScriptedVariableReference
+
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationScriptedVariableReference, @IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.ScriptedVariable
@@ -214,9 +225,11 @@ object ParadoxLocalisationPsiImplUtil {
     fun getExpression(element: ParadoxLocalisationScriptedVariableReference): String {
         return element.text
     }
+
     //endregion
 
     //region ParadoxLocalisationIcon
+
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationIcon, @IconFlags flags: Int): Icon {
         return PlsIcons.LocalisationNodes.Icon
@@ -260,16 +273,20 @@ object ParadoxLocalisationPsiImplUtil {
             CachedValueProvider.Result.create(value, element)
         }
     }
+
     //endregion
 
     //region ParadoxLocalisationCommand
+
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationCommand, @IconFlags flags: Int): Icon {
         return PlsIcons.LocalisationNodes.Command
     }
+
     //endregion
 
     //region ParadoxLocalisationCommandText
+
     @JvmStatic
     fun getName(element: ParadoxLocalisationCommandText): String {
         return element.text
@@ -296,9 +313,11 @@ object ParadoxLocalisationPsiImplUtil {
     fun getExpression(element: ParadoxLocalisationCommandText): String {
         return element.name
     }
+
     //endregion
 
     //region ParadoxLocalisationConcept
+
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationConcept, @IconFlags flags: Int): Icon {
         return PlsIcons.LocalisationNodes.Concept
@@ -331,9 +350,11 @@ object ParadoxLocalisationPsiImplUtil {
             CachedValueProvider.Result.create(value, element)
         }
     }
+
     //endregion
 
     //region ParadoxLocalisationConceptName
+
     @JvmStatic
     fun getName(element: ParadoxLocalisationConceptName): String {
         return element.text
@@ -360,9 +381,11 @@ object ParadoxLocalisationPsiImplUtil {
     fun getExpression(element: ParadoxLocalisationConceptName): String {
         return element.name
     }
+
     //endregion
 
     //region ParadoxLocalisationColorfulText
+
     @JvmStatic
     fun getName(element: ParadoxLocalisationColorfulText): String? {
         return element.idElement?.text
@@ -386,6 +409,7 @@ object ParadoxLocalisationPsiImplUtil {
             CachedValueProvider.Result.create(value, element)
         }
     }
+
     //endregion
 
     @JvmStatic

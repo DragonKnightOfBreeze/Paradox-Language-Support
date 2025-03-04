@@ -20,6 +20,7 @@ import javax.swing.*
 @Suppress("UNUSED_PARAMETER")
 object CwtPsiImplUtil {
     //region CwtRootBlock
+
     @JvmStatic
     fun getValue(element: CwtRootBlock): String {
         return PlsConstants.Folders.block
@@ -45,9 +46,11 @@ object CwtPsiImplUtil {
     fun getComponents(element: CwtRootBlock): List<PsiElement> {
         return element.findChildrenOfType { it is CwtProperty || it is CwtValue }
     }
+
     //endregion
 
     //region CwtOption
+
     @JvmStatic
     fun getIcon(element: CwtOption, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.CwtNodes.Option
@@ -84,9 +87,11 @@ object CwtPsiImplUtil {
         }
         return CwtSeparatorType.EQUAL
     }
+
     //endregion
 
     //region CwtOptionKey
+
     @JvmStatic
     fun getIcon(element: CwtOptionKey, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.CwtNodes.Option
@@ -101,9 +106,11 @@ object CwtPsiImplUtil {
     fun getValue(element: CwtOptionKey): String {
         return element.findChild(OPTION_KEY_TOKEN)!!.text.unquote()
     }
+
     //endregion
 
     //region CwtProperty
+
     @JvmStatic
     fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.CwtNodes.Property
@@ -140,9 +147,11 @@ object CwtPsiImplUtil {
         }
         return CwtSeparatorType.EQUAL
     }
+
     //endregion
 
     //region CwtPropertyKey
+
     @JvmStatic
     fun getIcon(element: CwtPropertyKey, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.CwtNodes.Property
@@ -163,9 +172,11 @@ object CwtPsiImplUtil {
         val newElement = CwtElementFactory.createPropertyKey(element.project, value.quoteIfNecessary())
         return element.replace(newElement).cast()
     }
+
     //endregion
 
     //region CwtValue
+
     @JvmStatic
     fun getIcon(element: CwtValue, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.CwtNodes.Value
@@ -186,30 +197,38 @@ object CwtPsiImplUtil {
         val newElement = CwtElementFactory.createValue(element.project, value)
         return element.replace(newElement).cast()
     }
+
     //endregion
 
     //region CwtBoolean
+
     @JvmStatic
     fun getBooleanValue(element: CwtBoolean): Boolean {
         return element.value.toBooleanYesNo()
     }
+
     //endregion
 
     //region CwtInt
+
     @JvmStatic
     fun getIntValue(element: CwtInt): Int {
         return element.value.toIntOrNull() ?: 0
     }
+
     //endregion
 
     //region CwtFloat
+
     @JvmStatic
     fun getFloatValue(element: CwtFloat): Float {
         return element.value.toFloatOrNull() ?: 0f
     }
+
     //endregion
 
     //region CwtString
+
     @JvmStatic
     fun getName(element: CwtString): String {
         return element.value
@@ -240,9 +259,11 @@ object CwtPsiImplUtil {
     fun getStringValue(element: CwtString): String {
         return element.value
     }
+
     //endregion
 
     //region CwtBlock
+
     @JvmStatic
     fun getIcon(element: CwtBlock, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.CwtNodes.Block
@@ -283,20 +304,25 @@ object CwtPsiImplUtil {
     fun getComponents(element: CwtBlock): List<PsiElement> {
         return element.findChildrenOfType { it is CwtProperty || it is CwtValue }
     }
+
     //endregion
 
     //region CwtDocumentationComment
+
     @JvmStatic
     fun getTokenType(element: CwtDocumentationComment): IElementType {
         return DOCUMENTATION_COMMENT
     }
+
     //endregion
 
     //region CwtOptionComment
+
     @JvmStatic
     fun getTokenType(element: CwtOptionComment): IElementType {
         return OPTION_COMMENT
     }
+
     //endregion
 
     @JvmStatic

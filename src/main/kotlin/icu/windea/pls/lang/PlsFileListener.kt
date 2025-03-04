@@ -8,9 +8,9 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 
 /**
- * 用于监听文件更改以更新相关信息缓存。
+ * 用于监听文件更改以更新相关缓存。
  */
-class ParadoxCoreFileListener : AsyncFileListener {
+class PlsFileListener : AsyncFileListener {
     override fun prepareChange(events: MutableList<out VFileEvent>): AsyncFileListener.ChangeApplier {
         val filesToClearRootInfo = mutableSetOf<VirtualFile>()
         val filesToClearFileInfo = mutableSetOf<VirtualFile>()
@@ -144,15 +144,15 @@ class ParadoxCoreFileListener : AsyncFileListener {
 
     private fun reparseOpenedFiles() {
         //重新解析所有项目的所有已打开的文件
-        val openedFiles = ParadoxCoreManager.findOpenedFiles()
-        ParadoxCoreManager.reparseAndRefreshFiles(openedFiles)
+        val openedFiles = PlsManager.findOpenedFiles()
+        PlsManager.reparseAndRefreshFiles(openedFiles)
     }
 
     private fun refreshInlineScripts() {
         ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
         ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
         //重新解析内联脚本文件
-        val files = ParadoxCoreManager.findOpenedFiles { file, _ -> ParadoxInlineScriptManager.getInlineScriptExpression(file) != null }
-        ParadoxCoreManager.reparseAndRefreshFiles(files)
+        val files = PlsManager.findOpenedFiles { file, _ -> ParadoxInlineScriptManager.getInlineScriptExpression(file) != null }
+        PlsManager.reparseAndRefreshFiles(files)
     }
 }

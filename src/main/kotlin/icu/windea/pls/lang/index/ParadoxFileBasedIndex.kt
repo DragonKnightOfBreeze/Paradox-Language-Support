@@ -6,8 +6,8 @@ import com.intellij.psi.*
 import com.intellij.util.gist.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import java.io.*
 
 abstract class ParadoxFileBasedIndex<T> : FileBasedIndexExtension<String, T>() {
@@ -84,10 +84,10 @@ abstract class ParadoxFileBasedIndex<T> : FileBasedIndexExtension<String, T>() {
     private fun buildFileData(file: PsiFile): Map<String, T> {
         return buildMap {
             try {
-                PlsStates.indexing.set(true)
+                PlsManager.indexing.set(true)
                 indexData(file, this)
             } finally {
-                PlsStates.indexing.remove()
+                PlsManager.indexing.remove()
             }
         }
     }
