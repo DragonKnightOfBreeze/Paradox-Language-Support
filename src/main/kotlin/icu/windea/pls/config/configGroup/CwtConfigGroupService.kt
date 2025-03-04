@@ -7,12 +7,10 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.progress.impl.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import kotlinx.coroutines.*
 import java.util.concurrent.*
@@ -27,12 +25,12 @@ class CwtConfigGroupService(private val project: Project) {
         //preload config groups
         val coroutineScope = getCoroutineScope(project)
         coroutineScope.launch {
-            launch {
-                runReadAction { getConfigGroup(null) }
+            readAction {
+                getConfigGroup(null)
             }
             ParadoxGameType.entries.forEach { gameType ->
-                launch {
-                    runReadAction { getConfigGroup(gameType) }
+                readAction {
+                    getConfigGroup(gameType)
                 }
             }
         }
