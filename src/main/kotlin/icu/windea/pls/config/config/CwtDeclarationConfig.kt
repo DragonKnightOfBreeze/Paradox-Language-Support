@@ -26,21 +26,20 @@ interface CwtDeclarationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
 
 //Accessors
 
-val CwtDeclarationConfig.subtypesUsedInDeclaration: Set<String>
-    by createKey(CwtDeclarationConfig.Keys) {
-        val result = sortedSetOf<String>()
-        config.processDescendants {
-            if (it is CwtPropertyConfig) {
-                val subtypeExpression = it.key.removeSurroundingOrNull("subtype[", "]")
-                if (subtypeExpression != null) {
-                    val resolved = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression)
-                    resolved.subtypes.forEach { (_, subtype) -> result.add(subtype) }
-                }
+val CwtDeclarationConfig.subtypesUsedInDeclaration: Set<String> by createKey(CwtDeclarationConfig.Keys) {
+    val result = sortedSetOf<String>()
+    config.processDescendants {
+        if (it is CwtPropertyConfig) {
+            val subtypeExpression = it.key.removeSurroundingOrNull("subtype[", "]")
+            if (subtypeExpression != null) {
+                val resolved = ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression)
+                resolved.subtypes.forEach { (_, subtype) -> result.add(subtype) }
             }
-            true
         }
-        result.optimized()
+        true
     }
+    result.optimized()
+}
 
 //Implementations (interned)
 

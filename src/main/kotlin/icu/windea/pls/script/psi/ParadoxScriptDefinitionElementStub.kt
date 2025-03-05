@@ -15,5 +15,4 @@ interface ParadoxScriptDefinitionElementStub<T : ParadoxScriptDefinitionElement>
     val gameType: ParadoxGameType
 
     val isValidDefinition: Boolean get() = type.isNotEmpty()
-    val nestedTypeRootKeys: Set<String> get() = getConfigGroup(gameType).types.get(type)?.possibleNestedTypeRootKeys.orEmpty()
 }

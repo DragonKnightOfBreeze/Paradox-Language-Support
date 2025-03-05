@@ -57,7 +57,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtSubtypeConfig? {
                 val set = caseInsensitiveStringSet() //忽略大小写
                 set.addAll(values)
                 val o = option.separatorType == CwtSeparatorType.EQUAL
-                typeKeyFilter = set reverseIf o
+                typeKeyFilter = set.optimized() reverseIf o
             }
             "type_key_regex" -> {
                 typeKeyRegex = option.stringValue?.toRegex(RegexOption.IGNORE_CASE)

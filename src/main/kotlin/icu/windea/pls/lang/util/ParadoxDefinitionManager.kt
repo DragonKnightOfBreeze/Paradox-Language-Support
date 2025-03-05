@@ -52,8 +52,8 @@ object ParadoxDefinitionManager {
     private fun doGetInfo(element: ParadoxScriptDefinitionElement, file: PsiFile = element.containingFile): ParadoxDefinitionInfo? {
         val rootKey = element.name.let { if (element is ParadoxScriptFile) it.substringBeforeLast('.') else it } //如果是文件名，不要包含扩展名
         if (element is ParadoxScriptProperty) {
-            if (rootKey.isParameterized()) return null //排除可能带参数的情况
             if (rootKey.isInlineUsage()) return null //排除是内联调用的情况
+            if (rootKey.isParameterized()) return null //排除可能带参数的情况
         }
         val project = file.project
 
@@ -61,7 +61,7 @@ object ParadoxDefinitionManager {
         getInfoFromStub(element, project)?.let { return it }
 
         val fileInfo = file.fileInfo ?: return null
-        val path = fileInfo.path //这里使用pathToEntry
+        val path = fileInfo.path
         val elementPath = ParadoxExpressionPathManager.get(element, PlsConstants.Settings.maxDefinitionDepth) ?: return null
         if (elementPath.path.isParameterized()) return null //忽略表达式路径带参数的情况
         val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
@@ -504,7 +504,7 @@ object ParadoxDefinitionManager {
         val vFile = selectFile(file) ?: return null
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = selectGameType(vFile) ?: return null
-        val path = fileInfo.path //这里使用pathToEntry
+        val path = fileInfo.path
         val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile) ?: return null
         val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
@@ -518,10 +518,9 @@ object ParadoxDefinitionManager {
 
     fun createStub(psi: ParadoxScriptProperty, parentStub: StubElement<*>): ParadoxScriptPropertyStub? {
         val rootKey = psi.name
-        if (rootKey.isParameterized()) return null //排除可能带参数的情况
         if (rootKey.isInlineUsage()) return null //排除是内联调用的情况
-        if (!checkParentStubWhenCreateDefinitionStub(parentStub)) return null
-        if (!checkRootKeyWhenCreateDefinitionStub(rootKey, parentStub)) return null
+        if (rootKey.isParameterized()) return null //排除可能带参数的情况
+        if (!checkWhenCreateDefinitionStub(parentStub)) return null //排除其他特定情况
         val definitionInfo = psi.definitionInfo ?: return null
         val name = definitionInfo.name
         val type = definitionInfo.type
@@ -533,18 +532,18 @@ object ParadoxDefinitionManager {
 
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptPropertyStub? {
         val rootKey = getNameFromNode(node, tree) ?: return null
-        if (rootKey.isParameterized()) return null //排除可能带参数的情况
         if (rootKey.isInlineUsage()) return null //排除是内联调用的情况
-        if (!checkParentStubWhenCreateDefinitionStub(parentStub)) return null
-        if (!checkRootKeyWhenCreateDefinitionStub(rootKey, parentStub)) return null
+        if (rootKey.isParameterized()) return null //排除可能带参数的情况
+        if (!checkWhenCreateDefinitionStub(parentStub)) return null //排除其他特定情况
         val psi = parentStub.psi
         val file = psi.containingFile
         val project = file.project
         val vFile = selectFile(psi) ?: return null
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = selectGameType(vFile) ?: return null
-        val path = fileInfo.path //这里使用pathToEntry
-        val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile, PlsConstants.Settings.maxDefinitionDepth) ?: return null
+        val path = fileInfo.path
+        val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile, PlsConstants.Settings.maxDefinitionDepth)
+        if (elementPath == null) return null
         val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
         if (typeConfig == null) return null
@@ -555,28 +554,24 @@ object ParadoxDefinitionManager {
         return ParadoxScriptPropertyStub.Impl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
     }
 
-    private fun checkParentStubWhenCreateDefinitionStub(parentStub: StubElement<*>): Boolean {
-        //优化：parentStub必须对应一个定义且该定义可以嵌套定义且stub可能对应这些嵌套定义，或者对应一个非定义的文件，或者对应一个非定义的属性且在定义之外
-        if (parentStub is ParadoxScriptDefinitionElementStub<*>) {
-            if (parentStub.isValidDefinition) {
-                if (parentStub.nestedTypeRootKeys.isEmpty()) return false
-            } else {
-                var stub: StubElement<PsiElement>? = parentStub.parentStub
-                while (stub != null) {
-                    if (stub is ParadoxScriptDefinitionElementStub<*> && stub.isValidDefinition) return false
-                    stub = stub.parentStub
-                }
+    private fun checkWhenCreateDefinitionStub(parentStub: StubElement<*>): Boolean {
+        if(parentStub !is ParadoxScriptPropertyStub) return false
+
+        //parentStub必须符合以下条件之一：
+        //* 对应一个定义之外的属性
+        //* 对应一个定义之内的属性，而这个定义可以嵌套其他定义
+        var superDefinitionStub: ParadoxScriptPropertyStub? = null
+        var superStub = parentStub
+        while (true) {
+            superStub = superStub.parentStub ?: break
+            if(superStub !is ParadoxScriptPropertyStub) break
+            if(superStub.isValidDefinition) {
+                superDefinitionStub = superStub
+                break
             }
         }
-        return true
-    }
-
-    private fun checkRootKeyWhenCreateDefinitionStub(rootKey: String, parentStub: StubElement<*>): Boolean {
-        //优化：如果parentStub对应一个定义，该定义必须可以嵌套定义且stub可能对应这些嵌套定义
-        if (parentStub is ParadoxScriptDefinitionElementStub<*>) {
-            if (parentStub.isValidDefinition) {
-                if (!parentStub.nestedTypeRootKeys.contains(rootKey)) return false
-            }
+        if (superDefinitionStub != null) {
+            return true //TODO 1.3.31
         }
         return true
     }

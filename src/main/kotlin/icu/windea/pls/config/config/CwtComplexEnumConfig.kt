@@ -18,7 +18,7 @@ import icu.windea.pls.cwt.psi.*
  * @property nameConfig `name`对应的CWT规则。
  * @property enumNameConfigs [nameConfig]中作为锚点的`enum_name`对应的CWT规则。
  */
-interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, UserDataHolder {
+interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val pathPatterns: Set<String>
     val paths: Set<String>

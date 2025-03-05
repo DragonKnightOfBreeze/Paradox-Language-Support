@@ -17,8 +17,6 @@ import icu.windea.pls.model.*
  */
 object ParadoxLocalisationManager {
     fun getInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        //快速判断
-        if (runReadAction { element.greenStub }?.isValid() == false) return null
         //从缓存中获取
         return doGetInfoFromCache(element)
     }

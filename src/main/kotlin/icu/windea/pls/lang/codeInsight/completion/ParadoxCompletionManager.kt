@@ -261,7 +261,7 @@ object ParadoxCompletionManager {
         val fileInfo = originalFile.fileInfo ?: return
         val gameType = context.gameType ?: return
         val configGroup = context.configGroup ?: return
-        val path = fileInfo.path //这里使用pathToEntry
+        val path = fileInfo.path
         val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
         for (typeConfig in configGroup.types.values) {
             if (ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(path, null, null, typeConfig)) {

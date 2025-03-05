@@ -30,7 +30,7 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
     }
 
     private fun createDefaultStub(parentStub: StubElement<*>): ParadoxScriptPropertyStub {
-        return ParadoxScriptPropertyStub.Impl(parentStub, "", "", null, "", ParadoxExpressionPath.Empty, ParadoxGameType.placeholder())
+        return ParadoxScriptPropertyStub.Dummy(parentStub)
     }
 
     override fun shouldCreateStub(node: ASTNode): Boolean {

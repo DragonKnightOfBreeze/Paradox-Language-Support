@@ -9,8 +9,6 @@ interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationPrope
     val locale: String?
     val gameType: ParadoxGameType
 
-    fun isValid() = name.isNotEmpty()
-
     abstract class Base(
         parent: StubElement<*>
     ) : StubBase<ParadoxLocalisationProperty>(parent, ParadoxLocalisationStubElementTypes.PROPERTY), ParadoxLocalisationPropertyStub {

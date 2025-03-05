@@ -31,7 +31,7 @@ import icu.windea.pls.model.*
  * @property localisation (property*) localisation: localisationInfo
  * @property images (property*) images: imagesInfo
  */
-interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, UserDataHolder {
+interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val baseType: String?
     val pathPatterns: Set<String>
@@ -66,25 +66,7 @@ val CwtTypeConfig.possibleRootKeys: Set<String> by createKey(CwtTypeConfig.Keys)
     caseInsensitiveStringSet().apply {
         typeKeyFilter?.takeIfTrue()?.let { addAll(it) }
         subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeIfTrue()?.let { addAll(it) } }
-    }
-}
-
-val CwtTypeConfig.possibleSwappedTypeRootKeys: Set<String> by createKey(CwtTypeConfig.Keys) {
-    caseInsensitiveStringSet().apply {
-        configGroup.swappedTypes.values.forEach f@{ swappedTypeConfig ->
-            val baseType = swappedTypeConfig.baseType ?: return@f
-            val baseTypeName = baseType.substringBefore('.')
-            if (baseTypeName != name) return@f
-            val rootKey = swappedTypeConfig.typeKeyFilter?.takeIfTrue()?.singleOrNull() ?: return@f
-            add(rootKey)
-        }
-    }
-}
-
-val CwtTypeConfig.possibleNestedTypeRootKeys: Set<String> by createKey(CwtTypeConfig.Keys) {
-    caseInsensitiveStringSet().apply {
-        addAll(possibleSwappedTypeRootKeys)
-    }
+    }.optimized()
 }
 
 //Implementations (interned)
@@ -180,7 +162,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
                 val set = caseInsensitiveStringSet() //忽略大小写
                 set.addAll(values)
                 val o = option.separatorType == CwtSeparatorType.EQUAL
-                typeKeyFilter = set reverseIf o
+                typeKeyFilter = set.optimized() reverseIf o
             }
             "type_key_regex" -> {
                 typeKeyRegex = option.stringValue?.toRegex(RegexOption.IGNORE_CASE)

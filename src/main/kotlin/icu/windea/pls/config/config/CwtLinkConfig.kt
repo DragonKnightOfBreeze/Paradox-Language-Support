@@ -92,6 +92,7 @@ private fun doResolve(config: CwtPropertyConfig, forLocalisation: Boolean = fals
     )
 }
 
+@Suppress("SameParameterValue")
 private fun doResolve(linkConfig: CwtLinkConfig, forLocalisation: Boolean = false): CwtLinkConfig {
     return linkConfig.apply {
         CwtLinkConfigImpl(
