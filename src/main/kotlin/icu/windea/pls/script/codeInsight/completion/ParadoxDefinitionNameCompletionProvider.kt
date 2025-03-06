@@ -56,7 +56,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                 if (elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
                 for (typeConfig in configGroup.types.values) {
                     if (typeConfig.nameField != null) continue
-                    if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(path, elementPath, null, typeConfig)) continue
+                    if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, elementPath, null)) continue
                     val type = typeConfig.name
                     val declarationConfig = configGroup.declarations.get(type) ?: continue
                     //需要考虑不指定子类型的情况

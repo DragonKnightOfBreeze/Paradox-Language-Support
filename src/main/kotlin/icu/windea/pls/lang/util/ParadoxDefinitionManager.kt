@@ -63,25 +63,24 @@ object ParadoxDefinitionManager {
 
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path
-        val elementPath = ParadoxExpressionPathManager.get(element, PlsConstants.Settings.maxDefinitionDepth) ?: return null
-        if (elementPath.path.isParameterized()) return null //忽略表达式路径带参数的情况
         val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
         val configGroup = getConfigGroup(project, gameType) //这里需要指定project
-        val typeConfig = getMatchedTypeConfig(element, path, elementPath, rootKey, configGroup)
+        val elementPath = ParadoxExpressionPathManager.get(element, PlsConstants.Settings.maxDefinitionDepth) ?: return null
+        if (elementPath.path.isParameterized()) return null //忽略表达式路径带参数的情况
+        val typeConfig = getMatchedTypeConfig(element, configGroup, path, rootKey, elementPath)
         if (typeConfig == null) return null
         return ParadoxDefinitionInfo(element, null, typeConfig, null, rootKey, elementPath, gameType, configGroup)
     }
 
     fun getMatchedTypeConfig(
         element: ParadoxScriptDefinitionElement,
+        configGroup: CwtConfigGroup,
         path: ParadoxPath,
-        elementPath: ParadoxExpressionPath,
         rootKey: String,
-        configGroup: CwtConfigGroup
+        elementPath: ParadoxExpressionPath
     ): CwtTypeConfig? {
         for (typeConfig in configGroup.types.values) {
-            if (!CwtConfigManager.matchesFilePath(typeConfig, path)) continue
-            if (!matchesType(element, path, elementPath, rootKey, typeConfig, configGroup)) continue
+            if (!matchesType(element, typeConfig, configGroup, path, rootKey, elementPath)) continue
             return typeConfig
         }
         return null
@@ -90,14 +89,13 @@ object ParadoxDefinitionManager {
     fun getMatchedTypeConfig(
         node: LighterASTNode,
         tree: LighterAST,
+        configGroup: CwtConfigGroup,
         path: ParadoxPath,
-        elementPath: ParadoxExpressionPath,
         rootKey: String,
-        configGroup: CwtConfigGroup
+        elementPath: ParadoxExpressionPath
     ): CwtTypeConfig? {
         for (typeConfig in configGroup.types.values) {
-            if (!CwtConfigManager.matchesFilePath(typeConfig, path)) continue
-            if (!matchesType(node, tree, path, elementPath, rootKey, typeConfig, configGroup)) continue
+            if (!matchesType(node, tree, typeConfig, configGroup, path, rootKey, elementPath)) continue
             return typeConfig
         }
         return null
@@ -105,11 +103,11 @@ object ParadoxDefinitionManager {
 
     fun matchesType(
         element: ParadoxScriptDefinitionElement,
-        path: ParadoxPath,
-        elementPath: ParadoxExpressionPath,
-        rootKey: String,
         typeConfig: CwtTypeConfig,
-        configGroup: CwtConfigGroup
+        configGroup: CwtConfigGroup,
+        path: ParadoxPath?,
+        rootKey: String?,
+        elementPath: ParadoxExpressionPath?
     ): Boolean {
         //判断definition是否需要是scriptFile还是scriptProperty
         run {
@@ -120,7 +118,7 @@ object ParadoxDefinitionManager {
             }
         }
 
-        val fastResult = matchesTypeFast(path, elementPath, rootKey, typeConfig)
+        val fastResult = matchesTypeFast(typeConfig, path, rootKey, elementPath)
         if (fastResult != null) return fastResult
 
         //判断definition的propertyValue是否需要是block
@@ -143,11 +141,11 @@ object ParadoxDefinitionManager {
     fun matchesType(
         node: LighterASTNode,
         tree: LighterAST,
-        path: ParadoxPath,
-        elementPath: ParadoxExpressionPath,
-        rootKey: String,
         typeConfig: CwtTypeConfig,
-        configGroup: CwtConfigGroup
+        configGroup: CwtConfigGroup,
+        path: ParadoxPath?,
+        rootKey: String?,
+        elementPath: ParadoxExpressionPath?
     ): Boolean {
         //判断definition是否需要是scriptFile还是scriptProperty
         run {
@@ -159,7 +157,7 @@ object ParadoxDefinitionManager {
             }
         }
 
-        val fastResult = matchesTypeFast(path, elementPath, rootKey, typeConfig)
+        val fastResult = matchesTypeFast(typeConfig, path, rootKey, elementPath)
         if (fastResult != null) return fastResult
 
         //判断definition的propertyValue是否需要是block
@@ -175,71 +173,13 @@ object ParadoxDefinitionManager {
     }
 
     fun matchesTypeFast(
-        path: ParadoxPath,
-        elementPath: ParadoxExpressionPath,
-        rootKey: String,
-        typeConfig: CwtTypeConfig
-    ): Boolean? {
-        //如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
-        //skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
-        //skip_root_key可以重复（其中之一匹配即可）
-        val skipRootKeyConfig = typeConfig.skipRootKey
-        if (skipRootKeyConfig.isNullOrEmpty()) {
-            if (elementPath.length > 1) return false
-        } else {
-            val result = skipRootKeyConfig.any { elementPath.matchEntire(it, useParentPath = true) }
-            if (!result) return false
-        }
-        //如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
-        val startsWithConfig = typeConfig.startsWith
-        if (!startsWithConfig.isNullOrEmpty()) {
-            val result = rootKey.startsWith(startsWithConfig, true)
-            if (!result) return false
-        }
-        //如果type_key_regex存在，则要求type_key匹配
-        val typeKeyRegexConfig = typeConfig.typeKeyRegex
-        if (typeKeyRegexConfig != null) {
-            val result = typeKeyRegexConfig.matches(rootKey)
-            if (!result) return false
-        }
-        //如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
-        val typeKeyFilterConfig = typeConfig.typeKeyFilter
-        if (typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
-            val filterResult = typeKeyFilterConfig.where { it.contains(rootKey) }
-            if (!filterResult) return false
-        }
-        //如果name_field存在，则要求root_key必须是由type_key_filter指定的所有可能的root_key之一，或者没有指定任何root_key
-        val nameFieldConfig = typeConfig.nameField
-        if (nameFieldConfig != null) {
-            val result = typeConfig.possibleRootKeys.isEmpty() || typeConfig.possibleRootKeys.contains(rootKey)
-            if (!result) return false
-        }
-        return null //需要进一步匹配
-    }
-
-    fun matchesTypeByUnknownDeclaration(
-        path: ParadoxPath,
-        elementPath: ParadoxExpressionPath?,
+        typeConfig: CwtTypeConfig,
+        path: ParadoxPath?,
         rootKey: String?,
-        typeConfig: CwtTypeConfig
-    ): Boolean {
-        //判断element是否需要是scriptFile还是scriptProperty
-        if (typeConfig.typePerFile) return false
-
-        //判断path是否匹配
-        if (!CwtConfigManager.matchesFilePath(typeConfig, path)) return false
-
-        if (elementPath != null) {
-            //如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
-            //skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
-            //skip_root_key可以重复（其中之一匹配即可）
-            val skipRootKeyConfig = typeConfig.skipRootKey
-            if (skipRootKeyConfig.isNullOrEmpty()) {
-                if (elementPath.length > 1) return false
-            } else {
-                val skipResult = skipRootKeyConfig.any { elementPath.matchEntire(it, useParentPath = true) }
-                if (!skipResult) return false
-            }
+        elementPath: ParadoxExpressionPath?
+    ): Boolean? {
+        if (path != null) {
+            if (!CwtConfigManager.matchesFilePath(typeConfig, path)) return false
         }
 
         if (rootKey != null) {
@@ -266,6 +206,76 @@ object ParadoxDefinitionManager {
             if (nameFieldConfig != null) {
                 val result = typeConfig.possibleRootKeys.isEmpty() || typeConfig.possibleRootKeys.contains(rootKey)
                 if (!result) return false
+            }
+        }
+
+        if (elementPath != null) {
+            //如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
+            //skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
+            //skip_root_key可以重复（其中之一匹配即可）
+            val skipRootKeyConfig = typeConfig.skipRootKey
+            if (skipRootKeyConfig.isNullOrEmpty()) {
+                if (elementPath.length > 1) return false
+            } else {
+                val result = skipRootKeyConfig.any { elementPath.matchEntire(it, useParentPath = true) }
+                if (!result) return false
+            }
+        }
+
+        return null //需要进一步匹配
+    }
+
+    fun matchesTypeByUnknownDeclaration(
+        typeConfig: CwtTypeConfig,
+        path: ParadoxPath?,
+        elementPath: ParadoxExpressionPath?,
+        rootKey: String?
+    ): Boolean {
+        //判断element是否需要是scriptFile还是scriptProperty
+        if (typeConfig.typePerFile) return false
+
+        //判断path是否匹配
+        if (path != null) {
+            if (!CwtConfigManager.matchesFilePath(typeConfig, path)) return false
+        }
+
+        if (rootKey != null) {
+            //如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
+            val startsWithConfig = typeConfig.startsWith
+            if (!startsWithConfig.isNullOrEmpty()) {
+                val result = rootKey.startsWith(startsWithConfig, true)
+                if (!result) return false
+            }
+            //如果type_key_regex存在，则要求type_key匹配
+            val typeKeyRegexConfig = typeConfig.typeKeyRegex
+            if (typeKeyRegexConfig != null) {
+                val result = typeKeyRegexConfig.matches(rootKey)
+                if (!result) return false
+            }
+            //如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
+            val typeKeyFilterConfig = typeConfig.typeKeyFilter
+            if (typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
+                val filterResult = typeKeyFilterConfig.where { it.contains(rootKey) }
+                if (!filterResult) return false
+            }
+            //如果name_field存在，则要求root_key必须是由type_key_filter指定的所有可能的root_key之一，或者没有指定任何root_key
+            val nameFieldConfig = typeConfig.nameField
+            if (nameFieldConfig != null) {
+                val result = typeConfig.possibleRootKeys.isEmpty() || typeConfig.possibleRootKeys.contains(rootKey)
+                if (!result) return false
+            }
+        }
+
+        if (elementPath != null) {
+            //如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
+            //skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
+            //skip_root_key可以重复（其中之一匹配即可）
+            val skipRootKeyConfig = typeConfig.skipRootKey
+            if (skipRootKeyConfig.isNullOrEmpty()) {
+                if (elementPath.length > 1) return false
+            } else {
+                val skipResult = skipRootKeyConfig.any { elementPath.matchEntire(it, useParentPath = true) }
+                if (!skipResult) return false
             }
         }
 
@@ -507,9 +517,9 @@ object ParadoxDefinitionManager {
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.path
-        val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile) ?: return null
+        val elementPath = ParadoxExpressionPath.Empty
         val configGroup = getConfigGroup(project, gameType) //这里需要指定project
-        val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
+        val typeConfig = getMatchedTypeConfig(node, tree, configGroup, path, rootKey, elementPath)
         if (typeConfig == null) return null
         //NOTE 这里不处理需要内联的情况
         val name = getNameWhenCreateDefinitionStub(typeConfig, rootKey, node, tree)
@@ -522,7 +532,6 @@ object ParadoxDefinitionManager {
         val rootKey = psi.name
         if (rootKey.isInlineUsage()) return null //排除是内联调用的情况
         if (rootKey.isParameterized()) return null //排除可能带参数的情况
-        if (!checkWhenCreateDefinitionStub(parentStub)) return null //排除其他特定情况
         val definitionInfo = psi.definitionInfo ?: return null
         val name = definitionInfo.name
         val type = definitionInfo.type
@@ -536,7 +545,6 @@ object ParadoxDefinitionManager {
         val rootKey = getNameFromNode(node, tree) ?: return null
         if (rootKey.isInlineUsage()) return null //排除是内联调用的情况
         if (rootKey.isParameterized()) return null //排除可能带参数的情况
-        if (!checkWhenCreateDefinitionStub(parentStub)) return null //排除其他特定情况
         val psi = parentStub.psi
         val file = psi.containingFile
         val project = file.project
@@ -544,38 +552,16 @@ object ParadoxDefinitionManager {
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.path
+        val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile, PlsConstants.Settings.maxDefinitionDepth)
         if (elementPath == null) return null
-        val configGroup = getConfigGroup(project, gameType) //这里需要指定project
-        val typeConfig = getMatchedTypeConfig(node, tree, path, elementPath, rootKey, configGroup)
+        val typeConfig = getMatchedTypeConfig(node, tree, configGroup, path, rootKey, elementPath)
         if (typeConfig == null) return null
         //NOTE 这里不处理需要内联的情况
         val name = getNameWhenCreateDefinitionStub(typeConfig, rootKey, node, tree)
         val type = typeConfig.name
         val subtypes = getSubtypesWhenCreateDefinitionStub(typeConfig, rootKey) //如果无法在索引时获取，之后再懒加载
         return ParadoxScriptPropertyStub.Impl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
-    }
-
-    private fun checkWhenCreateDefinitionStub(parentStub: StubElement<*>): Boolean {
-        if(parentStub !is ParadoxScriptPropertyStub) return false
-
-        //parentStub必须符合以下条件之一：
-        //* 对应一个定义之外的属性
-        //* 对应一个定义之内的属性，而这个定义可以嵌套其他定义
-        var superDefinitionStub: ParadoxScriptPropertyStub? = null
-        var superStub = parentStub
-        while (true) {
-            superStub = superStub.parentStub ?: break
-            if(superStub !is ParadoxScriptPropertyStub) break
-            if(superStub.isValidDefinition) {
-                superDefinitionStub = superStub
-                break
-            }
-        }
-        if (superDefinitionStub != null) {
-            return true //TODO 1.3.31
-        }
-        return true
     }
 
     private fun getNameWhenCreateDefinitionStub(typeConfig: CwtTypeConfig, rootKey: String, node: LighterASTNode, tree: LighterAST): String {
