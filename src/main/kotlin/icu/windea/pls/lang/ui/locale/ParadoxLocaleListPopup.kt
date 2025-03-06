@@ -6,7 +6,6 @@ import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configContext.*
 
 class ParadoxLocaleListPopup(
     val selectedLocale: CwtLocalisationLocaleConfig?,

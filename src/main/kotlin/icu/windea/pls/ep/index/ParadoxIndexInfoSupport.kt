@@ -3,7 +3,6 @@ package icu.windea.pls.ep.index
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configContext.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*

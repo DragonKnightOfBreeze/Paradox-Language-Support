@@ -3,7 +3,6 @@ package icu.windea.pls.lang.util
 import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configContext.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.script.psi.*

@@ -1,12 +1,9 @@
 package icu.windea.pls.lang.ui.locale
 
-import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
-import com.intellij.openapi.vfs.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 
 class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
     init {

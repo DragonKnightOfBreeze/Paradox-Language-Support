@@ -2,8 +2,6 @@
 
 package icu.windea.pls.config.config
 
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configContext.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 

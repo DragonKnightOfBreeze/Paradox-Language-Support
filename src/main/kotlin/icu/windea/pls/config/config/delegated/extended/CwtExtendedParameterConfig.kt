@@ -4,9 +4,6 @@ package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configContext.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*

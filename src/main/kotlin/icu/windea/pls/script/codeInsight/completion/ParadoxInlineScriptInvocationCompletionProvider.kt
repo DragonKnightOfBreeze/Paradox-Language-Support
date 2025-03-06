@@ -3,10 +3,8 @@ package icu.windea.pls.script.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.configContext.*
 import icu.windea.pls.core.*
-import icu.windea.pls.ep.config.*
 import icu.windea.pls.ep.configContext.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*

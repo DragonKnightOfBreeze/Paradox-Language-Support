@@ -6,7 +6,6 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configContext.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.navigation.*
 import icu.windea.pls.model.*

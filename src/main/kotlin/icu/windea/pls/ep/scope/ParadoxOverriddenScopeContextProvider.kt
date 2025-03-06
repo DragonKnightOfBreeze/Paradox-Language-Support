@@ -3,7 +3,6 @@ package icu.windea.pls.ep.scope
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configContext.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
