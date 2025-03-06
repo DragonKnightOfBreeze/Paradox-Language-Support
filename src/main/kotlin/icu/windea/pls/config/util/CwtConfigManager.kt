@@ -262,35 +262,18 @@ object CwtConfigManager {
         return config.getOrPutUserData(Keys.filePathPatterns) { doGetFilePathPatterns(config) }
     }
 
-    private fun doGetFilePathPatterns(config: CwtConfig<*>): TreeSet<String> {
+    private fun doGetFilePathPatterns(config: CwtConfig<*>): Set<String> {
+        if(config !is CwtPathMatchableConfig) return emptySet()
+
+        val pathPatterns = config.pathPatterns
+        val paths = config.paths
+        val pathFile = config.pathFile
+        val pathExtension = config.pathExtension
+        val pathStrict = config.pathStrict
         val patterns = sortedSetOf<String>()
-
-        var pathPatterns: Set<String> = emptySet()
-        var paths: Set<String> = emptySet()
-        var pathFile: String? = null
-        var pathExtension: String? = null
-        var pathStrict = false
-        when (config) {
-            is CwtTypeConfig -> {
-                pathPatterns = config.pathPatterns
-                paths = config.paths
-                pathFile = config.pathFile
-                pathExtension = config.pathExtension
-                pathStrict = config.pathStrict
-            }
-            is CwtComplexEnumConfig -> {
-                pathPatterns = config.pathPatterns
-                paths = config.paths
-                pathFile = config.pathFile
-                pathExtension = config.pathExtension
-                pathStrict = config.pathStrict
-            }
-        }
-
         if (pathPatterns.isNotEmpty()) {
             patterns += pathPatterns
         }
-
         val filePattern = when {
             pathFile.isNotNullOrEmpty() -> pathFile
             pathExtension.isNotNullOrEmpty() -> "*.${pathExtension}"
@@ -330,25 +313,13 @@ object CwtConfigManager {
         return config.getOrPutUserData(Keys.filePathsForPriority) { doGetFilePathsForPriority(config) }
     }
 
-    private fun doGetFilePathsForPriority(config: CwtConfig<*>): TreeSet<String> {
-        var pathPatterns: Set<String> = emptySet()
-        var paths: Set<String> = emptySet()
-        var pathFile: String? = null
-        var pathStrict = false
-        when (config) {
-            is CwtTypeConfig -> {
-                pathPatterns = config.pathPatterns
-                paths = config.paths
-                pathFile = config.pathFile
-                pathStrict = config.pathStrict
-            }
-            is CwtComplexEnumConfig -> {
-                pathPatterns = config.pathPatterns
-                paths = config.paths
-                pathFile = config.pathFile
-                pathStrict = config.pathStrict
-            }
-        }
+    private fun doGetFilePathsForPriority(config: CwtConfig<*>): Set<String> {
+        if(config !is CwtPathMatchableConfig) return emptySet()
+
+        val pathPatterns = config.pathPatterns
+        val paths = config.paths
+        val pathFile = config.pathFile
+        val pathStrict = config.pathStrict
         val filePaths = sortedSetOf<String>()
         if (pathPatterns.isNotEmpty()) {
             filePaths += pathPatterns.map { it.substringBefore("/*") }
@@ -366,6 +337,10 @@ object CwtConfigManager {
     }
 
     fun matchesFilePath(config: CwtPathMatchableConfig, filePath: ParadoxPath): Boolean {
+        return doMatchFilePath(config, filePath)
+    }
+
+    fun doMatchFilePath(config: CwtPathMatchableConfig, filePath: ParadoxPath): Boolean {
         val pathPatterns = config.pathPatterns
         val paths = config.paths
         val pathFile = config.pathFile
