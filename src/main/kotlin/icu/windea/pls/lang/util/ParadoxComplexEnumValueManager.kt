@@ -45,15 +45,13 @@ object ParadoxComplexEnumValueManager {
         val gameType = fileInfo.rootInfo.gameType
         val configGroup = getConfigGroup(project, gameType)
         for (complexEnumConfig in configGroup.complexEnums.values) {
-            if (CwtConfigManager.matchesFilePath(complexEnumConfig, path)) {
-                if (matchesComplexEnum(complexEnumConfig, element)) {
-                    val name = getName(element.value) ?: continue
-                    val enumName = complexEnumConfig.name
-                    val readWriteAccess = Access.Write //write (declaration)
-                    val elementOffset = element.startOffset
-                    return ParadoxComplexEnumValueIndexInfo(name, enumName, readWriteAccess, elementOffset, gameType)
-                }
-            }
+            if (!CwtConfigManager.matchesFilePath(complexEnumConfig, path)) continue
+            if (!matchesComplexEnum(complexEnumConfig, element)) continue
+            val name = getName(element.value) ?: continue
+            val enumName = complexEnumConfig.name
+            val readWriteAccess = Access.Write //write (declaration)
+            val elementOffset = element.startOffset
+            return ParadoxComplexEnumValueIndexInfo(name, enumName, readWriteAccess, elementOffset, gameType)
         }
         return null
     }

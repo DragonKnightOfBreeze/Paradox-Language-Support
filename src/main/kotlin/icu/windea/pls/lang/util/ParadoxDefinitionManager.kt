@@ -80,9 +80,9 @@ object ParadoxDefinitionManager {
         configGroup: CwtConfigGroup
     ): CwtTypeConfig? {
         for (typeConfig in configGroup.types.values) {
-            if (matchesType(element, path, elementPath, rootKey, typeConfig, configGroup)) {
-                return typeConfig
-            }
+            if (!CwtConfigManager.matchesFilePath(typeConfig, path)) continue
+            if (!matchesType(element, path, elementPath, rootKey, typeConfig, configGroup)) continue
+            return typeConfig
         }
         return null
     }
@@ -96,9 +96,9 @@ object ParadoxDefinitionManager {
         configGroup: CwtConfigGroup
     ): CwtTypeConfig? {
         for (typeConfig in configGroup.types.values) {
-            if (matchesType(node, tree, path, elementPath, rootKey, typeConfig, configGroup)) {
-                return typeConfig
-            }
+            if (!CwtConfigManager.matchesFilePath(typeConfig, path)) continue
+            if (!matchesType(node, tree, path, elementPath, rootKey, typeConfig, configGroup)) continue
+            return typeConfig
         }
         return null
     }
@@ -112,10 +112,12 @@ object ParadoxDefinitionManager {
         configGroup: CwtConfigGroup
     ): Boolean {
         //判断definition是否需要是scriptFile还是scriptProperty
-        if (typeConfig.typePerFile) {
-            if (element !is ParadoxScriptFile) return false
-        } else {
-            if (element !is ParadoxScriptProperty) return false
+        run {
+            if (typeConfig.typePerFile) {
+                if (element !is ParadoxScriptFile) return false
+            } else {
+                if (element !is ParadoxScriptProperty) return false
+            }
         }
 
         val fastResult = matchesTypeFast(path, elementPath, rootKey, typeConfig)
@@ -148,11 +150,13 @@ object ParadoxDefinitionManager {
         configGroup: CwtConfigGroup
     ): Boolean {
         //判断definition是否需要是scriptFile还是scriptProperty
-        val elementType = node.tokenType
-        if (typeConfig.typePerFile) {
-            if (elementType != ParadoxScriptStubElementTypes.FILE) return false
-        } else {
-            if (elementType != PROPERTY) return false
+        run {
+            val elementType = node.tokenType
+            if (typeConfig.typePerFile) {
+                if (elementType != ParadoxScriptStubElementTypes.FILE) return false
+            } else {
+                if (elementType != PROPERTY) return false
+            }
         }
 
         val fastResult = matchesTypeFast(path, elementPath, rootKey, typeConfig)
@@ -176,9 +180,6 @@ object ParadoxDefinitionManager {
         rootKey: String,
         typeConfig: CwtTypeConfig
     ): Boolean? {
-        //判断path是否匹配
-        if (!CwtConfigManager.matchesFilePath(typeConfig, path)) return false
-
         //如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
         //skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
         //skip_root_key可以重复（其中之一匹配即可）
@@ -539,7 +540,7 @@ object ParadoxDefinitionManager {
         val psi = parentStub.psi
         val file = psi.containingFile
         val project = file.project
-        val vFile = selectFile(psi) ?: return null
+        val vFile = selectFile(file) ?: return null
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.path

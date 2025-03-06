@@ -266,10 +266,23 @@ object ParadoxCompletionManager {
         val path = fileInfo.path
         val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
         for (typeConfig in configGroup.types.values) {
-            if (ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(path, null, null, typeConfig)) {
-                val skipRootKeyConfig = typeConfig.skipRootKey
-                if (skipRootKeyConfig.isNullOrEmpty()) {
-                    if (elementPath.isEmpty()) {
+            if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(path, null, null, typeConfig)) continue
+            val skipRootKeyConfig = typeConfig.skipRootKey
+            if (skipRootKeyConfig.isNullOrEmpty()) {
+                if (elementPath.isEmpty()) {
+                    typeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
+                        infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
+                    }
+                    typeConfig.subtypes.values.forEach { subtypeConfig ->
+                        subtypeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
+                            infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
+                        }
+                    }
+                }
+            } else {
+                for (skipConfig in skipRootKeyConfig) {
+                    val relative = elementPath.relativeTo(skipConfig) ?: continue
+                    if (relative.isEmpty()) {
                         typeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
                             infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
                         }
@@ -278,24 +291,10 @@ object ParadoxCompletionManager {
                                 infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
                             }
                         }
+                    } else {
+                        infoMap.getOrPut(relative) { mutableListOf() }
                     }
-                } else {
-                    for (skipConfig in skipRootKeyConfig) {
-                        val relative = elementPath.relativeTo(skipConfig) ?: continue
-                        if (relative.isEmpty()) {
-                            typeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
-                                infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
-                            }
-                            typeConfig.subtypes.values.forEach { subtypeConfig ->
-                                subtypeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
-                                    infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
-                                }
-                            }
-                        } else {
-                            infoMap.getOrPut(relative) { mutableListOf() }
-                        }
-                        break
-                    }
+                    break
                 }
             }
         }

@@ -57,25 +57,24 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                 if (elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
                 for (typeConfig in configGroup.types.values) {
                     if (typeConfig.nameField != null) continue
-                    if (ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(path, elementPath, null, typeConfig)) {
-                        val type = typeConfig.name
-                        val declarationConfig = configGroup.declarations.get(type) ?: continue
-                        //需要考虑不指定子类型的情况
-                        val configContext = CwtDeclarationConfigContextProvider.getContext(element, null, type, null, gameType, configGroup)
-                        val config = configContext?.getConfig(declarationConfig) ?: continue
+                    if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(path, elementPath, null, typeConfig)) continue
+                    val type = typeConfig.name
+                    val declarationConfig = configGroup.declarations.get(type) ?: continue
+                    //需要考虑不指定子类型的情况
+                    val configContext = CwtDeclarationConfigContextProvider.getContext(element, null, type, null, gameType, configGroup)
+                    val config = configContext?.getConfig(declarationConfig) ?: continue
 
-                        context.config = config
-                        context.isKey = true
-                        context.expressionTailText = ""
+                    context.config = config
+                    context.isKey = true
+                    context.expressionTailText = ""
 
-                        //排除正在输入的那一个
-                        val selector = selector(project, file).definition().contextSensitive()
-                            .notSamePosition(element)
-                            .distinctByName()
-                        ParadoxDefinitionSearch.search(type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
+                    //排除正在输入的那一个
+                    val selector = selector(project, file).definition().contextSensitive()
+                        .notSamePosition(element)
+                        .distinctByName()
+                    ParadoxDefinitionSearch.search(type, selector).processQueryAsync p@{ processDefinition(context, result, it) }
 
-                        ParadoxCompletionManager.completeExtendedDefinition(context, result)
-                    }
+                    ParadoxCompletionManager.completeExtendedDefinition(context, result)
                 }
             }
             //event = { id = _ }
