@@ -4,6 +4,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.refactoring.rename.naming.*
 import icu.windea.pls.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.config.util
 
 import com.google.common.cache.*
 import com.intellij.openapi.progress.*
@@ -15,7 +15,9 @@ import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.search.*
+import icu.windea.pls.lang.search.processQueryAsync
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 object CwtTemplateExpressionManager {
