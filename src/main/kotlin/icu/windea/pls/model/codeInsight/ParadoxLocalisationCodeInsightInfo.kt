@@ -1,6 +1,7 @@
 package icu.windea.pls.model.codeInsight
 
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configContext.*
 import icu.windea.pls.model.*
 
 data class ParadoxLocalisationCodeInsightInfo(

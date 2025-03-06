@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configContext.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.psi.*
@@ -26,7 +27,7 @@ interface ParadoxComplexExpressionNode {
     fun getReference(element: ParadoxExpressionElement): PsiReference? = null
 
     fun getUnresolvedError(): ParadoxComplexExpressionError? = null
-    
+
     fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? = null
 
     abstract class Base : ParadoxComplexExpressionNode {

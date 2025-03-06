@@ -11,6 +11,7 @@ import com.intellij.refactoring.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.config.*
+import icu.windea.pls.ep.configContext.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -40,7 +41,7 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
     override fun canInlineElementInEditor(element: PsiElement, editor: Editor?): Boolean {
         val reference = if (editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
         run {
-            //此内联操作也可以从"inline_script = {...}"中的"inline_script"发起 
+            //此内联操作也可以从"inline_script = {...}"中的"inline_script"发起
             if (reference == null) return@run
             val contextReferenceElement = reference.element.castOrNull<ParadoxScriptPropertyKey>()?.parent?.castOrNull<ParadoxScriptProperty>() ?: return@run
             if (contextReferenceElement.name.lowercase() != ParadoxInlineScriptManager.inlineScriptKey) return@run
@@ -56,7 +57,7 @@ class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
     override fun inlineElement(project: Project, editor: Editor?, element: PsiElement) {
         val reference = if (editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
         run {
-            //此内联操作也可以从"inline_script = {...}"中的"inline_script"发起 
+            //此内联操作也可以从"inline_script = {...}"中的"inline_script"发起
             if (reference == null) return@run
             val contextReferenceElement = reference.element.castOrNull<ParadoxScriptPropertyKey>()?.parent?.castOrNull<ParadoxScriptProperty>() ?: return@run
             if (contextReferenceElement.name.lowercase() != ParadoxInlineScriptManager.inlineScriptKey) return@run

@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configContext.*
 import icu.windea.pls.config.expression.CwtImageLocationExpression.*
 import icu.windea.pls.config.expression.CwtImageLocationExpression.ResolveResult
 import icu.windea.pls.core.*

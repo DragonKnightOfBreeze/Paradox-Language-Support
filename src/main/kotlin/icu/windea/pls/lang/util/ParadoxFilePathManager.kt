@@ -6,6 +6,7 @@ import com.intellij.openapi.vcs.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configContext.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*

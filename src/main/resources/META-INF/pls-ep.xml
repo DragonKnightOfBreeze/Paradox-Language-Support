@@ -2,11 +2,11 @@
   <extensionPoints>
     <extensionPoint qualifiedName="icu.windea.pls.incorrectExpressionChecker" interface="icu.windea.pls.ep.checker.ParadoxIncorrectExpressionChecker" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.colorSupport" interface="icu.windea.pls.ep.color.ParadoxColorSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.configContextProvider" interface="icu.windea.pls.ep.config.CwtConfigContextProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.declarationConfigContextProvider" interface="icu.windea.pls.ep.config.CwtDeclarationConfigContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.injectedConfigProvider" interface="icu.windea.pls.ep.config.CwtInjectedConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.overriddenConfigProvider" interface="icu.windea.pls.ep.config.CwtOverriddenConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.relatedConfigProvider" interface="icu.windea.pls.ep.config.CwtRelatedConfigProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.configContextProvider" interface="icu.windea.pls.ep.configContext.CwtConfigContextProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.declarationConfigContextProvider" interface="icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupDataProvider" interface="icu.windea.pls.ep.configGroup.CwtConfigGroupDataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupFileProvider" interface="icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionDataProvider" interface="icu.windea.pls.ep.data.ParadoxDefinitionDataProvider" dynamic="true"/>
@@ -58,15 +58,6 @@
     <colorSupport implementation="icu.windea.pls.ep.color.ParadoxScriptBlockColorSupport"/>
     <colorSupport implementation="icu.windea.pls.ep.color.ParadoxScriptColorColorSupport"/>
 
-    <configContextProvider implementation="icu.windea.pls.ep.config.CwtBaseConfigContextProvider" order="last"/>
-    <configContextProvider implementation="icu.windea.pls.ep.config.CwtInlineScriptUsageConfigContextProvider"/>
-    <configContextProvider implementation="icu.windea.pls.ep.config.CwtInlineScriptConfigContextProvider"/>
-    <configContextProvider implementation="icu.windea.pls.ep.config.CwtParameterValueConfigContextProvider"/>
-
-    <declarationConfigContextProvider implementation="icu.windea.pls.ep.config.CwtBaseDeclarationConfigContextProvider" order="last"/>
-    <declarationConfigContextProvider implementation="icu.windea.pls.ep.config.CwtGameRuleDeclarationConfigContextProvider"/>
-    <declarationConfigContextProvider implementation="icu.windea.pls.ep.config.CwtOnActionDeclarationConfigContextProvider"/>
-
     <injectedConfigProvider implementation="icu.windea.pls.ep.config.CwtTechnologyWithLevelInjectedConfigProvider"/>
     <injectedConfigProvider implementation="icu.windea.pls.ep.config.CwtInOnActionInjectedConfigProvider"/>
 
@@ -75,6 +66,15 @@
 
     <relatedConfigProvider implementation="icu.windea.pls.ep.config.CwtBaseRelatedConfigProvider"/>
     <relatedConfigProvider implementation="icu.windea.pls.ep.config.CwtExtendedRelatedConfigProvider"/>
+
+    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtBaseConfigContextProvider" order="last"/>
+    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtInlineScriptUsageConfigContextProvider"/>
+    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtInlineScriptConfigContextProvider"/>
+    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtParameterValueConfigContextProvider"/>
+
+    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.CwtBaseDeclarationConfigContextProvider" order="last"/>
+    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.CwtGameRuleDeclarationConfigContextProvider"/>
+    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.CwtOnActionDeclarationConfigContextProvider"/>
 
     <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.PredefinedCwtConfigGroupDataProvider" order="first"/>
     <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.FileBasedCwtConfigGroupDataProvider"/>

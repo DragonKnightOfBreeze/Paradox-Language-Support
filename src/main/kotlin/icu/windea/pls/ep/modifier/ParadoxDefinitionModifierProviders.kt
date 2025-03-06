@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.modifier
 
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configContext.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*

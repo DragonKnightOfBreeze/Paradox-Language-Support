@@ -14,6 +14,7 @@ import com.intellij.ui.layout.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configContext.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.metadata.*

@@ -1,9 +1,10 @@
-package icu.windea.pls.config.expression.internal
+@file:Suppress("PackageDirectoryMismatch")
+
+package icu.windea.pls.config.expression
 
 import com.google.common.cache.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.util.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 

@@ -7,9 +7,9 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.config.internal.*
+import icu.windea.pls.config.configContext.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.internal.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*

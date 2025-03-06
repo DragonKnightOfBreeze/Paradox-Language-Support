@@ -1,6 +1,7 @@
 package icu.windea.pls.lang
 
 import com.intellij.codeInsight.daemon.*
+import com.intellij.codeInsight.daemon.impl.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
@@ -101,7 +102,7 @@ object PlsManager {
                     if (psiFile != null) DaemonCodeAnalyzer.getInstance(project).restart(psiFile)
 
                     //refresh inlay hints
-                    _root_ide_package_.com.intellij.codeInsight.daemon.impl.InlayHintsPassFactoryInternal.clearModificationStamp(editor)
+                    InlayHintsPassFactoryInternal.clearModificationStamp(editor)
                 }
             }
         }

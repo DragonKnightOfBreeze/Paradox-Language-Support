@@ -7,6 +7,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configContext.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
@@ -25,7 +26,7 @@ import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys as Keys
 class ParadoxScriptAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         checkSyntax(element, holder)
-        
+
         annotateParameterValue(element, holder)
 
         when (element) {
