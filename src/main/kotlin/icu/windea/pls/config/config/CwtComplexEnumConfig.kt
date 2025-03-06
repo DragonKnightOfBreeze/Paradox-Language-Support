@@ -18,13 +18,13 @@ import icu.windea.pls.cwt.psi.*
  * @property nameConfig `name`对应的CWT规则。
  * @property enumNameConfigs [nameConfig]中作为锚点的`enum_name`对应的CWT规则。
  */
-interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> , CwtPathMatchableConfig {
     val name: String
-    val pathPatterns: Set<String>
-    val paths: Set<String>
-    val pathFile: String?
-    val pathExtension: String?
-    val pathStrict: Boolean
+    override val pathPatterns: Set<String>
+    override val paths: Set<String>
+    override val pathFile: String?
+    override val pathExtension: String?
+    override val pathStrict: Boolean
     val startFromRoot: Boolean
     val searchScopeType: String?
     val nameConfig: CwtPropertyConfig

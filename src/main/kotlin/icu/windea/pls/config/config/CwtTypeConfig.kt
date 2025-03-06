@@ -31,14 +31,14 @@ import icu.windea.pls.model.*
  * @property localisation (property*) localisation: localisationInfo
  * @property images (property*) images: imagesInfo
  */
-interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtPathMatchableConfig {
     val name: String
     val baseType: String?
-    val pathPatterns: Set<String>
-    val paths: Set<String>
-    val pathFile: String?
-    val pathExtension: String?
-    val pathStrict: Boolean
+    override val pathPatterns: Set<String>
+    override val paths: Set<String>
+    override val pathFile: String?
+    override val pathExtension: String?
+    override val pathStrict: Boolean
     val nameField: String?
     val nameFromFile: Boolean
     val typePerFile: Boolean

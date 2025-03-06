@@ -18,12 +18,12 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     val keyExpression: CwtDataExpression
     override val expression: CwtDataExpression get() = keyExpression
 
-    companion object
+    companion object Resolver
 }
 
 //Resolve Methods
 
-fun CwtPropertyConfig.Companion.resolve(
+fun CwtPropertyConfig.Resolver.resolve(
     pointer: SmartPsiElementPointer<out CwtProperty>,
     configGroup: CwtConfigGroup,
     key: String,
@@ -87,7 +87,7 @@ private abstract class CwtPropertyConfigImpl(
     valueType: CwtType = CwtType.String,
     separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
 ) : UserDataHolderBase(), CwtPropertyConfig {
-    private val valueTypeId = valueType.optimizeValue() //use enum id as field to optimize memory 
+    private val valueTypeId = valueType.optimizeValue() //use enum id as field to optimize memory
     override val valueType get() = valueTypeId.deoptimizeValue<CwtType>()
 
     private val separatorTypeId = separatorType.optimizeValue() //use enum id as field to optimize memory

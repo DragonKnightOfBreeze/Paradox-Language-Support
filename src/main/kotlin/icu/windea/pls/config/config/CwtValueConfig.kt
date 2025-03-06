@@ -13,12 +13,12 @@ interface CwtValueConfig : CwtMemberConfig<CwtValue> {
 
     override val expression: CwtDataExpression get() = valueExpression
 
-    companion object
+    companion object Resolver
 }
 
 //Resolve Methods
 
-fun CwtValueConfig.Companion.resolve(
+fun CwtValueConfig.Resolver.resolve(
     pointer: SmartPsiElementPointer<out CwtValue>,
     configGroup: CwtConfigGroup,
     value: String,
@@ -43,7 +43,7 @@ fun CwtValueConfig.Companion.resolve(
     }
 }
 
-fun CwtValueConfig.Companion.resolveFromPropertyConfig(
+fun CwtValueConfig.Resolver.resolveFromPropertyConfig(
     pointer: SmartPsiElementPointer<out CwtValue>,
     propertyConfig: CwtPropertyConfig
 ): CwtValueConfig {
@@ -199,7 +199,7 @@ private class CwtValueConfigDelegateWith(
     //configs should be always null here
 ) : CwtValueConfigDelegate(delegate)
 
-//12 + 4 * 4 = 28 -> 32 
+//12 + 4 * 4 = 28 -> 32
 private class CwtValueConfigFromPropertyConfig(
     override val pointer: SmartPsiElementPointer<out CwtValue>,
     override val propertyConfig: CwtPropertyConfig,
