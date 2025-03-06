@@ -7,7 +7,6 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configContext.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
@@ -366,28 +365,12 @@ object CwtConfigManager {
         return filePaths
     }
 
-    fun matchesFilePath(config: CwtConfig<*>, filePath: ParadoxPath): Boolean {
-        var pathPatterns: Set<String> = emptySet()
-        var paths: Set<String> = emptySet()
-        var pathFile: String? = null
-        var pathExtension: String? = null
-        var pathStrict = false
-        when (config) {
-            is CwtTypeConfig -> {
-                pathPatterns = config.pathPatterns
-                paths = config.paths
-                pathFile = config.pathFile
-                pathExtension = config.pathExtension
-                pathStrict = config.pathStrict
-            }
-            is CwtComplexEnumConfig -> {
-                pathPatterns = config.pathPatterns
-                paths = config.paths
-                pathFile = config.pathFile
-                pathExtension = config.pathExtension
-                pathStrict = config.pathStrict
-            }
-        }
+    fun matchesFilePath(config: CwtPathMatchableConfig, filePath: ParadoxPath): Boolean {
+        val pathPatterns = config.pathPatterns
+        val paths = config.paths
+        val pathFile = config.pathFile
+        val pathExtension = config.pathExtension
+        val pathStrict = config.pathStrict
 
         if (pathPatterns.isNotEmpty()) {
             if (pathPatterns.any { filePath.path.matchesAntPattern(it) }) return true
