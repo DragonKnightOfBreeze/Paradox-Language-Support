@@ -15,7 +15,7 @@ import icu.windea.pls.model.*
 @State(name = "ParadoxDiagramSettings.Ck3.EventTree", storages = [Storage("paradox-language-support.xml")])
 class Ck3EventTreeDiagramSettings(
     project: Project
-) : ParadoxEventTreeDiagramSettings<Ck3EventTreeDiagramSettings.State>(State()) {
+) : ParadoxEventTreeDiagramSettings<Ck3EventTreeDiagramSettings.State>(project, State()) {
     companion object {
         const val ID = "pls.diagram.Ck3.EventTree"
     }

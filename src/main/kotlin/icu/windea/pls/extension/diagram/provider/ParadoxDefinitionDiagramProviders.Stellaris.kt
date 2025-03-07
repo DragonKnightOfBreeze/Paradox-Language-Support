@@ -100,9 +100,9 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
 }
 
 @WithGameType(ParadoxGameType.Stellaris)
-class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvider(ParadoxGameType.Stellaris) {
+class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxGameType.Stellaris) {
     object Constants {
-        const val ID = "Stellaris.TechnologyTree"
+        const val ID = "Stellaris.TechTree"
         val ITEM_PROPERTY_KEYS = arrayOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels")
     }
 
@@ -115,7 +115,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
     override fun getID() = Constants.ID
 
     @Suppress("DialogTitleCapitalization")
-    override fun getPresentableName() = PlsDiagramBundle.message("stellaris.technologyTree.name")
+    override fun getPresentableName() = PlsDiagramBundle.message("stellaris.techTree.name")
 
     override fun getColorManager() = _colorManager
 
@@ -123,7 +123,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
 
     override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
 
-    override fun getDiagramSettings(project: Project) = project.service<StellarisTechnologyTreeDiagramSettings>()
+    override fun getDiagramSettings(project: Project) = project.service<StellarisTechTreeDiagramSettings>()
 
     class ColorManager : DiagramColorManagerBase() {
         override fun getNodeBorderColor(builder: DiagramBuilder, node: DiagramNode<*>?, isSelected: Boolean): Color {
@@ -154,9 +154,9 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
         project: Project,
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
-    ) : ParadoxTechnologyTreeDiagramProvider.DataModel(project, file, provider) {
+    ) : ParadoxTechTreeDiagramProvider.DataModel(project, file, provider) {
         override fun updateDataModel(indicator: ProgressIndicator?) {
-            provider as StellarisTechnologyTreeDiagramProvider
+            provider as StellarisTechTreeDiagramProvider
             val technologies = getDefinitions("technology")
             if (technologies.isEmpty()) return
             //群星原版科技有400+
@@ -197,7 +197,7 @@ class StellarisTechnologyTreeDiagramProvider : ParadoxTechnologyTreeDiagramProvi
         }
 
         private fun showNode(definition: ParadoxScriptDefinitionElement): Boolean {
-            provider as StellarisTechnologyTreeDiagramProvider
+            provider as StellarisTechTreeDiagramProvider
 
             val definitionInfo = definition.definitionInfo ?: return false
             val data = definition.getData<StellarisTechnologyData>() ?: return false

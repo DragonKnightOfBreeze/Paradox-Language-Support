@@ -5,7 +5,7 @@
 
   <extensions defaultExtensionNs="com.intellij.diagram">
     <Provider implementation="icu.windea.pls.extension.diagram.provider.StellarisEventTreeDiagramProvider"/>
-    <Provider implementation="icu.windea.pls.extension.diagram.provider.StellarisTechnologyTreeDiagramProvider"/>
+    <Provider implementation="icu.windea.pls.extension.diagram.provider.StellarisTechTreeDiagramProvider"/>
     <Provider implementation="icu.windea.pls.extension.diagram.provider.Ck2EventTreeDiagramProvider"/>
     <Provider implementation="icu.windea.pls.extension.diagram.provider.Ck3EventTreeDiagramProvider"/>
     <Provider implementation="icu.windea.pls.extension.diagram.provider.Eu4EventTreeDiagramProvider"/>

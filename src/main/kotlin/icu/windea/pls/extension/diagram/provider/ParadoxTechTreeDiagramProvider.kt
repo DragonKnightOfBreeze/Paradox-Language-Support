@@ -31,13 +31,13 @@ import javax.swing.*
  * * 可以按作用域过滤要显示的科技。（例如，仅限原版，仅限当前模组）
  * * 支持任何通用的图表操作。（例如，导出为图片）
  */
-abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) : ParadoxDefinitionDiagramProvider(gameType) {
+abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : ParadoxDefinitionDiagramProvider(gameType) {
     companion object {
-        val CAT_TYPE = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.type"), PlsIcons.Nodes.Type, true, false)
-        val CAT_PROPERTIES = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.properties"), PlsIcons.Nodes.Property, true, false)
-        val CAT_NAME = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.name"), PlsIcons.Nodes.Localisation, false, false)
-        val CAT_ICON = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.icon"), PlsIcons.Image, false, false)
-        val CAT_PRESENTATION = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.technologyTree.category.presentation"), PlsIcons.Presentation, false, false)
+        val CAT_TYPE = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.type"), PlsIcons.Nodes.Type, true, false)
+        val CAT_PROPERTIES = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.properties"), PlsIcons.Nodes.Property, true, false)
+        val CAT_NAME = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.name"), PlsIcons.Nodes.Localisation, false, false)
+        val CAT_ICON = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.icon"), PlsIcons.Image, false, false)
+        val CAT_PRESENTATION = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.presentation"), PlsIcons.Presentation, false, false)
         val CATEGORIES = arrayOf(CAT_TYPE, CAT_PROPERTIES, CAT_NAME, CAT_ICON, CAT_PRESENTATION)
 
         val REL_PREREQUISITE = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID) {
@@ -53,7 +53,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
 
     private val _elementManager by lazy { ElementManager(this) }
 
-    override fun getID() = gameType.title + ".TechnologyTree"
+    override fun getID() = gameType.title + ".TechTree"
 
     override fun createNodeContentManager() = NodeContentManager()
 
@@ -63,7 +63,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
 
     override fun getAllContentCategories() = CATEGORIES
 
-    abstract override fun getDiagramSettings(project: Project): ParadoxTechnologyTreeDiagramSettings<*>?
+    abstract override fun getDiagramSettings(project: Project): ParadoxTechTreeDiagramSettings<*>?
 
     class NodeContentManager : OrderedDiagramNodeContentManager() {
         override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?): Boolean {
@@ -131,7 +131,7 @@ abstract class ParadoxTechnologyTreeDiagramProvider(gameType: ParadoxGameType) :
         }
 
         private fun getProperties(nodeElement: ParadoxScriptProperty): Set<ParadoxScriptProperty> {
-            provider as ParadoxTechnologyTreeDiagramProvider
+            provider as ParadoxTechTreeDiagramProvider
             val itemPropertyKeys = provider.getItemPropertyKeys()
             val properties = sortedSetOf<ParadoxScriptProperty>(compareBy { itemPropertyKeys.indexOf(it.name.lowercase()) })
             nodeElement.block?.processProperty(conditional = true, inline = true) {
