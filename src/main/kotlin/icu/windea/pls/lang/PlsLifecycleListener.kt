@@ -35,11 +35,11 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener {
     private fun handlePaths() {
         val coroutineScope = getCoroutineScope()
         coroutineScope.launch {
-            PlsConstants.Paths.data.createDirectories()
-            PlsConstants.Paths.images.createDirectory()
-            PlsConstants.Paths.imagesTemp
-            writeAction { PlsConstants.Paths.unknownPngFile }
-            writeAction { PlsConstants.Paths.texconvExeFile }
+            runCatchingCancelable { PlsConstants.Paths.data.createDirectories() }
+            runCatchingCancelable { PlsConstants.Paths.images.createDirectory() }
+            runCatchingCancelable { PlsConstants.Paths.imagesTemp }
+            writeAction { runCatchingCancelable { PlsConstants.Paths.unknownPngFile } }
+            writeAction { runCatchingCancelable { PlsConstants.Paths.texconvExeFile } }
         }
     }
 
