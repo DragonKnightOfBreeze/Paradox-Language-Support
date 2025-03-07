@@ -25,7 +25,7 @@ class ParadoxDiagramSettingsConfigurable(
                 val jobs = mutableListOf<Deferred<Unit>>()
                 for (diagramSettings in getDiagramSettingsList()) {
                     collapsibleGroup(diagramSettings.groupName) p@{
-                        jobs += async { diagramSettings.groupBuilder(this@p) }
+                        jobs += async { diagramSettings.createGroup(this@p) }
                     }
                 }
                 jobs.awaitAll()

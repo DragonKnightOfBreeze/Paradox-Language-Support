@@ -1,5 +1,6 @@
 package icu.windea.pls.extension.diagram.settings
 
+import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.dsl.builder.*
@@ -39,9 +40,9 @@ class Hoi4EventTreeDiagramSettings(
 
     override val groupName: String = PlsDiagramBundle.message("hoi4.eventTree.name")
 
-    override val groupBuilder: Panel.() -> Unit = {
+    override suspend fun createGroup(panel: Panel) = with(panel) {
         val settings = state
-        val eventTypes = ParadoxEventManager.getTypes(project, ParadoxGameType.Hoi4)
+        val eventTypes = readAction { ParadoxEventManager.getTypes(project, ParadoxGameType.Hoi4) }
         eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
         settings.updateSettings()
 
