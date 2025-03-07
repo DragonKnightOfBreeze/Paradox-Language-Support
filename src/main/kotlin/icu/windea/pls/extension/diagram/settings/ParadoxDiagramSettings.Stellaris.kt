@@ -1,26 +1,20 @@
 package icu.windea.pls.extension.diagram.settings
 
-import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.gridLayout.*
-import com.intellij.util.ui.*
 import com.intellij.util.xmlb.annotations.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import kotlinx.coroutines.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 @Service(Service.Level.PROJECT)
 @State(name = "ParadoxDiagramSettings.Stellaris.EventTree", storages = [Storage("paradox-language-support.xml")])
 class StellarisEventTreeDiagramSettings(
-    val project: Project
+    project: Project
 ) : ParadoxEventTreeDiagramSettings<StellarisEventTreeDiagramSettings.State>(State()) {
     companion object {
         const val ID = "pls.diagram.Stellaris.EventTree"
@@ -46,55 +40,29 @@ class StellarisEventTreeDiagramSettings(
         }
     }
 
-    override fun buildConfigurablePanel(panel: Panel): Unit = with(panel) {
+    override val groupName: String = PlsDiagramBundle.message("stellaris.eventTree.name")
+
+    override val groupBuilder: Panel.() -> Unit = {
         val settings = state
         val eventTypes = ParadoxEventManager.getTypes(project, ParadoxGameType.Stellaris)
         eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
         settings.updateSettings()
 
-        collapsibleGroup(PlsDiagramBundle.message("stellaris.eventTree.name")) {
-            row {
-                label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
-            }
-            if (settings.type.isNotEmpty()) {
-                lateinit var cb: Cell<ThreeStateCheckBox>
-                row {
-                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.eventTree.settings.type")))
-                        .applyToComponent { isThirdStateEnabled = false }
-                        .smaller()
-                        .also { cb = it }
-                }
-                indent {
-                    settings.type.keys.forEach { key ->
-                        row {
-                            checkBox(PlsDiagramBundle.message("stellaris.eventTree.settings.type.${key}"))
-                                .bindSelected(settings.type.toMutableProperty(key, true))
-                                .threeStateCheckBox(cb)
-                                .smaller()
-                        }
-                    }
-                }
-            }
-            if (settings.eventType.isNotEmpty()) {
-                lateinit var cb: Cell<ThreeStateCheckBox>
-                row {
-                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.eventTree.settings.eventType")))
-                        .applyToComponent { isThirdStateEnabled = false }
-                        .smaller()
-                        .also { cb = it }
-                }
-                indent {
-                    settings.eventType.keys.forEach { key ->
-                        row {
-                            checkBox(PlsDiagramBundle.message("stellaris.eventTree.settings.eventType.option", key))
-                                .bindSelected(settings.eventType.toMutableProperty(key, true))
-                                .threeStateCheckBox(cb)
-                                .smaller()
-                        }
-                    }
-                }
-            }
+        row {
+            label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("stellaris.eventTree.settings.type"), { key ->
+            when (key) {
+                State.TypeSettings::hidden.name -> PlsDiagramBundle.message("stellaris.eventTree.settings.type.hidden")
+                State.TypeSettings::triggered.name -> PlsDiagramBundle.message("stellaris.eventTree.settings.type.triggered")
+                State.TypeSettings::major.name -> PlsDiagramBundle.message("stellaris.eventTree.settings.type.major")
+                State.TypeSettings::diplomatic.name -> PlsDiagramBundle.message("stellaris.eventTree.settings.type.diplomatic")
+                else -> null
+            }
+        })
+        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("stellaris.eventTree.settings.eventType"), { key ->
+            PlsDiagramBundle.message("stellaris.eventTree.settings.eventType.option", key)
+        })
     }
 }
 
@@ -102,7 +70,7 @@ class StellarisEventTreeDiagramSettings(
 @Service(Service.Level.PROJECT)
 @State(name = "ParadoxDiagramSettings.Stellaris.TechnologyTree", storages = [Storage("paradox-language-support.xml")])
 class StellarisTechnologyTreeDiagramSettings(
-    val project: Project
+    project: Project
 ) : ParadoxTechnologyTreeDiagramSettings<StellarisTechnologyTreeDiagramSettings.State>(State()) {
     companion object {
         const val ID = "pls.diagram.Stellaris.TechnologyTree"
@@ -133,7 +101,9 @@ class StellarisTechnologyTreeDiagramSettings(
         }
     }
 
-    override fun buildConfigurablePanel(panel: Panel): Unit = with(panel) {
+    override val groupName: String = PlsDiagramBundle.message("stellaris.technologyTree.name")
+
+    override val groupBuilder: Panel.() -> Unit = {
         val settings = state
         val tiers = ParadoxTechnologyManager.Stellaris.getTechnologyTiers(project, null)
         tiers.forEach { settings.tier.putIfAbsent(it.name, true) }
@@ -148,100 +118,31 @@ class StellarisTechnologyTreeDiagramSettings(
         val categoryNameProviders = mutableMapOf<String, () -> String?>()
         categories.forEach { categoryNameProviders.put(it.name) { ParadoxPresentationManager.getNameText(it) } }
 
-        val coroutineScope = getCoroutineScope(project)
-
-        collapsibleGroup(PlsDiagramBundle.message("stellaris.technologyTree.name")) {
-            row {
-                label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
+        row {
+            label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
+        }
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("stellaris.technologyTree.settings.type"), { key ->
+            when (key) {
+                State.TypeSettings::start.name -> PlsDiagramBundle.message("stellaris.technologyTree.settings.type.start")
+                State.TypeSettings::rare.name -> PlsDiagramBundle.message("stellaris.technologyTree.settings.type.rare")
+                State.TypeSettings::dangerous.name -> PlsDiagramBundle.message("stellaris.technologyTree.settings.type.dangerous")
+                State.TypeSettings::insight.name -> PlsDiagramBundle.message("stellaris.technologyTree.settings.type.insight")
+                State.TypeSettings::repeatable.name -> PlsDiagramBundle.message("stellaris.technologyTree.settings.type.repeatable")
+                else -> null
             }
-            if (settings.type.isNotEmpty()) {
-                lateinit var cb: Cell<ThreeStateCheckBox>
-                row {
-                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.type")))
-                        .applyToComponent { isThirdStateEnabled = false }
-                        .smaller()
-                        .also { cb = it }
-                }
-                indent {
-                    settings.type.keys.forEach { key ->
-                        row {
-                            checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.type.${key}"))
-                                .bindSelected(settings.type.toMutableProperty(key, true))
-                                .threeStateCheckBox(cb)
-                                .smaller()
-                        }
-                    }
-                }
-            }
-            if (settings.tier.isNotEmpty()) {
-                lateinit var cb: Cell<ThreeStateCheckBox>
-                row {
-                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.tier")))
-                        .applyToComponent { isThirdStateEnabled = false }
-                        .smaller()
-                        .also { cb = it }
-                }
-                indent {
-                    settings.tier.keys.forEach { key ->
-                        row {
-                            checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.tier.option", key))
-                                .bindSelected(settings.tier.toMutableProperty(key, true))
-                                .threeStateCheckBox(cb)
-                                .smaller()
-                        }
-                    }
-                }
-            }
-            if (settings.area.isNotEmpty()) {
-                lateinit var cb: Cell<ThreeStateCheckBox>
-                row {
-                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.area")))
-                        .applyToComponent { isThirdStateEnabled = false }
-                        .smaller()
-                        .also { cb = it }
-                }
-                indent {
-                    settings.area.keys.forEach { key ->
-                        row {
-                            checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.area.option", key))
-                                .bindSelected(settings.area.toMutableProperty(key, true))
-                                .threeStateCheckBox(cb)
-                                .smaller()
-
-                            //add related localized name as comment lazily
-                            comment("").customize(UnscaledGaps(3, 16, 3, 0)).applyToComponent t@{
-                                val p = areaNameProviders.get(key) ?: return@t
-                                coroutineScope.launch { text = readAction(p) }
-                            }
-                        }
-                    }
-                }
-            }
-            if (settings.category.isNotEmpty()) {
-                lateinit var cb: Cell<ThreeStateCheckBox>
-                row {
-                    cell(ThreeStateCheckBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.category")))
-                        .applyToComponent { isThirdStateEnabled = false }
-                        .smaller()
-                        .also { cb = it }
-                }
-                indent {
-                    settings.category.keys.forEach { key ->
-                        row {
-                            checkBox(PlsDiagramBundle.message("stellaris.technologyTree.settings.category.option", key))
-                                .bindSelected(settings.category.toMutableProperty(key, true))
-                                .threeStateCheckBox(cb)
-                                .smaller()
-
-                            //add related localized name as comment lazily
-                            comment("").customize(UnscaledGaps(3, 16, 3, 0)).applyToComponent t@{
-                                val p = categoryNameProviders.get(key) ?: return@t
-                                coroutineScope.launch { text = readAction(p) }
-                            }
-                        }
-                    }
-                }
-            }
+        })
+        checkBoxGroup(settings.tier, PlsDiagramBundle.message("stellaris.technologyTree.settings.tier"), { key ->
+            PlsDiagramBundle.message("stellaris.technologyTree.settings.tier.option", key)
+        })
+        checkBoxGroup(settings.area, PlsDiagramBundle.message("stellaris.technologyTree.settings.area"), { key ->
+            PlsDiagramBundle.message("stellaris.technologyTree.settings.area.option", key)
+        }) { key ->
+            areaNameProviders[key]?.invoke()
+        }
+        checkBoxGroup(settings.category, PlsDiagramBundle.message("stellaris.technologyTree.settings.category"), { key ->
+            PlsDiagramBundle.message("stellaris.technologyTree.settings.category.option", key)
+        }) { key ->
+            categoryNameProviders[key]?.invoke()
         }
     }
 }

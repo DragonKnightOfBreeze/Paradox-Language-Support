@@ -4,9 +4,11 @@ import com.intellij.diagram.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
+import com.intellij.platform.ide.progress.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
+import kotlinx.coroutines.*
 
 class ParadoxDiagramSettingsConfigurable(
     private val project: Project
@@ -18,8 +20,15 @@ class ParadoxDiagramSettingsConfigurable(
             row {
                 label(PlsDiagramBundle.message("settings.diagram.tooltip.selectSettings"))
             }
-            for (diagramSettings in getDiagramSettingsList()) {
-                diagramSettings.buildConfigurablePanel(this)
+
+            runWithModalProgressBlocking(project, PlsDiagramBundle.message("settings.diagram.modal.title")) {
+                val jobs = mutableListOf<Deferred<Unit>>()
+                for (diagramSettings in getDiagramSettingsList()) {
+                    collapsibleGroup(diagramSettings.groupName) p@{
+                        jobs += async { diagramSettings.groupBuilder(this@p) }
+                    }
+                }
+                jobs.awaitAll()
             }
         }
     }

@@ -120,6 +120,8 @@
       <entry key="scopeless" value="true" />
       <entry key="country" value="true" />
       <entry key="province" value="true" />
+      <entry key="state" value="true" />
+      <entry key="character" value="true" />
     </eventType>
     <type>
       <entry key="hidden" value="true" />
