@@ -2,43 +2,48 @@
 <list>
   <option name="PARADOX_SCRIPT.ARGUMENT">
     <value>
-      <option name="FOREGROUND" value="4A86E8"/>
+      <option name="FOREGROUND" value="467CDA"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.CONDITION_PARAMETER">
     <value>
-      <option name="FOREGROUND" value="4A86E8"/>
+      <option name="FOREGROUND" value="467CDA"/>
+    </value>
+  </option>
+  <option name="PARADOX_SCRIPT.COLOR">
+    <value>
+      <option name="FOREGROUND" value="E8BF6A"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.DEFINITION">
     <value>
-      <option name="FOREGROUND" value="871094"/>
-      <option name="EFFECT_COLOR" value="871094"/>
+      <option name="FOREGROUND" value="9876AA"/>
+      <option name="EFFECT_COLOR" value="9876AA"/>
       <option name="EFFECT_TYPE" value="1"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.DEFINITION_NAME">
     <value>
-      <option name="BACKGROUND" value="DBFFDB"/>
+      <option name="BACKGROUND" value="223C23"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.DEFINITION_REFERENCE">
     <value>
-      <option name="FOREGROUND" value="871094"/>
+      <option name="FOREGROUND" value="9876AA"/>
       <option name="EFFECT_COLOR" value="707D95"/>
       <option name="EFFECT_TYPE" value="5"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.LOCALISATION_REFERENCE">
     <value>
-      <option name="FOREGROUND" value="0033B3"/>
+      <option name="FOREGROUND" value="CC7832"/>
       <option name="EFFECT_COLOR" value="707D95"/>
       <option name="EFFECT_TYPE" value="5"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.COMPLEX_ENUM_VALUE">
     <value>
-      <option name="FOREGROUND" value="871094"/>
+      <option name="FOREGROUND" value="9876AA"/>
       <option name="EFFECT_COLOR" value="707D95"/>
       <option name="EFFECT_TYPE" value="5"/>
       <option name="FONT_TYPE" value="2"/>
@@ -46,12 +51,12 @@
   </option>
   <option name="PARADOX_SCRIPT.VALUE_FIELD">
     <value>
-      <option name="FOREGROUND" value="174be6" deuteranopia="3777E6" protanopia="3777E6"/>
+      <option name="FOREGROUND" value="56A8F5"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.VARIABLE">
     <value>
-      <option name="FOREGROUND" value="000000"/>
+      <option name="FOREGROUND" value="BCBEC4"/>
       <option name="FONT_TYPE" value="2"/>
     </value>
   </option>

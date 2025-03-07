@@ -5,6 +5,7 @@
 * [X] #121 Complex enums only accept `enum_name = scalar`, not `enum_name = bool` or `enum_name = int`
 * [X] #122 Non-Stellaris games raise warning if modifier icon doesn't exist
 * [X] #126 [CK3] Types inside other types do not register correctly
+* [X] Optimize color settings for various color schemes
 
 ## 1.3.30
 

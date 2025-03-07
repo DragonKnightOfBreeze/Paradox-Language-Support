@@ -1,0 +1,19 @@
+<?xml version='1.0'?>
+<list>
+  <option name="PARADOX_LOCALISATION.ICON">
+    <value>
+      <option name="FOREGROUND" value="5C8AE6"/>
+    </value>
+  </option>
+  <option name="PARADOX_LOCALISATION.CONCEPT">
+    <value>
+      <option name="FOREGROUND" value="008080"/>
+    </value>
+  </option>
+  <option name="PARADOX_LOCALISATION.VARIABLE">
+    <value>
+      <option name="FOREGROUND" value="BCBEC4"/>
+      <option name="FONT_TYPE" value="2"/>
+    </value>
+  </option>
+</list>
