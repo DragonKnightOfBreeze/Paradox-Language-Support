@@ -2,48 +2,48 @@
 <list>
   <option name="PARADOX_SCRIPT.ARGUMENT">
     <value>
-      <option name="FOREGROUND" value="467CDA"/>
+      <option name="FOREGROUND" value="56C1D6"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.CONDITION_PARAMETER">
     <value>
-      <option name="FOREGROUND" value="467CDA"/>
+      <option name="FOREGROUND" value="56C1D6"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.COLOR">
     <value>
-      <option name="FOREGROUND" value="E8BF6A"/>
+      <option name="FOREGROUND" value="D5B778"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.DEFINITION">
     <value>
-      <option name="FOREGROUND" value="9876AA"/>
-      <option name="EFFECT_COLOR" value="9876AA"/>
+      <option name="FOREGROUND" value="C77DBB"/>
+      <option name="EFFECT_COLOR" value="C77DBB"/>
       <option name="EFFECT_TYPE" value="1"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.DEFINITION_NAME">
     <value>
-      <option name="BACKGROUND" value="223C23"/>
+      <option name="BACKGROUND" value="1A3B2D"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.DEFINITION_REFERENCE">
     <value>
-      <option name="FOREGROUND" value="9876AA"/>
+      <option name="FOREGROUND" value="C77DBB"/>
       <option name="EFFECT_COLOR" value="707D95"/>
       <option name="EFFECT_TYPE" value="5"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.LOCALISATION_REFERENCE">
     <value>
-      <option name="FOREGROUND" value="CC7832"/>
+      <option name="FOREGROUND" value="CF8E6D"/>
       <option name="EFFECT_COLOR" value="707D95"/>
       <option name="EFFECT_TYPE" value="5"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.COMPLEX_ENUM_VALUE">
     <value>
-      <option name="FOREGROUND" value="9876AA"/>
+      <option name="FOREGROUND" value="C77DBB"/>
       <option name="EFFECT_COLOR" value="707D95"/>
       <option name="EFFECT_TYPE" value="5"/>
       <option name="FONT_TYPE" value="2"/>

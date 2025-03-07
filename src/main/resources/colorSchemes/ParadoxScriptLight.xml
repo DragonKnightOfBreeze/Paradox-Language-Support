@@ -2,14 +2,19 @@
 <list>
   <option name="PARADOX_SCRIPT.ARGUMENT">
     <value>
-      <option name="FOREGROUND" value="4A86E8"/>
+      <option name="FOREGROUND" value="56C1D6"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.CONDITION_PARAMETER">
     <value>
-      <option name="FOREGROUND" value="4A86E8"/>
+      <option name="FOREGROUND" value="56C1D6"/>
     </value>
   </option>
+  <!--<option name="PARADOX_SCRIPT.COLOR">-->
+  <!--  <value>-->
+  <!--    <option name="FOREGROUND" value="0033B3"/>-->
+  <!--  </value>-->
+  <!--</option>-->
   <option name="PARADOX_SCRIPT.DEFINITION">
     <value>
       <option name="FOREGROUND" value="871094"/>
@@ -44,11 +49,11 @@
       <option name="FONT_TYPE" value="2"/>
     </value>
   </option>
-  <option name="PARADOX_SCRIPT.VALUE_FIELD">
-    <value>
-      <option name="FOREGROUND" value="174BE6" deuteranopia="3777E6" protanopia="3777E6"/>
-    </value>
-  </option>
+  <!--<option name="PARADOX_SCRIPT.VALUE_FIELD">-->
+  <!--  <value>-->
+  <!--    <option name="FOREGROUND" value="174BE6"/>-->
+  <!--  </value>-->
+  <!--</option>-->
   <option name="PARADOX_SCRIPT.VARIABLE">
     <value>
       <option name="FOREGROUND" value="000000"/>

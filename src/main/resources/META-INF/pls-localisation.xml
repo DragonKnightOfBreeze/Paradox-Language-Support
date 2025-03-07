@@ -48,7 +48,7 @@
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxLocalisationDarcula.xml"/>
     <additionalTextAttributes scheme="Darcula Contrast" file="colorSchemes/ParadoxLocalisationDarculaContrast.xml"/>
     <additionalTextAttributes scheme="High contrast" file="colorSchemes/ParadoxLocalisationHighContrast.xml"/>
-    <additionalTextAttributes scheme="IntelliJ Light" file="colorSchemes/ParadoxLocalisationIntellijLight.xml"/>
+    <additionalTextAttributes scheme="IntelliJ Light" file="colorSchemes/ParadoxLocalisationIntelliJLight.xml"/>
     <additionalTextAttributes scheme="Dark" file="colorSchemes/ParadoxLocalisationDark.xml"/>
     <additionalTextAttributes scheme="Light" file="colorSchemes/ParadoxLocalisationLight.xml"/>
   </extensions>

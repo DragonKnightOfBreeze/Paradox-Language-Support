@@ -10,10 +10,15 @@
       <option name="FOREGROUND" value="4A86E8"/>
     </value>
   </option>
+  <!--<option name="PARADOX_SCRIPT.COLOR">-->
+  <!--  <value>-->
+  <!--    <option name="FOREGROUND" value="000080"/>-->
+  <!--  </value>-->
+  <!--</option>-->
   <option name="PARADOX_SCRIPT.DEFINITION">
     <value>
-      <option name="FOREGROUND" value="871094"/>
-      <option name="EFFECT_COLOR" value="871094"/>
+      <option name="FOREGROUND" value="66017A"/>
+      <option name="EFFECT_COLOR" value="66017A"/>
       <option name="EFFECT_TYPE" value="1"/>
     </value>
   </option>
@@ -24,31 +29,33 @@
   </option>
   <option name="PARADOX_SCRIPT.DEFINITION_REFERENCE">
     <value>
-      <option name="FOREGROUND" value="871094"/>
+      <option name="FOREGROUND" value="66017A"/>
       <option name="EFFECT_COLOR" value="707D95"/>
       <option name="EFFECT_TYPE" value="5"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.LOCALISATION_REFERENCE">
     <value>
-      <option name="FOREGROUND" value="0033B3"/>
+      <option name="FOREGROUND" value="000080"/>
       <option name="EFFECT_COLOR" value="707D95"/>
       <option name="EFFECT_TYPE" value="5"/>
+      <option name="FONT_TYPE" value="1"/>
     </value>
   </option>
   <option name="PARADOX_SCRIPT.COMPLEX_ENUM_VALUE">
     <value>
-      <option name="FOREGROUND" value="871094"/>
+      <option name="FOREGROUND" value="66017A"/>
       <option name="EFFECT_COLOR" value="707D95"/>
       <option name="EFFECT_TYPE" value="5"/>
       <option name="FONT_TYPE" value="2"/>
     </value>
   </option>
-  <option name="PARADOX_SCRIPT.VALUE_FIELD">
-    <value>
-      <option name="FOREGROUND" value="174be6" deuteranopia="3777E6" protanopia="3777E6"/>
-    </value>
-  </option>
+  <!--<option name="PARADOX_SCRIPT.VALUE_FIELD">-->
+  <!--  <value>-->
+  <!--    <option name="FOREGROUND" value="0000FF"/>-->
+  <!--    <option name="FONT_TYPE" value="1"/>-->
+  <!--  </value>-->
+  <!--</option>-->
   <option name="PARADOX_SCRIPT.VARIABLE">
     <value>
       <option name="FOREGROUND" value="000000"/>

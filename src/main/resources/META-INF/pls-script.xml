@@ -79,7 +79,7 @@
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
     <additionalTextAttributes scheme="Darcula Contrast" file="colorSchemes/ParadoxScriptDarculaContrast.xml"/>
     <additionalTextAttributes scheme="High contrast" file="colorSchemes/ParadoxScriptHighContrast.xml"/>
-    <additionalTextAttributes scheme="IntelliJ Light" file="colorSchemes/ParadoxScriptIntellijLight.xml"/>
+    <additionalTextAttributes scheme="IntelliJ Light" file="colorSchemes/ParadoxScriptIntelliJLight.xml"/>
     <additionalTextAttributes scheme="Dark" file="colorSchemes/ParadoxScriptDark.xml"/>
     <additionalTextAttributes scheme="Light" file="colorSchemes/ParadoxScriptLight.xml"/>
   </extensions>
