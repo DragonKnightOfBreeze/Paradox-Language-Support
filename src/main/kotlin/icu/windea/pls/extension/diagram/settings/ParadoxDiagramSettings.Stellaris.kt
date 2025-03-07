@@ -43,9 +43,9 @@ class StellarisEventTreeDiagramSettings(
 
     override val groupName: String = PlsDiagramBundle.message("stellaris.eventTree.name")
 
-    override suspend fun createGroup(panel: Panel) = with(panel) {
+    override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val eventTypes = readAction { ParadoxEventManager.getTypes(project, ParadoxGameType.Stellaris) }
+        val eventTypes = runReadAction { ParadoxEventManager.getTypes(project, ParadoxGameType.Stellaris) }
         eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
         settings.updateSettings()
 
@@ -104,13 +104,13 @@ class StellarisTechTreeDiagramSettings(
 
     override val groupName: String = PlsDiagramBundle.message("stellaris.techTree.name")
 
-    override suspend fun createGroup(panel: Panel) = with(panel) {
+    override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val tiers = readAction { ParadoxTechnologyManager.Stellaris.getTechnologyTiers(project, null) }
+        val tiers = runReadAction { ParadoxTechnologyManager.Stellaris.getTechnologyTiers(project, null) }
         tiers.forEach { settings.tier.putIfAbsent(it.name, true) }
-        val areas = readAction { ParadoxTechnologyManager.Stellaris.getResearchAreas() }
+        val areas = runReadAction { ParadoxTechnologyManager.Stellaris.getResearchAreas() }
         areas.forEach { settings.area.putIfAbsent(it, true) }
-        val categories = readAction { ParadoxTechnologyManager.Stellaris.getTechnologyCategories(project, null) }
+        val categories = runReadAction { ParadoxTechnologyManager.Stellaris.getTechnologyCategories(project, null) }
         categories.forEach { settings.category.putIfAbsent(it.name, true) }
         settings.updateSettings()
 

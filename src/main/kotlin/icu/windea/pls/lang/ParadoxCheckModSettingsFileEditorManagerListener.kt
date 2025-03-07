@@ -22,6 +22,8 @@ class ParadoxCheckModSettingsFileEditorManagerListener : FileEditorManagerListen
     }
 
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
+        //TODO 1.3.31+ should be optimized (to be properly compatible with non-project files)
+
         //For whole application (and never reset check status), not for each project
 
         val parent = file.parent ?: return

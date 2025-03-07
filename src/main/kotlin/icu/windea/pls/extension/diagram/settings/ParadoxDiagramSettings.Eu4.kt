@@ -41,9 +41,9 @@ class Eu4EventTreeDiagramSettings(
 
     override val groupName: String = PlsDiagramBundle.message("eu4.eventTree.name")
 
-    override suspend fun createGroup(panel: Panel) = with(panel) {
+    override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val eventTypes = readAction { ParadoxEventManager.getTypes(project, ParadoxGameType.Eu4) }
+        val eventTypes = runReadAction { ParadoxEventManager.getTypes(project, ParadoxGameType.Eu4) }
         eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
         settings.updateSettings()
 

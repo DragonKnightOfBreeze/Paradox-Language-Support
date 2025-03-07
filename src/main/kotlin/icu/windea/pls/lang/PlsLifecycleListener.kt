@@ -4,7 +4,10 @@ import com.intellij.ide.*
 import com.intellij.ide.plugins.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.startup.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.dds.support.*
@@ -15,7 +18,7 @@ import kotlin.io.path.*
 /**
  * 用于在特定生命周期执行特定的代码，例如，在IDE启动时初始化一些缓存数据。
  */
-class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener {
+class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, ProjectActivity {
     override fun appFrameCreated(commandLineArgs: MutableList<String>) {
         IIORegistry.getDefaultInstance().registerServiceProvider(ddsImageReaderSpi)
 
@@ -55,5 +58,22 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener {
         if (pluginDescriptor.pluginId.idString == PlsConstants.pluginId) {
             IIORegistry.getDefaultInstance().deregisterServiceProvider(ddsImageReaderSpi)
         }
+    }
+
+    override suspend fun execute(project: Project) {
+        //refresh roots for libraries on project startup
+        refreshRootsForLibraries(project)
+
+        //init caches for specific services
+        initCaches(project)
+    }
+
+    private fun refreshRootsForLibraries(project: Project) {
+        project.paradoxLibrary.refreshRoots()
+        project.configGroupLibrary.refreshRoots()
+    }
+
+    private fun initCaches(project: Project) {
+        project.service<CwtConfigGroupService>().init()
     }
 }

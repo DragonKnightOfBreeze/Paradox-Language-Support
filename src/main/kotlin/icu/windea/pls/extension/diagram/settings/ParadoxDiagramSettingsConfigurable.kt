@@ -21,14 +21,10 @@ class ParadoxDiagramSettingsConfigurable(
                 label(PlsDiagramBundle.message("settings.diagram.tooltip.selectSettings"))
             }
 
-            runWithModalProgressBlocking(project, PlsDiagramBundle.message("settings.diagram.modal.title")) {
-                val jobs = mutableListOf<Deferred<Unit>>()
-                for (diagramSettings in getDiagramSettingsList()) {
-                    collapsibleGroup(diagramSettings.groupName) p@{
-                        jobs += async { diagramSettings.createGroup(this@p) }
-                    }
+            for (diagramSettings in getDiagramSettingsList()) {
+                collapsibleGroup(diagramSettings.groupName) {
+                    diagramSettings.groupBuilder(this)
                 }
-                jobs.awaitAll()
             }
         }
     }

@@ -41,9 +41,9 @@ class Ck2EventTreeDiagramSettings(
 
     override val groupName: String = PlsDiagramBundle.message("ck2.eventTree.name")
 
-    override suspend fun createGroup(panel: Panel) = with(panel) {
+    override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val eventTypes = readAction { ParadoxEventManager.getTypes(project, ParadoxGameType.Ck2) }
+        val eventTypes = runReadAction { ParadoxEventManager.getTypes(project, ParadoxGameType.Ck2) }
         eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
         settings.updateSettings()
 

@@ -24,7 +24,7 @@ abstract class ParadoxDiagramSettings<T : ParadoxDiagramSettings.State>(
 
     abstract val groupName: String
 
-    abstract suspend fun createGroup(panel: Panel)
+    abstract val groupBuilder: Panel.() -> Unit
 
     protected fun Panel.checkBoxGroup(
         map: MutableMap<String, Boolean>,

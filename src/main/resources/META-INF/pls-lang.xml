@@ -113,7 +113,7 @@
 
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
 
-    <postStartupActivity implementation="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnProjectOpenedListener"/>
+    <postStartupActivity implementation="icu.windea.pls.lang.PlsLifecycleListener"/>
 
     <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.psi.ParadoxPsiTreeChangePreprocessor"/>
   </extensions>
