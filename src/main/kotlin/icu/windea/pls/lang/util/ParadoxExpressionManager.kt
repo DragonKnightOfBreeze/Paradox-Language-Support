@@ -294,7 +294,10 @@ object ParadoxExpressionManager {
                     configs.forEach f3@{ config ->
                         if (config is CwtPropertyConfig) {
                             if (subPath == "-") return@f3
-                            if (matchesKey && !ParadoxExpressionMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions).get(matchOptions)) return@f3
+                            if (matchesKey) {
+                                val matchResult = ParadoxExpressionMatcher.matches(element, expression, config.keyExpression, config, configGroup, matchOptions)
+                                if (!matchResult.get(matchOptions)) return@f3
+                            }
                             val inlinedConfigs = doInlineConfigForConfigContext(element, subPath, isQuoted, config, matchOptions)
                             if (inlinedConfigs.isEmpty()) {
                                 addToMatchedConfigs(config)
@@ -332,7 +335,13 @@ object ParadoxExpressionManager {
         return result
     }
 
-    private fun doInlineConfigForConfigContext(element: ParadoxScriptMemberElement, key: String, isQuoted: Boolean, config: CwtPropertyConfig, matchOptions: Int): List<CwtMemberConfig<*>> {
+    private fun doInlineConfigForConfigContext(
+        element: ParadoxScriptMemberElement,
+        key: String,
+        isQuoted: Boolean,
+        config: CwtPropertyConfig,
+        matchOptions: Int
+    ): List<CwtMemberConfig<*>> {
         val configGroup = config.configGroup
         val result = mutableListOf<CwtMemberConfig<*>>()
         run {

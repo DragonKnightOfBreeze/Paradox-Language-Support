@@ -11,14 +11,13 @@ class ParadoxLocalisationExpressionReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
         ProgressManager.checkCanceled()
 
-        if (element !is ParadoxLocalisationExpressionElement) return PsiReference.EMPTY_ARRAY
+        if (element !is ParadoxLocalisationExpressionElement || !element.isComplexExpression()) return PsiReference.EMPTY_ARRAY
 
         //尝试兼容可能包含参数的情况
         //if(text.isParameterized()) return PsiReference.EMPTY_ARRAY
 
-        //尝试解析为complexExpression
+        //尝试解析为复杂表达式
         run {
-            if (!element.isComplexExpression()) return@run
             val value = element.value
             val textRange = TextRange.create(0, value.length)
             val reference = ParadoxLocalisationExpressionPsiReference(element, textRange)
