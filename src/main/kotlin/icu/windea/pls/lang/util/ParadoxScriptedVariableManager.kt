@@ -21,7 +21,7 @@ object ParadoxScriptedVariableManager {
     fun getLocalScriptedVariables(file: ParadoxScriptFile): List<SmartPsiElementPointer<ParadoxScriptScriptedVariable>> {
         return CachedValuesManager.getCachedValue(file, Keys.localScriptedVariable) {
             val value = doGetLocalScriptedVariables(file)
-            CachedValueProvider.Result.create(value, file)
+            value.withDependencyItems(file)
         }
     }
 

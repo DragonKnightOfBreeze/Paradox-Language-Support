@@ -84,12 +84,11 @@ class CwtConfigContext(
 //depends on config group, indices and inference statuses
 private val CwtConfigGroup.configsCache by createKey(CwtConfigContext.Keys) {
     createCachedValue(project) {
-        val trackerProvider = ParadoxModificationTrackers
         createNestedCache<VirtualFile, _, _, _> {
             CacheBuilder.newBuilder().buildCache<String, List<CwtMemberConfig<*>>>()
         }.withDependencyItems(
-            trackerProvider.ScriptFileTracker,
-            trackerProvider.LocalisationFileTracker,
+            ParadoxModificationTrackers.ScriptFileTracker,
+            ParadoxModificationTrackers.LocalisationFileTracker,
             ParadoxModificationTrackers.ParameterConfigInferenceTracker,
             ParadoxModificationTrackers.InlineScriptConfigInferenceTracker,
         )

@@ -25,7 +25,7 @@ object ParadoxLocalisationManager {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationInfo) {
             ProgressManager.checkCanceled()
             val value = doGetInfo(element)
-            CachedValueProvider.Result.create(value, element)
+            value.withDependencyItems(element)
         }
     }
 

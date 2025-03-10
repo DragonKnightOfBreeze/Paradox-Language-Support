@@ -31,13 +31,13 @@ object ParadoxComplexEnumValueManager {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedComplexEnumValueInfo) {
             ProgressManager.checkCanceled()
-            val file = element.containingFile ?: return@getCachedValue null
+            val file = element.containingFile
             val value = doGetInfo(element, file)
-            CachedValueProvider.Result.create(value, file)
+            value.withDependencyItems(file)
         }
     }
 
-    private fun doGetInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile): ParadoxComplexEnumValueIndexInfo? {
+    private fun doGetInfo(element: ParadoxScriptStringExpressionElement, file: PsiFile = element.containingFile): ParadoxComplexEnumValueIndexInfo? {
         if (element.text.isParameterized()) return null //排除可能带参数的情况
         if (element.text.isInlineUsage()) return null //排除是内联调用的情况
         val project = file.project

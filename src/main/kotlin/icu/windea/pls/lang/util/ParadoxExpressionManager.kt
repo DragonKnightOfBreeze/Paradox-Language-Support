@@ -32,9 +32,11 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.ResultValue
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.references.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.editor.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.references.*
 import kotlin.collections.isNullOrEmpty
 
 object ParadoxExpressionManager {
@@ -168,7 +170,7 @@ object ParadoxExpressionManager {
     private fun doGetParameterRangesInExpressionFromCache(element: ParadoxExpressionElement): List<TextRange> {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParameterRanges) {
             val value = doGetParameterRangesInExpression(element)
-            CachedValueProvider.Result.create(value, element)
+            value.withDependencyItems(element)
         }
     }
 
@@ -206,11 +208,8 @@ object ParadoxExpressionManager {
     private fun doGetConfigContextFromCache(element: ParadoxScriptMemberElement): CwtConfigContext? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigContext) {
             val value = doGetConfigContext(element)
-            val trackers = buildList {
-                this += ParadoxModificationTrackers.ScriptFileTracker
-                this += ParadoxModificationTrackers.LocalisationFileTracker //for loc references
-            }.toTypedArray()
-            CachedValueProvider.Result.create(value, element, trackers)
+            //also depends on localisation files (for loc references)
+            value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
         }
     }
 
@@ -391,11 +390,8 @@ object ParadoxExpressionManager {
     private fun doGetConfigsCacheFromCache(element: PsiElement): MutableMap<String, List<CwtMemberConfig<*>>> {
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
             val value = doGetConfigsCache()
-            val trackers = buildList {
-                this += ParadoxModificationTrackers.ScriptFileTracker
-                this += ParadoxModificationTrackers.LocalisationFileTracker //for loc references
-            }.toTypedArray()
-            CachedValueProvider.Result.create(value, element, trackers)
+            //also depends on localisation files (for loc references)
+            value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
         }
     }
 
@@ -593,11 +589,8 @@ object ParadoxExpressionManager {
     private fun doGetChildOccurrenceMapCacheFromCache(element: ParadoxScriptMemberElement): MutableMap<String, Map<CwtDataExpression, Occurrence>>? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrenceMapCache) {
             val value = doGetChildOccurrenceMapCache()
-            val trackers = buildList {
-                this += ParadoxModificationTrackers.ScriptFileTracker
-                this += ParadoxModificationTrackers.LocalisationFileTracker //for loc references
-            }.toTypedArray()
-            CachedValueProvider.Result.create(value, element, trackers)
+            //also depends on localisation files (for loc references)
+            value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
         }
     }
 
@@ -727,6 +720,60 @@ object ParadoxExpressionManager {
         }
 
         annotateExpressionByAttributesKey(element, rangeToAnnotate, attributesKey, holder)
+    }
+
+    //endregion
+
+    //region Reference Methods
+
+    fun getExpressionReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
+        return when (element) {
+            is ParadoxScriptExpressionElement -> doGetExpressionReferencesFromCache(element)
+            is ParadoxLocalisationExpressionElement -> doGetExpressionReferencesFromCache(element)
+            else -> PsiReference.EMPTY_ARRAY
+        }
+    }
+
+    private fun doGetExpressionReferencesFromCache(element: ParadoxScriptExpressionElement): Array<out PsiReference> {
+        if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
+
+        //尝试兼容可能包含参数的情况
+        //if(element.text.isParameterized()) return PsiReference.EMPTY_ARRAY
+
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationExpressionReferences) {
+            val value = doGetExpressionReferences(element)
+            value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
+        }
+    }
+
+    private fun doGetExpressionReferences(element: ParadoxScriptExpressionElement): Array<out PsiReference> {
+        //尝试基于CWT规则进行解析
+        val isKey = element is ParadoxScriptPropertyKey
+        val configs = getConfigs(element, orDefault = isKey)
+        val config = configs.firstOrNull() ?: return PsiReference.EMPTY_ARRAY
+        val textRange = getExpressionTextRange(element) //unquoted text
+        val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
+        return reference.collectReferences()
+    }
+
+    private fun doGetExpressionReferencesFromCache(element: ParadoxLocalisationExpressionElement): Array<out PsiReference> {
+        if (!element.isCommandExpression()) return PsiReference.EMPTY_ARRAY
+
+        //尝试兼容可能包含参数的情况
+        //if(text.isParameterized()) return PsiReference.EMPTY_ARRAY
+
+        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationExpressionReferences) {
+            val value = doGetExpressionReferences(element)
+            value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
+        }
+    }
+
+    private fun doGetExpressionReferences(element: ParadoxLocalisationExpressionElement): Array<out PsiReference> {
+        //尝试解析为复杂表达式
+        val value = element.value
+        val textRange = TextRange.create(0, value.length)
+        val reference = ParadoxLocalisationExpressionPsiReference(element, textRange)
+        return reference.collectReferences()
     }
 
     //endregion

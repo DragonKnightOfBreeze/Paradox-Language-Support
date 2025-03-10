@@ -57,7 +57,10 @@ class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynam
     override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.DynamicValue
         if (!constraint.canResolveReference(element)) return
-        element.references.forEach f@{ reference ->
+        if(element !is ParadoxExpressionElement) return
+        //use expression references only to optimize indexing performance
+        val expressionReferences = ParadoxExpressionManager.getExpressionReferences(element)
+        expressionReferences.forEach f@{ reference ->
             if (!constraint.canResolve(reference)) return@f
             val resolved = reference.resolve()
             if (resolved !is ParadoxDynamicValueElement) return@f
@@ -71,7 +74,9 @@ class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynam
     override fun indexLocalisationCommandText(element: ParadoxLocalisationCommandText, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.DynamicValue
         if (!constraint.canResolveReference(element)) return
-        element.references.forEach f@{ reference ->
+        //use expression references only to optimize indexing performance
+        val expressionReferences = ParadoxExpressionManager.getExpressionReferences(element)
+        expressionReferences.forEach f@{ reference ->
             if (!constraint.canResolve(reference)) return@f
             val resolved = reference.resolve()
             if (resolved !is ParadoxDynamicValueElement) return@f

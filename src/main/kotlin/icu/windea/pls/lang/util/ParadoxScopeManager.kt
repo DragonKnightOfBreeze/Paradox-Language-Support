@@ -202,10 +202,10 @@ object ParadoxScopeManager {
             val file = element.containingFile ?: return@getCachedValue null
             val value = doGetSwitchedScopeContextOfDefinition(element)
                 ?: doGetSwitchedScopeContextOfDefinitionMember(element)
-            val trackers = buildList {
-                this += ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker //from inference
-            }.toTypedArray()
-            CachedValueProvider.Result(value, file, *trackers)
+            value.withDependencyItems(
+                file,
+                ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker, //from inference
+            )
         }
     }
 

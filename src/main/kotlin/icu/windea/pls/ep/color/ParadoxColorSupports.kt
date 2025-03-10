@@ -52,7 +52,7 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
         if (element !is ParadoxScriptBlock) return null
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColor) {
             val value = runCatchingCancelable { doGetColor(element) }.getOrNull()
-            CachedValueProvider.Result.create(value, element)
+            value.withDependencyItems(element)
         }
     }
 
@@ -114,7 +114,7 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
         if (element !is ParadoxScriptColor) return null
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColor) {
             val value = runCatchingCancelable { doGetColor(element) }.getOrNull()
-            CachedValueProvider.Result.create(value, element)
+            value.withDependencyItems(element)
         }
     }
 

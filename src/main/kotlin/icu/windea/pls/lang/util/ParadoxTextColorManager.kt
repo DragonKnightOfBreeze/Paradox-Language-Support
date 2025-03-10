@@ -35,7 +35,7 @@ object ParadoxTextColorManager {
     private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
         return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedTextColorInfo) {
             val value = doGetInfo(definition)
-            CachedValueProvider.Result.create(value, definition)
+            value.withDependencyItems(definition)
         }
     }
 

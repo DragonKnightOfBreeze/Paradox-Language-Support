@@ -47,9 +47,9 @@ object ParadoxInlineScriptManager {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedInlineScriptUsageInfo) {
             ProgressManager.checkCanceled()
-            val file = element.containingFile ?: return@getCachedValue null
+            val file = element.containingFile
             val value = runReadAction { doGetUsageInfo(element, file) }
-            CachedValueProvider.Result.create(value, file)
+            value.withDependencyItems(file)
         }
     }
 

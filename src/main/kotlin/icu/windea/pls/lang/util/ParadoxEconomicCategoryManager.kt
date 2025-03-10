@@ -41,7 +41,7 @@ object ParadoxEconomicCategoryManager {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEconomicCategoryInfo) {
             ProgressManager.checkCanceled()
             val value = runReadAction { doGetInfo(definition) }
-            CachedValueProvider.Result.create(value, definition)
+            value.withDependencyItems(definition)
         }
     }
 

@@ -10,6 +10,7 @@ import java.util.concurrent.*
 object ParadoxModificationTrackers {
     val ScriptFileTracker = SimpleModificationTracker()
     val LocalisationFileTracker = SimpleModificationTracker()
+    val FileTracker = MergedModificationTracker(ScriptFileTracker, LocalisationFileTracker)
 
     val ScriptFileTrackers = ConcurrentHashMap<String, FilePathBasedModificationTracker>()
 

@@ -44,9 +44,9 @@ object ParadoxDefinitionManager {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfo) {
             ProgressManager.checkCanceled()
-            val file = element.containingFile ?: return@getCachedValue null
+            val file = element.containingFile
             val value = doGetInfo(element, file)
-            CachedValueProvider.Result.create(value, file)
+            value.withDependencyItems(file)
         }
     }
 
@@ -621,8 +621,7 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisationKey) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisationKey(element)
-            val tracker = ParadoxModificationTrackers.LocalisationFileTracker
-            CachedValueProvider.Result.create(value, element, tracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker)
         }
     }
 
@@ -648,8 +647,7 @@ object ParadoxDefinitionManager {
         CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisation) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisation(element)
-            val tracker = ParadoxModificationTrackers.LocalisationFileTracker
-            CachedValueProvider.Result.create(value, element, tracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker)
         }
 
     private fun doGetPrimaryLocalisation(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
@@ -674,8 +672,7 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisations) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisations(element)
-            val tracker = ParadoxModificationTrackers.LocalisationFileTracker
-            CachedValueProvider.Result.create(value, element, tracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker)
         }
     }
 
@@ -702,8 +699,7 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryImage) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryImage(element)
-            val tracker = PsiModificationTracker.MODIFICATION_COUNT
-            CachedValueProvider.Result.create(value, element, tracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
         }
     }
 
@@ -729,8 +725,7 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionLocalizedNames) {
             ProgressManager.checkCanceled()
             val value = doGetLocalizedNames(element)
-            val tracker = ParadoxModificationTrackers.LocalisationFileTracker
-            CachedValueProvider.Result.create(value, element, tracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker)
         }
     }
 

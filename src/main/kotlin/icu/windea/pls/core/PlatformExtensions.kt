@@ -688,6 +688,7 @@ fun PsiReference.collectReferences(): Array<out PsiReference> {
     if (this is PsiReferencesAware) {
         val result = mutableListOf<PsiReference>()
         doCollectReferences(this, result)
+        if (result.isEmpty()) return PsiReference.EMPTY_ARRAY
         return result.toTypedArray()
     }
     return arrayOf(this)

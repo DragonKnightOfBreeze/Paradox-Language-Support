@@ -99,9 +99,9 @@ object CwtConfigManager {
     private fun doGetConfigPathFromCache(element: CwtMemberElement): CwtConfigPath? {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigPath) {
-            val file = runReadAction { element.containingFile } ?: return@getCachedValue null
+            val file = runReadAction { element.containingFile }
             val value = doGetConfigPath(element)
-            CachedValueProvider.Result.create(value, file)
+            value.withDependencyItems(file)
         }
     }
 
@@ -134,13 +134,13 @@ object CwtConfigManager {
     private fun doGetConfigTypeFromCache(element: CwtMemberElement): CwtConfigType? {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigType) {
-            val file = runReadAction { element.containingFile } ?: return@getCachedValue null
+            val file = runReadAction { element.containingFile }
             val value = when (element) {
                 is CwtProperty -> doGetConfigType(element, file)
                 is CwtValue -> doGetConfigType(element, file)
                 else -> null
             }
-            CachedValueProvider.Result.create(value, file)
+            value.withDependencyItems(file)
         }
     }
 
@@ -263,7 +263,7 @@ object CwtConfigManager {
     }
 
     private fun doGetFilePathPatterns(config: CwtConfig<*>): Set<String> {
-        if(config !is CwtPathMatchableConfig) return emptySet()
+        if (config !is CwtPathMatchableConfig) return emptySet()
 
         val pathPatterns = config.pathPatterns
         val paths = config.paths
@@ -314,7 +314,7 @@ object CwtConfigManager {
     }
 
     private fun doGetFilePathsForPriority(config: CwtConfig<*>): Set<String> {
-        if(config !is CwtPathMatchableConfig) return emptySet()
+        if (config !is CwtPathMatchableConfig) return emptySet()
 
         val pathPatterns = config.pathPatterns
         val paths = config.paths

@@ -242,12 +242,11 @@ object ParadoxExpressionMatcher {
 //depends on config group and indices
 private val CwtConfigGroup.configMatchResultCache by createKey(CwtConfigContext.Keys) {
     createCachedValue(project) {
-        val trackerProvider = ParadoxModificationTrackers
         createNestedCache<VirtualFile, _, _, _> {
             CacheBuilder.newBuilder().buildCache<String, Result>()
         }.withDependencyItems(
-            trackerProvider.ScriptFileTracker,
-            trackerProvider.LocalisationFileTracker,
+            ParadoxModificationTrackers.ScriptFileTracker,
+            ParadoxModificationTrackers.LocalisationFileTracker,
         )
     }
 }
