@@ -67,7 +67,7 @@ object PlsConstants {
         val data = userHome.resolve(".pls")
         val images = data.resolve("images")
 
-        val imagesTemp by PathAdapter(images.resolve("_temp")) { PathUtils.cleanDirectory(it) }
+        val imagesTemp by lazy { images.resolve("_temp").also { PathUtils.cleanDirectory(it) } }
 
         val unknownPng = data.resolve("unknown.png")
         val unknownPngClasspathUrl = "/tools/unknown.png".toClasspathUrl(locationClass)
