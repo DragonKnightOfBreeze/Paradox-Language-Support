@@ -201,6 +201,7 @@ object ParadoxExpressionManager {
     //region Core Methods
 
     fun getConfigContext(element: PsiElement): CwtConfigContext? {
+        ProgressManager.checkCanceled()
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return null
         return doGetConfigContextFromCache(memberElement)
     }
@@ -375,6 +376,7 @@ object ParadoxExpressionManager {
         orDefault: Boolean = true,
         matchOptions: Int = Options.Default
     ): List<CwtMemberConfig<*>> {
+        ProgressManager.checkCanceled()
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return emptyList()
         val configsMap = doGetConfigsCacheFromCache(memberElement)
         val cacheKey = buildString {
@@ -580,6 +582,7 @@ object ParadoxExpressionManager {
         val childConfigs = configs.flatMap { it.configs.orEmpty() }
         if (childConfigs.isEmpty()) return emptyMap()
 
+        ProgressManager.checkCanceled()
         val childOccurrenceMap = doGetChildOccurrenceMapCacheFromCache(element) ?: return emptyMap()
         //NOTE cacheKey基于childConfigs即可，key相同而value不同的规则，上面的cardinality应当保证是一样的
         val cacheKey = childConfigs.joinToString(" ")
@@ -727,6 +730,7 @@ object ParadoxExpressionManager {
     //region Reference Methods
 
     fun getExpressionReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
+        ProgressManager.checkCanceled()
         return when (element) {
             is ParadoxScriptExpressionElement -> doGetExpressionReferencesFromCache(element)
             is ParadoxLocalisationExpressionElement -> doGetExpressionReferencesFromCache(element)
@@ -776,6 +780,24 @@ object ParadoxExpressionManager {
         return reference.collectReferences()
     }
 
+
+    fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): Array<out PsiReference>? {
+        ProgressManager.checkCanceled()
+        if (configExpression == null) return null
+        val expressionText = getExpressionText(element, rangeInElement)
+
+        val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expressionText, config, isKey)
+        return result.orNull()
+    }
+
+    fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): Array<out PsiReference>? {
+        ProgressManager.checkCanceled()
+        val expressionText = getExpressionText(element, rangeInElement)
+
+        val result = ParadoxLocalisationExpressionSupport.getReferences(element, rangeInElement, expressionText)
+        return result.orNull()
+    }
+
     //endregion
 
     //region Resolve Methods
@@ -823,15 +845,6 @@ object ParadoxExpressionManager {
         return resolvedConfig.pointer.element
     }
 
-    fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>, configExpression: CwtDataExpression?, isKey: Boolean? = null): Array<out PsiReference>? {
-        ProgressManager.checkCanceled()
-        if (configExpression == null) return null
-        val expressionText = getExpressionText(element, rangeInElement)
-
-        val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expressionText, config, isKey)
-        return result.orNull()
-    }
-
     fun resolveExpression(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): PsiElement? {
         ProgressManager.checkCanceled()
         val expressionText = getExpressionText(element, rangeInElement)
@@ -848,14 +861,6 @@ object ParadoxExpressionManager {
 
         val result = ParadoxLocalisationExpressionSupport.multiResolve(element, rangeInElement, expressionText)
         return result
-    }
-
-    fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?): Array<out PsiReference>? {
-        ProgressManager.checkCanceled()
-        val expressionText = getExpressionText(element, rangeInElement)
-
-        val result = ParadoxLocalisationExpressionSupport.getReferences(element, rangeInElement, expressionText)
-        return result.orNull()
     }
 
     fun resolveModifier(element: ParadoxScriptExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
