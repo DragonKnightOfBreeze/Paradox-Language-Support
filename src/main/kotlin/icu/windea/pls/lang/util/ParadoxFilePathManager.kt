@@ -30,10 +30,10 @@ object ParadoxFilePathManager {
     }
 
     fun canBeScriptOrLocalisationFile(filePath: FilePath): Boolean {
-        val fileName = filePath.name.lowercase()
+        //val fileName = filePath.name.lowercase()
         val fileExtension = filePath.name.substringAfterLast('.').orNull()?.lowercase() ?: return false
         return when {
-            fileName == PlsConstants.modDescriptorFileName -> true
+            fileExtension == "mod" -> true
             fileExtension in PlsConstants.scriptFileExtensions -> true
             fileExtension in PlsConstants.localisationFileExtensions -> true
             else -> false
@@ -46,10 +46,10 @@ object ParadoxFilePathManager {
 
         if (file is VirtualFileWithoutContent) return false
         if (file is VirtualFileWindow) return true
-        val fileName = file.name.lowercase()
+        //val fileName = file.name.lowercase()
         val fileExtension = file.extension?.lowercase() ?: return false
         return when {
-            fileName == PlsConstants.modDescriptorFileName -> true
+            fileExtension == "mod" -> true
             fileExtension in PlsConstants.scriptFileExtensions -> true
             fileExtension in PlsConstants.localisationFileExtensions -> true
             else -> false

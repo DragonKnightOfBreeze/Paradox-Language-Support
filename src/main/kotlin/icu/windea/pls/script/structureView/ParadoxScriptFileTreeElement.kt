@@ -30,9 +30,9 @@ class ParadoxScriptFileTreeElement(
 
     override fun getIcon(open: Boolean): Icon? {
         val element = element ?: return null
-        //如果文件名是descriptor.mod（不区分大小写），则使用特殊图标
+        //对于模组描述符文件，使用特殊图标
         val name = element.name
-        if (name.equals(PlsConstants.modDescriptorFileName, true)) return PlsIcons.FileTypes.ModeDescriptor
+        if (name.endsWith(".mod", true)) return PlsIcons.FileTypes.ModeDescriptor
         //如果是定义，则显示定义的图标
         val definitionInfo = element.definitionInfo
         if (definitionInfo != null) return PlsIcons.Nodes.Definition(definitionInfo.type)
@@ -41,9 +41,9 @@ class ParadoxScriptFileTreeElement(
 
     override fun getPresentableText(): String? {
         val element = element ?: return null
-        //如果文件名是descriptor.mod（不区分大小写），则直接显示该文件名
+        //对于模组描述符文件，直接显示该文件名
         val name = element.name
-        if (name.equals(PlsConstants.modDescriptorFileName, true)) return name
+        if (name.endsWith(".mod", true)) return name
         //如果是定义，则优先显示定义的名字
         val definitionInfo = element.definitionInfo
         if (definitionInfo != null) return definitionInfo.name.orAnonymous()
@@ -52,9 +52,9 @@ class ParadoxScriptFileTreeElement(
 
     override fun getLocationString(): String? {
         val element = element ?: return null
-        //如果文件名是descriptor.mod（不区分大小写），则忽略
+        //对于模组描述符文件，直接返回
         val name = element.name
-        if (name.equals(PlsConstants.modDescriptorFileName, true)) return null
+        if (name.endsWith(".mod", true)) return null
         //如果是定义，则显示定义的类型信息
         val definitionInfo = element.definitionInfo ?: return null
         val builder = StringBuilder()

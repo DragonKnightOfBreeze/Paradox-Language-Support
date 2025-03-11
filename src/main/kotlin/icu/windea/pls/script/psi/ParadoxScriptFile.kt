@@ -21,8 +21,8 @@ class ParadoxScriptFile(
     override val block get() = findChild<ParadoxScriptRootBlock>()
 
     override fun getIcon(flags: Int): Icon? {
-        //对模组描述符文件使用特定的图标
-        if (name.equals(PlsConstants.modDescriptorFileName, true)) return PlsIcons.FileTypes.ModeDescriptor
+        //对于模组描述符文件，使用特殊图标
+        if (name.endsWith(".mod", true)) return PlsIcons.FileTypes.ModeDescriptor
         return super.getIcon(flags)
     }
 

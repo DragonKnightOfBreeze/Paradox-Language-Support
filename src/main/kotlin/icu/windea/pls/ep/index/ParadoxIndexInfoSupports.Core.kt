@@ -16,9 +16,9 @@ import java.io.*
 class ParadoxComplexEnumValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxComplexEnumValueIndexInfo> {
     private val compressComparator = compareBy<ParadoxComplexEnumValueIndexInfo>({ it.enumName }, { it.name })
 
-    override fun id() = ParadoxIndexInfoType.ComplexEnumValue.id
+    override val id = ParadoxIndexInfoType.ComplexEnumValue.id
 
-    override fun type() = ParadoxComplexEnumValueIndexInfo::class.java
+    override val type  = ParadoxComplexEnumValueIndexInfo::class.java
 
     override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         if (element !is ParadoxScriptStringExpressionElement) return
@@ -50,9 +50,9 @@ class ParadoxComplexEnumValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxC
 class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynamicValueIndexInfo> {
     private val compressComparator = compareBy<ParadoxDynamicValueIndexInfo>({ it.dynamicValueType }, { it.name })
 
-    override fun id() = ParadoxIndexInfoType.DynamicValue.id
+    override val id = ParadoxIndexInfoType.DynamicValue.id
 
-    override fun type() = ParadoxDynamicValueIndexInfo::class.java
+    override val type = ParadoxDynamicValueIndexInfo::class.java
 
     override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.DynamicValue
@@ -110,9 +110,9 @@ class ParadoxDynamicValueIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxDynam
 class ParadoxParameterIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxParameterIndexInfo> {
     private val compressComparator = compareBy<ParadoxParameterIndexInfo>({ it.contextKey }, { it.name })
 
-    override fun id() = ParadoxIndexInfoType.Parameter.id
+    override val id = ParadoxIndexInfoType.Parameter.id
 
-    override fun type() = ParadoxParameterIndexInfo::class.java
+    override val type = ParadoxParameterIndexInfo::class.java
 
     override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.Parameter
@@ -150,9 +150,9 @@ class ParadoxParameterIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxParamete
 class ParadoxLocalisationParameterIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxLocalisationParameterIndexInfo> {
     private val compressComparator = compareBy<ParadoxLocalisationParameterIndexInfo>({ it.localisationName }, { it.name })
 
-    override fun id() = ParadoxIndexInfoType.LocalisationParameter.id
+    override val id = ParadoxIndexInfoType.LocalisationParameter.id
 
-    override fun type() = ParadoxLocalisationParameterIndexInfo::class.java
+    override val type = ParadoxLocalisationParameterIndexInfo::class.java
 
     override fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         val constraint = ParadoxResolveConstraint.LocalisationParameter

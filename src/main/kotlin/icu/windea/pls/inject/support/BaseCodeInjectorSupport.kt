@@ -2,6 +2,7 @@ package icu.windea.pls.inject.support
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
+import icu.windea.pls.core.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*
 import javassist.*
@@ -119,7 +120,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             ctMethods = ctMethods.filter { ctMethod ->
                 val size = ctMethod.parameterTypes.size
                 for (i in 0 until size) {
-                    val r = runCatching {
+                    val r = runCatchingCancelable {
                         val t1 = ctMethod.parameterTypes[i]
                         val t2 = method.parameterTypes[i + argIndexOffset]
                         val t3 = classPool.get(t2.name)

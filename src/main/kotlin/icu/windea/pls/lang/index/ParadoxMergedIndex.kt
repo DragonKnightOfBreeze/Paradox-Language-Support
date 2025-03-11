@@ -136,7 +136,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
         val extensionList = ParadoxIndexInfoSupport.EP_NAME.extensionList
         fileData.mapValues { (k, v) ->
             val id = k.toByte()
-            val support = extensionList.find { it.id() == id }
+            val support = extensionList.find { it.id == id }
                 ?.castOrNull<ParadoxIndexInfoSupport<ParadoxIndexInfo>>()
                 ?: throw UnsupportedOperationException()
             support.compressData(v)
@@ -148,12 +148,13 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
         storage.writeIntFast(size)
         if (value.isEmpty()) return
 
-        val type = value.first().javaClass
-        val support = ParadoxIndexInfoSupport.EP_NAME.extensionList.find { it.type() == type }
+        val firstInfo = value.first()
+        val type = firstInfo.javaClass
+        val support = ParadoxIndexInfoSupport.EP_NAME.extensionList.find { it.type == type }
             ?.castOrNull<ParadoxIndexInfoSupport<ParadoxIndexInfo>>()
             ?: throw UnsupportedOperationException()
-        storage.writeByte(support.id())
-        val gameType = value.first().gameType
+        storage.writeByte(support.id)
+        val gameType = firstInfo.gameType
         storage.writeByte(gameType.optimizeValue())
         var previousInfo: ParadoxIndexInfo? = null
         value.forEach { info ->
@@ -167,7 +168,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
         if (size == 0) return emptyList()
 
         val id = storage.readByte()
-        val support = ParadoxIndexInfoSupport.EP_NAME.extensionList.find { it.id() == id }
+        val support = ParadoxIndexInfoSupport.EP_NAME.extensionList.find { it.id == id }
             ?.castOrNull<ParadoxIndexInfoSupport<ParadoxIndexInfo>>()
             ?: throw UnsupportedOperationException()
         val gameType = storage.readByte().deoptimizeValue<ParadoxGameType>()
@@ -187,8 +188,8 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
 
     override fun useLazyIndex(file: VirtualFile): Boolean {
         if (ParadoxFileManager.isInjectedFile(file)) return true
-        if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true
-        if (file.fileType == ParadoxLocalisationFileType) return true //to avoid recursion during indexing, see #127
+        if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true //inline script files should be lazy indexed
+        if (file.fileType == ParadoxLocalisationFileType) return true //to prevent recursion, see #127
         return false
     }
 

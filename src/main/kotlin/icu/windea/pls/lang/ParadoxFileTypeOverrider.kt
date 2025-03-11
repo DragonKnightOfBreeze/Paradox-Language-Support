@@ -18,7 +18,7 @@ import icu.windea.pls.script.*
 @Suppress("UnstableApiUsage")
 class ParadoxFileTypeOverrider : FileTypeOverrider {
     override fun getOverriddenFileType(file: VirtualFile): FileType? {
-        runCatching r@{
+        runCatchingCancelable r@{
             val fileInfoFromUserData = file.getUserData(PlsKeys.injectedFileInfo)
                 ?: file.getUserData(PlsKeys.fileInfo)?.castOrNull<ParadoxFileInfo>()
                 ?: return@r

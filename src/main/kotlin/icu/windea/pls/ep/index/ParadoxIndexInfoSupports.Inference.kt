@@ -39,7 +39,7 @@ class ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport : ParadoxIndexI
     }
 
     override fun compressData(value: List<ParadoxInferredScopeContextAwareDefinitionIndexInfo>): List<ParadoxInferredScopeContextAwareDefinitionIndexInfo> {
-        return value
+        return value.sortedWith(compressComparator)
     }
 
     override fun writeData(storage: DataOutput, info: ParadoxInferredScopeContextAwareDefinitionIndexInfo, previousInfo: ParadoxInferredScopeContextAwareDefinitionIndexInfo?, gameType: ParadoxGameType) {

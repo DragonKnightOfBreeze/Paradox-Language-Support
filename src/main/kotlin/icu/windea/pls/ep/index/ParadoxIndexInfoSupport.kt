@@ -10,9 +10,9 @@ import icu.windea.pls.script.psi.*
 import java.io.*
 
 interface ParadoxIndexInfoSupport<T : ParadoxIndexInfo> {
-    fun id(): Byte
+    val id: Byte
 
-    fun type(): Class<T>
+    val type: Class<T>
 
     fun indexScriptElement(element: PsiElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 
