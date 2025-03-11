@@ -18,7 +18,7 @@ interface ParadoxIndexInfoSupport<T : ParadoxIndexInfo> {
 
     fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 
-    fun indexLocalisationCommandText(element: ParadoxLocalisationCommandText, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
+    fun indexLocalisationExpression(element: ParadoxLocalisationExpressionElement, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {}
 
     fun compressData(value: List<T>): List<T> = value
 
@@ -27,7 +27,7 @@ interface ParadoxIndexInfoSupport<T : ParadoxIndexInfo> {
     fun readData(storage: DataInput, previousInfo: T?, gameType: ParadoxGameType): T
 
     fun <T : ParadoxIndexInfo> addToFileData(info: T, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        val list = fileData.getOrPut(id().toString()) { mutableListOf() } as MutableList
+        val list = fileData.getOrPut(id.toString()) { mutableListOf() } as MutableList
         list.add(info)
     }
 

@@ -121,9 +121,9 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
         val extensionList = ParadoxIndexInfoSupport.EP_NAME.extensionList
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                if (element is ParadoxLocalisationCommandText) {
+                if (element is ParadoxLocalisationExpressionElement) {
                     extensionList.forEach f@{ ep ->
-                        ep.indexLocalisationCommandText(element, fileData)
+                        ep.indexLocalisationExpression(element, fileData)
                     }
                 }
                 if (element.isRichTextContext()) super.visitElement(element)
@@ -188,6 +188,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
     override fun useLazyIndex(file: VirtualFile): Boolean {
         if (ParadoxFileManager.isInjectedFile(file)) return true
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true
+        if (file.fileType == ParadoxLocalisationFileType) return true //to avoid recursion during indexing, see #127
         return false
     }
 

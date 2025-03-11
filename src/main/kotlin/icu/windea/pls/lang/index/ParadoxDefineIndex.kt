@@ -75,8 +75,4 @@ class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexI
     override fun filterFile(file: VirtualFile): Boolean {
         return ParadoxDefineManager.isDefineFile(file)
     }
-
-    override fun useLazyIndex(file: VirtualFile): Boolean {
-        return false
-    }
 }
