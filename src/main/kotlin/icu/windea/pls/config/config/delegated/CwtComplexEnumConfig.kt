@@ -22,8 +22,8 @@ import icu.windea.pls.cwt.psi.*
  */
 interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> , CwtPathMatchableConfig {
     val name: String
-    override val pathPatterns: Set<String>
-    override val paths: Set<String>
+    override val pathPatterns: Array<String>
+    override val paths: Array<String>
     override val pathFile: String?
     override val pathExtension: String?
     override val pathStrict: Boolean
@@ -66,8 +66,10 @@ private fun doResolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
     val searchScopeType = config.findOption("search_scope_type")?.stringValue
 
     if (nameConfig == null) return null
+    val pathPatterns1 = pathPatterns.toOptimizedArray()
+    val paths1 = paths.toOptimizedArray()
     return CwtComplexEnumConfigImpl(
-        config, name, pathPatterns.optimized(), paths.optimized(), pathFile, pathExtension, pathStrict,
+        config, name, pathPatterns1, paths1, pathFile, pathExtension, pathStrict,
         startFromRoot, searchScopeType, nameConfig
     )
 }
@@ -75,8 +77,8 @@ private fun doResolve(config: CwtPropertyConfig): CwtComplexEnumConfig? {
 private class CwtComplexEnumConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
-    override val pathPatterns: Set<String>,
-    override val paths: Set<String>,
+    override val pathPatterns: Array<String>,
+    override val paths: Array<String>,
     override val pathFile: String?,
     override val pathExtension: String?,
     override val pathStrict: Boolean,

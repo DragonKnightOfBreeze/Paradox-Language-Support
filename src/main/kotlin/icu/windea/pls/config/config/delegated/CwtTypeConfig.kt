@@ -36,8 +36,8 @@ import icu.windea.pls.model.*
 interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtPathMatchableConfig {
     val name: String
     val baseType: String?
-    override val pathPatterns: Set<String>
-    override val paths: Set<String>
+    override val pathPatterns: Array<String>
+    override val paths: Array<String>
     override val pathFile: String?
     override val pathExtension: String?
     override val pathStrict: Boolean
@@ -176,8 +176,10 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
         }
     }
 
+    val pathPatterns1 = pathPatterns.toOptimizedArray()
+    val paths1 = paths.toOptimizedArray()
     return CwtTypeConfigImpl(
-        config, name, baseType, pathPatterns.optimized(), paths.optimized(), pathStrict, pathFile, pathExtension, nameField, nameFromFile,
+        config, name, baseType, pathPatterns1, paths1, pathStrict, pathFile, pathExtension, nameField, nameFromFile,
         typePerFile, unique, severity, skipRootKey, typeKeyFilter, typeKeyRegex, startsWith, graphRelatedTypes?.optimized(),
         subtypes.optimized(), localisation, images
     )
@@ -187,8 +189,8 @@ private class CwtTypeConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
     override val baseType: String?,
-    override val pathPatterns: Set<String>,
-    override val paths: Set<String>,
+    override val pathPatterns: Array<String>,
+    override val paths: Array<String>,
     override val pathStrict: Boolean,
     override val pathFile: String?,
     override val pathExtension: String?,

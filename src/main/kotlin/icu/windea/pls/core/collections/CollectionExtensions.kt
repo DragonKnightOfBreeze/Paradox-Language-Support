@@ -4,7 +4,6 @@ package icu.windea.pls.core.collections
 
 import icu.windea.pls.core.*
 import java.util.*
-import java.util.concurrent.*
 
 inline fun <T> Array<T>?.orNull() = this?.takeIf { it.isNotEmpty() }
 
@@ -139,18 +138,24 @@ fun <K, V> Map<K, V>.process(processor: (Map.Entry<K, V>) -> Boolean): Boolean {
     return true
 }
 
-fun <T> List<T>.toMutableIfNotEmptyInActual(): List<T> {
-    //make List<T> properties mutable in actual if not empty (to hack them if necessary)
-    if (this.isEmpty()) return this
-    if (this is ArrayList || this is LinkedList || this is CopyOnWriteArrayList) return this
-    try {
-        this as MutableList
-        this.removeAt(-1)
-    } catch (e: UnsupportedOperationException) {
-        return this.toMutableList()
-    } catch (e: Exception) {
-        return this
-    }
-    return this
-}
+//fun <T> List<T>.toMutableIfNotEmptyInActual(): List<T> {
+//    //make List<T> properties mutable in actual if not empty (to hack them if necessary)
+//    if (this.isEmpty()) return this
+//    if (this is ArrayList || this is LinkedList || this is CopyOnWriteArrayList) return this
+//    try {
+//        this as MutableList
+//        this.removeAt(-1)
+//    } catch (e: UnsupportedOperationException) {
+//        return this.toMutableList()
+//    } catch (e: Exception) {
+//        return this
+//    }
+//    return this
+//}
 
+private val emptyStringArray = emptyArray<String>()
+
+fun Collection<String>.toOptimizedArray() : Array<String> {
+    if(this.isEmpty()) return emptyStringArray
+    return this.toTypedArray()
+}
