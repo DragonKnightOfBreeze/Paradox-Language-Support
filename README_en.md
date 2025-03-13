@@ -9,7 +9,7 @@
 [Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
 [Discord](https://discord.gg/vBpbET2bXT)
 
-IDEA plugin: Support for Paradox language.
+The Intellij IDEA plugin for Stellaris modding (also supports other Paradox Interactive games), which is smart, convenient and with more potential.
 
 Features:
 
@@ -27,7 +27,7 @@ Besides, [customizing](https://windea.icu/Paradox-Language-Support/en/config.md#
 
 If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](https://windea.icu/Paradox-Language-Support/zh/plugin-integration.md).
 
-![](https://windea.icu/Paradox-Language-Support/images/preview_1_en.png)
+![](docs/images/preview_1_en.png)
 
 ## Quick Start
 
@@ -80,20 +80,37 @@ Known Issues:
 
 ## References
 
-Reference manual:
+Reference manuals:
 
+* [Kotlin Docs | Kotlin Documentation](https://kotlinlang.org/docs/home.html)
 * [IntelliJ Platform SDK | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
-* [JFlex - manual](https://www.jflex.de/manual.html)
 
-Tools and plugins:
+
+Plugins:
+
+* [YiiGuxing/TranslationPlugin](https://github.com/YiiGuxing/TranslationPlugin)
+
+Tools:
 
 * [cwtools/cwtools](https://github.com/cwtools/cwtools)
 * [cwtools/cwtools-vscode](https://github.com/cwtools/cwtools-vscode)
 * [bcssov/IronyModManager](https://github.com/bcssov/IronyModManager)
+* [amtep/ck3-tiger](https://github.com/amtep/ck3-tiger)
 * [OldEnt/stellaris-triggers-modifiers-effects-list](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
-* [YiiGuxing/TranslationPlugin](https://github.com/YiiGuxing/TranslationPlugin)
 
-Wiki:
+Wikis:
 
 * [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki)
 * [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5)
+
+## Contribution
+
+You can support and contribute this project by the following ways:
+
+* Star the project on GitHub
+* Send feedbacks (via [Discord](https://discord.gg/vBpbET2bXT), or via sending issues on GitHub directly)
+* Submit PRs (to plugin repository aka this project, or [these config repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md))
+* Share this plugin with your friends, or in related communities
+* If you like this plugin, you can also consider donating via [afdian](https://afdian.com/a/dk_breeze)
+
+Besides, if you are willing to submit PRs, and have any questions about the plugin code and the config files, feel free to ask via email and [Discord](https://discord.gg/vBpbET2bXT).

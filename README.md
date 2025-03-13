@@ -10,7 +10,7 @@
 [Discord](https://discord.gg/vBpbET2bXT) |
 QQ群：653824651
 
-IDEA插件：Paradox语言支持。
+用于编写群星模组（也支持其他P社游戏）的Intellij IDEA插件，智能、便捷且更具潜力。
 
 特性：
 
@@ -28,7 +28,7 @@ IDEA插件：Paradox语言支持。
 
 如果同时安装了 [Translation](https://github.com/YiiGuxing/TranslationPlugin) ，此插件可以提供一些[额外的功能](https://windea.icu/Paradox-Language-Support/zh/plugin-integration.md)。
 
-![](https://windea.icu/Paradox-Language-Support/images/preview_1_zh.png)
+![](docs/images/preview_1_zh.png)
 
 ## 快速开始
 
@@ -83,18 +83,34 @@ IDEA插件：Paradox语言支持。
 
 参考手册：
 
+* [Kotlin Docs | Kotlin Documentation](https://kotlinlang.org/docs/home.html)
 * [IntelliJ Platform SDK | IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
-* [JFlex - manual](https://www.jflex.de/manual.html)
 
-工具和插件：
+插件：
+
+* [YiiGuxing/TranslationPlugin](https://github.com/YiiGuxing/TranslationPlugin)
+
+工具：
 
 * [cwtools/cwtools](https://github.com/cwtools/cwtools)
 * [cwtools/cwtools-vscode](https://github.com/cwtools/cwtools-vscode)
 * [bcssov/IronyModManager](https://github.com/bcssov/IronyModManager)
+* [amtep/ck3-tiger](https://github.com/amtep/ck3-tiger)
 * [OldEnt/stellaris-triggers-modifiers-effects-list](https://github.com/OldEnt/stellaris-triggers-modifiers-effects-list)
-* [YiiGuxing/TranslationPlugin](https://github.com/YiiGuxing/TranslationPlugin)
 
-Wiki：
+Wikis：
 
 * [Stellaris Wiki](https://stellaris.paradoxwikis.com/Stellaris_Wiki)
 * [群星中文维基 | Stellaris 攻略资料指南 - 灰机wiki](https://qunxing.huijiwiki.com/wiki/%E9%A6%96%E9%A1%B5)
+
+## 贡献
+
+你可以通过下面这些方式支持与赞助这个项目：
+
+* 在GitHub上收藏此项目
+* 提交反馈（通过[Discord](https://discord.gg/vBpbET2bXT)与QQ群，或者直接在GitHub上提交Issue）
+* 提交PR（向插件仓库即此项目，或是[各个规则仓库](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/cwt/README.md)）
+* 向朋友或者在相关社区中推荐这个插件
+* 如果你喜欢这个插件，也可以考虑通过[爱发电](https://afdian.com/a/dk_breeze)提供赞助
+
+另外，如果你有意愿提交PR，而就插件代码与规则文件有任何问题的话，欢迎通过邮件与[Discord](https://discord.gg/vBpbET2bXT)等方式询问。

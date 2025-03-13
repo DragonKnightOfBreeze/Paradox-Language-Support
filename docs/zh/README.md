@@ -7,7 +7,7 @@
 [Discord](https://discord.gg/vBpbET2bXT) |
 QQ群：653824651
 
-IDEA插件：Paradox语言支持。
+用于编写群星模组（也支持其他P社游戏）的Intellij IDEA插件，智能、便捷且更具潜力。
 
 特性：
 

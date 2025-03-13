@@ -394,7 +394,7 @@ re.i:foo.*
 
 #### 如何在规则文件中指定作用域上下文
 
-在规则文件中，作用域上下文是通过选项`push_scope`与`replace_scope`来指定的。
+在规则文件中，作用域上下文是通过选项`push_scope`与`replace_scopes`来指定的。
 
 ```cwt
 # push 'country' scope to scope stack

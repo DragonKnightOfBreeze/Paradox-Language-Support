@@ -6,7 +6,7 @@
 [Plugin Marketplace Page](https://plugins.jetbrains.com/plugin/16825-paradox-language-support) |
 [Discord](https://discord.gg/vBpbET2bXT)
 
-IDEA plugin: Support for Paradox language.
+The Intellij IDEA plugin for Stellaris modding (also supports other Paradox Interactive games), which is smart, convenient and with more potential.
 
 Features:
 

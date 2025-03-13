@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.32
+
+* [ ] #123 [CK3] Supports `type_key_prefix` in cwt configs, which is currently only used in ck3's `scripted_effects.cwt`
+
 ## 1.3.31
 
 * [X] #121 Complex enums only accept `enum_name = scalar`, not `enum_name = bool` or `enum_name = int`

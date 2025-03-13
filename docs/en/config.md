@@ -405,7 +405,7 @@ re.i:foo.*
 
 #### How to Specify the Scope Context in Config Files
 
-In config files, the scope context is specified by option `push_scope` and `replace_scope`.
+In config files, the scope context is specified by option `push_scope` and `replace_scopes`.
 
 ```cwt
 # push 'country' scope to scope stack
