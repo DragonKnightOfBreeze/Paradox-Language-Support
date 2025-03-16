@@ -8,6 +8,7 @@
 * [X] #131 Only numbers in event names
 * [ ] #132 Icon detection unreliable
 * [ ] #133 Scripted Triggers detection fails sometimes
+* [ ] Other optimizations and bug fixes
 
 ## 1.3.31
 

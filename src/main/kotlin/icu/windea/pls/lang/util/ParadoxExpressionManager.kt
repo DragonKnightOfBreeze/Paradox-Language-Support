@@ -1001,16 +1001,13 @@ object ParadoxExpressionManager {
                 config.inlineConfig?.let { return getEntryConfigs(it) }
                 config.aliasConfig?.let { return getEntryConfigs(it) }
                 config.singleAliasConfig?.let { return getEntryConfigs(it) }
-
-                config.parentConfig?.castOrNull<CwtPropertyConfig>()?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }
-                    ?: config.toSingletonList()
-            }
-            config is CwtValueConfig && config.propertyConfig != null -> {
-                getEntryConfigs(config.propertyConfig!!)
+                config.parentConfig?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }?.let { return it }
+                config.toSingletonList()
             }
             config is CwtValueConfig -> {
-                config.parentConfig?.castOrNull<CwtPropertyConfig>()?.configs?.filterIsInstance<CwtValueConfig>()
-                    ?: config.toSingletonList()
+                config.propertyConfig?.let { return getEntryConfigs(it) }
+                config.parentConfig?.configs?.filterIsInstance<CwtValueConfig>()?.let { return it }
+                config.toSingletonList()
             }
             config is CwtSingleAliasConfig -> {
                 config.config.toSingletonListOrEmpty()

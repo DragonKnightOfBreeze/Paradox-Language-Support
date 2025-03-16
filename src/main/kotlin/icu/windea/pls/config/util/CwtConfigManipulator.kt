@@ -79,7 +79,7 @@ object CwtConfigManipulator {
                 if (subtypeExpression != null) {
                     val subtypes = context.definitionSubtypes
                     if (subtypes == null || ParadoxDefinitionSubtypeExpression.resolve(subtypeExpression).matches(subtypes)) {
-                        val cs2 = deepCopyConfigsInDeclarationConfig(c1, parentConfig, context)
+                        val cs2 = deepCopyConfigsInDeclarationConfig(c1, c1, context)
                         if (cs2.isNullOrEmpty()) return@f1
                         result += cs2
                     }
@@ -87,7 +87,7 @@ object CwtConfigManipulator {
                 }
             }
 
-            result += c1.delegated(deepCopyConfigsInDeclarationConfig(c1, parentConfig, context), parentConfig)
+            result += c1.delegated(deepCopyConfigsInDeclarationConfig(c1, c1, context), parentConfig)
         }
         CwtInjectedConfigProvider.injectConfigs(parentConfig, result)
         return result
