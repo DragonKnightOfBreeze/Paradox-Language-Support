@@ -41,21 +41,25 @@ class ParadoxTypeDeclarationProvider : TypeDeclarationProvider {
                 }
                 return null
             }
-            symbol is ParadoxScriptStringExpressionElement -> {
-                if (symbol is ParadoxScriptString && symbol.isDefinitionName()) {
+            symbol is ParadoxScriptExpressionElement -> {
+                if (symbol is ParadoxScriptPropertyKey) {
+                    return getSymbolTypeDeclarations(symbol.parent)
+                } else if (symbol is ParadoxScriptValue && symbol.isDefinitionName()) {
                     val definition = symbol.findParentDefinition()
                     if (definition is ParadoxScriptProperty) return getSymbolTypeDeclarations(definition)
                 }
-                val complexEnumValueInfo = symbol.complexEnumValueInfo
-                if (complexEnumValueInfo != null) {
-                    val gameType = complexEnumValueInfo.gameType
-                    val configGroup = getConfigGroup(symbol.project, gameType)
-                    val enumName = complexEnumValueInfo.enumName
-                    val config = configGroup.complexEnums[enumName] ?: return null //unexpected
-                    val resolved = config.pointer.element ?: return null
-                    return arrayOf(resolved)
+
+                if (symbol is ParadoxScriptStringExpressionElement) {
+                    val complexEnumValueInfo = symbol.complexEnumValueInfo
+                    if (complexEnumValueInfo != null) {
+                        val gameType = complexEnumValueInfo.gameType
+                        val configGroup = getConfigGroup(symbol.project, gameType)
+                        val enumName = complexEnumValueInfo.enumName
+                        val config = configGroup.complexEnums[enumName] ?: return null //unexpected
+                        val resolved = config.pointer.element ?: return null
+                        return arrayOf(resolved)
+                    }
                 }
-                if (symbol is ParadoxScriptPropertyKey) return getSymbolTypeDeclarations(symbol.parent)
             }
             symbol is CwtValue -> {
                 val configType = symbol.configType

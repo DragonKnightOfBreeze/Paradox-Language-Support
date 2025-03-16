@@ -87,7 +87,7 @@ object ParadoxPsiManager {
             }
             if (BitUtil.isSet(options, FindDefinitionOptions.BY_NAME)) {
                 val element = expressionElement
-                if (element is ParadoxScriptString && element.isDefinitionName()) {
+                if (element is ParadoxScriptValue && element.isDefinitionName()) {
                     return element.findParentDefinition()
                 }
             }

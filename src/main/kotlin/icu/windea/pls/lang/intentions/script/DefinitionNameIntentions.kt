@@ -41,7 +41,7 @@ abstract class DefinitionNameIntention : IntentionAction, PriorityAction, Iconab
         doInvoke(definition, definitionInfo, editor, project)
     }
 
-    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptString? {
+    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptValue? {
         return ParadoxPsiManager.findScriptExpression(file, offset).castOrNull()
     }
 

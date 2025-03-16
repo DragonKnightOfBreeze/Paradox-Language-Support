@@ -45,7 +45,7 @@ class GotoDefinitionsAction : BaseCodeInsightAction() {
         presentation.isEnabled = isEnabled
     }
 
-    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptStringExpressionElement? {
+    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
         return ParadoxPsiManager.findScriptExpression(file, offset).castOrNull()
     }
 }

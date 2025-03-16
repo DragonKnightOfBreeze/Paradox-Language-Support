@@ -77,6 +77,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                 }
             }
             //event = { id = _ }
+            //#131 won't be a number or some type else on completion
             element is ParadoxScriptString && element.isDefinitionName() -> {
                 val definition = element.findParentDefinition() ?: return
                 val definitionInfo = definition.definitionInfo

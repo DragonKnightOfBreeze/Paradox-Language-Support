@@ -53,10 +53,10 @@ fun ParadoxScriptExpressionElement.isResolvableExpression() : Boolean {
     return this is ParadoxScriptStringExpressionElement || this is ParadoxScriptInt || this is ParadoxScriptFloat
 }
 
-fun ParadoxScriptStringExpressionElement.isDefinitionRootKeyOrName(): Boolean {
+fun ParadoxScriptExpressionElement.isDefinitionRootKeyOrName(): Boolean {
     return when {
         this is ParadoxScriptPropertyKey -> isDefinitionRootKey()
-        this is ParadoxScriptString -> isDefinitionName()
+        this is ParadoxScriptValue -> isDefinitionName()
         else -> false
     }
 }
@@ -67,7 +67,10 @@ fun ParadoxScriptPropertyKey.isDefinitionRootKey(): Boolean {
     return false
 }
 
-fun ParadoxScriptString.isDefinitionName(): Boolean {
+fun ParadoxScriptValue.isDefinitionName(): Boolean {
+    //#131
+    if(!this.isResolvableExpression()) return false
+
     val nameProperty = this.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
     //def = def_name
     if (nameProperty.definitionInfo.let { it != null && it.typeConfig.nameField == "" }) return true
