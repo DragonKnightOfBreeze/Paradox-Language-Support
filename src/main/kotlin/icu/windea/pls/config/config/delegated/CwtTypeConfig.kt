@@ -19,7 +19,8 @@ import icu.windea.pls.model.*
  * @property pathFile (property) path_file: string
  * @property pathExtension (property) path_extension: string
  * @property pathStrict (property) path_strict: boolean
- * @property nameField (property) name_field: string/propertyKey
+ * @property nameField (property) name_field: string
+ * @property typeKeyPrefix (property) type_key_prefix: string
  * @property nameFromFile (property) name_from_file: boolean
  * @property typePerFile (property) type_per_file: boolean
  * @property typeKeyFilter (option*) type_key_filter: string | string[]
@@ -42,6 +43,7 @@ interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cw
     override val pathExtension: String?
     override val pathStrict: Boolean
     val nameField: String?
+    val typeKeyPrefix: String?
     val nameFromFile: Boolean
     val typePerFile: Boolean
     val unique: Boolean
@@ -84,6 +86,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
     var pathExtension: String? = null
     var pathStrict = false
     var nameField: String? = null
+    var typeKeyPrefix: String? = null
     var nameFromFile = false
     var typePerFile = false
     var unique = false
@@ -108,6 +111,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
             "path_extension" -> pathExtension = prop.stringValue?.removePrefix(".") ?: continue
             "path_strict" -> pathStrict = prop.booleanValue ?: continue
             "name_field" -> nameField = prop.stringValue ?: continue
+            "type_key_prefix" -> typeKeyPrefix = prop.stringValue ?: continue
             "name_from_file" -> nameFromFile = prop.booleanValue ?: continue
             "type_per_file" -> typePerFile = prop.booleanValue ?: continue
             "unique" -> unique = prop.booleanValue ?: continue
@@ -179,9 +183,9 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
     val pathPatterns1 = pathPatterns.toOptimizedArray()
     val paths1 = paths.toOptimizedArray()
     return CwtTypeConfigImpl(
-        config, name, baseType, pathPatterns1, paths1, pathStrict, pathFile, pathExtension, nameField, nameFromFile,
-        typePerFile, unique, severity, skipRootKey, typeKeyFilter, typeKeyRegex, startsWith, graphRelatedTypes?.optimized(),
-        subtypes.optimized(), localisation, images
+        config, name, baseType, pathPatterns1, paths1, pathStrict, pathFile, pathExtension, nameField, typeKeyPrefix,
+        nameFromFile, typePerFile, unique, severity, skipRootKey, typeKeyFilter, typeKeyRegex, startsWith,
+        graphRelatedTypes?.optimized(), subtypes.optimized(), localisation, images
     )
 }
 
@@ -195,6 +199,7 @@ private class CwtTypeConfigImpl(
     override val pathFile: String?,
     override val pathExtension: String?,
     override val nameField: String?,
+    override val typeKeyPrefix: String?,
     override val nameFromFile: Boolean,
     override val typePerFile: Boolean,
     override val unique: Boolean,
