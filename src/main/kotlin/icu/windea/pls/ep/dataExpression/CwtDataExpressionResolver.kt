@@ -25,5 +25,21 @@ interface CwtDataExpressionResolver {
             }
             return null
         }
+
+        /**
+         * @see CwtDataExpressionResolver.resolve
+         */
+        fun resolveTemplate(expressionString: String): CwtDataExpression? {
+            EP_NAME.extensionList.forEach f@{ ep ->
+                if (ep !is RuleBasedCwtDataExpressionResolver) return@f
+                val r = ep.resolve(expressionString, false)
+                if (r != null) return r
+            }
+            return null
+        }
+
+        val allRules by lazy {
+            EP_NAME.extensionList.filterIsInstance<RuleBasedCwtDataExpressionResolver>().flatMap { it.rules }
+        }
     }
 }

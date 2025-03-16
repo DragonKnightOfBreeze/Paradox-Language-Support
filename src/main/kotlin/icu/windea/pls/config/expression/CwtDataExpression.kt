@@ -19,9 +19,19 @@ interface CwtDataExpression : CwtExpression {
     fun <T> extraValue() = extraValue?.let { it as T }
 
     companion object Resolver {
+        val EmptyKeyExpression: CwtDataExpression = doResolveEmpty(true)
+        val EmptyValueExpression: CwtDataExpression = doResolveEmpty(false)
         val BlockExpression: CwtDataExpression = doResolveBlock()
 
-        fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression = getCache(isKey).get(expressionString)
+        fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression {
+            if(!validate(expressionString)) return if(isKey) EmptyKeyExpression else EmptyValueExpression
+            return getCache(isKey).get(expressionString)
+        }
+
+        fun resolveTemplate(expressionString: String): CwtDataExpression {
+            if(!validate(expressionString)) return EmptyValueExpression
+            return cacheForTemplate.get(expressionString)
+        }
 
         fun create(expressionString: String, isKey: Boolean, type: CwtDataType, value: String? = null, extraValue: Any? = null): CwtDataExpression {
             return CwtDataExpressionImpl(expressionString, isKey, type, value, extraValue)
@@ -33,15 +43,25 @@ interface CwtDataExpression : CwtExpression {
 
 private val cacheForKey = CacheBuilder.newBuilder().buildCache<String, CwtDataExpression> { doResolve(it, true) }
 private val cacheForValue = CacheBuilder.newBuilder().buildCache<String, CwtDataExpression> { doResolve(it, false) }
+private val cacheForTemplate = CacheBuilder.newBuilder().buildCache<String, CwtDataExpression> { doResolveTemplate(it) }
 
 private fun getCache(isKey: Boolean) = if (isKey) cacheForKey else cacheForValue
+
+private fun validate(expressionString: String): Boolean {
+    if (expressionString.isEmpty()) return false
+    return true
+}
+
 private fun doResolveEmpty(isKey: Boolean) = CwtDataExpressionImpl("", isKey, CwtDataTypes.Constant, "")
+
 private fun doResolveBlock() = CwtDataExpressionImpl("{...}", true, CwtDataTypes.Block, "{...}")
 
 private fun doResolve(expressionString: String, isKey: Boolean): CwtDataExpression {
-    if (expressionString.isEmpty()) return doResolveEmpty(isKey)
-    return CwtDataExpressionResolver.resolve(expressionString, isKey)
-        ?: CwtDataExpressionImpl(expressionString, isKey, CwtDataTypes.Other)
+    return CwtDataExpressionResolver.resolve(expressionString, isKey) ?: CwtDataExpressionImpl(expressionString, isKey, CwtDataTypes.Constant)
+}
+
+private fun doResolveTemplate(expressionString: String): CwtDataExpression {
+    return CwtDataExpressionResolver.resolveTemplate(expressionString) ?: CwtDataExpressionImpl(expressionString, false, CwtDataTypes.Constant)
 }
 
 private class CwtDataExpressionImpl : CwtDataExpression {

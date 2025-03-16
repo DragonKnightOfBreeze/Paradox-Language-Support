@@ -10,7 +10,6 @@ object CwtDataTypes {
     val Float = CwtDataType("Float")
     val Scalar = CwtDataType("Scalar")
     val ColorField = CwtDataType("ColorField")
-    val Other = CwtDataType("Other")
 
     val PercentageField = CwtDataType("PercentageField")
     val DateField = CwtDataType("DateField")

@@ -4,252 +4,163 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 
-class BaseCwtDataExpressionResolver : CwtDataExpressionResolver {
-    override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        if (expressionString == "bool") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Bool)
-        }
+abstract class RuleBasedCwtDataExpressionResolver : CwtDataExpressionResolver {
+    sealed interface Rule {
+        val type: CwtDataType
+    }
 
-        if (expressionString == "int") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Int)
-        }
-        expressionString.removeSurroundingOrNull("int[", "]")?.let { v ->
-            val range = v.split("..", limit = 2)
-                .let { tupleOf(it.getOrNull(0)?.toIntOrNull(), it.getOrNull(1)?.toIntOrNull()) }
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Int, null, range)
-        }
+    data class ConstantRule(
+        override val type: CwtDataType,
+        val constant: String,
+        val value: String? = null,
+        val extraValue: Any? = null,
+    ) : Rule
 
-        if (expressionString == "float") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Float)
-        }
-        expressionString.removeSurroundingOrNull("float[", "]")?.let { v ->
-            val range = v.split("..", limit = 2)
-                .let { tupleOf(it.getOrNull(0)?.toFloatOrNull(), it.getOrNull(1)?.toFloatOrNull()) }
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Float, null, range)
-        }
+    data class DynamicRule(
+        override val type: CwtDataType,
+        val prefix: String = "",
+        val suffix: String = "",
+        val valueResolver: ((data: String) -> String?)? = null,
+        val extraValueResolver: ((data: String) -> Any?)? = null,
+    ) : Rule
 
-        if (expressionString == "scalar") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Scalar)
-        }
+    protected fun rule(
+        type: CwtDataType,
+        constant: String,
+        value: String? = null,
+        extraValue: Any? = null,
+    ): Rule {
+        return ConstantRule(type, constant, value, extraValue)
+    }
 
-        if (expressionString == "colour_field") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.ColorField)
-        }
-        expressionString.removeSurroundingOrNull("colour[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.ColorField, value)
-        }
+    protected fun rule(
+        type: CwtDataType,
+        prefix: String,
+        suffix: String,
+        valueResolver: ((data: String) -> String?)? = null,
+        extraValueResolver: ((data: String) -> Any?)? = null,
+    ): Rule {
+        return DynamicRule(type, prefix, suffix, valueResolver, extraValueResolver)
+    }
 
+    abstract val rules: List<Rule>
+
+    private val constantRuleMap by lazy { rules.filterIsInstance<ConstantRule>().associateBy { it.constant } }
+    private val dynamicRules by lazy { rules.filterIsInstance<DynamicRule>() }
+
+    final override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
+        run {
+            val rule = constantRuleMap[expressionString]
+            if (rule == null) return@run
+            return CwtDataExpression.create(expressionString, isKey, rule.type, rule.value, rule.extraValue)
+        }
+        run {
+            dynamicRules.forEach f@{ rule ->
+                val data = expressionString.removeSurroundingOrNull(rule.prefix, rule.suffix)
+                if (data == null) return@f
+                val value = rule.valueResolver?.invoke(data)
+                val extraValue = rule.extraValueResolver?.invoke(data)
+                return CwtDataExpression.create(expressionString, isKey, rule.type, value, extraValue)
+            }
+        }
         return null
     }
 }
 
-class CoreCwtDataExpressionResolver : CwtDataExpressionResolver {
-    override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        if (expressionString == "percentage_field") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.PercentageField)
-        }
+class BaseCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
+    @Suppress("MoveLambdaOutsideParentheses")
+    override val rules = listOf(
+        rule(CwtDataTypes.Bool, "bool"),
 
-        if (expressionString == "date_field") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.DateField)
-        }
+        rule(CwtDataTypes.Int, "int"),
+        rule(CwtDataTypes.Int, "int[", "]", null, { it.split("..", limit = 2).let { v -> tupleOf(v.getOrNull(0)?.toIntOrNull(), v.getOrNull(1)?.toIntOrNull()) } }),
 
-        if (expressionString == "localisation") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Localisation)
-        }
+        rule(CwtDataTypes.Float, "float"),
+        rule(CwtDataTypes.Float, "float[", "]", null, { it.split("..", limit = 2).let { v -> tupleOf(v.getOrNull(0)?.toFloatOrNull(), v.getOrNull(1)?.toFloatOrNull()) } }),
 
-        if (expressionString == "localisation_synced") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SyncedLocalisation)
-        }
+        rule(CwtDataTypes.Scalar, "scalar"),
 
-        if (expressionString == "localisation_inline") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.InlineLocalisation)
-        }
+        rule(CwtDataTypes.ColorField, "colour_field"),
+        rule(CwtDataTypes.ColorField, "colour_field[", "]", { it.orNull() }),
+        rule(CwtDataTypes.ColorField, "color_field"),
+        rule(CwtDataTypes.ColorField, "color_field[", "]", { it.orNull() }),
+    )
+}
 
-        if (expressionString == "abs_filepath") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.AbsoluteFilePath)
-        }
+class CoreCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
+    override val rules: List<Rule> = listOf(
+        rule(CwtDataTypes.PercentageField, "percentage_field"),
+        rule(CwtDataTypes.DateField, "date_field"),
 
-        if (expressionString == "filename") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.FileName)
-        }
-        expressionString.removeSurroundingOrNull("filename[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.FileName, value)
-        }
+        rule(CwtDataTypes.Localisation, "localisation"),
+        rule(CwtDataTypes.SyncedLocalisation, "localisation_synced"),
+        rule(CwtDataTypes.InlineLocalisation, "localisation_inline"),
 
-        if (expressionString == "filepath") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.FilePath)
-        }
-        expressionString.removeSurroundingOrNull("filepath[", "]")?.let { v ->
-            val value = v.removePrefix("game/").orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.FilePath, value)
-        }
+        rule(CwtDataTypes.AbsoluteFilePath, "abs_filepath"),
+        rule(CwtDataTypes.FileName, "filename"),
+        rule(CwtDataTypes.FileName, "filename[", "]", { it.orNull() }),
+        rule(CwtDataTypes.FilePath, "filepath"),
+        rule(CwtDataTypes.FilePath, "filepath[", "]", { it.removePrefix("game/").orNull() }),
+        rule(CwtDataTypes.Icon, "icon[", "]", { it.removePrefix("game/").orNull() }),
 
-        expressionString.removeSurroundingOrNull("icon[", "]")?.let { v ->
-            val value = v.removePrefix("game/").orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Icon, value)
-        }
+        rule(CwtDataTypes.Modifier, "<modifier>"),
+        rule(CwtDataTypes.TechnologyWithLevel, "<technology_with_level>"),
+        rule(CwtDataTypes.Definition, "<", ">", { it.orNull() }),
 
-        if (expressionString == "<modifier>") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Modifier)
-        }
+        rule(CwtDataTypes.Value, "value[", "]", { it.orNull() }),
+        rule(CwtDataTypes.ValueSet, "value_set[", "]", { it.orNull() }),
+        rule(CwtDataTypes.DynamicValue, "dynamic_value[", "]", { it.orNull() }),
 
-        if (expressionString == "<technology_with_level>") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.TechnologyWithLevel)
-        }
+        rule(CwtDataTypes.EnumValue, "enum[", "]", { it.orNull() }),
 
-        expressionString.removeSurroundingOrNull("<", ">")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Definition, value)
-        }
+        rule(CwtDataTypes.ScopeField, "scope_field"),
+        rule(CwtDataTypes.Scope, "scope[", "]", { it.orNull().takeIf { v -> v != "any" } }),
+        rule(CwtDataTypes.ScopeGroup, "scope_group[", "]", { it.orNull() }),
 
-        expressionString.removeSurroundingOrNull("value[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Value, value)
-        }
+        rule(CwtDataTypes.ValueField, "value_field"),
+        rule(CwtDataTypes.ValueField, "value_field[", "]", { it.orNull() }),
+        rule(CwtDataTypes.IntValueField, "int_value_field"),
+        rule(CwtDataTypes.IntValueField, "int_value_field[", "]", { it.orNull() }),
 
-        expressionString.removeSurroundingOrNull("value_set[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.ValueSet, value)
-        }
+        rule(CwtDataTypes.VariableField, "variable_field"),
+        rule(CwtDataTypes.VariableField, "variable_field[", "]", { it.orNull() }),
+        rule(CwtDataTypes.VariableField, "variable_field32"),
+        rule(CwtDataTypes.VariableField, "variable_field32[", "]", { it.orNull() }),
+        rule(CwtDataTypes.IntVariableField, "int_variable_field"),
+        rule(CwtDataTypes.IntVariableField, "int_variable_field[", "]", { it.orNull() }),
+        rule(CwtDataTypes.IntVariableField, "int_variable_field_32"),
+        rule(CwtDataTypes.IntVariableField, "int_variable_field_32[", "]", { it.orNull() }),
 
-        expressionString.removeSurroundingOrNull("dynamic_value[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.DynamicValue, value)
-        }
+        rule(CwtDataTypes.SingleAliasRight, "single_alias_right[", "]", { it.orNull() }),
+        rule(CwtDataTypes.AliasName, "alias_name[", "]", { it.orNull() }),
+        rule(CwtDataTypes.AliasMatchLeft, "alias_match_left[", "]", { it.orNull() }),
+        rule(CwtDataTypes.AliasKeysField, "alias_keys_field[", "]", { it.orNull() }),
 
-        expressionString.removeSurroundingOrNull("enum[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.EnumValue, value)
-        }
+        rule(CwtDataTypes.Any, "\$any"),
 
-        if (expressionString == "scope_field") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.ScopeField)
-        }
-
-        expressionString.removeSurroundingOrNull("scope[", "]")?.let { v ->
-            val value = v.orNull().takeIf { it != "any" }
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Scope, value)
-        }
-
-        expressionString.removeSurroundingOrNull("scope_group[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.ScopeGroup, value)
-        }
-
-        if (expressionString == "value_field") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.ValueField)
-        }
-        expressionString.removeSurroundingOrNull("value_field[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.ValueField, value)
-        }
-
-        if (expressionString == "int_value_field") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.IntValueField)
-        }
-        expressionString.removeSurroundingOrNull("int_value_field[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.IntValueField, value)
-        }
-
-        if (expressionString == "variable_field") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.VariableField)
-        }
-        if (expressionString == "variable_field_32") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.VariableField)
-        }
-        expressionString.removeSurroundingOrNull("variable_field[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.VariableField, value)
-        }
-
-        if (expressionString == "int_variable_field") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.IntVariableField)
-        }
-        if (expressionString == "int_variable_field_32") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.IntVariableField)
-        }
-        expressionString.removeSurroundingOrNull("int_variable_field[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.IntVariableField, value)
-        }
-
-        expressionString.removeSurroundingOrNull("single_alias_right[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.SingleAliasRight, value)
-        }
-
-        expressionString.removeSurroundingOrNull("alias_name[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.AliasName, value)
-        }
-
-        expressionString.removeSurroundingOrNull("alias_match_left[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.AliasMatchLeft, value)
-        }
-
-        expressionString.removeSurroundingOrNull("alias_keys_field[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.AliasKeysField, value)
-        }
-
-        if (expressionString == "\$any") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Any)
-        }
-
-        if (expressionString == "\$parameter") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Parameter)
-        }
-
-        if (expressionString == "\$parameter_value") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.ParameterValue)
-        }
-
-        if (expressionString == "\$localisation_parameter") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.LocalisationParameter)
-        }
-
-        if (expressionString == "\$shader_effect") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.ShaderEffect)
-        }
-
-        if (expressionString == "\$database_object") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.DatabaseObject)
-        }
-
-        if (expressionString == "\$define_reference") {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.DefineReference)
-        }
-
-        expressionString.removeSurroundingOrNull("stellaris_name_format[", "]")?.let { v ->
-            val value = v.orNull()
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.StellarisNameFormat, value)
-        }
-
-        return null
-    }
+        rule(CwtDataTypes.Parameter, "\$parameter"),
+        rule(CwtDataTypes.ParameterValue, "\$parameter_value"),
+        rule(CwtDataTypes.LocalisationParameter, "\$localisation_parameter"),
+        rule(CwtDataTypes.ShaderEffect, "\$shader_effect"),
+        rule(CwtDataTypes.DatabaseObject, "\$database_object"),
+        rule(CwtDataTypes.DefineReference, "\$define_reference"),
+        rule(CwtDataTypes.StellarisNameFormat, "stellaris_name_format[", "]", { it.orNull() }),
+    )
 }
 
 class ConstantCwtDataExpressionResolver : CwtDataExpressionResolver, CwtConfigPatternAware {
-    private val excludeCharacters = "$[]<>".toCharArray()
+    private val excludeCharacters = ":.@[]<>".toCharArray()
 
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        if (expressionString.none { c -> c in excludeCharacters }) {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Constant, expressionString)
-        }
-        return null
+        if (expressionString.any { c -> c in excludeCharacters }) return null
+        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Constant, expressionString)
     }
 }
 
 class TemplateExpressionCwtDataExpressionResolver : CwtDataExpressionResolver, CwtConfigPatternAware {
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        if (CwtTemplateExpression.resolve(expressionString).expressionString.isNotEmpty()) {
-            return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.TemplateExpression)
-        }
-        return null
+        if (CwtTemplateExpression.resolve(expressionString).expressionString.isEmpty()) return null
+        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.TemplateExpression)
     }
 }
 
