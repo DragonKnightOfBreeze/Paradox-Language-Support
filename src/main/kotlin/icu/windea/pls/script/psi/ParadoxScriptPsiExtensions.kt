@@ -49,6 +49,10 @@ fun PsiElement.isExpressionOrMemberContext(): Boolean {
     return this is ParadoxScriptDefinitionElement || this is ParadoxScriptBlockElement || this is ParadoxScriptParameterCondition
 }
 
+fun ParadoxScriptExpressionElement.isResolvableExpression() : Boolean {
+    return this is ParadoxScriptStringExpressionElement || this is ParadoxScriptInt || this is ParadoxScriptFloat
+}
+
 fun ParadoxScriptStringExpressionElement.isDefinitionRootKeyOrName(): Boolean {
     return when {
         this is ParadoxScriptPropertyKey -> isDefinitionRootKey()
@@ -73,7 +77,6 @@ fun ParadoxScriptString.isDefinitionName(): Boolean {
     if (definition.definitionInfo.let { it != null && it.typeConfig.nameField == nameProperty.name }) return true
     return false
 }
-
 
 fun ParadoxScriptExpressionElement.value(valid: Boolean = false): String? {
     if (valid && !this.isValidExpression()) return null

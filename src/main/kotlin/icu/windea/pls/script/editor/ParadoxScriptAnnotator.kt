@@ -31,8 +31,7 @@ class ParadoxScriptAnnotator : Annotator {
         when (element) {
             is ParadoxScriptFile -> annotateFile(element, holder)
             is ParadoxScriptProperty -> annotateProperty(element, holder)
-            is ParadoxScriptStringExpressionElement -> annotateExpressionElement(element, holder)
-            is ParadoxScriptInt -> annotateExpressionElement(element, holder)
+            is ParadoxScriptExpressionElement -> annotateExpressionElement(element, holder)
         }
     }
 
@@ -110,25 +109,28 @@ class ParadoxScriptAnnotator : Annotator {
     }
 
     private fun annotateExpressionElement(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
+        //#131
+        if (!element.isResolvableExpression()) return
+
         //高亮复杂枚举值声明
-        if (element is ParadoxScriptStringExpressionElement) {
-            val complexEnumValueInfo = element.complexEnumValueInfo
-            if (complexEnumValueInfo != null) {
-                annotateComplexEnumValue(element, holder)
-                return
-            }
+        run {
+            if (element !is ParadoxScriptStringExpressionElement) return@run
+            if (element.complexEnumValueInfo == null) return@run
+            annotateComplexEnumValue(element, holder)
+            return
         }
 
         val isKey = element is ParadoxScriptPropertyKey
         val config = ParadoxExpressionManager.getConfigs(element, orDefault = isKey).firstOrNull()
         if (config != null) {
-            //如果不是字符串，除非是定义引用，否则不作高亮
-            if (element !is ParadoxScriptStringExpressionElement && config.expression.type != CwtDataTypes.Definition) {
-                return
-            }
             //高亮特殊标签
             if (element is ParadoxScriptStringExpressionElement && config is CwtValueConfig && config.isTagConfig) {
                 holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(Keys.TAG_KEY).create()
+                return
+            }
+
+            //如果不是字符串，除非是定义引用，否则不作高亮
+            if (element !is ParadoxScriptStringExpressionElement && config.expression.type != CwtDataTypes.Definition) {
                 return
             }
             //高亮脚本表达式

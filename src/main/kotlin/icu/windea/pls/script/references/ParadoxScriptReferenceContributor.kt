@@ -9,9 +9,7 @@ class ParadoxScriptReferenceContributor : PsiReferenceContributor() {
     val enumNamespaceReferenceProvider = ParadoxEventNamespaceReferenceProvider()
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-        registrar.registerReferenceProvider(psiElement(ParadoxScriptStringExpressionElement::class.java), expressionReferenceProvider)
-        registrar.registerReferenceProvider(psiElement(ParadoxScriptBlock::class.java), expressionReferenceProvider)
-        registrar.registerReferenceProvider(psiElement(ParadoxScriptInt::class.java), expressionReferenceProvider)
+        registrar.registerReferenceProvider(psiElement(ParadoxScriptExpressionElement::class.java), expressionReferenceProvider)
         registrar.registerReferenceProvider(psiElement(ParadoxScriptString::class.java), enumNamespaceReferenceProvider)
     }
 }

@@ -21,11 +21,19 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
 
     override fun getUsageType(element: PsiElement, targets: Array<out UsageTarget>): UsageType? {
         when {
-            element is ParadoxScriptStringExpressionElement || element is ParadoxScriptInt -> {
+            element is ParadoxScriptScriptedVariableReference -> return ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
+            element is ParadoxScriptInlineMathScriptedVariableReference -> return ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_2
+            element is ParadoxLocalisationScriptedVariableReference -> return ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_3
+            element is ParadoxScriptExpressionElement -> {
+                //#131
+                if (!element.isResolvableExpression()) return null
+
                 //尝试解析为复杂枚举值声明
-                val resolvedElements = targets.mapNotNull { it.castOrNull<PsiElementUsageTarget>()?.element }
-                val complexEnumValueElement = resolvedElements.findIsInstance<ParadoxComplexEnumValueElement>()
-                if (complexEnumValueElement != null) {
+                run {
+                    if (element !is ParadoxScriptStringExpressionElement) return@run
+                    val resolvedElements = targets.mapNotNull { it.castOrNull<PsiElementUsageTarget>()?.element }
+                    val resolved = resolvedElements.findIsInstance<ParadoxComplexEnumValueElement>()
+                    if (resolved == null) return@run
                     return ParadoxUsageType.COMPLEX_ENUM_VALUE
                 }
 
@@ -49,11 +57,6 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
                 }
                 return ParadoxUsageType.FROM_CONFIG_EXPRESSION(configExpression)
             }
-
-            element is ParadoxScriptScriptedVariableReference -> return ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
-            element is ParadoxScriptInlineMathScriptedVariableReference -> return ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_2
-            element is ParadoxLocalisationScriptedVariableReference -> return ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_3
-
             element is ParadoxScriptParameter -> return ParadoxUsageType.PARAMETER_REFERENCE_1
             element is ParadoxScriptInlineMathParameter -> return ParadoxUsageType.PARAMETER_REFERENCE_2
             element is ParadoxScriptParameterConditionParameter -> return ParadoxUsageType.PARAMETER_REFERENCE_3
