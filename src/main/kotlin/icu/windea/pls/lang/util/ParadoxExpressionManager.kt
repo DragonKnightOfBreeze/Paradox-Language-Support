@@ -316,14 +316,19 @@ object ParadoxExpressionManager {
 
             result = nextResult
 
-            if (matchesKey) {
+            run r1@{
+                if (!matchesKey) return@r1
+                val pathToMatch = ParadoxExpressionPath.resolve(originalSubPaths.dropLast(shift))
+                ProgressManager.checkCanceled()
+                val elementToMatch = element.findParentByPath(pathToMatch.path)
+                if (elementToMatch == null) return@r1
                 val resultValuesMatchKey = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
                 result.forEach f@{ config ->
-                    val matchResult = ParadoxExpressionMatcher.matches(element, expression, config.expression, config, configGroup, matchOptions)
+                    val matchResult = ParadoxExpressionMatcher.matches(elementToMatch, expression, config.expression, config, configGroup, matchOptions)
                     if (matchResult == ParadoxExpressionMatcher.Result.NotMatch) return@f
                     resultValuesMatchKey += ResultValue(config, matchResult)
                 }
-                val optimizedResult = optimizeMatchedConfigs(element, expression, resultValuesMatchKey, true, matchOptions)
+                val optimizedResult = optimizeMatchedConfigs(elementToMatch, expression, resultValuesMatchKey, true, matchOptions)
                 result = optimizedResult
             }
         }
@@ -522,19 +527,19 @@ object ParadoxExpressionManager {
                 if (it.result is ParadoxExpressionMatcher.Result.FallbackMatch) return@p false //之后再匹配
                 it.result.get(matchOptions)
             }
-            if (matched.isNotEmpty()) return matched.map { it.value }
+            if (matched.isNotEmpty()) return@r1 matched.map { it.value }
 
             resultValues.filterTo(matched) { it.result is ParadoxExpressionMatcher.Result.PartialMatch }
-            if (matched.isNotEmpty()) return matched.map { it.value }
+            if (matched.isNotEmpty()) return@r1 matched.map { it.value }
 
             resultValues.filterTo(matched) { it.result is ParadoxExpressionMatcher.Result.FallbackMatch }
-            if (matched.isNotEmpty()) return matched.map { it.value }
+            if (matched.isNotEmpty()) return@r1 matched.map { it.value }
 
-            return emptyList()
+            emptyList()
         }
+        if (result.isEmpty() || !postHandle) return result.optimized()
 
         var newResult = result
-        if (!postHandle) return newResult.optimized()
 
         //后续处理
 
@@ -544,6 +549,29 @@ object ParadoxExpressionManager {
             if (expression.type != ParadoxType.String) return@r1
             val result1 = newResult.filter { isConstantMatch(expression, it.expression, configGroup) }
             if (result1.isEmpty()) return@r1
+            newResult = result1
+        }
+
+        //如果匹配结果中存在键相同的规则，且其值是子句，则尝试根据子句进行进一步的匹配
+        run r1@{
+            if (newResult.isEmpty()) return@r1
+            val blockElement = element.castOrNull<ParadoxScriptProperty>()?.block ?: return@r1
+            val blockExpression = ParadoxDataExpression.BlockExpression
+            val configsToRemove = mutableSetOf<CwtPropertyConfig>()
+            val group: Collection<List<CwtPropertyConfig>> = newResult.filterIsInstance<CwtPropertyConfig>().groupBy { it.key }.values
+            group.forEach f1@{ configs ->
+                if (configs.size <= 1) return@f1
+                val configs1 = configs.filter { it.isBlock }
+                if (configs1.size <= 1) return@r1
+                configs.forEach f2@{ config ->
+                    val valueConfig = config.valueConfig ?: return@f2
+                    val matchResult = ParadoxExpressionMatcher.matches(blockElement, blockExpression, valueConfig.expression, valueConfig, configGroup, matchOptions)
+                    if (matchResult.get(matchOptions)) return@f2
+                    configsToRemove += config
+                }
+            }
+            if (configsToRemove.isEmpty()) return@r1
+            val result1 = newResult.filter { it !in configsToRemove }
             newResult = result1
         }
 

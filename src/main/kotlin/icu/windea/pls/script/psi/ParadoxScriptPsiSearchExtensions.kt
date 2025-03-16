@@ -338,9 +338,10 @@ fun ParadoxScriptMemberElement.findParentByPath(
         val elementPath = ParadoxExpressionPath.resolve(path)
         for(subPath in elementPath.subPaths.reversed()) {
             if(subPath == "-") {
-                return null //TODO 暂不支持 
+                current = current.parentOfType<ParadoxScriptBlock>() ?: return null
+            } else {
+                current = current.findParentProperty(subPath, ignoreCase) ?: return null
             }
-            current = current.findParentProperty(subPath, ignoreCase) ?: return null
         }
     }
     if (definitionType != null) {
