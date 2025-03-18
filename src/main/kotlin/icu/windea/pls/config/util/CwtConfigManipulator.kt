@@ -136,7 +136,7 @@ object CwtConfigManipulator {
         return CwtValueConfig.resolve(
             pointer = emptyPointer(),
             configGroup = configGroup,
-            value = PlsConstants.Folders.block,
+            value = PlsConstants.Strings.blockFolder,
             valueType = CwtType.Block,
             configs = configs,
             optionConfigs = config?.optionConfigs,

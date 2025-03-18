@@ -2,17 +2,16 @@ package icu.windea.pls.model
 
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 
 enum class ParadoxLocalisationCategory(
-    val id: String,
     val text: String
 ) {
-    Localisation("localisation", PlsBundle.message("prefix.localisation")),
-    SyncedLocalisation("localisation_synced", PlsBundle.message("prefix.localisationSynced"));
+    Localisation("localisation"),
+    SyncedLocalisation("localisation_synced"),
+    ;
 
     override fun toString(): String {
         return text

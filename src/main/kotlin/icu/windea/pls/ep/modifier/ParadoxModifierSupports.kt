@@ -190,7 +190,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         //加上名字
         val configGroup = modifierConfig.configGroup
         val name = modifierElement.name
-        append(PlsBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsConstants.Strings.modifierPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上模版信息
         val templateConfigExpression = modifierConfig.template
         if (templateConfigExpression.expressionString.isNotEmpty()) {
@@ -274,7 +274,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         if (modifiers.isEmpty()) return false
         for (modifier in modifiers) {
             appendBr()
-            append(PlsBundle.message("prefix.generatedModifier")).append(" ")
+            append(PlsConstants.Strings.generatedModifierPrefix).append(" ")
             appendModifierLink(modifier.name)
             grayed {
                 append(" ")
@@ -388,7 +388,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
 
         //加上名字
         val name = modifierElement.name
-        append(PlsBundle.message("prefix.modifier")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsConstants.Strings.modifierPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上经济类型信息
         appendBr().appendIndent()
         append(PlsBundle.message("generatedFromEconomicCategory"))
@@ -418,7 +418,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return false
         for (modifierInfo in economicCategoryInfo.modifiers) {
             appendBr()
-            append(PlsBundle.message("prefix.generatedModifier")).append(" ")
+            append(PlsConstants.Strings.generatedModifierPrefix).append(" ")
             appendModifierLink(modifierInfo.name)
             if (modifierInfo.resource != null) {
                 grayed {

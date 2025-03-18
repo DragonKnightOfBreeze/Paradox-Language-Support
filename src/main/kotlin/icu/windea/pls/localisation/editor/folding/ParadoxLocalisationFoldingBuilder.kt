@@ -16,7 +16,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         return when (node.elementType) {
             PROPERTY_REFERENCE -> ""
             ICON -> ""
-            COMMAND -> PlsConstants.Folders.command
+            COMMAND -> PlsConstants.Strings.commandFolder
             CONCEPT_TEXT -> "..."
             else -> null
         }
@@ -58,15 +58,15 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
                 val conceptNode = node.findChildByType(CONCEPT)
                 if (conceptNode == null) {
                     if (settings.localisationCommands) {
-                        descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Folders.command))
+                        descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.commandFolder))
                     }
                 } else {
                     if (ParadoxFoldingSettings.getInstance().localisationConcepts) {
                         val conceptTextNode = conceptNode.findChildByType(CONCEPT_TEXT)
                         if (conceptTextNode == null) {
-                            descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Folders.concept))
+                            descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.conceptFolder))
                         } else {
-                            descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Folders.conceptWithText))
+                            descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.conceptWithTextFolder))
                         }
                     }
                 }

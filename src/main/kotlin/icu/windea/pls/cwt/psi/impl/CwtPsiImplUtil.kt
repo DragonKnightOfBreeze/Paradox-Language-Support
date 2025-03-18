@@ -14,7 +14,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.navigation.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import javax.swing.*
 
@@ -24,7 +23,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtRootBlock): String {
-        return PlsConstants.Folders.block
+        return PlsConstants.Strings.blockFolder
     }
 
     @JvmStatic
@@ -282,7 +281,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtBlock): String {
-        return PlsConstants.Folders.block
+        return PlsConstants.Strings.blockFolder
     }
 
     @JvmStatic

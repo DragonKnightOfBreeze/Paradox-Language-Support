@@ -89,11 +89,11 @@ fun String.isInlineUsage(): Boolean {
     return this.equals(ParadoxInlineScriptManager.inlineScriptKey, true)
 }
 
-fun String?.orAnonymous() = if (isNullOrEmpty()) PlsConstants.anonymousString else this
+fun String?.orAnonymous() = if (isNullOrEmpty()) PlsConstants.Strings.anonymous else this
 
-fun String?.orUnknown() = if (isNullOrEmpty()) PlsConstants.unknownString else this
+fun String?.orUnknown() = if (isNullOrEmpty()) PlsConstants.Strings.unknown else this
 
-fun String?.orUnresolved() = if (isNullOrEmpty()) PlsConstants.unresolvedString else this
+fun String?.orUnresolved() = if (isNullOrEmpty()) PlsConstants.Strings.unresolved else this
 
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
     return when {

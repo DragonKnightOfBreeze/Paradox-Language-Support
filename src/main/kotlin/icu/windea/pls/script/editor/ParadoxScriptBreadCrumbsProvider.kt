@@ -25,7 +25,7 @@ class ParadoxScriptBreadCrumbsProvider : BreadcrumbsProvider {
             is ParadoxScriptProperty -> element.name
             is ParadoxScriptString -> element.name
             is ParadoxScriptValue -> element.name
-            is ParadoxScriptScriptedVariable -> element.name ?: PlsConstants.unresolvedString
+            is ParadoxScriptScriptedVariable -> element.name ?: PlsConstants.Strings.unresolved
             else -> throw InternalError()
         }
     }

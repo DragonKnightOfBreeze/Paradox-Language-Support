@@ -106,10 +106,10 @@ object ParadoxLocalisationTextHtmlRenderer {
                 }
             }
             resolved is CwtProperty -> {
-                context.builder.append(resolved.value?.escapeXml() ?: PlsConstants.unresolvedString)
+                context.builder.append(resolved.value?.escapeXml() ?: PlsConstants.Strings.unresolved)
             }
             resolved is ParadoxScriptScriptedVariable && resolved.value != null -> {
-                context.builder.append(resolved.value?.escapeXml() ?: PlsConstants.unresolvedString)
+                context.builder.append(resolved.value?.escapeXml() ?: PlsConstants.Strings.unresolved)
             }
             else -> {
                 context.builder.append("<code>")

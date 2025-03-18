@@ -25,8 +25,8 @@ interface ParadoxDataExpression {
     fun matchesConstant(v: String): Boolean
 
     companion object Resolver {
-        val BlockExpression: ParadoxDataExpression = Impl(PlsConstants.Folders.block, ParadoxType.Block, false, false)
-        val UnknownExpression: ParadoxDataExpression = Impl(PlsConstants.unknownString, ParadoxType.Unknown, false, false)
+        val BlockExpression: ParadoxDataExpression = Impl(PlsConstants.Strings.blockFolder, ParadoxType.Block, false, false)
+        val UnknownExpression: ParadoxDataExpression = Impl(PlsConstants.Strings.unknown, ParadoxType.Unknown, false, false)
 
         fun resolve(value: String, quoted: Boolean, isKey: Boolean? = null): ParadoxDataExpression {
             return Impl(value, ParadoxTypeManager.resolve(value), quoted, isKey)
@@ -38,7 +38,7 @@ interface ParadoxDataExpression {
 
         fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): ParadoxDataExpression {
             return when {
-                element is ParadoxScriptBlock -> Impl(PlsConstants.Folders.block, ParadoxType.Block, false, false)
+                element is ParadoxScriptBlock -> Impl(PlsConstants.Strings.blockFolder, ParadoxType.Block, false, false)
                 element is ParadoxScriptScriptedVariableReference -> LazyImpl(element, matchOptions, false)
                 else -> Impl(element.value, element.type, element.text.isLeftQuoted(), element is ParadoxScriptPropertyKey)
             }
@@ -99,7 +99,7 @@ interface ParadoxDataExpression {
             }
         }
 
-        override val value get() = valueElement?.value ?: PlsConstants.unknownString
+        override val value get() = valueElement?.value ?: PlsConstants.Strings.unknown
         override val type get() = valueElement?.type ?: ParadoxType.Unknown
         override val quoted get() = valueElement?.text?.isLeftQuoted() ?: false
     }

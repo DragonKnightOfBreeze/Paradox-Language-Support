@@ -15,13 +15,13 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
-            BLOCK -> PlsConstants.Folders.block
+            BLOCK -> PlsConstants.Strings.blockFolder
             PARAMETER_CONDITION -> {
                 val expression = node.psi.castOrNull<ParadoxScriptParameterCondition>()?.conditionExpression
                 if (expression == null) return "..."
-                PlsConstants.Folders.parameterCondition(expression)
+                PlsConstants.Strings.parameterConditionFolder(expression)
             }
-            INLINE_MATH -> PlsConstants.Folders.inlineMath
+            INLINE_MATH -> PlsConstants.Strings.inlineMathFolder
             else -> null
         }
     }

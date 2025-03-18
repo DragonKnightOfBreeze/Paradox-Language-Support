@@ -29,7 +29,7 @@ class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
         if (element.elementType == CwtElementTypes.LEFT_BRACE) {
             return when (location) {
                 UsageViewTypeLocation.INSTANCE -> PlsBundle.message("cwt.description.block")
-                else -> PlsConstants.Folders.block
+                else -> PlsConstants.Strings.blockFolder
             }
         }
         return when (element) {

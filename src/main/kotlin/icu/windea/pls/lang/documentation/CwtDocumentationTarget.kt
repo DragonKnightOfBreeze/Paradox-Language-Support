@@ -132,10 +132,10 @@ private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiEle
         val byName = if (shortName == name) null else name
         val prefix = when {
             configType?.isReference == true -> configType.prefix
-            referenceElement is ParadoxScriptPropertyKey -> PlsBundle.message("prefix.definitionProperty")
-            referenceElement is ParadoxScriptValue -> PlsBundle.message("prefix.definitionValue")
-            element is CwtMemberConfigElement && element.config is CwtPropertyConfig -> PlsBundle.message("prefix.definitionProperty")
-            element is CwtMemberConfigElement && element.config is CwtValueConfig -> PlsBundle.message("prefix.definitionValue")
+            referenceElement is ParadoxScriptPropertyKey -> PlsConstants.Strings.definitionPropertyPrefix
+            referenceElement is ParadoxScriptValue -> PlsConstants.Strings.definitionValuePrefix
+            element is CwtMemberConfigElement && element.config is CwtPropertyConfig -> PlsConstants.Strings.definitionPropertyPrefix
+            element is CwtMemberConfigElement && element.config is CwtValueConfig -> PlsConstants.Strings.definitionValuePrefix
             else -> configType?.prefix
         }
         val typeCategory = configType?.category
@@ -207,13 +207,13 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
     run {
         if (nameLocalisation == null) return@run
         appendBr()
-        append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
+        append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ")
         append("name = ").appendLocalisationLink(gameType, nameLocalisation.name, contextElement)
     }
     run {
         if (descLocalisation == null) return@run
         appendBr()
-        append(PlsBundle.message("prefix.relatedLocalisation")).append(" ")
+        append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ")
         append("desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement)
     }
     run rs@{
@@ -249,7 +249,7 @@ private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceE
         if (iconFile == null) return@run
         val iconPath = iconFile.fileInfo?.path?.path ?: return@run
         appendBr()
-        append(PlsBundle.message("prefix.relatedImage")).append(" ")
+        append(PlsConstants.Strings.relatedImagePrefix).append(" ")
         append("icon = ").appendFilePathLink(gameType, iconPath, iconPath, contextElement)
     }
     run rs@{

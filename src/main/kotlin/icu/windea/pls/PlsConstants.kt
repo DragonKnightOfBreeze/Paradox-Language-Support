@@ -18,42 +18,65 @@ object PlsConstants {
 
     const val modDescriptorFileName = "descriptor.mod"
 
-    const val anonymousString = "(anonymous)"
-    const val unknownString = "(unknown)"
-    const val unresolvedString = "(unresolved)"
-
     const val dummyIdentifier = "windea"
 
     //val eraseMarker = TextAttributes()
     //val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
 
-    object Settings {
-        /** 默认的封装变量的名字（执行重构与生成操作时会用到） */
-        const val defaultScriptedVariableName = "var"
-        /** 定义相对于脚本文件的最大深度（用于优化性能） */
-        const val maxDefinitionDepth = 4
-        /** 在提示信息中显示的条目的数量限制 */
-        const val itemLimit = 5
-    }
+    object Strings {
+        const val anonymous = "(anonymous)"
+        const val unknown = "(unknown)"
+        const val unresolved = "(unresolved)"
 
-    object Samples {
-        val cwtColorSettings = "/samples/Cwt.colorSettings.txt".toClasspathUrl(locationClass).readText()
-        val cwtCodeStyleSettings = "/samples/Cwt.codeStyleSettings.txt".toClasspathUrl(locationClass).readText()
+        const val typePrefix = "(type)"
+        const val subtypePrefix = "(subtype)"
+        const val gameRulePrefix = "(game rule)"
+        const val onActionPrefix = "(on action)"
+        const val enumPrefix = "(enum)"
+        const val enumValuePrefix = "(enum value)"
+        const val complexEnumPrefix = "(complex enum)"
+        const val complexEnumValuePrefix = "(complex enum value)"
+        const val dynamicValueTypePrefix = "(dynamic value type)"
+        const val dynamicValuePrefix = "(dynamic value)"
+        const val inlinePrefix = "(inline)"
+        const val singleAliasPrefix = "(single alias)"
+        const val aliasPrefix = "(alias)"
+        const val linkPrefix = "(link)"
+        const val localisationLinkPrefix = "(localisation link)"
+        const val localisationPromotionPrefix = "(localisation promotion)"
+        const val localisationCommandPrefix = "(localisation command)"
+        const val modifierCategoryPrefix = "(modifier category)"
+        const val modifierPrefix = "(modifier)"
+        const val triggerPrefix = "(trigger)"
+        const val effectPrefix = "(effect)"
+        const val scopePrefix = "(scope)"
+        const val scopeGroupPrefix = "(scope group)"
+        const val databaseObjectTypePrefix = "(database object type)"
+        const val systemScopePrefix = "(system scope)"
+        const val scriptedVariablePrefix = "(scripted variable)"
+        const val parameterPrefix = "(parameter)"
+        const val definitionPrefix = "(definition)"
+        const val relatedLocalisationPrefix = "(related localisation)"
+        const val relatedImagePrefix = "(related image)"
+        const val generatedModifierPrefix = "(generated modifier)"
+        const val eventTypePrefix = "(event type)"
+        const val definitionPropertyPrefix = "(definition property)"
+        const val definitionValuePrefix = "(definition value)"
+        const val propertyPrefix = "(property)"
+        const val localisationPrefix = "(localisation)"
+        const val localisationSyncedPrefix = "(localisation_synced)"
+        const val localisationPropertyPrefix = "(localisation property)"
+        const val localisationLocalePrefix = "(localisation locale)"
+        const val localisationColorPrefix = "(localisation color)"
+        const val localisationIconPrefix = "(localisation icon)"
+        const val inlineScriptPrefix = "(inline script)"
 
-        val paradoxLocalisationColorSettings = "/samples/ParadoxLocalisation.colorSettings.txt".toClasspathUrl(locationClass).readText()
-        val paradoxLocalisationCodeStyleSettings = "/samples/ParadoxLocalisation.codeStyleSettings.txt".toClasspathUrl(locationClass).readText()
-
-        val paradoxScriptColorSettings = "/samples/ParadoxScript.colorSettings.txt".toClasspathUrl(locationClass).readText()
-        val paradoxScriptCodeStyleSettings = "/samples/ParadoxScript.codeStyleSettings.txt".toClasspathUrl(locationClass).readText()
-    }
-
-    object Folders {
-        const val block = "{...}"
-        val parameterCondition = { expression: String -> "[[$expression]...]" }
-        const val inlineMath = "@[...]"
-        const val command = "[...]"
-        const val concept = "['...']"
-        const val conceptWithText = "['...', ...]"
+        const val blockFolder = "{...}"
+        val parameterConditionFolder = { expression: String -> "[[$expression]...]" }
+        const val inlineMathFolder = "@[...]"
+        const val commandFolder = "[...]"
+        const val conceptFolder = "['...']"
+        const val conceptWithTextFolder = "['...', ...]"
     }
 
     object Patterns {
@@ -76,5 +99,25 @@ object PlsConstants {
         val texconvExe = data.resolve("texconv.exe")
         val texconvExeClasspathUrl = "/tools/texconv.exe".toClasspathUrl(locationClass)
         val texconvExeFile by VirtualFileProvider(texconvExe) { VfsUtil.findFileByURL(texconvExeClasspathUrl)!! }
+    }
+
+    object Samples {
+        val cwtColorSettings = "/samples/Cwt.colorSettings.txt".toClasspathUrl(locationClass).readText()
+        val cwtCodeStyleSettings = "/samples/Cwt.codeStyleSettings.txt".toClasspathUrl(locationClass).readText()
+
+        val paradoxLocalisationColorSettings = "/samples/ParadoxLocalisation.colorSettings.txt".toClasspathUrl(locationClass).readText()
+        val paradoxLocalisationCodeStyleSettings = "/samples/ParadoxLocalisation.codeStyleSettings.txt".toClasspathUrl(locationClass).readText()
+
+        val paradoxScriptColorSettings = "/samples/ParadoxScript.colorSettings.txt".toClasspathUrl(locationClass).readText()
+        val paradoxScriptCodeStyleSettings = "/samples/ParadoxScript.codeStyleSettings.txt".toClasspathUrl(locationClass).readText()
+    }
+
+    object Settings {
+        /** 默认的封装变量的名字（执行重构与生成操作时会用到） */
+        const val defaultScriptedVariableName = "var"
+        /** 定义相对于脚本文件的最大深度（用于优化性能） */
+        const val maxDefinitionDepth = 4
+        /** 在提示信息中显示的条目的数量限制 */
+        const val itemLimit = 5
     }
 }

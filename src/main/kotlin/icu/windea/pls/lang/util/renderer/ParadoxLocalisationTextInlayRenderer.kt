@@ -127,10 +127,10 @@ object ParadoxLocalisationTextInlayRenderer {
                 }
             }
             resolved is CwtProperty -> {
-                smallText(resolved.value ?: PlsConstants.unresolvedString)
+                smallText(resolved.value ?: PlsConstants.Strings.unresolved)
             }
             resolved is ParadoxScriptScriptedVariable && resolved.value != null -> {
-                smallText(resolved.value ?: PlsConstants.unresolvedString)
+                smallText(resolved.value ?: PlsConstants.Strings.unresolved)
             }
             else -> {
                 truncatedSmallText(element.text, context)

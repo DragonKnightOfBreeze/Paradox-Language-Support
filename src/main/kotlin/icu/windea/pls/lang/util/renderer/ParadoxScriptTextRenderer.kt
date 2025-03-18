@@ -15,13 +15,13 @@ object ParadoxScriptTextRenderer {
 
     fun renderTo(element: ParadoxScriptProperty, builder: StringBuilder, renderInBlock: Boolean = false, conditional: Boolean = false, inline: Boolean = false) {
         val propertyKey = element.propertyKey
-        builder.append(propertyKey.value()?.quoteIfNecessary() ?: PlsConstants.unresolvedString)
+        builder.append(propertyKey.value()?.quoteIfNecessary() ?: PlsConstants.Strings.unresolved)
         builder.append(" = ")
         val propertyValue = element.propertyValue
         if (propertyValue != null) {
             renderTo(propertyValue, builder, renderInBlock, conditional, inline)
         } else {
-            builder.append(PlsConstants.unresolvedString)
+            builder.append(PlsConstants.Strings.unresolved)
         }
     }
 
@@ -40,7 +40,7 @@ object ParadoxScriptTextRenderer {
                 }
                 builder.append("}")
             }
-            else -> builder.append(element.value()?.quoteIfNecessary() ?: PlsConstants.unresolvedString)
+            else -> builder.append(element.value()?.quoteIfNecessary() ?: PlsConstants.Strings.unresolved)
         }
     }
 }

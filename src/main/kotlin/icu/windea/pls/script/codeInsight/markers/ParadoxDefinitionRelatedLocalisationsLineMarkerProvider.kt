@@ -45,10 +45,10 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
             }
             if (resolved.message != null) {
                 if (isFirst) isFirst = false else tooltipBuilder.append("<br>")
-                tooltipBuilder.append(PlsBundle.message("prefix.relatedLocalisation")).append(" ").append(key).append(" = ").append(resolved.message)
+                tooltipBuilder.append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ").append(key).append(" = ").append(resolved.message)
             } else if (resolved.elements.isNotEmpty() && keys.add(key)) {
                 if (isFirst) isFirst = false else tooltipBuilder.append("<br>")
-                tooltipBuilder.append(PlsBundle.message("prefix.relatedLocalisation")).append(" ").append(key).append(" = ").append(resolved.name)
+                tooltipBuilder.append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ").append(key).append(" = ").append(resolved.name)
             }
         }
         if (keys.isEmpty()) return

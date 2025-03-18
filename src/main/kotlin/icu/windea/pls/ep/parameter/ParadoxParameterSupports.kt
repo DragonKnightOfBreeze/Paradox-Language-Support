@@ -208,7 +208,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
 
         //加上名字
         val name = parameterElement.name
-        append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsConstants.Strings.parameterPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上推断得到的类型信息
         val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
         if (inferredType != null) {
@@ -537,7 +537,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
 
         //加上名字
         val name = parameterElement.name
-        append(PlsBundle.message("prefix.parameter")).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsConstants.Strings.parameterPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上推断得到的类型信息
         val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
         if (inferredType != null) {

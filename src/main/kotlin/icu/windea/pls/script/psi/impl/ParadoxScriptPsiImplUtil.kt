@@ -30,7 +30,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptRootBlock): String {
-        return PlsConstants.Folders.block
+        return PlsConstants.Strings.blockFolder
     }
 
     @JvmStatic
@@ -425,7 +425,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptBlock): String {
-        return PlsConstants.Folders.block
+        return PlsConstants.Strings.blockFolder
     }
 
     @JvmStatic
@@ -542,7 +542,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentationText(element: ParadoxScriptParameterCondition): String? {
-        return element.conditionExpression?.let { PlsConstants.Folders.parameterCondition(it) }
+        return element.conditionExpression?.let { PlsConstants.Strings.parameterConditionFolder(it) }
     }
 
     //endregion
@@ -578,7 +578,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentationText(element: ParadoxScriptInlineParameterCondition): String? {
-        return element.conditionExpression?.let { PlsConstants.Folders.parameterCondition(it) }
+        return element.conditionExpression?.let { PlsConstants.Strings.parameterConditionFolder(it) }
     }
 
     //endregion
@@ -623,7 +623,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptInlineMath): String {
-        return PlsConstants.Folders.inlineMath
+        return PlsConstants.Strings.inlineMathFolder
     }
 
     //endregion
@@ -787,11 +787,11 @@ object ParadoxScriptPsiImplUtil {
         return when (element) {
             is ParadoxScriptProperty -> {
                 val keyExpression = element.propertyKey.expression
-                val valueExpression = element.propertyValue?.expression ?: PlsConstants.unresolvedString
+                val valueExpression = element.propertyValue?.expression ?: PlsConstants.Strings.unresolved
                 "$keyExpression = $valueExpression"
             }
-            is ParadoxScriptBlock -> PlsConstants.Folders.block
-            is ParadoxScriptInlineMath -> PlsConstants.Folders.inlineMath
+            is ParadoxScriptBlock -> PlsConstants.Strings.blockFolder
+            is ParadoxScriptInlineMath -> PlsConstants.Strings.inlineMathFolder
             else -> element.text
         }
     }
