@@ -124,7 +124,7 @@ class ParadoxScriptAnnotator : Annotator {
         val config = ParadoxExpressionManager.getConfigs(element, orDefault = isKey).firstOrNull()
         if (config != null) {
             //高亮特殊标签
-            if (element is ParadoxScriptStringExpressionElement && config is CwtValueConfig && config.isTagConfig) {
+            if (element is ParadoxScriptStringExpressionElement && config is CwtValueConfig && config.tagType != null) {
                 holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(Keys.TAG_KEY).create()
                 return
             }

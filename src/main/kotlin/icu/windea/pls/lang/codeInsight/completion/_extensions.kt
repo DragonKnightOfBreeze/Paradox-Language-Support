@@ -336,7 +336,7 @@ private fun getIconToUse(icon: Icon?, config: CwtConfig<*>?): Icon? {
     if (icon == null) return null
     when (config) {
         is CwtValueConfig -> {
-            if (config.isTagConfig) return PlsIcons.Nodes.Tag
+            if (config.tagType != null) return PlsIcons.Nodes.Tag
         }
         is CwtAliasConfig -> {
             val aliasConfig = config

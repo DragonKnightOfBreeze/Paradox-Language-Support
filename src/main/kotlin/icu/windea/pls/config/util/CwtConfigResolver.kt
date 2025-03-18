@@ -49,7 +49,7 @@ object CwtConfigResolver {
         val configs = doGetConfigs(valueElement, file, fileConfig)
         val (optionConfigs, documentation) = doGetOptionConfigsAndDocumentation(propertyElement, file, fileConfig)
         val config = CwtPropertyConfig.resolve(pointer, configGroup, key, value, valueType, separatorType, configs, optionConfigs, documentation)
-            .let { applyInheritOptions(it) }
+        CwtConfigCollector.postHandleConfig(config)
         CwtConfigCollector.processConfigWithConfigExpression(config, config.keyExpression)
         CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
         configs?.forEach { it.parentConfig = config }
@@ -69,7 +69,7 @@ object CwtConfigResolver {
         val configs = doGetConfigs(valueElement, file, fileConfig)
         val (optionConfigs, documentation) = doGetOptionConfigsAndDocumentation(valueElement, file, fileConfig)
         val config = CwtValueConfig.resolve(pointer, configGroup, value, valueType, configs, optionConfigs, documentation)
-            .let { applyInheritOptions(it) }
+        CwtConfigCollector.postHandleConfig(config)
         CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
         configs?.forEach { it.parentConfig = config }
         return config
@@ -172,43 +172,5 @@ object CwtConfigResolver {
             }
         }
         return optionConfigs.optimized() //optimized to optimize memory
-    }
-
-    private fun <T : CwtMemberConfig<*>> applyInheritOptions(config: T): T {
-        //TODO 1.3.18+
-        //val configGroup = config.configGroup
-        //
-        //var inheritConfigsValue: String? = null
-        //var inheritOptionsValue: String? = null
-        //var inheritDocValue: String? = null
-        //
-        //val oldOptions = mutableListOf<CwtOptionMemberConfig<*>>()
-        //config.options?.forEach { o ->
-        //    when(o){
-        //        is CwtOptionConfig -> when(o.key) {
-        //            "inherit_configs" -> o.stringValue?.let { inheritConfigsValue = it }
-        //            "inherit_options" -> o.stringValue?.let { inheritOptionsValue = it }
-        //            "inherit_doc" -> o.stringValue?.let { inheritDocValue = it }
-        //            else -> oldOptions += o
-        //        }
-        //        is CwtOptionValueConfig -> oldOptions += o
-        //    }
-        //}
-        //
-        //if(inheritConfigsValue == null && inheritOptionsValue == null && inheritDocValue == null) return config
-        //
-        //var newConfigs: List<CwtMemberConfig<*>>? = null
-        //var newOptions: List<CwtOptionMemberConfig<*>>? = null
-        //var newDocumentation: String? = null
-        //
-        //inheritDocValue?.let { pathExpression ->
-        //    CwtConfigManager.getConfigByPathExpression(configGroup, pathExpression)?.let { newConfig ->
-        //        newDocumentation = newConfig.documentation
-        //    }
-        //}
-        //
-        //if(newConfigs == null && newOptions == null && newDocumentation == null) return config
-
-        return config
     }
 }

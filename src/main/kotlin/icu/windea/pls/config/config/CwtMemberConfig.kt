@@ -88,9 +88,6 @@ val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<*>
         is CwtValueConfig -> propertyConfig ?: this
     }
 
-val CwtValueConfig.isTagConfig: Boolean
-    get() = findOptionValue("tag") != null
-
 fun <T : CwtMemberElement> CwtMemberConfig<T>.toOccurrence(contextElement: PsiElement, project: Project): Occurrence {
     val cardinality = this.cardinality ?: return Occurrence(0, null, null, false)
     val cardinalityMinDefine = this.cardinalityMinDefine
@@ -116,7 +113,6 @@ fun <T : CwtMemberElement> CwtMemberConfig<T>.toOccurrence(contextElement: PsiEl
 val CwtMemberConfig.Keys.cardinality by createKey<CwtCardinalityExpression>(CwtMemberConfig.Keys)
 val CwtMemberConfig.Keys.cardinalityMinDefine by createKey<String>(CwtMemberConfig.Keys)
 val CwtMemberConfig.Keys.cardinalityMaxDefine by createKey<String>(CwtMemberConfig.Keys)
-val CwtMemberConfig.Keys.hasScopeOption by createKey<Boolean>(CwtMemberConfig.Keys)
 val CwtMemberConfig.Keys.scopeContext by createKey<ParadoxScopeContext>(CwtMemberConfig.Keys)
 val CwtMemberConfig.Keys.replaceScopes by createKey<Map<String, String>>(CwtMemberConfig.Keys)
 val CwtMemberConfig.Keys.pushScope by createKey<String>(CwtMemberConfig.Keys)
@@ -125,6 +121,7 @@ val CwtMemberConfig.Keys.supportedScopes by createKey<Set<String>>(CwtMemberConf
 //may on:
 // * a config expression in declaration config
 // * a config expression in subtype structure config
+
 val CwtMemberConfig<*>.cardinality: CwtCardinalityExpression?
     get() = getOrPutUserData(CwtMemberConfig.Keys.cardinality, CwtCardinalityExpression.EmptyExpression) action@{
         val option = findOption("cardinality")
@@ -146,6 +143,8 @@ val CwtMemberConfig<*>.cardinalityMaxDefine
         val option = findOption("cardinality_max_define")
         option?.stringValue
     }
+
+//from replace_scopes and push_scope
 
 val CwtMemberConfig<*>.scopeContext: ParadoxScopeContext?
     get() = getOrPutUserData(CwtMemberConfig.Keys.scopeContext, ParadoxScopeContext.Empty) action@{
@@ -196,6 +195,8 @@ val CwtMemberConfig<*>.supportedScopes: Set<String>
 var CwtPropertyConfig.singleAliasConfig: CwtSingleAliasConfig? by createKey(CwtMemberConfig.Keys)
 var CwtPropertyConfig.aliasConfig: CwtAliasConfig? by createKey(CwtMemberConfig.Keys)
 var CwtPropertyConfig.inlineConfig: CwtInlineConfig? by createKey(CwtMemberConfig.Keys)
+
+var CwtValueConfig.tagType: CwtTagType? by createKey(CwtMemberConfig.Keys)
 
 var CwtMemberConfig<*>.originalConfig: CwtMemberConfig<CwtMemberElement>? by createKey(CwtMemberConfig.Keys)
 var CwtMemberConfig<*>.overriddenProvider: CwtOverriddenConfigProvider? by createKey(CwtMemberConfig.Keys)
