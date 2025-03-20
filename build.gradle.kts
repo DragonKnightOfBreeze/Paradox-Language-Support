@@ -82,9 +82,6 @@ dependencies {
         plugin("cn.yiiguxing.plugin.translate:3.6.8")
     }
 
-    //built-in configs
-    implementation(files("build/libs/builtin-configs.jar"))
-
     //dds - https://github.com/iTitus/dds
     implementation("io.github.ititus:dds:3.1.0")
     implementation("io.github.ititus:ddsiio:3.1.0")
@@ -134,6 +131,17 @@ val excludesInJar = listOf(
 val excludesInZip = listOf(
     "lib/jackson-dataformat-csv-*.jar",
 )
+val cwtConfigDirs = listOf(
+    "core" to "core",
+    "cwtools-ck2-config" to "ck2",
+    "cwtools-ck3-config" to "ck3",
+    "cwtools-eu4-config" to "eu4",
+    "cwtools-hoi4-config" to "hoi4",
+    "cwtools-ir-config" to "ir",
+    "cwtools-stellaris-config" to "stellaris",
+    "cwtools-vic2-config" to "vic2",
+    "cwtools-vic3-config" to "vic3",
+)
 
 tasks {
     withType<Copy> {
@@ -150,21 +158,11 @@ tasks {
             )
         }
     }
-    val configJar by register<Jar>("configJar") {
-        archiveBaseName = providers.gradleProperty("configPackageName")
-        archiveVersion = provider { "" }
-
-        val cwtConfigDirs = listOf(
-            "core" to "core",
-            "cwtools-ck2-config" to "ck2",
-            "cwtools-ck3-config" to "ck3",
-            "cwtools-eu4-config" to "eu4",
-            "cwtools-hoi4-config" to "hoi4",
-            "cwtools-ir-config" to "ir",
-            "cwtools-stellaris-config" to "stellaris",
-            "cwtools-vic2-config" to "vic2",
-            "cwtools-vic3-config" to "vic3",
-        )
+    jar {
+        //添加项目文档和许可证
+        from("README.md", "README_en.md", "LICENSE")
+        //排除特定文件
+        excludesInJar.forEach { exclude(it) }
 
         //添加规则文件
         cwtConfigDirs.forEach { (cwtConfigDir, toDir) ->
@@ -180,16 +178,10 @@ tasks {
                 }
             }
         }
-        //添加文档和许可证
+        //添加相关的文档和许可证
         into("config") {
             from("cwt/README.md", "cwt/LICENSE")
         }
-    }
-    jar {
-        //添加项目文档和许可证
-        from("README.md", "README_en.md", "LICENSE")
-        //排除特定文件
-        excludesInJar.forEach { exclude(it) }
     }
     instrumentedJar {
         //排除特定文件

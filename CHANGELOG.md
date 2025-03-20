@@ -8,6 +8,7 @@
 * [X] #131 Only numbers in event names
 * [ ] #132 Icon detection unreliable
 * [ ] #133 Scripted Triggers detection fails sometimes
+* [X] Move built-in configs into main jar again together with codes and other sources to make things easy
 * [ ] Other optimizations and bug fixes
 
 ## 1.3.31
