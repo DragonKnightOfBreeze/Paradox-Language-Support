@@ -789,7 +789,7 @@ object ParadoxExpressionManager {
     }
 
     private fun doGetExpressionReferencesFromCache(element: ParadoxLocalisationExpressionElement): Array<out PsiReference> {
-        if (!element.isCommandExpression()) return PsiReference.EMPTY_ARRAY
+        if (!element.isComplexExpression()) return PsiReference.EMPTY_ARRAY
 
         //尝试兼容可能包含参数的情况
         //if(text.isParameterized()) return PsiReference.EMPTY_ARRAY
