@@ -278,6 +278,9 @@ parameters = {
     # 'x' can also be a pattern expression (template expression, ant expression or regex)
     # use 'x = xxx' to declare context config(s) (add '## context_configs_type = multiple' if there are various context configs)
     
+    # for value of option 'context_key',
+    # before '@' is the containing definition type (e.g., 'scripted_trigger'), or 'inline_script' for inline script parameters
+    # after '@' is the containing definition name, or the containing inline script path
     # since 1.3.6, value of option 'context_key' can also be a pattern expression (template expression, ant expression or regex)
     
     ### Some documentation
@@ -361,17 +364,16 @@ dynamic_values = {
 
 #### About the Template Expression
 
-Template expressions are composed of string literals and expressions of limited types (definitions, enums and dynamic values),
-and can be used for more flexible matching.
+Template expressions are composed of multiple data expressions (such as data expressions for string literals, definitions or localisations), and can be used for more flexible matching.
 
 ```cwt
 # a string literal, exactly matches 'x'
 x
 # a template expression which contains a reference to jobs, matches 'a_researcher_b', 'a_farmer_b', etc.
 a_<job>_b
-# a template expression which contains a references to enum of weight_or_base, matches 'a_weight_b' and 'a_base_b'
+# a template expression which contains a references to enum values of 'weight_or_base', matches 'a_weight_b' and 'a_base_b'
 a_enum[weight_or_base]_b
-# a template expression which contains a references to dynamic value type of anything
+# a template expression which contains a references to dynamic values of 'anything'
 # generally, there is no limit for 'value[anything]', so this expression is equivalent to regex 'a_.*_b'
 a_value[anything]_b
 ```
