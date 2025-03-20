@@ -56,7 +56,7 @@ object CwtConfigCollector {
         }
     }
 
-    fun processConfigWithConfigExpression(config: CwtMemberConfig<*>, configExpression: CwtDataExpression) {
+    fun processConfigWithConfigExpression(config: CwtConfig<*>, configExpression: CwtDataExpression) {
         val configGroup = config.configGroup
         when (configExpression.type) {
             CwtDataTypes.FilePath -> {
