@@ -266,7 +266,7 @@ object ParadoxCompletionManager {
         val path = fileInfo.path
         val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
         for (typeConfig in configGroup.types.values) {
-            if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, null, null)) continue
+            if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, null, null, null)) continue
             val skipRootKeyConfig = typeConfig.skipRootKey
             if (skipRootKeyConfig.isNullOrEmpty()) {
                 if (elementPath.isEmpty()) {

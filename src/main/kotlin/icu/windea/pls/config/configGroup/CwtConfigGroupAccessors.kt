@@ -1,11 +1,17 @@
 package icu.windea.pls.config.configGroup
 
+import com.intellij.openapi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.priority.*
+import icu.windea.pls.ep.scope.*
+import icu.windea.pls.lang.*
+
+//region Internal Accessors
 
 @Tags(Tag.Internal)
 val CwtConfigGroup.schemas: MutableList<CwtSchemaConfig>
@@ -16,6 +22,10 @@ val CwtConfigGroup.foldingSettings: MutableMap<String, MutableMap<String, CwtFol
 @Tags(Tag.Internal)
 val CwtConfigGroup.postfixTemplateSettings: MutableMap<String, MutableMap<String, CwtPostfixTemplateSettingsConfig>>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
+
+//endregion
+
+//region Core Accessors
 
 val CwtConfigGroup.priorities: MutableMap<String, ParadoxPriority>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
@@ -167,6 +177,10 @@ val CwtConfigGroup.definitionTypesSkipCheckSystemScope: MutableSet<String>
 @Tags(Tag.Computed)
 val CwtConfigGroup.definitionTypesSupportParameters: MutableSet<String>
     by createKey(CwtConfigGroup.Keys) { mutableSetOf() }
+//可能有类型键前缀（type_key_prefix）的定义类型 - 按文件路径计算
+@Tags(Tag.Computed)
+val CwtConfigGroup.definitionTypesMayWithTypeKeyPrefix: MutableSet<String>
+    by createKey(CwtConfigGroup.Keys) { mutableSetOf() }
 
 @Tags(Tag.Collected)
 val CwtConfigGroup.filePathExpressions: MutableSet<CwtDataExpression>
@@ -175,3 +189,48 @@ val CwtConfigGroup.filePathExpressions: MutableSet<CwtDataExpression>
 val CwtConfigGroup.parameterConfigs: MutableSet<CwtMemberConfig<*>>
     by createKey(CwtConfigGroup.Keys) { mutableSetOf() }
 
+//endregion
+
+//region Mock Configs
+
+@Tags(Tag.Computed)
+val CwtConfigGroup.mockVariableConfig: CwtValueConfig
+    by createKey(CwtConfigGroup.Keys) {
+        CwtValueConfig.resolve(emptyPointer(), this, "value[variable]")
+    }
+
+@Tags(Tag.Computed)
+val CwtConfigGroup.mockEventTargetConfig: CwtValueConfig
+    by createKey(CwtConfigGroup.Keys) {
+        CwtValueConfig.resolve(emptyPointer(), this, "value[event_target]")
+    }
+
+@Tags(Tag.Computed)
+val CwtConfigGroup.mockGlobalEventTargetConfig: CwtValueConfig
+    by createKey(CwtConfigGroup.Keys) {
+        CwtValueConfig.resolve(emptyPointer(), this, "value[global_event_target]")
+    }
+
+//endregion
+
+//region Modification Trackers
+
+@Tags(Tag.Computed)
+val CwtConfigGroup.definitionParameterModificationTracker: ModificationTracker
+    by createKey(CwtConfigGroup.Keys) {
+        val definitionTypes = definitionTypesSupportParameters
+        val configs = definitionTypes.mapNotNull { types[it] }
+        val patterns = configs.flatMapTo(sortedSetOf()) { CwtConfigManager.getFilePathPatterns(it) }
+        ParadoxModificationTrackers.ScriptFileTracker(patterns.joinToString(";"))
+    }
+
+@Tags(Tag.Computed)
+val CwtConfigGroup.definitionScopeContextModificationTracker: ModificationTracker
+    by createKey(CwtConfigGroup.Keys) {
+        val definitionTypes = ParadoxBaseDefinitionInferredScopeContextProvider.Constants.DEFINITION_TYPES
+        val configs = definitionTypes.mapNotNull { types[it] }
+        val patterns = configs.flatMapTo(sortedSetOf()) { CwtConfigManager.getFilePathPatterns(it) }
+        ParadoxModificationTrackers.ScriptFileTracker(patterns.joinToString(";"))
+    }
+
+//endregion

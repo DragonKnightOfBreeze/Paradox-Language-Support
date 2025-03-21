@@ -4,10 +4,10 @@
 
 * [ ] #123 [CK3] Supports `type_key_prefix` in cwt configs, which is currently only used in ck3's `scripted_effects.cwt`
 * [ ] #129 更好的对模版表达式规则的支持 / Better template expression config support
-* [ ] #130 更好的对嵌套的块的支持 / Bette support for nested blocks
+* [X] #130 更好的对嵌套的块的支持 / Bette support for nested blocks
 * [X] #131 Only numbers in event names
-* [ ] #132 Icon detection unreliable
-* [ ] #133 Scripted Triggers detection fails sometimes
+* [ ] #132 Icon detection unreliable (Not reproduced?)
+* [ ] #133 Scripted Triggers detection fails sometimes (Not reproduced?)
 * [X] 修复无法识别本地化文件中的数据库对象表达式的BUG / Fixed the bug that database object expression in loc files cannot be resolved 
 * [X] 将内置规则重新移到主要的jar包中以免去不必要的麻烦 / Move built-in configs into main jar to make things easy
 * [ ] 其他优化与BUG修复 / Other optimizations and bug fixes

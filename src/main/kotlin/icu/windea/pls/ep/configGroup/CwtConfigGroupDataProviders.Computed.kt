@@ -4,6 +4,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import kotlin.collections.component1
@@ -15,6 +16,7 @@ import kotlin.collections.set
  */
 class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
     override fun process(configGroup: CwtConfigGroup): Boolean {
+        //compute `generatedModifiers` and `predefinedModifiers`
         run {
             configGroup.modifiers.values
                 .filter { it.template.expressionString.isNotEmpty() }
@@ -25,6 +27,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 .associateByTo(configGroup.predefinedModifiers) { it.name }
         }
 
+        //compute `swappedTypes` and add missing declarations with swapped type
         run {
             for (typeConfig in configGroup.types.values) {
                 if (typeConfig.baseType == null) continue
@@ -59,6 +62,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 .filter { it.forScope() && it.fromData && it.prefix == "event_target:" }
         }
 
+        //bind `categoryConfigMap` for modifier configs
         run {
             for (modifier in configGroup.modifiers.values) {
                 for (category in modifier.categories) {
@@ -68,6 +72,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
         }
 
+        //compute `aliasKeysGroupConst` and `aliasKeysGroupNoConst`
         run {
             for ((k, v) in configGroup.aliasGroups) {
                 var keysConst: MutableMap<String, String>? = null
@@ -90,6 +95,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
         }
 
+        //compute `definitionTypesSupportParameters`
         run {
             with(configGroup.definitionTypesSupportParameters) {
                 for (parameterConfig in configGroup.parameterConfigs) {
@@ -100,6 +106,21 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         contextExpression.value?.let { this += it }
                     }
                 }
+            }
+        }
+
+        //compute `definitionTypesMayWithTypeKeyPrefix`
+        run {
+            //按文件路径计算，更准确地说，按规则的文件路径模式是否有交集来计算
+            //based on file paths, in detail, based on file path patterns (has any same file path patterns)
+            with(configGroup.definitionTypesMayWithTypeKeyPrefix) {
+                val types = configGroup.types.values.filter { c -> c.typeKeyPrefix != null }
+                val filePathPatterns = types.flatMapTo(mutableSetOf()) { c -> CwtConfigManager.getFilePathPatterns(c) }
+                val types1 = configGroup.types.values.filter { c ->
+                    val filePathPatterns1 = CwtConfigManager.getFilePathPatterns(c)
+                    filePathPatterns1.isNotEmpty() && filePathPatterns.any { it in filePathPatterns }
+                }
+                types1.forEach { c -> this += c.name }
             }
         }
 
