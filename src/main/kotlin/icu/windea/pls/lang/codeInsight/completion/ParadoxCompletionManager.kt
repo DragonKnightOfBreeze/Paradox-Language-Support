@@ -81,20 +81,17 @@ object ParadoxCompletionManager {
     fun addRootKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
         val elementPath = ParadoxExpressionPathManager.get(memberElement, PlsConstants.Settings.maxDefinitionDepth) ?: return
         if (elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
-
+        val rootKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(memberElement).singleOrNull() }
         context.isKey = true
-
-        completeRootKey(context, result, elementPath)
+        completeRootKey(context, result, elementPath, rootKeyPrefix)
     }
 
     fun addKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
         val configContext = ParadoxExpressionManager.getConfigContext(memberElement)
         if (configContext == null) return
-        if (!configContext.isRootOrMember()) {
-            //仅提示不在定义声明中的rootKey
-            addRootKeyCompletions(memberElement, context, result)
-            return
-        }
+
+        //仅提示不在定义声明中的rootKey
+        if (!configContext.isRootOrMember()) return addRootKeyCompletions(memberElement, context, result)
 
         val configGroup = configContext.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
@@ -135,12 +132,12 @@ object ParadoxCompletionManager {
 
         context.config = null
         context.configs = emptyList()
-        return
     }
 
     fun addValueCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
         val configContext = ParadoxExpressionManager.getConfigContext(memberElement)
         if (configContext == null) return
+
         if (!configContext.isRootOrMember()) return
 
         val configGroup = configContext.configGroup
@@ -178,12 +175,12 @@ object ParadoxCompletionManager {
         }
 
         context.config = null
-        return
     }
 
     fun addPropertyValueCompletions(element: ParadoxScriptStringExpressionElement, propertyElement: ParadoxScriptProperty, context: ProcessingContext, result: CompletionResultSet) {
         val configContext = ParadoxExpressionManager.getConfigContext(element)
         if (configContext == null) return
+
         if (!configContext.isRootOrMember()) return
 
         val configGroup = configContext.configGroup
@@ -202,7 +199,6 @@ object ParadoxCompletionManager {
         }
 
         context.config = null
-        return
     }
 
     private fun shouldComplete(config: CwtPropertyConfig, occurrenceMap: Map<CwtDataExpression, Occurrence>): Boolean {
@@ -258,7 +254,7 @@ object ParadoxCompletionManager {
 
     //region Base Completion Methods
 
-    fun completeRootKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxExpressionPath) {
+    fun completeRootKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxExpressionPath, rootKeyPrefix: Lazy<String?>) {
         val originalFile = context.parameters?.originalFile ?: return
         val fileInfo = originalFile.fileInfo ?: return
         val gameType = context.gameType ?: return
@@ -266,7 +262,7 @@ object ParadoxCompletionManager {
         val path = fileInfo.path
         val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
         for (typeConfig in configGroup.types.values) {
-            if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, null, null, null)) continue
+            if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, null, null, rootKeyPrefix)) continue
             val skipRootKeyConfig = typeConfig.skipRootKey
             if (skipRootKeyConfig.isNullOrEmpty()) {
                 if (elementPath.isEmpty()) {
@@ -307,17 +303,17 @@ object ParadoxCompletionManager {
                 typeConfigToUse == null || tuples.isEmpty() -> null
                 else -> tuples.mapNotNull { it.second }.ifEmpty { null }?.distinctBy { it.name }?.map { it.name }
             }
-            val config = if (typeToUse == null) null else {
-                val declarationConfig = configGroup.declarations.get(typeToUse)
-                if (declarationConfig == null) null else {
-                    val configContext = CwtDeclarationConfigContextProvider.getContext(context.contextElement!!, null, typeToUse, subtypesToUse, gameType, configGroup)
-                    configContext?.getConfig(declarationConfig)
-                }
+            val config = run {
+                if (typeToUse == null) return@run null
+                if (typeConfigToUse.typeKeyPrefix != null) return@run typeConfigToUse.typeKeyPrefixConfig
+                val declarationConfig = configGroup.declarations.get(typeToUse) ?: return@run null
+                val configContext = CwtDeclarationConfigContextProvider.getContext(context.contextElement!!, null, typeToUse, subtypesToUse, gameType, configGroup)
+                configContext?.getConfig(declarationConfig)
             }
             val element = config?.pointer?.element
-            val icon = if (config != null) PlsIcons.Nodes.Definition(typeToUse) else PlsIcons.Nodes.Property
+            val icon = if (config == null) PlsIcons.Nodes.Property else PlsIcons.Nodes.Definition(typeToUse)
             val tailText = if (tuples.isEmpty()) null else tuples.joinToString(", ", " for ") { (typeConfig, subTypeConfig) ->
-                if (subTypeConfig != null) "${typeConfig.name}.${subTypeConfig.name}" else typeConfig.name
+                if (subTypeConfig == null) typeConfig.name else "${typeConfig.name}.${subTypeConfig.name}"
             }
             val typeFile = config?.pointer?.containingFile
             context.config = config

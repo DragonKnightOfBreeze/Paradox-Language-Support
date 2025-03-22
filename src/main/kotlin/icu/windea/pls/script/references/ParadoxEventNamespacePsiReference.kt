@@ -9,9 +9,6 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
-/**
- * @see icu.windea.pls.script.codeInsight.completion.ParadoxEventIdCompletionProvider
- */
 class ParadoxEventNamespacePsiReference(
     element: ParadoxScriptString,
     rangeInElement: TextRange,

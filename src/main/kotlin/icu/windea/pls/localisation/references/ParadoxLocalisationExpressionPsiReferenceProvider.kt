@@ -6,7 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 
-class ParadoxLocalisationExpressionReferenceProvider : PsiReferenceProvider() {
+class ParadoxLocalisationExpressionPsiReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
         ProgressManager.checkCanceled()
         if (element !is ParadoxLocalisationExpressionElement) return PsiReference.EMPTY_ARRAY

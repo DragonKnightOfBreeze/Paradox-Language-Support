@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 解析事件ID中的事件命名空间引用。
  */
-class ParadoxEventNamespaceReferenceProvider : PsiReferenceProvider() {
+class ParadoxEventNamespacePsiReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
         ProgressManager.checkCanceled()
 

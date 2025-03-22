@@ -24,6 +24,7 @@ types = {
 		path_extension = $scalar
 		path_strict = $bool
 		name_field = $scalar
+        type_key_prefix = $scalar
 		name_from_file = $bool
 		type_per_file = $bool
 		unique = $bool

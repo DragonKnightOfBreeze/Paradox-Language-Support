@@ -184,7 +184,7 @@ object ParadoxDefinitionManager {
         path: ParadoxPath?,
         elementPath: ParadoxExpressionPath?,
         rootKey: String?,
-        rootKeyPrefix: Lazy<String?>? //TODO 1.3.32 需要正确获取
+        rootKeyPrefix: Lazy<String?>?
     ): Boolean {
         //判断element是否需要是scriptFile还是scriptProperty
         if (typeConfig.typePerFile) return false
@@ -530,7 +530,7 @@ object ParadoxDefinitionManager {
         val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile, PlsConstants.Settings.maxDefinitionDepth)
         if (elementPath == null) return null
-        val rootKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(node, tree, vFile).singleOrNull() }
+        val rootKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(node, tree).singleOrNull() }
         val typeConfig = getMatchedTypeConfig(node, tree, configGroup, path, elementPath, rootKey, rootKeyPrefix)
         if (typeConfig == null) return null
         //NOTE 这里不处理需要内联的情况
@@ -565,11 +565,15 @@ object ParadoxDefinitionManager {
     }
 
     private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {
-        return node.firstChild(tree, PROPERTY_KEY)?.firstChild(tree, ParadoxScriptTokenSets.PROPERTY_KEY_TOKENS)?.internNode(tree)?.toString()?.unquote()
+        return node.firstChild(tree, PROPERTY_KEY)
+            ?.childrenOfType(tree, PROPERTY_KEY_TOKEN)?.singleOrNull()
+            ?.internNode(tree)?.toString()?.unquote()
     }
 
     private fun getValueFromNode(node: LighterASTNode, tree: LighterAST): String? {
-        return node.firstChild(tree, STRING)?.firstChild(tree, ParadoxScriptTokenSets.STRING_TOKENS)?.internNode(tree)?.toString()?.unquote()
+        return node.firstChild(tree, STRING)
+            ?.childrenOfType(tree, STRING_TOKEN)?.singleOrNull()
+            ?.internNode(tree)?.toString()?.unquote()
     }
 
     fun getInfoFromStub(element: ParadoxScriptDefinitionElement, project: Project): ParadoxDefinitionInfo? {

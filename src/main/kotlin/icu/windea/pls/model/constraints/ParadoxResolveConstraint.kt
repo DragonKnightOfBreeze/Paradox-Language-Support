@@ -45,7 +45,7 @@ enum class ParadoxResolveConstraint {
                     val dataType = configExpression.type
                     dataType in CwtDataTypeGroups.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
                 }
-                is ParadoxTemplateSnippetExpressionReference -> {
+                is ParadoxTemplateSnippetPsiExpressionReference -> {
                     val configExpression = reference.configExpression
                     val dataType = configExpression.type
                     dataType in CwtDataTypeGroups.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
@@ -148,7 +148,7 @@ enum class ParadoxResolveConstraint {
                     val dataType = configExpression.type
                     dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField
                 }
-                is ParadoxTemplateSnippetExpressionReference -> {
+                is ParadoxTemplateSnippetPsiExpressionReference -> {
                     val configExpression = reference.configExpression
                     val dataType = configExpression.type
                     dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField
@@ -181,7 +181,7 @@ enum class ParadoxResolveConstraint {
                     val dataType = configExpression.type
                     dataType in CwtDataTypeGroups.DynamicValue || dataType == CwtDataTypes.AliasKeysField
                 }
-                is ParadoxTemplateSnippetExpressionReference -> {
+                is ParadoxTemplateSnippetPsiExpressionReference -> {
                     val configExpression = reference.configExpression
                     val dataType = configExpression.type
                     dataType in CwtDataTypeGroups.DynamicValue || dataType == CwtDataTypes.AliasKeysField
@@ -205,7 +205,7 @@ enum class ParadoxResolveConstraint {
         }
 
         override fun canResolve(reference: PsiReference): Boolean {
-            if (reference is ParadoxTemplateSnippetExpressionReference) return false
+            if (reference is ParadoxTemplateSnippetPsiExpressionReference) return false
             if (reference is ParadoxDataSourceNode.Reference) return false
             return DynamicValue.canResolve(reference)
         }

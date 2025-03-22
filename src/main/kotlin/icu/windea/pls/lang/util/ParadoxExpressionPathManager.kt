@@ -36,7 +36,7 @@ object ParadoxExpressionPathManager {
                 }
             }
             //如果发现深度超出指定的最大深度，则直接返回null
-            if (maxDepth > 0 && maxDepth < depth) return null
+            if (maxDepth >= 0 && maxDepth < depth) return null
             current = current.parent ?: break
         }
         if (current is PsiFile) {
@@ -71,7 +71,7 @@ object ParadoxExpressionPathManager {
                 }
             }
             //如果发现深度超出指定的最大深度，则直接返回null
-            if (maxDepth > 0 && maxDepth < depth) return null
+            if (maxDepth >= 0 && maxDepth < depth) return null
             current = tree.getParent(current) ?: break
         }
         if (current.tokenType == ParadoxScriptStubElementTypes.FILE) {
@@ -85,22 +85,26 @@ object ParadoxExpressionPathManager {
     }
 
     /**
-     * 得到指定的属性对应的PSI的键前缀。
+     * 得到指定的属性或值对应的PSI的键前缀。
      *
-     * 找到[element]对应的[ParadoxScriptProperty]，
+     * 找到[element]对应的[ParadoxScriptProperty]或[ParadoxScriptValue]，
      * 接着找到直接在其前面的连续的一组[ParadoxScriptString]（忽略空白和注释），
-     * 最后将它们转化为字符串列表（基于值，顺序由前往后）。
+     * 最后将它们转化为字符串列表（基于值，顺序从后往前）。
      */
     fun getKeyPrefixes(element: PsiElement): List<String> {
-        val property = element.parentOfType<ParadoxScriptProperty>(withSelf = true) ?: return emptyList()
+        val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return emptyList()
+        if (memberElement !is ParadoxScriptProperty && memberElement !is ParadoxScriptValue) return emptyList()
         var result: MutableList<String>? = null
-        property.siblings(forward = false, withSelf = false).forEach f@{ e ->
-            if(e is PsiWhiteSpace || e is PsiComment) return@f
-            if(e is ParadoxScriptString) {
-                if(result == null) result = mutableListOf()
-                result!! += e.value
+        memberElement.siblings(forward = false, withSelf = false).forEach f@{ e ->
+            when (e) {
+                is PsiWhiteSpace, is PsiComment -> return@f
+                is ParadoxScriptString -> {
+                    val v = e.value.takeUnless { it.isParameterized() } ?: return result ?: emptyList()
+                    if (result == null) result = mutableListOf()
+                    result!! += v
+                }
+                else -> return result ?: emptyList()
             }
-            return result ?: emptyList()
         }
         return emptyList()
     }
@@ -108,7 +112,34 @@ object ParadoxExpressionPathManager {
     /**
      * 得到指定的属性对应的节点的键前缀。
      */
-    fun getKeyPrefixes(node: LighterASTNode, tree: LighterAST, file: VirtualFile): List<String> {
-        TODO()
+    fun getKeyPrefixes(node: LighterASTNode, tree: LighterAST): List<String> {
+        val parent = node.parent(tree) ?: return emptyList()
+        val siblings = parent.children(tree)
+        if (siblings.isEmpty()) return emptyList()
+        var flag = false
+        var result: MutableList<String>? = null
+        for (i in siblings.lastIndex downTo 0) {
+            val n = siblings[i]
+            if (flag) {
+                val tokenType = n.tokenType
+                when (tokenType) {
+                    TokenType.WHITE_SPACE, COMMENT -> continue
+                    STRING -> {
+                        val v = getValueFromStringNode(n, tree) ?: return result ?: emptyList()
+                        if (result == null) result = mutableListOf()
+                        result += v
+                    }
+                    else -> return result ?: emptyList()
+                }
+            } else {
+                if (n === node) flag = true
+            }
+        }
+        return emptyList()
+    }
+
+    private fun getValueFromStringNode(node: LighterASTNode, tree: LighterAST): String? {
+        return node.childrenOfType(tree, STRING_TOKEN).singleOrNull()
+            ?.internNode(tree)?.toString()?.unquote()
     }
 }

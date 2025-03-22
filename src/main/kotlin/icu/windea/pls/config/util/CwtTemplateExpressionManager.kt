@@ -92,7 +92,7 @@ object CwtTemplateExpressionManager {
         return ParadoxTemplateExpressionElement(contextElement, text, templateExpression, gameType, project, references)
     }
 
-    fun resolveReferences(text: String, templateExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): List<ParadoxTemplateSnippetExpressionReference> {
+    fun resolveReferences(text: String, templateExpression: CwtTemplateExpression, configGroup: CwtConfigGroup): List<ParadoxTemplateSnippetPsiExpressionReference> {
         val snippetExpressions = templateExpression.snippetExpressions
         if (snippetExpressions.isEmpty()) return emptyList()
         val expressionString = text
@@ -101,7 +101,7 @@ object CwtTemplateExpressionManager {
         if (templateExpression.referenceExpressions.size != matchResult.groups.size - 1) return emptyList()
         //element仅仅表示上下文元素，因此这里需要生成ParadoxScriptStringExpressionElement并传给ParadoxTemplateSnippetExpressionReference
         val templateElement by lazy { ParadoxScriptElementFactory.createString(configGroup.project, text) }
-        val templateReferences = mutableListOf<ParadoxTemplateSnippetExpressionReference>()
+        val templateReferences = mutableListOf<ParadoxTemplateSnippetPsiExpressionReference>()
         var i = 1
         for (snippetExpression in snippetExpressions) {
             ProgressManager.checkCanceled()
@@ -109,7 +109,7 @@ object CwtTemplateExpressionManager {
                 val matchGroup = matchResult.groups.get(i++) ?: return emptyList()
                 val referenceName = matchGroup.value.intern() //intern to optimize memory
                 val range = TextRange.create(matchGroup.range.first, matchGroup.range.last)
-                val reference = ParadoxTemplateSnippetExpressionReference(templateElement, range, referenceName, snippetExpression, configGroup)
+                val reference = ParadoxTemplateSnippetPsiExpressionReference(templateElement, range, referenceName, snippetExpression, configGroup)
                 templateReferences.add(reference)
             } else {
                 //ignore

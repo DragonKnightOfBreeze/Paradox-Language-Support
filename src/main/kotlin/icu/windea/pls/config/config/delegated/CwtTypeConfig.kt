@@ -3,6 +3,7 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
@@ -71,6 +72,10 @@ val CwtTypeConfig.possibleRootKeys: Set<String> by createKey(CwtTypeConfig.Keys)
         typeKeyFilter?.takeIfTrue()?.let { addAll(it) }
         subtypes.values.forEach { subtype -> subtype.typeKeyFilter?.takeIfTrue()?.let { addAll(it) } }
     }.optimized()
+}
+
+val CwtTypeConfig.typeKeyPrefixConfig: CwtValueConfig? by createKey(CwtTypeConfig.Keys) {
+    config.properties?.find { it.key == "type_key_prefix" }?.valueConfig?.also { it.tagType = CwtTagType.TypeKeyPrefix }
 }
 
 //Implementations (interned)

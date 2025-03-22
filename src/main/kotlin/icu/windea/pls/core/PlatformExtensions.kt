@@ -580,6 +580,10 @@ fun LighterASTNode.childrenOfType(tree: LighterAST, types: TokenSet): List<Light
     return LightTreeUtil.getChildrenOfType(tree, this, types)
 }
 
+fun LighterASTNode.parent(tree: LighterAST): LighterASTNode? {
+    return tree.getParent(this)
+}
+
 fun LighterASTNode.internNode(tree: LighterAST): CharSequence? {
     if (this !is LighterASTTokenNode) return null
     return tree.charTable.intern(this.text).toString()

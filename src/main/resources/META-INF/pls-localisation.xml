@@ -6,7 +6,7 @@
     <stubElementTypeHolder class="icu.windea.pls.localisation.psi.ParadoxLocalisationStubElementTypes" externalIdPrefix="paradoxLocalisation."/>
     <spellchecker.support language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.ParadoxLocalisationSpellchecker"/>
     <lang.syntaxHighlighterFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationSyntaxHighlighterFactory"/>
-    <psi.referenceContributor language="PARADOX_LOCALISATION" implementation="icu.windea.pls.localisation.references.ParadoxLocalisationReferenceContributor"/>
+    <psi.referenceContributor language="PARADOX_LOCALISATION" implementation="icu.windea.pls.localisation.references.ParadoxLocalisationPsiReferenceContributor"/>
     <colorSettingsPage implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationColorSettingsPage"/>
     <lang.braceMatcher language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationBraceMatcher"/>
     <lang.commenter language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationCommenter"/>

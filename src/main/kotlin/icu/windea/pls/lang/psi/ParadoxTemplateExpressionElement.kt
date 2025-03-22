@@ -18,7 +18,7 @@ class ParadoxTemplateExpressionElement(
     val configExpression: CwtTemplateExpression,
     val gameType: ParadoxGameType,
     private val project: Project,
-    val references: List<ParadoxTemplateSnippetExpressionReference>,
+    val references: List<ParadoxTemplateSnippetPsiExpressionReference>,
 ) : ParadoxFakePsiElement(parent) {
     var canRename = false
 

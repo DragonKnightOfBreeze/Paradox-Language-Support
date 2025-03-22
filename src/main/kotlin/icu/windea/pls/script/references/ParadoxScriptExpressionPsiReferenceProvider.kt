@@ -6,7 +6,7 @@ import com.intellij.util.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptExpressionReferenceProvider : PsiReferenceProvider() {
+class ParadoxScriptExpressionPsiReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
         ProgressManager.checkCanceled()
         if (element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY

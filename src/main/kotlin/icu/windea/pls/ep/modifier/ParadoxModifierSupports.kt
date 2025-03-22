@@ -31,7 +31,7 @@ import icu.windea.pls.script.psi.*
 
 //region Extensions
 
-val ParadoxModifierSupport.Keys.templateReferences by createKey<List<ParadoxTemplateSnippetExpressionReference>>(ParadoxModifierSupport.Keys).synced()
+val ParadoxModifierSupport.Keys.templateReferences by createKey<List<ParadoxTemplateSnippetPsiExpressionReference>>(ParadoxModifierSupport.Keys).synced()
 val ParadoxModifierSupport.Keys.economicCategoryInfo by createKey<ParadoxEconomicCategoryInfo>(ParadoxModifierSupport.Keys).synced()
 val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by createKey<ParadoxEconomicCategoryInfo.ModifierInfo>(ParadoxModifierSupport.Keys).synced()
 
