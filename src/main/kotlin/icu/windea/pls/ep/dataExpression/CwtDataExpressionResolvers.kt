@@ -81,9 +81,9 @@ class BaseCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
         rule(CwtDataTypes.Scalar, "scalar"),
 
         rule(CwtDataTypes.ColorField, "colour_field"),
-        rule(CwtDataTypes.ColorField, "colour_field[", "]", { it.orNull() }),
+        rule(CwtDataTypes.ColorField, "colour[", "]", { it.orNull() }),
         rule(CwtDataTypes.ColorField, "color_field"),
-        rule(CwtDataTypes.ColorField, "color_field[", "]", { it.orNull() }),
+        rule(CwtDataTypes.ColorField, "color[", "]", { it.orNull() }),
     )
 }
 

@@ -20,7 +20,7 @@ types = {
 		skip_root_key = { $scalar }
 		base_type = $type$
 		path = $scalar
-		path_file = $scalar 
+		path_file = $scalar
 		path_extension = $scalar
 		path_strict = $bool
 		name_field = $scalar
@@ -190,8 +190,8 @@ $$data_expression = {
 	float
 	float[$start$..$end$]
 	scalar
-	colour_field
-	colour_field[$type$]
+	color_field
+	color[$type$]
 
 	percentage_field
 	date_field
@@ -236,10 +236,10 @@ $$data_expression = {
 	$shader_effect
 	$database_object
 	stellaris_name_format[$format$]
-	
+
 	ant:$ant_expression$
 	ant.i:$ant_expression$
-	
+
 	re:$re$
 	re.i:$re$
 }
