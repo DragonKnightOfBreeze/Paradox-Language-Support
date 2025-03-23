@@ -2,6 +2,7 @@ package icu.windea.pls.lang.quickfix
 
 import com.intellij.codeInsight.intention.*
 import com.intellij.codeInspection.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
@@ -22,8 +23,10 @@ class GenerateLocalisationsInFileFix(
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if (editor == null) return
-        val handler = ParadoxGenerateLocalisationsHandler(forFile = true, fromInspection = true)
-        handler.invoke(project, editor, file)
+        invokeLater {
+            val handler = ParadoxGenerateLocalisationsHandler(forFile = true, fromInspection = true)
+            handler.invoke(project, editor, file)
+        }
     }
 
     //true so that we can run MissingLocalisationInspection on mod files scope and generate all missing localisations
