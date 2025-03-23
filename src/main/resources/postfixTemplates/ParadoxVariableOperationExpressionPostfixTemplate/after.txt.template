@@ -1,3 +1,9 @@
-root = {
+some_effect = {
 	set_variable = { which = var value = <spot>v</spot> }
+	change_variable = { which = var value = <spot>v</spot> }
+	subtract_variable = { which = var value = <spot>v</spot> }
+	multiply_variable = { which = var value = <spot>v</spot> }
+	divide_variable = { which = var value = <spot>v</spot> }
+	modulo_variable = { which = var value = <spot>v</spot> }
+	round_variable_to_closest = { which = var value = <spot>v</spot> }
 }

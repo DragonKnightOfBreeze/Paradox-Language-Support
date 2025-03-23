@@ -1,3 +1,9 @@
-root = {
+some_effect = {
 	<spot>var</spot>.setv
+	<spot>var</spot>.chav
+	<spot>var</spot>.subv
+	<spot>var</spot>.mulv
+	<spot>var</spot>.divv
+	<spot>var</spot>.modv
+	<spot>var</spot>.rvtc
 }
