@@ -48,7 +48,7 @@ object CwtConfigManager {
 
         runCatchingCancelable r@{
             if (!forRepo) return@r
-            doGetContainingConfigGroupForRepo(file, project)
+            doGetContainingConfigGroupForRepo(file, project)?.let { return it }
         }
 
         return null
@@ -274,7 +274,7 @@ object CwtConfigManager {
         if (pathPatterns.isNotEmpty()) {
             patterns += pathPatterns
         }
-        val filePattern = when {
+        val filePattern = when  {
             pathFile.isNotNullOrEmpty() -> pathFile
             pathExtension.isNotNullOrEmpty() -> "*.${pathExtension}"
             else -> null
