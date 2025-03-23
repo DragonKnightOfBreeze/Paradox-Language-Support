@@ -1,13 +1,12 @@
 package icu.windea.pls.cwt.structureView
 
 import com.intellij.ide.structureView.*
-import com.intellij.ide.structureView.impl.common.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtValueTreeElement(
     element: CwtValue
-) : PsiTreeElementBase<CwtValue>(element) {
+) : CwtTreeElement<CwtValue>(element) {
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
         val element = element ?: return emptyList()
         if (element !is CwtBlock) return emptyList()

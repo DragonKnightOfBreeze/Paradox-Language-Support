@@ -4,10 +4,9 @@ import com.intellij.ide.structureView.*
 import com.intellij.ide.util.treeView.smartTree.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.*
 
 class ParadoxScriptStructureViewModel(
     editor: Editor?,
@@ -60,62 +59,5 @@ class ParadoxScriptStructureViewModel(
     @Suppress("UnstableApiUsage")
     override fun getMinimumAutoExpandDepth(): Int {
         return 1 //do not expand definitions at top level by default
-    }
-}
-
-object VariablesFilter : Filter {
-    override fun getName() = "PARADOX_SCRIPT_SHOW_VARIABLES"
-
-    override fun isReverted() = true
-
-    override fun isVisible(treeNode: TreeElement): Boolean {
-        return treeNode !is ParadoxScriptVariableTreeElement
-    }
-
-    override fun getPresentation(): ActionPresentation {
-        return ActionPresentationData(PlsBundle.message("script.structureView.showScriptedVariables"), null, PlsIcons.Nodes.ScriptedVariable)
-    }
-}
-
-object DefinitionsFilter : Filter {
-    override fun getName() = "PARADOX_SCRIPT_SHOW_DEFINITIONS"
-
-    override fun isReverted() = true
-
-    override fun isVisible(treeNode: TreeElement): Boolean {
-        //忽略本身是文件的定义
-        return treeNode !is ParadoxScriptPropertyTreeElement || treeNode.element?.definitionInfo == null
-    }
-
-    override fun getPresentation(): ActionPresentation {
-        return ActionPresentationData(PlsBundle.message("script.structureView.showDefinitions"), null, PlsIcons.Nodes.Definition)
-    }
-}
-
-object PropertiesFilter : Filter {
-    override fun getName() = "PARADOX_SCRIPT_SHOW_PROPERTIES"
-
-    override fun isReverted() = true
-
-    override fun isVisible(treeNode: TreeElement): Boolean {
-        return treeNode !is ParadoxScriptPropertyTreeElement || treeNode.element?.definitionInfo != null
-    }
-
-    override fun getPresentation(): ActionPresentation {
-        return ActionPresentationData(PlsBundle.message("script.structureView.showProperties"), null, PlsIcons.Nodes.Property)
-    }
-}
-
-object ValuesFilter : Filter {
-    override fun getName() = "PARADOX_SCRIPT_SHOW_VALUES"
-
-    override fun isReverted() = true
-
-    override fun isVisible(treeNode: TreeElement): Boolean {
-        return treeNode !is ParadoxScriptValueTreeElement
-    }
-
-    override fun getPresentation(): ActionPresentation {
-        return ActionPresentationData(PlsBundle.message("script.structureView.showValues"), null, PlsIcons.Nodes.Value)
     }
 }

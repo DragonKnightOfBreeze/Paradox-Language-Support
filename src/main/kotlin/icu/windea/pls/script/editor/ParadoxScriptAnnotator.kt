@@ -140,7 +140,8 @@ class ParadoxScriptAnnotator : Annotator {
         //高亮特殊标签
         run {
             if (element !is ParadoxScriptString) return@run
-            val tagReference = element.references.firstNotNullOfOrNull { it.castOrNull<ParadoxTagAwarePsiReference>() } ?: return@run
+            val tagReference = element.references.firstNotNullOfOrNull { it.castOrNull<ParadoxTagAwarePsiReference>() }
+            if (tagReference == null) return@run
             val tagConfig = tagReference.config
             if (tagConfig.tagType == null) return@run
             annotateTag(element, tagConfig, holder)

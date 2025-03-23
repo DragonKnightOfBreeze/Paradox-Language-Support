@@ -1,11 +1,12 @@
 package icu.windea.pls.script.structureView
 
 import com.intellij.ide.structureView.*
-import com.intellij.ide.structureView.impl.common.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptParameterConditionTreeElement(element: ParadoxScriptParameterCondition) : PsiTreeElementBase<ParadoxScriptParameterCondition>(element) {
+class ParadoxScriptParameterConditionTreeElement(
+    element: ParadoxScriptParameterCondition
+) : ParadoxScriptTreeElement<ParadoxScriptParameterCondition>(element) {
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
         val element = element ?: return emptyList()
         val parent = element
@@ -18,6 +19,7 @@ class ParadoxScriptParameterConditionTreeElement(element: ParadoxScriptParameter
                 it is ParadoxScriptProperty -> result.add(ParadoxScriptPropertyTreeElement(it))
             }
         }
+        postHandleMemberChildren(result)
         return result
     }
 

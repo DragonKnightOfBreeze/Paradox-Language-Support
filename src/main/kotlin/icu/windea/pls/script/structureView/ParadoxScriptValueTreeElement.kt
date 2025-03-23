@@ -1,13 +1,13 @@
 package icu.windea.pls.script.structureView
 
 import com.intellij.ide.structureView.*
-import com.intellij.ide.structureView.impl.common.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.references.*
 
 class ParadoxScriptValueTreeElement(
     element: ParadoxScriptValue
-) : PsiTreeElementBase<ParadoxScriptValue>(element) {
+) : ParadoxScriptTreeElement<ParadoxScriptValue>(element) {
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
         val element = element ?: return emptyList()
         val parent = element.castOrNull<ParadoxScriptBlock>() ?: return emptyList()
@@ -20,12 +20,19 @@ class ParadoxScriptValueTreeElement(
                 it is ParadoxScriptParameterCondition -> result.add(ParadoxScriptParameterConditionTreeElement(it))
             }
         }
+        postHandleMemberChildren(result)
         return result
     }
 
     override fun getPresentableText(): String? {
         val element = element ?: return null
         return element.value
+    }
+
+    fun isTag(): Boolean {
+        val element = element ?: return false
+        val tagReference = element.references.firstNotNullOfOrNull { it.castOrNull<ParadoxTagAwarePsiReference>() }
+        return tagReference != null
     }
 }
 

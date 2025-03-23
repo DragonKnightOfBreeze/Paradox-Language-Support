@@ -1,13 +1,12 @@
 package icu.windea.pls.cwt.structureView
 
 import com.intellij.ide.structureView.*
-import com.intellij.ide.structureView.impl.common.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtPropertyTreeElement(
     element: CwtProperty
-) : PsiTreeElementBase<CwtProperty>(element) {
+) : CwtTreeElement<CwtProperty>(element) {
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
         val element = element ?: return emptyList()
         val value = element.propertyValue ?: return emptyList()

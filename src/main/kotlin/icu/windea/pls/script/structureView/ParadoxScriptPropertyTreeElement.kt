@@ -1,14 +1,15 @@
 package icu.windea.pls.script.structureView
 
 import com.intellij.ide.structureView.*
-import com.intellij.ide.structureView.impl.common.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxScriptPropertyTreeElement(element: ParadoxScriptProperty) : PsiTreeElementBase<ParadoxScriptProperty>(element) {
+class ParadoxScriptPropertyTreeElement(
+    element: ParadoxScriptProperty
+) : ParadoxScriptTreeElement<ParadoxScriptProperty>(element) {
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
         val element = element ?: return emptyList()
         val parent = element.propertyValue<ParadoxScriptBlock>() ?: return emptyList()
@@ -22,6 +23,7 @@ class ParadoxScriptPropertyTreeElement(element: ParadoxScriptProperty) : PsiTree
                 it is ParadoxScriptParameterCondition -> result.add(ParadoxScriptParameterConditionTreeElement(it))
             }
         }
+        postHandleMemberChildren(result)
         return result
     }
 
