@@ -1,50 +1,50 @@
 # Postfix Template Settings
 # Used to provide additional postfix completion for script files.
-# 
+#
 # See: icu.windea.pls.lang.codeInsight.template.postfix.ParadoxPostfixTemplateProvider
 # See: icu.windea.pls.lang.codeInsight.template.postfix.ParadoxVariableOperationExpressionPostfixTemplate
 
 variable_operation_expressions = {
-	set_variable = {
-		key = setv
-		example = "set_variable = { which = expr value = v }"
-		variables = { VALUE = v }
-		expression = "set_variable = { which = $EXPR$ value = $VALUE$ }$END$"
-	}
-	change_variable = {
-		key = chav
-		example = "change_variable = { which = expr value = v }"
-		variables = { VALUE = v }
-		expression = "change_variable = { which = $EXPR$ value = $VALUE$ }$END$"
-	}
-	subtract_variable = {
-		key = subv
-		example = "subtract_variable = { which = expr value = v }"
-		variables = { VALUE = v }
-		expression = "subtract_variable = { which = $EXPR$ value = $VALUE$ }$END$"
-	}
-	multiply_variable = {
-		key = mulv
-		example = "multiply_variable = { which = expr value = v }"
-		variables = { VALUE = v }
-		expression = "multiply_variable = { which = $EXPR$ value = $VALUE$ }$END$"
-	}
-	divide_variable = {
-		key = divv
-		example = "divide_variable = { which = expr value = v }"
-		variables = { VALUE = v }
-		expression = "divide_variable = { which = $EXPR$ value = $VALUE$ }$END$"
-	}
-	modulo_variable = {
-		key = modv
-		example = "modulo_variable = { which = expr value = v }"
-		variables = { VALUE = v }
-		expression = "modulo_variable = { which = $EXPR$ value = $VALUE$ }$END$"
-	}
-	round_variable_to_closest = {
-		key = rvtc
-		example = "round_variable_to_closest = { which = expr value = v }"
-		variables = { VALUE = v }
-		expression = "round_variable_to_closest = { which = $EXPR$ value = $VALUE$ }$END$"
-	}
+    set_variable = {
+        key = setv
+        example = "set_variable = { which = expr value = v }"
+        variables = { VALUE = v }
+        expression = "set_variable = { which = $EXPR$ value = $VALUE$ }$END$"
+    }
+    change_variable = {
+        key = chav
+        example = "change_variable = { which = expr value = v }"
+        variables = { VALUE = v }
+        expression = "change_variable = { which = $EXPR$ value = $VALUE$ }$END$"
+    }
+    subtract_variable = {
+        key = subv
+        example = "subtract_variable = { which = expr value = v }"
+        variables = { VALUE = v }
+        expression = "subtract_variable = { which = $EXPR$ value = $VALUE$ }$END$"
+    }
+    multiply_variable = {
+        key = mulv
+        example = "multiply_variable = { which = expr value = v }"
+        variables = { VALUE = v }
+        expression = "multiply_variable = { which = $EXPR$ value = $VALUE$ }$END$"
+    }
+    divide_variable = {
+        key = divv
+        example = "divide_variable = { which = expr value = v }"
+        variables = { VALUE = v }
+        expression = "divide_variable = { which = $EXPR$ value = $VALUE$ }$END$"
+    }
+    modulo_variable = {
+        key = modv
+        example = "modulo_variable = { which = expr value = v }"
+        variables = { VALUE = v }
+        expression = "modulo_variable = { which = $EXPR$ value = $VALUE$ }$END$"
+    }
+    round_variable_to_closest = {
+        key = rvtc
+        example = "round_variable_to_closest = { which = expr value = v }"
+        variables = { VALUE = v }
+        expression = "round_variable_to_closest = { which = $EXPR$ value = $VALUE$ }$END$"
+    }
 }

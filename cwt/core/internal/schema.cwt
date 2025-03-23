@@ -1,178 +1,178 @@
 priorities = {
-	$path = $enum:priority$
+    $path = $enum:priority$
 }
 $enum:priority$ = { fios lios ordered }
 
 sysstem_scopes = {
-	$system_scope$ = {
-		base_id = $system_scope$
-	}
+    $system_scope$ = {
+        base_id = $system_scope$
+    }
 }
 
 localisation_locales = {
-	$localisation_locale$ = {
-		codes = { $scalar }
-	}
+    $localisation_locale$ = {
+        codes = { $scalar }
+    }
 }
 
 types = {
-	type[$type$] = {
-		skip_root_key = { $scalar }
-		base_type = $type$
-		path = $scalar
-		path_file = $scalar
-		path_extension = $scalar
-		path_strict = $bool
-		name_field = $scalar
+    type[$type$] = {
+        skip_root_key = { $scalar }
+        base_type = $type$
+        path = $scalar
+        path_file = $scalar
+        path_extension = $scalar
+        path_strict = $bool
+        name_field = $scalar
         type_key_prefix = $scalar
-		name_from_file = $bool
-		type_per_file = $bool
-		unique = $bool
-		severity = $enum:severity$
-		subtype[$subtype$] = $any
-		localisation = {
-			subtype[$subtype$] = {
-				$scalar = $scalar
-			}
-			$scalar = $scalar
-		}
-		images = {
-			subtype[$subtype$] = {
-				$scalar = $scalar
-			}
-			$scalar = $scalar
-		}
-	}
+        name_from_file = $bool
+        type_per_file = $bool
+        unique = $bool
+        severity = $enum:severity$
+        subtype[$subtype$] = $any
+        localisation = {
+            subtype[$subtype$] = {
+                $scalar = $scalar
+            }
+            $scalar = $scalar
+        }
+        images = {
+            subtype[$subtype$] = {
+                $scalar = $scalar
+            }
+            $scalar = $scalar
+        }
+    }
 }
 $enum:severity$ = { error warning info hint }
 
 enums = {
-	enum[$enum$] = {
-		$scalar
-	}
-	complex_enum[$complex_enum$] = {
-		path = $scalar
-		path_file = $scalar
-		path_extension = $scalar
-		path_strict = $bool
-		start_from_root = $bool
-		name = $any
-	}
+    enum[$enum$] = {
+        $scalar
+    }
+    complex_enum[$complex_enum$] = {
+        path = $scalar
+        path_file = $scalar
+        path_extension = $scalar
+        path_strict = $bool
+        start_from_root = $bool
+        name = $any
+    }
 }
 
 values = {
-	value[$dynamic_value_type$] = {
-		$dynamic_value$
-	}
+    value[$dynamic_value_type$] = {
+        $dynamic_value$
+    }
 }
 
 links = {
-	$link$ = {
-		desc = $scalar
-		from_data = $bool
-		from_argument = $bool
-		type = $enum:link_type$
-		prefix = $scalar
-		data_source = $data_expression
-		for_definition_type = $type$
-		input_scopes = { $scope$ }
-		output_scope = $scope$
-	}
+    $link$ = {
+        desc = $scalar
+        from_data = $bool
+        from_argument = $bool
+        type = $enum:link_type$
+        prefix = $scalar
+        data_source = $data_expression
+        for_definition_type = $type$
+        input_scopes = { $scope$ }
+        output_scope = $scope$
+    }
 }
 
 localisation_links = {
-	$localisation_link$ = {
-		input_scopes = { $scope$ }
-		output_scope = $scope$
-	}
+    $localisation_link$ = {
+        input_scopes = { $scope$ }
+        output_scope = $scope$
+    }
 }
 
 localisation_promotions = {
-	$localisation_link$ = $scope$
-	$localisation_link$ = { $scope$ }
+    $localisation_link$ = $scope$
+    $localisation_link$ = { $scope$ }
 }
 
 localisation_commands = {
-	$localisation_command$ = $scope$
-	$localisation_command$ = { $scope$ }
+    $localisation_command$ = $scope$
+    $localisation_command$ = { $scope$ }
 }
 
 $enum:link_type$ = { scope value both }
 
 modifier_categories = {
-	$modifier_category$ = {
-		supported_scopes = $scope$
-		supported_scopes = { $scope$ }
-	}
+    $modifier_category$ = {
+        supported_scopes = $scope$
+        supported_scopes = { $scope$ }
+    }
 }
 
 modifiers = {
-	$modifier$ = $scope$
+    $modifier$ = $scope$
 }
 
 scopes = {
-	$scope_name$ = {
-		aliases = { $scope$ }
-		is_subscope_of = $scope$
-	}
+    $scope_name$ = {
+        aliases = { $scope$ }
+        is_subscope_of = $scope$
+    }
 }
 
 scope_groups = {
-	$scope_group$ = { $scope$ }
+    $scope_group$ = { $scope$ }
 }
 
 database_object_types = {
-	$database_object_type$ = {
-		type = $type$
-		swap_type = $type$ # $swapped_type$
-	}
+    $database_object_type$ = {
+        type = $type$
+        swap_type = $type$ # $swapped_type$
+    }
 }
 
 ## extended
 scripted_variables = {
-	$scripted_variable$
+    $scripted_variable$
 }
 
 ## extended
 definitions = {
-	$definition$
+    $definition$
 }
 
 ## extended
 game_rules = {
-	$game_rule$
-	$game_rule$ = $declaration
+    $game_rule$
+    $game_rule$ = $declaration
 }
 
 ## extended
 on_actions = {
-	$on_action$
+    $on_action$
 }
 
 ## extended
 inline_scripts = {
-	$inline_script$
-	$inline_script$ = $declaration
+    $inline_script$
+    $inline_script$ = $declaration
 }
 
 ## extended
 parameters = {
-	$parameter$
-	$parameter$ = $declaration
+    $parameter$
+    $parameter$ = $declaration
 }
 
 ## extended
 complex_enum_values = {
-	$complex_enum$ = {
-		$complex_enum_value$
-	}
+    $complex_enum$ = {
+        $complex_enum_value$
+    }
 }
 
 ## extended
 dynamic_values = {
-	$dynamic_value_type$ = {
-		$dynamic_value$
-	}
+    $dynamic_value_type$ = {
+        $dynamic_value$
+    }
 }
 
 single_alias[$single_alias$] = $declaration
@@ -184,62 +184,62 @@ inline[$inline$] = $declaration
 $type$ = $declaration
 
 $$data_expression = {
-	bool
-	int
-	int[$start$..$end$]
-	float
-	float[$start$..$end$]
-	scalar
-	color_field
-	color[$type$]
+    bool
+    int
+    int[$start$..$end$]
+    float
+    float[$start$..$end$]
+    scalar
+    color_field
+    color[$type$]
 
-	percentage_field
-	date_field
-	localisation
-	localisation_synced
-	localisation_inline
-	abs_filepath
-	filename
-	filename[$expression$]
-	filepath
-	filepath[$expression$]
-	icon[$expression$]
-	<modifier>
-	<technology_with_level>
-	<$definition_type_expression$>
-	value[$dynamic_value_type$]
-	value_set[$dynamic_value_type$]
-	dynamic_value[$dynamic_value_type$]
-	enum[$enum$]
-	enum[$complex_enum$]
-	scope_field
-	scope[any]
-	scope[$scope$]
-	scope_group[$scope_group$]
-	value_field
-	value_field[$scope$]
-	int_value_field
-	int_value_field[$scope$]
-	variable_field
-	variable_field_32
-	variable_field[$scope$]
-	int_variable_field
-	int_variable_field_32
-	int_variable_field[$scope$]
-	single_alias_right[$single_alias$]
-	alias_name[$alias_name$] = alias_match_left[$alias_name$]
-	alias_keys_field[$alias_name$]
-	$any
-	$parameter
-	$parameter_value
-	$localisation_parameter
-	$shader_effect
-	$database_object
-	stellaris_name_format[$format$]
+    percentage_field
+    date_field
+    localisation
+    localisation_synced
+    localisation_inline
+    abs_filepath
+    filename
+    filename[$expression$]
+    filepath
+    filepath[$expression$]
+    icon[$expression$]
+    <modifier>
+    <technology_with_level>
+    <$definition_type_expression$>
+    value[$dynamic_value_type$]
+    value_set[$dynamic_value_type$]
+    dynamic_value[$dynamic_value_type$]
+    enum[$enum$]
+    enum[$complex_enum$]
+    scope_field
+    scope[any]
+    scope[$scope$]
+    scope_group[$scope_group$]
+    value_field
+    value_field[$scope$]
+    int_value_field
+    int_value_field[$scope$]
+    variable_field
+    variable_field_32
+    variable_field[$scope$]
+    int_variable_field
+    int_variable_field_32
+    int_variable_field[$scope$]
+    single_alias_right[$single_alias$]
+    alias_name[$alias_name$] = alias_match_left[$alias_name$]
+    alias_keys_field[$alias_name$]
+    $any
+    $parameter
+    $parameter_value
+    $localisation_parameter
+    $shader_effect
+    $database_object
+    stellaris_name_format[$format$]
 
-	ant:$ant_expression$
-	ant.i:$ant_expression$
+    ant:$ant_expression$
+    ant.i:$ant_expression$
 
-	re:$re$
-	re.i:$re$
+    re:$re$
+    re.i:$re$
 }

@@ -1,9 +1,9 @@
 # Folding Settings
 # Used to provide additional code folding rules for script files.
-# 
+#
 # See: icu.windea.pls.lang.editor.folding.ParadoxFoldingOptionsProvider
 # See: icu.windea.pls.lang.editor.folding.ParadoxVariableOperationExpressionFoldingBuilder
-# 
+#
 # Format:
 # <folding group name> = {
 #   <property key, of the property to folding> = {
@@ -15,32 +15,32 @@
 # }
 
 variable_operation_expressions = {
-	set_variable = {
-		keys = { which value }
-		placeholder = "$which$ = $value$"
-	}
-	change_variable = {
-		keys = { which value }
-		placeholder = "$which$ += $value$"
-	}
-	subtract_variable = {
-		keys = { which value }
-		placeholder = "$which$ -= $value$"
-	}
-	multiply_variable = {
-		keys = { which value }
-		placeholder = "$which$ *= $value$"
-	}
-	divide_variable = {
-		keys = { which value }
-		placeholder = "$which$ /= $value$"
-	}
-	modulo_variable = {
-		keys = { which value }
-		placeholder = "$which$ %= $value$"
-	}
-	round_variable_to_closest = {
-		keys = { which value }
-		placeholder = "$which$ roundTo $value$"
-	}
-} 
+    set_variable = {
+        keys = { which value }
+        placeholder = "$which$ = $value$"
+    }
+    change_variable = {
+        keys = { which value }
+        placeholder = "$which$ += $value$"
+    }
+    subtract_variable = {
+        keys = { which value }
+        placeholder = "$which$ -= $value$"
+    }
+    multiply_variable = {
+        keys = { which value }
+        placeholder = "$which$ *= $value$"
+    }
+    divide_variable = {
+        keys = { which value }
+        placeholder = "$which$ /= $value$"
+    }
+    modulo_variable = {
+        keys = { which value }
+        placeholder = "$which$ %= $value$"
+    }
+    round_variable_to_closest = {
+        keys = { which value }
+        placeholder = "$which$ roundTo $value$"
+    }
+}

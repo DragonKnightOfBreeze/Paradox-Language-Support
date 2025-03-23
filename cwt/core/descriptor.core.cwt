@@ -1,42 +1,42 @@
 types = {
-	type[mod_descriptor] = {
-		path_file = descriptor.mod
-		type_per_file = yes
-		name_field = name
-		images = {
-			## primary
-			## optional
-			picture = picture
-		}
-	}
+    type[mod_descriptor] = {
+        path_file = descriptor.mod
+        type_per_file = yes
+        name_field = name
+        images = {
+            ## primary
+            ## optional
+            picture = picture
+        }
+    }
 }
 
 mod_descriptor = {
-	### Mod's name.
-	name = scalar
-	### Mod's version.
-	version = scalar
-	### Mod's thumbnail picture.
-	## cardinality = 0..1
-	picture = filepath
-	### Mod's Tags.
-	## cardinality = 0..1
-	tags = {
-		## cardinality = 0..inf
-		scalar
-	}
-	## cardinality = 0..1
-	dependencies = {
-		<mod_descriptor>
-	}
-	### Mod's supported game version, support "*" wildcard.
-	supported_version = scalar
-	### Mod's Steam workshop item id.
-	### Use one of "remote_file_id" and "path".
-	## cardinality = 0..1
-	remote_file_id = scalar
-	### Mod's absolute directory / absolute zip file path
-	### Use one of "remote_file_id" and "path".
-	## cardinality = 0..1
-	path = abs_filepath
+    ### Mod's name.
+    name = scalar
+    ### Mod's version.
+    version = scalar
+    ### Mod's thumbnail picture.
+    ## cardinality = 0..1
+    picture = filepath
+    ### Mod's Tags.
+    ## cardinality = 0..1
+    tags = {
+        ## cardinality = 0..inf
+        scalar
+    }
+    ## cardinality = 0..1
+    dependencies = {
+        <mod_descriptor>
+    }
+    ### Mod's supported game version, support "*" wildcard.
+    supported_version = scalar
+    ### Mod's Steam workshop item id.
+    ### Use one of "remote_file_id" and "path".
+    ## cardinality = 0..1
+    remote_file_id = scalar
+    ### Mod's absolute directory / absolute zip file path
+    ### Use one of "remote_file_id" and "path".
+    ## cardinality = 0..1
+    path = abs_filepath
 }
