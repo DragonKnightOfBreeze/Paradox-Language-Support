@@ -3,7 +3,6 @@ package icu.windea.pls.script.structureView
 import com.intellij.ide.structureView.*
 import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.references.*
 
 class ParadoxScriptValueTreeElement(
     element: ParadoxScriptValue
@@ -28,11 +27,4 @@ class ParadoxScriptValueTreeElement(
         val element = element ?: return null
         return element.value
     }
-
-    fun isTag(): Boolean {
-        val element = element ?: return false
-        val tagReference = element.references.firstNotNullOfOrNull { it.castOrNull<ParadoxTagAwarePsiReference>() }
-        return tagReference != null
-    }
 }
-

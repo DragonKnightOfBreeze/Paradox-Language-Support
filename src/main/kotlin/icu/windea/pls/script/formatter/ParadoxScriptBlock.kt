@@ -33,6 +33,8 @@ class ParadoxScriptBlock(
         }
 
         private fun createSpacingBuilder(settings: CodeStyleSettings): SpacingBuilder {
+            //NOTE #123 - 目前对于格式化不需要进行额外的处理
+
             //变量声明分隔符周围的空格，属性分隔符周围的空格
             val customSettings = settings.getCustomSettings(ParadoxScriptCodeStyleSettings::class.java)
             return SpacingBuilder(settings, ParadoxScriptLanguage)

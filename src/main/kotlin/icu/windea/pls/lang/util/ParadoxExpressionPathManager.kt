@@ -106,7 +106,7 @@ object ParadoxExpressionPathManager {
                 else -> return result ?: emptyList()
             }
         }
-        return emptyList()
+        return result ?: emptyList()
     }
 
     /**
@@ -132,10 +132,10 @@ object ParadoxExpressionPathManager {
                     else -> return result ?: emptyList()
                 }
             } else {
-                if (n === node) flag = true
+                if (n == node) flag = true //这里需要使用值相等
             }
         }
-        return emptyList()
+        return result ?: emptyList()
     }
 
     private fun getValueFromStringNode(node: LighterASTNode, tree: LighterAST): String? {

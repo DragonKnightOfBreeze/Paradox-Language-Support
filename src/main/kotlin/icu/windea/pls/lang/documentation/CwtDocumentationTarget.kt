@@ -127,10 +127,14 @@ private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiEle
     definition {
         appendCwtConfigFileInfoHeader(element)
 
+        val bindingConfig = element.getUserData(PlsKeys.bindingConfig)
+        val tagName = bindingConfig?.castOrNull<CwtValueConfig>()?.tagType
         val referenceElement = getReferenceElement(originalElement)
+
         val shortName = configType?.getShortName(name) ?: name
         val byName = if (shortName == name) null else name
         val prefix = when {
+            referenceElement != null && tagName != null -> "(${tagName.id})" //处理特殊标签
             configType?.isReference == true -> configType.prefix
             referenceElement is ParadoxScriptPropertyKey -> PlsConstants.Strings.definitionPropertyPrefix
             referenceElement is ParadoxScriptValue -> PlsConstants.Strings.definitionValuePrefix

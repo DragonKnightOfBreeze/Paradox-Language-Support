@@ -75,7 +75,10 @@ val CwtTypeConfig.possibleRootKeys: Set<String> by createKey(CwtTypeConfig.Keys)
 }
 
 val CwtTypeConfig.typeKeyPrefixConfig: CwtValueConfig? by createKey(CwtTypeConfig.Keys) {
-    config.properties?.find { it.key == "type_key_prefix" }?.valueConfig?.also { it.tagType = CwtTagType.TypeKeyPrefix }
+    config.properties?.find { it.key == "type_key_prefix" }?.valueConfig?.also {
+        it.tagType = CwtTagType.TypeKeyPrefix
+        it.pointer.element?.bindConfig(it)
+    }
 }
 
 //Implementations (interned)

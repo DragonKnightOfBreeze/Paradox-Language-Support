@@ -13,7 +13,6 @@ import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.references.*
 import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys as Keys
 
 /**
@@ -110,6 +109,15 @@ class ParadoxScriptAnnotator : Annotator {
         //#131
         if (!element.isResolvableExpression()) return
 
+        //高亮特殊标签
+        run {
+            if (element !is ParadoxScriptString) return@run
+            val tagType = element.tagType()
+            if (tagType == null) return@run
+            annotateTag(element, holder)
+            return
+        }
+
         //高亮复杂枚举值声明
         run {
             if (element !is ParadoxScriptStringExpressionElement) return@run
@@ -121,14 +129,6 @@ class ParadoxScriptAnnotator : Annotator {
         val isKey = element is ParadoxScriptPropertyKey
         val config = ParadoxExpressionManager.getConfigs(element, orDefault = isKey).firstOrNull()
         if (config != null) {
-            //高亮特殊标签
-            run {
-                if (element !is ParadoxScriptString) return@run
-                if (config !is CwtValueConfig || config.tagType == null) return@run
-                annotateTag(element, config, holder)
-                return
-            }
-
             //如果不是字符串，除非是定义引用，否则不作高亮
             if (element !is ParadoxScriptStringExpressionElement && config.expression.type != CwtDataTypes.Definition) return
 
@@ -136,22 +136,11 @@ class ParadoxScriptAnnotator : Annotator {
             annotateExpression(element, holder, config)
             return
         }
-
-        //高亮特殊标签
-        run {
-            if (element !is ParadoxScriptString) return@run
-            val tagReference = element.references.firstNotNullOfOrNull { it.castOrNull<ParadoxTagAwarePsiReference>() }
-            if (tagReference == null) return@run
-            val tagConfig = tagReference.config
-            if (tagConfig.tagType == null) return@run
-            annotateTag(element, tagConfig, holder)
-        }
     }
 
-    private fun annotateTag(element: ParadoxScriptString, config: CwtValueConfig, holder: AnnotationHolder) {
-        val tagType = config.tagType ?: return
-        val tooltip = "<code>(${tagType.id})</code>"
-        holder.newSilentAnnotation(INFORMATION).range(element).tooltip(tooltip).textAttributes(Keys.TAG_KEY).create()
+    private fun annotateTag(element: ParadoxScriptString, holder: AnnotationHolder) {
+        //目前不在这里显示标签类型，而是在快速文档中
+        holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(Keys.TAG_KEY).create()
     }
 
     private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {

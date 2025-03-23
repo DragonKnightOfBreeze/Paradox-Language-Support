@@ -19,11 +19,12 @@ class ParadoxTypeKeyPrefixPsiReferenceProvider : PsiReferenceProvider() {
         ProgressManager.checkCanceled()
 
         if (element !is ParadoxScriptString) return PsiReference.EMPTY_ARRAY
+        if (!element.isBlockMember()) return PsiReference.EMPTY_ARRAY
         if (element.text.isParameterized()) return PsiReference.EMPTY_ARRAY //不应当带有参数
         val rangeInElement = getRangeInElement(element) ?: return PsiReference.EMPTY_ARRAY
         val nextProperty = findNextProperty(element) ?: return PsiReference.EMPTY_ARRAY //之后的兄弟节点必须是属性（跳过空白和注释）
         val typeConfig = nextProperty.definitionInfo?.typeConfig ?: return PsiReference.EMPTY_ARRAY //并且必须是定义
-        if (typeConfig.typeKeyPrefix.let { it == null || it != element.value }) return PsiReference.EMPTY_ARRAY //前缀规则必须存在且一致
+        if (typeConfig.typeKeyPrefix.let { it == null || !it.equals(element.value, ignoreCase = true) }) return PsiReference.EMPTY_ARRAY //前缀规则必须存在且一致
         val config = typeConfig.typeKeyPrefixConfig ?: return PsiReference.EMPTY_ARRAY
         val reference = ParadoxTypeKeyPrefixPsiReference(element, rangeInElement, config)
         return arrayOf(reference)
@@ -38,7 +39,7 @@ class ParadoxTypeKeyPrefixPsiReferenceProvider : PsiReferenceProvider() {
 
     private tailrec fun findNextProperty(element: PsiElement): ParadoxScriptProperty? {
         val nextSibling = element.nextSibling ?: return null
-        if (nextSibling is PsiWhiteSpace || nextSibling is PsiComment) return findNextProperty(element)
+        if (nextSibling is PsiWhiteSpace || nextSibling is PsiComment) return findNextProperty(nextSibling)
         if (nextSibling !is ParadoxScriptProperty) return null
         return nextSibling
     }

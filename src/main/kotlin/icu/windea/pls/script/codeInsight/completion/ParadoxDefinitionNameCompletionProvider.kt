@@ -54,9 +54,10 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
                 val path = fileInfo.path
                 val elementPath = ParadoxExpressionPathManager.get(element, PlsConstants.Settings.maxDefinitionDepth) ?: return
                 if (elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
+                val rootKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(element).firstOrNull() }
                 for (typeConfig in configGroup.types.values) {
                     if (typeConfig.nameField != null) continue
-                    if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, elementPath, null, null)) continue
+                    if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, elementPath, null, rootKeyPrefix)) continue
                     val type = typeConfig.name
                     val declarationConfig = configGroup.declarations.get(type) ?: continue
                     //需要考虑不指定子类型的情况

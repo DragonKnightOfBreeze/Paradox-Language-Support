@@ -67,7 +67,7 @@ object ParadoxDefinitionManager {
         val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val elementPath = ParadoxExpressionPathManager.get(element, PlsConstants.Settings.maxDefinitionDepth) ?: return null
         if (elementPath.path.isParameterized()) return null //忽略表达式路径带参数的情况
-        val rootKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxExpressionPathManager.getKeyPrefixes(element).singleOrNull() } else null
+        val rootKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxExpressionPathManager.getKeyPrefixes(element).firstOrNull() } else null
         val typeConfig = getMatchedTypeConfig(element, configGroup, path, elementPath, rootKey, rootKeyPrefix)
         if (typeConfig == null) return null
         return ParadoxDefinitionInfo(element, null, typeConfig, null, rootKey, elementPath, gameType, configGroup)
@@ -232,13 +232,13 @@ object ParadoxDefinitionManager {
                 val result = typeConfig.possibleRootKeys.isEmpty() || typeConfig.possibleRootKeys.contains(rootKey)
                 if (!result) return false
             }
+        }
 
-            //如果type_key_prefix存在，且有必要校验，则要求其与rootKeyPrefix必须一致
-            if (typeConfig.name in typeConfig.configGroup.definitionTypesMayWithTypeKeyPrefix) {
-                val typeKeyPrefix = typeConfig.typeKeyPrefix
-                val result = typeKeyPrefix == rootKeyPrefix?.value
-                if (!result) return false
-            }
+        //如果type_key_prefix存在，且有必要校验，则要求其与rootKeyPrefix必须一致（忽略大小写）
+        if (rootKeyPrefix != null && typeConfig.name in typeConfig.configGroup.definitionTypesMayWithTypeKeyPrefix) {
+            val typeKeyPrefix = typeConfig.typeKeyPrefix
+            val result = typeKeyPrefix.equals(rootKeyPrefix.value, ignoreCase = true)
+            if (!result) return false
         }
 
         if (elementPath != null) {
@@ -530,7 +530,7 @@ object ParadoxDefinitionManager {
         val configGroup = getConfigGroup(project, gameType) //这里需要指定project
         val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile, PlsConstants.Settings.maxDefinitionDepth)
         if (elementPath == null) return null
-        val rootKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(node, tree).singleOrNull() }
+        val rootKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(node, tree).firstOrNull() }
         val typeConfig = getMatchedTypeConfig(node, tree, configGroup, path, elementPath, rootKey, rootKeyPrefix)
         if (typeConfig == null) return null
         //NOTE 这里不处理需要内联的情况

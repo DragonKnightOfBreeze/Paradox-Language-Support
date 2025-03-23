@@ -4,6 +4,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
 import com.intellij.util.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -25,6 +26,17 @@ class ParadoxScriptExpressionPsiReference(
 ) : PsiPolyVariantReferenceBase<ParadoxScriptExpressionElement>(element, rangeInElement), PsiReferencesAware {
     val project by lazy { config.configGroup.project }
     //val project by lazy { element.project }
+
+    init {
+        bindConfigForResolved()
+    }
+
+    private fun bindConfigForResolved() {
+        //用于处理特殊标签
+        if (config is CwtValueConfig && config.tagType != null) {
+            config.pointer.element?.bindConfig(config)
+        }
+    }
 
     override fun handleElementRename(newElementName: String): PsiElement {
         val resolved = resolve()

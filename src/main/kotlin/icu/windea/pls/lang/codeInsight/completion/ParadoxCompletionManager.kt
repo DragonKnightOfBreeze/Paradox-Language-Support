@@ -81,7 +81,7 @@ object ParadoxCompletionManager {
     fun addRootKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
         val elementPath = ParadoxExpressionPathManager.get(memberElement, PlsConstants.Settings.maxDefinitionDepth) ?: return
         if (elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
-        val rootKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(memberElement).singleOrNull() }
+        val rootKeyPrefix = lazy { context.contextElement?.let { ParadoxExpressionPathManager.getKeyPrefixes(it).firstOrNull() } }
         context.isKey = true
         completeRootKey(context, result, elementPath, rootKeyPrefix)
     }
@@ -255,23 +255,38 @@ object ParadoxCompletionManager {
     //region Base Completion Methods
 
     fun completeRootKey(context: ProcessingContext, result: CompletionResultSet, elementPath: ParadoxExpressionPath, rootKeyPrefix: Lazy<String?>) {
+        //从以下来源收集需要提示的key（不仅仅是特定类型的定义的rootKey）
+        //* skip_root_key
+        //* type_key_filter
+        //* type_key_prefix
         val originalFile = context.parameters?.originalFile ?: return
         val fileInfo = originalFile.fileInfo ?: return
         val gameType = context.gameType ?: return
         val configGroup = context.configGroup ?: return
         val path = fileInfo.path
-        val infoMap = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
-        for (typeConfig in configGroup.types.values) {
+
+        val typeConfigs = configGroup.types.values
+        val infoMapForTag = mutableMapOf<String, MutableList<CwtTypeConfig>>()
+        val infoMapForKey = mutableMapOf<String, MutableList<Tuple2<CwtTypeConfig, CwtSubtypeConfig?>>>()
+        for (typeConfig in typeConfigs) {
+            run {
+                val typeKeyPrefix = typeConfig.typeKeyPrefix
+                if (typeKeyPrefix == null) return@run
+                if (rootKeyPrefix.value != null) return@run //avoid complete prefix again after an existing prefix
+                if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, null, null, null)) return@run
+                infoMapForTag.getOrPut(typeKeyPrefix) { mutableListOf() }.add(typeConfig)
+            }
+
             if (!ParadoxDefinitionManager.matchesTypeByUnknownDeclaration(typeConfig, path, null, null, rootKeyPrefix)) continue
             val skipRootKeyConfig = typeConfig.skipRootKey
             if (skipRootKeyConfig.isNullOrEmpty()) {
                 if (elementPath.isEmpty()) {
                     typeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
-                        infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
+                        infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
                     }
                     typeConfig.subtypes.values.forEach { subtypeConfig ->
                         subtypeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
-                            infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
+                            infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
                         }
                     }
                 }
@@ -280,21 +295,44 @@ object ParadoxCompletionManager {
                     val relative = elementPath.relativeTo(skipConfig) ?: continue
                     if (relative.isEmpty()) {
                         typeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
-                            infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
+                            infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
                         }
                         typeConfig.subtypes.values.forEach { subtypeConfig ->
                             subtypeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
-                                infoMap.getOrPut(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
+                                infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
                             }
                         }
                     } else {
-                        infoMap.getOrPut(relative) { mutableListOf() }
+                        infoMapForKey.getOrPut(relative) { mutableListOf() }
                     }
                     break
                 }
             }
         }
-        for ((key, tuples) in infoMap) {
+
+        for ((key, typeConfigsToUse) in infoMapForTag) {
+            val typeConfigToUse = typeConfigsToUse.firstOrNull() ?: continue
+            val config = typeConfigToUse.typeKeyPrefixConfig ?: continue
+            val element = config.pointer.element
+            val icon = PlsIcons.Nodes.Tag
+            val tailText = typeConfigsToUse.joinToString(", ", " for ") { typeConfig ->
+                typeConfig.name
+            }
+            val typeFile = config.pointer.containingFile
+            context.isKey = false
+            context.config = config
+            val lookupElement = LookupElementBuilder.create(key).withPsiElement(element)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withCaseSensitivity(false)
+                .withPatchableIcon(icon)
+                .withPatchableTailText(tailText)
+                .withPriority(ParadoxCompletionPriorities.rootKey)
+                .forScriptExpression(context)
+            result.addElement(lookupElement, context)
+            context.isKey = null
+            context.config = null
+        }
+        for ((key, tuples) in infoMapForKey) {
             if (key == "any") return //skip any wildcard
             val typeConfigToUse = tuples.map { it.first }.distinctBy { it.name }.singleOrNull()
             val typeToUse = typeConfigToUse?.name

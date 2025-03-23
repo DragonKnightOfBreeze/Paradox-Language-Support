@@ -1,9 +1,12 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.psi.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.script.references.*
 import java.awt.*
 
 inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.propertyValue(): T? {
@@ -49,7 +52,7 @@ fun PsiElement.isExpressionOrMemberContext(): Boolean {
     return this is ParadoxScriptDefinitionElement || this is ParadoxScriptBlockElement || this is ParadoxScriptParameterCondition
 }
 
-fun ParadoxScriptExpressionElement.isResolvableExpression() : Boolean {
+fun ParadoxScriptExpressionElement.isResolvableExpression(): Boolean {
     return this is ParadoxScriptStringExpressionElement || this is ParadoxScriptInt || this is ParadoxScriptFloat
 }
 
@@ -69,7 +72,7 @@ fun ParadoxScriptPropertyKey.isDefinitionRootKey(): Boolean {
 
 fun ParadoxScriptValue.isDefinitionName(): Boolean {
     //#131
-    if(!this.isResolvableExpression()) return false
+    if (!this.isResolvableExpression()) return false
 
     val nameProperty = this.parent?.castOrNull<ParadoxScriptProperty>() ?: return false
     //def = def_name
@@ -156,4 +159,21 @@ fun ParadoxScriptExpressionElement.resolved(): ParadoxScriptExpressionElement? {
         is ParadoxScriptScriptedVariableReference -> this.referenceValue
         else -> this
     }
+}
+
+fun ParadoxScriptValue.tagType(): CwtTagType? {
+    if (this !is ParadoxScriptString) return null
+    if (!this.isBlockMember()) return null
+    val references = references
+    run {
+        val tagReference = references.firstNotNullOfOrNull { it.castOrNull<ParadoxTagAwarePsiReference>() }
+        if (tagReference == null) return@run
+        return tagReference.config.tagType
+    }
+    run {
+        val expressionReference = references.firstNotNullOfOrNull { it.castOrNull<ParadoxScriptExpressionPsiReference>() }
+        if (expressionReference == null) return@run
+        return expressionReference.config.castOrNull<CwtValueConfig>()?.tagType
+    }
+    return null
 }
