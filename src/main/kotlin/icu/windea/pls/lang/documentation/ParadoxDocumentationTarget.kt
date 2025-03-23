@@ -641,7 +641,7 @@ private fun DocumentationBuilder.addParametersForDefinition(element: ParadoxScri
         var isFirst = true
         parameterContextInfo.parameters.forEach { (parameterName, elements) ->
             if (isFirst) isFirst = false else append("<br>")
-            append("<code>")
+            append("<pre>")
             append(parameterName)
             //加上推断得到的规则信息
             if (ParadoxParameterManager.isOptional(parameterContextInfo, parameterName)) append("?") //optional marker
@@ -653,7 +653,7 @@ private fun DocumentationBuilder.addParametersForDefinition(element: ParadoxScri
                     append(": ").append(inferredType.escapeXml())
                 }
             }
-            append("</code>")
+            append("</pre>")
         }
     }
     sections.put(PlsBundle.message("sectionTitle.parameters"), parametersText)

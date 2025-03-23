@@ -215,42 +215,42 @@ fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext,
 fun DocumentationBuilder.getModifierCategoriesText(categories: Set<String>, gameType: ParadoxGameType, contextElement: PsiElement): String {
     if (categories.isEmpty()) return ""
     return buildDocumentation {
-        append("<code>")
+        append("<pre>")
         var appendSeparator = false
         for (category in categories) {
             if (appendSeparator) append(", ") else appendSeparator = true
             appendCwtConfigLink("${gameType.prefix}modifier_categories/$category", category, contextElement)
         }
-        append("</code>")
+        append("</pre>")
     }
 }
 
 fun DocumentationBuilder.getScopeText(scopeId: String, gameType: ParadoxGameType, contextElement: PsiElement): String {
     return buildDocumentation {
-        append("<code>")
+        append("<pre>")
         buildScopeDoc(scopeId, gameType, contextElement)
-        append("</code>")
+        append("</pre>")
     }
 }
 
 fun DocumentationBuilder.getScopesText(scopeIds: Set<String>, gameType: ParadoxGameType, contextElement: PsiElement): String {
     if (scopeIds.isEmpty()) return ""
     return buildDocumentation {
-        append("<code>")
+        append("<pre>")
         var appendSeparator = false
         for (scopeId in scopeIds) {
             if (appendSeparator) append(", ") else appendSeparator = true
             buildScopeDoc(scopeId, gameType, contextElement)
         }
-        append("</code>")
+        append("</pre>")
     }
 }
 
 fun DocumentationBuilder.getScopeContextText(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement): String {
     return buildDocumentation {
-        append("<code>")
+        append("<pre>")
         buildScopeContextDoc(scopeContext, gameType, contextElement)
-        append("</code>")
+        append("</pre>")
     }
 }
 

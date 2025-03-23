@@ -99,7 +99,7 @@ class ParadoxScriptAnnotator : Annotator {
                 val nameString = definitionInfo.name.escapeXml().orAnonymous()
                 val typesString = definitionInfo.typesText
                 //这里不能使用PSI链接
-                val tooltip = "<code>(definition name) <b>$nameString</b>: $typesString</code>"
+                val tooltip = "<pre>(definition name) <b>$nameString</b>: $typesString</pre>"
                 holder.newSilentAnnotation(INFORMATION).range(nameElement).tooltip(tooltip).textAttributes(Keys.DEFINITION_NAME_KEY).create()
             }
         }
