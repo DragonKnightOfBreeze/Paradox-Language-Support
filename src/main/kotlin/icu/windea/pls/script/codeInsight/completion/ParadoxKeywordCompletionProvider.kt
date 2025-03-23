@@ -2,11 +2,11 @@ package icu.windea.pls.script.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.util.*
-import icu.windea.pls.config.configContext.*
+import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 /**
@@ -25,13 +25,14 @@ class ParadoxKeywordCompletionProvider : CompletionProvider<CompletionParameters
         if (element.text.isLeftQuoted()) return
         if (element.text.isParameterized()) return
 
-        //判断光标位置是否在定义声明中（这里的代码逻辑更加准确，兼容性更好）
-        if (element.isExpression()) {
-            val configContext = ParadoxExpressionManager.getConfigContext(element)
-            if (configContext != null && configContext.isRootOrMember()) return
-        }
-
         ParadoxCompletionManager.initializeContext(parameters, context)
+
+        val configGroup = context.configGroup ?: return
+        val path = parameters.originalFile.fileInfo?.path
+
+        //判断所在文件是否可能包含定义，如果可能，则不提示关键字
+        val isDefinitionAwareFile = path != null && configGroup.types.values.any { CwtConfigManager.matchesFilePath(it, path) }
+        if(isDefinitionAwareFile) return
 
         lookupElements.forEach { lookupElement ->
             result.addElement(lookupElement, context)
