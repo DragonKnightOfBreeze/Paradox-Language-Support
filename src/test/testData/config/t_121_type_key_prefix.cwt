@@ -1,0 +1,25 @@
+types = {
+    type[scripted_effect] = {
+        path = "game/common/scripted_effects"
+        file_extension = .txt
+    }
+    type[test_scripted_effect] = {
+        path = "game/common/scripted_effects"
+        file_extension = .txt
+        type_key_prefix = test_scripted_effect
+    }
+}
+
+scripted_effect = {
+    ## cardinality = 0..1
+    ## tag
+    optimize_memory
+    alias_name[effect] = alias_match_left[effect]
+}
+
+test_scripted_effect = {
+    ## cardinality = 0..1
+    ## tag
+    optimize_memory
+    alias_name[effect] = alias_match_left[effect]
+}
