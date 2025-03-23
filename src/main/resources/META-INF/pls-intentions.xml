@@ -16,26 +16,8 @@
       <descriptionDirectoryName>CwtUnquoteIdentifierIntention</descriptionDirectoryName>
     </intentionAction>
     <!--endregion-->
-    
+
     <!--region Paradox script-->
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.DefinitionNameFindUsagesIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.DefinitionNameGotoImplementationsIntention</className>
-    </intentionAction>
-    <intentionAction>
-      <language>PARADOX_SCRIPT</language>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>intention.script.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.script.DefinitionNameGotoTypeDeclarationIntention</className>
-    </intentionAction>
     <intentionAction>
       <language>PARADOX_SCRIPT</language>
       <bundleName>messages.PlsBundle</bundleName>
