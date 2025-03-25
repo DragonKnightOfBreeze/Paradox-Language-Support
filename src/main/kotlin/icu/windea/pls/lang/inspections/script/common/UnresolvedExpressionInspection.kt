@@ -57,6 +57,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 //skip checking property if property key is parameterized
                 val propertyKey = element.propertyKey
                 if (propertyKey.text.isParameterized()) return false
+
                 val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return true
                 if (!configContext.isRootOrMember() || configContext.isDefinition()) return true
                 val configs = ParadoxExpressionManager.getConfigs(element)
@@ -91,10 +92,14 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 //skip checking value if it is parameterized
                 if (element is ParadoxScriptString && element.text.isParameterized()) return false
                 if (element is ParadoxScriptScriptedVariableReference && element.text.isParameterized()) return false
+
                 val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return true
                 if (!configContext.isRootOrMember() || configContext.isDefinition()) return true
                 val configs = ParadoxExpressionManager.getConfigs(element, orDefault = false)
                 if (configs.isEmpty()) {
+                    //skip check value if it is a special tag and there are no matched configs
+                    if (element.tagType() != null) return false
+
                     val expectedConfigs = getExpectedConfigs(element, configContext)
                     if (expectedConfigs.isNotEmpty()) {
                         //判断是否需要排除
