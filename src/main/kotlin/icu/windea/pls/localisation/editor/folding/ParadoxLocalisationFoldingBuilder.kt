@@ -49,19 +49,23 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             COMMENT -> return //optimization
             LOCALE -> return //optimization
             PROPERTY_REFERENCE -> {
-                if (settings.localisationReferencesFully) descriptors.add(FoldingDescriptor(node, node.textRange))
+                if (settings.localisationReferencesFullyEnabled) {
+                    descriptors.add(FoldingDescriptor(node, node.textRange))
+                }
             }
             ICON -> {
-                if (settings.localisationIconsFully) descriptors.add(FoldingDescriptor(node, node.textRange))
+                if (settings.localisationIconsFullyEnabled) {
+                    descriptors.add(FoldingDescriptor(node, node.textRange))
+                }
             }
             COMMAND -> {
                 val conceptNode = node.findChildByType(CONCEPT)
                 if (conceptNode == null) {
-                    if (settings.localisationCommands) {
+                    if (settings.localisationCommandsEnabled) {
                         descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.commandFolder))
                     }
                 } else {
-                    if (ParadoxFoldingSettings.getInstance().localisationConcepts) {
+                    if (settings.localisationConceptsEnabled) {
                         val conceptTextNode = conceptNode.findChildByType(CONCEPT_TEXT)
                         if (conceptTextNode == null) {
                             descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.conceptFolder))
@@ -73,7 +77,9 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             }
             CONCEPT_NAME -> return //optimization
             CONCEPT_TEXT -> {
-                descriptors.add(FoldingDescriptor(node, node.textRange))
+                if (settings.localisationConceptTextsEnabled) {
+                    descriptors.add(FoldingDescriptor(node, node.textRange))
+                }
             }
         }
         val children = node.getChildren(null)

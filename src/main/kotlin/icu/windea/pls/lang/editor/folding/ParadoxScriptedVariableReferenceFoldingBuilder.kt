@@ -33,6 +33,8 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
     }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
+        if(!ParadoxFoldingSettings.getInstance().scriptedVariableReferencesEnabled) return FoldingDescriptor.EMPTY_ARRAY
+
         if (quick) return FoldingDescriptor.EMPTY_ARRAY
         if (!root.language.isParadoxLanguage()) return FoldingDescriptor.EMPTY_ARRAY
         val foldingGroup = getFoldingGroup()

@@ -6,6 +6,8 @@ import com.intellij.openapi.ui.*
 import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDescriptor
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
@@ -212,40 +214,96 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.folding.inlineMathBlocks"))
                         .bindSelected(foldingSettings::inlineMathBlocks)
                 }
+                //localisationReferencesFullyEnabled
+                lateinit var localisationReferencesFullyEnabledCb: JBCheckBox
+                row {
+                    checkBox(PlsBundle.message("settings.folding.localisationReferencesFullyEnabled"))
+                        .bindSelected(foldingSettings::localisationReferencesFullyEnabled)
+                        .applyToComponent { localisationReferencesFullyEnabledCb = this }
+                }
                 //localisationReferencesFully
                 row {
                     checkBox(PlsBundle.message("settings.folding.localisationReferencesFully"))
                         .bindSelected(foldingSettings::localisationReferencesFully)
+                        .enabledIf(localisationReferencesFullyEnabledCb.selected)
+                }
+                //localisationIconsFullyEnabled
+                lateinit var localisationIconsFullyEnabledCb: JBCheckBox
+                row {
+                    checkBox(PlsBundle.message("settings.folding.localisationIconsFullyEnabled"))
+                        .bindSelected(foldingSettings::localisationIconsFullyEnabled)
+                        .applyToComponent { localisationIconsFullyEnabledCb = this }
                 }
                 //localisationIconsFully
                 row {
                     checkBox(PlsBundle.message("settings.folding.localisationIconsFully"))
                         .bindSelected(foldingSettings::localisationIconsFully)
+                        .enabledIf(localisationIconsFullyEnabledCb.selected)
+                }
+                //localisationCommandsEnabled
+                lateinit var localisationCommandsEnabledCb: JBCheckBox
+                row {
+                    checkBox(PlsBundle.message("settings.folding.localisationCommandsEnabled"))
+                        .bindSelected(foldingSettings::localisationCommandsEnabled)
+                        .applyToComponent { localisationCommandsEnabledCb = this }
                 }
                 //localisationCommands
                 row {
                     checkBox(PlsBundle.message("settings.folding.localisationCommands"))
                         .bindSelected(foldingSettings::localisationCommands)
+                        .enabledIf(localisationCommandsEnabledCb.selected)
+                }
+                //localisationConceptsEnabled
+                lateinit var localisationConceptsEnabledCb: JBCheckBox
+                row {
+                    checkBox(PlsBundle.message("settings.folding.localisationConceptsEnabled"))
+                        .bindSelected(foldingSettings::localisationConceptsEnabled)
+                        .applyToComponent { localisationConceptsEnabledCb = this }
                 }
                 //localisationConcepts
                 row {
                     checkBox(PlsBundle.message("settings.folding.localisationConcepts"))
                         .bindSelected(foldingSettings::localisationConcepts)
+                        .enabledIf(localisationConceptsEnabledCb.selected)
+                }
+                //localisationConceptTextsEnabled
+                lateinit var localisationConceptTextsEnabledCb: JBCheckBox
+                row {
+                    checkBox(PlsBundle.message("settings.folding.localisationConceptTextsEnabled"))
+                        .bindSelected(foldingSettings::localisationConceptTextsEnabled)
+                        .applyToComponent { localisationConceptTextsEnabledCb = this }
                 }
                 //localisationConceptTexts
                 row {
                     checkBox(PlsBundle.message("settings.folding.localisationConceptTexts"))
                         .bindSelected(foldingSettings::localisationConceptTexts)
+                        .enabledIf(localisationConceptTextsEnabledCb.selected)
+                }
+                //scriptedVariableReferencesEnabled
+                lateinit var scriptedVariableReferencesEnabledCb: JBCheckBox
+                row {
+                    checkBox(PlsBundle.message("settings.folding.scriptedVariableReferencesEnabled"))
+                        .bindSelected(foldingSettings::scriptedVariableReferencesEnabled)
+                        .applyToComponent { scriptedVariableReferencesEnabledCb = this }
                 }
                 //scriptedVariableReferences
                 row {
                     checkBox(PlsBundle.message("settings.folding.scriptedVariableReferences"))
-                        .bindSelected(foldingSettings::parameterConditionBlocks)
+                        .bindSelected(foldingSettings::scriptedVariableReferences)
+                        .enabledIf(scriptedVariableReferencesEnabledCb.selected)
+                }
+                //variableOperationExpressionsEnabled
+                lateinit var variableOperationExpressionsEnabledCb: JBCheckBox
+                row {
+                    checkBox(PlsBundle.message("settings.folding.variableOperationExpressionsEnabled"))
+                        .bindSelected(foldingSettings::variableOperationExpressionsEnabled)
+                        .applyToComponent { variableOperationExpressionsEnabledCb = this }
                 }
                 //variableOperationExpressions
                 row {
                     checkBox(PlsBundle.message("settings.folding.variableOperationExpressions"))
                         .bindSelected(foldingSettings::variableOperationExpressions)
+                        .enabledIf(variableOperationExpressionsEnabledCb.selected)
                 }
             }
             //completion
@@ -324,19 +382,14 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         radioButton(PlsBundle.message("settings.generation.localisationStrategy.0"), LocalisationGenerationStrategy.EmptyText)
                     }
                     row {
-                        lateinit var rbCell: Cell<JBRadioButton>
-                        radioButton(PlsBundle.message("settings.generation.localisationStrategy.1"), LocalisationGenerationStrategy.SpecificText)
-                            .apply { rbCell = this }
-                        textField().bindText(settings.generation::localisationStrategyText.toNonNullableProperty(""))
-                            .enabledIf(rbCell.selected)
+                        lateinit var rb: JBRadioButton
+                        radioButton(PlsBundle.message("settings.generation.localisationStrategy.1"), LocalisationGenerationStrategy.SpecificText).applyToComponent { rb = this }
+                        textField().bindText(settings.generation::localisationStrategyText.toNonNullableProperty("")).enabledIf(rb.selected)
                     }
                     row {
-                        lateinit var rbCell: Cell<JBRadioButton>
-                        radioButton(PlsBundle.message("settings.generation.localisationStrategy.2"), LocalisationGenerationStrategy.FromLocale)
-                            .apply { rbCell = this }
-                        localeComboBox(addAuto = true)
-                            .bindItem(settings.generation::localisationStrategyLocale.toNullableProperty())
-                            .enabledIf(rbCell.selected)
+                        lateinit var rb: JBRadioButton
+                        radioButton(PlsBundle.message("settings.generation.localisationStrategy.2"), LocalisationGenerationStrategy.FromLocale).applyToComponent { rb = this }
+                        localeComboBox(addAuto = true).bindItem(settings.generation::localisationStrategyLocale.toNullableProperty()).enabledIf(rb.selected)
                     }
                 }.bind(settings.generation::localisationStrategy)
             }
