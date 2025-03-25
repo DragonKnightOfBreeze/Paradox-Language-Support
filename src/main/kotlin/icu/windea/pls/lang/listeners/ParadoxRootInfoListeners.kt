@@ -6,7 +6,7 @@ import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.*
 
 /**
- * 当根目录信息被添加时，同步相关配置。
+ * 当根目录信息被添加后，同步相关配置。
  */
 class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
     override fun onAdd(rootInfo: ParadoxRootInfo) {

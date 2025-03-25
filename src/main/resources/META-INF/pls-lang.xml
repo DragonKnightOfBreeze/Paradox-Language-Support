@@ -56,6 +56,9 @@
     <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.documentation.CwtDocumentationLinkHandler"/>
     <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.documentation.ParadoxDocumentationLinkHandler"/>
 
+    <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider"/>
+    <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxInlineScriptEditorNotificationProvider"/>
+
     <applicationService serviceImplementation="icu.windea.pls.lang.editor.folding.ParadoxFoldingSettings"/>
     <codeFoldingOptionsProvider instance="icu.windea.pls.lang.editor.folding.ParadoxFoldingOptionsProvider"/>
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.editor.folding.ParadoxVariableOperationExpressionFoldingBuilder"/>
@@ -146,15 +149,15 @@
   <projectListeners>
     <listener class="icu.windea.pls.lang.psi.ParadoxPsiTreeChangePreprocessor$Listener"
               topic="com.intellij.openapi.project.DumbService$DumbModeListener"/>
-    <listener class="icu.windea.pls.lang.ParadoxCheckModSettingsFileEditorManagerListener"
-              topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
   </projectListeners>
 
   <applicationListeners>
-    <listener class="icu.windea.pls.lang.listeners.ParadoxRefreshOnDefaultGameTypeChangedListener"
-              topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateEditorNotificationsOnDefaultGameDirectoriesChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxRefreshOnDefaultGameTypeChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnLocalConfigDirectoryChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxLocalConfigDirectoryListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxRefreshOnModGameTypeChangedListener"
@@ -162,6 +165,8 @@
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnGameSettingsChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxGameSettingsListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnModSettingsChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxModSettingsListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateEditorNotificationsOnModSettingsChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxModSettingsListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateSettingsOnRootInfoChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxRootInfoListener"/>

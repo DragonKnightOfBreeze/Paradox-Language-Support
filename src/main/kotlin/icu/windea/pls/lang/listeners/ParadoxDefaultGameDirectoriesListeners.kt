@@ -3,8 +3,10 @@ package icu.windea.pls.lang.listeners
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
+import com.intellij.ui.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.editor.*
 
 /**
  * 当更改默认游戏目录映射后，刷新库信息。
@@ -29,5 +31,16 @@ class ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener : ParadoxDefau
             val library = project.paradoxLibrary
             library.refreshRoots()
         }
+    }
+}
+
+/**
+ * 当更改默认游戏目录映射后，更新编辑器通知。
+ *
+ * @see ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
+ */
+class ParadoxUpdateEditorNotificationsOnDefaultGameDirectoriesChangedListener : ParadoxDefaultGameDirectoriesListener {
+    override fun onChange(oldGameDirectories: Map<String, String>, newGameDirectories: Map<String, String>) {
+        EditorNotifications.updateAll()
     }
 }

@@ -1,4 +1,4 @@
-package icu.windea.pls.script.editor
+package icu.windea.pls.lang.editor
 
 import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.openapi.fileEditor.*
@@ -23,12 +23,11 @@ class ParadoxInlineScriptEditorNotificationProvider : EditorNotificationProvider
 
         return Function f@{ fileEditor ->
             if (fileEditor !is TextEditor) return@f null
-            val editor = fileEditor.editor
             val psiFile = file.toPsiFile(project) ?: return@f null
             val message = PlsBundle.message("editor.notification.inlineScript", inlineScriptExpression)
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info).text(message)
             panel.createActionLabel(PlsBundle.message("goto.usages")) {
-                GotoDeclarationAction.startFindUsages(editor, project, psiFile)
+                GotoDeclarationAction.startFindUsages(fileEditor.editor, project, psiFile)
             }
             panel
         }

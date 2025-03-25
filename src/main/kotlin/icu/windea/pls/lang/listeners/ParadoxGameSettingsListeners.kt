@@ -8,20 +8,18 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 
 /**
- * 当更改模组配置后，刷新库信息。
+ * 当添加或更改游戏配置后，刷新库信息。
  *
  * @see ParadoxLibrary
  * @see ParadoxLibraryProvider
  */
-class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListener {
-    //目前不考虑onRemove的情况
-
-    override fun onAdd(modSettings: ParadoxModSettingsState) {
-        doUpdateLibrary(modSettings.modDirectory)
+class ParadoxUpdateLibraryOnGameSettingsChangedListener : ParadoxGameSettingsListener {
+    override fun onAdd(gameSettings: ParadoxGameSettingsState) {
+        doUpdateLibrary(gameSettings.gameDirectory)
     }
 
-    override fun onChange(modSettings: ParadoxModSettingsState) {
-        doUpdateLibrary(modSettings.modDirectory)
+    override fun onChange(gameSettings: ParadoxGameSettingsState) {
+        doUpdateLibrary(gameSettings.gameDirectory)
     }
 
     //org.jetbrains.kotlin.idea.core.script.ucache.ScriptClassRootsUpdater.doUpdate

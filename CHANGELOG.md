@@ -8,6 +8,7 @@
 * [X] #131 Only numbers in event names
 * [X] 修复无法识别本地化文件中的数据库对象表达式的BUG / Fixed the bug that database object expression in loc files cannot be resolved 
 * [X] 将内置规则重新移到主要的jar包中以免去不必要的麻烦 / Move built-in configs into main jar to make things easy
+* [X] 如果游戏目录未配置，打开模组文件后显示编辑器横幅通知，而非显示全局通知 / If game directory is not configured, show an editor notification after opening mod files, instead of showing a global notification
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.31

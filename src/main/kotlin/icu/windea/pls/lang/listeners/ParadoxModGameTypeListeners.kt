@@ -5,7 +5,7 @@ import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.*
 
 /**
- * 当模组的游戏类型变更后，重新解析文件。
+ * 当更改模组的游戏类型后，重新解析文件。
  */
 class ParadoxRefreshOnModGameTypeChangedListener : ParadoxModGameTypeListener {
     override fun onChange(modSettings: ParadoxModSettingsState) {

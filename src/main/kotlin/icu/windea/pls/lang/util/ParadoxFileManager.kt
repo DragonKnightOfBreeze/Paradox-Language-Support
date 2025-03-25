@@ -99,7 +99,7 @@ object ParadoxFileManager {
     }
 
     fun isLightFile(file: VirtualFile): Boolean {
-        return file is LightVirtualFile
+        return file is LightVirtualFileBase
     }
 
     fun isInjectedFile(file: VirtualFile): Boolean {

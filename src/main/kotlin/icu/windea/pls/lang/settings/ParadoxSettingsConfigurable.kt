@@ -50,27 +50,27 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 row {
                     label(PlsBundle.message("settings.general.defaultGameDirectories")).widthGroup("general")
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameDirectories.tooltip") }
-                    var defaultGameDirectories = settings.defaultGameDirectories
+                    val defaultGameDirectories = settings.defaultGameDirectories
                     ParadoxGameType.entries.forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
-                    var list = defaultGameDirectories.toMutableEntryList().mapTo(mutableListOf()) { it.copy() }
+                    val defaultList = defaultGameDirectories.toMutableEntryList()
+                    var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                     val action = { _: ActionEvent ->
                         val dialog = ParadoxGameDirectoriesDialog(list)
                         if (dialog.showAndGet()) list = dialog.resultList
                     }
                     link(PlsBundle.message("settings.general.defaultGameDirectories.link"), action)
                         .onApply {
-                            settings.defaultGameDirectories = list.toMutableMap()
-                            val oldDefaultGameDirectories = defaultGameDirectories.toMap()
-                            val newDefaultGameDirectories = settings.defaultGameDirectories
+                            val oldDefaultGameDirectories = defaultGameDirectories.toMutableMap()
+                            val newDefaultGameDirectories = list.toMutableMap()
                             if (oldDefaultGameDirectories != newDefaultGameDirectories) {
-                                defaultGameDirectories = newDefaultGameDirectories
+                                settings.defaultGameDirectories = newDefaultGameDirectories
                                 val messageBus = ApplicationManager.getApplication().messageBus
                                 messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC)
                                     .onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
                             }
                         }
-                        .onReset { list = defaultGameDirectories.toMutableEntryList() }
-                        .onIsModified { list != defaultGameDirectories.toMutableEntryList() }
+                        .onReset { list = defaultList }
+                        .onIsModified { list != defaultList }
                 }
                 //preferredLocale
                 row {
@@ -352,7 +352,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.hierarchy.showDefinitionsInCallHierarchy"))
                         .bindSelected(settings.hierarchy::showDefinitionsInCallHierarchy)
 
-                    val defaultList = settings.hierarchy.definitionTypeBindingsInCallHierarchy.toMutableEntryList()
+                    val definitionTypeBindingsInCallHierarchy = settings.hierarchy.definitionTypeBindingsInCallHierarchy
+                    val defaultList = definitionTypeBindingsInCallHierarchy.toMutableEntryList()
                     var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                     val action = { _: ActionEvent ->
                         val dialog = ParadoxDefinitionTypeBindingsInCallHierarchyDialog(list)

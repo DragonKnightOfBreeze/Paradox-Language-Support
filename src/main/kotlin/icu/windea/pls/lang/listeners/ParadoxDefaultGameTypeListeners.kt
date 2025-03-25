@@ -4,7 +4,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 /**
- * 当默认游戏类型变更后，重新解析文件。
+ * 当更改默认游戏类型后，重新解析文件。
  */
 class ParadoxRefreshOnDefaultGameTypeChangedListener : ParadoxDefaultGameTypeListener {
     override fun onChange(oldGameType: ParadoxGameType, newGameType: ParadoxGameType) {
