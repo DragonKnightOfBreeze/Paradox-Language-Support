@@ -23,7 +23,7 @@ import icu.windea.pls.script.psi.*
  * * 对脚本参数的传入值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
  * * 对脚本参数的默认值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
  *
- * @see ParameterValueInjectionInfo
+ * @see ParadoxParameterValueInjectionInfo
  * @see CwtParameterValueConfigContextProvider
  */
 class ParadoxScriptLanguageInjector : MultiHostInjector {
@@ -52,7 +52,7 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
     private fun doGetLanguageToInject(host: PsiLanguageInjectionHost, registrar: MultiHostRegistrar): Boolean {
         if (host.lastChild is PsiErrorElement) return true //skip if host has syntax error
 
-        val allInjectionInfos = mutableListOf<ParameterValueInjectionInfo>()
+        val allInjectionInfos = mutableListOf<ParadoxParameterValueInjectionInfo>()
 
         ProgressManager.checkCanceled()
         applyInjectionForArgumentValue(host, allInjectionInfos)
@@ -68,14 +68,14 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         return false
     }
 
-    private fun applyInjectionForArgumentValue(host: PsiElement, allInjectionInfos: MutableList<ParameterValueInjectionInfo>) {
+    private fun applyInjectionForArgumentValue(host: PsiElement, allInjectionInfos: MutableList<ParadoxParameterValueInjectionInfo>) {
         if (host !is ParadoxScriptString) return
         val injectionInfos = getInjectionInfosForArgumentValue(host)
         if (injectionInfos.isEmpty()) return
         allInjectionInfos.addAll(injectionInfos)
     }
 
-    private fun getInjectionInfosForArgumentValue(host: ParadoxScriptString): List<ParameterValueInjectionInfo> {
+    private fun getInjectionInfosForArgumentValue(host: ParadoxScriptString): List<ParadoxParameterValueInjectionInfo> {
         //这里先向上得到contextReferenceInfo，接着获取传入值对应的textRange，然后选用在host的textRange之内的那些
         val from = ParadoxParameterContextReferenceInfo.From.InContextReference
         val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(host, from = from) ?: return emptyList()
@@ -104,18 +104,18 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
                 }
             }
             val textToInject = rangeInsideHost.substring(text)
-            ParameterValueInjectionInfo(textToInject, rangeInsideHost, parameterValueQuoted, parameterElementProvider)
+            ParadoxParameterValueInjectionInfo(textToInject, rangeInsideHost, parameterValueQuoted, parameterElementProvider)
         }
     }
 
-    private fun applyInjectionForParameterDefaultValue(host: PsiElement, allInjectionInfos: MutableList<ParameterValueInjectionInfo>) {
+    private fun applyInjectionForParameterDefaultValue(host: PsiElement, allInjectionInfos: MutableList<ParadoxParameterValueInjectionInfo>) {
         if (host !is ParadoxParameter) return
         val injectionInfo = getInjectionInfoForParameterDefaultValue(host)
         if (injectionInfo == null) return
         allInjectionInfos.add(injectionInfo)
     }
 
-    private fun getInjectionInfoForParameterDefaultValue(host: ParadoxParameter): ParameterValueInjectionInfo? {
+    private fun getInjectionInfoForParameterDefaultValue(host: ParadoxParameter): ParadoxParameterValueInjectionInfo? {
         val parameterName = host.name
         if (parameterName.isNullOrEmpty()) return null //skip if host is invalid
         var start = -1
@@ -136,6 +136,6 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
             ParadoxParameterSupport.resolveParameter(host)
         }
         val textToInject = rangeInsideHost.substring(host.text)
-        return ParameterValueInjectionInfo(textToInject, rangeInsideHost, parameterValueQuoted, parameterElementProvider)
+        return ParadoxParameterValueInjectionInfo(textToInject, rangeInsideHost, parameterValueQuoted, parameterElementProvider)
     }
 }

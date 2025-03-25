@@ -9,7 +9,7 @@ import icu.windea.pls.lang.psi.*
  * @property rangeInsideHost 原始文本在宿主PSI中的文本范围。
  * @property parameterElement 对应的参数PSI。必须使用懒加载。
  */
-class ParameterValueInjectionInfo(
+class ParadoxParameterValueInjectionInfo(
     val text: String,
     val rangeInsideHost: TextRange,
     val parameterValueQuoted: Boolean,

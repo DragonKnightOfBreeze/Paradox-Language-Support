@@ -242,7 +242,7 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         return configContext
     }
 
-    private fun getInjectionInfo(file: PsiFile, host: PsiElement): ParameterValueInjectionInfo? {
+    private fun getInjectionInfo(file: PsiFile, host: PsiElement): ParadoxParameterValueInjectionInfo? {
         val injectionInfos = host.getUserData(PlsKeys.parameterValueInjectionInfos)
         if (injectionInfos.isNullOrEmpty()) return null
         return when {
