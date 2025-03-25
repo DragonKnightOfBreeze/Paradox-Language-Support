@@ -1,14 +1,19 @@
 # Changelog
 
+## 1.3.33
+
+* [ ] 修复更新到IDEA 2024.3后，无法通过按住Ctrl并点击参数（以及其他类似目标）直接查找使用的问题（JB你在做什么？？） / Fixed the bug that cannot find usages directly by holding down Ctrl and clicking on parameters (or other similar targets) since IDEA 2024.3
+* [ ] 提供对*魔法注释*的初步支持，可以用来从指定的源数据生成脚本片段 / Provide initial support for *Magic Comments*, can be used to generate script snippet from specified source data
+
 ## 1.3.32
 
 * [X] #123 [CK3] Supports `type_key_prefix` in cwt configs, which is currently only used in ck3's `scripted_effects.cwt`
 * [ ] #129 更好的对模版表达式规则的支持 / Better template expression config support
 * [X] #130 更好的对嵌套的块的支持 / Bette support for nested blocks
 * [X] #131 Only numbers in event names
-* [X] 修复无法识别本地化文件中的数据库对象表达式的BUG / Fixed the bug that database object expression in loc files cannot be resolved 
-* [X] 将内置规则重新移到主要的jar包中以免去不必要的麻烦 / Move built-in configs into main jar to make things easy
+* [X] 修复无法识别本地化文件中的数据库对象表达式的BUG / Fixed the bug that database object expression in loc files cannot be resolved
 * [X] 如果游戏目录未配置，打开模组文件后显示编辑器横幅通知，而非显示全局通知 / If game directory is not configured, show an editor notification after opening mod files, instead of showing a global notification
+* [X] 将内置规则重新移到主要的jar包中以免去不必要的麻烦 / Move built-in configs into main jar to make things easy
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.31
