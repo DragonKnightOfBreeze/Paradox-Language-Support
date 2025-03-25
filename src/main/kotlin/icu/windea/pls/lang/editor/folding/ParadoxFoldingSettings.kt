@@ -4,7 +4,9 @@ import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.*
 
 /**
- * @property parameterConditionBlocks 是否默认折叠参数条件表达式块。默认不启用。
+ * @property commentEnabled 是否允许折叠多行注释。默认不启用。适用于脚本文件和本地化文件。
+ * @property comment 是否默认折叠多行注释。默认不启用。适用于脚本文件和本地化文件。
+ * @property parameterConditionBlocks 是否允许折叠参数条件表达式块。默认不启用。
  * @property inlineMathBlocks 是否默认折叠内联数学表达式块。默认启用。
  * @property localisationReferencesFullyEnabled 是否允许折叠本地化引用。完全折叠。默认不启用。
  * @property localisationReferencesFully 是否默认折叠本地化引用。完全折叠。默认不启用。
@@ -23,6 +25,8 @@ import com.intellij.util.xmlb.*
  */
 @State(name = "ParadoxFoldingSettings", storages = [Storage("editor.xml")], category = SettingsCategory.CODE)
 class ParadoxFoldingSettings : PersistentStateComponent<ParadoxFoldingSettings> {
+    var commentEnabled = false
+    var comment = false
     var parameterConditionBlocks = false
     var inlineMathBlocks = true
     var localisationReferencesFullyEnabled = false

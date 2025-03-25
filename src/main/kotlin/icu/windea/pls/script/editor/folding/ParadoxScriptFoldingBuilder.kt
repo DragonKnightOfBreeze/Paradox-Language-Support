@@ -28,6 +28,7 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
         return when (node.elementType) {
+            COMMENT -> ParadoxFoldingSettings.getInstance().comment
             BLOCK -> false
             PARAMETER_CONDITION -> ParadoxFoldingSettings.getInstance().parameterConditionBlocks
             INLINE_MATH -> ParadoxFoldingSettings.getInstance().inlineMathBlocks
@@ -36,12 +37,17 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
-        collectDescriptorsRecursively(root.node, document, descriptors)
+        val settings = ParadoxFoldingSettings.getInstance()
+        collectDescriptorsRecursively(root.node, document, descriptors, settings)
     }
 
-    private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>) {
+    private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: ParadoxFoldingSettings) {
         when (node.elementType) {
-            COMMENT -> return //optimization
+            COMMENT -> {
+                if (settings.commentEnabled) {
+                    ParadoxFoldingManager.addCommentFoldingDescriptor(node, document, descriptors)
+                }
+            }
             SCRIPTED_VARIABLE -> return //optimization
             BLOCK -> descriptors.add(FoldingDescriptor(node, node.textRange))
             PARAMETER_CONDITION -> descriptors.add(FoldingDescriptor(node, node.textRange))
@@ -49,7 +55,7 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         }
         val children = node.getChildren(null)
         for (child in children) {
-            collectDescriptorsRecursively(child, document, descriptors)
+            collectDescriptorsRecursively(child, document, descriptors, settings)
         }
     }
 

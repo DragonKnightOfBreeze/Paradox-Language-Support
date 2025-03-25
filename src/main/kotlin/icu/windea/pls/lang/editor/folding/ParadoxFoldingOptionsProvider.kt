@@ -9,6 +9,8 @@ class ParadoxFoldingOptionsProvider : BeanConfigurable<ParadoxFoldingSettings>, 
 
     init {
         val settings = instance
+        checkBox(PlsBundle.message("settings.folding.commentEnabled"), settings::commentEnabled)
+        checkBox(PlsBundle.message("settings.folding.comment"), settings::comment)
         checkBox(PlsBundle.message("settings.folding.parameterConditionBlocks"), settings::parameterConditionBlocks)
         checkBox(PlsBundle.message("settings.folding.inlineMathBlocks"), settings::inlineMathBlocks)
         checkBox(PlsBundle.message("settings.folding.localisationReferencesFullyEnabled"), settings::localisationReferencesFullyEnabled)

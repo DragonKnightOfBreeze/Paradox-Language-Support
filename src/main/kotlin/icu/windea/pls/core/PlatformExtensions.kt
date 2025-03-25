@@ -823,24 +823,26 @@ inline fun <reified T> PsiElement.findChildrenOfType(forward: Boolean = true, pr
     return result ?: emptyList()
 }
 
-///**查找最远的相同类型的兄弟节点。可指定是否向后查找，以及是否在空行处中断。*/
-//fun findFurthestSiblingOfSameType(element: PsiElement, findAfter: Boolean, stopOnBlankLine: Boolean = true): PsiElement? {
-//	var node = element.node
-//	val expectedType = node.elementType
-//	var lastSeen = node
-//	while(node != null) {
-//		val elementType = node.elementType
-//		when {
-//			elementType == expectedType -> lastSeen = node
-//			elementType == TokenType.WHITE_SPACE -> {
-//				if(stopOnBlankLine && node.text.containsBlankLine()) break
-//			}
-//			else -> break
-//		}
-//		node = if(findAfter) node.treeNext else node.treePrev
-//	}
-//	return lastSeen.psi
-//}
+/**
+ * 查找最远的相同类型的兄弟节点。可指定是否向后查找，以及是否在空行处中断。
+ */
+fun PsiElement.findFurthestSiblingOfSameType(findAfter: Boolean, stopOnBlankLine: Boolean = true): PsiElement {
+    var node = node
+    val expectedType = node.elementType
+    var lastSeen = node
+    while(node != null) {
+        val elementType = node.elementType
+        when {
+            elementType == expectedType -> lastSeen = node
+            elementType == TokenType.WHITE_SPACE -> {
+                if(stopOnBlankLine && node.text.containsBlankLine()) break
+            }
+            else -> break
+        }
+        node = if(findAfter) node.treeNext else node.treePrev
+    }
+    return lastSeen.psi
+}
 
 val PsiElement.icon
     get() = getIcon(0)

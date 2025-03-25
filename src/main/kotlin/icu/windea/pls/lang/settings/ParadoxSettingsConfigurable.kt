@@ -204,6 +204,19 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
             }
             //folding
             collapsibleGroup(PlsBundle.message("settings.folding")) {
+                //CommentEnabled
+                lateinit var commentEnabledCb: JBCheckBox
+                row {
+                    checkBox(PlsBundle.message("settings.folding.commentEnabled"))
+                        .bindSelected(foldingSettings::commentEnabled)
+                        .applyToComponent { commentEnabledCb = this }
+                }
+                //comment
+                row {
+                    checkBox(PlsBundle.message("settings.folding.comment"))
+                        .bindSelected(foldingSettings::comment)
+                        .enabledIf(commentEnabledCb.selected)
+                }
                 //parameterConditionBlocks
                 row {
                     checkBox(PlsBundle.message("settings.folding.parameterConditionBlocks"))

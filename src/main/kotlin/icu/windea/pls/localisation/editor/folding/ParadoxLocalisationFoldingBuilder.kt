@@ -24,6 +24,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
         return when (node.elementType) {
+            COMMENT -> ParadoxFoldingSettings.getInstance().comment
             PROPERTY_REFERENCE -> ParadoxFoldingSettings.getInstance().localisationReferencesFully
             ICON -> ParadoxFoldingSettings.getInstance().localisationIconsFully
             COMMAND -> {
@@ -46,7 +47,11 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 
     private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: ParadoxFoldingSettings) {
         when (node.elementType) {
-            COMMENT -> return //optimization
+            COMMENT -> {
+                if (settings.commentEnabled) {
+                    ParadoxFoldingManager.addCommentFoldingDescriptor(node, document, descriptors)
+                }
+            }
             LOCALE -> return //optimization
             PROPERTY_REFERENCE -> {
                 if (settings.localisationReferencesFullyEnabled) {
