@@ -1,14 +1,15 @@
 # Changelog
 
-## 1.3.33
+## PLANNED
 
-* [ ] 修复更新到IDEA 2024.3后，无法通过按住Ctrl并点击参数（以及其他类似目标）直接查找使用的问题（JB你在做什么？？） / Fixed the bug that cannot find usages directly by holding down Ctrl and clicking on parameters (or other similar targets) since IDEA 2024.3
-* [ ] 提供对*魔法注释*的初步支持，可以用来从指定的源数据生成脚本片段 / Provide initial support for *Magic Comments*, can be used to generate script snippet from specified source data
+* [ ] 修复自IDEA 2024.3开始，无法通过按住Ctrl并点击参数（以及其他类似目标）直接查找使用的问题 / Fixed the bug that cannot find usages directly by holding down Ctrl and clicking on parameters (and other similar targets) since IDEA 2024.3
+* [ ] 提供对**魔法注释**的初步支持，可以用来从指定的源数据生成脚本片段 / Provides initial support for **Magic Comments**, which can be used to generate script snippet from specified source data
+* [ ] 允许为同一个模组配置多个模组依赖列表 / Allows to configure multiple mod dependency lists for the same mod
 
 ## 1.3.32
 
 * [X] #123 [CK3] Supports `type_key_prefix` in cwt configs, which is currently only used in ck3's `scripted_effects.cwt`
-* [ ] #129 更好的对模版表达式规则的支持 / Better template expression config support
+* [X] #129 更好的对模版表达式规则的支持 / Better template expression config support
 * [X] #130 更好的对嵌套的块的支持 / Bette support for nested blocks
 * [X] #131 Only numbers in event names
 * [X] 修复无法识别本地化文件中的数据库对象表达式的BUG / Fixed the bug that database object expression in loc files cannot be resolved
