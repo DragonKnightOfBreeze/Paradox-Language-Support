@@ -318,10 +318,11 @@ object ParadoxExpressionManager {
 
             run r1@{
                 if (!matchesKey) return@r1
-                val pathToMatch = ParadoxExpressionPath.resolve(originalSubPaths.dropLast(shift))
-                ProgressManager.checkCanceled()
-                val elementToMatch = element.findParentByPath(pathToMatch.path)
+                val memberElement = element.parent?.castOrNull<ParadoxScriptProperty>() ?: element
+                val pathToMatch = ParadoxExpressionPath.resolve(originalSubPaths.drop(i).dropLast(1))
+                val elementToMatch = memberElement.findParentByPath(pathToMatch.path)
                 if (elementToMatch == null) return@r1
+                ProgressManager.checkCanceled()
                 val resultValuesMatchKey = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
                 result.forEach f@{ config ->
                     val matchResult = ParadoxExpressionMatcher.matches(elementToMatch, expression, config.expression, config, configGroup, matchOptions)
