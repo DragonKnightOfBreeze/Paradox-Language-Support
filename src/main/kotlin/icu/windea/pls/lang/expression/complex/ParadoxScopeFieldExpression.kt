@@ -38,7 +38,19 @@ class ParadoxScopeFieldExpression private constructor(
     val scopeNodes: List<ParadoxScopeLinkNode>
         get() = nodes.filterIsInstance<ParadoxScopeLinkNode>()
 
-    override val errors by lazy { validate() }
+    override fun validate(): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val context = ParadoxComplexExpressionProcessContext()
+        val result = processAllNodesToValidate(errors, context) {
+            when {
+                it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
+                else -> true
+            }
+        }
+        val malformed = !result
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedScopeFieldExpression(rangeInExpression, text)
+        return errors
+    }
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxScopeFieldExpression? {
@@ -81,20 +93,6 @@ class ParadoxScopeFieldExpression private constructor(
             }
             if (!incomplete && nodes.isEmpty()) return null
             return ParadoxScopeFieldExpression(expressionString, range, nodes, configGroup)
-        }
-
-        private fun ParadoxScopeFieldExpression.validate(): List<ParadoxComplexExpressionError> {
-            val errors = mutableListOf<ParadoxComplexExpressionError>()
-            val context = ParadoxComplexExpressionProcessContext()
-            val result = processAllNodesToValidate(errors, context) {
-                when {
-                    it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
-                    else -> true
-                }
-            }
-            val malformed = !result
-            if (malformed) errors += ParadoxComplexExpressionErrors.malformedScopeFieldExpression(rangeInExpression, text)
-            return errors
         }
     }
 }

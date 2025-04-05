@@ -7,6 +7,7 @@ import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.*
@@ -16,48 +17,45 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxDataSourceNode(
+/**
+ * @see ParadoxTemplateExpression
+ */
+class ParadoxTemplateSnippetNode(
     override val text: String,
     override val rangeInExpression: TextRange,
     override val configGroup: CwtConfigGroup,
-    val linkConfigs: List<CwtLinkConfig>
+    val configExpression: CwtDataExpression
 ) : ParadoxComplexExpressionNode.Base() {
+    val config = CwtValueConfig.resolve(emptyPointer(), configGroup, configExpression.expressionString)
+
     override fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? {
         if (text.isParameterized()) return null
-        if (linkConfigs.isEmpty()) return null
-        if (linkConfigs.size == 1) return linkConfigs.first()
-        if (linkConfigs.all { it.expression?.type in CwtDataTypeGroups.DynamicValue }) return linkConfigs.first()
-        if (element !is ParadoxScriptStringExpressionElement) return null
-        return linkConfigs.find { linkConfig ->
-            ParadoxExpressionManager.resolveExpression(element, rangeInExpression, linkConfig, linkConfig.expression, exact = false) != null
-        } ?: linkConfigs.firstOrNull()
+        return config
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
         if (nodes.isNotEmpty()) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        val configExpressions = linkConfigs.mapNotNullTo(mutableSetOf()) { it.expression }
-        //忽略不是引用或者是dynamicValue的情况
-        if (configExpressions.any { !it.type.isReference || it.type in CwtDataTypeGroups.DynamicValue }) return null
+        //忽略不是引用的情况
+        if (!configExpression.type.isReference) return null
         //排除可解析的情况
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrors.unresolvedDataSource(rangeInExpression, text, configExpressions.joinToString())
+        return ParadoxComplexExpressionErrors.unresolvedTemplateSnippet(rangeInExpression, text, configExpression.expressionString)
     }
 
-    override fun getReference(element: ParadoxExpressionElement): Reference? {
-        if (linkConfigs.isEmpty()) return null
+    override fun getReference(element: ParadoxExpressionElement): PsiReference? {
         if (text.isParameterized()) return null
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement, text, linkConfigs, configGroup)
+        return Reference(element, rangeInElement, text, config, configGroup)
     }
 
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
         val name: String,
-        val linkConfigs: List<CwtLinkConfig>,
+        val config: CwtValueConfig,
         val configGroup: CwtConfigGroup
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
         val project = configGroup.project
@@ -101,34 +99,28 @@ class ParadoxDataSourceNode(
         private fun doResolve(): PsiElement? {
             val element = element
             if (element !is ParadoxScriptStringExpressionElement) return null
-            if (linkConfigs.all { it.expression?.type in CwtDataTypeGroups.DynamicValue }) {
-                val configExpressions = linkConfigs.mapNotNull { it.expression }
-                return ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
+            if(config.expression.type in CwtDataTypeGroups.DynamicValue) {
+                return ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.expression, configGroup)
             }
-            return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-                ParadoxExpressionManager.resolveExpression(element, rangeInElement, linkConfig, linkConfig.expression)
-            }
+            return ParadoxExpressionManager.resolveExpression(element, rangeInElement, config, config.expression)
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             val element = element
             if (element !is ParadoxScriptStringExpressionElement) return ResolveResult.EMPTY_ARRAY
-            if (linkConfigs.all { it.expression?.type in CwtDataTypeGroups.DynamicValue }) {
-                val configExpressions = linkConfigs.mapNotNull { it.expression }
-                return ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
+            if(config.expression.type in CwtDataTypeGroups.DynamicValue) {
+                return ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.expression, configGroup)
                     ?.let { arrayOf(PsiElementResolveResult(it)) } ?: ResolveResult.EMPTY_ARRAY
             }
-            return linkConfigs.flatMap { linkConfig ->
-                ParadoxExpressionManager.multiResolveExpression(element, rangeInElement, linkConfig, configExpression = linkConfig.expression)
-            }.mapToArray { PsiElementResolveResult(it) }
+            return ParadoxExpressionManager.multiResolveExpression(element, rangeInElement, config, config.expression)
+                .mapToArray { PsiElementResolveResult(it) }
         }
     }
 
     companion object Resolver {
-        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, linkConfigs: List<CwtLinkConfig>): ParadoxDataSourceNode {
+        fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configExpression: CwtDataExpression): ParadoxTemplateSnippetNode {
             //text may contain parameters
-            return ParadoxDataSourceNode(text, textRange, configGroup, linkConfigs)
+            return ParadoxTemplateSnippetNode(text, textRange, configGroup, configExpression)
         }
     }
 }
-

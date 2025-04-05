@@ -39,7 +39,19 @@ class ParadoxDatabaseObjectExpression private constructor(
     val swapValueNode: ParadoxDatabaseObjectNode?
         get() = nodes.getOrNull(4)?.cast()
 
-    override val errors by lazy { validate() }
+    override fun validate(): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val context = ParadoxComplexExpressionProcessContext()
+        val result = processAllNodesToValidate(errors, context) {
+            when {
+                it is ParadoxDatabaseObjectNode -> it.text.isParameterAwareIdentifier()
+                else -> true
+            }
+        }
+        val malformed = !result || (nodes.size != 3 && nodes.size != 5)
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedDatabaseObjectExpression(rangeInExpression, text)
+        return errors
+    }
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
@@ -86,20 +98,6 @@ class ParadoxDatabaseObjectExpression private constructor(
             }
             if (!incomplete && nodes.isEmpty()) return null
             return expression
-        }
-
-        private fun ParadoxDatabaseObjectExpression.validate(): List<ParadoxComplexExpressionError> {
-            val errors = mutableListOf<ParadoxComplexExpressionError>()
-            val context = ParadoxComplexExpressionProcessContext()
-            val result = processAllNodesToValidate(errors, context) {
-                when {
-                    it is ParadoxDatabaseObjectNode -> it.text.isParameterAwareIdentifier()
-                    else -> true
-                }
-            }
-            val malformed = !result || (nodes.size != 3 && nodes.size != 5)
-            if (malformed) errors += ParadoxComplexExpressionErrors.malformedDatabaseObjectExpression(rangeInExpression, text)
-            return errors
         }
     }
 }

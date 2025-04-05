@@ -28,12 +28,25 @@ class ParadoxDefineReferenceExpression private constructor(
     override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpression.Base() {
-    override val errors by lazy { validate() }
-
     val namespaceNode: ParadoxDefineNamespaceNode?
         get() = nodes.getOrNull(1)?.cast()
     val variableNode: ParadoxDefineVariableNode?
         get() = nodes.getOrNull(3)?.cast()
+
+    override fun validate(): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val context = ParadoxComplexExpressionProcessContext()
+        val result = processAllNodesToValidate(errors, context) {
+            when {
+                it is ParadoxDefineNamespaceNode -> it.text.isParameterAwareIdentifier()
+                it is ParadoxDefineVariableNode -> it.text.isParameterAwareIdentifier()
+                else -> true
+            }
+        }
+        val malformed = !result || nodes.size != 4
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedDefineReferenceExpression(rangeInExpression, text)
+        return errors
+    }
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDefineReferenceExpression? {
@@ -77,21 +90,6 @@ class ParadoxDefineReferenceExpression private constructor(
             }
             if (!incomplete && nodes.isEmpty()) return null
             return expression
-        }
-
-        private fun ParadoxDefineReferenceExpression.validate(): List<ParadoxComplexExpressionError> {
-            val errors = mutableListOf<ParadoxComplexExpressionError>()
-            val context = ParadoxComplexExpressionProcessContext()
-            val result = processAllNodesToValidate(errors, context) {
-                when {
-                    it is ParadoxDefineNamespaceNode -> it.text.isParameterAwareIdentifier()
-                    it is ParadoxDefineVariableNode -> it.text.isParameterAwareIdentifier()
-                    else -> true
-                }
-            }
-            val malformed = !result || nodes.size != 4
-            if (malformed) errors += ParadoxComplexExpressionErrors.malformedDefineReferenceExpression(rangeInExpression, text)
-            return errors
         }
     }
 }

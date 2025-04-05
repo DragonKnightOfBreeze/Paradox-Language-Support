@@ -64,8 +64,8 @@ class ParadoxTypeDeclarationProvider : TypeDeclarationProvider {
             symbol is CwtValue -> {
                 val configType = symbol.configType
                 return when (configType) {
-                    CwtConfigType.EnumValue -> symbol.parent?.let { arrayOf(it) }
-                    CwtConfigType.DynamicValue -> symbol.parent?.let { arrayOf(it) }
+                    CwtConfigTypes.EnumValue -> symbol.parent?.let { arrayOf(it) }
+                    CwtConfigTypes.DynamicValue -> symbol.parent?.let { arrayOf(it) }
                     else -> return null
                 }
             }

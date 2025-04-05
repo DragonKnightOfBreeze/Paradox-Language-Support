@@ -50,10 +50,21 @@ class ParadoxValueFieldExpression private constructor(
     val valueFieldNode: ParadoxValueFieldNode
         get() = nodes.last().cast()
     val scriptValueExpression: ParadoxScriptValueExpression?
-        get() = this.valueFieldNode.castOrNull<ParadoxDynamicValueFieldNode>()
-            ?.dataSourceNode?.nodes?.findIsInstance<ParadoxScriptValueExpression>()
+        get() = valueFieldNode.castOrNull<ParadoxDynamicValueFieldNode>()?.dataSourceNode?.nodes?.findIsInstance<ParadoxScriptValueExpression>()
 
-    override val errors by lazy { validate() }
+    override fun validate(): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val context = ParadoxComplexExpressionProcessContext()
+        val result = processAllNodesToValidate(errors, context) {
+            when {
+                it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
+                else -> true
+            }
+        }
+        val malformed = !result
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedValueFieldExpression(rangeInExpression, text)
+        return errors
+    }
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxValueFieldExpression? {
@@ -111,20 +122,6 @@ class ParadoxValueFieldExpression private constructor(
 
         private fun isNumber(text: String): Boolean {
             return ParadoxDataExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
-        }
-
-        private fun ParadoxValueFieldExpression.validate(): List<ParadoxComplexExpressionError> {
-            val errors = mutableListOf<ParadoxComplexExpressionError>()
-            val context = ParadoxComplexExpressionProcessContext()
-            val result = processAllNodesToValidate(errors, context) {
-                when {
-                    it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
-                    else -> true
-                }
-            }
-            val malformed = !result
-            if (malformed) errors += ParadoxComplexExpressionErrors.malformedValueFieldExpression(rangeInExpression, text)
-            return errors
         }
     }
 }

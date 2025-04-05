@@ -13,15 +13,15 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.modifier.ParadoxModifierSupport.Keys.synced
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.documentation.*
+import icu.windea.pls.lang.expression.complex.*
+import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
@@ -31,15 +31,15 @@ import icu.windea.pls.script.psi.*
 
 //region Extensions
 
-val ParadoxModifierSupport.Keys.templateReferences by createKey<List<ParadoxTemplateSnippetPsiExpressionReference>>(ParadoxModifierSupport.Keys).synced()
+val ParadoxModifierSupport.Keys.templateExpression by createKey<ParadoxTemplateExpression>(ParadoxModifierSupport.Keys).synced()
 val ParadoxModifierSupport.Keys.economicCategoryInfo by createKey<ParadoxEconomicCategoryInfo>(ParadoxModifierSupport.Keys).synced()
 val ParadoxModifierSupport.Keys.economicCategoryModifierInfo by createKey<ParadoxEconomicCategoryInfo.ModifierInfo>(ParadoxModifierSupport.Keys).synced()
 
-var ParadoxModifierInfo.templateReferences by ParadoxModifierSupport.Keys.templateReferences
+var ParadoxModifierInfo.templateExpression by ParadoxModifierSupport.Keys.templateExpression
 var ParadoxModifierInfo.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
 var ParadoxModifierInfo.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
 
-var ParadoxModifierElement.templateReferences by ParadoxModifierSupport.Keys.templateReferences
+var ParadoxModifierElement.templateExpression by ParadoxModifierSupport.Keys.templateExpression
 var ParadoxModifierElement.economicCategoryInfo by ParadoxModifierSupport.Keys.economicCategoryInfo
 var ParadoxModifierElement.economicCategoryModifierInfo by ParadoxModifierSupport.Keys.economicCategoryModifierInfo
 
@@ -113,7 +113,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
     override fun matchModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup): Boolean {
         val modifierName = name
         return configGroup.generatedModifiers.values.any { config ->
-            CwtTemplateExpressionManager.matches(modifierName, element, config.template, configGroup)
+            CwtTemplateExpressionManager.matches(element, modifierName, config.template, configGroup)
         }
     }
 
@@ -122,17 +122,16 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
         var modifierConfig: CwtModifierConfig? = null
-        val templateReferences = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
+        val templateExpression = configGroup.generatedModifiers.values.firstNotNullOfOrNull { config ->
             ProgressManager.checkCanceled()
-
-            val resolvedReferences = CwtTemplateExpressionManager.resolveReferences(modifierName, config.template, configGroup).orNull()
-            if (resolvedReferences != null) modifierConfig = config
-            resolvedReferences
-        }.orEmpty()
+            val templateExpression = ParadoxTemplateExpression.resolve(modifierName, TextRange.from(0, modifierName.length), configGroup, config)
+            if (templateExpression != null) modifierConfig = config
+            templateExpression
+        }
         if (modifierConfig == null) return null
         val modifierInfo = ParadoxModifierInfo(modifierName, gameType, project)
         modifierInfo.modifierConfig = modifierConfig
-        modifierInfo.templateReferences = templateReferences
+        modifierInfo.templateExpression = templateExpression
         return modifierInfo
     }
 
@@ -156,7 +155,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             if (template.expressionString.isEmpty()) continue
             val typeFile = modifierConfig.pointer.containingFile
             //生成的modifier
-            CwtTemplateExpressionManager.processResolveResult(element, template, configGroup) p@{ name ->
+            ParadoxModifierManager.completeTemplateModifier(element, template, configGroup) p@{ name ->
                 //排除重复的
                 if (!modifierNames.add(name)) return@p true
 
@@ -185,7 +184,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
     override fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: DocumentationBuilder): Boolean = with(builder) {
         val modifierConfig = modifierElement.modifierConfig ?: return false
-        val templateReferences = modifierElement.templateReferences ?: return false
+        val templateExpression = modifierElement.templateExpression ?: return false
 
         //加上名字
         val configGroup = modifierConfig.configGroup
@@ -202,13 +201,14 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
             appendCwtConfigLink("${gameType.prefix}modifiers/$templateString", templateString)
 
             //加上生成源信息
-            if (templateReferences.isNotEmpty()) {
-                for (reference in templateReferences) {
+            val snippetNodes = templateExpression.nodes.filterIsInstance<ParadoxTemplateSnippetNode>()
+            if (snippetNodes.isNotEmpty()) {
+                for (snippetNode in snippetNodes) {
                     appendBr().appendIndent()
-                    val configExpression = reference.configExpression
+                    val configExpression = snippetNode.configExpression
                     when (configExpression.type) {
                         CwtDataTypes.Definition -> {
-                            val definitionName = reference.name
+                            val definitionName = snippetNode.text
                             val definitionType = configExpression.value!!
                             val definitionTypes = definitionType.split('.')
                             append(PlsBundle.message("generatedFromDefinition"))
@@ -227,7 +227,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             }
                         }
                         CwtDataTypes.EnumValue -> {
-                            val enumValueName = reference.name
+                            val enumValueName = snippetNode.text
                             val enumName = configExpression.value!!
                             append(PlsBundle.message("generatedFromEnumValue"))
                             append(" ")
@@ -247,7 +247,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             }
                         }
                         CwtDataTypes.Value -> {
-                            val dynamicValueType = reference.name
+                            val dynamicValueType = snippetNode.text
                             val valueName = configExpression.value!!
                             append(PlsBundle.message("generatedFromDynamicValue"))
                             if (configGroup.dynamicValueTypes.containsKey(valueName)) {

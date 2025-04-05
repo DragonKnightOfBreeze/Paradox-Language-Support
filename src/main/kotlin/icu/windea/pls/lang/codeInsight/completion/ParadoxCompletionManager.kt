@@ -668,30 +668,6 @@ object ParadoxCompletionManager {
         result.addElement(lookupElement, context)
     }
 
-    fun completeTemplateExpression(context: ProcessingContext, result: CompletionResultSet) {
-        ProgressManager.checkCanceled()
-        val contextElement = context.contextElement!!
-        val configGroup = context.configGroup!!
-        val config = context.config!!
-        val scopeMatched = context.scopeMatched
-
-        if (contextElement !is ParadoxScriptStringExpressionElement) return
-        val configExpression = config.expression ?: return
-        val template = CwtTemplateExpression.resolve(configExpression.expressionString)
-        val tailText = getExpressionTailText(context, config)
-        CwtTemplateExpressionManager.processResolveResult(contextElement, template, configGroup) { expression ->
-            val templateExpressionElement = ParadoxExpressionManager.resolveTemplateExpression(contextElement, expression, configExpression, configGroup)
-            val lookupElement = LookupElementBuilder.create(expression).withPsiElement(templateExpressionElement)
-                .withCaseSensitivity(false)
-                .withPatchableIcon(PlsIcons.Nodes.TemplateExpression)
-                .withPatchableTailText(tailText)
-                .withScopeMatched(scopeMatched)
-                .forScriptExpression(context)
-            result.addElement(lookupElement, context)
-            true
-        }
-    }
-
     fun completeParameter(context: ProcessingContext, result: CompletionResultSet) {
         val config = context.config ?: return
         //提示参数名（仅限key）
@@ -731,6 +707,62 @@ object ParadoxCompletionManager {
         } finally {
             PlsManager.incompleteComplexExpression.remove()
         }
+    }
+
+    fun completeTemplateExpression(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val keyword = context.keyword
+        val keywordOffset = context.keywordOffset
+        val configGroup = context.configGroup ?: return
+        val config = context.config
+        val configs = context.configs
+
+        val finalConfig = configs.firstOrNull() ?: config
+        if (finalConfig == null) return
+
+        val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
+        val expression = markIncomplete { ParadoxTemplateExpression.resolve(keyword, textRange, configGroup, finalConfig) } ?: return
+
+        val scopeContext = context.scopeContext ?: ParadoxScopeManager.getAnyScopeContext()
+        val isKey = context.isKey
+        context.scopeContext = null //skip check scope context here
+        context.isKey = null
+
+        val offset = context.offsetInParent!! - context.expressionOffset
+        if (offset < 0) return //unexpected
+        for (node in expression.nodes) {
+            val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
+            if (node is ParadoxTemplateSnippetNode) {
+                if (inRange) {
+                    val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+                    val resultToUse = result.withPrefixMatcher(keywordToUse)
+                    context.keyword = keywordToUse
+                    context.keywordOffset = node.rangeInExpression.startOffset
+                    context.config = node.config
+                    context.configs = emptyList()
+                    completeScriptExpression(context, resultToUse)
+                    break
+                }
+            } else if (node is ParadoxTemplateSnippetConstantNode) {
+                if (inRange) {
+                    val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
+                    val resultToUse = result.withPrefixMatcher(keywordToUse)
+                    context.keyword = keywordToUse
+                    context.keywordOffset = node.rangeInExpression.startOffset
+                    context.config = CwtValueConfig.resolve(emptyPointer(), configGroup, node.text)
+                    context.configs = emptyList()
+                    completeConstant(context, resultToUse)
+                    break
+                }
+            }
+        }
+
+        context.keyword = keyword
+        context.keywordOffset = keywordOffset
+        context.config = config
+        context.configs = configs
+        context.scopeContext = scopeContext
+        context.isKey = isKey
     }
 
     fun completeDynamicValueExpression(context: ProcessingContext, result: CompletionResultSet) {

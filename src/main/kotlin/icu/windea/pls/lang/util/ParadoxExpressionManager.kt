@@ -839,10 +839,8 @@ object ParadoxExpressionManager {
         val result = ParadoxScriptExpressionSupport.resolve(element, rangeInElement, expressionText, config, isKey, exact)
         if (result != null) return result
 
-        val configGroup = config.configGroup
-        if (configExpression.isKey && configExpression.type in CwtDataTypeGroups.KeyReference) {
-            return getResolvedConfigElement(element, config, configGroup)
-        }
+        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup)
+
         return null
     }
 
@@ -855,10 +853,8 @@ object ParadoxExpressionManager {
         val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expressionText, config, isKey)
         if (result.isNotEmpty()) return result
 
-        val configGroup = config.configGroup
-        if (configExpression.isKey && configExpression.type in CwtDataTypeGroups.KeyReference) {
-            return getResolvedConfigElement(element, config, configGroup).toSingletonSetOrEmpty()
-        }
+        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).toSingletonSetOrEmpty()
+
         return emptySet()
     }
 
@@ -894,12 +890,6 @@ object ParadoxExpressionManager {
     fun resolveModifier(element: ParadoxScriptExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {
         if (element !is ParadoxScriptStringExpressionElement) return null
         return ParadoxModifierManager.resolveModifier(name, element, configGroup)
-    }
-
-    fun resolveTemplateExpression(element: ParadoxScriptExpressionElement, text: String, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): ParadoxTemplateExpressionElement? {
-        if (element !is ParadoxScriptStringExpressionElement) return null
-        val templateConfigExpression = CwtTemplateExpression.resolve(configExpression.expressionString)
-        return CwtTemplateExpressionManager.resolve(text, element, templateConfigExpression, configGroup)
     }
 
     fun resolvePredefinedScope(name: String, configGroup: CwtConfigGroup): PsiElement? {
@@ -1049,7 +1039,10 @@ object ParadoxExpressionManager {
     }
 
     private fun isInBlockKey(config: CwtPropertyConfig): Boolean {
-        return config.keyExpression.type == CwtDataTypes.Constant && config.cardinality?.isRequired() != false
+        if(config.key == ParadoxInlineScriptManager.inlineScriptKey) return false
+        if(config.keyExpression.type != CwtDataTypes.Constant) return false
+        if(config.cardinality?.isRequired() == false) return false
+        return true
     }
 
     //endregion

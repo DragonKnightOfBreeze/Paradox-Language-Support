@@ -151,108 +151,108 @@ object CwtConfigManager {
         if (configPath == null || configPath.isEmpty()) return null
         return when {
             element is CwtProperty && configPath.path.matchesAntPattern("types/type[*]") -> {
-                CwtConfigType.Type
+                CwtConfigTypes.Type
             }
             element is CwtProperty && configPath.path.matchesAntPattern("types/type[*]/subtype[*]") -> {
-                CwtConfigType.Subtype
+                CwtConfigTypes.Subtype
             }
             element is CwtProperty && configPath.path.matchesAntPattern("types/type[*]/modifiers/**") -> {
                 when {
                     configPath.get(3).surroundsWith("subtype[", "]") -> {
-                        if (configPath.length == 5) return CwtConfigType.Modifier
+                        if (configPath.length == 5) return CwtConfigTypes.Modifier
                     }
                     else -> {
-                        if (configPath.length == 4) return CwtConfigType.Modifier
+                        if (configPath.length == 4) return CwtConfigTypes.Modifier
                     }
                 }
                 null
             }
             element is CwtProperty && configPath.path.matchesAntPattern("enums/enum[*]") -> {
-                CwtConfigType.Enum
+                CwtConfigTypes.Enum
             }
             element is CwtValue && configPath.path.matchesAntPattern("enums/enum[*]/*") -> {
-                CwtConfigType.EnumValue
+                CwtConfigTypes.EnumValue
             }
             element is CwtProperty && configPath.path.matchesAntPattern("enums/complex_enum[*]") -> {
-                CwtConfigType.ComplexEnum
+                CwtConfigTypes.ComplexEnum
             }
             element is CwtProperty && configPath.path.matchesAntPattern("values/value[*]") -> {
-                CwtConfigType.DynamicValueType
+                CwtConfigTypes.DynamicValueType
             }
             element is CwtValue && configPath.path.matchesAntPattern("values/value[*]/*") -> {
-                CwtConfigType.DynamicValue
+                CwtConfigTypes.DynamicValue
             }
             element is CwtProperty && configPath.path.matchesAntPattern("inline[*]") -> {
-                CwtConfigType.Inline
+                CwtConfigTypes.Inline
             }
             element is CwtProperty && configPath.path.matchesAntPattern("single_alias[*]") -> {
-                CwtConfigType.SingleAlias
+                CwtConfigTypes.SingleAlias
             }
             element is CwtProperty && configPath.path.matchesAntPattern("alias[*]") -> {
                 val aliasName = configPath.get(0).substringIn('[', ']', "").substringBefore(':', "")
                 when {
-                    aliasName == "modifier" -> return CwtConfigType.Modifier
-                    aliasName == "trigger" -> return CwtConfigType.Trigger
-                    aliasName == "effect" -> return CwtConfigType.Effect
+                    aliasName == "modifier" -> return CwtConfigTypes.Modifier
+                    aliasName == "trigger" -> return CwtConfigTypes.Trigger
+                    aliasName == "effect" -> return CwtConfigTypes.Effect
                 }
-                CwtConfigType.Alias
+                CwtConfigTypes.Alias
             }
             element is CwtProperty && configPath.path.matchesAntPattern("links/*") -> {
-                CwtConfigType.Link
+                CwtConfigTypes.Link
             }
             element is CwtProperty && configPath.path.matchesAntPattern("localisation_links/*") -> {
-                CwtConfigType.LocalisationLink
+                CwtConfigTypes.LocalisationLink
             }
             element is CwtProperty && configPath.path.matchesAntPattern("localisation_promotions/*") -> {
-                CwtConfigType.LocalisationPromotion
+                CwtConfigTypes.LocalisationPromotion
             }
             element is CwtProperty && configPath.path.matchesAntPattern("localisation_commands/*") -> {
-                CwtConfigType.LocalisationCommand
+                CwtConfigTypes.LocalisationCommand
             }
             element is CwtProperty && configPath.path.matchesAntPattern("modifier_categories/*") -> {
-                CwtConfigType.ModifierCategory
+                CwtConfigTypes.ModifierCategory
             }
             element is CwtProperty && configPath.path.matchesAntPattern("modifiers/*") -> {
-                CwtConfigType.Modifier
+                CwtConfigTypes.Modifier
             }
             element is CwtProperty && configPath.path.matchesAntPattern("scopes/*") -> {
-                CwtConfigType.Scope
+                CwtConfigTypes.Scope
             }
             element is CwtProperty && configPath.path.matchesAntPattern("scope_groups/*") -> {
-                CwtConfigType.ScopeGroup
+                CwtConfigTypes.ScopeGroup
             }
             element is CwtProperty && configPath.path.matchesAntPattern("database_object_types/*") -> {
-                CwtConfigType.DatabaseObjectType
+                CwtConfigTypes.DatabaseObjectType
             }
             element is CwtProperty && configPath.path.matchesAntPattern("system_scopes/*") -> {
-                CwtConfigType.SystemScope
+                CwtConfigTypes.SystemScope
             }
             element is CwtProperty && configPath.path.matchesAntPattern("localisation_locales/*") -> {
-                CwtConfigType.LocalisationLocale
+                CwtConfigTypes.LocalisationLocale
             }
             configPath.path.matchesAntPattern("scripted_variables/*") -> {
-                CwtConfigType.ExtendedScriptedVariable
+                CwtConfigTypes.ExtendedScriptedVariable
             }
             configPath.path.matchesAntPattern("definitions/*") -> {
-                CwtConfigType.ExtendedDefinition
+                CwtConfigTypes.ExtendedDefinition
             }
             configPath.path.matchesAntPattern("game_rules/*") -> {
-                CwtConfigType.ExtendedGameRule
+                CwtConfigTypes.ExtendedGameRule
             }
             configPath.path.matchesAntPattern("on_actions/*") -> {
-                CwtConfigType.ExtendedOnAction
+                CwtConfigTypes.ExtendedOnAction
             }
             configPath.path.matchesAntPattern("inline_scripts/*") -> {
-                CwtConfigType.ExtendedInlineScript
+                CwtConfigTypes.ExtendedInlineScript
             }
             configPath.path.matchesAntPattern("parameters/*") -> {
-                CwtConfigType.ExtendedParameter
+                CwtConfigTypes.ExtendedParameter
             }
             configPath.path.matchesAntPattern("complex_enum_values/*/*") -> {
-                CwtConfigType.ExtendedComplexEnumValue
+                CwtConfigTypes.ExtendedComplexEnumValue
             }
             configPath.path.matchesAntPattern("dynamic_values/*/*") -> {
-                CwtConfigType.ExtendedDynamicValue
+                CwtConfigTypes.ExtendedDynamicValue
             }
             else -> null
         }
@@ -452,6 +452,7 @@ object CwtConfigManager {
             is CwtSchemaExpression.Constraint -> {
                 false //fast check
             }
+            else -> false
         }
     }
 }

@@ -36,14 +36,14 @@ class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
             is CwtProperty -> {
                 val configType = element.configType?.takeIf { it.isReference }
                 when (location) {
-                    UsageViewTypeLocation.INSTANCE -> configType?.descriptionText ?: PlsBundle.message("cwt.description.property")
+                    UsageViewTypeLocation.INSTANCE -> configType?.description ?: PlsBundle.message("cwt.description.property")
                     else -> element.configType?.getShortName(element.name) ?: element.name
                 }
             }
             is CwtString -> {
                 val configType = element.configType?.takeIf { it.isReference }
                 when (location) {
-                    UsageViewTypeLocation.INSTANCE -> configType?.descriptionText ?: PlsBundle.message("cwt.description.value")
+                    UsageViewTypeLocation.INSTANCE -> configType?.description ?: PlsBundle.message("cwt.description.value")
                     else -> element.configType?.getShortName(element.name) ?: element.name
                 }
             }

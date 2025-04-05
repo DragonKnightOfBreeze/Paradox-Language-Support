@@ -12,6 +12,33 @@ import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
+class ParadoxScriptTemplateExpressionSupport : ParadoxScriptExpressionSupport {
+    override fun supports(config: CwtConfig<*>): Boolean {
+        return config.expression?.type == CwtDataTypes.TemplateExpression
+    }
+
+    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+        if (element !is ParadoxScriptStringExpressionElement) return
+        val configGroup = config.configGroup
+        val range = TextRange.create(0, expressionText.length)
+        val templateExpression = ParadoxTemplateExpression.resolve(expressionText, range, configGroup, config) ?: return
+        ParadoxExpressionManager.annotateComplexExpression(element, templateExpression, holder, config)
+    }
+
+    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+        if (element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
+        val configGroup = config.configGroup
+        val range = TextRange.create(0, expressionText.length)
+        val templateExpression = ParadoxTemplateExpression.resolve(expressionText, range, configGroup, config)
+        if (templateExpression == null) return PsiReference.EMPTY_ARRAY
+        return templateExpression.getAllReferences(element).toTypedArray()
+    }
+
+    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
+        ParadoxCompletionManager.completeTemplateExpression(context, result)
+    }
+}
+
 class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type in CwtDataTypeGroups.DynamicValue

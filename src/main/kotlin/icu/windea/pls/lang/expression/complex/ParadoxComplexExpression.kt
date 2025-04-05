@@ -15,6 +15,12 @@ interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
     val errors: List<ParadoxComplexExpressionError>
 
     abstract class Base : ParadoxComplexExpression {
+        final override val errors: List<ParadoxComplexExpressionError> by lazy { validate() }
+
+        protected open fun validate(): List<ParadoxComplexExpressionError> {
+            return emptyList()
+        }
+
         override fun equals(other: Any?): Boolean {
             return this === other || (other is ParadoxComplexExpression && this.javaClass == other.javaClass && text == other.text)
         }
@@ -32,6 +38,7 @@ interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
         fun resolveByConfig(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
             val dataType = config.expression?.type ?: return null
             return when {
+                dataType == CwtDataTypes.TemplateExpression -> ParadoxTemplateExpression.resolve(expressionString, range, configGroup, config)
                 dataType in CwtDataTypeGroups.DynamicValue -> ParadoxDynamicValueExpression.resolve(expressionString, range, configGroup, config)
                 dataType in CwtDataTypeGroups.ScopeField -> ParadoxScopeFieldExpression.resolve(expressionString, range, configGroup)
                 dataType in CwtDataTypeGroups.ValueField -> ParadoxValueFieldExpression.resolve(expressionString, range, configGroup)

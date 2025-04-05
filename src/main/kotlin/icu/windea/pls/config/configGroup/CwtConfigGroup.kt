@@ -5,6 +5,7 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
+import java.util.*
 import java.util.concurrent.atomic.*
 
 /**
@@ -20,6 +21,18 @@ class CwtConfigGroup(
     val modificationTracker = SimpleModificationTracker()
 
     val files: MutableMap<String, CwtFileConfig> = mutableMapOf()
+
+    override fun equals(other: Any?): Boolean {
+        return this === other || (other is CwtConfigGroup && gameType == other.gameType && project == other.project)
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(gameType, project)
+    }
+
+    override fun toString(): String {
+        return "CwtConfigGroup(gameType=${gameType.id}, project=$project)"
+    }
 
     object Keys : KeyRegistry()
 }

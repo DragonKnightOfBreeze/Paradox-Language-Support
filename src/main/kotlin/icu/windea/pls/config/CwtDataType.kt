@@ -1,11 +1,22 @@
 package icu.windea.pls.config
 
-//note that CwtDataType can be extended, so that do not declare it as an enum class
-
 /**
  * @see CwtDataTypes
  * @see CwtDataTypeGroups
  */
 data class CwtDataType(
-    val id: String
-)
+    val id: String,
+    val isReference: Boolean = false,
+) {
+    override fun equals(other: Any?): Boolean {
+        return this === other || (other is CwtDataType && id == other.id)
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+
+    override fun toString(): String {
+        return "CwtDataType($id)"
+    }
+}

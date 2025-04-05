@@ -44,7 +44,19 @@ class ParadoxCommandExpression private constructor(
     override val nodes: List<ParadoxComplexExpressionNode>,
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpression.Base() {
-    override val errors by lazy { validate() }
+    override fun validate(): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val context = ParadoxComplexExpressionProcessContext()
+        val result = processAllNodesToValidate(errors, context) {
+            when {
+                it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
+                else -> true
+            }
+        }
+        val malformed = !result
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedCommandExpression(rangeInExpression, text)
+        return errors
+    }
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxCommandExpression? {
@@ -118,20 +130,6 @@ class ParadoxCommandExpression private constructor(
             }
             nodes += suffixNodes
             return expression
-        }
-
-        private fun ParadoxCommandExpression.validate(): List<ParadoxComplexExpressionError> {
-            val errors = mutableListOf<ParadoxComplexExpressionError>()
-            val context = ParadoxComplexExpressionProcessContext()
-            val result = processAllNodesToValidate(errors, context) {
-                when {
-                    it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
-                    else -> true
-                }
-            }
-            val malformed = !result
-            if (malformed) errors += ParadoxComplexExpressionErrors.malformedCommandExpression(rangeInExpression, text)
-            return errors
         }
     }
 }

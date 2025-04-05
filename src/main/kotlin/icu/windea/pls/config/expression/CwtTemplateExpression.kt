@@ -12,7 +12,7 @@ import icu.windea.pls.lang.*
 
 interface CwtTemplateExpression : CwtExpression {
     val snippetExpressions: List<CwtDataExpression>
-    val referenceExpressions: Set<CwtDataExpression>
+    val referenceExpressions: List<CwtDataExpression>
 
     companion object Resolver {
         val EmptyExpression: CwtTemplateExpression = doResolveEmpty()
@@ -87,7 +87,7 @@ private class CwtTemplateExpressionImpl(
     override val expressionString: String,
     override val snippetExpressions: List<CwtDataExpression>
 ) : CwtTemplateExpression {
-    override val referenceExpressions: Set<CwtDataExpression> = snippetExpressions.filterTo(mutableSetOf()) { it.type != CwtDataTypes.Constant }
+    override val referenceExpressions: List<CwtDataExpression> = snippetExpressions.filter { it.type != CwtDataTypes.Constant }
 
     override fun equals(other: Any?) = this === other || other is CwtTemplateExpression && expressionString == other.expressionString
     override fun hashCode() = expressionString.hashCode()

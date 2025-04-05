@@ -38,7 +38,19 @@ class ParadoxDynamicValueExpression private constructor(
     val scopeFieldExpression: ParadoxScopeFieldExpression?
         get() = nodes.getOrNull(2)?.cast()
 
-    override val errors by lazy { validate() }
+    override fun validate(): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val context = ParadoxComplexExpressionProcessContext()
+        val result = processAllNodesToValidate(errors, context) {
+            when {
+                it is ParadoxDynamicValueNode -> it.text.isParameterAwareIdentifier('.') //兼容点号
+                else -> true
+            }
+        }
+        val malformed = !result
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedDynamicValueExpression(rangeInExpression, text)
+        return errors
+    }
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
@@ -46,6 +58,8 @@ class ParadoxDynamicValueExpression private constructor(
         }
 
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
+            if(configs.any { it.expression?.type !in CwtDataTypeGroups.DynamicValue }) return null
+
             val incomplete = PlsManager.incompleteComplexExpression.get() ?: false
             if (!incomplete && expressionString.isEmpty()) return null
 
@@ -83,20 +97,6 @@ class ParadoxDynamicValueExpression private constructor(
             }
             if (!incomplete && nodes.isEmpty()) return null
             return ParadoxDynamicValueExpression(expressionString, range, nodes, configGroup, configs)
-        }
-
-        private fun ParadoxDynamicValueExpression.validate(): List<ParadoxComplexExpressionError> {
-            val errors = mutableListOf<ParadoxComplexExpressionError>()
-            val context = ParadoxComplexExpressionProcessContext()
-            val result = processAllNodesToValidate(errors, context) {
-                when {
-                    it is ParadoxDynamicValueNode -> it.text.isParameterAwareIdentifier('.') //兼容点号
-                    else -> true
-                }
-            }
-            val malformed = !result
-            if (malformed) errors += ParadoxComplexExpressionErrors.malformedDynamicValueExpression(rangeInExpression, text)
-            return errors
         }
     }
 }

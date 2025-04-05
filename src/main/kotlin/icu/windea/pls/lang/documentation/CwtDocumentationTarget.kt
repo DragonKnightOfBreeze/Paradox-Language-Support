@@ -169,7 +169,7 @@ private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiEle
         }
 
         if (configGroup != null) {
-            if (referenceElement != null && configType == CwtConfigType.Modifier) {
+            if (referenceElement != null && configType == CwtConfigTypes.Modifier) {
                 addModifierRelatedLocalisations(element, referenceElement, name, configGroup)
                 addModifierIcon(element, referenceElement, name, configGroup)
             }
@@ -279,7 +279,7 @@ private fun DocumentationBuilder.addScope(element: PsiElement, name: String, con
     val gameType = configGroup.gameType ?: return
     val contextElement = element
     when (configType) {
-        CwtConfigType.Link -> {
+        CwtConfigTypes.Link -> {
             val linkConfig = configGroup.links[name] ?: return
             if (sections != null) {
                 val inputScopes = linkConfig.inputScopes
@@ -289,7 +289,7 @@ private fun DocumentationBuilder.addScope(element: PsiElement, name: String, con
                 sections.put(PlsBundle.message("sectionTitle.outputScope"), getScopeText(outputScope, gameType, contextElement))
             }
         }
-        CwtConfigType.LocalisationLink -> {
+        CwtConfigTypes.LocalisationLink -> {
             val linkConfig = configGroup.localisationLinks[name] ?: return
             if (sections != null) {
                 val inputScopes = linkConfig.inputScopes
@@ -299,7 +299,7 @@ private fun DocumentationBuilder.addScope(element: PsiElement, name: String, con
                 sections.put(PlsBundle.message("sectionTitle.outputScope"), getScopeText(outputScope, gameType, contextElement))
             }
         }
-        CwtConfigType.Modifier -> {
+        CwtConfigTypes.Modifier -> {
             val modifierConfig = configGroup.modifiers[name] ?: return
             if (sections != null) {
                 val categoryNames = modifierConfig.categoryConfigMap.keys
@@ -311,28 +311,28 @@ private fun DocumentationBuilder.addScope(element: PsiElement, name: String, con
                 sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
             }
         }
-        CwtConfigType.ModifierCategory -> {
+        CwtConfigTypes.ModifierCategory -> {
             val modifierCategoryConfig = configGroup.modifierCategories[name] ?: return
             if (sections != null) {
                 val supportedScopes = modifierCategoryConfig.supportedScopes
                 sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
             }
         }
-        CwtConfigType.LocalisationPromotion -> {
+        CwtConfigTypes.LocalisationPromotion -> {
             val localisationPromotionConfig = configGroup.localisationPromotions[name] ?: return
             if (sections != null) {
                 val supportedScopes = localisationPromotionConfig.supportedScopes
                 sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
             }
         }
-        CwtConfigType.LocalisationCommand -> {
+        CwtConfigTypes.LocalisationCommand -> {
             val localisationCommandConfig = configGroup.localisationCommands[name] ?: return
             if (sections != null) {
                 val supportedScopes = localisationCommandConfig.supportedScopes
                 sections.put(PlsBundle.message("sectionTitle.supportedScopes"), getScopesText(supportedScopes, gameType, contextElement))
             }
         }
-        CwtConfigType.Alias, CwtConfigType.Trigger, CwtConfigType.Effect -> {
+        CwtConfigTypes.Alias, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> {
             val (aliasName, aliasSubName) = name.removeSurroundingOrNull("alias[", "]")?.split(':') ?: return
             val aliasConfigGroup = configGroup.aliasGroups[aliasName] ?: return
             val aliasConfigs = aliasConfigGroup[aliasSubName] ?: return

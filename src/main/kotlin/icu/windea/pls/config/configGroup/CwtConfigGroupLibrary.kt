@@ -40,6 +40,10 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
         return project.hashCode()
     }
 
+    override fun toString(): String {
+        return "CwtConfigGroupLibrary(project=$project)"
+    }
+
     @Suppress("UnstableApiUsage")
     fun refreshRoots() {
         val oldRoots = roots

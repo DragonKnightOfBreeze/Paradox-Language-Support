@@ -1,0 +1,6 @@
+## replace_scopes = { this = planet root = planet from = species }
+army = {
+    value[gui_element_name]:<sprite> = value[gui_element_name]:localisation
+
+    # ...
+}

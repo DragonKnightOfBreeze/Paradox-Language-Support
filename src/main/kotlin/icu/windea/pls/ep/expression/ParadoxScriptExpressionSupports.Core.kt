@@ -323,7 +323,11 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport {
     }
 }
 
-abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpressionSupport {
+class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupport {
+    override fun supports(config: CwtConfig<*>): Boolean {
+        return config.expression?.type == CwtDataTypes.Constant
+    }
+
     override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         val annotated = annotateByAliasName(element, rangeInElement, holder, config)
         if (annotated) return
@@ -362,12 +366,6 @@ abstract class ParadoxScriptConstantLikeExpressionSupport : ParadoxScriptExpress
         ParadoxExpressionManager.annotateExpressionByAttributesKey(element, range, attributesKey, holder)
         return true
     }
-}
-
-class ParadoxScriptConstantExpressionSupport : ParadoxScriptConstantLikeExpressionSupport() {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.Constant
-    }
 
     override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         return config.resolved().pointer.element
@@ -377,23 +375,5 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptConstantLikeExpressi
         if (context.keyword.isParameterized()) return //排除可能带参数的情况
 
         ParadoxCompletionManager.completeConstant(context, result)
-    }
-}
-
-class ParadoxScriptTemplateExpressionSupport : ParadoxScriptConstantLikeExpressionSupport() {
-    override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.TemplateExpression
-    }
-
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        val configExpression = config.expression ?: return null
-        val configGroup = config.configGroup
-        return ParadoxExpressionManager.resolveTemplateExpression(element, expressionText, configExpression, configGroup)
-    }
-
-    override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        if (context.keyword.isParameterized()) return //排除可能带参数的情况
-
-        ParadoxCompletionManager.completeTemplateExpression(context, result)
     }
 }

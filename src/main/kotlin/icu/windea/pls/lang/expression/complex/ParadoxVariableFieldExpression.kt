@@ -28,7 +28,19 @@ class ParadoxVariableFieldExpression(
     val variableNode: ParadoxDataSourceNode
         get() = nodes.last().cast()
 
-    override val errors by lazy { validate() }
+    override fun validate(): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val context = ParadoxComplexExpressionProcessContext()
+        val result = processAllNodesToValidate(errors, context) {
+            when {
+                it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
+                else -> true
+            }
+        }
+        val malformed = !result
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedVariableFieldExpression(rangeInExpression, text)
+        return errors
+    }
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {
@@ -87,20 +99,6 @@ class ParadoxVariableFieldExpression(
 
         private fun isNumber(text: String): Boolean {
             return ParadoxDataExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
-        }
-
-        private fun ParadoxVariableFieldExpression.validate(): List<ParadoxComplexExpressionError> {
-            val errors = mutableListOf<ParadoxComplexExpressionError>()
-            val context = ParadoxComplexExpressionProcessContext()
-            val result = processAllNodesToValidate(errors, context) {
-                when {
-                    it is ParadoxDataSourceNode -> it.text.isParameterAwareIdentifier()
-                    else -> true
-                }
-            }
-            val malformed = !result
-            if (malformed) errors += ParadoxComplexExpressionErrors.malformedVariableFieldExpression(rangeInExpression, text)
-            return errors
         }
     }
 }

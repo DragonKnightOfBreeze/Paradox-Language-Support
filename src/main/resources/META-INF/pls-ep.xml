@@ -140,8 +140,8 @@
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptModifierExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptAliasNameExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptConstantExpressionSupport"/>
-    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptTemplateExpressionSupport"/>
 
+    <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptTemplateExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptDynamicValueExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptScopeFieldExpressionSupport"/>
     <scriptExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxScriptValueFieldExpressionSupport"/>

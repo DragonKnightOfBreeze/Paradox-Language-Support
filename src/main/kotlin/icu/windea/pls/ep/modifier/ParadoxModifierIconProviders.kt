@@ -6,9 +6,9 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
@@ -27,10 +27,12 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
 
     override fun addModifierIconPath(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>) {
         val modifierConfig = modifierInfo.modifierConfig ?: return
-        val templateReferences = modifierInfo.templateReferences ?: return
-        val templateReference = templateReferences.singleOrNull()?.takeIf { it.configExpression.type == CwtDataTypes.Definition } ?: return
-        val definitionName = templateReference.name
-        val definitionType = templateReference.configExpression.value ?: return
+        val templateExpression = modifierInfo.templateExpression ?: return
+        val snippetNode = templateExpression.nodes
+            .filterIsInstance<ParadoxTemplateSnippetNode>()
+            .find { it.configExpression.type == CwtDataTypes.Definition } ?: return
+        val definitionName = snippetNode.text
+        val definitionType = snippetNode.configExpression.value ?: return
         if (definitionType.substringBefore('.') != "job") return
         val configGroup = modifierConfig.config.configGroup
         val selector = selector(configGroup.project, element).definition().contextSensitive()

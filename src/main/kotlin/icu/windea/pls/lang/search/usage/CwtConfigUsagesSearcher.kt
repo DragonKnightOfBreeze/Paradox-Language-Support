@@ -24,15 +24,15 @@ class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
         val extraWords = mutableSetOf<String>()
         val configType = target.configType
         when (configType) {
-            CwtConfigType.Alias, CwtConfigType.Modifier, CwtConfigType.Trigger, CwtConfigType.Effect -> {
+            CwtConfigTypes.Alias, CwtConfigTypes.Modifier, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> {
                 val aliasSubName = target.name.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
                 if (aliasSubName.isNotNullOrEmpty()) extraWords.add(aliasSubName)
             }
-            CwtConfigType.Inline -> {
+            CwtConfigTypes.Inline -> {
                 val inlineName = target.name.removeSurroundingOrNull("inline[", "]")
                 if (inlineName.isNotNullOrEmpty()) extraWords.add(inlineName)
             }
-            CwtConfigType.Link -> {
+            CwtConfigTypes.Link -> {
                 val prefixProperty = target.propertyValue?.castOrNull<CwtBlock>()
                     ?.findChildOfType<CwtProperty> { it.name == "prefix" }
                 val prefix = prefixProperty?.propertyValue?.castOrNull<CwtString>()?.stringValue

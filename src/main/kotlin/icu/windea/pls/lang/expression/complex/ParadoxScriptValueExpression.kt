@@ -51,7 +51,28 @@ class ParadoxScriptValueExpression private constructor(
             }
         }
 
-    override val errors by lazy { validate() }
+    override fun validate(): List<ParadoxComplexExpressionError> {
+        val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val context = ParadoxComplexExpressionProcessContext()
+        val result = processAllNodesToValidate(errors, context) {
+            when {
+                it is ParadoxScriptValueNode -> it.text.isParameterAwareIdentifier()
+                it is ParadoxScriptValueArgumentNode -> it.text.isIdentifier()
+                it is ParadoxScriptValueArgumentValueNode -> true
+                else -> true
+            }
+        }
+        var malformed = !result
+        if (!malformed) {
+            //check whether pipe count is valid
+            val pipeNodeCount = nodes.count { it is ParadoxTokenNode && it.text == "|" }
+            if (pipeNodeCount == 1 || (pipeNodeCount != 0 && pipeNodeCount % 2 == 0)) {
+                malformed = true
+            }
+        }
+        if (malformed) errors += ParadoxComplexExpressionErrors.malformedScriptValueExpression(rangeInExpression, text)
+        return errors
+    }
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxScriptValueExpression? {
@@ -107,29 +128,6 @@ class ParadoxScriptValueExpression private constructor(
             }
             if (!incomplete && nodes.isEmpty()) return null
             return ParadoxScriptValueExpression(expressionString, range, nodes, configGroup, config)
-        }
-
-        private fun ParadoxScriptValueExpression.validate(): List<ParadoxComplexExpressionError> {
-            val errors = mutableListOf<ParadoxComplexExpressionError>()
-            val context = ParadoxComplexExpressionProcessContext()
-            val result = processAllNodesToValidate(errors, context) {
-                when {
-                    it is ParadoxScriptValueNode -> it.text.isParameterAwareIdentifier()
-                    it is ParadoxScriptValueArgumentNode -> it.text.isIdentifier()
-                    it is ParadoxScriptValueArgumentValueNode -> true
-                    else -> true
-                }
-            }
-            var malformed = !result
-            if (!malformed) {
-                //check whether pipe count is valid
-                val pipeNodeCount = nodes.count { it is ParadoxTokenNode && it.text == "|" }
-                if (pipeNodeCount == 1 || (pipeNodeCount != 0 && pipeNodeCount % 2 == 0)) {
-                    malformed = true
-                }
-            }
-            if (malformed) errors += ParadoxComplexExpressionErrors.malformedScriptValueExpression(rangeInExpression, text)
-            return errors
         }
     }
 }

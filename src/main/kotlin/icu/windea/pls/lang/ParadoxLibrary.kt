@@ -40,6 +40,10 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
         return project.hashCode()
     }
 
+    override fun toString(): String {
+        return "ParadoxLibrary(project=$project)"
+    }
+
     @Suppress("UnstableApiUsage")
     fun refreshRoots() {
         val oldRoots = roots
