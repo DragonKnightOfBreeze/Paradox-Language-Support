@@ -43,15 +43,31 @@ object CwtTemplateExpressionManager {
     private val regexCache = CacheBuilder.newBuilder().buildCache<CwtTemplateExpression, Regex> { doToRegex(it) }
 
     private fun doToRegex(templateExpression: CwtTemplateExpression): Regex {
-        return buildString {
-            templateExpression.snippetExpressions.forEach {
-                if (it.type == CwtDataTypes.Constant) {
-                    append("\\Q").append(it.expressionString).append("\\E")
-                } else {
-                    append("(.*?)")
-                }
+        return buildString { templateExpression.snippetExpressions.forEach { appendRegexSnippet(it) } }.toRegex(RegexOption.IGNORE_CASE)
+    }
+
+    fun toMatchedRegex(templateExpression: CwtTemplateExpression, text: String, incomplete: Boolean = false): Tuple2<Regex, MatchResult>? {
+        val regex = toRegex(templateExpression)
+        val matchResult = regex.matchEntire(text)
+        if (matchResult != null) return regex to matchResult
+        if (incomplete) {
+            var truncated = templateExpression.snippetExpressions.size - 1
+            while (truncated > 0) {
+                val regex1 = buildString { templateExpression.snippetExpressions.take(truncated).forEach { appendRegexSnippet(it) } }.toRegex(RegexOption.IGNORE_CASE)
+                val matchResult1 = regex1.matchEntire(text)
+                if (matchResult1 != null) return regex to matchResult1
+                truncated--
             }
-        }.toRegex(RegexOption.IGNORE_CASE)
+        }
+        return null
+    }
+
+    private fun StringBuilder.appendRegexSnippet(expression: CwtDataExpression) {
+        if (expression.type == CwtDataTypes.Constant) {
+            append("\\Q").append(expression.expressionString).append("\\E")
+        } else {
+            append("(.*?)")
+        }
     }
 
     fun matches(

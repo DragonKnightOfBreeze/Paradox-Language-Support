@@ -745,6 +745,7 @@ object ParadoxCompletionManager {
                 }
             } else if (node is ParadoxTemplateSnippetConstantNode) {
                 if (inRange) {
+                    //一般来说，仅适用于是第一个节点的情况（否则，仍然会匹配范围内的通配符）
                     val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse

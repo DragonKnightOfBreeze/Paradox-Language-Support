@@ -34,8 +34,9 @@ class ParadoxTemplateExpression private constructor(
             val incomplete = PlsManager.incompleteComplexExpression.get() ?: false
             if (!incomplete && expressionString.isEmpty()) return null
 
-            val regex = CwtTemplateExpressionManager.toRegex(templateExpression)
-            val matchResult = regex.matchEntire(expressionString) ?: return null //TODO 1.3.32 如果incomplete=true这里可能会直接返回null
+            //这里需要允许部分匹配
+            val (_, matchResult) = CwtTemplateExpressionManager.toMatchedRegex(templateExpression, expressionString, incomplete) ?: return null
+
             val matchGroups = matchResult.groups.drop(1)
             if (matchGroups.isEmpty()) return null
             if (matchGroups.size > templateExpression.referenceExpressions.size) return null

@@ -1,7 +1,7 @@
 # common/armies
 
 defense_army = {
-    foo:GFX_army_type_defensive = foo:defense_army
+    foo:GFX_army_type_defensive = foo:foo:defense_army
 
     # ...
 }
