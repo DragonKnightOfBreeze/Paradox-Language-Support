@@ -150,7 +150,6 @@ object ParadoxInlineScriptManager {
 
     fun getInferredContextConfigs(contextElement: ParadoxScriptMemberElement, inlineScriptExpression: String, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
         if (!getSettings().inference.configContextForInlineScripts) return emptyList()
-
         return withRecursionGuard("ParadoxInlineScriptManager.getInferredContextConfigs") {
             withRecursionCheck(inlineScriptExpression) {
                 context.inlineScriptHasConflict = false
@@ -178,6 +177,7 @@ object ParadoxInlineScriptManager {
 
     private fun doGetInferredContextConfigsFromUsages(contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, inlineScriptExpression: String, matchOptions: Int): List<CwtMemberConfig<*>> {
         // infer & merge
+        val fastInference = getSettings().inference.configContextForInlineScriptsFast
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         val project = context.configGroup.project
         val selector = selector(project, contextElement).inlineScriptUsage()
@@ -192,6 +192,10 @@ object ParadoxInlineScriptManager {
                 val memberElement = p.parentOfType<ParadoxScriptMemberElement>() ?: return@p1 true
                 val usageConfigContext = ParadoxExpressionManager.getConfigContext(memberElement) ?: return@p1 true
                 val usageConfigs = usageConfigContext.getConfigs(matchOptions).orNull()
+                if(fastInference && usageConfigs.isNotNullOrEmpty()) {
+                    result.set(usageConfigs)
+                    return@p1 false
+                }
                 // merge
                 result.mergeValue(usageConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }.also {
                     if (it) return@also

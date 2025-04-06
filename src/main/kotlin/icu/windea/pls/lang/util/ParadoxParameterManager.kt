@@ -343,23 +343,33 @@ object ParadoxParameterManager {
     }
 
     private fun doGetInferredContextConfigsFromUsages(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
+        val fastInference = getSettings().inference.configContextForParametersFast
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
             ProgressManager.checkCanceled()
             val contextInfo = ParadoxParameterSupport.getContextInfo(context) ?: return@p true
             val contextConfigs = doGetInferredContextConfigsFromUsages(parameterElement.name, contextInfo).orNull()
+            if(fastInference && contextConfigs.isNotNullOrEmpty()) {
+                result.set(contextConfigs)
+                return@p false
+            }
             result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
         }
         return result.get().orEmpty()
     }
 
     private fun doGetInferredContextConfigsFromUsages(parameterName: String, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>> {
+        val fastInference = getSettings().inference.configContextForParametersFast
         val parameterInfos = parameterContextInfo.parameters.get(parameterName)
         if (parameterInfos.isNullOrEmpty()) return emptyList()
         val result = Ref.create<List<CwtMemberConfig<*>>>()
-        parameterInfos.process { parameterInfo ->
+        parameterInfos.process p@{ parameterInfo ->
             ProgressManager.checkCanceled()
             val contextConfigs = ParadoxParameterInferredConfigProvider.getContextConfigs(parameterInfo, parameterContextInfo).orNull()
+            if(fastInference && contextConfigs.isNotNullOrEmpty()) {
+                result.set(contextConfigs)
+                return@p false
+            }
             result.mergeValue(contextConfigs) { v1, v2 -> CwtConfigManipulator.mergeConfigs(v1, v2) }
         }
         return result.get().orEmpty()

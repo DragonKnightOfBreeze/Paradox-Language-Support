@@ -86,8 +86,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                             val newPreferredLocale = settings.preferredLocale
                             if (oldPreferredLocale != newPreferredLocale) {
                                 preferredLocale = newPreferredLocale
-                                val openedFiles = PlsManager.findOpenedFiles()
-                                PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
+                                refreshForOpenedFiles()
                             }
                         }
                 }
@@ -204,7 +203,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
             }
             //folding
             collapsibleGroup(PlsBundle.message("settings.folding")) {
-                //CommentEnabled
+                //commentEnabled
                 lateinit var commentEnabledCb: JBCheckBox
                 row {
                     checkBox(PlsBundle.message("settings.folding.commentEnabled"))
@@ -440,58 +439,56 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
             collapsibleGroup(PlsBundle.message("settings.inference")) {
                 //configContextForParameters
                 row {
+                    lateinit var configContextForParametersCb: JBCheckBox
                     checkBox(PlsBundle.message("settings.inference.configContextForParameters"))
                         .bindSelected(settings.inference::configContextForParameters)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextForParameters.tooltip") }
-                        .onApply {
-                            ParadoxModificationTrackers.ParameterConfigInferenceTracker.incModificationCount()
-                        }
+                        .onApply { refreshForParameterInference() }
+                        .applyToComponent { configContextForParametersCb = this }
+
+                    //configContextForParametersFast
+                    checkBox(PlsBundle.message("settings.inference.configContextFast"))
+                        .bindSelected(settings.inference::configContextForParametersFast)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextFast.tooltip") }
+                        .onApply { refreshForParameterInference() }
+                        .enabledIf(configContextForParametersCb.selected)
                 }
                 //configContextForInlineScripts
                 row {
+                    lateinit var configContextForInlineScriptsCb: JBCheckBox
                     checkBox(PlsBundle.message("settings.inference.configContextForInlineScripts"))
                         .bindSelected(settings.inference::configContextForInlineScripts)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextForInlineScripts.tooltip") }
-                        .onApply {
-                            ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
-                            ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
-                            ParadoxModificationTrackers.InlineScriptConfigInferenceTracker.incModificationCount()
-                            val openedFiles = PlsManager.findOpenedFiles { file, _ -> ParadoxInlineScriptManager.getInlineScriptExpression(file) != null }
-                            PlsManager.reparseAndRefreshFiles(openedFiles)
-                        }
+                        .onApply { refreshForInlineScriptInference() }
+                        .applyToComponent { configContextForInlineScriptsCb = this }
+
+                    //configContextForInlineScriptsFast
+                    checkBox(PlsBundle.message("settings.inference.configContextFast"))
+                        .bindSelected(settings.inference::configContextForInlineScriptsFast)
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextFast.tooltip") }
+                        .onApply { refreshForInlineScriptInference() }
+                        .enabledIf(configContextForInlineScriptsCb.selected)
                 }
                 //scopeContext
                 row {
                     checkBox(PlsBundle.message("settings.inference.scopeContext"))
                         .bindSelected(settings.inference::scopeContext)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContext.tooltip") }
-                        .onApply {
-                            ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
-                            val openedFiles = PlsManager.findOpenedFiles()
-                            PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
-                        }
+                        .onApply { refreshForScopeContextInference() }
                 }
                 //scopeContextForEvents
                 row {
                     checkBox(PlsBundle.message("settings.inference.scopeContextForEvents"))
                         .bindSelected(settings.inference::scopeContextForEvents)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContextForEvents.tooltip") }
-                        .onApply {
-                            ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
-                            val openedFiles = PlsManager.findOpenedFiles()
-                            PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
-                        }
+                        .onApply { refreshForScopeContextInference() }
                 }
                 //scopeContextForOnActions
                 row {
                     checkBox(PlsBundle.message("settings.inference.scopeContextForOnActions"))
                         .bindSelected(settings.inference::scopeContextForOnActions)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContextForOnActions.tooltip") }
-                        .onApply {
-                            ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
-                            val openedFiles = PlsManager.findOpenedFiles()
-                            PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
-                        }
+                        .onApply { refreshForScopeContextInference() }
                 }
             }
             //others
@@ -510,19 +507,13 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 row {
                     checkBox(PlsBundle.message("settings.others.highlightLocalisationColorId"))
                         .bindSelected(settings.others::highlightLocalisationColorId)
-                        .onApply {
-                            val openedFiles = PlsManager.findOpenedFiles()
-                            PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
-                        }
+                        .onApply { refreshForOpenedFiles() }
                 }
                 //renderLocalisationColorfulText
                 row {
                     checkBox(PlsBundle.message("settings.others.renderLocalisationColorfulText"))
                         .bindSelected(settings.others::renderLocalisationColorfulText)
-                        .onApply {
-                            val openedFiles = PlsManager.findOpenedFiles()
-                            PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
-                        }
+                        .onApply { refreshForOpenedFiles() }
                 }
                 //defaultDiffGroup
                 buttonsGroup(PlsBundle.message("settings.others.defaultDiffGroup")) {
@@ -537,7 +528,34 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     }
                 }.bind(settings.others::defaultDiffGroup)
             }
+            onApply {
+
+            }
         }
+    }
+
+    //如果应用更改时涉及多个相关字段，下面这些回调可能同一回调会被多次调用，不过目前看来问题不大
+
+    private fun refreshForOpenedFiles() {
+        val openedFiles = PlsManager.findOpenedFiles()
+        PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
+    }
+
+    private fun refreshForParameterInference() {
+        ParadoxModificationTrackers.ParameterConfigInferenceTracker.incModificationCount()
+    }
+
+    private fun refreshForInlineScriptInference() {
+        ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
+        ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
+        ParadoxModificationTrackers.InlineScriptConfigInferenceTracker.incModificationCount()
+        val openedFiles = PlsManager.findOpenedFiles { file, _ -> ParadoxInlineScriptManager.getInlineScriptExpression(file) != null }
+        PlsManager.reparseAndRefreshFiles(openedFiles)
+    }
+
+    private fun refreshForScopeContextInference() {
+        ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
+        refreshForOpenedFiles()
     }
 }
 

@@ -16,7 +16,8 @@
 * [X] 修复无法识别本地化文件中的数据库对象表达式的BUG / Fixed the bug that database object expression in loc files cannot be resolved
 * [X] 如果游戏目录未配置，打开模组文件后显示编辑器横幅通知，而非显示全局通知 / If game directory is not configured, show an editor notification after opening mod files, instead of showing a global notification
 * [X] 细化代码折叠配置 / Refine code folding configuration
-* [X] 代码折叠：允许折叠连续的注释，默认不启用 / Code folding: Allow to fold continuous comments, disabled by default
+* [X] 代码折叠：允许折叠连续的注释，可配置，默认不启用 / Code folding: Allow to fold continuous comments, configurable, disabled by default
+* [X] 智能推断：允许快速推断规则上下文，可配置，默认不启用 / Smart inference: Allow to use quick inference for config context, configurable, disabled by default
 * [X] 将内置规则重新移到主要的jar包中以免去不必要的麻烦 / Move built-in configs into main jar to make things easy
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 

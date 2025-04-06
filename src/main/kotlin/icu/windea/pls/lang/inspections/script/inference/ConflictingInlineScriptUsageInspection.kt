@@ -13,7 +13,6 @@ import icu.windea.pls.lang.util.*
  */
 class ConflictingInlineScriptUsageInspection : LocalInspectionTool() {
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if (!getSettings().inference.configContextForInlineScripts) return null
         if (!shouldCheckFile(file)) return null
 
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return null

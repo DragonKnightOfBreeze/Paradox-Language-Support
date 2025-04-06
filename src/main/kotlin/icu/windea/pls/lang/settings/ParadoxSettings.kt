@@ -138,8 +138,10 @@ class ParadoxSettingsState : BaseState() {
     /**
      * 注意：仅可配置是否启用基于使用的推断，基于自定义规则的推断是始终启用的。
      *
-     * @property configContextForParameters 是否推断参数对应的脚本表达式。
-     * @property configContextForInlineScripts 是否推断内联脚本的使用位置。
+     * @property configContextForParameters 是否推断参数值的规则上下文。
+     * @property configContextForParametersFast 推断参数的规则上下文时，是否进行快速推断。
+     * @property configContextForInlineScripts 是否推断内联脚本的规则上下文。
+     * @property configContextForInlineScriptsFast 推断内联脚本的规则上下文时，是否进行快速推断。
      * @property scopeContext 是否推断scripted_trigger、scripted_effect等的作用域上下文。
      * @property scopeContextForEvents 是否推断event的作用域上下文。
      * @property scopeContextForOnActions 是否推断on_action的作用域上下文。
@@ -147,7 +149,9 @@ class ParadoxSettingsState : BaseState() {
     @Tag("inference")
     class InferenceState : BaseState() {
         var configContextForParameters by property(true)
+        var configContextForParametersFast by property(true)
         var configContextForInlineScripts by property(true)
+        var configContextForInlineScriptsFast by property(true)
         var scopeContext by property(false)
         var scopeContextForEvents by property(false)
         var scopeContextForOnActions by property(false)
