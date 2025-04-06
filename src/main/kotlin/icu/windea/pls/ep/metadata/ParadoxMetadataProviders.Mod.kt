@@ -52,29 +52,19 @@ class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
     override fun getMetadata(rootFile: VirtualFile): ParadoxMetadata? {
         //尝试在根目录的.metadata子目录中查找metadata.json
 
-        val descriptorFile = runReadAction { ParadoxMetadataManager.getModMetadataFile(rootFile) } ?: return null
-        val descriptorInfo = ParadoxMetadataManager.getModMetadataInfo(descriptorFile) ?: return null
-        //NOTE 1.3.29 skip if game_id in metadata.json is invalid or unavailable
-        val gameTypeFromInfo = getGameTypeFromInfo(descriptorInfo) ?: return null
-        return Metadata(rootFile, descriptorFile, descriptorInfo, gameTypeFromInfo)
-    }
-
-    private fun getGameTypeFromInfo(info: ParadoxModMetadataInfo): ParadoxGameType? {
-        return when(info.gameId) {
-            "victoria3" -> ParadoxGameType.Vic3
-            else -> null
-        }
+        val infoFile = runReadAction { ParadoxMetadataManager.getModMetadataFile(rootFile) } ?: return null
+        val info = ParadoxMetadataManager.getModMetadataInfo(infoFile) ?: return null
+        return Metadata(rootFile, infoFile, info)
     }
 
     class Metadata(
         override val rootFile: VirtualFile,
         val infoFile: VirtualFile,
         val info: ParadoxModMetadataInfo,
-        val gameTypeFromInfo: ParadoxGameType?
     ) : ParadoxMetadata.Mod {
         override val name: String get() = info.name
         override val version: String? get() = info.version
-        override val inferredGameType: ParadoxGameType? = doGetInferredGameType()
+        override val inferredGameType: ParadoxGameType = doGetInferredGameType()
         override val gameType: ParadoxGameType = doGetGameType()
         override val entryFile: VirtualFile get() = rootFile
 
@@ -84,15 +74,15 @@ class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
         override val remoteId: String? get() = null
         override val source: ParadoxModSource get() = ParadoxModSource.Local
 
-        private fun doGetInferredGameType(): ParadoxGameType? {
-            if(gameTypeFromInfo != null) return gameTypeFromInfo
-            return ParadoxCoreManager.getInferredGameType(rootFile)
+        private fun doGetInferredGameType(): ParadoxGameType {
+            return when(info.gameId) {
+                "victoria3" -> ParadoxGameType.Vic3
+                else -> ParadoxGameType.Vic3 //#134 by default vic3
+            }
         }
 
         private fun doGetGameType(): ParadoxGameType {
             return inferredGameType
-                ?: getProfilesSettings().modDescriptorSettings.get(rootFile.path)?.gameType
-                ?: getSettings().defaultGameType
         }
     }
 }
