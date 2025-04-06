@@ -556,7 +556,7 @@ private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxS
         if (sectionKeys.contains(key)) continue
         val resolved = locationExpression.resolve(element, definitionInfo) ?: continue //发生意外，直接跳过
         if (resolved.message != null) {
-            map.putIfAbsent(key, resolved.message)
+            map.put(key, resolved.message)
         } else if (resolved.element != null) {
             val nameOrFilePath = resolved.nameOrFilePath
             val gameType = definitionInfo.gameType
