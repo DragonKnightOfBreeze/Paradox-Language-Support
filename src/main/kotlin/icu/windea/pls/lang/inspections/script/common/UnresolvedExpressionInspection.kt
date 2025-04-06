@@ -63,7 +63,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 //skip if config context not exists
                 val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return true
                 //skip if config context is not suitable
-                if (!configContext.isRootOrMember()) return true
+                if (!configContext.isRootOrMember() || configContext.isDefinition()) return true
                 //skip if there are no context configs
                 if (configContext.getConfigs().isEmpty()) return true
 
