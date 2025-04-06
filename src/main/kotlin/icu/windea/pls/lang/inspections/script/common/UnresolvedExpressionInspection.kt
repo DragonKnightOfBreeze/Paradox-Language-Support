@@ -58,8 +58,15 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val propertyKey = element.propertyKey
                 if (propertyKey.text.isParameterized()) return false
 
+                //NOTE if code is skipped by following checks, it may still be unresolved in fact, should be optimized in the future
+
+                //skip if config context not exists
                 val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return true
-                if (!configContext.isRootOrMember() || configContext.isDefinition()) return true
+                //skip if config context is not suitable
+                if (!configContext.isRootOrMember()) return true
+                //skip if there are no context configs
+                if (configContext.getConfigs().isEmpty()) return true
+
                 val configs = ParadoxExpressionManager.getConfigs(element)
                 if (configs.isEmpty()) {
                     val expectedConfigs = getExpectedConfigs(element)
@@ -93,8 +100,15 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 if (element is ParadoxScriptString && element.text.isParameterized()) return false
                 if (element is ParadoxScriptScriptedVariableReference && element.text.isParameterized()) return false
 
+                //NOTE if code is skipped by following checks, it may still be unresolved in fact, should be optimized in the future
+
+                //skip if config context not exists
                 val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return true
-                if (!configContext.isRootOrMember() || configContext.isDefinition()) return true
+                //skip if config context is not suitable
+                if (!configContext.isRootOrMember()) return true
+                //skip if there are no context configs
+                if (configContext.getConfigs().isEmpty()) return true
+
                 val configs = ParadoxExpressionManager.getConfigs(element, orDefault = false)
                 if (configs.isEmpty()) {
                     //skip check value if it is a special tag and there are no matched configs

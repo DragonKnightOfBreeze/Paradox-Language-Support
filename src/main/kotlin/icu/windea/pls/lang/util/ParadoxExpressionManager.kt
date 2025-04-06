@@ -424,9 +424,11 @@ object ParadoxExpressionManager {
         }
 
         val configContext = getConfigContext(element) ?: return emptyList()
-        val isDefinition = configContext.isDefinition()
-        if (isDefinition && element is ParadoxScriptDefinitionElement && !BitUtil.isSet(matchOptions, Options.AcceptDefinition)) return emptyList()
         val configGroup = configContext.configGroup
+
+        if (element is ParadoxScriptDefinitionElement && configContext.isDefinition()) {
+            if (!BitUtil.isSet(matchOptions, Options.AcceptDefinition)) return emptyList()
+        }
 
         ProgressManager.checkCanceled()
         val contextConfigs = configContext.getConfigs(matchOptions)
