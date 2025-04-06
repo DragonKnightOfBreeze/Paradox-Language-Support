@@ -19,6 +19,8 @@ import kotlin.io.path.*
  * 用于在特定生命周期执行特定的代码，例如，在IDE启动时初始化一些缓存数据。
  */
 class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, ProjectActivity {
+    //for whole application
+
     override fun appFrameCreated(commandLineArgs: MutableList<String>) {
         IIORegistry.getDefaultInstance().registerServiceProvider(ddsImageReaderSpi)
 
@@ -59,6 +61,8 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
             IIORegistry.getDefaultInstance().deregisterServiceProvider(ddsImageReaderSpi)
         }
     }
+
+    //for each project
 
     override suspend fun execute(project: Project) {
         //refresh roots for libraries on project startup

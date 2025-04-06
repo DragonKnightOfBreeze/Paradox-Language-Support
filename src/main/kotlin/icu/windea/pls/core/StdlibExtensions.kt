@@ -569,7 +569,7 @@ fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolea
  * 将分隔符统一替换成"/"，将连续的分隔符替换为单个分隔符，并去除所有作为后缀的分隔符。
  */
 fun String.normalizePath(): String {
-    if(this.isEmpty()) return ""
+    if (this.isEmpty()) return ""
     val builder = StringBuilder()
     var separatorFlag = false
     this.forEach { c ->
@@ -688,7 +688,7 @@ fun executeCommand(
         process.waitFor(timeout, TimeUnit.MILLISECONDS)
     }
     val result = process.inputStream.bufferedReader().readText().trim()
-    if(result.isNotEmpty() || process.exitValue() == 0) return result
+    if (result.isNotEmpty() || process.exitValue() == 0) return result
     val errorResult = process.errorStream.bufferedReader().readText().trim()
     throw CommandExecutionException(errorResult)
 }

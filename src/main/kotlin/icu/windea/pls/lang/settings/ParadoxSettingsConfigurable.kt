@@ -534,7 +534,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
         }
     }
 
-    //如果应用更改时涉及多个相关字段，下面这些回调可能同一回调会被多次调用，不过目前看来问题不大
+    //NOTE 如果应用更改时涉及多个相关字段，下面这些回调可能同一回调会被多次调用，不过目前看来问题不大
 
     private fun refreshForOpenedFiles() {
         val openedFiles = PlsManager.findOpenedFiles()
