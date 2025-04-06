@@ -6,7 +6,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
@@ -32,13 +31,7 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
             //不索引内存中的文件
             if (ParadoxFileManager.isLightFile(file)) return false
             //仅索引有根目录的文件
-            val fileInfo = file.fileInfo ?: return false
-            val path = fileInfo.path
-            //不索引直接在根目录下的文件（除了模组描述符文件）
-            if (path.length == 1) return path.path.equals(PlsConstants.modDescriptorFileName, true)
-            //不索引内联脚本文件
-            if ("common/inline_scripts".matchesPath(path.path)) return false
-            return true
+            return file.fileInfo != null
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             return false

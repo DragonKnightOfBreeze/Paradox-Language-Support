@@ -8,7 +8,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.impl.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.constraints.ParadoxLocalisationConstraint.*
+import icu.windea.pls.model.constraints.*
 
 object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<ParadoxLocalisationPropertyStub, ParadoxLocalisationProperty>(
     "PROPERTY",
@@ -35,18 +35,18 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
     }
 
     override fun shouldCreateStub(node: ASTNode): Boolean {
-        return true //always true
+        return true
     }
 
     override fun shouldCreateStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): Boolean {
-        return true //always true
+        return true
     }
 
     override fun indexStub(stub: ParadoxLocalisationPropertyStub, sink: IndexSink) {
         when (stub.category) {
             ParadoxLocalisationCategory.Localisation -> {
-                //sink.occurrence(ParadoxLocalisationNameIndexKey, stub.name)
-                entries.forEach { constraint ->
+                //sink.occurrence(ParadoxLocalisationNameIndex.KEY, stub.name)
+                ParadoxLocalisationConstraint.entries.forEach { constraint ->
                     if (constraint.predicate(stub.name)) {
                         val name = if (constraint.ignoreCase) stub.name.lowercase() else stub.name
                         sink.occurrence(constraint.indexKey, name)

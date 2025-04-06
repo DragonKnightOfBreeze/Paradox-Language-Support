@@ -16,8 +16,6 @@ object PlsConstants {
     val localisationFileExtensions = arrayOf("yml")
     val imageFileExtensions = arrayOf("dds", "png", "tga")
 
-    const val modDescriptorFileName = "descriptor.mod"
-
     const val dummyIdentifier = "windea"
 
     //val eraseMarker = TextAttributes()
