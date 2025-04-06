@@ -110,11 +110,13 @@ class PlsFileListener : AsyncFileListener {
                 if (filesToClearLocale.isNotEmpty()) {
                     filesToClearLocale.forEach { clearLocale(it) }
                 }
+                if (refreshInlineScripts) {
+                    refreshForInlineScripts()
+                }
                 if (reparseOpenedFiles) {
                     reparseOpenedFiles()
-                }
-                if (refreshInlineScripts) {
-                    refreshInlineScripts()
+                } else if (refreshInlineScripts) {
+                    reparseOpenedFilesForInlineScripts()
                 }
             }
         }
@@ -134,15 +136,19 @@ class PlsFileListener : AsyncFileListener {
 
     private fun reparseOpenedFiles() {
         //重新解析所有项目的所有已打开的文件
-        val openedFiles = PlsManager.findOpenedFiles()
-        PlsManager.reparseAndRefreshFiles(openedFiles)
+        val files = PlsManager.findOpenedFiles()
+        PlsManager.reparseAndRefreshFiles(files)
     }
 
-    private fun refreshInlineScripts() {
-        ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
-        ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
-        //重新解析内联脚本文件
+    private fun reparseOpenedFilesForInlineScripts() {
+        //重新解析所有项目的所有已打开的内联脚本文件
         val files = PlsManager.findOpenedFiles { file, _ -> ParadoxInlineScriptManager.getInlineScriptExpression(file) != null }
         PlsManager.reparseAndRefreshFiles(files)
+    }
+
+    private fun refreshForInlineScripts() {
+        //重新解析内联脚本文件
+        ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
+        ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
     }
 }
