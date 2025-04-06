@@ -12,6 +12,7 @@
 * [X] #129 更好的对模版表达式规则的支持 / Better template expression config support
 * [X] #130 更好的对嵌套的块的支持 / Bette support for nested blocks
 * [X] #131 Only numbers in event names
+* [X] #134 [Vic3] Mods are not correctly detected
 * [X] 修复无法识别本地化文件中的数据库对象表达式的BUG / Fixed the bug that database object expression in loc files cannot be resolved
 * [X] 如果游戏目录未配置，打开模组文件后显示编辑器横幅通知，而非显示全局通知 / If game directory is not configured, show an editor notification after opening mod files, instead of showing a global notification
 * [X] 细化代码折叠配置 / Refine code folding configuration

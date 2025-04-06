@@ -42,14 +42,9 @@ object ParadoxCoreManager {
             //resolve rootInfo
             try {
                 val rootInfo = doGetRootInfo(rootFile)
-                if (rootInfo != null) {
-                    rootFile.tryPutUserData(PlsKeys.rootInfo, rootInfo)
-                    run {
-                        if (ParadoxFileManager.isLightFile(rootFile)) return@run
-                        ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
-                    }
-                } else {
-                    rootFile.tryPutUserData(PlsKeys.rootInfo, EMPTY_OBJECT)
+                rootFile.tryPutUserData(PlsKeys.rootInfo, rootInfo ?: EMPTY_OBJECT)
+                if (rootInfo != null && !ParadoxFileManager.isLightFile(rootFile)) {
+                    ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
                 }
                 return rootInfo
             } catch (e: Exception) {
