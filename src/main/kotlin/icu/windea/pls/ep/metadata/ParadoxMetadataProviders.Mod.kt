@@ -64,7 +64,7 @@ class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
     ) : ParadoxMetadata.Mod {
         override val name: String get() = info.name
         override val version: String? get() = info.version
-        override val inferredGameType: ParadoxGameType = doGetInferredGameType()
+        override val inferredGameType: ParadoxGameType? = doGetInferredGameType()
         override val gameType: ParadoxGameType = doGetGameType()
         override val entryFile: VirtualFile get() = rootFile
 
@@ -74,8 +74,15 @@ class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
         override val remoteId: String? get() = null
         override val source: ParadoxModSource get() = ParadoxModSource.Local
 
-        private fun doGetInferredGameType(): ParadoxGameType {
-            return when(info.gameId) {
+        private fun doGetInferredGameType(): ParadoxGameType? {
+            val gameTypeFromInfo = doGetInferredGameTypeFromInfo()
+            if (gameTypeFromInfo != null) return gameTypeFromInfo
+            return ParadoxCoreManager.getInferredGameType(rootFile)
+        }
+
+        @Suppress("RedundantNullableReturnType")
+        private fun doGetInferredGameTypeFromInfo(): ParadoxGameType? {
+            return when (info.gameId) {
                 "victoria3" -> ParadoxGameType.Vic3
                 else -> ParadoxGameType.Vic3 //#134 by default vic3
             }
@@ -83,6 +90,8 @@ class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
 
         private fun doGetGameType(): ParadoxGameType {
             return inferredGameType
+                ?: getProfilesSettings().modDescriptorSettings.get(rootFile.path)?.gameType
+                ?: getSettings().defaultGameType
         }
     }
 }
