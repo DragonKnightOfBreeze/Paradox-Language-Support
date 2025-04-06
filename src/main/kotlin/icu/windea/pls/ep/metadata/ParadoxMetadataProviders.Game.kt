@@ -10,6 +10,7 @@ class ParadoxLauncherSettingsBasedMetadataProvider : ParadoxMetadataProvider {
         //尝试在根目录或其launcher子目录中查找launcher-settings.json
         //如果找到，再根据"dlcPath"的值获取游戏文件的根目录
         //注意游戏文件的根目录可能是此目录的game子目录，而非此目录自身
+
         val infoFile = runReadAction { ParadoxMetadataManager.getLauncherSettingsFile(rootFile) } ?: return null
         val info = ParadoxMetadataManager.getLauncherSettingsInfo(infoFile) ?: return null
         return Metadata(rootFile, infoFile, info)

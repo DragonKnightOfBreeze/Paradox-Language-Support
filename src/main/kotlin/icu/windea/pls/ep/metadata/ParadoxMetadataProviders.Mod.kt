@@ -10,6 +10,7 @@ import icu.windea.pls.model.*
 class ParadoxModDescriptorBasedMetadataProvider : ParadoxMetadataProvider {
     override fun getMetadata(rootFile: VirtualFile): ParadoxMetadata? {
         //尝试在根目录中查找descriptor.mod
+
         val infoFile = runReadAction { ParadoxMetadataManager.getModDescriptorFile(rootFile) } ?: return null
         val info = ParadoxMetadataManager.getModDescriptorInfo(infoFile) ?: return null
         return Metadata(rootFile, infoFile, info)
@@ -49,7 +50,8 @@ class ParadoxModDescriptorBasedMetadataProvider : ParadoxMetadataProvider {
  */
 class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
     override fun getMetadata(rootFile: VirtualFile): ParadoxMetadata? {
-        //尝试在根目录的.metadata子目录中中查找metadata.json
+        //尝试在根目录的.metadata子目录中查找metadata.json
+
         val descriptorFile = runReadAction { ParadoxMetadataManager.getModMetadataFile(rootFile) } ?: return null
         val descriptorInfo = ParadoxMetadataManager.getModMetadataInfo(descriptorFile) ?: return null
         //NOTE 1.3.29 skip if game_id in metadata.json is invalid or unavailable

@@ -2,7 +2,7 @@
   <profile version="1.0">
     <option name="myName" value="Project Default" />
     <inspection_tool class="ActionPresentationInitializedInCtor" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="AddVarianceModifier" enabled="false" level="TYPO" enabled_by_default="false" />
+    <inspection_tool class="AddVarianceModifier" enabled="true" level="WARNING" enabled_by_default="true" editorAttributes="WARNING_ATTRIBUTES" />
     <inspection_tool class="ApplicationServiceAsStaticFinalField" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ArrayEquality" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AssertEqualsMayBeAssertSame" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -94,7 +94,7 @@
     <inspection_tool class="LiftReturnOrAssignment" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="LinkTextDoesNotMatchHeading" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="LocalVariableName" enabled="true" level="INFORMATION" enabled_by_default="true" />
-    <inspection_tool class="LoggingSimilarMessage" enabled="true" level="INFORMATION" enabled_by_default="true" />
+    <inspection_tool class="LoggingSimilarMessage" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES" />
     <inspection_tool class="LossyEncoding" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="MalformedSetUpTearDown" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MarkdownIncorrectTableFormatting" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
@@ -172,13 +172,13 @@
     <inspection_tool class="TestMethodInProductCode" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="TestMethodWithoutAssertion" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="TrailingComma" enabled="false" level="INFO" enabled_by_default="false" />
-    <inspection_tool class="TypeScriptMissingAugmentationImport" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="TypeScriptMissingAugmentationImport" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="TypescriptExplicitMemberType" enabled="true" level="INFORMATION" enabled_by_default="true">
       <option name="myPreferExplicitLocalVariableTypes" value="true" />
       <option name="myPreferExplicitReturnTypesForFunctionExpressions" value="true" />
     </inspection_tool>
     <inspection_tool class="UnnecessaryVariable" enabled="true" level="INFORMATION" enabled_by_default="true" />
-    <inspection_tool class="UnusedProperty" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="UnusedProperty" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES" />
     <inspection_tool class="UnusedSymbol" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="WarningOnMainUnusedParameterMigration" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="WhenWithOnlyElse" enabled="true" level="WARNING" enabled_by_default="true" />

@@ -10,7 +10,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.model.*
-import icu.windea.pls.tools.*
 import icu.windea.pls.tools.ui.*
 
 /**
@@ -19,7 +18,7 @@ import icu.windea.pls.tools.ui.*
  * * 当前文件是项目中的游戏文件或目录时启用。
  *
  * @see icu.windea.pls.lang.settings.ParadoxGameSettingsState
- * @see icu.windea.pls.tools.ParadoxGameSettingsDialog
+ * @see icu.windea.pls.tools.ui.ParadoxGameSettingsDialog
  */
 class OpenGameSettingsAction : DumbAwareAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
