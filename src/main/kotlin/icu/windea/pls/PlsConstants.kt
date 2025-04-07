@@ -4,6 +4,7 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.io.*
 import org.apache.commons.io.file.*
+import kotlin.io.path.*
 
 object PlsConstants {
     const val pluginId = "icu.windea.pls"
@@ -83,20 +84,13 @@ object PlsConstants {
         val parameterName = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
     }
 
-    object Paths {
-        val userHome = System.getProperty("user.home").toPath()
-        val data = userHome.resolve(".pls")
-        val images = data.resolve("images")
-
-        val imagesTemp by lazy { images.resolve("_temp").also { PathUtils.cleanDirectory(it) } }
-
-        val unknownPng = data.resolve("unknown.png")
-        val unknownPngClasspathUrl = "/tools/unknown.png".toClasspathUrl(locationClass)
-        val unknownPngFile by VirtualFileProvider(unknownPng) { VfsUtil.findFileByURL(unknownPngClasspathUrl)!! }
-
-        val texconvExe = data.resolve("texconv.exe")
-        val texconvExeClasspathUrl = "/tools/texconv.exe".toClasspathUrl(locationClass)
-        val texconvExeFile by VirtualFileProvider(texconvExe) { VfsUtil.findFileByURL(texconvExeClasspathUrl)!! }
+    object Settings {
+        /** 默认的封装变量的名字（执行重构与生成操作时会用到） */
+        const val defaultScriptedVariableName = "var"
+        /** 定义相对于脚本文件的最大深度（用于优化性能） */
+        const val maxDefinitionDepth = 4
+        /** 在提示信息中显示的条目的数量限制 */
+        const val itemLimit = 5
     }
 
     object Samples {
@@ -110,12 +104,19 @@ object PlsConstants {
         val paradoxScriptCodeStyleSettings = "/samples/ParadoxScript.codeStyleSettings.txt".toClasspathUrl(locationClass).readText()
     }
 
-    object Settings {
-        /** 默认的封装变量的名字（执行重构与生成操作时会用到） */
-        const val defaultScriptedVariableName = "var"
-        /** 定义相对于脚本文件的最大深度（用于优化性能） */
-        const val maxDefinitionDepth = 4
-        /** 在提示信息中显示的条目的数量限制 */
-        const val itemLimit = 5
+    object Paths {
+        val userHome = System.getProperty("user.home").toPath()
+
+        val data by lazy { userHome.resolve(".pls").also { runCatchingCancelable { it.createDirectories() } } }
+        val images by lazy { data.resolve("images").also { runCatchingCancelable { it.createDirectory() } } }
+        val imagesTemp by lazy { images.resolve("_temp").also { runCatchingCancelable { PathUtils.cleanDirectory(it) } } }
+
+        val unknownPng by lazy { data.resolve("unknown.png") }
+        val unknownPngClasspathUrl = "/tools/unknown.png".toClasspathUrl(locationClass)
+        val unknownPngFile by VirtualFileProvider(unknownPng) { VfsUtil.findFileByURL(unknownPngClasspathUrl)!! }
+
+        val texconvExe by lazy { data.resolve("texconv.exe") }
+        val texconvExeClasspathUrl = "/tools/texconv.exe".toClasspathUrl(locationClass)
+        val texconvExeFile by VirtualFileProvider(texconvExe) { VfsUtil.findFileByURL(texconvExeClasspathUrl)!! }
     }
 }

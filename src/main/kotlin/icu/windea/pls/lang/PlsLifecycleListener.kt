@@ -13,7 +13,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.dds.support.*
 import kotlinx.coroutines.*
 import javax.imageio.spi.*
-import kotlin.io.path.*
 
 /**
  * 用于在特定生命周期执行特定的代码，例如，在IDE启动时初始化一些缓存数据。
@@ -40,9 +39,9 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     private fun handlePaths() {
         val coroutineScope = getCoroutineScope()
         coroutineScope.launch {
-            runCatchingCancelable { PlsConstants.Paths.data.createDirectories() }
-            runCatchingCancelable { PlsConstants.Paths.images.createDirectory() }
-            runCatchingCancelable { PlsConstants.Paths.imagesTemp }
+            PlsConstants.Paths.data
+            PlsConstants.Paths.images
+            PlsConstants.Paths.imagesTemp
             writeAction { runCatchingCancelable { PlsConstants.Paths.unknownPngFile } }
             writeAction { runCatchingCancelable { PlsConstants.Paths.texconvExeFile } }
         }
