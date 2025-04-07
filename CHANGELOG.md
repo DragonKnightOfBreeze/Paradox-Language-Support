@@ -511,7 +511,7 @@
 
 ## 1.2.0
 
-* [X] 优化对[规则分组](https://windea.icu/Paradox-Language-Support/zh/config.md#config-group)的支持
+* [X] 优化对[规则分组](https://windea.icu/Paradox-Language-Support/zh/config.html#config-group)的支持
 * [X] 其他优化与BUG修复
 
 ## 1.1.13
