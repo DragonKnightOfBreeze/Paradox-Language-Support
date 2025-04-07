@@ -52,7 +52,7 @@ export default hopeTheme({
         "/en/": ["en-US", "en-UK", "en"]
       }
     },
-    //note that fulltext search is not supported by @vuepress/plugin-search (only for titles)
+    // note that fulltext search is not supported by @vuepress/plugin-search (only for titles)
     search: {
       maxSuggestions: 20,
       locales: {
@@ -71,9 +71,10 @@ export default hopeTheme({
         // generate "New in {version}" badges
         {
           matcher: /^\(New in .*\)$/,
-          replacer: ({ tag, attrs, content }) => {
-            if (tag === "em")
-              return { tag: "Badge", attrs: { type: "tip" }, content: content.substring(1, content.length - 1) }
+          replacer: ({ tag, content }) => {
+            if (tag === "em") {
+                return {tag: "Badge", attrs: {type: "tip"}, content: content.substring(1, content.length - 1)}
+            }
           }
         }
       ]
