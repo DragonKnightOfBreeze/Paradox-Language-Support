@@ -106,6 +106,7 @@ fun ParadoxScriptExpressionElement.intValue(valid: Boolean = false): Int? {
     return when (resolved) {
         is ParadoxScriptPropertyKey -> resolved.value.toIntOrNull()
         is ParadoxScriptInt -> resolved.intValue
+        is ParadoxScriptFloat -> resolved.floatValue.toInt()
         is ParadoxScriptString -> resolved.value.toIntOrNull()
         else -> null
     }
@@ -116,20 +117,9 @@ fun ParadoxScriptExpressionElement.floatValue(valid: Boolean = false): Float? {
     val resolved = this.resolved() ?: return null
     return when (resolved) {
         is ParadoxScriptPropertyKey -> resolved.value.toFloatOrNull()
+        is ParadoxScriptInt -> resolved.intValue.toFloat()
         is ParadoxScriptFloat -> resolved.floatValue
         is ParadoxScriptString -> resolved.value.toFloatOrNull()
-        else -> null
-    }
-}
-
-fun ParadoxScriptExpressionElement.stringText(valid: Boolean = false): String? {
-    if (valid && !this.isValidExpression()) return null
-    val resolved = this.resolved() ?: return null
-    return when (resolved) {
-        is ParadoxScriptPropertyKey -> resolved.text
-        is ParadoxScriptString -> resolved.text
-        is ParadoxScriptInt -> resolved.value
-        is ParadoxScriptFloat -> resolved.value
         else -> null
     }
 }
@@ -158,6 +148,18 @@ fun ParadoxScriptExpressionElement.resolved(): ParadoxScriptExpressionElement? {
     return when (this) {
         is ParadoxScriptScriptedVariableReference -> this.referenceValue
         else -> this
+    }
+}
+
+fun ParadoxScriptExpressionElement.stringText(valid: Boolean = false): String? {
+    if (valid && !this.isValidExpression()) return null
+    val resolved = this.resolved() ?: return null
+    return when (resolved) {
+        is ParadoxScriptPropertyKey -> resolved.text
+        is ParadoxScriptString -> resolved.text
+        is ParadoxScriptInt -> resolved.value
+        is ParadoxScriptFloat -> resolved.value
+        else -> null
     }
 }
 

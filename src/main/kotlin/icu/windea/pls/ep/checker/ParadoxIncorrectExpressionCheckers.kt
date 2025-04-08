@@ -20,16 +20,18 @@ import icu.windea.pls.script.psi.*
 class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         val configExpression = config.expression
-        if (config.expression.type != CwtDataTypes.Int) return
+        if (configExpression.type != CwtDataTypes.Int) return //for int only
         val expression = element.expression ?: return
-        val (min, max) = configExpression.extraValue<Tuple2<Int?, Int?>>() ?: return
-        val min0 = min ?: Int.MIN_VALUE
-        val max0 = max ?: Int.MAX_VALUE
-        val value = element.intValue() ?: return
-        if (value !in min0..max0) {
-            val min1 = min?.toString() ?: "-inf"
-            val max1 = max?.toString() ?: "inf"
-            holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.range", expression, min1, max1, value))
+        val (min0, max0) = configExpression.extraValue<Tuple2<Int?, Int?>>() ?: return
+        val min = min0 ?: Int.MIN_VALUE
+        val max = max0 ?: Int.MAX_VALUE
+        val resolved = element.resolved() ?: return
+        val value = resolved.intValue() ?: return
+        if (value !in min..max) {
+            val min1 = min0?.toString() ?: "-inf"
+            val max1 = max0?.toString() ?: "inf"
+            val value1 = resolved.value
+            holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.range", expression, min1, max1, value1))
         }
     }
 }
@@ -37,16 +39,18 @@ class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
 class ParadoxRangedFloatChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         val configExpression = config.expression
-        if (config.expression.type != CwtDataTypes.Float) return
+        if (configExpression.type != CwtDataTypes.Int && configExpression.type != CwtDataTypes.Float) return //for int and float
         val expression = element.expression ?: return
-        val (min, max) = configExpression.extraValue<Tuple2<Float?, Float?>>() ?: return
-        val min0 = min ?: Float.MIN_VALUE
-        val max0 = max ?: Float.MAX_VALUE
-        val value = element.floatValue() ?: return
-        if (value !in min0..max0) {
-            val min1 = min?.toString() ?: "-inf"
-            val max1 = max?.toString() ?: "inf"
-            holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.range", expression, min1, max1, value))
+        val (min0, max0) = configExpression.extraValue<Tuple2<Float?, Float?>>() ?: return
+        val min = min0 ?: Float.MIN_VALUE
+        val max = max0 ?: Float.MAX_VALUE
+        val resolved = element.resolved() ?: return
+        val value = resolved.floatValue() ?: return
+        if (value !in min..max) {
+            val min1 = min0?.toString() ?: "-inf"
+            val max1 = max0?.toString() ?: "inf"
+            val value1 = resolved.value
+            holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.range", expression, min1, max1, value1))
         }
     }
 }
