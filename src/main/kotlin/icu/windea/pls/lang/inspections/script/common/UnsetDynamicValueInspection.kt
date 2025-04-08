@@ -50,7 +50,7 @@ class UnsetDynamicValueInspection : LocalInspectionTool() {
                 val references = element.references
                 for (reference in references) {
                     ProgressManager.checkCanceled()
-                    if (!reference.canResolve(ParadoxResolveConstraint.DynamicValue)) continue
+                    if (!ParadoxResolveConstraint.DynamicValue.canResolve(reference)) continue
                     val resolved = reference.resolveFirst()
                     if (resolved !is ParadoxDynamicValueElement) continue
                     if (resolved.readWriteAccess != Access.Read) continue

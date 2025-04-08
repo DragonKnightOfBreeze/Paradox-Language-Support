@@ -148,23 +148,16 @@ class CoreCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
     )
 }
 
-class ConstantCwtDataExpressionResolver : CwtDataExpressionResolver, CwtConfigPatternAware {
-    private val excludeCharacters = ":.@[]<>".toCharArray()
+abstract class PatternAwareCwtDataExpressionResolver: CwtDataExpressionResolver
 
-    override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
-        if (expressionString.any { c -> c in excludeCharacters }) return null
-        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Constant, expressionString)
-    }
-}
-
-class TemplateExpressionCwtDataExpressionResolver : CwtDataExpressionResolver, CwtConfigPatternAware {
+class TemplateExpressionCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
     override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
         if (CwtTemplateExpression.resolve(expressionString).expressionString.isEmpty()) return null
         return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.TemplateExpression)
     }
 }
 
-class AntExpressionCwtDataExpressionResolver : CwtDataExpressionResolver, CwtConfigPatternAware {
+class AntExpressionCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
     private val prefix = "ant:"
     private val prefixIgnoreCase = "ant.i:"
 
@@ -179,7 +172,7 @@ class AntExpressionCwtDataExpressionResolver : CwtDataExpressionResolver, CwtCon
     }
 }
 
-class RegexCwtDataExpressionResolver : CwtDataExpressionResolver, CwtConfigPatternAware {
+class RegexCwtDataExpressionResolver : PatternAwareCwtDataExpressionResolver() {
     private val prefix = "re:"
     private val prefixIgnoreCase = "re.i:"
 
@@ -191,5 +184,14 @@ class RegexCwtDataExpressionResolver : CwtDataExpressionResolver, CwtConfigPatte
             return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Regex, v.orNull(), true)
         }
         return null
+    }
+}
+
+class ConstantCwtDataExpressionResolver : CwtDataExpressionResolver {
+    private val excludeCharacters = ":.@[]<>".toCharArray()
+
+    override fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression? {
+        if (expressionString.any { c -> c in excludeCharacters }) return null
+        return CwtDataExpression.create(expressionString, isKey, CwtDataTypes.Constant, expressionString)
     }
 }

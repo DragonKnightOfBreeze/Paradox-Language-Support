@@ -43,7 +43,7 @@ interface CwtDataExpression : CwtExpression {
 
 private val cacheForKey = CacheBuilder.newBuilder().buildCache<String, CwtDataExpression> { doResolve(it, true) }
 private val cacheForValue = CacheBuilder.newBuilder().buildCache<String, CwtDataExpression> { doResolve(it, false) }
-private val cacheForTemplate = CacheBuilder.newBuilder().buildCache<String, CwtDataExpression> { doResolveConstant(it) }
+private val cacheForTemplate = CacheBuilder.newBuilder().buildCache<String, CwtDataExpression> { doResolveTemplate(it) }
 
 private fun getCache(isKey: Boolean) = if (isKey) cacheForKey else cacheForValue
 
@@ -60,7 +60,7 @@ private fun doResolve(expressionString: String, isKey: Boolean): CwtDataExpressi
     return CwtDataExpressionResolver.resolve(expressionString, isKey) ?: CwtDataExpressionImpl(expressionString, isKey, CwtDataTypes.Constant)
 }
 
-private fun doResolveConstant(expressionString: String): CwtDataExpression {
+private fun doResolveTemplate(expressionString: String): CwtDataExpression {
     return CwtDataExpressionResolver.resolveTemplate(expressionString) ?: CwtDataExpressionImpl(expressionString, false, CwtDataTypes.Constant)
 }
 

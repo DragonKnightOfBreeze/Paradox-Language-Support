@@ -19,7 +19,7 @@ interface CwtDataExpressionMerger {
         val EP_NAME = ExtensionPointName.create<CwtDataExpressionMerger>("icu.windea.pls.dataExpressionMerger")
 
         /**
-         * @see icu.windea.pls.ep.dataExpression.CwtDataExpressionMerger.merge
+         * @see CwtDataExpressionMerger.merge
          */
         fun merge(expression: CwtDataExpression, otherExpression: CwtDataExpression, configGroup: CwtConfigGroup): String? {
             if (expression == otherExpression) return expression.expressionString

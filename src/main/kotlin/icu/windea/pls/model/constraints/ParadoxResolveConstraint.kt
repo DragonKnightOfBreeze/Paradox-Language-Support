@@ -237,7 +237,3 @@ enum class ParadoxResolveConstraint {
 
     open fun canResolve(reference: PsiReference): Boolean = true
 }
-
-fun PsiElement.canResolveReference(constraint: ParadoxResolveConstraint) = constraint.canResolveReference(this)
-
-fun PsiReference.canResolve(constraint: ParadoxResolveConstraint) = constraint.canResolve(this)

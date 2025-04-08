@@ -49,7 +49,7 @@ class UnusedParameterInspection : LocalInspectionTool() {
                 val references = element.references
                 for (reference in references) {
                     ProgressManager.checkCanceled()
-                    if (!reference.canResolve(ParadoxResolveConstraint.Parameter)) continue
+                    if (!ParadoxResolveConstraint.Parameter.canResolve(reference)) continue
                     val resolved = reference.resolve()
                     if (resolved !is ParadoxParameterElement) continue
                     if (resolved.contextName.isParameterized()) continue //skip if context name is parameterized

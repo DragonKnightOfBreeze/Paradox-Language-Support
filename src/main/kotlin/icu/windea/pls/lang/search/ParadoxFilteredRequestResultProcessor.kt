@@ -14,10 +14,10 @@ class ParadoxFilteredRequestResultProcessor(
     }
 
     override fun acceptElement(element: PsiElement): Boolean {
-        return element.canResolveReference(constraint)
+        return constraint.canResolveReference(element)
     }
 
     override fun acceptReference(reference: PsiReference): Boolean {
-        return reference.canResolve(constraint)
+        return constraint.canResolve(reference)
     }
 }

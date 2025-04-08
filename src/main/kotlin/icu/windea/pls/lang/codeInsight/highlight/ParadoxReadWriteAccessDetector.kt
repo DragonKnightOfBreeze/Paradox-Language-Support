@@ -34,19 +34,19 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
     }
 
     override fun getReferenceAccess(referencedElement: PsiElement, reference: PsiReference): Access {
-        if (reference.canResolve(ParadoxResolveConstraint.Parameter)) {
+        if (ParadoxResolveConstraint.Parameter.canResolve(reference)) {
             val resolved = reference.resolveFirst()?.castOrNull<ParadoxParameterElement>()
             if (resolved != null) return resolved.readWriteAccess
         }
-        if (reference.canResolve(ParadoxResolveConstraint.LocalisationParameter)) {
+        if (ParadoxResolveConstraint.LocalisationParameter.canResolve(reference)) {
             val resolved = reference.resolveFirst()?.castOrNull<ParadoxLocalisationParameterElement>()
             if (resolved != null) return resolved.readWriteAccess
         }
-        if (reference.canResolve(ParadoxResolveConstraint.DynamicValue)) {
+        if (ParadoxResolveConstraint.DynamicValue.canResolve(reference)) {
             val resolved = reference.resolveFirst()?.castOrNull<ParadoxDynamicValueElement>()
             if (resolved != null) return resolved.readWriteAccess
         }
-        if (reference.canResolve(ParadoxResolveConstraint.ComplexEnumValue)) {
+        if (ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference)) {
             val resolved = reference.resolveFirst()?.castOrNull<ParadoxComplexEnumValueElement>()
             if (resolved != null) return resolved.readWriteAccess
         }
@@ -58,19 +58,19 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
         if (expression.language != ParadoxScriptLanguage && expression.language != ParadoxLocalisationLanguage) return Access.ReadWrite
         for (reference in expression.references) {
             ProgressManager.checkCanceled()
-            if (reference.canResolve(ParadoxResolveConstraint.Parameter)) {
+            if (ParadoxResolveConstraint.Parameter.canResolve(reference)) {
                 val resolved = reference.resolveFirst()?.castOrNull<ParadoxParameterElement>()
                 if (resolved != null) return resolved.readWriteAccess
             }
-            if (reference.canResolve(ParadoxResolveConstraint.LocalisationParameter)) {
+            if (ParadoxResolveConstraint.LocalisationParameter.canResolve(reference)) {
                 val resolved = reference.resolveFirst()?.castOrNull<ParadoxLocalisationParameterElement>()
                 if (resolved != null) return resolved.readWriteAccess
             }
-            if (reference.canResolve(ParadoxResolveConstraint.DynamicValue)) {
+            if (ParadoxResolveConstraint.DynamicValue.canResolve(reference)) {
                 val resolved = reference.resolveFirst()?.castOrNull<ParadoxDynamicValueElement>()
                 if (resolved != null) return resolved.readWriteAccess
             }
-            if (reference.canResolve(ParadoxResolveConstraint.ComplexEnumValue)) {
+            if (ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference)) {
                 val resolved = reference.resolveFirst()?.castOrNull<ParadoxComplexEnumValueElement>()
                 if (resolved != null) return resolved.readWriteAccess
             }

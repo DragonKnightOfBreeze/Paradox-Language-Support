@@ -43,7 +43,7 @@ object ParadoxPsiManager {
         }
         if (BitUtil.isSet(options, FindScriptedVariableOptions.BY_REFERENCE)) {
             val reference = file.findReferenceAt(offset) {
-                it.canResolve(ParadoxResolveConstraint.ScriptedVariable)
+                ParadoxResolveConstraint.ScriptedVariable.canResolve(it)
             }
             val resolved = reference?.resolve()?.castOrNull<ParadoxScriptScriptedVariable>()
             if (resolved != null) return resolved
@@ -69,7 +69,7 @@ object ParadoxPsiManager {
         }
         val expressionReference by lazy {
             file.findReferenceAt(offset) {
-                it.element is ParadoxScriptExpressionElement && it.canResolve(ParadoxResolveConstraint.Definition)
+                it.element is ParadoxScriptExpressionElement && ParadoxResolveConstraint.Definition.canResolve(it)
             }
         }
 
@@ -126,7 +126,7 @@ object ParadoxPsiManager {
         }
         if (BitUtil.isSet(options, FindLocalisationOptions.BY_REFERENCE)) {
             val reference = file.findReferenceAt(offset) {
-                it.canResolve(ParadoxResolveConstraint.Localisation)
+                ParadoxResolveConstraint.Localisation.canResolve(it)
             }
             val resolved = when {
                 reference == null -> null

@@ -111,10 +111,10 @@
 
     <dataExpressionResolver id="base" implementation="icu.windea.pls.ep.dataExpression.BaseCwtDataExpressionResolver"/>
     <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.dataExpression.CoreCwtDataExpressionResolver"/>
-    <dataExpressionResolver id="constant" implementation="icu.windea.pls.ep.dataExpression.ConstantCwtDataExpressionResolver" order="last"/>
     <dataExpressionResolver id="template" implementation="icu.windea.pls.ep.dataExpression.TemplateExpressionCwtDataExpressionResolver" order="last, after constant"/>
     <dataExpressionResolver id="ant" implementation="icu.windea.pls.ep.dataExpression.AntExpressionCwtDataExpressionResolver"/>
     <dataExpressionResolver id="re" implementation="icu.windea.pls.ep.dataExpression.RegexCwtDataExpressionResolver"/>
+    <dataExpressionResolver id="constant" implementation="icu.windea.pls.ep.dataExpression.ConstantCwtDataExpressionResolver" order="last"/>
 
     <dataExpressionMerger implementation="icu.windea.pls.ep.dataExpression.DefaultCwtDataExpressionMerger"/>
 

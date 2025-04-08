@@ -85,9 +85,9 @@ class ParadoxCalleeHierarchyTreeStructure(
                 if (references.isEmpty()) return
                 for (reference in references) {
                     var canResolve = false
-                    canResolve = canResolve || (reference.canResolve(ParadoxResolveConstraint.ScriptedVariable) && settings.hierarchy.showScriptedVariablesInCallHierarchy)
-                    canResolve = canResolve || (reference.canResolve(ParadoxResolveConstraint.Definition) && settings.hierarchy.showDefinitionsInCallHierarchy)
-                    canResolve = canResolve || (reference.canResolve(ParadoxResolveConstraint.Localisation) && settings.hierarchy.showLocalisationsInCallHierarchy)
+                    canResolve = canResolve || (ParadoxResolveConstraint.ScriptedVariable.canResolve(reference) && settings.hierarchy.showScriptedVariablesInCallHierarchy)
+                    canResolve = canResolve || (ParadoxResolveConstraint.Definition.canResolve(reference) && settings.hierarchy.showDefinitionsInCallHierarchy)
+                    canResolve = canResolve || (ParadoxResolveConstraint.Localisation.canResolve(reference) && settings.hierarchy.showLocalisationsInCallHierarchy)
                     if (!canResolve) continue
 
                     val resolved = reference.resolve()

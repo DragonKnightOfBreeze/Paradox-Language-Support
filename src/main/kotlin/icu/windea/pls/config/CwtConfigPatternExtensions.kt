@@ -4,14 +4,12 @@ import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.ep.dataExpression.*
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.util.*
 
 interface CwtConfigPatternAware
 
-private val patternResolvers by lazy { CwtDataExpressionResolver.EP_NAME.extensionList.filter { it is CwtConfigPatternAware } }
 private val patternMatchers by lazy { ParadoxScriptExpressionMatcher.EP_NAME.extensionList.filter { it is CwtConfigPatternAware } }
 
 /**
