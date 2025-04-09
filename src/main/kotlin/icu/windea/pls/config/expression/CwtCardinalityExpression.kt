@@ -33,11 +33,14 @@ interface CwtCardinalityExpression : CwtExpression {
     companion object Resolver {
         val EmptyExpression: CwtCardinalityExpression = doResolveEmpty()
 
-        fun resolve(expressionString: String): CwtCardinalityExpression = cache.get(expressionString)
+        fun resolve(expressionString: String): CwtCardinalityExpression {
+            if (expressionString.isEmpty()) return EmptyExpression
+            return cache.get(expressionString)
+        }
     }
 }
 
-//Implementations (cached & interned)
+//Implementations (cached & not interned)
 
 private val cache = CacheBuilder.newBuilder().buildCache<String, CwtCardinalityExpression> { doResolve(it) }
 
@@ -52,7 +55,7 @@ private fun doResolve(expressionString: String): CwtCardinalityExpression {
             val max = expressionString.substring(firstDotIndex + 2)
                 .let { if (it.equals("inf", true)) null else it.toIntOrNull() ?: 0 }
             val relaxMin = true
-            CwtCardinalityExpressionImpl(expressionString, min, max, relaxMin)
+            CwtCardinalityExpressionImpl(expressionString.intern(), min, max, relaxMin)
         }
         else -> {
             val firstDotIndex = expressionString.indexOf('.')
@@ -65,20 +68,21 @@ private fun doResolve(expressionString: String): CwtCardinalityExpression {
     }
 }
 
-private class CwtCardinalityExpressionImpl : CwtCardinalityExpression {
-    override val expressionString: String
-    override val min: Int
-    override val max: Int?
+private class CwtCardinalityExpressionImpl(
+    override val expressionString: String,
+    override val min: Int,
+    override val max: Int?,
     override val relaxMin: Boolean
-
-    constructor(expressionString: String, min: Int, max: Int?, relaxMin: Boolean) {
-        this.expressionString = expressionString.intern()
-        this.min = min
-        this.max = max
-        this.relaxMin = relaxMin
+) : CwtCardinalityExpression {
+    override fun equals(other: Any?): Boolean {
+        return this === other || other is CwtCardinalityExpression && expressionString == other.expressionString
     }
 
-    override fun equals(other: Any?) = this === other || other is CwtCardinalityExpression && expressionString == other.expressionString
-    override fun hashCode() = expressionString.hashCode()
-    override fun toString() = expressionString
+    override fun hashCode(): Int {
+        return expressionString.hashCode()
+    }
+
+    override fun toString(): String {
+        return expressionString
+    }
 }

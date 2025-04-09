@@ -68,11 +68,14 @@ interface CwtImageLocationExpression : CwtExpression {
     companion object Resolver {
         val EmptyExpression: CwtImageLocationExpression = doResolveEmpty()
 
-        fun resolve(expressionString: String): CwtImageLocationExpression = cache.get(expressionString)
+        fun resolve(expressionString: String): CwtImageLocationExpression {
+            if (expressionString.isEmpty()) return EmptyExpression
+            return cache.get(expressionString)
+        }
     }
 }
 
-//Implementations (cached & interned)
+//Implementations (cached & not interned)
 
 private val cache = CacheBuilder.newBuilder().buildCache<String, CwtImageLocationExpression> { doResolve(it) }
 
@@ -86,7 +89,7 @@ private fun doResolve(expressionString: String): CwtImageLocationExpression {
             CwtImageLocationExpressionImpl(expressionString, placeholder = placeholder)
         }
         else -> {
-            val propertyName = expressionString.substringBefore('|').intern()
+            val propertyName = expressionString.substringBefore('|')
             val framePropertyNames = expressionString.substringAfter('|', "").orNull()
                 ?.toCommaDelimitedStringList()
             CwtImageLocationExpressionImpl(expressionString, propertyName = propertyName, framePropertyNames = framePropertyNames)
@@ -94,19 +97,12 @@ private fun doResolve(expressionString: String): CwtImageLocationExpression {
     }
 }
 
-private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
-    override val expressionString: String
-    override val placeholder: String?
-    override val propertyName: String?
-    override val framePropertyNames: List<String>?
-
-    constructor(expressionString: String, placeholder: String? = null, propertyName: String? = null, framePropertyNames: List<String>? = null) {
-        this.expressionString = expressionString.intern()
-        this.placeholder = placeholder?.intern()
-        this.propertyName = propertyName?.intern()
-        this.framePropertyNames = framePropertyNames
-    }
-
+private class CwtImageLocationExpressionImpl(
+    override val expressionString: String,
+    override val placeholder: String? = null,
+    override val propertyName: String? = null,
+    override val framePropertyNames: List<String>? = null
+) : CwtImageLocationExpression {
     override fun resolvePlaceholder(name: String): String? {
         if (placeholder == null) return null
         return buildString { for (c in placeholder) if (c == '$') append(name) else append(c) }
@@ -305,5 +301,17 @@ private class CwtImageLocationExpressionImpl : CwtImageLocationExpression {
         } else {
             throw IllegalStateException() //不期望的结果
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return this === other || other is CwtImageLocationExpression && expressionString == other.expressionString
+    }
+
+    override fun hashCode(): Int {
+        return expressionString.hashCode()
+    }
+
+    override fun toString(): String {
+        return expressionString
     }
 }

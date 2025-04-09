@@ -81,7 +81,7 @@ val CwtTypeConfig.typeKeyPrefixConfig: CwtValueConfig? by createKey(CwtTypeConfi
     }
 }
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
     val configGroup = config.configGroup
@@ -113,10 +113,10 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
     for (prop in props) {
         when (prop.key) {
             "base_type" -> baseType = prop.stringValue
-            "path_pattern" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { pathPatterns += it }
-            "path" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { paths += it }
+            "path_pattern" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { pathPatterns += it.intern() }
+            "path" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { paths += it.intern() }
             "path_file" -> pathFile = prop.stringValue ?: continue
-            "path_extension" -> pathExtension = prop.stringValue?.removePrefix(".") ?: continue
+            "path_extension" -> pathExtension = prop.stringValue?.removePrefix(".")?.intern() ?: continue
             "path_strict" -> pathStrict = prop.booleanValue ?: continue
             "name_field" -> nameField = prop.stringValue ?: continue
             "type_key_prefix" -> typeKeyPrefix = prop.stringValue ?: continue
@@ -188,11 +188,11 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
         }
     }
 
-    val pathPatterns1 = pathPatterns.toOptimizedArray()
-    val paths1 = paths.toOptimizedArray()
     return CwtTypeConfigImpl(
-        config, name, baseType, pathPatterns1, paths1, pathStrict, pathFile, pathExtension, nameField, typeKeyPrefix,
-        nameFromFile, typePerFile, unique, severity, skipRootKey, typeKeyFilter, typeKeyRegex, startsWith,
+        config, name, baseType,
+        pathPatterns.toOptimizedArray(), paths.toOptimizedArray(), pathStrict, pathFile, pathExtension,
+        nameField, typeKeyPrefix, nameFromFile, typePerFile, unique, severity,
+        skipRootKey, typeKeyFilter, typeKeyRegex, startsWith,
         graphRelatedTypes?.optimized(), subtypes.optimized(), localisation, images
     )
 }

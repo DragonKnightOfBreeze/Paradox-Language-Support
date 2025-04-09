@@ -18,7 +18,7 @@ interface CwtExtendedOnActionConfig : CwtDelegatedConfig<CwtMemberElement, CwtMe
     }
 }
 
-//Implementations
+//Implementations (not interned)
 
 private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedOnActionConfig? {
     val name = when (config) {

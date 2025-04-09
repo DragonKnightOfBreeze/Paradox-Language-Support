@@ -31,7 +31,7 @@ interface CwtModifierConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
     }
 }
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig, name: String): CwtModifierConfig? {
     //string | string[]

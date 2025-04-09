@@ -30,7 +30,7 @@ interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMemberElement, C
     }
 }
 
-//Implementations (interned)
+//Implementations (not interned)
 
 private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedInlineScriptConfig {
     val name = when (config) {

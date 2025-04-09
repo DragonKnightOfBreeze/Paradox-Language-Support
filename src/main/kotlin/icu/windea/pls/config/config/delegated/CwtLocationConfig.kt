@@ -22,7 +22,7 @@ interface CwtLocationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>
     }
 }
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig): CwtLocationConfig? {
     //default to optional

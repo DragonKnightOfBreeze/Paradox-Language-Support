@@ -13,9 +13,17 @@ private val logger = logger<CwtSchemaExpression>()
 sealed class CwtSchemaExpression(
     override val expressionString: String
 ) : CwtExpression {
-    override fun equals(other: Any?) = this === other || other is CwtSchemaExpression && expressionString == other.expressionString
-    override fun hashCode() = expressionString.hashCode()
-    override fun toString() = expressionString
+    override fun equals(other: Any?): Boolean {
+        return this === other || other is CwtSchemaExpression && expressionString == other.expressionString
+    }
+
+    override fun hashCode(): Int {
+        return expressionString.hashCode()
+    }
+
+    override fun toString(): String {
+        return expressionString
+    }
 
     class Constant(
         expressionString: String

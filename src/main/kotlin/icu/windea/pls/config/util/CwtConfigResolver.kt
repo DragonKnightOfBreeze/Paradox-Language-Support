@@ -42,8 +42,8 @@ object CwtConfigResolver {
             configGroup.project.isDefault -> emptyPointer()
             else -> propertyElement.createPointer(file).let { CwtPropertyPointer(it) }
         }
-        val key = propertyElement.name.intern() //intern to optimize memory
-        val value: String = valueElement.value.intern() //intern to optimize memory
+        val key = propertyElement.name
+        val value: String = valueElement.value
         val valueType = valueElement.type
         val separatorType = propertyElement.separatorType
         val configs = doGetConfigs(valueElement, file, fileConfig)
@@ -64,7 +64,7 @@ object CwtConfigResolver {
             configGroup.project.isDefault -> emptyPointer()
             else -> valueElement.createPointer(file)
         }
-        val value: String = valueElement.value.intern() //intern to optimize memory
+        val value: String = valueElement.value
         val valueType = valueElement.type
         val configs = doGetConfigs(valueElement, file, fileConfig)
         val (optionConfigs, documentation) = doGetOptionConfigsAndDocumentation(valueElement, file, fileConfig)
@@ -140,8 +140,8 @@ object CwtConfigResolver {
             return null
         }
 
-        val key = optionElement.name.intern() //intern to optimize memory
-        val value = optionValueElement.value.intern() //intern to optimize memory
+        val key = optionElement.name
+        val value = optionValueElement.value
         val valueType: CwtType = optionValueElement.type
         val separatorType = optionElement.separatorType
         val optionConfigs = doGetOptionConfigs(optionValueElement, file, fileConfig)
@@ -149,7 +149,7 @@ object CwtConfigResolver {
     }
 
     private fun resolveOptionValue(optionValueElement: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionValueConfig {
-        val value = optionValueElement.value.intern() //intern to optimize memory
+        val value = optionValueElement.value
         val valueType = optionValueElement.type
         val optionConfigs = doGetOptionConfigs(optionValueElement, file, fileConfig)
         return CwtOptionValueConfig.resolve(value, valueType, optionConfigs)

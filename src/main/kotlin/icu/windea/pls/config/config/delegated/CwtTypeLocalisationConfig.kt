@@ -23,13 +23,13 @@ interface CwtTypeLocalisationConfig : CwtDelegatedConfig<CwtProperty, CwtPropert
     }
 }
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig): CwtTypeLocalisationConfig? {
     val locationConfigs: MutableList<Pair<String?, CwtLocationConfig>> = mutableListOf()
     val props1 = config.properties ?: return null
     for (prop1 in props1) {
-        val subtypeName = prop1.key.removeSurroundingOrNull("subtype[", "]")
+        val subtypeName = prop1.key.removeSurroundingOrNull("subtype[", "]")?.intern()
         if (subtypeName != null) {
             val props2 = prop1.properties ?: continue
             for (prop2 in props2) {

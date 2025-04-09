@@ -32,7 +32,7 @@ interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     }
 }
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig): CwtAliasConfig? {
     val key = config.key
@@ -40,14 +40,17 @@ private fun doResolve(config: CwtPropertyConfig): CwtAliasConfig? {
         ?.split(':', limit = 2)?.takeIf { it.size == 2 }
         ?: return null
     val (name, subName) = tokens
-    return CwtAliasConfigImpl(config, name.intern(), subName.intern())
+    return CwtAliasConfigImpl(config, name, subName)
 }
 
 private class CwtAliasConfigImpl(
     override val config: CwtPropertyConfig,
-    override val name: String,
-    override val subName: String
+    name: String,
+    subName: String
 ) : UserDataHolderBase(), CwtAliasConfig {
+    override val name = name.intern() //intern to optimize memory
+    override val subName = subName.intern() //intern to optimize memory
+
     override val supportedScopes get() = config.supportedScopes
     override val outputScope get() = config.pushScope
 

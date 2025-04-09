@@ -22,7 +22,7 @@ interface CwtDynamicValueTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropert
     }
 }
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig): CwtDynamicValueTypeConfig? {
     val key = config.key

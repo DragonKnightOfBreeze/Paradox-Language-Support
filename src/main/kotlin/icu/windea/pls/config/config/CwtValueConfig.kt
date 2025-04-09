@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
@@ -84,15 +83,17 @@ class CwtPropertyPointer(
     val valuePointer: SmartPsiElementPointer<CwtValue>? = delegate.element?.propertyValue?.createPointer()
 }
 
-//Implementations
+//Implementations (interned)
 
 private abstract class CwtValueConfigImpl(
     override val pointer: SmartPsiElementPointer<out CwtValue>,
     override val configGroup: CwtConfigGroup,
-    override val value: String,
+    value: String,
     valueType: CwtType = CwtType.String,
     propertyConfig: CwtPropertyConfig? = null,
 ) : UserDataHolderBase(), CwtValueConfig {
+    override val value = value.intern() //intern to optimize memory
+
     private val valueTypeId = valueType.optimizeValue() //use enum id to optimize memory
     override val valueType get() = valueTypeId.deoptimizeValue<CwtType>()
 
@@ -196,9 +197,11 @@ private class CwtValueConfigDelegate2(
 //12 + 4 * 4 = 28 -> 32
 private class CwtValueConfigDelegateWith(
     delegate: CwtValueConfig,
-    override val value: String,
+    value: String,
     //configs should be always null here
-) : CwtValueConfigDelegate(delegate)
+) : CwtValueConfigDelegate(delegate) {
+    override val value = value.intern() //intern to optimize memory
+}
 
 //12 + 4 * 4 = 28 -> 32
 private class CwtValueConfigFromPropertyConfig(

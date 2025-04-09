@@ -35,7 +35,7 @@ interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> 
     }
 }
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig): CwtSubtypeConfig? {
     val name = config.key.removeSurroundingOrNull("subtype[", "]")?.orNull()?.intern() ?: return null

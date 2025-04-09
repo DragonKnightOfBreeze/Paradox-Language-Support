@@ -18,9 +18,9 @@ interface CwtExtendedScriptedVariableConfig : CwtDelegatedConfig<CwtMemberElemen
     }
 }
 
-//Implementations (interned)
+//Implementations (not interned)
 
-private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfig? {
+private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedScriptedVariableConfig {
     val name = when (config) {
         is CwtPropertyConfig -> config.key
         is CwtValueConfig -> config.value

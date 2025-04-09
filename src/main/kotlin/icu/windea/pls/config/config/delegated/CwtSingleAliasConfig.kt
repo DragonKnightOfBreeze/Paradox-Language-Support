@@ -17,7 +17,7 @@ interface CwtSingleAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     }
 }
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig): CwtSingleAliasConfig? {
     val key = config.key

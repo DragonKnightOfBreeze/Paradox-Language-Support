@@ -21,7 +21,7 @@ interface CwtLocalisationLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPrope
     }
 }
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig): CwtLocalisationLocaleConfig {
     val id = config.key

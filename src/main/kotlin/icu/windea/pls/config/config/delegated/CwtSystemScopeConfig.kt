@@ -16,7 +16,7 @@ interface CwtSystemScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
     }
 }
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig): CwtSystemScopeConfig {
     val id = config.key

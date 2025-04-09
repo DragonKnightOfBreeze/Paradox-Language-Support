@@ -18,21 +18,16 @@ interface CwtTemplateExpression : CwtExpression {
         val EmptyExpression: CwtTemplateExpression = doResolveEmpty()
 
         fun resolve(expressionString: String): CwtTemplateExpression {
-            if (!validate(expressionString)) return EmptyExpression
+            if (expressionString.isEmpty()) return EmptyExpression
+            if (expressionString.containsBlank()) return EmptyExpression //不允许包含空白（同时防止后续的处理逻辑出现意外错误）
             return cache.get(expressionString)
         }
     }
 }
 
-//Implementations (cached)
+//Implementations (cached & not interned)
 
 private val cache = CacheBuilder.newBuilder().buildCache<String, CwtTemplateExpression> { doResolve(it) }
-
-private fun validate(expressionString: String): Boolean {
-    if (expressionString.isEmpty()) return false
-    if (expressionString.containsBlank()) return false //不允许包含空白（同时防止后续的处理逻辑出现意外错误）
-    return true
-}
 
 private fun doResolveEmpty() = CwtTemplateExpressionImpl("", emptyList())
 
@@ -87,9 +82,17 @@ private class CwtTemplateExpressionImpl(
     override val expressionString: String,
     override val snippetExpressions: List<CwtDataExpression>
 ) : CwtTemplateExpression {
-    override val referenceExpressions: List<CwtDataExpression> = snippetExpressions.filter { it.type != CwtDataTypes.Constant }
+    override val referenceExpressions = snippetExpressions.filter { it.type != CwtDataTypes.Constant }
 
-    override fun equals(other: Any?) = this === other || other is CwtTemplateExpression && expressionString == other.expressionString
-    override fun hashCode() = expressionString.hashCode()
-    override fun toString() = expressionString
+    override fun equals(other: Any?): Boolean {
+        return this === other || other is CwtTemplateExpression && expressionString == other.expressionString
+    }
+
+    override fun hashCode(): Int {
+        return expressionString.hashCode()
+    }
+
+    override fun toString(): String {
+        return expressionString
+    }
 }

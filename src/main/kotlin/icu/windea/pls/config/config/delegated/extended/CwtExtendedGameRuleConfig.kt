@@ -18,7 +18,7 @@ interface CwtExtendedGameRuleConfig : CwtDelegatedConfig<CwtMemberElement, CwtMe
     }
 }
 
-//Implementations
+//Implementations (not interned)
 
 private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedGameRuleConfig {
     val name = when (config) {

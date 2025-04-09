@@ -62,11 +62,14 @@ interface CwtLocalisationLocationExpression : CwtExpression {
     companion object Resolver {
         val EmptyExpression: CwtLocalisationLocationExpression = doResolveEmpty()
 
-        fun resolve(expressionString: String): CwtLocalisationLocationExpression = cache.get(expressionString)
+        fun resolve(expressionString: String): CwtLocalisationLocationExpression {
+            if (expressionString.isEmpty()) return EmptyExpression
+            return cache.get(expressionString)
+        }
     }
 }
 
-//Implementations (cached & interned)
+//Implementations (cached & not interned)
 
 private val cache = CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) }
 
@@ -76,7 +79,7 @@ private fun doResolve(expressionString: String): CwtLocalisationLocationExpressi
     return when {
         expressionString.isEmpty() -> Resolver.EmptyExpression
         expressionString.contains('$') -> {
-            val placeholder = expressionString.substringBefore('|').intern()
+            val placeholder = expressionString.substringBefore('|')
             val upperCase = expressionString.substringAfter('|', "") == "u"
             CwtLocalisationLocationExpressionImpl(expressionString, placeholder = placeholder, upperCase = upperCase)
         }
@@ -87,19 +90,12 @@ private fun doResolve(expressionString: String): CwtLocalisationLocationExpressi
     }
 }
 
-private class CwtLocalisationLocationExpressionImpl : CwtLocalisationLocationExpression {
-    override val expressionString: String
-    override val placeholder: String?
-    override val propertyName: String?
-    override val upperCase: Boolean
-
-    constructor(expressionString: String, placeholder: String? = null, propertyName: String? = null, upperCase: Boolean = false) {
-        this.expressionString = expressionString.intern()
-        this.placeholder = placeholder?.intern()
-        this.propertyName = propertyName?.intern()
-        this.upperCase = upperCase
-    }
-
+private class CwtLocalisationLocationExpressionImpl(
+    override val expressionString: String,
+    override val placeholder: String? = null,
+    override val propertyName: String? = null,
+    override val upperCase: Boolean = false
+) : CwtLocalisationLocationExpression {
     override fun resolvePlaceholder(name: String): String? {
         if (placeholder == null) return null
         return buildString { for (c in placeholder) if (c == '$') append(name) else append(c) }
@@ -166,5 +162,16 @@ private class CwtLocalisationLocationExpressionImpl : CwtLocalisationLocationExp
             throw IllegalStateException() //不期望的结果
         }
     }
-}
 
+    override fun equals(other: Any?): Boolean {
+        return this === other || other is CwtLocalisationLocationExpression && expressionString == other.expressionString
+    }
+
+    override fun hashCode(): Int {
+        return expressionString.hashCode()
+    }
+
+    override fun toString(): String {
+        return expressionString
+    }
+}

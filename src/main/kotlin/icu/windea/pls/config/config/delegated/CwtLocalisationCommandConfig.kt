@@ -19,7 +19,7 @@ interface CwtLocalisationCommandConfig : CwtDelegatedConfig<CwtProperty, CwtProp
     }
 }
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig): CwtLocalisationCommandConfig {
     val name = config.key

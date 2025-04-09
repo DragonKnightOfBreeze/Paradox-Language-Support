@@ -23,7 +23,7 @@ interface CwtTypeImagesConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfi
     }
 }
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig): CwtTypeImagesConfig? {
     val locationConfigs: MutableList<Pair<String?, CwtLocationConfig>> = mutableListOf()

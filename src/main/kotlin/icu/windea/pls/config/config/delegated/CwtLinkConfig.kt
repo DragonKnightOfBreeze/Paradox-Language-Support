@@ -55,7 +55,7 @@ fun CwtLinkConfig.forValue() = type == "both" || type == "value"
 
 fun CwtLinkConfig.withPrefix() = prefix.isNotNullOrEmpty()
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig, forLocalisation: Boolean = false): CwtLinkConfig? {
     val name = config.key

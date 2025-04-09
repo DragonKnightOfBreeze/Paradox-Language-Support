@@ -77,16 +77,19 @@ fun CwtPropertyConfig.copy(
     return CwtPropertyConfig.resolve(pointer, this.configGroup, key, value, valueType, separatorType, configs, optionConfigs, documentation)
 }
 
-//Implementations
+//Implementations (interned)
 
 private abstract class CwtPropertyConfigImpl(
     override val pointer: SmartPsiElementPointer<out CwtProperty>,
     override val configGroup: CwtConfigGroup,
-    override val key: String,
-    override val value: String,
+    key: String,
+    value: String,
     valueType: CwtType = CwtType.String,
     separatorType: CwtSeparatorType = CwtSeparatorType.EQUAL,
 ) : UserDataHolderBase(), CwtPropertyConfig {
+    override val key = key.intern() //intern to optimize memory
+    override val value = value.intern() //intern to optimize memory
+
     private val valueTypeId = valueType.optimizeValue() //use enum id as field to optimize memory
     override val valueType get() = valueTypeId.deoptimizeValue<CwtType>()
 
@@ -207,10 +210,13 @@ private class CwtPropertyConfigDelegate2(
 //12 + 6 * 4 = 36 -> 40
 private class CwtPropertyConfigDelegateWith(
     delegate: CwtPropertyConfig,
-    override val key: String,
-    override val value: String,
+    key: String,
+    value: String,
     //configs should be always null here
-) : CwtPropertyConfigDelegate(delegate)
+) : CwtPropertyConfigDelegate(delegate) {
+    override val key = key.intern() //intern to optimize memory
+    override val value = value.intern() //intern to optimize memory
+}
 
 private fun CwtPropertyConfig.getValueConfig(): CwtValueConfig? {
     //this function should be enough fast because there are no pointers to be created

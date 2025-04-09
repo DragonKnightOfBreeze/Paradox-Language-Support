@@ -583,7 +583,7 @@ fun String.normalizePath(): String {
         }
     }
     val s = builder.toString()
-    return s.trimEnd('/').intern()
+    return s.trimEnd('/')
 }
 
 fun Path.exists(): Boolean {

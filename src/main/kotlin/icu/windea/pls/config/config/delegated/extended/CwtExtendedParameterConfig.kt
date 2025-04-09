@@ -42,7 +42,7 @@ interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMemberElement, CwtM
     }
 }
 
-//Implementations (interned)
+//Implementations (not interned)
 
 private fun doResolve(config: CwtMemberConfig<*>): CwtExtendedParameterConfig? {
     val name = when (config) {

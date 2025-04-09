@@ -20,7 +20,7 @@ interface CwtExtendedDynamicValueConfig : CwtDelegatedConfig<CwtMemberElement, C
     }
 }
 
-//Implementations (interned)
+//Implementations (not interned)
 
 private fun doResolve(config: CwtMemberConfig<*>, type: String): CwtExtendedDynamicValueConfig {
     val name = when (config) {

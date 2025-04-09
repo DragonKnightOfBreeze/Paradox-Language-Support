@@ -21,7 +21,7 @@ interface CwtDatabaseObjectTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPrope
     }
 }
 
-//Implementations
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig): CwtDatabaseObjectTypeConfig? {
     val name = config.key

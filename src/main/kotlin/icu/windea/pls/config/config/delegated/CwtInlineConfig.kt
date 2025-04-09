@@ -17,7 +17,7 @@ interface CwtInlineConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     }
 }
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig): CwtInlineConfig? {
     val key = config.key

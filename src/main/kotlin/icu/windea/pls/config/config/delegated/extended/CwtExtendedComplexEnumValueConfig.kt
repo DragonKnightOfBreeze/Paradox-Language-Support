@@ -20,7 +20,7 @@ interface CwtExtendedComplexEnumValueConfig : CwtDelegatedConfig<CwtMemberElemen
     }
 }
 
-//Implementations (interned)
+//Implementations (not interned)
 
 private fun doResolve(config: CwtMemberConfig<*>, type: String): CwtExtendedComplexEnumValueConfig {
     val name = when (config) {

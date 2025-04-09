@@ -43,7 +43,7 @@ val CwtDeclarationConfig.subtypesUsedInDeclaration: Set<String> by createKey(Cwt
     result.optimized()
 }
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig, name: String?): CwtDeclarationConfig? {
     val name0 = name ?: config.key.takeIf { it.isIdentifier() } ?: return null

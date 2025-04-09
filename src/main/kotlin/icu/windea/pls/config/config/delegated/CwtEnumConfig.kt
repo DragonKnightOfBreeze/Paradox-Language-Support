@@ -22,7 +22,7 @@ interface CwtEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     }
 }
 
-//Implementations (interned)
+//Implementations (interned if necessary)
 
 //TODO an enum value can be a template expression
 
