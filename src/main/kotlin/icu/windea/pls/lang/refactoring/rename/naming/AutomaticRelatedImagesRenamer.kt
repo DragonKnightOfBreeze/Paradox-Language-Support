@@ -4,6 +4,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.refactoring.rename.naming.*
 import icu.windea.pls.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
@@ -40,7 +41,7 @@ class AutomaticRelatedImagesRenamer(element: PsiElement, newName: String) : Auto
         val infos = definitionInfo.images.orNull() ?: return
         for (info in infos) {
             ProgressManager.checkCanceled()
-            val result = info.locationExpression.resolveAll(element, definitionInfo) ?: continue
+            val result = CwtLocationExpressionManager.resolveAll(info.locationExpression, element, definitionInfo) ?: continue
             val rename = info.locationExpression.resolvePlaceholder(newName) ?: continue
             val finalRename = if (rename.startsWith("GFX_")) rename else rename.substringAfterLast('/')
             result.elements.forEach { allRenames[it] = finalRename }

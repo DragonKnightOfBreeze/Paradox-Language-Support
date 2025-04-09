@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
@@ -34,7 +35,7 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : RelatedItemLineMarkerPr
         var isFirst = true
         for ((key, locationExpression) in imageInfos) {
             ProgressManager.checkCanceled()
-            val resolved = locationExpression.resolveAll(element, definitionInfo) ?: continue
+            val resolved = CwtLocationExpressionManager.resolveAll(locationExpression, element, definitionInfo) ?: continue
             if (resolved.elements.isNotEmpty()) {
                 targets.addAll(resolved.elements)
             }

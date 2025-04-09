@@ -7,6 +7,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.ep.data.*
@@ -86,7 +87,7 @@ object ParadoxImageResolver {
         //兼容definition不是sprite的情况
         val resolved = runReadAction {
             definitionInfo.primaryImages.firstNotNullOfOrNull {
-                it.locationExpression.resolve(definition, definitionInfo, frameInfo, toFile = true)
+                CwtLocationExpressionManager.resolve(it.locationExpression, definition, definitionInfo, frameInfo, toFile = true)
             }
         } ?: return null
         val resolvedFile = resolved.element?.castOrNull<PsiFile>() ?: return null

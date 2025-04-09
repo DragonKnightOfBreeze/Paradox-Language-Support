@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.inspections.script.common.*
@@ -65,7 +66,7 @@ data class ParadoxImageCodeInsightContext(
             for (info in definitionInfo.images) {
                 ProgressManager.checkCanceled()
                 val expression = info.locationExpression
-                val resolved = expression.resolve(definition, definitionInfo)
+                val resolved = CwtLocationExpressionManager.resolve(expression, definition, definitionInfo)
                 val type = when {
                     info.required -> ParadoxImageCodeInsightInfo.Type.Required
                     info.primary -> ParadoxImageCodeInsightInfo.Type.Primary

@@ -12,6 +12,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.ep.documentation.*
@@ -554,7 +555,7 @@ private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxS
     val sectionKeys = mutableSetOf<String>()
     for ((key, locationExpression, required) in imagesInfos) {
         if (sectionKeys.contains(key)) continue
-        val resolved = locationExpression.resolve(element, definitionInfo) ?: continue //发生意外，直接跳过
+        val resolved = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) ?: continue //发生意外，直接跳过
         if (resolved.message != null) {
             map.put(key, resolved.message)
         } else if (resolved.element != null) {

@@ -8,6 +8,7 @@ import com.intellij.openapi.project.*
 import com.intellij.pom.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
@@ -40,7 +41,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
                     ProgressManager.checkCanceled()
                     //need read action here
                     runReadAction {
-                        val resolved = locationExpression.resolveAll(definition, definitionInfo)
+                        val resolved = CwtLocationExpressionManager.resolveAll(locationExpression, definition, definitionInfo)
                         if (resolved != null && resolved.elements.isNotEmpty()) {
                             targets.addAll(resolved.elements)
                         }

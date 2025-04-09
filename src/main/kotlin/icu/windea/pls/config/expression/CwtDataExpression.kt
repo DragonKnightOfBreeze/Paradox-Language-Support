@@ -8,8 +8,8 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.dataExpression.*
 
 /**
+ * CWT数据表达式。
  * @property type 表达式类型，即CWT规则中的dataType。
- * @see CwtDataExpressionResolver
  */
 interface CwtDataExpression : CwtExpression, UserDataHolder {
     val isKey: Boolean
