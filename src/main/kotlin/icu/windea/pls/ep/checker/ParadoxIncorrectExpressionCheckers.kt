@@ -7,6 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
@@ -22,7 +23,7 @@ class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
         val configExpression = config.expression
         if (configExpression.type != CwtDataTypes.Int) return //for int only
         val expression = element.expression ?: return
-        val (min0, max0) = configExpression.extraValue<Tuple2<Int?, Int?>>() ?: return
+        val (min0, max0) = configExpression.intRange ?: return
         val min = min0 ?: Int.MIN_VALUE
         val max = max0 ?: Int.MAX_VALUE
         val resolved = element.resolved() ?: return
@@ -41,7 +42,7 @@ class ParadoxRangedFloatChecker : ParadoxIncorrectExpressionChecker {
         val configExpression = config.expression
         if (configExpression.type != CwtDataTypes.Int && configExpression.type != CwtDataTypes.Float) return //for int and float
         val expression = element.expression ?: return
-        val (min0, max0) = configExpression.extraValue<Tuple2<Float?, Float?>>() ?: return
+        val (min0, max0) = configExpression.floatRange ?: return
         val min = min0 ?: Float.MIN_VALUE
         val max = max0 ?: Float.MAX_VALUE
         val resolved = element.resolved() ?: return

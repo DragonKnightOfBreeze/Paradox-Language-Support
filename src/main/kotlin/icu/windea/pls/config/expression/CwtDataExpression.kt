@@ -1,7 +1,9 @@
 package icu.windea.pls.config.expression
 
 import com.google.common.cache.*
+import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.dataExpression.*
 
@@ -9,14 +11,9 @@ import icu.windea.pls.ep.dataExpression.*
  * @property type 表达式类型，即CWT规则中的dataType。
  * @see CwtDataExpressionResolver
  */
-interface CwtDataExpression : CwtExpression {
-    val type: CwtDataType
-    val value: String?
-    val extraValue: Any?
+interface CwtDataExpression : CwtExpression, UserDataHolder {
     val isKey: Boolean
-
-    @Suppress("UNCHECKED_CAST")
-    fun <T> extraValue() = extraValue?.let { it as T }
+    val type: CwtDataType
 
     companion object Resolver {
         val EmptyKeyExpression: CwtDataExpression = doResolveEmpty(true)
@@ -34,11 +31,18 @@ interface CwtDataExpression : CwtExpression {
             return cacheForTemplate.get(expressionString)
         }
 
-        fun create(expressionString: String, isKey: Boolean, type: CwtDataType, value: String? = null, extraValue: Any? = null): CwtDataExpression {
-            return doCreate(expressionString, isKey, type, value, extraValue)
+        fun create(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpression {
+            return doCreate(expressionString, isKey, type)
         }
     }
+
+    object Keys : KeyRegistry()
 }
+
+var CwtDataExpression.value: String? by createKey(CwtDataExpression.Keys)
+var CwtDataExpression.intRange: TypedTuple2<Int?>? by createKey(CwtDataExpression.Keys)
+var CwtDataExpression.floatRange: TypedTuple2<Float?>? by createKey(CwtDataExpression.Keys)
+var CwtDataExpression.ignoreCase: Boolean? by createKey(CwtDataExpression.Keys)
 
 //Implementations (cached & not interned)
 
@@ -46,29 +50,29 @@ private val cacheForKey = CacheBuilder.newBuilder().buildCache<String, CwtDataEx
 private val cacheForValue = CacheBuilder.newBuilder().buildCache<String, CwtDataExpression> { doResolve(it, false) }
 private val cacheForTemplate = CacheBuilder.newBuilder().buildCache<String, CwtDataExpression> { doResolveTemplate(it) }
 
-private fun doResolveEmpty(isKey: Boolean) = CwtDataExpressionImpl("", isKey, CwtDataTypes.Constant, "")
+private fun doResolveEmpty(isKey: Boolean) = CwtDataExpressionImpl("", isKey, CwtDataTypes.Constant).apply { value = "" }
 
-private fun doResolveBlock() = CwtDataExpressionImpl("{...}", true, CwtDataTypes.Block, "{...}")
+private fun doResolveBlock() = CwtDataExpressionImpl("{...}", true, CwtDataTypes.Block)
 
 private fun doResolve(expressionString: String, isKey: Boolean): CwtDataExpression {
-    return CwtDataExpressionResolver.resolve(expressionString, isKey) ?: doCreate(expressionString, isKey, CwtDataTypes.Constant)
+    return CwtDataExpressionResolver.resolve(expressionString, isKey)
+        ?: CwtDataExpressionImpl(expressionString, isKey, CwtDataTypes.Constant).apply { value = expressionString }
 }
 
 private fun doResolveTemplate(expressionString: String): CwtDataExpression {
-    return CwtDataExpressionResolver.resolveTemplate(expressionString) ?: doCreate(expressionString, false, CwtDataTypes.Constant)
+    return CwtDataExpressionResolver.resolveTemplate(expressionString)
+        ?: CwtDataExpressionImpl(expressionString, false, CwtDataTypes.Constant).apply { value = expressionString }
 }
 
-private fun doCreate(expressionString: String, isKey: Boolean, type: CwtDataType, value: String? = null, extraValue: Any? = null): CwtDataExpressionImpl {
-    return CwtDataExpressionImpl(expressionString, isKey, type, value, extraValue)
+private fun doCreate(expressionString: String, isKey: Boolean, type: CwtDataType): CwtDataExpressionImpl {
+    return CwtDataExpressionImpl(expressionString, isKey, type)
 }
 
 private class CwtDataExpressionImpl(
     override val expressionString: String,
     override val isKey: Boolean,
-    override val type: CwtDataType,
-    override val value: String? = null,
-    override val extraValue: Any? = null
-) : CwtDataExpression {
+    override val type: CwtDataType
+) : UserDataHolderBase(), CwtDataExpression {
     override fun equals(other: Any?): Boolean {
         return this === other || other is CwtDataExpression && expressionString == other.expressionString
     }

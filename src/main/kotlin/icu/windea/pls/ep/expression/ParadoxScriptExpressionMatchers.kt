@@ -55,7 +55,7 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             configExpression.type == CwtDataTypes.Int -> {
                 //quoted number (e.g., "1") -> ok according to vanilla game files
                 if (expression.type.isIntType() || ParadoxTypeManager.resolve(expression.value).isIntType()) {
-                    val (min, max) = configExpression.extraValue<Tuple2<Int?, Int?>>() ?: return Result.ExactMatch
+                    val (min, max) = configExpression.intRange ?: return Result.ExactMatch
                     return Result.LazySimpleMatch p@{
                         val value = expression.value.toIntOrNull() ?: return@p true
                         (min == null || min <= value) && (max == null || max >= value)
@@ -66,7 +66,7 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             configExpression.type == CwtDataTypes.Float -> {
                 //quoted number (e.g., "1") -> ok according to vanilla game files
                 if (expression.type.isFloatType() || ParadoxTypeManager.resolve(expression.value).isFloatType()) {
-                    val (min, max) = configExpression.extraValue<Tuple2<Float?, Float?>>() ?: return Result.ExactMatch
+                    val (min, max) = configExpression.floatRange ?: return Result.ExactMatch
                     return Result.LazySimpleMatch p@{
                         val value = expression.value.toFloatOrNull() ?: return@p true
                         (min == null || min <= value) && (max == null || max >= value)
@@ -335,7 +335,7 @@ class AntExpressionParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatch
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         if (configExpression.type == CwtDataTypes.AntExpression) {
             val pattern = configExpression.value ?: return Result.NotMatch
-            val ignoreCase = configExpression.extraValue?.castOrNull<Boolean>() ?: false
+            val ignoreCase = configExpression.ignoreCase ?: false
             val r = expression.value.matchesAntPattern(pattern, ignoreCase)
             return Result.of(r)
         }
@@ -347,7 +347,7 @@ class RegexParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher, CwtC
     override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         if (configExpression.type == CwtDataTypes.Regex) {
             val pattern = configExpression.value ?: return Result.NotMatch
-            val ignoreCase = configExpression.extraValue?.castOrNull<Boolean>() ?: false
+            val ignoreCase = configExpression.ignoreCase ?: false
             val r = expression.value.matchesRegex(pattern, ignoreCase)
             return Result.of(r)
         }
