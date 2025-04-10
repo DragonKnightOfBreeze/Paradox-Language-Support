@@ -4,6 +4,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.refactoring.rename.naming.*
 import icu.windea.pls.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.selector.*
@@ -41,7 +42,7 @@ class AutomaticRelatedLocalisationsRenamer(element: PsiElement, newName: String)
         val infos = definitionInfo.localisations.orNull() ?: return
         for (info in infos) {
             ProgressManager.checkCanceled()
-            val result = info.locationExpression.resolveAll(element, definitionInfo, selector(definitionInfo.project, element).localisation()) ?: continue
+            val result = CwtLocationExpressionManager.resolveAll(info.locationExpression, element, definitionInfo, selector(definitionInfo.project, element).localisation()) ?: continue
             val rename = info.locationExpression.resolvePlaceholder(newName) ?: continue
             result.elements.forEach { allRenames[it] = rename }
         }

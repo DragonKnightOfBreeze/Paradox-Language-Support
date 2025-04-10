@@ -522,7 +522,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: P
     for ((key, locationExpression, required) in localisationInfos) {
         if (sectionKeys.contains(key)) continue
         val selector = selector(project, element).localisation().contextSensitive().preferLocale(usedLocale)
-        val resolved = locationExpression.resolve(element, definitionInfo, selector) ?: continue //发生意外，直接跳过
+        val resolved = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo, selector) ?: continue //发生意外，直接跳过
         if (resolved.message != null) {
             map.put(key, resolved.message)
         } else if (resolved.element != null) {

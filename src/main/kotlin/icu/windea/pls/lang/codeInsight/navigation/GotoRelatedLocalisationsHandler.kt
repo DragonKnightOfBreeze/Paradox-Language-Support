@@ -8,6 +8,7 @@ import com.intellij.openapi.project.*
 import com.intellij.pom.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
@@ -43,7 +44,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     //need read action here
                     runReadAction {
                         val selector = selector(project, definition).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                        val resolved = locationExpression.resolveAll(definition, definitionInfo, selector)
+                        val resolved = CwtLocationExpressionManager.resolveAll(locationExpression, definition, definitionInfo, selector)
                         if (resolved != null && resolved.elements.isNotEmpty()) {
                             targets.addAll(resolved.elements)
                         }

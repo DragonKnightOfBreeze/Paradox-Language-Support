@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
@@ -39,7 +40,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
         for ((key, locationExpression) in localisationInfos) {
             ProgressManager.checkCanceled()
             val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            val resolved = locationExpression.resolveAll(element, definitionInfo, selector) ?: continue
+            val resolved = CwtLocationExpressionManager.resolveAll(locationExpression, element, definitionInfo, selector) ?: continue
             if (resolved.elements.isNotEmpty()) {
                 targets.addAll(resolved.elements)
             }

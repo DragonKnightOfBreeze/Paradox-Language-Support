@@ -5,6 +5,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.CwtLocalisationLocationExpression.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
@@ -34,18 +35,6 @@ interface CwtLocalisationLocationExpression : CwtExpression {
     val upperCase: Boolean
 
     fun resolvePlaceholder(name: String): String?
-
-    fun resolve(
-        definition: ParadoxScriptDefinitionElement,
-        definitionInfo: ParadoxDefinitionInfo,
-        selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
-    ): ResolveResult?
-
-    fun resolveAll(
-        definition: ParadoxScriptDefinitionElement,
-        definitionInfo: ParadoxDefinitionInfo,
-        selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
-    ): ResolveAllResult?
 
     data class ResolveResult(
         val name: String,
@@ -100,67 +89,6 @@ private class CwtLocalisationLocationExpressionImpl(
         if (placeholder == null) return null
         return buildString { for (c in placeholder) if (c == '$') append(name) else append(c) }
             .letIf(upperCase) { it.uppercase() }
-    }
-
-    override fun resolve(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveResult? {
-        if (placeholder != null) {
-            if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
-            val name = resolvePlaceholder(definitionInfo.name)!!
-            val resolved = ParadoxLocalisationSearch.search(name, selector).find()
-            return ResolveResult(name, resolved)
-        } else if (propertyName != null) {
-            val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
-            val propertyValue = property.propertyValue ?: return null
-            val config = ParadoxExpressionManager.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-            if (config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
-                return ResolveResult("", null, PlsBundle.message("dynamic"))
-            }
-            if (propertyValue !is ParadoxScriptString) {
-                return null
-            }
-            if (propertyValue.text.isParameterized()) {
-                return ResolveResult("", null, PlsBundle.message("parameterized"))
-            }
-            if (config.expression.type == CwtDataTypes.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
-                return ResolveResult("", null, PlsBundle.message("inlined"))
-            }
-            val name = propertyValue.value
-            val resolved = ParadoxLocalisationSearch.search(name, selector).find()
-            return ResolveResult(name, resolved)
-        } else {
-            throw IllegalStateException() //不期望的结果
-        }
-    }
-
-    override fun resolveAll(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): ResolveAllResult? {
-        if (placeholder != null) {
-            if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
-
-            val name = resolvePlaceholder(definitionInfo.name)!!
-            val resolved = ParadoxLocalisationSearch.search(name, selector).findAll()
-            return ResolveAllResult(name, resolved)
-        } else if (propertyName != null) {
-            val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
-            val propertyValue = property.propertyValue ?: return null
-            val config = ParadoxExpressionManager.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-            if (config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
-                return ResolveAllResult("", emptySet(), PlsBundle.message("dynamic"))
-            }
-            if (propertyValue !is ParadoxScriptString) {
-                return null
-            }
-            if (propertyValue.text.isParameterized()) {
-                return ResolveAllResult("", emptySet(), PlsBundle.message("parameterized"))
-            }
-            if (config.expression.type == CwtDataTypes.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
-                return ResolveAllResult("", emptySet(), PlsBundle.message("inlined"))
-            }
-            val name = propertyValue.value
-            val resolved = ParadoxLocalisationSearch.search(name, selector).findAll()
-            return ResolveAllResult(name, resolved)
-        } else {
-            throw IllegalStateException() //不期望的结果
-        }
     }
 
     override fun equals(other: Any?): Boolean {

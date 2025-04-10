@@ -11,10 +11,85 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 object CwtLocationExpressionManager {
+    fun resolve(
+        locationExpression: CwtLocalisationLocationExpression,
+        definition: ParadoxScriptDefinitionElement,
+        definitionInfo: ParadoxDefinitionInfo,
+        selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
+    ): CwtLocalisationLocationExpression.ResolveResult? {
+        val placeholder = locationExpression.placeholder
+        val propertyName = locationExpression.propertyName
+        if (placeholder != null) {
+            if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
+            val name = locationExpression.resolvePlaceholder(definitionInfo.name)!!
+            val resolved = ParadoxLocalisationSearch.search(name, selector).find()
+            return CwtLocalisationLocationExpression.ResolveResult(name, resolved)
+        } else if (propertyName != null) {
+            val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
+            val propertyValue = property.propertyValue ?: return null
+            val config = ParadoxExpressionManager.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
+            if (config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
+                return CwtLocalisationLocationExpression.ResolveResult("", null, PlsBundle.message("dynamic"))
+            }
+            if (propertyValue !is ParadoxScriptString) {
+                return null
+            }
+            if (propertyValue.text.isParameterized()) {
+                return CwtLocalisationLocationExpression.ResolveResult("", null, PlsBundle.message("parameterized"))
+            }
+            if (config.expression.type == CwtDataTypes.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
+                return CwtLocalisationLocationExpression.ResolveResult("", null, PlsBundle.message("inlined"))
+            }
+            val name = propertyValue.value
+            val resolved = ParadoxLocalisationSearch.search(name, selector).find()
+            return CwtLocalisationLocationExpression.ResolveResult(name, resolved)
+        } else {
+            throw IllegalStateException() //不期望的结果
+        }
+    }
+
+    fun resolveAll(
+        locationExpression: CwtLocalisationLocationExpression,
+        definition: ParadoxScriptDefinitionElement,
+        definitionInfo: ParadoxDefinitionInfo,
+        selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
+    ): CwtLocalisationLocationExpression.ResolveAllResult? {
+        val placeholder = locationExpression.placeholder
+        val propertyName = locationExpression.propertyName
+        if (placeholder != null) {
+            if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
+            val name = locationExpression.resolvePlaceholder(definitionInfo.name)!!
+            val resolved = ParadoxLocalisationSearch.search(name, selector).findAll()
+            return CwtLocalisationLocationExpression.ResolveAllResult(name, resolved)
+        } else if (propertyName != null) {
+            val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
+            val propertyValue = property.propertyValue ?: return null
+            val config = ParadoxExpressionManager.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
+            if (config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
+                return CwtLocalisationLocationExpression.ResolveAllResult("", emptySet(), PlsBundle.message("dynamic"))
+            }
+            if (propertyValue !is ParadoxScriptString) {
+                return null
+            }
+            if (propertyValue.text.isParameterized()) {
+                return CwtLocalisationLocationExpression.ResolveAllResult("", emptySet(), PlsBundle.message("parameterized"))
+            }
+            if (config.expression.type == CwtDataTypes.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
+                return CwtLocalisationLocationExpression.ResolveAllResult("", emptySet(), PlsBundle.message("inlined"))
+            }
+            val name = propertyValue.value
+            val resolved = ParadoxLocalisationSearch.search(name, selector).findAll()
+            return CwtLocalisationLocationExpression.ResolveAllResult(name, resolved)
+        } else {
+            throw IllegalStateException() //不期望的结果
+        }
+    }
+
     fun resolve(
         locationExpression: CwtImageLocationExpression,
         definition: ParadoxScriptDefinitionElement,
@@ -27,6 +102,7 @@ object CwtLocationExpressionManager {
         if (definitionInfo.type == "sprite") {
             newFrameInfo = newFrameInfo merge ParadoxSpriteManager.getFrameInfo(definition)
         }
+
         val placeholder = locationExpression.placeholder
         val propertyName = locationExpression.propertyName
         if (placeholder != null) {
@@ -124,6 +200,7 @@ object CwtLocationExpressionManager {
         if (definitionInfo.type == "sprite") {
             newFrameInfo = newFrameInfo merge ParadoxSpriteManager.getFrameInfo(definition)
         }
+
         val placeholder = locationExpression.placeholder
         val propertyName = locationExpression.propertyName
         if (placeholder != null) {

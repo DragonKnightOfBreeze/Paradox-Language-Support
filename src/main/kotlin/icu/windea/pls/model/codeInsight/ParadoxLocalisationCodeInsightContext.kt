@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.inspections.script.common.*
@@ -79,7 +80,7 @@ data class ParadoxLocalisationCodeInsightContext(
                 for (locale in locales) {
                     ProgressManager.checkCanceled()
                     val selector = selector(project, definition).localisation().locale(locale) //use file as context
-                    val resolved = expression.resolve(definition, definitionInfo, selector)
+                    val resolved = CwtLocationExpressionManager.resolve(expression, definition, definitionInfo, selector)
                     val type = when {
                         info.required -> ParadoxLocalisationCodeInsightInfo.Type.Required
                         info.primary -> ParadoxLocalisationCodeInsightInfo.Type.Primary
