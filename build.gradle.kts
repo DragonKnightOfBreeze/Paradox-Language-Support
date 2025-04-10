@@ -77,6 +77,8 @@ dependencies {
         //bundledPlugins("com.intellij.java")
         //bundledPlugins("org.jetbrains.kotlin")
         //bundledPlugins("org.intellij.plugins.markdown")
+        //bundledPlugins("JavaScript")
+        //bundledPlugins("tslint")
 
         //TranslationPlugin - https://github.com/YiiGuxing/TranslationPlugin
         plugin("cn.yiiguxing.plugin.translate:3.6.8")

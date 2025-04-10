@@ -6,6 +6,10 @@
 * [ ] 提供对**魔法注释**的初步支持，可以用来从指定的源数据生成脚本片段 / Provides initial support for **Magic Comments**, which can be used to generate script snippet from specified source data
 * [ ] 允许为同一个模组配置多个模组依赖列表 / Allows to configure multiple mod dependency lists for the same mod
 
+## 1.3.33
+
+* [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
+
 ## 1.3.32
 
 * [X] #123 [CK3] Supports `type_key_prefix` in cwt configs, which is currently only used in ck3's `scripted_effects.cwt`
