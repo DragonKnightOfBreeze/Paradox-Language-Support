@@ -3,6 +3,7 @@ package icu.windea.pls.ep.modifier
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
