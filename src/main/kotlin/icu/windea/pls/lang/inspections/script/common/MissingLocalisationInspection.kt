@@ -111,7 +111,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 
             private fun getMessage(codeInsightInfo: ParadoxLocalisationCodeInsightInfo): String? {
                 val locationExpression = codeInsightInfo.relatedLocalisationInfo?.locationExpression
-                val from = locationExpression?.propertyName?.let { PlsBundle.message("inspection.script.missingLocalisation.from.2", it) }
+                val from = locationExpression?.path?.let { PlsBundle.message("inspection.script.missingLocalisation.from.2", it) }
                     ?: codeInsightInfo.name?.let { PlsBundle.message("inspection.script.missingLocalisation.from.1", it) }
                     ?: return null
                 val localeId = codeInsightInfo.locale.id

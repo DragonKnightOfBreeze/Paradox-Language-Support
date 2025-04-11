@@ -303,8 +303,11 @@ fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
     if (path.isNotEmpty()) {
         val elementPath = ParadoxExpressionPath.resolve(path)
         for (subPath in elementPath.subPaths) {
-            if (subPath == "-") return null //TODO 暂不支持
-            current = current.findProperty(subPath, ignoreCase, conditional, inline) ?: return null
+            if (subPath == "-") {
+                return null //TODO 暂不支持
+            } else {
+                current = current.findProperty(subPath, ignoreCase, conditional, inline) ?: return null
+            }
         }
     } else {
         current = current.findProperty("", ignoreCase, conditional, inline) ?: return null

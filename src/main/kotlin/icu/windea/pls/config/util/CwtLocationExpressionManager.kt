@@ -23,29 +23,28 @@ object CwtLocationExpressionManager {
         selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
     ): CwtLocalisationLocationExpression.ResolveResult? {
         val placeholder = locationExpression.placeholder
-        val propertyName = locationExpression.propertyName
+        val path = locationExpression.path
         if (placeholder != null) {
             if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             val name = locationExpression.resolvePlaceholder(definitionInfo.name)!!
             val resolved = ParadoxLocalisationSearch.search(name, selector).find()
             return CwtLocalisationLocationExpression.ResolveResult(name, resolved)
-        } else if (propertyName != null) {
-            val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
-            val propertyValue = property.propertyValue ?: return null
-            val config = ParadoxExpressionManager.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
+        } else if (path != null) {
+            val valueElement = definition.findByPath(path, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
+            val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
             if (config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
                 return CwtLocalisationLocationExpression.ResolveResult("", null, PlsBundle.message("dynamic"))
             }
-            if (propertyValue !is ParadoxScriptString) {
+            if (valueElement !is ParadoxScriptString) {
                 return null
             }
-            if (propertyValue.text.isParameterized()) {
+            if (valueElement.text.isParameterized()) {
                 return CwtLocalisationLocationExpression.ResolveResult("", null, PlsBundle.message("parameterized"))
             }
-            if (config.expression.type == CwtDataTypes.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
+            if (config.expression.type == CwtDataTypes.InlineLocalisation && valueElement.text.isLeftQuoted()) {
                 return CwtLocalisationLocationExpression.ResolveResult("", null, PlsBundle.message("inlined"))
             }
-            val name = propertyValue.value
+            val name = valueElement.value
             val resolved = ParadoxLocalisationSearch.search(name, selector).find()
             return CwtLocalisationLocationExpression.ResolveResult(name, resolved)
         } else {
@@ -60,29 +59,28 @@ object CwtLocationExpressionManager {
         selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
     ): CwtLocalisationLocationExpression.ResolveAllResult? {
         val placeholder = locationExpression.placeholder
-        val propertyName = locationExpression.propertyName
+        val path = locationExpression.path
         if (placeholder != null) {
             if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             val name = locationExpression.resolvePlaceholder(definitionInfo.name)!!
             val resolved = ParadoxLocalisationSearch.search(name, selector).findAll()
             return CwtLocalisationLocationExpression.ResolveAllResult(name, resolved)
-        } else if (propertyName != null) {
-            val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
-            val propertyValue = property.propertyValue ?: return null
-            val config = ParadoxExpressionManager.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
+        } else if (path != null) {
+            val valueElement = definition.findByPath(path, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
+            val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
             if (config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
                 return CwtLocalisationLocationExpression.ResolveAllResult("", emptySet(), PlsBundle.message("dynamic"))
             }
-            if (propertyValue !is ParadoxScriptString) {
+            if (valueElement !is ParadoxScriptString) {
                 return null
             }
-            if (propertyValue.text.isParameterized()) {
+            if (valueElement.text.isParameterized()) {
                 return CwtLocalisationLocationExpression.ResolveAllResult("", emptySet(), PlsBundle.message("parameterized"))
             }
-            if (config.expression.type == CwtDataTypes.InlineLocalisation && propertyValue.text.isLeftQuoted()) {
+            if (config.expression.type == CwtDataTypes.InlineLocalisation && valueElement.text.isLeftQuoted()) {
                 return CwtLocalisationLocationExpression.ResolveAllResult("", emptySet(), PlsBundle.message("inlined"))
             }
-            val name = propertyValue.value
+            val name = valueElement.value
             val resolved = ParadoxLocalisationSearch.search(name, selector).findAll()
             return CwtLocalisationLocationExpression.ResolveAllResult(name, resolved)
         } else {
@@ -104,7 +102,7 @@ object CwtLocationExpressionManager {
         }
 
         val placeholder = locationExpression.placeholder
-        val propertyName = locationExpression.propertyName
+        val path = locationExpression.path
         if (placeholder != null) {
             if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             if (placeholder.startsWith("GFX_")) {
@@ -135,21 +133,19 @@ object CwtLocationExpressionManager {
             val selector = selector(project, definition).file().contextSensitive()
             val file = ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
             return CwtImageLocationExpression.ResolveResult(filePath, file, newFrameInfo)
-        } else if (propertyName != null) {
-            //propertyName可以为空字符串，这时直接查找定义的字符串类型的值（如果存在）
-            val property = definition.findProperty(propertyName, conditional = true, inline = true) ?: return null
-            val propertyValue = property.propertyValue ?: return null
-            val config = ParadoxExpressionManager.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
+        } else if (path != null) {
+            val valueElement = definition.findByPath(path, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
+            val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
             if (config.expression.type !in CwtDataTypeGroups.ImageLocationResolved) {
                 return CwtImageLocationExpression.ResolveResult("", null, null, PlsBundle.message("dynamic"))
             }
-            if (propertyValue !is ParadoxScriptString) {
+            if (valueElement !is ParadoxScriptString) {
                 return null
             }
-            if (propertyValue.text.isParameterized()) {
+            if (valueElement.text.isParameterized()) {
                 return CwtImageLocationExpression.ResolveResult("", null, null, PlsBundle.message("parameterized"))
             }
-            val resolved = ParadoxExpressionManager.resolveExpression(propertyValue, null, config, config.expression, false)
+            val resolved = ParadoxExpressionManager.resolveExpression(valueElement, null, config, config.expression, false)
             when {
                 //由filePath解析为图片文件
                 resolved is PsiFile && resolved.fileType == DdsFileType -> {
@@ -202,7 +198,7 @@ object CwtLocationExpressionManager {
         }
 
         val placeholder = locationExpression.placeholder
-        val propertyName = locationExpression.propertyName
+        val path = locationExpression.path
         if (placeholder != null) {
             if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             if (placeholder.startsWith("GFX_")) {
@@ -242,21 +238,19 @@ object CwtLocationExpressionManager {
             val files = ParadoxFilePathSearch.search(filePath, null, selector).findAll()
                 .mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
             return CwtImageLocationExpression.ResolveAllResult(filePath, files, newFrameInfo)
-        } else if (propertyName != null) {
-            //dynamic -> returns ("", null, 0)
-            val property = definition.findProperty(propertyName, inline = true) ?: return null
-            val propertyValue = property.propertyValue ?: return null
-            val config = ParadoxExpressionManager.getConfigs(propertyValue, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
+        } else if (path != null) {
+            val valueElement = definition.findByPath(path, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
+            val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
             if (config.expression.type !in CwtDataTypeGroups.ImageLocationResolved) {
                 return CwtImageLocationExpression.ResolveAllResult("", emptySet(), null, PlsBundle.message("dynamic"))
             }
-            if (propertyValue !is ParadoxScriptString) {
+            if (valueElement !is ParadoxScriptString) {
                 return null
             }
-            if (propertyValue.text.isParameterized()) {
+            if (valueElement.text.isParameterized()) {
                 return CwtImageLocationExpression.ResolveAllResult("", emptySet(), null, PlsBundle.message("parameterized"))
             }
-            val resolved = ParadoxExpressionManager.resolveExpression(propertyValue, null, config, config.expression, false)
+            val resolved = ParadoxExpressionManager.resolveExpression(valueElement, null, config, config.expression, false)
             when {
                 //由filePath解析为图片文件
                 resolved is PsiFile && resolved.fileType == DdsFileType -> {
