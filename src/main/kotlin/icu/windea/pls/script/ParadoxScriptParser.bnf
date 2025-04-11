@@ -85,14 +85,14 @@ property_key ::= property_key_part (<<processSnippet>> property_key_part) * {
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
     "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
-  ] 
+  ]
   methods=[
     getIcon getName getValue setValue getType getExpression getConfigExpression
     getReference getReferences toString
   ]
 }
 private property_key_part ::= PROPERTY_KEY_TOKEN | parameter | inline_parameter_condition
-private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN | QUESTION_EQUAL_SIGN
+private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN | SAFE_EQUAL_SIGN
 private property_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
 //value related
@@ -253,7 +253,7 @@ private inline_parameter_condition_item_part ::= PARAMETER_VALUE_TOKEN | paramet
 //only first inline math expression in a scripted effect / trigger is correctly recognized and evaluated
 //supported operators: + - * / %
 //also support unary operators "+1" "-1", abs operator "| 1 |" and parentheses "( 1 )"
-//inline math factor can also be scripted_variable and (if parameter it self is allowed) parameter 
+//inline math factor can also be scripted_variable and (if parameter it self is allowed) parameter
 inline_math ::= INLINE_MATH_START inline_math_expr INLINE_MATH_END {
   pin=1
   recoverWhile="#auto"

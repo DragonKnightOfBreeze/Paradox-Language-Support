@@ -9,6 +9,7 @@
 ## 1.3.33
 
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
+* [X] #136 [VIC3/CK3] Problems with ?= operator *
 
 ## 1.3.32
 

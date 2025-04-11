@@ -33,29 +33,29 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
             yybegin(defaultState);
         }
     }
-    
+
     private void enterState(AtomicInteger stateRef, int state) {
         if(stateRef.get() == -1) {
             stateRef.set(state);
         }
     }
-    
+
     private void exitState(AtomicInteger stateRef) {
         int state = stateRef.getAndSet(-1);
         if(state != -1) {
             if(stateRef == templateStateRef && state != IN_INLINE_MATH) {
                 state = stack.isEmpty() ? YYINITIAL : stack.peekLast();
-            } 
+            }
             yybegin(state);
         }
     }
-    
+
     private boolean exitStateForErrorToken(AtomicInteger stateRef) {
         int state = stateRef.getAndSet(-1);
         if(state != -1) {
             if(stateRef == templateStateRef && state != IN_INLINE_MATH) {
                 state = stack.isEmpty() ? YYINITIAL : stack.peekLast();
-            } 
+            }
             yybegin(state);
         }
         if(state != -1) {
@@ -65,7 +65,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
             return false;
         }
     }
-    
+
     private void recoverState(AtomicInteger stateRef) {
         int state = stateRef.get();
         if(state != -1) {
@@ -122,10 +122,10 @@ CHECK_SCRIPTED_VARIABLE_REFERENCE=[a-zA-Z_$\[][^@#={}\s\"]*
 
 CHECK_PROPERTY_SEPARTOR=[=<>!?]
 CHECK_PROPERTY_KEY=({WILDCARD_PROPERTY_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_TOKEN})\s*{CHECK_PROPERTY_SEPARTOR}
-WILDCARD_PROPERTY_KEY_TOKEN=[^@#={}\[\s\"][^#={}\s\"]*\"?
+WILDCARD_PROPERTY_KEY_TOKEN=[^@#=<>?{}\[\s\"][^#=<>?{}\s\"]*\"?
 WILDCARD_QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\r\n\\]|\\.)*\"?
-PROPERTY_KEY_TOKEN=[^@#$={}\[\]\s\"][^#$={}\[\]\s\"]*\"?
-QUOTED_PROPERTY_KEY_TOKEN=([^\"\r\n\\$]|\\.)+
+PROPERTY_KEY_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
+QUOTED_PROPERTY_KEY_TOKEN=\"([^\"$\\\r\n]|\\[\s\S])*\"?
 
 BOOLEAN_TOKEN=(yes)|(no)
 INT_NUMBER_TOKEN=[0-9]+ //leading zero is permitted
@@ -138,7 +138,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{WILDCARD_QUOTED_STRING_TOKEN}
 WILDCARD_STRING_TOKEN=[^@#=<>?{}\s\"][^#=<>?{}\s\"]*\"?
 WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\[\s\S])*\"?
 STRING_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
-QUOTED_STRING_TOKEN=([^\"\\$]|\\[\s\S])+
+QUOTED_STRING_TOKEN=\"([^\"$\\]|\\[\s\S])*\"?
 
 PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
 
@@ -246,7 +246,7 @@ PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
     "$" { exitState(parameterStateRef); return PARAMETER_END; }
-    {PARAMETER_VALUE_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return PARAMETER_VALUE_TOKEN; } 
+    {PARAMETER_VALUE_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return PARAMETER_VALUE_TOKEN; }
 }
 <IN_PARAMETER_DEFAULT_VALUE_END> {
     \s|"#" { yypushback(yylength()); exitState(parameterStateRef); }
@@ -283,11 +283,11 @@ PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
 
 <IN_INLINE_MATH> {
     "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
-    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }    
+    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "]" { exitState(stack, YYINITIAL); return INLINE_MATH_END; }
     "|" {
         if(leftAbsSign) {
-            leftAbsSign = false; 
+            leftAbsSign = false;
             return LABS_SIGN;
         } else {
             leftAbsSign = true;
@@ -337,7 +337,7 @@ PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
     ">" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GT_SIGN; }
     "<=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return LE_SIGN; }
     ">=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return GE_SIGN; }
-    "?=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return QUESTION_EQUAL_SIGN; }
+    "?=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return SAFE_EQUAL_SIGN; }
 }
 
 <YYINITIAL, IN_PROPERTY_OR_VALUE, IN_PROPERTY_VALUE, IN_PARAMETER_CONDITION_BODY> {
@@ -393,7 +393,7 @@ PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
 <IN_QUOTED_KEY> {
     {EOL} { exitState(templateStateRef); return WHITE_SPACE; }
     "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
-    \"|{QUOTED_PROPERTY_KEY_TOKEN}\"? {
+    {QUOTED_PROPERTY_KEY_TOKEN} {
         boolean rightQuoted = yycharat(yylength() -1) == '"';
         if(rightQuoted) {
             exitState(templateStateRef);
@@ -416,7 +416,7 @@ PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
     //quoted multiline string is allowed
     //{EOL} { exitState(templateStateRef); return WHITE_SPACE; }
     "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
-    \"|{QUOTED_STRING_TOKEN}\"? {
+    {QUOTED_STRING_TOKEN} {
         boolean rightQuoted = yycharat(yylength() -1) == '"';
         if(rightQuoted) {
             exitState(templateStateRef);

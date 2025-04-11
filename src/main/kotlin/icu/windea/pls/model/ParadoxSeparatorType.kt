@@ -9,7 +9,7 @@ enum class ParadoxSeparatorType(
     GT(">"),
     LE("<="),
     GE(">="),
-    QUESTION_EQUAL("?="), //same as "=", used in several games, see #86
+    SAFE_EQUAL("?="), //supported in ck3 and vic3, see #102
     ;
 
     override fun toString(): String {
@@ -26,7 +26,7 @@ enum class ParadoxSeparatorType(
                 ">" -> GT
                 "<=" -> LE
                 ">=" -> GE
-                "?=" -> QUESTION_EQUAL
+                "?=" -> SAFE_EQUAL
                 else -> null
             }
         }

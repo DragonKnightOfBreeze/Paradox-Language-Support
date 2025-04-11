@@ -45,7 +45,7 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
             yybegin(YYINITIAL);
             optionStack.clear();
         } else {
-            if(yystate() == EXPECT_NEXT) { 
+            if(yystate() == EXPECT_NEXT) {
                 yybegin(YYINITIAL);
                 optionStack.clear();
             } else if(yystate() == EXPECT_NEXT_OPTION) {
@@ -87,13 +87,15 @@ CHECK_SEPARATOR=(=)|(\!=)|(<>)
 CHECK_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?\s*{CHECK_SEPARATOR}
 CHECK_OPTION_KEY=({OPTION_KEY_TOKEN})?\s*{CHECK_SEPARATOR}
 
-PROPERTY_KEY_TOKEN=([^#={}\s\"]+\"?)|(\"([^\"\\\r\n]|\\.)*\"?)
-OPTION_KEY_TOKEN=([^#={}\s\"]+\"?)|(\"([^\"\\\r\n]|\\.)*\"?)
+PROPERTY_KEY_TOKEN=([^#={}\s\"]+\"?)|({QUOTED_KEY_TOKEN})
+OPTION_KEY_TOKEN=([^#={}\s\"]+\"?)|({QUOTED_KEY_TOKEN})
+QUOTED_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 BOOLEAN_TOKEN=(yes)|(no)
 INT_TOKEN=[+-]?[0-9]+ //leading zero is permitted
 FLOAT_TOKEN=[+-]?[0-9]*(\.[0-9]+) //leading zero is permitted
-STRING_TOKEN=([^#={}\s\"]+\"?)|(\"([^\"\\\r\n]|\\.)*\"?)
-TOP_STRING_TOKEN=([^#={}\s\"]([^#={}\r\n\"]*[^#={}\s\"])?\"?)|(\"([^\"\\\r\n]|\\.)*\"?) //top option value can contain whitespaces
+STRING_TOKEN=([^#={}\s\"]+\"?)|({QUOTED_STRING_TOKEN})
+TOP_STRING_TOKEN=([^#={}\s\"]([^#={}\r\n\"]*[^#={}\s\"])?\"?)|({QUOTED_STRING_TOKEN}) //top option value can contain whitespaces
+QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 
 %%
 
@@ -111,7 +113,7 @@ TOP_STRING_TOKEN=([^#={}\s\"]([^#={}\r\n\"]*[^#={}\s\"])?\"?)|(\"([^\"\\\r\n]|\\
     {DOCUMENTATION_COMMENT_START} { yybegin(IN_DOCUMENTATION); return DOCUMENTATION_START; }
     {OPTION_COMMENT_START} { yybegin(IN_OPTION); return OPTION_START; }
     {COMMENT} { return COMMENT; }
-} 
+}
 <IN_PROPERTY_KEY>{
     {BLANK} { processBlank(); return WHITE_SPACE; }
     "{" { enterState(stack, YYINITIAL); return LEFT_BRACE; }
