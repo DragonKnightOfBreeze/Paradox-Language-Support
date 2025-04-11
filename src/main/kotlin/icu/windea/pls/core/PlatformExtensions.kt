@@ -874,7 +874,7 @@ fun <E : PsiElement> E.createPointer(project: Project = this.project): SmartPsiE
     }
 }
 
-fun <E : PsiElement> E.createPointer(file: PsiFile?, project: Project = this.project): SmartPsiElementPointer<E> {
+fun <E : PsiElement> E.createPointer(file: PsiFile?, project: Project = file?.project ?: this.project): SmartPsiElementPointer<E> {
     return try {
         SmartPointerManager.getInstance(project).createSmartPsiElementPointer(this, file)
     } catch (e: IllegalArgumentException) {
