@@ -125,7 +125,7 @@ CHECK_PROPERTY_KEY=({WILDCARD_PROPERTY_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_
 WILDCARD_PROPERTY_KEY_TOKEN=[^@#=<>?{}\[\s\"][^#=<>?{}\s\"]*\"?
 WILDCARD_QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\r\n\\]|\\.)*\"?
 PROPERTY_KEY_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
-QUOTED_PROPERTY_KEY_TOKEN=\"([^\"$\\\r\n]|\\[\s\S])*\"?
+QUOTED_PROPERTY_KEY_TOKEN=([^\"$\\\r\n]|\\[\s\S])+ //without arounding quotes
 
 BOOLEAN_TOKEN=(yes)|(no)
 INT_NUMBER_TOKEN=[0-9]+ //leading zero is permitted
@@ -138,7 +138,7 @@ CHECK_STRING={WILDCARD_STRING_TOKEN}|{WILDCARD_QUOTED_STRING_TOKEN}
 WILDCARD_STRING_TOKEN=[^@#=<>?{}\s\"][^#=<>?{}\s\"]*\"?
 WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\[\s\S])*\"?
 STRING_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
-QUOTED_STRING_TOKEN=\"([^\"$\\]|\\[\s\S])*\"?
+QUOTED_STRING_TOKEN=([^\"$\\]|\\[\s\S])+ //without arounding quotes
 
 PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
 
@@ -393,7 +393,7 @@ PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
 <IN_QUOTED_KEY> {
     {EOL} { exitState(templateStateRef); return WHITE_SPACE; }
     "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
-    {QUOTED_PROPERTY_KEY_TOKEN} {
+    \"|{QUOTED_PROPERTY_KEY_TOKEN}\"? {
         boolean rightQuoted = yycharat(yylength() -1) == '"';
         if(rightQuoted) {
             exitState(templateStateRef);
@@ -416,7 +416,7 @@ PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
     //quoted multiline string is allowed
     //{EOL} { exitState(templateStateRef); return WHITE_SPACE; }
     "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
-    {QUOTED_STRING_TOKEN} {
+    \"|{QUOTED_STRING_TOKEN}\"? {
         boolean rightQuoted = yycharat(yylength() -1) == '"';
         if(rightQuoted) {
             exitState(templateStateRef);
