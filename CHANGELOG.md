@@ -5,10 +5,12 @@
 * [ ] 修复自IDEA 2024.3开始，无法通过按住Ctrl并点击参数（以及其他类似目标）直接查找使用的问题 / Fixed the bug that cannot find usages directly by holding down Ctrl and clicking on parameters (and other similar targets) since IDEA 2024.3
 * [ ] 提供对**魔法注释**的初步支持，可以用来从指定的源数据生成脚本片段 / Provides initial support for **Magic Comments**, which can be used to generate script snippet from specified source data
 * [ ] 允许为同一个模组配置多个模组依赖列表 / Allows to configure multiple mod dependency lists for the same mod
+* [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
+* [ ] #137 [VIC3/CK3] Support special localizations
 
 ## 1.3.33
 
-* [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
+* [X] Update CWT config files for VIC3, based on latest documentation / 更新VIC3的CWT规则文件，基于最新的文档
 * [X] #136 [VIC3/CK3] Problems with ?= operator
 * [X] Merge plugin code folding settings into plugin settings page and file / 将插件的代码折叠设置合并到插件的设置页面与文件
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
@@ -128,7 +130,7 @@
 
 ***
 
-* [X] Update CWT configs files to match Stellaris 3.14.1
+* [X] Update CWT config files to match Stellaris 3.14.1
 * [X] #93 Allow to use local scripted variables from usage locations in inline script files
 * [X] #95 When merge config expressions, support merge `alias_name[x]` and `alias_keys_field[x]`
 * [X] Other optimizations and bug fixes
@@ -169,7 +171,7 @@
 
 ***
 
-* [X] Update CWT configs files to match Stellaris 3.13.0
+* [X] Update CWT config files to match Stellaris 3.13.0
 * [X] Optimize performance and memory
 * [X] Other optimizations and bug fixes
 
@@ -310,7 +312,7 @@
 
 ***
 
-* [X] Update CWT configs files to match Stellaris 3.12.3
+* [X] Update CWT config files to match Stellaris 3.12.3
 * [X] New feature: Supports to change localisation locale in quick documentation (If available, open quick documentation, then click `Change Localisation Locale` in Right Click Menu or More Menus in the bottom-right corner)
 * [X] #78 Optimization: Support for specifying the scope context for dynamic values (e.g., `event_target`) via extended CWT configs - more perfect support (See reference documentation for details)
 * [X] Other optimizations and bug fixes
@@ -357,7 +359,7 @@
 
 ***
 
-* [X] Update CWT configs files to match Stellaris 3.12.2 (almost done)
+* [X] Update CWT config files to match Stellaris 3.12.2 (almost done)
 * [X] Optimization: Optimize code reformatting feature, fixes some bugs in details
 * [X] Optimization: Determine override order for targets (definitions, localisations, etc.) based on CWT configs files (Can be customized, see reference documentation for details)
 * [X] Optimization: For localisation file, it's unnecessary to escape double quotes in localisation text
