@@ -8,7 +8,9 @@ import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*
 
 /**
- * PLS设置。可以在设置页面`Settings > Languages & Frameworks > Paradox Language Support`中进行配置。
+ * PLS设置。
+ *
+ * 可以在插件的设置页面（`Settings > Languages & Frameworks > Paradox Language Support`）中进行配置。
  */
 @Service(Service.Level.APP)
 @State(name = "ParadoxSettings", storages = [Storage("paradox-language-support.xml")])
@@ -31,17 +33,19 @@ class ParadoxSettingsState : BaseState() {
     val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet(caseInsensitiveStringSet()).orEmpty() }
 
     @get:Property(surroundWithTag = false)
-    var documentation by property(DocumentationState())
+    val documentation by property(DocumentationState())
     @get:Property(surroundWithTag = false)
-    var completion by property(CompletionState())
+    val completion by property(CompletionState())
     @get:Property(surroundWithTag = false)
-    var generation by property(GenerationState())
+    val folding by property(FoldingState())
     @get:Property(surroundWithTag = false)
-    var inference by property(InferenceState())
+    val generation by property(GenerationState())
     @get:Property(surroundWithTag = false)
-    var hierarchy by property(HierarchyState())
+    val inference by property(InferenceState())
     @get:Property(surroundWithTag = false)
-    var others by property(OthersState())
+    val hierarchy by property(HierarchyState())
+    @get:Property(surroundWithTag = false)
+    val others by property(OthersState())
 
     /**
      * @property renderLineComment 是否需要渲染之前的单行注释文本到文档中。
@@ -101,6 +105,50 @@ class ParadoxSettingsState : BaseState() {
         class ClauseTemplateState : BaseState() {
             var maxMemberCountInOneLine by property(2)
         }
+    }
+
+    /**
+     * 注意：某些折叠规则总是启用，不可配置。
+     *
+     * @property comment 是否允许折叠多行注释。默认不启用。适用于脚本文件和本地化文件。
+     * @property commentByDefault 是否默认折叠多行注释。默认不启用。适用于脚本文件和本地化文件。
+     * @property parameterConditionBlocksByDefault 是否允许折叠参数条件表达式块。默认不启用。
+     * @property inlineMathBlocksByDefault 是否默认折叠内联数学表达式块。默认启用。
+     * @property localisationReferencesFully 是否允许折叠本地化引用。完全折叠。默认不启用。
+     * @property localisationReferencesFullyByDefault 是否默认折叠本地化引用。完全折叠。默认不启用。
+     * @property localisationIconsFully 是否允许折叠本地化图标。完全折叠。默认不启用。
+     * @property localisationIconsFullyByDefault 是否默认折叠本地化图标。完全折叠。默认不启用。
+     * @property localisationCommands 是否允许折叠本地化命令。默认不启用。
+     * @property localisationCommandsByDefault 是否默认折叠本地化命令。默认不启用。
+     * @property localisationConcepts 是否允许折叠本地化概念。默认不启用。
+     * @property localisationConceptsByDefault 是否默认折叠本地化概念。默认不启用。
+     * @property localisationConceptTexts 是否允许折叠本地化概念的自定义文本。默认不启用。
+     * @property localisationConceptTextsByDefault 是否默认折叠本地化概念的自定义文本。默认不启用。
+     * @property scriptedVariableReferences 是否允许折叠封装变量引用。折叠为解析后的值。默认启用。
+     * @property scriptedVariableReferencesByDefault 是否默认折叠封装变量引用。折叠为解析后的值。默认启用。
+     * @property variableOperationExpressions 是否允许折叠变量操作表达式。折叠为简化形式。默认启用。基于内置的规则文件。
+     * @property variableOperationExpressionsByDefault 是否默认折叠变量操作表达式。折叠为简化形式。默认启用。基于内置的规则文件。
+     */
+    @Tag("folding")
+    class FoldingState : BaseState() {
+        var comment by property(false)
+        var commentByDefault by property(false)
+        var parameterConditionBlocksByDefault by property(false)
+        var inlineMathBlocksByDefault by property(true)
+        var localisationReferencesFully by property(false)
+        var localisationReferencesFullyByDefault by property(false)
+        var localisationIconsFully by property(false)
+        var localisationIconsFullyByDefault by property(false)
+        var localisationCommands by property(false)
+        var localisationCommandsByDefault by property(false)
+        var localisationConcepts by property(false)
+        var localisationConceptsByDefault by property(false)
+        var localisationConceptTexts by property(false)
+        var localisationConceptTextsByDefault by property(false)
+        var scriptedVariableReferences by property(true)
+        var scriptedVariableReferencesByDefault by property(true)
+        var variableOperationExpressions by property(true)
+        var variableOperationExpressionsByDefault by property(true)
     }
 
     /**

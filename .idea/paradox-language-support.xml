@@ -90,6 +90,20 @@
       <entry key="diplomatic" value="true" />
     </type>
   </component>
+  <component name="ParadoxDiagramSettings.Stellaris.TechTree">
+    <area>
+      <entry key="physics" value="true" />
+      <entry key="society" value="true" />
+      <entry key="engineering" value="true" />
+    </area>
+    <type>
+      <entry key="start" value="true" />
+      <entry key="rare" value="true" />
+      <entry key="dangerous" value="true" />
+      <entry key="insight" value="true" />
+      <entry key="repeatable" value="true" />
+    </type>
+  </component>
   <component name="ParadoxDiagramSettings.Stellaris.TechnologyTree">
     <area>
       <entry key="physics" value="true" />

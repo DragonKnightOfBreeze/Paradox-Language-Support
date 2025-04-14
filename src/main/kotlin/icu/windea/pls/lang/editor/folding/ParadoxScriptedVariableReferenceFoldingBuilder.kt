@@ -29,11 +29,11 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
     }
 
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
-        return ParadoxFoldingSettings.getInstance().scriptedVariableReferences
+        return getSettings().folding.scriptedVariableReferencesByDefault
     }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        if(!ParadoxFoldingSettings.getInstance().scriptedVariableReferencesEnabled) return FoldingDescriptor.EMPTY_ARRAY
+        if(!getSettings().folding.scriptedVariableReferences) return FoldingDescriptor.EMPTY_ARRAY
 
         if (quick) return FoldingDescriptor.EMPTY_ARRAY
         if (!root.language.isParadoxLanguage()) return FoldingDescriptor.EMPTY_ARRAY

@@ -12,7 +12,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.editor.folding.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.ui.locale.*
@@ -26,7 +25,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
     @Suppress("DialogTitleCapitalization")
     override fun createPanel(): DialogPanel {
         val settings = getSettings()
-        val foldingSettings = ParadoxFoldingSettings.getInstance()
         return panel {
             //general
             group(PlsBundle.message("settings.general")) {
@@ -201,123 +199,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showGeneratedModifiers.tooltip") }
                 }
             }
-            //folding
-            collapsibleGroup(PlsBundle.message("settings.folding")) {
-                //commentEnabled
-                lateinit var commentEnabledCb: JBCheckBox
-                row {
-                    checkBox(PlsBundle.message("settings.folding.commentEnabled"))
-                        .bindSelected(foldingSettings::commentEnabled)
-                        .applyToComponent { commentEnabledCb = this }
-                }
-                //comment
-                row {
-                    checkBox(PlsBundle.message("settings.folding.comment"))
-                        .bindSelected(foldingSettings::comment)
-                        .enabledIf(commentEnabledCb.selected)
-                }
-                //parameterConditionBlocks
-                row {
-                    checkBox(PlsBundle.message("settings.folding.parameterConditionBlocks"))
-                        .bindSelected(foldingSettings::parameterConditionBlocks)
-                }
-                //inlineMathBlocks
-                row {
-                    checkBox(PlsBundle.message("settings.folding.inlineMathBlocks"))
-                        .bindSelected(foldingSettings::inlineMathBlocks)
-                }
-                //localisationReferencesFullyEnabled
-                lateinit var localisationReferencesFullyEnabledCb: JBCheckBox
-                row {
-                    checkBox(PlsBundle.message("settings.folding.localisationReferencesFullyEnabled"))
-                        .bindSelected(foldingSettings::localisationReferencesFullyEnabled)
-                        .applyToComponent { localisationReferencesFullyEnabledCb = this }
-                }
-                //localisationReferencesFully
-                row {
-                    checkBox(PlsBundle.message("settings.folding.localisationReferencesFully"))
-                        .bindSelected(foldingSettings::localisationReferencesFully)
-                        .enabledIf(localisationReferencesFullyEnabledCb.selected)
-                }
-                //localisationIconsFullyEnabled
-                lateinit var localisationIconsFullyEnabledCb: JBCheckBox
-                row {
-                    checkBox(PlsBundle.message("settings.folding.localisationIconsFullyEnabled"))
-                        .bindSelected(foldingSettings::localisationIconsFullyEnabled)
-                        .applyToComponent { localisationIconsFullyEnabledCb = this }
-                }
-                //localisationIconsFully
-                row {
-                    checkBox(PlsBundle.message("settings.folding.localisationIconsFully"))
-                        .bindSelected(foldingSettings::localisationIconsFully)
-                        .enabledIf(localisationIconsFullyEnabledCb.selected)
-                }
-                //localisationCommandsEnabled
-                lateinit var localisationCommandsEnabledCb: JBCheckBox
-                row {
-                    checkBox(PlsBundle.message("settings.folding.localisationCommandsEnabled"))
-                        .bindSelected(foldingSettings::localisationCommandsEnabled)
-                        .applyToComponent { localisationCommandsEnabledCb = this }
-                }
-                //localisationCommands
-                row {
-                    checkBox(PlsBundle.message("settings.folding.localisationCommands"))
-                        .bindSelected(foldingSettings::localisationCommands)
-                        .enabledIf(localisationCommandsEnabledCb.selected)
-                }
-                //localisationConceptsEnabled
-                lateinit var localisationConceptsEnabledCb: JBCheckBox
-                row {
-                    checkBox(PlsBundle.message("settings.folding.localisationConceptsEnabled"))
-                        .bindSelected(foldingSettings::localisationConceptsEnabled)
-                        .applyToComponent { localisationConceptsEnabledCb = this }
-                }
-                //localisationConcepts
-                row {
-                    checkBox(PlsBundle.message("settings.folding.localisationConcepts"))
-                        .bindSelected(foldingSettings::localisationConcepts)
-                        .enabledIf(localisationConceptsEnabledCb.selected)
-                }
-                //localisationConceptTextsEnabled
-                lateinit var localisationConceptTextsEnabledCb: JBCheckBox
-                row {
-                    checkBox(PlsBundle.message("settings.folding.localisationConceptTextsEnabled"))
-                        .bindSelected(foldingSettings::localisationConceptTextsEnabled)
-                        .applyToComponent { localisationConceptTextsEnabledCb = this }
-                }
-                //localisationConceptTexts
-                row {
-                    checkBox(PlsBundle.message("settings.folding.localisationConceptTexts"))
-                        .bindSelected(foldingSettings::localisationConceptTexts)
-                        .enabledIf(localisationConceptTextsEnabledCb.selected)
-                }
-                //scriptedVariableReferencesEnabled
-                lateinit var scriptedVariableReferencesEnabledCb: JBCheckBox
-                row {
-                    checkBox(PlsBundle.message("settings.folding.scriptedVariableReferencesEnabled"))
-                        .bindSelected(foldingSettings::scriptedVariableReferencesEnabled)
-                        .applyToComponent { scriptedVariableReferencesEnabledCb = this }
-                }
-                //scriptedVariableReferences
-                row {
-                    checkBox(PlsBundle.message("settings.folding.scriptedVariableReferences"))
-                        .bindSelected(foldingSettings::scriptedVariableReferences)
-                        .enabledIf(scriptedVariableReferencesEnabledCb.selected)
-                }
-                //variableOperationExpressionsEnabled
-                lateinit var variableOperationExpressionsEnabledCb: JBCheckBox
-                row {
-                    checkBox(PlsBundle.message("settings.folding.variableOperationExpressionsEnabled"))
-                        .bindSelected(foldingSettings::variableOperationExpressionsEnabled)
-                        .applyToComponent { variableOperationExpressionsEnabledCb = this }
-                }
-                //variableOperationExpressions
-                row {
-                    checkBox(PlsBundle.message("settings.folding.variableOperationExpressions"))
-                        .bindSelected(foldingSettings::variableOperationExpressions)
-                        .enabledIf(variableOperationExpressionsEnabledCb.selected)
-                }
-            }
             //completion
             collapsibleGroup(PlsBundle.message("settings.completion")) {
                 //completeScriptedVariableNames
@@ -381,6 +262,105 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeByExtendedCwtConfigs.tooltip") }
                 }
             }
+            //folding
+            collapsibleGroup(PlsBundle.message("settings.folding")) {
+                //comment & commentByDefault
+                row {
+                    lateinit var cb: JBCheckBox
+                    checkBox(PlsBundle.message("settings.folding.comment"))
+                        .bindSelected(getSettings().folding::comment)
+                        .applyToComponent { cb = this }
+                    checkBox(PlsBundle.message("settings.folding.byDefault"))
+                        .bindSelected(getSettings().folding::commentByDefault)
+                        .enabledIf(cb.selected)
+                }
+                //parameterConditionBlocks & parameterConditionBlocksByDefault
+                row {
+                    checkBox(PlsBundle.message("settings.folding.parameterConditionBlocks"))
+                        .selected(true)
+                        .enabled(false)
+                    checkBox(PlsBundle.message("settings.folding.byDefault"))
+                        .bindSelected(getSettings().folding::parameterConditionBlocksByDefault)
+                }
+                //inlineMathBlocks & inlineMathBlocksByDefault
+                row {
+                    checkBox(PlsBundle.message("settings.folding.inlineMathBlocks"))
+                        .selected(true)
+                        .enabled(false)
+                    checkBox(PlsBundle.message("settings.folding.byDefault"))
+                        .bindSelected(getSettings().folding::inlineMathBlocksByDefault)
+                }
+                //localisationReferencesFully & localisationReferencesFullyByDefault
+                row {
+                    lateinit var cb: JBCheckBox
+                    checkBox(PlsBundle.message("settings.folding.localisationReferencesFully"))
+                        .bindSelected(getSettings().folding::localisationReferencesFully)
+                        .applyToComponent { cb = this }
+                    checkBox(PlsBundle.message("settings.folding.byDefault"))
+                        .bindSelected(getSettings().folding::localisationReferencesFullyByDefault)
+                        .enabledIf(cb.selected)
+                }
+                //localisationIconsFully & localisationIconsFullyByDefault
+                row {
+                    lateinit var cb: JBCheckBox
+                    checkBox(PlsBundle.message("settings.folding.localisationIconsFully"))
+                        .bindSelected(getSettings().folding::localisationIconsFully)
+                        .applyToComponent { cb = this }
+                    checkBox(PlsBundle.message("settings.folding.byDefault"))
+                        .bindSelected(getSettings().folding::localisationIconsFullyByDefault)
+                        .enabledIf(cb.selected)
+                }
+                //localisationCommands & localisationCommandsByDefault
+                row {
+                    lateinit var cb: JBCheckBox
+                    checkBox(PlsBundle.message("settings.folding.localisationCommands"))
+                        .bindSelected(getSettings().folding::localisationCommands)
+                        .applyToComponent { cb = this }
+                    checkBox(PlsBundle.message("settings.folding.byDefault"))
+                        .bindSelected(getSettings().folding::localisationCommandsByDefault)
+                        .enabledIf(cb.selected)
+                }
+                //localisationConcepts & localisationConceptsByDefault
+                row {
+                    lateinit var cb: JBCheckBox
+                    checkBox(PlsBundle.message("settings.folding.localisationConcepts"))
+                        .bindSelected(getSettings().folding::localisationConcepts)
+                        .applyToComponent { cb = this }
+                    checkBox(PlsBundle.message("settings.folding.byDefault"))
+                        .bindSelected(getSettings().folding::localisationConceptsByDefault)
+                        .enabledIf(cb.selected)
+                }
+                //localisationConceptTexts & localisationConceptTextsByDefault
+                row {
+                    lateinit var cb: JBCheckBox
+                    checkBox(PlsBundle.message("settings.folding.localisationConceptTexts"))
+                        .bindSelected(getSettings().folding::localisationConceptTexts)
+                        .applyToComponent { cb = this }
+                    checkBox(PlsBundle.message("settings.folding.byDefault"))
+                        .bindSelected(getSettings().folding::localisationConceptTextsByDefault)
+                        .enabledIf(cb.selected)
+                }
+                //scriptedVariableReferences & scriptedVariableReferencesByDefault
+                row {
+                    lateinit var cb: JBCheckBox
+                    checkBox(PlsBundle.message("settings.folding.scriptedVariableReferences"))
+                        .bindSelected(getSettings().folding::scriptedVariableReferences)
+                        .applyToComponent { cb = this }
+                    checkBox(PlsBundle.message("settings.folding.byDefault"))
+                        .bindSelected(getSettings().folding::scriptedVariableReferencesByDefault)
+                        .enabledIf(cb.selected)
+                }
+                //variableOperationExpressions & variableOperationExpressionsByDefault
+                row {
+                    lateinit var cb: JBCheckBox
+                    checkBox(PlsBundle.message("settings.folding.variableOperationExpressions"))
+                        .bindSelected(getSettings().folding::variableOperationExpressions)
+                        .applyToComponent { cb = this }
+                    checkBox(PlsBundle.message("settings.folding.byDefault"))
+                        .bindSelected(getSettings().folding::variableOperationExpressionsByDefault)
+                        .enabledIf(cb.selected)
+                }
+            }
             //generation
             collapsibleGroup(PlsBundle.message("settings.generation")) {
                 //fileNamePrefix
@@ -437,37 +417,33 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
             }
             //inference
             collapsibleGroup(PlsBundle.message("settings.inference")) {
-                //configContextForParameters
+                //configContextForParameters & configContextForParametersFast
                 row {
-                    lateinit var configContextForParametersCb: JBCheckBox
+                    lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.inference.configContextForParameters"))
                         .bindSelected(settings.inference::configContextForParameters)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextForParameters.tooltip") }
                         .onApply { refreshForParameterInference() }
-                        .applyToComponent { configContextForParametersCb = this }
-
-                    //configContextForParametersFast
+                        .applyToComponent { cb = this }
                     checkBox(PlsBundle.message("settings.inference.configContextFast"))
                         .bindSelected(settings.inference::configContextForParametersFast)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextFast.tooltip") }
                         .onApply { refreshForParameterInference() }
-                        .enabledIf(configContextForParametersCb.selected)
+                        .enabledIf(cb.selected)
                 }
-                //configContextForInlineScripts
+                //configContextForInlineScripts & configContextForInlineScriptsFast
                 row {
-                    lateinit var configContextForInlineScriptsCb: JBCheckBox
+                    lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.inference.configContextForInlineScripts"))
                         .bindSelected(settings.inference::configContextForInlineScripts)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextForInlineScripts.tooltip") }
                         .onApply { refreshForInlineScriptInference() }
-                        .applyToComponent { configContextForInlineScriptsCb = this }
-
-                    //configContextForInlineScriptsFast
+                        .applyToComponent { cb = this }
                     checkBox(PlsBundle.message("settings.inference.configContextFast"))
                         .bindSelected(settings.inference::configContextForInlineScriptsFast)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextFast.tooltip") }
                         .onApply { refreshForInlineScriptInference() }
-                        .enabledIf(configContextForInlineScriptsCb.selected)
+                        .enabledIf(cb.selected)
                 }
                 //scopeContext
                 row {
@@ -527,9 +503,6 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         radioButton(PlsBundle.message("settings.others.defaultDiffGroup.2"), DiffGroupStrategy.Last)
                     }
                 }.bind(settings.others::defaultDiffGroup)
-            }
-            onApply {
-
             }
         }
     }

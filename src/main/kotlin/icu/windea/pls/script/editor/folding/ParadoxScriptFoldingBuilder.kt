@@ -8,7 +8,9 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.editor.folding.*
+import icu.windea.pls.lang.settings.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -27,24 +29,25 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
+        val settings = getSettings().folding
         return when (node.elementType) {
-            COMMENT -> ParadoxFoldingSettings.getInstance().comment
+            COMMENT -> settings.commentByDefault
             BLOCK -> false
-            PARAMETER_CONDITION -> ParadoxFoldingSettings.getInstance().parameterConditionBlocks
-            INLINE_MATH -> ParadoxFoldingSettings.getInstance().inlineMathBlocks
+            PARAMETER_CONDITION -> settings.parameterConditionBlocksByDefault
+            INLINE_MATH -> settings.inlineMathBlocksByDefault
             else -> false
         }
     }
 
     override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
-        val settings = ParadoxFoldingSettings.getInstance()
+        val settings = getSettings().folding
         collectDescriptorsRecursively(root.node, document, descriptors, settings)
     }
 
-    private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: ParadoxFoldingSettings) {
+    private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: ParadoxSettingsState.FoldingState) {
         when (node.elementType) {
             COMMENT -> {
-                if (settings.commentEnabled) {
+                if (settings.comment) {
                     ParadoxFoldingManager.addCommentFoldingDescriptor(node, document, descriptors)
                 }
             }

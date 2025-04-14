@@ -59,8 +59,6 @@
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider"/>
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxInlineScriptEditorNotificationProvider"/>
 
-    <applicationService serviceImplementation="icu.windea.pls.lang.editor.folding.ParadoxFoldingSettings"/>
-    <codeFoldingOptionsProvider instance="icu.windea.pls.lang.editor.folding.ParadoxFoldingOptionsProvider"/>
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.editor.folding.ParadoxVariableOperationExpressionFoldingBuilder"/>
     <lang.foldingBuilder language="PARADOX" implementationClass="icu.windea.pls.lang.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
 

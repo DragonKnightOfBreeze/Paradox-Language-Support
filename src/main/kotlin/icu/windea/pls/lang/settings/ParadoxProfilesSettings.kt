@@ -7,6 +7,11 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
+/**
+ * PLS资料配置。
+ *
+ * 由插件自动根据游戏信息与模组信息进行配置。
+ */
 @Service(Service.Level.APP)
 @State(name = "ParadoxProfilesSettings", storages = [Storage("paradox-language-support.xml")])
 class ParadoxProfilesSettings : SimplePersistentStateComponent<ParadoxProfilesSettingsState>(ParadoxProfilesSettingsState())
@@ -126,6 +131,7 @@ class ParadoxGameSettingsState : BaseState(), ParadoxGameDescriptorAwareSettings
 
 /**
  * 单个模组的配置。
+ *
  * @property modDependencies 模组依赖。不包括游戏目录和本模组。
  */
 @Tag("settings")
