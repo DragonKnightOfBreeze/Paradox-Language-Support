@@ -10,7 +10,7 @@
 
 ## 1.3.33
 
-* [X] Update CWT config files for VIC3, based on latest documentation / 更新VIC3的CWT规则文件，基于最新的文档
+* [X] 更新VIC3的CWT规则文件，基于最新的文档 / Update CWT config files for VIC3, based on latest documentation
 * [X] #136 [VIC3/CK3] Problems with ?= operator
 * [X] Merge plugin code folding settings into plugin settings page and file / 将插件的代码折叠设置合并到插件的设置页面与文件
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
@@ -19,7 +19,7 @@
 
 * [X] #123 [CK3] Supports `type_key_prefix` in cwt configs, which is currently only used in ck3's `scripted_effects.cwt`
 * [X] #129 更好的对模版表达式规则的支持 / Better template expression config support
-* [X] #130 更好的对嵌套的块的支持 / Bette support for nested blocks
+* [X] #130 更好的对嵌套的块的支持 / Better support for nested blocks
 * [X] #131 Only numbers in event names
 * [X] #134 [Vic3] Mods are not correctly detected
 * [X] 修复无法识别本地化文件中的数据库对象表达式的BUG / Fixed the bug that database object expression in loc files cannot be resolved
