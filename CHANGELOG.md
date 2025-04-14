@@ -12,7 +12,7 @@
 
 * [X] 更新VIC3的CWT规则文件，基于最新的文档 / Update CWT config files for VIC3, based on latest documentation
 * [X] #136 [VIC3/CK3] Problems with ?= operator
-* [X] Merge plugin code folding settings into plugin settings page and file / 将插件的代码折叠设置合并到插件的设置页面与文件
+* [X] 将插件的代码折叠设置合并到插件的设置页面与文件 / Merge plugin code folding settings into plugin settings page and file
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.32
