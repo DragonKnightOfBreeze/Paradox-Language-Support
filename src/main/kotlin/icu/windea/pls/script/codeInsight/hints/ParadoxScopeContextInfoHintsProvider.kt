@@ -52,7 +52,7 @@ class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings
         if (element !is ParadoxScriptProperty) return true
         //show only for properties with clause value, and left curly brace should be at end of line
         val block = element.propertyValue as? ParadoxScriptBlock ?: return true
-        val leftCurlyBrace = block.findChild(ParadoxScriptElementTypes.LEFT_BRACE) ?: return true
+        val leftCurlyBrace = block.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE } ?: return true
         val offset = leftCurlyBrace.endOffset
         val isAtLineEnd = editor.document.isAtLineEnd(offset, true)
         if (!isAtLineEnd) return true //show only if there are no non-blank characters after '{'

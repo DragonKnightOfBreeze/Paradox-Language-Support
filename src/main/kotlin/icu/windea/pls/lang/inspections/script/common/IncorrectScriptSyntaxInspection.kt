@@ -5,6 +5,7 @@ package icu.windea.pls.lang.inspections.script.common
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
@@ -26,7 +27,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
             private fun checkComparisonOperator(element: PsiElement) {
                 //不期望的比较操作符（比较操作符的左值或者右值必须能表示一个数字）
                 if (element !is ParadoxScriptProperty) return
-                val token = element.findChild(ParadoxScriptTokenSets.COMPARISON_TOKENS) ?: return
+                val token = element.findChild { it.elementType in ParadoxScriptTokenSets.COMPARISON_TOKENS } ?: return
                 val propertyKey = element.propertyKey
                 if (canResolveToNumber(propertyKey)) return
                 val propertyValue = element.propertyValue ?: return

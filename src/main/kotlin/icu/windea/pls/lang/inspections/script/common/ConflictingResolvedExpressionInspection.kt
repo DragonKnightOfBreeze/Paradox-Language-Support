@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.script.common
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
@@ -34,7 +35,7 @@ class ConflictingResolvedExpressionInspection : LocalInspectionTool() {
                     ?.castOrNull<ParadoxScriptProperty>()
                 val position = property?.propertyKey
                     ?.also { if (it.text.isParameterized()) return }
-                    ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
+                    ?: element.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE }
                     ?: return
                 val expression = property?.expression ?: element.expression
                 val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)

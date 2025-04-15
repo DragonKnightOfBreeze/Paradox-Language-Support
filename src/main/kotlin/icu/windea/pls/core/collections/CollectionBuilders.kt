@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.core.collections
 
 import icu.windea.pls.core.*

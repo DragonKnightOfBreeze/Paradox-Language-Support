@@ -10,7 +10,7 @@ import icu.windea.pls.script.references.*
 import java.awt.*
 
 inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.propertyValue(): T? {
-    return findChild()
+    return findChild<T>(forward = false)
 }
 
 inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.valueList(): List<T> {
@@ -18,7 +18,7 @@ inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.valueList(): L
 }
 
 inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlockElement.valueList(): List<T> {
-    return findChildren()
+    return findChildren<T>()
 }
 
 fun ParadoxScriptMemberElement.isBlockMember(): Boolean {

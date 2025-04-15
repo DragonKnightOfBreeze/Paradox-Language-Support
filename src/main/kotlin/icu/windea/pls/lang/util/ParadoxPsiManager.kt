@@ -6,8 +6,11 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.util.ParadoxPsiManager.findParentAndAnchorToIntroduceGlobalScriptedVariable
+import icu.windea.pls.lang.util.ParadoxPsiManager.findParentAndAnchorToIntroduceLocalScriptedVariable
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.references.*
@@ -347,8 +350,8 @@ object ParadoxPsiManager {
 
     private fun ParadoxScriptDefinitionElement.findParentAndAnchorToIntroduceLocalScriptedVariable(): Pair<PsiElement, PsiElement?> {
         if (this is ParadoxScriptFile) {
-            val anchor = this.findChildOfType<ParadoxScriptScriptedVariable>(forward = false)
-                ?: return this to this.lastChild
+            val anchor = this.findChild<ParadoxScriptScriptedVariable>(forward = false)
+            if (anchor == null) return this to this.lastChild
             return this to anchor
         } else {
             val parent = parent
@@ -375,8 +378,8 @@ object ParadoxPsiManager {
     }
 
     private fun ParadoxScriptFile.findParentAndAnchorToIntroduceGlobalScriptedVariable(): Pair<PsiElement, PsiElement> {
-        val anchor = this.findChildOfType<ParadoxScriptScriptedVariable>(forward = false)
-            ?: return this to this.lastChild
+        val anchor = this.findChild<ParadoxScriptScriptedVariable>(forward = false)
+        if (anchor == null) return this to this.lastChild
         return this to anchor
     }
 

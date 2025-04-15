@@ -10,6 +10,7 @@ import com.intellij.refactoring.*
 import com.intellij.refactoring.rename.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
@@ -29,12 +30,12 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
 
         //仅对于存在且仅存在一个locale的本地化文件
         var theOnlyPropertyList: ParadoxLocalisationPropertyList? = null
-        file.processChildrenOfType<ParadoxLocalisationPropertyList> {
+        file.children().filterIsInstance<ParadoxLocalisationPropertyList>().process {
             if (theOnlyPropertyList == null) {
                 theOnlyPropertyList = it
                 true
             } else {
-                return null
+                false
             }
         }
         val locale = theOnlyPropertyList?.locale ?: return null

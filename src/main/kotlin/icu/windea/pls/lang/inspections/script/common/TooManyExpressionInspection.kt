@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.script.common
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
@@ -54,7 +55,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                     ?.castOrNull<ParadoxScriptProperty>()
                 val position = property?.propertyKey
                     ?.also { if (it.text.isParameterized()) return }
-                    ?: element.findChild(ParadoxScriptElementTypes.LEFT_BRACE)
+                    ?: element.findChild { it.elementType == ParadoxScriptElementTypes.LEFT_BRACE }
                     ?: return
                 val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return
                 if (configContext.skipTooManyExpressionCheck()) return

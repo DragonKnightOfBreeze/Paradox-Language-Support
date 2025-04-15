@@ -38,11 +38,11 @@ class ParadoxLocalisationBlock(
 
     private val spacingBuilder = createSpacingBuilder(settings)
 
-    //收集所有节点
     override fun buildChildren(): List<Block> {
         val children = mutableListOf<Block>()
-        myNode.processChild { node ->
-            node.takeUnless(TokenType.WHITE_SPACE)?.let { ParadoxLocalisationBlock(it, settings) }?.also { children.add(it) }
+        myNode.processChild p@{ node ->
+            if (node.elementType == TokenType.WHITE_SPACE) return@p true
+            children += ParadoxLocalisationBlock(node, settings)
             true
         }
         return children

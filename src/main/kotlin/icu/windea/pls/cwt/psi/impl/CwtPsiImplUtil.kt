@@ -44,7 +44,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getComponents(element: CwtRootBlock): List<PsiElement> {
-        return element.findChildrenOfType { it is CwtProperty || it is CwtValue }
+        return element.children().filter { it is CwtProperty || it is CwtValue }.toList()
     }
 
     //endregion
@@ -104,7 +104,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtOptionKey): String {
-        return element.findChild(OPTION_KEY_TOKEN)!!.text.unquote()
+        return element.findChild { it.elementType == OPTION_KEY_TOKEN }!!.text.unquote()
     }
 
     //endregion
@@ -164,7 +164,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtPropertyKey): String {
-        return element.findChild(PROPERTY_KEY_TOKEN)!!.text.unquote()
+        return element.findChild { it.elementType == PROPERTY_KEY_TOKEN }!!.text.unquote()
     }
 
     @JvmStatic
@@ -302,7 +302,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getComponents(element: CwtBlock): List<PsiElement> {
-        return element.findChildrenOfType { it is CwtProperty || it is CwtValue }
+        return element.children().filter { it is CwtProperty || it is CwtValue }.toList()
     }
 
     //endregion

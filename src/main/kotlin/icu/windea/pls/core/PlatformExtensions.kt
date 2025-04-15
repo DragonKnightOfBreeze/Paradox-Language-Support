@@ -16,6 +16,7 @@ import com.intellij.injected.editor.*
 import com.intellij.lang.*
 import com.intellij.lang.documentation.*
 import com.intellij.lang.injection.*
+import com.intellij.lang.tree.util.*
 import com.intellij.navigation.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
@@ -490,16 +491,16 @@ fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
 
 //region AST Extensions
 
-fun <T : ASTNode> T.takeIf(elementType: IElementType): T? {
-    return takeIf { it.elementType == elementType }
+inline fun ASTNode.forEachChild(forward: Boolean = true, action: (ASTNode) -> Unit) {
+    var child: ASTNode? = if (forward) this.firstChildNode else this.lastChildNode
+    while (child != null) {
+        action(child)
+        child = child.treeNext
+    }
 }
 
-fun <T : ASTNode> T.takeUnless(elementType: IElementType): T? {
-    return takeUnless { it.elementType == elementType }
-}
-
-inline fun ASTNode.processChild(processor: (ASTNode) -> Boolean): Boolean {
-    var child: ASTNode? = this.firstChildNode
+inline fun ASTNode.processChild(forward: Boolean = true, processor: (ASTNode) -> Boolean): Boolean {
+    var child: ASTNode? = if (forward) this.firstChildNode else this.lastChildNode
     while (child != null) {
         val result = processor(child)
         if (!result) return false
@@ -508,48 +509,19 @@ inline fun ASTNode.processChild(processor: (ASTNode) -> Boolean): Boolean {
     return true
 }
 
-inline fun ASTNode.forEachChild(action: (ASTNode) -> Unit) {
-    var child: ASTNode? = this.firstChildNode
-    while (child != null) {
-        action(child)
-        child = child.treeNext
-    }
+fun ASTNode.children(forward: Boolean = true): Sequence<ASTNode> {
+    val child = if (forward) this.firstChildNode else this.lastChildNode
+    if (child == null) return emptySequence()
+    return child.siblings(forward, withSelf = true)
 }
 
-fun ASTNode.isStartOfLine(): Boolean {
-    return treePrev?.let { it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() } ?: false
-}
-
-fun ASTNode.isEndOfLine(): Boolean {
-    return treeNext?.let { it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() } ?: false
-}
-
-fun ASTNode.firstChild(type: IElementType): ASTNode? {
-    var child: ASTNode? = this.firstChildNode
-    while (child != null) {
-        if (child.elementType == type) return child
-        child = child.treeNext
-    }
-    return null
-}
-
-fun ASTNode.firstChild(types: TokenSet): ASTNode? {
-    var child: ASTNode? = this.firstChildNode
-    while (child != null) {
-        if (child.elementType in types) return child
-        child = child.treeNext
-    }
-    return null
-}
-
-fun ASTNode.firstChild(predicate: (ASTNode) -> Boolean): ASTNode? {
-    var child: ASTNode? = this.firstChildNode
-    while (child != null) {
-        if (predicate(child)) return child
-        child = child.treeNext
-    }
-    return null
-}
+//fun ASTNode.isStartOfLine(): Boolean {
+//    return treePrev?.let { it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() } ?: false
+//}
+//
+//fun ASTNode.isEndOfLine(): Boolean {
+//    return treeNext?.let { it.elementType == TokenType.WHITE_SPACE && it.text.containsLineBreak() } ?: false
+//}
 
 fun LighterASTNode.firstChild(tree: LighterAST, type: IElementType): LighterASTNode? {
     return LightTreeUtil.firstChildOfType(tree, this, type)
@@ -620,7 +592,12 @@ fun <T : PsiElement> PsiFile.findElementAt(offset: Int, forward: Boolean? = null
     return null
 }
 
-fun <T : PsiElement> PsiFile.findElementsBetween(startOffset: Int, endOffset: Int, rootTransform: (element: PsiElement) -> PsiElement?, transform: (element: PsiElement) -> T?): List<T> {
+fun <T : PsiElement> PsiFile.findElementsBetween(
+    startOffset: Int,
+    endOffset: Int,
+    rootTransform: (element: PsiElement) -> PsiElement?,
+    transform: (element: PsiElement) -> T?
+): List<T> {
     val startRoot = findElementAt(startOffset, true, rootTransform) ?: return emptyList()
     val endRoot = findElementAt(endOffset, true, rootTransform) ?: return emptyList()
     val root = if (startRoot.isAncestor(endRoot)) startRoot else endRoot
@@ -639,7 +616,11 @@ fun <T : PsiElement> PsiFile.findElementsBetween(startOffset: Int, endOffset: In
     return elements
 }
 
-fun PsiFile.findAllElementsBetween(startOffset: Int, endOffset: Int, rootTransform: (element: PsiElement) -> PsiElement?): List<PsiElement> {
+fun PsiFile.findAllElementsBetween(
+    startOffset: Int,
+    endOffset: Int,
+    rootTransform: (element: PsiElement) -> PsiElement?
+): List<PsiElement> {
     val startRoot = findElementAt(startOffset, true, rootTransform) ?: return emptyList()
     val endRoot = findElementAt(endOffset, true, rootTransform) ?: return emptyList()
     val root = if (startRoot.isAncestor(endRoot)) startRoot else endRoot
@@ -721,36 +702,31 @@ infix fun PsiElement?.isSamePosition(other: PsiElement?): Boolean {
         && containingFile.originalFile.virtualFile == other.containingFile.originalFile.virtualFile
 }
 
-inline fun <reified T : PsiElement> PsiElement.findChild(forward: Boolean = true): T? {
-    return findChildOfType(forward)
+@JvmName("findChildByType")
+inline fun <reified T : PsiElement> PsiElement.findChild(forward: Boolean = true, predicate: (T) -> Boolean = { true }): T? {
+    return children(forward).findIsInstance<T>(predicate)
 }
 
-fun PsiElement.findChild(type: IElementType, forward: Boolean = true): PsiElement? {
-    return findChildOfType(forward) { it.elementType == type }
+inline fun PsiElement.findChild(forward: Boolean = true, predicate: (PsiElement) -> Boolean = { true }): PsiElement? {
+    return children(forward).findIsInstance(predicate)
 }
 
-fun PsiElement.findChild(tokenSet: TokenSet, forward: Boolean = true): PsiElement? {
-    return findChildOfType(forward) { it.elementType in tokenSet }
+@JvmName("findChildrenByType")
+inline fun <reified T : PsiElement> PsiElement.findChildren(forward: Boolean = true, noinline predicate: (T) -> Boolean = { true }): List<T> {
+    return children(forward).filterIsInstance<T>(predicate).toList()
 }
 
-inline fun PsiElement.findChild(forward: Boolean = true, predicate: (PsiElement) -> Boolean): PsiElement? {
-    return findChildOfType(forward, predicate)
+inline fun PsiElement.findChildren(forward: Boolean = true, noinline predicate: (PsiElement) -> Boolean = { true }): List<PsiElement> {
+    return children(forward).filter(predicate).toList()
 }
 
-inline fun <reified T : PsiElement> PsiElement.findChildren(forward: Boolean = true): List<T> {
-    return findChildrenOfType(forward)
-}
-
-fun PsiElement.findChildren(type: IElementType, forward: Boolean = true): List<PsiElement> {
-    return findChildrenOfType(forward) { it.elementType == type }
-}
-
-fun PsiElement.findChildren(tokenSet: TokenSet, forward: Boolean = true): List<PsiElement> {
-    return findChildrenOfType(forward) { it.elementType in tokenSet }
-}
-
-inline fun PsiElement.findChildren(forward: Boolean = true, predicate: (PsiElement) -> Boolean): List<PsiElement> {
-    return findChildrenOfType(forward, predicate)
+inline fun PsiElement.forEachChild(forward: Boolean = true, action: (PsiElement) -> Unit) {
+    //不会忽略某些特定类型的子元素
+    var child: PsiElement? = if (forward) this.firstChild else this.lastChild
+    while (child != null) {
+        action(child)
+        child = if (forward) child.nextSibling else child.prevSibling
+    }
 }
 
 inline fun PsiElement.processChild(forward: Boolean = true, processor: (PsiElement) -> Boolean): Boolean {
@@ -777,50 +753,10 @@ inline fun <reified T : PsiElement> PsiElement.indexOfChild(forward: Boolean = t
     return -1
 }
 
-inline fun PsiElement.forEachChild(forward: Boolean = true, action: (PsiElement) -> Unit) {
-    //不会忽略某些特定类型的子元素
-    var child: PsiElement? = if (forward) this.firstChild else this.lastChild
-    while (child != null) {
-        action(child)
-        child = if (forward) child.nextSibling else child.prevSibling
-    }
-}
-
-inline fun <reified T : PsiElement> PsiElement.processChildrenOfType(forward: Boolean = true, processor: (T) -> Boolean): Boolean {
-    //不会忽略某些特定类型的子元素
-    var child: PsiElement? = if (forward) this.firstChild else this.lastChild
-    while (child != null) {
-        if (child is T) {
-            val result = processor(child)
-            if (!result) return false
-        }
-        child = if (forward) child.nextSibling else child.prevSibling
-    }
-    return true
-}
-
-inline fun <reified T : PsiElement> PsiElement.findChildOfType(forward: Boolean = true, predicate: (T) -> Boolean = { true }): T? {
-    //不会忽略某些特定类型的子元素
-    var child: PsiElement? = if (forward) this.firstChild else this.lastChild
-    while (child != null) {
-        if (child is T && predicate(child)) return child
-        child = if (forward) child.nextSibling else child.prevSibling
-    }
-    return null
-}
-
-inline fun <reified T> PsiElement.findChildrenOfType(forward: Boolean = true, predicate: (T) -> Boolean = { true }): List<T> {
-    //不会忽略某些特定类型的子元素
-    var result: MutableList<T>? = null
-    var child: PsiElement? = if (forward) this.firstChild else this.lastChild
-    while (child != null) {
-        if (child is T && predicate(child)) {
-            if (result == null) result = mutableListOf()
-            result.add(child)
-        }
-        child = if (forward) child.nextSibling else child.prevSibling
-    }
-    return result ?: emptyList()
+fun PsiElement.children(forward: Boolean = true): Sequence<PsiElement> {
+    val child = if (forward) this.firstChild else this.lastChild
+    if (child == null) return emptySequence()
+    return child.siblings(forward, withSelf = true)
 }
 
 /**
@@ -830,16 +766,16 @@ fun PsiElement.findFurthestSiblingOfSameType(findAfter: Boolean, stopOnBlankLine
     var node = node
     val expectedType = node.elementType
     var lastSeen = node
-    while(node != null) {
+    while (node != null) {
         val elementType = node.elementType
         when {
             elementType == expectedType -> lastSeen = node
             elementType == TokenType.WHITE_SPACE -> {
-                if(stopOnBlankLine && node.text.containsBlankLine()) break
+                if (stopOnBlankLine && node.text.containsBlankLine()) break
             }
             else -> break
         }
-        node = if(findAfter) node.treeNext else node.treePrev
+        node = if (findAfter) node.treeNext else node.treePrev
     }
     return lastSeen.psi
 }

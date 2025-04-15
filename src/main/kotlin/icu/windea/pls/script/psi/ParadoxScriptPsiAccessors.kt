@@ -21,19 +21,19 @@ val ParadoxScriptString.idElement: PsiElement?
     get() = firstChild?.takeIf { it.nextSibling == null && it.elementType == STRING_TOKEN }
 
 val ParadoxScriptParameterConditionParameter.idElement: PsiElement
-    get() = findChild(CONDITION_PARAMETER_TOKEN)!!
+    get() = findChild { it.elementType == CONDITION_PARAMETER_TOKEN }!!
 
 val ParadoxScriptInlineMathScriptedVariableReference.idElement: PsiElement?
     get() = firstChild?.takeIf { it.nextSibling == null && it.elementType == INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN }
 
 val ParadoxScriptParameter.idElement: PsiElement?
-    get() = findChild(PARAMETER_TOKEN)
+    get() = findChild { it.elementType == PARAMETER_TOKEN }
 
 val ParadoxScriptInlineMathParameter.idElement: PsiElement?
-    get() = findChild(PARAMETER_TOKEN)
+    get() = findChild { it.elementType == PARAMETER_TOKEN }
 
 val ParadoxParameter.defaultValueToken: PsiElement?
-    get() = findChild(PARAMETER_VALUE_TOKEN)
+    get() = findChild { it.elementType == PARAMETER_VALUE_TOKEN }
 
 val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptValue?
     get() = siblings(forward = true, withSelf = false).findIsInstance()

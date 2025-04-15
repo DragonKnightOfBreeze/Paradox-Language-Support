@@ -58,7 +58,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getComponents(element: ParadoxScriptRootBlock): List<PsiElement> {
         //允许混合value和property
-        return element.findChildrenOfType { isRootBlockComponent(it) }
+        return element.findChildren { isRootBlockComponent(it) }
     }
 
     private fun isRootBlockComponent(element: PsiElement): Boolean {
@@ -209,7 +209,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getBlock(element: ParadoxScriptProperty): ParadoxScriptBlock? {
-        return element.findChild()
+        return element.findChild<ParadoxScriptBlock>(forward = false)
     }
 
     @JvmStatic
@@ -465,7 +465,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getComponents(element: ParadoxScriptBlock): List<PsiElement> {
         //允许混合value和property
-        return element.findChildrenOfType { isBlockComponent(it) }
+        return element.findChildren { isBlockComponent(it) }
     }
 
     private fun isBlockComponent(element: PsiElement): Boolean {
@@ -531,7 +531,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getComponents(element: ParadoxScriptParameterCondition): List<PsiElement> {
         //允许混合value和property
-        return element.findChildrenOfType { isParameterConditionComponent(it) }
+        return element.findChildren { isParameterConditionComponent(it) }
     }
 
     private fun isParameterConditionComponent(element: PsiElement): Boolean {
@@ -706,7 +706,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getDefaultValue(element: ParadoxScriptParameter): String? {
         //兼容默认值为空字符串的情况
-        if (element.findChild(PIPE)?.takeIf { it.nextSibling?.elementType == PARAMETER_END } != null) return ""
+        if (element.findChild { it.elementType == PIPE }?.takeIf { it.nextSibling?.elementType == PARAMETER_END } != null) return ""
         return element.defaultValueToken?.text
     }
 
@@ -750,7 +750,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getDefaultValue(element: ParadoxScriptInlineMathParameter): String? {
         //兼容默认值为空字符串的情况
-        if (element.findChild(PIPE)?.takeIf { it.nextSibling?.elementType == PARAMETER_END } != null) return ""
+        if (element.findChild { it.elementType == PIPE }?.takeIf { it.nextSibling?.elementType == PARAMETER_END } != null) return ""
         return element.defaultValueToken?.text
     }
 

@@ -23,62 +23,62 @@ object ParadoxLocalisationElementFactory {
     fun createProperty(project: Project, key: String, value: String): ParadoxLocalisationProperty {
         return createDummyFile(project, "l_english:\n$key:0 \"$value\"")
             .findChild<ParadoxLocalisationPropertyList>()
-            ?.findChild() ?: throw IncorrectOperationException()
+            ?.findChild<ParadoxLocalisationProperty>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createPropertyKey(project: Project, key: String): ParadoxLocalisationPropertyKey {
         return createProperty(project, key, "")
-            .findChild() ?: throw IncorrectOperationException()
+            .findChild<ParadoxLocalisationPropertyKey>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createPropertyValue(project: Project, value: String): ParadoxLocalisationPropertyValue {
         return createProperty(project, "a", value)
-            .findChild() ?: throw IncorrectOperationException()
+            .findChild<ParadoxLocalisationPropertyValue>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createPropertyReference(project: Project, name: String): ParadoxLocalisationPropertyReference {
         return createPropertyValue(project, "$$name$")
-            .findChild() ?: throw IncorrectOperationException()
+            .findChild<ParadoxLocalisationPropertyReference>() ?: throw IncorrectOperationException()
     }
 
     fun createScriptedVariableReference(project: Project, name: String): ParadoxLocalisationScriptedVariableReference {
         return createPropertyValue(project, "$@$name$")
             .findChild<ParadoxLocalisationPropertyReference>()
-            ?.findChild() ?: throw IncorrectOperationException()
+            ?.findChild<ParadoxLocalisationScriptedVariableReference>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createCommandText(project: Project, text: String): ParadoxLocalisationCommandText {
         return createPropertyValue(project, "[$text]")
             .findChild<ParadoxLocalisationCommand>()
-            ?.findChild() ?: throw IncorrectOperationException()
+            ?.findChild<ParadoxLocalisationCommandText>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createConceptName(project: Project, name: String): ParadoxLocalisationConceptName {
         return createPropertyValue(project, "['$name']")
             .findChild<ParadoxLocalisationCommand>()
-            ?.findChild() ?: throw IncorrectOperationException()
+            ?.findChild<ParadoxLocalisationConceptName>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createIcon(project: Project, name: String): ParadoxLocalisationIcon {
         return createPropertyValue(project, "£$name£")
-            .findChild() ?: throw IncorrectOperationException()
+            .findChild<ParadoxLocalisationIcon>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createColorfulText(project: Project, name: String, value: String = ""): ParadoxLocalisationColorfulText {
         return createPropertyValue(project, "§$name$value§!")
-            .findChild() ?: throw IncorrectOperationException()
+            .findChild<ParadoxLocalisationColorfulText>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createString(project: Project, text: String): ParadoxLocalisationString {
         return createPropertyValue(project, text)
-            .findChild() ?: throw IncorrectOperationException()
+            .findChild<ParadoxLocalisationString>() ?: throw IncorrectOperationException()
     }
 }

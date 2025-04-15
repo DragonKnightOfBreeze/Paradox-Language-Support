@@ -77,14 +77,14 @@ object ParadoxScriptElementFactory {
         return createRootBlock(project, text)
             .findChild<ParadoxScriptProperty>()
             ?.findChild<ParadoxScriptBlock>()
-            ?.findChild() ?: throw IncorrectOperationException()
+            ?.findChild<ParadoxScriptParameterCondition>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createParameterConditionParameter(project: Project, name: String): ParadoxScriptParameterConditionParameter {
         return createParameterCondition(project, name, "a")
             .findChild<ParadoxScriptParameterConditionExpression>()
-            ?.findChild() ?: throw IncorrectOperationException()
+            ?.findChild<ParadoxScriptParameterConditionParameter>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
@@ -96,32 +96,32 @@ object ParadoxScriptElementFactory {
     @JvmStatic
     fun createInlineMathVariableReference(project: Project, name: String): ParadoxScriptInlineMathScriptedVariableReference {
         return createInlineMath(project, name)
-            .findChild() ?: throw IncorrectOperationException()
+            .findChild<ParadoxScriptInlineMathScriptedVariableReference>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createParameter(project: Project, text: String): ParadoxScriptParameter {
         return createValue(project, text)
-            .findChild() ?: throw IncorrectOperationException()
+            .findChild<ParadoxScriptParameter>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createParameterSmartly(project: Project, name: String, defaultValue: String? = null): ParadoxScriptParameter {
         val text = if (defaultValue == null) "$$name$" else "$$name|$defaultValue$"
         return createValue(project, text)
-            .findChild() ?: throw IncorrectOperationException()
+            .findChild<ParadoxScriptParameter>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createInlineMathParameter(project: Project, text: String): ParadoxScriptParameter {
         return createInlineMath(project, text)
-            .findChild() ?: throw IncorrectOperationException()
+            .findChild<ParadoxScriptParameter>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createInlineMathParameterSmartly(project: Project, name: String, defaultValue: String? = null): ParadoxScriptInlineMathParameter {
         val text = if (defaultValue == null) "$$name$" else "$$name|$defaultValue$"
         return createInlineMath(project, text)
-            .findChild() ?: throw IncorrectOperationException()
+            .findChild<ParadoxScriptInlineMathParameter>() ?: throw IncorrectOperationException()
     }
 }
