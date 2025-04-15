@@ -11,7 +11,6 @@ import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.data.*
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
 import java.lang.invoke.*
@@ -20,12 +19,12 @@ object ParadoxDefineManager {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
 
     val definePathExpression = CwtDataExpression.resolve("filepath[common/defines/,.txt]", false)
-    
+
     fun isDefineElement(define: ParadoxDefineIndexInfo.Compact, defineElement: ParadoxScriptProperty): Boolean {
         if(define.variable == null) return defineElement.propertyValue is ParadoxScriptBlock
         return true
     }
-    
+
     fun getDefineElement(define: ParadoxDefineIndexInfo.Compact, project: Project): ParadoxScriptProperty? {
         val file = define.virtualFile?.toPsiFile(project) ?: return null
         val elementOffset = define.elementOffsets.lastOrNull() ?: return null
@@ -43,24 +42,24 @@ object ParadoxDefineManager {
     fun getDefineElements(defines: Collection<ParadoxDefineIndexInfo.Compact>, project: Project): List<ParadoxScriptProperty> {
         return defines.flatMap { define -> getDefineElements(define, project) }
     }
-    
+
     fun getDefineValue(expression: String, contextElement: PsiElement, project: Project): Any? {
         val defineSelector = selector(project, contextElement).define().contextSensitive()
         val define = ParadoxDefineSearch.search(expression, defineSelector).find() ?: return null
         return getDefineValue(define, project)
     }
-    
+
     fun getDefineValue(defineInfo: ParadoxDefineIndexInfo.Compact, project: Project): Any? {
         val defineProperty = getDefineElement(defineInfo, project) ?: return null
         val definePropertyValue = defineProperty.propertyValue ?: return null
-        return ParadoxScriptDataValueResolver.resolveValue(definePropertyValue, conditional = false)
+        return definePropertyValue.resolveValue()
     }
 
     fun getDefineValue(define: ParadoxScriptProperty): Any? {
         val definePropertyValue = define.propertyValue ?: return null
-        return ParadoxScriptDataValueResolver.resolveValue(definePropertyValue, conditional = false)
+        return definePropertyValue.resolveValue()
     }
-    
+
     fun isDefineFile(file: VirtualFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         val filePath = fileInfo.path.path

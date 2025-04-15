@@ -144,6 +144,20 @@ fun ParadoxScriptValue.colorValue(valid: Boolean = false): Color? {
     }
 }
 
+fun ParadoxScriptValue.resolveValue(valid: Boolean = false): Any? {
+    if (valid && !this.isValidExpression()) return null
+    return when (this) {
+        is ParadoxScriptBoolean -> this.booleanValue
+        is ParadoxScriptInt -> this.intValue
+        is ParadoxScriptFloat -> this.floatValue
+        is ParadoxScriptString -> this.stringValue
+        is ParadoxScriptColor -> this.color
+        is ParadoxScriptScriptedVariableReference -> this.referenceValue?.resolveValue()
+        is ParadoxScriptBlock -> null //unsupported
+        else -> null //unsupported
+    }
+}
+
 fun ParadoxScriptExpressionElement.resolved(): ParadoxScriptExpressionElement? {
     return when (this) {
         is ParadoxScriptScriptedVariableReference -> this.referenceValue
