@@ -8,6 +8,11 @@
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
 * [ ] #137 [VIC3/CK3] Support special localizations
 
+## 1.3.14
+
+* [ ] 提供适配新UI的图标 / Provide icons that fit the new UI
+* [ ] 提供简体中文的本地化 / Provides localization for Simplified Chinese   
+
 ## 1.3.33
 
 * [X] 更新VIC3的CWT规则文件，基于最新的文档 / Update CWT config files for VIC3, based on latest documentation
