@@ -17,6 +17,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.complexEnumValueExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxComplexEnumValueExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dynamicValueExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxDynamicValueExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionResolver" interface="icu.windea.pls.ep.dataExpression.CwtDataExpressionResolver" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.dataExpressionMatcher" interface="icu.windea.pls.ep.dataExpression.CwtDataExpressionMatcher" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionMerger" interface="icu.windea.pls.ep.dataExpression.CwtDataExpressionMerger" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionPriorityProvider" interface="icu.windea.pls.ep.dataExpression.CwtDataExpressionPriorityProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionMatcher" interface="icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher" dynamic="true"/>
@@ -115,6 +116,11 @@
     <dataExpressionResolver id="ant" implementation="icu.windea.pls.ep.dataExpression.AntExpressionCwtDataExpressionResolver"/>
     <dataExpressionResolver id="re" implementation="icu.windea.pls.ep.dataExpression.RegexCwtDataExpressionResolver"/>
     <dataExpressionResolver id="constant" implementation="icu.windea.pls.ep.dataExpression.ConstantCwtDataExpressionResolver" order="last"/>
+
+    <dataExpressionMatcher id="template" implementation="icu.windea.pls.ep.dataExpression.TemplateExpressionCwtDataExpressionMatcher"/>
+    <dataExpressionMatcher id="ant" implementation="icu.windea.pls.ep.dataExpression.AntExpressionCwtDataExpressionMatcher"/>
+    <dataExpressionMatcher id="re" implementation="icu.windea.pls.ep.dataExpression.RegexCwtDataExpressionMatcher"/>
+    <dataExpressionMatcher id="constant" implementation="icu.windea.pls.ep.dataExpression.ConstantCwtDataExpressionMatcher" order="first"/>
 
     <dataExpressionMerger implementation="icu.windea.pls.ep.dataExpression.DefaultCwtDataExpressionMerger"/>
 
