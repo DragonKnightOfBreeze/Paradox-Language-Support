@@ -1,0 +1,28 @@
+<html>
+<body>
+  报告缺失的参数。
+  <p>
+    如果一个参数在定义声明中被使用，但是没有设置默认值（在定义声明中），
+    或者没有设置（在其他地方，例如定义声明中），
+    则该参数被视为是缺失的。
+  </p>
+  <p>
+    基于发现的第一个参数上下文（例如，定义声明）。
+  </p>
+  <p><b>示例：</b></p>
+  <pre>
+# some_script_file.txt
+some_definition = {
+    some_prop = $PARAM1$
+    some_other_prop = $PARAM2$
+}
+
+# some_other_script_file.txt
+some_other_definition = {
+    some_definition = {
+        $PARAM1$ = value # PARAM2 is missing
+    }
+    some_sv_prop = value:some_sv|$PARAM1$|value| # PARAM2 is missing
+}</pre>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<html>
+<body>
+  报告未使用的参数。
+  <p>
+    如果参数被设置（通过调用表达式或脚本值表达式）或被检查（通过参数条件表达式），但未被使用（如在定义声明中），则视为未使用。
+  </p>
+  <p><b>示例：</b></p>
+  <pre>
+# some_script_file.txt
+some_definition = {
+    some_prop = $PARAM$ # 已使用
+    [[UNUSED_PARAM] # 被检查但未使用
+        some_other_prop = $PARAM$
+    ]
+}
+
+# some_other_script_file.txt
+some_other_definition = {
+    some_definition = {
+        UNUSED_PARAM = value # 设置但未使用
+    }
+    some_sv_prop = value:some_sv|UNUSED_PARAM|value| # 设置但未使用
+}
+  </pre>
+</body>
+</html>

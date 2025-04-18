@@ -11,7 +11,7 @@
 ## 1.3.14
 
 * [ ] 提供适配新UI的图标 / Provide icons that fit the new UI
-* [ ] 提供简体中文的本地化 / Provides localization for Simplified Chinese   
+* [X] 提供简体中文的本地化 / Provides localization for Simplified Chinese
 
 ## 1.3.33
 

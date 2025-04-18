@@ -1,0 +1,22 @@
+<html>
+<body>
+  报告用法存在冲突的内联脚本。
+  <p>
+    如果同一个内联脚本的用法在匹配的CWT配置中具有不同的配置路径（如<code>alias_name[trigger]</code>与<code>alias_name[effect]</code>），则会被视为用法冲突。
+  </p>
+  <!-- tooltip end -->
+  <p>
+    内联脚本文件是指扩展名为“.txt”，位于<code>common/inline_scripts</code>目录下的脚本文件。
+    这些脚本可以在其他脚本文件中（几乎任意位置）被调用。
+  </p>
+  <p><b>示例：</b></p>
+  <pre>
+# some_inline_script.txt (under directory common/inline_scripts/dir)
+# ...
+
+# some_other_script_file.txt
+some_other_definition = {
+    inline_script = "dir/some_inline_script"
+}</pre>
+</body>
+</html>
