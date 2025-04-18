@@ -14,7 +14,7 @@ object PlsIcons {
     @JvmField
     val Library = AllIcons.Nodes.PpLibFolder
     @JvmField
-    val Image = loadIcon("/icons/image.svg")
+    val Image = AllIcons.FileTypes.Image
     @JvmField
     val Presentation = loadIcon("/icons/presentation.svg")
     @JvmField

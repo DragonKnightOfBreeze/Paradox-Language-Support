@@ -1,0 +1,100 @@
+{
+  "icons": {
+    "expui": {
+      "actions": {
+        "gameDataDirectory.svg": "actions/gameDataDirectory.svg",
+        "gameDataDirectory_dark.svg": "actions/gameDataDirectory_dark.svg",
+        "gameSettings.svg": "actions/gameSettings.svg",
+        "modSettings.svg": "actions/modSettings.svg",
+        "refreshConfigGroups.svg": "actions/refreshConfigGroups.svg",
+        "steamDirectory.svg": "actions/steamDirectory.svg",
+        "steamDirectory_dark.svg": "actions/steamDirectory_dark.svg",
+        "steamGameDirectory.svg": "actions/steamGameDirectory.svg",
+        "steamGameDirectory_dark.svg": "actions/steamGameDirectory_dark.svg",
+        "steamWorkshopDirectory.svg": "actions/steamWorkshopDirectory.svg",
+        "steamWorkshopDirectory_dark.svg": "actions/steamWorkshopDirectory_dark.svg"
+      },
+      "fileTypes": {
+        "cwt.svg": "fileTypes/cwt.svg",
+        "cwtConfig.svg": "fileTypes/cwtConfig.svg",
+        "modDescriptor.svg": "fileTypes/modDescriptor.svg",
+        "paradoxLocalisation.svg": "fileTypes/paradoxLocalisation.svg",
+        "paradoxScript.svg": "fileTypes/paradoxScript.svg"
+      },
+      "gutter": {
+        "complexEnumValue.svg": "gutter/complexEnumValue.svg",
+        "definition.svg": "gutter/definition.svg",
+        "localisation.svg": "gutter/localisation.svg",
+        "relatedImages.svg": "gutter/relatedImages.svg",
+        "relatedImages_dark.svg": "gutter/relatedImages_dark.svg",
+        "relatedLocalisations.svg": "gutter/relatedLocalisations.svg",
+        "scriptedVariable.svg": "gutter/scriptedVariable.svg"
+      },
+      "nodes": {
+        "alias.svg": "nodes/alias.svg",
+        "complexEnum.svg": "nodes/complexEnum.svg",
+        "complexEnumValue.svg": "nodes/complexEnumValue.svg",
+        "defineNamespace.svg": "nodes/defineNamespace.svg",
+        "defineVariable.svg": "nodes/defineVariable.svg",
+        "definition.svg": "nodes/definition.svg",
+        "definitionConfig.svg": "nodes/definitionConfig.svg",
+        "dynamicValue.svg": "nodes/dynamicValue.svg",
+        "dynamicValueType.svg": "nodes/dynamicValueType.svg",
+        "effect.svg": "nodes/effect.svg",
+        "enum.svg": "nodes/enum.svg",
+        "enumValue.svg": "nodes/enumValue.svg",
+        "eventId.svg": "nodes/eventId.svg",
+        "eventNamespace.svg": "nodes/eventNamespace.svg",
+        "gameObjectType.svg": "nodes/gameObjectType.svg",
+        "inlineScript.svg": "nodes/inlineScript.svg",
+        "inlineScriptConfig.svg": "nodes/inlineScriptConfig.svg",
+        "link.svg": "nodes/link.svg",
+        "localisation.svg": "nodes/localisation.svg",
+        "modifier.svg": "nodes/modifier.svg",
+        "modifierCategory.svg": "nodes/modifierCategory.svg",
+        "onAction.svg": "nodes/onAction.svg",
+        "parameter.svg": "nodes/parameter.svg",
+        "parameterConfig.svg": "nodes/parameterConfig.svg",
+        "property.svg": "nodes/property.svg",
+        "scope.svg": "nodes/scope.svg",
+        "scopeGroup.svg": "nodes/scopeGroup.svg",
+        "scriptedVariable.svg": "nodes/scriptedVariable.svg",
+        "scriptedVariableConfig.svg": "nodes/scriptedVariableConfig.svg",
+        "systemScope.svg": "nodes/systemScope.svg",
+        "tag.svg": "nodes/tag.svg",
+        "templateExpression.svg": "nodes/templateExpression.svg",
+        "trigger.svg": "nodes/trigger.svg",
+        "type.svg": "nodes/type.svg",
+        "value.svg": "nodes/value.svg",
+        "valueField.svg": "nodes/valueField.svg",
+        "variable.svg": "nodes/variable.svg",
+        "cwt": {
+          "block.svg": "nodes/cwt/block.svg",
+          "option.svg": "nodes/cwt/option.svg",
+          "property.svg": "nodes/cwt/property.svg",
+          "value.svg": "nodes/cwt/value.svg"
+        },
+        "localisation": {
+          "command.svg": "nodes/localisation/command.svg",
+          "commandField.svg": "nodes/localisation/commandField.svg",
+          "commandScope.svg": "nodes/localisation/commandScope.svg",
+          "concept.svg": "nodes/localisation/concept.svg",
+          "icon.svg": "nodes/localisation/icon.svg",
+          "locale.svg": "nodes/localisation/locale.svg",
+          "property.svg": "nodes/localisation/property.svg"
+        },
+        "script": {
+          "block.svg": "nodes/script/block.svg",
+          "parameter.svg": "nodes/script/parameter.svg",
+          "parameterCondition.svg": "nodes/script/parameterCondition.svg",
+          "property.svg": "nodes/script/property.svg",
+          "scriptedVariable.svg": "nodes/script/scriptedVariable.svg",
+          "value.svg": "nodes/script/value.svg"
+        }
+      },
+      "presentation.svg": "presentation.svg",
+      "presentation_dark.svg": "presentation_dark.svg",
+      "steam.svg": "steam.svg"
+    }
+  }
+}

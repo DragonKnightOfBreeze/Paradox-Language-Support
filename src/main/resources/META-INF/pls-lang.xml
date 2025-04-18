@@ -117,6 +117,8 @@
     <postStartupActivity implementation="icu.windea.pls.lang.PlsLifecycleListener"/>
 
     <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.psi.ParadoxPsiTreeChangePreprocessor"/>
+
+    <iconMapper mappingFile="icons/PlsIconMappings.json"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls">
