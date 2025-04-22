@@ -16,7 +16,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
+    override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         return when {
             configExpression.type == CwtDataTypes.Block -> {
                 if (expression.isKey != false) return Result.NotMatch
@@ -96,7 +96,7 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 }
 
 class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
-    override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
+    override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         val project = configGroup.project
         return when {
             configExpression.type == CwtDataTypes.PercentageField -> {
@@ -303,7 +303,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 }
 
 class ConstantParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher, CwtConfigPatternAware {
-    override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
+    override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         if (configExpression.type == CwtDataTypes.Constant) {
             val value = configExpression.value ?: return Result.NotMatch
             if (!configExpression.isKey) {
@@ -320,7 +320,7 @@ class ConstantParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher, C
 }
 
 class TemplateExpressionParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher, CwtConfigPatternAware {
-    override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
+    override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         if (configExpression.type == CwtDataTypes.TemplateExpression) {
             if (!expression.type.isStringLikeType()) return Result.NotMatch
             if (expression.isParameterized()) return Result.ParameterizedMatch
@@ -332,7 +332,7 @@ class TemplateExpressionParadoxScriptExpressionMatcher : ParadoxScriptExpression
 }
 
 class AntExpressionParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher, CwtConfigPatternAware {
-    override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
+    override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         if (configExpression.type == CwtDataTypes.AntExpression) {
             val pattern = configExpression.value ?: return Result.NotMatch
             val ignoreCase = configExpression.ignoreCase ?: false
@@ -344,7 +344,7 @@ class AntExpressionParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatch
 }
 
 class RegexParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher, CwtConfigPatternAware {
-    override fun matches(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
+    override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         if (configExpression.type == CwtDataTypes.Regex) {
             val pattern = configExpression.value ?: return Result.NotMatch
             val ignoreCase = configExpression.ignoreCase ?: false

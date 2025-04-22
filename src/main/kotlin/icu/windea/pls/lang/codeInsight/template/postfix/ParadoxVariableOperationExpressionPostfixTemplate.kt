@@ -35,7 +35,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         val configs = ParadoxExpressionManager.getConfigs(parentProperty, matchOptions = Options.Default or Options.AcceptDefinition)
         if (configs.isEmpty()) return emptyList()
         val configGroup = configs.first().configGroup
-        val expression = ParadoxDataExpression.resolve(setting.id, quoted = false, isKey = true)
+        val expression = ParadoxScriptExpression.resolve(setting.id, quoted = false, isKey = true)
         val configsToMatch = configs.flatMapTo(mutableListOf()) { it.configs.orEmpty() }
         val matched = configsToMatch.find p@{ config ->
             if (config !is CwtPropertyConfig) return@p false

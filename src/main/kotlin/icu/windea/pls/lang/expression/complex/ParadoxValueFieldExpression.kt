@@ -121,7 +121,7 @@ class ParadoxValueFieldExpression private constructor(
         }
 
         private fun isNumber(text: String): Boolean {
-            return ParadoxDataExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
+            return ParadoxScriptExpression.resolve(text).type.let { it == ParadoxType.Int || it == ParadoxType.Float }
         }
     }
 }

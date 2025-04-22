@@ -253,7 +253,7 @@ object ParadoxExpressionManager {
             val isFullParameterized = subPath.isParameterized(full = true)
             val shift = subPaths.lastIndex - i
             val matchesKey = isPropertyValue || shift > 0
-            val expression = ParadoxDataExpression.resolve(subPath, isQuoted, true)
+            val expression = ParadoxScriptExpression.resolve(subPath, isQuoted, true)
             val nextResult = mutableListOf<CwtMemberConfig<*>>()
 
             val parameterizedKeyConfigs by lazy {
@@ -412,14 +412,14 @@ object ParadoxExpressionManager {
         //未填写属性的值 - 匹配所有
         val keyExpression = when {
             element is ParadoxScriptFile -> null
-            element is ParadoxScriptProperty -> element.propertyKey.let { ParadoxDataExpression.resolve(it, matchOptions) }
+            element is ParadoxScriptProperty -> element.propertyKey.let { ParadoxScriptExpression.resolve(it, matchOptions) }
             element is ParadoxScriptValue -> null
             else -> return emptyList()
         }
         val valueExpression = when {
-            element is ParadoxScriptFile -> ParadoxDataExpression.BlockExpression
-            element is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxDataExpression.resolve(it, matchOptions) }
-            element is ParadoxScriptValue -> ParadoxDataExpression.resolve(element, matchOptions)
+            element is ParadoxScriptFile -> ParadoxScriptExpression.BlockExpression
+            element is ParadoxScriptProperty -> element.propertyValue?.let { ParadoxScriptExpression.resolve(it, matchOptions) }
+            element is ParadoxScriptValue -> ParadoxScriptExpression.resolve(element, matchOptions)
             else -> return emptyList()
         }
 
@@ -484,7 +484,7 @@ object ParadoxExpressionManager {
 
     fun optimizeMatchedConfigs(
         element: PsiElement,
-        expression: ParadoxDataExpression,
+        expression: ParadoxScriptExpression,
         resultValues: List<ResultValue<CwtMemberConfig<*>>>,
         postHandle: Boolean,
         matchOptions: Int = Options.Default
@@ -559,7 +559,7 @@ object ParadoxExpressionManager {
         run r1@{
             if (newResult.isEmpty()) return@r1
             val blockElement = element.castOrNull<ParadoxScriptProperty>()?.block ?: return@r1
-            val blockExpression = ParadoxDataExpression.BlockExpression
+            val blockExpression = ParadoxScriptExpression.BlockExpression
             val configsToRemove = mutableSetOf<CwtPropertyConfig>()
             val group: Collection<List<CwtPropertyConfig>> = newResult.filterIsInstance<CwtPropertyConfig>().groupBy { it.key }.values
             group.forEach f1@{ configs ->
@@ -654,8 +654,8 @@ object ParadoxExpressionManager {
         //注意这里需要考虑内联和可选的情况
         blockElement.processMember(conditional = true, inline = true) p@{ data ->
             val expression = when {
-                data is ParadoxScriptProperty -> ParadoxDataExpression.resolve(data.propertyKey)
-                data is ParadoxScriptValue -> ParadoxDataExpression.resolve(data)
+                data is ParadoxScriptProperty -> ParadoxScriptExpression.resolve(data.propertyKey)
+                data is ParadoxScriptValue -> ParadoxScriptExpression.resolve(data)
                 else -> return@p true
             }
             val isParameterized = expression.type == ParadoxType.String && expression.value.isParameterized()
@@ -936,7 +936,7 @@ object ParadoxExpressionManager {
 
     //region Misc Methods
 
-    fun isConstantMatch(expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
+    fun isConstantMatch(expression: ParadoxScriptExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Boolean {
         //注意这里可能需要在同一循环中同时检查keyExpression和valueExpression，因此这里需要特殊处理
         if (configExpression.isKey && expression.isKey == false) return false
         if (!configExpression.isKey && expression.isKey == true) return false
@@ -959,7 +959,7 @@ object ParadoxExpressionManager {
         val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
         if (constKey != null) return constKey
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return null
-        val expression = ParadoxDataExpression.resolve(key, quoted, true)
+        val expression = ParadoxScriptExpression.resolve(key, quoted, true)
         return keys.find { ParadoxExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
     }
 
@@ -967,7 +967,7 @@ object ParadoxExpressionManager {
         val constKey = configGroup.aliasKeysGroupConst[aliasName]?.get(key) //不区分大小写
         if (constKey != null) return listOf(constKey)
         val keys = configGroup.aliasKeysGroupNoConst[aliasName] ?: return emptyList()
-        val expression = ParadoxDataExpression.resolve(key, quoted, true)
+        val expression = ParadoxScriptExpression.resolve(key, quoted, true)
         return keys.filter { ParadoxExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(it, true), null, configGroup, matchOptions).get(matchOptions) }
     }
 

@@ -125,7 +125,7 @@ object ParadoxExpressionMatcher {
 
     fun matches(
         element: PsiElement,
-        expression: ParadoxDataExpression,
+        expression: ParadoxScriptExpression,
         configExpression: CwtDataExpression,
         config: CwtConfig<*>?,
         configGroup: CwtConfigGroup,
@@ -146,7 +146,7 @@ object ParadoxExpressionMatcher {
             return cache.get(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
         }
 
-        fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {
+        fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxScriptExpression, project: Project): Result {
             val name = expression.value
             val cacheKey = "l#$name"
             return getCachedMatchResult(element, cacheKey) {
@@ -155,7 +155,7 @@ object ParadoxExpressionMatcher {
             }
         }
 
-        fun getSyncedLocalisationMatchResult(element: PsiElement, expression: ParadoxDataExpression, project: Project): Result {
+        fun getSyncedLocalisationMatchResult(element: PsiElement, expression: ParadoxScriptExpression, project: Project): Result {
             val name = expression.value
             val cacheKey = "ls#$name"
             return getCachedMatchResult(element, cacheKey) {
@@ -164,7 +164,7 @@ object ParadoxExpressionMatcher {
             }
         }
 
-        fun getDefinitionMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, project: Project): Result {
+        fun getDefinitionMatchResult(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, project: Project): Result {
             val name = expression.value
             val typeExpression = configExpression.value ?: return Result.NotMatch //invalid cwt config
             val cacheKey = "d#${typeExpression}#${name}"
@@ -174,7 +174,7 @@ object ParadoxExpressionMatcher {
             }
         }
 
-        fun getPathReferenceMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, project: Project): Result {
+        fun getPathReferenceMatchResult(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, project: Project): Result {
             val pathReference = expression.value.normalizePath()
             val cacheKey = "p#${pathReference}#${configExpression}"
             return getCachedMatchResult(element, cacheKey) {
@@ -219,7 +219,7 @@ object ParadoxExpressionMatcher {
             }
         }
 
-        fun getModifierMatchResult(element: PsiElement, expression: ParadoxDataExpression, configGroup: CwtConfigGroup): Result {
+        fun getModifierMatchResult(element: PsiElement, expression: ParadoxScriptExpression, configGroup: CwtConfigGroup): Result {
             val name = expression.value
             val cacheKey = "m#${name}"
             return getCachedMatchResult(element, cacheKey) {
@@ -227,7 +227,7 @@ object ParadoxExpressionMatcher {
             }
         }
 
-        fun getTemplateMatchResult(element: PsiElement, expression: ParadoxDataExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
+        fun getTemplateMatchResult(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
             val exp = expression.value
             val template = configExpression.expressionString
             val cacheKey = "t#${template}#${exp}"

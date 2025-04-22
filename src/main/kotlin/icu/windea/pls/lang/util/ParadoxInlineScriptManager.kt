@@ -64,7 +64,7 @@ object ParadoxInlineScriptManager {
         val propertyValue = element.propertyValue ?: return null
         val matchOptions = Options.SkipIndex or Options.SkipScope
         val inlineConfig = inlineConfigs.find {
-            val expression = ParadoxDataExpression.resolve(propertyValue, matchOptions)
+            val expression = ParadoxScriptExpression.resolve(propertyValue, matchOptions)
             ParadoxExpressionMatcher.matches(propertyValue, expression, it.config.valueExpression, it.config, configGroup).get(matchOptions)
         }
         if (inlineConfig == null) return null

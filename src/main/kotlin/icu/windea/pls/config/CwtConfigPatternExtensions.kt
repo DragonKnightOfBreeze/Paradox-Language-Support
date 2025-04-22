@@ -36,7 +36,7 @@ fun String.matchFromPattern(
     val pattern0 = this.substring(fromIndex)
     val configExpression = CwtDataExpression.resolve(pattern0, true)
     if (configExpression.expressionString.isEmpty()) return false
-    val expression = ParadoxDataExpression.resolve(key)
+    val expression = ParadoxScriptExpression.resolve(key)
     val matchResult = patternMatchers.firstNotNullOfOrNull { it.matches(contextElement, expression, configExpression, null, configGroup, matchOptions) } ?: return false
     return matchResult.get(matchOptions)
 }

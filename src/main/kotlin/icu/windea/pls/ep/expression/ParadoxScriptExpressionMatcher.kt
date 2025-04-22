@@ -13,7 +13,7 @@ import icu.windea.pls.script.psi.*
  * 用于匹配脚本表达式与CWT规则表达式。
  *
  * @see ParadoxScriptExpressionElement
- * @see ParadoxDataExpression
+ * @see ParadoxScriptExpression
  * @see CwtDataExpression
  */
 interface ParadoxScriptExpressionMatcher {
@@ -30,7 +30,7 @@ interface ParadoxScriptExpressionMatcher {
      */
     fun matches(
         element: PsiElement,
-        expression: ParadoxDataExpression,
+        expression: ParadoxScriptExpression,
         configExpression: CwtDataExpression,
         config: CwtConfig<*>?,
         configGroup: CwtConfigGroup,
@@ -45,7 +45,7 @@ interface ParadoxScriptExpressionMatcher {
          */
         fun matches(
             element: PsiElement,
-            expression: ParadoxDataExpression,
+            expression: ParadoxScriptExpression,
             configExpression: CwtDataExpression,
             config: CwtConfig<*>?,
             configGroup: CwtConfigGroup,

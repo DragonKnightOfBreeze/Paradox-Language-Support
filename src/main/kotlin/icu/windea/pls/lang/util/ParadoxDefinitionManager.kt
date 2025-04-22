@@ -351,7 +351,7 @@ object ParadoxDefinitionManager {
                 }
                 //匹配值
                 propertyConfig.stringValue != null -> {
-                    val expression = ParadoxDataExpression.resolve(propValue, matchOptions)
+                    val expression = ParadoxScriptExpression.resolve(propValue, matchOptions)
                     return ParadoxExpressionMatcher.matches(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchOptions).get(matchOptions)
                 }
                 //匹配single_alias
@@ -389,7 +389,7 @@ object ParadoxDefinitionManager {
         //注意：propConfig.key可能有重复，这种情况下只要有其中一个匹配即可
         val matched = blockElement.processProperty { propertyElement ->
             val keyElement = propertyElement.propertyKey
-            val expression = ParadoxDataExpression.resolve(keyElement, matchOptions)
+            val expression = ParadoxScriptExpression.resolve(keyElement, matchOptions)
             val propConfigs = propertyConfigs.filter {
                 ParadoxExpressionMatcher.matches(keyElement, expression, it.keyExpression, it, configGroup, matchOptions).get(matchOptions)
             }
@@ -423,7 +423,7 @@ object ParadoxDefinitionManager {
 
         val matched = blockElement.processValue { valueElement ->
             //如果没有匹配的规则则忽略
-            val expression = ParadoxDataExpression.resolve(valueElement, matchOptions)
+            val expression = ParadoxScriptExpression.resolve(valueElement, matchOptions)
 
             val matched = valueConfigs.any { valueConfig ->
                 val matched = ParadoxExpressionMatcher.matches(valueElement, expression, valueConfig.valueExpression, valueConfig, configGroup, matchOptions).get(matchOptions)

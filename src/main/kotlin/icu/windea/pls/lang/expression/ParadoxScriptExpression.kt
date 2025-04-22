@@ -10,9 +10,11 @@ import icu.windea.pls.script.psi.*
 import java.util.*
 
 /**
- * 数据表达式，对应脚本语言中的某处键/值。
+ * 脚本表达式，
+ *
+ * @see ParadoxScriptExpressionElement
  */
-interface ParadoxDataExpression {
+interface ParadoxScriptExpression {
     val value: String
     val type: ParadoxType
     val quoted: Boolean
@@ -25,18 +27,18 @@ interface ParadoxDataExpression {
     fun matchesConstant(v: String): Boolean
 
     companion object Resolver {
-        val BlockExpression: ParadoxDataExpression = Impl(PlsConstants.Strings.blockFolder, ParadoxType.Block, false, false)
-        val UnknownExpression: ParadoxDataExpression = Impl(PlsConstants.Strings.unknown, ParadoxType.Unknown, false, false)
+        val BlockExpression: ParadoxScriptExpression = Impl(PlsConstants.Strings.blockFolder, ParadoxType.Block, false, false)
+        val UnknownExpression: ParadoxScriptExpression = Impl(PlsConstants.Strings.unknown, ParadoxType.Unknown, false, false)
 
-        fun resolve(value: String, quoted: Boolean, isKey: Boolean? = null): ParadoxDataExpression {
+        fun resolve(value: String, quoted: Boolean, isKey: Boolean? = null): ParadoxScriptExpression {
             return Impl(value, ParadoxTypeManager.resolve(value), quoted, isKey)
         }
 
-        fun resolve(text: String, isKey: Boolean? = null): ParadoxDataExpression {
+        fun resolve(text: String, isKey: Boolean? = null): ParadoxScriptExpression {
             return Impl(text.unquote(), ParadoxTypeManager.resolve(text), text.isLeftQuoted(), isKey)
         }
 
-        fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): ParadoxDataExpression {
+        fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): ParadoxScriptExpression {
             return when {
                 element is ParadoxScriptBlock -> Impl(PlsConstants.Strings.blockFolder, ParadoxType.Block, false, false)
                 element is ParadoxScriptScriptedVariableReference -> LazyImpl(element, matchOptions, false)
@@ -47,7 +49,7 @@ interface ParadoxDataExpression {
 
     //region Implementations
 
-    private sealed class Base : ParadoxDataExpression {
+    private sealed class Base : ParadoxScriptExpression {
         private val regex by lazy { ParadoxExpressionManager.toRegex(value) }
 
         override fun isParameterized(): Boolean {
@@ -67,7 +69,7 @@ interface ParadoxDataExpression {
         }
 
         override fun equals(other: Any?): Boolean {
-            return other is ParadoxDataExpression && (value == other.value && quoted == other.quoted)
+            return other is ParadoxScriptExpression && (value == other.value && quoted == other.quoted)
         }
 
         override fun hashCode(): Int {
