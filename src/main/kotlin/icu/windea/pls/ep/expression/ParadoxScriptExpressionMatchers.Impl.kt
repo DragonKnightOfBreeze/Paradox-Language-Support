@@ -302,55 +302,47 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     }
 }
 
-class ConstantParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher, CwtConfigPatternAware {
+class TemplateExpressionParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
     override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
-        if (configExpression.type == CwtDataTypes.Constant) {
-            val value = configExpression.value ?: return Result.NotMatch
-            if (!configExpression.isKey) {
-                //常量的值也可能是yes/no
-                val text = expression.value
-                if ((value == "yes" || value == "no") && text.isLeftQuoted()) return Result.NotMatch
-            }
-            //这里也用来匹配空字符串
-            val r = expression.matchesConstant(value)
-            return Result.of(r)
-        }
-        return null
+        if (configExpression.type != CwtDataTypes.TemplateExpression) return null
+        if (!expression.type.isStringLikeType()) return Result.NotMatch
+        if (expression.isParameterized()) return Result.ParameterizedMatch
+        //允许用引号括起
+        return ParadoxExpressionMatcher.Impls.getTemplateMatchResult(element, expression, configExpression, configGroup)
     }
 }
 
-class TemplateExpressionParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher, CwtConfigPatternAware {
+class AntExpressionParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
     override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
-        if (configExpression.type == CwtDataTypes.TemplateExpression) {
-            if (!expression.type.isStringLikeType()) return Result.NotMatch
-            if (expression.isParameterized()) return Result.ParameterizedMatch
-            //允许用引号括起
-            return ParadoxExpressionMatcher.Impls.getTemplateMatchResult(element, expression, configExpression, configGroup)
-        }
-        return null
+        if (configExpression.type != CwtDataTypes.AntExpression) return null
+        val pattern = configExpression.value ?: return Result.NotMatch
+        val ignoreCase = configExpression.ignoreCase ?: false
+        val r = expression.value.matchesAntPattern(pattern, ignoreCase)
+        return Result.of(r)
     }
 }
 
-class AntExpressionParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher, CwtConfigPatternAware {
+class RegexParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
     override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
-        if (configExpression.type == CwtDataTypes.AntExpression) {
-            val pattern = configExpression.value ?: return Result.NotMatch
-            val ignoreCase = configExpression.ignoreCase ?: false
-            val r = expression.value.matchesAntPattern(pattern, ignoreCase)
-            return Result.of(r)
-        }
-        return null
+        if (configExpression.type != CwtDataTypes.Regex) return null
+        val pattern = configExpression.value ?: return Result.NotMatch
+        val ignoreCase = configExpression.ignoreCase ?: false
+        val r = expression.value.matchesRegex(pattern, ignoreCase)
+        return Result.of(r)
     }
 }
 
-class RegexParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher, CwtConfigPatternAware {
+class ConstantParadoxScriptExpressionMatcher : PatternAwareParadoxScriptExpressionMatcher() {
     override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
-        if (configExpression.type == CwtDataTypes.Regex) {
-            val pattern = configExpression.value ?: return Result.NotMatch
-            val ignoreCase = configExpression.ignoreCase ?: false
-            val r = expression.value.matchesRegex(pattern, ignoreCase)
-            return Result.of(r)
+        if (configExpression.type != CwtDataTypes.Constant) return null
+        val value = configExpression.value ?: return Result.NotMatch
+        if (!configExpression.isKey) {
+            //常量的值也可能是yes/no
+            val text = expression.value
+            if ((value == "yes" || value == "no") && text.isLeftQuoted()) return Result.NotMatch
         }
-        return null
+        //这里也用来匹配空字符串
+        val r = expression.matchesConstant(value)
+        return Result.of(r)
     }
 }

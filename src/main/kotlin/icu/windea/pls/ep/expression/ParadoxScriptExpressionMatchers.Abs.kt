@@ -1,0 +1,3 @@
+package icu.windea.pls.ep.expression
+
+abstract class PatternAwareParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher

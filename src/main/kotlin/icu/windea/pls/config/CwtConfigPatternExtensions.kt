@@ -8,10 +8,6 @@ import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.util.*
 
-interface CwtConfigPatternAware
-
-private val patternMatchers by lazy { ParadoxScriptExpressionMatcher.EP_NAME.extensionList.filter { it is CwtConfigPatternAware } }
-
 /**
  * 用当前键作为通配符来匹配指定的[key]。
  * @param key 要与通配符进行匹配的键。
@@ -37,7 +33,11 @@ fun String.matchFromPattern(
     val configExpression = CwtDataExpression.resolve(pattern0, true)
     if (configExpression.expressionString.isEmpty()) return false
     val expression = ParadoxScriptExpression.resolve(key)
-    val matchResult = patternMatchers.firstNotNullOfOrNull { it.matches(contextElement, expression, configExpression, null, configGroup, matchOptions) } ?: return false
+    val matchResult = ParadoxScriptExpressionMatcher.EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+        if (ep !is PatternAwareParadoxScriptExpressionMatcher) return@f null
+        ep.matches(contextElement, expression, configExpression, null, configGroup, matchOptions)
+    }
+    if (matchResult == null) return false
     return matchResult.get(matchOptions)
 }
 
