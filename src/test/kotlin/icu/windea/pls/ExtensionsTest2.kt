@@ -1,4 +1,4 @@
-package icu.windea.pls.test
+package icu.windea.pls
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.lang.*

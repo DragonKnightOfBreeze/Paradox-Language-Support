@@ -1,4 +1,4 @@
-package icu.windea.pls.test.misc
+package icu.windea.pls.misc
 
 import com.intellij.ui.*
 import org.junit.*
