@@ -17,6 +17,8 @@ import icu.windea.pls.localisation.psi.*
  * 提供对本地化表达式的支持。
  *
  * 用于实现代码高亮、引用解析、代码补全等功能。
+ *
+ * @see ParadoxLocalisationExpressionElement
  */
 @WithGameTypeEP
 interface ParadoxLocalisationExpressionSupport {

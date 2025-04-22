@@ -6,8 +6,8 @@ import icu.windea.pls.config.CwtDataTypeGroups as TypeGroups
 import icu.windea.pls.config.CwtDataTypes as Types
 
 class DefaultCwtDataExpressionMerger : CwtDataExpressionMerger {
-    override fun merge(expression: CwtDataExpression, otherExpression: CwtDataExpression, configGroup: CwtConfigGroup): String? {
-        return mergeExpressionString(expression, otherExpression, configGroup)
+    override fun merge(configExpression1: CwtDataExpression, configExpression2: CwtDataExpression, configGroup: CwtConfigGroup): String? {
+        return mergeExpressionString(configExpression1, configExpression2, configGroup)
     }
 
     private fun mergeExpressionString(e1: CwtDataExpression, e2: CwtDataExpression, configGroup: CwtConfigGroup): String? {

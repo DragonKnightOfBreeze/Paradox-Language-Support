@@ -5,8 +5,8 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 
 class BaseCwtDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider {
-    override fun getPriority(expression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
-        return when (expression.type) {
+    override fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
+        return when (configExpression.type) {
             CwtDataTypes.Block -> 100.0 //highest
             CwtDataTypes.Bool -> 100.0 //highest
             CwtDataTypes.Int -> 90.0 //very high
@@ -19,8 +19,8 @@ class BaseCwtDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider 
 }
 
 class CoreCwtDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider {
-    override fun getPriority(expression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
-        return when (expression.type) {
+    override fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
+        return when (configExpression.type) {
             CwtDataTypes.Constant -> 100.0 //highest
             CwtDataTypes.Any -> 1.0 //very low
             CwtDataTypes.Parameter -> 10.0
@@ -40,7 +40,7 @@ class CoreCwtDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider 
             CwtDataTypes.FileName -> 70.0
             CwtDataTypes.Definition -> 70.0
             CwtDataTypes.EnumValue -> {
-                val enumName = expression.value ?: return 0.0 //unexpected
+                val enumName = configExpression.value ?: return 0.0 //unexpected
                 if (configGroup.enums.containsKey(enumName)) return 80.0
                 if (configGroup.complexEnums.containsKey(enumName)) return 45.0
                 return 0.0 //unexpected

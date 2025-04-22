@@ -18,6 +18,8 @@ import icu.windea.pls.script.psi.*
  * 提供对脚本表达式的支持。
  *
  * 用于实现代码高亮、引用解析、代码补全等功能。
+ *
+ * @see ParadoxScriptExpressionElement
  */
 @WithGameTypeEP
 interface ParadoxScriptExpressionSupport {

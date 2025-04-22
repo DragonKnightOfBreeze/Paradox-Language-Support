@@ -13,7 +13,7 @@ interface CwtDataExpressionMerger {
     /**
      * 得到合并后的表达式的字符串。如果不能合并则返回null。
      */
-    fun merge(expression: CwtDataExpression, otherExpression: CwtDataExpression, configGroup: CwtConfigGroup): String?
+    fun merge(configExpression1: CwtDataExpression, configExpression2: CwtDataExpression, configGroup: CwtConfigGroup): String?
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtDataExpressionMerger>("icu.windea.pls.dataExpressionMerger")
@@ -21,10 +21,10 @@ interface CwtDataExpressionMerger {
         /**
          * @see CwtDataExpressionMerger.merge
          */
-        fun merge(expression: CwtDataExpression, otherExpression: CwtDataExpression, configGroup: CwtConfigGroup): String? {
-            if (expression == otherExpression) return expression.expressionString
+        fun merge(configExpression1: CwtDataExpression, configExpression2: CwtDataExpression, configGroup: CwtConfigGroup): String? {
+            if (configExpression1 == configExpression2) return configExpression1.expressionString
             EP_NAME.extensionList.forEach f@{ ep ->
-                val r = ep.merge(expression, otherExpression, configGroup)
+                val r = ep.merge(configExpression1, configExpression2, configGroup)
                 if (r != null) return r
             }
             return null
