@@ -19,12 +19,13 @@ import icu.windea.pls.script.psi.*
 interface ParadoxScriptExpressionMatcher {
     /**
      * 匹配脚本表达式和CWT规则表达式。
+     *
      * @param element 上下文PSI元素。
      * @param expression 脚本表达式
      * @param configExpression CWT规则表达式。
      * @param config 上下文CWT规则。
      * @param configGroup 规则分组。
-     * @return 匹配结果，
+     * @return 匹配结果。
      * @see ParadoxExpressionMatcher
      * @see ParadoxExpressionMatcher.Result
      */

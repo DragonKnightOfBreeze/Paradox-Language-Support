@@ -1,13 +1,15 @@
 import org.jetbrains.changelog.*
 import org.jetbrains.intellij.platform.gradle.*
+import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.tasks.*
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.utils.*
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.9.25"
-    id("org.jetbrains.intellij.platform") version "2.3.0"
+    id("org.jetbrains.kotlin.jvm") version "2.1.10"
+    id("org.jetbrains.intellij.platform") version "2.5.0"
     id("org.jetbrains.grammarkit") version "2022.3.2.2"
-    id("org.jetbrains.changelog") version "2.0.0"
+    id("org.jetbrains.changelog") version "2.2.1"
 }
 
 group = providers.gradleProperty("pluginGroup").get()
@@ -20,7 +22,7 @@ fun String.toChangeLogText(): String {
     return lines()
         .run {
             val start = indexOfFirst { it.startsWith("## $version") }
-            val end = indexOfFirst(start + 1) { it.startsWith("## ") }.let { if (it != -1) it else size }
+            val end = drop(start + 1).indexOfFirst { it.startsWith("## ") }.let { if (it != -1) it else size }
             subList(start + 1, end)
         }
         .mapNotNull {
@@ -124,6 +126,15 @@ sourceSets {
 
 kotlin {
     jvmToolchain(21)
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_21
+        freeCompilerArgs.addAll(listOf(
+            "-Xjvm-default=all",
+            "-Xinline-classes",
+            "-opt-in=kotlin.RequiresOptIn",
+            "-opt-in=kotlin.ExperimentalStdlibApi",
+        ))
+    }
 }
 
 val excludesInJar = listOf(
@@ -148,17 +159,6 @@ val cwtConfigDirs = listOf(
 tasks {
     withType<Copy> {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    }
-    withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "21"
-            freeCompilerArgs = listOf(
-                "-Xjvm-default=all",
-                "-Xinline-classes",
-                "-opt-in=kotlin.RequiresOptIn",
-                "-opt-in=kotlin.ExperimentalStdlibApi",
-            )
-        }
     }
     jar {
         //添加项目文档和许可证

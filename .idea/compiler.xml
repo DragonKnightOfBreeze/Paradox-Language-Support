@@ -4,14 +4,6 @@
     <option name="USE_RELEASE_OPTION" value="false" />
     <bytecodeTargetLevel target="21" />
   </component>
-  <component name="JavacSettings">
-    <option name="ADDITIONAL_OPTIONS_STRING" value="--add-exports=java.desktop/sun.awt=ALL-UNNAMED --add-opens=java.desktop/sun.awt=ALL-UNNAMED" />
-    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="Paradox-Language-Support" options="" />
-      <module name="Paradox-Language-Support.main" options="" />
-      <module name="Paradox-Language-Support.test" options="" />
-    </option>
-  </component>
   <component name="TypeScriptCompiler">
     <option name="useTypesFromServer" value="true" />
   </component>

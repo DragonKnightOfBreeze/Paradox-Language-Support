@@ -4,5 +4,9 @@
     <option name="redisAddress" value="" />
     <option name="redisAuth" value="" />
     <option name="redisCacheKey" value="" />
+    <option name="tunnelServerList">
+      <list />
+    </option>
+    <option name="lastSelectAppJson" value="null" />
   </component>
 </project>

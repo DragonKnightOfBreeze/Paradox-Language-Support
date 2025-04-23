@@ -10,7 +10,8 @@
 
 ## 1.3.14
 
-* [ ] 提供适配新UI的图标 / Provide icons that fit the new UI
+* [X] 更新IDEA版本到2025.1 / Update IDEA version to 2025.1 *
+* [X] 提供适配新UI的图标 / Provide icons that fit the new UI *
 * [X] 提供简体中文的本地化 / Provides localization for Simplified Chinese
 
 ## 1.3.33
