@@ -44,7 +44,7 @@ class ParadoxScriptedVariableInlineProcessor(
         if (reference != null) {
             usages.add(UsageInfo(reference.element))
         }
-        for (reference in ReferencesSearch.search(element, myRefactoringScope, true)) {
+        ReferencesSearch.search(element, myRefactoringScope, true).processQuery p@{ reference ->
             ProgressManager.checkCanceled()
             usages.add(UsageInfo(reference.element))
         }

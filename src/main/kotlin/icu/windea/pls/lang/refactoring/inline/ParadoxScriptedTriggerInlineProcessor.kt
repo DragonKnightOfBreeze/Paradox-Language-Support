@@ -36,16 +36,18 @@ class ParadoxScriptedTriggerInlineProcessor(
     override fun createUsageViewDescriptor(usages: Array<out UsageInfo>) = ParadoxInlineViewDescriptor(element)
 
     override fun findUsages(): Array<UsageInfo> {
+        if (inlineThisOnly) {
+            if (reference == null) return UsageInfo.EMPTY_ARRAY
+            return arrayOf(UsageInfo(reference))
+        }
         val usages = mutableSetOf<UsageInfo>()
         if (reference != null) {
             usages.add(UsageInfo(reference.element))
         }
-        if (!inlineThisOnly) {
-            for (reference in ReferencesSearch.search(element, myRefactoringScope, true)) {
-                ProgressManager.checkCanceled()
-                if (!ParadoxPsiManager.isInvocationReference(element, reference.element)) continue
-                usages.add(UsageInfo(reference.element))
-            }
+        ReferencesSearch.search(element, myRefactoringScope, true).processQuery p@{ reference ->
+            ProgressManager.checkCanceled()
+            if (!ParadoxPsiManager.isInvocationReference(element, reference.element)) return@p true
+            usages.add(UsageInfo(reference.element))
         }
         return usages.toTypedArray()
     }
