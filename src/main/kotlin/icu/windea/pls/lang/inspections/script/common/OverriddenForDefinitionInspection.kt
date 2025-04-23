@@ -12,16 +12,17 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
+import org.jetbrains.annotations.Nls
 
 /**
  * （对于脚本文件）检查是否存在对定义的重载。
  */
 class OverriddenForDefinitionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
-
         val file = holder.file
         val project = holder.project
+        if (!shouldCheckFile(file)) return PsiElementVisitor.EMPTY_VISITOR
+        val fileInfo = file.fileInfo ?: return PsiElementVisitor.EMPTY_VISITOR
         val virtualFile = file.virtualFile
         val inProject = virtualFile != null && ProjectFileIndex.getInstance(project).isInContent(virtualFile)
         if (!inProject) return PsiElementVisitor.EMPTY_VISITOR //only for project files
@@ -39,6 +40,7 @@ class OverriddenForDefinitionInspection : LocalInspectionTool() {
                 val selector = selector(project, file).definition()
                 val name = definitionInfo.name
                 val type = definitionInfo.type
+                if (name.isEmpty()) return //anonymous -> skipped
                 if (name.isParameterized()) return //parameterized -> ignored
                 val results = ParadoxDefinitionSearch.search(name, type, selector).findAll()
                 if (results.size < 2) return //no override -> skip
@@ -59,10 +61,13 @@ class OverriddenForDefinitionInspection : LocalInspectionTool() {
     private class NavigateToOverriddenDefinitionsFix(key: String, element: PsiElement, elements: Collection<PsiElement>) : NavigateToFix(key, element, elements) {
         override fun getText() = PlsBundle.message("inspection.script.overriddenForDefinition.fix.1")
 
-        override fun getPopupTitle(editor: Editor) =
-            PlsBundle.message("inspection.script.overriddenForDefinition.fix.1.popup.title", key)
+        override fun getPopupTitle(editor: Editor): @Nls String {
+            return PlsBundle.message("inspection.script.overriddenForDefinition.fix.1.popup.title", key)
+        }
 
-        override fun getPopupText(editor: Editor, value: PsiElement) =
-            PlsBundle.message("inspection.script.overriddenForDefinition.fix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+        override fun getPopupText(editor: Editor, value: PsiElement): @Nls String {
+            val lineNumber = editor.document.getLineNumber(value.textOffset)
+            return PlsBundle.message("inspection.script.overriddenForDefinition.fix.1.popup.text", key, lineNumber)
+        }
     }
 }

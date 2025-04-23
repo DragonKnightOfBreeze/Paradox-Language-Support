@@ -7,10 +7,15 @@ import com.intellij.openapi.roots.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.dds.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.*
+import org.intellij.images.fileTypes.impl.*
+import org.jetbrains.annotations.Nls
 
 /**
  * 检查是否存在对文件的重载
@@ -19,7 +24,9 @@ class OverriddenForFileInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         val project = holder.project
+        if (!shouldCheckFile(file)) return PsiElementVisitor.EMPTY_VISITOR
         val fileInfo = file.fileInfo ?: return PsiElementVisitor.EMPTY_VISITOR
+        if (!shouldCheckFile(file, fileInfo.fileType)) return PsiElementVisitor.EMPTY_VISITOR
         val virtualFile = file.virtualFile
         val inProject = virtualFile != null && ProjectFileIndex.getInstance(project).isInContent(virtualFile)
         if (!inProject) return PsiElementVisitor.EMPTY_VISITOR //only for project files
@@ -40,13 +47,35 @@ class OverriddenForFileInspection : LocalInspectionTool() {
         }
     }
 
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if (ParadoxFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (selectRootFile(file) == null) return false
+        return true
+    }
+
+    private fun shouldCheckFile(file: PsiFile, fileType: ParadoxFileType): Boolean {
+        return when (fileType) {
+            ParadoxFileType.Script -> true
+            ParadoxFileType.Localisation -> true
+            ParadoxFileType.ModDescriptor -> false
+            ParadoxFileType.Other -> {
+                // currently only accept generic images
+                val t = file.fileType
+                t == ImageFileType.INSTANCE || t == DdsFileType
+            }
+        }
+    }
+
     private class NavigateToOverriddenFilesFix(key: String, element: PsiElement, elements: Collection<PsiElement>) : NavigateToFix(key, element, elements) {
         override fun getText() = PlsBundle.message("inspection.overriddenForFile.fix.1")
 
-        override fun getPopupTitle(editor: Editor) =
-            PlsBundle.message("inspection.overriddenForFile.fix.1.popup.title", key)
+        override fun getPopupTitle(editor: Editor): @Nls String {
+            return PlsBundle.message("inspection.overriddenForFile.fix.1.popup.title", key)
+        }
 
-        override fun getPopupText(editor: Editor, value: PsiElement) =
-            PlsBundle.message("inspection.overriddenForFile.fix.1.popup.text", key, value.containingFile?.fileInfo?.rootInfo?.rootFile?.path.orAnonymous())
+        override fun getPopupText(editor: Editor, value: PsiElement): @Nls String {
+            val filePath = value.containingFile?.fileInfo?.rootInfo?.rootFile?.path.orAnonymous()
+            return PlsBundle.message("inspection.overriddenForFile.fix.1.popup.text", key, filePath)
+        }
     }
 }

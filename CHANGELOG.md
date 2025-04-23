@@ -13,6 +13,7 @@
 * [X] 更新IDEA版本到2025.1 / Update IDEA version to 2025.1 *
 * [X] 提供适配新UI的图标 / Provide icons that fit the new UI *
 * [X] 提供简体中文的本地化 / Provides localization for Simplified Chinese
+* [X] 优化：有关重载的代码检查不应适用于匿名的定义 / OP: Code checks about overridden should not be applied to anonymous definitions *
 
 ## 1.3.33
 
