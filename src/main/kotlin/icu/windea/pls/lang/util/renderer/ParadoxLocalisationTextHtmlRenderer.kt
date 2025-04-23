@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util.renderer
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
@@ -50,7 +51,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         val color = context.color
         if (color != null) {
             context.colorStack.addLast(color)
-            context.builder.append("<span color=\"").append(color.toHex()).append("\">")
+            context.builder.append("<span style=\"color: #").append(ColorUtil.toHex(color, true)).append("\">")
         } else {
             context.builder.append("<span>")
         }
@@ -79,7 +80,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         //如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
         val color = if (getSettings().others.renderLocalisationColorfulText) element.colorConfig?.color else null
         if (color != null) {
-            context.builder.append("<span style=\"color: #").append(color.toHex()).append("\">")
+            context.builder.append("<span style=\"color: #").append(ColorUtil.toHex(color, true)).append("\">")
         }
         val resolved = element.reference?.resolve()
             ?: element.scriptedVariableReference?.reference?.resolve()
@@ -172,14 +173,22 @@ object ParadoxLocalisationTextHtmlRenderer {
                 val definitionInfo = referenceElement.definitionInfo ?: return@r2
                 val definitionName = definitionInfo.name.orAnonymous()
                 val definitionType = definitionInfo.type
-                if (conceptColor != null) context.builder.append("<span style=\"color: #").append(conceptColor.toHex()).append("\">")
-                context.builder.appendDefinitionLink(context.gameType.orDefault(), definitionName, definitionType, context.element, label = conceptText)
-                if (conceptColor != null) context.builder.append("</span>")
+                if (conceptColor != null) {
+                    context.builder.append("<span style=\"color: #").append(ColorUtil.toHex(conceptColor, true)).append("\">")
+                }
+                context.builder.appendDefinitionLink(context.gameType.orDefault(), definitionName, definitionType, context.element, conceptText)
+                if (conceptColor != null) {
+                    context.builder.append("</span>")
+                }
                 return
             }
-            if (conceptColor != null) context.builder.append("<span style=\"color: #").append(conceptColor.toHex()).append("\">")
+            if (conceptColor != null) {
+                context.builder.append("<span style=\"color: #").append(ColorUtil.toHex(conceptColor, true)).append("\">")
+            }
             context.builder.append(concept.name)
-            if (conceptColor != null) context.builder.append("</span>")
+            if (conceptColor != null) {
+                context.builder.append("</span>")
+            }
             return
         }
 
@@ -203,7 +212,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         val color = if (getSettings().others.renderLocalisationColorfulText) element.colorConfig?.color else null
         if (color != null) {
             context.colorStack.addLast(color)
-            context.builder.append("<span style=\"color: #").append(color.toHex()).append("\">")
+            context.builder.append("<span style=\"color: #").append(ColorUtil.toHex(color, true)).append("\">")
         }
         for (richText in richTextList) {
             ProgressManager.checkCanceled()
@@ -249,7 +258,7 @@ object ParadoxLocalisationTextHtmlRenderer {
                     //如果没有颜色，这里需要使用文档的默认前景色，以显示为普通文本
                     val useDefaultColor = context.colorStack.isEmpty()
                     if (useDefaultColor) {
-                        context.builder.append("<span style=\"color: #").append(defaultColor.toHex()).append("\">")
+                        context.builder.append("<span style=\"color: #").append(ColorUtil.toHex(defaultColor, true)).append("\">")
                     }
                     context.builder.append(link)
                     if (useDefaultColor) {

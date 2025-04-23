@@ -25,7 +25,7 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
     }
 
     override fun getIcon(unused: Boolean): Icon {
-        return PlsIcons.Library
+        return PlsIcons.General.Library
     }
 
     override fun getPresentableText(): String {

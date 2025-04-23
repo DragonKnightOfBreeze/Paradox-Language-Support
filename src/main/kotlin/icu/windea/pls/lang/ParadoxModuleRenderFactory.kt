@@ -3,10 +3,9 @@ package icu.windea.pls.lang
 import com.intellij.ide.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.*
+import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.util.*
 import icu.windea.pls.cwt.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 /**
@@ -23,14 +22,14 @@ class ParadoxModuleRenderFactory : ModuleRendererFactory() {
             val configGroup = CwtConfigManager.getContainingConfigGroup(element) ?: return@run
             val gameType = configGroup.gameType
             val text = "${gameType.title} Config"
-            return TextWithIcon(text, PlsIcons.ConfigGroupDirectory)
+            return TextWithIcon(text, PlsIcons.General.ConfigGroupDirectory)
         }
 
         val rootFile = selectRootFile(element) ?: return null
         val rootInfo = rootFile.rootInfo ?: return null
         return when (rootInfo) {
-            is ParadoxRootInfo.Game -> TextWithIcon(rootInfo.qualifiedName, PlsIcons.GameDirectory)
-            is ParadoxRootInfo.Mod -> TextWithIcon(rootInfo.qualifiedName, PlsIcons.ModDirectory)
+            is ParadoxRootInfo.Game -> TextWithIcon(rootInfo.qualifiedName, PlsIcons.General.GameDirectory)
+            is ParadoxRootInfo.Mod -> TextWithIcon(rootInfo.qualifiedName, PlsIcons.General.ModDirectory)
         }
     }
 }

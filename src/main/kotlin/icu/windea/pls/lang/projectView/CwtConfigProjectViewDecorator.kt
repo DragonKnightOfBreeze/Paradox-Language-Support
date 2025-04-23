@@ -2,7 +2,7 @@ package icu.windea.pls.lang.projectView
 
 import com.intellij.ide.projectView.*
 import com.intellij.ide.projectView.impl.nodes.*
-import icu.windea.pls.*
+import icu.windea.pls.PlsIcons
 import icu.windea.pls.ep.configGroup.*
 
 /**
@@ -15,7 +15,7 @@ class CwtConfigProjectViewDecorator : ProjectViewNodeDecorator {
             val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
             val fileProvider = fileProviders.find { it.getRootDirectory(node.project) == file } ?: return
             if (data.locationString != null) return //忽略存在locationString的情况
-            data.setIcon(PlsIcons.ConfigGroupDirectory)
+            data.setIcon(PlsIcons.General.ConfigGroupDirectory)
             if (node.parent is SyntheticLibraryElementNode) {
                 data.locationString = fileProvider.getHintMessage()
             }

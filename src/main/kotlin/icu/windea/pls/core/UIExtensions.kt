@@ -35,8 +35,6 @@ fun URL.toIconOrNull(): Icon? {
     return IconLoader.findIcon(this)
 }
 
-fun Color.toHex(withAlpha: Boolean = true) = ColorUtil.toHex(this, withAlpha)
-
 operator fun Color.component1() = red
 operator fun Color.component2() = green
 operator fun Color.component3() = blue

@@ -31,31 +31,31 @@
       <add-to-group group-id="Other.KeymapGroup"/>
     </group>
     <group id="Dds.EditorToolbar">
-      <reference id="Images.ToggleTransparencyChessboard"/>
-      <reference id="Images.Editor.ToggleGrid"/>
+      <reference ref="Images.ToggleTransparencyChessboard"/>
+      <reference ref="Images.Editor.ToggleGrid"/>
       <separator/>
-      <reference id="Images.Editor.ZoomIn"/>
-      <reference id="Images.Editor.ZoomOut"/>
-      <reference id="Images.Editor.ActualSize"/>
-      <reference id="Images.Editor.FitZoomToWindow"/>
-      <reference id="ShowColorPicker"/>
-      <reference id="Images.ChangeBackground"/>
+      <reference ref="Images.Editor.ZoomIn"/>
+      <reference ref="Images.Editor.ZoomOut"/>
+      <reference ref="Images.Editor.ActualSize"/>
+      <reference ref="Images.Editor.FitZoomToWindow"/>
+      <reference ref="ShowColorPicker"/>
+      <reference ref="Images.ChangeBackground"/>
     </group>
     <group id="Dds.EditorPopupMenu">
-      <reference id="CutCopyPasteGroup"/>
+      <reference ref="CutCopyPasteGroup"/>
       <separator/>
-      <reference id="FindUsages"/>
-      <reference id="RefactoringMenu"/>
+      <reference ref="FindUsages"/>
+      <reference ref="RefactoringMenu"/>
       <separator/>
-      <reference id="Images.EditorToolbar"/>
-      <reference id="Images.ShowBorder"/>
+      <reference ref="Images.EditorToolbar"/>
+      <reference ref="Images.ShowBorder"/>
       <separator/>
-      <reference id="VersionControlsGroup"/>
+      <reference ref="VersionControlsGroup"/>
       <separator/>
-      <reference id="Dds.EditExternally"/>
-      <reference id="Dds.EditExternalEditorPath"/>
-      <reference id="Dds.ConvertToPng"/>
-      <reference id="ExternalToolsGroup"/>
+      <reference ref="Dds.EditExternally"/>
+      <reference ref="Dds.EditExternalEditorPath"/>
+      <reference ref="Dds.ConvertToPng"/>
+      <reference ref="ExternalToolsGroup"/>
     </group>
     <action id="Dds.ConvertToDds" class="icu.windea.pls.dds.actions.ConvertToDdsAction">
       <keyboard-shortcut first-keystroke="control alt p" keymap="$default"/>

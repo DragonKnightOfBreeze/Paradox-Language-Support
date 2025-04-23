@@ -5,112 +5,148 @@ import com.intellij.ui.*
 import javax.swing.*
 
 object PlsIcons {
-    @JvmField
-    val GameDirectory = AllIcons.Modules.SourceRoot
-    @JvmField
-    val ModDirectory = AllIcons.Modules.SourceRoot
-    @JvmField
-    val ConfigGroupDirectory = AllIcons.Nodes.ConfigFolder
-    @JvmField
-    val Library = AllIcons.Nodes.PpLibFolder
-    @JvmField
-    val Image = AllIcons.FileTypes.Image
-    @JvmField
-    val Presentation = loadIcon("/icons/presentation.svg")
-    @JvmField
-    val Steam = loadIcon("/icons/steam.svg")
+    private val colorWhite = ColorUtil.fromHex("#9AA7B0")
+    private val colorBlue = ColorUtil.fromHex("#5D8DC3")
+
+    private fun IconManager.getIcon(path: String): Icon = getIcon(path, PlsIcons.javaClass.classLoader)
+
+    object General {
+        @JvmField
+        val GameDirectory = AllIcons.Modules.SourceRoot
+        @JvmField
+        val ModDirectory = AllIcons.Modules.SourceRoot
+        @JvmField
+        val ConfigGroupDirectory = AllIcons.Modules.ResourcesRoot
+        @JvmField
+        val Library = AllIcons.Nodes.PpLibFolder
+        @JvmField
+        val Image = IconManager.getInstance().getIcon("/icons/general/image.svg") // from ThumbnailToolWindow.svg
+        @JvmField
+        val Presentation = IconManager.getInstance().getIcon("/icons/general/presentation.svg") // from ThumbnailToolWindow.svg, fill #5D8DC3
+        @JvmField
+        val Steam = IconManager.getInstance().getIcon("/icons/general/steam.svg")
+    }
 
     object FileTypes {
         @JvmField
-        val Cwt = loadIcon("/icons/fileTypes/cwt.svg")
+        val Cwt = IconManager.getInstance().getIcon("/icons/fileTypes/cwt.svg")
         @JvmField
-        val ParadoxScript = loadIcon("/icons/fileTypes/paradoxScript.svg")
+        val ParadoxScript = IconManager.getInstance().getIcon("/icons/fileTypes/paradoxScript.svg")
         @JvmField
-        val ParadoxLocalisation = loadIcon("/icons/fileTypes/paradoxLocalisation.svg")
+        val ParadoxLocalisation = IconManager.getInstance().getIcon("/icons/fileTypes/paradoxLocalisation.svg")
         @JvmField
-        val ModeDescriptor = loadIcon("/icons/fileTypes/modDescriptor.svg")
+        val CwtConfig = IconManager.getInstance().getIcon("/icons/fileTypes/cwtConfig.svg") // from general/gear.svg, fill #9AA7B0
         @JvmField
-        val CwtConfig = loadIcon("/icons/fileTypes/cwtConfig.svg")
+        val ModeDescriptor = IconManager.getInstance().getIcon("/icons/fileTypes/modDescriptor.svg") // from general/gear.svg, fill #5D8DC3
     }
 
     object Nodes {
         @JvmField
-        val ScriptedVariable = loadIcon("/icons/nodes/scriptedVariable.svg")
+        val CwtProperty = IconManager.getInstance().getIcon("/icons/nodes/cwt_property.svg")
         @JvmField
-        val Definition = loadIcon("/icons/nodes/definition.svg")
+        val CwtValue = IconManager.getInstance().getIcon("/icons/nodes/cwt_value.svg")
         @JvmField
-        val Localisation = loadIcon("/icons/nodes/localisation.svg")
+        val CwtBlock = IconManager.getInstance().getIcon("/icons/nodes/cwt_block.svg")
         @JvmField
-        val Property = loadIcon("/icons/nodes/property.svg")
+        val CwtOption = IconManager.getInstance().getIcon("/icons/nodes/cwt_option.svg")
+
         @JvmField
-        val Value = loadIcon("/icons/nodes/value.svg")
+        val ScriptedVariableConfig = IconManager.getInstance().getIcon("/icons/nodes/config_scriptedVariable.svg") // fill #9AA7B0
         @JvmField
-        val Parameter = loadIcon("/icons/nodes/parameter.svg")
+        val DefinitionConfig = IconManager.getInstance().getIcon("/icons/nodes/config_definition.svg") // fill #9AA7B0
         @JvmField
-        val Type = loadIcon("/icons/nodes/type.svg")
+        val InlineScriptConfig = IconManager.getInstance().getIcon("/icons/nodes/config_inlineScript.svg") // fill #9AA7B0
         @JvmField
-        val Variable = loadIcon("/icons/nodes/variable.svg")
+        val ParameterConfig = IconManager.getInstance().getIcon("/icons/nodes/config_parameter.svg") // fill #9AA7B0
         @JvmField
-        val DynamicValueType = loadIcon("/icons/nodes/dynamicValueType.svg")
+        val DynamicValueConfig = IconManager.getInstance().getIcon("/icons/nodes/config_dynamicValue.svg") // fill #9AA7B0
         @JvmField
-        val DynamicValue = loadIcon("/icons/nodes/dynamicValue.svg")
+        val EnumValueConfig = IconManager.getInstance().getIcon("/icons/nodes/config_enumValue.svg") // fill #9AA7B0
+
         @JvmField
-        val Enum = loadIcon("/icons/nodes/enum.svg")
+        val ScriptedVariable = IconManager.getInstance().getIcon("/icons/nodes/scriptedVariable.svg")
         @JvmField
-        val EnumValue = loadIcon("/icons/nodes/enumValue.svg")
+        val Property = IconManager.getInstance().getIcon("/icons/nodes/property.svg")
         @JvmField
-        val ComplexEnum = loadIcon("/icons/nodes/complexEnum.svg")
+        val Value = IconManager.getInstance().getIcon("/icons/nodes/value.svg")
         @JvmField
-        val ComplexEnumValue = loadIcon("/icons/nodes/complexEnumValue.svg")
+        val Block = IconManager.getInstance().getIcon("/icons/nodes/block.svg")
         @JvmField
-        val Scope = loadIcon("/icons/nodes/scope.svg")
+        val Parameter = IconManager.getInstance().getIcon("/icons/nodes/parameter.svg")
         @JvmField
-        val ScopeGroup = loadIcon("/icons/nodes/scopeGroup.svg")
+        val ParameterCondition = IconManager.getInstance().getIcon("/icons/nodes/parameterCondition.svg")
+
         @JvmField
-        val SystemScope = loadIcon("/icons/nodes/systemScope.svg")
+        val LocalisationLocale = IconManager.getInstance().getIcon("/icons/nodes/localisationLocale.svg")
         @JvmField
-        val Link = loadIcon("/icons/nodes/link.svg")
+        val LocalisationProperty = IconManager.getInstance().getIcon("/icons/nodes/localisationProperty.svg")
         @JvmField
-        val ValueField = loadIcon("/icons/nodes/valueField.svg")
+        val LocalisationIcon = IconManager.getInstance().getIcon("/icons/nodes/localisationIcon.svg")
         @JvmField
-        val ModifierCategory = loadIcon("/icons/nodes/modifierCategory.svg")
+        val LocalisationCommand = IconManager.getInstance().getIcon("/icons/nodes/localisationCommand.svg")
         @JvmField
-        val Modifier = loadIcon("/icons/nodes/modifier.svg")
+        val LocalisationCommandScope = IconManager.getInstance().getIcon("/icons/nodes/localisationCommandScope.svg")
         @JvmField
-        val Trigger = loadIcon("/icons/nodes/trigger.svg")
+        val LocalisationCommandField = IconManager.getInstance().getIcon("/icons/nodes/localisationCommandField.svg")
         @JvmField
-        val Effect = loadIcon("/icons/nodes/effect.svg")
+        val LocalisationConcept = IconManager.getInstance().getIcon("/icons/nodes/localisationConcept.svg")
+
         @JvmField
-        val Tag = loadIcon("/icons/nodes/tag.svg")
+        val Definition = IconManager.getInstance().getIcon("/icons/nodes/definition.svg")
         @JvmField
-        val TemplateExpression = loadIcon("icons/nodes/templateExpression.svg")
+        val Localisation = IconManager.getInstance().getIcon("/icons/nodes/localisation.svg")
         @JvmField
-        val Alias = loadIcon("/icons/nodes/alias.svg")
+        val Type = IconManager.getInstance().getIcon("/icons/nodes/type.svg")
         @JvmField
-        val EventNamespace = loadIcon("/icons/nodes/eventNamespace.svg")
+        val Variable = IconManager.getInstance().getIcon("/icons/nodes/variable.svg")
         @JvmField
-        val EventId = loadIcon("/icons/nodes/eventId.svg")
+        val DynamicValueType = IconManager.getInstance().getIcon("/icons/nodes/dynamicValueType.svg")
+        @JvmField
+        val DynamicValue = IconManager.getInstance().getIcon("/icons/nodes/dynamicValue.svg")
+        @JvmField
+        val Enum = IconManager.getInstance().getIcon("/icons/nodes/enum.svg")
+        @JvmField
+        val EnumValue = IconManager.getInstance().getIcon("/icons/nodes/enumValue.svg")
+        @JvmField
+        val Scope = IconManager.getInstance().getIcon("/icons/nodes/scope.svg")
+        @JvmField
+        val ScopeGroup = IconManager.getInstance().getIcon("/icons/nodes/scopeGroup.svg")
+        @JvmField
+        val SystemScope = IconManager.getInstance().getIcon("/icons/nodes/systemScope.svg")
+        @JvmField
+        val Link = IconManager.getInstance().getIcon("/icons/nodes/link.svg")
+        @JvmField
+        val ValueField = IconManager.getInstance().getIcon("/icons/nodes/valueField.svg")
+        @JvmField
+        val ModifierCategory = IconManager.getInstance().getIcon("/icons/nodes/modifierCategory.svg")
+        @JvmField
+        val Modifier = IconManager.getInstance().getIcon("/icons/nodes/modifier.svg")
+        @JvmField
+        val Trigger = IconManager.getInstance().getIcon("/icons/nodes/trigger.svg")
+        @JvmField
+        val Effect = IconManager.getInstance().getIcon("/icons/nodes/effect.svg")
+        @JvmField
+        val Tag = IconManager.getInstance().getIcon("/icons/nodes/tag.svg")
+        @JvmField
+        val TemplateExpression = IconManager.getInstance().getIcon("icons/nodes/templateExpression.svg")
+        @JvmField
+        val Alias = IconManager.getInstance().getIcon("/icons/nodes/alias.svg")
+        @JvmField
+        val EventNamespace = IconManager.getInstance().getIcon("/icons/nodes/eventNamespace.svg")
+        @JvmField
+        val EventId = IconManager.getInstance().getIcon("/icons/nodes/eventId.svg")
         @JvmField
         val PathReference = AllIcons.FileTypes.Any_type
         @JvmField
         val Inline = AllIcons.FileTypes.AddAny
         @JvmField
-        val InlineScript = loadIcon("/icons/nodes/inlineScript.svg")
+        val InlineScript = IconManager.getInstance().getIcon("/icons/nodes/inlineScript.svg")
         @JvmField
-        val DatabaseObjectType = loadIcon("/icons/nodes/gameObjectType.svg")
+        val DatabaseObjectType = IconManager.getInstance().getIcon("/icons/nodes/databaseObjectType.svg")
         @JvmField
-        val DefineNamespace = loadIcon("/icons/nodes/defineNamespace.svg")
+        val DefineNamespace = IconManager.getInstance().getIcon("/icons/nodes/defineNamespace.svg")
         @JvmField
-        val DefineVariable = loadIcon("/icons/nodes/defineVariable.svg")
-
-        @JvmField
-        val ScriptedVariableConfig = loadIcon("/icons/nodes/scriptedVariableConfig.svg")
-        @JvmField
-        val DefinitionConfig = loadIcon("/icons/nodes/definitionConfig.svg")
-        @JvmField
-        val ParameterConfig = loadIcon("/icons/nodes/parameterConfig.svg")
-        @JvmField
-        val InlineScriptConfig = loadIcon("/icons/nodes/inlineScriptConfig.svg")
+        val DefineVariable = IconManager.getInstance().getIcon("/icons/nodes/defineVariable.svg")
 
         @JvmStatic
         fun Definition(type: String?) = when (type) {
@@ -126,107 +162,32 @@ object PlsIcons {
         }
     }
 
-    object CwtNodes {
+    object Gutter {
         @JvmField
-        val Property = loadIcon("/icons/nodes/cwt/property.svg")
+        val ScriptedVariable = IconManager.getInstance().getIcon("/icons/gutter/scriptedVariable.svg")
         @JvmField
-        val Value = loadIcon("/icons/nodes/cwt/value.svg")
+        val Definition = IconManager.getInstance().getIcon("/icons/gutter/definition.svg")
         @JvmField
-        val Block = loadIcon("/icons/nodes/cwt/block.svg")
+        val RelatedLocalisations = IconManager.getInstance().getIcon("/icons/gutter/relatedLocalisations.svg")
         @JvmField
-        val Option = loadIcon("/icons/nodes/cwt/option.svg")
-    }
-
-    object ScriptNodes {
+        val RelatedImages = IconManager.getInstance().getIcon("/icons/gutter/relatedImages.svg")
         @JvmField
-        val ScriptedVariable = loadIcon("/icons/nodes/script/scriptedVariable.svg")
+        val Localisation = IconManager.getInstance().getIcon("/icons/gutter/localisation.svg")
         @JvmField
-        val Property = loadIcon("/icons/nodes/script/property.svg")
-        @JvmField
-        val Value = loadIcon("/icons/nodes/script/value.svg")
-        @JvmField
-        val Block = loadIcon("/icons/nodes/script/block.svg")
-        @JvmField
-        val ParameterCondition = loadIcon("/icons/nodes/script/parameterCondition.svg")
-    }
-
-    object LocalisationNodes {
-        @JvmField
-        val Locale = loadIcon("/icons/nodes/localisation/locale.svg")
-        @JvmField
-        val Property = loadIcon("/icons/nodes/localisation/property.svg")
-        @JvmField
-        val Icon = loadIcon("/icons/nodes/localisation/icon.svg")
-        @JvmField
-        val Command = loadIcon("/icons/nodes/localisation/command.svg")
-        @JvmField
-        val CommandScope = loadIcon("/icons/nodes/localisation/commandScope.svg")
-        @JvmField
-        val CommandField = loadIcon("/icons/nodes/localisation/commandField.svg")
-        @JvmField
-        val Concept = loadIcon("/icons/nodes/localisation/concept.svg")
+        val ComplexEnumValue = IconManager.getInstance().getIcon("icons/gutter/complexEnumValue.svg")
     }
 
     object Actions {
         @JvmField
-        val GameDirectory = AllIcons.Modules.SourceRoot
+        val GameSettings = IconManager.getInstance().getIcon("/icons/actions/gameSettings.svg") // from general/gear.svg, fill #5D8DC3
         @JvmField
-        val ModDirectory = AllIcons.Modules.SourceRoot
-
+        val ModSettings = IconManager.getInstance().getIcon("/icons/actions/modSettings.svg") // from general/gear.svg, fill #5D8DC3
         @JvmField
-        val GameSettings = loadIcon("/icons/actions/gameSettings.svg")
-        @JvmField
-        val ModSettings = loadIcon("/icons/actions/modSettings.svg")
-
-        @JvmField
-        val SteamDirectory = loadIcon("/icons/actions/steamDirectory.svg")
-        @JvmField
-        val SteamGameDirectory = loadIcon("/icons/actions/steamGameDirectory.svg")
-        @JvmField
-        val SteamWorkshopDirectory = loadIcon("/icons/actions/steamWorkshopDirectory.svg")
-        @JvmField
-        val GameDataDirectory = loadIcon("/icons/actions/gameDataDirectory.svg")
-
-        @JvmField
-        val DuplicateDescriptor = AllIcons.Actions.Copy
-        @JvmField
-        val SwitchToPrevDescriptor = AllIcons.General.ArrowLeft
-        @JvmField
-        val SwitchToNextDescriptor = AllIcons.General.ArrowRight
-
-        @JvmField
-        val CreateReference = LocalisationNodes.Property
-        @JvmField
-        val CreateIcon = LocalisationNodes.Icon
-        @JvmField
-        val CreateCommand = LocalisationNodes.Command
-
-        @JvmField
-        val RefreshConfigGroups = loadIcon("/icons/actions/refreshConfigGroups.svg")
-    }
-
-    object Gutter {
-        @JvmField
-        val ScriptedVariable = loadIcon("/icons/gutter/scriptedVariable.svg")
-        @JvmField
-        val Definition = loadIcon("/icons/gutter/definition.svg")
-        @JvmField
-        val RelatedLocalisations = loadIcon("/icons/gutter/relatedLocalisations.svg")
-        @JvmField
-        val RelatedImages = loadIcon("/icons/gutter/relatedImages.svg")
-        @JvmField
-        val Localisation = loadIcon("/icons/gutter/localisation.svg")
-        @JvmField
-        val ComplexEnumValue = loadIcon("icons/gutter/complexEnumValue.svg")
+        val RefreshConfigGroups = IconManager.getInstance().getIcon("/icons/actions/refreshConfigGroups.svg") // from icons/refresh.svg, fill #5D8DC3
     }
 
     object Hierarchy {
         @JvmField
         val Definition = AllIcons.Hierarchy.Subtypes
-    }
-
-    @JvmStatic
-    fun loadIcon(path: String): Icon {
-        return IconManager.getInstance().getIcon(path, PlsIcons.javaClass.classLoader)
     }
 }

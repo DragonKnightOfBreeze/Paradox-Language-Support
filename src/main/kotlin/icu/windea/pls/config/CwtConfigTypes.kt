@@ -1,6 +1,7 @@
 package icu.windea.pls.config
 
 import icu.windea.pls.*
+import icu.windea.pls.PlsIcons
 
 object CwtConfigTypes {
     val Type = CwtConfigType("type") {
@@ -22,7 +23,7 @@ object CwtConfigTypes {
     }
     val ComplexEnum = CwtConfigType("complex enum") {
         prefix = PlsConstants.Strings.complexEnumPrefix
-        icon = PlsIcons.Nodes.ComplexEnum
+        icon = PlsIcons.Nodes.Enum
     }
     val DynamicValueType = CwtConfigType("dynamic value type") {
         prefix = PlsConstants.Strings.dynamicValueTypePrefix
@@ -63,7 +64,7 @@ object CwtConfigTypes {
     val LocalisationCommand = CwtConfigType("localisation command", isReference = true) {
         prefix = PlsConstants.Strings.localisationCommandPrefix
         description = PlsBundle.message("cwt.description.localisationCommand")
-        icon = PlsIcons.LocalisationNodes.CommandField
+        icon = PlsIcons.Nodes.LocalisationCommandField
     }
     val ModifierCategory = CwtConfigType("modifier category", isReference = true) {
         prefix = PlsConstants.Strings.modifierCategoryPrefix
@@ -108,8 +109,9 @@ object CwtConfigTypes {
     val LocalisationLocale = CwtConfigType("localisation locale", isReference = true) {
         prefix = PlsConstants.Strings.localisationLocalePrefix
         description = PlsBundle.message("cwt.description.localisationLocale")
-        icon = PlsIcons.LocalisationNodes.Locale
+        icon = PlsIcons.Nodes.LocalisationLocale
     }
+
     val ExtendedScriptedVariable = CwtConfigType("extended scripted variable") {
         prefix = PlsConstants.Strings.scriptedVariablePrefix
         icon = PlsIcons.Nodes.ScriptedVariableConfig
@@ -136,10 +138,10 @@ object CwtConfigTypes {
     }
     val ExtendedDynamicValue = CwtConfigType("extended dynamic value") {
         prefix = PlsConstants.Strings.dynamicValuePrefix
-        icon = PlsIcons.Nodes.DynamicValue
+        icon = PlsIcons.Nodes.DynamicValueConfig
     }
     val ExtendedComplexEnumValue = CwtConfigType("extended complex enum value") {
         prefix = PlsConstants.Strings.complexEnumValuePrefix
-        icon = PlsIcons.Nodes.ComplexEnumValue
+        icon = PlsIcons.Nodes.EnumValueConfig
     }
 }

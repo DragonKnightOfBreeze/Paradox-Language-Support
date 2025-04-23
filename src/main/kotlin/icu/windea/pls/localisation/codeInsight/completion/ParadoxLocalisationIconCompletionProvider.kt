@@ -5,7 +5,7 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.*
+import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
@@ -67,7 +67,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
         when (element) {
             //val tailText = " by $expression in ${config.pointer.containingFile?.name ?: anonymousString}"
             is ParadoxScriptDefinitionElement -> {
-                val icon = PlsIcons.LocalisationNodes.Icon //使用特定图标
+                val icon = PlsIcons.Nodes.LocalisationIcon //使用特定图标
                 val definitionInfo = element.definitionInfo //不应该为null
                 val tailText = if (definitionInfo != null) " from ${definitionInfo.type} ${definitionInfo.name}" else ""
                 val typeFile = element.containingFile
@@ -78,7 +78,7 @@ class ParadoxLocalisationIconCompletionProvider : CompletionProvider<CompletionP
                 result.addElement(lookupElement, context)
             }
             is PsiFile -> {
-                val icon = PlsIcons.LocalisationNodes.Icon //使用特定图标
+                val icon = PlsIcons.Nodes.LocalisationIcon //使用特定图标
                 val tailText = " from image file"
                 val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
                     .withTailText(tailText, true)

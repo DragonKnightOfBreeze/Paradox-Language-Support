@@ -23,8 +23,8 @@ class ParadoxIconProvider : IconProvider(), DumbAware {
                 if (ProjectRootsUtil.isModuleContentRoot(file, project)) return null
                 if (ProjectRootsUtil.isModuleSourceRoot(file, project)) return null
                 val icon = when (rootInfo) {
-                    is ParadoxRootInfo.Game -> PlsIcons.GameDirectory
-                    is ParadoxRootInfo.Mod -> PlsIcons.ModDirectory
+                    is ParadoxRootInfo.Game -> PlsIcons.General.GameDirectory
+                    is ParadoxRootInfo.Mod -> PlsIcons.General.ModDirectory
                 }
                 return icon
             }

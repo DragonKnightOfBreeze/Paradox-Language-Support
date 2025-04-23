@@ -34,7 +34,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         val CAT_TYPE = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.eventTree.category.type"), PlsIcons.Nodes.Type, true, false)
         val CAT_PROPERTIES = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.eventTree.category.properties"), PlsIcons.Nodes.Property, true, false)
         val CAT_TITLE = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.eventTree.category.title"), PlsIcons.Nodes.Localisation, false, false)
-        val CAT_PICTURE = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.eventTree.category.picture"), PlsIcons.Image, false, false)
+        val CAT_PICTURE = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.eventTree.category.picture"), PlsIcons.General.Image, false, false)
         val CATEGORIES = arrayOf(CAT_TYPE, CAT_PROPERTIES, CAT_TITLE, CAT_PICTURE)
 
         val REL_INVOKE = object : DiagramRelationshipInfoAdapter("INVOKE", DiagramLineType.SOLID, PlsDiagramBundle.message("paradox.eventTree.rel.invoke")) {

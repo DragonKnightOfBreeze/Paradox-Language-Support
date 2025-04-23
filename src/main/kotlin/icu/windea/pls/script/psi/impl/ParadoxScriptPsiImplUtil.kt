@@ -151,7 +151,7 @@ object ParadoxScriptPsiImplUtil {
     fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
         val definitionInfo = element.definitionInfo
         if (definitionInfo != null) return PlsIcons.Nodes.Definition(definitionInfo.type)
-        return PlsIcons.ScriptNodes.Property
+        return PlsIcons.Nodes.Property
     }
 
     @JvmStatic
@@ -238,7 +238,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptPropertyKey, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.ScriptNodes.Property
+        return PlsIcons.Nodes.Property
     }
 
     @JvmStatic
@@ -305,7 +305,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptValue, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.ScriptNodes.Value
+        return PlsIcons.Nodes.Value
     }
 
     @JvmStatic
@@ -358,7 +358,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptString, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.ScriptNodes.Value
+        return PlsIcons.Nodes.Value
     }
 
     @JvmStatic
@@ -420,7 +420,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptBlock, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.ScriptNodes.Block
+        return PlsIcons.Nodes.Block
     }
 
     @JvmStatic
@@ -481,7 +481,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptParameterCondition, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.ScriptNodes.ParameterCondition
+        return PlsIcons.Nodes.ParameterCondition
     }
 
     @JvmStatic
@@ -551,7 +551,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptInlineParameterCondition, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.ScriptNodes.ParameterCondition
+        return PlsIcons.Nodes.ParameterCondition
     }
 
     @JvmStatic

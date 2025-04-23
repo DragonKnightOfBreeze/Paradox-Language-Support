@@ -74,7 +74,7 @@ class CwtConfigGameElementNode(
 
     override fun update(presentation: PresentationData) {
         if (value == null) return
-        presentation.setIcon(PlsIcons.GameDirectory)
+        presentation.setIcon(PlsIcons.General.GameDirectory)
         presentation.presentableText = value.gameType.title
     }
 

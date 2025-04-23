@@ -4,7 +4,7 @@ import com.intellij.ide.*
 import com.intellij.ide.projectView.impl.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import icu.windea.pls.*
+import icu.windea.pls.PlsIcons
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.configGroup.*
 import javax.swing.*
@@ -23,7 +23,7 @@ class CwtConfigIconProvider : IconProvider(), DumbAware {
                 val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
                 val fileProvider = fileProviders.find { it.getRootDirectory(project) == file }
                 if (fileProvider == null) return null
-                return PlsIcons.ConfigGroupDirectory
+                return PlsIcons.General.ConfigGroupDirectory
             }
             element is CwtFile -> {
                 val file = element.virtualFile

@@ -16,14 +16,14 @@
   </extensions>
 
   <actions>
-    <reference id="Pls.GotoGroup">
+    <reference ref="Pls.GotoGroup">
       <add-to-group group-id="Uml.SourceActionsGroup.GoTo" relative-to-action="GotoRelated" anchor="after"/>
       <add-to-group group-id="Uml.NodeCellEditorPopup.GoTo" relative-to-action="GotoRelated" anchor="after"/>
     </reference>
     <action id="Pls.Diagram.OpenSettings" class="icu.windea.pls.extension.diagram.actions.ParadoxDiagramOpenSettingsAction" icon="AllIcons.General.GearPlain">
       <add-to-group group-id="Diagram.DefaultGraphToolbar" relative-to-action="Diagram.OpenSettings" anchor="after"/>
     </action>
-    <reference id="UML.Group">
+    <reference ref="UML.Group">
       <add-to-group group-id="Pls.DefinitionHierarchyPopupMenu"/>
       <add-to-group group-id="Pls.CallHierarchyPopupMenu"/>
     </reference>

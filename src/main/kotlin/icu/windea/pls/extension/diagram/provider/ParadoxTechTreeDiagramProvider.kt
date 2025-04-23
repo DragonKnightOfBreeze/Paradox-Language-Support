@@ -36,8 +36,8 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
         val CAT_TYPE = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.type"), PlsIcons.Nodes.Type, true, false)
         val CAT_PROPERTIES = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.properties"), PlsIcons.Nodes.Property, true, false)
         val CAT_NAME = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.name"), PlsIcons.Nodes.Localisation, false, false)
-        val CAT_ICON = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.icon"), PlsIcons.Image, false, false)
-        val CAT_PRESENTATION = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.presentation"), PlsIcons.Presentation, false, false)
+        val CAT_ICON = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.icon"), PlsIcons.General.Image, false, false)
+        val CAT_PRESENTATION = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.presentation"), PlsIcons.General.Presentation, false, false)
         val CATEGORIES = arrayOf(CAT_TYPE, CAT_PROPERTIES, CAT_NAME, CAT_ICON, CAT_PRESENTATION)
 
         val REL_PREREQUISITE = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID) {

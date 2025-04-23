@@ -11,6 +11,7 @@ import com.intellij.patterns.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configContext.*
@@ -599,7 +600,7 @@ object ParadoxCompletionManager {
                 val lookupElement = LookupElementBuilder.create(element, name)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withPriority(ParadoxCompletionPriorities.complexEnumValue)
-                    .withPatchableIcon(PlsIcons.Nodes.ComplexEnumValue)
+                    .withPatchableIcon(PlsIcons.Nodes.EnumValue)
                     .withPatchableTailText(tailText)
                     .forScriptExpression(context)
                 result.addElement(lookupElement, context)
@@ -1582,7 +1583,7 @@ object ParadoxCompletionManager {
             val tailText = " from command scopes"
             val typeFile = localisationScope.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.LocalisationNodes.CommandScope)
+                .withIcon(PlsIcons.Nodes.LocalisationCommandScope)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
@@ -1608,7 +1609,7 @@ object ParadoxCompletionManager {
             val tailText = " from command fields"
             val typeFile = localisationCommand.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.LocalisationNodes.CommandField)
+                .withIcon(PlsIcons.Nodes.LocalisationCommandField)
                 .withTailText(tailText, true)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
@@ -2056,7 +2057,7 @@ object ParadoxCompletionManager {
             val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withItemTextUnderlined(true) //used for completions from extended configs
-                .withPatchableIcon(PlsIcons.Nodes.ComplexEnumValue)
+                .withPatchableIcon(PlsIcons.Nodes.EnumValue)
                 .withPatchableTailText(tailText)
                 .forScriptExpression(context)
             result.addElement(lookupElement, context)

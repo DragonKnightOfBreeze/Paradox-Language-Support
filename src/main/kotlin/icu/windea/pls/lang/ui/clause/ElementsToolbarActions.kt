@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.ui.clause
 
+import com.intellij.icons.*
 import com.intellij.openapi.actionSystem.*
 import icu.windea.pls.*
 
@@ -9,7 +10,7 @@ interface ElementsToolbarActions {
      */
     class DuplicateAction(
         private val elementsList: ElementsListTable
-    ) : AnAction(PlsIcons.Actions.DuplicateDescriptor) {
+    ) : AnAction(AllIcons.Actions.Copy) {
         init {
             templatePresentation.text = PlsBundle.message("ui.dialog.expandClauseTemplate.actions.duplicate")
             registerCustomShortcutSet(CustomShortcutSet.fromString("alt C"), null)
@@ -31,7 +32,7 @@ interface ElementsToolbarActions {
      */
     class SwitchToPrevAction(
         private val elementsList: ElementsListTable
-    ) : AnAction(PlsIcons.Actions.SwitchToPrevDescriptor) {
+    ) : AnAction(AllIcons.General.ArrowLeft) {
         init {
             templatePresentation.text = PlsBundle.message("ui.dialog.expandClauseTemplate.actions.switchToPrev")
             registerCustomShortcutSet(CustomShortcutSet.fromString("alt P"), null)
@@ -58,7 +59,7 @@ interface ElementsToolbarActions {
      */
     class SwitchToNextAction(
         private val elementsList: ElementsListTable
-    ) : AnAction(PlsIcons.Actions.SwitchToNextDescriptor) {
+    ) : AnAction(AllIcons.General.ArrowRight) {
         init {
             templatePresentation.text = PlsBundle.message("ui.dialog.expandClauseTemplate.actions.switchToNext")
             registerCustomShortcutSet(CustomShortcutSet.fromString("alt N"), null)

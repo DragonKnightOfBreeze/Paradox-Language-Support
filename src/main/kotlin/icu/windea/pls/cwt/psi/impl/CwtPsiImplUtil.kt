@@ -8,6 +8,7 @@ import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
@@ -53,7 +54,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtOption, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.CwtNodes.Option
+        return PlsIcons.Nodes.CwtOption
     }
 
     @JvmStatic
@@ -94,7 +95,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtOptionKey, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.CwtNodes.Option
+        return PlsIcons.Nodes.CwtOption
     }
 
     @JvmStatic
@@ -113,7 +114,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtProperty, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.CwtNodes.Property
+        return PlsIcons.Nodes.CwtProperty
     }
 
     @JvmStatic
@@ -154,7 +155,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtPropertyKey, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.CwtNodes.Property
+        return PlsIcons.Nodes.CwtProperty
     }
 
     @JvmStatic
@@ -179,7 +180,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtValue, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.CwtNodes.Value
+        return PlsIcons.Nodes.CwtValue
     }
 
     @JvmStatic
@@ -266,7 +267,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: CwtBlock, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.CwtNodes.Block
+        return PlsIcons.Nodes.CwtBlock
     }
 
     @JvmStatic

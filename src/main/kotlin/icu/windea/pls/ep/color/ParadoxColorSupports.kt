@@ -4,6 +4,7 @@ import com.intellij.openapi.command.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
+import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.util.*
@@ -32,8 +33,7 @@ class ParadoxScriptStringColorSupport : ParadoxColorSupport {
 
     private fun doSetColor(element: ParadoxScriptString, color: Color) {
         val project = element.project
-        val colorHex = color.toHex()
-        val newText = "0x${colorHex}"
+        val newText = "0x${ColorUtil.toHex(color, true)}"
         val newString = ParadoxScriptElementFactory.createValue(project, newText)
         if (newString !is ParadoxScriptString) return
         val command = Runnable {

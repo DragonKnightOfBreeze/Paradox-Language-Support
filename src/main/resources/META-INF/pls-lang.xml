@@ -180,17 +180,17 @@
       <add-to-group group-id="Documentation.PrimaryGroup"/>
     </group>
 
-    <action id="Pls.OpenInSteam" class="icu.windea.pls.lang.actions.OpenInSteamAction" icon="icu.windea.pls.PlsIcons.Steam">
+    <action id="Pls.OpenInSteam" class="icu.windea.pls.lang.actions.OpenInSteamAction" icon="icu.windea.pls.PlsIcons.General.Steam">
       <add-to-group group-id="RevealGroup" anchor="last"/>
       <override-text place="RevealInPopup"/>
       <add-to-group group-id="TouchBarDefault_alt" anchor="last"/>
     </action>
-    <action id="Pls.OpenInSteamWebsite" class="icu.windea.pls.lang.actions.OpenInSteamWebsiteAction" icon="icu.windea.pls.PlsIcons.Steam">
+    <action id="Pls.OpenInSteamWebsite" class="icu.windea.pls.lang.actions.OpenInSteamWebsiteAction" icon="icu.windea.pls.PlsIcons.General.Steam">
       <add-to-group group-id="RevealGroup" anchor="last"/>
       <override-text place="RevealInPopup"/>
       <add-to-group group-id="TouchBarDefault_alt" anchor="last"/>
     </action>
-    <action id="Pls.CopySteamPageUrl" class="icu.windea.pls.lang.actions.CopySteamPageProvider" icon="icu.windea.pls.PlsIcons.Steam">
+    <action id="Pls.CopySteamPageUrl" class="icu.windea.pls.lang.actions.CopySteamPageProvider" icon="icu.windea.pls.PlsIcons.General.Steam">
       <add-to-group group-id="CopyFileReference"/>
     </action>
 

@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.util.renderer
 
+import com.intellij.ui.*
 import com.intellij.util.ui.*
-import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.*
 import javax.swing.*
@@ -32,7 +32,7 @@ object ParadoxLocalisationTextUIRenderer {
             if (color == null) {
                 append("<span>")
             } else {
-                append("<span style=\"color: #").append(color.toHex()).append("\">")
+                append("<span style=\"color: #").append(ColorUtil.toHex(color, true)).append("\">")
             }
             append(text)
             append("</span>")

@@ -3,7 +3,7 @@ package icu.windea.pls.localisation.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.util.*
-import icu.windea.pls.*
+import icu.windea.pls.PlsIcons
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.data.*
 import icu.windea.pls.lang.*
@@ -32,7 +32,7 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
         ParadoxDefinitionSearch.search("game_concept", conceptSelector).processQueryAsync p@{ concept ->
             val tailText = " from concepts"
             val typeFile = concept.containingFile
-            val icon = PlsIcons.LocalisationNodes.Concept
+            val icon = PlsIcons.Nodes.LocalisationConcept
             run action@{
                 val key = concept.name
                 if (!keysToDistinct.add(key)) return@action

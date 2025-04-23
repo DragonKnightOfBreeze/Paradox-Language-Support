@@ -18,7 +18,7 @@ interface ParadoxModDependenciesPopupActions {
      */
     class OpenModPathAction(
         private val table: ParadoxModDependenciesTable
-    ) : DumbAwareAction(PlsIcons.Actions.ModDirectory) {
+    ) : DumbAwareAction(PlsIcons.General.ModDirectory) {
         init {
             templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.OpenModPath.text")
             templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.OpenModPath.description")
@@ -56,7 +56,7 @@ interface ParadoxModDependenciesPopupActions {
      */
     class OpenModPageInSteamAction(
         private val table: ParadoxModDependenciesTable
-    ) : DumbAwareAction(PlsIcons.Steam) {
+    ) : DumbAwareAction(PlsIcons.General.Steam) {
         init {
             templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteam.text")
             templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteam.description")
@@ -99,7 +99,7 @@ interface ParadoxModDependenciesPopupActions {
      */
     class OpenModPageInSteamWebsiteAction(
         private val table: ParadoxModDependenciesTable
-    ) : DumbAwareAction(PlsIcons.Steam) {
+    ) : DumbAwareAction(PlsIcons.General.Steam) {
         init {
             templatePresentation.text = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteamWebsite.text")
             templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteamWebsite.description")

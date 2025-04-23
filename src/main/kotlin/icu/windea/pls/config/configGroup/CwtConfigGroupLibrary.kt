@@ -25,7 +25,7 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
     }
 
     override fun getIcon(unused: Boolean): Icon {
-        return PlsIcons.Library
+        return PlsIcons.General.Library
     }
 
     override fun getPresentableText(): String {
