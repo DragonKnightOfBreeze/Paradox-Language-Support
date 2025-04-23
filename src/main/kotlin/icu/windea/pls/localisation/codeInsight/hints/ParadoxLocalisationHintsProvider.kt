@@ -69,7 +69,7 @@ abstract class ParadoxLocalisationHintsProvider<T : Any> : InlayHintsProvider<T>
                 .applyToComponent { toolTipText = PlsBundle.message("localisation.hints.settings.textLengthLimit.tooltip") }
             textField()
                 .bindIntText(property)
-                .bindIntWhenTextChanged(property)
+                .bindIntTextWhenChanged(property)
                 .errorOnApply(PlsBundle.message("error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
         }
     }
@@ -80,7 +80,7 @@ abstract class ParadoxLocalisationHintsProvider<T : Any> : InlayHintsProvider<T>
                 .applyToComponent { toolTipText = PlsBundle.message("localisation.hints.settings.iconHeightLimit.tooltip") }
             textField()
                 .bindIntText(property)
-                .bindIntWhenTextChanged(property)
+                .bindIntTextWhenChanged(property)
                 .errorOnApply(PlsBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
         }
     }

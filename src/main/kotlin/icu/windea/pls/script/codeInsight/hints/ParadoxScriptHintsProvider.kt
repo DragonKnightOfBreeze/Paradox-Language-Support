@@ -68,7 +68,7 @@ abstract class ParadoxScriptHintsProvider<T : Any> : InlayHintsProvider<T> {
                 .applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.textLengthLimit.tooltip") }
             textField()
                 .bindIntText(property)
-                .bindIntWhenTextChanged(property)
+                .bindIntTextWhenChanged(property)
                 .errorOnApply(PlsBundle.message("error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
         }
     }
@@ -79,7 +79,7 @@ abstract class ParadoxScriptHintsProvider<T : Any> : InlayHintsProvider<T> {
                 .applyToComponent { toolTipText = PlsBundle.message("script.hints.settings.iconHeightLimit.tooltip") }
             textField()
                 .bindIntText(property)
-                .bindIntWhenTextChanged(property)
+                .bindIntTextWhenChanged(property)
                 .errorOnApply(PlsBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
         }
     }

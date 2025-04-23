@@ -11,6 +11,7 @@ import icu.windea.pls.lang.ui.*
 import icu.windea.pls.model.*
 import java.awt.*
 
+@Suppress("UnstableApiUsage")
 class ParadoxModDependencySettingsDialog(
     val project: Project,
     val settings: ParadoxModDependencySettingsState,
@@ -65,7 +66,7 @@ class ParadoxModDependencySettingsDialog(
                     .withTitle(PlsBundle.message("mod.dependency.settings.modDirectory.title"))
                     .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
-                textFieldWithBrowseButton(null, project, descriptor) { it.path }
+                textFieldWithBrowseButton(descriptor, project) { it.path }
                     .text(settings.modDirectory.orEmpty())
                     .columns(36)
                     .align(Align.FILL)

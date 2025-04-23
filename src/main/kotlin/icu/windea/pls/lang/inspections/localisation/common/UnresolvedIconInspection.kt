@@ -55,11 +55,11 @@ class UnresolvedIconInspection : LocalInspectionTool() {
             row {
                 textField()
                     .bindText(::ignoredIconNames)
-                    .bindWhenTextChanged(::ignoredIconNames)
+                    .bindTextWhenChanged(::ignoredIconNames)
                     .comment(PlsBundle.message("inspection.localisation.unresolvedIcon.option.ignoredIconNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()
             }
         }
     }
-} 
+}

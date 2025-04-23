@@ -13,6 +13,7 @@ import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.ui.*
 import icu.windea.pls.model.*
 
+@Suppress("UnstableApiUsage")
 class ParadoxGameSettingsDialog(
     val project: Project,
     val settings: ParadoxGameSettingsState
@@ -52,7 +53,7 @@ class ParadoxGameSettingsDialog(
                     .withTitle(PlsBundle.message("game.settings.gameDirectory.title"))
                     .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
-                textFieldWithBrowseButton(null, project, descriptor) { it.path }
+                textFieldWithBrowseButton(descriptor, project) { it.path }
                     .text(settings.gameDirectory.orEmpty())
                     .columns(36)
                     .align(Align.FILL)

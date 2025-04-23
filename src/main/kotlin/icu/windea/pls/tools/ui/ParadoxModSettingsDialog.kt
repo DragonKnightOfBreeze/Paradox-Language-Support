@@ -15,6 +15,7 @@ import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
+@Suppress("UnstableApiUsage")
 class ParadoxModSettingsDialog(
     val project: Project,
     val settings: ParadoxModSettingsState
@@ -93,7 +94,7 @@ class ParadoxModSettingsDialog(
                     .withTitle(PlsBundle.message("gameDirectory.title"))
                     .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
-                textFieldWithBrowseButton(null, project, descriptor) { it.path }
+                textFieldWithBrowseButton(descriptor, project) { it.path }
                     .applyToComponent { defaultGameDirectory?.orNull()?.let { jbTextField.emptyText.setText(it) } }
                     .bindText(gameDirectoryProperty)
                     .columns(36)
@@ -113,7 +114,7 @@ class ParadoxModSettingsDialog(
                     .withTitle(PlsBundle.message("mod.settings.modDirectory.title"))
                     .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
-                textFieldWithBrowseButton(null, project, descriptor) { it.path }
+                textFieldWithBrowseButton(descriptor, project) { it.path }
                     .text(settings.modDirectory.orEmpty())
                     .columns(36)
                     .align(Align.FILL)

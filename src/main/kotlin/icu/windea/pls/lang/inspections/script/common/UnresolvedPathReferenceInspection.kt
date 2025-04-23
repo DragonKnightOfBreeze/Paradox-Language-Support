@@ -103,7 +103,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     .applyToComponent { toolTipText = PlsBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames.tooltip") }
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFileNames)
-                    .bindWhenTextChanged(::ignoredFileNames)
+                    .bindTextWhenChanged(::ignoredFileNames)
                     .comment(PlsBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()

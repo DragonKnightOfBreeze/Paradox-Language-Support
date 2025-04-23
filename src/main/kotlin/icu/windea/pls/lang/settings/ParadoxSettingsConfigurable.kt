@@ -120,7 +120,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .withTitle(PlsBundle.message("settings.general.localConfigDirectory.title"))
                         .asBrowseFolderDescriptor()
                     var localConfigDirectory = settings.localConfigDirectory
-                    textFieldWithBrowseButton(null, null, descriptor) { it.path }
+                    textFieldWithBrowseButton(descriptor, null) { it.path }
                         .bindText(settings::localConfigDirectory.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                         .align(Align.FILL)

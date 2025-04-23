@@ -14,7 +14,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.util.*
 import icu.windea.pls.dds.*
 import org.intellij.images.*
-import org.intellij.images.actions.*
 import org.intellij.images.fileTypes.*
 import org.intellij.images.options.impl.*
 import java.awt.*
@@ -28,8 +27,8 @@ internal class EditExternallyAction : DumbAwareAction() {
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        val imageFile = e.getRequiredData(CommonDataKeys.VIRTUAL_FILE)
-        var executablePath = PropertiesComponent.getInstance().getValue(EditExternalImageEditorAction.EXT_PATH_KEY, "")
+        val imageFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
+        var executablePath = PropertiesComponent.getInstance().getValue("Images.ExternalEditorPath", "")
         if (!StringUtil.isEmpty(executablePath)) {
             EnvironmentUtil.getEnvironmentMap().forEach { (varName, varValue) ->
                 executablePath = if (SystemInfo.isWindows) StringUtil.replace(executablePath, "%$varName%", varValue, true)
@@ -72,7 +71,7 @@ internal class EditExternallyAction : DumbAwareAction() {
     override fun update(e: AnActionEvent) {
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
         val enabled = file != null && file.fileType == DdsFileType
-        if (ActionPlaces.isPopupPlace(e.place)) {
+        if (e.isFromContextMenu) {
             e.presentation.isVisible = enabled
         }
         e.presentation.isEnabled = enabled

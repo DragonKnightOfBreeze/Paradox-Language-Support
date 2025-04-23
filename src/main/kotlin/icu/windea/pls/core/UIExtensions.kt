@@ -161,21 +161,19 @@ fun <T : Cell<JBCheckBox>> T.threeStateCheckBox(threeStateCheckBox: Cell<ThreeSt
     return this
 }
 
-fun Cell<JBTextField>.bindWhenTextChanged(property: KMutableProperty0<String>): Cell<JBTextField> {
+fun Cell<JBTextField>.bindTextWhenChanged(property: KMutableProperty0<String>): Cell<JBTextField> {
     return applyToComponent {
         whenTextChanged {
-            val document = it.document
-            val text = document.getText(0, document.length)
+            val text = it
             if (text != property.get()) property.set(text)
         }
     }
 }
 
-fun Cell<JBTextField>.bindIntWhenTextChanged(property: KMutableProperty0<Int>): Cell<JBTextField> {
+fun Cell<JBTextField>.bindIntTextWhenChanged(property: KMutableProperty0<Int>): Cell<JBTextField> {
     return applyToComponent {
         whenTextChanged {
-            val document = it.document
-            val text = document.getText(0, document.length).toIntOrNull() ?: 0
+            val text = it.toIntOrNull() ?: 0
             if (text != property.get()) property.set(text)
         }
     }

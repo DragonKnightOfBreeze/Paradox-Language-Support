@@ -46,7 +46,7 @@ class MissingLocaleInspection : LocalInspectionTool() {
             row {
                 expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                     .bindText(::ignoredFileNames)
-                    .bindWhenTextChanged(::ignoredFileNames)
+                    .bindTextWhenChanged(::ignoredFileNames)
                     .comment(PlsBundle.message("inspection.localisation.missingLocale.option.ignoredFileNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()
