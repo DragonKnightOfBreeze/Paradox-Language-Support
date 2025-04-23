@@ -40,10 +40,6 @@ class ParadoxScriptedVariableInlineDialog(
         return PlsBundle.message("inline.scriptedVariable.label", name)
     }
 
-    override fun getBorderTitle(): String {
-        return PlsBundle.message("inline.scriptedVariable.border.title")
-    }
-
     override fun getInlineThisText(): String {
         return PlsBundle.message("inline.scriptedVariable.inline.this")
     }

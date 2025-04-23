@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.search.implementation
 
 import com.intellij.openapi.application.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
@@ -26,7 +25,7 @@ class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, Defin
         val name = localisationInfo.name
         if (name.isEmpty()) return true
         val project = queryParameters.project
-        DumbService.getInstance(project).runReadActionInSmartMode {
+        ReadAction.nonBlocking<Unit> {
             val category = localisationInfo.category
             //这里不需要也无法进行排序
             val selector = selector(project, sourceElement).localisation()
@@ -39,7 +38,7 @@ class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, Defin
             localisations.forEach {
                 consumer.process(it)
             }
-        }
+        }.inSmartMode(project).executeSynchronously()
         return true
     }
 }

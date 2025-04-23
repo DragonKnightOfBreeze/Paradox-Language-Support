@@ -49,7 +49,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
             }
         }
         if (words.isEmpty()) return
-        DumbService.getInstance(project).runReadActionInSmartMode {
+        ReadAction.nonBlocking<Unit> {
             //这里不能直接使用target.useScope，否则文件高亮会出现问题
             val useScope = queryParameters.effectiveSearchScope
             //这里searchContext必须包含IN_STRINGS，用于查找本地化图标引用
@@ -59,7 +59,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
             val processor = getProcessor(target)
             queryParameters.optimizer.wordRequests.removeIf { it.word in words }
             words.forEach { word -> queryParameters.optimizer.searchWord(word, useScope, searchContext, true, target, processor) }
-        }
+        }.inSmartMode(project).executeSynchronously()
     }
 
     private fun getProcessor(target: PsiElement): RequestResultProcessor {

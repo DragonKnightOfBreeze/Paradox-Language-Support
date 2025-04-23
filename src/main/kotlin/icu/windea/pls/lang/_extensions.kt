@@ -128,10 +128,14 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
         from is PsiDirectory -> selectGameType(selectFile(from))
         from is PsiFile -> selectGameType(selectFile(from))
-        from is ParadoxScriptScriptedVariable -> runReadAction { from.greenStub }?.gameType
-            ?: selectGameType(from.containingFile)
-        from is ParadoxScriptDefinitionElement -> runReadAction { from.greenStub }?.gameType
-            ?: selectGameType(from.containingFile)
+        from is ParadoxScriptScriptedVariable -> {
+            runReadAction { from.greenStub }?.gameType?.let { return it }
+            selectGameType(from.containingFile)
+        }
+        from is ParadoxScriptDefinitionElement -> {
+            runReadAction { from.greenStub }?.gameType?.let { return it }
+            selectGameType(from.containingFile)
+        }
         from is StubBasedPsiElementBase<*> -> selectGameType(from.containingFile)
         from is PsiElement -> selectGameType(from.parent)
         from is ParadoxIndexInfo -> selectGameType(from.virtualFile)
@@ -148,8 +152,10 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
         from is PsiFile -> ParadoxCoreManager.getLocaleConfig(from.virtualFile ?: return null, from.project)
         from is ParadoxLocalisationLocale -> from.name.toLocale(from)
         from is ParadoxLocalisationPropertyList -> selectLocale(from.locale)
-        from is ParadoxLocalisationProperty -> runReadAction { from.greenStub }?.locale?.toLocale(from)
-            ?: selectLocale(from.containingFile)
+        from is ParadoxLocalisationProperty -> {
+            runReadAction { from.greenStub }?.locale?.toLocale(from)?.let { return it }
+            selectLocale(from.containingFile)
+        }
         from is StubBasedPsiElementBase<*> && from.language == ParadoxLocalisationLanguage -> selectLocale(from.containingFile)
         from is PsiElement && from.language == ParadoxLocalisationLanguage -> selectLocale(from.parent)
         else -> ParadoxLocaleManager.getPreferredLocaleConfig()

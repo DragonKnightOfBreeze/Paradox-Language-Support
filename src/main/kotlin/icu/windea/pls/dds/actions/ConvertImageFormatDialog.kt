@@ -103,11 +103,9 @@ class ConvertImageFormatDialog(
         if (recentEntries != null) targetDirectoryComponent.history = recentEntries
         targetDirectoryComponent.text = targetPath
         val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
-        targetDirectoryField.addBrowseFolderListener(
-            PlsBundle.message("dds.convertImageFormat.dialog.targetDirectory.title"),
-            PlsBundle.message("dds.convertImageFormat.dialog.targetDirectory.description"),
-            project, descriptor, TextComponentAccessors.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT
-        )
+            .withTitle(PlsBundle.message("dds.convertImageFormat.dialog.targetDirectory.title"))
+            .withDescription(PlsBundle.message("dds.convertImageFormat.dialog.targetDirectory.description"))
+        targetDirectoryField.addBrowseFolderListener(project, descriptor, TextComponentAccessors.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT)
         return targetDirectoryField
     }
 

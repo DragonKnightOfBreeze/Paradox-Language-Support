@@ -19,14 +19,14 @@ class ParadoxLocalisationParameterUsagesSearcher : QueryExecutorBase<PsiReferenc
         val name = target.name
         if (name.isEmpty()) return
         val project = queryParameters.project
-        DumbService.getInstance(project).runReadActionInSmartMode {
+        ReadAction.nonBlocking<Unit> {
             //这里不能直接使用target.useScope，否则文件高亮会出现问题
             val useScope = queryParameters.effectiveSearchScope
             val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_COMMENTS
             val processor = getProcessor(target)
             queryParameters.optimizer.wordRequests.removeIf { it.word == name }
             queryParameters.optimizer.searchWord(name, useScope, searchContext, true, target, processor)
-        }
+        }.inSmartMode(project).executeSynchronously()
     }
 
     private fun getProcessor(target: PsiElement): RequestResultProcessor {

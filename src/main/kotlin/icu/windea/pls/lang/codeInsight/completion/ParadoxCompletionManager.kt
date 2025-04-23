@@ -3,6 +3,7 @@ package icu.windea.pls.lang.codeInsight.completion
 import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
@@ -437,9 +438,9 @@ object ParadoxCompletionManager {
             true
         }
         //保证索引在此readAction中可用
-        DumbService.getInstance(project).runReadActionInSmartMode {
+        ReadAction.nonBlocking<Unit> {
             ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
-        }
+        }.inSmartMode(project).executeSynchronously()
     }
 
     fun completeSyncedLocalisation(context: ProcessingContext, result: CompletionResultSet) {
@@ -472,9 +473,9 @@ object ParadoxCompletionManager {
             true
         }
         //保证索引在此readAction中可用
-        DumbService.getInstance(project).runReadActionInSmartMode {
+        ReadAction.nonBlocking<Unit> {
             ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
-        }
+        }.inSmartMode(project).executeSynchronously()
     }
 
     fun completeDefinition(context: ProcessingContext, result: CompletionResultSet) {

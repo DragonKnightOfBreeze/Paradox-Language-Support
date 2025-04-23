@@ -77,6 +77,7 @@ class IntroduceGlobalScriptedVariableDialog(
             //选择目标文件 - 仅允许用户选择同一入口目录下的common/scripted_variables目录下的文件
             label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile")).widthGroup("left")
             val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor(ParadoxScriptFileType)
+                .withTitle(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.browseDialogTitle"))
                 .withRoots(scriptedVariablesFile)
                 .withTreeRootVisible(true)
             val fileField = fileField.apply {
@@ -84,13 +85,7 @@ class IntroduceGlobalScriptedVariableDialog(
                 val recentEntries = RecentsManager.getInstance(project).getRecentEntries(RECENT_KEYS)
                 if (recentEntries != null) childComponent.history = recentEntries
                 childComponent.text = recentEntries?.firstOrNull() ?: filePath
-                addBrowseFolderListener(
-                    PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.browseDialogTitle"),
-                    null,
-                    project,
-                    descriptor,
-                    TextComponentAccessors.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT
-                )
+                addBrowseFolderListener(project, descriptor, TextComponentAccessors.TEXT_FIELD_WITH_HISTORY_WHOLE_TEXT)
             }
             cell(fileField)
                 .align(Align.FILL)

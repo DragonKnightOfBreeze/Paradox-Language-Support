@@ -32,6 +32,6 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         val configGroupsToChange = configGroups.filter { !it.changed.get() }
         if (configGroupsToChange.isEmpty()) return
         configGroupsToChange.forEach { configGroup -> configGroup.changed.set(true) }
-        FloatingToolbarProvider.getProvider<ConfigGroupRefreshFloatingProvider>().updateToolbarComponents(project)
+        FloatingToolbarProvider.EP_NAME.findExtensionOrFail(ConfigGroupRefreshFloatingProvider::class.java).updateToolbarComponents(project)
     }
 }

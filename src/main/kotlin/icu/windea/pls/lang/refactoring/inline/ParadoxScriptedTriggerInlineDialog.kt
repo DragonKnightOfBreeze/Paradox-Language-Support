@@ -35,10 +35,6 @@ class ParadoxScriptedTriggerInlineDialog(
         return PlsBundle.message("inline.scriptedTrigger.label", name)
     }
 
-    override fun getBorderTitle(): String {
-        return PlsBundle.message("inline.scriptedTrigger.border.title")
-    }
-
     override fun getInlineThisText(): String {
         return PlsBundle.message("inline.scriptedTrigger.inline.this")
     }

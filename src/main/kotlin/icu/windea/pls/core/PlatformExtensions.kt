@@ -4,84 +4,47 @@ package icu.windea.pls.core
 
 import com.google.common.util.concurrent.*
 import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.intention.*
-import com.intellij.codeInsight.lookup.*
 import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInsight.template.*
-import com.intellij.codeInsight.template.impl.*
 import com.intellij.codeInspection.*
 import com.intellij.codeInspection.ex.*
-import com.intellij.extapi.psi.*
 import com.intellij.injected.editor.*
 import com.intellij.lang.*
-import com.intellij.lang.documentation.*
 import com.intellij.lang.injection.*
 import com.intellij.lang.tree.util.*
 import com.intellij.navigation.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
-import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.editor.Document
-import com.intellij.openapi.keymap.*
-import com.intellij.openapi.observable.properties.*
-import com.intellij.openapi.observable.util.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
-import com.intellij.openapi.vfs.newvfs.events.*
 import com.intellij.patterns.*
 import com.intellij.profile.codeInspection.*
 import com.intellij.psi.*
-import com.intellij.psi.codeStyle.*
 import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.impl.source.tree.injected.*
-import com.intellij.psi.search.*
-import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
-import com.intellij.refactoring.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
-import com.intellij.ui.*
-import com.intellij.ui.components.*
-import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.gridLayout.*
-import com.intellij.ui.scale.*
-import com.intellij.ui.table.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
-import com.intellij.util.io.*
-import com.intellij.util.ui.*
-import com.intellij.util.xmlb.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.model.*
-import it.unimi.dsi.fastutil.*
+import it.unimi.dsi.fastutil.Hash
 import it.unimi.dsi.fastutil.objects.*
-import java.awt.*
-import java.awt.image.*
 import java.io.*
-import java.net.*
 import java.nio.file.*
 import java.util.*
-import java.util.Arrays
 import java.util.concurrent.*
-import java.util.function.*
-import java.util.logging.*
 import javax.swing.*
-import javax.swing.table.*
-import javax.swing.text.*
+import kotlin.Result
 import kotlin.collections.isNullOrEmpty
-import kotlin.properties.*
 import kotlin.reflect.*
 
 //region Common Extensions
@@ -479,7 +442,7 @@ fun VirtualFile.addBom(bom: ByteArray, wait: Boolean = true) {
 fun VirtualFile.removeBom(bom: ByteArray, wait: Boolean = true) {
     this.bom = null
     val bytes = this.contentsToByteArray()
-    val contentWithStrippedBom = Arrays.copyOfRange(bytes, bom.size, bytes.size)
+    val contentWithStrippedBom = bytes.copyOfRange(bom.size, bytes.size)
     if (wait) {
         WriteAction.runAndWait<IOException> { this.setBinaryContent(contentWithStrippedBom) }
     } else {

@@ -317,7 +317,7 @@ fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
             return current.castOrNull<ParadoxScriptProperty>() as? T
         }
         ParadoxScriptValue::class.java.isAssignableFrom(targetType) -> {
-            return current.castOrNull<ParadoxScriptProperty>()?.propertyValue() as? T
+            return current.castOrNull<ParadoxScriptProperty>()?.propertyValue<ParadoxScriptValue>() as? T
         }
     }
     return null

@@ -39,7 +39,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
                 if (name.isParameterized()) return //skip if name is parameterized
                 val reference = element.reference ?: return
                 if (reference.resolve() != null) return
-                val quickFixes = listOf(
+                val quickFixes = listOf<LocalQuickFix>(
                     IntroduceLocalVariableFix(name, element),
                     IntroduceGlobalVariableFix(name, element)
                 )

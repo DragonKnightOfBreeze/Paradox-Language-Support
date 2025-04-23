@@ -36,10 +36,6 @@ class ParadoxInlineScriptInlineDialog(
         return PlsBundle.message("inline.inlineScript.label", name)
     }
 
-    override fun getBorderTitle(): String {
-        return PlsBundle.message("inline.inlineScript.border.title")
-    }
-
     override fun getInlineThisText(): String {
         return PlsBundle.message("inline.inlineScript.inline.this")
     }

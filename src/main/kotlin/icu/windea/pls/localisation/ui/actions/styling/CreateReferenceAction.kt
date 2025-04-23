@@ -86,7 +86,7 @@ class CreateReferenceAction : ToggleAction(), DumbAware {
     override fun update(event: AnActionEvent) {
         val originalIcon = event.presentation.icon
         super.update(event)
-        if (ActionPlaces.isPopupPlace(event.place)) {
+        if (event.isFromContextMenu) {
             // Restore original icon, as it will be disabled in popups, and we still want to show in GeneratePopup
             event.presentation.icon = originalIcon
         }
@@ -98,7 +98,7 @@ class CreateReferenceAction : ToggleAction(), DumbAware {
 
     companion object {
         private fun isSelectedElement(file: PsiFile, editor: Editor): Boolean? {
-            //返回null表示此操作不可用 
+            //返回null表示此操作不可用
             //仅判断选中文本之外是否都是正确的首尾PSI ELEMENT，不判断执行操作后语法是否仍然合法
             val start = editor.selectionModel.selectionStart
             val end = editor.selectionModel.selectionEnd

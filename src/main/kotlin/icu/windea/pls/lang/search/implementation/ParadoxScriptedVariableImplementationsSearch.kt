@@ -21,13 +21,13 @@ class ParadoxScriptedVariableImplementationsSearch : QueryExecutor<PsiElement, D
         val name = runReadAction { sourceElement.name }
         if (name.isNullOrEmpty()) return true
         val project = queryParameters.project
-        DumbService.getInstance(project).runReadActionInSmartMode {
+        ReadAction.nonBlocking<Unit> {
             //这里不进行排序
             //使用全部作用域
             val selector = selector(project, sourceElement).scriptedVariable().withSearchScope(GlobalSearchScope.allScope(project))
             ParadoxLocalScriptedVariableSearch.search(name, selector).forEach(consumer)
             ParadoxGlobalScriptedVariableSearch.search(name, selector).forEach(consumer)
-        }
+        }.inSmartMode(project).executeSynchronously()
         return true
     }
 }

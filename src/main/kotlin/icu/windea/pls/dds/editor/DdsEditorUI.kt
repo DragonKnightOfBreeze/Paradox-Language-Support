@@ -16,11 +16,7 @@ import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.dds.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
 import org.intellij.images.editor.*
 import org.intellij.images.editor.ImageDocument.*
 import org.intellij.images.options.*
@@ -58,7 +54,7 @@ class DdsEditorUI(
     private val myScrollPane: JScrollPane
 
     init {
-        imageComponent.addPropertyChangeListener(ZOOM_FACTOR_PROP) { imageComponent.zoomFactor = getZoomModel().zoomFactor }
+        imageComponent.addPropertyChangeListener(ZOOM_FACTOR_PROP) { imageComponent.zoomFactor = zoomModel.zoomFactor }
         val options = OptionsManager.getInstance().options
         val editorOptions = options.editorOptions
         options.addPropertyChangeListener(OptionsChangeListener(), this)
@@ -263,7 +259,7 @@ class DdsEditorUI(
             add(imageComponent)
             putClientProperty(Magnificator.CLIENT_PROPERTY_KEY, Magnificator { scale, at ->
                 val locationBefore = imageComponent.location
-                val model = if (editor != null) editor.zoomModel else getZoomModel()
+                val model = if (editor != null) editor.zoomModel else zoomModel
                 val factor = model.zoomFactor
                 model.zoomFactor = scale * factor
                 Point(
@@ -464,7 +460,7 @@ class DdsEditorUI(
     private fun updateImageComponentSize() {
         val bounds = imageComponent.document.bounds
         if (bounds != null) {
-            val zoom = getZoomModel().zoomFactor
+            val zoom = zoomModel.zoomFactor
             imageComponent.setCanvasSize(ceil(bounds.width * zoom).toInt(), ceil(bounds.height * zoom).toInt())
         }
     }
@@ -482,6 +478,7 @@ class DdsEditorUI(
         }
     }
 
+    @Suppress("DEPRECATION")
     private inner class FocusRequester : MouseAdapter() {
         override fun mousePressed(e: MouseEvent) {
             IdeFocusManager.getGlobalInstance().doWhenFocusSettlesDown { IdeFocusManager.getGlobalInstance().requestFocus(this@DdsEditorUI, true) }
@@ -496,7 +493,9 @@ class DdsEditorUI(
         sink[PlatformDataKeys.CUT_PROVIDER] = copyPasteSupport?.cutProvider
         sink[PlatformDataKeys.DELETE_ELEMENT_PROVIDER] = deleteProvider
         sink[ImageComponentDecorator.DATA_KEY] = editor ?: this
-        sink[PlatformCoreDataKeys.BGT_DATA_PROVIDER] = DataProvider { slowId: String -> getSlowData(slowId) }
+        sink.lazy(CommonDataKeys.PSI_FILE) { findPsiFile() }
+        sink.lazy(CommonDataKeys.PSI_ELEMENT) { findPsiFile() }
+        sink.lazy(PlatformCoreDataKeys.PSI_ELEMENT_ARRAY) { findPsiFile()?.toSingletonArray() ?: PsiElement.EMPTY_ARRAY }
     }
 
     private fun getSlowData(dataId: String): Any? {

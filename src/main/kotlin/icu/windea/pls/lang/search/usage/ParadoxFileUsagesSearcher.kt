@@ -32,13 +32,13 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
                 ?.let { extraWords.add(it) }
         }
         if (extraWords.isEmpty()) return
-        DumbService.getInstance(project).runReadActionInSmartMode {
+        ReadAction.nonBlocking<Unit> {
             //这里不能直接使用target.useScope，否则文件高亮会出现问题
             val useScope = queryParameters.effectiveSearchScope
             for (extraWord in extraWords) {
                 val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_STRINGS or UsageSearchContext.IN_COMMENTS
                 queryParameters.optimizer.searchWord(extraWord, useScope, searchContext, true, target)
             }
-        }
+        }.inSmartMode(project).executeSynchronously()
     }
 }

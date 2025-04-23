@@ -2,6 +2,7 @@ package icu.windea.pls.localisation.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.util.*
@@ -51,11 +52,11 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
             true
         }
         //保证索引在此readAction中可用
-        DumbService.getInstance(project).runReadActionInSmartMode {
+        ReadAction.nonBlocking<Unit> {
             when (category) {
                 ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
                 ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
             }
-        }
+        }.inSmartMode(project).executeSynchronously()
     }
 }

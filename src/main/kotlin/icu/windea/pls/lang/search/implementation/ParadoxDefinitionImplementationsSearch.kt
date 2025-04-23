@@ -25,12 +25,12 @@ class ParadoxDefinitionImplementationsSearch : QueryExecutor<PsiElement, Definit
         if (name.isEmpty()) return true
         val type = definitionInfo.type
         val project = queryParameters.project
-        DumbService.getInstance(project).runReadActionInSmartMode {
+        ReadAction.nonBlocking<Unit> {
             //这里不进行排序
             val selector = selector(project, sourceElement).definition()
                 .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
             ParadoxDefinitionSearch.search(name, type, selector).forEach(consumer)
-        }
+        }.inSmartMode(project).executeSynchronously()
         return true
     }
 }

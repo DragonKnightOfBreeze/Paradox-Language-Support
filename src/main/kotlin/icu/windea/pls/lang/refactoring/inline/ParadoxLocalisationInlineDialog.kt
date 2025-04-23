@@ -35,10 +35,6 @@ class ParadoxLocalisationInlineDialog(
         return PlsBundle.message("inline.localisation.label", name)
     }
 
-    override fun getBorderTitle(): String {
-        return PlsBundle.message("inline.localisation.border.title")
-    }
-
     override fun getInlineThisText(): String {
         return PlsBundle.message("inline.localisation.inline.this")
     }
