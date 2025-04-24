@@ -12,14 +12,13 @@
         "cwt_property.svg": "nodes/cwt_property.svg",
         "cwt_value.svg": "nodes/cwt_value.svg",
         "cwt_block.svg": "nodes/cwt_block.svg",
+        "cwt_option.svg": "nodes/cwt_option.svg",
         "config_scriptedVariable.svg": "nodes/config_scriptedVariable.svg",
         "config_definition.svg": "nodes/config_definition.svg",
         "config_inlineScript.svg": "nodes/config_inlineScript.svg",
         "config_parameter.svg": "nodes/config_parameter.svg",
         "config_dynamicValue.svg": "nodes/config_dynamicValue.svg",
         "config_enumValue.svg": "nodes/config_enumValue.svg",
-        "cwt_option.svg": "nodes/cwt_option.svg",
-
         "scriptedVariable.svg": "nodes/scriptedVariable.svg",
         "property.svg": "nodes/property.svg",
         "value.svg":  "nodes/value.svg",
@@ -63,7 +62,6 @@
       "gutter": {
         "scriptedVariable.svg": "gutter/scriptedVariable.svg",
         "definition.svg": "gutter/definition.svg",
-        "complexEnumValue.svg": "gutter/complexEnumValue.svg",
         "localisation.svg": "gutter/localisation.svg",
         "relatedImages.svg": "gutter/relatedImages.svg",
         "relatedLocalisations.svg": "gutter/relatedLocalisations.svg"

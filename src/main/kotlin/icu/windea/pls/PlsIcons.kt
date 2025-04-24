@@ -168,13 +168,11 @@ object PlsIcons {
         @JvmField
         val Definition = IconManager.getInstance().getIcon("/icons/gutter/definition.svg")
         @JvmField
+        val Localisation = IconManager.getInstance().getIcon("/icons/gutter/localisation.svg")
+        @JvmField
         val RelatedLocalisations = IconManager.getInstance().getIcon("/icons/gutter/relatedLocalisations.svg")
         @JvmField
         val RelatedImages = IconManager.getInstance().getIcon("/icons/gutter/relatedImages.svg")
-        @JvmField
-        val Localisation = IconManager.getInstance().getIcon("/icons/gutter/localisation.svg")
-        @JvmField
-        val ComplexEnumValue = IconManager.getInstance().getIcon("icons/gutter/complexEnumValue.svg")
     }
 
     object Actions {
