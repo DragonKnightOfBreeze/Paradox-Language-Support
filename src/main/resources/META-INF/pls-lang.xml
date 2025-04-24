@@ -118,7 +118,7 @@
 
     <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.psi.ParadoxPsiTreeChangePreprocessor"/>
 
-    <iconMapper mappingFile="icons/PlsIconMappings.json"/>
+    <iconMapper mappingFile="PlsIconMappings.json"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls">
