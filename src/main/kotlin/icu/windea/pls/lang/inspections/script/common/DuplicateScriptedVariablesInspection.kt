@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.script.psi.*
+import org.jetbrains.annotations.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 
@@ -63,10 +64,11 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
     private class NavigateToDuplicatesFix(key: String, element: PsiElement, duplicates: Collection<PsiElement>) : NavigateToFix(key, element, duplicates, true) {
         override fun getText() = PlsBundle.message("inspection.script.duplicateScriptedVariables.fix.1")
 
-        override fun getPopupTitle(editor: Editor) =
-            PlsBundle.message("inspection.script.duplicateScriptedVariables.fix.1.popup.title", key)
+        override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.script.duplicateScriptedVariables.fix.1.popup.title", key)
 
-        override fun getPopupText(editor: Editor, value: PsiElement) =
-            PlsBundle.message("inspection.script.duplicateScriptedVariables.fix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+        override fun getPopupText(editor: Editor, value: PsiElement): @Nls String {
+            val lineNumber = editor.document.getLineNumber(value.textOffset)
+            return PlsBundle.message("inspection.fix.navigate.popup.text.2", key, lineNumber)
+        }
     }
 }

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections.common
+package icu.windea.pls.lang.inspections.overridden
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
@@ -15,7 +15,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import org.intellij.images.fileTypes.impl.*
-import org.jetbrains.annotations.Nls
+import org.jetbrains.annotations.*
 
 /**
  * 检查是否存在对文件的重载
@@ -69,13 +69,13 @@ class OverriddenForFileInspection : LocalInspectionTool() {
     private class NavigateToOverriddenFilesFix(key: String, element: PsiElement, elements: Collection<PsiElement>) : NavigateToFix(key, element, elements) {
         override fun getText() = PlsBundle.message("inspection.overriddenForFile.fix.1")
 
-        override fun getPopupTitle(editor: Editor): @Nls String {
-            return PlsBundle.message("inspection.overriddenForFile.fix.1.popup.title", key)
-        }
+        override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.overriddenForFile.fix.1.popup.title", key)
 
         override fun getPopupText(editor: Editor, value: PsiElement): @Nls String {
-            val filePath = value.containingFile?.fileInfo?.rootInfo?.rootFile?.path.orAnonymous()
-            return PlsBundle.message("inspection.overriddenForFile.fix.1.popup.text", key, filePath)
+            val file = value.containingFile
+            val filePath = file.fileInfo?.rootInfo?.rootFile?.path
+            if (filePath == null) return PlsBundle.message("inspection.fix.navigate.popup.text.0", key)
+            return PlsBundle.message("inspection.fix.navigate.popup.text.1", key, filePath)
         }
     }
 }

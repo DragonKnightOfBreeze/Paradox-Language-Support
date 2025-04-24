@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.inspections.script.bug
+package icu.windea.pls.lang.inspections.overridden
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
@@ -14,7 +14,7 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
-import org.jetbrains.annotations.Nls
+import org.jetbrains.annotations.*
 
 /**
  * （对于脚本文件）检查是否存在不正确的对（全局）封装的重载。
@@ -56,7 +56,7 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
 
                 //different root file -> incorrect override
                 val locationElement = element.scriptedVariableName
-                val message = PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.desc", name, priority)
+                val message = PlsBundle.message("inspection.incorrectOverriddenForScriptedVariable.desc", name, priority)
                 val fix = NavigateToOverriddenScriptedVariablesFix(name, element, results)
                 holder.registerProblem(locationElement, message, fix)
             }
@@ -70,16 +70,15 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
     }
 
     private class NavigateToOverriddenScriptedVariablesFix(key: String, element: PsiElement, scriptedVariables: Collection<PsiElement>) : NavigateToFix(key, element, scriptedVariables) {
-        override fun getText() = PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.fix.1")
+        override fun getText() = PlsBundle.message("inspection.incorrectOverriddenForScriptedVariable.fix.1")
 
-        override fun getPopupTitle(editor: Editor): @Nls String {
-            return PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.fix.1.popup.title", key)
-        }
+        override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.incorrectOverriddenForScriptedVariable.fix.1.popup.title", key)
 
         override fun getPopupText(editor: Editor, value: PsiElement): @Nls String {
-            val lineNumber = editor.document.getLineNumber(value.textOffset)
-            return PlsBundle.message("inspection.script.incorrectOverriddenForScriptedVariable.fix.1.popup.text", key, lineNumber)
+            val file = value.containingFile
+            val lineNumber = PsiDocumentManager.getInstance(file.project).getDocument(file)?.getLineNumber(value.textOffset) ?: "?"
+            val filePath = file.fileInfo?.rootInfo?.rootFile?.path.orAnonymous()
+            return PlsBundle.message("inspection.fix.navigate.popup.text.3", key, lineNumber, filePath)
         }
     }
 }
-

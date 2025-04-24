@@ -9,6 +9,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
+import org.jetbrains.annotations.*
 
 /**
  * （对于本地化文件）检查是否存在不支持的递归。
@@ -50,10 +51,11 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     private class NavigateToRecursionFix(key: String, target: PsiElement, recursions: Collection<PsiElement>) : NavigateToFix(key, target, recursions) {
         override fun getText() = PlsBundle.message("inspection.localisation.unsupportedRecursion.fix.1")
 
-        override fun getPopupTitle(editor: Editor) =
-            PlsBundle.message("inspection.localisation.unsupportedRecursion.fix.1.popup.title", key)
+        override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.localisation.unsupportedRecursion.fix.1.popup.title", key)
 
-        override fun getPopupText(editor: Editor, value: PsiElement) =
-            PlsBundle.message("inspection.localisation.unsupportedRecursion.fix.1.popup.text", key, editor.document.getLineNumber(value.textOffset))
+        override fun getPopupText(editor: Editor, value: PsiElement): @Nls String {
+            val lineNumber = editor.document.getLineNumber(value.textOffset)
+            return PlsBundle.message("inspection.fix.navigate.popup.text.2", key, lineNumber)
+        }
     }
 }
