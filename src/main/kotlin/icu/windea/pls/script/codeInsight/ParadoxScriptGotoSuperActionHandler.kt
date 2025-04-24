@@ -1,11 +1,7 @@
 package icu.windea.pls.script.codeInsight
 
-import com.intellij.codeInsight.CodeInsightActionHandler
 import com.intellij.codeInsight.generation.actions.*
-import com.intellij.codeInsight.generation.actions.PresentableActionHandlerBasedAction
 import com.intellij.ide.util.*
-import com.intellij.lang.CodeInsightActions
-import com.intellij.lang.LanguageExtension
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
@@ -40,6 +36,7 @@ class ParadoxScriptGotoSuperActionHandler : PresentableCodeInsightActionHandler 
         update(editor, file, presentation, null)
     }
 
+    @Suppress("DEPRECATION")
     override fun update(editor: Editor, file: PsiFile, presentation: Presentation?, actionPlace: String?) {
         if (presentation == null) return
         val useShortName = actionPlace != null && (ActionPlaces.MAIN_MENU == actionPlace || ActionPlaces.isPopupPlace(actionPlace))
