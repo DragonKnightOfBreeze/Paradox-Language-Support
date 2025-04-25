@@ -15,16 +15,16 @@ import icu.windea.pls.lang.settings.*
  */
 class ParadoxUpdateLibraryOnGameSettingsChangedListener : ParadoxGameSettingsListener {
     override fun onAdd(gameSettings: ParadoxGameSettingsState) {
-        doUpdateLibrary(gameSettings.gameDirectory)
+        doUpdate(gameSettings.gameDirectory)
     }
 
     override fun onChange(gameSettings: ParadoxGameSettingsState) {
-        doUpdateLibrary(gameSettings.gameDirectory)
+        doUpdate(gameSettings.gameDirectory)
     }
 
     //org.jetbrains.kotlin.idea.core.script.ucache.ScriptClassRootsUpdater.doUpdate
 
-    private fun doUpdateLibrary(directory: String?) {
+    private fun doUpdate(directory: String?) {
         val root = directory?.orNull()?.toVirtualFile(false) ?: return
         for (project in ProjectManager.getInstance().openProjects) {
             if (project.isDisposed) continue
@@ -33,5 +33,9 @@ class ParadoxUpdateLibraryOnGameSettingsChangedListener : ParadoxGameSettingsLis
             val paradoxLibrary = project.paradoxLibrary
             paradoxLibrary.refreshRoots()
         }
+
+        //重新解析已打开的文件
+        val openedFiles = PlsManager.findOpenedFiles()
+        PlsManager.reparseAndRefreshFiles(openedFiles)
     }
 }

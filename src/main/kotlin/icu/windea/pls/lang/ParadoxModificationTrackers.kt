@@ -24,4 +24,10 @@ object ParadoxModificationTrackers {
     val ParameterConfigInferenceTracker = SimpleModificationTracker()
     val InlineScriptConfigInferenceTracker = SimpleModificationTracker()
     val DefinitionScopeContextInferenceTracker = SimpleModificationTracker()
+
+    fun refreshPsi() {
+        ScriptFileTracker.incModificationCount()
+        LocalisationFileTracker.incModificationCount()
+        ScriptFileTrackers.values.forEach { it.incModificationCount() }
+    }
 }

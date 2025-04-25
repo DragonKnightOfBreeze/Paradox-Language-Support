@@ -19,8 +19,9 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
                 .bindItem(settings::preferredLocale.toNullableProperty())
                 .onApply {
                     if (oldPreferredLocale != settings.preferredLocale) {
-                        val openedFiles = PlsManager.findOpenedFiles()
-                        PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
+                        //刷新已打开的文件
+                        val files = PlsManager.findOpenedFiles()
+                        PlsManager.reparseAndRefreshFiles(files, reparse = false)
                     }
                 }
         }

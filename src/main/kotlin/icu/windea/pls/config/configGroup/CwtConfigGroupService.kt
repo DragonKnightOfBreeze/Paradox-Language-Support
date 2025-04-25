@@ -71,11 +71,11 @@ class CwtConfigGroupService(private val project: Project) {
                     logger.info("Refresh config group '$gameTypeId'...")
                     val start = System.currentTimeMillis()
 
-                    ReadAction.nonBlocking(Callable {
+                    ReadAction.nonBlocking<Unit> {
                         val newConfigGroup = doCreateConfigGroup(configGroup.gameType)
                         newConfigGroup.copyUserDataTo(configGroup)
                         configGroup.modificationTracker.incModificationCount()
-                    }).expireWhen { project.isDisposed }.wrapProgress(indicator).executeSynchronously()
+                    }.expireWhen { project.isDisposed }.wrapProgress(indicator).executeSynchronously()
 
                     val end = System.currentTimeMillis()
                     logger.info("Refresh config group '$gameTypeId' finished in ${end - start} ms.")
@@ -88,7 +88,7 @@ class CwtConfigGroupService(private val project: Project) {
 
             override fun onSuccess() {
                 val action = NotificationAction.createSimple(PlsBundle.message("configGroup.refresh.notification.action.reindex")) {
-                    //重新解析文件（IDE之后会自动请求重新索引）
+                    //重新解析并刷新（IDE之后会自动请求重新索引）
                     //TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
                     val rootFilePaths = getRootFilePaths(configGroups)
                     val files = PlsManager.findFilesByRootFilePaths(rootFilePaths)

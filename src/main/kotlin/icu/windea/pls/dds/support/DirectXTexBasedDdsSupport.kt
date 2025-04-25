@@ -112,7 +112,8 @@ class DirectXTexBasedDdsSupport : DdsSupport {
         val wd = texconvExeWd
 
         val r = executeCommand(command, CommandType.CMD, workDirectory = wd)
-        val outputPath = r.lines().lastOrNull()?.removePrefix("writing ")?.trim()?.toPathOrNull() ?: throw IllegalStateException()
+        val outputPath = r.lines().lastOrNull()?.removePrefix("writing ")?.trim()?.toPathOrNull()
+        if (outputPath == null) throw IllegalStateException()
 
         if (targetDirectoryPath == null) {
             if (targetFileName == null) return outputPath

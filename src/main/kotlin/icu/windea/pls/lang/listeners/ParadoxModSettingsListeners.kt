@@ -17,16 +17,16 @@ import icu.windea.pls.lang.settings.*
  */
 class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListener {
     override fun onAdd(modSettings: ParadoxModSettingsState) {
-        doUpdateLibrary(modSettings.modDirectory)
+        doUpdate(modSettings.modDirectory)
     }
 
     override fun onChange(modSettings: ParadoxModSettingsState) {
-        doUpdateLibrary(modSettings.modDirectory)
+        doUpdate(modSettings.modDirectory)
     }
 
     //org.jetbrains.kotlin.idea.core.script.ucache.ScriptClassRootsUpdater.doUpdate
 
-    private fun doUpdateLibrary(directory: String?) {
+    private fun doUpdate(directory: String?) {
         val root = directory?.orNull()?.toVirtualFile(false) ?: return
         for (project in ProjectManager.getInstance().openProjects) {
             if (project.isDisposed) continue
@@ -35,6 +35,10 @@ class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListe
             val paradoxLibrary = project.paradoxLibrary
             paradoxLibrary.refreshRoots()
         }
+
+        //重新解析已打开的文件
+        val openedFiles = PlsManager.findOpenedFiles()
+        PlsManager.reparseAndRefreshFiles(openedFiles)
     }
 }
 
@@ -45,7 +49,7 @@ class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListe
  */
 class ParadoxUpdateEditorNotificationsOnModSettingsChangedListener : ParadoxModSettingsListener {
     override fun onAdd(modSettings: ParadoxModSettingsState) {
-
+        EditorNotifications.updateAll()
     }
 
     override fun onChange(modSettings: ParadoxModSettingsState) {

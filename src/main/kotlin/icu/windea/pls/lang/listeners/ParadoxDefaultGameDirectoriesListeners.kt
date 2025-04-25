@@ -1,10 +1,7 @@
 package icu.windea.pls.lang.listeners
 
-import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.roots.*
 import com.intellij.ui.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.editor.*
 
@@ -18,19 +15,19 @@ class ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener : ParadoxDefau
     override fun onChange(oldGameDirectories: Map<String, String>, newGameDirectories: Map<String, String>) {
         val directories = newGameDirectories.values.toMutableSet()
         directories.removeAll(oldGameDirectories.values.toSet())
-        doUpdateLibrary(directories)
+        doUpdate(directories)
     }
 
-    private fun doUpdateLibrary(directories: Set<String>) {
-        val roots = directories.mapNotNull { directory -> directory.orNull()?.toVirtualFile(false) }
-        if (roots.isEmpty()) return
+    private fun doUpdate(directories: Set<String>) {
         for (project in ProjectManager.getInstance().openProjects) {
             if (project.isDisposed) continue
-            val isInProject = runReadAction { roots.any { root -> ProjectFileIndex.getInstance(project).isInContent(root) } }
-            if (!isInProject) continue
             val library = project.paradoxLibrary
             library.refreshRoots()
         }
+
+        //重新解析已打开的文件
+        val openedFiles = PlsManager.findOpenedFiles()
+        PlsManager.reparseAndRefreshFiles(openedFiles)
     }
 }
 

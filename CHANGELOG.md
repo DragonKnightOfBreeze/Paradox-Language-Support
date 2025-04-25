@@ -2,7 +2,6 @@
 
 ## PLANNED
 
-* [ ] 修复自IDEA 2024.3开始，无法通过按住Ctrl并点击参数（以及其他类似目标）直接查找使用的问题 / Fixed the bug that cannot find usages directly by holding down Ctrl and clicking on parameters (and other similar targets) since IDEA 2024.3
 * [ ] 提供对**魔法注释**的初步支持，可以用来从指定的源数据生成脚本片段 / Provides initial support for **Magic Comments**, which can be used to generate script snippet from specified source data
 * [ ] 允许为同一个模组配置多个模组依赖列表 / Allows to configure multiple mod dependency lists for the same mod
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
@@ -15,6 +14,8 @@
 * [X] 提供简体中文的本地化 / Provide localization for Simplified Chinese
 * [X] 优化：有关重载的代码检查不应适用于匿名的定义 / OP: Code checks about overridden should not be applied to anonymous definitions *
 * [X] #138 修复与导航到重载目标的快速修正有关的一个问题 / Fixed a problem related to quick fixes for navigation to overridden targets *
+* [X] 修复依赖发生变化时，相关状态未正确刷新的问题 / Fixed the problem that related statuses are not refreshed correctly when dependencies changes
+* [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.33
 

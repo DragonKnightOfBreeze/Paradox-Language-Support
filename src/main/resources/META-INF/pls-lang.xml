@@ -160,6 +160,8 @@
               topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnLocalConfigDirectoryChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxLocalConfigDirectoryListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateConfigGroupOnLocalConfigDirectoryChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxLocalConfigDirectoryListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxRefreshOnModGameTypeChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxModGameTypeListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnGameSettingsChangedListener"

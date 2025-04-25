@@ -19,10 +19,10 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import java.awt.event.*
 
+@Suppress("UnstableApiUsage")
 class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
     override fun getId() = "pls"
 
-    @Suppress("DialogTitleCapitalization")
     override fun createPanel(): DialogPanel {
         val settings = getSettings()
         return panel {
@@ -84,7 +84,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                             val newPreferredLocale = settings.preferredLocale
                             if (oldPreferredLocale != newPreferredLocale) {
                                 preferredLocale = newPreferredLocale
-                                refreshForOpenedFiles()
+                                refreshOnlyForOpenedFiles()
                             }
                         }
                 }
@@ -107,8 +107,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                                 fileNames += oldIgnoredFileNameSet
                                 fileNames += newIgnoredFileNameSet
                                 //设置中的被忽略文件名被更改时，需要重新解析相关文件（IDE之后会自动请求重新索引）
-                                val files = PlsManager.findFilesByFileNames(fileNames)
-                                PlsManager.reparseAndRefreshFiles(files)
+                                refreshForFilesByFileNames(fileNames)
                             }
                         }
                 }
@@ -483,13 +482,13 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 row {
                     checkBox(PlsBundle.message("settings.others.highlightLocalisationColorId"))
                         .bindSelected(settings.others::highlightLocalisationColorId)
-                        .onApply { refreshForOpenedFiles() }
+                        .onApply { refreshOnlyForOpenedFiles() }
                 }
                 //renderLocalisationColorfulText
                 row {
                     checkBox(PlsBundle.message("settings.others.renderLocalisationColorfulText"))
                         .bindSelected(settings.others::renderLocalisationColorfulText)
-                        .onApply { refreshForOpenedFiles() }
+                        .onApply { refreshOnlyForOpenedFiles() }
                 }
                 //defaultDiffGroup
                 buttonsGroup(PlsBundle.message("settings.others.defaultDiffGroup")) {
@@ -509,13 +508,20 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 
     //NOTE 如果应用更改时涉及多个相关字段，下面这些回调可能同一回调会被多次调用，不过目前看来问题不大
 
-    private fun refreshForOpenedFiles() {
+    private fun refreshForFilesByFileNames(fileNames: MutableSet<String>) {
+        val files = PlsManager.findFilesByFileNames(fileNames)
+        PlsManager.reparseAndRefreshFiles(files)
+    }
+
+    private fun refreshOnlyForOpenedFiles() {
         val openedFiles = PlsManager.findOpenedFiles()
         PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
     }
 
     private fun refreshForParameterInference() {
         ParadoxModificationTrackers.ParameterConfigInferenceTracker.incModificationCount()
+        val openedFiles = PlsManager.findOpenedFiles()
+        PlsManager.reparseAndRefreshFiles(openedFiles)
     }
 
     private fun refreshForInlineScriptInference() {
@@ -528,7 +534,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
 
     private fun refreshForScopeContextInference() {
         ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
-        refreshForOpenedFiles()
+        val openedFiles = PlsManager.findOpenedFiles()
+        PlsManager.reparseAndRefreshFiles(openedFiles)
     }
 }
-

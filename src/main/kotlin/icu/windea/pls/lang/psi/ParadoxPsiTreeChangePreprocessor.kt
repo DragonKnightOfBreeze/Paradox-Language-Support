@@ -13,17 +13,11 @@ import icu.windea.pls.script.psi.*
 class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
     class Listener : DumbService.DumbModeListener {
         override fun enteredDumbMode() {
-            incCount()
+            ParadoxModificationTrackers.refreshPsi()
         }
 
         override fun exitDumbMode() {
-            incCount()
-        }
-
-        private fun incCount() {
-            ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
-            ParadoxModificationTrackers.LocalisationFileTracker.incModificationCount()
-            ParadoxModificationTrackers.ScriptFileTrackers.values.forEach { it.incModificationCount() }
+            ParadoxModificationTrackers.refreshPsi()
         }
     }
 

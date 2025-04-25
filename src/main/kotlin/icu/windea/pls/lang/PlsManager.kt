@@ -87,6 +87,7 @@ object PlsManager {
         if (files.isEmpty()) return
         runInEdt {
             if (reparse) {
+                ParadoxModificationTrackers.refreshPsi()
                 FileContentUtilCore.reparseFiles(files)
             }
 
