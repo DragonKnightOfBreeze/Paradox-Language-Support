@@ -258,23 +258,14 @@ object CwtConfigManager {
         }
     }
 
-    fun getFilePathPatterns(config: CwtConfig<*>): Set<String> {
-        return config.getOrPutUserData(Keys.filePathPatterns) { doGetFilePathPatterns(config) }
-    }
-
-    private fun doGetFilePathPatterns(config: CwtConfig<*>): Set<String> {
-        if (config !is CwtPathMatchableConfig) return emptySet()
-
-        val pathPatterns = config.pathPatterns
+    fun getFilePathPatterns(config: CwtFilePathMatchableConfig): Set<String> {
         val paths = config.paths
         val pathFile = config.pathFile
         val pathExtension = config.pathExtension
         val pathStrict = config.pathStrict
-        val patterns = sortedSetOf<String>()
-        if (pathPatterns.isNotEmpty()) {
-            patterns += pathPatterns
-        }
-        val filePattern = when  {
+        val pathPatterns = config.pathPatterns
+        val result = sortedSetOf<String>()
+        val filePattern = when {
             pathFile.isNotNullOrEmpty() -> pathFile
             pathExtension.isNotNullOrEmpty() -> "*.${pathExtension}"
             else -> null
@@ -282,7 +273,7 @@ object CwtConfigManager {
         if (paths.isNotEmpty()) {
             for (path in paths) {
                 if (path.isNotEmpty()) {
-                    patterns += buildString {
+                    result += buildString {
                         append(path)
                         if (pathStrict) {
                             if (filePattern.isNotNullOrEmpty()) {
@@ -299,72 +290,44 @@ object CwtConfigManager {
                         }
                     }
                 } else if (filePattern.isNotNullOrEmpty()) {
-                    patterns += filePattern
+                    result += filePattern
                 }
             }
         } else if (filePattern.isNotNullOrEmpty()) {
-            patterns += filePattern
+            result += filePattern
         }
-
-        return patterns
+        if (pathPatterns.isNotEmpty()) {
+            result += pathPatterns
+        }
+        return result
     }
 
-    fun getFilePathsForPriority(config: CwtConfig<*>): Set<String> {
-        return config.getOrPutUserData(Keys.filePathsForPriority) { doGetFilePathsForPriority(config) }
-    }
-
-    private fun doGetFilePathsForPriority(config: CwtConfig<*>): Set<String> {
-        if (config !is CwtPathMatchableConfig) return emptySet()
-
-        val pathPatterns = config.pathPatterns
+    fun getFilePathPatternsForPriority(config: CwtFilePathMatchableConfig): Set<String> {
         val paths = config.paths
         val pathFile = config.pathFile
         val pathStrict = config.pathStrict
-        val filePaths = sortedSetOf<String>()
-        if (pathPatterns.isNotEmpty()) {
-            filePaths += pathPatterns.map { it.substringBefore("/*") }
-        }
+        val pathPatterns = config.pathPatterns
+        val result = sortedSetOf<String>()
         if (paths.isNotEmpty()) {
             if (pathFile.isNotNullOrEmpty() && pathStrict) {
-                filePaths += paths.map { "$it/$pathFile" }
+                result += paths.map { "$it/$pathFile" }
             } else {
-                filePaths += paths
+                result += paths
             }
         } else if (pathFile.isNotNullOrEmpty()) {
-            filePaths += pathFile
+            result += pathFile
         }
-        return filePaths
-    }
-
-    fun matchesFilePath(config: CwtPathMatchableConfig, filePath: ParadoxPath): Boolean {
-        return doMatchFilePath(config, filePath)
-    }
-
-    fun doMatchFilePath(config: CwtPathMatchableConfig, filePath: ParadoxPath): Boolean {
-        val pathPatterns = config.pathPatterns
-        val paths = config.paths
-        val pathFile = config.pathFile
-        val pathExtension = config.pathExtension
-        val pathStrict = config.pathStrict
-
         if (pathPatterns.isNotEmpty()) {
-            if (pathPatterns.any { filePath.path.matchesAntPattern(it) }) return true
+            result += pathPatterns.map { it.substringBefore("/**", "").orNull() ?: it.substringBeforeLast("/") }
         }
+        return result
+    }
 
-        if (pathFile.isNotNullOrEmpty()) {
-            if (pathFile != filePath.fileName) return false
-        } else if (pathExtension.isNotNullOrEmpty()) {
-            if (filePath.fileExtension == null || !pathExtension.equals(filePath.fileExtension, true)) return false
-        }
-        if (paths.isNotEmpty()) {
-            for (path in paths) {
-                if (path.matchesPath(filePath.path, strict = pathStrict)) return true
-            }
-            return false
-        } else {
-            if (pathFile.isNullOrEmpty() && pathExtension.isNullOrEmpty()) return false
-            return true
-        }
+    fun matchesFilePathPattern(config: CwtFilePathMatchableConfig, filePath: ParadoxPath): Boolean {
+        //TODO 1.3.35+ check performance
+        
+        val filePathPatterns = config.filePathPatterns
+        return filePathPatterns.any { filePath.path.matchesAntPattern(it) }
     }
 
     fun getConfigByPathExpression(configGroup: CwtConfigGroup, pathExpression: String): List<CwtMemberConfig<*>> {
@@ -452,7 +415,6 @@ object CwtConfigManager {
             is CwtSchemaExpression.Constraint -> {
                 false //fast check
             }
-            else -> false
         }
     }
 }

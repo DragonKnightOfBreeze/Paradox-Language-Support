@@ -205,7 +205,7 @@ object ParadoxDefinitionManager {
     ): Boolean? {
         //判断path是否匹配
         if (path != null) {
-            if (!CwtConfigManager.matchesFilePath(typeConfig, path)) return false
+            if (!CwtConfigManager.matchesFilePathPattern(typeConfig, path)) return false
         }
 
         if (rootKey != null) {

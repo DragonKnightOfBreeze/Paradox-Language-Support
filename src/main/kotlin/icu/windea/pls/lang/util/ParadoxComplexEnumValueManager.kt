@@ -74,7 +74,7 @@ object ParadoxComplexEnumValueManager {
         path: ParadoxPath?
     ): Boolean {
         if (path != null) {
-            if (!CwtConfigManager.matchesFilePath(complexEnumConfig, path)) return false
+            if (!CwtConfigManager.matchesFilePathPattern(complexEnumConfig, path)) return false
         }
 
         for (enumNameConfig in complexEnumConfig.enumNameConfigs) {

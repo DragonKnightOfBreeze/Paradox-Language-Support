@@ -35,7 +35,7 @@ class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
                 for (tracker in trackers) {
                     val patterns = tracker.patterns
                     for (pattern in patterns) {
-                        if (fileInfo.path.path.matchesAntPattern(pattern, ignoreCase = true)) {
+                        if (fileInfo.path.path.matchesAntPattern(pattern)) {
                             tracker.incModificationCount()
                             break
                         }

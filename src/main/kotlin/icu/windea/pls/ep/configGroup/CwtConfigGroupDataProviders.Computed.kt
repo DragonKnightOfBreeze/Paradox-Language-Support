@@ -115,9 +115,9 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             //based on file paths, in detail, based on file path patterns (has any same file path patterns)
             with(configGroup.definitionTypesMayWithTypeKeyPrefix) {
                 val types = configGroup.types.values.filter { c -> c.typeKeyPrefix != null }
-                val filePathPatterns = types.flatMapTo(mutableSetOf()) { c -> CwtConfigManager.getFilePathPatterns(c) }
+                val filePathPatterns = types.flatMapTo(mutableSetOf()) { c -> c.filePathPatterns }
                 val types1 = configGroup.types.values.filter { c ->
-                    val filePathPatterns1 = CwtConfigManager.getFilePathPatterns(c)
+                    val filePathPatterns1 = c.filePathPatterns
                     filePathPatterns1.isNotEmpty() && filePathPatterns.any { it in filePathPatterns }
                 }
                 types1.forEach { c -> this += c.name }

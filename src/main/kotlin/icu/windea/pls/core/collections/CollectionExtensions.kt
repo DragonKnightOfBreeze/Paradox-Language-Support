@@ -110,9 +110,3 @@ fun <T> Iterable<T>.process(processor: (T) -> Boolean): Boolean {
 //    return this
 //}
 
-private val emptyStringArray = emptyArray<String>()
-
-fun Collection<String>.toOptimizedArray(): Array<String> {
-    if (this.isEmpty()) return emptyStringArray
-    return this.toTypedArray()
-}

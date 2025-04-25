@@ -5,6 +5,7 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
@@ -15,11 +16,11 @@ import icu.windea.pls.model.*
 /**
  * @property name string
  * @property baseType (property) path: string
- * @property pathPatterns (property*) path_pattern: string
  * @property paths (property) path: string
  * @property pathFile (property) path_file: string
  * @property pathExtension (property) path_extension: string
  * @property pathStrict (property) path_strict: boolean
+ * @property pathPatterns (property*) path_pattern: string
  * @property nameField (property) name_field: string
  * @property typeKeyPrefix (property) type_key_prefix: string
  * @property nameFromFile (property) name_from_file: boolean
@@ -35,14 +36,14 @@ import icu.windea.pls.model.*
  * @property localisation (property*) localisation: localisationInfo
  * @property images (property*) images: imagesInfo
  */
-interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtPathMatchableConfig {
+interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtFilePathMatchableConfig {
     val name: String
     val baseType: String?
-    override val pathPatterns: Array<String>
-    override val paths: Array<String>
+    override val paths: Set<String>
     override val pathFile: String?
     override val pathExtension: String?
     override val pathStrict: Boolean
+    override val pathPatterns: Set<String>
     val nameField: String?
     val typeKeyPrefix: String?
     val nameFromFile: Boolean
@@ -88,11 +89,11 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
 
     val name = config.key.removeSurroundingOrNull("type[", "]")?.orNull()?.intern() ?: return null
     var baseType: String? = null
-    val pathPatterns = sortedSetOf<String>()
     val paths = sortedSetOf<String>()
     var pathFile: String? = null
     var pathExtension: String? = null
     var pathStrict = false
+    val pathPatterns = sortedSetOf<String>()
     var nameField: String? = null
     var typeKeyPrefix: String? = null
     var nameFromFile = false
@@ -113,11 +114,11 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
     for (prop in props) {
         when (prop.key) {
             "base_type" -> baseType = prop.stringValue
-            "path_pattern" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { pathPatterns += it.intern() }
             "path" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { paths += it.intern() }
             "path_file" -> pathFile = prop.stringValue ?: continue
             "path_extension" -> pathExtension = prop.stringValue?.removePrefix(".")?.intern() ?: continue
             "path_strict" -> pathStrict = prop.booleanValue ?: continue
+            "path_pattern" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { pathPatterns += it.intern() }
             "name_field" -> nameField = prop.stringValue ?: continue
             "type_key_prefix" -> typeKeyPrefix = prop.stringValue ?: continue
             "name_from_file" -> nameFromFile = prop.booleanValue ?: continue
@@ -190,7 +191,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtTypeConfig? {
 
     return CwtTypeConfigImpl(
         config, name, baseType,
-        pathPatterns.toOptimizedArray(), paths.toOptimizedArray(), pathStrict, pathFile, pathExtension,
+        paths.optimized(), pathFile, pathExtension, pathStrict, pathPatterns.optimized(),
         nameField, typeKeyPrefix, nameFromFile, typePerFile, unique, severity,
         skipRootKey, typeKeyFilter, typeKeyRegex, startsWith,
         graphRelatedTypes?.optimized(), subtypes.optimized(), localisation, images
@@ -201,11 +202,11 @@ private class CwtTypeConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
     override val baseType: String?,
-    override val pathPatterns: Array<String>,
-    override val paths: Array<String>,
-    override val pathStrict: Boolean,
+    override val paths: Set<String>,
     override val pathFile: String?,
     override val pathExtension: String?,
+    override val pathStrict: Boolean,
+    override val pathPatterns: Set<String>,
     override val nameField: String?,
     override val typeKeyPrefix: String?,
     override val nameFromFile: Boolean,
@@ -220,4 +221,11 @@ private class CwtTypeConfigImpl(
     override val subtypes: Map<String, CwtSubtypeConfig>,
     override val localisation: CwtTypeLocalisationConfig?,
     override val images: CwtTypeImagesConfig?,
-) : UserDataHolderBase(), CwtTypeConfig
+) : UserDataHolderBase(), CwtTypeConfig {
+    override val filePathPatterns: Set<String> by lazy {
+        CwtConfigManager.getFilePathPatterns(this).optimized()
+    }
+    override val filePathPatternsForPriority: Set<String> by lazy {
+        CwtConfigManager.getFilePathPatternsForPriority(this).optimized()
+    }
+}
