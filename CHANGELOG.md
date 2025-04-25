@@ -12,8 +12,8 @@
 * [X] 更新IDEA版本到2025.1 / Update IDEA version to 2025.1
 * [X] 提供适配新UI的图标 / Provide icons that fit the new UI
 * [X] 提供简体中文的本地化 / Provide localization for Simplified Chinese
-* [X] 优化：有关重载的代码检查不应适用于匿名的定义 / OP: Code checks about overridden should not be applied to anonymous definitions *
-* [X] #138 修复与导航到重载目标的快速修正有关的一个问题 / Fixed a problem related to quick fixes for navigation to overridden targets *
+* [X] 优化：有关重载的代码检查不应适用于匿名的定义 / OP: Code checks about overridden should not be applied to anonymous definitions
+* [X] #138 修复与导航到重载目标的快速修正有关的一个问题 / Fixed a problem related to quick fixes for navigation to overridden targets
 * [X] 修复依赖发生变化时，相关状态未正确刷新的问题 / Fixed the problem that related statuses are not refreshed correctly when dependencies changes
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
