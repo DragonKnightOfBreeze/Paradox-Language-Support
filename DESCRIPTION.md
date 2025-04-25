@@ -1,7 +1,7 @@
-<p>IDEA plugin: Support for Paradox language.</p>
+<p>The Intellij IDEA plugin for Stellaris modding (also supports other Paradox Interactive games), which is smart, convenient and with more potential.</p>
 <p>Features:</p>
 <ul>
-<li>Supports script & localisation languages and CWT language (used by config files).</li>
+<li>Supports script &amp; localisation languages and CWT language (used by config files).</li>
 <li>Provides various almost excellent language features for script &amp; localisation languages, including code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff and more.</li>
 <li>Provides basic language features for CWT language, including code highlight, code navigation, quick documentation and more.</li>
 <li>Supports rendering scope context, localisation text, DDS images and other useful information via quick documentation and inlay hints.</li>
@@ -16,7 +16,7 @@ Besides, <a href="https://windea.icu/Paradox-Language-Support/en/config.html#wri
 
 <br/>
 
-<p>IDEA插件：Paradox语言支持。</p>
+<p>用于编写群星模组（也支持其他P社游戏）的Intellij IDEA插件，智能、便捷且更具潜力。</p>
 <p>特性：</p>
 <ul>
 <li>支持脚本语言与本地化语言，以及规则文件所使用的CWT语言。</li>

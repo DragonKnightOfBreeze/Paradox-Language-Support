@@ -1,9 +1,6 @@
 import org.jetbrains.changelog.*
 import org.jetbrains.intellij.platform.gradle.*
 import org.jetbrains.kotlin.gradle.dsl.*
-import org.jetbrains.kotlin.gradle.tasks.*
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.utils.*
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.10"
@@ -19,22 +16,19 @@ fun String.toChangeLogText(): String {
     val regex1 = """[-*] \[ ].*""".toRegex()
     val regex2 = """[-*] \[[xX]].*""".toRegex()
     val regex3 = """[-*]{3,}""".toRegex()
-    return lines()
-        .run {
-            val start = indexOfFirst { it.startsWith("## $version") }
-            val end = drop(start + 1).indexOfFirst { it.startsWith("## ") }.let { if (it != -1) it else size }
-            subList(start + 1, end)
-        }
+    return lines().asSequence()
+        .dropWhile { !it.startsWith("## $version") }.drop(1)
+        .takeWhile { !it.startsWith("## ") }
         .mapNotNull {
             when {
-                it.matches(regex3) -> null //horizontal line
                 it.contains("(HIDDEN)") -> null //hidden
                 it.matches(regex1) -> null //undo
                 it.matches(regex2) -> "*" + it.substring(5) //done
+                it.matches(regex3) -> null //horizontal line
                 else -> it
             }
         }
-        .joinToString("\n")
+        .joinToString("\n").trim()
         .let { markdownToHTML(it) }
 }
 
