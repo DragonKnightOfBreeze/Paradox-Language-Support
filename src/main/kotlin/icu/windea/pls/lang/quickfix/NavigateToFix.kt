@@ -42,7 +42,7 @@ abstract class NavigateToFix(
 
                 override fun onChosen(selectedValue: PsiElement, finalChoice: Boolean): PopupStep<*>? {
                     navigateTo(editor, selectedValue)
-                    return PopupStep.FINAL_CHOICE
+                    return FINAL_CHOICE
                 }
             }
             JBPopupFactory.getInstance().createListPopup(popup).showInBestPositionFor(editor)
@@ -50,8 +50,13 @@ abstract class NavigateToFix(
     }
 
     private fun navigateTo(editor: Editor, toNavigate: PsiElement) {
-        editor.caretModel.moveToOffset(toNavigate.textOffset)
-        editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
+        val navigationElement = toNavigate.navigationElement
+        if (editor.virtualFile == toNavigate.containingFile.virtualFile) {
+            editor.caretModel.moveToOffset(navigationElement.textOffset)
+            editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
+        } else {
+            navigationElement.castOrNull<NavigatablePsiElement>()?.navigate(true)
+        }
     }
 
     override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor) = IntentionPreviewInfo.EMPTY
