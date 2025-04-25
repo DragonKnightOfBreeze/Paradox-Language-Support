@@ -2,12 +2,12 @@
 
 ## PLANNED
 
-* [ ] 提供对**魔法注释**的初步支持，可以用来从指定的源数据生成脚本片段 / Provides initial support for **Magic Comments**, which can be used to generate script snippet from specified source data
-* [ ] 允许为同一个模组配置多个模组依赖列表 / Allows to configure multiple mod dependency lists for the same mod
+* [ ] 提供对**魔法注释**的初步支持（可以用来生成脚本片段） / Provide initial support for **Magic Comments** (Can be used to generate script snippets)
+* [ ] 允许为同一个模组配置多个模组依赖列表 / Allow to configure multiple mod dependency lists for the same mod
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
 * [ ] #137 [VIC3/CK3] Support special localizations
 
-## 1.3.14
+## 1.3.34
 
 * [X] 更新IDEA版本到2025.1 / Update IDEA version to 2025.1
 * [X] 提供适配新UI的图标 / Provide icons that fit the new UI
