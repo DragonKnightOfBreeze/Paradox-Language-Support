@@ -1,7 +1,5 @@
 <idea-plugin>
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.paradoxLanguage" beanClass="icu.windea.pls.lang.ParadoxMetaLanguage$ParadoxLanguageEP" dynamic="true"/>
-
     <extensionPoint qualifiedName="icu.windea.pls.search.localScriptedVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.globalScriptedVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.definitionSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
@@ -17,8 +15,6 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
-    <metaLanguage implementation="icu.windea.pls.lang.ParadoxMetaLanguage"/>
-
     <applicationConfigurable id="pls" groupId="language" bundle="messages.PlsBundle" key="settings" instance="icu.windea.pls.lang.settings.ParadoxSettingsConfigurable"/>
 
     <additionalLibraryRootsProvider implementation="icu.windea.pls.lang.ParadoxLibraryProvider"/>
@@ -119,11 +115,6 @@
     <psi.treeChangePreprocessor implementation="icu.windea.pls.lang.psi.ParadoxPsiTreeChangePreprocessor"/>
 
     <iconMapper mappingFile="PlsIconMappings.json"/>
-  </extensions>
-
-  <extensions defaultExtensionNs="icu.windea.pls">
-    <paradoxLanguage language="PARADOX_SCRIPT"/>
-    <paradoxLanguage language="PARADOX_LOCALISATION"/>
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls.search">
