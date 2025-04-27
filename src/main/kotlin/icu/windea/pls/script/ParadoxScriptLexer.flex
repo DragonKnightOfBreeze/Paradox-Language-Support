@@ -112,10 +112,10 @@ WHITE_SPACE=[\s&&[^\r\n]]+
 BLANK=\s+
 COMMENT=#[^\r\n]*
 
-//leading number is not permitted for parameter names
+// leading number is not permitted for parameter names
 PARAMETER_TOKEN=[a-zA-Z_][a-zA-Z0-9_]*
 
-//leading number is not permitted for scripted variable names
+// leading number is not permitted for scripted variable names
 SCRIPTED_VARIABLE_NAME_TOKEN=[a-zA-Z0-9_]+
 CHECK_SCRIPTED_VARIABLE_NAME=[a-zA-Z_$\[][^@#={}\s\"]*(\s*=)?
 CHECK_SCRIPTED_VARIABLE_REFERENCE=[a-zA-Z_$\[][^@#={}\s\"]*
@@ -125,22 +125,22 @@ CHECK_PROPERTY_KEY=({WILDCARD_PROPERTY_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_
 WILDCARD_PROPERTY_KEY_TOKEN=[^@#=<>?{}\[\s\"][^#=<>?{}\s\"]*\"?
 WILDCARD_QUOTED_PROPERTY_KEY_TOKEN=\"([^\"\r\n\\]|\\.)*\"?
 PROPERTY_KEY_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
-QUOTED_PROPERTY_KEY_TOKEN=([^\"$\\\r\n]|\\[\s\S])+ //without arounding quotes
+QUOTED_PROPERTY_KEY_TOKEN=([^\"$\\\r\n]|\\[\s\S])+ // without arounding quotes
 
 BOOLEAN_TOKEN=(yes)|(no)
-INT_NUMBER_TOKEN=[0-9]+ //leading zero is permitted
+INT_NUMBER_TOKEN=[0-9]+ // leading zero is permitted
 INT_TOKEN=[+-]?{INT_NUMBER_TOKEN}
-FLOAT_NUMBER_TOKEN=[0-9]*(\.[0-9]+) //leading zero is permitted
+FLOAT_NUMBER_TOKEN=[0-9]*(\.[0-9]+) // leading zero is permitted
 FLOAT_TOKEN=[+-]?{FLOAT_NUMBER_TOKEN}
-COLOR_TOKEN=(rgb|hsv|hsv360)[ \t]*\{[\d.\s&&[^\r\n]]*} //#103 hsv360 (from vic3)
+COLOR_TOKEN=(rgb|hsv|hsv360)[ \t]*\{[\d.\s&&[^\r\n]]*} // #103 hsv360 (from vic3)
 
 CHECK_STRING={WILDCARD_STRING_TOKEN}|{WILDCARD_QUOTED_STRING_TOKEN}
 WILDCARD_STRING_TOKEN=[^@#=<>?{}\s\"][^#=<>?{}\s\"]*\"?
 WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\[\s\S])*\"?
 STRING_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
-QUOTED_STRING_TOKEN=([^\"$\\]|\\[\s\S])+ //without arounding quotes
+QUOTED_STRING_TOKEN=([^\"$\\]|\\[\s\S])+ // without arounding quotes
 
-PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
+PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ // compatible with leading '@'
 
 %%
 
@@ -159,7 +159,7 @@ PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
     {CHECK_SCRIPTED_VARIABLE_NAME} {
-        //如果匹配到的文本以等号结尾，则作为scriptedVariable进行解析，否则作为scriptedVariableReference进行解析
+        // 如果匹配到的文本以等号结尾，则作为scriptedVariable进行解析，否则作为scriptedVariableReference进行解析
         if(yycharat(yylength() -1) == '='){
             yypushback(yylength());
             enterState(templateStateRef, yystate());
@@ -309,7 +309,7 @@ PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
     {BLANK} { return WHITE_SPACE; }
 }
 
-//scripted variable separator
+// scripted variable separator
 <IN_SCRIPTED_VARIABLE_NAME> {
     "=" { exitState(templateStateRef); yybegin(IN_SCRIPTED_VARIABLE_VALUE); return EQUAL_SIGN; }
 }
@@ -329,7 +329,7 @@ PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
     {WILDCARD_QUOTED_STRING_TOKEN} { enterState(templateStateRef, yystate()); return STRING_TOKEN; }
 }
 
-//property separator
+// property separator
 <YYINITIAL, IN_SCRIPTED_VARIABLE, IN_PROPERTY_OR_VALUE, IN_KEY> {
     "=" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
     "!="|"<>" { exitState(templateStateRef); yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
@@ -413,8 +413,8 @@ PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ //compatible with leading "@"
     {BLANK} { exitState(templateStateRef); return WHITE_SPACE; }
 }
 <IN_QUOTED_STRING> {
-    //quoted multiline string is allowed
-    //{EOL} { exitState(templateStateRef); return WHITE_SPACE; }
+    // quoted multiline string is allowed
+    // {EOL} { exitState(templateStateRef); return WHITE_SPACE; }
     "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
     \"|{QUOTED_STRING_TOKEN}\"? {
         boolean rightQuoted = yycharat(yylength() -1) == '"';
