@@ -394,5 +394,21 @@
                      implementationClass="icu.windea.pls.lang.inspections.localisation.expression.IncorrectDatabaseObjectExpressionInspection"/>
     <!--endregion-->
     <!--endregion-->
+
+    <!--region Integration-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxTigerInspection"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.tigerValidator"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.integration.group"
+                     groupPathKey="inspection.groupPath"
+                     implementationClass="icu.windea.pls.integration.tiger.ParadoxTigerInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxTigerInspection"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.tigerValidator"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.integration.group"
+                     groupPathKey="inspection.groupPath"
+                     implementationClass="icu.windea.pls.integration.tiger.ParadoxTigerInspection"/>
+    <!--endregion-->
+
   </extensions>
 </idea-plugin>
