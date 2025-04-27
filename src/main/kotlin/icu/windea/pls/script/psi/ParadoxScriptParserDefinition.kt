@@ -14,7 +14,7 @@ class ParadoxScriptParserDefinition : ParserDefinition {
 
     override fun getStringLiteralElements() = ParadoxScriptTokenSets.STRING_LITERALS
 
-    override fun getFileNodeType() = ParadoxScriptFile.ELEMENT_TYPE
+    override fun getFileNodeType() = ParadoxScriptFileStubElementType.INSTANCE
 
     override fun createFile(viewProvider: FileViewProvider): ParadoxScriptFile {
         return ParadoxScriptFile(viewProvider)

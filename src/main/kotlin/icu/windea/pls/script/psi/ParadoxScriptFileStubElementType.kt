@@ -14,10 +14,9 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
 
-object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxScriptLanguage.INSTANCE) {
-    private const val ID = "paradoxScript.file"
-    private const val VERSION = 58 //1.3.27
-
+class ParadoxScriptFileStubElementType(
+    language: ParadoxScriptLanguage = ParadoxScriptLanguage.INSTANCE
+) : ILightStubFileElementType<PsiFileStub<*>>(language) {
     override fun getExternalId() = ID
 
     override fun getStubVersion() = VERSION
@@ -100,5 +99,13 @@ object ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<
                 else -> true
             }
         }
+    }
+
+    companion object {
+        private const val ID = "paradoxScript.file"
+        private const val VERSION = 58 //1.3.27
+
+        @JvmStatic
+        val INSTANCE = ParadoxScriptFileStubElementType()
     }
 }

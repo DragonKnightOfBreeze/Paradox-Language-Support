@@ -7,15 +7,13 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.navigation.*
+import icu.windea.pls.model.ParadoxGameType
 
 class ParadoxLocalisationFile(
-    viewProvider: FileViewProvider
-) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage.INSTANCE) {
-    companion object {
-        val ELEMENT_TYPE = ParadoxLocalisationStubElementTypes.FILE
-    }
-
-    override fun getFileType() = ParadoxLocalisationFileType.INSTANCE
+    viewProvider: FileViewProvider,
+    val gameType: ParadoxGameType? = null
+) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage.forGameType(gameType)) {
+    override fun getFileType() = viewProvider.fileType
 
     val propertyLists: List<ParadoxLocalisationPropertyList>
         get() = findChildrenByClass(ParadoxLocalisationPropertyList::class.java).toList()

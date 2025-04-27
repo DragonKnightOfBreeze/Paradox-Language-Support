@@ -16,7 +16,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType CONCEPT_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_TEXT");
   IElementType ICON = ParadoxLocalisationElementTypeFactory.getElementType("ICON");
   IElementType LOCALE = ParadoxLocalisationElementTypeFactory.getElementType("LOCALE");
-  IElementType PROPERTY = ParadoxLocalisationStubElementTypes.getPropertyType("PROPERTY");
+  IElementType PROPERTY = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY");
   IElementType PROPERTY_KEY = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY_KEY");
   IElementType PROPERTY_LIST = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY_LIST");
   IElementType PROPERTY_REFERENCE = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY_REFERENCE");

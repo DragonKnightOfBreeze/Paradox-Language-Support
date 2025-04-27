@@ -119,7 +119,7 @@ object ParadoxLocalisationGenerator {
         val namesToDistinct = mutableSetOf<String>()
         val text = buildString {
             append(locale.id).append(":\n")
-            val indentSize = CodeStyle.getSettings(project).getIndentOptions(ParadoxLocalisationFileType.INSTANCE).INDENT_SIZE
+            val indentSize = CodeStyle.getSettings(project).getIndentOptions(ParadoxLocalisationFileType).INDENT_SIZE
             val indent = " ".repeat(indentSize)
             for (localisation in members) {
                 //exclude duplicate localisation names
@@ -174,7 +174,7 @@ object ParadoxLocalisationGenerator {
     }
 
     private fun createLocalisationTempFile(fileName: String, text: String): VirtualFile {
-        val lightFile = ParadoxFileManager.createLightFile(fileName, text, ParadoxLocalisationLanguage.INSTANCE)
+        val lightFile = ParadoxFileManager.createLightFile(fileName, text, ParadoxLocalisationLanguage)
         lightFile.bom = PlsConstants.utf8Bom //这里需要直接这样添加bom
         return lightFile
     }

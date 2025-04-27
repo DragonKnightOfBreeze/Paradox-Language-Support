@@ -10,13 +10,10 @@ import icu.windea.pls.localisation.psi.impl.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
 
-object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<ParadoxLocalisationPropertyStub, ParadoxLocalisationProperty>(
-    "PROPERTY",
-    ParadoxLocalisationLanguage.INSTANCE
-) {
-    private const val externalId = "paradoxLocalisation.property"
-
-    override fun getExternalId() = externalId
+class ParadoxLocalisationPropertyStubElementType(
+    language: ParadoxLocalisationLanguage = ParadoxLocalisationLanguage
+) : ILightStubElementType<ParadoxLocalisationPropertyStub, ParadoxLocalisationProperty>("PROPERTY", language) {
+    override fun getExternalId() = ID
 
     override fun createPsi(stub: ParadoxLocalisationPropertyStub): ParadoxLocalisationProperty {
         return ParadoxLocalisationPropertyImpl(stub, this)
@@ -76,5 +73,12 @@ object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Parado
 
     override fun isAlwaysLeaf(root: StubBase<*>): Boolean {
         return true
+    }
+
+    companion object {
+        private const val ID = "paradoxLocalisation.property"
+
+        @JvmStatic
+        val INSTANCE = ParadoxLocalisationFileStubElementType()
     }
 }

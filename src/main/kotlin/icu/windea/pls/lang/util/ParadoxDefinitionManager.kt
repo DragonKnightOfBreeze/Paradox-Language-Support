@@ -23,6 +23,7 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptFileStubElementType
 import icu.windea.pls.script.psi.impl.*
 
 /**
@@ -159,7 +160,7 @@ object ParadoxDefinitionManager {
         run {
             val elementType = node.tokenType
             if (typeConfig.typePerFile) {
-                if (elementType != ParadoxScriptStubElementTypes.FILE) return false
+                if (elementType !is ParadoxScriptFileStubElementType) return false
             } else {
                 if (elementType != PROPERTY) return false
             }

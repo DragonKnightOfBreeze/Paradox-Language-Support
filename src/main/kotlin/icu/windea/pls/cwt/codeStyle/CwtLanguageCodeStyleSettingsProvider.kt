@@ -9,7 +9,7 @@ import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings as Settings
 
 class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
-    override fun getLanguage() = CwtLanguage.INSTANCE
+    override fun getLanguage() = CwtLanguage
 
     override fun getCodeSample(settingsType: SettingsType) = PlsConstants.Samples.cwtCodeStyleSettings
 

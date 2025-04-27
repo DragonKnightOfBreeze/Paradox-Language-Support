@@ -7,7 +7,7 @@ import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtBreadCrumbsProvider : BreadcrumbsProvider {
-    private val _defaultLanguages = arrayOf(CwtLanguage.INSTANCE)
+    private val _defaultLanguages = arrayOf(CwtLanguage)
 
     override fun getLanguages(): Array<out Language> {
         return _defaultLanguages

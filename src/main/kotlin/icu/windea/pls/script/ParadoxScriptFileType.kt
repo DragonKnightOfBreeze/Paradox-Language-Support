@@ -6,9 +6,7 @@ import icu.windea.pls.lang.*
 class ParadoxScriptFileType : ParadoxBaseFileType(ParadoxScriptLanguage.INSTANCE) {
     override fun getName() = "Paradox Script"
 
-    override fun getDescription() = PlsBundle.message("filetype.script.description")
-
-    override fun getDisplayName() = PlsBundle.message("filetype.script.displayName")
+    override fun getDescription() = PlsBundle.message("language.name.script")
 
     override fun getDefaultExtension() = "txt"
 

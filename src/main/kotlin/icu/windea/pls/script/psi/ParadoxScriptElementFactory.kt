@@ -9,7 +9,7 @@ import icu.windea.pls.script.*
 object ParadoxScriptElementFactory {
     @JvmStatic
     fun createDummyFile(project: Project, text: String): ParadoxScriptFile {
-        return PsiFileFactory.getInstance(project).createFileFromText(ParadoxScriptLanguage, text)
+        return PsiFileFactory.getInstance(project).createFileFromText(ParadoxScriptLanguage.INSTANCE, text)
             .castOrNull<ParadoxScriptFile>() ?: throw IncorrectOperationException()
     }
 

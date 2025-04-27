@@ -8,12 +8,12 @@ import icu.windea.pls.cwt.*
 
 class CwtFile(
     viewProvider: FileViewProvider
-) : PsiFileBase(viewProvider, CwtLanguage.INSTANCE) {
+) : PsiFileBase(viewProvider, CwtLanguage) {
     companion object {
-        val ELEMENT_TYPE = IFileElementType("CWT_FILE", CwtLanguage.INSTANCE)
+        val ELEMENT_TYPE = IFileElementType("CWT_FILE", CwtLanguage)
     }
 
-    override fun getFileType() = CwtFileType.INSTANCE
+    override fun getFileType() = viewProvider.fileType
 
     val block get() = findChild<CwtRootBlock>()
 

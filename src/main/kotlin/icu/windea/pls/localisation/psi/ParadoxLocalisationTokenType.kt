@@ -5,5 +5,5 @@ import icu.windea.pls.localisation.*
 
 class ParadoxLocalisationTokenType(
     debugName: String
-) : IElementType(debugName, ParadoxLocalisationLanguage.INSTANCE)
+) : IElementType(debugName, ParadoxLocalisationLanguage)
 

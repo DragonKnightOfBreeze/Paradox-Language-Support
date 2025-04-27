@@ -1,10 +1,8 @@
 package icu.windea.pls.lang
 
 import com.intellij.lang.*
+import icu.windea.pls.model.*
 
-open class ParadoxBaseLanguage(ID: String) : Language(ID), DependentLanguage {
-    companion object {
-        @JvmField
-        val INSTANCE = ParadoxBaseLanguage("Paradox")
-    }
+open class ParadoxBaseLanguage(ID: String, val gameType: ParadoxGameType? = null) : Language(ID) {
+    companion object General : ParadoxBaseLanguage("PARADOX")
 }

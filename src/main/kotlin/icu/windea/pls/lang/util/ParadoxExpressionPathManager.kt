@@ -10,6 +10,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptFileStubElementType
 import java.util.*
 
 /**
@@ -74,7 +75,7 @@ object ParadoxExpressionPathManager {
             if (maxDepth >= 0 && maxDepth < depth) return null
             current = tree.getParent(current) ?: break
         }
-        if (current.tokenType == ParadoxScriptStubElementTypes.FILE) {
+        if (current.tokenType is ParadoxScriptFileStubElementType) {
             val virtualFile = file
             val injectedElementPathPrefix = virtualFile.getUserData(PlsKeys.injectedElementPathPrefix)
             if (injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {

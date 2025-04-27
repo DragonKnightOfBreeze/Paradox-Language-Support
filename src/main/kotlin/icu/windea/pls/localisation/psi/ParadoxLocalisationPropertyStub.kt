@@ -3,6 +3,7 @@ package icu.windea.pls.localisation.psi
 import com.intellij.psi.stubs.*
 import icu.windea.pls.model.*
 
+@Suppress("UnstableApiUsage")
 interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationProperty> {
     val name: String
     val category: ParadoxLocalisationCategory
@@ -11,7 +12,7 @@ interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationPrope
 
     abstract class Base(
         parent: StubElement<*>
-    ) : StubBase<ParadoxLocalisationProperty>(parent, ParadoxLocalisationStubElementTypes.PROPERTY), ParadoxLocalisationPropertyStub {
+    ) : StubBase<ParadoxLocalisationProperty>(parent, ParadoxLocalisationPropertyStubElementType.INSTANCE), ParadoxLocalisationPropertyStub {
         override fun toString(): String {
             return "ParadoxLocalisationPropertyStub(name=$name, category=$category, locale=$locale, gameType=$gameType)"
         }

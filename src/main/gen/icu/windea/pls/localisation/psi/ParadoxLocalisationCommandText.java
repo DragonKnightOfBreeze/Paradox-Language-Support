@@ -16,34 +16,24 @@ public interface ParadoxLocalisationCommandText extends ParadoxLocalisationExpre
   @NotNull
   List<ParadoxLocalisationPropertyReference> getPropertyReferenceList();
 
-  @NotNull
-  String getName();
+  @NotNull String getName();
 
-  @NotNull
-  String getValue();
+  @NotNull String getValue();
 
-  @NotNull
-  ParadoxLocalisationCommandText setValue(@NotNull String value);
+  @NotNull ParadoxLocalisationCommandText setValue(@NotNull String value);
 
-  @Nullable
-  ParadoxType getType();
+  @Nullable ParadoxType getType();
 
-  @NotNull
-  String getExpression();
+  @NotNull String getExpression();
 
-  @Nullable
-  PsiReference getReference();
+  @Nullable PsiReference getReference();
 
-  @NotNull
-  PsiReference[] getReferences();
+  @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

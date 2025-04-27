@@ -5,5 +5,5 @@ import icu.windea.pls.cwt.*
 
 class CwtTokenType(
     debugName: String
-) : IElementType(debugName, CwtLanguage.INSTANCE)
+) : IElementType(debugName, CwtLanguage)
 

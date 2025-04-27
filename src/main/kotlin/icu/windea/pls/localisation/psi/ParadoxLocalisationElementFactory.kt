@@ -9,7 +9,7 @@ import icu.windea.pls.localisation.*
 object ParadoxLocalisationElementFactory {
     @JvmStatic
     fun createDummyFile(project: Project, text: String): ParadoxLocalisationFile {
-        return PsiFileFactory.getInstance(project).createFileFromText(ParadoxLocalisationLanguage.INSTANCE, text)
+        return PsiFileFactory.getInstance(project).createFileFromText(ParadoxLocalisationLanguage, text)
             .castOrNull() ?: throw IncorrectOperationException()
     }
 

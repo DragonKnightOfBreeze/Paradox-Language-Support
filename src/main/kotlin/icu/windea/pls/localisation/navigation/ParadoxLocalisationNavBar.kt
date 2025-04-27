@@ -10,7 +10,7 @@ import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
 class ParadoxLocalisationNavBar : StructureAwareNavBarModelExtension() {
-    override val language: Language = ParadoxLocalisationLanguage.INSTANCE
+    override val language: Language = ParadoxLocalisationLanguage
 
     override fun getIcon(o: Any?): Icon? {
         return when {

@@ -97,7 +97,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {
-        return node.elementType == ParadoxLocalisationFile.ELEMENT_TYPE
+        return node.elementType is ParadoxLocalisationFileStubElementType
     }
 
     override fun isCustomFoldingCandidate(node: ASTNode): Boolean {

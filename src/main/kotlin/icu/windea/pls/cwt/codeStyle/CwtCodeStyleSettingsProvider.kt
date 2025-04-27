@@ -6,7 +6,7 @@ import icu.windea.pls.*
 import icu.windea.pls.cwt.*
 
 class CwtCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
-    override fun getLanguage() = CwtLanguage.INSTANCE
+    override fun getLanguage() = CwtLanguage
 
     override fun createCustomSettings(settings: CodeStyleSettings) = CwtCodeStyleSettings(settings)
 

@@ -9,11 +9,11 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.model.*
 
-object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage.INSTANCE) {
-    private const val ID = "paradoxLocalisation.file"
-    private const val VERSION = 58 //1.3.27
-
+class ParadoxLocalisationFileStubElementType(
+    language: ParadoxLocalisationLanguage = ParadoxLocalisationLanguage
+) : ILightStubFileElementType<PsiFileStub<*>>(language) {
     override fun getExternalId() = ID
 
     override fun getStubVersion() = VERSION
@@ -58,5 +58,18 @@ object ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFil
                 else -> true
             }
         }
+    }
+
+    companion object {
+        private const val ID = "paradoxLocalisation.file"
+        private const val VERSION = 58 //1.3.27
+
+        @JvmStatic
+        val INSTANCE = ParadoxLocalisationFileStubElementType()
+
+        private val MAP = ParadoxGameType.entries.associateWith { ParadoxLocalisationFileStubElementType(ParadoxLocalisationLanguage.forGameType(it)) }
+
+        @JvmStatic
+        fun forGameType(gameType: ParadoxGameType?): ParadoxLocalisationFileStubElementType = if (gameType == null) INSTANCE else MAP.getValue(gameType)
     }
 }

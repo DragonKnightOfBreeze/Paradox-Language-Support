@@ -22,7 +22,7 @@ class ParadoxScriptedVariableInlineDialog(
 ) : InlineOptionsDialog(project, true, element) {
     private val optimizedScope = when {
         ParadoxPsiManager.isGlobalScriptedVariable(element) -> ParadoxSearchScope.fromElement(element)
-            ?.withFileTypes(ParadoxScriptFileType.INSTANCE, ParadoxLocalisationFileType.INSTANCE)
+            ?.withFileTypes(ParadoxScriptFileType.INSTANCE, ParadoxLocalisationFileType)
             ?.intersectWith(GlobalSearchScope.projectScope(project))
             ?: GlobalSearchScope.projectScope(project)
         else -> GlobalSearchScope.fileScope(element.containingFile)

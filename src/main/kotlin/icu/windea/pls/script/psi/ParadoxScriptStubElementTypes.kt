@@ -3,10 +3,10 @@ package icu.windea.pls.script.psi
 interface ParadoxScriptStubElementTypes {
     companion object {
         @JvmField
-        val FILE = ParadoxScriptFileStubElementType
+        val FILE = ParadoxScriptFileStubElementType.INSTANCE
         @JvmField
-        val SCRIPTED_VARIABLE = ParadoxScriptScriptedVariableStubElementType
+        val SCRIPTED_VARIABLE = ParadoxScriptScriptedVariableStubElementType.INSTANCE
         @JvmField
-        val PROPERTY = ParadoxScriptPropertyStubElementType
+        val PROPERTY = ParadoxScriptPropertyStubElementType.INSTANCE
     }
 }

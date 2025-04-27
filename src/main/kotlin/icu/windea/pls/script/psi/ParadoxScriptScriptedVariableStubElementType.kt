@@ -9,13 +9,10 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
-object ParadoxScriptScriptedVariableStubElementType : ILightStubElementType<ParadoxScriptScriptedVariableStub, ParadoxScriptScriptedVariable>(
-    "SCRIPTED_VARIABLE",
-    ParadoxScriptLanguage.INSTANCE
-) {
-    private const val externalId = "paradoxScript.scriptedVariable"
-
-    override fun getExternalId() = externalId
+class ParadoxScriptScriptedVariableStubElementType(
+    language: ParadoxScriptLanguage = ParadoxScriptLanguage.INSTANCE
+) : ILightStubElementType<ParadoxScriptScriptedVariableStub, ParadoxScriptScriptedVariable>("SCRIPTED_VARIABLE", language) {
+    override fun getExternalId() = ID
 
     override fun createPsi(stub: ParadoxScriptScriptedVariableStub): ParadoxScriptScriptedVariable {
         return ParadoxScriptScriptedVariableImpl(stub, this)
@@ -60,5 +57,12 @@ object ParadoxScriptScriptedVariableStubElementType : ILightStubElementType<Para
 
     override fun isAlwaysLeaf(root: StubBase<*>): Boolean {
         return true
+    }
+
+    companion object {
+        private const val ID = "paradoxScript.scriptedVariable"
+
+        @JvmStatic
+        val INSTANCE = ParadoxScriptScriptedVariableStubElementType()
     }
 }

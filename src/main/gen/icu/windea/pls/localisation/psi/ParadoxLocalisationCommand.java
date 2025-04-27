@@ -18,16 +18,12 @@ public interface ParadoxLocalisationCommand extends ParadoxLocalisationRichText 
   @Nullable
   ParadoxLocalisationConcept getConcept();
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

@@ -14,9 +14,7 @@ import javax.swing.*
 class ParadoxScriptFile(
     viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, ParadoxScriptLanguage.INSTANCE), ParadoxScriptDefinitionElement {
-    companion object {
-        val ELEMENT_TYPE = ParadoxScriptStubElementTypes.FILE
-    }
+    override fun getFileType() = viewProvider.fileType
 
     override val block get() = findChild<ParadoxScriptRootBlock>()
 
@@ -24,10 +22,6 @@ class ParadoxScriptFile(
         //对于模组描述符文件，使用特殊图标
         if (name.endsWith(".mod", true)) return PlsIcons.FileTypes.ModeDescriptor
         return super.getIcon(flags)
-    }
-
-    override fun getFileType(): FileType {
-        return ParadoxScriptFileType.INSTANCE
     }
 
     override fun getPresentation(): ItemPresentation {

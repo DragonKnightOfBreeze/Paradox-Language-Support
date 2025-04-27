@@ -56,7 +56,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         "DATABASE_OBJECT" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY,
     )
 
-    override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxLocalisationLanguage.INSTANCE, null, null)
+    override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxLocalisationLanguage, null, null)
 
     override fun getAdditionalHighlightingTagToDescriptorMap() = _tagToDescriptorMap
 
@@ -66,7 +66,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 
     override fun getColorDescriptors() = ColorDescriptor.EMPTY_ARRAY
 
-    override fun getDisplayName() = PlsBundle.message("options.localisation.displayName")
+    override fun getDisplayName() = PlsBundle.message("language.name.localisation")
 
     override fun getDemoText() = PlsConstants.Samples.paradoxLocalisationColorSettings
 }

@@ -32,7 +32,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
     private fun doGetFileType(fileInfo: ParadoxFileInfo): FileType? {
         return when (fileInfo.fileType) {
             ParadoxFileType.Script -> ParadoxScriptFileType.INSTANCE
-            ParadoxFileType.Localisation -> ParadoxLocalisationFileType.INSTANCE
+            ParadoxFileType.Localisation -> ParadoxLocalisationFileType.forGameType(fileInfo.rootInfo.gameType)
             ParadoxFileType.ModDescriptor -> ParadoxScriptFileType.INSTANCE
             else -> null
         }

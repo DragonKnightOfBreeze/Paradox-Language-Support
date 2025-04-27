@@ -9,13 +9,10 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
-object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScriptPropertyStub, ParadoxScriptProperty>(
-    "PROPERTY",
-    ParadoxScriptLanguage.INSTANCE
-) {
-    private const val externalId = "paradoxScript.property"
-
-    override fun getExternalId() = externalId
+class ParadoxScriptPropertyStubElementType(
+    language: ParadoxScriptLanguage = ParadoxScriptLanguage.INSTANCE
+) : ILightStubElementType<ParadoxScriptPropertyStub, ParadoxScriptProperty>("PROPERTY", language) {
+    override fun getExternalId() = ID
 
     override fun createPsi(stub: ParadoxScriptPropertyStub): ParadoxScriptProperty {
         return ParadoxScriptPropertyImpl(stub, this)
@@ -71,5 +68,12 @@ object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScrip
         val elementPath = dataStream.readNameString().orEmpty().let { ParadoxExpressionPath.resolve(it) }
         val gameType = dataStream.readByte().deoptimizeValue<ParadoxGameType>()
         return ParadoxScriptPropertyStub.Impl(parentStub, name, type, subtypes, rootKey, elementPath, gameType)
+    }
+
+    companion object {
+        private const val ID = "paradoxScript.property"
+
+        @JvmStatic
+        val INSTANCE = ParadoxScriptPropertyStubElementType()
     }
 }
