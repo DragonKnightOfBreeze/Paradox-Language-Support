@@ -485,6 +485,10 @@ public class _ParadoxScriptLexer implements FlexLexer {
         this.gameType = gameType;
     }
 
+    public ParadoxGameType getGameType() {
+        return this.gameType;
+    }
+
     private void enterState(Deque<Integer> stack, int state) {
         stack.offerLast(state);
         yybegin(state);

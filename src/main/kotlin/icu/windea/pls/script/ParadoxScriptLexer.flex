@@ -30,6 +30,10 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
         this.gameType = gameType;
     }
 
+    public ParadoxGameType getGameType() {
+        return this.gameType;
+    }
+
     private void enterState(Deque<Integer> stack, int state) {
         stack.offerLast(state);
         yybegin(state);

@@ -169,9 +169,15 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // concept
+  // <<supportsConceptQuoted>> concept
   static boolean concept_expression(PsiBuilder b, int l) {
-    return concept(b, l + 1);
+    if (!recursion_guard_(b, l, "concept_expression")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = supportsConceptQuoted(b, l + 1);
+    r = r && concept(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */

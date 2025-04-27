@@ -1,7 +1,12 @@
 package icu.windea.pls.model.constraints
 
+import com.intellij.lang.*
+import com.intellij.psi.impl.source.resolve.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.ParadoxGameType.*
+import icu.windea.pls.script.psi.*
 
 enum class ParadoxSyntaxConstraint(
     vararg val gameTypes: ParadoxGameType
@@ -21,7 +26,12 @@ enum class ParadoxSyntaxConstraint(
     ;
 
     fun supports(target: Any): Boolean {
-
-        return gameType != null && gameType in this.gameTypes
+        val gameType = when (target) {
+            is PsiBuilder -> target.getUserData(FileContextUtil.CONTAINING_FILE_KEY)?.fileInfo?.rootInfo?.gameType
+            is _ParadoxScriptLexer -> target.gameType
+            is _ParadoxLocalisationLexer -> target.gameType
+            else -> null
+        }
+        return gameType == null || gameType in this.gameTypes
     }
 }

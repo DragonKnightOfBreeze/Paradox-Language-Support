@@ -141,7 +141,7 @@ command_text ::= (COMMAND_TEXT_TOKEN | property_reference)* { //can be parameter
 
 // [stellaris] concept rules, as special commands
 
-private concept_expression ::= concept
+private concept_expression ::= <<supportsConceptQuoted>> concept
 concept ::= LEFT_SINGLE_QUOTE concept_name RIGHT_SINGLE_QUOTE (COMMA concept_text) ? {
   pin=1
   methods=[getIcon getName setName getReference]

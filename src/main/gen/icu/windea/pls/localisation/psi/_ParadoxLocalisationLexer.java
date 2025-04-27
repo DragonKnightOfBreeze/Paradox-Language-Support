@@ -418,6 +418,10 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
         this.gameType = gameType;
     }
 
+    public ParadoxGameType getGameType() {
+        return this.gameType;
+    }
+
     private void increaseDepth(){
         depth++;
     }
