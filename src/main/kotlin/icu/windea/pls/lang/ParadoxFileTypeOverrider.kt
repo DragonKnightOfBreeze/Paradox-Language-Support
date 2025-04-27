@@ -15,7 +15,6 @@ import icu.windea.pls.script.*
  *
  * 基于文件的扩展名以及相对于入口目录的路径，将符合的文件重载为脚本文件或本地化文件。
  */
-@Suppress("UnstableApiUsage")
 class ParadoxFileTypeOverrider : FileTypeOverrider {
     override fun getOverriddenFileType(file: VirtualFile): FileType? {
         runCatchingCancelable r@{
@@ -32,9 +31,9 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
 
     private fun doGetFileType(fileInfo: ParadoxFileInfo): FileType? {
         return when (fileInfo.fileType) {
-            ParadoxFileType.Script -> ParadoxScriptFileType
-            ParadoxFileType.Localisation -> ParadoxLocalisationFileType
-            ParadoxFileType.ModDescriptor -> ParadoxScriptFileType
+            ParadoxFileType.Script -> ParadoxScriptFileType.INSTANCE
+            ParadoxFileType.Localisation -> ParadoxLocalisationFileType.INSTANCE
+            ParadoxFileType.ModDescriptor -> ParadoxScriptFileType.INSTANCE
             else -> null
         }
     }

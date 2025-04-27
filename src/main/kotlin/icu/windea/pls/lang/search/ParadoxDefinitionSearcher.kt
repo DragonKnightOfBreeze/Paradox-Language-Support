@@ -56,7 +56,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         processor: Processor<ParadoxScriptFile>
     ) {
         if (typeExpression != null && configGroup.types.get(typeExpression.type)?.typePerFile != true) return
-        FileTypeIndex.processFiles(ParadoxScriptFileType, p@{
+        FileTypeIndex.processFiles(ParadoxScriptFileType.INSTANCE, p@{
             ProgressManager.checkCanceled()
             val file = it.toPsiFile(project) ?: return@p true
             if (file !is ParadoxScriptFile) return@p true

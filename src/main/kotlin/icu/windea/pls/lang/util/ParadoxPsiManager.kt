@@ -6,11 +6,8 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.util.ParadoxPsiManager.findParentAndAnchorToIntroduceGlobalScriptedVariable
-import icu.windea.pls.lang.util.ParadoxPsiManager.findParentAndAnchorToIntroduceLocalScriptedVariable
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.references.*
@@ -175,20 +172,19 @@ object ParadoxPsiManager {
             newText = newText.drop(1)
         }
         val language = element.language
-        when {
-            language == ParadoxScriptLanguage -> {
+        when (language) {
+            is ParadoxScriptLanguage -> {
                 //这里会把newText识别为一个值，但是实际上newText可以是任何文本，目前不进行额外的处理
                 val newRef = ParadoxScriptElementFactory.createValue(project, newText)
                 element.replace(newRef)
             }
-            language == ParadoxLocalisationLanguage -> {
+            is ParadoxLocalisationLanguage -> {
                 //这里会把newText识别为一个字符串，但是实际上newText可以是任何文本，目前不进行额外的处理
                 newText = newText.unquote() //内联到本地化文本中时，需要先尝试去除周围的双引号
                 val newRef = ParadoxLocalisationElementFactory.createString(project, newText)
                 //element.parent should be something like "$@var$"
                 element.parent.replace(newRef)
             }
-            else -> return //unexpected
         }
     }
 

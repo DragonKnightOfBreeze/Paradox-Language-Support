@@ -70,8 +70,8 @@ class ParadoxDataSourceNode(
             }
             return when {
                 resolvedElement == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-                resolvedElement.language == CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
-                resolvedElement.language.isParadoxLanguage() -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+                resolvedElement.language is CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
+                resolvedElement.language is ParadoxBaseLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
                 else -> throw IncorrectOperationException()
             }
         }

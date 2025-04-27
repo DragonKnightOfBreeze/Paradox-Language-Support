@@ -6,7 +6,7 @@ import icu.windea.pls.localisation.*
 
 class ParadoxLocalisationWordSelectionHandler : ExtendWordSelectionHandlerBase() {
     override fun canSelect(e: PsiElement): Boolean {
-        if (e.language != ParadoxLocalisationLanguage) return false
+        if (e.language !is ParadoxLocalisationLanguage) return false
         return false
     }
 

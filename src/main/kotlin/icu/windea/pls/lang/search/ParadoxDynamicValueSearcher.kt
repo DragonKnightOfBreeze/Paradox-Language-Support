@@ -49,8 +49,8 @@ class ParadoxDynamicValueSearcher : QueryExecutorBase<ParadoxDynamicValueIndexIn
     }
 
     private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
-        FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope).let { if (!it) return false }
-        FileTypeIndex.processFiles(ParadoxLocalisationFileType, processor, scope).let { if (!it) return false }
+        FileTypeIndex.processFiles(ParadoxScriptFileType.INSTANCE, processor, scope).let { if (!it) return false }
+        FileTypeIndex.processFiles(ParadoxLocalisationFileType.INSTANCE, processor, scope).let { if (!it) return false }
         return true
     }
 }

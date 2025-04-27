@@ -28,7 +28,7 @@ class ParadoxFileLocaleIndex : ScalarIndexExtension<String>() {
     override fun getIndexer(): DataIndexer<String, Void, FileContent> {
         return DataIndexer { inputData ->
             val locale = when (inputData.fileType) {
-                ParadoxLocalisationFileType -> inputData.psiFile.castOrNull<ParadoxLocalisationFile>()?.propertyList?.locale?.name.orEmpty()
+                is ParadoxLocalisationFileType -> inputData.psiFile.castOrNull<ParadoxLocalisationFile>()?.propertyList?.locale?.name.orEmpty()
                 else -> ""
             }
             Collections.singletonMap<String, Void>(locale, null)

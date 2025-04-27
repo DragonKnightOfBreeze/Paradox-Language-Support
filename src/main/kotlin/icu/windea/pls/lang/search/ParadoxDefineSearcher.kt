@@ -71,6 +71,6 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo.Compact, 
     }
 
     private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
-        return FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
+        return FileTypeIndex.processFiles(ParadoxScriptFileType.INSTANCE, processor, scope)
     }
 }

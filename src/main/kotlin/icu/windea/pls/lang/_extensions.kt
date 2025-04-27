@@ -2,7 +2,6 @@ package icu.windea.pls.lang
 
 import com.intellij.extapi.psi.*
 import com.intellij.injected.editor.*
-import com.intellij.lang.*
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
@@ -52,10 +51,6 @@ fun getDataProvider() = service<PlsDataProvider>()
 fun getConfigGroup(gameType: ParadoxGameType?) = getDefaultProject().service<CwtConfigGroupService>().getConfigGroup(gameType)
 
 fun getConfigGroup(project: Project, gameType: ParadoxGameType?) = project.service<CwtConfigGroupService>().getConfigGroup(gameType)
-
-fun FileType.isParadoxFileType() = this == ParadoxScriptFileType || this == ParadoxLocalisationFileType
-
-fun Language.isParadoxLanguage() = this.isKindOf(ParadoxScriptLanguage) || this.isKindOf(ParadoxLocalisationLanguage)
 
 fun Char.isIdentifierChar(): Boolean {
     return StringUtil.isJavaIdentifierPart(this)
@@ -156,8 +151,8 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
             runReadAction { from.greenStub }?.locale?.toLocale(from)?.let { return it }
             selectLocale(from.containingFile)
         }
-        from is StubBasedPsiElementBase<*> && from.language == ParadoxLocalisationLanguage -> selectLocale(from.containingFile)
-        from is PsiElement && from.language == ParadoxLocalisationLanguage -> selectLocale(from.parent)
+        from is StubBasedPsiElementBase<*> && from.language is ParadoxLocalisationLanguage -> selectLocale(from.containingFile)
+        from is PsiElement && from.language is ParadoxLocalisationLanguage -> selectLocale(from.parent)
         else -> ParadoxLocaleManager.getPreferredLocaleConfig()
     }
 }

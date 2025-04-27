@@ -10,12 +10,12 @@ import icu.windea.pls.localisation.navigation.*
 
 class ParadoxLocalisationFile(
     viewProvider: FileViewProvider
-) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage) {
+) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage.INSTANCE) {
     companion object {
         val ELEMENT_TYPE = ParadoxLocalisationStubElementTypes.FILE
     }
 
-    override fun getFileType() = ParadoxLocalisationFileType
+    override fun getFileType() = ParadoxLocalisationFileType.INSTANCE
 
     val propertyLists: List<ParadoxLocalisationPropertyList>
         get() = findChildrenByClass(ParadoxLocalisationPropertyList::class.java).toList()

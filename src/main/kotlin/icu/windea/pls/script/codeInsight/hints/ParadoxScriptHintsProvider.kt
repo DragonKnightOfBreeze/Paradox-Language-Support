@@ -20,7 +20,7 @@ abstract class ParadoxScriptHintsProvider<T : Any> : InlayHintsProvider<T> {
     override val previewText: String? get() = null
 
     override fun isLanguageSupported(language: Language): Boolean {
-        return language == ParadoxScriptLanguage
+        return language is ParadoxScriptLanguage
     }
 
     override fun createConfigurable(settings: T): ImmediateConfigurable {

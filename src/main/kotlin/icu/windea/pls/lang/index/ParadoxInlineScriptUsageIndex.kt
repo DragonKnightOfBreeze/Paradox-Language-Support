@@ -65,7 +65,7 @@ class ParadoxInlineScriptUsageIndex : ParadoxFileBasedIndex<ParadoxInlineScriptU
 
     override fun filterFile(file: VirtualFile): Boolean {
         val fileType = file.fileType
-        if (fileType != ParadoxScriptFileType) return false
+        if (fileType !is ParadoxScriptFileType) return false
         if (file.fileInfo == null) return false
         return true
     }

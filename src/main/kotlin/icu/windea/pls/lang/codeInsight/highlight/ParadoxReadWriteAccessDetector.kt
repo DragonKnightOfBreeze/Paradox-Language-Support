@@ -4,6 +4,7 @@ import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.model.constraints.*
@@ -55,7 +56,7 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
 
     override fun getExpressionAccess(expression: PsiElement): Access {
         //find usages use this method finally
-        if (expression.language != ParadoxScriptLanguage && expression.language != ParadoxLocalisationLanguage) return Access.ReadWrite
+        if (expression.language !is ParadoxBaseLanguage) return Access.ReadWrite
         for (reference in expression.references) {
             ProgressManager.checkCanceled()
             if (ParadoxResolveConstraint.Parameter.canResolve(reference)) {

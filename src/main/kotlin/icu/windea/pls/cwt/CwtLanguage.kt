@@ -2,7 +2,12 @@ package icu.windea.pls.cwt
 
 import com.intellij.lang.*
 
-object CwtLanguage : Language("CWT") {
+class CwtLanguage : Language("CWT") {
     override fun getDisplayName() = "Cwt"
+
+    companion object {
+        @JvmField
+        val INSTANCE = CwtLanguage()
+    }
 }
 

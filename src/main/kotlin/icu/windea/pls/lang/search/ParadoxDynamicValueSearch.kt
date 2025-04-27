@@ -21,6 +21,7 @@ class ParadoxDynamicValueSearch : ExtensibleQueryFactory<ParadoxDynamicValueInde
     ) : ParadoxSearchParameters<ParadoxDynamicValueIndexInfo>
 
     companion object {
+        @JvmField
         val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxDynamicValueIndexInfo, SearchParameters>>("icu.windea.pls.search.dynamicValueSearch")
         @JvmField
         val INSTANCE = ParadoxDynamicValueSearch()

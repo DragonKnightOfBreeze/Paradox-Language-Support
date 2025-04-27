@@ -9,7 +9,7 @@ import icu.windea.pls.cwt.psi.*
 import javax.swing.*
 
 class CwtNavBar : StructureAwareNavBarModelExtension() {
-    override val language: Language = CwtLanguage
+    override val language: Language = CwtLanguage.INSTANCE
 
     override fun getIcon(o: Any?): Icon? {
         return when {

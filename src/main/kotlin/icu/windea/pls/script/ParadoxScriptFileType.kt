@@ -1,9 +1,9 @@
 package icu.windea.pls.script
 
-import com.intellij.openapi.fileTypes.*
 import icu.windea.pls.*
+import icu.windea.pls.lang.*
 
-object ParadoxScriptFileType : LanguageFileType(ParadoxScriptLanguage) {
+class ParadoxScriptFileType : ParadoxBaseFileType(ParadoxScriptLanguage.INSTANCE) {
     override fun getName() = "Paradox Script"
 
     override fun getDescription() = PlsBundle.message("filetype.script.description")
@@ -13,4 +13,10 @@ object ParadoxScriptFileType : LanguageFileType(ParadoxScriptLanguage) {
     override fun getDefaultExtension() = "txt"
 
     override fun getIcon() = PlsIcons.FileTypes.ParadoxScript
+
+    @Suppress("CompanionObjectInExtension")
+    companion object {
+        @JvmField
+        val INSTANCE = ParadoxScriptFileType()
+    }
 }

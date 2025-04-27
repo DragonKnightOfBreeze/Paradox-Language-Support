@@ -22,8 +22,8 @@ class ParadoxLocalisationExpressionPsiReference(
         val resolved = resolve()
         return when {
             resolved == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-            resolved.language == CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
-            resolved.language.isParadoxLanguage() -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+            resolved.language is CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
+            resolved.language is ParadoxBaseLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
             else -> throw IncorrectOperationException()
         }
     }

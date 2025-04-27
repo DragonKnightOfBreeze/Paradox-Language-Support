@@ -4,6 +4,8 @@ import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import java.util.*;
 import java.util.concurrent.atomic.*;
+import icu.windea.pls.model.ParadoxGameType;
+import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
@@ -11,6 +13,8 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %%
 
 %{
+    private ParadoxGameType gameType;
+
     private boolean leftAbsSign = true;
     private final Deque<Integer> stack = new ArrayDeque<>();
     private final AtomicInteger templateStateRef = new AtomicInteger(-1);
@@ -18,6 +22,12 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 
     public _ParadoxScriptLexer() {
         this((java.io.Reader)null);
+        this.gameType = null;
+    }
+
+    public _ParadoxScriptLexer(ParadoxGameType gameType) {
+        this((java.io.Reader)null);
+        this.gameType = gameType;
     }
 
     private void enterState(Deque<Integer> stack, int state) {

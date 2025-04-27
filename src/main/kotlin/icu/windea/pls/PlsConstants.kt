@@ -76,12 +76,16 @@ object PlsConstants {
         const val commandFolder = "[...]"
         const val conceptFolder = "['...']"
         const val conceptWithTextFolder = "['...', ...]"
+
+        const val suppressInspectionsTagName = "noinspection"
     }
 
     object Patterns {
         val scriptedVariableName = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
         val localisationPropertyName = """[a-zA-Z0-9_.\-']+""".toRegex()
         val parameterName = """[a-zA-Z_][a-zA-Z0-9_]*""".toRegex()
+
+        val conceptName = """[a-zA-Z0-9_:]+""".toRegex()
     }
 
     object Settings {

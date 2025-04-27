@@ -1,7 +1,14 @@
 package icu.windea.pls.localisation
 
-import com.intellij.lang.*
+import icu.windea.pls.lang.*
 
-object ParadoxLocalisationLanguage : Language("PARADOX_LOCALISATION") {
+class ParadoxLocalisationLanguage : ParadoxBaseLanguage("PARADOX_LOCALISATION") {
     override fun getDisplayName() = "Paradox Localisation"
+
+    override fun getBaseLanguage() = ParadoxBaseLanguage.INSTANCE
+
+    companion object {
+        @JvmField
+        val INSTANCE = ParadoxLocalisationLanguage()
+    }
 }

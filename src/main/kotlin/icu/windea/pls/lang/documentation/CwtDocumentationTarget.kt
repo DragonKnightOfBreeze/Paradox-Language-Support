@@ -407,11 +407,11 @@ private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) 
 }
 
 private fun getConfigGroup(element: PsiElement, originalElement: PsiElement?, project: Project): CwtConfigGroup? {
-    if (originalElement != null && originalElement.language.isParadoxLanguage()) {
+    if (originalElement != null && originalElement.language is ParadoxBaseLanguage) {
         val gameType = selectGameType(originalElement)
         if (gameType != null) return getConfigGroup(project, gameType)
     }
-    if (element.language == CwtLanguage) {
+    if (element.language is CwtLanguage) {
         return CwtConfigManager.getContainingConfigGroup(element, forRepo = true)
     }
     return null

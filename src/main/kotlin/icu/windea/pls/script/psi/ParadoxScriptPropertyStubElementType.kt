@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.impl.*
 
 object ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScriptPropertyStub, ParadoxScriptProperty>(
     "PROPERTY",
-    ParadoxScriptLanguage
+    ParadoxScriptLanguage.INSTANCE
 ) {
     private const val externalId = "paradoxScript.property"
 

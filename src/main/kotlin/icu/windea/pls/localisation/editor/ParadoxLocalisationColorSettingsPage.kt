@@ -56,7 +56,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         "DATABASE_OBJECT" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY,
     )
 
-    override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxLocalisationLanguage, null, null)
+    override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxLocalisationLanguage.INSTANCE, null, null)
 
     override fun getAdditionalHighlightingTagToDescriptorMap() = _tagToDescriptorMap
 

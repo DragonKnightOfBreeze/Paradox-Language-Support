@@ -21,7 +21,7 @@ abstract class ParadoxLocalisationHintsProvider<T : Any> : InlayHintsProvider<T>
     override val previewText: String? get() = null
 
     override fun isLanguageSupported(language: Language): Boolean {
-        return language == ParadoxLocalisationLanguage
+        return language is ParadoxLocalisationLanguage
     }
 
     override fun createConfigurable(settings: T): ImmediateConfigurable {

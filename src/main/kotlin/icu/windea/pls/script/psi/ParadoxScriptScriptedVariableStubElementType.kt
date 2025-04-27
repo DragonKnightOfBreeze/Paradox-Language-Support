@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.impl.*
 
 object ParadoxScriptScriptedVariableStubElementType : ILightStubElementType<ParadoxScriptScriptedVariableStub, ParadoxScriptScriptedVariable>(
     "SCRIPTED_VARIABLE",
-    ParadoxScriptLanguage
+    ParadoxScriptLanguage.INSTANCE
 ) {
     private const val externalId = "paradoxScript.scriptedVariable"
 

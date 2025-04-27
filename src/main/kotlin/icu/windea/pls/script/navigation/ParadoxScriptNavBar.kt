@@ -10,7 +10,7 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 class ParadoxScriptNavBar : StructureAwareNavBarModelExtension() {
-    override val language: Language = ParadoxScriptLanguage
+    override val language: Language = ParadoxScriptLanguage.INSTANCE
 
     override fun getIcon(o: Any?): Icon? {
         return when {

@@ -11,7 +11,7 @@ import icu.windea.pls.cwt.psi.*
 
 class CwtWordSelectionHandler : ExtendWordSelectionHandlerBase() {
     override fun canSelect(e: PsiElement): Boolean {
-        if (e.language != CwtLanguage) return false
+        if (e.language !is CwtLanguage) return false
         val element = e.parents(true).find { it is CwtPropertyKey || it is CwtString } ?: return false
         if (!element.text.isLeftQuoted()) return false
         return true

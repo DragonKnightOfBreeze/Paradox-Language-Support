@@ -16,7 +16,6 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import java.io.*
 
@@ -181,7 +180,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
 
     override fun filterFile(file: VirtualFile): Boolean {
         val fileType = file.fileType
-        if (fileType != ParadoxScriptFileType && fileType != ParadoxLocalisationFileType) return false
+        if (fileType !is ParadoxBaseFileType) return false
         if (file.fileInfo == null) return false
         return true
     }
@@ -189,7 +188,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
     override fun useLazyIndex(file: VirtualFile): Boolean {
         if (ParadoxFileManager.isInjectedFile(file)) return true
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true //inline script files should be lazy indexed
-        if (file.fileType == ParadoxLocalisationFileType) return true //to prevent recursion, see #127
+        if (file.fileType is ParadoxLocalisationFileType) return true //to prevent recursion, see #127
         return false
     }
 

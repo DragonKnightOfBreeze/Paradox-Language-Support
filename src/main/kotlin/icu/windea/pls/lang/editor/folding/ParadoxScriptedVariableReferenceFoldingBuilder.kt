@@ -36,7 +36,7 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
         if(!getSettings().folding.scriptedVariableReferences) return FoldingDescriptor.EMPTY_ARRAY
 
         if (quick) return FoldingDescriptor.EMPTY_ARRAY
-        if (!root.language.isParadoxLanguage()) return FoldingDescriptor.EMPTY_ARRAY
+        if (!(root.language is ParadoxBaseLanguage)) return FoldingDescriptor.EMPTY_ARRAY
         val foldingGroup = getFoldingGroup()
         val allDescriptors = mutableListOf<FoldingDescriptor>()
         root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {

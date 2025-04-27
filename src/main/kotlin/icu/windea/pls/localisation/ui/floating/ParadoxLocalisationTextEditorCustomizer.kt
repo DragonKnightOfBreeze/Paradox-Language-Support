@@ -29,7 +29,7 @@ class ParadoxLocalisationTextEditorCustomizer : TextEditorCustomizer {
 
     private fun shouldAcceptEditor(editor: TextEditor): Boolean {
         val file = editor.file
-        return file.fileType == ParadoxLocalisationFileType || shouldAcceptScratchFile(editor)
+        return file.fileType is ParadoxLocalisationFileType || shouldAcceptScratchFile(editor)
     }
 
     private fun shouldAcceptScratchFile(editor: TextEditor): Boolean {
@@ -43,6 +43,6 @@ class ParadoxLocalisationTextEditorCustomizer : TextEditorCustomizer {
     }
 
     private fun isParadoxScratchFile(file: VirtualFile, project: Project): Boolean {
-        return ScratchUtil.isScratch(file) && LanguageUtil.getLanguageForPsi(project, file, file.fileType) == ParadoxLocalisationLanguage
+        return ScratchUtil.isScratch(file) && LanguageUtil.getLanguageForPsi(project, file, file.fileType) is ParadoxLocalisationLanguage
     }
 }

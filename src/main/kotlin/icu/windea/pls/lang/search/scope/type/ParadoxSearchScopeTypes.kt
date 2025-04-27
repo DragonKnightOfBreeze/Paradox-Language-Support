@@ -28,7 +28,7 @@ object ParadoxSearchScopeTypes {
         val fileInfo = file.fileInfo ?: return null
         val result = mutableListOf<ParadoxSearchScopeType>()
         result.add(All)
-        if (file.fileType.isParadoxFileType()) {
+        if (file.fileType is ParadoxBaseFileType) {
             result.add(File)
         }
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)

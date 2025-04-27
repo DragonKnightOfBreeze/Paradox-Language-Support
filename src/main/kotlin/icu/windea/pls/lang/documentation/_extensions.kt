@@ -75,8 +75,8 @@ fun getDocumentationTargets(element: PsiElement, originalElement: PsiElement?): 
 private fun getDocumentationTarget(element: PsiElement, originalElement: PsiElement?): DocumentationTarget? {
     return when {
         element is PsiFileSystemItem -> null
-        element.language.isParadoxLanguage() -> ParadoxDocumentationTarget(element, null)
-        element.language == CwtLanguage -> CwtDocumentationTarget(element, null)
+        element.language is ParadoxBaseLanguage -> ParadoxDocumentationTarget(element, null)
+        element.language is CwtLanguage -> CwtDocumentationTarget(element, null)
         else -> null
     }
 }

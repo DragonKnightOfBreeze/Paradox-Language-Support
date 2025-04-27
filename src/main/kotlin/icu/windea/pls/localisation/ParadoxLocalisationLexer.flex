@@ -2,6 +2,8 @@ package icu.windea.pls.localisation.psi;
 
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
+import icu.windea.pls.model.ParadoxGameType;
+import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.core.StdlibExtensionsKt.*;
@@ -10,6 +12,8 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %%
 
 %{
+    private ParadoxGameType gameType;
+
     private int depth = 0;
     private boolean inConceptText = false;
     private CommandLocation commandLocation = CommandLocation.NORMAL;
@@ -17,6 +21,12 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
     public _ParadoxLocalisationLexer() {
         this((java.io.Reader)null);
+        this.gameType = null;
+    }
+
+    public _ParadoxLocalisationLexer(ParadoxGameType gameType) {
+        this((java.io.Reader)null);
+        this.gameType = gameType;
     }
 
     private void increaseDepth(){
@@ -321,13 +331,12 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
 <IN_COMMAND>{
     {WHITE_SPACE} { return WHITE_SPACE; }
     . {
-        if(yycharat(0) == '\'') {
+        if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptQuoted.supports(this)) {
             yybegin(IN_CONCEPT_NAME);
             return LEFT_SINGLE_QUOTE;
-        } else {
-            yypushback(1);
-            yybegin(IN_COMMAND_TEXT);
         }
+        yypushback(1);
+        yybegin(IN_COMMAND_TEXT);
     }
 }
 <IN_COMMAND_TEXT>{

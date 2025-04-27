@@ -1,9 +1,9 @@
 package icu.windea.pls.localisation
 
-import com.intellij.openapi.fileTypes.*
 import icu.windea.pls.*
+import icu.windea.pls.lang.*
 
-object ParadoxLocalisationFileType : LanguageFileType(ParadoxLocalisationLanguage) {
+class ParadoxLocalisationFileType : ParadoxBaseFileType(ParadoxLocalisationLanguage.INSTANCE) {
     override fun getName() = "Paradox Localisation"
 
     override fun getDescription() = PlsBundle.message("filetype.localisation.description")
@@ -13,5 +13,11 @@ object ParadoxLocalisationFileType : LanguageFileType(ParadoxLocalisationLanguag
     override fun getDefaultExtension() = "yml"
 
     override fun getIcon() = PlsIcons.FileTypes.ParadoxLocalisation
+
+    @Suppress("CompanionObjectInExtension")
+    companion object {
+        @JvmField
+        val INSTANCE = ParadoxLocalisationFileType()
+    }
 }
 

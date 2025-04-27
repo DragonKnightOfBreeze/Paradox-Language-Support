@@ -225,7 +225,7 @@ object ParadoxComplexEnumValueManager {
      * @return [ParadoxScriptProperty] | [ParadoxScriptValue]
      */
     private fun PsiElement.findParentPropertyOrBockValue(): PsiElement? {
-        if (language != ParadoxScriptLanguage) return null
+        if (language !is ParadoxScriptLanguage) return null
         return parents(false).find {
             it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockMember())
         }

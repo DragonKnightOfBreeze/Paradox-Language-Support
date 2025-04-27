@@ -21,7 +21,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         if (quick) return FoldingDescriptor.EMPTY_ARRAY
-        if (!root.language.isKindOf(ParadoxScriptLanguage)) return FoldingDescriptor.EMPTY_ARRAY
+        if (root.language !is ParadoxScriptLanguage) return FoldingDescriptor.EMPTY_ARRAY
         val project = root.project
         val gameType = selectGameType(root) ?: return FoldingDescriptor.EMPTY_ARRAY
         val configGroup = getConfigGroup(project, gameType)

@@ -9,7 +9,7 @@ import icu.windea.pls.cwt.*
 object CwtElementFactory {
     @JvmStatic
     fun createDummyFile(project: Project, text: String): CwtFile {
-        return PsiFileFactory.getInstance(project).createFileFromText(CwtLanguage, text)
+        return PsiFileFactory.getInstance(project).createFileFromText(CwtLanguage.INSTANCE, text)
             .castOrNull<CwtFile>() ?: throw IncorrectOperationException()
     }
 

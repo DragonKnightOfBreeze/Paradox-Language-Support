@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxInlineScriptInlineActionHandler : InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.inlineScript")
 
-    override fun isEnabledForLanguage(language: Language) = language == ParadoxScriptLanguage
+    override fun isEnabledForLanguage(language: Language) = language is ParadoxScriptLanguage
 
     override fun canInlineElement(element: PsiElement): Boolean {
         run {

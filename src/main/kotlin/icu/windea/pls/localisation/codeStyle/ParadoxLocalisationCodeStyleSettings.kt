@@ -5,4 +5,4 @@ import icu.windea.pls.localisation.*
 
 class ParadoxLocalisationCodeStyleSettings(
     container: CodeStyleSettings
-) : CustomCodeStyleSettings(ParadoxLocalisationLanguage.id, container)
+) : CustomCodeStyleSettings(ParadoxLocalisationLanguage.INSTANCE.id, container)

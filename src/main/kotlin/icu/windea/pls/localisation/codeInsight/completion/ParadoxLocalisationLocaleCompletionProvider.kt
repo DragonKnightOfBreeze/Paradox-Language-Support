@@ -29,7 +29,7 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
             editor.caretModel.moveToOffset(colonIndex + 1)
         } else {
             val settings = CodeStyle.getSettings(context.file)
-            val indentOptions = settings.getIndentOptions(ParadoxLocalisationFileType)
+            val indentOptions = settings.getIndentOptions(ParadoxLocalisationFileType.INSTANCE)
             val insertLineBreak = editor.document.getLineNumber(editor.caretModel.offset) == editor.document.lineCount - 1
             val s = buildString {
                 append(":")

@@ -13,7 +13,7 @@ class ParadoxFindUsagesHandlerFactory(project: Project) : FindUsagesHandlerFacto
     val findLocalisationOptions = ParadoxLocalisationFindUsagesOptions(project)
 
     override fun canFindUsages(element: PsiElement): Boolean {
-        return element.language.isParadoxLanguage()
+        return element.language is ParadoxBaseLanguage
     }
 
     override fun createFindUsagesHandler(element: PsiElement, forHighlightUsages: Boolean): FindUsagesHandler {

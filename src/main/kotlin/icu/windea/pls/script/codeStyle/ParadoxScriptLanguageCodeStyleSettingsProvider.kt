@@ -9,9 +9,7 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings as Settings
 
 class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
-    override fun getLanguage() = ParadoxScriptLanguage
-
-    override fun getConfigurableDisplayName() = PlsBundle.message("options.script.displayName")
+    override fun getLanguage() = ParadoxScriptLanguage.INSTANCE
 
     override fun getCodeSample(settingsType: SettingsType) = PlsConstants.Samples.paradoxScriptCodeStyleSettings
 

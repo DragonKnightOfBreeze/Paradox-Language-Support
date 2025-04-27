@@ -15,7 +15,7 @@ class ParadoxOperatorNode(
 ) : ParadoxComplexExpressionNode.Base(), ParadoxTokenNode {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return when (element.language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.OPERATOR_KEY
+            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.OPERATOR_KEY
             else -> ParadoxScriptAttributesKeys.OPERATOR_KEY
         }
     }

@@ -13,7 +13,7 @@ import icu.windea.pls.localisation.psi.*
  */
 class ParadoxLocalisationErrorQuickFixProvider : ErrorQuickFixProvider {
     override fun registerErrorQuickFix(errorElement: PsiErrorElement, builder: HighlightInfo.Builder) {
-        if (errorElement.language != ParadoxLocalisationLanguage) return
+        if (errorElement.language !is ParadoxLocalisationLanguage) return
         when {
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationIcon -> {
                 //ICON_END

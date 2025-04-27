@@ -12,7 +12,7 @@ import icu.windea.pls.model.constraints.*
 
 object ParadoxLocalisationPropertyStubElementType : ILightStubElementType<ParadoxLocalisationPropertyStub, ParadoxLocalisationProperty>(
     "PROPERTY",
-    ParadoxLocalisationLanguage
+    ParadoxLocalisationLanguage.INSTANCE
 ) {
     private const val externalId = "paradoxLocalisation.property"
 

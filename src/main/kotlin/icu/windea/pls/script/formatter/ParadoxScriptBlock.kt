@@ -37,7 +37,7 @@ class ParadoxScriptBlock(
 
             //变量声明分隔符周围的空格，属性分隔符周围的空格
             val customSettings = settings.getCustomSettings(ParadoxScriptCodeStyleSettings::class.java)
-            return SpacingBuilder(settings, ParadoxScriptLanguage)
+            return SpacingBuilder(settings, ParadoxScriptLanguage.INSTANCE)
                 .between(MEMBERS, MEMBERS).spaces(1) //封装变量/属性/值/参数条件块之间需要有空格或者换行
                 .aroundInside(SEPARATORS, SCRIPTED_VARIABLE).spaceIf(customSettings.SPACE_AROUND_SCRIPTED_VARIABLE_SEPARATOR) //间隔符周围按情况可能需要空格
                 .aroundInside(SEPARATORS, PROPERTY).spaceIf(customSettings.SPACE_AROUND_PROPERTY_SEPARATOR) //间隔符周围按情况可能需要空格

@@ -17,7 +17,7 @@ import icu.windea.pls.localisation.references.*
 class ParadoxLocalisationInlineActionHandler : InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.localisation")
 
-    override fun isEnabledForLanguage(language: Language) = language == ParadoxLocalisationLanguage
+    override fun isEnabledForLanguage(language: Language) = language is ParadoxLocalisationLanguage
 
     override fun canInlineElement(element: PsiElement): Boolean {
         if (element !is ParadoxLocalisationProperty) return false

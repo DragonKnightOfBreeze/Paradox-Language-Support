@@ -48,10 +48,9 @@ class ParadoxCallerHierarchyTreeStructure(
         ReferencesSearch.search(element, scope).processQueryAsync { reference ->
             ProgressManager.checkCanceled()
             val referenceElement = reference.element
-            if (referenceElement.language == ParadoxScriptLanguage) {
-                processScriptReferenceElement(reference, referenceElement, descriptor, descriptors)
-            } else if (referenceElement.language == ParadoxLocalisationLanguage) {
-                processLocalisationReferenceElement(reference, referenceElement, descriptor, descriptors)
+            when (referenceElement.language) {
+                is ParadoxScriptLanguage -> processScriptReferenceElement(reference, referenceElement, descriptor, descriptors)
+                is ParadoxLocalisationLanguage -> processLocalisationReferenceElement(reference, referenceElement, descriptor, descriptors)
             }
             true
         }

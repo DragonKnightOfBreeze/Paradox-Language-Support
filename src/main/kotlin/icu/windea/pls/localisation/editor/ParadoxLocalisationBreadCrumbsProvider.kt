@@ -8,7 +8,7 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationBreadCrumbsProvider : BreadcrumbsProvider {
-    private val _defaultLanguages = arrayOf(ParadoxLocalisationLanguage)
+    private val _defaultLanguages = arrayOf(ParadoxLocalisationLanguage.INSTANCE)
 
     override fun getLanguages(): Array<out Language> {
         return _defaultLanguages

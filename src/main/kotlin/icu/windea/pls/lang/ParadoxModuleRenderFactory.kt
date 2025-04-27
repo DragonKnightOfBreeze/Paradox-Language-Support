@@ -18,7 +18,7 @@ class ParadoxModuleRenderFactory : ModuleRendererFactory() {
 
     override fun getModuleTextWithIcon(element: Any?): TextWithIcon? {
         run {
-            if (element !is PsiElement || element.language != CwtLanguage) return@run
+            if (element !is PsiElement || element.language !is CwtLanguage) return@run
             val configGroup = CwtConfigManager.getContainingConfigGroup(element) ?: return@run
             val gameType = configGroup.gameType
             val text = "${gameType.title} Config"

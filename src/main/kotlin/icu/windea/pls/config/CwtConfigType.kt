@@ -49,7 +49,7 @@ data class CwtConfigType(
             id: String,
             category: String? = null,
             isReference: Boolean = false,
-            builder: Builder.() -> Unit
+            builder: Builder.() -> Unit = {}
         ): CwtConfigType {
             val b = Builder().also(builder)
             return CwtConfigType(id, category, isReference, b.prefix, b.description, b.icon)

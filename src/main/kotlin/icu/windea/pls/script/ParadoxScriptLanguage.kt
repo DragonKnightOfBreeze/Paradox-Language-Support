@@ -1,7 +1,14 @@
 package icu.windea.pls.script
 
-import com.intellij.lang.*
+import icu.windea.pls.lang.*
 
-object ParadoxScriptLanguage : Language("PARADOX_SCRIPT") {
+class ParadoxScriptLanguage : ParadoxBaseLanguage("PARADOX_SCRIPT") {
     override fun getDisplayName() = "Paradox Script"
+
+    override fun getBaseLanguage() = ParadoxBaseLanguage.INSTANCE
+
+    companion object {
+        @JvmField
+        val INSTANCE = ParadoxScriptLanguage()
+    }
 }

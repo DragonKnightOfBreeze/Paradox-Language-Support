@@ -54,8 +54,8 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
             if (container is PsiFile) {
-                val text = SuppressionUtilCore.SUPPRESS_INSPECTIONS_TAG_NAME + " " + myID
-                val comment = SuppressionUtil.createComment(project, text, ParadoxLocalisationLanguage)
+                val text = PlsConstants.Strings.suppressInspectionsTagName + " " + myID
+                val comment = SuppressionUtil.createComment(project, text, ParadoxLocalisationLanguage.INSTANCE)
                 container.addAfter(comment, null)
             }
         }

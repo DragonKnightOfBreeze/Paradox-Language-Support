@@ -42,7 +42,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
         if (editor == null || file == null) return false
-        if (file.language != ParadoxLocalisationLanguage) return false
+        if (file.language !is ParadoxLocalisationLanguage) return false
         val selectionStart = editor.selectionModel.selectionStart
         val selectionEnd = editor.selectionModel.selectionEnd
         return if (selectionStart == selectionEnd) {
@@ -59,7 +59,7 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         if (editor == null || file == null) return
-        if (file.language != ParadoxLocalisationLanguage) return
+        if (file.language !is ParadoxLocalisationLanguage) return
         val selectionStart = editor.selectionModel.selectionStart
         val selectionEnd = editor.selectionModel.selectionEnd
         val elements = if (selectionStart == selectionEnd) {

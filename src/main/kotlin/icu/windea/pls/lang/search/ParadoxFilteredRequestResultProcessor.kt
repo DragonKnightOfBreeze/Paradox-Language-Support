@@ -10,7 +10,7 @@ class ParadoxFilteredRequestResultProcessor(
     private val constraint: ParadoxResolveConstraint
 ) : FilteredRequestResultProcessor(target) {
     override fun applyFor(element: PsiElement): Boolean {
-        return element.language.isParadoxLanguage()
+        return element.language is ParadoxBaseLanguage
     }
 
     override fun acceptElement(element: PsiElement): Boolean {

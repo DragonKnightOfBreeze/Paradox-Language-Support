@@ -9,7 +9,7 @@ import icu.windea.pls.script.psi.*
 abstract class ParadoxScriptTemplateContextType(presentableName: String) : TemplateContextType(presentableName) {
     override fun isInContext(templateActionContext: TemplateActionContext): Boolean {
         val file = templateActionContext.file
-        if (!file.language.isKindOf(ParadoxScriptLanguage)) return false
+        if (file.language !is ParadoxScriptLanguage) return false
         return doIsInContext(templateActionContext)
     }
 

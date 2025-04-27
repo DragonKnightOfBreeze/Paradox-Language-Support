@@ -22,7 +22,7 @@ class CwtColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("cwt.displayName.badCharacter"), CwtAttributesKeys.BAD_CHARACTER_KEY)
     )
 
-    override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(CwtLanguage, null, null)
+    override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(CwtLanguage.INSTANCE, null, null)
 
     override fun getAdditionalHighlightingTagToDescriptorMap() = null
 

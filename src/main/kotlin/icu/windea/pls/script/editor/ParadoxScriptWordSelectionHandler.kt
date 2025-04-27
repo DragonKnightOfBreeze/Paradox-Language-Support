@@ -11,7 +11,7 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptWordSelectionHandler : ExtendWordSelectionHandlerBase() {
     override fun canSelect(e: PsiElement): Boolean {
-        if (e.language != ParadoxScriptLanguage) return false
+        if (e.language !is ParadoxScriptLanguage) return false
         val element = e.parents(true).find { it is ParadoxScriptPropertyKey || it is ParadoxScriptString } ?: return false
         if (!element.text.isLeftQuoted()) return false
         return true

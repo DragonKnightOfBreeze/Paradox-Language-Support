@@ -20,7 +20,7 @@ class ParadoxInlineScriptInlineDialog(
     private val editor: Editor?
 ) : InlineOptionsDialog(project, true, element) {
     private val optimizedScope = ParadoxSearchScope.fromElement(element)
-        ?.withFileTypes(ParadoxScriptFileType)
+        ?.withFileTypes(ParadoxScriptFileType.INSTANCE)
         ?.intersectWith(GlobalSearchScope.projectScope(project))
         ?: GlobalSearchScope.projectScope(project)
 

@@ -5,6 +5,8 @@ package icu.windea.pls.localisation.psi;
 
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
+import icu.windea.pls.model.ParadoxGameType;
+import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.core.StdlibExtensionsKt.*;
@@ -399,31 +401,39 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
+    private ParadoxGameType gameType;
+
     private int depth = 0;
     private boolean inConceptText = false;
     private CommandLocation commandLocation = CommandLocation.NORMAL;
     private ReferenceLocation referenceLocation = ReferenceLocation.NORMAL;
-    
+
     public _ParadoxLocalisationLexer() {
         this((java.io.Reader)null);
+        this.gameType = null;
     }
-    
+
+    public _ParadoxLocalisationLexer(ParadoxGameType gameType) {
+        this((java.io.Reader)null);
+        this.gameType = gameType;
+    }
+
     private void increaseDepth(){
         depth++;
     }
-    
+
     private void decreaseDepth(){
         if(depth > 0) depth--;
     }
-    
+
     private int nextStateForText(){
       return depth <= 0 ? IN_RICH_TEXT : IN_COLORFUL_TEXT;
     }
-    
+
     private enum CommandLocation {
         NORMAL, REFERENCE, ICON;
     }
-    
+
     private int nextStateForCommand(){
         return switch(commandLocation) {
             case NORMAL -> nextStateForText();
@@ -431,11 +441,11 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
             case ICON -> IN_ICON;
         };
     }
-    
+
     private enum ReferenceLocation {
         NORMAL, ICON, ICON_FRAME, COMMAND, CONCEPT_NAME;
     }
-    
+
     private int nextStateForPropertyReference(){
         return switch(referenceLocation) {
             case NORMAL -> nextStateForText();
@@ -445,30 +455,30 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
 			case CONCEPT_NAME -> IN_CONCEPT_NAME;
         };
     }
-    
+
     private boolean isReferenceStart(){
         if(yylength() <= 1) return false;
         return true;
     }
-    
+
     private boolean isIconStart(){
         if(yylength() <= 1) return false;
         char c = yycharat(1);
         return isExactLetter(c) || isExactDigit(c) || c == '_' || c == '$';
     }
-    
+
     private boolean isCommandStart(){
         if(yylength() <= 1) return false;
         return yycharat(yylength()-1) == ']';
     }
-    
+
     private boolean isColorfulTextStart(){
         if(yylength() <= 1) return false;
         return isExactLetter(yycharat(1));
     }
-    
+
     private IElementType checkRightQuote() {
-        //double quote should be threat as string if it's not the last one of current line
+        // double quote should be threat as string if it's not the last one of current line
         try {
             int i = zzCurrentPos + 1;
             int length = zzBuffer.length();
@@ -479,9 +489,9 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
                 i++;
             }
         } catch(Exception e) {
-            //ignored
+            // ignored
         }
-        
+
         yybegin(IN_PROPERTY_END);
 	    return RIGHT_QUOTE;
     }
@@ -929,13 +939,12 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 83: break;
           case 33:
-            { if(yycharat(0) == '\'') {
+            { if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptQuoted.supports(this)) {
             yybegin(IN_CONCEPT_NAME);
             return LEFT_SINGLE_QUOTE;
-        } else {
-            yypushback(1);
-            yybegin(IN_COMMAND_TEXT);
         }
+        yypushback(1);
+        yybegin(IN_COMMAND_TEXT);
             }
           // fall through
           case 84: break;
@@ -995,8 +1004,8 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 95: break;
           case 45:
-            { //特殊处理
-        //如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_TOKEN或者command，或者是@，则认为代表属性引用的开始
+            { // 特殊处理
+        // 如果匹配到的字符串长度大于1，且"$"后面的字符可以被识别为PROPERTY_REFERENCE_TOKEN或者command，或者是@，则认为代表属性引用的开始
         boolean isReferenceStart = isReferenceStart();
         yypushback(yylength()-1);
         if(isReferenceStart){
@@ -1010,9 +1019,9 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 96: break;
           case 46:
-            { //特殊处理
-        //如果匹配到的字符串的第2个字符存在且为字母、数字或下划线或者$，则认为代表图标的开始
-        //否则认为是常规字符串
+            { // 特殊处理
+        // 如果匹配到的字符串的第2个字符存在且为字母、数字或下划线或者$，则认为代表图标的开始
+        // 否则认为是常规字符串
         boolean isIconStart = isIconStart();
         yypushback(yylength()-1);
         if(isIconStart){
@@ -1026,9 +1035,9 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
           // fall through
           case 97: break;
           case 47:
-            { //特殊处理
-        //如果匹配到的字符串的第2个字符存在且为字母，则认为代表彩色文本的开始
-        //否则认为是常规字符串
+            { // 特殊处理
+        // 如果匹配到的字符串的第2个字符存在且为字母，则认为代表彩色文本的开始
+        // 否则认为是常规字符串
         boolean isColorfulTextStart = isColorfulTextStart();
         yypushback(yylength()-1);
         if(isColorfulTextStart) {
@@ -1056,10 +1065,10 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
             // lookahead expression with fixed lookahead length
             zzMarkedPos = Character.offsetByCodePoints
                 (zzBufferL, zzMarkedPos, -1);
-            { //本地化文件中可以没有，或者有多个locale - 主要是为了兼容localisation/languages.yml
-        //locale之前必须没有任何缩进
-        //locale之后的冒号和换行符之间应当没有任何字符或者只有空白字符
-        //采用最简单的实现方式，尽管JFlex手册中说 "^" "$" 性能不佳
+            { // 本地化文件中可以没有，或者有多个locale - 主要是为了兼容localisation/languages.yml
+        // locale之前必须没有任何缩进
+        // locale之后的冒号和换行符之间应当没有任何字符或者只有空白字符
+        // 采用最简单的实现方式，尽管JFlex手册中说 "^" "$" 性能不佳
         int n = 1;
         int l = yylength();
         while(Character.isWhitespace(yycharat(l - n))) {
@@ -1075,10 +1084,10 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
             // lookahead expression with fixed lookahead length
             zzMarkedPos = Character.offsetByCodePoints
                 (zzBufferL, zzMarkedPos, -2);
-            { //本地化文件中可以没有，或者有多个locale - 主要是为了兼容localisation/languages.yml
-        //locale之前必须没有任何缩进
-        //locale之后的冒号和换行符之间应当没有任何字符或者只有空白字符
-        //采用最简单的实现方式，尽管JFlex手册中说 "^" "$" 性能不佳
+            { // 本地化文件中可以没有，或者有多个locale - 主要是为了兼容localisation/languages.yml
+        // locale之前必须没有任何缩进
+        // locale之后的冒号和换行符之间应当没有任何字符或者只有空白字符
+        // 采用最简单的实现方式，尽管JFlex手册中说 "^" "$" 性能不佳
         int n = 1;
         int l = yylength();
         while(Character.isWhitespace(yycharat(l - n))) {

@@ -47,7 +47,7 @@ class LineCommentCopyPastePreProcessorCodeInjector : CodeInjectorBase() {
         var addSpace = false
 
         run {
-            if (language == CwtLanguage) {
+            if (language is CwtLanguage) {
                 if (matchesCommentPrefix(CwtCommenter.DOCUMENTATION_COMMENT_PREFIX)) {
                     commentPrefix = CwtCommenter.DOCUMENTATION_COMMENT_PREFIX
                     addSpace = CodeStyle.getSettings(file).getCustomSettings(CwtCodeStyleSettings::class.java).DOCUMENTATION_COMMENT_ADD_SPACE

@@ -13,11 +13,17 @@ import java.util.*
 /**
  * 用于索引文件的路径信息。
  */
-class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo>() {
+class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathIndex.Info>() {
+    data class Info(
+        val directory: String,
+        val gameType: ParadoxGameType,
+        val included: Boolean
+    )
+
     @Suppress("CompanionObjectInExtension")
     companion object {
         val INSTANCE by lazy { findFileBasedIndex<ParadoxFilePathIndex>() }
-        val NAME = ID.create<String, ParadoxFilePathInfo>("paradox.file.path.index")
+        val NAME = ID.create<String, Info>("paradox.file.path.index")
 
         private const val VERSION = 58 //1.3.27
 
@@ -38,7 +44,7 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
 
     override fun getVersion() = VERSION
 
-    override fun getIndexer(): DataIndexer<String, ParadoxFilePathInfo, FileContent> {
+    override fun getIndexer(): DataIndexer<String, Info, FileContent> {
         return DataIndexer { inputData ->
             //这里索引的路径，使用相对于入口目录的路径
             val fileInfo = inputData.file.fileInfo ?: return@DataIndexer emptyMap()
@@ -46,7 +52,7 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
             val directoryPath = fileInfo.path.parent
             val gameType = fileInfo.rootInfo.gameType
             val included = isIncluded(inputData.file)
-            val info = ParadoxFilePathInfo(directoryPath, gameType, included)
+            val info = Info(directoryPath, gameType, included)
             Collections.singletonMap(path, info)
         }
     }
@@ -55,20 +61,19 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInfo
         return EnumeratorStringDescriptor.INSTANCE
     }
 
-
-    override fun getValueExternalizer(): DataExternalizer<ParadoxFilePathInfo> {
-        return object : DataExternalizer<ParadoxFilePathInfo> {
-            override fun save(storage: DataOutput, value: ParadoxFilePathInfo) {
+    override fun getValueExternalizer(): DataExternalizer<Info> {
+        return object : DataExternalizer<Info> {
+            override fun save(storage: DataOutput, value: Info) {
                 storage.writeUTFFast(value.directory)
                 storage.writeByte(value.gameType.optimizeValue())
                 storage.writeBoolean(value.included)
             }
 
-            override fun read(storage: DataInput): ParadoxFilePathInfo {
+            override fun read(storage: DataInput): Info {
                 val path = storage.readUTFFast()
                 val gameType = storage.readByte().deoptimizeValue<ParadoxGameType>()
                 val included = storage.readBoolean()
-                return ParadoxFilePathInfo(path, gameType, included)
+                return Info(path, gameType, included)
             }
         }
     }

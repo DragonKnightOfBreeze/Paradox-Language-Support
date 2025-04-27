@@ -25,7 +25,7 @@ class ParadoxDatabaseObjectTypeNode(
 ) : ParadoxComplexExpressionNode.Base() {
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return when (element.language) {
-            ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY
+            is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY
             else -> ParadoxScriptAttributesKeys.DATABASE_OBJECT_TYPE_KEY
         }
     }

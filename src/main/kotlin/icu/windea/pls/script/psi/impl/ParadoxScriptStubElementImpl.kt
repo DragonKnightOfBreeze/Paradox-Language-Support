@@ -9,5 +9,5 @@ open class ParadoxScriptStubElementImpl<T : StubElement<*>> : StubBasedPsiElemen
     constructor(stub: T, nodeType: IStubElementType<*, *>?) : super(stub, nodeType!!)
     constructor(node: ASTNode) : super(node)
 
-    override fun getLanguage() = ParadoxScriptLanguage
+    override fun getLanguage() = ParadoxScriptLanguage.INSTANCE
 }

@@ -7,6 +7,8 @@ import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import java.util.*;
 import java.util.concurrent.atomic.*;
+import icu.windea.pls.model.ParadoxGameType;
+import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 
 import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
@@ -466,6 +468,8 @@ public class _ParadoxScriptLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
+    private ParadoxGameType gameType;
+
     private boolean leftAbsSign = true;
     private final Deque<Integer> stack = new ArrayDeque<>();
     private final AtomicInteger templateStateRef = new AtomicInteger(-1);
@@ -473,6 +477,12 @@ public class _ParadoxScriptLexer implements FlexLexer {
 
     public _ParadoxScriptLexer() {
         this((java.io.Reader)null);
+        this.gameType = null;
+    }
+
+    public _ParadoxScriptLexer(ParadoxGameType gameType) {
+        this((java.io.Reader)null);
+        this.gameType = gameType;
     }
 
     private void enterState(Deque<Integer> stack, int state) {
@@ -852,7 +862,7 @@ public class _ParadoxScriptLexer implements FlexLexer {
           // fall through
           case 78: break;
           case 15:
-            { //如果匹配到的文本以等号结尾，则作为scriptedVariable进行解析，否则作为scriptedVariableReference进行解析
+            { // 如果匹配到的文本以等号结尾，则作为scriptedVariable进行解析，否则作为scriptedVariableReference进行解析
         if(yycharat(yylength() -1) == '='){
             yypushback(yylength());
             enterState(templateStateRef, yystate());

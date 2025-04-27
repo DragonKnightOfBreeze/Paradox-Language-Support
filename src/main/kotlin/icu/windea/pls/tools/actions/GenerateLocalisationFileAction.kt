@@ -40,7 +40,7 @@ class GenerateLocalisationFileAction : AnAction() {
             val allFiles = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY) ?: VirtualFile.EMPTY_ARRAY
             if (allFiles.isEmpty()) return@run
             val files = allFiles.filter { file ->
-                if (file.fileType != ParadoxLocalisationFileType) return@filter false
+                if (file.fileType !is ParadoxLocalisationFileType) return@filter false
                 if (file.fileInfo == null) return@filter false
                 if (ParadoxFileManager.isLightFile(file)) return@filter false
                 true
@@ -70,7 +70,7 @@ class GenerateLocalisationFileAction : AnAction() {
         val allFiles = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY) ?: VirtualFile.EMPTY_ARRAY
         if (allFiles.isEmpty()) return
         val files = allFiles.filter { file ->
-            if (file.fileType != ParadoxLocalisationFileType) return@filter false
+            if (file.fileType !is ParadoxLocalisationFileType) return@filter false
             if (file.fileInfo == null) return@filter false
             if (ParadoxFileManager.isLightFile(file)) return@filter false
             true

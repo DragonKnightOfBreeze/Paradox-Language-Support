@@ -7,11 +7,11 @@ import icu.windea.pls.cwt.*
 class CwtCodeStylePanel(
     currentSettings: CodeStyleSettings,
     settings: CodeStyleSettings
-) : TabbedLanguageCodeStylePanel(CwtLanguage, currentSettings, settings) {
+) : TabbedLanguageCodeStylePanel(CwtLanguage.INSTANCE, currentSettings, settings) {
     override fun initTabs(settings: CodeStyleSettings) {
         addIndentOptionsTab(settings)
         addSpacesTab(settings)
         addBlankLinesTab(settings)
-        addTab(GenerationCodeStylePanel(settings, CwtLanguage))
+        addTab(GenerationCodeStylePanel(settings, CwtLanguage.INSTANCE))
     }
 }

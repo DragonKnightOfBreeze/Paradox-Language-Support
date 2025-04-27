@@ -160,7 +160,7 @@ private fun ParadoxScriptProperty.doProcessPropertyChild(conditional: Boolean, i
  * 可能为null，可能为自身。
  */
 fun PsiElement.findParentDefinition(): ParadoxScriptDefinitionElement? {
-    if (language != ParadoxScriptLanguage) return null
+    if (language !is ParadoxScriptLanguage) return null
     var current: PsiElement = this
     while (current !is PsiDirectory) {
         ProgressManager.checkCanceled()
@@ -182,7 +182,7 @@ fun PsiElement.findProperty(
     conditional: Boolean = false,
     inline: Boolean = false
 ): ParadoxScriptProperty? {
-    if (language != ParadoxScriptLanguage) return null
+    if (language !is ParadoxScriptLanguage) return null
     if (propertyName != null && propertyName.isEmpty()) return this as? ParadoxScriptProperty
     val block = when {
         this is ParadoxScriptDefinitionElement -> this.block
@@ -211,7 +211,7 @@ fun PsiElement.findProperty(
     inline: Boolean = false,
     propertyPredicate: (String) -> Boolean
 ): ParadoxScriptProperty? {
-    if (language != ParadoxScriptLanguage) return null
+    if (language !is ParadoxScriptLanguage) return null
     if (propertyPredicate("")) return this as? ParadoxScriptProperty
     val block = when {
         this is ParadoxScriptDefinitionElement -> this.block
@@ -240,7 +240,7 @@ fun PsiElement.findParentProperty(
     ignoreCase: Boolean = true,
     fromParentBlock: Boolean = false
 ): ParadoxScriptDefinitionElement? {
-    if (language != ParadoxScriptLanguage) return null
+    if (language !is ParadoxScriptLanguage) return null
     var current: PsiElement = when {
         fromParentBlock -> this.parentOfType<ParadoxScriptBlockElement>() ?: return null
         this is ParadoxScriptProperty -> this.parent
@@ -266,7 +266,7 @@ fun PsiElement.findParentProperty(
     fromParentBlock: Boolean = false,
     propertyPredicate: (String) -> Boolean
 ): ParadoxScriptDefinitionElement? {
-    if (language != ParadoxScriptLanguage) return null
+    if (language !is ParadoxScriptLanguage) return null
     var current: PsiElement = when {
         fromParentBlock -> this.parentOfType<ParadoxScriptBlockElement>() ?: return null
         this is ParadoxScriptProperty -> this.parent
@@ -298,7 +298,7 @@ fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
     conditional: Boolean = false,
     inline: Boolean = false
 ): T? {
-    if (language != ParadoxScriptLanguage) return null
+    if (language !is ParadoxScriptLanguage) return null
     var current: ParadoxScriptMemberElement = this
     if (path.isNotEmpty()) {
         val elementPath = ParadoxExpressionPath.resolve(path)
@@ -335,7 +335,7 @@ fun ParadoxScriptMemberElement.findParentByPath(
     ignoreCase: Boolean = true,
     definitionType: String? = null
 ): ParadoxScriptDefinitionElement? {
-    if (language != ParadoxScriptLanguage) return null
+    if (language !is ParadoxScriptLanguage) return null
     var current: ParadoxScriptMemberElement = this
     if (path.isNotEmpty()) {
         val elementPath = ParadoxExpressionPath.resolve(path)

@@ -61,7 +61,7 @@ class ParadoxScriptLanguageInjector : MultiHostInjector {
         host.putUserData(PlsKeys.parameterValueInjectionInfos, allInjectionInfos.orNull())
         if (allInjectionInfos.isEmpty()) return true
         allInjectionInfos.forEach f@{ injectionInfo ->
-            registrar.startInjecting(ParadoxScriptLanguage)
+            registrar.startInjecting(ParadoxScriptLanguage.INSTANCE)
             registrar.addPlace(null, null, host, injectionInfo.rangeInsideHost)
             registrar.doneInjecting()
         }

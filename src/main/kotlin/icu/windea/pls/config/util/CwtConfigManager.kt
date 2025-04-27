@@ -39,7 +39,7 @@ object CwtConfigManager {
      * @param forRepo 是否兼容插件或者规则仓库中的CWT文件（此时将其视为规则文件）。
      */
     fun getContainingConfigGroup(file: VirtualFile, project: Project, forRepo: Boolean = false): CwtConfigGroup? {
-        if (file.fileType != CwtFileType) return null
+        if (file.fileType !is CwtFileType) return null
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         val configGroup = fileProviders.firstNotNullOfOrNull { fileProvider ->
             fileProvider.getContainingConfigGroup(file, project)
@@ -77,7 +77,7 @@ object CwtConfigManager {
     }
 
     fun getFilePath(file: VirtualFile, project: Project): String? {
-        if (file.fileType != CwtFileType) return null
+        if (file.fileType !is CwtFileType) return null
         val configGroup = getContainingConfigGroup(file, project) ?: return null
         val gameTypeId = configGroup.gameType.id
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
@@ -325,7 +325,7 @@ object CwtConfigManager {
 
     fun matchesFilePathPattern(config: CwtFilePathMatchableConfig, filePath: ParadoxPath): Boolean {
         //TODO 1.3.35+ check performance
-        
+
         val filePathPatterns = config.filePathPatterns
         return filePathPatterns.any { filePath.path.matchesAntPattern(it) }
     }
