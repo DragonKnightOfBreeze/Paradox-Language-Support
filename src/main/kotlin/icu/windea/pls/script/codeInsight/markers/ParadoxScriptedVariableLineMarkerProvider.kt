@@ -14,7 +14,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 封装变量（scripted_variable）的装订线图标提供器。
+ * 封装变量的装订线图标提供器。
  */
 class ParadoxScriptedVariableLineMarkerProvider : RelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.scriptedVariable")
