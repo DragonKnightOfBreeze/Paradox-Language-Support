@@ -20,7 +20,7 @@
 * 需要提供方案验证结果的等效性。
 * 避免无限循环调用。
 
-方案2：（对于`CompositePsiElement`）声明带有`volatile`修饰符的字段，重载`subtreeChanged`方法，在里面清空缓存。
+方案2：（对于`CompositePsiElement`）声明带有`volatile`修正的字段，重载`subtreeChanged`方法，在里面清空缓存。
 
 ### UI
 
