@@ -2,15 +2,17 @@
 package icu.windea.pls.localisation.psi.impl;
 
 import java.util.List;
-
-import icu.windea.pls.localisation.psi.util.ParadoxLocalisationPsiImplUtil;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
+import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.localisation.psi.*;
+import icu.windea.pls.localisation.psi.util.ParadoxLocalisationPsiImplUtil;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
@@ -44,27 +46,32 @@ public class ParadoxLocalisationPropertyListImpl extends ASTWrapperPsiElement im
   }
 
   @Override
-  public @NotNull Icon getIcon(@IconFlags int flags) {
+  @NotNull
+  public Icon getIcon(@IconFlags int flags) {
     return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  public @NotNull List<@NotNull ParadoxLocalisationProperty> getComponents() {
+  @NotNull
+  public List<ParadoxLocalisationProperty> getComponents() {
     return ParadoxLocalisationPsiImplUtil.getComponents(this);
   }
 
   @Override
-  public @NotNull ItemPresentation getPresentation() {
+  @NotNull
+  public ItemPresentation getPresentation() {
     return ParadoxLocalisationPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  public @NotNull GlobalSearchScope getResolveScope() {
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
     return ParadoxLocalisationPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  public @NotNull SearchScope getUseScope() {
+  @NotNull
+  public SearchScope getUseScope() {
     return ParadoxLocalisationPsiImplUtil.getUseScope(this);
   }
 

@@ -18,7 +18,7 @@ import javax.swing.Icon;
 
 public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
 
-  public CwtOptionImpl(@NotNull ASTNode node) {
+  public CwtOptionImpl(ASTNode node) {
     super(node);
   }
 

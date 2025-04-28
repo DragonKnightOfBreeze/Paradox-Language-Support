@@ -72,11 +72,11 @@ public interface ParadoxScriptElementTypes {
   IElementType PIPE = ParadoxScriptElementTypeFactory.getTokenType("PIPE");
   IElementType PLUS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("PLUS_SIGN");
   IElementType PROPERTY_KEY_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("PROPERTY_KEY_TOKEN");
-  IElementType SAFE_EQUAL_SIGN = ParadoxScriptElementTypeFactory.getTokenType("SAFE_EQUAL_SIGN");
   IElementType RABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("RABS_SIGN");
   IElementType RIGHT_BRACE = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_BRACE");
   IElementType RIGHT_BRACKET = ParadoxScriptElementTypeFactory.getTokenType("RIGHT_BRACKET");
   IElementType RP_SIGN = ParadoxScriptElementTypeFactory.getTokenType("RP_SIGN");
+  IElementType SAFE_EQUAL_SIGN = ParadoxScriptElementTypeFactory.getTokenType("SAFE_EQUAL_SIGN");
   IElementType SCRIPTED_VARIABLE_NAME_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_NAME_TOKEN");
   IElementType SCRIPTED_VARIABLE_REFERENCE_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_TOKEN");
   IElementType STRING_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("STRING_TOKEN");
