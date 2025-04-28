@@ -8,8 +8,8 @@
   elementTypeHolderClass="icu.windea.pls.cwt.psi.CwtElementTypes"
   elementTypeClass="icu.windea.pls.cwt.psi.CwtElementType"
   tokenTypeClass="icu.windea.pls.cwt.psi.CwtTokenType"
-  psiImplUtilClass="icu.windea.pls.cwt.psi.impl.CwtPsiImplUtil"
-  parserUtilClass="icu.windea.pls.cwt.psi.CwtParserUtil"
+  psiImplUtilClass="icu.windea.pls.cwt.psi.util.CwtPsiImplUtil"
+  parserUtilClass="icu.windea.pls.cwt.psi.util.CwtParserUtil"
   psiVisitorName=""
   methods(".*")=[getPresentation getUseScope]
 }
@@ -23,10 +23,10 @@ private option_comment_item ::= option | option_value
 
 option ::= option_key option_separator option_value {
   pin=1
-  mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
+  mixin="icu.windea.pls.cwt.psi.CwtNamedElementImpl"
   implements=["icu.windea.pls.cwt.psi.CwtNamedElement"]
   methods=[
-    optionKey="option_key" optionValue="value"
+    getOptionValue
     getIcon getName setName getNameIdentifier getValue getSeparatorType
   ]
 }

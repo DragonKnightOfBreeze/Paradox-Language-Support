@@ -1,4 +1,4 @@
-package icu.windea.pls.cwt.psi.impl
+package icu.windea.pls.cwt.psi.util
 
 import com.intellij.navigation.*
 import com.intellij.openapi.util.*
@@ -8,13 +8,11 @@ import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.navigation.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.model.*
 import javax.swing.*
 
@@ -53,6 +51,11 @@ object CwtPsiImplUtil {
     //region CwtOption
 
     @JvmStatic
+    fun getOptionValue(element: CwtOption):CwtValue? {
+        return PsiTreeUtil.getChildOfType(element, CwtValue::class.java)
+    }
+
+    @JvmStatic
     fun getIcon(element: CwtOption, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.CwtOption
     }
@@ -82,8 +85,8 @@ object CwtPsiImplUtil {
         //这里不能遍历element.children
         element.forEachChild { child ->
             when (child.elementType) {
-                EQUAL_SIGN -> return CwtSeparatorType.EQUAL
-                NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
+                CwtElementTypes.EQUAL_SIGN -> return CwtSeparatorType.EQUAL
+                CwtElementTypes.NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
             }
         }
         return CwtSeparatorType.EQUAL
@@ -105,7 +108,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtOptionKey): String {
-        return element.findChild { it.elementType == OPTION_KEY_TOKEN }!!.text.unquote()
+        return element.findChild { it.elementType == CwtElementTypes.OPTION_KEY_TOKEN }!!.text.unquote()
     }
 
     //endregion
@@ -142,8 +145,8 @@ object CwtPsiImplUtil {
         //这里不能遍历element.children
         element.forEachChild { child ->
             when (child.elementType) {
-                EQUAL_SIGN -> return CwtSeparatorType.EQUAL
-                NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
+                CwtElementTypes.EQUAL_SIGN -> return CwtSeparatorType.EQUAL
+                CwtElementTypes.NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
             }
         }
         return CwtSeparatorType.EQUAL
@@ -165,7 +168,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtPropertyKey): String {
-        return element.findChild { it.elementType == PROPERTY_KEY_TOKEN }!!.text.unquote()
+        return element.findChild { it.elementType == CwtElementTypes.PROPERTY_KEY_TOKEN }!!.text.unquote()
     }
 
     @JvmStatic
@@ -312,7 +315,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getTokenType(element: CwtDocumentationComment): IElementType {
-        return DOC_COMMENT
+        return CwtElementTypes.DOC_COMMENT
     }
 
     //endregion
@@ -321,7 +324,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getTokenType(element: CwtOptionComment): IElementType {
-        return OPTION_COMMENT
+        return CwtElementTypes.OPTION_COMMENT
     }
 
     //endregion

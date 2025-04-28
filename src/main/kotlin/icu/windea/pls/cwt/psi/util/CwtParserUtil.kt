@@ -1,7 +1,8 @@
-package icu.windea.pls.cwt.psi
+package icu.windea.pls.cwt.psi.util
 
 import com.intellij.lang.*
-import com.intellij.lang.parser.GeneratedParserUtilBase
+import com.intellij.lang.parser.*
+import icu.windea.pls.cwt.psi.*
 
 object CwtParserUtil: GeneratedParserUtilBase() {
     @JvmStatic

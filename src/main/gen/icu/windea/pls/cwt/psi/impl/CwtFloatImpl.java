@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import icu.windea.pls.cwt.psi.*;
+import icu.windea.pls.cwt.psi.util.CwtPsiImplUtil;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.config.CwtConfigType;

@@ -1,4 +1,4 @@
-package icu.windea.pls.script.psi.impl
+package icu.windea.pls.script.psi.util
 
 import com.intellij.navigation.*
 import com.intellij.openapi.application.*

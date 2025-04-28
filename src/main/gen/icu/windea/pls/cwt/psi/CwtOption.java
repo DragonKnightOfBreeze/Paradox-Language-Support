@@ -15,6 +15,9 @@ public interface CwtOption extends CwtNamedElement {
   @NotNull
   CwtOptionKey getOptionKey();
 
+  @Nullable
+  CwtValue getOptionValue();
+
   @NotNull
   Icon getIcon(@IconFlags int flags);
 

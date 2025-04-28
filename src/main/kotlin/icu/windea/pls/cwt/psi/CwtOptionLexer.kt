@@ -2,5 +2,4 @@ package icu.windea.pls.cwt.psi
 
 import com.intellij.lexer.*
 
-class CwtLexer : FlexAdapter(_CwtLexer(null))
-
+class CwtOptionLexer : FlexAdapter(_CwtOptionLexer(null))

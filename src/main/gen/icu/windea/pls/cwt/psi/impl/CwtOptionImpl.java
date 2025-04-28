@@ -7,7 +7,9 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
+import icu.windea.pls.cwt.psi.CwtNamedElementImpl;
 import icu.windea.pls.cwt.psi.*;
+import icu.windea.pls.cwt.psi.util.CwtPsiImplUtil;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.SearchScope;
@@ -24,6 +26,12 @@ public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
   @NotNull
   public CwtOptionKey getOptionKey() {
     return findNotNullChildByClass(CwtOptionKey.class);
+  }
+
+  @Override
+  @Nullable
+  public CwtValue getOptionValue() {
+    return CwtPsiImplUtil.getOptionValue(this);
   }
 
   @Override

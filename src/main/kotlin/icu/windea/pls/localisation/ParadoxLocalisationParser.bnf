@@ -10,8 +10,8 @@
   tokenTypeClass="icu.windea.pls.localisation.psi.ParadoxLocalisationTokenType"
   elementTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypeFactory.getElementType"
   tokenTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypeFactory.getTokenType"
-  psiImplUtilClass="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPsiImplUtil"
-  parserUtilClass="icu.windea.pls.localisation.psi.ParadoxLocalisationParserUtil"
+  psiImplUtilClass="icu.windea.pls.localisation.psi.util.ParadoxLocalisationPsiImplUtil"
+  parserUtilClass="icu.windea.pls.localisation.psi.util.ParadoxLocalisationParserUtil"
   tokens=[
     COLON=":"
     AT="@"

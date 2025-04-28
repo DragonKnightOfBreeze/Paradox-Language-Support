@@ -743,8 +743,7 @@ fun PsiElement.findFurthestSiblingOfSameType(findAfter: Boolean, stopOnBlankLine
     return lastSeen.psi
 }
 
-val PsiElement.icon
-    get() = getIcon(0)
+val PsiElement.icon get() = getIcon(0)
 
 object EmptyPointer : SmartPsiElementPointer<PsiElement> {
     override fun getElement() = null

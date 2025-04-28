@@ -8,7 +8,7 @@
   elementTypeHolderClass="icu.windea.pls.cwt.psi.CwtElementTypes"
   elementTypeClass="icu.windea.pls.cwt.psi.CwtElementType"
   tokenTypeClass="icu.windea.pls.cwt.psi.CwtTokenType"
-  psiImplUtilClass="icu.windea.pls.cwt.psi.impl.CwtPsiImplUtil"
+  psiImplUtilClass="icu.windea.pls.cwt.psi.util.CwtPsiImplUtil"
   psiVisitorName=""
   methods(".*")=[getPresentation getUseScope]
 }
@@ -40,7 +40,7 @@ option_comment ::= OPTION_COMMENT_START OPTION_COMMENT_TOKEN ? {
 property ::= property_key property_separator value {
   pin=1
   recoverWhile="#auto"
-  mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
+  mixin="icu.windea.pls.cwt.psi.CwtNamedElementImpl"
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtMemberElement"
@@ -89,7 +89,7 @@ float ::= FLOAT_TOKEN {
 }
 string ::= STRING_TOKEN {
   extends=value
-  mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
+  mixin="icu.windea.pls.cwt.psi.CwtNamedElementImpl"
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "com.intellij.psi.PsiLiteralValue"
@@ -100,7 +100,7 @@ string ::= STRING_TOKEN {
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
   extends=value
-  mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
+  mixin="icu.windea.pls.cwt.psi.CwtNamedElementImpl"
   implements=[
     "icu.windea.pls.cwt.psi.CwtBlockElement"
   ]

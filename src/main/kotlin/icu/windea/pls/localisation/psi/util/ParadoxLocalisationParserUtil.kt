@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.psi
+package icu.windea.pls.localisation.psi.util
 
 import com.intellij.lang.*
 import com.intellij.lang.parser.*

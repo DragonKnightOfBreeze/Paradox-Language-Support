@@ -108,7 +108,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "documentation_comment")) return false;
     if (!nextTokenIs(b, DOC_COMMENT_START)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, DOC_COMMENT, null);
+    Marker m = enter_section_(b, l, _NONE_, DOCUMENTATION_COMMENT, null);
     r = consumeToken(b, DOC_COMMENT_START);
     p = r; // pin = 1
     r = r && documentation_comment_1(b, l + 1);
