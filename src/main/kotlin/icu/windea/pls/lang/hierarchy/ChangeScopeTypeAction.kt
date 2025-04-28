@@ -15,7 +15,7 @@ import javax.swing.*
 
 class ChangeScopeTypeAction(
     val provider: HierarchyBrowserBaseEx,
-    val settings: icu.windea.pls.lang.hierarchy.ParadoxHierarchyBrowserSettings
+    val settings: ParadoxHierarchyBrowserSettings
 ) : ComboBoxAction() {
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.EDT

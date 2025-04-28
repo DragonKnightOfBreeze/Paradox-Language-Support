@@ -26,7 +26,7 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
     override fun createTrees(trees: MutableMap<in String, in JTree>) {
         val tree1 = createTree(false)
         PopupHandler.installPopupMenu(tree1, PlsActions.CallHierarchyPopupMenu, ActionPlaces.CALL_HIERARCHY_VIEW_POPUP)
-        val baseOnThisMethodAction = ParadoxCallHierarchyBrowser.BaseOnThisMethodAction()
+        val baseOnThisMethodAction = BaseOnThisMethodAction()
         baseOnThisMethodAction.registerCustomShortcutSet(ActionManager.getInstance().getAction(IdeActions.ACTION_CALL_HIERARCHY).shortcutSet, tree1)
         trees.put(getCalleeType(), tree1)
 

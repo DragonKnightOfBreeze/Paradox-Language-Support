@@ -63,7 +63,7 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
 
         override fun onChosen(selectedValue: CwtLocalisationLocaleConfig, finalChoice: Boolean): PopupStep<*>? {
             runUndoTransparentWriteAction { value.setName(selectedValue.id) }
-            return PopupStep.FINAL_CHOICE
+            return FINAL_CHOICE
         }
     }
 }

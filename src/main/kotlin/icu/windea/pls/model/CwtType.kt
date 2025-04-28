@@ -1,7 +1,7 @@
 package icu.windea.pls.model
 
 enum class CwtType(
-    val text: kotlin.String
+    val text: String
 ) {
     Unknown("(unknown)"),
     Boolean("boolean"),
@@ -11,7 +11,7 @@ enum class CwtType(
     Block("block"),
     ;
 
-    override fun toString(): kotlin.String {
+    override fun toString(): String {
         return text
     }
 }

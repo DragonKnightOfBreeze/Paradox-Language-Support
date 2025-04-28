@@ -60,7 +60,7 @@ class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
 
         override fun onChosen(selectedValue: ParadoxTextColorInfo, finalChoice: Boolean): PopupStep<*>? {
             runUndoTransparentWriteAction { value.setName(selectedValue.name) }
-            return PopupStep.FINAL_CHOICE
+            return FINAL_CHOICE
         }
     }
 }

@@ -1,7 +1,7 @@
 package icu.windea.pls.model
 
 enum class ParadoxType(
-    val text: kotlin.String
+    val text: String
 ) {
     Unknown("(unknown)"),
     Boolean("boolean"),
@@ -16,43 +16,43 @@ enum class ParadoxType(
     DatabaseObjectExpression("database object expression"),
     ;
 
-    override fun toString(): kotlin.String {
+    override fun toString(): String {
         return text
     }
 
-    fun isBooleanType(): kotlin.Boolean {
+    fun isBooleanType(): Boolean {
         return this == Boolean
     }
 
-    fun isIntType(): kotlin.Boolean {
+    fun isIntType(): Boolean {
         return this == Unknown || this == Int || this == Parameter || this == InlineMath
     }
 
-    fun isFloatType(): kotlin.Boolean {
+    fun isFloatType(): Boolean {
         return this == Unknown || this == Int || this == Float || this == Parameter || this == InlineMath
     }
 
-    fun isNumberType(): kotlin.Boolean {
+    fun isNumberType(): Boolean {
         return this == Unknown || this == Int || this == Float || this == Parameter || this == InlineMath
     }
 
-    fun isStringType(): kotlin.Boolean {
+    fun isStringType(): Boolean {
         return this == Unknown || this == String || this == Parameter
     }
 
-    fun isColorType(): kotlin.Boolean {
+    fun isColorType(): Boolean {
         return this == Color
     }
 
-    fun isStringLikeType(): kotlin.Boolean {
+    fun isStringLikeType(): Boolean {
         return this == Unknown || this == String || this == Parameter || this == Int || this == Float
     }
 
-    fun isBlockLikeType(): kotlin.Boolean {
+    fun isBlockLikeType(): Boolean {
         return this == Block || this == Color || this == InlineMath
     }
 
-    fun canBeScriptedVariableValue(): kotlin.Boolean {
+    fun canBeScriptedVariableValue(): Boolean {
         return this == Boolean || this == Int || this == Float || this == String
     }
 }
