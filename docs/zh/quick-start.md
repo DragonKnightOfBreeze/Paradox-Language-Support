@@ -28,13 +28,13 @@
   * 点击`Alt 6`或者`Problems`工具窗口，打开问题面板，然后查看当前文件存在的问题，或者进行整个项目的全局代码检查。
   * 点击`Code > Inspect Code...`，进行整个项目的全局代码检查。
   * 完成代码检查后，IDE将会在问题面板中显示详细的检查结果。
-* 如果需要更改插件的全局配置，请参考以下方式：
-  * 点击`Settings > Languages & Frameworks > Paradox Language Support`，打开插件的配置页面。
-* 如果需要更改模组类型、游戏目录、模组依赖等配置，请通过以下方式之一打开模组配置对话框：
+* 如果需要更改模组类型、游戏目录、模组依赖等设置，请通过以下方式之一打开模组设置对话框：
   * 点击`Settings > Languages & Frameworks > Paradox Language Support`，可配置默认的游戏目录。
   * 点击位于页面右上方的编辑器悬浮工具栏中的蓝色齿轮图标。
   * 在编辑器中打开右键菜单，点击`Paradox Language Support > Open Mod Settings...`。
   * 点击`Tools > Paradox Language Support > Open Mod Settings...`。
+* 如果需要更改插件的全局设置，请参考以下方式：
+  * 点击`Settings > Languages & Frameworks > Paradox Language Support`，打开插件的设置页面。
 * 如果在使用过程中遇到意外问题，请尝试通过以下方式解决：
   * 更新IDE和插件到最新版本。
   * 如果可能与IDE索引有关，请尝试重建索引并重启IDE。（点击`File -> Invalidate Caches... -> Invalidate and Restart`）
