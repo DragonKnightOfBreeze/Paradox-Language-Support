@@ -11,9 +11,9 @@ import icu.windea.pls.cwt.psi.*
  */
 class CwtCommenter : CodeDocumentationAwareCommenterEx {
     companion object {
-        const val LINE_COMMENT_PREFIX = "#"
-        const val OPTION_COMMENT_PREFIX = "##"
         const val DOC_COMMENT_PREFIX = "###"
+        const val OPTION_COMMENT_PREFIX = "##"
+        const val LINE_COMMENT_PREFIX = "#"
     }
 
     override fun getLineCommentPrefix() = LINE_COMMENT_PREFIX
@@ -38,10 +38,7 @@ class CwtCommenter : CodeDocumentationAwareCommenterEx {
 
     override fun getDocumentationCommentTokenType() = CwtElementTypes.DOC_COMMENT
 
-    override fun isDocumentationComment(element: PsiComment) = element is CwtDocumentationComment
+    override fun isDocumentationComment(element: PsiComment) = element is CwtDocComment
 
-    override fun isDocumentationCommentText(element: PsiElement): Boolean {
-        val elementType = element.elementType
-        return elementType == CwtElementTypes.DOCUMENTATION_TEXT || element == CwtElementTypes.DOC_COMMENT_TOKEN
-    }
+    override fun isDocumentationCommentText(element: PsiElement) = element.elementType == CwtElementTypes.DOC_COMMENT_TOKEN
 }

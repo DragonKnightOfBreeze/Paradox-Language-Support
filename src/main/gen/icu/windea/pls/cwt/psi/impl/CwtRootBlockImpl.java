@@ -21,8 +21,8 @@ public class CwtRootBlockImpl extends ASTWrapperPsiElement implements CwtRootBlo
 
   @Override
   @NotNull
-  public List<CwtDocumentationComment> getDocumentationCommentList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, CwtDocumentationComment.class);
+  public List<CwtDocComment> getDocCommentList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, CwtDocComment.class);
   }
 
   @Override

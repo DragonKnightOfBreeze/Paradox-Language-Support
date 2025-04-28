@@ -65,7 +65,6 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 %s IN_PROPERTY_SEPARATOR
 %s IN_PROPERTY_VALUE
 %s EXPECT_NEXT
-%s IN_DOCUMENTATION
 %s IN_OPTION
 %s IN_OPTION_KEY
 %s IN_OPTION_SEPARATOR
@@ -76,12 +75,6 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 %unicode
 
 BLANK=\s+
-
-DOC_COMMENT_START=###
-OPTION_COMMENT_START=##
-DOC_COMMENT_TOKEN=[^\s][^\r\n]*
-COMMENT=(#)|(#[^#\r\n][^\r\n]*)
-RELAX_COMMENT=#[^\r\n]*
 
 CHECK_SEPARATOR=(=)|(\!=)|(<>)
 CHECK_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?\s*{CHECK_SEPARATOR}
@@ -109,10 +102,6 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
     {INT_TOKEN} { yybegin(EXPECT_NEXT); return INT_TOKEN; }
     {FLOAT_TOKEN} { yybegin(EXPECT_NEXT); return FLOAT_TOKEN; }
     {STRING_TOKEN} { yybegin(EXPECT_NEXT); return STRING_TOKEN; }
-
-    {DOC_COMMENT_START} { yybegin(IN_DOCUMENTATION); return DOC_COMMENT_START; }
-    {OPTION_COMMENT_START} { yybegin(IN_OPTION); return OPTION_COMMENT_START; }
-    {COMMENT} { return COMMENT; }
 }
 <IN_PROPERTY_KEY>{
     {BLANK} { processBlank(); return WHITE_SPACE; }
@@ -120,8 +109,6 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
 
     {PROPERTY_KEY_TOKEN} { yybegin(IN_PROPERTY_SEPARATOR); return PROPERTY_KEY_TOKEN; }
-
-    {COMMENT} { return COMMENT; }
 }
 <IN_PROPERTY_SEPARATOR>{
     {BLANK} { processBlank(); return WHITE_SPACE; }
@@ -129,8 +116,6 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "="|"==" { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
     "!="|"<>" { yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
-
-    {COMMENT} { return COMMENT; }
 }
 <IN_PROPERTY_VALUE>{
     {BLANK} { processBlank(); return WHITE_SPACE; }
@@ -142,23 +127,11 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
     {INT_TOKEN} { yybegin(EXPECT_NEXT); return INT_TOKEN; }
     {FLOAT_TOKEN} { yybegin(EXPECT_NEXT); return FLOAT_TOKEN; }
     {STRING_TOKEN} { yybegin(EXPECT_NEXT); return STRING_TOKEN; }
-
-    {DOC_COMMENT_START} { yybegin(IN_DOCUMENTATION); return DOC_COMMENT_START; }
-    {OPTION_COMMENT_START} { yybegin(IN_OPTION); return OPTION_COMMENT_START; }
-    {COMMENT} { return COMMENT; }
 }
 <EXPECT_NEXT>{
     {BLANK} { processBlank(); return WHITE_SPACE; }
     "{" { enterState(stack, YYINITIAL); return LEFT_BRACE; }
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
-
-    {RELAX_COMMENT} { return COMMENT; }
-}
-
-<IN_DOCUMENTATION>{
-    {BLANK} { processBlank(); return WHITE_SPACE; }
-
-    {DOC_COMMENT_TOKEN} { yybegin(YYINITIAL); return DOC_COMMENT_TOKEN; }
 }
 
 <IN_OPTION>{
@@ -177,8 +150,6 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
               yybegin(EXPECT_NEXT_OPTION); return STRING_TOKEN;
         }
     }
-
-    {RELAX_COMMENT} { return COMMENT; }
 }
 <IN_OPTION_KEY>{
     {BLANK} { processBlank(); return WHITE_SPACE; }
@@ -186,8 +157,6 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
     "}" { exitState(optionStack, IN_OPTION); return RIGHT_BRACE; }
 
     {OPTION_KEY_TOKEN} { yybegin(IN_OPTION_SEPARATOR); return OPTION_KEY_TOKEN; }
-
-    {RELAX_COMMENT} { return COMMENT; }
 }
 <IN_OPTION_SEPARATOR>{
     {BLANK} { processBlank(); return WHITE_SPACE; }
@@ -195,8 +164,6 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
     "}" { exitState(optionStack, IN_OPTION); return RIGHT_BRACE; }
     "="|"==" { yybegin(IN_OPTION_VALUE); return EQUAL_SIGN; }
     "!="|"<>" { yybegin(IN_OPTION_VALUE); return NOT_EQUAL_SIGN; }
-
-    {RELAX_COMMENT} { return COMMENT; }
 }
 
 <IN_OPTION_VALUE_TOP_STRING>{
@@ -205,8 +172,6 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
     "}" { exitState(optionStack, IN_OPTION); return RIGHT_BRACE; }
 
     {TOP_STRING_TOKEN} { yybegin(EXPECT_NEXT_OPTION); return STRING_TOKEN; }
-
-    {RELAX_COMMENT} { return COMMENT; }
 }
 
 <IN_OPTION_VALUE>{
@@ -225,16 +190,12 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
               yybegin(EXPECT_NEXT_OPTION); return STRING_TOKEN;
         }
     }
-
-    {RELAX_COMMENT} { return COMMENT; }
 }
 
 <EXPECT_NEXT_OPTION>{
     {BLANK} { processBlank(); return WHITE_SPACE; }
     "{" { enterState(optionStack, IN_OPTION); return LEFT_BRACE; }
     "}" { exitState(optionStack, IN_OPTION); return RIGHT_BRACE; }
-
-    {RELAX_COMMENT} { return COMMENT; }
 }
 
 [^] { return BAD_CHARACTER; }

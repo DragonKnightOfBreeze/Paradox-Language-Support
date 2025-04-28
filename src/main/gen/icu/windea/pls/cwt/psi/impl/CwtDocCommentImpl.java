@@ -14,9 +14,9 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.tree.IElementType;
 
-public class CwtDocumentationCommentImpl extends ASTWrapperPsiElement implements CwtDocumentationComment {
+public class CwtDocCommentImpl extends ASTWrapperPsiElement implements CwtDocComment {
 
-  public CwtDocumentationCommentImpl(@NotNull ASTNode node) {
+  public CwtDocCommentImpl(@NotNull ASTNode node) {
     super(node);
   }
 

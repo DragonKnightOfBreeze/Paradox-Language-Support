@@ -380,7 +380,7 @@ private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) 
     while (true) {
         current = current.prevSibling ?: break
         when {
-            current is CwtDocumentationComment -> {
+            current is CwtDocComment -> {
                 val documentationText = current.documentationText
                 if (documentationText != null) {
                     if (documentationLines == null) documentationLines = LinkedList()

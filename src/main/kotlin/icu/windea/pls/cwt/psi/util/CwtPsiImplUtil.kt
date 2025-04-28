@@ -314,7 +314,7 @@ object CwtPsiImplUtil {
     //region CwtDocumentationComment
 
     @JvmStatic
-    fun getTokenType(element: CwtDocumentationComment): IElementType {
+    fun getTokenType(element: CwtDocComment): IElementType {
         return CwtElementTypes.DOC_COMMENT
     }
 

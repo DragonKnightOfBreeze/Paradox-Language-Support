@@ -11,7 +11,7 @@ public interface CwtElementTypes {
     IElementType DOC_COMMENT = new CwtElementType("DOC_COMMENT");
     IElementType FLOAT = new CwtElementType("FLOAT");
     IElementType INT = new CwtElementType("INT");
-    IElementType OPTION_COMMENT = new CwtElementType("OPTION_COMMENT");
+    IElementType OPTION_COMMENT = new CwtOptionCommentElementType("OPTION_COMMENT");
     IElementType PROPERTY = new CwtElementType("PROPERTY");
     IElementType PROPERTY_KEY = new CwtElementType("PROPERTY_KEY");
     IElementType ROOT_BLOCK = new CwtElementType("ROOT_BLOCK");
@@ -23,7 +23,6 @@ public interface CwtElementTypes {
 
     IElementType BOOLEAN_TOKEN = new CwtTokenType("BOOLEAN_TOKEN");
     IElementType COMMENT = new CwtTokenType("COMMENT");
-    IElementType DOC_COMMENT_START = new CwtTokenType("DOC_COMMENT_START");
     IElementType DOC_COMMENT_TOKEN = new CwtTokenType("DOC_COMMENT_TOKEN");
     IElementType EQUAL_SIGN = new CwtTokenType("EQUAL_SIGN");
     IElementType FLOAT_TOKEN = new CwtTokenType("FLOAT_TOKEN");
@@ -46,7 +45,7 @@ public interface CwtElementTypes {
             } else if (type == BOOLEAN) {
                 return new CwtBooleanImpl(node);
             } else if (type == DOC_COMMENT) {
-                return new CwtDocumentationCommentImpl(node);
+                return new CwtDocCommentImpl(node);
             } else if (type == FLOAT) {
                 return new CwtFloatImpl(node);
             } else if (type == INT) {

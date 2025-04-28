@@ -19,23 +19,21 @@ root_block ::= root_block_item + {
   implements=["icu.windea.pls.cwt.psi.CwtBlockElement"]
   methods=[getValue isEmpty isNotEmpty getComponents]
 }
-private root_block_item ::= comment | property | value {
+private root_block_item ::= general_comment | property | value {
   recoverWhile="#auto"
 }
 
-private comment ::= documentation_comment | option_comment | COMMENT
-
-documentation_comment ::= DOC_COMMENT_START DOC_COMMENT_TOKEN ? {
-  pin=1
+private general_comment ::= doc_comment | option_comment | comment
+doc_comment ::= DOC_COMMENT_TOKEN {
   implements=["com.intellij.psi.PsiComment"]
   methods=[getTokenType]
 }
-
-option_comment ::= OPTION_COMMENT_START OPTION_COMMENT_TOKEN ? {
-  pin=1
+option_comment ::= OPTION_COMMENT_TOKEN {
   implements=["com.intellij.psi.PsiComment"]
   methods=[getTokenType]
+  elementTypeClass="icu.windea.pls.cwt.psi.CwtOptionCommentElementType"
 }
+private comment ::= COMMENT
 
 property ::= property_key property_separator value {
   pin=1
@@ -91,8 +89,8 @@ string ::= STRING_TOKEN {
   extends=value
   mixin="icu.windea.pls.cwt.psi.CwtNamedElementImpl"
   implements=[
-    "icu.windea.pls.cwt.psi.CwtNamedElement"
     "com.intellij.psi.PsiLiteralValue"
+    "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
   methods=[getIcon getName setName getNameIdentifier getValue setValue getStringValue getType getConfigType]
@@ -102,6 +100,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   extends=value
   mixin="icu.windea.pls.cwt.psi.CwtNamedElementImpl"
   implements=[
+    "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtBlockElement"
   ]
   methods=[getIcon getName setName getValue setValue isEmpty isNotEmpty getComponents getType getConfigType]

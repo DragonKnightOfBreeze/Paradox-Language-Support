@@ -9,7 +9,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.tree.IElementType;
 
-public interface CwtDocumentationComment extends PsiComment {
+public interface CwtDocComment extends PsiComment {
 
   @NotNull
   IElementType getTokenType();

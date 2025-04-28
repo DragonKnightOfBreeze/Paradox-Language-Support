@@ -12,7 +12,7 @@ import icu.windea.pls.config.CwtConfigType;
 import icu.windea.pls.model.CwtType;
 import javax.swing.Icon;
 
-public interface CwtString extends CwtValue, CwtNamedElement, PsiLiteralValue, CwtStringExpressionElement {
+public interface CwtString extends CwtValue, PsiLiteralValue, CwtNamedElement, CwtStringExpressionElement {
 
   @NotNull
   Icon getIcon(@IconFlags int flags);

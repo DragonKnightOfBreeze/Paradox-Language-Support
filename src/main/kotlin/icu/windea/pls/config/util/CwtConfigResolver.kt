@@ -117,7 +117,7 @@ object CwtConfigResolver {
                         optionConfigs.add(0, resolved)
                     }
                 }
-                current is CwtDocumentationComment -> {
+                current is CwtDocComment -> {
                     val documentationText = current.documentationText
                     if (documentationText != null) {
                         if (documentationLines == null) documentationLines = LinkedList()

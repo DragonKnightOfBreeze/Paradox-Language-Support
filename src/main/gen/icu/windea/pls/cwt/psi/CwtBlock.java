@@ -11,13 +11,7 @@ import icu.windea.pls.config.CwtConfigType;
 import icu.windea.pls.model.CwtType;
 import javax.swing.Icon;
 
-public interface CwtBlock extends CwtValue, CwtBlockElement {
-
-  @NotNull
-  List<CwtDocumentationComment> getDocumentationCommentList();
-
-  @NotNull
-  List<CwtOptionComment> getOptionCommentList();
+public interface CwtBlock extends CwtValue, CwtNamedElement, CwtBlockElement {
 
   @NotNull
   List<CwtProperty> getPropertyList();

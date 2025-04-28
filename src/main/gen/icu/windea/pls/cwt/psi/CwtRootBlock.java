@@ -10,7 +10,7 @@ import com.intellij.psi.search.SearchScope;
 public interface CwtRootBlock extends CwtBlockElement {
 
   @NotNull
-  List<CwtDocumentationComment> getDocumentationCommentList();
+  List<CwtDocComment> getDocCommentList();
 
   @NotNull
   List<CwtOptionComment> getOptionCommentList();
