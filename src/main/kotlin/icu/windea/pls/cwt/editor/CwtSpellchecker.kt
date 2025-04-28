@@ -1,9 +1,9 @@
-package icu.windea.pls.cwt
+package icu.windea.pls.cwt.editor
 
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.spellchecker.tokenizer.*
-import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import icu.windea.pls.cwt.psi.*
 
 class CwtSpellchecker : SpellcheckingStrategy() {
     private val textTokenizer = TEXT_TOKENIZER
@@ -12,9 +12,9 @@ class CwtSpellchecker : SpellcheckingStrategy() {
 
     override fun getTokenizer(element: PsiElement?): Tokenizer<*> {
         return when (element.elementType) {
-            PROPERTY_KEY_TOKEN, OPTION_KEY_TOKEN -> compactTextTokenizer
-            STRING_TOKEN -> compactTextTokenizer
-            COMMENT, DOC_COMMENT_TOKEN -> textTokenizer
+            CwtElementTypes.PROPERTY_KEY_TOKEN, CwtElementTypes.OPTION_KEY_TOKEN -> compactTextTokenizer
+            CwtElementTypes.STRING_TOKEN -> compactTextTokenizer
+            CwtElementTypes.COMMENT, CwtElementTypes.DOC_COMMENT_TOKEN -> textTokenizer
             else -> emptyTokenizer
         }
     }

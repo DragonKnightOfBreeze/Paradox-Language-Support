@@ -3,7 +3,7 @@
     <fileType language="CWT" name="Cwt" fieldName="INSTANCE" extensions="cwt" implementationClass="icu.windea.pls.cwt.CwtFileType"/>
     <lang.parserDefinition language="CWT" implementationClass="icu.windea.pls.cwt.psi.CwtParserDefinition"/>
 
-    <spellchecker.support language="CWT" implementationClass="icu.windea.pls.cwt.CwtSpellchecker"/>
+    <spellchecker.support language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSpellchecker"/>
     <lang.syntaxHighlighterFactory language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.cwt.editor.CwtColorSettingsPage"/>
     <lang.braceMatcher language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtBraceMatcher"/>

@@ -4,7 +4,7 @@
     <lang.parserDefinition language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.psi.ParadoxScriptParserDefinition"/>
 
     <stubElementTypeHolder class="icu.windea.pls.script.psi.ParadoxScriptStubElementTypes" externalIdPrefix="paradoxScript."/>
-    <spellchecker.support language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.ParadoxScriptSpellchecker"/>
+    <spellchecker.support language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSpellchecker"/>
     <lang.syntaxHighlighterFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSyntaxHighlighterFactory"/>
     <psi.referenceContributor language="PARADOX_SCRIPT" implementation="icu.windea.pls.script.references.ParadoxScriptPsiReferenceContributor"/>
     <colorSettingsPage implementation="icu.windea.pls.script.editor.ParadoxScriptColorSettingsPage"/>
