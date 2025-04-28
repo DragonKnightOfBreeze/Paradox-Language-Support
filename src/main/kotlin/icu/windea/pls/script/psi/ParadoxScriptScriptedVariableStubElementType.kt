@@ -10,7 +10,7 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
 class ParadoxScriptScriptedVariableStubElementType(
-    language: ParadoxScriptLanguage = ParadoxScriptLanguage.INSTANCE
+    language: ParadoxScriptLanguage = ParadoxScriptLanguage
 ) : ILightStubElementType<ParadoxScriptScriptedVariableStub, ParadoxScriptScriptedVariable>("SCRIPTED_VARIABLE", language) {
     override fun getExternalId() = ID
 

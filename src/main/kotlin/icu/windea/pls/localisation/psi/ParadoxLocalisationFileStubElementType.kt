@@ -9,7 +9,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.model.*
 
 class ParadoxLocalisationFileStubElementType(
     language: ParadoxLocalisationLanguage = ParadoxLocalisationLanguage
@@ -66,10 +65,5 @@ class ParadoxLocalisationFileStubElementType(
 
         @JvmStatic
         val INSTANCE = ParadoxLocalisationFileStubElementType()
-
-        private val MAP = ParadoxGameType.entries.associateWith { ParadoxLocalisationFileStubElementType(ParadoxLocalisationLanguage.forGameType(it)) }
-
-        @JvmStatic
-        fun forGameType(gameType: ParadoxGameType?): ParadoxLocalisationFileStubElementType = if (gameType == null) INSTANCE else MAP.getValue(gameType)
     }
 }

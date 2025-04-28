@@ -8,7 +8,7 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptBreadCrumbsProvider : BreadcrumbsProvider {
-    private val _defaultLanguages = arrayOf(ParadoxScriptLanguage.INSTANCE)
+    private val _defaultLanguages = arrayOf(ParadoxScriptLanguage)
 
     override fun getLanguages(): Array<out Language> {
         return _defaultLanguages

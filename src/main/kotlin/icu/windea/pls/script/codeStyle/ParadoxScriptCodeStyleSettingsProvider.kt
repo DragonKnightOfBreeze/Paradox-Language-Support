@@ -5,7 +5,7 @@ import com.intellij.psi.codeStyle.*
 import icu.windea.pls.script.*
 
 class ParadoxScriptCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
-    override fun getLanguage() = ParadoxScriptLanguage.INSTANCE
+    override fun getLanguage() = ParadoxScriptLanguage
 
     override fun createCustomSettings(settings: CodeStyleSettings) = ParadoxScriptCodeStyleSettings(settings)
 

@@ -5,5 +5,5 @@ import icu.windea.pls.script.*
 
 class ParadoxScriptTokenType(
     debugName: String
-) : IElementType(debugName, ParadoxScriptLanguage.INSTANCE)
+) : IElementType(debugName, ParadoxScriptLanguage)
 

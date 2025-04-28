@@ -5,7 +5,7 @@ import icu.windea.pls.script.*
 
 class ParadoxScriptCodeStyleSettings(
     container: CodeStyleSettings,
-) : CustomCodeStyleSettings(ParadoxScriptLanguage.INSTANCE.id, container) {
+) : CustomCodeStyleSettings(ParadoxScriptLanguage.id, container) {
     //自定义配置项对应的字段（需要是@JvmField var）
 
     //spacing settings

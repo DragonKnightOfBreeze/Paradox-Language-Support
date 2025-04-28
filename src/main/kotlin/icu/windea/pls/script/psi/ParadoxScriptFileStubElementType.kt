@@ -15,7 +15,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.impl.*
 
 class ParadoxScriptFileStubElementType(
-    language: ParadoxScriptLanguage = ParadoxScriptLanguage.INSTANCE
+    language: ParadoxScriptLanguage = ParadoxScriptLanguage
 ) : ILightStubFileElementType<PsiFileStub<*>>(language) {
     override fun getExternalId() = ID
 

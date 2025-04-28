@@ -50,6 +50,6 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
     }
 
     private fun doProcessFiles(scope: GlobalSearchScope, processor: Processor<VirtualFile>): Boolean {
-        return FileTypeIndex.processFiles(ParadoxScriptFileType.INSTANCE, processor, scope)
+        return FileTypeIndex.processFiles(ParadoxScriptFileType, processor, scope)
     }
 }

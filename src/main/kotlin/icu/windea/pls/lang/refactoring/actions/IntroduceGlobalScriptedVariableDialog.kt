@@ -76,7 +76,7 @@ class IntroduceGlobalScriptedVariableDialog(
         row {
             //选择目标文件 - 仅允许用户选择同一入口目录下的common/scripted_variables目录下的文件
             label(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile")).widthGroup("left")
-            val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor(ParadoxScriptFileType.INSTANCE)
+            val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor(ParadoxScriptFileType)
                 .withTitle(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.extractToFile.browseDialogTitle"))
                 .withRoots(scriptedVariablesFile)
                 .withTreeRootVisible(true)

@@ -12,7 +12,7 @@ import icu.windea.pls.model.ParadoxGameType
 class ParadoxLocalisationFile(
     viewProvider: FileViewProvider,
     val gameType: ParadoxGameType? = null
-) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage.forGameType(gameType)) {
+) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage) {
     override fun getFileType() = viewProvider.fileType
 
     val propertyLists: List<ParadoxLocalisationPropertyList>

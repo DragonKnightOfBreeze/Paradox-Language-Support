@@ -1,8 +1,8 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <fileType language="PARADOX_SCRIPT" name="Paradox Script" fieldName="INSTANCE" fileNames="descriptor.mod"
-              implementationClass="icu.windea.pls.script.ParadoxScriptFileType"/>
+    <fileType language="PARADOX_SCRIPT" name="Paradox Script" fieldName="INSTANCE" fileNames="descriptor.mod" implementationClass="icu.windea.pls.script.ParadoxScriptFileType"/>
     <lang.parserDefinition language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.psi.ParadoxScriptParserDefinition"/>
+
     <stubElementTypeHolder class="icu.windea.pls.script.psi.ParadoxScriptStubElementTypes" externalIdPrefix="paradoxScript."/>
     <spellchecker.support language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.ParadoxScriptSpellchecker"/>
     <lang.syntaxHighlighterFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSyntaxHighlighterFactory"/>

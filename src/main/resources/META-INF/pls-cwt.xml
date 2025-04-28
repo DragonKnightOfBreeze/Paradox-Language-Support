@@ -1,7 +1,6 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <fileType language="CWT" name="Cwt" fieldName="INSTANCE" extensions="cwt"
-              implementationClass="icu.windea.pls.cwt.CwtFileType"/>
+    <fileType language="CWT" name="Cwt" fieldName="INSTANCE" extensions="cwt" implementationClass="icu.windea.pls.cwt.CwtFileType"/>
     <lang.parserDefinition language="CWT" implementationClass="icu.windea.pls.cwt.psi.CwtParserDefinition"/>
 
     <spellchecker.support language="CWT" implementationClass="icu.windea.pls.cwt.CwtSpellchecker"/>

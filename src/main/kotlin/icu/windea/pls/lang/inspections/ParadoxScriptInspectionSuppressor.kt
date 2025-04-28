@@ -71,7 +71,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
             if (container is PsiFile) {
                 val text = PlsConstants.Strings.suppressInspectionsTagName + " " + myID
-                val comment = SuppressionUtil.createComment(project, text, ParadoxScriptLanguage.INSTANCE)
+                val comment = SuppressionUtil.createComment(project, text, ParadoxScriptLanguage)
                 container.addAfter(comment, null)
             }
         }

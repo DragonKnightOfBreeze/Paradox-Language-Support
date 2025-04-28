@@ -7,11 +7,11 @@ import icu.windea.pls.script.*
 class ParadoxScriptCodeStylePanel(
     currentSettings: CodeStyleSettings,
     settings: CodeStyleSettings
-) : TabbedLanguageCodeStylePanel(ParadoxScriptLanguage.INSTANCE, currentSettings, settings) {
+) : TabbedLanguageCodeStylePanel(ParadoxScriptLanguage, currentSettings, settings) {
     override fun initTabs(settings: CodeStyleSettings) {
         addIndentOptionsTab(settings)
         addSpacesTab(settings)
         addBlankLinesTab(settings)
-        addTab(GenerationCodeStylePanel(settings, ParadoxScriptLanguage.INSTANCE))
+        addTab(GenerationCodeStylePanel(settings, ParadoxScriptLanguage))
     }
 }

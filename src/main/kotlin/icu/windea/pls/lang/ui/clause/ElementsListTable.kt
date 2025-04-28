@@ -20,7 +20,7 @@ class ElementsListTable(
     val context: ElementsContext,
     val dialog: DialogWithValidation
 ) : JBListTable(elementsTable, disposable) {
-    val _rowRenderer = object : EditorTextFieldJBTableRowRenderer(context.project, ParadoxScriptLanguage.INSTANCE, disposable) {
+    val _rowRenderer = object : EditorTextFieldJBTableRowRenderer(context.project, ParadoxScriptLanguage, disposable) {
         override fun getText(table: JTable, row: Int): String {
             val item = getRowItem(row)
             return when (item) {
