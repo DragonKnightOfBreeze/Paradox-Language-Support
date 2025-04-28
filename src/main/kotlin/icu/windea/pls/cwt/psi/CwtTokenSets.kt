@@ -7,9 +7,8 @@ import icu.windea.pls.cwt.psi.CwtElementTypes.*
 object CwtTokenSets {
     @JvmField
     val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
-    //DO NOT add DOC_COMMENT_TOKEN here, or documentation comment text will be resolved to PsiComment
     @JvmField
-    val COMMENTS = TokenSet.create(COMMENT)
+    val COMMENTS = TokenSet.create(COMMENT) //DO NOT add DOC_COMMENT here
     @JvmField
     val STRING_LITERALS = TokenSet.create(STRING_TOKEN)
 
