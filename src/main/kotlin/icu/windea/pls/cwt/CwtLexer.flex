@@ -11,6 +11,8 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 %%
 
 %{
+    private int nextState;
+
     public _CwtLexer() {
         this((java.io.Reader)null);
     }
@@ -49,7 +51,7 @@ QUOTED_STRING_TOKEN=\"([^\"\\\R]|\\[\s\S])*\"?
 <YYINITIAL> {
     "{" { yybegin(YYINITIAL); return LEFT_BRACE; }
     "}" { yybegin(YYINITIAL); return RIGHT_BRACE; }
-    "#" { yypushback(1); yybegin(IN_COMMENT); }
+    "#" { yypushback(1); nextState=yystate(); yybegin(IN_COMMENT); }
     {BLANK} { return WHITE_SPACE; }
 
     {CHECK_PROPERTY_KEY} { yypushback(yylength()); yybegin(IN_PROPERTY_KEY); }
@@ -61,7 +63,7 @@ QUOTED_STRING_TOKEN=\"([^\"\\\R]|\\[\s\S])*\"?
 <IN_PROPERTY_KEY>{
     "{" { yybegin(YYINITIAL); return LEFT_BRACE; }
     "}" { yybegin(YYINITIAL); return RIGHT_BRACE; }
-    "#" { yypushback(1); yybegin(IN_COMMENT); }
+    "#" { yypushback(1); nextState=yystate(); yybegin(IN_COMMENT); }
     {BLANK} { return WHITE_SPACE; }
 
     {PROPERTY_KEY_TOKEN} { yybegin(IN_PROPERTY_SEPARATOR); return PROPERTY_KEY_TOKEN; }
@@ -90,6 +92,7 @@ QUOTED_STRING_TOKEN=\"([^\"\\\R]|\\[\s\S])*\"?
 }
 <IN_COMMENT>{
     {COMMENT} {
+        yybegin(nextState);
         int length = yylength();
         if (length >= 2 && yycharat(1) == '#') {
             if (length >= 3 && yycharat(2) == '#') {

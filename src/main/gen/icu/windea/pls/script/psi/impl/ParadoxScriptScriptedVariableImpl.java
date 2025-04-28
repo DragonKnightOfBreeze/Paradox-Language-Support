@@ -8,7 +8,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import icu.windea.pls.script.psi.ParadoxScriptStubElementImpl;
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableStub;
 import icu.windea.pls.script.psi.*;
 import icu.windea.pls.script.psi.util.ParadoxScriptPsiImplUtil;
@@ -22,12 +21,12 @@ import com.intellij.psi.stubs.IStubElementType;
 
 public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementImpl<ParadoxScriptScriptedVariableStub> implements ParadoxScriptScriptedVariable {
 
-  public ParadoxScriptScriptedVariableImpl(ASTNode node) {
-    super(node);
+  public ParadoxScriptScriptedVariableImpl(@NotNull ParadoxScriptScriptedVariableStub stub, @Nullable IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
-  public ParadoxScriptScriptedVariableImpl(ParadoxScriptScriptedVariableStub stub, IStubElementType stubType) {
-    super(stub, stubType);
+  public ParadoxScriptScriptedVariableImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull ParadoxScriptVisitor visitor) {

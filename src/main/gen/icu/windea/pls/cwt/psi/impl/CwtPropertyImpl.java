@@ -7,7 +7,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
-import icu.windea.pls.cwt.psi.CwtNamedElementImpl;
 import icu.windea.pls.cwt.psi.*;
 import icu.windea.pls.cwt.psi.util.CwtPsiImplUtil;
 import com.intellij.navigation.ItemPresentation;
@@ -18,7 +17,7 @@ import javax.swing.Icon;
 
 public class CwtPropertyImpl extends CwtNamedElementImpl implements CwtProperty {
 
-  public CwtPropertyImpl(ASTNode node) {
+  public CwtPropertyImpl(@NotNull ASTNode node) {
     super(node);
   }
 

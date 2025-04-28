@@ -381,12 +381,9 @@ private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) 
         current = current.prevSibling ?: break
         when {
             current is CwtDocComment -> {
-                val documentationText = current.documentationText
-                if (documentationText != null) {
-                    if (documentationLines == null) documentationLines = LinkedList()
-                    val docText = documentationText.text.trimStart('#').trim() //这里接受HTML
-                    documentationLines.addFirst(docText)
-                }
+                if (documentationLines == null) documentationLines = LinkedList()
+                val docText = current.text.trimStart('#').trim() //这里接受HTML
+                documentationLines.addFirst(docText)
             }
             current is CwtOptionComment -> {
                 val option = current.option

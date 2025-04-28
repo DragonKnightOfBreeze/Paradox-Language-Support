@@ -38,7 +38,7 @@ private root_block_value ::= scripted_variable_reference | boolean | int | float
 scripted_variable ::= scripted_variable_name scripted_variable_separator scripted_variable_value {
   pin=1
   recoverWhile="#auto"
-  extends="icu.windea.pls.script.psi.ParadoxScriptStubElementImpl<?>"
+  extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
     "icu.windea.pls.lang.psi.ParadoxTypedElement"
@@ -66,7 +66,7 @@ private scripted_variable_value ::= boolean | int | float | string | inline_math
 property ::= property_key property_separator property_value {
   pin=1
   recoverWhile="#auto" //当前属性解析失败时，需要跳过继续解析下一个
-  extends="icu.windea.pls.script.psi.ParadoxScriptStubElementImpl<?>"
+  extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"

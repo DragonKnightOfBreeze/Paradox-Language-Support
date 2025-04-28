@@ -311,7 +311,7 @@ object CwtPsiImplUtil {
 
     //endregion
 
-    //region CwtDocumentationComment
+    //region CwtDocComment
 
     @JvmStatic
     fun getTokenType(element: CwtDocComment): IElementType {
@@ -325,6 +325,16 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getTokenType(element: CwtOptionComment): IElementType {
         return CwtElementTypes.OPTION_COMMENT
+    }
+
+    @JvmStatic
+    fun getOption(element: CwtOptionComment): CwtOption? {
+        return PsiTreeUtil.findChildOfType(element, CwtOption::class.java)
+    }
+
+    @JvmStatic
+    fun getOptionValue(element: CwtOptionComment): CwtValue? {
+        return PsiTreeUtil.findChildOfType(element, CwtValue::class.java)
     }
 
     //endregion

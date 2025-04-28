@@ -14,6 +14,12 @@ public interface CwtOptionComment extends PsiComment {
   @NotNull
   IElementType getTokenType();
 
+  @Nullable
+  CwtOption getOption();
+
+  @Nullable
+  CwtValue getOptionValue();
+
   @NotNull
   ItemPresentation getPresentation();
 

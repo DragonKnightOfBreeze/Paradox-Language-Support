@@ -111,19 +111,16 @@ object CwtConfigResolver {
                         val resolved = resolveOption(option, file, fileConfig) ?: continue
                         optionConfigs.add(0, resolved)
                     } else {
-                        val optionValue = current.value ?: continue
+                        val optionValue = current.optionValue ?: continue
                         if (optionConfigs == null) optionConfigs = mutableListOf()
                         val resolved = resolveOptionValue(optionValue, file, fileConfig)
                         optionConfigs.add(0, resolved)
                     }
                 }
                 current is CwtDocComment -> {
-                    val documentationText = current.documentationText
-                    if (documentationText != null) {
-                        if (documentationLines == null) documentationLines = LinkedList()
-                        val docText = documentationText.text.trimStart('#').trim() //这里接受HTML
-                        documentationLines.add(0, docText)
-                    }
+                    if (documentationLines == null) documentationLines = LinkedList()
+                    val docText = current.text.trimStart('#').trim() //这里接受HTML
+                    documentationLines.add(0, docText)
                 }
                 current is PsiWhiteSpace || current is PsiComment -> continue
                 else -> break

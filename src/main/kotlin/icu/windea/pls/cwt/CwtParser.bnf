@@ -30,7 +30,7 @@ doc_comment ::= DOC_COMMENT_TOKEN {
 }
 option_comment ::= OPTION_COMMENT_TOKEN {
   implements=["com.intellij.psi.PsiComment"]
-  methods=[getTokenType]
+  methods=[getTokenType getOption getOptionValue]
   elementTypeClass="icu.windea.pls.cwt.psi.CwtOptionCommentElementType"
 }
 private comment ::= COMMENT
@@ -38,7 +38,7 @@ private comment ::= COMMENT
 property ::= property_key property_separator value {
   pin=1
   recoverWhile="#auto"
-  mixin="icu.windea.pls.cwt.psi.CwtNamedElementImpl"
+  mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtMemberElement"
@@ -87,7 +87,7 @@ float ::= FLOAT_TOKEN {
 }
 string ::= STRING_TOKEN {
   extends=value
-  mixin="icu.windea.pls.cwt.psi.CwtNamedElementImpl"
+  mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.cwt.psi.CwtNamedElement"
@@ -98,7 +98,7 @@ string ::= STRING_TOKEN {
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
   extends=value
-  mixin="icu.windea.pls.cwt.psi.CwtNamedElementImpl"
+  mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtBlockElement"

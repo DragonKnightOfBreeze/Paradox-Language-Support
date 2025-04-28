@@ -4,18 +4,26 @@ import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import java.util.*;
 
-import static com.intellij.psi.TokenType.BAD_CHARACTER;
-import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 
 %%
 
 %{
+    private volatile int depth;
     private final Deque<Integer> stack = new ArrayDeque<>();
     private final Deque<Integer> optionStack = new ArrayDeque<>();
 
     public _CwtOptionLexer() {
         this((java.io.Reader)null);
+    }
+
+    private void beginNextState() {
+        if (depth <= 0) {
+            yybegin(YYINITIAL);
+        } else {
+            yybegin(IN_BLOCK);
+        }
     }
 
     private void enterState(Deque<Integer> stack, int state) {
@@ -61,16 +69,19 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 %function advance
 %type IElementType
 
-%s IN_PROPERTY_KEY
-%s IN_PROPERTY_SEPARATOR
-%s IN_PROPERTY_VALUE
-%s EXPECT_NEXT
 %s IN_OPTION
 %s IN_OPTION_KEY
 %s IN_OPTION_SEPARATOR
 %s IN_OPTION_VALUE
 %s IN_OPTION_VALUE_TOP_STRING
 %s EXPECT_NEXT_OPTION
+
+%s IN_PROPERTY_KEY
+%s IN_PROPERTY_SEPARATOR
+%s IN_PROPERTY_VALUE
+%s EXPECT_NEXT
+
+%s IN_BLOCK
 
 %unicode
 
@@ -87,21 +98,24 @@ BOOLEAN_TOKEN=(yes)|(no)
 INT_TOKEN=[+-]?[0-9]+ // leading zero is permitted
 FLOAT_TOKEN=[+-]?[0-9]*(\.[0-9]+) // leading zero is permitted
 STRING_TOKEN=([^#={}\s\"]+\"?)|({QUOTED_STRING_TOKEN})
-TOP_STRING_TOKEN=([^#={}\s\"]([^#={}\r\n\"]*[^#={}\s\"])?\"?)|({QUOTED_STRING_TOKEN}) // top option value can contain whitespaces
 QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
+
+// top option value can contain whitespaces
+TOP_STRING_TOKEN=([^#={}\s\"]([^#={}\r\n\"]*[^#={}\s\"])?\"?)|({QUOTED_STRING_TOKEN})
 
 %%
 
 <YYINITIAL> {
+    "##" {  return OPTION_COMMENT_START; }
+    "{" { depth++; return LEFT_BRACE; }
+    "}" { depth--; return RIGHT_BRACE; }
     {BLANK} { return WHITE_SPACE; }
-    "{" { enterState(stack, YYINITIAL); return LEFT_BRACE; }
-    "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
 
-    {CHECK_PROPERTY_KEY} { yypushback(yylength()); yybegin(IN_PROPERTY_KEY); }
-    {BOOLEAN_TOKEN} { yybegin(EXPECT_NEXT); return BOOLEAN_TOKEN; }
-    {INT_TOKEN} { yybegin(EXPECT_NEXT); return INT_TOKEN; }
-    {FLOAT_TOKEN} { yybegin(EXPECT_NEXT); return FLOAT_TOKEN; }
-    {STRING_TOKEN} { yybegin(EXPECT_NEXT); return STRING_TOKEN; }
+    {CHECK_OPTION_KEY} { yypushback(yylength()); yybegin(IN_OPTION_KEY); }
+    {BOOLEAN_TOKEN} { return BOOLEAN_TOKEN; }
+    {INT_TOKEN} { return INT_TOKEN; }
+    {FLOAT_TOKEN} { return FLOAT_TOKEN; }
+    {TOP_STRING_TOKEN} { return STRING_TOKEN; }
 }
 <IN_PROPERTY_KEY>{
     {BLANK} { processBlank(); return WHITE_SPACE; }
