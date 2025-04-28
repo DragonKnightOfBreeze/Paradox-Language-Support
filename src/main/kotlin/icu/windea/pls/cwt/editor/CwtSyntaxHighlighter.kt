@@ -16,7 +16,7 @@ class CwtSyntaxHighlighter : SyntaxHighlighter {
         private val OPERATOR_KEYS = arrayOf(CwtAttributesKeys.OPERATOR_KEY)
         private val COMMENT_KEYS = arrayOf(CwtAttributesKeys.COMMENT_KEY)
         private val OPTION_COMMENT_KEYS = arrayOf(CwtAttributesKeys.OPTION_COMMENT_KEY)
-        private val DOCUMENTATION_COMMENT_KEYS = arrayOf(CwtAttributesKeys.DOCUMENTATION_COMMENT_KEY)
+        private val DOC_COMMENT_KEYS = arrayOf(CwtAttributesKeys.DOC_COMMENT_KEY)
         private val KEYWORD_KEYS = arrayOf(CwtAttributesKeys.KEYWORD_KEY)
         private val PROPERTY_KEY_KEYS = arrayOf(CwtAttributesKeys.PROPERTY_KEY_KEY)
         private val OPTION_KEY_KEYS = arrayOf(CwtAttributesKeys.OPTION_KEY_KEY)
@@ -34,8 +34,8 @@ class CwtSyntaxHighlighter : SyntaxHighlighter {
         LEFT_BRACE, RIGHT_BRACE -> BRACES_KEYS
         EQUAL_SIGN, NOT_EQUAL_SIGN -> OPERATOR_KEYS
         COMMENT -> COMMENT_KEYS
-        OPTION_START -> OPTION_COMMENT_KEYS
-        DOCUMENTATION_START, DOCUMENTATION_TOKEN -> DOCUMENTATION_COMMENT_KEYS
+        OPTION_COMMENT_START -> OPTION_COMMENT_KEYS
+        DOC_COMMENT_START, DOC_COMMENT_TOKEN -> DOC_COMMENT_KEYS
         PROPERTY_KEY_TOKEN -> PROPERTY_KEY_KEYS
         OPTION_KEY_TOKEN -> OPTION_KEY_KEYS
         BOOLEAN_TOKEN -> KEYWORD_KEYS

@@ -17,9 +17,6 @@ public interface CwtBlock extends CwtValue, CwtBlockElement {
   List<CwtDocumentationComment> getDocumentationCommentList();
 
   @NotNull
-  List<CwtOption> getOptionList();
-
-  @NotNull
   List<CwtOptionComment> getOptionCommentList();
 
   @NotNull

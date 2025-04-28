@@ -312,7 +312,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getTokenType(element: CwtDocumentationComment): IElementType {
-        return DOCUMENTATION_COMMENT
+        return DOC_COMMENT
     }
 
     //endregion

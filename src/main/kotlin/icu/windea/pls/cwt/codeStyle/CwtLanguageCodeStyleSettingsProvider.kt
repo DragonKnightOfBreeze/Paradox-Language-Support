@@ -68,7 +68,7 @@ class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
         )
         val commentsGroup = CodeStyleSettingsCustomizableOptions.getInstance().WRAPPING_COMMENTS
         consumer.showCustomOption(Settings::class.java, Settings::OPTION_COMMENT_ADD_SPACE.name, PlsBundle.message("cwt.codeStyleSettings.commenter.optionComment.addSpace"), commentsGroup)
-        consumer.showCustomOption(Settings::class.java, Settings::DOCUMENTATION_COMMENT_ADD_SPACE.name, PlsBundle.message("cwt.codeStyleSettings.commenter.documentationComment.addSpace"), commentsGroup)
+        consumer.showCustomOption(Settings::class.java, Settings::DOC_COMMENT_ADD_SPACE.name, PlsBundle.message("cwt.codeStyleSettings.commenter.documentationComment.addSpace"), commentsGroup)
     }
 
     class IndentOptionsEditor(

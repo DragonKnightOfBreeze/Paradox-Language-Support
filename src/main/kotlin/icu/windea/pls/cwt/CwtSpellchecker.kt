@@ -14,7 +14,7 @@ class CwtSpellchecker : SpellcheckingStrategy() {
         return when (element.elementType) {
             PROPERTY_KEY_TOKEN, OPTION_KEY_TOKEN -> compactTextTokenizer
             STRING_TOKEN -> compactTextTokenizer
-            COMMENT, DOCUMENTATION_TOKEN -> textTokenizer
+            COMMENT, DOC_COMMENT_TOKEN -> textTokenizer
             else -> emptyTokenizer
         }
     }

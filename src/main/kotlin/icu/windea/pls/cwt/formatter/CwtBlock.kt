@@ -20,7 +20,7 @@ class CwtBlock(
         private val MEMBERS = TokenSet.create(PROPERTY, VALUE, BOOLEAN, INT, FLOAT, STRING, BLOCK)
         private val SEPARATORS = TokenSet.create(EQUAL_SIGN, NOT_EQUAL_SIGN)
         private val SHOULD_INDENT_PARENT_TYPES = TokenSet.create(BLOCK)
-        private val SHOULD_INDENT_TYPES = TokenSet.create(PROPERTY, VALUE, BOOLEAN, INT, FLOAT, STRING, BLOCK, COMMENT, DOCUMENTATION_COMMENT, OPTION_COMMENT)
+        private val SHOULD_INDENT_TYPES = TokenSet.create(PROPERTY, VALUE, BOOLEAN, INT, FLOAT, STRING, BLOCK, COMMENT, DOC_COMMENT, OPTION_COMMENT)
         private val SHOULD_CHILD_INDENT_TYPES = TokenSet.create(BLOCK)
 
         private fun createWrap(): Wrap? {

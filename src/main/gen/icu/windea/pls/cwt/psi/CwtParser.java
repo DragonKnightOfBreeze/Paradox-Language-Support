@@ -67,14 +67,13 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // comment | property | option | value
+  // comment | property | value
   static boolean block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block_item")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
     r = comment(b, l + 1);
     if (!r) r = property(b, l + 1);
-    if (!r) r = option(b, l + 1);
     if (!r) r = value(b, l + 1);
     exit_section_(b, l, m, r, false, block_item_auto_recover_);
     return r;
@@ -104,36 +103,24 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // DOCUMENTATION_START documentation_text ?
+  // DOC_COMMENT_START DOC_COMMENT_TOKEN ?
   public static boolean documentation_comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "documentation_comment")) return false;
-    if (!nextTokenIs(b, DOCUMENTATION_START)) return false;
+    if (!nextTokenIs(b, DOC_COMMENT_START)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, DOCUMENTATION_COMMENT, null);
-    r = consumeToken(b, DOCUMENTATION_START);
+    Marker m = enter_section_(b, l, _NONE_, DOC_COMMENT, null);
+    r = consumeToken(b, DOC_COMMENT_START);
     p = r; // pin = 1
     r = r && documentation_comment_1(b, l + 1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // documentation_text ?
+  // DOC_COMMENT_TOKEN ?
   private static boolean documentation_comment_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "documentation_comment_1")) return false;
-    documentation_text(b, l + 1);
+    consumeToken(b, DOC_COMMENT_TOKEN);
     return true;
-  }
-
-  /* ********************************************************** */
-  // DOCUMENTATION_TOKEN
-  public static boolean documentation_text(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "documentation_text")) return false;
-    if (!nextTokenIs(b, DOCUMENTATION_TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, DOCUMENTATION_TOKEN);
-    exit_section_(b, m, DOCUMENTATION_TEXT, r);
-    return r;
   }
 
   /* ********************************************************** */
@@ -161,72 +148,24 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // option_key option_separator value
-  public static boolean option(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "option")) return false;
-    if (!nextTokenIs(b, OPTION_KEY_TOKEN)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, OPTION, null);
-    r = option_key(b, l + 1);
-    p = r; // pin = 1
-    r = r && report_error_(b, option_separator(b, l + 1));
-    r = p && value(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  /* ********************************************************** */
-  // OPTION_START option_comment_item ?
+  // OPTION_COMMENT_START OPTION_COMMENT_TOKEN ?
   public static boolean option_comment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment")) return false;
-    if (!nextTokenIs(b, OPTION_START)) return false;
+    if (!nextTokenIs(b, OPTION_COMMENT_START)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, OPTION_COMMENT, null);
-    r = consumeToken(b, OPTION_START);
+    r = consumeToken(b, OPTION_COMMENT_START);
     p = r; // pin = 1
     r = r && option_comment_1(b, l + 1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // option_comment_item ?
+  // OPTION_COMMENT_TOKEN ?
   private static boolean option_comment_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "option_comment_1")) return false;
-    option_comment_item(b, l + 1);
+    consumeToken(b, OPTION_COMMENT_TOKEN);
     return true;
-  }
-
-  /* ********************************************************** */
-  // option | value
-  static boolean option_comment_item(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "option_comment_item")) return false;
-    boolean r;
-    r = option(b, l + 1);
-    if (!r) r = value(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // OPTION_KEY_TOKEN
-  public static boolean option_key(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "option_key")) return false;
-    if (!nextTokenIs(b, OPTION_KEY_TOKEN)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, OPTION_KEY_TOKEN);
-    exit_section_(b, m, OPTION_KEY, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // EQUAL_SIGN | NOT_EQUAL_SIGN
-  static boolean option_separator(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "option_separator")) return false;
-    if (!nextTokenIs(b, "", EQUAL_SIGN, NOT_EQUAL_SIGN)) return false;
-    boolean r;
-    r = consumeToken(b, EQUAL_SIGN);
-    if (!r) r = consumeToken(b, NOT_EQUAL_SIGN);
-    return r;
   }
 
   /* ********************************************************** */
@@ -331,9 +270,8 @@ public class CwtParser implements PsiParser, LightPsiParser {
   }
 
   static final Parser block_item_auto_recover_ = (b, l) -> !nextTokenIsFast(b, BOOLEAN_TOKEN, COMMENT,
-    DOCUMENTATION_START, FLOAT_TOKEN, INT_TOKEN, LEFT_BRACE, OPTION_KEY_TOKEN, OPTION_START,
-    PROPERTY_KEY_TOKEN, RIGHT_BRACE, STRING_TOKEN);
+    DOC_COMMENT_START, FLOAT_TOKEN, INT_TOKEN, LEFT_BRACE, OPTION_COMMENT_START, PROPERTY_KEY_TOKEN, RIGHT_BRACE, STRING_TOKEN);
   static final Parser property_auto_recover_ = block_item_auto_recover_;
   static final Parser root_block_item_auto_recover_ = (b, l) -> !nextTokenIsFast(b, BOOLEAN_TOKEN, COMMENT,
-    DOCUMENTATION_START, FLOAT_TOKEN, INT_TOKEN, LEFT_BRACE, OPTION_START, PROPERTY_KEY_TOKEN, STRING_TOKEN);
+    DOC_COMMENT_START, FLOAT_TOKEN, INT_TOKEN, LEFT_BRACE, OPTION_COMMENT_START, PROPERTY_KEY_TOKEN, STRING_TOKEN);
 }

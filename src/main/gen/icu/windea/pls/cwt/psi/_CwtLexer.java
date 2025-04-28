@@ -41,7 +41,7 @@ public class _CwtLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7, 
+     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  7,  7,
      8,  8,  6,  6,  9,  9, 10, 10
   };
 
@@ -698,7 +698,7 @@ public class _CwtLexer implements FlexLexer {
           // fall through
           case 39: break;
           case 12:
-            { yybegin(YYINITIAL); return DOCUMENTATION_TOKEN;
+            { yybegin(YYINITIAL); return DOC_COMMENT_TOKEN;
             }
           // fall through
           case 40: break;
@@ -747,7 +747,7 @@ public class _CwtLexer implements FlexLexer {
           // fall through
           case 48: break;
           case 21:
-            { yybegin(IN_OPTION); return OPTION_START;
+            { yybegin(IN_OPTION); return OPTION_COMMENT_START;
             }
           // fall through
           case 49: break;
@@ -782,7 +782,7 @@ public class _CwtLexer implements FlexLexer {
           // fall through
           case 55: break;
           case 28:
-            { yybegin(IN_DOCUMENTATION); return DOCUMENTATION_START;
+            { yybegin(IN_DOCUMENTATION); return DOC_COMMENT_START;
             }
           // fall through
           case 56: break;

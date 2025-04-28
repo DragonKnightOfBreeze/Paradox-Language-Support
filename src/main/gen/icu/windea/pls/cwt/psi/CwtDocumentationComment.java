@@ -11,9 +11,6 @@ import com.intellij.psi.tree.IElementType;
 
 public interface CwtDocumentationComment extends PsiComment {
 
-  @Nullable
-  CwtDocumentationText getDocumentationText();
-
   @NotNull
   IElementType getTokenType();
 

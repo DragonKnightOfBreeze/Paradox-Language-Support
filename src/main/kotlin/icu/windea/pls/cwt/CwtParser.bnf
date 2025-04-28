@@ -9,6 +9,7 @@
   elementTypeClass="icu.windea.pls.cwt.psi.CwtElementType"
   tokenTypeClass="icu.windea.pls.cwt.psi.CwtTokenType"
   psiImplUtilClass="icu.windea.pls.cwt.psi.impl.CwtPsiImplUtil"
+  psiVisitorName=""
   methods(".*")=[getPresentation getUseScope]
 }
 
@@ -24,33 +25,17 @@ private root_block_item ::= comment | property | value {
 
 private comment ::= documentation_comment | option_comment | COMMENT
 
-documentation_comment ::= DOCUMENTATION_START documentation_text ? {
+documentation_comment ::= DOC_COMMENT_START DOC_COMMENT_TOKEN ? {
   pin=1
   implements=["com.intellij.psi.PsiComment"]
   methods=[getTokenType]
 }
-documentation_text ::= DOCUMENTATION_TOKEN
 
-option_comment ::= OPTION_START option_comment_item ? {
+option_comment ::= OPTION_COMMENT_START OPTION_COMMENT_TOKEN ? {
   pin=1
   implements=["com.intellij.psi.PsiComment"]
   methods=[getTokenType]
 }
-private option_comment_item ::= option | value
-
-option ::= option_key option_separator value {
-  pin=1
-  mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
-  implements=["icu.windea.pls.cwt.psi.CwtNamedElement"]
-  methods=[
-    optionKey="option_key" optionValue="value"
-    getIcon getName setName getNameIdentifier getValue getSeparatorType
-  ]
-}
-option_key ::= OPTION_KEY_TOKEN {
-  methods=[getIcon getName getValue]
-}
-private option_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
 
 property ::= property_key property_separator value {
   pin=1
@@ -121,6 +106,6 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   ]
   methods=[getIcon getName setName getValue setValue isEmpty isNotEmpty getComponents getType getConfigType]
 }
-private block_item ::= comment | property | option | value{
+private block_item ::= comment | property | value {
   recoverWhile="#auto"
 }

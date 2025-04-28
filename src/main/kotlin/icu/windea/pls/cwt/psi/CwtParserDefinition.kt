@@ -30,7 +30,7 @@ class CwtParserDefinition : ParserDefinition {
         return when {
             leftType == COMMENT -> MUST_LINE_BREAK
             leftType == OPTION_COMMENT -> MUST_LINE_BREAK
-            leftType == DOCUMENTATION_COMMENT -> MUST_LINE_BREAK
+            leftType == DOC_COMMENT -> MUST_LINE_BREAK
             else -> MAY
         }
     }

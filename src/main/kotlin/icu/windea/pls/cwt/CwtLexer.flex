@@ -77,9 +77,9 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 
 BLANK=\s+
 
-DOCUMENTATION_COMMENT_START=###
+DOC_COMMENT_START=###
 OPTION_COMMENT_START=##
-DOCUMENTATION_TOKEN=[^\s][^\r\n]*
+DOC_COMMENT_TOKEN=[^\s][^\r\n]*
 COMMENT=(#)|(#[^#\r\n][^\r\n]*)
 RELAX_COMMENT=#[^\r\n]*
 
@@ -110,8 +110,8 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
     {FLOAT_TOKEN} { yybegin(EXPECT_NEXT); return FLOAT_TOKEN; }
     {STRING_TOKEN} { yybegin(EXPECT_NEXT); return STRING_TOKEN; }
 
-    {DOCUMENTATION_COMMENT_START} { yybegin(IN_DOCUMENTATION); return DOCUMENTATION_START; }
-    {OPTION_COMMENT_START} { yybegin(IN_OPTION); return OPTION_START; }
+    {DOC_COMMENT_START} { yybegin(IN_DOCUMENTATION); return DOC_COMMENT_START; }
+    {OPTION_COMMENT_START} { yybegin(IN_OPTION); return OPTION_COMMENT_START; }
     {COMMENT} { return COMMENT; }
 }
 <IN_PROPERTY_KEY>{
@@ -143,8 +143,8 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
     {FLOAT_TOKEN} { yybegin(EXPECT_NEXT); return FLOAT_TOKEN; }
     {STRING_TOKEN} { yybegin(EXPECT_NEXT); return STRING_TOKEN; }
 
-    {DOCUMENTATION_COMMENT_START} { yybegin(IN_DOCUMENTATION); return DOCUMENTATION_START; }
-    {OPTION_COMMENT_START} { yybegin(IN_OPTION); return OPTION_START; }
+    {DOC_COMMENT_START} { yybegin(IN_DOCUMENTATION); return DOC_COMMENT_START; }
+    {OPTION_COMMENT_START} { yybegin(IN_OPTION); return OPTION_COMMENT_START; }
     {COMMENT} { return COMMENT; }
 }
 <EXPECT_NEXT>{
@@ -158,7 +158,7 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 <IN_DOCUMENTATION>{
     {BLANK} { processBlank(); return WHITE_SPACE; }
 
-    {DOCUMENTATION_TOKEN} { yybegin(YYINITIAL); return DOCUMENTATION_TOKEN; }
+    {DOC_COMMENT_TOKEN} { yybegin(YYINITIAL); return DOC_COMMENT_TOKEN; }
 }
 
 <IN_OPTION>{
