@@ -17,7 +17,7 @@
 
 ## 1.3.35
 
-* [ ] 优化：可以配置是否在层次视图中显示位置信息与本地化信息 / OP: Allow to configure whether to display position information and localisation information in hierarchy views
+* [X] 优化：可以配置是否在层次视图中显示位置信息与本地化名字 / OP: Allow to configure whether to show position info and localized name in hierarchy views *
 * [ ] 实现高级类型层次视图，支持过滤、分组、展开等操作 / Implement advanced type hierarchy views, support operations such as filtering, grouping, expansion, etc.
 * [ ] 实现事件树与科技树对应的高级层次视图 / Implement advanced hierarchy views for event trees and technology trees
 * [ ] 其他优化与BUG修复 / Other optimizations and bug fixes

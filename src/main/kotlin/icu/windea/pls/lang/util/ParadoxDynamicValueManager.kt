@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
+import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
@@ -41,5 +42,13 @@ object ParadoxDynamicValueManager {
         val readWriteAccess = getReadWriteAccess(configExpression)
         val dynamicValueTypes = configExpressions.mapNotNullTo(mutableSetOf()) { it.value }
         return ParadoxDynamicValueElement(element, name, dynamicValueTypes, readWriteAccess, gameType, configGroup.project)
+    }
+
+    fun getHintFromExtendedConfig(name: String, type: String, contextElement: PsiElement): String? {
+        val gameType = selectGameType(contextElement) ?: return null
+        val configGroup = getConfigGroup(contextElement.project, gameType)
+        val configs = configGroup.extendedDynamicValues[type] ?: return null
+        val config = configs.findFromPattern(name, contextElement, configGroup) ?: return null
+        return config.hint
     }
 }

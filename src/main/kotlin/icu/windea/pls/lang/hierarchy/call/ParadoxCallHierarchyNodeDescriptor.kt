@@ -13,8 +13,8 @@ import com.intellij.pom.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.usageView.*
-import icu.windea.pls.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -34,55 +34,64 @@ class ParadoxCallHierarchyNodeDescriptor(
 
     companion object {
         @JvmStatic
-        fun getLocationAttributes(): TextAttributes? {
-            return UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
-        }
+        private fun getNameAttributes(color: Color?) = if (color == null) null else TextAttributes(color, null, null, null, Font.PLAIN)
+
+        @JvmStatic
+        private fun getTypeAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
+
+        @JvmStatic
+        private fun getLocalizedNameAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
+
+        @JvmStatic
+        private fun getLocationAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
     }
 
     override fun update(): Boolean {
         var changes = super.update()
         val element = psiElement
-        if (element == null) {
-            return invalidElement()
-        }
+        if (element == null) return invalidElement()
         if (changes && myIsBase) {
             icon = getBaseMarkerIcon(icon)
         }
         val oldText = myHighlightedText
         myHighlightedText = CompositeAppearance()
-        val nameAttributes = if (myColor != null) TextAttributes(myColor, null, null, null, Font.PLAIN) else null
+        val file = element.containingFile
+        val hierarchySettings = getSettings().hierarchy
         when (element) {
             is ParadoxScriptScriptedVariable -> {
-                val fileInfo = element.fileInfo ?: return invalidElement()
                 val name = element.name.orAnonymous()
-                myHighlightedText.ending.addText(name, nameAttributes)
-                val path = fileInfo.path.path
-                val qualifiedName = fileInfo.rootInfo.qualifiedName
-                val location = " " + PlsBundle.message("hierarchy.call.descriptor.scriptedVariable.location", path, qualifiedName)
-                myHighlightedText.ending.addText(location, getLocationAttributes())
+                myHighlightedText.ending.addText(name, getNameAttributes(myColor))
             }
             is ParadoxScriptDefinitionElement -> {
                 val definitionInfo = element.definitionInfo ?: return invalidElement()
-                val fileInfo = element.fileInfo ?: return invalidElement()
                 val name = definitionInfo.name.orAnonymous()
-                myHighlightedText.ending.addText(name, nameAttributes)
+                myHighlightedText.ending.addText(name, getNameAttributes(myColor))
                 val type = definitionInfo.type
-                val path = fileInfo.path.path
-                val qualifiedName = fileInfo.rootInfo.qualifiedName
-                val location = " " + PlsBundle.message("hierarchy.call.descriptor.definition.location", type, path, qualifiedName)
-                myHighlightedText.ending.addText(location, getLocationAttributes())
+                myHighlightedText.ending.addText(": $type", getTypeAttributes())
             }
             is ParadoxLocalisationProperty -> {
-                val fileInfo = element.fileInfo ?: return invalidElement()
                 val name = element.name.orAnonymous()
-                myHighlightedText.ending.addText(name, nameAttributes)
-                val path = fileInfo.path.path
-                val qualifiedName = fileInfo.rootInfo.qualifiedName
-                val location = " " + PlsBundle.message("hierarchy.call.descriptor.localisation.location", path, qualifiedName)
-                myHighlightedText.ending.addText(location, getLocationAttributes())
+                myHighlightedText.ending.addText(name, getNameAttributes(myColor))
             }
         }
-        if (usageCount > 1) {
+        run {
+            if (!(hierarchySettings.showLocalizedName)) return@run
+            val localizedName = getLocalizedName(element, file)
+            if (localizedName.isNullOrEmpty()) return@run
+            myHighlightedText.ending.addText(" $localizedName", getLocalizedNameAttributes())
+        }
+        run {
+            if (!hierarchySettings.showLocationInfo) return@run
+            val fileInfo = file.fileInfo ?: return@run
+            val text = buildString {
+                if (hierarchySettings.showPathInfo) append(" in ").append(fileInfo.path.path)
+                if (hierarchySettings.showRootInfo) append(" of ").append(fileInfo.rootInfo.qualifiedName)
+            }
+            if (text.isEmpty()) return@run
+            myHighlightedText.ending.addText(text, getLocationAttributes())
+        }
+        run {
+            if (usageCount <= 1) return@run
             val text = IdeBundle.message("node.call.hierarchy.N.usages", usageCount)
             myHighlightedText.ending.addText(" $text", getUsageCountPrefixAttributes())
         }
@@ -92,6 +101,20 @@ class ParadoxCallHierarchyNodeDescriptor(
             changes = true
         }
         return changes
+    }
+
+    private fun getLocalizedName(element: PsiElement, file: PsiFile): String? {
+        return when (element) {
+            is ParadoxScriptScriptedVariable -> {
+                val name = element.name
+                if (name.isNullOrEmpty()) return null
+                ParadoxScriptedVariableManager.getHintFromExtendedConfig(name, file)
+            }
+            is ParadoxScriptDefinitionElement -> {
+                ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
+            }
+            else -> null
+        }
     }
 
     override fun navigate(requestFocus: Boolean) {

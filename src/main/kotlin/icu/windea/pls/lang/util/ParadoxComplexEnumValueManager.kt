@@ -7,6 +7,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
@@ -233,5 +234,13 @@ object ParadoxComplexEnumValueManager {
 
     fun getName(expression: String): String? {
         return expression.orNull()
+    }
+
+    fun getHintFromExtendedConfig(name: String, enumName: String, contextElement: PsiElement): String? {
+        val gameType = selectGameType(contextElement) ?: return null
+        val configGroup = getConfigGroup(contextElement.project, gameType)
+        val configs = configGroup.extendedComplexEnumValues[enumName] ?: return null
+        val config = configs.findFromPattern(name, contextElement, configGroup) ?: return null
+        return config.hint
     }
 }

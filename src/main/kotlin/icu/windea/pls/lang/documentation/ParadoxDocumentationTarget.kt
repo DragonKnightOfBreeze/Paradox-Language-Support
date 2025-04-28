@@ -742,33 +742,23 @@ private fun DocumentationBuilder.buildLocalisationColorDefinition(name: String) 
 }
 
 private fun DocumentationBuilder.buildDocumentationContent(element: ParadoxParameterElement) {
-    ParadoxParameterExtendedDocumentationProvider.buildDocumentationContent(element) { content ->
-        content { append(content) }
-    }
+    ParadoxParameterExtendedDocumentationProvider.getAllDocumentationContent(element).forEach { content { append(it) } }
 }
 
 private fun DocumentationBuilder.buildDocumentationContent(element: ParadoxComplexEnumValueElement) {
-    ParadoxComplexEnumValueExtendedDocumentationProvider.buildDocumentationContent(element) { content ->
-        content { append(content) }
-    }
+    ParadoxComplexEnumValueExtendedDocumentationProvider.getAllDocumentationContent(element).forEach { content { append(it) } }
 }
 
 private fun DocumentationBuilder.buildDocumentationContent(element: ParadoxDynamicValueElement) {
-    ParadoxDynamicValueExtendedDocumentationProvider.buildDocumentationContent(element) { content ->
-        content { append(content) }
-    }
+    ParadoxDynamicValueExtendedDocumentationProvider.getAllDocumentationContent(element).forEach { content { append(it) } }
 }
 
 private fun DocumentationBuilder.buildDocumentationContent(element: ParadoxScriptScriptedVariable) {
-    ParadoxScriptedVariableExtendedDocumentationProvider.buildDocumentationContent(element) { content ->
-        content { append(content) }
-    }
+    ParadoxScriptedVariableExtendedDocumentationProvider.getAllDocumentationContent(element).forEach { content { append(it) } }
 }
 
 private fun DocumentationBuilder.buildDocumentationContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-    ParadoxDefinitionExtendedDocumentationProvider.buildDocumentationContent(element, definitionInfo) { content ->
-        content { append(content) }
-    }
+    ParadoxDefinitionExtendedDocumentationProvider.getAllDocumentationContent(element, definitionInfo).forEach { content { append(it) } }
 }
 
 private fun DocumentationBuilder.buildLineCommentContent(element: PsiElement) {
