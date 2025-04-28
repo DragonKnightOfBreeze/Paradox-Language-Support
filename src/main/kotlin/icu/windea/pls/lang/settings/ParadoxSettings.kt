@@ -164,14 +164,30 @@ class ParadoxSettingsState : BaseState() {
         var localisationStrategyLocale by string("auto")
     }
 
+    /**
+     * @property showLocationInfo 是否额外显示位置信息。默认启用。
+     * @property showPathInfo 显示位置信息时，是否显示路经。默认启用。
+     * @property showRootInfo 显示位置信息时，是否显示游戏或模组信息。默认启用。
+     * @property showAbsPath 显示位置信息时，是否显示绝对路经。默认不启用。
+     * @property showLocalizedName 是否额外显示本地化名称。默认不启用。
+     * @property showScriptedVariablesInCallHierarchy 是否在调用层级视图中显示封装变量。默认启用。
+     * @property showDefinitionsInCallHierarchyByBindings 是否在调用层级视图中显示定义。默认启用。
+     * @property showLocalisationsInCallHierarchy 是否在调用层级视图中显示本地化。默认启用。
+     */
     @Tag("hierarchy")
     class HierarchyState : BaseState() {
+        var showLocationInfo by property(true)
+        var showPathInfo by property(true)
+        var showRootInfo by property(true)
+        var showAbsPath by property(false)
+        var showLocalizedName by property(false)
+
         var showScriptedVariablesInCallHierarchy by property(true)
         var showDefinitionsInCallHierarchy by property(true)
         var showLocalisationsInCallHierarchy by property(true)
-        var definitionTypeBindingsInCallHierarchy by map<String, String>()
+        var definitionTypeBindingsInCallHierarchy by map<String, String>() //TODO 1.3.35+ 优化：考虑更好的配置方式
 
-        fun showDefinitionsInCallHierarchy(rootDefinitionInfo: ParadoxDefinitionInfo?, definitionInfo: ParadoxDefinitionInfo?): Boolean {
+        fun showDefinitionsInCallHierarchyByBindings(rootDefinitionInfo: ParadoxDefinitionInfo?, definitionInfo: ParadoxDefinitionInfo?): Boolean {
             if (rootDefinitionInfo == null || definitionInfo == null) return true
             val bindings = definitionTypeBindingsInCallHierarchy
             if (bindings.isEmpty()) return true

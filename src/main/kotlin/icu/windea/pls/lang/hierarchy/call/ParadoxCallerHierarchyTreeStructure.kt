@@ -62,7 +62,7 @@ class ParadoxCallerHierarchyTreeStructure(
         val definitionInfo = definition?.definitionInfo
         if (definition != null && definitionInfo != null) {
             ProgressManager.checkCanceled()
-            if (!getSettings().hierarchy.showDefinitionsInCallHierarchy(rootDefinitionInfo, definitionInfo)) return //不显示
+            if (!getSettings().hierarchy.showDefinitionsInCallHierarchyByBindings(rootDefinitionInfo, definitionInfo)) return //不显示
             val key = "d:${definitionInfo.name}: ${definitionInfo.type}"
             synchronized(descriptors) {
                 val d = descriptors.getOrPut(key) { ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, definition, false, true) }

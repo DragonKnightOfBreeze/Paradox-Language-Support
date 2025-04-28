@@ -386,6 +386,28 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
             }
             //hierarchy
             collapsibleGroup(PlsBundle.message("settings.hierarchy")) {
+                //showLocationInfo
+                row {
+                    lateinit var cb: JBCheckBox
+                    checkBox(PlsBundle.message("settings.hierarchy.showLocationInfo"))
+                        .bindSelected(settings.hierarchy::showLocationInfo)
+                        .applyToComponent { cb = this }
+                    checkBox(PlsBundle.message("settings.hierarchy.showPathInfo"))
+                        .bindSelected(settings.hierarchy::showPathInfo)
+                        .enabledIf(cb.selected)
+                    checkBox(PlsBundle.message("settings.hierarchy.showRootInfo"))
+                        .bindSelected(settings.hierarchy::showRootInfo)
+                        .enabledIf(cb.selected)
+                    checkBox(PlsBundle.message("settings.hierarchy.showAbsPath"))
+                        .bindSelected(settings.hierarchy::showAbsPath)
+                        .enabledIf(cb.selected)
+                }
+                //showLocalizedName
+                row {
+                    checkBox(PlsBundle.message("settings.hierarchy.showLocalizedName"))
+                        .bindSelected(settings.hierarchy::showLocalizedName)
+                }
+
                 //showScriptedVariablesInCallHierarchy
                 row {
                     checkBox(PlsBundle.message("settings.hierarchy.showScriptedVariablesInCallHierarchy"))

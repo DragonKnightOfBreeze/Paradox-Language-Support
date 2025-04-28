@@ -103,7 +103,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                         is ParadoxScriptDefinitionElement -> {
                             if (!settings.hierarchy.showDefinitionsInCallHierarchy) continue //不显示
                             val definitionInfo = resolved.definitionInfo ?: continue
-                            if (!settings.hierarchy.showDefinitionsInCallHierarchy(rootDefinitionInfo, definitionInfo)) return //不显示
+                            if (!settings.hierarchy.showDefinitionsInCallHierarchyByBindings(rootDefinitionInfo, definitionInfo)) return //不显示
                             val key = "d:${definitionInfo.name}: ${definitionInfo.type}"
                             if (descriptors.containsKey(key)) continue //去重
                             val resolvedFile = selectFile(resolved)
