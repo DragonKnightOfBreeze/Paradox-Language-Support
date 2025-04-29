@@ -28,7 +28,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
 
     override fun getID() = Constants.ID
 
-    override fun getPresentableName() = PlsDiagramBundle.message("stellaris.eventTree.name")
+    override fun getPresentableName() = PlsDiagramBundle.message("eventTree.name.stellaris")
 
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
 
@@ -113,7 +113,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
 
     override fun getID() = Constants.ID
 
-    override fun getPresentableName() = PlsDiagramBundle.message("stellaris.techTree.name")
+    override fun getPresentableName() = PlsDiagramBundle.message("techTree.name.stellaris")
 
     override fun getColorManager() = _colorManager
 

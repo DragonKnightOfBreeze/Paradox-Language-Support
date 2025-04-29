@@ -5,6 +5,7 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.*
+import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
@@ -16,7 +17,7 @@ import icu.windea.pls.model.*
 @State(name = "ParadoxDiagramSettings.Vic2.EventTree", storages = [Storage("paradox-language-support.xml")])
 class Vic2EventTreeDiagramSettings(
     project: Project
-) : ParadoxEventTreeDiagramSettings<Vic2EventTreeDiagramSettings.State>(project, State()) {
+) : ParadoxEventTreeDiagramSettings<Vic2EventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Vic2) {
     companion object {
         const val ID = "pls.diagram.Vic2.EventTree"
     }
@@ -39,7 +40,7 @@ class Vic2EventTreeDiagramSettings(
         }
     }
 
-    override val groupName: String = PlsDiagramBundle.message("vic2.eventTree.name")
+    override val groupName: String = PlsDiagramBundle.message("eventTree.name.vic2")
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
@@ -50,15 +51,11 @@ class Vic2EventTreeDiagramSettings(
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("vic2.eventTree.settings.type"), { key ->
-            when (key) {
-                State.TypeSettings::triggered.name -> PlsDiagramBundle.message("vic2.eventTree.settings.type.triggered")
-                State.TypeSettings::major.name -> PlsDiagramBundle.message("vic2.eventTree.settings.type.major")
-                else -> null
-            }
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
+            PlsDocBundle.eventType(key, gameType)
         })
-        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("vic2.eventTree.settings.eventType"), { key ->
-            PlsDiagramBundle.message("vic2.eventTree.settings.eventType.option", key)
+        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("eventTree.settings.eventType"), { key ->
+            PlsDiagramBundle.message("eventTree.settings.eventType.option", key)
         })
     }
 }

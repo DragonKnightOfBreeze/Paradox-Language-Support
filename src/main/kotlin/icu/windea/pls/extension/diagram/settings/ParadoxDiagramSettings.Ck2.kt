@@ -5,6 +5,7 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.*
+import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
@@ -16,7 +17,7 @@ import icu.windea.pls.model.*
 @State(name = "ParadoxDiagramSettings.Ck2.EventTree", storages = [Storage("paradox-language-support.xml")])
 class Ck2EventTreeDiagramSettings(
     project: Project
-) : ParadoxEventTreeDiagramSettings<Ck2EventTreeDiagramSettings.State>(project, State()) {
+) : ParadoxEventTreeDiagramSettings<Ck2EventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Ck2) {
     companion object {
         const val ID = "pls.diagram.Ck2.EventTree"
     }
@@ -39,7 +40,7 @@ class Ck2EventTreeDiagramSettings(
         }
     }
 
-    override val groupName: String = PlsDiagramBundle.message("ck2.eventTree.name")
+    override val groupName: String = PlsDiagramBundle.message("eventTree.name.ck2")
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
@@ -50,15 +51,11 @@ class Ck2EventTreeDiagramSettings(
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("ck2.eventTree.settings.type"), { key ->
-            when (key) {
-                State.TypeSettings::hidden.name -> PlsDiagramBundle.message("ck2.eventTree.settings.type.hidden")
-                State.TypeSettings::triggered.name -> PlsDiagramBundle.message("ck2.eventTree.settings.type.triggered")
-                else -> null
-            }
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
+            PlsDocBundle.eventType(key, gameType)
         })
-        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("ck2.eventTree.settings.eventType"), { key ->
-            PlsDiagramBundle.message("ck2.eventTree.settings.eventType.option", key)
+        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("eventTree.settings.eventType"), { key ->
+            PlsDiagramBundle.message("eventTree.settings.eventType.option", key)
         })
     }
 }

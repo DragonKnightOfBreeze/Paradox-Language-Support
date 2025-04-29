@@ -106,7 +106,6 @@ object ParadoxEventManager {
         return ParadoxDefinitionManager.getPrimaryImage(definition)
     }
 
-
     /**
      * 得到指定事件可能调用的所有事件。
      *

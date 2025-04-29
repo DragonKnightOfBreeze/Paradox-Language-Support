@@ -24,7 +24,7 @@ class Vic3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
 
     override fun getID() = Constants.ID
 
-    override fun getPresentableName() = PlsDiagramBundle.message("vic3.eventTree.name")
+    override fun getPresentableName() = PlsDiagramBundle.message("eventTree.name.vic3")
 
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
 

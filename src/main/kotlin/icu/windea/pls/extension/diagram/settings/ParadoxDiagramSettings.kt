@@ -8,11 +8,13 @@ import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.ui.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.model.*
 import kotlinx.coroutines.*
 
 abstract class ParadoxDiagramSettings<T : ParadoxDiagramSettings.State>(
     val project: Project,
-    initialState: T
+    initialState: T,
+    val gameType: ParadoxGameType?
 ) : SimplePersistentStateComponent<T>(initialState) {
     abstract val id: String
 

@@ -24,7 +24,7 @@ class Eu4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
 
     override fun getID() = Constants.ID
 
-    override fun getPresentableName() = PlsDiagramBundle.message("eu4.eventTree.name")
+    override fun getPresentableName() = PlsDiagramBundle.message("eventTree.name.eu4")
 
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
 

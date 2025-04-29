@@ -24,7 +24,7 @@ class IrEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameTy
 
     override fun getID() = Constants.ID
 
-    override fun getPresentableName() = PlsDiagramBundle.message("ir.eventTree.name")
+    override fun getPresentableName() = PlsDiagramBundle.message("eventTree.name.ir")
 
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
 

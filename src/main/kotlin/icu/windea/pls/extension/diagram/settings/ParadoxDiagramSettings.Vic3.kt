@@ -5,6 +5,7 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.*
+import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
@@ -16,7 +17,7 @@ import icu.windea.pls.model.*
 @State(name = "ParadoxDiagramSettings.Vic3.EventTree", storages = [Storage("paradox-language-support.xml")])
 class Vic3EventTreeDiagramSettings(
     project: Project
-) : ParadoxEventTreeDiagramSettings<Vic3EventTreeDiagramSettings.State>(project, State()) {
+) : ParadoxEventTreeDiagramSettings<Vic3EventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Vic3) {
     companion object {
         const val ID = "pls.diagram.Vic3.EventTree"
     }
@@ -38,7 +39,7 @@ class Vic3EventTreeDiagramSettings(
         }
     }
 
-    override val groupName: String = PlsDiagramBundle.message("vic3.eventTree.name")
+    override val groupName: String = PlsDiagramBundle.message("eventTree.name.vic3")
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
@@ -49,14 +50,11 @@ class Vic3EventTreeDiagramSettings(
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("vic3.eventTree.settings.type"), { key ->
-            when (key) {
-                State.TypeSettings::hidden.name -> PlsDiagramBundle.message("vic3.eventTree.settings.type.hidden")
-                else -> null
-            }
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
+            PlsDocBundle.eventType(key, gameType)
         })
-        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("vic3.eventTree.settings.eventType"), { key ->
-            PlsDiagramBundle.message("vic3.eventTree.settings.eventType.option", key)
+        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("eventTree.settings.eventType"), { key ->
+            PlsDiagramBundle.message("eventTree.settings.eventType.option", key)
         })
     }
 }

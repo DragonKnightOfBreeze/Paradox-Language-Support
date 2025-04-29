@@ -24,7 +24,7 @@ class Hoi4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
 
     override fun getID() = Constants.ID
 
-    override fun getPresentableName() = PlsDiagramBundle.message("hoi4.eventTree.name")
+    override fun getPresentableName() = PlsDiagramBundle.message("eventTree.name.hoi4")
 
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
 

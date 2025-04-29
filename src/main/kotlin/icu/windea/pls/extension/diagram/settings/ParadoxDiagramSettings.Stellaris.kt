@@ -5,6 +5,7 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.*
+import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
@@ -16,7 +17,7 @@ import icu.windea.pls.model.*
 @State(name = "ParadoxDiagramSettings.Stellaris.EventTree", storages = [Storage("paradox-language-support.xml")])
 class StellarisEventTreeDiagramSettings(
     project: Project
-) : ParadoxEventTreeDiagramSettings<StellarisEventTreeDiagramSettings.State>(project, State()) {
+) : ParadoxEventTreeDiagramSettings<StellarisEventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Stellaris) {
     companion object {
         const val ID = "pls.diagram.Stellaris.EventTree"
     }
@@ -41,7 +42,7 @@ class StellarisEventTreeDiagramSettings(
         }
     }
 
-    override val groupName: String = PlsDiagramBundle.message("stellaris.eventTree.name")
+    override val groupName: String = PlsDiagramBundle.message("eventTree.name.stellaris")
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
@@ -52,17 +53,11 @@ class StellarisEventTreeDiagramSettings(
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("stellaris.eventTree.settings.type"), { key ->
-            when (key) {
-                State.TypeSettings::hidden.name -> PlsDiagramBundle.message("stellaris.eventTree.settings.type.hidden")
-                State.TypeSettings::triggered.name -> PlsDiagramBundle.message("stellaris.eventTree.settings.type.triggered")
-                State.TypeSettings::major.name -> PlsDiagramBundle.message("stellaris.eventTree.settings.type.major")
-                State.TypeSettings::diplomatic.name -> PlsDiagramBundle.message("stellaris.eventTree.settings.type.diplomatic")
-                else -> null
-            }
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
+            PlsDocBundle.eventType(key, gameType)
         })
-        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("stellaris.eventTree.settings.eventType"), { key ->
-            PlsDiagramBundle.message("stellaris.eventTree.settings.eventType.option", key)
+        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("eventTree.settings.eventType"), { key ->
+            PlsDiagramBundle.message("eventTree.settings.eventType.option", key)
         })
     }
 }
@@ -72,7 +67,7 @@ class StellarisEventTreeDiagramSettings(
 @State(name = "ParadoxDiagramSettings.Stellaris.TechTree", storages = [Storage("paradox-language-support.xml")])
 class StellarisTechTreeDiagramSettings(
     project: Project
-) : ParadoxTechTreeDiagramSettings<StellarisTechTreeDiagramSettings.State>(project, State()) {
+) : ParadoxTechTreeDiagramSettings<StellarisTechTreeDiagramSettings.State>(project, State(), ParadoxGameType.Stellaris) {
     companion object {
         const val ID = "pls.diagram.Stellaris.TechTree"
     }
@@ -102,7 +97,7 @@ class StellarisTechTreeDiagramSettings(
         }
     }
 
-    override val groupName: String = PlsDiagramBundle.message("stellaris.techTree.name")
+    override val groupName: String = PlsDiagramBundle.message("techTree.name.stellaris")
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
@@ -122,26 +117,19 @@ class StellarisTechTreeDiagramSettings(
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("stellaris.techTree.settings.type"), { key ->
-            when (key) {
-                State.TypeSettings::start.name -> PlsDiagramBundle.message("stellaris.techTree.settings.type.start")
-                State.TypeSettings::rare.name -> PlsDiagramBundle.message("stellaris.techTree.settings.type.rare")
-                State.TypeSettings::dangerous.name -> PlsDiagramBundle.message("stellaris.techTree.settings.type.dangerous")
-                State.TypeSettings::insight.name -> PlsDiagramBundle.message("stellaris.techTree.settings.type.insight")
-                State.TypeSettings::repeatable.name -> PlsDiagramBundle.message("stellaris.techTree.settings.type.repeatable")
-                else -> null
-            }
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("techTree.settings.type"), { key ->
+            PlsDocBundle.eventType(key, gameType)
         })
-        checkBoxGroup(settings.tier, PlsDiagramBundle.message("stellaris.techTree.settings.tier"), { key ->
-            PlsDiagramBundle.message("stellaris.techTree.settings.tier.option", key)
+        checkBoxGroup(settings.tier, PlsDiagramBundle.message("techTree.settings.tier"), { key ->
+            PlsDiagramBundle.message("techTree.settings.tier.option", key)
         })
-        checkBoxGroup(settings.area, PlsDiagramBundle.message("stellaris.techTree.settings.area"), { key ->
-            PlsDiagramBundle.message("stellaris.techTree.settings.area.option", key)
+        checkBoxGroup(settings.area, PlsDiagramBundle.message("techTree.settings.area"), { key ->
+            PlsDiagramBundle.message("techTree.settings.area.option", key)
         }) { key ->
             areaNameProviders[key]?.invoke()
         }
-        checkBoxGroup(settings.category, PlsDiagramBundle.message("stellaris.techTree.settings.category"), { key ->
-            PlsDiagramBundle.message("stellaris.techTree.settings.category.option", key)
+        checkBoxGroup(settings.category, PlsDiagramBundle.message("techTree.settings.category"), { key ->
+            PlsDiagramBundle.message("techTree.settings.category.option", key)
         }) { key ->
             categoryNameProviders[key]?.invoke()
         }

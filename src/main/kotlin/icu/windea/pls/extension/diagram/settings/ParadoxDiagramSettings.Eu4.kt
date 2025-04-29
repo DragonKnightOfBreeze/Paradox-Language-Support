@@ -5,6 +5,7 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.*
+import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
@@ -16,7 +17,7 @@ import icu.windea.pls.model.*
 @State(name = "ParadoxDiagramSettings.Eu4.EventTree", storages = [Storage("paradox-language-support.xml")])
 class Eu4EventTreeDiagramSettings(
     project: Project
-) : ParadoxEventTreeDiagramSettings<Eu4EventTreeDiagramSettings.State>(project, State()) {
+) : ParadoxEventTreeDiagramSettings<Eu4EventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Eu4) {
     companion object {
         const val ID = "pls.diagram.Eu4.EventTree"
     }
@@ -39,7 +40,7 @@ class Eu4EventTreeDiagramSettings(
         }
     }
 
-    override val groupName: String = PlsDiagramBundle.message("eu4.eventTree.name")
+    override val groupName: String = PlsDiagramBundle.message("eventTree.name.eu4")
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
@@ -50,15 +51,11 @@ class Eu4EventTreeDiagramSettings(
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("eu4.eventTree.settings.type"), { key ->
-            when (key) {
-                State.TypeSettings::hidden.name -> PlsDiagramBundle.message("eu4.eventTree.settings.type.hidden")
-                State.TypeSettings::triggered.name -> PlsDiagramBundle.message("eu4.eventTree.settings.type.triggered")
-                else -> null
-            }
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
+            PlsDocBundle.eventType(key, gameType)
         })
-        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("eu4.eventTree.settings.eventType"), { key ->
-            PlsDiagramBundle.message("eu4.eventTree.settings.eventType.option", key)
+        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("eventTree.settings.eventType"), { key ->
+            PlsDiagramBundle.message("eventTree.settings.eventType.option", key)
         })
     }
 }

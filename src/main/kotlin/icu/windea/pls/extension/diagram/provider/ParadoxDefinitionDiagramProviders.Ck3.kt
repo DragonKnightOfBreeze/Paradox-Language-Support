@@ -24,7 +24,7 @@ class Ck3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
 
     override fun getID() = Constants.ID
 
-    override fun getPresentableName() = PlsDiagramBundle.message("ck3.eventTree.name")
+    override fun getPresentableName() = PlsDiagramBundle.message("eventTree.name.ck3")
 
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
 
