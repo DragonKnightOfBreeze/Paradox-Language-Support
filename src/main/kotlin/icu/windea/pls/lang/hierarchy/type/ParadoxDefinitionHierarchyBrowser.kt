@@ -16,40 +16,28 @@ import icu.windea.pls.script.psi.*
 import java.text.*
 import java.util.function.*
 import javax.swing.*
+import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyType as Type
 
 class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) : HierarchyBrowserBaseEx(project, element) {
-    @Suppress("InvalidBundleOrProperty")
-    companion object {
-        fun getDefinitionHierarchyType() = PlsBundle.message("title.hierarchy.definition")
-        fun getDefinitionHierarchyTypeWithSubtypes() = PlsBundle.message("title.hierarchy.definition.with.subtypes")
-    }
+    var type: Type = Type.Type
+    val element: PsiElement? get() = hierarchyBase
 
     override fun createTrees(trees: MutableMap<in String, in JTree>) {
-        val tree1 = createTree(true)
-        PopupHandler.installPopupMenu(tree1, PlsActions.DefinitionHierarchyPopupMenu, ActionPlaces.TYPE_HIERARCHY_VIEW_POPUP)
-        trees.put(getDefinitionHierarchyType(), tree1)
-
-        val tree2 = createTree(true)
-        PopupHandler.installPopupMenu(tree2, PlsActions.DefinitionHierarchyPopupMenu, ActionPlaces.TYPE_HIERARCHY_VIEW_POPUP)
-        trees.put(getDefinitionHierarchyTypeWithSubtypes(), tree2)
+        Type.entries.forEach { type ->
+            val tree = createTree(true)
+            PopupHandler.installPopupMenu(tree, PlsActions.DefinitionHierarchyPopupMenu, ActionPlaces.TYPE_HIERARCHY_VIEW_POPUP)
+            trees.put(type.text, tree)
+        }
     }
 
     override fun createHierarchyTreeStructure(type: String, psiElement: PsiElement): HierarchyTreeStructure? {
-        return when (type) {
-            getDefinitionHierarchyType() -> {
-                val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return null
-                val typeConfig = definitionInfo.typeConfig
-                val typeElement = typeConfig.pointer.element ?: return null
-                ParadoxDefinitionHierarchyTreeStructure(myProject, psiElement, typeElement, typeConfig, false)
-            }
-            getDefinitionHierarchyTypeWithSubtypes() -> {
-                val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return null
-                val typeConfig = definitionInfo.typeConfig
-                val typeElement = typeConfig.pointer.element ?: return null
-                ParadoxDefinitionHierarchyTreeStructure(myProject, psiElement, typeElement, typeConfig, true)
-            }
-            else -> null
-        }
+        val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return null
+        val typeConfig = definitionInfo.typeConfig
+        val typeElement = typeConfig.pointer.element ?: return null
+        val finalType = this.type
+        finalType.predicate?.let { if (!it(definitionInfo)) return null }
+        val finalNodeType = ParadoxDefinitionHierarchyNodeType.Type
+        return ParadoxDefinitionHierarchyTreeStructure(myProject, psiElement, typeElement, typeConfig, finalType, finalNodeType)
     }
 
     override fun isApplicableElement(element: PsiElement): Boolean {
@@ -72,8 +60,9 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
 
     override fun getPresentableNameMap(): MutableMap<String, Supplier<String>> {
         val map = mutableMapOf<String, Supplier<String>>()
-        map.put(getDefinitionHierarchyType()) { getDefinitionHierarchyType() }
-        map.put(getDefinitionHierarchyTypeWithSubtypes()) { getDefinitionHierarchyTypeWithSubtypes() }
+        Type.entries.forEach { type ->
+            map.put(type.text) { type.text }
+        }
         return map
     }
 
@@ -86,10 +75,14 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     }
 
     override fun prependActions(actionGroup: DefaultActionGroup) {
-        actionGroup.add(ViewDefinitionHierarchyAction())
-        actionGroup.add(ViewDefinitionHierarchyWithSubtypesAction())
+        actionGroup.add(ParadoxDefinitionHierarchyActions.ViewDefinitionHierarchyAction())
+        actionGroup.add(ParadoxDefinitionHierarchyActions.ViewDefinitionHierarchyWithSubtypesAction())
+        actionGroup.add(ParadoxDefinitionHierarchyActions.ViewEventTreeInvokerAction())
+        actionGroup.add(ParadoxDefinitionHierarchyActions.ViewEventTreeInvokedAction())
+        actionGroup.add(ParadoxDefinitionHierarchyActions.ViewTechTreePreAction())
+        actionGroup.add(ParadoxDefinitionHierarchyActions.ViewTechTreePostAction())
         actionGroup.add(AlphaSortAction())
-        actionGroup.add(ChangeScopeTypeAction(this, getHierarchySettings()))
+        actionGroup.add(ParadoxHierarchyActions.ChangeScopeTypeAction(this, getHierarchySettings()))
     }
 
     override fun getPreviousOccurenceActionName(): String {
@@ -97,7 +90,11 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     }
 
     override fun getPrevOccurenceActionNameImpl(): String {
-        return PlsBundle.message("hierarchy.definition.prev.occurrence.name")
+        return when (type) {
+            Type.EventTreeInvoker, Type.EventTreeInvoked -> PlsBundle.message("hierarchy.eventTree.prev.occurrence.name")
+            Type.TechTreePre, Type.TechTreePost -> PlsBundle.message("hierarchy.techTree.prev.occurrence.name")
+            else -> PlsBundle.message("hierarchy.definition.prev.occurrence.name")
+        }
     }
 
     override fun getNextOccurenceActionName(): String {
@@ -105,9 +102,15 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     }
 
     override fun getNextOccurenceActionNameImpl(): String {
-        return PlsBundle.message("hierarchy.definition.next.occurrence.name")
+        return when (type) {
+            Type.EventTreeInvoker, Type.EventTreeInvoked -> PlsBundle.message("hierarchy.eventTree.next.occurrence.name")
+            Type.TechTreePre, Type.TechTreePost -> PlsBundle.message("hierarchy.techTree.next.occurrence.name")
+            else -> PlsBundle.message("hierarchy.definition.next.occurrence.name")
+        }
     }
 
-    private fun getHierarchySettings() = ParadoxDefinitionHierarchyBrowserSettings.getInstance(myProject)
+    private fun getHierarchySettings(): ParadoxDefinitionHierarchyBrowserSettings {
+        return ParadoxDefinitionHierarchyBrowserSettings.getInstance(myProject)
+    }
 }
 

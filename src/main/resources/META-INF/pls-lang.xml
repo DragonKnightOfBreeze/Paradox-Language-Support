@@ -262,8 +262,12 @@
       <add-to-group group-id="HierarchyPopupMenu.Common" relative-to-action="CompareFileWithEditor" anchor="after"/>
     </group>
 
-    <action id="Pls.TypeHierarchy.Definition1" class="icu.windea.pls.lang.hierarchy.type.ViewDefinitionHierarchyAction"/>
-    <action id="Pls.TypeHierarchy.Definition2" class="icu.windea.pls.lang.hierarchy.type.ViewDefinitionHierarchyWithSubtypesAction"/>
+    <action id="Pls.TypeHierarchy.Definition1" class="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyActions$ViewDefinitionHierarchyAction"/>
+    <action id="Pls.TypeHierarchy.Definition2" class="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyActions$ViewDefinitionHierarchyWithSubtypesAction"/>
+    <action id="Pls.TypeHierarchy.EventTreeInvoker" class="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyActions$ViewEventTreeInvokerAction"/>
+    <action id="Pls.TypeHierarchy.EventTreeInvoked" class="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyActions$ViewEventTreeInvokedAction"/>
+    <action id="Pls.TypeHierarchy.TechTreePre" class="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyActions$ViewTechTreePreAction"/>
+    <action id="Pls.TypeHierarchy.TechTreePost" class="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyActions$ViewTechTreePostAction"/>
 
     <group id="Pls.DefinitionHierarchyPopupMenu">
       <reference ref="Pls.TypeHierarchy.Definition1"/>

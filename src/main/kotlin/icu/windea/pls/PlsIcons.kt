@@ -183,9 +183,4 @@ object PlsIcons {
         @JvmField
         val RefreshConfigGroups = IconManager.getInstance().getIcon("/icons/actions/refreshConfigGroups.svg") // from icons/refresh.svg, fill #5D8DC3
     }
-
-    object Hierarchy {
-        @JvmField
-        val Definition = AllIcons.Hierarchy.Subtypes
-    }
 }

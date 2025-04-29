@@ -165,20 +165,20 @@ class ParadoxSettingsState : BaseState() {
     }
 
     /**
-     * @property showLocalizedName 是否在层级视图中额外显示本地化名字。默认不启用。
+     * @property showLocalizedName 是否在层级视图中额外显示本地化名字。默认启用。
      * @property showLocationInfo 是否在层级视图中额外显示位置信息。默认启用。
      * @property showPathInfo 显示位置信息时，是否显示路经。默认启用。
-     * @property showRootInfo 显示位置信息时，是否显示游戏或模组信息。默认启用。
+     * @property showRootInfo 显示位置信息时，是否显示游戏或模组信息。默认不启用。
      * @property showScriptedVariablesInCallHierarchy 是否在调用层级视图中显示封装变量。默认启用。
      * @property showDefinitionsInCallHierarchyByBindings 是否在调用层级视图中显示定义。默认启用。
      * @property showLocalisationsInCallHierarchy 是否在调用层级视图中显示本地化。默认启用。
      */
     @Tag("hierarchy")
     class HierarchyState : BaseState() {
-        var showLocalizedName by property(false)
+        var showLocalizedName by property(true)
         var showLocationInfo by property(true)
         var showPathInfo by property(true)
-        var showRootInfo by property(true)
+        var showRootInfo by property(false)
 
         var showScriptedVariablesInCallHierarchy by property(true)
         var showDefinitionsInCallHierarchy by property(true)

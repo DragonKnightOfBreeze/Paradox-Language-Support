@@ -17,10 +17,10 @@ import javax.swing.*
 
 class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHierarchyBrowserBase(project, target) {
     override fun prependActions(actionGroup: DefaultActionGroup) {
-        actionGroup.add(ViewCallerHierarchyAction())
-        actionGroup.add(ViewCalleeHierarchyAction())
+        actionGroup.add(ParadoxCallHierarchyActions.ViewCallerHierarchyAction())
+        actionGroup.add(ParadoxCallHierarchyActions.ViewCalleeHierarchyAction())
         actionGroup.add(AlphaSortAction())
-        actionGroup.add(ChangeScopeTypeAction(this, getHierarchySettings()))
+        actionGroup.add(ParadoxHierarchyActions.ChangeScopeTypeAction(this, getHierarchySettings()))
     }
 
     override fun createTrees(trees: MutableMap<in String, in JTree>) {
@@ -55,15 +55,10 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
     }
 
     override fun createHierarchyTreeStructure(type: String, psiElement: PsiElement): HierarchyTreeStructure? {
+        val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
         return when (type) {
-            getCallerType() -> {
-                val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
-                ParadoxCallerHierarchyTreeStructure(myProject, psiElement, definitionInfo)
-            }
-            getCalleeType() -> {
-                val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
-                ParadoxCalleeHierarchyTreeStructure(myProject, psiElement, definitionInfo)
-            }
+            getCallerType() -> ParadoxCallerHierarchyTreeStructure(myProject, psiElement, definitionInfo)
+            getCalleeType() -> ParadoxCalleeHierarchyTreeStructure(myProject, psiElement, definitionInfo)
             else -> null
         }
     }
@@ -72,7 +67,9 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
         return ParadoxHierarchyManager.getComparator(myProject)
     }
 
-    private fun getHierarchySettings() = ParadoxCallHierarchyBrowserSettings.getInstance(myProject)
+    private fun getHierarchySettings(): ParadoxCallHierarchyBrowserSettings {
+        return ParadoxCallHierarchyBrowserSettings.getInstance(myProject)
+    }
 
     private class BaseOnThisMethodAction : CallHierarchyBrowserBase.BaseOnThisMethodAction()
 }

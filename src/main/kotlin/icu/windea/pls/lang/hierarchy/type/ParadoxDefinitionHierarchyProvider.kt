@@ -41,6 +41,6 @@ class ParadoxDefinitionHierarchyProvider : HierarchyProvider {
 
     override fun browserActivated(hierarchyBrowser: HierarchyBrowser) {
         hierarchyBrowser as ParadoxDefinitionHierarchyBrowser
-        hierarchyBrowser.changeView(ParadoxDefinitionHierarchyBrowser.getDefinitionHierarchyType())
+        hierarchyBrowser.changeView(ParadoxDefinitionHierarchyType.Type.text)
     }
 }

@@ -12,10 +12,12 @@ import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
+import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType as NodeType
 
 //com.intellij.ide.hierarchy.type.TypeHierarchyNodeDescriptor
 
@@ -25,26 +27,9 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
     element: PsiElement,
     isBase: Boolean,
     val name: String,
-    val type: Type
+    val type: ParadoxDefinitionHierarchyType,
+    val nodeType: ParadoxDefinitionHierarchyNodeType
 ) : HierarchyNodeDescriptor(project, parentDescriptor, element, isBase) {
-    enum class Type {
-        Type, Subtype, NoSubtype, Definition
-    }
-
-    companion object {
-        @JvmStatic
-        private fun getNameAttributes(color: Color?) = if (color == null) null else TextAttributes(color, null, null, null, Font.PLAIN)
-
-        //@JvmStatic
-        //private fun getTypeAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
-
-        @JvmStatic
-        private fun getLocalizedNameAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
-
-        @JvmStatic
-        private fun getLocationAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
-    }
-
     override fun update(): Boolean {
         var changes = super.update()
         val element = psiElement
@@ -58,7 +43,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         val hierarchySettings = getSettings().hierarchy
         when (element) {
             is CwtProperty -> {
-                if (type == Type.NoSubtype) {
+                if (nodeType == NodeType.NoSubtype) {
                     val name = PlsBundle.message("hierarchy.definition.descriptor.noSubtype")
                     myHighlightedText.ending.addText(name, getLocationAttributes())
                 } else {
@@ -111,5 +96,19 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
     private fun getLocalizedName(element: PsiElement): String? {
         if (element !is ParadoxScriptDefinitionElement) return null
         return ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
+    }
+
+    companion object {
+        @JvmStatic
+        private fun getNameAttributes(color: Color?) = if (color == null) null else TextAttributes(color, null, null, null, Font.PLAIN)
+
+        //@JvmStatic
+        //private fun getTypeAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
+
+        @JvmStatic
+        private fun getLocalizedNameAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
+
+        @JvmStatic
+        private fun getLocationAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
     }
 }

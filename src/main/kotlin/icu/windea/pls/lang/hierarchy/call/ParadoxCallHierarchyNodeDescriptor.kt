@@ -32,20 +32,6 @@ class ParadoxCallHierarchyNodeDescriptor(
     var usageCount = 1
     val references = mutableListOf<PsiReference>()
 
-    companion object {
-        @JvmStatic
-        private fun getNameAttributes(color: Color?) = if (color == null) null else TextAttributes(color, null, null, null, Font.PLAIN)
-
-        @JvmStatic
-        private fun getTypeAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
-
-        @JvmStatic
-        private fun getLocalizedNameAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
-
-        @JvmStatic
-        private fun getLocationAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
-    }
-
     override fun update(): Boolean {
         var changes = super.update()
         val element = psiElement
@@ -168,5 +154,19 @@ class ParadoxCallHierarchyNodeDescriptor(
 
     override fun canNavigateToSource(): Boolean {
         return canNavigate()
+    }
+
+    companion object {
+        @JvmStatic
+        private fun getNameAttributes(color: Color?) = if (color == null) null else TextAttributes(color, null, null, null, Font.PLAIN)
+
+        @JvmStatic
+        private fun getTypeAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
+
+        @JvmStatic
+        private fun getLocalizedNameAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
+
+        @JvmStatic
+        private fun getLocationAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
     }
 }
