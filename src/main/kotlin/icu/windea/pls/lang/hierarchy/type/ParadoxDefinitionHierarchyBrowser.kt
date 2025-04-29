@@ -18,10 +18,9 @@ import java.util.function.*
 import javax.swing.*
 
 class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) : HierarchyBrowserBaseEx(project, element) {
+    @Suppress("InvalidBundleOrProperty")
     companion object {
-        @Suppress("InvalidBundleOrProperty")
         fun getDefinitionHierarchyType() = PlsBundle.message("title.hierarchy.definition")
-        @Suppress("InvalidBundleOrProperty")
         fun getDefinitionHierarchyTypeWithSubtypes() = PlsBundle.message("title.hierarchy.definition.with.subtypes")
     }
 
@@ -84,10 +83,6 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
 
     override fun getActionPlace(): String {
         return ActionPlaces.TYPE_HIERARCHY_VIEW_TOOLBAR
-    }
-
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
     }
 
     override fun prependActions(actionGroup: DefaultActionGroup) {
