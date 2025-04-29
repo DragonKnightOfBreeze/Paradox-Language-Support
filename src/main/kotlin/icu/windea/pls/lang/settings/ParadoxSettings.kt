@@ -165,7 +165,7 @@ class ParadoxSettingsState : BaseState() {
     }
 
     /**
-     * @property showLocalizedName 是否在层级视图中额外显示本地化名称。默认不启用。
+     * @property showLocalizedName 是否在层级视图中额外显示本地化名字。默认不启用。
      * @property showLocationInfo 是否在层级视图中额外显示位置信息。默认启用。
      * @property showPathInfo 显示位置信息时，是否显示路经。默认启用。
      * @property showRootInfo 显示位置信息时，是否显示游戏或模组信息。默认启用。

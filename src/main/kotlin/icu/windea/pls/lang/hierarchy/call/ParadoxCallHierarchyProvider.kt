@@ -33,17 +33,20 @@ class ParadoxCallHierarchyProvider : HierarchyProvider {
             val offset = editor.caretModel.offset
 
             run r@{
-                val findOptions = ParadoxPsiManager.FindScriptedVariableOptions.run { DEFAULT or BY_REFERENCE }
+                val allOptions = ParadoxPsiManager.FindScriptedVariableOptions
+                val findOptions = allOptions.DEFAULT or allOptions.BY_REFERENCE
                 val result = ParadoxPsiManager.findScriptVariable(file, offset, findOptions) ?: return@r
                 return result
             }
             run r@{
-                val findOptions = ParadoxPsiManager.FindDefinitionOptions.run { DEFAULT or BY_REFERENCE }
+                val allOptions = ParadoxPsiManager.FindDefinitionOptions
+                val findOptions = allOptions.DEFAULT or allOptions.BY_REFERENCE
                 val result = ParadoxPsiManager.findDefinition(file, offset, findOptions) ?: return@r
                 return result
             }
             run r@{
-                val findOptions = ParadoxPsiManager.FindLocalisationOptions.run { DEFAULT or BY_REFERENCE }
+                val allOptions = ParadoxPsiManager.FindLocalisationOptions
+                val findOptions = allOptions.DEFAULT or allOptions.BY_REFERENCE
                 val result = ParadoxPsiManager.findLocalisation(file, offset, findOptions) ?: return@r
                 return result
             }

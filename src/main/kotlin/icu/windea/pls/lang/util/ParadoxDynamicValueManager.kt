@@ -45,6 +45,7 @@ object ParadoxDynamicValueManager {
     }
 
     fun getHintFromExtendedConfig(name: String, type: String, contextElement: PsiElement): String? {
+        if (name.isEmpty()) return null
         val gameType = selectGameType(contextElement) ?: return null
         val configGroup = getConfigGroup(contextElement.project, gameType)
         val configs = configGroup.extendedDynamicValues[type] ?: return null

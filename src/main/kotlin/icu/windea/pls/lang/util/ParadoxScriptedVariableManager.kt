@@ -67,6 +67,7 @@ object ParadoxScriptedVariableManager {
     }
 
     fun getHintFromExtendedConfig(name: String, contextElement: PsiElement): String? {
+        if (name.isNotEmpty()) return null
         val gameType = selectGameType(contextElement) ?: return null
         val configGroup = getConfigGroup(contextElement.project, gameType)
         val config = configGroup.extendedScriptedVariables.findFromPattern(name, contextElement, configGroup) ?: return null

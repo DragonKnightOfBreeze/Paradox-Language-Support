@@ -26,7 +26,8 @@ class ParadoxDefinitionHierarchyProvider : HierarchyProvider {
             val offset = editor.caretModel.offset
 
             run r@{
-                val findOptions = ParadoxPsiManager.FindDefinitionOptions.run { DEFAULT or BY_REFERENCE }
+                val allOptions = ParadoxPsiManager.FindDefinitionOptions
+                val findOptions = allOptions.DEFAULT or allOptions.BY_REFERENCE
                 val result = ParadoxPsiManager.findDefinition(file, offset, findOptions) ?: return@r
                 return result
             }

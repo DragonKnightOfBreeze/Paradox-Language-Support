@@ -237,6 +237,7 @@ object ParadoxComplexEnumValueManager {
     }
 
     fun getHintFromExtendedConfig(name: String, enumName: String, contextElement: PsiElement): String? {
+        if (name.isEmpty()) return null
         val gameType = selectGameType(contextElement) ?: return null
         val configGroup = getConfigGroup(contextElement.project, gameType)
         val configs = configGroup.extendedComplexEnumValues[enumName] ?: return null
