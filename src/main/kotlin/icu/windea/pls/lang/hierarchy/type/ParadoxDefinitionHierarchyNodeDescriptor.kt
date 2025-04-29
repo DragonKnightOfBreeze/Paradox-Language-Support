@@ -19,7 +19,7 @@ import java.awt.*
 
 //com.intellij.ide.hierarchy.type.TypeHierarchyNodeDescriptor
 
-class ParadoxDefinitionTypeHierarchyNodeDescriptor(
+class ParadoxDefinitionHierarchyNodeDescriptor(
     project: Project,
     parentDescriptor: HierarchyNodeDescriptor?,
     element: PsiElement,
@@ -70,6 +70,7 @@ class ParadoxDefinitionTypeHierarchyNodeDescriptor(
                 val definitionInfo = element.definitionInfo ?: return invalidElement()
                 val name = definitionInfo.name.orAnonymous()
                 myHighlightedText.ending.addText(name, getNameAttributes(myColor))
+                //it's unnecessary to show type info here
                 //val type = definitionInfo.type
                 //myHighlightedText.ending.addText(": $type", getTypeAttributes())
             }
@@ -78,7 +79,7 @@ class ParadoxDefinitionTypeHierarchyNodeDescriptor(
             if (element is CwtProperty) return@run
 
             if (!(hierarchySettings.showLocalizedName)) return@run
-            val localizedName = getLocalizedName(element, file)
+            val localizedName = getLocalizedName(element)
             if (localizedName.isNullOrEmpty()) return@run
             myHighlightedText.ending.addText(" $localizedName", getLocalizedNameAttributes())
         }
@@ -107,7 +108,7 @@ class ParadoxDefinitionTypeHierarchyNodeDescriptor(
         return changes
     }
 
-    private fun getLocalizedName(element: PsiElement, file: PsiFile): String? {
+    private fun getLocalizedName(element: PsiElement): String? {
         if (element !is ParadoxScriptDefinitionElement) return null
         return ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
     }

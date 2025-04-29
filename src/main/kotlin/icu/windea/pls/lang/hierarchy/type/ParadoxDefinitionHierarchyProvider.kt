@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
  *
  * * 忽略直接位于游戏或模组入口目录下的文件。
  */
-class ParadoxDefinitionTypeHierarchyProvider : HierarchyProvider {
+class ParadoxDefinitionHierarchyProvider : HierarchyProvider {
     override fun getTarget(dataContext: DataContext): PsiElement? {
         run {
             val element = dataContext.getData(CommonDataKeys.PSI_ELEMENT)
@@ -35,11 +35,11 @@ class ParadoxDefinitionTypeHierarchyProvider : HierarchyProvider {
     }
 
     override fun createHierarchyBrowser(target: PsiElement): HierarchyBrowser {
-        return ParadoxDefinitionTypeHierarchyBrowser(target.project, target)
+        return ParadoxDefinitionHierarchyBrowser(target.project, target)
     }
 
     override fun browserActivated(hierarchyBrowser: HierarchyBrowser) {
-        hierarchyBrowser as ParadoxDefinitionTypeHierarchyBrowser
-        hierarchyBrowser.changeView(ParadoxDefinitionTypeHierarchyBrowser.getDefinitionHierarchyType())
+        hierarchyBrowser as ParadoxDefinitionHierarchyBrowser
+        hierarchyBrowser.changeView(ParadoxDefinitionHierarchyBrowser.getDefinitionHierarchyType())
     }
 }

@@ -17,7 +17,7 @@ import java.text.*
 import java.util.function.*
 import javax.swing.*
 
-class ParadoxDefinitionTypeHierarchyBrowser(project: Project, element: PsiElement) : HierarchyBrowserBaseEx(project, element) {
+class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) : HierarchyBrowserBaseEx(project, element) {
     companion object {
         @Suppress("InvalidBundleOrProperty")
         fun getDefinitionHierarchyType() = PlsBundle.message("title.hierarchy.definition")
@@ -41,13 +41,13 @@ class ParadoxDefinitionTypeHierarchyBrowser(project: Project, element: PsiElemen
                 val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return null
                 val typeConfig = definitionInfo.typeConfig
                 val typeElement = typeConfig.pointer.element ?: return null
-                ParadoxDefinitionTypeHierarchyTreeStructure(myProject, psiElement, typeElement, typeConfig, false)
+                ParadoxDefinitionHierarchyTreeStructure(myProject, psiElement, typeElement, typeConfig, false)
             }
             getDefinitionHierarchyTypeWithSubtypes() -> {
                 val definitionInfo = psiElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return null
                 val typeConfig = definitionInfo.typeConfig
                 val typeElement = typeConfig.pointer.element ?: return null
-                ParadoxDefinitionTypeHierarchyTreeStructure(myProject, psiElement, typeElement, typeConfig, true)
+                ParadoxDefinitionHierarchyTreeStructure(myProject, psiElement, typeElement, typeConfig, true)
             }
             else -> null
         }
@@ -113,6 +113,6 @@ class ParadoxDefinitionTypeHierarchyBrowser(project: Project, element: PsiElemen
         return PlsBundle.message("hierarchy.definition.next.occurrence.name")
     }
 
-    private fun getHierarchySettings() = ParadoxDefinitionTypeHierarchyBrowserSettings.getInstance(myProject)
+    private fun getHierarchySettings() = ParadoxDefinitionHierarchyBrowserSettings.getInstance(myProject)
 }
 
