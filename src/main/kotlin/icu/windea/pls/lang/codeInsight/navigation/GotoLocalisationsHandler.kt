@@ -16,7 +16,6 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import java.util.*
 
-@Suppress("DialogTitleCapitalization")
 class GotoLocalisationsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
         return "navigation.goto.paradoxLocalisations"

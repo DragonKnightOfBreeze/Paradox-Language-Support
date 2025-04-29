@@ -16,7 +16,6 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 
-@Suppress("DialogTitleCapitalization")
 class GotoDefinitionsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
         return "navigation.goto.paradoxDefinitions"
