@@ -5,8 +5,8 @@ import com.intellij.ide.hierarchy.*
 import icu.windea.pls.*
 
 class ViewCalleeHierarchyAction : ChangeHierarchyViewActionBase(
-    PlsBundle.message("action.view.callee.hierarchy"),
-    PlsBundle.message("action.description.view.callee.hierarchy"),
+    PlsBundle.message("action.view.hierarchy.callee"),
+    PlsBundle.message("action.view.hierarchy.callee.description"),
     AllIcons.Hierarchy.Subtypes
 ) {
     override fun getTypeName(): String {

@@ -4,8 +4,8 @@ import com.intellij.ide.hierarchy.*
 import icu.windea.pls.*
 
 class ViewDefinitionHierarchyAction : ChangeHierarchyViewActionBase(
-    PlsBundle.message("action.view.definition.hierarchy"),
-    PlsBundle.message("action.description.view.definition.hierarchy"),
+    PlsBundle.message("action.view.hierarchy.definition"),
+    PlsBundle.message("action.view.hierarchy.definition.description"),
     PlsIcons.Hierarchy.Definition
 ) {
     override fun getTypeName(): String {
