@@ -17,8 +17,7 @@ import java.text.*
 import java.util.function.*
 import javax.swing.*
 
-@Suppress("DialogTitleCapitalization")
-class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) : HierarchyBrowserBaseEx(project, element) {
+class ParadoxDefinitionTypeHierarchyBrowser(project: Project, element: PsiElement) : HierarchyBrowserBaseEx(project, element) {
     companion object {
         @Suppress("InvalidBundleOrProperty")
         fun getDefinitionHierarchyType() = PlsBundle.message("title.hierarchy.definition")
@@ -114,6 +113,6 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         return PlsBundle.message("hierarchy.definition.next.occurrence.name")
     }
 
-    private fun getHierarchySettings() = ParadoxDefinitionHierarchyBrowserSettings.getInstance(myProject)
+    private fun getHierarchySettings() = ParadoxDefinitionTypeHierarchyBrowserSettings.getInstance(myProject)
 }
 

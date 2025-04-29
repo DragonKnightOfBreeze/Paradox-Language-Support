@@ -72,7 +72,7 @@ class ParadoxCallHierarchyBrowser(project: Project, target: PsiElement) : CallHi
         return ParadoxHierarchyManager.getComparator(myProject)
     }
 
-    private fun getHierarchySettings() = ParadoxCallHierarchyBrowserSettings.Companion.getInstance(myProject)
+    private fun getHierarchySettings() = ParadoxCallHierarchyBrowserSettings.getInstance(myProject)
 
     private class BaseOnThisMethodAction : CallHierarchyBrowserBase.BaseOnThisMethodAction()
 }

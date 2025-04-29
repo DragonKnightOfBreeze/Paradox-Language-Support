@@ -14,7 +14,7 @@ import javax.swing.*
 class ParadoxScriptFile(
     viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxScriptDefinitionElement {
-    override fun getFileType() = viewProvider.fileType
+    override fun getFileType() = ParadoxScriptFileType
 
     override val block get() = findChild<ParadoxScriptRootBlock>()
 

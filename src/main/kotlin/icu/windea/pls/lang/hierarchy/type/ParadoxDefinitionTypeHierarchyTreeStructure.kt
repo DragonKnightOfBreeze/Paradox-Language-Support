@@ -6,7 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeDescriptor.*
+import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionTypeHierarchyNodeDescriptor.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 
@@ -19,22 +19,22 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
     typeElement: PsiElement,
     val typeConfig: CwtTypeConfig,
     val withSubtypes: Boolean,
-) : HierarchyTreeStructure(project, ParadoxDefinitionHierarchyNodeDescriptor(project, null, typeElement, false, typeConfig.name, Type.Type)) {
+) : HierarchyTreeStructure(project, ParadoxDefinitionTypeHierarchyNodeDescriptor(project, null, typeElement, false, typeConfig.name, Type.Type)) {
     private val elementPointer = element.createPointer()
 
     override fun buildChildren(descriptor: HierarchyNodeDescriptor): Array<out HierarchyNodeDescriptor> {
-        descriptor as ParadoxDefinitionHierarchyNodeDescriptor
+        descriptor as ParadoxDefinitionTypeHierarchyNodeDescriptor
         return when (descriptor.type) {
             Type.Type -> {
                 if (withSubtypes) {
                     val descriptors = mutableListOf<HierarchyNodeDescriptor>()
                     typeConfig.subtypes.forEach { (_, subtypeConfig) ->
                         val subtypeElement = subtypeConfig.pointer.element ?: return@forEach
-                        descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, subtypeElement, false, subtypeConfig.name, Type.Subtype))
+                        descriptors.add(ParadoxDefinitionTypeHierarchyNodeDescriptor(myProject, descriptor, subtypeElement, false, subtypeConfig.name, Type.Subtype))
                     }
                     val typeElement = descriptor.psiElement
                     if (typeElement != null) {
-                        descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, typeElement, false, "", Type.NoSubtype))
+                        descriptors.add(ParadoxDefinitionTypeHierarchyNodeDescriptor(myProject, descriptor, typeElement, false, "", Type.NoSubtype))
                     }
                     descriptors.toTypedArray()
                 } else {
@@ -46,7 +46,7 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
                     val element = elementPointer.element
                     definitions.forEach { definition ->
                         val isBase = element != null && element isSamePosition definition
-                        descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, definition, isBase, "", Type.Definition))
+                        descriptors.add(ParadoxDefinitionTypeHierarchyNodeDescriptor(myProject, descriptor, definition, isBase, "", Type.Definition))
                     }
                     descriptors.toTypedArray()
                 }
@@ -60,7 +60,7 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
                 val element = elementPointer.element
                 definitions.forEach { definition ->
                     val isBase = element != null && element isSamePosition definition
-                    descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, definition, isBase, "", Type.Definition))
+                    descriptors.add(ParadoxDefinitionTypeHierarchyNodeDescriptor(myProject, descriptor, definition, isBase, "", Type.Definition))
                 }
                 return descriptors.toTypedArray()
             }
@@ -74,7 +74,7 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
                 definitions.forEach { definition ->
                     if (definition.definitionInfo?.subtypes?.isEmpty() != true) return@forEach
                     val isBase = element != null && element isSamePosition definition
-                    descriptors.add(ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, definition, isBase, "", Type.Definition))
+                    descriptors.add(ParadoxDefinitionTypeHierarchyNodeDescriptor(myProject, descriptor, definition, isBase, "", Type.Definition))
                 }
                 descriptors.toTypedArray()
             }
@@ -82,5 +82,5 @@ class ParadoxDefinitionTypeHierarchyTreeStructure(
         }
     }
 
-    private fun getHierarchySettings() = ParadoxDefinitionHierarchyBrowserSettings.getInstance(myProject)
+    private fun getHierarchySettings() = ParadoxDefinitionTypeHierarchyBrowserSettings.getInstance(myProject)
 }

@@ -10,6 +10,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.scope.type.*
+import icu.windea.pls.lang.settings.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
@@ -42,48 +43,52 @@ class ParadoxCallerHierarchyTreeStructure(
     }
 
     private fun searchElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
+        val hierarchySettings = getSettings().hierarchy
         val scopeType = getHierarchySettings().scopeType
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
             ?: GlobalSearchScope.allScope(myProject)
         ReferencesSearch.search(element, scope).processQueryAsync { reference ->
             ProgressManager.checkCanceled()
-            val referenceElement = reference.element
-            when (referenceElement.language) {
-                is ParadoxScriptLanguage -> processScriptReferenceElement(reference, referenceElement, descriptor, descriptors)
-                is ParadoxLocalisationLanguage -> processLocalisationReferenceElement(reference, referenceElement, descriptor, descriptors)
-            }
+            processReference(reference, descriptor, descriptors, hierarchySettings)
             true
         }
     }
 
-    private fun processScriptReferenceElement(reference: PsiReference, referenceElement: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
-        if (!getSettings().hierarchy.showDefinitionsInCallHierarchy) return //不显示
-        val definition = referenceElement.findParentDefinition()
-        val definitionInfo = definition?.definitionInfo
-        if (definition != null && definitionInfo != null) {
-            ProgressManager.checkCanceled()
-            if (!getSettings().hierarchy.showDefinitionsInCallHierarchyByBindings(rootDefinitionInfo, definitionInfo)) return //不显示
-            val key = "d:${definitionInfo.name}: ${definitionInfo.type}"
-            synchronized(descriptors) {
-                val d = descriptors.getOrPut(key) { ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, definition, false, true) }
+    private fun processReference(
+        reference: PsiReference,
+        descriptor: HierarchyNodeDescriptor,
+        descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>,
+        settings: ParadoxSettingsState.HierarchyState
+    ) {
+        val referenceElement = reference.element
+        when (referenceElement.language) {
+            is ParadoxScriptLanguage -> {
+                if (!settings.showDefinitionsInCallHierarchy) return //不显示
+                val definition = referenceElement.findParentDefinition()
+                val definitionInfo = definition?.definitionInfo
+                if (definition == null || definitionInfo == null) return
+                ProgressManager.checkCanceled()
+                if (!settings.showDefinitionsInCallHierarchyByBindings(rootDefinitionInfo, definitionInfo)) return //不显示
+                val key = "d:${definitionInfo.name}: ${definitionInfo.type}"
+                val d = synchronized(descriptors) {
+                    descriptors.getOrPut(key) { ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, definition, false, true) }
+                }
                 if (d.references.isNotEmpty() && !d.references.contains(reference)) {
                     d.usageCount++
                 }
                 d.references.add(reference)
             }
-        }
-    }
-
-    private fun processLocalisationReferenceElement(reference: PsiReference, referenceElement: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
-        if (!getSettings().hierarchy.showLocalisationsInCallHierarchy) return //不显示
-        //兼容向上内联的情况
-        val localisation = referenceElement.parentOfType<ParadoxLocalisationProperty>()
-        val localisationInfo = localisation?.localisationInfo
-        if (localisation != null && localisationInfo != null) {
-            ProgressManager.checkCanceled()
-            val key = "l:${localisationInfo.name}"
-            synchronized(descriptors) {
-                val d = descriptors.getOrPut(key) { ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, localisation, false, true) }
+            is ParadoxLocalisationLanguage -> {
+                if (!settings.showLocalisationsInCallHierarchy) return  //不显示
+                //兼容向上内联的情况
+                val localisation = referenceElement.parentOfType<ParadoxLocalisationProperty>()
+                val localisationInfo = localisation?.localisationInfo
+                if (localisation == null || localisationInfo == null) return
+                ProgressManager.checkCanceled()
+                val key = "l:${localisationInfo.name}"
+                val d = synchronized(descriptors) {
+                    descriptors.getOrPut(key) { ParadoxCallHierarchyNodeDescriptor(myProject, descriptor, localisation, false, true) }
+                }
                 if (d.references.isNotEmpty() && !d.references.contains(reference)) {
                     d.usageCount++
                 }

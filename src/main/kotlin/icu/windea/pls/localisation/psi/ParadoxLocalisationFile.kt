@@ -13,7 +13,7 @@ class ParadoxLocalisationFile(
     viewProvider: FileViewProvider,
     val gameType: ParadoxGameType? = null
 ) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage) {
-    override fun getFileType() = viewProvider.fileType
+    override fun getFileType() = ParadoxLocalisationFileType
 
     val propertyLists: List<ParadoxLocalisationPropertyList>
         get() = findChildrenByClass(ParadoxLocalisationPropertyList::class.java).toList()

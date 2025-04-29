@@ -13,7 +13,7 @@ class CwtFile(
         val ELEMENT_TYPE = IFileElementType("CWT_FILE", CwtLanguage)
     }
 
-    override fun getFileType() = viewProvider.fileType
+    override fun getFileType() = CwtFileType
 
     val block get() = findChild<CwtRootBlock>()
 

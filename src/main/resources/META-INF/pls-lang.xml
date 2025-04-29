@@ -77,7 +77,7 @@
     <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.refactoring.actions.IntroduceLocalScriptedVariableHandler"/>
     <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.refactoring.actions.IntroduceGlobalScriptedVariableHandler"/>
 
-    <typeHierarchyProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyProvider"/>
+    <typeHierarchyProvider language="PARADOX" implementationClass="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionTypeHierarchyProvider"/>
     <callHierarchyProvider language="PARADOX" implementationClass="icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyProvider"/>
 
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxScriptedVariableNameIndex"/>

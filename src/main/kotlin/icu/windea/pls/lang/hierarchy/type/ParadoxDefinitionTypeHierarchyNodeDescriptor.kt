@@ -19,7 +19,7 @@ import java.awt.*
 
 //com.intellij.ide.hierarchy.type.TypeHierarchyNodeDescriptor
 
-class ParadoxDefinitionHierarchyNodeDescriptor(
+class ParadoxDefinitionTypeHierarchyNodeDescriptor(
     project: Project,
     parentDescriptor: HierarchyNodeDescriptor?,
     element: PsiElement,
