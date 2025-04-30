@@ -6,6 +6,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*
+import icu.windea.pls.lang.settings.ParadoxStrategies.*
 
 /**
  * PLS设置。
@@ -159,7 +160,7 @@ class ParadoxSettingsState : BaseState() {
     @Tag("generation")
     class GenerationState : BaseState() {
         var fileNamePrefix by string("000000_")
-        var localisationStrategy by enum(LocalisationGenerationStrategy.SpecificText)
+        var localisationStrategy by enum(LocalisationGeneration.SpecificText)
         var localisationStrategyText by string("REPLACE_ME")
         var localisationStrategyLocale by string("auto")
     }
@@ -172,6 +173,9 @@ class ParadoxSettingsState : BaseState() {
      * @property showScriptedVariablesInCallHierarchy 是否在调用层级视图中显示封装变量。默认启用。
      * @property showDefinitionsInCallHierarchyByBindings 是否在调用层级视图中显示定义。默认启用。
      * @property showLocalisationsInCallHierarchy 是否在调用层级视图中显示本地化。默认启用。
+     * @property definitionTypeBindingsInCallHierarchy 调用层级视图中，定义类型的绑定。
+     * @property eventTreeGrouping 事件树的层级视图使用的分组策略。
+     * @property techTreeGrouping 科技树的层级视图使用的分组策略。
      */
     @Tag("hierarchy")
     class HierarchyState : BaseState() {
@@ -184,6 +188,9 @@ class ParadoxSettingsState : BaseState() {
         var showDefinitionsInCallHierarchy by property(true)
         var showLocalisationsInCallHierarchy by property(true)
         var definitionTypeBindingsInCallHierarchy by map<String, String>() //TODO 1.3.35+ 优化：考虑更好的配置方式
+
+        var eventTreeGrouping by enum(EventTreeGrouping.None)
+        var techTreeGrouping by enum(TechTreeGrouping.None)
 
         fun showDefinitionsInCallHierarchyByBindings(rootDefinitionInfo: ParadoxDefinitionInfo?, definitionInfo: ParadoxDefinitionInfo?): Boolean {
             if (rootDefinitionInfo == null || definitionInfo == null) return true
@@ -232,18 +239,7 @@ class ParadoxSettingsState : BaseState() {
         var showLocalisationFloatingToolbar by property(true)
         var highlightLocalisationColorId by property(true)
         var renderLocalisationColorfulText by property(true)
-        var defaultDiffGroup by enum(DiffGroupStrategy.VsCopy)
+        var defaultDiffGroup by enum(DiffGroup.VsCopy)
     }
 }
 
-enum class LocalisationGenerationStrategy {
-    EmptyText,
-    SpecificText,
-    FromLocale,
-}
-
-enum class DiffGroupStrategy {
-    VsCopy,
-    First,
-    Last,
-}

@@ -17,9 +17,9 @@
 
 ## 1.3.35
 
-* [X] 优化：可以配置是否在层次视图中显示位置信息与本地化名字 / OP: Allow to configure whether to show position info and localized name in hierarchy views *
-* [ ] 实现高级类型层次视图，支持过滤、分组、展开等操作 / Implement advanced type hierarchy views, support operations such as filtering, grouping, expansion, etc.
-* [ ] 实现事件树与科技树对应的高级层次视图 / Implement advanced hierarchy views for event trees and technology trees
+* [X] 优化：可以配置是否在层级视图中显示位置信息与本地化名字 / OP: Allow to configure whether to show position info and localized name in hierarchy views *
+* [ ] 实现高级类型层级视图，支持过滤、分组、展开等操作 / Implement advanced type hierarchy views, support operations such as filtering, grouping, expansion, etc.
+* [ ] 实现事件树与科技树对应的高级层级视图 / Implement advanced hierarchy views for event trees and technology trees
 * [X] 为封装变量、定义和本地化提供一些额外的意图操作 / Provide some extra intentions for scripted variables, definitions and localizations
 * [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
@@ -892,7 +892,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   修复：[群星文本颜色插件失效（没有弹出选框），同时报错 #15](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/15)
 * [X] 实现内嵌提示以提示复杂枚举值的信息（枚举名，如`policy_flag`，默认启用）
 * [X] 实现类型层级（`Navigate > Type Hierarchy`） - 用于基于定义类型列出定义（光标位置在定义声明中时，此功能可用）
-* [X] 完善对类型层次的支持 - 支持通过作用域过滤显示结果
+* [X] 完善对类型层级的支持 - 支持通过作用域过滤显示结果
 * [X] 优化索引，重新索引后，对于复杂枚举值（如`policy_flag`）和值集值（如`variable`），应当不会再出现应当可以解析但有时无法解析的情况了
 * [X] 可以在插件配置页面中配置进行DIFF时，初始打开的初始打开的DIFF分组。默认初始打开VS副本的DIFF分组
 

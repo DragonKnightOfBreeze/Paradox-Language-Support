@@ -13,6 +13,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
+import icu.windea.pls.lang.settings.ParadoxStrategies.*
 import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
@@ -33,8 +34,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     label(PlsBundle.message("settings.general.defaultGameType")).widthGroup("general")
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameType.tooltip") }
                     var defaultGameType = settings.defaultGameType
-                    comboBox(ParadoxGameType.entries)
-                        .bindItem(settings::defaultGameType.toNullableProperty())
+                    comboBox(ParadoxGameType.entries).bindItem(settings::defaultGameType.toNullableProperty())
                         .onApply {
                             val oldDefaultGameType = defaultGameType
                             val newDefaultGameType = settings.defaultGameType
@@ -370,16 +370,16 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 //localisationStrategy
                 buttonsGroup(PlsBundle.message("settings.generation.localisationStrategy")) {
                     row {
-                        radioButton(PlsBundle.message("settings.generation.localisationStrategy.0"), LocalisationGenerationStrategy.EmptyText)
+                        with(LocalisationGeneration.EmptyText) { radioButton(text, this) }
                     }
                     row {
                         lateinit var rb: JBRadioButton
-                        radioButton(PlsBundle.message("settings.generation.localisationStrategy.1"), LocalisationGenerationStrategy.SpecificText).applyToComponent { rb = this }
+                        with(LocalisationGeneration.SpecificText) { radioButton(text, this) }.applyToComponent { rb = this }
                         textField().bindText(settings.generation::localisationStrategyText.toNonNullableProperty("")).enabledIf(rb.selected)
                     }
                     row {
                         lateinit var rb: JBRadioButton
-                        radioButton(PlsBundle.message("settings.generation.localisationStrategy.2"), LocalisationGenerationStrategy.FromLocale).applyToComponent { rb = this }
+                        with(LocalisationGeneration.FromLocale) { radioButton(text, this) }.applyToComponent { rb = this }
                         localeComboBox(addAuto = true).bindItem(settings.generation::localisationStrategyLocale.toNullableProperty()).enabledIf(rb.selected)
                     }
                 }.bind(settings.generation::localisationStrategy)
@@ -404,6 +404,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .bindSelected(settings.hierarchy::showRootInfo)
                         .enabledIf(cb.selected)
                 }
+
                 //showScriptedVariablesInCallHierarchy
                 row {
                     checkBox(PlsBundle.message("settings.hierarchy.showScriptedVariablesInCallHierarchy"))
@@ -430,6 +431,17 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 row {
                     checkBox(PlsBundle.message("settings.hierarchy.showLocalisationsInCallHierarchy"))
                         .bindSelected(settings.hierarchy::showLocalisationsInCallHierarchy)
+                }
+
+                //eventTreeGrouping
+                row {
+                    label(PlsBundle.message("settings.hierarchy.eventTreeGrouping"))
+                    comboBox(EventTreeGrouping.entries).bindItem(settings.hierarchy::eventTreeGrouping.toNullableProperty())
+                }
+                //techTreeGrouping
+                row {
+                    label(PlsBundle.message("settings.hierarchy.techTreeGrouping"))
+                    comboBox(TechTreeGrouping.entries).bindItem(settings.hierarchy::techTreeGrouping.toNullableProperty())
                 }
             }
             //inference
@@ -509,17 +521,10 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .onApply { refreshOnlyForOpenedFiles() }
                 }
                 //defaultDiffGroup
-                buttonsGroup(PlsBundle.message("settings.others.defaultDiffGroup")) {
-                    row {
-                        radioButton(PlsBundle.message("settings.others.defaultDiffGroup.0"), DiffGroupStrategy.VsCopy)
-                    }
-                    row {
-                        radioButton(PlsBundle.message("settings.others.defaultDiffGroup.1"), DiffGroupStrategy.First)
-                    }
-                    row {
-                        radioButton(PlsBundle.message("settings.others.defaultDiffGroup.2"), DiffGroupStrategy.Last)
-                    }
-                }.bind(settings.others::defaultDiffGroup)
+                row {
+                    label(PlsBundle.message("settings.others.defaultDiffGroup"))
+                    comboBox(DiffGroup.entries).bindItem(settings.others::defaultDiffGroup.toNullableProperty())
+                }
             }
         }
     }

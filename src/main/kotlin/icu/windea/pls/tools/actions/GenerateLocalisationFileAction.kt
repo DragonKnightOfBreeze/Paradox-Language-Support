@@ -14,10 +14,10 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.lang.settings.ParadoxStrategies.LocalisationGeneration as LocalisationGenerationStrategy
 
 /**
  * 用于从指定的本地化文件生成其他语言区域的本地化文件。
