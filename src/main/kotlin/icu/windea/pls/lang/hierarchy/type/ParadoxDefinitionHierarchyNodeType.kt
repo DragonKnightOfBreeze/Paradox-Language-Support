@@ -8,7 +8,8 @@ enum class ParadoxDefinitionHierarchyNodeType {
     EventAttribute,
     EventType,
     TechAttribute,
-    TechSearchArea,
     TechTier,
+    TechSearchArea,
+    TechCategory,
     ;
 }

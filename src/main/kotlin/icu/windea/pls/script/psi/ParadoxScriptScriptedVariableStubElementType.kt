@@ -9,10 +9,8 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
-class ParadoxScriptScriptedVariableStubElementType(
-    language: ParadoxScriptLanguage = ParadoxScriptLanguage
-) : ILightStubElementType<ParadoxScriptScriptedVariableStub, ParadoxScriptScriptedVariable>("SCRIPTED_VARIABLE", language) {
-    override fun getExternalId() = ID
+class ParadoxScriptScriptedVariableStubElementType : ILightStubElementType<ParadoxScriptScriptedVariableStub, ParadoxScriptScriptedVariable>("SCRIPTED_VARIABLE", ParadoxScriptLanguage) {
+    override fun getExternalId() = "paradoxScript.SCRIPTED_VARIABLE"
 
     override fun createPsi(stub: ParadoxScriptScriptedVariableStub): ParadoxScriptScriptedVariable {
         return ParadoxScriptScriptedVariableImpl(stub, this)
@@ -60,9 +58,7 @@ class ParadoxScriptScriptedVariableStubElementType(
     }
 
     companion object {
-        private const val ID = "paradoxScript.scriptedVariable"
-
-        @JvmStatic
+        @JvmField
         val INSTANCE = ParadoxScriptScriptedVariableStubElementType()
     }
 }

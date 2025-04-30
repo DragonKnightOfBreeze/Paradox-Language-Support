@@ -1,14 +1,20 @@
 package icu.windea.pls.lang.hierarchy
 
+import com.intellij.icons.*
 import com.intellij.ide.hierarchy.*
+import com.intellij.ide.hierarchy.HierarchyBrowserBaseEx.*
+import com.intellij.ide.util.treeView.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.*
 import com.intellij.openapi.application.*
+import com.intellij.openapi.editor.*
+import com.intellij.ui.tree.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.search.scope.type.*
 import java.awt.*
+import java.util.function.*
 import javax.swing.*
 
 interface ParadoxHierarchyActions {

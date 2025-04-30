@@ -23,7 +23,6 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.ParadoxScriptFileStubElementType
 import icu.windea.pls.script.psi.impl.*
 
 /**
@@ -629,7 +628,7 @@ object ParadoxDefinitionManager {
         CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisation) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisation(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker, ParadoxModificationTrackers.LocaleTracker)
         }
 
     private fun doGetPrimaryLocalisation(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
@@ -654,7 +653,7 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisations) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisations(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker, ParadoxModificationTrackers.LocaleTracker)
         }
     }
 
@@ -707,7 +706,7 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionLocalizedNames) {
             ProgressManager.checkCanceled()
             val value = doGetLocalizedNames(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker, ParadoxModificationTrackers.LocaleTracker)
         }
     }
 

@@ -9,10 +9,8 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
-class ParadoxScriptPropertyStubElementType(
-    language: ParadoxScriptLanguage = ParadoxScriptLanguage
-) : ILightStubElementType<ParadoxScriptPropertyStub, ParadoxScriptProperty>("PROPERTY", language) {
-    override fun getExternalId() = ID
+class ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScriptPropertyStub, ParadoxScriptProperty>("PROPERTY", ParadoxScriptLanguage) {
+    override fun getExternalId() = "paradoxScript.PROPERTY"
 
     override fun createPsi(stub: ParadoxScriptPropertyStub): ParadoxScriptProperty {
         return ParadoxScriptPropertyImpl(stub, this)
@@ -71,9 +69,7 @@ class ParadoxScriptPropertyStubElementType(
     }
 
     companion object {
-        private const val ID = "paradoxScript.property"
-
-        @JvmStatic
+        @JvmField
         val INSTANCE = ParadoxScriptPropertyStubElementType()
     }
 }

@@ -10,10 +10,8 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
-class ParadoxLocalisationFileStubElementType(
-    language: ParadoxLocalisationLanguage = ParadoxLocalisationLanguage
-) : ILightStubFileElementType<PsiFileStub<*>>(language) {
-    override fun getExternalId() = ID
+class ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFileStub<*>>(ParadoxLocalisationLanguage) {
+    override fun getExternalId() = "paradoxLocalisation.FILE"
 
     override fun getStubVersion() = VERSION
 
@@ -60,10 +58,9 @@ class ParadoxLocalisationFileStubElementType(
     }
 
     companion object {
-        private const val ID = "paradoxLocalisation.file"
         private const val VERSION = 58 //1.3.27
 
-        @JvmStatic
+        @JvmField
         val INSTANCE = ParadoxLocalisationFileStubElementType()
     }
 }

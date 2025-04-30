@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
+import com.intellij.ui.tree.LeafState
 import icu.windea.pls.ep.inline.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
@@ -144,6 +145,8 @@ class ParadoxCalleeHierarchyTreeStructure(
             }
         }
     }
+
+    override fun getLeafState(element: Any) = LeafState.ASYNC
 
     private fun getHierarchySettings() = ParadoxCallHierarchyBrowserSettings.getInstance(myProject)
 }

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.hierarchy.type
 import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.ui.tree.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
@@ -46,8 +47,9 @@ class ParadoxDefinitionHierarchyTreeStructure(
             ParadoxDefinitionHierarchyNodeType.EventAttribute -> TODO()
             ParadoxDefinitionHierarchyNodeType.EventType -> TODO()
             ParadoxDefinitionHierarchyNodeType.TechAttribute -> TODO()
-            ParadoxDefinitionHierarchyNodeType.TechSearchArea -> TODO()
             ParadoxDefinitionHierarchyNodeType.TechTier -> TODO()
+            ParadoxDefinitionHierarchyNodeType.TechSearchArea -> TODO()
+            ParadoxDefinitionHierarchyNodeType.TechCategory -> TODO()
         }
         if (descriptors.isEmpty()) return HierarchyNodeDescriptor.EMPTY_ARRAY
         return descriptors.toTypedArray()
@@ -99,6 +101,13 @@ class ParadoxDefinitionHierarchyTreeStructure(
             val isBase = element != null && element isSamePosition nestedDefinition
             descriptors += ParadoxDefinitionHierarchyNodeDescriptor(myProject, descriptor, nestedDefinition, isBase, "", type, NodeType.Definition)
         }
+    }
+
+    override fun getLeafState(element: Any): LeafState {
+        if (element is ParadoxScriptDefinitionElement && (type == Type.Type || type == Type.TypeAndSubtypes)) {
+            return LeafState.NEVER
+        }
+        return LeafState.ASYNC
     }
 
     private fun getHierarchySettings() = ParadoxDefinitionHierarchyBrowserSettings.getInstance(myProject)

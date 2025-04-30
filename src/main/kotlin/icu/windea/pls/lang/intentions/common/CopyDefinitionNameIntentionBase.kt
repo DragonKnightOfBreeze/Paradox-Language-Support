@@ -7,38 +7,42 @@ import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.renderer.*
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.psi.*
 import java.awt.datatransfer.*
 
 /**
- * 复制本地化文本到剪贴板。（复制的是处理后的纯文本）
+ * 复制定义的名字到剪贴板。
  */
-class CopyLocalisationTextAsPlainIntention : IntentionAction {
-    override fun getText() = PlsBundle.message("intention.copyLocalisationTextAsPlain")
+abstract class CopyDefinitionNameIntentionBase : IntentionAction {
+    override fun getText() = PlsBundle.message("intention.copyDefinitionName")
 
     override fun getFamilyName() = text
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
         if (editor == null || file == null) return false
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset)
-        return element != null
+        return getName(file, offset) != null
     }
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         if (editor == null || file == null) return
         val offset = editor.caretModel.offset
-        val element = findElement(file, offset) ?: return
-        val text = ParadoxLocalisationTextRenderer.render(element)
+        val text = getName(file, offset) ?: return
         CopyPasteManager.getInstance().setContents(StringSelection(text))
     }
 
-    private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        val allOptions = ParadoxPsiManager.FindLocalisationOptions
+    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptDefinitionElement? {
+        val allOptions = ParadoxPsiManager.FindDefinitionOptions
         val options = allOptions.DEFAULT or allOptions.BY_REFERENCE
-        return ParadoxPsiManager.findLocalisation(file, offset, options)
+        return ParadoxPsiManager.findDefinition(file, offset, options)
+    }
+
+    private fun getName(file: PsiFile, offset: Int): String? {
+        val element = findElement(file, offset) ?: return null
+        return element.definitionInfo?.name?.orNull()
     }
 
     override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
