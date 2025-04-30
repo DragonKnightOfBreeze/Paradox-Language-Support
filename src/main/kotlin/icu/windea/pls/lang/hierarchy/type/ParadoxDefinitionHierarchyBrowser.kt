@@ -26,6 +26,8 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         Type.entries.forEach { type ->
             val tree = createTree(true)
             PopupHandler.installPopupMenu(tree, PlsActions.DefinitionHierarchyPopupMenu, ActionPlaces.TYPE_HIERARCHY_VIEW_POPUP)
+            val baseOnThisAction = BaseOnThisAction()
+            baseOnThisAction.registerCustomShortcutSet(ActionManager.getInstance().getAction(IdeActions.ACTION_TYPE_HIERARCHY).shortcutSet, tree)
             trees.put(type.text, tree)
         }
     }
@@ -113,5 +115,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
     private fun getHierarchySettings(): ParadoxDefinitionHierarchyBrowserSettings {
         return ParadoxDefinitionHierarchyBrowserSettings.getInstance(myProject)
     }
+
+    private class BaseOnThisAction : BaseOnThisElementAction(LanguageTypeHierarchy.INSTANCE)
 }
 
