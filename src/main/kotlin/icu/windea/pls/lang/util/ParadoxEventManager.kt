@@ -164,9 +164,8 @@ object ParadoxEventManager {
                 ReferencesSearch.search(definition0, selector.scope).processQuery p@{ ref ->
                     if (ref !is ParadoxScriptExpressionPsiReference) return@p true
                     ProgressManager.checkCanceled()
-                    val resolved = ref.resolve() ?: return@p true
-                    if (resolved !is ParadoxScriptString) return@p true
-                    val rDefinition = resolved.findParentDefinition() ?: return@p true
+                    val refElement = ref.element.castOrNull<ParadoxScriptString>() ?: return@p true
+                    val rDefinition = refElement.findParentDefinition() ?: return@p true
                     val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                     if(rDefinitionInfo.name.isEmpty()) return@p true
                     if (rDefinitionInfo.type != "event") return@p true

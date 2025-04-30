@@ -108,10 +108,8 @@ object ParadoxTechnologyManager {
                     ProgressManager.checkCanceled()
                     ReferencesSearch.search(definition0, selector.scope).processQuery p@{ ref ->
                         if (ref !is ParadoxScriptExpressionPsiReference) return@p true
-                        ProgressManager.checkCanceled()
-                        val resolved = ref.resolve() ?: return@p true
-                        if (resolved !is ParadoxScriptString) return@p true
-                        val rDefinition = resolved.findParentByPath("prerequisites/-") ?: return@p true
+                        val refElement = ref.element.castOrNull<ParadoxScriptString>() ?: return@p true
+                        val rDefinition = refElement.findParentByPath("prerequisites/-", definitionType = "technology") ?: return@p true
                         val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                         if (rDefinitionInfo.name.isEmpty()) return@p true
                         if (rDefinitionInfo.type != "technology") return@p true
