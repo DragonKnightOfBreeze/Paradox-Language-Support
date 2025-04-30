@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -16,6 +17,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.references.*
 
 object ParadoxEventManager {
     object Keys : KeyRegistry() {
@@ -107,9 +109,9 @@ object ParadoxEventManager {
     }
 
     /**
-     * 得到指定事件可能调用的所有事件。
+     * 得到指定事件可能调用的所有事件的名字。
      *
-     * TODO 兼容需要内联和事件继承的情况。
+     * TODO 考虑兼容需要内联和事件继承的情况。
      */
     fun getInvocations(definition: ParadoxScriptDefinitionElement): Set<String> {
         return CachedValuesManager.getCachedValue(definition, Keys.cachedEventInvocations) {
@@ -150,15 +152,53 @@ object ParadoxEventManager {
      * 得到作为调用者的事件列表。
      */
     fun getInvokerEvents(definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
-        //NOTE 目前不兼容封装变量引用
-        return emptyList() //TODO 1.3.35
+        //NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找使用
+        //NOTE 为了优化性能，这里可能需要新增并应用索引
+
+        val name = definition.definitionInfo?.name
+        if (name.isNullOrEmpty()) return emptyList()
+        selector.withGameType(ParadoxGameType.Stellaris)
+        return buildList b@{
+            ParadoxDefinitionSearch.search(name, "event", selector).processQuery p0@{ definition0 ->
+                ProgressManager.checkCanceled()
+                ReferencesSearch.search(definition0, selector.scope).processQuery p@{ ref ->
+                    if (ref !is ParadoxScriptExpressionPsiReference) return@p true
+                    ProgressManager.checkCanceled()
+                    val resolved = ref.resolve() ?: return@p true
+                    if (resolved !is ParadoxScriptString) return@p true
+                    val rDefinition = resolved.findParentDefinition() ?: return@p true
+                    val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
+                    if(rDefinitionInfo.name.isEmpty()) return@p true
+                    if (rDefinitionInfo.type != "event") return@p true
+                    this += rDefinition
+                    true
+                }
+                true
+            }
+        }.distinct()
     }
 
     /**
-     * 得到被调用的事件列表。
+     * 得到调用的事件列表。
      */
     fun getInvokedEvents(definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
-        //NOTE 目前不兼容封装变量引用
-        return emptyList() //TODO 1.3.35
+        //NOTE 1. 目前不兼容封装变量引用
+        //NOTE 为了优化性能，这里可能需要新增并应用索引
+
+        val name = definition.definitionInfo?.name
+        if (name.isNullOrEmpty()) return emptyList()
+        val invocations = getInvocations(definition)
+        if(invocations.isEmpty()) return emptyList()
+        selector.withGameType(ParadoxGameType.Stellaris)
+        return buildList b@{
+            ParadoxDefinitionSearch.search("event", selector).processQuery p@{ rDefinition ->
+                ProgressManager.checkCanceled()
+                val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
+                if(rDefinitionInfo.name.isEmpty()) return@p true
+                if (rDefinitionInfo.name !in invocations) return@p true
+                this += rDefinition
+                true
+            }
+        }.distinct()
     }
 }
