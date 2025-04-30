@@ -28,17 +28,17 @@ class StellarisEventTreeDiagramSettings(
         override var scopeType by string()
 
         @get:XMap
-        var type by linkedMap<String, Boolean>()
+        var attribute by linkedMap<String, Boolean>()
         @get:XMap
-        var eventType by linkedMap<String, Boolean>()
+        var type by linkedMap<String, Boolean>()
 
-        val typeSettings = TypeSettings()
+        val attributeSettings = AttributeSettings()
 
-        inner class TypeSettings {
-            val hidden by type withDefault true
-            val triggered by type withDefault true
-            val major by type withDefault true
-            val diplomatic by type withDefault true
+        inner class AttributeSettings {
+            val hidden by attribute withDefault true
+            val triggered by attribute withDefault true
+            val major by attribute withDefault true
+            val diplomatic by attribute withDefault true
         }
     }
 
@@ -47,17 +47,17 @@ class StellarisEventTreeDiagramSettings(
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
         val eventTypes = runReadAction { ParadoxEventManager.getTypes(project, ParadoxGameType.Stellaris) }
-        eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
+        eventTypes.forEach { settings.type.putIfAbsent(it, true) }
         settings.updateSettings()
 
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
-            PlsDocBundle.eventType(key, gameType)
+        checkBoxGroup(settings.attribute, PlsDiagramBundle.message("eventTree.settings.attribute"), { key ->
+            PlsDocBundle.eventAttribute(key, gameType)
         })
-        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("eventTree.settings.eventType"), { key ->
-            PlsDiagramBundle.message("eventTree.settings.eventType.option", key)
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
+            PlsDiagramBundle.message("eventTree.settings.type.option", key)
         })
     }
 }
@@ -78,7 +78,7 @@ class StellarisTechTreeDiagramSettings(
         override var scopeType by string()
 
         @get:XMap
-        var type by linkedMap<String, Boolean>()
+        var attribute by linkedMap<String, Boolean>()
         @get:XMap
         var tier by linkedMap<String, Boolean>()
         @get:XMap
@@ -86,14 +86,14 @@ class StellarisTechTreeDiagramSettings(
         @get:XMap
         var category by linkedMap<String, Boolean>()
 
-        val typeSettings = TypeSettings()
+        val attributeSettings = AttributeSettings()
 
-        inner class TypeSettings {
-            val start by type withDefault true
-            val rare by type withDefault true
-            val dangerous by type withDefault true
-            val insight by type withDefault true
-            val repeatable by type withDefault true
+        inner class AttributeSettings {
+            val start by attribute withDefault true
+            val rare by attribute withDefault true
+            val dangerous by attribute withDefault true
+            val insight by attribute withDefault true
+            val repeatable by attribute withDefault true
         }
     }
 
@@ -101,11 +101,11 @@ class StellarisTechTreeDiagramSettings(
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val tiers = runReadAction { ParadoxTechnologyManager.Stellaris.getTechnologyTiers(project, null) }
+        val tiers = runReadAction { ParadoxTechnologyManager.Stellaris.getTiers(project, null) }
         tiers.forEach { settings.tier.putIfAbsent(it.name, true) }
         val areas = runReadAction { ParadoxTechnologyManager.Stellaris.getResearchAreas() }
         areas.forEach { settings.area.putIfAbsent(it, true) }
-        val categories = runReadAction { ParadoxTechnologyManager.Stellaris.getTechnologyCategories(project, null) }
+        val categories = runReadAction { ParadoxTechnologyManager.Stellaris.getCategories(project, null) }
         categories.forEach { settings.category.putIfAbsent(it.name, true) }
         settings.updateSettings()
 
@@ -117,8 +117,8 @@ class StellarisTechTreeDiagramSettings(
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("techTree.settings.type"), { key ->
-            PlsDocBundle.eventType(key, gameType)
+        checkBoxGroup(settings.attribute, PlsDiagramBundle.message("techTree.settings.attribute"), { key ->
+            PlsDocBundle.technologyAttribute(key, gameType)
         })
         checkBoxGroup(settings.tier, PlsDiagramBundle.message("techTree.settings.tier"), { key ->
             PlsDiagramBundle.message("techTree.settings.tier.option", key)

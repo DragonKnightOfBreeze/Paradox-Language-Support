@@ -22,12 +22,12 @@ object PlsDocBundle {
     }
 
     @JvmStatic
-    fun eventType(name: String, gameType: ParadoxGameType?): @Nls String {
-        return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.event.type.$name") ?: INSTANCE.getMessage("general.event.type.default", name)
+    fun eventAttribute(name: String, gameType: ParadoxGameType?): @Nls String {
+        return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.event.attribute.$name") ?: INSTANCE.getMessage("general.event.attribute.default", name)
     }
 
     @JvmStatic
-    fun technologyType(name: String, gameType: ParadoxGameType?): @Nls String {
-        return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.technology.type.$name") ?: INSTANCE.getMessage("general.technology.type.default", name)
+    fun technologyAttribute(name: String, gameType: ParadoxGameType?): @Nls String {
+        return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.technology.attribute.$name") ?: INSTANCE.getMessage("general.technology.attribute.default", name)
     }
 }

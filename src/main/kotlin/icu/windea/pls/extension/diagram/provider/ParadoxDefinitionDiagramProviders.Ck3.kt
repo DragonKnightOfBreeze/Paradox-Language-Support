@@ -81,7 +81,7 @@ class Ck3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
                 if (v.contains("hidden")) enabled = enabled || this.hidden
                 if (!enabled) return false
             }
-            with(settings.eventType) {
+            with(settings.type) {
                 val v = definitionInfo.subtypes.orNull() ?: return@with
                 val enabled = v.any { this[it] ?: false }
                 if (!enabled) return false

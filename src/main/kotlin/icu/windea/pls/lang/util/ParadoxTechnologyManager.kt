@@ -41,7 +41,7 @@ object ParadoxTechnologyManager {
 
     @WithGameType(ParadoxGameType.Stellaris)
     object Stellaris {
-        fun getTechnologyTiers(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
+        fun getTiers(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
             val selector = selector(project, context).definition().withGameType(ParadoxGameType.Stellaris).contextSensitive().distinctByName()
             return ParadoxDefinitionSearch.search("technology_tier", selector).findAll()
         }
@@ -50,7 +50,7 @@ object ParadoxTechnologyManager {
             return getConfigGroup(ParadoxGameType.Stellaris).enums.get("research_area")?.values.orEmpty()
         }
 
-        fun getTechnologyCategories(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
+        fun getCategories(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
             val selector = selector(project, context).definition().withGameType(ParadoxGameType.Stellaris).contextSensitive().distinctByName()
             return ParadoxDefinitionSearch.search("technology_category", selector).findAll()
         }

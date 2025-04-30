@@ -28,14 +28,14 @@ class Vic3EventTreeDiagramSettings(
         override var scopeType by string()
 
         @get:XMap
-        var type by linkedMap<String, Boolean>()
+        var attribute by linkedMap<String, Boolean>()
         @get:XMap
-        var eventType by linkedMap<String, Boolean>()
+        var type by linkedMap<String, Boolean>()
 
-        val typeSettings = TypeSettings()
+        val attributeSettings = AttributeSettings()
 
-        inner class TypeSettings {
-            val hidden by type withDefault true
+        inner class AttributeSettings {
+            val hidden by attribute withDefault true
         }
     }
 
@@ -44,17 +44,17 @@ class Vic3EventTreeDiagramSettings(
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
         val eventTypes = runReadAction { ParadoxEventManager.getTypes(project, ParadoxGameType.Vic3) }
-        eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
+        eventTypes.forEach { settings.type.putIfAbsent(it, true) }
         settings.updateSettings()
 
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
-            PlsDocBundle.eventType(key, gameType)
+        checkBoxGroup(settings.attribute, PlsDiagramBundle.message("eventTree.settings.attribute"), { key ->
+            PlsDocBundle.eventAttribute(key, gameType)
         })
-        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("eventTree.settings.eventType"), { key ->
-            PlsDiagramBundle.message("eventTree.settings.eventType.option", key)
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
+            PlsDiagramBundle.message("eventTree.settings.type.option", key)
         })
     }
 }

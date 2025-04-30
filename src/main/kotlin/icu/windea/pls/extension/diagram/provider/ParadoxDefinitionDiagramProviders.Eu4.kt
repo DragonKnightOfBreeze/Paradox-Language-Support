@@ -75,14 +75,14 @@ class Eu4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
             val settings = provider.getDiagramSettings(project).state
 
             //对于每组配置，只要其中任意一个配置匹配即可
-            with(settings.typeSettings) {
+            with(settings.attributeSettings) {
                 val v = definitionInfo.subtypes.orNull() ?: return@with
                 var enabled = false
                 if (v.contains("hidden")) enabled = enabled || this.hidden
                 if (v.contains("triggered")) enabled = enabled || this.triggered
                 if (!enabled) return false
             }
-            with(settings.eventType) {
+            with(settings.type) {
                 val v = definitionInfo.subtypes.orNull() ?: return@with
                 val enabled = v.any { this[it] ?: false }
                 if (!enabled) return false
