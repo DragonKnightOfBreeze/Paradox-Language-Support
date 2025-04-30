@@ -7,13 +7,15 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
+import javax.swing.Icon
 
 interface ParadoxDefinitionHierarchyActions {
     sealed class ViewActionBase(
         text: String,
         description: String,
+        icon: Icon,
         val type: ParadoxDefinitionHierarchyType
-    ) : ChangeHierarchyViewActionBase(text, description, AllIcons.Hierarchy.Class) {
+    ) : ChangeHierarchyViewActionBase(text, description, icon) {
         override fun getTypeName() = type.text
 
         override fun update(event: AnActionEvent) {
@@ -37,36 +39,42 @@ interface ParadoxDefinitionHierarchyActions {
     class ViewDefinitionHierarchyAction : ViewActionBase(
         PlsBundle.message("action.view.hierarchy.definition"),
         PlsBundle.message("action.view.hierarchy.definition.description"),
+        AllIcons.Hierarchy.Class,
         ParadoxDefinitionHierarchyType.Type
     )
 
     class ViewDefinitionHierarchyWithSubtypesAction : ViewActionBase(
         PlsBundle.message("action.view.hierarchy.definition.with.subtypes"),
         PlsBundle.message("action.view.hierarchy.definition.with.subtypes.description"),
+        AllIcons.Hierarchy.Class,
         ParadoxDefinitionHierarchyType.TypeAndSubtypes
     )
 
     class ViewEventTreeInvokerAction : ViewActionBase(
         PlsBundle.message("action.view.hierarchy.eventTree.invoker"),
         PlsBundle.message("action.view.hierarchy.eventTree.invoker.description"),
+        AllIcons.Hierarchy.Supertypes,
         ParadoxDefinitionHierarchyType.EventTreeInvoker
     )
 
     class ViewEventTreeInvokedAction : ViewActionBase(
         PlsBundle.message("action.view.hierarchy.eventTree.invoked"),
         PlsBundle.message("action.view.hierarchy.eventTree.invoked.description"),
+        AllIcons.Hierarchy.Subtypes,
         ParadoxDefinitionHierarchyType.EventTreeInvoked
     )
 
     class ViewTechTreePreAction : ViewActionBase(
         PlsBundle.message("action.view.hierarchy.techTree.pre"),
         PlsBundle.message("action.view.hierarchy.techTree.pre.description"),
+        AllIcons.Hierarchy.Supertypes,
         ParadoxDefinitionHierarchyType.TechTreePre
     )
 
     class ViewTechTreePostAction : ViewActionBase(
         PlsBundle.message("action.view.hierarchy.techTree.post"),
         PlsBundle.message("action.view.hierarchy.techTree.post.description"),
+        AllIcons.Hierarchy.Subtypes,
         ParadoxDefinitionHierarchyType.TechTreePost
     )
 }
