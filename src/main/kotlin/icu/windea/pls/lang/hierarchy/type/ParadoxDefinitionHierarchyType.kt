@@ -6,14 +6,15 @@ import icu.windea.pls.model.*
 @Suppress("InvalidBundleOrProperty")
 enum class ParadoxDefinitionHierarchyType(
     val text: String,
-    val predicate: ((ParadoxDefinitionInfo) -> Boolean)? = null
+    val nested: Boolean = false,
+    val predicate: ((ParadoxDefinitionInfo) -> Boolean) = { true }
 ) {
     Type(PlsBundle.message("title.hierarchy.definition")),
     TypeAndSubtypes(PlsBundle.message("title.hierarchy.definition.with.subtypes")),
 
-    EventTreeInvoker(PlsBundle.message("title.hierarchy.eventTree.invoker"), { it.type == "event" }),
-    EventTreeInvoked(PlsBundle.message("title.hierarchy.eventTree.invoked"), { it.type == "event" }),
-    TechTreePre(PlsBundle.message("title.hierarchy.techTree.pre"), { it.type == "technology" && it.gameType == ParadoxGameType.Stellaris }),
-    TechTreePost(PlsBundle.message("title.hierarchy.techTree.post"), { it.type == "technology" && it.gameType == ParadoxGameType.Stellaris }),
+    EventTreeInvoker(PlsBundle.message("title.hierarchy.eventTree.invoker"), true, { it.type == "event" }),
+    EventTreeInvoked(PlsBundle.message("title.hierarchy.eventTree.invoked"), true, { it.type == "event" }),
+    TechTreePre(PlsBundle.message("title.hierarchy.techTree.pre"), true, { it.type == "technology" && it.gameType == ParadoxGameType.Stellaris }),
+    TechTreePost(PlsBundle.message("title.hierarchy.techTree.post"), true, { it.type == "technology" && it.gameType == ParadoxGameType.Stellaris }),
     ;
 }

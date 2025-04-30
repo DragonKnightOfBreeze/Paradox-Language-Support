@@ -18,12 +18,11 @@ interface ParadoxDefinitionHierarchyActions {
 
         override fun update(event: AnActionEvent) {
             super.update(event)
-            val predicate = type.predicate ?: return
             val hierarchyBrowser = getHierarchyBrowser(event.dataContext)
             val definitionInfo = hierarchyBrowser?.castOrNull<ParadoxDefinitionHierarchyBrowser>()
                 ?.element?.castOrNull<ParadoxScriptDefinitionElement>()
                 ?.definitionInfo
-            val visible = definitionInfo != null && predicate(definitionInfo)
+            val visible = definitionInfo != null && type.predicate(definitionInfo)
             event.presentation.isVisible = visible
         }
 

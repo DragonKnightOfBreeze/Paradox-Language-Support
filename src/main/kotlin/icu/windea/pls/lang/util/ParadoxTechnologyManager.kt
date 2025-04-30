@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
@@ -42,6 +43,22 @@ object ParadoxTechnologyManager {
         fun getTechnologyCategories(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
             val selector = selector(project, context).definition().withGameType(ParadoxGameType.Stellaris).contextSensitive().distinctByName()
             return ParadoxDefinitionSearch.search("technology_category", selector).findAll()
+        }
+
+        /**
+         * 得到作为前提条件的科技列表。
+         */
+        fun getPreTechnologies(definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
+            //NOTE 目前不兼容封装变量引用
+            return emptyList() //TODO 1.3.35
+        }
+
+        /**
+         * 得到后续的科技列表。
+         */
+        fun getPostTechnologies(definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
+            //NOTE 目前不兼容封装变量引用
+            return emptyList() //TODO 1.3.35
         }
     }
 }

@@ -145,4 +145,20 @@ object ParadoxEventManager {
         })
         return result
     }
+
+    /**
+     * 得到作为调用者的事件列表。
+     */
+    fun getInvokerEvents(definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
+        //NOTE 目前不兼容封装变量引用
+        return emptyList() //TODO 1.3.35
+    }
+
+    /**
+     * 得到被调用的事件列表。
+     */
+    fun getInvokedEvents(definition: ParadoxScriptDefinitionElement, selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): List<ParadoxScriptDefinitionElement> {
+        //NOTE 目前不兼容封装变量引用
+        return emptyList() //TODO 1.3.35
+    }
 }

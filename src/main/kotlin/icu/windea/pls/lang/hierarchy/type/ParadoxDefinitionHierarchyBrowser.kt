@@ -35,9 +35,10 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         val typeConfig = definitionInfo.typeConfig
         val typeElement = typeConfig.pointer.element ?: return null
         val finalType = this.type
-        finalType.predicate?.let { if (!it(definitionInfo)) return null }
+        if (!finalType.predicate(definitionInfo)) return null
         val finalNodeType = ParadoxDefinitionHierarchyNodeType.Type
-        return ParadoxDefinitionHierarchyTreeStructure(myProject, psiElement, typeElement, typeConfig, finalType, finalNodeType)
+        val baseDescriptor = ParadoxDefinitionHierarchyNodeDescriptor(project, null, typeElement, false, typeConfig.name, finalType, finalNodeType)
+        return ParadoxDefinitionHierarchyTreeStructure(myProject, baseDescriptor, psiElement, typeConfig, finalType)
     }
 
     override fun isApplicableElement(element: PsiElement): Boolean {

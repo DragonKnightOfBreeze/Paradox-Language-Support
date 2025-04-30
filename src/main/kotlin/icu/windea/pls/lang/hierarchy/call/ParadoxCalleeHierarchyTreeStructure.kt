@@ -19,9 +19,9 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxCalleeHierarchyTreeStructure(
     project: Project,
-    element: PsiElement,
-    val rootDefinitionInfo: ParadoxDefinitionInfo?
-) : HierarchyTreeStructure(project, ParadoxCallHierarchyNodeDescriptor(project, null, element, true, false)) {
+    baseDescriptor: ParadoxCallHierarchyNodeDescriptor,
+    val baseDefinitionInfo: ParadoxDefinitionInfo?
+) : HierarchyTreeStructure(project, baseDescriptor) {
     override fun buildChildren(descriptor: HierarchyNodeDescriptor): Array<out HierarchyNodeDescriptor> {
         descriptor as ParadoxCallHierarchyNodeDescriptor
         val element = descriptor.psiElement ?: return HierarchyNodeDescriptor.EMPTY_ARRAY
@@ -34,6 +34,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                 searchElement(element, descriptor, descriptors)
             }
         }
+        if (descriptors.values.isEmpty()) return HierarchyNodeDescriptor.EMPTY_ARRAY
         return descriptors.values.toTypedArray()
     }
 
@@ -121,7 +122,7 @@ class ParadoxCalleeHierarchyTreeStructure(
             is ParadoxScriptDefinitionElement -> {
                 if (!settings.showDefinitionsInCallHierarchy) return //不显示
                 val definitionInfo = resolved.definitionInfo ?: return
-                if (!settings.showDefinitionsInCallHierarchyByBindings(rootDefinitionInfo, definitionInfo)) return //不显示
+                if (!settings.showDefinitionsInCallHierarchyByBindings(baseDefinitionInfo, definitionInfo)) return //不显示
                 val key = "d:${definitionInfo.name}: ${definitionInfo.type}"
                 if (descriptors.containsKey(key)) return //去重
                 val resolvedFile = selectFile(resolved)

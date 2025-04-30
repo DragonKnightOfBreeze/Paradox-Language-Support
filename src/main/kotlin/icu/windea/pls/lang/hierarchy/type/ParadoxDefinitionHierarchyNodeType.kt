@@ -5,5 +5,10 @@ enum class ParadoxDefinitionHierarchyNodeType {
     Subtype,
     NoSubtype,
     Definition,
+    EventAttribute,
+    EventType,
+    TechAttribute,
+    TechSearchArea,
+    TechTier,
     ;
 }
