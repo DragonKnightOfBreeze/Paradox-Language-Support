@@ -86,6 +86,7 @@ class ParadoxDefinitionHierarchyBrowser(project: Project, element: PsiElement) :
         actionGroup.add(ParadoxDefinitionHierarchyActions.ViewTechTreePostAction())
         actionGroup.add(AlphaSortAction())
         actionGroup.add(ParadoxHierarchyActions.ChangeScopeTypeAction(this, getHierarchySettings()))
+        actionGroup.add(ParadoxHierarchyActions.ChangeGroupingStrategyAction(this))
     }
 
     override fun getPreviousOccurenceActionName(): String {

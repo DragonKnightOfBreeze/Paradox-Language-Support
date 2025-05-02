@@ -114,13 +114,13 @@ class ParadoxDefinitionHierarchyTreeStructure(
             NodeType.Type -> {
                 when (groupingStrategy) {
                     TechTreeGrouping.Tier, TechTreeGrouping.Tier2Area, TechTreeGrouping.Tier2Category -> {
-                        return doBuildEventTreeChildren(descriptor, descriptors, NodeType.TechTier)
+                        return doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechTier)
                     }
                     TechTreeGrouping.Area, TechTreeGrouping.Area2Tier -> {
-                        return doBuildEventTreeChildren(descriptor, descriptors, NodeType.TechArea)
+                        return doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechArea)
                     }
                     TechTreeGrouping.Category, TechTreeGrouping.Category2Tier -> {
-                        return doBuildEventTreeChildren(descriptor, descriptors, NodeType.TechCategory)
+                        return doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechCategory)
                     }
                     else -> {}
                 }
@@ -128,10 +128,10 @@ class ParadoxDefinitionHierarchyTreeStructure(
             NodeType.TechTier -> {
                 when (groupingStrategy) {
                     TechTreeGrouping.Tier2Area -> {
-                        return doBuildEventTreeChildren(descriptor, descriptors, NodeType.TechArea)
+                        return doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechArea)
                     }
                     TechTreeGrouping.Tier2Category -> {
-                        return doBuildEventTreeChildren(descriptor, descriptors, NodeType.TechCategory)
+                        return doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechCategory)
                     }
                     else -> {}
                 }
@@ -139,7 +139,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
             NodeType.TechArea -> {
                 when (groupingStrategy) {
                     TechTreeGrouping.Area2Tier -> {
-                        return doBuildEventTreeChildren(descriptor, descriptors, NodeType.TechTier)
+                        return doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechTier)
                     }
                     else -> {}
                 }
@@ -147,7 +147,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
             NodeType.TechCategory -> {
                 when (groupingStrategy) {
                     TechTreeGrouping.Category2Tier -> {
-                        return doBuildEventTreeChildren(descriptor, descriptors, NodeType.TechTier)
+                        return doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechTier)
                     }
                     else -> {}
                 }

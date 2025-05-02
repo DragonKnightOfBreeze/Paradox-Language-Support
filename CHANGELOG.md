@@ -18,10 +18,10 @@
 ## 1.3.35
 
 * [X] 优化：可以配置是否在层级视图中显示位置信息与本地化名字 / OP: Allow to configure whether to show position info and localized name in hierarchy views
-* [X] 实现高级类型层级视图，支持过滤、分组、展开等操作 / Implement advanced type hierarchy views, support operations such as filtering, grouping, expansion, etc. *
-* [X] 实现事件树与科技树对应的高级层级视图 / Implement advanced hierarchy views for event trees and technology trees *
-* [X] 可以配置是否在高级层级视图中显示相关信息（事件信息或科技信息） / Allow to configure whether to show related info in advanced type hierarchy views (event info or technology info) *
-* [X] 为封装变量、定义和本地化提供一些额外的意图操作 / Provide some extra intentions for scripted variables, definitions and localizations *
+* [X] 实现高级类型层级视图，支持过滤、分组、展开等操作 / Implement advanced type hierarchy views, support operations such as filtering, grouping, expansion, etc.
+* [X] 实现事件树与科技树对应的高级层级视图 / Implement advanced hierarchy views for event trees and technology trees
+* [X] 可以配置是否在高级层级视图中显示相关信息（事件信息或科技信息） / Allow to configure whether to show related info in advanced type hierarchy views (event info or technology info)
+* [X] 为封装变量、定义和本地化提供一些额外的意图操作 / Provide some extra intentions for scripted variables, definitions and localizations
 * [X] 修复某些插件配置在IDE重启后会被重置为默认的问题 / Fixed a problem that some plugin settings will be reset to default after IDEA restart
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
