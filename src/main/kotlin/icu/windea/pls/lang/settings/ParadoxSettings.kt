@@ -34,19 +34,19 @@ class ParadoxSettingsState : BaseState() {
     val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet(caseInsensitiveStringSet()).orEmpty() }
 
     @get:Property(surroundWithTag = false)
-    val documentation by property(DocumentationState())
+    var documentation by property(DocumentationState())
     @get:Property(surroundWithTag = false)
-    val completion by property(CompletionState())
+    var completion by property(CompletionState())
     @get:Property(surroundWithTag = false)
-    val folding by property(FoldingState())
+    var folding by property(FoldingState())
     @get:Property(surroundWithTag = false)
-    val generation by property(GenerationState())
+    var generation by property(GenerationState())
     @get:Property(surroundWithTag = false)
-    val inference by property(InferenceState())
+    var inference by property(InferenceState())
     @get:Property(surroundWithTag = false)
-    val hierarchy by property(HierarchyState())
+    var hierarchy by property(HierarchyState())
     @get:Property(surroundWithTag = false)
-    val others by property(OthersState())
+    var others by property(OthersState())
 
     /**
      * @property renderLineComment 是否需要渲染之前的单行注释文本到文档中。
