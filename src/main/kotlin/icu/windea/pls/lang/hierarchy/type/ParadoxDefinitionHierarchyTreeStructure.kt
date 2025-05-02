@@ -11,7 +11,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.settings.ParadoxStrategies.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType as NodeType
@@ -75,14 +75,18 @@ class ParadoxDefinitionHierarchyTreeStructure(
 
     private fun buildEventTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>) {
         val groupingStrategy = getSettings().hierarchy.eventTreeGrouping
-        when {
-            groupingStrategy == ParadoxStrategies.EventTreeGrouping.Type && descriptor.nodeType == NodeType.Type -> {
-                doBuildEventTreeChildren(descriptor, descriptors, NodeType.EventType)
+        when (descriptor.nodeType) {
+            NodeType.Type -> {
+                when (groupingStrategy) {
+                    EventTreeGrouping.Type -> {
+                        return doBuildEventTreeChildren(descriptor, descriptors, NodeType.EventType)
+                    }
+                    else -> {}
+                }
             }
-            else -> {
-                buildDefinitionChildren(descriptor, descriptors)
-            }
+            else -> {}
         }
+        return buildDefinitionChildren(descriptor, descriptors)
     }
 
     @Suppress("SameParameterValue")
@@ -106,20 +110,51 @@ class ParadoxDefinitionHierarchyTreeStructure(
 
     private fun buildTechTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>) {
         val groupingStrategy = getSettings().hierarchy.techTreeGrouping
-        when {
-            groupingStrategy == ParadoxStrategies.TechTreeGrouping.Tier && descriptor.nodeType == NodeType.Type -> {
-                doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechTier)
+        when (descriptor.nodeType) {
+            NodeType.Type -> {
+                when (groupingStrategy) {
+                    TechTreeGrouping.Tier, TechTreeGrouping.Tier2Area, TechTreeGrouping.Tier2Category -> {
+                        return doBuildEventTreeChildren(descriptor, descriptors, NodeType.TechTier)
+                    }
+                    TechTreeGrouping.Area, TechTreeGrouping.Area2Tier -> {
+                        return doBuildEventTreeChildren(descriptor, descriptors, NodeType.TechArea)
+                    }
+                    TechTreeGrouping.Category, TechTreeGrouping.Category2Tier -> {
+                        return doBuildEventTreeChildren(descriptor, descriptors, NodeType.TechCategory)
+                    }
+                    else -> {}
+                }
             }
-            groupingStrategy == ParadoxStrategies.TechTreeGrouping.Area && descriptor.nodeType == NodeType.Type -> {
-                doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechArea)
+            NodeType.TechTier -> {
+                when (groupingStrategy) {
+                    TechTreeGrouping.Tier2Area -> {
+                        return doBuildEventTreeChildren(descriptor, descriptors, NodeType.TechArea)
+                    }
+                    TechTreeGrouping.Tier2Category -> {
+                        return doBuildEventTreeChildren(descriptor, descriptors, NodeType.TechCategory)
+                    }
+                    else -> {}
+                }
             }
-            groupingStrategy == ParadoxStrategies.TechTreeGrouping.Category && descriptor.nodeType == NodeType.Type -> {
-                doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechCategory)
+            NodeType.TechArea -> {
+                when (groupingStrategy) {
+                    TechTreeGrouping.Area2Tier -> {
+                        return doBuildEventTreeChildren(descriptor, descriptors, NodeType.TechTier)
+                    }
+                    else -> {}
+                }
             }
-            else -> {
-                buildDefinitionChildren(descriptor, descriptors)
+            NodeType.TechCategory -> {
+                when (groupingStrategy) {
+                    TechTreeGrouping.Category2Tier -> {
+                        return doBuildEventTreeChildren(descriptor, descriptors, NodeType.TechTier)
+                    }
+                    else -> {}
+                }
             }
+            else -> {}
         }
+        return buildDefinitionChildren(descriptor, descriptors)
     }
 
     private fun doBuildTechTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>, nextNodeType: NodeType) {
