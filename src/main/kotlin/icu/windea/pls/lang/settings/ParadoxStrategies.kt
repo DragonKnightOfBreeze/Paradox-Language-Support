@@ -46,7 +46,6 @@ interface ParadoxStrategies {
         Tier(PlsBundle.message("settings.strategy.techTreeGrouping.1")),
         Area(PlsBundle.message("settings.strategy.techTreeGrouping.2")),
         Category(PlsBundle.message("settings.strategy.techTreeGrouping.3")),
-        Area2Category(PlsBundle.message("settings.strategy.techTreeGrouping.4")),
         ;
 
         override fun toString() = text

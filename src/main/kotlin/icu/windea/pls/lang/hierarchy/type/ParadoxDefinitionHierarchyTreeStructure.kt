@@ -116,19 +116,6 @@ class ParadoxDefinitionHierarchyTreeStructure(
             groupingStrategy == ParadoxStrategies.TechTreeGrouping.Category && descriptor.nodeType == NodeType.Type -> {
                 doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechCategory)
             }
-            groupingStrategy == ParadoxStrategies.TechTreeGrouping.Area2Category -> {
-                when (descriptor.nodeType) {
-                    NodeType.Type -> {
-                        doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechArea)
-                    }
-                    NodeType.TechArea -> {
-                        doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechCategory)
-                    }
-                    else -> {
-                        buildDefinitionChildren(descriptor, descriptors)
-                    }
-                }
-            }
             else -> {
                 buildDefinitionChildren(descriptor, descriptors)
             }
