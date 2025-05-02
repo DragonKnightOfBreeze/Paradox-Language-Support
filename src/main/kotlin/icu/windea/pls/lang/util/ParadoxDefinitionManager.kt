@@ -36,7 +36,7 @@ object ParadoxDefinitionManager {
 
     fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
         //快速判断
-        if (runReadAction { element.greenStub }?.isValidDefinition == false) return null
+        runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub }?.let { if (!(it.isValidDefinition)) return null }
         //从缓存中获取
         return doGetInfoFromCache(element)
     }
@@ -470,11 +470,13 @@ object ParadoxDefinitionManager {
     }
 
     fun getName(element: ParadoxScriptDefinitionElement): String? {
-        return runReadAction { element.greenStub }?.name ?: element.definitionInfo?.name
+        runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub }?.let { return it.name }
+        return element.definitionInfo?.name
     }
 
     fun getType(element: ParadoxScriptDefinitionElement): String? {
-        return runReadAction { element.greenStub }?.type ?: element.definitionInfo?.type
+        runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub }?.let { return it.type }
+        return element.definitionInfo?.type
     }
 
     fun getSubtypes(element: ParadoxScriptDefinitionElement): List<String>? {
@@ -578,7 +580,7 @@ object ParadoxDefinitionManager {
     }
 
     fun getInfoFromStub(element: ParadoxScriptDefinitionElement, project: Project): ParadoxDefinitionInfo? {
-        val stub = runReadAction { element.greenStub } ?: return null
+        val stub = runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub } ?: return null
         //if(!stub.isValid()) return null //这里不用再次判断
         val name = stub.name
         val type = stub.type

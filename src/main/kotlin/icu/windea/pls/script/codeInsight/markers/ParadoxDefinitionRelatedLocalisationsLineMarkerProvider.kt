@@ -4,6 +4,7 @@ import com.intellij.codeInsight.daemon.*
 import com.intellij.navigation.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.util.NotNullLazyValue
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.util.*
@@ -16,7 +17,7 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 定义的相关本地化（relatedLocalisation，对应localisation，不对应localisation_synced）的装订线图标提供器。
+ * 提供定义的相关本地化（relatedLocalisation，对应localisation，不对应localisation_synced）的装订线图标。
  */
 class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.relatedLocalisations")
@@ -32,10 +33,10 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
         if (localisationInfos.isEmpty()) return
         //显示在提示中 & 可导航：去重后的一组本地化的键名，不包括没有对应的本地化的项，按解析顺序排序
         val icon = PlsIcons.Gutter.RelatedLocalisations
-        val tooltipBuilder = StringBuilder()
+        val prefix = PlsConstants.Strings.relatedLocalisationPrefix
+        val tooltipLines = mutableSetOf<String>()
         val keys = mutableSetOf<String>()
         val targets = mutableSetOf<ParadoxLocalisationProperty>() //这里需要考虑基于引用相等去重
-        var isFirst = true
         val project = element.project
         for ((key, locationExpression) in localisationInfos) {
             ProgressManager.checkCanceled()
@@ -45,21 +46,19 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
                 targets.addAll(resolved.elements)
             }
             if (resolved.message != null) {
-                if (isFirst) isFirst = false else tooltipBuilder.append("<br>")
-                tooltipBuilder.append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ").append(key).append(" = ").append(resolved.message)
+                tooltipLines.add("$prefix $key = ${resolved.message}")
             } else if (resolved.elements.isNotEmpty() && keys.add(key)) {
-                if (isFirst) isFirst = false else tooltipBuilder.append("<br>")
-                tooltipBuilder.append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ").append(key).append(" = ").append(resolved.name)
+                tooltipLines.add("$prefix $key = ${resolved.name}")
             }
         }
         if (keys.isEmpty()) return
         if (targets.isEmpty()) return
-        val tooltip = tooltipBuilder.toString()
+        ProgressManager.checkCanceled()
         val lineMarkerInfo = createNavigationGutterIconBuilder(icon) { createGotoRelatedItem(targets) }
-            .setTooltipText(tooltip)
+            .setTooltipText(tooltipLines.joinToString("<br>"))
             .setPopupTitle(PlsBundle.message("script.gutterIcon.relatedLocalisations.title"))
-            .setTargets(targets)
-            .setAlignment(GutterIconRenderer.Alignment.RIGHT)
+            .setTargets(NotNullLazyValue.lazy { targets })
+            .setAlignment(GutterIconRenderer.Alignment.LEFT)
             .setNamer { PlsBundle.message("script.gutterIcon.relatedLocalisations") }
             .createLineMarkerInfo(locationElement)
         //NavigateAction.setNavigateAction(

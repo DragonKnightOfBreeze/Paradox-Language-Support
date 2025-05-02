@@ -14,7 +14,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 定义（definition）的装订线图标提供器。
+ * 提供定义（definition）的装订线图标。
  */
 class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.definition")
@@ -27,11 +27,10 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
         val locationElement = element.propertyKey.idElement ?: return
         val definitionInfo = element.definitionInfo ?: return
         val icon = PlsIcons.Gutter.Definition
-        val tooltip = buildString {
-            val name = definitionInfo.name
-            val typeText = definitionInfo.typesText
-            append(PlsConstants.Strings.definitionPrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>: ").append(typeText)
-        }
+        val prefix = PlsConstants.Strings.definitionPrefix
+        val name = definitionInfo.name
+        val typeText = definitionInfo.typesText
+        val tooltip = "<b>$prefix ${name.escapeXml().orAnonymous()}</b>: $typeText"
         val targets by lazy {
             val project = element.project
             val selector = selector(project, element).definition().contextSensitive()
@@ -41,7 +40,7 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
             .setTooltipText(tooltip)
             .setPopupTitle(PlsBundle.message("script.gutterIcon.definition.title"))
             .setTargets(NotNullLazyValue.lazy { targets })
-            .setAlignment(GutterIconRenderer.Alignment.RIGHT)
+            .setAlignment(GutterIconRenderer.Alignment.LEFT)
             .setNamer { PlsBundle.message("script.gutterIcon.definition") }
             .createLineMarkerInfo(locationElement)
         //NavigateAction.setNavigateAction(

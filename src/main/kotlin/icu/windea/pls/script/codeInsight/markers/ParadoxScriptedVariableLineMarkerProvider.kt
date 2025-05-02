@@ -14,7 +14,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 封装变量的装订线图标提供器。
+ * 提供封装变量（scripted_variable）的装订线图标。
  */
 class ParadoxScriptedVariableLineMarkerProvider : RelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.scriptedVariable")
@@ -25,11 +25,10 @@ class ParadoxScriptedVariableLineMarkerProvider : RelatedItemLineMarkerProvider(
         //何时显示装订线图标：element是scriptedVariable
         if (element !is ParadoxScriptScriptedVariable) return
         val locationElement = element.scriptedVariableName.idElement ?: return
+        val prefix = PlsConstants.Strings.scriptedVariablePrefix
         val name = element.name ?: return
         val icon = PlsIcons.Gutter.ScriptedVariable
-        val tooltip = buildString {
-            append(PlsConstants.Strings.scriptedVariablePrefix).append(" <b>@").append(name.escapeXml().orAnonymous()).append("</b>")
-        }
+        val tooltip = "$prefix <b>@${name.escapeXml().orAnonymous()}</b>"
         val targets by lazy {
             val project = element.project
             val selector = selector(project, element).scriptedVariable().contextSensitive()
@@ -44,7 +43,7 @@ class ParadoxScriptedVariableLineMarkerProvider : RelatedItemLineMarkerProvider(
             .setTooltipText(tooltip)
             .setPopupTitle(PlsBundle.message("script.gutterIcon.scriptedVariable.title"))
             .setTargets(NotNullLazyValue.lazy { targets })
-            .setAlignment(GutterIconRenderer.Alignment.RIGHT)
+            .setAlignment(GutterIconRenderer.Alignment.LEFT)
             .setNamer { PlsBundle.message("script.gutterIcon.scriptedVariable") }
             .createLineMarkerInfo(locationElement)
         //NavigateAction.setNavigateAction(

@@ -120,6 +120,22 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             }
         }
 
+        //computer `relatedLocalisationPatterns`
+        run {
+            with(configGroup.relatedLocalisationPatterns) {
+                val r = mutableSetOf<String>()
+                configGroup.types.values.forEach { c ->
+                    c.localisation?.locationConfigs?.forEach { (_, lc) -> r += lc.value }
+                }
+                r.forEach { s ->
+                    val i = s.indexOf('$')
+                    if (i == -1) return@forEach
+                    this += tupleOf(s.substring(0, i), s.substring(i + 1))
+                }
+                this.sortedWith(compareBy({ it.first }, { it.second }))
+            }
+        }
+
         return true
     }
 }

@@ -144,6 +144,7 @@ private fun getScriptedVariableDoc(element: ParadoxScriptScriptedVariable, origi
 private fun getPropertyDoc(element: ParadoxScriptProperty, originalElement: PsiElement?, quickNavigation: Boolean): String {
     val definitionInfo = element.definitionInfo
     if (definitionInfo != null) return getDefinitionDoc(element, definitionInfo, originalElement, quickNavigation)
+
     val name = element.name
     return buildDocumentation {
         buildPropertyDefinition(element, name)
@@ -154,8 +155,8 @@ private fun getPropertyDoc(element: ParadoxScriptProperty, originalElement: PsiE
 
 private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, originalElement: PsiElement?, quickNavigation: Boolean): String {
     return buildDocumentation {
-        //在definition部分，相关图片信息显示在相关本地化信息之后，在sections部分则显示在之前
-        sectionsList = List(4) { mutableMapOf() }
+        //对于相关图片信息，在definition部分显示在相关本地化信息之后，在sections部分则显示在之前
+        if (!quickNavigation) initSections(3)
         buildDefinitionDefinition(element, definitionInfo)
         if (quickNavigation) return@buildDocumentation
         buildDocumentationContent(element, definitionInfo)
@@ -166,8 +167,9 @@ private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: Par
 
 private fun getLocalisationPropertyDoc(element: ParadoxLocalisationProperty, originalElement: PsiElement?, quickNavigation: Boolean): String {
     val name = element.name
-    val category = element.category
-    if (category != null) return getLocalisationDoc(element, name, category, originalElement, quickNavigation)
+    val localisationInfo = element.localisationInfo
+    if (localisationInfo != null) return getLocalisationDoc(element, localisationInfo, originalElement, quickNavigation)
+
     return buildDocumentation {
         buildLocalisationPropertyDefinition(element)
     }
@@ -180,9 +182,9 @@ private fun getLocalisationLocaleDoc(element: ParadoxLocalisationLocale, origina
     }
 }
 
-private fun getLocalisationDoc(element: ParadoxLocalisationProperty, name: String, category: ParadoxLocalisationCategory, originalElement: PsiElement?, quickNavigation: Boolean): String {
+private fun getLocalisationDoc(element: ParadoxLocalisationProperty, localisationInfo: ParadoxLocalisationInfo, originalElement: PsiElement?, quickNavigation: Boolean): String {
     return buildDocumentation {
-        buildLocalisationDefinition(element, category, name)
+        buildLocalisationDefinition(element, localisationInfo)
         if (quickNavigation) return@buildDocumentation
         buildLineCommentContent(element)
         buildLocalisationSections(element)
@@ -438,7 +440,7 @@ private fun DocumentationBuilder.buildDefinitionDefinition(element: ParadoxScrip
         appendFileInfoHeader(element)
 
         //加上定义信息
-        addDefinitionInfo(definitionInfo)
+        addDefinitionInfo(element, definitionInfo)
 
         //加上继承的定义信息
         val superDefinition = ParadoxDefinitionInheritSupport.getSuperDefinition(element, definitionInfo)
@@ -471,32 +473,16 @@ private fun DocumentationBuilder.buildDefinitionDefinition(element: ParadoxScrip
     }
 }
 
-private fun DocumentationBuilder.addDefinitionInfo(definitionInfo: ParadoxDefinitionInfo) {
+private fun DocumentationBuilder.addDefinitionInfo(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, usePrefix: String? = null) {
     val gameType = definitionInfo.gameType
-    append(PlsConstants.Strings.definitionPrefix)
-    append(" <b>")
+    val prefix = usePrefix ?: PlsConstants.Strings.definitionPrefix
+    append(prefix).append(" ")
     val name = definitionInfo.name
-    append(name.orAnonymous().escapeXml())
-    append("</b>: ")
-    val typeConfig = definitionInfo.typeConfig
-    val typeLink = "${gameType.prefix}types/${typeConfig.name}"
-    appendCwtConfigLink(typeLink, typeConfig.name)
-    val subtypeConfigs = definitionInfo.subtypeConfigs
-    if (subtypeConfigs.isNotEmpty()) {
-        for (subtypeConfig in subtypeConfigs) {
-            append(", ")
-            val subtypeLink = "$typeLink/${subtypeConfig.name}"
-            appendCwtConfigLink(subtypeLink, subtypeConfig.name)
-        }
+    if(usePrefix == null) {
+        append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
+    } else {
+        appendDefinitionLink(gameType, name, definitionInfo.type, definition, name.escapeXml().orAnonymous())
     }
-}
-
-private fun DocumentationBuilder.addSuperDefinitionInfo(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
-    val gameType = definitionInfo.gameType
-    appendIndent().append(PlsBundle.message("inherits"))
-    append(" ")
-    val name = definitionInfo.name
-    appendDefinitionLink(gameType, name, definitionInfo.type, definition, name.orAnonymous().escapeXml())
     append(": ")
     val typeConfig = definitionInfo.typeConfig
     val typeLink = "${gameType.prefix}types/${typeConfig.name}"
@@ -504,9 +490,26 @@ private fun DocumentationBuilder.addSuperDefinitionInfo(definition: ParadoxScrip
     val subtypeConfigs = definitionInfo.subtypeConfigs
     if (subtypeConfigs.isNotEmpty()) {
         for (subtypeConfig in subtypeConfigs) {
-            append(", ")
             val subtypeLink = "$typeLink/${subtypeConfig.name}"
-            appendCwtConfigLink(subtypeLink, subtypeConfig.name)
+            append(", ").appendCwtConfigLink(subtypeLink, subtypeConfig.name)
+        }
+    }
+}
+
+private fun DocumentationBuilder.addSuperDefinitionInfo(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
+    val gameType = definitionInfo.gameType
+    appendIndent().append(PlsBundle.message("inherits")).append(" ")
+    val name = definitionInfo.name
+    appendDefinitionLink(gameType, name, definitionInfo.type, definition, name.escapeXml().orAnonymous())
+    append(": ")
+    val typeConfig = definitionInfo.typeConfig
+    val typeLink = "${gameType.prefix}types/${typeConfig.name}"
+    appendCwtConfigLink(typeLink, typeConfig.name)
+    val subtypeConfigs = definitionInfo.subtypeConfigs
+    if (subtypeConfigs.isNotEmpty()) {
+        for (subtypeConfig in subtypeConfigs) {
+            val subtypeLink = "$typeLink/${subtypeConfig.name}"
+            append(", ").appendCwtConfigLink(subtypeLink, subtypeConfig.name)
         }
     }
 }
@@ -689,16 +692,35 @@ private fun DocumentationBuilder.buildLocalisationPropertyDefinition(element: Pa
     }
 }
 
-private fun DocumentationBuilder.buildLocalisationDefinition(element: ParadoxLocalisationProperty, category: ParadoxLocalisationCategory, name: String) {
+private fun DocumentationBuilder.buildLocalisationDefinition(element: ParadoxLocalisationProperty, localisationInfo: ParadoxLocalisationInfo) {
     definition {
         //加上文件信息
         appendFileInfoHeader(element)
-        //加上元素定义信息
-        val prefix = when (category) {
-            ParadoxLocalisationCategory.Localisation -> PlsConstants.Strings.localisationPrefix
-            ParadoxLocalisationCategory.SyncedLocalisation -> PlsConstants.Strings.localisationSyncedPrefix
-        }
-        append(prefix).append(" <b>").append(name).append("</b>")
+
+        //加上定义信息
+        addLocalisationInfo(localisationInfo)
+
+        //加上相关定义信息
+        addRelatedDefinitionsForLocalisation(element, localisationInfo)
+    }
+}
+
+private fun DocumentationBuilder.addLocalisationInfo(localisationInfo: ParadoxLocalisationInfo) {
+    val prefix = when (localisationInfo.category) {
+        ParadoxLocalisationCategory.Localisation -> PlsConstants.Strings.localisationPrefix
+        ParadoxLocalisationCategory.SyncedLocalisation -> PlsConstants.Strings.localisationSyncedPrefix
+    }
+    append(prefix).append(" ")
+    append("<b>").append(localisationInfo.name.orUnresolved()).append("</b>")
+}
+
+private fun DocumentationBuilder.addRelatedDefinitionsForLocalisation(element: ParadoxLocalisationProperty, localisationInfo: ParadoxLocalisationInfo) {
+    val relatedDefinitions = ParadoxLocalisationManager.getRelatedDefinitions(element)
+    if (relatedDefinitions.isEmpty()) return
+    for (relatedDefinition in relatedDefinitions) {
+        val relatedDefinitionInfo = relatedDefinition.definitionInfo ?: continue
+        appendBr()
+        addDefinitionInfo(relatedDefinition, relatedDefinitionInfo, usePrefix = PlsConstants.Strings.relatedDefinitionPrefix)
     }
 }
 

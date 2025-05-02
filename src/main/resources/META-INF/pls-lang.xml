@@ -203,6 +203,12 @@
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
+      <action id="Pls.GoToRelatedDefinitions" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedDefinitionsAction">
+        <keyboard-shortcut first-keystroke="alt shift p" keymap="$default"/>
+        <mouse-shortcut keymap="$default" keystroke="alt shift button1"/>
+        <override-text place="MainMenu"/>
+        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
+      </action>
       <action id="Pls.GoToRelatedLocalisations" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedLocalisationsAction">
         <keyboard-shortcut first-keystroke="alt shift p" keymap="$default"/>
         <mouse-shortcut keymap="$default" keystroke="alt shift button1"/>

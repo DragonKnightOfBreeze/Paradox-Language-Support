@@ -17,7 +17,7 @@ class ChainedParadoxSelector<T>(
     val rootFile = selectRootFile(file)
 
     val gameType by lazy {
-        val selectorGameType = selectors.filterIsInstance<ParadoxWithGameTypeSelector<*>>().lastOrNull()?.gameType
+        val selectorGameType = selectors.filterIsInstance<ParadoxWithGameTypeSelector<T>>().lastOrNull()?.gameType
         if (selectorGameType != null) return@lazy selectorGameType
         selectGameType(context)
     }

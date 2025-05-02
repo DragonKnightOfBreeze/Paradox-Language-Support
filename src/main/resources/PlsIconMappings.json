@@ -65,6 +65,7 @@
         "definition.svg": "icons/gutter/definition.svg",
         "localisation.svg": "icons/gutter/localisation.svg",
         "relatedImages.svg": "icons/gutter/relatedImages.svg",
+        "relatedDefinitions.svg": "icons/gutter/relatedDefinitions.svg",
         "relatedLocalisations.svg": "icons/gutter/relatedLocalisations.svg"
       },
       "actions": {

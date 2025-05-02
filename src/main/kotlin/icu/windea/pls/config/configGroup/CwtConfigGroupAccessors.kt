@@ -180,6 +180,10 @@ val CwtConfigGroup.definitionTypesSupportParameters: MutableSet<String>
 @Tags(Tag.Computed)
 val CwtConfigGroup.definitionTypesMayWithTypeKeyPrefix: MutableSet<String>
     by createKey(CwtConfigGroup.Keys) { mutableSetOf() }
+//相关本地化的模式，用于从本地化导航到相关定义
+@Tags(Tag.Computed)
+val CwtConfigGroup.relatedLocalisationPatterns: MutableSet<Tuple2<String, String>>
+    by createKey(CwtConfigGroup.Keys) { mutableSetOf() }
 
 @Tags(Tag.Collected)
 val CwtConfigGroup.filePathExpressions: MutableSet<CwtDataExpression>

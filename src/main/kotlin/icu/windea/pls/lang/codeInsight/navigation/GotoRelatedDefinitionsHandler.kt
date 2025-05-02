@@ -9,16 +9,14 @@ import com.intellij.pom.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import java.util.*
 
-class GotoLocalisationsHandler : GotoTargetHandler() {
+class GotoRelatedDefinitionsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
-        return "navigation.goto.paradoxLocalisations"
+        return "navigation.goto.paradoxRelatedDefinitions"
     }
 
     override fun getSourceAndTargetElements(editor: Editor, file: PsiFile): GotoData? {
@@ -26,19 +24,15 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
         val localisation = element
-        val category = localisation.category ?: return null
+        if (localisation.category != ParadoxLocalisationCategory.Localisation) return null
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
         val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
             //need read action here
             runReadAction {
-                val selector = selector(project, localisation).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                val resolved = when(category) {
-                    ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.search(localisation.name, selector).findAll()
-                    ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(localisation.name, selector).findAll()
-                }
+                val resolved = ParadoxLocalisationManager.getRelatedDefinitions(localisation)
                 targets.addAll(resolved)
             }
-        }, PlsBundle.message("script.goto.localisations.search", localisation.name), true, project)
+        }, PlsBundle.message("script.goto.relatedDefinitions.search", localisation.name), true, project)
         if (!runResult) return null
         if (targets.isNotEmpty()) targets.removeIf { it == localisation }
         return GotoData(localisation, targets.distinct().toTypedArray(), emptyList())
@@ -54,16 +48,16 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
         val localisationName = sourceElement.castOrNull<ParadoxLocalisationProperty>()?.name ?: return ""
-        return PlsBundle.message("script.goto.localisations.chooseTitle", localisationName.escapeXml())
+        return PlsBundle.message("script.goto.relatedDefinitions.chooseTitle", localisationName.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         val localisationName = sourceElement.castOrNull<ParadoxLocalisationProperty>()?.name ?: return ""
-        return PlsBundle.message("script.goto.localisations.findUsagesTitle", localisationName.escapeXml())
+        return PlsBundle.message("script.goto.relatedDefinitions.findUsagesTitle", localisationName.escapeXml())
     }
 
     override fun getNotFoundMessage(project: Project, editor: Editor, file: PsiFile): String {
-        return PlsBundle.message("script.goto.localisations.notFoundMessage")
+        return PlsBundle.message("script.goto.relatedDefinitions.notFoundMessage")
     }
 
     override fun navigateToElement(descriptor: Navigatable) {

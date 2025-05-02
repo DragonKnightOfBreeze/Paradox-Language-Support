@@ -125,7 +125,7 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
             runReadAction { from.greenStub }?.gameType?.let { return it }
             selectGameType(from.containingFile)
         }
-        from is ParadoxScriptDefinitionElement -> {
+        from is ParadoxScriptProperty -> {
             runReadAction { from.greenStub }?.gameType?.let { return it }
             selectGameType(from.containingFile)
         }

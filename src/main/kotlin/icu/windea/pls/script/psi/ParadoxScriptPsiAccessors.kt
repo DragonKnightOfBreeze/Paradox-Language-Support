@@ -44,13 +44,5 @@ val ParadoxScriptValue.propertyKey: ParadoxScriptPropertyKey?
 val ParadoxScriptScriptedVariable.greenStub: ParadoxScriptScriptedVariableStub?
     get() = this.castOrNull<ParadoxScriptScriptedVariableImpl>()?.greenStub
 
-@Suppress("UNCHECKED_CAST")
-val <T : ParadoxScriptDefinitionElement> T.greenStub: ParadoxScriptDefinitionElementStub<T>?
-    get() = when {
-        this is ParadoxScriptFile -> this.stub
-        this is ParadoxScriptPropertyImpl -> this.greenStub
-        else -> throw IllegalStateException()
-    } as? ParadoxScriptDefinitionElementStub<T>?
-
 val ParadoxScriptProperty.greenStub: ParadoxScriptPropertyStub?
     get() = this.castOrNull<ParadoxScriptPropertyImpl>()?.greenStub
