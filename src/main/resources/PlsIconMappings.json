@@ -57,7 +57,8 @@
         "inlineScript.svg": "icons/nodes/inlineScript.svg",
         "databaseObjectType.svg": "icons/nodes/databaseObjectType.svg",
         "defineNamespace.svg": "icons/nodes/defineNamespace.svg",
-        "defineVariable.svg": "icons/nodes/defineVariable.svg"
+        "defineVariable.svg": "icons/nodes/defineVariable.svg",
+        "definitionGroup.svg": "icons/nodes/definitionGroup.svg"
       },
       "gutter": {
         "scriptedVariable.svg": "icons/gutter/scriptedVariable.svg",

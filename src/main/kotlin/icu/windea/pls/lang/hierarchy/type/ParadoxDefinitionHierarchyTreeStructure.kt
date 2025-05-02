@@ -4,15 +4,15 @@ import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.ui.tree.*
+import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType as NodeType
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyType as Type
@@ -30,33 +30,32 @@ class ParadoxDefinitionHierarchyTreeStructure(
         descriptor as ParadoxDefinitionHierarchyNodeDescriptor
         val nodeType = descriptor.nodeType
         val descriptors = mutableListOf<HierarchyNodeDescriptor>()
-        when (nodeType) {
-            NodeType.Type -> {
-                when (type) {
-                    Type.Type -> {
-                        buildDefinitionChildren(descriptor, descriptors)
-                    }
-                    Type.TypeAndSubtypes -> {
+        when {
+            type == Type.Type -> {
+                buildDefinitionChildren(descriptor, descriptors)
+            }
+            type == Type.TypeAndSubtypes -> {
+                when {
+                    nodeType == NodeType.Type -> {
                         buildSubtypeConfigChildren(descriptors, descriptor)
                     }
-                    Type.EventTreeInvoker, Type.EventTreeInvoked -> {
+                    else -> {
+                        buildDefinitionChildren(descriptor, descriptors)
+                    }
+                }
+            }
+            type.nested -> {
+                when {
+                    nodeType == NodeType.Definition -> {
+                        buildNestedDefinitionChildren(descriptor, descriptors)
+                    }
+                    type == Type.EventTreeInvoker || type == Type.EventTreeInvoked -> {
                         buildEventTreeChildren(descriptor, descriptors)
                     }
-                    Type.TechTreePre, Type.TechTreePost -> {
+                    type == Type.TechTreePre || type == Type.TechTreePost -> {
                         buildTechTreeChildren(descriptor, descriptors)
                     }
                 }
-            }
-            NodeType.Subtype, NodeType.NoSubtype -> {
-                buildDefinitionChildren(descriptor, descriptors)
-            }
-            NodeType.Definition -> {
-                if (type.nested) {
-                    buildNestedDefinitionChildren(descriptor, descriptors)
-                }
-            }
-            else -> {
-                buildDefinitionChildren(descriptor, descriptors)
             }
         }
         if (descriptors.isEmpty()) return HierarchyNodeDescriptor.EMPTY_ARRAY
@@ -67,31 +66,33 @@ class ParadoxDefinitionHierarchyTreeStructure(
         val project = myProject
         typeConfig.subtypes.forEach { (_, subtypeConfig) ->
             val subtypeElement = subtypeConfig.pointer.element ?: return@forEach
-            descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, subtypeElement, false, subtypeConfig.name, this.type, NodeType.Subtype)
+            descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, subtypeElement, false, subtypeConfig.name, type, NodeType.Subtype)
         }
         val typeElement = descriptor.psiElement ?: return
-        descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, typeElement, false, "", this.type, NodeType.NoSubtype)
+        val name = PlsBundle.message("hierarchy.definition.descriptor.noSubtype")
+        descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, typeElement, false, name, type, NodeType.NoSubtype)
     }
 
     private fun buildEventTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>) {
         val groupingStrategy = getSettings().hierarchy.eventTreeGrouping
-        doBuildEventTreeChildren(descriptor, descriptors, groupingStrategy)
+        when {
+            groupingStrategy == ParadoxStrategies.EventTreeGrouping.Type && descriptor.nodeType == NodeType.Type -> {
+                doBuildEventTreeChildren(descriptor, descriptors, NodeType.EventType)
+            }
+            else -> {
+                buildDefinitionChildren(descriptor, descriptors)
+            }
+        }
     }
 
-    private fun doBuildEventTreeChildren(
-        descriptor: ParadoxDefinitionHierarchyNodeDescriptor,
-        descriptors: MutableList<HierarchyNodeDescriptor>,
-        groupingStrategy: ParadoxStrategies.EventTreeGrouping
-    ) {
+    @Suppress("SameParameterValue")
+    private fun doBuildEventTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>, nextNodeType: NodeType) {
         val gameType = typeConfig.configGroup.gameType
         if (gameType == null) return
 
         val project = myProject
-        when (groupingStrategy) {
-            ParadoxStrategies.EventTreeGrouping.None -> {
-                buildDefinitionChildren(descriptor, descriptors)
-            }
-            ParadoxStrategies.EventTreeGrouping.Type -> {
+        when (nextNodeType) {
+            NodeType.EventType -> {
                 val eventTypeConfigs = ParadoxEventManager.getAllTypeConfigs(project, gameType)
                 eventTypeConfigs.forEach { config ->
                     val configElement = config.pointer.element ?: return@forEach
@@ -99,28 +100,48 @@ class ParadoxDefinitionHierarchyTreeStructure(
                     descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, configElement, false, name, type, NodeType.EventType)
                 }
             }
+            else -> {}
         }
     }
 
     private fun buildTechTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>) {
         val groupingStrategy = getSettings().hierarchy.techTreeGrouping
-        doBuildTechTreeChildren(descriptor, descriptors, groupingStrategy)
-    }
-
-    private fun doBuildTechTreeChildren(
-        descriptor: ParadoxDefinitionHierarchyNodeDescriptor,
-        descriptors: MutableList<HierarchyNodeDescriptor>,
-        groupingStrategy: ParadoxStrategies.TechTreeGrouping
-    ) {
-        val gameType = typeConfig.configGroup.gameType
-        if (gameType != ParadoxGameType.Stellaris) return
-
-        val project = myProject
-        when (groupingStrategy) {
-            ParadoxStrategies.TechTreeGrouping.None -> {
+        when {
+            groupingStrategy == ParadoxStrategies.TechTreeGrouping.Tier && descriptor.nodeType == NodeType.Type -> {
+                doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechTier)
+            }
+            groupingStrategy == ParadoxStrategies.TechTreeGrouping.Area && descriptor.nodeType == NodeType.Type -> {
+                doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechArea)
+            }
+            groupingStrategy == ParadoxStrategies.TechTreeGrouping.Category && descriptor.nodeType == NodeType.Type -> {
+                doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechCategory)
+            }
+            groupingStrategy == ParadoxStrategies.TechTreeGrouping.Area2Category -> {
+                when (descriptor.nodeType) {
+                    NodeType.Type -> {
+                        doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechArea)
+                    }
+                    NodeType.TechArea -> {
+                        doBuildTechTreeChildren(descriptor, descriptors, NodeType.TechCategory)
+                    }
+                    else -> {
+                        buildDefinitionChildren(descriptor, descriptors)
+                    }
+                }
+            }
+            else -> {
                 buildDefinitionChildren(descriptor, descriptors)
             }
-            ParadoxStrategies.TechTreeGrouping.Tier -> {
+        }
+    }
+
+    private fun doBuildTechTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>, nextNodeType: NodeType) {
+        val gameType = typeConfig.configGroup.gameType
+        if (gameType == null) return
+
+        val project = myProject
+        when (nextNodeType) {
+            NodeType.TechTier -> {
                 val element = elementPointer.element
                 val tierElements = ParadoxTechnologyManager.Stellaris.getAllTiers(project, element)
                 tierElements.forEach { tierElement ->
@@ -128,7 +149,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
                     descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, tierElement, false, name, type, NodeType.TechTier)
                 }
             }
-            ParadoxStrategies.TechTreeGrouping.Area -> {
+            NodeType.TechArea -> {
                 val areaConfigs = ParadoxTechnologyManager.Stellaris.getAllResearchAreaConfigs(project)
                 areaConfigs.forEach { config ->
                     val configElement = config.pointer.element ?: return@forEach
@@ -136,7 +157,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
                     descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, configElement, false, name, type, NodeType.TechArea)
                 }
             }
-            ParadoxStrategies.TechTreeGrouping.Category -> {
+            NodeType.TechCategory -> {
                 val element = elementPointer.element
                 val categoryElements = ParadoxTechnologyManager.Stellaris.getAllCategories(project, element)
                 categoryElements.forEach { categoryElement ->
@@ -144,18 +165,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
                     descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, categoryElement, false, name, type, NodeType.TechCategory)
                 }
             }
-            ParadoxStrategies.TechTreeGrouping.Area2Category -> {
-                val parentNodeType = descriptor.parentDescriptor?.castOrNull<ParadoxDefinitionHierarchyNodeDescriptor>()?.nodeType
-                when (parentNodeType) {
-                    NodeType.Type -> {
-                        doBuildTechTreeChildren(descriptor, descriptors, ParadoxStrategies.TechTreeGrouping.Area)
-                    }
-                    NodeType.TechArea -> {
-                        doBuildTechTreeChildren(descriptor, descriptors, ParadoxStrategies.TechTreeGrouping.Category)
-                    }
-                    else -> {} //unexpected
-                }
-            }
+            else -> {}
         }
     }
 
@@ -173,7 +183,8 @@ class ParadoxDefinitionHierarchyTreeStructure(
         definitions.forEach f@{ definition ->
             if (!filterDefinitionChild(descriptor, definition, groupingRules)) return@f
             val isBase = element != null && element isSamePosition definition
-            descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, definition, isBase, "", type, NodeType.Definition)
+            val name = definition.definitionInfo?.name ?: return@f
+            descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, definition, isBase, name, type, NodeType.Definition)
         }
     }
 
@@ -181,11 +192,11 @@ class ParadoxDefinitionHierarchyTreeStructure(
         return buildList {
             var currentDescriptor = descriptor
             while (true) {
-                currentDescriptor = currentDescriptor.parentDescriptor?.castOrNull<ParadoxDefinitionHierarchyNodeDescriptor>() ?: break
                 val currentNodeType = currentDescriptor.nodeType
                 if (currentNodeType.grouped) {
                     this += tupleOf(currentNodeType, currentDescriptor.name)
                 }
+                currentDescriptor = currentDescriptor.parentDescriptor?.castOrNull<ParadoxDefinitionHierarchyNodeDescriptor>() ?: break
             }
         }.optimized()
     }
@@ -232,9 +243,10 @@ class ParadoxDefinitionHierarchyTreeStructure(
         }
         if (nestedDefinitions.isEmpty()) return
         val element = elementPointer.element
-        nestedDefinitions.forEach { nestedDefinition ->
+        nestedDefinitions.forEach f@{ nestedDefinition ->
             val isBase = element != null && element isSamePosition nestedDefinition
-            descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, nestedDefinition, isBase, "", type, NodeType.Definition)
+            val name = nestedDefinition.definitionInfo?.name ?: return@f
+            descriptors += ParadoxDefinitionHierarchyNodeDescriptor(project, descriptor, nestedDefinition, isBase, name, type, NodeType.Definition)
         }
     }
 

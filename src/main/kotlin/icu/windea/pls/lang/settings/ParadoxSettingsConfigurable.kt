@@ -442,8 +442,8 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.hierarchy.showEventInfoByType"))
                         .bindSelected(settings.hierarchy::showEventInfoByType)
                         .enabledIf(cb.selected)
-                    checkBox(PlsBundle.message("settings.hierarchy.showEventInfoByAttribute"))
-                        .bindSelected(settings.hierarchy::showEventInfoByAttribute)
+                    checkBox(PlsBundle.message("settings.hierarchy.showEventInfoByAttributes"))
+                        .bindSelected(settings.hierarchy::showEventInfoByAttributes)
                         .enabledIf(cb.selected)
                 }
                 //showTechInfo
@@ -458,11 +458,11 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.hierarchy.showTechInfoByArea"))
                         .bindSelected(settings.hierarchy::showTechInfoByArea)
                         .enabledIf(cb.selected)
-                    checkBox(PlsBundle.message("settings.hierarchy.showTechInfoByCategory"))
-                        .bindSelected(settings.hierarchy::showTechInfoByCategory)
+                    checkBox(PlsBundle.message("settings.hierarchy.showTechInfoByCategories"))
+                        .bindSelected(settings.hierarchy::showTechInfoByCategories)
                         .enabledIf(cb.selected)
-                    checkBox(PlsBundle.message("settings.hierarchy.showTechInfoByAttribute"))
-                        .bindSelected(settings.hierarchy::showTechInfoByAttribute)
+                    checkBox(PlsBundle.message("settings.hierarchy.showTechInfoByAttributes"))
+                        .bindSelected(settings.hierarchy::showTechInfoByAttributes)
                         .enabledIf(cb.selected)
                 }
 

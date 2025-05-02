@@ -49,7 +49,7 @@ object PlsDocBundle {
     }
 
     @JvmStatic
-    fun technologyResearchArea(name: String, gameType: ParadoxGameType?, project: Project, context: Any? = null): @Nls String {
+    fun technologyArea(name: String, gameType: ParadoxGameType?, project: Project, context: Any? = null): @Nls String {
         run {
             val selector = selector(project, context).localisation().contextSensitive()
                 .withGameType(gameType)
@@ -72,7 +72,7 @@ object PlsDocBundle {
             val definition = ParadoxDefinitionSearch.search(name, "technology_category", selector).find() ?: return@run
             val localizedName = ParadoxDefinitionManager.getPrimaryLocalisation(definition)
             if (localizedName != null) {
-                val text = ParadoxLocalisationTextHtmlRenderer.render(localizedName).orNull()
+                val text = ParadoxLocalisationTextRenderer.render(localizedName).orNull()
                 if (text != null) return text
             }
         }

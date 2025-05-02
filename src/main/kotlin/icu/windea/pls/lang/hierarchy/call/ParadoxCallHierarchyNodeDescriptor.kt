@@ -12,6 +12,7 @@ import com.intellij.openapi.util.*
 import com.intellij.pom.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import com.intellij.ui.SimpleTextAttributes
 import com.intellij.usageView.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
@@ -161,16 +162,18 @@ class ParadoxCallHierarchyNodeDescriptor(
     }
 
     companion object {
+        private val grayedAttributes = SimpleTextAttributes.GRAYED_ATTRIBUTES
+
         @JvmStatic
         private fun getNameAttributes(color: Color?) = if (color == null) null else TextAttributes(color, null, null, null, Font.PLAIN)
 
         @JvmStatic
-        private fun getTypeAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
+        private fun getTypeAttributes() = grayedAttributes
 
         @JvmStatic
-        private fun getLocalizedNameAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
+        private fun getLocalizedNameAttributes() = grayedAttributes
 
         @JvmStatic
-        private fun getLocationAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
+        private fun getLocationAttributes() = grayedAttributes
     }
 }

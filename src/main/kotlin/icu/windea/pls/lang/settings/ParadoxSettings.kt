@@ -176,11 +176,11 @@ class ParadoxSettingsState : BaseState() {
      * @property definitionTypeBindingsInCallHierarchy 调用层级视图中，定义类型的绑定。
      * @property showEventInfo 是否在事件树的层级视图中显示事件信息。
      * @property showEventInfoByType 显示事件信息时，是否显示事件的类型。
-     * @property showEventInfoByAttribute 显示事件信息时，是否显示事件的特性。
+     * @property showEventInfoByAttributes 显示事件信息时，是否显示事件的特性。
      * @property showTechInfoByTier 显示科技信息时，是否显示科技的等级。
      * @property showTechInfoByArea 显示科技信息时，是否显示科技的研究领域。
-     * @property showTechInfoByCategory 显示科技信息时，是否显示科技的类别。
-     * @property showTechInfoByAttribute 显示科技信息时，是否显示科技的特性。
+     * @property showTechInfoByCategories 显示科技信息时，是否显示科技的类别。
+     * @property showTechInfoByAttributes 显示科技信息时，是否显示科技的特性。
      * @property showTechInfo 是否在科技树的层级视图中显示科技信息。
      * @property eventTreeGrouping 事件树的层级视图使用的分组策略。
      * @property techTreeGrouping 科技树的层级视图使用的分组策略。
@@ -199,13 +199,13 @@ class ParadoxSettingsState : BaseState() {
 
         var showEventInfo by property(false)
         var showEventInfoByType by property(true)
-        var showEventInfoByAttribute by property(false)
+        var showEventInfoByAttributes by property(false)
 
         var showTechInfo by property(false)
         var showTechInfoByTier by property(true)
         var showTechInfoByArea by property(true)
-        var showTechInfoByCategory by property(true)
-        var showTechInfoByAttribute by property(false)
+        var showTechInfoByCategories by property(true)
+        var showTechInfoByAttributes by property(false)
 
         var eventTreeGrouping by enum(EventTreeGrouping.None)
         var techTreeGrouping by enum(TechTreeGrouping.None)
