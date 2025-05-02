@@ -9,6 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
+import icu.windea.pls.lang.PlsDocBundle
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
@@ -28,9 +29,9 @@ class Vic3EventTreeDiagramSettings(
         override var scopeType by string()
 
         @get:XMap
-        var attribute by linkedMap<String, Boolean>()
-        @get:XMap
         var type by linkedMap<String, Boolean>()
+        @get:XMap
+        var attribute by linkedMap<String, Boolean>()
 
         val attributeSettings = AttributeSettings()
 
@@ -43,18 +44,18 @@ class Vic3EventTreeDiagramSettings(
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val eventTypes = runReadAction { ParadoxEventManager.getTypes(project, ParadoxGameType.Vic3) }
+        val eventTypes = runReadAction { ParadoxEventManager.getAllTypes(ParadoxGameType.Vic3) }
         eventTypes.forEach { settings.type.putIfAbsent(it, true) }
         settings.updateSettings()
 
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
+            PlsDocBundle.eventType(key, gameType)
+        })
         checkBoxGroup(settings.attribute, PlsDiagramBundle.message("eventTree.settings.attribute"), { key ->
             PlsDocBundle.eventAttribute(key, gameType)
-        })
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
-            PlsDiagramBundle.message("eventTree.settings.type.option", key)
         })
     }
 }

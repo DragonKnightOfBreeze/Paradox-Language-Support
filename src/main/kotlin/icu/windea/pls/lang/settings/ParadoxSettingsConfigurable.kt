@@ -397,11 +397,11 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     checkBox(PlsBundle.message("settings.hierarchy.showLocationInfo"))
                         .bindSelected(settings.hierarchy::showLocationInfo)
                         .applyToComponent { cb = this }
-                    checkBox(PlsBundle.message("settings.hierarchy.showPathInfo"))
-                        .bindSelected(settings.hierarchy::showPathInfo)
+                    checkBox(PlsBundle.message("settings.hierarchy.showLocationInfoByPath"))
+                        .bindSelected(settings.hierarchy::showLocationInfoByPath)
                         .enabledIf(cb.selected)
-                    checkBox(PlsBundle.message("settings.hierarchy.showRootInfo"))
-                        .bindSelected(settings.hierarchy::showRootInfo)
+                    checkBox(PlsBundle.message("settings.hierarchy.showLocationInfoByRootInfo"))
+                        .bindSelected(settings.hierarchy::showLocationInfoByRootInfo)
                         .enabledIf(cb.selected)
                 }
 
@@ -431,6 +431,39 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                 row {
                     checkBox(PlsBundle.message("settings.hierarchy.showLocalisationsInCallHierarchy"))
                         .bindSelected(settings.hierarchy::showLocalisationsInCallHierarchy)
+                }
+
+                //showEventInfo
+                row {
+                    lateinit var cb: JBCheckBox
+                    checkBox(PlsBundle.message("settings.hierarchy.showEventInfo"))
+                        .bindSelected(settings.hierarchy::showEventInfo)
+                        .applyToComponent { cb = this }
+                    checkBox(PlsBundle.message("settings.hierarchy.showEventInfoByType"))
+                        .bindSelected(settings.hierarchy::showEventInfoByType)
+                        .enabledIf(cb.selected)
+                    checkBox(PlsBundle.message("settings.hierarchy.showEventInfoByAttribute"))
+                        .bindSelected(settings.hierarchy::showEventInfoByAttribute)
+                        .enabledIf(cb.selected)
+                }
+                //showTechInfo
+                row {
+                    lateinit var cb: JBCheckBox
+                    checkBox(PlsBundle.message("settings.hierarchy.showTechInfo"))
+                        .bindSelected(settings.hierarchy::showTechInfo)
+                        .applyToComponent { cb = this }
+                    checkBox(PlsBundle.message("settings.hierarchy.showTechInfoByTier"))
+                        .bindSelected(settings.hierarchy::showTechInfoByTier)
+                        .enabledIf(cb.selected)
+                    checkBox(PlsBundle.message("settings.hierarchy.showTechInfoByArea"))
+                        .bindSelected(settings.hierarchy::showTechInfoByArea)
+                        .enabledIf(cb.selected)
+                    checkBox(PlsBundle.message("settings.hierarchy.showTechInfoByCategory"))
+                        .bindSelected(settings.hierarchy::showTechInfoByCategory)
+                        .enabledIf(cb.selected)
+                    checkBox(PlsBundle.message("settings.hierarchy.showTechInfoByAttribute"))
+                        .bindSelected(settings.hierarchy::showTechInfoByAttribute)
+                        .enabledIf(cb.selected)
                 }
 
                 //eventTreeGrouping

@@ -148,6 +148,9 @@ object PlsIcons {
         @JvmField
         val DefineVariable = IconManager.getInstance().getIcon("/icons/nodes/defineVariable.svg")
 
+        @JvmField
+        val DefinitionGroup = IconManager.getInstance().getIcon("/icons/nodes/definitionGroup.svg")
+
         @JvmStatic
         fun Definition(type: String?) = when (type) {
             "event" -> EventId

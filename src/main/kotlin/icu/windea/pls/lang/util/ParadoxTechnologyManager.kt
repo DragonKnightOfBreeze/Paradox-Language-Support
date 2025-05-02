@@ -5,10 +5,12 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.ep.data.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -21,6 +23,8 @@ import icu.windea.pls.script.references.*
 object ParadoxTechnologyManager {
     object Keys : KeyRegistry() {
         val cachedPrerequisites by createKey<CachedValue<Set<String>>>(this)
+        val technologyAllAttributes by createKey<Set<String>>(this)
+        val technologyAttributes by createKey<Set<String>>(this)
     }
 
     fun getTechnologies(selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {
@@ -41,18 +45,58 @@ object ParadoxTechnologyManager {
 
     @WithGameType(ParadoxGameType.Stellaris)
     object Stellaris {
-        fun getTiers(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
-            val selector = selector(project, context).definition().withGameType(ParadoxGameType.Stellaris).contextSensitive().distinctByName()
+        private val gameType = ParadoxGameType.Stellaris
+
+        fun getAllTiers(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
+            val selector = selector(project, context).definition().withGameType(gameType).contextSensitive().distinctByName()
             return ParadoxDefinitionSearch.search("technology_tier", selector).findAll()
         }
 
-        fun getResearchAreas(): Set<String> {
-            return getConfigGroup(ParadoxGameType.Stellaris).enums.get("research_area")?.values.orEmpty()
+        fun getAllResearchAreas(): Set<String> {
+            return getConfigGroup(gameType).enums.get("research_area")?.values.orEmpty()
         }
 
-        fun getCategories(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
-            val selector = selector(project, context).definition().withGameType(ParadoxGameType.Stellaris).contextSensitive().distinctByName()
+        fun getAllResearchAreaConfigs(project: Project): Collection<CwtValueConfig> {
+            return getConfigGroup(project, gameType).enums.get("research_area")?.valueConfigMap?.values.orEmpty()
+        }
+
+        fun getAllCategories(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
+            val selector = selector(project, context).definition().withGameType(gameType).contextSensitive().distinctByName()
             return ParadoxDefinitionSearch.search("technology_category", selector).findAll()
+        }
+
+        fun getAllAttributes(gameType: ParadoxGameType): Set<String> {
+            val eventConfig = getConfigGroup(gameType).types["technology"] ?: return emptySet()
+            return eventConfig.config.getOrPutUserData(Keys.technologyAllAttributes) {
+                eventConfig.subtypes.values.filter { it.inGroup("technology_attribute") }.map { it.name }.toSet()
+            }
+        }
+
+        fun getAllAttributeConfigs(project: Project): Collection<CwtSubtypeConfig> {
+            val eventConfig = getConfigGroup(project, gameType).types["technology"] ?: return emptySet()
+            return eventConfig.subtypes.values.filter { it.inGroup("technology_attribute") }
+        }
+
+        fun getTier(element: ParadoxScriptDefinitionElement): String? {
+            return element.getData<StellarisTechnologyData>()?.tier
+        }
+
+        fun getArea(element: ParadoxScriptDefinitionElement): String? {
+            return element.getData<StellarisTechnologyData>()?.area
+        }
+
+        fun getCategories(element: ParadoxScriptDefinitionElement): Set<String> {
+            return element.getData<StellarisTechnologyData>()?.category.orEmpty()
+        }
+
+        fun getAttributes(element: ParadoxScriptDefinitionElement): Set<String> {
+            return element.definitionInfo?.let { getAttributes(it) }.orEmpty()
+        }
+
+        fun getAttributes(definitionInfo: ParadoxDefinitionInfo): Set<String> {
+            return definitionInfo.getOrPutUserData(Keys.technologyAttributes) {
+                definitionInfo.subtypeConfigs.filter { it.inGroup("technology_attribute") }.mapTo(mutableSetOf()) { it.name }
+            }
         }
 
         /**
@@ -81,7 +125,7 @@ object ParadoxTechnologyManager {
             if (name.isNullOrEmpty()) return emptyList()
             val prerequisites = getPrerequisites(definition)
             if (prerequisites.isEmpty()) return emptyList()
-            selector.withGameType(ParadoxGameType.Stellaris)
+            selector.withGameType(gameType)
             return buildList b@{
                 ParadoxDefinitionSearch.search("technology", selector).processQuery p@{ rDefinition ->
                     ProgressManager.checkCanceled()
@@ -102,7 +146,7 @@ object ParadoxTechnologyManager {
 
             val name = definition.definitionInfo?.name
             if (name.isNullOrEmpty()) return emptyList()
-            selector.withGameType(ParadoxGameType.Stellaris)
+            selector.withGameType(gameType)
             return buildList b@{
                 ParadoxDefinitionSearch.search(name, "technology", selector).processQuery p0@{ definition0 ->
                     ProgressManager.checkCanceled()

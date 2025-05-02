@@ -70,8 +70,12 @@ class ParadoxCallHierarchyNodeDescriptor(
             if (!hierarchySettings.showLocationInfo) return@run
             val fileInfo = file.fileInfo ?: return@run
             val text = buildString {
-                if (hierarchySettings.showPathInfo) append(" in ").append(fileInfo.path.path)
-                if (hierarchySettings.showRootInfo) append(" of ").append(fileInfo.rootInfo.qualifiedName)
+                if (hierarchySettings.showLocationInfoByPath) {
+                    append(" in ").append(fileInfo.path.path)
+                }
+                if (hierarchySettings.showLocationInfoByRootInfo) {
+                    append(" of ").append(fileInfo.rootInfo.qualifiedName)
+                }
             }
             if (text.isEmpty()) return@run
             myHighlightedText.ending.addText(text, getLocationAttributes())

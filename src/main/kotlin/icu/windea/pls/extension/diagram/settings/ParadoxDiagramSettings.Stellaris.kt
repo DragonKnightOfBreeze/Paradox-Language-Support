@@ -5,10 +5,10 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.*
-import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
+import icu.windea.pls.lang.PlsDocBundle
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
@@ -28,9 +28,9 @@ class StellarisEventTreeDiagramSettings(
         override var scopeType by string()
 
         @get:XMap
-        var attribute by linkedMap<String, Boolean>()
-        @get:XMap
         var type by linkedMap<String, Boolean>()
+        @get:XMap
+        var attribute by linkedMap<String, Boolean>()
 
         val attributeSettings = AttributeSettings()
 
@@ -46,18 +46,18 @@ class StellarisEventTreeDiagramSettings(
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val eventTypes = runReadAction { ParadoxEventManager.getTypes(project, ParadoxGameType.Stellaris) }
+        val eventTypes = runReadAction { ParadoxEventManager.getAllTypes(ParadoxGameType.Stellaris) }
         eventTypes.forEach { settings.type.putIfAbsent(it, true) }
         settings.updateSettings()
 
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
+            PlsDocBundle.eventType(key, gameType)
+        })
         checkBoxGroup(settings.attribute, PlsDiagramBundle.message("eventTree.settings.attribute"), { key ->
             PlsDocBundle.eventAttribute(key, gameType)
-        })
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
-            PlsDiagramBundle.message("eventTree.settings.type.option", key)
         })
     }
 }
@@ -78,13 +78,13 @@ class StellarisTechTreeDiagramSettings(
         override var scopeType by string()
 
         @get:XMap
-        var attribute by linkedMap<String, Boolean>()
-        @get:XMap
         var tier by linkedMap<String, Boolean>()
         @get:XMap
         var area by linkedMap<String, Boolean>()
         @get:XMap
         var category by linkedMap<String, Boolean>()
+        @get:XMap
+        var attribute by linkedMap<String, Boolean>()
 
         val attributeSettings = AttributeSettings()
 
@@ -101,11 +101,11 @@ class StellarisTechTreeDiagramSettings(
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val tiers = runReadAction { ParadoxTechnologyManager.Stellaris.getTiers(project, null) }
+        val tiers = runReadAction { ParadoxTechnologyManager.Stellaris.getAllTiers(project, null) }
         tiers.forEach { settings.tier.putIfAbsent(it.name, true) }
-        val areas = runReadAction { ParadoxTechnologyManager.Stellaris.getResearchAreas() }
+        val areas = runReadAction { ParadoxTechnologyManager.Stellaris.getAllResearchAreas() }
         areas.forEach { settings.area.putIfAbsent(it, true) }
-        val categories = runReadAction { ParadoxTechnologyManager.Stellaris.getCategories(project, null) }
+        val categories = runReadAction { ParadoxTechnologyManager.Stellaris.getAllCategories(project, null) }
         categories.forEach { settings.category.putIfAbsent(it.name, true) }
         settings.updateSettings()
 
@@ -117,21 +117,21 @@ class StellarisTechTreeDiagramSettings(
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.attribute, PlsDiagramBundle.message("techTree.settings.attribute"), { key ->
-            PlsDocBundle.technologyAttribute(key, gameType)
-        })
         checkBoxGroup(settings.tier, PlsDiagramBundle.message("techTree.settings.tier"), { key ->
-            PlsDiagramBundle.message("techTree.settings.tier.option", key)
+            PlsDocBundle.technologyTier(key, gameType)
         })
         checkBoxGroup(settings.area, PlsDiagramBundle.message("techTree.settings.area"), { key ->
-            PlsDiagramBundle.message("techTree.settings.area.option", key)
+            PlsDocBundle.message("default.technology.area", key)
         }) { key ->
             areaNameProviders[key]?.invoke()
         }
         checkBoxGroup(settings.category, PlsDiagramBundle.message("techTree.settings.category"), { key ->
-            PlsDiagramBundle.message("techTree.settings.category.option", key)
+            PlsDocBundle.message("default.technology.category", key)
         }) { key ->
             categoryNameProviders[key]?.invoke()
         }
+        checkBoxGroup(settings.attribute, PlsDiagramBundle.message("techTree.settings.attribute"), { key ->
+            PlsDocBundle.technologyAttribute(key, gameType)
+        })
     }
 }

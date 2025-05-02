@@ -32,8 +32,7 @@ interface ParadoxStrategies {
      */
     enum class EventTreeGrouping(val text: String) {
         None(PlsBundle.message("settings.strategy.eventTreeGrouping.0")),
-        Attribute(PlsBundle.message("settings.strategy.eventTreeGrouping.1")),
-        Type(PlsBundle.message("settings.strategy.eventTreeGrouping.2")),
+        Type(PlsBundle.message("settings.strategy.eventTreeGrouping.1")),
         ;
 
         override fun toString() = text
@@ -44,11 +43,10 @@ interface ParadoxStrategies {
      */
     enum class TechTreeGrouping(val text: String) {
         None(PlsBundle.message("settings.strategy.techTreeGrouping.0")),
-        Attribute(PlsBundle.message("settings.strategy.techTreeGrouping.1")),
-        Tier(PlsBundle.message("settings.strategy.techTreeGrouping.2")),
-        Area(PlsBundle.message("settings.strategy.techTreeGrouping.3")),
-        Category(PlsBundle.message("settings.strategy.techTreeGrouping.4")),
-        Area2Category(PlsBundle.message("settings.strategy.techTreeGrouping.5")),
+        Tier(PlsBundle.message("settings.strategy.techTreeGrouping.1")),
+        Area(PlsBundle.message("settings.strategy.techTreeGrouping.2")),
+        Category(PlsBundle.message("settings.strategy.techTreeGrouping.3")),
+        Area2Category(PlsBundle.message("settings.strategy.techTreeGrouping.4")),
         ;
 
         override fun toString() = text

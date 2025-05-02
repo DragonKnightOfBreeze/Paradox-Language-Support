@@ -16,11 +16,9 @@ import javax.swing.*
 object ParadoxPresentationManager {
     fun getNameText(definition: ParadoxScriptDefinitionElement): String? {
         val localizedName = ParadoxDefinitionManager.getPrimaryLocalisation(definition)
-        if (localizedName == null) {
-            val key = ParadoxDefinitionManager.getPrimaryLocalisationKey(definition) ?: return null
-            return key
-        }
-        return ParadoxLocalisationTextHtmlRenderer.render(localizedName)
+        if (localizedName != null) return ParadoxLocalisationTextHtmlRenderer.render(localizedName)
+        val localizedNameKey = ParadoxDefinitionManager.getPrimaryLocalisationKey(definition)
+        return localizedNameKey
     }
 
     fun getText(localisation: ParadoxLocalisationProperty): String {

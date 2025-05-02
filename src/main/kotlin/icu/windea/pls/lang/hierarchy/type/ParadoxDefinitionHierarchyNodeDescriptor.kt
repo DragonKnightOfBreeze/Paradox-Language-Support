@@ -12,12 +12,13 @@ import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
+import javax.swing.*
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType as NodeType
+import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyType as Type
 
 //com.intellij.ide.hierarchy.type.TypeHierarchyNodeDescriptor
 
@@ -27,8 +28,8 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
     element: PsiElement,
     isBase: Boolean,
     val name: String,
-    val type: ParadoxDefinitionHierarchyType,
-    val nodeType: ParadoxDefinitionHierarchyNodeType
+    val type: Type,
+    val nodeType: NodeType
 ) : HierarchyNodeDescriptor(project, parentDescriptor, element, isBase) {
     override fun update(): Boolean {
         var changes = super.update()
@@ -61,12 +62,50 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
             }
         }
         run {
-            if (element is CwtProperty) return@run
-
+            if (element !is ParadoxScriptDefinitionElement) return@run
             if (!(hierarchySettings.showLocalizedName)) return@run
             val localizedName = getLocalizedName(element)
             if (localizedName.isNullOrEmpty()) return@run
             myHighlightedText.ending.addText(" $localizedName", getLocalizedNameAttributes())
+        }
+        run {
+            if (element !is ParadoxScriptDefinitionElement) return@run
+            if (type != Type.EventTreeInvoker && type != Type.EventTreeInvoked) return@run
+            if (!hierarchySettings.showEventInfo) return@run
+            val definitionInfo = element.definitionInfo ?: return@run
+            val infos = buildList {
+                if (hierarchySettings.showEventInfoByType) {
+                    this += ParadoxEventManager.getType(definitionInfo)?.orNull() ?: "-"
+                }
+                if (hierarchySettings.showEventInfoByAttribute) {
+                    this += ParadoxEventManager.getAttributes(definitionInfo).joinToString(", ").orNull() ?: "-"
+                }
+            }
+            val text = infos.joinToString(" | ", "[", "]")
+            myHighlightedText.ending.addText(text, getRelatedInfoAttributes())
+        }
+        run {
+            if (element !is ParadoxScriptDefinitionElement) return@run
+            if (type != Type.TechTreePre && type != Type.TechTreePost) return@run
+            if (!hierarchySettings.showTechInfo) return@run
+            val definitionInfo = element.definitionInfo ?: return@run
+            if (definitionInfo.gameType != ParadoxGameType.Stellaris) return@run
+            val infos = buildList {
+                if (hierarchySettings.showTechInfoByTier) {
+                    this += ParadoxTechnologyManager.Stellaris.getTier(element)?.orNull() ?: "-"
+                }
+                if (hierarchySettings.showTechInfoByArea) {
+                    this += ParadoxTechnologyManager.Stellaris.getArea(element)?.orNull() ?: "-"
+                }
+                if (hierarchySettings.showTechInfoByCategory) {
+                    this += ParadoxTechnologyManager.Stellaris.getCategories(element).joinToString(", ").orNull() ?: "-"
+                }
+                if (hierarchySettings.showTechInfoByAttribute) {
+                    this += ParadoxTechnologyManager.Stellaris.getAttributes(definitionInfo).joinToString(", ").orNull() ?: "-"
+                }
+            }
+            val text = infos.joinToString(" | ", "[", "]")
+            myHighlightedText.ending.addText(text, getRelatedInfoAttributes())
         }
         run {
             if (element is CwtProperty) {
@@ -76,11 +115,16 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
                 return@run
             }
 
+            if (element !is ParadoxScriptDefinitionElement) return@run
             if (!hierarchySettings.showLocationInfo) return@run
             val fileInfo = file.fileInfo ?: return@run
             val text = buildString {
-                if (hierarchySettings.showPathInfo) append(" in ").append(fileInfo.path.path)
-                if (hierarchySettings.showRootInfo) append(" of ").append(fileInfo.rootInfo.qualifiedName)
+                if (hierarchySettings.showLocationInfoByPath) {
+                    append(" in ").append(fileInfo.path.path)
+                }
+                if (hierarchySettings.showLocationInfoByRootInfo) {
+                    append(" of ").append(fileInfo.rootInfo.qualifiedName)
+                }
             }
             if (text.isEmpty()) return@run
             myHighlightedText.ending.addText(text, getLocationAttributes())
@@ -98,6 +142,11 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         return ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
     }
 
+    override fun getIcon(element: PsiElement): Icon? {
+        if (nodeType.grouped) return PlsIcons.Nodes.DefinitionGroup
+        return super.getIcon(element)
+    }
+
     companion object {
         @JvmStatic
         private fun getNameAttributes(color: Color?) = if (color == null) null else TextAttributes(color, null, null, null, Font.PLAIN)
@@ -107,6 +156,9 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
 
         @JvmStatic
         private fun getLocalizedNameAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
+
+        @JvmStatic
+        private fun getRelatedInfoAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
 
         @JvmStatic
         private fun getLocationAttributes() = UsageTreeColors.NUMBER_OF_USAGES_ATTRIBUTES.toTextAttributes()
