@@ -23,7 +23,7 @@
 * [X] 可以配置是否在高级层级视图中显示相关信息（事件信息或科技信息） / Allow to configure whether to show related info in advanced type hierarchy views (event info or technology info)
 * [X] 为封装变量、定义和本地化提供一些额外的意图操作 / Provide some extra intentions for scripted variables, definitions and localizations
 * [X] 提供对本地化的相关定义的支持（快速文档、导航操作、装订线图标） / Provide support for related definitions of localisations (quick doc, navigation actions, gutter icons)
-* [X] 修复某些插件配置在IDE重启后会被重置为默认的问题 / Fixed a problem that some plugin settings will be reset to default after IDEA restart
+* [X] 修复某些插件配置在IDE重启后会被重置为默认的问题 / Fixed a problem that some plugin settings will be reset to default after IDE restart
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.34
