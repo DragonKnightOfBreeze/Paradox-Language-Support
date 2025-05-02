@@ -3,7 +3,6 @@ package icu.windea.pls.ep.expression
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
 import icu.windea.pls.config.expression.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.index.*
 
 /**

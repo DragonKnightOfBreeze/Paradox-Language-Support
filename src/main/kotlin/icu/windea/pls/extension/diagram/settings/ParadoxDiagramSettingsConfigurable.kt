@@ -4,11 +4,9 @@ import com.intellij.diagram.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
-import com.intellij.platform.ide.progress.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.*
-import kotlinx.coroutines.*
 
 class ParadoxDiagramSettingsConfigurable(
     private val project: Project

@@ -8,8 +8,6 @@ import icu.windea.pls.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.script.psi.*
 import org.jetbrains.annotations.*
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 /**
  * 同一文件中重复的封装变量声明的检查。

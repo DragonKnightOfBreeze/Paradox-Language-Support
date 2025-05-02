@@ -5,8 +5,8 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.expression.*
-import icu.windea.pls.model.*
 import icu.windea.pls.lang.settings.ParadoxStrategies.*
+import icu.windea.pls.model.*
 
 /**
  * PLS设置。

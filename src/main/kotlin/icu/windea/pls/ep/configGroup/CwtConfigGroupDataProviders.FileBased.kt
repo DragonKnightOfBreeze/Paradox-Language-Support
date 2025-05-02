@@ -10,7 +10,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.priority.*
-import kotlin.collections.set
 
 /**
  * 用于初始规则分组中基于文件内容的那些数据。

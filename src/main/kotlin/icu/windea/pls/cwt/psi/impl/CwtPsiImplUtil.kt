@@ -8,7 +8,6 @@ import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*

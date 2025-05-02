@@ -8,8 +8,6 @@ import icu.windea.pls.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.localisation.psi.*
 import org.jetbrains.annotations.*
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 /**
  * 同一文件中重复的（同一语言区域的）属性声明的检查。

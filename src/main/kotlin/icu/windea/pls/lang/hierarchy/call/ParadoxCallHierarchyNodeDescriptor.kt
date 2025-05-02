@@ -12,8 +12,7 @@ import com.intellij.openapi.util.*
 import com.intellij.pom.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.ui.SimpleTextAttributes
-import com.intellij.usageView.*
+import com.intellij.ui.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*

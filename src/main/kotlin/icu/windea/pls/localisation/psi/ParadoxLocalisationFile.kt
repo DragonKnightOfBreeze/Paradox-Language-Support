@@ -7,7 +7,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.navigation.*
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.*
 
 class ParadoxLocalisationFile(
     viewProvider: FileViewProvider,

@@ -16,8 +16,6 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 /**
  * 缺失的本地化的检查。

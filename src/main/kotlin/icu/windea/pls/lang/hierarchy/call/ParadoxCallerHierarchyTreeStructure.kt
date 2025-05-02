@@ -7,7 +7,7 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
-import com.intellij.ui.tree.LeafState
+import com.intellij.ui.tree.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.scope.type.*

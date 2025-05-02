@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.search.implementation
 
-import com.intellij.openapi.application.ReadAction
-import com.intellij.openapi.project.*
+import com.intellij.openapi.application.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*

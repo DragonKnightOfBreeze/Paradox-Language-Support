@@ -2,7 +2,7 @@ package icu.windea.pls.lang.projectView
 
 import com.intellij.ide.projectView.*
 import com.intellij.ide.projectView.impl.nodes.*
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.*
 import icu.windea.pls.ep.configGroup.*
 
 /**

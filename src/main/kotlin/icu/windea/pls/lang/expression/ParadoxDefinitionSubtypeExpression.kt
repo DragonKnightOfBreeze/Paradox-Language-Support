@@ -1,11 +1,7 @@
 package icu.windea.pls.lang.expression
 
-import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import java.util.*
 
 /**
  * 定义子类型表达式。

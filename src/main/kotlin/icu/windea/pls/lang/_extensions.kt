@@ -5,7 +5,6 @@ import com.intellij.injected.editor.*
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
-import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.util.text.*
@@ -25,7 +24,6 @@ import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import kotlinx.coroutines.*
 import java.lang.Integer.*

@@ -14,8 +14,6 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 import java.util.concurrent.*
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 /**
  * @property name 定义的名字。如果是空字符串，则表示定义是匿名的。（注意：不一定与定义的顶级键名相同，例如，可能来自某个属性的值）

@@ -2,9 +2,8 @@ package icu.windea.pls.localisation.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
-import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.*

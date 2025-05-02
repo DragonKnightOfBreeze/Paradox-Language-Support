@@ -19,7 +19,6 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import kotlin.collections.set
 
 /**
  * 用于处理作用域。
