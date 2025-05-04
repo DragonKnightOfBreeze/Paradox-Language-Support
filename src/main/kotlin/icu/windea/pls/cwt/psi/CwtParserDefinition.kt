@@ -20,9 +20,9 @@ class CwtParserDefinition : ParserDefinition {
 
     override fun createElement(node: ASTNode?) = Factory.createElement(node)
 
-    override fun createParser(project: Project?) = CwtParser()
+    override fun createParser(project: Project?) = General.createParser(project)
 
-    override fun createLexer(project: Project?) = CwtLexer()
+    override fun createLexer(project: Project?) = General.createLexer(project)
 
     override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): SpaceRequirements {
         val leftType = left?.elementType
@@ -38,9 +38,12 @@ class CwtParserDefinition : ParserDefinition {
     @Suppress("UNUSED_PARAMETER")
     object General {
         @JvmStatic
-        fun createParser(project: Project?) = CwtParser()
+        fun createParser(project: Project? = null) = CwtParser()
 
         @JvmStatic
-        fun createOptionLexer(project: Project?) = CwtOptionLexer()
+        fun createLexer(project: Project? = null) = CwtLexer()
+
+        @JvmStatic
+        fun createOptionLexer(project: Project? = null) = CwtOptionLexer()
     }
 }
