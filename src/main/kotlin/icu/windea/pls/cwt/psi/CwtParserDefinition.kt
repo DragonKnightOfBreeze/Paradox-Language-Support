@@ -38,7 +38,7 @@ class CwtParserDefinition : ParserDefinition {
     @Suppress("UNUSED_PARAMETER")
     object General {
         @JvmStatic
-        fun createOptionParser(project: Project?) = CwtOptionParser()
+        fun createParser(project: Project?) = CwtParser()
 
         @JvmStatic
         fun createOptionLexer(project: Project?) = CwtOptionLexer()

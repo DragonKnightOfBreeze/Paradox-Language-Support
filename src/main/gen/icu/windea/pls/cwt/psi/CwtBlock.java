@@ -14,43 +14,42 @@ import javax.swing.Icon;
 public interface CwtBlock extends CwtValue, CwtNamedElement, CwtBlockElement {
 
   @NotNull
+  List<CwtDocComment> getDocCommentList();
+
+  @NotNull
+  List<CwtOption> getOptionList();
+
+  @NotNull
+  List<CwtOptionComment> getOptionCommentList();
+
+  @NotNull
   List<CwtProperty> getPropertyList();
 
   @NotNull
   List<CwtValue> getValueList();
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull
-  String getName();
+  @NotNull String getName();
 
-  @NotNull
-  CwtBlock setName(@NotNull String name);
+  @NotNull CwtBlock setName(@NotNull String name);
 
-  @NotNull
-  String getValue();
+  @NotNull String getValue();
 
-  @NotNull
-  CwtValue setValue(@NotNull String value);
+  @NotNull CwtValue setValue(@NotNull String value);
 
   boolean isEmpty();
 
   boolean isNotEmpty();
 
-  @NotNull
-  List<PsiElement> getComponents();
+  @NotNull List<@NotNull PsiElement> getComponents();
 
-  @NotNull
-  CwtType getType();
+  @NotNull CwtType getType();
 
-  @Nullable
-  CwtConfigType getConfigType();
+  @Nullable CwtConfigType getConfigType();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

@@ -21,32 +21,27 @@ public class CwtOptionCommentImpl extends ASTWrapperPsiElement implements CwtOpt
   }
 
   @Override
-  @NotNull
-  public IElementType getTokenType() {
-    return CwtPsiImplUtil.getTokenType(this);
-  }
-
-  @Override
-  @Nullable
-  public CwtOption getOption() {
+  public @Nullable CwtOption getOption() {
     return CwtPsiImplUtil.getOption(this);
   }
 
   @Override
-  @Nullable
-  public CwtValue getOptionValue() {
+  public @Nullable CwtValue getOptionValue() {
     return CwtPsiImplUtil.getOptionValue(this);
   }
 
   @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
+  public @NotNull IElementType getTokenType() {
+    return CwtPsiImplUtil.getTokenType(this);
+  }
+
+  @Override
+  public @NotNull ItemPresentation getPresentation() {
     return CwtPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  @NotNull
-  public SearchScope getUseScope() {
+  public @NotNull SearchScope getUseScope() {
     return CwtPsiImplUtil.getUseScope(this);
   }
 

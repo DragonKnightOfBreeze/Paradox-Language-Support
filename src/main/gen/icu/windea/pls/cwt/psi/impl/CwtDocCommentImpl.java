@@ -21,20 +21,17 @@ public class CwtDocCommentImpl extends ASTWrapperPsiElement implements CwtDocCom
   }
 
   @Override
-  @NotNull
-  public IElementType getTokenType() {
+  public @NotNull IElementType getTokenType() {
     return CwtPsiImplUtil.getTokenType(this);
   }
 
   @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
+  public @NotNull ItemPresentation getPresentation() {
     return CwtPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  @NotNull
-  public SearchScope getUseScope() {
+  public @NotNull SearchScope getUseScope() {
     return CwtPsiImplUtil.getUseScope(this);
   }
 

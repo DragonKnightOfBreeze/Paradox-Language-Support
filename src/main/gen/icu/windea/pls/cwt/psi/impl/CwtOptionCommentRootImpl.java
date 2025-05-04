@@ -7,32 +7,28 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.cwt.psi.*;
 import icu.windea.pls.cwt.psi.util.CwtPsiImplUtil;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.config.CwtConfigType;
-import icu.windea.pls.model.CwtType;
 
-public class CwtFloatImpl extends CwtValueImpl implements CwtFloat {
+public class CwtOptionCommentRootImpl extends ASTWrapperPsiElement implements CwtOptionCommentRoot {
 
-  public CwtFloatImpl(@NotNull ASTNode node) {
+  public CwtOptionCommentRootImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
-  public float getFloatValue() {
-    return CwtPsiImplUtil.getFloatValue(this);
+  @Nullable
+  public CwtOption getOption() {
+    return findChildByClass(CwtOption.class);
   }
 
   @Override
-  public @NotNull CwtType getType() {
-    return CwtPsiImplUtil.getType(this);
-  }
-
-  @Override
-  public @Nullable CwtConfigType getConfigType() {
-    return CwtPsiImplUtil.getConfigType(this);
+  @Nullable
+  public CwtValue getOptionValue() {
+    return findChildByClass(CwtValue.class);
   }
 
   @Override

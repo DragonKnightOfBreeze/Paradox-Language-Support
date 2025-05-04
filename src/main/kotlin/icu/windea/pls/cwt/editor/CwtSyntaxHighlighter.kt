@@ -34,7 +34,7 @@ class CwtSyntaxHighlighter : SyntaxHighlighter {
         LEFT_BRACE, RIGHT_BRACE -> BRACES_KEYS
         EQUAL_SIGN, NOT_EQUAL_SIGN -> OPERATOR_KEYS
         DOC_COMMENT_TOKEN -> DOC_COMMENT_KEYS
-        OPTION_COMMENT_TOKEN, OPTION_COMMENT_START -> OPTION_COMMENT_KEYS
+        OPTION_COMMENT_START -> OPTION_COMMENT_KEYS
         COMMENT -> COMMENT_KEYS
         PROPERTY_KEY_TOKEN -> PROPERTY_KEY_KEYS
         OPTION_KEY_TOKEN -> OPTION_KEY_KEYS
@@ -49,10 +49,14 @@ class CwtSyntaxHighlighter : SyntaxHighlighter {
 
     override fun getHighlightingLexer(): Lexer {
         val lexer = LayeredLexer(CwtLexer())
+        val optionLexer = LayeredLexer(CwtOptionLexer())
         val lexer1 = StringLiteralLexer(NO_QUOTE_CHAR, PROPERTY_KEY_TOKEN, false, additionalValidEscapes, false, false)
-        lexer.registerSelfStoppingLayer(lexer1, arrayOf(PROPERTY_KEY_TOKEN), emptyArray())
         val lexer2 = StringLiteralLexer(NO_QUOTE_CHAR, STRING_TOKEN, false, additionalValidEscapes, false, false)
+        lexer.registerSelfStoppingLayer(optionLexer, arrayOf(OPTION_COMMENT_TOKEN), emptyArray())
+        lexer.registerSelfStoppingLayer(lexer1, arrayOf(PROPERTY_KEY_TOKEN), emptyArray())
         lexer.registerSelfStoppingLayer(lexer2, arrayOf(STRING_TOKEN), emptyArray())
+        optionLexer.registerSelfStoppingLayer(lexer1, arrayOf(PROPERTY_KEY_TOKEN), emptyArray())
+        optionLexer.registerSelfStoppingLayer(lexer2, arrayOf(STRING_TOKEN), emptyArray())
         return lexer
     }
 }

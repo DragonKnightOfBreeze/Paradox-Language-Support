@@ -51,11 +51,6 @@ object CwtPsiImplUtil {
     //region CwtOption
 
     @JvmStatic
-    fun getOptionValue(element: CwtOption):CwtValue? {
-        return PsiTreeUtil.getChildOfType(element, CwtValue::class.java)
-    }
-
-    @JvmStatic
     fun getIcon(element: CwtOption, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.CwtOption
     }
@@ -323,11 +318,6 @@ object CwtPsiImplUtil {
     //region CwtOptionComment
 
     @JvmStatic
-    fun getTokenType(element: CwtOptionComment): IElementType {
-        return CwtElementTypes.OPTION_COMMENT
-    }
-
-    @JvmStatic
     fun getOption(element: CwtOptionComment): CwtOption? {
         return PsiTreeUtil.findChildOfType(element, CwtOption::class.java)
     }
@@ -335,6 +325,11 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getOptionValue(element: CwtOptionComment): CwtValue? {
         return PsiTreeUtil.findChildOfType(element, CwtValue::class.java)
+    }
+
+    @JvmStatic
+    fun getTokenType(element: CwtOptionComment): IElementType {
+        return CwtElementTypes.OPTION_COMMENT
     }
 
     //endregion

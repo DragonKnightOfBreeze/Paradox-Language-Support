@@ -9,8 +9,8 @@
 
 ## 1.4.0
 
-* [ ] (HIDDEN) 通过懒解析CWT文件中的选项注释来优化性能 / Optimize performance by lazily parsing option comments in CWT files
-* [ ] (HIDDEN) 通过懒解析本地化文件中的本地化文本来优化性能与提高代码灵活性 / Optimize performance and improve code flexibility by lazily parsing localisation text in localisation files
+* [ ] (HIDDEN) 通过懒解析CWT文件中的选项注释来尝试优化性能 / Try to optimize performance by lazily parsing option comments in CWT files
+* [ ] (HIDDEN) 通过懒解析本地化文件中的本地化文本来尝试优化性能与提高代码灵活性 / Try to optimize performance and improve code flexibility by lazily parsing localisation text in localisation files
 * [ ] #94 优化CWT文件解析器的性能 / Optimize performance for CWT file parser
 * [ ] #137 [VIC3/CK3] Support special localizations - Basic support
 * [ ] 其他优化与BUG修复 / Other optimizations and bug fixes

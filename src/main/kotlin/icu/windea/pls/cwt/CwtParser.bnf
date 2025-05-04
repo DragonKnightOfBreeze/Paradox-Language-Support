@@ -6,9 +6,10 @@
   psiPackage="icu.windea.pls.cwt.psi"
   psiImplPackage="icu.windea.pls.cwt.psi.impl"
   elementTypeHolderClass="icu.windea.pls.cwt.psi.CwtElementTypes"
-  elementTypeClass="icu.windea.pls.cwt.psi.CwtElementType"
-  tokenTypeClass="icu.windea.pls.cwt.psi.CwtTokenType"
+  tokenTypeFactory="icu.windea.pls.cwt.psi.CwtElementTypeFactory.getTokenType"
+  elementTypeFactory="icu.windea.pls.cwt.psi.CwtElementTypeFactory.getElementType"
   psiImplUtilClass="icu.windea.pls.cwt.psi.util.CwtPsiImplUtil"
+  parserUtilClass="icu.windea.pls.cwt.psi.util.CwtParserUtil"
   psiVisitorName=""
   methods(".*")=[getPresentation getUseScope]
 }
@@ -30,12 +31,14 @@ doc_comment ::= DOC_COMMENT_TOKEN {
 }
 option_comment ::= OPTION_COMMENT_TOKEN {
   implements=["com.intellij.psi.PsiComment"]
-  methods=[getTokenType getOption getOptionValue]
-  elementTypeClass="icu.windea.pls.cwt.psi.CwtOptionCommentElementType"
+  methods=[
+    getOption getOptionValue
+    getTokenType
+  ]
 }
 private comment ::= COMMENT
 
-property ::= property_key property_separator value {
+property ::= property_key property_separator property_value {
   pin=1
   recoverWhile="#auto"
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
@@ -56,11 +59,13 @@ property_key ::= PROPERTY_KEY_TOKEN {
   ]
 }
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
+private property_value ::= value
 
 value ::= boolean | int | float | string | block {
   implements=[
     "icu.windea.pls.cwt.psi.CwtExpressionElement"
     "icu.windea.pls.cwt.psi.CwtMemberElement"
+    "icu.windea.pls.cwt.psi.CwtOptionMemberElement"
   ]
   methods=[getIcon getName getValue setValue getType getConfigType]
 }
@@ -105,6 +110,34 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   ]
   methods=[getIcon getName setName getValue setValue isEmpty isNotEmpty getComponents getType getConfigType]
 }
-private block_item ::= comment | property | value {
+private block_item ::= general_comment | property | option | value {
   recoverWhile="#auto"
 }
+
+// option comment (lazy-parsing)
+
+option_comment_root ::= OPTION_COMMENT_START option_comment_item ? comment ? {
+  extraRoot=true
+  methods=[
+    option="option" option_value="value"
+  ]
+}
+private option_comment_item ::= option | option_value
+
+option ::= option_key option_separator option_value {
+  pin=1
+  mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
+  implements=[
+    "icu.windea.pls.cwt.psi.CwtNamedElement"
+    "icu.windea.pls.cwt.psi.CwtOptionMemberElement"
+  ]
+  methods=[
+    option_key="option_key" option_value="value"
+    getIcon getName setName getNameIdentifier getValue getSeparatorType
+  ]
+}
+option_key ::= OPTION_KEY_TOKEN {
+  methods=[getIcon getName getValue]
+}
+private option_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
+private option_value ::= value

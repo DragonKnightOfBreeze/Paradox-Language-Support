@@ -23,68 +23,57 @@ public class CwtStringImpl extends CwtNamedElementImpl implements CwtString {
   }
 
   @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
+  public @NotNull Icon getIcon(@IconFlags int flags) {
     return CwtPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  @NotNull
-  public String getName() {
+  public @NotNull String getName() {
     return CwtPsiImplUtil.getName(this);
   }
 
   @Override
-  @NotNull
-  public CwtString setName(@NotNull String name) {
+  public @NotNull CwtString setName(@NotNull String name) {
     return CwtPsiImplUtil.setName(this, name);
   }
 
   @Override
-  @NotNull
-  public PsiElement getNameIdentifier() {
+  public @NotNull PsiElement getNameIdentifier() {
     return CwtPsiImplUtil.getNameIdentifier(this);
   }
 
   @Override
-  @NotNull
-  public String getValue() {
+  public @NotNull String getValue() {
     return CwtPsiImplUtil.getValue(this);
   }
 
   @Override
-  @NotNull
-  public CwtString setValue(@NotNull String value) {
+  public @NotNull CwtValue setValue(@NotNull String value) {
     return CwtPsiImplUtil.setValue(this, value);
   }
 
   @Override
-  @NotNull
-  public String getStringValue() {
+  public @NotNull String getStringValue() {
     return CwtPsiImplUtil.getStringValue(this);
   }
 
   @Override
-  @NotNull
-  public CwtType getType() {
+  public @NotNull CwtType getType() {
     return CwtPsiImplUtil.getType(this);
   }
 
   @Override
-  @Nullable
-  public CwtConfigType getConfigType() {
+  public @Nullable CwtConfigType getConfigType() {
     return CwtPsiImplUtil.getConfigType(this);
   }
 
   @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
+  public @NotNull ItemPresentation getPresentation() {
     return CwtPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  @NotNull
-  public SearchScope getUseScope() {
+  public @NotNull SearchScope getUseScope() {
     return CwtPsiImplUtil.getUseScope(this);
   }
 

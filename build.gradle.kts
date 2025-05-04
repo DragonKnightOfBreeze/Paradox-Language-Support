@@ -70,7 +70,7 @@ dependencies {
 
         bundledPlugins("com.intellij.platform.images")
         bundledPlugins("com.intellij.diagram")
-        //bundledPlugins("com.intellij.java")
+        bundledPlugins("com.intellij.java")
         //bundledPlugins("org.jetbrains.kotlin")
         //bundledPlugins("org.intellij.plugins.markdown")
         //bundledPlugins("JavaScript")

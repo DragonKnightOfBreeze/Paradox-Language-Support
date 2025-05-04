@@ -30,54 +30,46 @@ public class CwtOptionImpl extends CwtNamedElementImpl implements CwtOption {
   @Override
   @Nullable
   public CwtValue getOptionValue() {
-    return CwtPsiImplUtil.getOptionValue(this);
+    return findChildByClass(CwtValue.class);
   }
 
   @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
+  public @NotNull Icon getIcon(@IconFlags int flags) {
     return CwtPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  @NotNull
-  public String getName() {
+  public @NotNull String getName() {
     return CwtPsiImplUtil.getName(this);
   }
 
   @Override
-  @NotNull
-  public CwtOption setName(@NotNull String name) {
+  public @NotNull CwtOption setName(@NotNull String name) {
     return CwtPsiImplUtil.setName(this, name);
   }
 
   @Override
-  @NotNull
-  public PsiElement getNameIdentifier() {
+  public @NotNull PsiElement getNameIdentifier() {
     return CwtPsiImplUtil.getNameIdentifier(this);
   }
 
   @Override
-  @Nullable
-  public String getValue() {
+  public @Nullable String getValue() {
     return CwtPsiImplUtil.getValue(this);
   }
 
   @Override
-  @NotNull
-  public CwtSeparatorType getSeparatorType() {
+  public @NotNull CwtSeparatorType getSeparatorType() {
     return CwtPsiImplUtil.getSeparatorType(this);
   }
 
   @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
+  public @NotNull ItemPresentation getPresentation() {
     return CwtPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  @NotNull
-  public SearchScope getUseScope() {
+  public @NotNull SearchScope getUseScope() {
     return CwtPsiImplUtil.getUseScope(this);
   }
 

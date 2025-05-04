@@ -4,17 +4,20 @@ import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import java.util.*;
 
-import static com.intellij.psi.TokenType.BAD_CHARACTER;
-import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 
 %%
 
 %{
-    private int nextState;
+    // private int depth;
 
     public _CwtLexer() {
         this((java.io.Reader)null);
+    }
+
+    private int nextState() {
+        return YYINITIAL;
     }
 %}
 
@@ -24,81 +27,74 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 %function advance
 %type IElementType
 
-%s IN_PROPERTY_KEY
-%s IN_PROPERTY_SEPARATOR
-%s IN_PROPERTY_VALUE
-%s IN_COMMENT
+%s PK
+%s PS
+%s PV
 
 %unicode
 
 BLANK=\s+
-
-COMMENT=#[^\R]*
+COMMENT=#[^\r\n]*
 
 CHECK_SEPARATOR=(=)|(\!=)|(<>)
 CHECK_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?\s*{CHECK_SEPARATOR}
 
 PROPERTY_KEY_TOKEN=([^#={}\s\"]+\"?)|({QUOTED_KEY_TOKEN})
-QUOTED_KEY_TOKEN=\"([^\"\\\R]|\\[\s\S])*\"?
+QUOTED_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 BOOLEAN_TOKEN=(yes)|(no)
 INT_TOKEN=[+-]?[0-9]+ // leading zero is permitted
 FLOAT_TOKEN=[+-]?[0-9]*(\.[0-9]+) // leading zero is permitted
 STRING_TOKEN=([^#={}\s\"]+\"?)|({QUOTED_STRING_TOKEN})
-QUOTED_STRING_TOKEN=\"([^\"\\\R]|\\[\s\S])*\"?
+QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 
 %%
 
 <YYINITIAL> {
-    "{" { yybegin(YYINITIAL); return LEFT_BRACE; }
-    "}" { yybegin(YYINITIAL); return RIGHT_BRACE; }
-    "#" { yypushback(1); nextState=yystate(); yybegin(IN_COMMENT); }
-    {BLANK} { return WHITE_SPACE; }
-
-    {CHECK_PROPERTY_KEY} { yypushback(yylength()); yybegin(IN_PROPERTY_KEY); }
+    {CHECK_PROPERTY_KEY} { yypushback(yylength()); yybegin(PK); }
     {BOOLEAN_TOKEN} { return BOOLEAN_TOKEN; }
     {INT_TOKEN} { return INT_TOKEN; }
     {FLOAT_TOKEN} { return FLOAT_TOKEN; }
     {STRING_TOKEN} { return STRING_TOKEN; }
 }
-<IN_PROPERTY_KEY>{
-    "{" { yybegin(YYINITIAL); return LEFT_BRACE; }
-    "}" { yybegin(YYINITIAL); return RIGHT_BRACE; }
-    "#" { yypushback(1); nextState=yystate(); yybegin(IN_COMMENT); }
-    {BLANK} { return WHITE_SPACE; }
-
-    {PROPERTY_KEY_TOKEN} { yybegin(IN_PROPERTY_SEPARATOR); return PROPERTY_KEY_TOKEN; }
+<PK>{
+    {PROPERTY_KEY_TOKEN} { yybegin(PS); return PROPERTY_KEY_TOKEN; }
 }
-<IN_PROPERTY_SEPARATOR>{
-    "{" { yybegin(YYINITIAL); return LEFT_BRACE; }
-    "}" { yybegin(YYINITIAL); return RIGHT_BRACE; }
-    "="|"==" { yybegin(IN_PROPERTY_VALUE); return EQUAL_SIGN; }
-    "!="|"<>" { yybegin(IN_PROPERTY_VALUE); return NOT_EQUAL_SIGN; }
-
-    {COMMENT} { return COMMENT; }
-    {BLANK} { return WHITE_SPACE; }
+<PS>{
+    "="|"==" { yybegin(PV); return EQUAL_SIGN; }
+    "!="|"<>" { yybegin(PV); return NOT_EQUAL_SIGN; }
 }
-<IN_PROPERTY_VALUE>{
-    "{" { yybegin(YYINITIAL); return LEFT_BRACE; }
-    "}" { yybegin(YYINITIAL); return RIGHT_BRACE; }
-
-    {COMMENT} { return COMMENT; }
-    {BLANK} { return WHITE_SPACE; }
-
-    {CHECK_PROPERTY_KEY} { yypushback(yylength()); yybegin(IN_PROPERTY_KEY); }
-    {BOOLEAN_TOKEN} { yybegin(YYINITIAL); return BOOLEAN_TOKEN; }
-    {INT_TOKEN} { yybegin(YYINITIAL); return INT_TOKEN; }
-    {FLOAT_TOKEN} { yybegin(YYINITIAL); return FLOAT_TOKEN; }
-    {STRING_TOKEN} { yybegin(YYINITIAL); return STRING_TOKEN; }
+<PV>{
+    {CHECK_PROPERTY_KEY} { yypushback(yylength()); yybegin(PK); }
+    {BOOLEAN_TOKEN} { yybegin(nextState()); return BOOLEAN_TOKEN; }
+    {INT_TOKEN} { yybegin(nextState()); return INT_TOKEN; }
+    {FLOAT_TOKEN} { yybegin(nextState()); return FLOAT_TOKEN; }
+    {STRING_TOKEN} { yybegin(nextState()); return STRING_TOKEN; }
 }
-<IN_COMMENT>{
+
+<YYINITIAL, PK, PS, PV> {
+    "{" {
+        // depth++;
+        yybegin(nextState());
+        return LEFT_BRACE;
+    }
+    "}" {
+        // depth--;
+        yybegin(nextState());
+        return RIGHT_BRACE;
+    }
+}
+<YYINITIAL, PK, PS, PV> {
+    {BLANK} { return WHITE_SPACE; }
     {COMMENT} {
-        yybegin(nextState);
-        int length = yylength();
-        if (length >= 2 && yycharat(1) == '#') {
-            if (length >= 3 && yycharat(2) == '#') {
-                return DOC_COMMENT;
+        int state = yystate();
+        if (state == YYINITIAL || state == PK) {
+            int length = yylength();
+            if (length >= 2 && yycharat(1) == '#') {
+                if (length >= 3 && yycharat(2) == '#') {
+                    return DOC_COMMENT_TOKEN;
+                }
+                return OPTION_COMMENT_TOKEN;
             }
-            return OPTION_COMMENT;
         }
         return COMMENT;
     }

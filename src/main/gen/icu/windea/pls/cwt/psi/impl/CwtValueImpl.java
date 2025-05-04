@@ -24,50 +24,42 @@ public abstract class CwtValueImpl extends ASTWrapperPsiElement implements CwtVa
   }
 
   @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
+  public @NotNull Icon getIcon(@IconFlags int flags) {
     return CwtPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  @NotNull
-  public String getName() {
+  public @NotNull String getName() {
     return CwtPsiImplUtil.getName(this);
   }
 
   @Override
-  @NotNull
-  public String getValue() {
+  public @NotNull String getValue() {
     return CwtPsiImplUtil.getValue(this);
   }
 
   @Override
-  @NotNull
-  public CwtValue setValue(@NotNull String value) {
+  public @NotNull CwtValue setValue(@NotNull String value) {
     return CwtPsiImplUtil.setValue(this, value);
   }
 
   @Override
-  @NotNull
-  public CwtType getType() {
+  public @NotNull CwtType getType() {
     return CwtPsiImplUtil.getType(this);
   }
 
   @Override
-  @Nullable
-  public CwtConfigType getConfigType() {
+  public @Nullable CwtConfigType getConfigType() {
     return CwtPsiImplUtil.getConfigType(this);
   }
 
   @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
+  public @NotNull ItemPresentation getPresentation() {
     return CwtPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  @NotNull
-  public SearchScope getUseScope() {
+  public @NotNull SearchScope getUseScope() {
     return CwtPsiImplUtil.getUseScope(this);
   }
 
