@@ -11,7 +11,6 @@ import icu.windea.pls.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptPropertySurrounder : Surrounder {
-    @Suppress("DialogTitleCapitalization")
     override fun getTemplateDescription(): String {
         return PlsBundle.message("script.surroundWith.property.description")
     }

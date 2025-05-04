@@ -13,7 +13,7 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
         val INSTANCE by lazy { findStubIndex<ParadoxLocalisationNameIndex>() }
         val KEY = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
 
-        private const val VERSION = 58 //1.3.27
+        private const val VERSION = 59 //1.3.35
         private const val CACHE_SIZE = 100 * 1024 //98000+ in stellaris@3.6
     }
 
@@ -32,7 +32,7 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
             val INSTANCE by lazy { findStubIndex<ModifierIndex>() }
             val KEY = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.modifier")
 
-            private const val VERSION = 58 //1.3.27
+            private const val VERSION = 59 //1.3.35
             private const val CACHE_SIZE = 2 * 1024
         }
 

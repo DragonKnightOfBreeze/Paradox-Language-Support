@@ -5,7 +5,6 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.*
 import com.intellij.openapi.editor.HighlighterColors.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
-import icu.windea.pls.localisation.editor.*
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys as LKeys
 
 object ParadoxScriptAttributesKeys {

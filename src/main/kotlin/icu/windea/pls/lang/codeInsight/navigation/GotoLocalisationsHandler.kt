@@ -9,14 +9,13 @@ import com.intellij.pom.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
 import java.util.*
 
-@Suppress("DialogTitleCapitalization")
 class GotoLocalisationsHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
         return "navigation.goto.paradoxLocalisations"
@@ -27,16 +26,19 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
         val localisation = element
-        val localisationInfo = localisation.localisationInfo ?: return null
+        val category = localisation.category ?: return null
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
         val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
             //need read action here
             runReadAction {
                 val selector = selector(project, localisation).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                val resolved = ParadoxLocalisationSearch.search(localisationInfo.name, selector).findAll()
+                val resolved = when(category) {
+                    ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.search(localisation.name, selector).findAll()
+                    ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(localisation.name, selector).findAll()
+                }
                 targets.addAll(resolved)
             }
-        }, PlsBundle.message("script.goto.localisations.search", localisationInfo.name), true, project)
+        }, PlsBundle.message("script.goto.localisations.search", localisation.name), true, project)
         if (!runResult) return null
         if (targets.isNotEmpty()) targets.removeIf { it == localisation }
         return GotoData(localisation, targets.distinct().toTypedArray(), emptyList())

@@ -4,6 +4,8 @@ import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
+import icu.windea.pls.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
@@ -64,4 +66,11 @@ object ParadoxScriptedVariableManager {
             ?.internNode(tree)?.toString()
     }
 
+    fun getHintFromExtendedConfig(name: String, contextElement: PsiElement): String? {
+        if (name.isNotEmpty()) return null
+        val gameType = selectGameType(contextElement) ?: return null
+        val configGroup = getConfigGroup(contextElement.project, gameType)
+        val config = configGroup.extendedScriptedVariables.findFromPattern(name, contextElement, configGroup) ?: return null
+        return config.hint
+    }
 }

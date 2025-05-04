@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.search.usage
 
 import com.intellij.openapi.application.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
@@ -41,14 +40,13 @@ class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
             else -> return
         }
         if (extraWords.isEmpty()) return
+
         val project = queryParameters.project
-        ReadAction.nonBlocking<Unit> {
-            //这里不能直接使用target.useScope，否则文件高亮会出现问题
-            val useScope = queryParameters.effectiveSearchScope
-            val searchContext = UsageSearchContext.IN_CODE
-            for (extraWord in extraWords) {
-                queryParameters.optimizer.searchWord(extraWord, useScope, searchContext, false, target) //忽略大小写
-            }
-        }.inSmartMode(project).executeSynchronously()
+        //这里不能直接使用target.useScope，否则文件高亮会出现问题
+        val useScope = queryParameters.effectiveSearchScope
+        val searchContext = UsageSearchContext.IN_CODE
+        for (extraWord in extraWords) {
+            queryParameters.optimizer.searchWord(extraWord, useScope, searchContext, false, target) //忽略大小写
+        }
     }
 }

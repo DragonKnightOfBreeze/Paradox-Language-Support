@@ -1,7 +1,6 @@
 package icu.windea.pls.config
 
 import icu.windea.pls.*
-import icu.windea.pls.PlsIcons
 
 object CwtConfigTypes {
     val Type = CwtConfigType("type") {

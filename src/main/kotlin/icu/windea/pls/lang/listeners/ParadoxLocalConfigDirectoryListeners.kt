@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.listeners
 
-import com.intellij.openapi.components.service
-import com.intellij.openapi.editor.toolbar.floating.FloatingToolbarProvider
+import com.intellij.openapi.components.*
+import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*

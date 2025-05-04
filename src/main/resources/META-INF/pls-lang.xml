@@ -77,7 +77,7 @@
     <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.refactoring.actions.IntroduceLocalScriptedVariableHandler"/>
     <refactoring.extractIncludeHandler language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.refactoring.actions.IntroduceGlobalScriptedVariableHandler"/>
 
-    <typeHierarchyProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyProvider"/>
+    <typeHierarchyProvider language="PARADOX" implementationClass="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyProvider"/>
     <callHierarchyProvider language="PARADOX" implementationClass="icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyProvider"/>
 
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxScriptedVariableNameIndex"/>
@@ -203,6 +203,12 @@
         <override-text place="MainMenu"/>
         <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
       </action>
+      <action id="Pls.GoToRelatedDefinitions" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedDefinitionsAction">
+        <keyboard-shortcut first-keystroke="alt shift p" keymap="$default"/>
+        <mouse-shortcut keymap="$default" keystroke="alt shift button1"/>
+        <override-text place="MainMenu"/>
+        <override-text place="EditorPopup" use-text-of-place="MainMenu"/>
+      </action>
       <action id="Pls.GoToRelatedLocalisations" class="icu.windea.pls.lang.codeInsight.navigation.GotoRelatedLocalisationsAction">
         <keyboard-shortcut first-keystroke="alt shift p" keymap="$default"/>
         <mouse-shortcut keymap="$default" keystroke="alt shift button1"/>
@@ -262,16 +268,18 @@
       <add-to-group group-id="HierarchyPopupMenu.Common" relative-to-action="CompareFileWithEditor" anchor="after"/>
     </group>
 
-    <action id="Pls.TypeHierarchy.Definition1" class="icu.windea.pls.lang.hierarchy.type.ViewDefinitionHierarchyAction"/>
-    <action id="Pls.TypeHierarchy.Definition2" class="icu.windea.pls.lang.hierarchy.type.ViewDefinitionHierarchyWithSubtypesAction"/>
-
     <group id="Pls.DefinitionHierarchyPopupMenu">
-      <reference ref="Pls.TypeHierarchy.Definition1"/>
-      <reference ref="Pls.TypeHierarchy.Definition2"/>
+      <action id="Pls.DefinitionHierarchy.BaseOnThis" class="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyBrowser$BaseOnThisAction"/>
+      <action id="Pls.DefinitionHierarchy.Definition1" class="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyActions$ViewDefinitionHierarchyAction"/>
+      <action id="Pls.DefinitionHierarchy.Definition2" class="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyActions$ViewDefinitionHierarchyWithSubtypesAction"/>
+      <action id="Pls.DefinitionHierarchy.EventTreeInvoker" class="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyActions$ViewEventTreeInvokerAction"/>
+      <action id="Pls.DefinitionHierarchy.EventTreeInvoked" class="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyActions$ViewEventTreeInvokedAction"/>
+      <action id="Pls.DefinitionHierarchy.TechTreePre" class="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyActions$ViewTechTreePreAction"/>
+      <action id="Pls.DefinitionHierarchy.TechTreePost" class="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyActions$ViewTechTreePostAction"/>
       <reference ref="HierarchyPopupMenu.Common"/>
     </group>
     <group id="Pls.CallHierarchyPopupMenu">
-      <reference ref="CallHierarchy.BaseOnThisMethod"/>
+      <action id="Pls.CallHierarchy.BaseOnThis" class="icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyBrowser$BaseOnThisAction"/>
       <reference ref="HierarchyPopupMenu.Common"/>
     </group>
   </actions>

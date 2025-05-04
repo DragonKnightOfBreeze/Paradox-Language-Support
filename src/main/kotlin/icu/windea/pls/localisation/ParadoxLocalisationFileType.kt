@@ -2,7 +2,6 @@ package icu.windea.pls.localisation
 
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.model.*
 
 object ParadoxLocalisationFileType : ParadoxBaseFileType(ParadoxLocalisationLanguage) {
     override fun getName() = "Paradox Localisation"

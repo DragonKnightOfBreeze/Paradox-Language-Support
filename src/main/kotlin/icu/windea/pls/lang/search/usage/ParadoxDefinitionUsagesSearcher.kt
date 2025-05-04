@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.search.usage
 
 import com.intellij.openapi.application.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
@@ -29,37 +28,36 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         if (definitionName.isEmpty()) return //ignore anonymous definitions
         val type = definitionInfo.type
         val project = queryParameters.project
-        val words = mutableSetOf<String>()
-        words.add(definitionName)
+        val extraWords = mutableSetOf<String>()
+        extraWords.add(definitionName)
         when {
             type == "sprite" -> {
                 val gfxTextName = definitionName.removePrefix("GFX_text_")
                 if (gfxTextName.isNotEmpty()) {
-                    words.add(gfxTextName)
+                    extraWords.add(gfxTextName)
                 } else {
                     val gfxName = definitionName.removePrefix("GFX_")
                     if (gfxTextName.isNotEmpty()) {
-                        words.add(gfxName)
+                        extraWords.add(gfxName)
                     }
                 }
             }
             type == "concept" -> {
                 val data = target.getData<StellarisGameConceptData>()
-                data?.alias?.forEach { words.add(it) }
+                data?.alias?.forEach { extraWords.add(it) }
             }
         }
-        if (words.isEmpty()) return
-        ReadAction.nonBlocking<Unit> {
-            //这里不能直接使用target.useScope，否则文件高亮会出现问题
-            val useScope = queryParameters.effectiveSearchScope
-            //这里searchContext必须包含IN_STRINGS，用于查找本地化图标引用
-            //否则因为它的前缀是"£"，会导致对应的偏移位置被跳过
-            //com.intellij.psi.impl.search.LowLevelSearchUtil.checkJavaIdentifier
-            val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_STRINGS or UsageSearchContext.IN_COMMENTS
-            val processor = getProcessor(target)
-            queryParameters.optimizer.wordRequests.removeIf { it.word in words }
-            words.forEach { word -> queryParameters.optimizer.searchWord(word, useScope, searchContext, true, target, processor) }
-        }.inSmartMode(project).executeSynchronously()
+        if (extraWords.isEmpty()) return
+
+        //这里不能直接使用target.useScope，否则文件高亮会出现问题
+        val useScope = queryParameters.effectiveSearchScope
+        //这里searchContext必须包含IN_STRINGS，用于查找本地化图标引用
+        //否则因为它的前缀是"£"，会导致对应的偏移位置被跳过
+        //com.intellij.psi.impl.search.LowLevelSearchUtil.checkJavaIdentifier
+        val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_STRINGS or UsageSearchContext.IN_COMMENTS
+        val processor = getProcessor(target)
+        queryParameters.optimizer.wordRequests.removeIf { it.word in extraWords }
+        extraWords.forEach { word -> queryParameters.optimizer.searchWord(word, useScope, searchContext, true, target, processor) }
     }
 
     private fun getProcessor(target: PsiElement): RequestResultProcessor {

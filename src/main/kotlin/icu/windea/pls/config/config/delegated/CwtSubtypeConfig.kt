@@ -35,6 +35,10 @@ interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> 
     }
 }
 
+fun CwtSubtypeConfig.inGroup(groupName: String): Boolean {
+    return config.findOption("group")?.stringValue == groupName
+}
+
 //Implementations (interned if necessary)
 
 private fun doResolve(config: CwtPropertyConfig): CwtSubtypeConfig? {

@@ -4,12 +4,8 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
-import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.set
 
 /**
  * 用于初始规则分组中需要经过计算的那些数据。
@@ -121,6 +117,22 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     filePathPatterns1.isNotEmpty() && filePathPatterns.any { it in filePathPatterns }
                 }
                 types1.forEach { c -> this += c.name }
+            }
+        }
+
+        //computer `relatedLocalisationPatterns`
+        run {
+            with(configGroup.relatedLocalisationPatterns) {
+                val r = mutableSetOf<String>()
+                configGroup.types.values.forEach { c ->
+                    c.localisation?.locationConfigs?.forEach { (_, lc) -> r += lc.value }
+                }
+                r.forEach { s ->
+                    val i = s.indexOf('$')
+                    if (i == -1) return@forEach
+                    this += tupleOf(s.substring(0, i), s.substring(i + 1))
+                }
+                this.sortedWith(compareBy({ it.first }, { it.second }))
             }
         }
 

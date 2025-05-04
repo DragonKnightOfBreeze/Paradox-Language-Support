@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.search.usage
 
 import com.intellij.openapi.application.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
@@ -32,13 +31,12 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
                 ?.let { extraWords.add(it) }
         }
         if (extraWords.isEmpty()) return
-        ReadAction.nonBlocking<Unit> {
-            //这里不能直接使用target.useScope，否则文件高亮会出现问题
-            val useScope = queryParameters.effectiveSearchScope
-            for (extraWord in extraWords) {
-                val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_STRINGS or UsageSearchContext.IN_COMMENTS
-                queryParameters.optimizer.searchWord(extraWord, useScope, searchContext, true, target)
-            }
-        }.inSmartMode(project).executeSynchronously()
+
+        //这里不能直接使用target.useScope，否则文件高亮会出现问题
+        val useScope = queryParameters.effectiveSearchScope
+        for (extraWord in extraWords) {
+            val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_STRINGS or UsageSearchContext.IN_COMMENTS
+            queryParameters.optimizer.searchWord(extraWord, useScope, searchContext, true, target)
+        }
     }
 }

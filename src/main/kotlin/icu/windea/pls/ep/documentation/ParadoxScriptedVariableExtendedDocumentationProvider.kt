@@ -3,6 +3,7 @@ package icu.windea.pls.ep.documentation
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 
@@ -16,13 +17,22 @@ interface ParadoxScriptedVariableExtendedDocumentationProvider {
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxScriptedVariableExtendedDocumentationProvider>("icu.windea.pls.scriptedVariableExtendedDocumentationProvider")
 
-        fun buildDocumentationContent(element: ParadoxScriptScriptedVariable, action: (String) -> Unit) {
+        fun getDocumentationContent(element: ParadoxScriptScriptedVariable): String? {
             val gameType = selectGameType(element)
-            EP_NAME.extensionList.forEach f@{ ep ->
-                if (!gameType.supportsByAnnotation(ep)) return@f
-                val content = ep.getDocumentationContent(element)?.orNull() ?: return@f
-                action(content)
+            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+                if (!gameType.supportsByAnnotation(ep)) return@f null
+                val content = ep.getDocumentationContent(element)?.orNull() ?: return@f null
+                content.orNull()
             }
+        }
+
+        fun getAllDocumentationContent(element: ParadoxScriptScriptedVariable): List<String> {
+            val gameType = selectGameType(element)
+            return EP_NAME.extensionList.mapNotNull f@{ ep ->
+                if (!gameType.supportsByAnnotation(ep)) return@f null
+                val content = ep.getDocumentationContent(element)?.orNull() ?: return@f null
+                content.orNull()
+            }.optimized()
         }
     }
 }

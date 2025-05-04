@@ -10,7 +10,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.ParadoxScriptFileStubElementType
 import java.util.*
 
 /**

@@ -20,7 +20,7 @@ import java.awt.datatransfer.*
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
 class CopyLocalisationIntention : IntentionAction, PriorityAction {
-    override fun getPriority() = PriorityAction.Priority.HIGH
+    override fun getPriority() = PriorityAction.Priority.LOW
 
     override fun getText() = PlsBundle.message("intention.copyLocalisation")
 

@@ -2,7 +2,6 @@ package icu.windea.pls.script.psi
 
 import com.intellij.extapi.psi.*
 import com.intellij.navigation.*
-import com.intellij.openapi.fileTypes.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -14,7 +13,7 @@ import javax.swing.*
 class ParadoxScriptFile(
     viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxScriptDefinitionElement {
-    override fun getFileType() = viewProvider.fileType
+    override fun getFileType() = ParadoxScriptFileType
 
     override val block get() = findChild<ParadoxScriptRootBlock>()
 

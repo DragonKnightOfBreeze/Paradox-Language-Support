@@ -7,8 +7,6 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 /**
  * @property name string

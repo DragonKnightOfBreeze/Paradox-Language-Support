@@ -1,6 +1,5 @@
 package icu.windea.pls.script.editor
 
-import com.intellij.lang.*
 import com.intellij.lang.cacheBuilder.*
 import com.intellij.lang.findUsages.*
 import com.intellij.psi.*
@@ -91,7 +90,7 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
     }
 
     override fun getHelpId(psiElement: PsiElement): String {
-        return HelpID.FIND_OTHER_USAGES
+        return "reference.dialogs.findUsages.other"
     }
 
     override fun canFindUsagesFor(element: PsiElement): Boolean {

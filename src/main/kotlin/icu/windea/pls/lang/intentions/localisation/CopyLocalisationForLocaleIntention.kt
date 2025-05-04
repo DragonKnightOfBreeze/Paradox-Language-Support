@@ -34,7 +34,7 @@ import java.awt.datatransfer.*
  */
 @WithExtension("cn.yiiguxing.plugin.translate")
 class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
-    override fun getPriority() = PriorityAction.Priority.HIGH
+    override fun getPriority() = PriorityAction.Priority.LOW
 
     override fun getText() = PlsBundle.message("intention.copyLocalisationForLocale")
 

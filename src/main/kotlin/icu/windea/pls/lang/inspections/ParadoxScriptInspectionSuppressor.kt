@@ -1,5 +1,3 @@
-@file:Suppress("RedundantOverride")
-
 package icu.windea.pls.lang.inspections
 
 import com.intellij.codeInsight.daemon.impl.actions.*

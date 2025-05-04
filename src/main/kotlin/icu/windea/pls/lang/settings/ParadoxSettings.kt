@@ -5,6 +5,7 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.expression.*
+import icu.windea.pls.lang.settings.ParadoxStrategies.*
 import icu.windea.pls.model.*
 
 /**
@@ -33,19 +34,19 @@ class ParadoxSettingsState : BaseState() {
     val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet(caseInsensitiveStringSet()).orEmpty() }
 
     @get:Property(surroundWithTag = false)
-    val documentation by property(DocumentationState())
+    var documentation by property(DocumentationState())
     @get:Property(surroundWithTag = false)
-    val completion by property(CompletionState())
+    var completion by property(CompletionState())
     @get:Property(surroundWithTag = false)
-    val folding by property(FoldingState())
+    var folding by property(FoldingState())
     @get:Property(surroundWithTag = false)
-    val generation by property(GenerationState())
+    var generation by property(GenerationState())
     @get:Property(surroundWithTag = false)
-    val inference by property(InferenceState())
+    var inference by property(InferenceState())
     @get:Property(surroundWithTag = false)
-    val hierarchy by property(HierarchyState())
+    var hierarchy by property(HierarchyState())
     @get:Property(surroundWithTag = false)
-    val others by property(OthersState())
+    var others by property(OthersState())
 
     /**
      * @property renderLineComment 是否需要渲染之前的单行注释文本到文档中。
@@ -110,24 +111,24 @@ class ParadoxSettingsState : BaseState() {
     /**
      * 注意：某些折叠规则总是启用，不可配置。
      *
-     * @property comment 是否允许折叠多行注释。默认不启用。适用于脚本文件和本地化文件。
-     * @property commentByDefault 是否默认折叠多行注释。默认不启用。适用于脚本文件和本地化文件。
-     * @property parameterConditionBlocksByDefault 是否允许折叠参数条件表达式块。默认不启用。
-     * @property inlineMathBlocksByDefault 是否默认折叠内联数学表达式块。默认启用。
-     * @property localisationReferencesFully 是否允许折叠本地化引用。完全折叠。默认不启用。
-     * @property localisationReferencesFullyByDefault 是否默认折叠本地化引用。完全折叠。默认不启用。
-     * @property localisationIconsFully 是否允许折叠本地化图标。完全折叠。默认不启用。
-     * @property localisationIconsFullyByDefault 是否默认折叠本地化图标。完全折叠。默认不启用。
-     * @property localisationCommands 是否允许折叠本地化命令。默认不启用。
-     * @property localisationCommandsByDefault 是否默认折叠本地化命令。默认不启用。
-     * @property localisationConcepts 是否允许折叠本地化概念。默认不启用。
-     * @property localisationConceptsByDefault 是否默认折叠本地化概念。默认不启用。
-     * @property localisationConceptTexts 是否允许折叠本地化概念的自定义文本。默认不启用。
-     * @property localisationConceptTextsByDefault 是否默认折叠本地化概念的自定义文本。默认不启用。
-     * @property scriptedVariableReferences 是否允许折叠封装变量引用。折叠为解析后的值。默认启用。
-     * @property scriptedVariableReferencesByDefault 是否默认折叠封装变量引用。折叠为解析后的值。默认启用。
-     * @property variableOperationExpressions 是否允许折叠变量操作表达式。折叠为简化形式。默认启用。基于内置的规则文件。
-     * @property variableOperationExpressionsByDefault 是否默认折叠变量操作表达式。折叠为简化形式。默认启用。基于内置的规则文件。
+     * @property comment 是否允许折叠多行注释。适用于脚本文件和本地化文件。
+     * @property commentByDefault 是否默认折叠多行注释。适用于脚本文件和本地化文件。
+     * @property parameterConditionBlocksByDefault 是否允许折叠参数条件表达式块。
+     * @property inlineMathBlocksByDefault 是否默认折叠内联数学表达式块。
+     * @property localisationReferencesFully 是否允许折叠本地化引用。完全折叠。
+     * @property localisationReferencesFullyByDefault 是否默认折叠本地化引用。完全折叠。
+     * @property localisationIconsFully 是否允许折叠本地化图标。完全折叠。
+     * @property localisationIconsFullyByDefault 是否默认折叠本地化图标。完全折叠。
+     * @property localisationCommands 是否允许折叠本地化命令。
+     * @property localisationCommandsByDefault 是否默认折叠本地化命令。
+     * @property localisationConcepts 是否允许折叠本地化概念。
+     * @property localisationConceptsByDefault 是否默认折叠本地化概念。
+     * @property localisationConceptTexts 是否允许折叠本地化概念的自定义文本。
+     * @property localisationConceptTextsByDefault 是否默认折叠本地化概念的自定义文本。
+     * @property scriptedVariableReferences 是否允许折叠封装变量引用。折叠为解析后的值。
+     * @property scriptedVariableReferencesByDefault 是否默认折叠封装变量引用。折叠为解析后的值。
+     * @property variableOperationExpressions 是否允许折叠变量操作表达式。折叠为简化形式。基于内置的规则文件。
+     * @property variableOperationExpressionsByDefault 是否默认折叠变量操作表达式。折叠为简化形式。基于内置的规则文件。
      */
     @Tag("folding")
     class FoldingState : BaseState() {
@@ -159,19 +160,57 @@ class ParadoxSettingsState : BaseState() {
     @Tag("generation")
     class GenerationState : BaseState() {
         var fileNamePrefix by string("000000_")
-        var localisationStrategy by enum(LocalisationGenerationStrategy.SpecificText)
+        var localisationStrategy by enum(LocalisationGeneration.SpecificText)
         var localisationStrategyText by string("REPLACE_ME")
         var localisationStrategyLocale by string("auto")
     }
 
+    /**
+     * @property showLocalizedName 是否在层级视图中额外显示本地化名字。
+     * @property showLocationInfo 是否在层级视图中额外显示位置信息。
+     * @property showLocationInfoByPath 显示位置信息时，是否显示路经。
+     * @property showLocationInfoByRootInfo 显示位置信息时，是否显示游戏或模组信息。
+     * @property showScriptedVariablesInCallHierarchy 是否在调用层级视图中显示封装变量。
+     * @property showDefinitionsInCallHierarchyByBindings 是否在调用层级视图中显示定义。
+     * @property showLocalisationsInCallHierarchy 是否在调用层级视图中显示本地化。
+     * @property definitionTypeBindingsInCallHierarchy 调用层级视图中，定义类型的绑定。
+     * @property showEventInfo 是否在事件树的层级视图中显示事件信息。
+     * @property showEventInfoByType 显示事件信息时，是否显示事件的类型。
+     * @property showEventInfoByAttributes 显示事件信息时，是否显示事件的特性。
+     * @property showTechInfoByTier 显示科技信息时，是否显示科技的等级。
+     * @property showTechInfoByArea 显示科技信息时，是否显示科技的研究领域。
+     * @property showTechInfoByCategories 显示科技信息时，是否显示科技的类别。
+     * @property showTechInfoByAttributes 显示科技信息时，是否显示科技的特性。
+     * @property showTechInfo 是否在科技树的层级视图中显示科技信息。
+     * @property eventTreeGrouping 事件树的层级视图使用的分组策略。
+     * @property techTreeGrouping 科技树的层级视图使用的分组策略。
+     */
     @Tag("hierarchy")
     class HierarchyState : BaseState() {
+        var showLocalizedName by property(true)
+        var showLocationInfo by property(true)
+        var showLocationInfoByPath by property(true)
+        var showLocationInfoByRootInfo by property(false)
+
         var showScriptedVariablesInCallHierarchy by property(true)
         var showDefinitionsInCallHierarchy by property(true)
         var showLocalisationsInCallHierarchy by property(true)
-        var definitionTypeBindingsInCallHierarchy by map<String, String>()
+        var definitionTypeBindingsInCallHierarchy by map<String, String>() //TODO 1.3.35+ 优化：考虑更好的配置方式
 
-        fun showDefinitionsInCallHierarchy(rootDefinitionInfo: ParadoxDefinitionInfo?, definitionInfo: ParadoxDefinitionInfo?): Boolean {
+        var showEventInfo by property(false)
+        var showEventInfoByType by property(true)
+        var showEventInfoByAttributes by property(false)
+
+        var showTechInfo by property(false)
+        var showTechInfoByTier by property(true)
+        var showTechInfoByArea by property(true)
+        var showTechInfoByCategories by property(true)
+        var showTechInfoByAttributes by property(false)
+
+        var eventTreeGrouping by enum(EventTreeGrouping.None)
+        var techTreeGrouping by enum(TechTreeGrouping.None)
+
+        fun showDefinitionsInCallHierarchyByBindings(rootDefinitionInfo: ParadoxDefinitionInfo?, definitionInfo: ParadoxDefinitionInfo?): Boolean {
             if (rootDefinitionInfo == null || definitionInfo == null) return true
             val bindings = definitionTypeBindingsInCallHierarchy
             if (bindings.isEmpty()) return true
@@ -218,18 +257,7 @@ class ParadoxSettingsState : BaseState() {
         var showLocalisationFloatingToolbar by property(true)
         var highlightLocalisationColorId by property(true)
         var renderLocalisationColorfulText by property(true)
-        var defaultDiffGroup by enum(DiffGroupStrategy.VsCopy)
+        var defaultDiffGroup by enum(DiffGroup.VsCopy)
     }
 }
 
-enum class LocalisationGenerationStrategy {
-    EmptyText,
-    SpecificText,
-    FromLocale,
-}
-
-enum class DiffGroupStrategy {
-    VsCopy,
-    First,
-    Last,
-}

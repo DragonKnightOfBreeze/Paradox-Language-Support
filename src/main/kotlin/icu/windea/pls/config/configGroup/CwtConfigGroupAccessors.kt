@@ -3,7 +3,6 @@ package icu.windea.pls.config.configGroup
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
-import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
@@ -180,6 +179,10 @@ val CwtConfigGroup.definitionTypesSupportParameters: MutableSet<String>
 //可能有类型键前缀（type_key_prefix）的定义类型 - 按文件路径计算
 @Tags(Tag.Computed)
 val CwtConfigGroup.definitionTypesMayWithTypeKeyPrefix: MutableSet<String>
+    by createKey(CwtConfigGroup.Keys) { mutableSetOf() }
+//相关本地化的模式，用于从本地化导航到相关定义
+@Tags(Tag.Computed)
+val CwtConfigGroup.relatedLocalisationPatterns: MutableSet<Tuple2<String, String>>
     by createKey(CwtConfigGroup.Keys) { mutableSetOf() }
 
 @Tags(Tag.Collected)

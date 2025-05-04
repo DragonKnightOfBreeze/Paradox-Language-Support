@@ -57,13 +57,15 @@
         "inlineScript.svg": "icons/nodes/inlineScript.svg",
         "databaseObjectType.svg": "icons/nodes/databaseObjectType.svg",
         "defineNamespace.svg": "icons/nodes/defineNamespace.svg",
-        "defineVariable.svg": "icons/nodes/defineVariable.svg"
+        "defineVariable.svg": "icons/nodes/defineVariable.svg",
+        "definitionGroup.svg": "icons/nodes/definitionGroup.svg"
       },
       "gutter": {
         "scriptedVariable.svg": "icons/gutter/scriptedVariable.svg",
         "definition.svg": "icons/gutter/definition.svg",
         "localisation.svg": "icons/gutter/localisation.svg",
         "relatedImages.svg": "icons/gutter/relatedImages.svg",
+        "relatedDefinitions.svg": "icons/gutter/relatedDefinitions.svg",
         "relatedLocalisations.svg": "icons/gutter/relatedLocalisations.svg"
       },
       "actions": {

@@ -247,10 +247,10 @@ enums = {
 
 ### 生成器
 
-modifier（修饰符）：
+modifier（修正）：
 
 * 游戏运行时会生成日志文件`modifiers.log`
-* 对于任意pop_job（职业）`job_xxx`，会在游戏运行时生成modifier（修饰符）`job_xxx_add`，对应的本地化`mod_job_xxx_add`不会自动生成
+* 对于任意pop_job（职业）`job_xxx`，会在游戏运行时生成modifier（修正）`job_xxx_add`，对应的本地化`mod_job_xxx_add`不会自动生成
 
 trigger（触发器）：
 

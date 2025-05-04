@@ -10,7 +10,6 @@ import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtPropertySurrounder : CwtSurrounder() {
-    @Suppress("DialogTitleCapitalization")
     override fun getTemplateDescription(): String {
         return PlsBundle.message("cwt.surroundWith.property.description")
     }

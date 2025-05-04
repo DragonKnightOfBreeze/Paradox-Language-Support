@@ -3,7 +3,7 @@ package icu.windea.pls.localisation.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
 import com.intellij.util.*
-import icu.windea.pls.PlsIcons
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.data.*
 import icu.windea.pls.lang.*

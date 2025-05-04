@@ -15,7 +15,6 @@ import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
-import kotlin.collections.set
 
 /**
  * 参数被设置/引用但未被使用的检查。

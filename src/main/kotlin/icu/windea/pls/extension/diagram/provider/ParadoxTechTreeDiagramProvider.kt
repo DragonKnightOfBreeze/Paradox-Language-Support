@@ -33,11 +33,11 @@ import javax.swing.*
  */
 abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : ParadoxDefinitionDiagramProvider(gameType) {
     companion object {
-        val CAT_TYPE = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.type"), PlsIcons.Nodes.Type, true, false)
-        val CAT_PROPERTIES = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.properties"), PlsIcons.Nodes.Property, true, false)
-        val CAT_NAME = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.name"), PlsIcons.Nodes.Localisation, false, false)
-        val CAT_ICON = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.icon"), PlsIcons.General.Image, false, false)
-        val CAT_PRESENTATION = DiagramCategory(PlsDiagramBundle.lazyMessage("paradox.techTree.category.presentation"), PlsIcons.General.Presentation, false, false)
+        val CAT_TYPE = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.type"), PlsIcons.Nodes.Type, true, false)
+        val CAT_PROPERTIES = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.properties"), PlsIcons.Nodes.Property, true, false)
+        val CAT_NAME = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.name"), PlsIcons.Nodes.Localisation, false, false)
+        val CAT_ICON = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.icon"), PlsIcons.General.Image, false, false)
+        val CAT_PRESENTATION = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.presentation"), PlsIcons.General.Presentation, false, false)
         val CATEGORIES = arrayOf(CAT_TYPE, CAT_PROPERTIES, CAT_NAME, CAT_ICON, CAT_PRESENTATION)
 
         val REL_PREREQUISITE = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID) {

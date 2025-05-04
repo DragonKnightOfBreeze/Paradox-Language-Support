@@ -15,6 +15,17 @@
 * [ ] #137 [VIC3/CK3] Support special localizations - Basic support
 * [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
+## 1.3.35
+
+* [X] 优化：可以配置是否在层级视图中显示位置信息与本地化名字 / OP: Allow to configure whether to show position info and localized name in hierarchy views
+* [X] 实现高级类型层级视图，支持过滤、分组、展开等操作 / Implement advanced type hierarchy views, support operations such as filtering, grouping, expansion, etc.
+* [X] 实现事件树与科技树对应的高级层级视图 / Implement advanced hierarchy views for event trees and technology trees
+* [X] 可以配置是否在高级层级视图中显示相关信息（事件信息或科技信息） / Allow to configure whether to show related info in advanced type hierarchy views (event info or technology info)
+* [X] 为封装变量、定义和本地化提供一些额外的意图操作 / Provide some extra intentions for scripted variables, definitions and localizations
+* [X] 提供对本地化的相关定义的支持（快速文档、导航操作、装订线图标） / Provide support for related definitions of localisations (quick doc, navigation actions, gutter icons)
+* [X] 修复某些插件配置在IDE重启后会被重置为默认的问题 / Fixed a problem that some plugin settings will be reset to default after IDE restart
+* [X] 其他优化与BUG修复 / Other optimizations and bug fixes
+
 ## 1.3.34
 
 * [X] 更新IDEA版本到2025.1 / Update IDEA version to 2025.1
@@ -884,7 +895,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
   修复：[群星文本颜色插件失效（没有弹出选框），同时报错 #15](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/15)
 * [X] 实现内嵌提示以提示复杂枚举值的信息（枚举名，如`policy_flag`，默认启用）
 * [X] 实现类型层级（`Navigate > Type Hierarchy`） - 用于基于定义类型列出定义（光标位置在定义声明中时，此功能可用）
-* [X] 完善对类型层次的支持 - 支持通过作用域过滤显示结果
+* [X] 完善对类型层级的支持 - 支持通过作用域过滤显示结果
 * [X] 优化索引，重新索引后，对于复杂枚举值（如`policy_flag`）和值集值（如`variable`），应当不会再出现应当可以解析但有时无法解析的情况了
 * [X] 可以在插件配置页面中配置进行DIFF时，初始打开的初始打开的DIFF分组。默认初始打开VS副本的DIFF分组
 
@@ -1034,7 +1045,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 计划内容：
 
 * 支持推断inline_script的调用位置从而为其提供各种功能
-* 支持通过economic_category生成的修饰符
+* 支持通过economic_category生成的修正
 * 提供更加完善的颜色支持（可以通过颜色装订线图标显示和设置颜色）
 
 更新项：
@@ -1057,10 +1068,10 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
     * [X] 基于使用处推断`inline_script`的位置（即需要对应的CWT规则文件入口，同时如果可以推断，在内联脚本文件上方提示，同时也提供对参数的支持）
     * [X] 可扩展的参数解析器（提供推断参数的上下文、调用表达式中传入参数的上下文等功能）
 * 新增功能
-    * 完善支持处理生成的修饰符（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能
-        * [X] 支持通过Stellaris的`economic_category`生成修饰符
-        * [X] 通过Stellaris的`economic_category`生成修饰符，兼容继承的mult修饰符（如，`starbase_outpost_cost_mult`）
-        * [X] 提供修饰符解析器的扩展点，便于后续扩展
+    * 完善支持处理生成的修正（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能
+        * [X] 支持通过Stellaris的`economic_category`生成修正
+        * [X] 通过Stellaris的`economic_category`生成修正，兼容继承的mult修正（如，`starbase_outpost_cost_mult`）
+        * [X] 提供修正解析器的扩展点，便于后续扩展
     * 代码检查（`Code > Inspect Code...`）
         * [X] 缺少的传参的检查（警告级别，在调用表达式、SV表达式中，如果参数不存在默认值且未传递，则认为缺少传参）
         * [X] 推断的`inline_script`的位置存在冲突（使用处的父节点对应的CWT规则存在不一致的情况）
@@ -1114,20 +1125,20 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
     * [X] 初步支持CWT规则类型`variable_field`和`int_variable_field`，以及相关的引用解析、代码补全、代码高亮等功能
         * 作为`value_field`和`int_value_field`的子级
         * 仅支持`root.var`的格式
-    * [X] 初步支持处理生成的修饰符（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能
+    * [X] 初步支持处理生成的修正（`modifier`），以及相关的引用解析、代码补全、代码高亮等功能
         * 基于CWT类型规则中的`modifiers`规则（例如：`modifiers = { job_<job>_add = Planets }`）（认为没有实际上的声明处，并使用特殊的高亮）
         * 基于`modifiers.log`生成`modifiers.gen.cwt`，并且整理编写`modifiers.cwt`
-          ，以处理生成的修饰符（包括由Stellaris的`economic_category`生成的）
-        * 注意：暂不支持通过Stellaris的`economic_category`生成修饰符（原版游戏会生成的照常支持）
+          ，以处理生成的修正（包括由Stellaris的`economic_category`生成的）
+        * 注意：暂不支持通过Stellaris的`economic_category`生成修正（原版游戏会生成的照常支持）
 * 新增功能
     * 快速文档（`Quick Documentation`）
         * [X] 优化CWT规则的快速文档显示
-        * [X] 如果是修饰符，在快速文档中显示相关本地化、图标、分类、支持的作用域、作用域上下文等信息
-        * [X] 如果是生成的修饰符，在快速文档中显示生成模版（例如，`job_<job>_add`）和生成源的信息（例如，`job_xxx_add`）
+        * [X] 如果是修正，在快速文档中显示相关本地化、图标、分类、支持的作用域、作用域上下文等信息
+        * [X] 如果是生成的修正，在快速文档中显示生成模版（例如，`job_<job>_add`）和生成源的信息（例如，`job_xxx_add`）
     * 代码补全（`Code > Code Completion`）
-        * [X] 可以补全预定义/生成的修饰符
+        * [X] 可以补全预定义/生成的修正
     * 引用解析
-        * [X] 可以通过`Ctrl+Click`查找修饰符使用
+        * [X] 可以通过`Ctrl+Click`查找修正使用
     * 意向（`Intention`）
         * [X] 用双引号括起/不再用双引号括起（对于属性名、数字和字符串）
     * 代码检查（`Code > Inspect Code...`）
@@ -1149,8 +1160,8 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
     * [X] 默认将基于子句内联模版的提示项放到前面
     * [X] 实现生成器从`modifiers.log`生成或更新`modifiers.cwt`和`modifier_categories.cwt`
     * [X] 如果定义类型的顶级属性名是限定且存在多种情况的，如有必要，解析定义信息时总是要求顶级属性名是可能的情况之一，而不是任意字符串（如stellaris中的event）
-    * [X] 为修饰符、触发器和效果（`modifier trigger effect`）提供特殊的高亮
-    * [X] 为修饰符、触发器和效果（`modifier trigger effect`）提供特殊的图标
+    * [X] 为修正、触发器和效果（`modifier trigger effect`）提供特殊的高亮
+    * [X] 为修正、触发器和效果（`modifier trigger effect`）提供特殊的图标
     * [X] 定义引用也可以是一个整数，例如，对于`<technology_tier>`
     * [X] 兼容切换类型（例如，`swapped_civic`），包括引用解析、代码提示等功能
 * 功能变更
@@ -1174,7 +1185,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
         * [X] 如果支持且位置合适，提供作用域上下文的内嵌提示（参考Kotlin Lambda内嵌提示的实现）
     * 代码补全（`Code > Code Completion`）
         * [X] 基于别名规则进行提示时，如果设置要求匹配作用域，则仅提示匹配的
-        * [X] 提示修饰符时，如果设置要求匹配作用域，则仅提示匹配的
+        * [X] 提示修正时，如果设置要求匹配作用域，则仅提示匹配的
         * [X] 在各种复杂表达式中进行提示时，如果设置要求匹配作用域，则仅提示匹配的（作用域字段表达式、值字段表达式和本地化命令表达式）
     * 代码检查（`Code > Inspect Code...`）
         * [X] 检查作用域上下文与当前作用域是否匹配（警告级别，部分完成，适用于`effect`、`trigger`
@@ -1218,7 +1229,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
         * 可以通过`Code > Save as Live Template...`将选中的文本保存为动态模版，以便快速编写脚本或者文本
     * 其他
         * [X] 支持事件ID中对事件命名空间的引用
-        * [X] 支持通过快速文档和内嵌提示显示修饰符（`modifier`）的图标和本地化名字（需要确定具体规则是什么）
+        * [X] 支持通过快速文档和内嵌提示显示修正（`modifier`）的图标和本地化名字（需要确定具体规则是什么）
 
 ## 0.7.7
 
@@ -1303,7 +1314,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
     * [X] 实现检查：无法解析的命令作用域（unresolvedCommandScope）
     * [X] 实现检查：无法解析的命令字段（unresolvedCommandField）
     * [X] 实现内嵌提示：本地化图标（渲染出选用的内嵌图标，如果对应图标的大小合适）
-    * [X] 实现内嵌提示：预定义修饰符的本地化名字（`mod_$`）
+    * [X] 实现内嵌提示：预定义修正的本地化名字（`mod_$`）
     * [X] 实现动作：导航到（对应的）CWT规则（对于定义成员，在导航菜单/右键菜单中）（作为一个更加统一的入口，包括内联前后的CWT规则，包括所有完全匹配的规则）
     * [X] 在查找使用中，区分参数和值集值值的读/写使用
     * [X] 在查找使用中，区分使用的使用类型（基于读写和对应的CWT规则）（待日后完善） *
@@ -1405,7 +1416,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
     * [X] 可以根据扩展的CWT规则显示和设置block所对应的颜色
     * [X] 脚本文件：可以显示类型信息以及导航到类型定义，如果可用 - 支持定义成员，显示其规则表达式以及导航到规则声明
     * [X] 解析本地化颜色直接基于`textcolor`类型的定义，在`shared.cwt`中定义，移除内置规则中的`colors`
-    * [X] 对于修饰符`X`，如果存在本地化`mod_X`，在文档注释中渲染对应的本地化文本
+    * [X] 对于修正`X`，如果存在本地化`mod_X`，在文档注释中渲染对应的本地化文本
     * [X] 优化导入游戏或模组目录时弹出的对话框
     * [X] 优化导入游戏或模组目录时弹出的对话框 - 在文件选择器中提供额外的工具栏按钮，可以快速选中Steam游戏目录、Steam创意工坊目录等
     * [X] 优化动态模版，移除硬编码的颜色码枚举（尽管仍然不够直观，或许应该考虑顶部工具类 / 悬浮工具栏？）

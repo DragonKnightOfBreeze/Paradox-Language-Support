@@ -23,7 +23,6 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.ParadoxScriptFileStubElementType
 import icu.windea.pls.script.psi.impl.*
 
 /**
@@ -37,7 +36,7 @@ object ParadoxDefinitionManager {
 
     fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
         //快速判断
-        if (runReadAction { element.greenStub }?.isValidDefinition == false) return null
+        runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub }?.let { if (!(it.isValidDefinition)) return null }
         //从缓存中获取
         return doGetInfoFromCache(element)
     }
@@ -471,11 +470,13 @@ object ParadoxDefinitionManager {
     }
 
     fun getName(element: ParadoxScriptDefinitionElement): String? {
-        return runReadAction { element.greenStub }?.name ?: element.definitionInfo?.name
+        runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub }?.let { return it.name }
+        return element.definitionInfo?.name
     }
 
     fun getType(element: ParadoxScriptDefinitionElement): String? {
-        return runReadAction { element.greenStub }?.type ?: element.definitionInfo?.type
+        runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub }?.let { return it.type }
+        return element.definitionInfo?.type
     }
 
     fun getSubtypes(element: ParadoxScriptDefinitionElement): List<String>? {
@@ -579,7 +580,7 @@ object ParadoxDefinitionManager {
     }
 
     fun getInfoFromStub(element: ParadoxScriptDefinitionElement, project: Project): ParadoxDefinitionInfo? {
-        val stub = runReadAction { element.greenStub } ?: return null
+        val stub = runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub } ?: return null
         //if(!stub.isValid()) return null //这里不用再次判断
         val name = stub.name
         val type = stub.type
@@ -629,7 +630,7 @@ object ParadoxDefinitionManager {
         CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisation) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisation(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker, ParadoxModificationTrackers.LocaleTracker)
         }
 
     private fun doGetPrimaryLocalisation(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
@@ -654,7 +655,7 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisations) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisations(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker, ParadoxModificationTrackers.LocaleTracker)
         }
     }
 
@@ -707,7 +708,7 @@ object ParadoxDefinitionManager {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionLocalizedNames) {
             ProgressManager.checkCanceled()
             val value = doGetLocalizedNames(element)
-            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker)
+            value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker, ParadoxModificationTrackers.LocaleTracker)
         }
     }
 

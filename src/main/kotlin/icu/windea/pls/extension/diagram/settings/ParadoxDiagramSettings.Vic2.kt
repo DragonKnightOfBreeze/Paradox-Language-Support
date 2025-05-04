@@ -8,6 +8,7 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
@@ -16,7 +17,7 @@ import icu.windea.pls.model.*
 @State(name = "ParadoxDiagramSettings.Vic2.EventTree", storages = [Storage("paradox-language-support.xml")])
 class Vic2EventTreeDiagramSettings(
     project: Project
-) : ParadoxEventTreeDiagramSettings<Vic2EventTreeDiagramSettings.State>(project, State()) {
+) : ParadoxEventTreeDiagramSettings<Vic2EventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Vic2) {
     companion object {
         const val ID = "pls.diagram.Vic2.EventTree"
     }
@@ -29,36 +30,32 @@ class Vic2EventTreeDiagramSettings(
         @get:XMap
         var type by linkedMap<String, Boolean>()
         @get:XMap
-        var eventType by linkedMap<String, Boolean>()
+        var attribute by linkedMap<String, Boolean>()
 
-        val typeSettings = TypeSettings()
+        val attributeSettings = AttributeSettings()
 
-        inner class TypeSettings {
-            val triggered by type withDefault true
-            val major by type withDefault true
+        inner class AttributeSettings {
+            val triggered by attribute withDefault true
+            val major by attribute withDefault true
         }
     }
 
-    override val groupName: String = PlsDiagramBundle.message("vic2.eventTree.name")
+    override val groupName: String = PlsDiagramBundle.message("eventTree.name.vic2")
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val eventTypes = runReadAction { ParadoxEventManager.getTypes(project, ParadoxGameType.Vic2) }
-        eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
+        val eventTypes = runReadAction { ParadoxEventManager.getAllTypes(ParadoxGameType.Vic2) }
+        eventTypes.forEach { settings.type.putIfAbsent(it, true) }
         settings.updateSettings()
 
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("vic2.eventTree.settings.type"), { key ->
-            when (key) {
-                State.TypeSettings::triggered.name -> PlsDiagramBundle.message("vic2.eventTree.settings.type.triggered")
-                State.TypeSettings::major.name -> PlsDiagramBundle.message("vic2.eventTree.settings.type.major")
-                else -> null
-            }
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
+            PlsDocBundle.eventType(key, gameType)
         })
-        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("vic2.eventTree.settings.eventType"), { key ->
-            PlsDiagramBundle.message("vic2.eventTree.settings.eventType.option", key)
+        checkBoxGroup(settings.attribute, PlsDiagramBundle.message("eventTree.settings.attribute"), { key ->
+            PlsDocBundle.eventAttribute(key, gameType)
         })
     }
 }

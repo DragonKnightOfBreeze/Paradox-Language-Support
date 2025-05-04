@@ -6,11 +6,15 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.search.*
+import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.model.*
+import icu.windea.pls.script.psi.*
 
 /**
  * 用于处理本地化信息。
@@ -80,5 +84,36 @@ object ParadoxLocalisationManager {
         val fileName = file.name
         if (fileName.startsWith("name_system_")) return true //e.g., name_system_l_english.yml
         return false
+    }
+
+    fun getRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxScriptDefinitionElement> {
+        val name = element.name.orNull() ?: return emptyList()
+        val project = element.project
+        val gameType = selectGameType(element) ?: return emptyList()
+        val configGroup = getConfigGroup(project, gameType)
+        val patterns = configGroup.relatedLocalisationPatterns
+        val namesToSearch = mutableSetOf<String>()
+        patterns.forEach { (prefix, suffix) ->
+            name.removeSurroundingOrNull(prefix, suffix)?.let { namesToSearch += it }
+        }
+        if(namesToSearch.isEmpty()) return emptyList()
+        val selector = selector(project, element).definition().contextSensitive()
+        val result = mutableListOf<ParadoxScriptDefinitionElement>()
+        namesToSearch.forEach f1@{ nameToSearch ->
+            ProgressManager.checkCanceled()
+            //op: only search definitions declared by a property, to optimize performance
+            ParadoxDefinitionSearch.search(nameToSearch, "", selector).findAll().forEach f2@{ definition ->
+                ProgressManager.checkCanceled()
+                val definitionInfo = definition.definitionInfo ?: return@f2
+                val definitionName = definitionInfo.name.orNull() ?: return@f2
+                definitionInfo.localisations.forEach f3@{ l ->
+                    val resolved = l.locationExpression.resolvePlaceholder(definitionName) ?: return@f3
+                    if(resolved != name) return@f3
+                    result += definition
+                    return@f2
+                }
+            }
+        }
+        return result
     }
 }

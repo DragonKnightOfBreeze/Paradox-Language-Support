@@ -10,7 +10,6 @@ import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
@@ -55,8 +54,7 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
 
         val info = ParadoxComplexEnumValueManager.getInfo(element)
         if (info != null) {
-            val configGroup = getConfigGroup(file.project, info.gameType)
-            val presentation = doCollect(info.name, info.enumName, configGroup, file, editor, settings) ?: return true
+            val presentation = doCollect(info.name, info.enumName, file, editor, settings) ?: return true
             val finalPresentation = presentation.toFinalPresentation(this, file.project)
             val endOffset = element.endOffset
             sink.addInlineElement(endOffset, true, finalPresentation, false)
@@ -64,11 +62,10 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
         }
 
         val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return true
-        val configGroup = config.configGroup
         val type = config.expression.type
         if (type != CwtDataTypes.EnumValue) return true
         val enumName = config.expression.value ?: return true
-        val presentation = doCollect(name, enumName, configGroup, file, editor, settings) ?: return true
+        val presentation = doCollect(name, enumName, file, editor, settings) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
@@ -76,11 +73,10 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
         return true
     }
 
-    private fun PresentationFactory.doCollect(name: String, enumName: String, configGroup: CwtConfigGroup, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
-        val configs = configGroup.extendedComplexEnumValues[enumName] ?: return null
-        val config = configs.findFromPattern(name, file, configGroup) ?: return null //just use file as contextElement here
-        val hint = config.hint ?: return null
-        val hintElement = ParadoxLocalisationElementFactory.createProperty(configGroup.project, "hint", hint)
+    private fun PresentationFactory.doCollect(name: String, enumName: String, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
+        val hint = ParadoxComplexEnumValueManager.getHintFromExtendedConfig(name, enumName, file) //just use file as contextElement here
+        if (hint.isNullOrEmpty()) return null
+        val hintElement = ParadoxLocalisationElementFactory.createProperty(file.project, "hint", hint)
         //it's necessary to inject fileInfo (so that gameType can be got later)
         hintElement.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
         return ParadoxLocalisationTextInlayRenderer.render(hintElement, this, editor, settings.textLengthLimit, settings.iconHeightLimit)

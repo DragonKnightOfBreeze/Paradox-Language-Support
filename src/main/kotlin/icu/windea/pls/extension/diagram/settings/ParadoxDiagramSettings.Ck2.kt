@@ -8,6 +8,7 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
@@ -16,7 +17,7 @@ import icu.windea.pls.model.*
 @State(name = "ParadoxDiagramSettings.Ck2.EventTree", storages = [Storage("paradox-language-support.xml")])
 class Ck2EventTreeDiagramSettings(
     project: Project
-) : ParadoxEventTreeDiagramSettings<Ck2EventTreeDiagramSettings.State>(project, State()) {
+) : ParadoxEventTreeDiagramSettings<Ck2EventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Ck2) {
     companion object {
         const val ID = "pls.diagram.Ck2.EventTree"
     }
@@ -29,36 +30,32 @@ class Ck2EventTreeDiagramSettings(
         @get:XMap
         var type by linkedMap<String, Boolean>()
         @get:XMap
-        var eventType by linkedMap<String, Boolean>()
+        var attribute by linkedMap<String, Boolean>()
 
-        val typeSettings = TypeSettings()
+        val attributeSettings = AttributeSettings()
 
-        inner class TypeSettings {
-            val hidden by type withDefault true
-            val triggered by type withDefault true
+        inner class AttributeSettings {
+            val hidden by attribute withDefault true
+            val triggered by attribute withDefault true
         }
     }
 
-    override val groupName: String = PlsDiagramBundle.message("ck2.eventTree.name")
+    override val groupName: String = PlsDiagramBundle.message("eventTree.name.ck2")
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val eventTypes = runReadAction { ParadoxEventManager.getTypes(project, ParadoxGameType.Ck2) }
-        eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
+        val eventTypes = runReadAction { ParadoxEventManager.getAllTypes(ParadoxGameType.Ck2) }
+        eventTypes.forEach { settings.type.putIfAbsent(it, true) }
         settings.updateSettings()
 
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("ck2.eventTree.settings.type"), { key ->
-            when (key) {
-                State.TypeSettings::hidden.name -> PlsDiagramBundle.message("ck2.eventTree.settings.type.hidden")
-                State.TypeSettings::triggered.name -> PlsDiagramBundle.message("ck2.eventTree.settings.type.triggered")
-                else -> null
-            }
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
+            PlsDocBundle.eventType(key, gameType)
         })
-        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("ck2.eventTree.settings.eventType"), { key ->
-            PlsDiagramBundle.message("ck2.eventTree.settings.eventType.option", key)
+        checkBoxGroup(settings.attribute, PlsDiagramBundle.message("eventTree.settings.attribute"), { key ->
+            PlsDocBundle.eventAttribute(key, gameType)
         })
     }
 }

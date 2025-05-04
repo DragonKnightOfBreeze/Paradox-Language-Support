@@ -12,11 +12,11 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
+import icu.windea.pls.lang.settings.ParadoxStrategies.LocalisationGeneration as LocalisationGenerationStrategy
 
 object ParadoxLocalisationGenerator {
     val currentContext = ThreadLocal<ParadoxLocalisationCodeInsightContext>()

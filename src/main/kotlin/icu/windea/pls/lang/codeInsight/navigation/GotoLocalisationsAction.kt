@@ -9,6 +9,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.actions.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.ParadoxLocalisationCategory
 
 /**
  * 导航到当前本地化的包括自身在内的相同名称的本地化。
@@ -32,7 +33,7 @@ class GotoLocalisationsAction : BaseCodeInsightAction() {
         presentation.isVisible = true
         val offset = editor.caretModel.offset
         val localisation = findElement(file, offset)
-        presentation.isEnabled = localisation != null
+        presentation.isEnabled = localisation != null && localisation.category != null
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {

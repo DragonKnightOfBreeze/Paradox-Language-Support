@@ -19,7 +19,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.codeStyle.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 object CwtConfigCompletionManager {

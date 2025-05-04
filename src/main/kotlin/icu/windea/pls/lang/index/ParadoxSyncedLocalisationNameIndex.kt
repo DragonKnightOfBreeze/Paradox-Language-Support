@@ -13,7 +13,7 @@ class ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLocal
         val INSTANCE by lazy { findStubIndex<ParadoxSyncedLocalisationNameIndex>() }
         val KEY = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
 
-        private const val VERSION = 58 //1.3.27
+        private const val VERSION = 59 //1.3.35
         private const val CACHE_SIZE = 2 * 1024
     }
 

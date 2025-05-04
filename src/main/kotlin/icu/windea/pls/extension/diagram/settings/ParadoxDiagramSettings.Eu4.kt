@@ -8,6 +8,7 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
@@ -16,7 +17,7 @@ import icu.windea.pls.model.*
 @State(name = "ParadoxDiagramSettings.Eu4.EventTree", storages = [Storage("paradox-language-support.xml")])
 class Eu4EventTreeDiagramSettings(
     project: Project
-) : ParadoxEventTreeDiagramSettings<Eu4EventTreeDiagramSettings.State>(project, State()) {
+) : ParadoxEventTreeDiagramSettings<Eu4EventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Eu4) {
     companion object {
         const val ID = "pls.diagram.Eu4.EventTree"
     }
@@ -29,36 +30,32 @@ class Eu4EventTreeDiagramSettings(
         @get:XMap
         var type by linkedMap<String, Boolean>()
         @get:XMap
-        var eventType by linkedMap<String, Boolean>()
+        var attribute by linkedMap<String, Boolean>()
 
-        val typeSettings = TypeSettings()
+        val attributeSettings = AttributeSettings()
 
-        inner class TypeSettings {
-            val hidden by type withDefault true
-            val triggered by type withDefault true
+        inner class AttributeSettings {
+            val hidden by attribute withDefault true
+            val triggered by attribute withDefault true
         }
     }
 
-    override val groupName: String = PlsDiagramBundle.message("eu4.eventTree.name")
+    override val groupName: String = PlsDiagramBundle.message("eventTree.name.eu4")
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val eventTypes = runReadAction { ParadoxEventManager.getTypes(project, ParadoxGameType.Eu4) }
-        eventTypes.forEach { settings.eventType.putIfAbsent(it, true) }
+        val eventTypes = runReadAction { ParadoxEventManager.getAllTypes(ParadoxGameType.Eu4) }
+        eventTypes.forEach { settings.type.putIfAbsent(it, true) }
         settings.updateSettings()
 
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))
         }
-        checkBoxGroup(settings.type, PlsDiagramBundle.message("eu4.eventTree.settings.type"), { key ->
-            when (key) {
-                State.TypeSettings::hidden.name -> PlsDiagramBundle.message("eu4.eventTree.settings.type.hidden")
-                State.TypeSettings::triggered.name -> PlsDiagramBundle.message("eu4.eventTree.settings.type.triggered")
-                else -> null
-            }
+        checkBoxGroup(settings.type, PlsDiagramBundle.message("eventTree.settings.type"), { key ->
+            PlsDocBundle.eventType(key, gameType)
         })
-        checkBoxGroup(settings.eventType, PlsDiagramBundle.message("eu4.eventTree.settings.eventType"), { key ->
-            PlsDiagramBundle.message("eu4.eventTree.settings.eventType.option", key)
+        checkBoxGroup(settings.attribute, PlsDiagramBundle.message("eventTree.settings.attribute"), { key ->
+            PlsDocBundle.eventAttribute(key, gameType)
         })
     }
 }

@@ -5,8 +5,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.*
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 class ParadoxPostfixTemplateProvider : PostfixTemplateProvider {
     private val defaultTemplates by lazy {

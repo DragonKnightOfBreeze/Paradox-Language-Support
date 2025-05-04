@@ -20,16 +20,17 @@ import icu.windea.pls.script.psi.*
 class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionElement, ParadoxDefinitionSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxDefinitionSearch.SearchParameters, consumer: Processor<in ParadoxScriptDefinitionElement>) {
         ProgressManager.checkCanceled()
-        if(queryParameters.project.isDefault) return
+        if (queryParameters.project.isDefault) return
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
         val name = queryParameters.name
-        val typeExpression = queryParameters.typeExpression?.let { ParadoxDefinitionTypeExpression.resolve(it) }
+        val forFile = queryParameters.typeExpression != ""
+        val typeExpression = queryParameters.typeExpression?.orNull()?.let { ParadoxDefinitionTypeExpression.resolve(it) }
         val project = queryParameters.project
         val gameType = queryParameters.selector.gameType ?: return
         val configGroup = getConfigGroup(project, gameType)
 
-        processQueryForFileDefinitions(name, typeExpression, project, scope, configGroup) { consumer.process(it) }
+        if (forFile) processQueryForFileDefinitions(name, typeExpression, project, scope, configGroup) { consumer.process(it) }
         processQueryForStubDefinitions(name, typeExpression, project, scope) { consumer.process(it) }
 
         if (typeExpression != null) {

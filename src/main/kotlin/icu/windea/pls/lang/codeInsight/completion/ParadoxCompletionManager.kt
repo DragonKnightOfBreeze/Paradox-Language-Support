@@ -3,16 +3,14 @@ package icu.windea.pls.lang.codeInsight.completion
 import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.*
-import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.patterns.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.PlsIcons
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configContext.*

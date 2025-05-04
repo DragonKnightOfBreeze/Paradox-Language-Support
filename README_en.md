@@ -59,13 +59,13 @@ Tips:
   * Click `Alt 6` or `Problems` Tool window, open the Problems panel ,then view problems of current file, or run a global code inspection for whole project.
   * Click `Code > Inspect Code...`, run a global code inspection for whole project.
   * When code inspection is finished ,IDE will show detail inspection result in Problems panel.
-* To change the global configuration of the plugin, refer to the following method:
-  * Click `Settings > Languages & Frameworks > Paradox Language Support` to open the settings page for the plugin.
-* To change the configuration of mod types, game directories, mod dependencies, etc., open the Mod Configuration dialog using one of the following methods:
+* To change the settings of mod types, game directories, mod dependencies, etc., open the mod settings dialog using one of the following methods:
   * Click `Settings > Languages & Frameworks > Paradox Language Support` to configure default game directories.
   * Click the blue gear icon in the editor floating toolbar located in the upper right corner of the page.
-  * In the editor, open the context menu and click `Paradox Language Support > Open Mod Settings...`.
+  * Open the context menu and click `Paradox Language Support > Open Mod Settings...` in the editor.
   * Click `Tools > Paradox Language Support > Open Mod Settings...`.
+* To change the global settings of the plugin, refer to the following method:
+  * Click `Settings > Languages & Frameworks > Paradox Language Support` to open the settings page for the plugin.
 * If you encounter some unexpected problems during use, try the following:
   * Update the IDE and plugin to the latest version.
   * If it may be related to IDE indices, try to rebuild indices and restart the IDE. (Click `File -> Invalidate Caches... -> Invalidate and Restart`)

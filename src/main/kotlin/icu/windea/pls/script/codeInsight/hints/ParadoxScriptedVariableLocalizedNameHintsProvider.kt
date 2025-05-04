@@ -9,9 +9,8 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxScriptedVariableLocalizedNameHintsProvider.*
@@ -56,11 +55,9 @@ class ParadoxScriptedVariableLocalizedNameHintsProvider : ParadoxScriptHintsProv
         val name = element.name
         if (name.isNullOrEmpty()) return null
         if (name.isParameterized()) return null
-        val gameType = selectGameType(element) ?: return null
-        val configGroup = getConfigGroup(element.project, gameType)
-        val config = configGroup.extendedScriptedVariables.findFromPattern(name, element, configGroup) ?: return null
-        val hint = config.hint ?: return null
-        val hintElement = ParadoxLocalisationElementFactory.createProperty(configGroup.project, "hint", hint)
+        val hint = ParadoxScriptedVariableManager.getHintFromExtendedConfig(name, file) //just use file as contextElement here
+        if (hint.isNullOrEmpty()) return null
+        val hintElement = ParadoxLocalisationElementFactory.createProperty(file.project, "hint", hint)
         //it's necessary to inject fileInfo (so that gameType can be got later)
         hintElement.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
         return ParadoxLocalisationTextInlayRenderer.render(hintElement, this, editor, settings.textLengthLimit, settings.iconHeightLimit)

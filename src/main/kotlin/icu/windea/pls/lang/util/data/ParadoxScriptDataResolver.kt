@@ -14,6 +14,15 @@ object ParadoxScriptDataResolver {
         return resolveBlock(rootBlock, conditional, inline)
     }
 
+    fun resolve(element: PsiElement, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData? {
+        return when (element) {
+            is ParadoxScriptBlock -> resolveBlock(element, conditional, inline)
+            is ParadoxScriptValue -> resolveValue(element, conditional, inline)
+            is ParadoxScriptProperty -> resolveProperty(element, conditional, inline)
+            else -> null
+        }
+    }
+
     fun resolveBlock(element: ParadoxScriptBlockElement, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData {
         val value = element as? ParadoxScriptBlock
         val children: MutableList<ParadoxScriptData> = mutableListOf()

@@ -2,7 +2,7 @@ package icu.windea.pls.localisation.psi
 
 import com.intellij.lexer.*
 import com.intellij.psi.tree.*
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.*
 
 class ParadoxLocalisationLexer(
     val gameType: ParadoxGameType? = null

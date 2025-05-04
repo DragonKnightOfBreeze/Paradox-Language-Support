@@ -27,6 +27,14 @@ object ParadoxPsiManager {
     }
 
     fun findScriptVariable(file: PsiFile, offset: Int, options: Int = 1): ParadoxScriptScriptedVariable? {
+        if (BitUtil.isSet(options, FindScriptedVariableOptions.BY_REFERENCE)) {
+            val reference = file.findReferenceAt(offset) {
+                ParadoxResolveConstraint.ScriptedVariable.canResolve(it)
+            }
+            val resolved = reference?.resolve()?.castOrNull<ParadoxScriptScriptedVariable>()
+            if (resolved != null) return resolved
+        }
+        if (file.language !is ParadoxScriptLanguage) return null
         if (BitUtil.isSet(options, FindScriptedVariableOptions.DEFAULT)) {
             val result = file.findElementAt(offset) t@{
                 it.parents(false).find p@{ p -> p is ParadoxScriptScriptedVariable }
@@ -40,13 +48,6 @@ object ParadoxPsiManager {
                 }?.castOrNull<ParadoxScriptScriptedVariable>()
                 if (result != null) return result
             }
-        }
-        if (BitUtil.isSet(options, FindScriptedVariableOptions.BY_REFERENCE)) {
-            val reference = file.findReferenceAt(offset) {
-                ParadoxResolveConstraint.ScriptedVariable.canResolve(it)
-            }
-            val resolved = reference?.resolve()?.castOrNull<ParadoxScriptScriptedVariable>()
-            if (resolved != null) return resolved
         }
         return null
     }
@@ -73,6 +74,12 @@ object ParadoxPsiManager {
             }
         }
 
+        if (BitUtil.isSet(options, FindDefinitionOptions.BY_REFERENCE)) {
+            val reference = expressionReference
+            val resolved = reference?.resolve()?.castOrNull<ParadoxScriptDefinitionElement>()?.takeIf { it.definitionInfo != null }
+            if (resolved != null) return resolved
+        }
+        if (file.language !is ParadoxScriptLanguage) return null
         if (BitUtil.isSet(options, FindDefinitionOptions.DEFAULT)) {
             val result = file.findElementAt(offset) t@{
                 it.parents(false).find p@{ p -> p is ParadoxScriptDefinitionElement && p.definitionInfo != null }
@@ -92,11 +99,6 @@ object ParadoxPsiManager {
                 }
             }
         }
-        if (BitUtil.isSet(options, FindDefinitionOptions.BY_REFERENCE)) {
-            val reference = expressionReference
-            val resolved = reference?.resolve()?.castOrNull<ParadoxScriptDefinitionElement>()?.takeIf { it.definitionInfo != null }
-            if (resolved != null) return resolved
-        }
         return null
     }
 
@@ -110,6 +112,18 @@ object ParadoxPsiManager {
      * @param options 从哪些位置查找对应的定义。如果传1，则表示直接向上查找即可。
      */
     fun findLocalisation(file: PsiFile, offset: Int, options: Int = 1): ParadoxLocalisationProperty? {
+        if (BitUtil.isSet(options, FindLocalisationOptions.BY_REFERENCE)) {
+            val reference = file.findReferenceAt(offset) {
+                ParadoxResolveConstraint.Localisation.canResolve(it)
+            }
+            val resolved = when {
+                reference == null -> null
+                reference is ParadoxLocalisationPropertyPsiReference -> reference.resolveLocalisation()
+                else -> reference.resolve()
+            }?.castOrNull<ParadoxLocalisationProperty>()
+            if (resolved != null) return resolved
+        }
+        if (file.language !is ParadoxLocalisationLanguage) return null
         if (BitUtil.isSet(options, FindLocalisationOptions.DEFAULT)) {
             val result = file.findElementAt(offset) t@{
                 it.parents(false).find p@{ p -> p is ParadoxLocalisationProperty && p.localisationInfo != null }
@@ -124,27 +138,18 @@ object ParadoxPsiManager {
                 if (result != null) return result
             }
         }
-        if (BitUtil.isSet(options, FindLocalisationOptions.BY_REFERENCE)) {
-            val reference = file.findReferenceAt(offset) {
-                ParadoxResolveConstraint.Localisation.canResolve(it)
-            }
-            val resolved = when {
-                reference == null -> null
-                reference is ParadoxLocalisationPropertyPsiReference -> reference.resolveLocalisation()
-                else -> reference.resolve()
-            }?.castOrNull<ParadoxLocalisationProperty>()
-            if (resolved != null) return resolved
-        }
         return null
     }
 
     fun findScriptExpression(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
+        if (file.language !is ParadoxScriptLanguage) return null
         return file.findElementAt(offset) {
             it.parentOfType<ParadoxScriptExpressionElement>(false)
         }?.takeIf { it.isExpression() }
     }
 
     fun findLocalisationColorfulText(file: PsiFile, offset: Int, fromNameToken: Boolean = false): ParadoxLocalisationColorfulText? {
+        if (file.language !is ParadoxLocalisationLanguage) return null
         return file.findElementAt(offset) t@{
             if (fromNameToken && it.elementType != ParadoxLocalisationElementTypes.COLOR_TOKEN) return@t null
             it.parentOfType<ParadoxLocalisationColorfulText>(false)
@@ -152,6 +157,7 @@ object ParadoxPsiManager {
     }
 
     fun findLocalisationLocale(file: PsiFile, offset: Int, fromNameToken: Boolean = false): ParadoxLocalisationLocale? {
+        if (file.language !is ParadoxLocalisationLanguage) return null
         return file.findElementAt(offset) p@{
             if (fromNameToken && it.elementType != ParadoxLocalisationElementTypes.LOCALE_TOKEN) return@p null
             it.parentOfType<ParadoxLocalisationLocale>(false)

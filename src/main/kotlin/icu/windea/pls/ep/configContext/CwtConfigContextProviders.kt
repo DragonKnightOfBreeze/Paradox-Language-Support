@@ -217,7 +217,7 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         ProgressManager.checkCanceled()
 
         //兼容适用语言注入功能的 VirtualFileWindow
-        //兼容通过编辑代码碎片的意向操作打开的 LightVirtualFile
+        //兼容通过编辑代码碎片的意图操作打开的 LightVirtualFile
 
         val vFile = selectFile(file) ?: return null
         if (!ParadoxFileManager.isInjectedFile(vFile)) return null

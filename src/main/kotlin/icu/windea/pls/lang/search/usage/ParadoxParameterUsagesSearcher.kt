@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.search.usage
 
 import com.intellij.openapi.application.*
-import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
@@ -18,15 +17,14 @@ class ParadoxParameterUsagesSearcher : QueryExecutorBase<PsiReference, Reference
         if (target !is ParadoxParameterElement) return
         val name = target.name
         if (name.isEmpty()) return
+
         val project = queryParameters.project
-        ReadAction.nonBlocking<Unit> {
-            //这里不能直接使用target.useScope，否则文件高亮会出现问题
-            val useScope = queryParameters.effectiveSearchScope
-            val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_COMMENTS
-            val processor = getProcessor(target)
-            queryParameters.optimizer.wordRequests.removeIf { it.word == name }
-            queryParameters.optimizer.searchWord(name, useScope, searchContext, true, target, processor)
-        }.inSmartMode(project).executeSynchronously()
+        //这里不能直接使用target.useScope，否则文件高亮会出现问题
+        val useScope = queryParameters.effectiveSearchScope
+        val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_COMMENTS
+        val processor = getProcessor(target)
+        queryParameters.optimizer.wordRequests.removeIf { it.word == name }
+        queryParameters.optimizer.searchWord(name, useScope, searchContext, true, target, processor)
     }
 
     private fun getProcessor(target: PsiElement): RequestResultProcessor {

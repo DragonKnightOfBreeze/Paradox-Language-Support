@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.intentions.script
+package icu.windea.pls.lang.intentions.common
 
 import com.intellij.codeInsight.intention.*
 import com.intellij.codeInsight.intention.preview.*
@@ -13,10 +13,10 @@ import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
 
 /**
- * 复制本地化文本到剪贴板。（复制的是处理后的纯文本）
+ * 复制本地化文本到剪贴板。（复制的是HTML文本）
  */
-class CopyLocalisationTextAsPlainIntention : IntentionAction {
-    override fun getText() = PlsBundle.message("intention.copyLocalisationTextAsPlain")
+abstract class CopyLocalisationTextAsHtmlIntentionBase : IntentionAction {
+    override fun getText() = PlsBundle.message("intention.copyLocalisationTextAsHtml")
 
     override fun getFamilyName() = text
 
@@ -31,7 +31,7 @@ class CopyLocalisationTextAsPlainIntention : IntentionAction {
         if (editor == null || file == null) return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
-        val text = ParadoxLocalisationTextRenderer.render(element)
+        val text = ParadoxLocalisationTextHtmlRenderer.render(element)
         CopyPasteManager.getInstance().setContents(StringSelection(text))
     }
 

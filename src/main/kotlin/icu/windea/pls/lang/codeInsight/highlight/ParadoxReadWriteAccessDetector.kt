@@ -6,9 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.localisation.*
 import icu.windea.pls.model.constraints.*
-import icu.windea.pls.script.*
 
 //如果在查找使用页面中能够获取具体的读/写图标，就不会再显示PsiElement对应的图标（element.presentation.getIcon()）
 

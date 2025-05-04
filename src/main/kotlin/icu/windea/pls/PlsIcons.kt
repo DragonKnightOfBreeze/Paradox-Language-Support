@@ -148,6 +148,9 @@ object PlsIcons {
         @JvmField
         val DefineVariable = IconManager.getInstance().getIcon("/icons/nodes/defineVariable.svg")
 
+        @JvmField
+        val DefinitionGroup = IconManager.getInstance().getIcon("/icons/nodes/definitionGroup.svg")
+
         @JvmStatic
         fun Definition(type: String?) = when (type) {
             "event" -> EventId
@@ -170,6 +173,8 @@ object PlsIcons {
         @JvmField
         val Localisation = IconManager.getInstance().getIcon("/icons/gutter/localisation.svg")
         @JvmField
+        val RelatedDefinitions = IconManager.getInstance().getIcon("/icons/gutter/relatedDefinitions.svg")
+        @JvmField
         val RelatedLocalisations = IconManager.getInstance().getIcon("/icons/gutter/relatedLocalisations.svg")
         @JvmField
         val RelatedImages = IconManager.getInstance().getIcon("/icons/gutter/relatedImages.svg")
@@ -182,10 +187,5 @@ object PlsIcons {
         val ModSettings = IconManager.getInstance().getIcon("/icons/actions/modSettings.svg") // from general/gear.svg, fill #5D8DC3
         @JvmField
         val RefreshConfigGroups = IconManager.getInstance().getIcon("/icons/actions/refreshConfigGroups.svg") // from icons/refresh.svg, fill #5D8DC3
-    }
-
-    object Hierarchy {
-        @JvmField
-        val Definition = AllIcons.Hierarchy.Subtypes
     }
 }

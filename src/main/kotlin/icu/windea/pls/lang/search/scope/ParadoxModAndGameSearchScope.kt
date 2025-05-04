@@ -14,7 +14,6 @@ class ParadoxModAndGameSearchScope(
     val modDirectory: VirtualFile?,
     val gameDirectory: VirtualFile?
 ) : ParadoxSearchScope(project) {
-    @Suppress("DialogTitleCapitalization")
     override fun getDisplayName(): String {
         return PlsBundle.message("search.scope.name.modAndGame")
     }

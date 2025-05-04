@@ -6,7 +6,6 @@ import icu.windea.pls.dds.support.DdsSupport.INSTANCE.EP_NAME
 import java.io.*
 import java.nio.file.*
 import javax.imageio.*
-import javax.imageio.spi.*
 
 object DdsManager {
     fun getMetadata(file: VirtualFile): DdsMetadata? {
