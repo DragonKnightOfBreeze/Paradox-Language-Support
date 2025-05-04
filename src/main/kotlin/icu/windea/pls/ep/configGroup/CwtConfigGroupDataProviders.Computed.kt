@@ -114,7 +114,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 val filePathPatterns = types.flatMapTo(mutableSetOf()) { c -> c.filePathPatterns }
                 val types1 = configGroup.types.values.filter { c ->
                     val filePathPatterns1 = c.filePathPatterns
-                    filePathPatterns1.isNotEmpty() && filePathPatterns.any { it in filePathPatterns }
+                    filePathPatterns1.isNotEmpty() && filePathPatterns1.any { it in filePathPatterns }
                 }
                 types1.forEach { c -> this += c.name }
             }

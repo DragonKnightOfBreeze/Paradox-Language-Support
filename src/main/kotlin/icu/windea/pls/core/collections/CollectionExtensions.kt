@@ -15,9 +15,9 @@ inline fun <T> List<T>.asMutable(): MutableList<T> = this as MutableList<T>
 
 inline fun <T> Set<T>.asMutable(): MutableSet<T> = this as MutableSet<T>
 
-inline fun <T> List<T>.optimized(): List<T> = this.ifEmpty { emptyList() }
+inline fun <T> List<T>.optimized(): List<T> = if (size <= 1) this.toList() else this
 
-inline fun <T> Set<T>.optimized(): Set<T> = this.ifEmpty { emptySet() }
+inline fun <T : Any> Set<T>.optimized(): Set<T> = if (size <= 1) this.toSet() else this
 
 inline fun <T> MutableList<T>.synced(): MutableList<T> = Collections.synchronizedList(this)
 

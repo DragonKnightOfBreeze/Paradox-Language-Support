@@ -9,7 +9,7 @@ inline fun <T : Map<*, *>> T?.orNull() = this?.takeIf { it.isNotEmpty() }
 
 inline fun <K, V> Map<K, V>.asMutable(): MutableMap<K, V> = this as MutableMap<K, V>
 
-inline fun <K, V> Map<K, V>.optimized(): Map<K, V> = this.ifEmpty { emptyMap() }
+inline fun <K, V> Map<K, V>.optimized(): Map<K, V> = if (size <= 1) this.toMap() else this
 
 inline fun <K, V> MutableMap<K, V>.synced(): MutableMap<K, V> = Collections.synchronizedMap(this)
 
