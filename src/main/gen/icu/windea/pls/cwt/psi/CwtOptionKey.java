@@ -11,14 +11,19 @@ import javax.swing.Icon;
 
 public interface CwtOptionKey extends PsiElement {
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getName();
+  @NotNull
+  String getName();
 
-  @NotNull String getValue();
+  @NotNull
+  String getValue();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

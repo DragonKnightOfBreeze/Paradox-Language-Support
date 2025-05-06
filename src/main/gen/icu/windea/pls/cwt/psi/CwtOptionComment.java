@@ -11,14 +11,19 @@ import com.intellij.psi.tree.IElementType;
 
 public interface CwtOptionComment extends PsiComment {
 
-  @Nullable CwtOption getOption();
+  @Nullable
+  CwtOption getOption();
 
-  @Nullable CwtValue getOptionValue();
+  @Nullable
+  CwtValue getOptionValue();
 
-  @NotNull IElementType getTokenType();
+  @NotNull
+  IElementType getTokenType();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

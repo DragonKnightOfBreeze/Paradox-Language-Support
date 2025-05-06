@@ -1,6 +1,7 @@
 package icu.windea.pls.cwt.editor
 
 import com.intellij.lang.cacheBuilder.*
+import icu.windea.pls.cwt.lexer.*
 import icu.windea.pls.cwt.psi.*
 
 class CwtWordScanner : DefaultWordsScanner(

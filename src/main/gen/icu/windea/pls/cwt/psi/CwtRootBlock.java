@@ -21,16 +21,20 @@ public interface CwtRootBlock extends CwtBlockElement {
   @NotNull
   List<CwtValue> getValueList();
 
-  @NotNull String getValue();
+  @NotNull
+  String getValue();
 
   boolean isEmpty();
 
   boolean isNotEmpty();
 
-  @NotNull List<@NotNull PsiElement> getComponents();
+  @NotNull
+  List<PsiElement> getComponents();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

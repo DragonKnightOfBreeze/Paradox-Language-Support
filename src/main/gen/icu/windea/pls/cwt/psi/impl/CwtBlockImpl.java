@@ -5,10 +5,10 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import icu.windea.pls.cwt.psi.*;
-import icu.windea.pls.cwt.psi.util.CwtPsiImplUtil;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.SearchScope;
@@ -20,6 +20,16 @@ public class CwtBlockImpl extends CwtNamedElementImpl implements CwtBlock {
 
   public CwtBlockImpl(@NotNull ASTNode node) {
     super(node);
+  }
+
+  public void accept(@NotNull CwtVisitor visitor) {
+    visitor.visitBlock(this);
+  }
+
+  @Override
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof CwtVisitor) accept((CwtVisitor)visitor);
+    else super.accept(visitor);
   }
 
   @Override
@@ -53,27 +63,32 @@ public class CwtBlockImpl extends CwtNamedElementImpl implements CwtBlock {
   }
 
   @Override
-  public @NotNull Icon getIcon(@IconFlags int flags) {
+  @NotNull
+  public Icon getIcon(@IconFlags int flags) {
     return CwtPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  public @NotNull String getName() {
+  @NotNull
+  public String getName() {
     return CwtPsiImplUtil.getName(this);
   }
 
   @Override
-  public @NotNull CwtBlock setName(@NotNull String name) {
+  @NotNull
+  public CwtBlock setName(@NotNull String name) {
     return CwtPsiImplUtil.setName(this, name);
   }
 
   @Override
-  public @NotNull String getValue() {
+  @NotNull
+  public String getValue() {
     return CwtPsiImplUtil.getValue(this);
   }
 
   @Override
-  public @NotNull CwtValue setValue(@NotNull String value) {
+  @NotNull
+  public CwtValue setValue(@NotNull String value) {
     return CwtPsiImplUtil.setValue(this, value);
   }
 
@@ -88,27 +103,32 @@ public class CwtBlockImpl extends CwtNamedElementImpl implements CwtBlock {
   }
 
   @Override
-  public @NotNull List<@NotNull PsiElement> getComponents() {
+  @NotNull
+  public List<PsiElement> getComponents() {
     return CwtPsiImplUtil.getComponents(this);
   }
 
   @Override
-  public @NotNull CwtType getType() {
+  @NotNull
+  public CwtType getType() {
     return CwtPsiImplUtil.getType(this);
   }
 
   @Override
-  public @Nullable CwtConfigType getConfigType() {
+  @Nullable
+  public CwtConfigType getConfigType() {
     return CwtPsiImplUtil.getConfigType(this);
   }
 
   @Override
-  public @NotNull ItemPresentation getPresentation() {
+  @NotNull
+  public ItemPresentation getPresentation() {
     return CwtPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  public @NotNull SearchScope getUseScope() {
+  @NotNull
+  public SearchScope getUseScope() {
     return CwtPsiImplUtil.getUseScope(this);
   }
 

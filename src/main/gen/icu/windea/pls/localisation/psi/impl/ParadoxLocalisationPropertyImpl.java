@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyStub;
 import icu.windea.pls.localisation.psi.*;
-import icu.windea.pls.localisation.psi.util.ParadoxLocalisationPsiImplUtil;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;

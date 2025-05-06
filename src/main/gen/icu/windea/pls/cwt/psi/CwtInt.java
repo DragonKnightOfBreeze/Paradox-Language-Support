@@ -14,12 +14,16 @@ public interface CwtInt extends CwtValue, PsiLiteralValue {
 
   int getIntValue();
 
-  @NotNull CwtType getType();
+  @NotNull
+  CwtType getType();
 
-  @Nullable CwtConfigType getConfigType();
+  @Nullable
+  CwtConfigType getConfigType();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

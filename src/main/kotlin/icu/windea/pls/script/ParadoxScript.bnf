@@ -1,0 +1,309 @@
+{
+  parserImports="static com.intellij.lang.WhitespacesBinders.*"
+  parserClass="icu.windea.pls.script.parser.ParadoxScriptParser"
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+  psiClassPrefix="ParadoxScript"
+  psiImplClassSuffix="Impl"
+  psiPackage="icu.windea.pls.script.psi"
+  psiImplPackage="icu.windea.pls.script.psi.impl"
+  elementTypeHolderClass="icu.windea.pls.script.psi.ParadoxScriptElementTypes"
+  elementTypeFactory="icu.windea.pls.script.psi.ParadoxScriptElementTypeFactory.getElementType"
+  tokenTypeFactory="icu.windea.pls.script.psi.ParadoxScriptElementTypeFactory.getTokenType"
+  psiImplUtilClass="icu.windea.pls.script.psi.impl.ParadoxScriptPsiImplUtil"
+  parserUtilClass="icu.windea.pls.script.parser.ParadoxScriptParserUtil"
+    tokens=[
+      AT="@"
+      PIPE="|"
+    ]
+  methods(".*")=[getPresentation getResolveScope getUseScope]
+}
+
+// 忽略空白，在ParserDefinition里面定义PsiElement之间的空白类型
+// regex必须定向到token，而非rule
+// 即使idea提示不需要转义，一些字符在regexp中仍然需要转义
+
+// 分隔符可以是比较运算符
+
+root ::= root_block ?
+root_block ::= root_block_item + {
+  implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptBlockElement"
+  ]
+  methods=[getValue isEmpty isNotEmpty getComponents]
+}
+private root_block_item ::= COMMENT | root_block_value | property | scripted_variable | parameter_condition {
+  recoverWhile="#auto"
+}
+private root_block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
+
+// scripted_variable
+scripted_variable ::= scripted_variable_name scripted_variable_separator scripted_variable_value {
+  pin=1
+  recoverWhile="#auto"
+  extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
+  implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
+    "icu.windea.pls.lang.psi.ParadoxTypedElement"
+  ]
+  stubClass="icu.windea.pls.script.psi.ParadoxScriptScriptedVariableStub"
+  methods=[
+    scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
+    getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue getType
+    isEquivalentTo toString
+  ]
+}
+// can be parameterized
+scripted_variable_name ::= AT scripted_variable_name_part (<<processSnippet>> scripted_variable_name_part) * {
+  pin=1;
+  implements=[
+    "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
+  ]
+  methods=[getName getValue]
+}
+private scripted_variable_name_part ::= SCRIPTED_VARIABLE_NAME_TOKEN | parameter | inline_parameter_condition
+private scripted_variable_separator ::= EQUAL_SIGN
+private scripted_variable_value ::= boolean | int | float | string | inline_math
+
+// property related
+property ::= property_key property_separator property_value {
+  pin=1
+  recoverWhile="#auto" //当前属性解析失败时，需要跳过继续解析下一个
+  extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
+  stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
+  implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
+    "icu.windea.pls.lang.psi.ParadoxTypedElement"
+    "icu.windea.pls.script.psi.ParadoxScriptDefinitionElement"
+  ]
+  methods=[
+    property_key="property_key" property_value="value"
+    getIcon getName setName getNameIdentifier getValue getDepth getBlock getType getConfigExpression getExpression
+    isEquivalentTo toString
+  ]
+}
+// can be parameterized
+property_key ::= property_key_part (<<processSnippet>> property_key_part) * {
+  implements=[
+    "com.intellij.psi.PsiLiteralValue"
+    "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
+    "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
+  ]
+  methods=[
+    getIcon getName getValue setValue getType getExpression getConfigExpression
+    getReference getReferences toString
+  ]
+}
+private property_key_part ::= PROPERTY_KEY_TOKEN | parameter | inline_parameter_condition
+private property_separator ::= EQUAL_SIGN | LT_SIGN | GT_SIGN | LE_SIGN | GE_SIGN | NOT_EQUAL_SIGN | SAFE_EQUAL_SIGN
+private property_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
+
+// value related
+// noinspection BnfUnusedRule
+value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math {
+  implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptExpressionElement"
+    "icu.windea.pls.script.psi.ParadoxScriptMemberElement"
+  ]
+  methods=[
+    getIcon getName getValue setValue getType getExpression getConfigExpression
+  ]
+}
+// can be parameterized
+scripted_variable_reference ::= AT scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> scripted_variable_reference_part) * {
+  extends=value
+  implements=[
+    "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
+    "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
+  ]
+  methods=[getIcon getName setName getValue getReference getType getExpression]
+}
+private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | parameter | inline_parameter_condition
+boolean ::= BOOLEAN_TOKEN {
+  extends=value
+  implements=[
+    "com.intellij.psi.PsiLiteralValue"
+  ]
+  methods=[getBooleanValue getType]
+}
+int ::= INT_TOKEN {
+  extends=value
+  implements=[
+    "com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.ContributedReferenceHost"
+  ]
+  methods=[getValue getIntValue getType getReference getReferences]
+}
+float ::= FLOAT_TOKEN {
+  extends=value
+  implements=[
+    "com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.ContributedReferenceHost"
+  ]
+  methods=[getValue getFloatValue getType getReference getReferences]
+}
+// can be parameterized
+string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_part) * {
+  extends=value
+  implements=[
+    "com.intellij.psi.PsiLiteralValue"
+    "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
+    "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
+  ]
+  methods=[
+    getIcon getValue setValue getStringValue getType getExpression getConfigExpression
+    getReference getReferences toString
+  ]
+}
+private string_part ::= STRING_TOKEN | parameter | inline_parameter_condition
+color ::= COLOR_TOKEN {
+  extends=value
+  methods=[getValue getColorType getColorArgs getColor setColor getType]
+}
+block ::= LEFT_BRACE block_item * RIGHT_BRACE {
+  pin=1
+  recoverWhile="#auto"
+  extends=value
+  implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptBlockElement"
+    "com.intellij.psi.ContributedReferenceHost"
+  ]
+  methods=[
+    property="" value="" getPropertyList getValueList
+    getIcon getValue isEmpty isNotEmpty getComponents getType getExpression
+    getReference getReferences
+  ]
+}
+private block_item ::= COMMENT | block_value | property | scripted_variable | parameter_condition {
+  recoverWhile="#auto"
+}
+private block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
+
+// advanced script syntax
+// see: common/scripted_effects/99_advanced_documentation.txt
+// see wiki: https://stellaris.paradoxwikis.com/Dynamic_modding
+
+// tag
+// should in definition declaration (scripted_effect / scripted_trigger)
+// resolved from a string, before any scripted variables, (non-tag) strings and properties
+
+// parameter rules
+
+// Currently, parameters can be used in:
+// * scripted variable names
+// * scripted variable reference names
+// * keys (can be quoted)
+// * values (can be quoted)
+// * inline math expressions
+
+// icu.windea.pls.script.psi.ParadoxScriptParserUtil.doParameter
+parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END {
+  pin=2
+  implements=[
+    "icu.windea.pls.lang.psi.ParadoxParameter"
+  ]
+  methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
+}
+// icu.windea.pls.script.psi.ParadoxScriptParserUtil.doInlineMathParameter
+inline_math_parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END {
+  extends=inline_math_factor
+  pin=2
+  implements="icu.windea.pls.lang.psi.ParadoxParameter"
+  methods=[getIcon getName setName getValue getTextOffset getDefaultValue getReference]
+}
+private parameter_default_value ::= PARAMETER_VALUE_TOKEN
+
+// parameter condition rules
+
+// parameter condition
+// should in definition declaration (script_value / scripted_effect / scripted_trigger)
+parameter_condition ::= LEFT_BRACKET parameter_condition_expr parameter_condition_item * RIGHT_BRACKET {
+  pin=1
+  recoverWhile="#auto"
+  implements=[
+    "com.intellij.psi.PsiListLikeElement"
+  ]
+  methods=[getIcon getConditionExpression isEmpty isNotEmpty getComponents getPresentationText]
+}
+private parameter_condition_expr ::= NESTED_LEFT_BRACKET parameter_condition_expression NESTED_RIGHT_BRACKET {
+  pin=1
+}
+parameter_condition_expression ::= NOT_SIGN ? parameter_condition_parameter
+parameter_condition_parameter ::= CONDITION_PARAMETER_TOKEN {
+  implements="icu.windea.pls.lang.psi.ParadoxConditionParameter"
+  methods=[getIcon getName setName getValue getTextOffset getReference]
+}
+private parameter_condition_item ::= COMMENT | parameter_condition_value | property | parameter_condition {
+  recoverWhile="#auto"
+}
+private parameter_condition_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
+
+// inline parameter condition
+// used in, such as, dynamic strings (e.g. "a[[b]c]d")
+inline_parameter_condition ::= LEFT_BRACKET <<processInlineParameterCondition>> parameter_condition_expr inline_parameter_condition_item RIGHT_BRACKET {
+  pin=2
+  methods=[getIcon getConditionExpression getPresentationText]
+}
+private inline_parameter_condition_item ::= <<processInlineParameterConditionItem>> inline_parameter_condition_snippet <<postProcessInlineParameterConditionItem>>
+private inline_parameter_condition_snippet ::= inline_parameter_condition_item_part (<<processSnippet>> inline_parameter_condition_item_part) *
+private inline_parameter_condition_item_part ::= PARAMETER_VALUE_TOKEN | parameter | inline_parameter_condition
+
+// inline math rules
+
+// inline math
+// should in definition declaration
+// should starts with "@\[" if in specific definition declaration (scripted_effect / scripted_trigger) (TO CHECK)
+// only first inline math expression in a scripted effect / trigger is correctly recognized and evaluated
+// supported operators: + - * / %
+// also support unary operators "+1" "-1", abs operator "| 1 |" and parentheses "( 1 )"
+// inline math factor can also be scripted_variable and (if parameter it self is allowed) parameter
+inline_math ::= INLINE_MATH_START inline_math_expr INLINE_MATH_END {
+  pin=1
+  recoverWhile="#auto"
+  extends=value
+  methods=[getValue getType getExpression]
+}
+private inline_math_expr ::= (inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor) inline_math_bi_expression *
+// noinspection BnfUnusedRule
+inline_math_expression ::= inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_bi_expression
+inline_math_unary_expression ::= inline_math_unary_op inline_math_unary_expr {
+  pin=1
+  extends=inline_math_expression
+}
+private inline_math_unary_op ::= PLUS_SIGN | MINUS_SIGN
+private inline_math_unary_expr ::= inline_math_abs_expression | inline_math_par_expression | inline_math_factor
+inline_math_abs_expression ::= LABS_SIGN inline_math_abs_expr RABS_SIGN {
+  pin=1
+  extends=inline_math_expression
+}
+private inline_math_abs_expr ::= inline_math_expr
+inline_math_par_expression ::= LP_SIGN inline_math_par_expr RP_SIGN {
+  pin=1
+  extends=inline_math_expression
+}
+private inline_math_par_expr ::= inline_math_expr
+left inline_math_bi_expression ::= inline_math_bi_op inline_math_bi_right_factor {
+  pin=1
+  extends=inline_math_expression
+}
+private inline_math_bi_op ::= PLUS_SIGN | MINUS_SIGN | TIMES_SIGN | DIV_SIGN | MOD_SIGN
+private inline_math_bi_right_factor ::= inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor
+inline_math_factor ::= inline_math_number | inline_math_parameter | inline_math_scripted_variable_reference
+inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
+  extends=inline_math_factor
+  implements=[
+    "com.intellij.psi.PsiLiteralValue"
+    "icu.windea.pls.lang.psi.ParadoxTypedElement"
+  ]
+  methods=[getValue getType getExpression]
+}
+// without prefix "@", can be parameterized
+inline_math_scripted_variable_reference ::= inline_math_scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> inline_math_scripted_variable_reference_part) * {
+  extends=inline_math_factor
+  implements=[
+    "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
+    "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
+  ]
+  methods=[getIcon getName setName getValue getReference getType getExpression]
+}
+private inline_math_scripted_variable_reference_part ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter | inline_parameter_condition
+

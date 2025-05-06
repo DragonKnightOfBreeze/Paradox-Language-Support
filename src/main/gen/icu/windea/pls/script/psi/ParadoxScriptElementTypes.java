@@ -37,7 +37,7 @@ public interface ParadoxScriptElementTypes {
   IElementType STRING = ParadoxScriptElementTypeFactory.getElementType("STRING");
   IElementType VALUE = ParadoxScriptElementTypeFactory.getElementType("VALUE");
 
-  IElementType AT = ParadoxScriptElementTypeFactory.getTokenType("AT");
+  IElementType AT = ParadoxScriptElementTypeFactory.getTokenType("@");
   IElementType BOOLEAN_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("BOOLEAN_TOKEN");
   IElementType COLOR_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("COLOR_TOKEN");
   IElementType COMMENT = ParadoxScriptElementTypeFactory.getTokenType("COMMENT");
@@ -69,7 +69,7 @@ public interface ParadoxScriptElementTypes {
   IElementType PARAMETER_START = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_START");
   IElementType PARAMETER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_TOKEN");
   IElementType PARAMETER_VALUE_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_VALUE_TOKEN");
-  IElementType PIPE = ParadoxScriptElementTypeFactory.getTokenType("PIPE");
+  IElementType PIPE = ParadoxScriptElementTypeFactory.getTokenType("|");
   IElementType PLUS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("PLUS_SIGN");
   IElementType PROPERTY_KEY_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("PROPERTY_KEY_TOKEN");
   IElementType RABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("RABS_SIGN");

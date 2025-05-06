@@ -15,8 +15,10 @@ public interface CwtOptionCommentRoot extends PsiElement {
   @Nullable
   CwtValue getOptionValue();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

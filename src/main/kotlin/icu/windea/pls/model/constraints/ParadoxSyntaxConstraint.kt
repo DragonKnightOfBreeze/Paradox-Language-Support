@@ -3,10 +3,10 @@ package icu.windea.pls.model.constraints
 import com.intellij.lang.*
 import com.intellij.psi.impl.source.resolve.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.lexer.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.ParadoxGameType.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.lexer.*
 
 enum class ParadoxSyntaxConstraint(
     vararg val gameTypes: ParadoxGameType

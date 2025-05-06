@@ -8,7 +8,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.StringEscapesTokenTypes.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.lexer.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 
 class ParadoxLocalisationSyntaxHighlighter(

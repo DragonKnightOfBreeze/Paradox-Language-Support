@@ -7,7 +7,7 @@ import com.intellij.openapi.fileTypes.*
 import com.intellij.psi.StringEscapesTokenTypes.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
-import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.cwt.lexer.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 class CwtSyntaxHighlighter : SyntaxHighlighter {
@@ -49,7 +49,7 @@ class CwtSyntaxHighlighter : SyntaxHighlighter {
 
     override fun getHighlightingLexer(): Lexer {
         val lexer = LayeredLexer(CwtLexer())
-        val optionLexer = LayeredLexer(CwtOptionLexer())
+        val optionLexer = LayeredLexer(CwtOptionCommentLexer())
         val lexer1 = StringLiteralLexer(NO_QUOTE_CHAR, PROPERTY_KEY_TOKEN, false, additionalValidEscapes, false, false)
         val lexer2 = StringLiteralLexer(NO_QUOTE_CHAR, STRING_TOKEN, false, additionalValidEscapes, false, false)
         lexer.registerSelfStoppingLayer(optionLexer, arrayOf(OPTION_COMMENT_TOKEN), emptyArray())

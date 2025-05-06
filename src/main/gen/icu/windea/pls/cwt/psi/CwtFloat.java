@@ -14,12 +14,16 @@ public interface CwtFloat extends CwtValue, PsiLiteralValue {
 
   float getFloatValue();
 
-  @NotNull CwtType getType();
+  @NotNull
+  CwtType getType();
 
-  @Nullable CwtConfigType getConfigType();
+  @Nullable
+  CwtConfigType getConfigType();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

@@ -5,11 +5,11 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.cwt.psi.*;
-import icu.windea.pls.cwt.psi.util.CwtPsiImplUtil;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.SearchScope;
@@ -23,43 +23,61 @@ public class CwtPropertyKeyImpl extends ASTWrapperPsiElement implements CwtPrope
     super(node);
   }
 
+  public void accept(@NotNull CwtVisitor visitor) {
+    visitor.visitPropertyKey(this);
+  }
+
   @Override
-  public @NotNull Icon getIcon(@IconFlags int flags) {
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof CwtVisitor) accept((CwtVisitor)visitor);
+    else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public Icon getIcon(@IconFlags int flags) {
     return CwtPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  public @NotNull String getName() {
+  @NotNull
+  public String getName() {
     return CwtPsiImplUtil.getName(this);
   }
 
   @Override
-  public @NotNull String getValue() {
+  @NotNull
+  public String getValue() {
     return CwtPsiImplUtil.getValue(this);
   }
 
   @Override
-  public @NotNull CwtPropertyKey setValue(@NotNull String value) {
+  @NotNull
+  public CwtPropertyKey setValue(@NotNull String value) {
     return CwtPsiImplUtil.setValue(this, value);
   }
 
   @Override
-  public @NotNull CwtType getType() {
+  @NotNull
+  public CwtType getType() {
     return CwtPsiImplUtil.getType(this);
   }
 
   @Override
-  public @Nullable CwtConfigType getConfigType() {
+  @Nullable
+  public CwtConfigType getConfigType() {
     return CwtPsiImplUtil.getConfigType(this);
   }
 
   @Override
-  public @NotNull ItemPresentation getPresentation() {
+  @NotNull
+  public ItemPresentation getPresentation() {
     return CwtPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  public @NotNull SearchScope getUseScope() {
+  @NotNull
+  public SearchScope getUseScope() {
     return CwtPsiImplUtil.getUseScope(this);
   }
 

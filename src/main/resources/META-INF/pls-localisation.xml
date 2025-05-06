@@ -1,7 +1,7 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
     <fileType language="PARADOX_LOCALISATION" name="Paradox Localisation" fieldName="INSTANCE" implementationClass="icu.windea.pls.localisation.ParadoxLocalisationFileType"/>
-    <lang.parserDefinition language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.psi.ParadoxLocalisationParserDefinition"/>
+    <lang.parserDefinition language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.ParadoxLocalisationParserDefinition"/>
 
     <stubElementTypeHolder class="icu.windea.pls.localisation.psi.ParadoxLocalisationStubElementTypes" externalIdPrefix="paradoxLocalisation."/>
     <spellchecker.support language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationSpellchecker"/>

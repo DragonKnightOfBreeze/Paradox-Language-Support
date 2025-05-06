@@ -5,10 +5,10 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import icu.windea.pls.cwt.psi.*;
-import icu.windea.pls.cwt.psi.util.CwtPsiImplUtil;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.config.CwtConfigType;
@@ -21,27 +21,42 @@ public class CwtFloatImpl extends CwtValueImpl implements CwtFloat {
   }
 
   @Override
+  public void accept(@NotNull CwtVisitor visitor) {
+    visitor.visitFloat(this);
+  }
+
+  @Override
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof CwtVisitor) accept((CwtVisitor)visitor);
+    else super.accept(visitor);
+  }
+
+  @Override
   public float getFloatValue() {
     return CwtPsiImplUtil.getFloatValue(this);
   }
 
   @Override
-  public @NotNull CwtType getType() {
+  @NotNull
+  public CwtType getType() {
     return CwtPsiImplUtil.getType(this);
   }
 
   @Override
-  public @Nullable CwtConfigType getConfigType() {
+  @Nullable
+  public CwtConfigType getConfigType() {
     return CwtPsiImplUtil.getConfigType(this);
   }
 
   @Override
-  public @NotNull ItemPresentation getPresentation() {
+  @NotNull
+  public ItemPresentation getPresentation() {
     return CwtPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  public @NotNull SearchScope getUseScope() {
+  @NotNull
+  public SearchScope getUseScope() {
     return CwtPsiImplUtil.getUseScope(this);
   }
 
