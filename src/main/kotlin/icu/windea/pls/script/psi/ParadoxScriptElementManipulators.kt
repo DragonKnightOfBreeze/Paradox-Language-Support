@@ -1,4 +1,4 @@
-package icu.windea.pls.script.psi.manipulators
+package icu.windea.pls.script.psi
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*

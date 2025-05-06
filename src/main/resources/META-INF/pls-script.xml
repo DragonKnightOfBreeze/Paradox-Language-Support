@@ -64,15 +64,15 @@
     <codeInsight.gotoSuper language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptGotoSuperActionHandler"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKey"
-                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptPropertyKeyManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKeyManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptValue"
-                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptValueManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptValueManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptString"
-                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptStringManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptStringManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptParameter"
-                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptParameterManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptParameterManipulator"/>
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptInlineMathParameter"
-                             implementationClass="icu.windea.pls.script.psi.manipulators.ParadoxScriptInlineMathParameterManipulator"/>
+                             implementationClass="icu.windea.pls.script.psi.ParadoxScriptInlineMathParameterManipulator"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/ParadoxScriptDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/ParadoxScriptDarcula.xml"/>
