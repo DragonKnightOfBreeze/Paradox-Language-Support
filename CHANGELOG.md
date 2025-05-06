@@ -15,6 +15,10 @@
 * [ ] #137 [VIC3/CK3] Support special localizations - Basic support
 * [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
+## 1.3.36
+
+* [X] 更新CWT规则文件以适配Stellaris 4.0 / Update CWT config files to match Stellaris 4.0
+
 ## 1.3.35
 
 * [X] 优化：可以配置是否在层级视图中显示位置信息与本地化名字 / OP: Allow to configure whether to show position info and localized name in hierarchy views
