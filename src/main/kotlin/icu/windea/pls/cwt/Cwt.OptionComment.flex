@@ -16,12 +16,14 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
         this((java.io.Reader)null);
     }
 
-    private int nextState() {
-        return depth <= 0 ? TOP : NOT_TOP;
+    private void beginNextOptionValueState() {
+        int nextState = depth <= 0 ? OV_TOP : OV_NOT_TOP;
+        yybegin(nextState);
     }
 
-    private int nextOvState() {
-        return depth <= 0 ? OV_TOP : OV_NOT_TOP;
+    private void beginNextOptionState() {
+        int nextState = depth <= 0 ? TOP : NOT_TOP;
+        yybegin(nextState);
     }
 %}
 
@@ -62,37 +64,6 @@ TOP_STRING_TOKEN=([^#={}\s\"]([^#={}\r\n\"]*[^#={}\s\"])?\"?)|({QUOTED_STRING_TO
 <YYINITIAL> {
     "##" { yybegin(TOP); return OPTION_COMMENT_START; }
 }
-<TOP, NOT_TOP> {
-    {CHECK_OPTION_KEY} { yypushback(yylength()); yybegin(OK); }
-    {BOOLEAN_TOKEN} { return BOOLEAN_TOKEN; }
-    {INT_TOKEN} { return INT_TOKEN; }
-    {FLOAT_TOKEN} { return FLOAT_TOKEN; }
-}
-<TOP> {
-    {TOP_STRING_TOKEN} { return STRING_TOKEN; }
-}
-<NOT_TOP> {
-    {STRING_TOKEN} { return STRING_TOKEN; }
-}
-<OK>{
-    {OPTION_KEY_TOKEN} { yybegin(OS); return OPTION_KEY_TOKEN; }
-}
-<OS>{
-    "="|"==" { yybegin(nextOvState()); return EQUAL_SIGN; }
-    "!="|"<>" { yybegin(nextOvState()); return NOT_EQUAL_SIGN; }
-}
-<OV_TOP, OV_NOT_TOP>{
-    {BOOLEAN_TOKEN} { yybegin(nextState()); return BOOLEAN_TOKEN; }
-    {INT_TOKEN} { yybegin(nextState()); return INT_TOKEN; }
-    {FLOAT_TOKEN} { yybegin(nextState()); return FLOAT_TOKEN; }
-}
-<OV_TOP> {
-    {TOP_STRING_TOKEN} { yybegin(nextState()); return STRING_TOKEN; }
-}
-<OV_NOT_TOP> {
-    {STRING_TOKEN} { yybegin(nextState()); return STRING_TOKEN; }
-}
-
 <TOP, NOT_TOP, OK, OS, OV_TOP, OV_NOT_TOP> {
     "{" {
         depth++;
@@ -101,10 +72,31 @@ TOP_STRING_TOKEN=([^#={}\s\"]([^#={}\r\n\"]*[^#={}\s\"])?\"?)|({QUOTED_STRING_TO
     }
     "}" {
         depth--;
-        yybegin(nextState());
+        beginNextOptionState();
         return RIGHT_BRACE;
     }
 }
+<OS>{
+    "="|"==" { beginNextOptionValueState(); return EQUAL_SIGN; }
+    "!="|"<>" { beginNextOptionValueState(); return NOT_EQUAL_SIGN; }
+}
+
+<TOP, NOT_TOP, OV_TOP, OV_NOT_TOP>{
+    {CHECK_OPTION_KEY} { yypushback(yylength()); yybegin(OK); }
+    {BOOLEAN_TOKEN} { beginNextOptionState(); return BOOLEAN_TOKEN; }
+    {INT_TOKEN} { beginNextOptionState(); return INT_TOKEN; }
+    {FLOAT_TOKEN} { beginNextOptionState(); return FLOAT_TOKEN; }
+}
+<TOP, OV_TOP> {
+    {TOP_STRING_TOKEN} { beginNextOptionState(); return STRING_TOKEN; }
+}
+<NOT_TOP, OV_NOT_TOP> {
+    {STRING_TOKEN} { beginNextOptionState(); return STRING_TOKEN; }
+}
+<OK>{
+    {OPTION_KEY_TOKEN} { yybegin(OS); return OPTION_KEY_TOKEN; }
+}
+
 <TOP, NOT_TOP, OK, OS, OV_TOP, OV_NOT_TOP> {
     {BLANK} { return WHITE_SPACE; }
     {COMMENT} { return COMMENT; }

@@ -32,7 +32,7 @@ public class _CwtLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  3, 3
+     0,  0,  1,  1,  2,  2,  0, 0
   };
 
   /**
@@ -102,15 +102,13 @@ public class _CwtLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\4\0\1\1\1\2\1\1\1\3\2\1\1\4\1\1"+
+    "\3\0\1\1\1\2\1\1\1\3\2\1\1\4\1\1"+
     "\1\5\2\1\1\6\1\7\1\10\1\2\1\10\3\11"+
-    "\1\12\4\13\1\14\3\13\1\0\1\1\2\0\1\1"+
-    "\1\5\1\0\1\15\1\5\1\16\1\1\1\10\1\0"+
-    "\1\17\1\12\2\13\1\5\1\0\1\20\1\5\1\21"+
-    "\1\13";
+    "\1\12\1\0\1\1\2\0\1\1\1\5\1\0\1\13"+
+    "\1\5\1\14\1\1\1\10\1\0\1\15\1\12";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[55];
+    int [] result = new int[38];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -136,15 +134,13 @@ public class _CwtLexer implements FlexLexer {
 
   private static final String ZZ_ROWMAP_PACKED_0 =
     "\0\0\0\24\0\50\0\74\0\120\0\144\0\170\0\214"+
-    "\0\240\0\264\0\240\0\310\0\334\0\360\0\u0104\0\334"+
-    "\0\334\0\u0118\0\u012c\0\u0140\0\334\0\u0154\0\u0168\0\u017c"+
-    "\0\u0190\0\u01a4\0\u01b8\0\u01cc\0\u01b8\0\u01e0\0\u01f4\0\u0208"+
-    "\0\u021c\0\u021c\0\u0230\0\u0244\0\u0258\0\170\0\u026c\0\264"+
-    "\0\120\0\120\0\u0280\0\334\0\u0294\0\334\0\334\0\u021c"+
-    "\0\u02a8\0\u01a4\0\u02bc\0\u01cc\0\u0190\0\u0190\0\u02d0";
+    "\0\240\0\214\0\264\0\310\0\334\0\360\0\310\0\310"+
+    "\0\u0104\0\u0118\0\u012c\0\310\0\u0140\0\u0154\0\u0168\0\u017c"+
+    "\0\u017c\0\u0190\0\u01a4\0\u01b8\0\144\0\u01cc\0\240\0\74"+
+    "\0\74\0\u01e0\0\310\0\u01f4\0\310\0\310";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[55];
+    int [] result = new int[38];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -167,46 +163,32 @@ public class _CwtLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpacktrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\5\2\6\1\5\1\7\1\10\1\11\1\12\1\13"+
-    "\1\14\1\15\3\5\1\16\2\5\1\17\1\20\1\21"+
-    "\1\22\2\23\1\22\1\24\1\10\4\22\1\25\7\22"+
-    "\1\20\1\21\1\25\2\23\1\26\1\25\1\10\3\25"+
-    "\1\27\1\30\7\25\1\20\1\21\1\31\2\6\1\31"+
-    "\1\32\1\10\1\33\1\34\1\35\1\36\1\15\3\31"+
-    "\1\37\2\31\1\40\1\20\1\21\1\5\2\41\1\5"+
-    "\1\42\1\0\3\5\1\14\1\15\7\5\3\0\2\6"+
-    "\1\43\5\0\1\44\1\15\11\0\2\7\1\41\1\7"+
-    "\1\42\4\7\1\45\1\46\1\7\1\47\7\7\2\10"+
-    "\1\0\21\10\1\5\2\41\1\5\1\42\1\0\1\5"+
-    "\1\12\1\13\1\14\1\15\7\5\2\0\1\5\2\41"+
-    "\1\5\1\42\1\0\2\5\1\50\1\14\1\15\7\5"+
-    "\2\0\1\5\2\41\1\5\1\42\1\0\3\5\1\14"+
-    "\1\15\1\51\6\5\26\0\1\5\2\41\1\5\1\42"+
-    "\1\0\3\5\1\14\1\15\4\5\1\52\2\5\2\0"+
-    "\1\5\2\41\1\5\1\42\1\0\3\5\1\14\1\15"+
-    "\2\5\1\53\4\5\2\0\1\22\2\0\1\22\1\54"+
-    "\1\0\4\22\1\0\7\22\3\0\2\23\21\0\2\24"+
-    "\1\0\1\24\1\54\7\24\1\55\7\24\12\0\1\56"+
-    "\24\0\1\56\22\0\1\57\11\0\1\31\2\41\1\31"+
-    "\1\60\1\0\3\31\1\36\1\15\7\31\2\0\2\32"+
-    "\1\41\1\32\1\60\4\32\1\61\1\62\1\32\1\63"+
-    "\7\32\1\31\2\41\1\31\1\60\1\0\1\31\1\34"+
-    "\1\35\1\36\1\15\7\31\2\0\1\31\2\41\1\31"+
-    "\1\60\1\0\2\31\1\64\1\36\1\15\7\31\2\0"+
-    "\1\31\2\41\1\31\1\60\1\0\3\31\1\36\1\15"+
-    "\1\65\6\31\2\0\1\31\2\41\1\31\1\60\1\0"+
-    "\3\31\1\36\1\15\4\31\1\66\2\31\2\0\1\31"+
-    "\2\41\1\31\1\60\1\0\3\31\1\36\1\15\2\31"+
-    "\1\67\4\31\3\0\2\41\1\43\5\0\1\44\1\15"+
-    "\23\0\1\15\24\0\1\15\10\0\2\7\1\41\1\7"+
-    "\1\42\4\7\1\45\2\46\1\47\33\7\1\5\2\41"+
-    "\1\5\1\42\1\0\3\5\1\14\1\15\5\5\1\52"+
-    "\1\5\2\0\24\24\2\32\1\41\1\32\1\60\4\32"+
-    "\1\61\2\62\1\63\33\32\1\31\2\41\1\31\1\60"+
-    "\1\0\3\31\1\36\1\15\5\31\1\66\1\31\2\0";
+    "\1\4\2\5\1\4\1\6\1\7\1\10\1\11\1\12"+
+    "\1\13\1\14\3\4\1\15\2\4\1\16\1\17\1\20"+
+    "\1\21\2\22\1\21\1\23\1\7\4\21\1\24\7\21"+
+    "\1\17\1\20\1\24\2\22\1\25\1\24\1\7\3\24"+
+    "\1\26\1\27\7\24\1\17\1\20\1\4\2\30\1\4"+
+    "\1\31\1\0\3\4\1\13\1\14\7\4\3\0\2\5"+
+    "\1\32\5\0\1\33\1\14\11\0\2\6\1\30\1\6"+
+    "\1\31\4\6\1\34\1\35\1\6\1\36\7\6\2\7"+
+    "\1\0\21\7\1\4\2\30\1\4\1\31\1\0\1\4"+
+    "\1\11\1\12\1\13\1\14\7\4\2\0\1\4\2\30"+
+    "\1\4\1\31\1\0\2\4\1\37\1\13\1\14\7\4"+
+    "\2\0\1\4\2\30\1\4\1\31\1\0\3\4\1\13"+
+    "\1\14\1\40\6\4\26\0\1\4\2\30\1\4\1\31"+
+    "\1\0\3\4\1\13\1\14\4\4\1\41\2\4\2\0"+
+    "\1\4\2\30\1\4\1\31\1\0\3\4\1\13\1\14"+
+    "\2\4\1\42\4\4\2\0\1\21\2\0\1\21\1\43"+
+    "\1\0\4\21\1\0\7\21\3\0\2\22\21\0\2\23"+
+    "\1\0\1\23\1\43\7\23\1\44\7\23\12\0\1\45"+
+    "\24\0\1\45\22\0\1\46\12\0\2\30\1\32\5\0"+
+    "\1\33\1\14\23\0\1\14\24\0\1\14\10\0\2\6"+
+    "\1\30\1\6\1\31\4\6\1\34\2\35\1\36\33\6"+
+    "\1\4\2\30\1\4\1\31\1\0\3\4\1\13\1\14"+
+    "\5\4\1\41\1\4\2\0\24\23";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[740];
+    int [] result = new int[520];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -244,12 +226,12 @@ public class _CwtLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\4\0\10\1\1\11\2\1\2\11\3\1\1\11\13\1"+
+    "\3\0\10\1\1\11\2\1\2\11\3\1\1\11\3\1"+
     "\1\0\1\1\2\0\2\1\1\0\4\1\1\11\1\0"+
-    "\2\11\3\1\1\0\4\1";
+    "\2\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[55];
+    int [] result = new int[38];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -323,8 +305,9 @@ public class _CwtLexer implements FlexLexer {
         this((java.io.Reader)null);
     }
 
-    private int nextState() {
-        return YYINITIAL;
+    private void beginNextMemberState() {
+        int nextState = yybegin(YYINITIAL);
+        yybegin(nextState);
     }
 
 
@@ -570,15 +553,15 @@ public class _CwtLexer implements FlexLexer {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { return STRING_TOKEN;
+            { beginNextMemberState(); return STRING_TOKEN;
             }
           // fall through
-          case 18: break;
+          case 14: break;
           case 2:
             { return WHITE_SPACE;
             }
           // fall through
-          case 19: break;
+          case 15: break;
           case 3:
             { int state = yystate();
         if (state == YYINITIAL || state == PK) {
@@ -593,81 +576,61 @@ public class _CwtLexer implements FlexLexer {
         return COMMENT;
             }
           // fall through
-          case 20: break;
+          case 16: break;
           case 4:
-            { return INT_TOKEN;
+            { beginNextMemberState(); return INT_TOKEN;
             }
           // fall through
-          case 21: break;
+          case 17: break;
           case 5:
             { yypushback(yylength()); yybegin(PK);
             }
           // fall through
-          case 22: break;
+          case 18: break;
           case 6:
             { // depth++;
-        yybegin(nextState());
+        beginNextMemberState();
         return LEFT_BRACE;
             }
           // fall through
-          case 23: break;
+          case 19: break;
           case 7:
             { // depth--;
-        yybegin(nextState());
+        beginNextMemberState();
         return RIGHT_BRACE;
             }
           // fall through
-          case 24: break;
+          case 20: break;
           case 8:
             { yybegin(PS); return PROPERTY_KEY_TOKEN;
             }
           // fall through
-          case 25: break;
+          case 21: break;
           case 9:
             { return BAD_CHARACTER;
             }
           // fall through
-          case 26: break;
+          case 22: break;
           case 10:
             { yybegin(PV); return EQUAL_SIGN;
             }
           // fall through
-          case 27: break;
+          case 23: break;
           case 11:
-            { yybegin(nextState()); return STRING_TOKEN;
+            { beginNextMemberState(); return FLOAT_TOKEN;
             }
           // fall through
-          case 28: break;
+          case 24: break;
           case 12:
-            { yybegin(nextState()); return INT_TOKEN;
+            { beginNextMemberState(); return BOOLEAN_TOKEN;
             }
           // fall through
-          case 29: break;
+          case 25: break;
           case 13:
-            { return FLOAT_TOKEN;
-            }
-          // fall through
-          case 30: break;
-          case 14:
-            { return BOOLEAN_TOKEN;
-            }
-          // fall through
-          case 31: break;
-          case 15:
             { yybegin(PV); return NOT_EQUAL_SIGN;
             }
           // fall through
-          case 32: break;
-          case 16:
-            { yybegin(nextState()); return FLOAT_TOKEN;
-            }
-          // fall through
-          case 33: break;
-          case 17:
-            { yybegin(nextState()); return BOOLEAN_TOKEN;
-            }
-          // fall through
-          case 34: break;
+          case 26: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

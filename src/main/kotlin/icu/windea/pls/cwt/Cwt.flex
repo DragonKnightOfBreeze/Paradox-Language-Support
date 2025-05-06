@@ -16,8 +16,9 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
         this((java.io.Reader)null);
     }
 
-    private int nextState() {
-        return YYINITIAL;
+    private void beginNextMemberState() {
+        int nextState = yybegin(YYINITIAL);
+        yybegin(nextState);
     }
 %}
 
@@ -49,40 +50,34 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 
 %%
 
-<YYINITIAL> {
-    {CHECK_PROPERTY_KEY} { yypushback(yylength()); yybegin(PK); }
-    {BOOLEAN_TOKEN} { return BOOLEAN_TOKEN; }
-    {INT_TOKEN} { return INT_TOKEN; }
-    {FLOAT_TOKEN} { return FLOAT_TOKEN; }
-    {STRING_TOKEN} { return STRING_TOKEN; }
-}
-<PK>{
-    {PROPERTY_KEY_TOKEN} { yybegin(PS); return PROPERTY_KEY_TOKEN; }
+<YYINITIAL, PK, PS, PV> {
+    "{" {
+        // depth++;
+        beginNextMemberState();
+        return LEFT_BRACE;
+    }
+    "}" {
+        // depth--;
+        beginNextMemberState();
+        return RIGHT_BRACE;
+    }
 }
 <PS>{
     "="|"==" { yybegin(PV); return EQUAL_SIGN; }
     "!="|"<>" { yybegin(PV); return NOT_EQUAL_SIGN; }
 }
-<PV>{
+
+<YYINITIAL, PV> {
     {CHECK_PROPERTY_KEY} { yypushback(yylength()); yybegin(PK); }
-    {BOOLEAN_TOKEN} { yybegin(nextState()); return BOOLEAN_TOKEN; }
-    {INT_TOKEN} { yybegin(nextState()); return INT_TOKEN; }
-    {FLOAT_TOKEN} { yybegin(nextState()); return FLOAT_TOKEN; }
-    {STRING_TOKEN} { yybegin(nextState()); return STRING_TOKEN; }
+    {BOOLEAN_TOKEN} { beginNextMemberState(); return BOOLEAN_TOKEN; }
+    {INT_TOKEN} { beginNextMemberState(); return INT_TOKEN; }
+    {FLOAT_TOKEN} { beginNextMemberState(); return FLOAT_TOKEN; }
+    {STRING_TOKEN} { beginNextMemberState(); return STRING_TOKEN; }
+}
+<PK>{
+    {PROPERTY_KEY_TOKEN} { yybegin(PS); return PROPERTY_KEY_TOKEN; }
 }
 
-<YYINITIAL, PK, PS, PV> {
-    "{" {
-        // depth++;
-        yybegin(nextState());
-        return LEFT_BRACE;
-    }
-    "}" {
-        // depth--;
-        yybegin(nextState());
-        return RIGHT_BRACE;
-    }
-}
 <YYINITIAL, PK, PS, PV> {
     {BLANK} { return WHITE_SPACE; }
     {COMMENT} {
