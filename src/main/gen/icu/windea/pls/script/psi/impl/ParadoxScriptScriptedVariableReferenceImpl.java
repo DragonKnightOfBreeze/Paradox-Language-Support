@@ -90,6 +90,12 @@ public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptVal
 
   @Override
   @NotNull
+  public String toString() {
+    return ParadoxScriptPsiImplUtil.toString(this);
+  }
+
+  @Override
+  @NotNull
   public ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }

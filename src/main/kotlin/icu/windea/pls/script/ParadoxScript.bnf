@@ -105,7 +105,7 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
     "icu.windea.pls.script.psi.ParadoxScriptMemberElement"
   ]
   methods=[
-    getIcon getName getValue setValue getType getExpression getConfigExpression
+    getIcon getName getValue setValue getType getExpression getConfigExpression toString
   ]
 }
 // can be parameterized
@@ -115,7 +115,7 @@ scripted_variable_reference ::= AT scripted_variable_reference_part <<postProces
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
     "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
   ]
-  methods=[getIcon getName setName getValue getReference getType getExpression]
+  methods=[getIcon getName setName getValue getReference getType getExpression toString]
 }
 private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | parameter | inline_parameter_condition
 boolean ::= BOOLEAN_TOKEN {
@@ -123,7 +123,7 @@ boolean ::= BOOLEAN_TOKEN {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getBooleanValue getType]
+  methods=[getBooleanValue getType toString]
 }
 int ::= INT_TOKEN {
   extends=value
@@ -131,7 +131,7 @@ int ::= INT_TOKEN {
     "com.intellij.psi.PsiLiteralValue"
     "com.intellij.psi.ContributedReferenceHost"
   ]
-  methods=[getValue getIntValue getType getReference getReferences]
+  methods=[getValue getIntValue getType getReference getReferences toString]
 }
 float ::= FLOAT_TOKEN {
   extends=value
@@ -139,7 +139,7 @@ float ::= FLOAT_TOKEN {
     "com.intellij.psi.PsiLiteralValue"
     "com.intellij.psi.ContributedReferenceHost"
   ]
-  methods=[getValue getFloatValue getType getReference getReferences]
+  methods=[getValue getFloatValue getType getReference getReferences toString]
 }
 // can be parameterized
 string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_part) * {
@@ -157,7 +157,7 @@ string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_pa
 private string_part ::= STRING_TOKEN | parameter | inline_parameter_condition
 color ::= COLOR_TOKEN {
   extends=value
-  methods=[getValue getColorType getColorArgs getColor setColor getType]
+  methods=[getValue getColorType getColorArgs getColor setColor getType toString]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
@@ -170,7 +170,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   methods=[
     property="" value="" getPropertyList getValueList
     getIcon getValue isEmpty isNotEmpty getComponents getType getExpression
-    getReference getReferences
+    getReference getReferences toString
   ]
 }
 private block_item ::= COMMENT | block_value | property | scripted_variable | parameter_condition {

@@ -13,6 +13,8 @@
   methods(".*")=[getPresentation getUseScope]
 }
 
+// core rules
+
 root ::= root_block ?
 
 root_block ::= root_block_item + {
@@ -28,12 +30,9 @@ doc_comment ::= DOC_COMMENT_TOKEN {
   implements=["com.intellij.psi.PsiComment"]
   methods=[getTokenType]
 }
-option_comment ::= OPTION_COMMENT_TOKEN {
+option_comment ::= OPTION_COMMENT_TOKEN { // lazy-parsing OPTION_COMMENT_TOKEN
   implements=["com.intellij.psi.PsiComment"]
-  methods=[
-    getOption getOptionValue
-    getTokenType
-  ]
+  methods=[getOption getOptionValue getTokenType]
 }
 private comment ::= COMMENT
 
@@ -113,7 +112,7 @@ private block_item ::= general_comment | property | option | value {
   recoverWhile="#auto"
 }
 
-// option comment (lazy-parsing)
+// option comment rules (lazy-parsing, from OPTION_COMMENT_TOKEN)
 
 option_comment_root ::= OPTION_COMMENT_START option_comment_item ? comment ? {
   extraRoot=true

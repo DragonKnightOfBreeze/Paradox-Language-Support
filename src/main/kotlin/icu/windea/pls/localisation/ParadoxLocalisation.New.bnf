@@ -1,0 +1,81 @@
+{
+  parserClass="icu.windea.pls.localisation.parser.ParadoxLocalisationParser"
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+  psiClassPrefix="ParadoxLocalisation"
+  psiImplClassSuffix="Impl"
+  psiPackage="icu.windea.pls.localisation.psi"
+  psiImplPackage="icu.windea.pls.localisation.psi.impl"
+  elementTypeHolderClass="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes"
+  tokenTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypeFactory.getTokenType"
+  elementTypeFactory="icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypeFactory.getElementType"
+  psiImplUtilClass="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationPsiImplUtil"
+  parserUtilClass="icu.windea.pls.localisation.parser.ParadoxLocalisationParserUtil"
+  methods(".*")=[getPresentation getResolveScope getUseScope]
+}
+
+// core rules
+
+root ::= property_list *
+
+property_list ::= COMMENT * (property_item_list_with_locale | property_item_list) {
+  recoverWhile="#auto"
+  implements="com.intellij.psi.PsiListLikeElement"
+  methods=[getIcon getComponents]
+}
+private property_item_list_with_locale ::= locale property_item * {
+  pin=1
+}
+private property_item_list ::= property_item +
+private property_item ::= COMMENT | property {
+  recoverWhile="#auto"
+}
+
+locale ::= LOCALE_TOKEN COLON {
+  pin=1
+  implements="com.intellij.psi.NavigatablePsiElement"
+  methods=[getIcon getName setName getReference]
+}
+
+property ::= property_key COLON property_number? property_value {
+  pin=1
+  recoverWhile="#auto"
+  extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
+  stubClass="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyStub"
+  implements="icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
+  methods=[
+    getIcon getName setName getNameIdentifier getTextOffset getCategory getValue setValue
+    isEquivalentTo toString
+  ]
+}
+
+property_key ::= PROPERTY_KEY_TOKEN {
+  methods=[getIcon]
+}
+
+// The number seen in vanilla files right after the colon can be omitted, as it is only useful for Paradox’s internal translation tracking
+// https://stellaris.paradoxwikis.com/Localisation_modding
+// https://twitter.com/Martin_Anward/status/1039175213773144066
+private property_number ::= PROPERTY_NUMBER
+
+property_value ::= LEFT_QUOTE PROPERTY_VALUE_TOKEN RIGHT_QUOTE { // lazy-parsing PROPERTY_VALUE_TOKEN
+  pin=1
+}
+
+// localisation text rules (lazy-parsing, from PROPERTY_VALUE_TOKEN)
+
+// colorful text rules
+
+// localisation reference rules
+
+// scripted variable reference rules (in references)
+
+// localisation icon rules
+
+// localisation command rules
+
+// [stellaris] localisation concept rules (as special commands)
+
+// [ck3, vic3] localisation formatting rules
+
+// [ck3, vic3] localisation text icon rules
+

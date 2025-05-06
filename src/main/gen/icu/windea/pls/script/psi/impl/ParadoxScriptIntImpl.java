@@ -63,6 +63,12 @@ public class ParadoxScriptIntImpl extends ParadoxScriptValueImpl implements Para
 
   @Override
   @NotNull
+  public String toString() {
+    return ParadoxScriptPsiImplUtil.toString(this);
+  }
+
+  @Override
+  @NotNull
   public ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }

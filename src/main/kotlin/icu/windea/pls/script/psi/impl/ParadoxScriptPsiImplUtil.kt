@@ -125,7 +125,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun toString(element: ParadoxScriptScriptedVariable): String {
-        return "ParadoxScriptScriptedVariable(name=${element.name})"
+        return "ParadoxScriptScriptedVariable: ${element.name}"
     }
 
     //endregion
@@ -229,7 +229,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun toString(element: ParadoxScriptProperty): String {
-        return "ParadoxScriptProperty(name=${element.name})"
+        return "ParadoxScriptProperty: ${element.name}"
     }
 
     //endregion
@@ -259,7 +259,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun toString(element: ParadoxScriptPropertyKey): String {
-        return "ParadoxScriptPropertyKey(value=${element.value})"
+        return "ParadoxScriptPropertyKey: ${element.value}"
     }
 
     //endregion
@@ -324,6 +324,11 @@ object ParadoxScriptPsiImplUtil {
         return element.replace(newElement).cast()
     }
 
+    @JvmStatic
+    fun toString(element: ParadoxScriptValue): String {
+        return "${element.javaClass.simpleName}: ${element.value}"
+    }
+
     //endregion
 
     //region ParadoxScriptBoolean
@@ -376,11 +381,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getStringValue(element: ParadoxScriptString): String {
         return element.value
-    }
-
-    @JvmStatic
-    fun toString(element: ParadoxScriptString): String {
-        return "ParadoxScriptString(value=${element.value})"
     }
 
     //endregion

@@ -135,7 +135,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun toString(element: ParadoxLocalisationProperty): String {
-        return "ParadoxLocalisationProperty(name=${element.name})"
+        return "ParadoxLocalisationProperty: ${element.name}"
     }
 
     //endregion

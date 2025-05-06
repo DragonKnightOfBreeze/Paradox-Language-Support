@@ -44,6 +44,12 @@ public class ParadoxScriptBooleanImpl extends ParadoxScriptValueImpl implements 
 
   @Override
   @NotNull
+  public String toString() {
+    return ParadoxScriptPsiImplUtil.toString(this);
+  }
+
+  @Override
+  @NotNull
   public ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
