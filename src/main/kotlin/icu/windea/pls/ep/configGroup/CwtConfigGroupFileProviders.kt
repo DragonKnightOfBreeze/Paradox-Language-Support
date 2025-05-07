@@ -60,6 +60,7 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     }
 
     private fun doGetRootDirectory(): VirtualFile? {
+        if (!getSettings().others.enableBuiltInConfigGroups) return null
         val rootPath = "/config"
         val rootUrl = rootPath.toClasspathUrl(PlsConstants.locationClass)
         val file = VfsUtil.findFileByURL(rootUrl)
@@ -78,7 +79,8 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  */
 class LocalCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override fun getRootDirectory(project: Project): VirtualFile? {
-        val directory = getSettings().localConfigDirectory
+        if (!getSettings().others.enableLocalConfigGroups) return null
+        val directory = getSettings().others.localConfigDirectory
         val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
         val path = absoluteDirectory.toPathOrNull() ?: return null
         val file = VfsUtil.findFile(path, true)
@@ -97,6 +99,7 @@ class LocalCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  */
 class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override fun getRootDirectory(project: Project): VirtualFile? {
+        if (!getSettings().others.enableProjectLocalConfigGroups) return null
         val projectRootDirectory = project.guessProjectDir() ?: return null
         val rootPath = ".config"
         val file = VfsUtil.findRelativeFile(projectRootDirectory, rootPath)

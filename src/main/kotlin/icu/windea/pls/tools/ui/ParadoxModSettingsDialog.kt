@@ -94,7 +94,7 @@ class ParadoxModSettingsDialog(
                     .withTitle(PlsBundle.message("gameDirectory.title"))
                     .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
-                textFieldWithBrowseButton(descriptor, project) { it.path }
+                textFieldWithBrowseButton(descriptor, project)
                     .applyToComponent { defaultGameDirectory?.orNull()?.let { jbTextField.emptyText.setText(it) } }
                     .bindText(gameDirectoryProperty)
                     .columns(36)
@@ -114,7 +114,7 @@ class ParadoxModSettingsDialog(
                     .withTitle(PlsBundle.message("mod.settings.modDirectory.title"))
                     .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
-                textFieldWithBrowseButton(descriptor, project) { it.path }
+                textFieldWithBrowseButton(descriptor, project)
                     .text(settings.modDirectory.orEmpty())
                     .columns(36)
                     .align(Align.FILL)

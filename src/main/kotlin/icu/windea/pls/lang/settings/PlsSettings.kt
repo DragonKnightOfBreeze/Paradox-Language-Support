@@ -23,14 +23,12 @@ class PlsSettings : SimplePersistentStateComponent<PlsSettingsState>(PlsSettings
  * @property defaultGameDirectories 默认的游戏目录映射。
  * @property preferredLocale 偏好的语言区域。
  * @property ignoredFileNames 需要忽略的文件名（不识别为脚本和本地化文件，逗号分隔，不区分大小写）
- * @property localConfigDirectory 全局的本地规则分组所在的根目录。
  */
 class PlsSettingsState : BaseState() {
     var defaultGameType by enum(ParadoxGameType.Stellaris)
     var defaultGameDirectories by map<String, String>()
     var preferredLocale by string(ParadoxLocaleManager.ID_AUTO)
     var ignoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
-    var localConfigDirectory by string()
 
     val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet(caseInsensitiveStringSet()).orEmpty() }
 
@@ -246,6 +244,10 @@ class PlsSettingsState : BaseState() {
     }
 
     /**
+     * @property enableBuiltInConfigGroups 是否启用内置的规则分组。
+     * @property enableLocalConfigGroups 是否启用全局的本地规则分组。
+     * @property enableProjectLocalConfigGroups 是否启用项目的本地规则分组。
+     * @property localConfigDirectory 全局的本地规则分组所在的根目录。
      * @property showEditorContextToolbar 是否在编辑器右上角显示上下文工具栏。
      * @property showLocalisationFloatingToolbar 是否在选中本地化文本时显示悬浮工具栏。
      * @property highlightLocalisationColorId 是否用对应的颜色高亮本地化颜色ID。
@@ -254,6 +256,11 @@ class PlsSettingsState : BaseState() {
      */
     @Tag("others")
     class OthersState : BaseState() {
+        var enableBuiltInConfigGroups by property(true)
+        var enableLocalConfigGroups by property(true)
+        var enableProjectLocalConfigGroups by property(true)
+        var localConfigDirectory by string()
+
         var showEditorContextToolbar by property(true)
         var showLocalisationFloatingToolbar by property(true)
         var highlightLocalisationColorId by property(true)

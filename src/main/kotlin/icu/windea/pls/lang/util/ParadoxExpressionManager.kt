@@ -382,6 +382,7 @@ object ParadoxExpressionManager {
         orDefault: Boolean = true,
         matchOptions: Int = Options.Default
     ): List<CwtMemberConfig<*>> {
+
         ProgressManager.checkCanceled()
         val memberElement = element.parentOfType<ParadoxScriptMemberElement>(withSelf = true) ?: return emptyList()
         val configsMap = doGetConfigsCacheFromCache(memberElement)

@@ -66,7 +66,7 @@ class ParadoxModDependencySettingsDialog(
                     .withTitle(PlsBundle.message("mod.dependency.settings.modDirectory.title"))
                     .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
-                textFieldWithBrowseButton(descriptor, project) { it.path }
+                textFieldWithBrowseButton(descriptor, project)
                     .text(settings.modDirectory.orEmpty())
                     .columns(36)
                     .align(Align.FILL)

@@ -14,7 +14,7 @@ import icu.windea.pls.model.*
 import javax.swing.*
 
 @Suppress("UnstableApiUsage")
-class ParadoxGameDirectoriesDialog(val list: MutableList<Entry<String, String>>) : DialogWrapper(null) {
+class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>) : DialogWrapper(null) {
     val resultList = list.mapTo(mutableListOf()) { it.copy() }
 
     val graph = PropertyGraph()
@@ -37,7 +37,7 @@ class ParadoxGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
                         .withTitle(PlsBundle.message("gameDirectory.title"))
                         .asBrowseFolderDescriptor()
                         .apply { putUserData(PlsDataKeys.gameType, gameType) }
-                    textFieldWithBrowseButton(descriptor, null) { it.path }
+                    textFieldWithBrowseButton(descriptor, null)
                         .bindText(gameDirectoryProperty)
                         .columns(36)
                         .align(Align.FILL)

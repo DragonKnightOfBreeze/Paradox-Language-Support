@@ -9,7 +9,6 @@ import icu.windea.pls.lang.util.*
 fun Row.localeComboBox(withAuto: Boolean = false, withDefault: Boolean = false, pingPreferred: Boolean = true): Cell<ComboBox<String>> {
     val locales = ParadoxLocaleManager.getLocaleConfigs(withAuto, withDefault, pingPreferred)
     val localeMap = locales.associateBy { it.id }
-    val localeIds = localeMap.keys
 
-    return comboBox(localeMap.keys, SimpleListCellRenderer.create { label, value, _ -> localeMap[value] ?: value })
+    return comboBox(localeMap.keys, SimpleListCellRenderer.create { label, value, _ -> label.text = localeMap[value]?.description ?: value })
 }

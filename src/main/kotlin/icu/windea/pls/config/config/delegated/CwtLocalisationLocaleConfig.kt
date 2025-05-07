@@ -3,9 +3,9 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
-import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 
 interface CwtLocalisationLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val id: String
@@ -36,7 +36,7 @@ private class CwtLocalisationLocaleConfigImpl(
     override val id: String,
     override val codes: List<String>
 ) : UserDataHolderBase(), CwtLocalisationLocaleConfig {
-    override val description: String get() = PlsBundle.message("locale.$id")
+    override val description: String get() = PlsDocBundle.locale(id)
     override val text get() = if(description.isEmpty()) id else "$id ($description)"
 
     override fun equals(other: Any?): Boolean {
@@ -58,7 +58,7 @@ private class AutoCwtLocalisationLocaleConfig(
     override val config: CwtPropertyConfig get() = throw UnsupportedOperationException()
     override val codes: List<String> get() = emptyList()
 
-    override val description: String get() = PlsBundle.message("locale.$id")
+    override val description: String get() = PlsDocBundle.locale(id)
     override val text: String get() = description
 
     override fun equals(other: Any?): Boolean {

@@ -58,14 +58,15 @@ object ParadoxLocaleManager {
             locales += CwtLocalisationLocaleConfig.AUTO_OS
         }
         val localesById = getConfigGroup(null).localisationLocalesById
-        localesById.forEach { (_, v) -> locales += v }
+        var locales0 = localesById.values.toList()
         if (!withDefault) {
-            locales.removeIf { it.id == ID_DEFAULT }
+            locales0 = locales0.filter { it.id != ID_DEFAULT }
         }
         if (pingPreferred) {
             val preferredLocale = getPreferredLocaleConfig()
-            return locales.pinned { it == preferredLocale }
+            locales0 = locales0.pinned { it == preferredLocale }
         }
+        locales += locales0
         return locales
     }
 

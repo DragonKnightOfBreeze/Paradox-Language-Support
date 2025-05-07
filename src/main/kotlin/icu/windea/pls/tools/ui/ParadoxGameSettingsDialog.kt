@@ -53,7 +53,7 @@ class ParadoxGameSettingsDialog(
                     .withTitle(PlsBundle.message("game.settings.gameDirectory.title"))
                     .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
-                textFieldWithBrowseButton(descriptor, project) { it.path }
+                textFieldWithBrowseButton(descriptor, project)
                     .text(settings.gameDirectory.orEmpty())
                     .columns(36)
                     .align(Align.FILL)

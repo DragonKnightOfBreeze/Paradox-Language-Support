@@ -12,8 +12,8 @@ import icu.windea.pls.config.configGroup.*
  * @see CwtConfigGroupLibrary
  * @see CwtConfigGroupLibraryProvider
  */
-class ParadoxUpdateLibraryOnLocalConfigDirectoryChangedListener : ParadoxLocalConfigDirectoryListener {
-    override fun onChange(oldDirectory: String, newDirectory: String) {
+class ParadoxUpdateLibraryOnConfigDirectoriesChangedListener : ParadoxConfigDirectoriesListener {
+    override fun onChange() {
         doUpdate()
     }
 
@@ -32,8 +32,8 @@ class ParadoxUpdateLibraryOnLocalConfigDirectoryChangedListener : ParadoxLocalCo
  * @see CwtConfigGroup
  * @see ConfigGroupRefreshFloatingProvider
  */
-class ParadoxUpdateConfigGroupOnLocalConfigDirectoryChangedListener : ParadoxLocalConfigDirectoryListener {
-    override fun onChange(oldDirectory: String, newDirectory: String) {
+class ParadoxUpdateConfigGroupOnConfigDirectoriesChangedListener : ParadoxConfigDirectoriesListener {
+    override fun onChange() {
         doUpdate()
     }
 

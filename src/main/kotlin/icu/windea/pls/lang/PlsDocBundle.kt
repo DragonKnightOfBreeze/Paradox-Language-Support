@@ -29,6 +29,7 @@ object PlsDocBundle {
 
     //methods to get specific messages
 
+    @JvmStatic
     fun locale(name: String) : @Nls String {
         return INSTANCE.messageOrNull("locale.$name")
             ?: name
