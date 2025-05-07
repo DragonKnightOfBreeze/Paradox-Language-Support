@@ -569,13 +569,13 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
     }
 
     private fun refreshOnlyForOpenedFiles() {
-        val openedFiles = PlsManager.findOpenedFiles()
+        val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
         PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
     }
 
     private fun refreshForParameterInference() {
         ParadoxModificationTrackers.ParameterConfigInferenceTracker.incModificationCount()
-        val openedFiles = PlsManager.findOpenedFiles()
+        val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
         PlsManager.reparseAndRefreshFiles(openedFiles)
     }
 
@@ -583,13 +583,13 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
         ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
         ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
         ParadoxModificationTrackers.InlineScriptConfigInferenceTracker.incModificationCount()
-        val openedFiles = PlsManager.findOpenedFiles { file, _ -> ParadoxInlineScriptManager.getInlineScriptExpression(file) != null }
+        val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
         PlsManager.reparseAndRefreshFiles(openedFiles)
     }
 
     private fun refreshForScopeContextInference() {
         ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
-        val openedFiles = PlsManager.findOpenedFiles()
+        val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
         PlsManager.reparseAndRefreshFiles(openedFiles)
     }
 }

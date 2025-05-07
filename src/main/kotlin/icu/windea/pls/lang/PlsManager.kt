@@ -4,11 +4,11 @@ import com.intellij.codeInsight.daemon.*
 import com.intellij.codeInsight.daemon.impl.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.*
 
 object PlsManager {
     //region ThreadLocals
@@ -68,15 +68,15 @@ object PlsManager {
         return files
     }
 
-    fun findOpenedFiles(onlyParadoxFiles: Boolean = true, predicate: ((VirtualFile, Project) -> Boolean)? = null): Set<VirtualFile> {
+    fun findOpenedFiles(onlyParadoxFiles: Boolean = false, onlyInlineScriptFiles: Boolean = false): Set<VirtualFile> {
         val files = mutableSetOf<VirtualFile>()
         runReadAction {
             val allEditors = EditorFactory.getInstance().allEditors
             for (editor in allEditors) {
-                val file = editor.virtualFile ?: continue
                 val project = editor.project ?: continue
+                val file = editor.virtualFile ?: continue
                 if (onlyParadoxFiles && file.fileType !is ParadoxBaseFileType) continue
-                if (predicate != null && !predicate(file, project)) continue
+                if (onlyInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) == null) continue
                 files.add(file)
             }
         }
@@ -94,8 +94,8 @@ object PlsManager {
             if (refresh) {
                 val allEditors = EditorFactory.getInstance().allEditors
                 for (editor in allEditors) {
-                    val file = editor.virtualFile ?: continue
                     val project = editor.project ?: continue
+                    val file = editor.virtualFile ?: continue
                     if (file !in files) continue
 
                     //refresh code highlighting
