@@ -75,7 +75,7 @@ object PlsManager {
             for (editor in allEditors) {
                 val file = editor.virtualFile ?: continue
                 val project = editor.project ?: continue
-                if (onlyParadoxFiles && !(file.fileType is ParadoxBaseFileType)) continue
+                if (onlyParadoxFiles && file.fileType !is ParadoxBaseFileType) continue
                 if (predicate != null && !predicate(file, project)) continue
                 files.add(file)
             }

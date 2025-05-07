@@ -15,8 +15,7 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
         row {
             val settings = getSettings()
             val oldPreferredLocale = settings.preferredLocale
-            localeComboBox(addAuto = true)
-                .bindItem(settings::preferredLocale.toNullableProperty())
+            localeComboBox(withAuto = true).bindItem(settings::preferredLocale.toNullableProperty())
                 .onApply {
                     if (oldPreferredLocale != settings.preferredLocale) {
                         //刷新已打开的文件

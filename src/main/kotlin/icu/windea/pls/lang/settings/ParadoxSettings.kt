@@ -6,6 +6,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.settings.ParadoxStrategies.*
+import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.*
 
 /**
@@ -27,7 +28,7 @@ class ParadoxSettings : SimplePersistentStateComponent<ParadoxSettingsState>(Par
 class ParadoxSettingsState : BaseState() {
     var defaultGameType by enum(ParadoxGameType.Stellaris)
     var defaultGameDirectories by map<String, String>()
-    var preferredLocale by string("auto")
+    var preferredLocale by string(ParadoxLocaleManager.ID_AUTO)
     var ignoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
     var localConfigDirectory by string()
 
@@ -162,7 +163,7 @@ class ParadoxSettingsState : BaseState() {
         var fileNamePrefix by string("000000_")
         var localisationStrategy by enum(LocalisationGeneration.SpecificText)
         var localisationStrategyText by string("REPLACE_ME")
-        var localisationStrategyLocale by string("auto")
+        var localisationStrategyLocale by string(ParadoxLocaleManager.ID_AUTO)
     }
 
     /**

@@ -45,8 +45,7 @@ class ChangeQuickDocLocalisationLocaleAction : AnAction(), ActionToIgnore {
         val locale = ParadoxLocaleManager.getLocaleInDocumentation(targetElement)
         if (locale == null) return
         val allLocales = mutableListOf<CwtLocalisationLocaleConfig>()
-        allLocales += CwtLocalisationLocaleConfig.AUTO
-        allLocales += ParadoxLocaleManager.getLocaleConfigs()
+        allLocales += ParadoxLocaleManager.getLocaleConfigs(withAuto = true)
         val onChosen = { selected: CwtLocalisationLocaleConfig ->
             targetElement.putUserData(PlsKeys.documentationLocale, selected.id)
             browser.reload()

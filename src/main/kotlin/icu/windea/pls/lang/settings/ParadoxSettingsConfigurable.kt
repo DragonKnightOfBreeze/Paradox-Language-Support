@@ -77,8 +77,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     label(PlsBundle.message("settings.general.preferredLocale")).widthGroup("general")
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.preferredLocale.tooltip") }
                     var preferredLocale = settings.preferredLocale
-                    localeComboBox(addAuto = true)
-                        .bindItem(settings::preferredLocale.toNullableProperty())
+                    localeComboBox(withAuto = true).bindItem(settings::preferredLocale.toNullableProperty())
                         .onApply {
                             val oldPreferredLocale = preferredLocale
                             val newPreferredLocale = settings.preferredLocale
@@ -380,7 +379,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     row {
                         lateinit var rb: JBRadioButton
                         with(LocalisationGeneration.FromLocale) { radioButton(text, this) }.applyToComponent { rb = this }
-                        localeComboBox(addAuto = true).bindItem(settings.generation::localisationStrategyLocale.toNullableProperty()).enabledIf(rb.selected)
+                        localeComboBox(withAuto = true).bindItem(settings.generation::localisationStrategyLocale.toNullableProperty()).enabledIf(rb.selected)
                     }
                 }.bind(settings.generation::localisationStrategy)
             }
