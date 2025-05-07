@@ -14,9 +14,9 @@ import icu.windea.pls.model.*
  */
 @Service(Service.Level.APP)
 @State(name = "ParadoxProfilesSettings", storages = [Storage("paradox-language-support.xml")])
-class ParadoxProfilesSettings : SimplePersistentStateComponent<ParadoxProfilesSettingsState>(ParadoxProfilesSettingsState())
+class PlsProfilesSettings : SimplePersistentStateComponent<PlsProfilesSettingsState>(PlsProfilesSettingsState())
 
-class ParadoxProfilesSettingsState : BaseState() {
+class PlsProfilesSettingsState : BaseState() {
     @get:Property(surroundWithTag = false)
     @get:MapAnnotation(entryTagName = "gameDescriptorSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
     val gameDescriptorSettings: MutableMap<String, ParadoxGameDescriptorSettingsState> by linkedMap()

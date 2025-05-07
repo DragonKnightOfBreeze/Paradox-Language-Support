@@ -88,8 +88,8 @@ interface ParadoxHierarchyActions {
         override fun createPopupActionGroup(button: JComponent, dataContext: DataContext): DefaultActionGroup {
             val type = browser.castOrNull<ParadoxDefinitionHierarchyBrowser>()?.type
             val strategies = when (type) {
-                Type.EventTreeInvoker, Type.EventTreeInvoked -> ParadoxStrategies.EventTreeGrouping.entries
-                Type.TechTreePre, Type.TechTreePost -> ParadoxStrategies.TechTreeGrouping.entries
+                Type.EventTreeInvoker, Type.EventTreeInvoked -> PlsStrategies.EventTreeGrouping.entries
+                Type.TechTreePre, Type.TechTreePost -> PlsStrategies.TechTreeGrouping.entries
                 else -> emptyList()
             }
 
@@ -113,11 +113,11 @@ interface ParadoxHierarchyActions {
             return panel
         }
 
-        private inner class MenuAction(val strategy: ParadoxStrategies.Grouping) : AnAction(strategy.text) {
+        private inner class MenuAction(val strategy: PlsStrategies.Grouping) : AnAction(strategy.text) {
             override fun actionPerformed(e: AnActionEvent) {
                 when (strategy) {
-                    is ParadoxStrategies.EventTreeGrouping -> getSettings().hierarchy.eventTreeGrouping = strategy
-                    is ParadoxStrategies.TechTreeGrouping -> getSettings().hierarchy.techTreeGrouping = strategy
+                    is PlsStrategies.EventTreeGrouping -> getSettings().hierarchy.eventTreeGrouping = strategy
+                    is PlsStrategies.TechTreeGrouping -> getSettings().hierarchy.techTreeGrouping = strategy
                 }
 
                 // invokeLater is called to update state of button before long tree building operation

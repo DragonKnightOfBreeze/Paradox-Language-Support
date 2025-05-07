@@ -40,9 +40,9 @@ fun getCoroutineScope(project: Project) = project.service<PlsProjectService>().c
 
 fun getCoroutineScope() = service<PlsApplicationService>().coroutineScope
 
-fun getSettings() = service<ParadoxSettings>().state
+fun getSettings() = service<PlsSettings>().state
 
-fun getProfilesSettings() = service<ParadoxProfilesSettings>().state
+fun getProfilesSettings() = service<PlsProfilesSettings>().state
 
 fun getDataProvider() = service<PlsDataProvider>()
 

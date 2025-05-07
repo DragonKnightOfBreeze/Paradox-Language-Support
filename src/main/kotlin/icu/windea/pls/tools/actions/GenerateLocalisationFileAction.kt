@@ -17,7 +17,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.lang.settings.ParadoxStrategies.LocalisationGeneration as LocalisationGenerationStrategy
+import icu.windea.pls.lang.settings.PlsStrategies.LocalisationGeneration as LocalisationGenerationStrategy
 
 /**
  * 用于从指定的本地化文件生成其他语言区域的本地化文件。

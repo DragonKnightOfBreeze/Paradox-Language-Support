@@ -2,7 +2,7 @@ package icu.windea.pls.lang.settings
 
 import icu.windea.pls.*
 
-interface ParadoxStrategies {
+interface PlsStrategies {
     /**
      * 生成本地化的策略。
      */

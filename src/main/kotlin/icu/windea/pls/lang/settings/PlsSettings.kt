@@ -5,7 +5,7 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.settings.ParadoxStrategies.*
+import icu.windea.pls.lang.settings.PlsStrategies.*
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.model.*
 
@@ -16,7 +16,7 @@ import icu.windea.pls.model.*
  */
 @Service(Service.Level.APP)
 @State(name = "ParadoxSettings", storages = [Storage("paradox-language-support.xml")])
-class ParadoxSettings : SimplePersistentStateComponent<ParadoxSettingsState>(ParadoxSettingsState())
+class PlsSettings : SimplePersistentStateComponent<PlsSettingsState>(PlsSettingsState())
 
 /**
  * @property defaultGameType 默认的游戏类型。
@@ -25,7 +25,7 @@ class ParadoxSettings : SimplePersistentStateComponent<ParadoxSettingsState>(Par
  * @property ignoredFileNames 需要忽略的文件名（不识别为脚本和本地化文件，逗号分隔，不区分大小写）
  * @property localConfigDirectory 全局的本地规则分组所在的根目录。
  */
-class ParadoxSettingsState : BaseState() {
+class PlsSettingsState : BaseState() {
     var defaultGameType by enum(ParadoxGameType.Stellaris)
     var defaultGameDirectories by map<String, String>()
     var preferredLocale by string(ParadoxLocaleManager.ID_AUTO)

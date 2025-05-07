@@ -13,15 +13,14 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
-import icu.windea.pls.lang.settings.ParadoxStrategies.*
+import icu.windea.pls.lang.settings.PlsStrategies.*
 import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.ui.locale.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import java.awt.event.*
 
 @Suppress("UnstableApiUsage")
-class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
+class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
     override fun getId() = "pls"
 
     override fun createPanel(): DialogPanel {
@@ -237,7 +236,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                         .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeWithClauseTemplate.tooltip") }
 
                     link(PlsBundle.message("settings.completion.clauseTemplate.link")) {
-                        val dialog = ParadoxClauseTemplateSettingsDialog()
+                        val dialog = ClauseTemplateSettingsDialog()
                         dialog.show()
                     }
                 }
@@ -418,7 +417,7 @@ class ParadoxSettingsConfigurable : BoundConfigurable(PlsBundle.message("setting
                     val defaultList = definitionTypeBindingsInCallHierarchy.toMutableEntryList()
                     var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                     val action = { _: ActionEvent ->
-                        val dialog = ParadoxDefinitionTypeBindingsInCallHierarchyDialog(list)
+                        val dialog = DefinitionTypeBindingsInCallHierarchyDialog(list)
                         if (dialog.showAndGet()) list = dialog.resultList
                     }
                     link(PlsBundle.message("settings.hierarchy.definitionTypeBindings.link"), action)

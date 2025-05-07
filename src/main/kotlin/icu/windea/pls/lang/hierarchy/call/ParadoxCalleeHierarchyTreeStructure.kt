@@ -106,7 +106,7 @@ class ParadoxCalleeHierarchyTreeStructure(
         scope: GlobalSearchScope,
         descriptor: HierarchyNodeDescriptor,
         descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>,
-        settings: ParadoxSettingsState.HierarchyState
+        settings: PlsSettingsState.HierarchyState
     ) {
         val resolved = reference.resolve()
         when (resolved) {
