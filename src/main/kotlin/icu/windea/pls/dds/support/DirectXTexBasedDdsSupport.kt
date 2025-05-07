@@ -25,7 +25,9 @@ import kotlin.io.path.*
  * 参见：[Texconv · microsoft/DirectXTex Wiki](https://github.com/microsoft/DirectXTex/wiki/Texconv)
  */
 class DirectXTexBasedDdsSupport : DdsSupport {
-    private val texconvExe get() = PlsConstants.Paths.texconvExeFile
+    private val logger = thisLogger()
+
+    private val texconvExe by lazy { PlsConstants.Paths.texconvExeFile }
     private val texconvExeWd by lazy { PlsConstants.Paths.texconvExe.parent?.toFile() }
 
     override fun getMetadata(file: VirtualFile): DdsMetadata? {
@@ -82,7 +84,7 @@ class DirectXTexBasedDdsSupport : DdsSupport {
             return true
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
-            thisLogger().warn(e)
+            logger.warn(e)
             throw UnsupportedOperationException(e)
         }
     }
@@ -94,7 +96,7 @@ class DirectXTexBasedDdsSupport : DdsSupport {
             return true
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
-            thisLogger().warn(e)
+            logger.warn(e)
             throw UnsupportedOperationException(e)
         }
     }
@@ -112,8 +114,17 @@ class DirectXTexBasedDdsSupport : DdsSupport {
         val wd = texconvExeWd
 
         val r = executeCommand(command, CommandType.CMD, workDirectory = wd)
-        val outputPath = r.lines().lastOrNull()?.removePrefix("writing ")?.trim()?.toPathOrNull()
-        if (outputPath == null) throw IllegalStateException()
+        val lines = r.lines()
+        val outputPath = lines.firstNotNullOfOrNull { it.removePrefixOrNull("writing ")?.trim()?.toPathOrNull() }
+        val hasWarnings = lines.any { it.startsWith("WARNING: ") }
+
+        if(hasWarnings) {
+            logger.warn("Execute texconv command with warnings.\nCommand: $command\nCommand result: $r")
+        } else {
+            logger.info("Execute texconv command.\nCommand: $command\nCommand result: $r")
+        }
+
+        if(outputPath == null) throw IllegalStateException()
 
         if (targetDirectoryPath == null) {
             if (targetFileName == null) return outputPath
