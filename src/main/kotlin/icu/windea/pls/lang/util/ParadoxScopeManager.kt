@@ -483,10 +483,10 @@ object ParadoxScopeManager {
 
     fun getSupportedScopes(categoryConfigMap: Map<String, CwtModifierCategoryConfig>): Set<String> {
         val categoryConfigs = categoryConfigMap.values
-        if (categoryConfigs.any { it.supportedScopes == anyScopeIdSet }) {
-            return anyScopeIdSet
-        } else {
-            return categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
+        return when {
+            categoryConfigs.isEmpty() -> anyScopeIdSet
+            categoryConfigs.any { it.supportedScopes == anyScopeIdSet } -> anyScopeIdSet
+            else -> categoryConfigs.flatMapTo(mutableSetOf()) { it.supportedScopes }
         }
     }
 

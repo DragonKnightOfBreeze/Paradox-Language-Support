@@ -128,21 +128,4 @@ object ParadoxEconomicCategoryManager {
         }
         return map
     }
-
-    fun resolveModifierCategory(value: String?, configGroup: CwtConfigGroup): Map<String, CwtModifierCategoryConfig> {
-        val finalValue = value ?: "economic_unit" //default to economic_unit
-        val enumConfig = configGroup.enums.getValue("scripted_modifier_category")
-        var keys = getModifierCategoryOptionValues(enumConfig, finalValue)
-        if (keys == null) keys = getModifierCategoryOptionValues(enumConfig, "economic_unit")
-        if (keys == null) keys = emptySet() //unexpected
-        val modifierCategories = configGroup.modifierCategories
-        return keys.associateWith { modifierCategories.getValue(it) }
-    }
-
-    private fun getModifierCategoryOptionValues(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
-        val valueConfig = enumConfig.valueConfigMap.getValue(finalValue)
-        return valueConfig.getOrPutUserData(Keys.modifierCategories, emptySet()) {
-            valueConfig.findOption("modifier_categories")?.getOptionValues()
-        }
-    }
 }
