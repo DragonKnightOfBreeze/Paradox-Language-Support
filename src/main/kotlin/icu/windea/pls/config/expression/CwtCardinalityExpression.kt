@@ -55,8 +55,8 @@ private fun doResolve(expressionString: String): CwtCardinalityExpression {
     if (i == -1) return doResolveEmpty()
     val s1 = expressionString.substring(0, i)
     val s2 = expressionString.substring(i + 2)
-    val min = s1.removePrefix("~").toIntOrNull() ?: 0
-    val max = s2.removePrefix("~").toIntOrNull() ?: 0
+    val min = s1.removePrefix("~").let { n -> n.toIntOrNull() ?: 0 }
+    val max = s2.removePrefix("~").let { n -> if (n.equals("inf", true)) null else n.toIntOrNull() }
     val relaxMin = s1.startsWith('~')
     val relaxMax = s2.startsWith('~')
     return CwtCardinalityExpressionImpl(expressionString, min, max, relaxMin, relaxMax)
