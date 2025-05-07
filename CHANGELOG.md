@@ -18,6 +18,7 @@
 # 1.3.36
 
 * [X] 修复某些情况下无法正常渲染与预览DDS图片的问题 / Fixed a problem that DDS images could not be properly rendered and previewed in some situations
+* [X] 完善Stellaris 4.0的CWT规则文件 / Optimize CWT config files for Stellaris 4.0
 
 ## 1.3.36
 
