@@ -22,7 +22,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
             }
 
             private fun visitExpressionElement(element: ParadoxScriptExpressionElement) {
-                if (!element.isExpression()) return // skip check if element is not a expression
+                if (!element.isExpression()) return // skip check if element is not an expression
 
                 //跳过一些脚本表达式类型
                 if (element is ParadoxScriptBlock) return
@@ -30,10 +30,10 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
 
                 //得到完全匹配的CWT规则
                 val config = ParadoxExpressionManager.getConfigs(element, orDefault = false).firstOrNull() ?: return
-                
+
                 //开始检查
                 ParadoxIncorrectExpressionChecker.check(element, config, holder)
-                
+
                 //TODO 1.3.26 应当也适用于各种复杂表达式中的数据源
             }
         }

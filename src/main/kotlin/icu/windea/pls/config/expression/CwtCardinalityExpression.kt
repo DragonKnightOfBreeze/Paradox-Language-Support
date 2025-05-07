@@ -17,15 +17,18 @@ import icu.windea.pls.core.util.*
  * @property min 最小值。
  * @property max 最大值，null表示无限。
  * @property relaxMin 如果值为`false`，则当实际数量小于最小值时仅会作出（弱）警告。
+ * @property relaxMax 如果值为`false`，则当实际数量大于最大值时仅会作出（弱）警告。
  */
 interface CwtCardinalityExpression : CwtExpression {
     val min: Int
     val max: Int?
     val relaxMin: Boolean
+    val relaxMax: Boolean
 
     operator fun component1() = min
     operator fun component2() = max
     operator fun component3() = relaxMin
+    operator fun component4() = relaxMax
 
     fun isOptional() = min == 0
     fun isRequired() = min > 0
@@ -44,35 +47,27 @@ interface CwtCardinalityExpression : CwtExpression {
 
 private val cache = CacheBuilder.newBuilder().buildCache<String, CwtCardinalityExpression> { doResolve(it) }
 
-private fun doResolveEmpty() = CwtCardinalityExpressionImpl("", 0, null, true)
+private fun doResolveEmpty() = CwtCardinalityExpressionImpl("", 0, null, false, false)
 
 private fun doResolve(expressionString: String): CwtCardinalityExpression {
     if (expressionString.isEmpty()) return doResolveEmpty()
-    return when {
-        expressionString.first() == '~' -> {
-            val firstDotIndex = expressionString.indexOf('.')
-            val min = expressionString.substring(1, firstDotIndex).toIntOrNull() ?: 0
-            val max = expressionString.substring(firstDotIndex + 2)
-                .let { if (it.equals("inf", true)) null else it.toIntOrNull() ?: 0 }
-            val relaxMin = true
-            CwtCardinalityExpressionImpl(expressionString.intern(), min, max, relaxMin)
-        }
-        else -> {
-            val firstDotIndex = expressionString.indexOf('.')
-            val min = expressionString.substring(0, firstDotIndex).toIntOrNull() ?: 0
-            val max = expressionString.substring(firstDotIndex + 2)
-                .let { if (it.equals("inf", true)) null else it.toIntOrNull() ?: 0 }
-            val relaxMin = false
-            CwtCardinalityExpressionImpl(expressionString, min, max, relaxMin)
-        }
-    }
+    val i = expressionString.indexOf("..")
+    if (i == -1) return doResolveEmpty()
+    val s1 = expressionString.substring(0, i)
+    val s2 = expressionString.substring(i + 2)
+    val min = s1.removePrefix("~").toIntOrNull() ?: 0
+    val max = s2.removePrefix("~").toIntOrNull() ?: 0
+    val relaxMin = s1.startsWith('~')
+    val relaxMax = s2.startsWith('~')
+    return CwtCardinalityExpressionImpl(expressionString, min, max, relaxMin, relaxMax)
 }
 
 private class CwtCardinalityExpressionImpl(
     override val expressionString: String,
     override val min: Int,
     override val max: Int?,
-    override val relaxMin: Boolean
+    override val relaxMin: Boolean,
+    override val relaxMax: Boolean
 ) : CwtCardinalityExpression {
     override fun equals(other: Any?): Boolean {
         return this === other || other is CwtCardinalityExpression && expressionString == other.expressionString
