@@ -90,6 +90,9 @@ object PlsConstants {
     }
 
     object Settings {
+        /** 是否需要在IDE启动后首次打开某个项目时，刷新此项目已打开的脚本文件和本地化文件 */
+        const val refreshOnProjectStartup = true
+
         /** 默认的封装变量的名字（执行重构与生成操作时会用到） */
         const val defaultScriptedVariableName = "var"
         /** 定义相对于脚本文件的最大深度（用于优化性能） */

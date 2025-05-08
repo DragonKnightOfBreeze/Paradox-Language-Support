@@ -85,6 +85,16 @@ object PlsManager {
 
     fun reparseAndRefreshFiles(files: Set<VirtualFile>, reparse: Boolean = true, refresh: Boolean = true) {
         if (files.isEmpty()) return
+        val allEditors = EditorFactory.getInstance().allEditors
+        val editors = allEditors.filter f@{ editor ->
+            val project = editor.project ?: return@f false
+            val file = editor.virtualFile ?: return@f false
+            if (file !in files) return@f false
+            true
+        }
+        val psiFiles = runReadAction {
+            editors.mapNotNull { editor -> editor.virtualFile?.toPsiFile(editor.project!!) }
+        }
         runInEdt {
             if (reparse) {
                 ParadoxModificationTrackers.refreshPsi()
@@ -92,19 +102,11 @@ object PlsManager {
             }
 
             if (refresh) {
-                val allEditors = EditorFactory.getInstance().allEditors
-                for (editor in allEditors) {
-                    val project = editor.project ?: continue
-                    val file = editor.virtualFile ?: continue
-                    if (file !in files) continue
+                //refresh code highlighting
+                psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile) }
 
-                    //refresh code highlighting
-                    val psiFile = file.toPsiFile(project)
-                    if (psiFile != null) DaemonCodeAnalyzer.getInstance(project).restart(psiFile)
-
-                    //refresh inlay hints
-                    InlayHintsPassFactoryInternal.clearModificationStamp(editor)
-                }
+                //refresh inlay hints
+                editors.forEach { editor -> InlayHintsPassFactoryInternal.clearModificationStamp(editor) }
             }
         }
     }
