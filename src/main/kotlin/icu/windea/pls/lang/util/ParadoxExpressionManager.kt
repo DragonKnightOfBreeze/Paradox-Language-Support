@@ -427,13 +427,14 @@ object ParadoxExpressionManager {
         val configContext = getConfigContext(element) ?: return emptyList()
         val configGroup = configContext.configGroup
 
-        if (element is ParadoxScriptDefinitionElement && configContext.isDefinition()) {
-            if (!BitUtil.isSet(matchOptions, Options.AcceptDefinition)) return emptyList()
-        }
-
         ProgressManager.checkCanceled()
         val contextConfigs = configContext.getConfigs(matchOptions)
         if (contextConfigs.isEmpty()) return emptyList()
+
+        if (element is ParadoxScriptDefinitionElement && configContext.isDefinition()) {
+            //直接返回 contextConfigs
+            if (BitUtil.isSet(matchOptions, Options.AcceptDefinition)) return contextConfigs
+        }
 
         //匹配键
         val resultMatchKey = when {

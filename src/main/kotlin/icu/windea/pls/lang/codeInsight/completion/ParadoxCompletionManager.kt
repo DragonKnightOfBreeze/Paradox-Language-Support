@@ -33,6 +33,7 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.codeStyle.*
@@ -95,7 +96,7 @@ object ParadoxCompletionManager {
 
         val configGroup = configContext.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchOptions = ParadoxExpressionMatcher.Options.Default or ParadoxExpressionMatcher.Options.Relax or ParadoxExpressionMatcher.Options.AcceptDefinition
+        val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
         val parentConfigs = ParadoxExpressionManager.getConfigs(memberElement, matchOptions = matchOptions)
         val configs = mutableListOf<CwtPropertyConfig>()
         parentConfigs.forEach { c1 ->
@@ -142,7 +143,7 @@ object ParadoxCompletionManager {
 
         val configGroup = configContext.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
-        val matchOptions = ParadoxExpressionMatcher.Options.Default or ParadoxExpressionMatcher.Options.Relax or ParadoxExpressionMatcher.Options.AcceptDefinition
+        val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
         val parentConfigs = ParadoxExpressionManager.getConfigs(memberElement, matchOptions = matchOptions)
         val configs = mutableListOf<CwtValueConfig>()
         parentConfigs.forEach { c1 ->
