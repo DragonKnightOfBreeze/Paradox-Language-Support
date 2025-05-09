@@ -18,21 +18,13 @@ open class ParadoxLocalisationParserDefinition : ParserDefinition {
 
     override fun getFileNodeType() = ParadoxLocalisationFileStubElementType.INSTANCE
 
-    override fun createFile(viewProvider: FileViewProvider): ParadoxLocalisationFile {
-        return ParadoxLocalisationFile(viewProvider)
-    }
+    override fun createFile(viewProvider: FileViewProvider) = ParadoxLocalisationFile(viewProvider)
 
-    override fun createElement(node: ASTNode): PsiElement {
-        return Factory.createElement(node)
-    }
+    override fun createElement(node: ASTNode) = Factory.createElement(node)
 
-    override fun createParser(project: Project?): ParadoxLocalisationParser {
-        return ParadoxLocalisationParser()
-    }
+    override fun createParser(project: Project?) = ParadoxLocalisationParser()
 
-    override fun createLexer(project: Project?): ParadoxLocalisationLexer {
-        return ParadoxLocalisationLexer()
-    }
+    override fun createLexer(project: Project?) = ParadoxLocalisationLexerFactory.createLexer(project)
 
     override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): ParserDefinition.SpaceRequirements {
         val leftType = left?.elementType

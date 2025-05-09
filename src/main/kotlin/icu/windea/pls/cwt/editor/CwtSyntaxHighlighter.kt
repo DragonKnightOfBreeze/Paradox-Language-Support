@@ -1,16 +1,17 @@
 package icu.windea.pls.cwt.editor
 
-import com.intellij.lexer.*
-import com.intellij.lexer.StringLiteralLexer.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.fileTypes.*
+import com.intellij.openapi.project.*
 import com.intellij.psi.StringEscapesTokenTypes.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.cwt.lexer.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
-class CwtSyntaxHighlighter : SyntaxHighlighter {
+class CwtSyntaxHighlighter(
+    private val project: Project?
+) : SyntaxHighlighter {
     companion object {
         private val BRACES_KEYS = arrayOf(CwtAttributesKeys.BRACES_KEY)
         private val OPERATOR_KEYS = arrayOf(CwtAttributesKeys.OPERATOR_KEY)
@@ -26,8 +27,6 @@ class CwtSyntaxHighlighter : SyntaxHighlighter {
         private val INVALID_ESCAPE_KEYS = arrayOf(CwtAttributesKeys.INVALID_ESCAPE_KEY)
         private val BAD_CHARACTER_KEYS = arrayOf(CwtAttributesKeys.BAD_CHARACTER_KEY)
         private val EMPTY_KEYS = TextAttributesKey.EMPTY_ARRAY
-
-        private const val additionalValidEscapes = "$"
     }
 
     override fun getTokenHighlights(tokenType: IElementType?) = when (tokenType) {
@@ -47,16 +46,5 @@ class CwtSyntaxHighlighter : SyntaxHighlighter {
         else -> EMPTY_KEYS
     }
 
-    override fun getHighlightingLexer(): Lexer {
-        val lexer = LayeredLexer(CwtLexer())
-        val optionLexer = LayeredLexer(CwtOptionCommentLexer())
-        val lexer1 = StringLiteralLexer(NO_QUOTE_CHAR, PROPERTY_KEY_TOKEN, false, additionalValidEscapes, false, false)
-        val lexer2 = StringLiteralLexer(NO_QUOTE_CHAR, STRING_TOKEN, false, additionalValidEscapes, false, false)
-        lexer.registerSelfStoppingLayer(optionLexer, arrayOf(OPTION_COMMENT_TOKEN), emptyArray())
-        lexer.registerSelfStoppingLayer(lexer1, arrayOf(PROPERTY_KEY_TOKEN), emptyArray())
-        lexer.registerSelfStoppingLayer(lexer2, arrayOf(STRING_TOKEN), emptyArray())
-        optionLexer.registerSelfStoppingLayer(lexer1, arrayOf(PROPERTY_KEY_TOKEN), emptyArray())
-        optionLexer.registerSelfStoppingLayer(lexer2, arrayOf(STRING_TOKEN), emptyArray())
-        return lexer
-    }
+    override fun getHighlightingLexer() = CwtLexerFactory.createHighlightingLexer(project)
 }

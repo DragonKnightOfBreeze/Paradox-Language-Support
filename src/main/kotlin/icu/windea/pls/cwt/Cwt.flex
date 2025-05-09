@@ -17,7 +17,7 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
     }
 
     private void beginNextMemberState() {
-        int nextState = yybegin(YYINITIAL);
+        int nextState = YYINITIAL;
         yybegin(nextState);
     }
 %}
@@ -37,8 +37,8 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 BLANK=\s+
 COMMENT=#[^\r\n]*
 
-CHECK_SEPARATOR=(=)|(\!=)|(<>)
-CHECK_PROPERTY_KEY=({PROPERTY_KEY_TOKEN})?\s*{CHECK_SEPARATOR}
+SEPARATOR_CHECK=(=)|(\!=)|(<>)
+PROPERTY_KEY_CHECK=({PROPERTY_KEY_TOKEN})?\s*{SEPARATOR_CHECK}
 
 PROPERTY_KEY_TOKEN=([^#={}\s\"]+\"?)|({QUOTED_KEY_TOKEN})
 QUOTED_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
@@ -68,7 +68,7 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 }
 
 <YYINITIAL, PV> {
-    {CHECK_PROPERTY_KEY} { yypushback(yylength()); yybegin(PK); }
+    {PROPERTY_KEY_CHECK} { yypushback(yylength()); yybegin(PK); }
     {BOOLEAN_TOKEN} { beginNextMemberState(); return BOOLEAN_TOKEN; }
     {INT_TOKEN} { beginNextMemberState(); return INT_TOKEN; }
     {FLOAT_TOKEN} { beginNextMemberState(); return FLOAT_TOKEN; }

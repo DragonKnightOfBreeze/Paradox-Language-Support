@@ -24,6 +24,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType RICH_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("RICH_TEXT");
   IElementType SCRIPTED_VARIABLE_REFERENCE = ParadoxLocalisationElementTypeFactory.getElementType("SCRIPTED_VARIABLE_REFERENCE");
   IElementType STRING = ParadoxLocalisationElementTypeFactory.getElementType("STRING");
+  IElementType TEXT_ROOT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_ROOT");
 
   IElementType AT = ParadoxLocalisationElementTypeFactory.getTokenType("AT");
   IElementType COLON = ParadoxLocalisationElementTypeFactory.getTokenType("COLON");
@@ -50,6 +51,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PROPERTY_REFERENCE_PARAMETER_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_PARAMETER_TOKEN");
   IElementType PROPERTY_REFERENCE_START = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_START");
   IElementType PROPERTY_REFERENCE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_TOKEN");
+  IElementType PROPERTY_VALUE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_VALUE_TOKEN");
   IElementType RIGHT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_QUOTE");
   IElementType RIGHT_SINGLE_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_SINGLE_QUOTE");
   IElementType SCRIPTED_VARIABLE_REFERENCE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_TOKEN");
@@ -97,11 +99,17 @@ public interface ParadoxLocalisationElementTypes {
       else if (type == PROPERTY_VALUE) {
         return new ParadoxLocalisationPropertyValueImpl(node);
       }
+      else if (type == RICH_TEXT) {
+        return new ParadoxLocalisationRichTextImpl(node);
+      }
       else if (type == SCRIPTED_VARIABLE_REFERENCE) {
         return new ParadoxLocalisationScriptedVariableReferenceImpl(node);
       }
       else if (type == STRING) {
         return new ParadoxLocalisationStringImpl(node);
+      }
+      else if (type == TEXT_ROOT) {
+        return new ParadoxLocalisationTextRootImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

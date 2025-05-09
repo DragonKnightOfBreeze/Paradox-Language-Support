@@ -28,8 +28,7 @@ enum class ParadoxSyntaxConstraint(
     fun supports(target: Any): Boolean {
         val gameType = when (target) {
             is PsiBuilder -> target.getUserData(FileContextUtil.CONTAINING_FILE_KEY)?.fileInfo?.rootInfo?.gameType
-            is _ParadoxScriptLexer -> target.gameType
-            is _ParadoxLocalisationLexer -> target.gameType
+            is _ParadoxLocalisationTextLexer -> target.gameType
             else -> null
         }
         return gameType == null || gameType in this.gameTypes

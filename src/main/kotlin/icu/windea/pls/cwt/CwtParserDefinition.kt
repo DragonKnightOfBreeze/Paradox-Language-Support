@@ -1,7 +1,6 @@
 package icu.windea.pls.cwt
 
 import com.intellij.lang.*
-import com.intellij.lang.ParserDefinition.*
 import com.intellij.lang.ParserDefinition.SpaceRequirements.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
@@ -23,11 +22,11 @@ class CwtParserDefinition : ParserDefinition {
 
     override fun createElement(node: ASTNode?) = Factory.createElement(node)
 
-    override fun createParser(project: Project?) = General.createParser(project)
+    override fun createParser(project: Project?) = CwtParser()
 
-    override fun createLexer(project: Project?) = General.createLexer(project)
+    override fun createLexer(project: Project?) = CwtLexerFactory.createLexer(project)
 
-    override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): SpaceRequirements {
+    override fun spaceExistenceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): ParserDefinition.SpaceRequirements {
         val leftType = left?.elementType
         //val rightType = right?.elementType
         return when {
@@ -36,17 +35,5 @@ class CwtParserDefinition : ParserDefinition {
             leftType == DOC_COMMENT -> MUST_LINE_BREAK
             else -> MAY
         }
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    object General {
-        @JvmStatic
-        fun createParser(project: Project? = null) = CwtParser()
-
-        @JvmStatic
-        fun createLexer(project: Project? = null) = CwtLexer()
-
-        @JvmStatic
-        fun createOptionLexer(project: Project? = null) = CwtOptionCommentLexer()
     }
 }

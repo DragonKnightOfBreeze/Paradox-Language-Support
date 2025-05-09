@@ -112,6 +112,8 @@ private block_item ::= general_comment | property | option | value {
   recoverWhile="#auto"
 }
 
+// ------
+
 // option comment rules (lazy-parsing, from OPTION_COMMENT_TOKEN)
 
 option_comment_root ::= OPTION_COMMENT_START option_comment_item ? comment ? {

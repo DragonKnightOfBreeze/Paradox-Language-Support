@@ -5,7 +5,7 @@ import icu.windea.pls.localisation.lexer.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationWordScanner : DefaultWordsScanner(
-    ParadoxLocalisationLexer(),
+    ParadoxLocalisationLexerFactory.createLayeredLexer(),
     ParadoxLocalisationTokenSets.IDENTIFIER_TOKENS,
     ParadoxLocalisationTokenSets.COMMENT_TOKENS,
     ParadoxLocalisationTokenSets.LITERAL_TOKENS

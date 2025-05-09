@@ -45,8 +45,8 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 BLANK=\s+
 COMMENT=#[^\r\n]*
 
-CHECK_SEPARATOR=(=)|(\!=)|(<>)
-CHECK_OPTION_KEY=({OPTION_KEY_TOKEN})?\s*{CHECK_SEPARATOR}
+SEPARATOR_CHECK=(=)|(\!=)|(<>)
+OPTION_KEY_CHECK=({OPTION_KEY_TOKEN})?\s*{SEPARATOR_CHECK}
 
 OPTION_KEY_TOKEN=([^#={}\s\"]+\"?)|({QUOTED_KEY_TOKEN})
 QUOTED_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
@@ -82,7 +82,7 @@ TOP_STRING_TOKEN=([^#={}\s\"]([^#={}\r\n\"]*[^#={}\s\"])?\"?)|({QUOTED_STRING_TO
 }
 
 <TOP, NOT_TOP, OV_TOP, OV_NOT_TOP>{
-    {CHECK_OPTION_KEY} { yypushback(yylength()); yybegin(OK); }
+    {OPTION_KEY_CHECK} { yypushback(yylength()); yybegin(OK); }
     {BOOLEAN_TOKEN} { beginNextOptionState(); return BOOLEAN_TOKEN; }
     {INT_TOKEN} { beginNextOptionState(); return INT_TOKEN; }
     {FLOAT_TOKEN} { beginNextOptionState(); return FLOAT_TOKEN; }
