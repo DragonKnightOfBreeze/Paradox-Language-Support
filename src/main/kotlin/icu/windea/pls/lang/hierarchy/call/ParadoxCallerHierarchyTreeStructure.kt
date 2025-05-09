@@ -60,7 +60,7 @@ class ParadoxCallerHierarchyTreeStructure(
         reference: PsiReference,
         descriptor: HierarchyNodeDescriptor,
         descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>,
-        settings: ParadoxSettingsState.HierarchyState
+        settings: PlsSettingsState.HierarchyState
     ) {
         val referenceElement = reference.element
         when (referenceElement.language) {

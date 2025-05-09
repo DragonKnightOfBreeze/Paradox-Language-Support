@@ -10,7 +10,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
-import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport.INSTANCE.get
+import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
@@ -45,7 +45,7 @@ class ParadoxScriptExpressionPsiReference(
             resolved is PsiFileSystemItem -> {
                 //https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/#33
                 val configExpression = config.expression ?: throw IncorrectOperationException()
-                val ep = get(configExpression) ?: throw IncorrectOperationException()
+                val ep = ParadoxPathReferenceExpressionSupport.get(configExpression) ?: throw IncorrectOperationException()
                 val fileInfo = resolved.fileInfo ?: throw IncorrectOperationException()
                 val newFilePath = fileInfo.path.parent + "/" + newElementName
                 val pathReference = ep.extract(configExpression, element, newFilePath) ?: throw IncorrectOperationException()

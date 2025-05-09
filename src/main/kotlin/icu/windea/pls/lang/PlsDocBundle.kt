@@ -27,6 +27,14 @@ object PlsDocBundle {
         return INSTANCE.getLazyMessage(key, *params)
     }
 
+    //methods to get specific messages
+
+    @JvmStatic
+    fun locale(name: String) : @Nls String {
+        return INSTANCE.messageOrNull("locale.$name")
+            ?: name
+    }
+
     @JvmStatic
     fun eventType(name: String, gameType: ParadoxGameType?): @Nls String {
         return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.event.type.$name")

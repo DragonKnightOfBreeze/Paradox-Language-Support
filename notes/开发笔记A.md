@@ -27,6 +27,7 @@
 关于UI DSL
 
 * 当使用`validation` `validationXxx`时，必须配套使用`bindText(observableMutableProperty)`，否则无法正确验证修改后的值
+* `com.intellij.ui.dsl.builder.Cell.onApply` - 调用这个方法时，对应的属性必定已经被修改（但是，如果修改了多个属性并且存在重复的对饮的回调，似乎仍然会重复执行回调）
 
 ## 自定义语言
 

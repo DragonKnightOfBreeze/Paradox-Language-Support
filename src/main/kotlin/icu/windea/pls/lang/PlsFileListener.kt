@@ -136,13 +136,13 @@ class PlsFileListener : AsyncFileListener {
 
     private fun reparseOpenedFiles() {
         //重新解析所有项目的所有已打开的文件
-        val files = PlsManager.findOpenedFiles()
+        val files = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
         PlsManager.reparseAndRefreshFiles(files)
     }
 
     private fun reparseOpenedFilesForInlineScripts() {
         //重新解析所有项目的所有已打开的内联脚本文件
-        val files = PlsManager.findOpenedFiles { file, _ -> ParadoxInlineScriptManager.getInlineScriptExpression(file) != null }
+        val files = PlsManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
         PlsManager.reparseAndRefreshFiles(files)
     }
 

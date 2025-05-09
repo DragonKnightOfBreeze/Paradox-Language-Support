@@ -6,7 +6,7 @@ import com.intellij.diff.util.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.settings.ParadoxStrategies.DiffGroup as DiffGroupStrategy
+import icu.windea.pls.lang.settings.PlsStrategies.DiffGroup as DiffGroupStrategy
 
 //com.intellij.diff.actions.BaseShowDiffAction
 

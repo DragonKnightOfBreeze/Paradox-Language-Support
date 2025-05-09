@@ -15,7 +15,7 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="pls" groupId="language" bundle="messages.PlsBundle" key="settings" instance="icu.windea.pls.lang.settings.ParadoxSettingsConfigurable"/>
+    <applicationConfigurable id="pls" groupId="language" bundle="messages.PlsBundle" key="settings" instance="icu.windea.pls.lang.settings.PlsSettingsConfigurable"/>
 
     <additionalLibraryRootsProvider implementation="icu.windea.pls.lang.ParadoxLibraryProvider"/>
     <moduleRendererFactory implementation="icu.windea.pls.lang.ParadoxModuleRenderFactory"/>
@@ -149,10 +149,10 @@
               topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxRefreshOnDefaultGameTypeChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener"/>
-    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnLocalConfigDirectoryChangedListener"
-              topic="icu.windea.pls.lang.listeners.ParadoxLocalConfigDirectoryListener"/>
-    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateConfigGroupOnLocalConfigDirectoryChangedListener"
-              topic="icu.windea.pls.lang.listeners.ParadoxLocalConfigDirectoryListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnConfigDirectoriesChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxConfigDirectoriesListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateConfigGroupOnConfigDirectoriesChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxConfigDirectoriesListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxRefreshOnModGameTypeChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxModGameTypeListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnGameSettingsChangedListener"

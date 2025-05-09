@@ -47,7 +47,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
             }
 
             private fun visitBlock(element: ParadoxScriptBlock) {
-                if (!element.isExpression()) return // skip check if element is not a expression
+                if (!element.isExpression()) return // skip check if element is not an expression
 
                 //skip checking property if its property key may contain parameters
                 //position: (in property) property key / (standalone) left curly brace
@@ -98,7 +98,7 @@ class TooManyExpressionInspection : LocalInspectionTool() {
             }
 
             private fun doCheckOccurrence(element: ParadoxScriptMemberElement, position: PsiElement, occurrence: Occurrence, configExpression: CwtDataExpression): Boolean {
-                val (actual, _, max) = occurrence
+                val (actual, _, max, _, relaxMax) = occurrence
                 if (max != null && actual > max) {
                     val isKey = configExpression.isKey
                     val isConst = configExpression.type == CwtDataTypes.Constant
@@ -118,7 +118,10 @@ class TooManyExpressionInspection : LocalInspectionTool() {
                         maxDefine == null -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.1", max, actual)
                         else -> PlsBundle.message("inspection.script.tooManyExpression.desc.detail.2", max, actual, maxDefine)
                     }
-                    val highlightType = ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+                    val highlightType = when {
+                        relaxMax -> ProblemHighlightType.WEAK_WARNING //weak warning (wave lines), not warning
+                        else -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+                    }
                     val fileLevel = element is PsiFile
                     if (!fileLevel && firstOnly && holder.hasResults()) return false
                     if (fileLevel && firstOnlyOnFile && holder.hasResults()) return false

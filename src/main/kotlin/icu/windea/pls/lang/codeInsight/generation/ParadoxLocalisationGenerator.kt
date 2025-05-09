@@ -16,7 +16,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
-import icu.windea.pls.lang.settings.ParadoxStrategies.LocalisationGeneration as LocalisationGenerationStrategy
+import icu.windea.pls.lang.settings.PlsStrategies.LocalisationGeneration as LocalisationGenerationStrategy
 
 object ParadoxLocalisationGenerator {
     val currentContext = ThreadLocal<ParadoxLocalisationCodeInsightContext>()
@@ -163,7 +163,7 @@ object ParadoxLocalisationGenerator {
             LocalisationGenerationStrategy.SpecificText -> generationSettings.localisationStrategyText.orEmpty()
             LocalisationGenerationStrategy.FromLocale -> {
                 //使用对应语言区域的文本，如果不存在，以及其他任何意外，直接使用空字符串
-                val locale = ParadoxLocaleManager.getLocaleConfig(generationSettings.localisationStrategyLocale.orEmpty())
+                val locale = ParadoxLocaleManager.resolveLocaleConfig(generationSettings.localisationStrategyLocale.orEmpty())
                 val selector = selector(project, file).localisation().contextSensitive().locale(locale)
                 val localisation = ParadoxLocalisationSearch.search(localisationName, selector).find()
                 localisation?.propertyValue?.text.orEmpty()

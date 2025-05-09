@@ -14,16 +14,15 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
     override fun createCenterPanel() = panel {
         row {
             val settings = getSettings()
-            val oldPreferredLocale = settings.preferredLocale
-            localeComboBox(addAuto = true)
-                .bindItem(settings::preferredLocale.toNullableProperty())
+            localeComboBox(withAuto = true).bindItem(settings::preferredLocale.toNullableProperty())
                 .onApply {
-                    if (oldPreferredLocale != settings.preferredLocale) {
-                        //刷新已打开的文件
-                        val files = PlsManager.findOpenedFiles()
-                        PlsManager.reparseAndRefreshFiles(files, reparse = false)
-                    }
+                    refreshOnlyForOpenedFiles()
                 }
         }
+    }
+
+    private fun refreshOnlyForOpenedFiles() {
+        val files = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsManager.reparseAndRefreshFiles(files, reparse = false)
     }
 }

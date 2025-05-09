@@ -345,7 +345,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
 
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return@p true
             //排除不匹配modifier的supported_scopes的情况
-            val modifierCategories = ParadoxEconomicCategoryManager.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
+            val modifierCategories = ParadoxModifierManager.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
             val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
             if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
@@ -379,7 +379,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val economicCategoryInfo = modifierElement.economicCategoryInfo ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory //may be null
         val configGroup = getConfigGroup(modifierElement.project, modifierElement.gameType)
-        return ParadoxEconomicCategoryManager.resolveModifierCategory(modifierCategory, configGroup)
+        return ParadoxModifierManager.resolveModifierCategory(modifierCategory, configGroup)
     }
 
     override fun buildDocumentationDefinition(modifierElement: ParadoxModifierElement, builder: DocumentationBuilder): Boolean = with(builder) {

@@ -14,7 +14,7 @@ import icu.windea.pls.model.*
 import javax.swing.*
 
 @Suppress("UnstableApiUsage")
-class ParadoxGameDirectoriesDialog(val list: MutableList<Entry<String, String>>) : DialogWrapper(null) {
+class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>) : DialogWrapper(null) {
     val resultList = list.mapTo(mutableListOf()) { it.copy() }
 
     val graph = PropertyGraph()
@@ -37,7 +37,7 @@ class ParadoxGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
                         .withTitle(PlsBundle.message("gameDirectory.title"))
                         .asBrowseFolderDescriptor()
                         .apply { putUserData(PlsDataKeys.gameType, gameType) }
-                    textFieldWithBrowseButton(descriptor, null) { it.path }
+                    textFieldWithBrowseButton(descriptor, null)
                         .bindText(gameDirectoryProperty)
                         .columns(36)
                         .align(Align.FILL)
@@ -50,8 +50,7 @@ class ParadoxGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
                     properties.forEach f@{ (gameTypeId, gameDirectoryProperty) ->
                         val gameType = ParadoxGameType.resolve(gameTypeId) ?: return@f
                         val quickGameDirectory = ParadoxCoreManager.getQuickGameDirectory(gameType)?.orNull() ?: return@f
-                        var gameDirectory by gameDirectoryProperty
-                        gameDirectory = quickGameDirectory
+                        gameDirectoryProperty.set(quickGameDirectory)
                     }
                 }
             }
@@ -66,7 +65,7 @@ class ParadoxGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
     }
 }
 
-class ParadoxDefinitionTypeBindingsInCallHierarchyDialog(val list: MutableList<Entry<String, String>>) : DialogWrapper(null) {
+class DefinitionTypeBindingsInCallHierarchyDialog(val list: MutableList<Entry<String, String>>) : DialogWrapper(null) {
     val resultList = list.mapTo(mutableListOf()) { it.copy() }
 
     init {
@@ -91,7 +90,7 @@ class ParadoxDefinitionTypeBindingsInCallHierarchyDialog(val list: MutableList<E
     }
 }
 
-class ParadoxClauseTemplateSettingsDialog : DialogWrapper(null) {
+class ClauseTemplateSettingsDialog : DialogWrapper(null) {
     init {
         title = PlsBundle.message("settings.completion.clauseTemplate.dialog.title")
         init()

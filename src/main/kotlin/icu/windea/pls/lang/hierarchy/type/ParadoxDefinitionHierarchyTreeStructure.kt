@@ -11,7 +11,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.settings.ParadoxStrategies.*
+import icu.windea.pls.lang.settings.PlsStrategies.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType as NodeType

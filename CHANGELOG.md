@@ -15,6 +15,17 @@
 * [ ] #137 [VIC3/CK3] Support special localizations - Basic support
 * [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
+# 1.3.36
+
+* [X] 完善Stellaris 4.0的CWT规则文件 / Optimize CWT config files for Stellaris 4.0
+* [X] #139 修复某些情况下无法正常渲染与预览DDS图片的问题 / Fixed a problem that DDS images could not be properly rendered and previewed in some situations
+* [X] 可以分别配置是否启用内置、全局本地、项目本地的规则分组 / Allow to configure whether to enable built-in, global-local, and project-local config groups separately
+* [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
+
+## 1.3.36
+
+* [X] 更新CWT规则文件以适配Stellaris 4.0 / Update CWT config files to match Stellaris 4.0
+
 ## 1.3.35
 
 * [X] 优化：可以配置是否在层级视图中显示位置信息与本地化名字 / OP: Allow to configure whether to show position info and localized name in hierarchy views

@@ -89,10 +89,10 @@ val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<*>
     }
 
 fun <T : CwtMemberElement> CwtMemberConfig<T>.toOccurrence(contextElement: PsiElement, project: Project): Occurrence {
-    val cardinality = this.cardinality ?: return Occurrence(0, null, null, false)
+    val cardinality = this.cardinality ?: return Occurrence(0, null, null)
     val cardinalityMinDefine = this.cardinalityMinDefine
     val cardinalityMaxDefine = this.cardinalityMaxDefine
-    val occurrence = Occurrence(0, cardinality.min, cardinality.max, cardinality.relaxMin)
+    val occurrence = Occurrence(0, cardinality.min, cardinality.max, cardinality.relaxMin, cardinality.relaxMax)
     run {
         if (cardinalityMinDefine == null) return@run
         val defineValue = ParadoxDefineManager.getDefineValue(cardinalityMinDefine, contextElement, project)?.castOrNull<Int>() ?: return@run
@@ -126,9 +126,9 @@ val CwtMemberConfig<*>.cardinality: CwtCardinalityExpression?
     get() = getOrPutUserData(CwtMemberConfig.Keys.cardinality, CwtCardinalityExpression.EmptyExpression) action@{
         val option = findOption("cardinality")
         if (option == null) {
-            //如果没有注明且类型是常量，则推断为 1..1
+            //如果没有注明且类型是常量，则推断为 1..~1
             if (expression.type == CwtDataTypes.Constant) {
-                return@action CwtCardinalityExpression.resolve("1..1")
+                return@action CwtCardinalityExpression.resolve("1..~1")
             }
         }
         option?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
@@ -138,7 +138,7 @@ val CwtMemberConfig<*>.cardinalityMinDefine: String?
         val option = findOption("cardinality_min_define")
         option?.stringValue
     }
-val CwtMemberConfig<*>.cardinalityMaxDefine
+val CwtMemberConfig<*>.cardinalityMaxDefine: String?
     get() = getOrPutUserData(CwtMemberConfig.Keys.cardinalityMaxDefine, "") action@{
         val option = findOption("cardinality_max_define")
         option?.stringValue

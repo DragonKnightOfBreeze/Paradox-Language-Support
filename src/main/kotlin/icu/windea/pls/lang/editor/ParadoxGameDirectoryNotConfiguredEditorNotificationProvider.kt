@@ -42,23 +42,21 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
                 val dialog = ParadoxModSettingsDialog(project, modSettings)
                 dialog.show()
             }
-            panel.createActionLabel(PlsBundle.message("editor.notification.1.action.2")) {
+            panel.createActionLabel(PlsBundle.message("editor.notification.1.action.2")) action@{
                 val settings = getSettings()
                 val defaultGameDirectories = settings.defaultGameDirectories
                 ParadoxGameType.entries.forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
                 val defaultList = defaultGameDirectories.toMutableEntryList()
                 var list = defaultList.mapTo(mutableListOf()) { it.copy() }
-                val dialog = ParadoxGameDirectoriesDialog(list)
+                val dialog = DefaultGameDirectoriesDialog(list)
                 if (dialog.showAndGet()) {
                     list = dialog.resultList
                     val oldDefaultGameDirectories = defaultGameDirectories.toMutableMap()
                     val newDefaultGameDirectories = list.toMutableMap()
-                    if (oldDefaultGameDirectories != newDefaultGameDirectories) {
-                        settings.defaultGameDirectories = newDefaultGameDirectories
-                        val messageBus = ApplicationManager.getApplication().messageBus
-                        messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC)
-                            .onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
-                    }
+                    if (oldDefaultGameDirectories == newDefaultGameDirectories) return@action
+                    settings.defaultGameDirectories = newDefaultGameDirectories
+                    val messageBus = ApplicationManager.getApplication().messageBus
+                    messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC).onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
                 }
             }
             panel

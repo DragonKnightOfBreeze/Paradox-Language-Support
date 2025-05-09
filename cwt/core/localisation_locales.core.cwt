@@ -4,48 +4,37 @@
 # See vanilla game file: localisation/languages.yml
 
 localisation_locales = {
-    ### Default
     l_default = {
         codes = {}
     }
-    ### English
     l_english = {
         codes = { "en" }
     }
-    ### Brazilian Portuguese
     l_braz_por = {
         codes = { "pt" }
     }
-    ### German
     l_german = {
         codes = { "de" }
     }
-    ### French
     l_french = {
         codes = { "fr" }
     }
-    ### Spanish
     l_spanish = {
         codes = { "es" }
     }
-    ### Polish
     l_polish = {
         codes = { "pl" }
     }
-    ### Russian
     l_russian = {
         codes = { "ru" }
     }
-    ### Simple Chinese
     l_simp_chinese = {
-        codes = { "zh-CN" "zh" }
+        codes = { "zh" "zh-CN" }
     }
-    ### Japanese
     l_japanese = {
         # Since: stellaris v3.4
         codes = { "ja" }
     }
-    ### Korean
     l_korean = {
         # Since: stellaris v3.4
         codes = { "ko" }

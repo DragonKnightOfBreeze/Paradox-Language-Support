@@ -17,7 +17,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.lang.settings.ParadoxStrategies.LocalisationGeneration as LocalisationGenerationStrategy
+import icu.windea.pls.lang.settings.PlsStrategies.LocalisationGeneration as LocalisationGenerationStrategy
 
 /**
  * 用于从指定的本地化文件生成其他语言区域的本地化文件。
@@ -150,7 +150,7 @@ class GenerateLocalisationFileAction : AnAction() {
                                         LocalisationGenerationStrategy.SpecificText -> e.setValue(generationSettings.localisationStrategyText.orEmpty())
                                         LocalisationGenerationStrategy.FromLocale -> {
                                             //使用对应语言区域的文本，如果不存在，以及其他任何意外，直接使用空字符串
-                                            val locale = ParadoxLocaleManager.getLocaleConfig(generationSettings.localisationStrategyLocale.orEmpty())
+                                            val locale = ParadoxLocaleManager.resolveLocaleConfig(generationSettings.localisationStrategyLocale.orEmpty())
                                             val selector = selector(project, baseFile).localisation().contextSensitive().locale(locale)
                                             val localisation = ParadoxLocalisationSearch.search(e.name, selector).find()
                                             e.setValue(localisation?.propertyValue?.text?.unquote().orEmpty())
