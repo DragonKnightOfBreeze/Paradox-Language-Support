@@ -18,7 +18,7 @@ class ParadoxFileLocaleIndex : ScalarIndexExtension<String>() {
         val INSTANCE by lazy { findFileBasedIndex<ParadoxFileLocaleIndex>() }
         val NAME = ID.create<String, Void>("paradox.file.locale.index")
 
-        private const val VERSION = 59 //1.3.35
+        private const val VERSION = 60 //1.4.0
     }
 
     override fun getName() = NAME

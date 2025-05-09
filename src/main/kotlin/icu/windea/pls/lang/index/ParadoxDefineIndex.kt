@@ -21,7 +21,7 @@ class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexI
         val INSTANCE by lazy { findFileBasedIndex<ParadoxDefineIndex>() }
         val NAME = ID.create<String, Map<String, ParadoxDefineIndexInfo.Compact>>("paradox.define.index")
 
-        private const val VERSION = 59 //1.3.35
+        private const val VERSION = 60 //1.4.0
     }
 
     override fun getName() = NAME

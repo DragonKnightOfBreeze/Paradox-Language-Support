@@ -13,7 +13,7 @@ class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinit
         val INSTANCE by lazy { findStubIndex<ParadoxDefinitionNameIndex>() }
         val KEY = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index")
 
-        private const val VERSION = 59 //1.3.35
+        private const val VERSION = 60 //1.4.0
         private const val CACHE_SIZE = 20 * 1024 //38000+ in stellaris@3.6
     }
 

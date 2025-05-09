@@ -34,7 +34,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
         val INSTANCE by lazy { findFileBasedIndex<ParadoxMergedIndex>() }
         val NAME = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.index")
 
-        private const val VERSION = 59 //1.3.35
+        private const val VERSION = 60 //1.4.0
 
         private val markerKey = createKey<Boolean>("paradox.merged.info.index.marker")
 

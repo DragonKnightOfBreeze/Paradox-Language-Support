@@ -13,7 +13,7 @@ class ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScriptS
         val INSTANCE by lazy { findStubIndex<ParadoxScriptedVariableNameIndex>() }
         val KEY = StubIndexKey.createIndexKey<String, ParadoxScriptScriptedVariable>("paradox.scriptedVariable.name.index")
 
-        private const val VERSION = 59 //1.3.35
+        private const val VERSION = 60 //1.4.0
         private const val CACHE_SIZE = 2 * 1024
     }
 
