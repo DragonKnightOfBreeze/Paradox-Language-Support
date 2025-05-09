@@ -4,35 +4,57 @@
 
 ### CWT规则文件
 
+* CWT规则文件从语法上看似类似脚本语言，实际上仍然有许多不同的地方。例如，CWT规则文件支持文档注释何选项注释，并且不支持参数。
+
 ### 脚本语言
 
 ### 本地化语言
 
 对于本地化语言中引用的命令（`[Root.GetName]`）
 
-* 可以对应内置命令（详见：`Stellaris\logs\script_documentation\localizations.log`）
-* 可以对应类型为`scripted_loc`的定义（引用方式：`SCOPE.NAME`，`SCOPE`是作用域名称，`NAME`是定义的名字）
 * 重复的左方括号可以进行转义（`[[Text]`，这会被渲染为`[Text]`）
+* 可能大小写敏感，也可能大小写不敏感，需要具体情况具体分析。
+* 可能对应（用于本地化命令的）预定义的作用域（如，`[Root.GetName]`中的`[Root]`）
+* 可能对应内置命令（详见：游戏的脚本文档日志目录中的`localizations.log`）
+* 至少在Stellaris中，可能对应类型为`scripted_loc`的定义（引用方式：`SCOPE.NAME`，`SCOPE`是作用域名称，`NAME`是`scripted_loc`的名字）
+* 在Stellaris以外的游戏中，拥有更加复杂的情况。
 
 对于本地化语言中引用的图标（`£energy£`）：
 
 * 前后缀必须要匹配，否则会显示为问号图标（原版游戏文件中有许多这样的解析错误）
-* 可以对应同名的`gfx/interface/icons`下的dds文件（引用方式：`£NAME£`，`NAME`是不包括文件后缀名的文件名）
-* 可以对应名为`GFX_text_NAME`，类型为`sprite_type`的定义（引用方式：`£NAME£`，`NAME`是图标的名字）
-* 可以对应名为`GFX_NAME`，类型为`sprite_type`的定义（引用方式：`£NAME£`，`NAME`是图标的名字）
+* 可能对应同名的`gfx/interface/icons`下的dds文件（引用方式：`£NAME£`，`NAME`是不包括文件后缀名的文件名）
+* 可能对应名为`GFX_text_NAME`，类型为`sprite_type`的定义（引用方式：`£NAME£`，`NAME`是图标的名字）
+* 可能对应名为`GFX_NAME`，类型为`sprite_type`的定义（引用方式：`£NAME£`，`NAME`是图标的名字）
+
+关于属性引用、命令等的可能的参数的说明：
+
+（来自[[VIC3/CK3\] Support special localizations · Issue #137 · DragonKnightOfBreeze/Paradox-Language-Support](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/137)）
+
+| Code   | Effect                                                       |
+| ------ | ------------------------------------------------------------ |
+| `*`    | Converts the variable to SI units—appends "K" or "M" and divides the variable appropriately, such as 65 536 becoming 65.53K and 1 500 000 becoming 1.50M. Displays 2 decimals after the dot by default. |
+| `^`    | Same as `*`.                                                 |
+| `=`    | Prefixes the variable with + if the value is positive or - if it is negative. |
+| `0..9` | Controls the number of decimals to display. Due to the nature of the game's variables, there are no more than 3 decimals that can be shown. Using any digit greater than 3 will instead have the same result as 3. |
+| `%`    | Converts the variable to percentage, multiplying by 100 and appending a %. By default, will show 2 digits after the decimal point, though the second digit will always be 0. |
+| `%%`   | Appends a percentage to the end of the variable without multiplying by 100. |
+| `+`    | Colours the variable green if positive, yellow if zero, red if negative. |
+| `-`    | Colours the variable red if positive, yellow if zero, green if negative. |
 
 注意事项：
 
 * `localisation_synced`中不能通过`$KEY$`的方式引用`localisation`
 
-[Localisation modding](https://stellaris.paradoxwikis.com/Localisation_modding)
-
-有用的命令：
+有用的控制台命令：
 
 ```
 reload text - 重载本地化文本表
 switchlanguage $language - 切换使用的语言并且重载本地化文本表（$language为语言名，如：l_english）
 ```
+
+参考链接：
+
+[Localisation modding](https://stellaris.paradoxwikis.com/Localisation_modding)
 
 另见CHANGELOG。
 
@@ -194,8 +216,6 @@ some_effect = {
 
 ### 扩展
 
-插件补充的CWT规则文件。提供缺失的规则和额外的规则。
-
 ```cwt
 types = {
   type[some_type] = {
@@ -211,7 +231,7 @@ types = {
       # 按优先级排序（从上往下优先级从高到低）
       # primary # 当其他定义需要基于另一个定义得到对应的DDS图片，而另一个定义有多种对应的DDS图片时，使用此DDS图片
       pic1 = "#icon" # 对应此定义的名为"icon"的属性的值，所对应的DDS图片（基于值的类型）
-      pic2 = "#icon|#icon_frame,#frame" # icon_frame，对应此定义的名为"icon_frame"的属性的值，用于对DDS图片进行切割，获取最终需要的DDS图片
+      pic2 = "#icon|#icon_argument,#frame" # icon_argument，对应此定义的名为"icon_argument"的属性的值，用于对DDS图片进行切割，获取最终需要的DDS图片
       pic3 = "gfx/interfaces/icons/$.dds" # "$"是定义名称的占位符，对应相对于游戏或模组目录，其所对应的DDS图片
       # pic4 = "#" # 如果此定义的值是字符串，则直接基于此定义的值，查找对应的DDS图片
     }
@@ -228,6 +248,8 @@ enums = {
     }
 }
 ```
+
+通过规则文件抑制特定的代码检查：
 
 ```
 ## suppress = <inspectionToolId>
@@ -284,6 +306,8 @@ effect（效果）：
 
 * 事件（id为`test.1`和id为`test.01`的事件是同一个）
 
+参考链接：
+
 [Modding - Stellaris Wiki: Overwriting specific elements](https://stellaris.paradoxwikis.com/Modding#Overwriting_specific_elements)
 [Modding - Stellaris Wiki: Mod load order](https://stellaris.paradoxwikis.com/Modding#Mod_load_order)
 
@@ -291,13 +315,11 @@ effect（效果）：
 
 * 封装修正（`scripted_modifier`）可以覆盖预定义的修正`modifier`
 
-## 其他
-
-### 渲染dds图片
+## 渲染dds图片
 
 转换dds文件为png文件，然后渲染到文档注释中。
 
-#### 方案1
+### 方案1
 
 使用`dds2png`工具（小巧，但是生成需要一定时间，并且生成的PNG文件可能存在错误）
 
@@ -314,7 +336,7 @@ effect（效果）：
   * png文件保存在`~/dds2png/tmp`这个目录中
 * 未知图标（`unknown.png`，44x44）需要保存到`~/dds2png/tmp`的顶级目录下，以便必要时直接使用
 
-#### 方案2
+### 方案2
 
 使用`DDS4J`（高效，但仍然不兼容某些dds图片）
 
@@ -326,15 +348,16 @@ effect（效果）：
 * 得到DDS文件路径后，将其转化为PNG文件，然后保存到`~/.pls/images`目录中，保留相对路径，并在文件名中加上UUID后缀。
 * 渲染图标时，使用PNG文件的绝对路径。
 
-#### 方案3（计划选用）
+### 方案3（选用）
 
-使用来自iTitus的dds支持库，以及来自官方的Texconv工具
+使用来自iTitus的dds支持库，以及来自官方的Texconv工具。
 
 相关链接：
 
 * [GitHub: iTitus/dds](https://github.com/iTitus/dds)
 * [Texconv · microsoft/DirectXTex Wiki](https://github.com/microsoft/DirectXTex/wiki/Texconv)
 
-* 如果需要DDS图片的元数据，可以直接通过dds支持库获取
-* 如果需要将DDS图片转化为PNG图片，或者转换成其他格式的图片，或者进行其他图片处理操作，在Windows操作系统下，可以使用Texconv工具，以提供更好的支持
-* 尽管dds支持库提供了对`ImageIO`，如果可行，仍然先使用Texconv工具将DDS图片转化为PNG图片，接着再基于PNG图片进行渲染
+* 如果需要DDS图片的元数据，可以直接通过dds支持库获取。
+* 如果需要将DDS图片转化为PNG图片，或者转换成其他格式的图片，或者进行其他图片处理操作，在Windows操作系统下，可以使用Texconv工具，以提供更好的支持。
+* 尽管dds支持库提供了对`ImageIO`，如果可行，仍然先使用Texconv工具将DDS图片转化为PNG图片，接着再基于PNG图片进行渲染。
+* 在Windows操作系统下，应当能够提供接近完美的支持。

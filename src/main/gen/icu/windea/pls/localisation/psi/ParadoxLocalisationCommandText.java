@@ -13,8 +13,9 @@ import icu.windea.pls.model.ParadoxType;
 
 public interface ParadoxLocalisationCommandText extends ParadoxLocalisationExpressionElement, ContributedReferenceHost {
 
-  @NotNull
-  List<ParadoxLocalisationPropertyReference> getPropertyReferenceList();
+  @Nullable PsiElement getIdElement();
+
+  @Nullable ParadoxLocalisationPropertyReference getReferenceElement();
 
   @NotNull String getName();
 

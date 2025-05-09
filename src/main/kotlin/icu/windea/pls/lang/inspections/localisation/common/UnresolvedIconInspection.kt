@@ -36,7 +36,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
                 }
                 val reference = element.reference
                 if (reference == null || reference.resolve() != null) return
-                val location = element.iconId ?: return
+                val location = element.idElement ?: return
                 holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedIcon.desc", iconName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }

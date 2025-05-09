@@ -32,7 +32,7 @@ doc_comment ::= DOC_COMMENT_TOKEN {
 }
 option_comment ::= OPTION_COMMENT_TOKEN { // lazy-parsing OPTION_COMMENT_TOKEN
   implements=["com.intellij.psi.PsiComment"]
-  methods=[getOption getOptionValue getTokenType]
+  methods=[getTokenType getTokenElement getOption getOptionValue]
 }
 private comment ::= COMMENT
 
@@ -118,9 +118,7 @@ private block_item ::= general_comment | property | option | value {
 
 option_comment_root ::= OPTION_COMMENT_START option_comment_item ? comment ? {
   extraRoot=true
-  methods=[
-    option="option" option_value="value"
-  ]
+  methods=[option="option" option_value="value"]
 }
 private option_comment_item ::= option | option_value
 

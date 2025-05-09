@@ -21,8 +21,9 @@ class ParadoxLocalisationAnnotator : Annotator {
 
         when (element) {
             is ParadoxLocalisationProperty -> annotateProperty(element, holder)
-            is ParadoxLocalisationPropertyReference -> annotatePropertyReference(element, holder)
             is ParadoxLocalisationColorfulText -> annotateColorfulText(element, holder)
+            is ParadoxLocalisationPropertyReference -> annotatePropertyReference(element, holder)
+            is ParadoxLocalisationCommand -> annotateCommand(element, holder)
             is ParadoxLocalisationExpressionElement -> annotateExpression(element, holder)
         }
     }
@@ -55,25 +56,32 @@ class ParadoxLocalisationAnnotator : Annotator {
         //	.create()
     }
 
-    private fun annotatePropertyReference(element: ParadoxLocalisationPropertyReference, holder: AnnotationHolder) {
-        //颜色高亮
-        val location = element.propertyReferenceParameter
-        if (location != null) {
-            val text = location.text
-            val colorId = text.find { it.isExactLetter() } ?: return
-            val colorConfig = ParadoxTextColorManager.getInfo(colorId.toString(), element.project, element) ?: return
-            val attributesKey = Keys.getColorKey(colorConfig.color) ?: return
-            val colorIdOffset = location.startOffset + text.indexOf(colorId)
-            val range = TextRange.create(colorIdOffset, colorIdOffset + 1)
-            holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
-        }
-    }
-
     private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
         //颜色高亮
         val location = element.idElement ?: return
         val attributesKey = element.reference?.getAttributesKey() ?: return
         holder.newSilentAnnotation(INFORMATION).range(location).textAttributes(attributesKey).create()
+    }
+
+    private fun annotatePropertyReference(element: ParadoxLocalisationPropertyReference, holder: AnnotationHolder) {
+        annotateByArgument(element.argumentElement, holder)
+    }
+
+    private fun annotateCommand(element: ParadoxLocalisationCommand, holder: AnnotationHolder) {
+        annotateByArgument(element.argumentElement, holder)
+    }
+
+    private fun annotateByArgument(element: ParadoxLocalisationArgument?, holder: AnnotationHolder) {
+        if (element == null) return
+        val text = element.text
+        val textColorCharIndex = text.indexOfLast { ParadoxLocalisationArgumentManager.isTextColorChar(it) }
+        if(textColorCharIndex == -1) return
+        val colorId = text[textColorCharIndex]
+        val colorConfig = ParadoxTextColorManager.getInfo(colorId.toString(), element.project, element) ?: return
+        val attributesKey = Keys.getColorKey(colorConfig.color) ?: return
+        val colorIdOffset = element.startOffset + text.indexOf(colorId)
+        val range = TextRange.create(colorIdOffset, colorIdOffset + 1)
+        holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
     }
 
     private fun annotateExpression(element: ParadoxLocalisationExpressionElement, holder: AnnotationHolder) {

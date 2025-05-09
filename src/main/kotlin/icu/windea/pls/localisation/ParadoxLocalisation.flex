@@ -87,7 +87,7 @@ PROPERTY_VALUE_TOKEN=[^\"\r\n]+ // it's unnecessary to escape double quotes in l
 <YYINITIAL> {
     {WHITE_SPACE} { return WHITE_SPACE; }
     {COMMENT} { return COMMENT; }
-    ^ {LOCALE_TOKEN} ":" \s* $ { handleLocaleToken(); }
+    ^ {LOCALE_TOKEN} ":" \s* $ { return handleLocaleToken(); }
     {PROPERTY_KEY_TOKEN} { yybegin(IN_PROPERTY_COLON); return PROPERTY_KEY_TOKEN; }
 }
 <IN_LOCALE_COLON>{

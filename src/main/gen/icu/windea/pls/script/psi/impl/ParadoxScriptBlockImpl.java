@@ -47,26 +47,22 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  @NotNull
-  public List<ParadoxScriptProperty> getPropertyList() {
+  public @NotNull List<@NotNull ParadoxScriptProperty> getPropertyList() {
     return ParadoxScriptPsiImplUtil.getPropertyList(this);
   }
 
   @Override
-  @NotNull
-  public List<ParadoxScriptValue> getValueList() {
+  public @NotNull List<@NotNull ParadoxScriptValue> getValueList() {
     return ParadoxScriptPsiImplUtil.getValueList(this);
   }
 
   @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
+  public @NotNull Icon getIcon(@IconFlags int flags) {
     return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  @NotNull
-  public String getValue() {
+  public @NotNull String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
   }
 
@@ -81,56 +77,47 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  @NotNull
-  public List<PsiElement> getComponents() {
+  public @NotNull List<@NotNull PsiElement> getComponents() {
     return ParadoxScriptPsiImplUtil.getComponents(this);
   }
 
   @Override
-  @NotNull
-  public ParadoxType getType() {
+  public @NotNull ParadoxType getType() {
     return ParadoxScriptPsiImplUtil.getType(this);
   }
 
   @Override
-  @NotNull
-  public String getExpression() {
+  public @NotNull String getExpression() {
     return ParadoxScriptPsiImplUtil.getExpression(this);
   }
 
   @Override
-  @Nullable
-  public PsiReference getReference() {
+  public @Nullable PsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 
   @Override
-  @NotNull
-  public PsiReference[] getReferences() {
+  public @NotNull PsiReference @NotNull [] getReferences() {
     return ParadoxScriptPsiImplUtil.getReferences(this);
   }
 
   @Override
-  @NotNull
-  public String toString() {
+  public @NotNull String toString() {
     return ParadoxScriptPsiImplUtil.toString(this);
   }
 
   @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
+  public @NotNull ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  @NotNull
-  public GlobalSearchScope getResolveScope() {
+  public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  @NotNull
-  public SearchScope getUseScope() {
+  public @NotNull SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 

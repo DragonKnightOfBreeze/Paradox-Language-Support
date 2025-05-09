@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.editor.folding
 
+import cn.yiiguxing.plugin.translate.util.elementType
 import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
@@ -12,6 +13,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
 @WithBuiltInConfig("builtin/folding_settings.cwt", CwtFoldingSettingsConfig::class)
 abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
@@ -33,7 +35,8 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
         root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptProperty) visitProperty(element)
-                if (element.isExpressionOrMemberContext()) super.visitElement(element)
+                if (element.elementType !in ParadoxScriptTokenSets.MEMBER_CONTEXT) return //optimize
+                super.visitElement(element)
             }
 
             private fun visitProperty(element: ParadoxScriptProperty) {

@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util
 
+import cn.yiiguxing.plugin.translate.util.elementType
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
@@ -17,6 +18,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.references.*
 
 object ParadoxEventManager {
@@ -159,7 +161,8 @@ object ParadoxEventManager {
         definition.block?.acceptChildren(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
-                if (element.isExpressionOrMemberContext()) super.visitElement(element)
+                if (element.elementType !in ParadoxScriptTokenSets.MEMBER_CONTEXT) return //optimize
+                super.visitElement(element)
             }
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {

@@ -13,34 +13,24 @@ import javax.swing.Icon;
 
 public interface ParadoxScriptValue extends ParadoxScriptExpressionElement, ParadoxScriptMemberElement {
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull
-  String getName();
+  @NotNull String getName();
 
-  @NotNull
-  String getValue();
+  @NotNull String getValue();
 
-  @NotNull
-  ParadoxScriptValue setValue(@NotNull String value);
+  @NotNull ParadoxScriptValue setValue(@NotNull String value);
 
-  @NotNull
-  ParadoxType getType();
+  @NotNull ParadoxType getType();
 
-  @NotNull
-  String getExpression();
+  @NotNull String getExpression();
 
-  @Nullable
-  String getConfigExpression();
+  @Nullable String getConfigExpression();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

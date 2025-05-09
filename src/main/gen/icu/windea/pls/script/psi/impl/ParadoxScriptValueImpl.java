@@ -34,68 +34,57 @@ public abstract class ParadoxScriptValueImpl extends ASTWrapperPsiElement implem
   }
 
   @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
+  public @NotNull Icon getIcon(@IconFlags int flags) {
     return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  @NotNull
-  public String getName() {
+  public @NotNull String getName() {
     return ParadoxScriptPsiImplUtil.getName(this);
   }
 
   @Override
-  @NotNull
-  public String getValue() {
+  public @NotNull String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
   }
 
   @Override
-  @NotNull
-  public ParadoxScriptValue setValue(@NotNull String value) {
+  public @NotNull ParadoxScriptValue setValue(@NotNull String value) {
     return ParadoxScriptPsiImplUtil.setValue(this, value);
   }
 
   @Override
-  @NotNull
-  public ParadoxType getType() {
+  public @NotNull ParadoxType getType() {
     return ParadoxScriptPsiImplUtil.getType(this);
   }
 
   @Override
-  @NotNull
-  public String getExpression() {
+  public @NotNull String getExpression() {
     return ParadoxScriptPsiImplUtil.getExpression(this);
   }
 
   @Override
-  @Nullable
-  public String getConfigExpression() {
+  public @Nullable String getConfigExpression() {
     return ParadoxScriptPsiImplUtil.getConfigExpression(this);
   }
 
   @Override
-  @NotNull
-  public String toString() {
+  public @NotNull String toString() {
     return ParadoxScriptPsiImplUtil.toString(this);
   }
 
   @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
+  public @NotNull ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  @NotNull
-  public GlobalSearchScope getResolveScope() {
+  public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  @NotNull
-  public SearchScope getUseScope() {
+  public @NotNull SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 

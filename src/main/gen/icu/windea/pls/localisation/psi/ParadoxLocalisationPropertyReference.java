@@ -19,6 +19,11 @@ public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisatio
   @Nullable
   ParadoxLocalisationScriptedVariableReference getScriptedVariableReference();
 
+  @Nullable PsiElement getIdElement();
+
+  @Nullable
+  ParadoxLocalisationPropertyReferenceArgument getArgumentElement();
+
   @NotNull String getName();
 
   @NotNull ParadoxLocalisationPropertyReference setName(@NotNull String name);

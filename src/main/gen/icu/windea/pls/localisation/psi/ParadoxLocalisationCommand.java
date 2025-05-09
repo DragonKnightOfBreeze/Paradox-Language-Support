@@ -18,6 +18,9 @@ public interface ParadoxLocalisationCommand extends ParadoxLocalisationRichText 
   @Nullable
   ParadoxLocalisationConcept getConcept();
 
+  @Nullable
+  ParadoxLocalisationCommandArgument getArgumentElement();
+
   @NotNull Icon getIcon(@IconFlags int flags);
 
   @NotNull ItemPresentation getPresentation();

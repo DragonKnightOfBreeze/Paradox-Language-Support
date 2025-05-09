@@ -133,6 +133,11 @@ object ParadoxScriptPsiImplUtil {
     //region ParadoxScriptScriptedVariableName
 
     @JvmStatic
+    fun getIdElement(element: ParadoxScriptScriptedVariableName): PsiElement? {
+        return element.firstChild?.nextSibling?.takeIf { it.nextSibling == null && it.elementType == SCRIPTED_VARIABLE_NAME_TOKEN }
+    }
+
+    @JvmStatic
     fun getName(element: ParadoxScriptScriptedVariableName): String? {
         // 不包含作为前缀的"@"
         return element.text.removePrefix("@").orNull()
@@ -237,6 +242,11 @@ object ParadoxScriptPsiImplUtil {
     //region ParadoxScriptPropertyKey
 
     @JvmStatic
+    fun getIdElement(element: ParadoxScriptPropertyKey): PsiElement? {
+        return element.firstChild?.takeIf { it.nextSibling == null && it.elementType == PROPERTY_KEY_TOKEN }
+    }
+
+    @JvmStatic
     fun getIcon(element: ParadoxScriptPropertyKey, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.Property
     }
@@ -265,6 +275,11 @@ object ParadoxScriptPsiImplUtil {
     //endregion
 
     //region ParadoxScriptScriptedVariableReference
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxScriptScriptedVariableReference): PsiElement? {
+        return element.firstChild?.nextSibling?.takeIf { it.nextSibling == null && it.elementType == SCRIPTED_VARIABLE_REFERENCE_TOKEN }
+    }
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptScriptedVariableReference, @Iconable.IconFlags flags: Int): Icon {
@@ -301,36 +316,6 @@ object ParadoxScriptPsiImplUtil {
 
     //endregion
 
-    //region ParadoxScriptValue
-
-    @JvmStatic
-    fun getIcon(element: ParadoxScriptValue, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.Value
-    }
-
-    @JvmStatic
-    fun getName(element: ParadoxScriptValue): String {
-        return element.value
-    }
-
-    @JvmStatic
-    fun getValue(element: ParadoxScriptValue): String {
-        return element.text
-    }
-
-    @JvmStatic
-    fun setValue(element: ParadoxScriptValue, value: String): ParadoxScriptValue {
-        val newElement = ParadoxScriptElementFactory.createValue(element.project, value)
-        return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun toString(element: ParadoxScriptValue): String {
-        return "${element.javaClass.simpleName}: ${element.value}"
-    }
-
-    //endregion
-
     //region ParadoxScriptBoolean
 
     @JvmStatic
@@ -360,6 +345,11 @@ object ParadoxScriptPsiImplUtil {
     //endregion
 
     //region ParadoxScriptString
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxScriptString): PsiElement? {
+        return element.firstChild?.takeIf { it.nextSibling == null && it.elementType == STRING_TOKEN }
+    }
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptString, @Iconable.IconFlags flags: Int): Icon {
@@ -477,6 +467,36 @@ object ParadoxScriptPsiImplUtil {
 
     //endregion
 
+    //region ParadoxScriptValue
+
+    @JvmStatic
+    fun getIcon(element: ParadoxScriptValue, @Iconable.IconFlags flags: Int): Icon {
+        return PlsIcons.Nodes.Value
+    }
+
+    @JvmStatic
+    fun getName(element: ParadoxScriptValue): String {
+        return element.value
+    }
+
+    @JvmStatic
+    fun getValue(element: ParadoxScriptValue): String {
+        return element.text
+    }
+
+    @JvmStatic
+    fun setValue(element: ParadoxScriptValue, value: String): ParadoxScriptValue {
+        val newElement = ParadoxScriptElementFactory.createValue(element.project, value)
+        return element.replace(newElement).cast()
+    }
+
+    @JvmStatic
+    fun toString(element: ParadoxScriptValue): String {
+        return "${element.javaClass.simpleName}: ${element.value}"
+    }
+
+    //endregion
+
     //region ParadoxScriptParameterCondition
 
     @JvmStatic
@@ -586,6 +606,11 @@ object ParadoxScriptPsiImplUtil {
     //region ParadoxScriptParameterConditionParameter
 
     @JvmStatic
+    fun getIdElement(element: ParadoxScriptParameterConditionParameter): PsiElement {
+        return element.findChild { it.elementType == CONDITION_PARAMETER_TOKEN }!!
+    }
+
+    @JvmStatic
     fun getIcon(element: ParadoxScriptParameterConditionParameter, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.Parameter
     }
@@ -640,6 +665,11 @@ object ParadoxScriptPsiImplUtil {
     //region ParadoxScriptInlineMathVariableReference
 
     @JvmStatic
+    fun getIdElement(element: ParadoxScriptInlineMathScriptedVariableReference): PsiElement? {
+        return element.firstChild?.takeIf { it.nextSibling == null && it.elementType == INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN }
+    }
+
+    @JvmStatic
     fun getIcon(element: ParadoxScriptInlineMathScriptedVariableReference, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.ScriptedVariable
     }
@@ -675,6 +705,11 @@ object ParadoxScriptPsiImplUtil {
     //endregion
 
     //region ParadoxScriptParameter
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxScriptParameter): PsiElement? {
+        return element.findChild { it.elementType == PARAMETER_TOKEN }
+    }
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptParameter, @Iconable.IconFlags flags: Int): Icon {
@@ -719,6 +754,11 @@ object ParadoxScriptPsiImplUtil {
     //endregion
 
     //region ParadoxScriptInlineMathParameter
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxScriptInlineMathParameter): PsiElement? {
+        return element.findChild { it.elementType == PARAMETER_TOKEN }
+    }
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptInlineMathParameter, @Iconable.IconFlags flags: Int): Icon {

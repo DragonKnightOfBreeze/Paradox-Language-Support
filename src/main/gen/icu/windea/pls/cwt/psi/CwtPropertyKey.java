@@ -14,28 +14,20 @@ import javax.swing.Icon;
 
 public interface CwtPropertyKey extends PsiLiteralValue, CwtStringExpressionElement {
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull
-  String getName();
+  @NotNull String getName();
 
-  @NotNull
-  String getValue();
+  @NotNull String getValue();
 
-  @NotNull
-  CwtPropertyKey setValue(@NotNull String value);
+  @NotNull CwtPropertyKey setValue(@NotNull String value);
 
-  @NotNull
-  CwtType getType();
+  @NotNull CwtType getType();
 
-  @Nullable
-  CwtConfigType getConfigType();
+  @Nullable CwtConfigType getConfigType();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

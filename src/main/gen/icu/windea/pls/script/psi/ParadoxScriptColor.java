@@ -12,30 +12,22 @@ import java.awt.Color;
 
 public interface ParadoxScriptColor extends ParadoxScriptValue {
 
-  @NotNull
-  String getValue();
+  @NotNull String getValue();
 
-  @NotNull
-  String getColorType();
+  @NotNull String getColorType();
 
-  @NotNull
-  List<String> getColorArgs();
+  @NotNull List<@NotNull String> getColorArgs();
 
-  @Nullable
-  Color getColor();
+  @Nullable Color getColor();
 
   void setColor(@NotNull Color color);
 
-  @NotNull
-  ParadoxType getType();
+  @NotNull ParadoxType getType();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

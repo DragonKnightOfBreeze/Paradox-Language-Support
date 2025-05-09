@@ -179,7 +179,7 @@ object ParadoxExpressionManager {
         element.processChild { e ->
             if (isParameterElementInExpression(e)) {
                 if (parameterRanges == null) parameterRanges = mutableListOf()
-                parameterRanges?.add(e.textRange)
+                parameterRanges.add(e.textRange)
             }
             true
         }

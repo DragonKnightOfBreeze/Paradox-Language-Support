@@ -45,6 +45,13 @@ object ParadoxLocalisationTextRenderer {
         ParadoxEscapeManager.unescapeLocalisationString(element.text, context.builder, ParadoxEscapeManager.Type.Default)
     }
 
+    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context) {
+        //直接渲染其中的文本
+        for (v in element.richTextList) {
+            renderTo(v, context)
+        }
+    }
+
     private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {
         val resolved = element.reference?.resolve()
             ?: element.scriptedVariableReference?.reference?.resolve()
@@ -79,12 +86,6 @@ object ParadoxLocalisationTextRenderer {
         }
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context) {
-        //忽略
-        //builder.append(":${element.name}:")
-    }
-
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
         //显示解析后的概念文本
         run r1@{
@@ -110,10 +111,9 @@ object ParadoxLocalisationTextRenderer {
         context.builder.append(element.text)
     }
 
-    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context) {
-        //直接渲染其中的文本
-        for (v in element.richTextList) {
-            renderTo(v, context)
-        }
+    @Suppress("UNUSED_PARAMETER")
+    private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context) {
+        //忽略
+        //builder.append(":${element.name}:")
     }
 }

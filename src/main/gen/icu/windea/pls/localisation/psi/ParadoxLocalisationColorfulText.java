@@ -15,6 +15,8 @@ public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRich
   @NotNull
   List<ParadoxLocalisationRichText> getRichTextList();
 
+  @Nullable PsiElement getIdElement();
+
   @Nullable String getName();
 
   @NotNull ParadoxLocalisationColorfulText setName(@NotNull String name);

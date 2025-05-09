@@ -25,29 +25,22 @@ public interface ParadoxScriptParameterCondition extends PsiListLikeElement {
   @NotNull
   List<ParadoxScriptValue> getValueList();
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-  @Nullable
-  String getConditionExpression();
+  @Nullable String getConditionExpression();
 
   boolean isEmpty();
 
   boolean isNotEmpty();
 
-  @NotNull
-  List<PsiElement> getComponents();
+  @NotNull List<@NotNull PsiElement> getComponents();
 
-  @Nullable
-  String getPresentationText();
+  @Nullable String getPresentationText();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

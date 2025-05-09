@@ -11,13 +11,10 @@ import com.intellij.psi.tree.IElementType;
 
 public interface CwtDocComment extends PsiComment {
 
-  @NotNull
-  IElementType getTokenType();
+  @NotNull IElementType getTokenType();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

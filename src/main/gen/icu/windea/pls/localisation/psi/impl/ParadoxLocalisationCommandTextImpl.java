@@ -33,9 +33,13 @@ public class ParadoxLocalisationCommandTextImpl extends ASTWrapperPsiElement imp
   }
 
   @Override
-  @NotNull
-  public List<ParadoxLocalisationPropertyReference> getPropertyReferenceList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationPropertyReference.class);
+  public @Nullable PsiElement getIdElement() {
+    return ParadoxLocalisationPsiImplUtil.getIdElement(this);
+  }
+
+  @Override
+  public @Nullable ParadoxLocalisationPropertyReference getReferenceElement() {
+    return ParadoxLocalisationPsiImplUtil.getReferenceElement(this);
   }
 
   @Override

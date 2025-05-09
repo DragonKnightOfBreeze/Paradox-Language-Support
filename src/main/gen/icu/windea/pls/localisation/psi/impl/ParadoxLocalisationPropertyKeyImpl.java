@@ -33,6 +33,11 @@ public class ParadoxLocalisationPropertyKeyImpl extends ASTWrapperPsiElement imp
   }
 
   @Override
+  public @NotNull PsiElement getIdElement() {
+    return ParadoxLocalisationPsiImplUtil.getIdElement(this);
+  }
+
+  @Override
   public @NotNull Icon getIcon(@IconFlags int flags) {
     return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
   }

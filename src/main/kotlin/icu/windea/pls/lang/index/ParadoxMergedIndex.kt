@@ -6,6 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
+import com.intellij.psi.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
@@ -125,7 +126,8 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
                         ep.indexLocalisationExpression(element, fileData)
                     }
                 }
-                if (element.isRichTextContext()) super.visitElement(element)
+                if (element.elementType !in ParadoxLocalisationTokenSets.RICH_TEXT_CONTEXT) return //optimize
+                super.visitElement(element)
             }
         })
     }

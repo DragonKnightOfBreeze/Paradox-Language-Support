@@ -37,32 +37,27 @@ public class ParadoxScriptBooleanImpl extends ParadoxScriptValueImpl implements 
   }
 
   @Override
-  @NotNull
-  public ParadoxType getType() {
+  public @NotNull ParadoxType getType() {
     return ParadoxScriptPsiImplUtil.getType(this);
   }
 
   @Override
-  @NotNull
-  public String toString() {
+  public @NotNull String toString() {
     return ParadoxScriptPsiImplUtil.toString(this);
   }
 
   @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
+  public @NotNull ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  @NotNull
-  public GlobalSearchScope getResolveScope() {
+  public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  @NotNull
-  public SearchScope getUseScope() {
+  public @NotNull SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 

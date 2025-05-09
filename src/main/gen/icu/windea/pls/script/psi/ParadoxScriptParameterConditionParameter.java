@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import icu.windea.pls.lang.psi.ParadoxConditionParameter;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.lang.references.ParadoxConditionParameterPsiReference;
@@ -14,30 +15,24 @@ import javax.swing.Icon;
 
 public interface ParadoxScriptParameterConditionParameter extends ParadoxConditionParameter {
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @NotNull PsiElement getIdElement();
 
-  @NotNull
-  String getName();
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull
-  ParadoxScriptParameterConditionParameter setName(@NotNull String name);
+  @NotNull String getName();
 
-  @NotNull
-  String getValue();
+  @NotNull ParadoxScriptParameterConditionParameter setName(@NotNull String name);
+
+  @NotNull String getValue();
 
   int getTextOffset();
 
-  @NotNull
-  ParadoxConditionParameterPsiReference getReference();
+  @NotNull ParadoxConditionParameterPsiReference getReference();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

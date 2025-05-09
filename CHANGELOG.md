@@ -15,6 +15,10 @@
 * [ ] #137 [VIC3/CK3] Support special localizations - Basic support
 * [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
+TODO:
+
+* [ ] 验证本地化的HTML渲染和内嵌提示渲染，在重构代码后是否仍然正常工作
+
 # 1.3.36
 
 * [X] 完善Stellaris 4.0的CWT规则文件 / Optimize CWT config files for Stellaris 4.0

@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util
 
+import cn.yiiguxing.plugin.translate.util.elementType
 import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.stubs.*
@@ -34,7 +35,8 @@ object ParadoxScriptedVariableManager {
                 if (element is ParadoxScriptScriptedVariable) {
                     result.add(element.createPointer(file))
                 }
-                if (element.isExpressionOrMemberContext()) super.visitElement(element)
+                if (element.elementType !in ParadoxScriptTokenSets.MEMBER_CONTEXT) return //optimize
+                super.visitElement(element)
             }
         })
         return result

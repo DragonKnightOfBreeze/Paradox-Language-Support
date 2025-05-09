@@ -31,6 +31,11 @@ public class ParadoxLocalisationPropertyValueImpl extends ASTWrapperPsiElement i
   }
 
   @Override
+  public @Nullable PsiElement getTokenElement() {
+    return ParadoxLocalisationPsiImplUtil.getTokenElement(this);
+  }
+
+  @Override
   public @NotNull List<@NotNull ParadoxLocalisationRichText> getRichTextList() {
     return ParadoxLocalisationPsiImplUtil.getRichTextList(this);
   }

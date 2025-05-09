@@ -16,6 +16,8 @@ import javax.swing.Icon;
 
 public interface ParadoxLocalisationScriptedVariableReference extends ParadoxScriptedVariableReference {
 
+  @Nullable PsiElement getIdElement();
+
   @NotNull Icon getIcon(@IconFlags int flags);
 
   @Nullable String getName();

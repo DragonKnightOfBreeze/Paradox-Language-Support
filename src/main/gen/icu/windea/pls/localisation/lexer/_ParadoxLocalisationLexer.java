@@ -682,7 +682,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
             // lookahead expression with fixed lookahead length
             zzMarkedPos = Character.offsetByCodePoints
                 (zzBufferL, zzMarkedPos, -1);
-            { handleLocaleToken();
+            { return handleLocaleToken();
             }
           // fall through
           case 25: break;
@@ -690,7 +690,7 @@ public class _ParadoxLocalisationLexer implements FlexLexer {
             // lookahead expression with fixed lookahead length
             zzMarkedPos = Character.offsetByCodePoints
                 (zzBufferL, zzMarkedPos, -2);
-            { handleLocaleToken();
+            { return handleLocaleToken();
             }
           // fall through
           case 26: break;

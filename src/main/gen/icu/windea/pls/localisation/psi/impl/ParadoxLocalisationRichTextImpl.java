@@ -14,7 +14,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public class ParadoxLocalisationRichTextImpl extends ASTWrapperPsiElement implements ParadoxLocalisationRichText {
+public abstract class ParadoxLocalisationRichTextImpl extends ASTWrapperPsiElement implements ParadoxLocalisationRichText {
 
   public ParadoxLocalisationRichTextImpl(@NotNull ASTNode node) {
     super(node);
@@ -28,12 +28,6 @@ public class ParadoxLocalisationRichTextImpl extends ASTWrapperPsiElement implem
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ParadoxLocalisationVisitor) accept((ParadoxLocalisationVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxLocalisationString getString() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationString.class);
   }
 
   @Override

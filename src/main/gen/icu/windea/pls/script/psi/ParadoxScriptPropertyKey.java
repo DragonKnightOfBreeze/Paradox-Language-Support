@@ -22,40 +22,30 @@ public interface ParadoxScriptPropertyKey extends PsiLiteralValue, ParadoxScript
   @NotNull
   List<ParadoxScriptParameter> getParameterList();
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @Nullable PsiElement getIdElement();
 
-  @NotNull
-  String getName();
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull
-  String getValue();
+  @NotNull String getName();
 
-  @NotNull
-  ParadoxScriptPropertyKey setValue(@NotNull String value);
+  @NotNull String getValue();
 
-  @NotNull
-  ParadoxType getType();
+  @NotNull ParadoxScriptPropertyKey setValue(@NotNull String value);
 
-  @NotNull
-  String getExpression();
+  @NotNull ParadoxType getType();
 
-  @Nullable
-  String getConfigExpression();
+  @NotNull String getExpression();
 
-  @Nullable
-  PsiReference getReference();
+  @Nullable String getConfigExpression();
 
-  @NotNull
-  PsiReference[] getReferences();
+  @Nullable PsiReference getReference();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull
-  GlobalSearchScope getResolveScope();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull GlobalSearchScope getResolveScope();
+
+  @NotNull SearchScope getUseScope();
 
 }

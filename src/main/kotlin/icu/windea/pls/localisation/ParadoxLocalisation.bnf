@@ -33,7 +33,7 @@ private property_item ::= COMMENT | property {
 locale ::= LOCALE_TOKEN COLON {
   pin=1
   implements="com.intellij.psi.NavigatablePsiElement"
-  methods=[getIcon getName setName getReference]
+  methods=[getIdElement getIcon getName setName getReference]
 }
 
 property ::= property_key COLON property_number? property_value {
@@ -49,7 +49,7 @@ property ::= property_key COLON property_number? property_value {
 }
 
 property_key ::= PROPERTY_KEY_TOKEN {
-  methods=[getIcon]
+  methods=[getIdElement getIcon]
 }
 
 // The number seen in vanilla files right after the colon can be omitted, as it is only useful for Paradox’s internal translation tracking
@@ -57,9 +57,9 @@ property_key ::= PROPERTY_KEY_TOKEN {
 // https://twitter.com/Martin_Anward/status/1039175213773144066
 private property_number ::= PROPERTY_NUMBER
 
-property_value ::= LEFT_QUOTE PROPERTY_VALUE_TOKEN RIGHT_QUOTE { // lazy-parsing PROPERTY_VALUE_TOKEN
+property_value ::= LEFT_QUOTE PROPERTY_VALUE_TOKEN ? RIGHT_QUOTE { // lazy-parsing PROPERTY_VALUE_TOKEN
   pin=1
-  methods=[getRichTextList]
+  methods=[getTokenElement getRichTextList]
 }
 
 // ------
@@ -75,7 +75,10 @@ private text_item ::= rich_text | COLORFUL_TEXT_END {
 
 rich_text ::= string | colorful_text | property_reference | icon | command
 
-string ::= STRING_TOKEN
+string ::= STRING_TOKEN {
+  extends=rich_text
+  methods=[getIdElement]
+}
 
 // localisation colorful text rules
 
@@ -83,7 +86,7 @@ string ::= STRING_TOKEN
 colorful_text ::= COLORFUL_TEXT_START COLOR_TOKEN colorful_text_item [COLORFUL_TEXT_END]{
   pin=1
   extends=rich_text
-  methods=[getName setName getReference]
+  methods=[getIdElement getName setName getReference]
 }
 private colorful_text_item ::= rich_text *
 
@@ -91,17 +94,20 @@ private colorful_text_item ::= rich_text *
 
 // see: https://stellaris.paradoxwikis.com/Localisation_modding#.24_Codes
 // may be resolved to localisation / parameter / system statistics in GUI elements
-property_reference ::= PROPERTY_REFERENCE_START [property_reference_name] [PIPE [property_reference_parameter]] PROPERTY_REFERENCE_END {
+property_reference ::= PROPERTY_REFERENCE_START property_reference_name [PIPE property_reference_argument] PROPERTY_REFERENCE_END {
   pin=1
   extends=rich_text
-  implements=[
-    "com.intellij.psi.NavigatablePsiElement"
+  implements=["com.intellij.psi.NavigatablePsiElement"]
+  methods=[
+    getIdElement argument_element="property_reference_argument"
+    getName setName getReference
   ]
-  methods=[getName setName getReference]
 }
-// token / command (e.g. "[Root.GetName]") / scripted_variable (e.g. "@v")
-private property_reference_name ::= PROPERTY_REFERENCE_TOKEN | command | scripted_variable_reference
-private property_reference_parameter ::= PROPERTY_REFERENCE_PARAMETER_TOKEN //TODO check syntax
+private property_reference_name ::= PROPERTY_REFERENCE_TOKEN | command | scripted_variable_reference //can be parameterized, or @sv
+property_reference_argument ::= PROPERTY_REFERENCE_ARGUMENT_TOKEN {
+  implements=["icu.windea.pls.localisation.psi.ParadoxLocalisationArgument"]
+  methods=[getIdElement]
+}
 
 // scripted variable reference rules (in references)
 
@@ -109,7 +115,7 @@ scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_TOKEN {
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
   ]
-  methods=[getIcon getName setName getReference getType getExpression]
+  methods=[getIdElement getIcon getName setName getReference getType getExpression]
 }
 
 // localisation command rules
@@ -119,45 +125,63 @@ command ::= COMMAND_START command_expression ? COMMAND_END {
   pin=1
   extends=rich_text
   implements="icu.windea.pls.localisation.psi.ParadoxLocalisationRichText"
-  methods=[getIcon]
+  methods=[
+    argument_element="command_argument"
+    getIcon
+  ]
 }
 
-private command_expression ::= concept_expression | command_text
-command_text ::= (COMMAND_TEXT_TOKEN | property_reference)* { //can be parameterized
+private command_expression ::= concept_expression | (command_text [PIPE command_argument])
+command_text ::= COMMAND_TEXT_TOKEN | property_reference { //can be parameterized
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement"
     "com.intellij.psi.ContributedReferenceHost"
   ]
-  methods=[getName getValue setValue getType getExpression getReference getReferences]
+  methods=[
+    getIdElement getReferenceElement property_reference=""
+    getName getValue setValue getType getExpression getReference getReferences
+  ]
+}
+command_argument ::= COMMAND_ARGUMENT_TOKEN | property_reference { //can be parameterized
+  implements=["icu.windea.pls.localisation.psi.ParadoxLocalisationArgument"]
+  methods=[getIdElement getReferenceElement property_reference=""]
 }
 
 // localisation icon rules
 
-icon ::= ICON_START icon_name [PIPE icon_frame] ICON_END {
+icon ::= ICON_START icon_name [PIPE icon_argument] ICON_END {
   pin=1
   extends=rich_text
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
   ]
-  methods=[getIcon getName setName getFrame getReference]
+  methods=[
+    getIdElement getReferenceElement argument_element="icon_argument"
+    getIcon getName setName getFrame getReference
+  ]
 }
 private icon_name ::= command | property_reference | ICON_TOKEN //can be parameterized
-private icon_frame ::= ICON_FRAME | property_reference //can be parameterized
+icon_argument ::= ICON_ARGUMENT_TOKEN | property_reference { //can be parameterized
+  implements=["icu.windea.pls.localisation.psi.ParadoxLocalisationArgument"]
+  methods=[getIdElement getReferenceElement property_reference=""]
+}
 
 // [stellaris] localisation concept rules (as special commands)
 
 private concept_expression ::= <<supportsConceptQuoted>> concept
-concept ::= LEFT_SINGLE_QUOTE concept_name RIGHT_SINGLE_QUOTE (COMMA concept_text) ? {
+concept ::= LEFT_SINGLE_QUOTE concept_name ? RIGHT_SINGLE_QUOTE (COMMA concept_text) ? {
   pin=1
   methods=[getIcon getName setName getReference]
 }
-concept_name ::= (CONCEPT_NAME_TOKEN | property_reference)* { //can be parameterized
-  pin=1
+concept_name ::= CONCEPT_NAME_TOKEN | property_reference { //can be parameterized
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement"
     "com.intellij.psi.ContributedReferenceHost"
   ]
-  methods=[getName getValue setValue getType getExpression getReference getReferences]
+  methods=[
+    getIdElement
+    getName getValue setValue getType getExpression getReference getReferences
+  ]
 }
 concept_text ::= rich_text *
 

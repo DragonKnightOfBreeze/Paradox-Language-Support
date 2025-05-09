@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.inspections.script.common
 
+import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
@@ -32,9 +33,8 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (inInlineMath || element.isExpressionOrMemberContext()) {
-                    super.visitElement(element)
-                }
+                if (!inInlineMath && element.elementType !in ParadoxScriptTokenSets.MEMBER_CONTEXT) return //optimize
+                super.visitElement(element)
             }
 
             override fun elementFinished(element: PsiElement?) {

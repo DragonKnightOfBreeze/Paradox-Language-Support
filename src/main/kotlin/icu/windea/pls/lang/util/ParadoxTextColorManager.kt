@@ -14,13 +14,13 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxTextColorManager {
     fun getInfo(element: PsiElement): ParadoxTextColorInfo? {
-        val colorId = when {
-            //单个大写或小写字母，不限定位置
-            element is ParadoxLocalisationPropertyReference -> element.propertyReferenceParameter?.text?.find { it.isExactLetter() }?.toString()
-            //单个大写或小写字母
-            element is ParadoxLocalisationColorfulText -> element.name
+        val colorIdText = when {
+            element is ParadoxLocalisationColorfulText -> element.idElement?.text
+            element is ParadoxLocalisationPropertyReference -> element.argumentElement?.text
+            element is ParadoxLocalisationCommand -> element.argumentElement?.text
             else -> null
         }
+        val colorId = colorIdText?.findLast { ParadoxLocalisationArgumentManager.isTextColorChar(it) }?.toString()
         if (colorId.isNullOrEmpty()) return null
         return getInfo(colorId, element.project, element)
     }
@@ -43,7 +43,7 @@ object ParadoxTextColorManager {
         if (definition !is ParadoxScriptProperty) return null
         //要求输入的name必须是单个字母或数字
         val name = definition.name
-        if (name.singleOrNull()?.let { it.isExactLetter() || it.isExactDigit() } != true) return null
+        if (name.singleOrNull()?.let { isColorId(it) } != true) return null
         val gameType = selectGameType(definition) ?: return null
         val rgbList = definition.block?.valueList?.mapNotNull { it.intValue() } ?: return null
         val value = ParadoxTextColorInfo(name, gameType, definition.createPointer(), rgbList[0], rgbList[1], rgbList[2])
@@ -55,6 +55,10 @@ object ParadoxTextColorManager {
         val definitions = ParadoxDefinitionSearch.search("textcolor", selector).findAll()
         if (definitions.isEmpty()) return emptyList()
         return definitions.mapNotNull { definition -> doGetInfoFromCache(definition) } //it.name == it.definitionInfo.name
+    }
+
+    fun isColorId(c: Char): Boolean {
+        return c.isExactWord()
     }
 }
 

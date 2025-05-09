@@ -1,5 +1,6 @@
 package icu.windea.pls.model.codeInsight
 
+import cn.yiiguxing.plugin.translate.util.elementType
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
@@ -52,7 +53,8 @@ data class ParadoxLocalisationCodeInsightContext(
                         is ParadoxScriptDefinitionElement -> fromDefinition(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
                         is ParadoxScriptStringExpressionElement -> fromExpression(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
                     }
-                    if (element.isExpressionOrMemberContext()) super.visitElement(element)
+                    if (element.elementType !in ParadoxScriptTokenSets.MEMBER_CONTEXT) return //optimize
+                    super.visitElement(element)
                 }
             })
             //exclude duplicates and sort contexts

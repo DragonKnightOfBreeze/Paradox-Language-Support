@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.hierarchy.call
 
+import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
@@ -73,9 +74,8 @@ class ParadoxCalleeHierarchyTreeStructure(
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (inInlineMath || element.isExpressionOrMemberContext()) {
-                    super.visitElement(element)
-                }
+                if (!inInlineMath && element.elementType !in ParadoxScriptTokenSets.MEMBER_CONTEXT) return //optimize
+                super.visitElement(element)
             }
 
             override fun elementFinished(element: PsiElement?) {

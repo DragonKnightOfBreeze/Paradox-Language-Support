@@ -10,9 +10,6 @@ import com.intellij.psi.search.SearchScope;
 
 public interface ParadoxLocalisationRichText extends PsiElement {
 
-  @Nullable
-  ParadoxLocalisationString getString();
-
   @NotNull ItemPresentation getPresentation();
 
   @NotNull GlobalSearchScope getResolveScope();

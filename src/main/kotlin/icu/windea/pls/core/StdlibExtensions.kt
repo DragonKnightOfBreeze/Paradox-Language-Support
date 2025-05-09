@@ -244,6 +244,10 @@ fun Char.isExactDigit(): Boolean {
     return this in '0'..'9'
 }
 
+fun Char.isExactWord(): Boolean {
+    return this == '_' || isExactLetter() || isExactDigit()
+}
+
 fun String.isLeftQuoted(quote: Char = '"'): Boolean {
     return startsWith(quote)
 }

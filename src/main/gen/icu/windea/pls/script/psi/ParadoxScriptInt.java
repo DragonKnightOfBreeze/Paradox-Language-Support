@@ -14,27 +14,20 @@ import icu.windea.pls.model.ParadoxType;
 
 public interface ParadoxScriptInt extends ParadoxScriptValue, PsiLiteralValue, ContributedReferenceHost {
 
-  @NotNull
-  String getValue();
+  @NotNull String getValue();
 
   int getIntValue();
 
-  @NotNull
-  ParadoxType getType();
+  @NotNull ParadoxType getType();
 
-  @Nullable
-  PsiReference getReference();
+  @Nullable PsiReference getReference();
 
-  @NotNull
-  PsiReference[] getReferences();
+  @NotNull PsiReference @NotNull [] getReferences();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

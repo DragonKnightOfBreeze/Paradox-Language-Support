@@ -13,6 +13,7 @@ import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.navigation.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.model.*
 import javax.swing.*
 
@@ -80,8 +81,8 @@ object CwtPsiImplUtil {
         //这里不能遍历element.children
         element.forEachChild { child ->
             when (child.elementType) {
-                CwtElementTypes.EQUAL_SIGN -> return CwtSeparatorType.EQUAL
-                CwtElementTypes.NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
+                EQUAL_SIGN -> return CwtSeparatorType.EQUAL
+                NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
             }
         }
         return CwtSeparatorType.EQUAL
@@ -103,7 +104,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtOptionKey): String {
-        return element.findChild { it.elementType == CwtElementTypes.OPTION_KEY_TOKEN }!!.text.unquote()
+        return element.findChild { it.elementType == OPTION_KEY_TOKEN }!!.text.unquote()
     }
 
     //endregion
@@ -140,8 +141,8 @@ object CwtPsiImplUtil {
         //这里不能遍历element.children
         element.forEachChild { child ->
             when (child.elementType) {
-                CwtElementTypes.EQUAL_SIGN -> return CwtSeparatorType.EQUAL
-                CwtElementTypes.NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
+                EQUAL_SIGN -> return CwtSeparatorType.EQUAL
+                NOT_EQUAL_SIGN -> return CwtSeparatorType.NOT_EQUAL
             }
         }
         return CwtSeparatorType.EQUAL
@@ -163,7 +164,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtPropertyKey): String {
-        return element.findChild { it.elementType == CwtElementTypes.PROPERTY_KEY_TOKEN }!!.text.unquote()
+        return element.findChild { it.elementType == PROPERTY_KEY_TOKEN }!!.text.unquote()
     }
 
     @JvmStatic
@@ -310,7 +311,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getTokenType(element: CwtDocComment): IElementType {
-        return CwtElementTypes.DOC_COMMENT
+        return DOC_COMMENT
     }
 
     //endregion
@@ -318,18 +319,23 @@ object CwtPsiImplUtil {
     //region CwtOptionComment
 
     @JvmStatic
+    fun getTokenType(element: CwtOptionComment): IElementType {
+        return OPTION_COMMENT
+    }
+
+    @JvmStatic
+    fun getTokenElement(element: CwtOptionComment): PsiElement? {
+        return element.findChild { it.elementType == OPTION_COMMENT_TOKEN }
+    }
+
+    @JvmStatic
     fun getOption(element: CwtOptionComment): CwtOption? {
-        return PsiTreeUtil.findChildOfType(element, CwtOption::class.java)
+        return element.tokenElement?.findChild<_>()
     }
 
     @JvmStatic
     fun getOptionValue(element: CwtOptionComment): CwtValue? {
-        return PsiTreeUtil.findChildOfType(element, CwtValue::class.java)
-    }
-
-    @JvmStatic
-    fun getTokenType(element: CwtOptionComment): IElementType {
-        return CwtElementTypes.OPTION_COMMENT
+        return element.tokenElement?.findChild<_>()
     }
 
     //endregion

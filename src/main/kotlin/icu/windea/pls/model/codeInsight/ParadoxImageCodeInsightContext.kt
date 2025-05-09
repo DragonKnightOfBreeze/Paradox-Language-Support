@@ -1,5 +1,6 @@
 package icu.windea.pls.model.codeInsight
 
+import cn.yiiguxing.plugin.translate.util.elementType
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
@@ -46,7 +47,8 @@ data class ParadoxImageCodeInsightContext(
                         is ParadoxScriptDefinitionElement -> fromDefinition(element, fromInspection = fromInspection)?.let { children.add(it) }
                         is ParadoxScriptStringExpressionElement -> fromExpression(element, fromInspection = fromInspection)?.let { children.add(it) }
                     }
-                    if (element.isExpressionOrMemberContext()) super.visitElement(element)
+                    if (element.elementType !in ParadoxScriptTokenSets.MEMBER_CONTEXT) return //optimize
+                    super.visitElement(element)
                 }
             })
             return ParadoxImageCodeInsightContext(Type.File, file.name, codeInsightInfos, children)

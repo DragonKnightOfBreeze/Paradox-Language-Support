@@ -45,6 +45,22 @@ object ParadoxLocalisationTextHtmlRenderer {
         renderTo(element, context)
     }
 
+     fun renderWithColor(color: Color?, context: Context, action: (Context) -> Unit): String {
+        return buildDocumentation { renderWithColorTo(color, context, action) }
+    }
+
+     fun renderWithColorTo(color: Color?, context: Context, action: (Context) -> Unit) {
+        if (color != null) {
+            context.colorStack.addLast(color)
+            context.builder.append("<span style=\"color: #").append(ColorUtil.toHex(color, true)).append("\">")
+        }
+        action(context)
+        if (color != null) {
+            context.colorStack.removeLast()
+            context.builder.append("</span>")
+        }
+    }
+
     private fun renderTo(element: ParadoxLocalisationProperty, context: Context) {
         val richTextList = element.propertyValue?.richTextList
         if (richTextList.isNullOrEmpty()) return
@@ -76,50 +92,88 @@ object ParadoxLocalisationTextHtmlRenderer {
         ParadoxEscapeManager.unescapeLocalisationString(element.text.escapeXml(), context.builder.content, ParadoxEscapeManager.Type.Html)
     }
 
-    private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {
-        //如果处理文本失败，则使用原始文本，如果有颜色码，则使用该颜色渲染，否则保留颜色码
+    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context) {
+        //如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
+        val richTextList = element.richTextList
+        if (richTextList.isEmpty()) return
         val color = if (getSettings().others.renderLocalisationColorfulText) element.colorConfig?.color else null
-        if (color != null) {
-            context.builder.append("<span style=\"color: #").append(ColorUtil.toHex(color, true)).append("\">")
+        renderWithColorTo(color, context) {
+            for (richText in richTextList) {
+                ProgressManager.checkCanceled()
+                renderTo(richText, context)
+            }
         }
-        val resolved = element.reference?.resolve()
-            ?: element.scriptedVariableReference?.reference?.resolve()
-        when {
-            resolved is ParadoxLocalisationProperty -> {
-                if (ParadoxLocalisationManager.isSpecialLocalisation(resolved)) {
-                    context.builder.append("<code>")
-                    renderElementText(element, context)
-                    context.builder.append("</code>")
-                } else {
-                    val resolvedName = resolved.name
-                    if (context.guardStack.contains(resolvedName)) {
+    }
+
+    private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {
+        //如果处理文本失败，则使用原始文本
+        //如果有颜色码，则使用该颜色渲染，否则保留颜色码
+
+        val color = if (getSettings().others.renderLocalisationColorfulText) element.colorConfig?.color else null
+
+        renderWithColorTo(color, context) {
+            val resolved = element.reference?.resolve()
+                ?: element.scriptedVariableReference?.reference?.resolve()
+            when {
+                resolved is ParadoxLocalisationProperty -> {
+                    if (ParadoxLocalisationManager.isSpecialLocalisation(resolved)) {
                         context.builder.append("<code>")
                         renderElementText(element, context)
                         context.builder.append("</code>")
                     } else {
-                        context.guardStack.addLast(resolvedName)
-                        try {
-                            renderTo(resolved, context)
-                        } finally {
-                            context.guardStack.removeLast()
+                        val resolvedName = resolved.name
+                        if (context.guardStack.contains(resolvedName)) {
+                            context.builder.append("<code>")
+                            renderElementText(element, context)
+                            context.builder.append("</code>")
+                        } else {
+                            context.guardStack.addLast(resolvedName)
+                            try {
+                                renderTo(resolved, context)
+                            } finally {
+                                context.guardStack.removeLast()
+                            }
                         }
                     }
                 }
-            }
-            resolved is CwtProperty -> {
-                context.builder.append(resolved.value?.escapeXml() ?: PlsConstants.Strings.unresolved)
-            }
-            resolved is ParadoxScriptScriptedVariable && resolved.value != null -> {
-                context.builder.append(resolved.value?.escapeXml() ?: PlsConstants.Strings.unresolved)
-            }
-            else -> {
-                context.builder.append("<code>")
-                context.builder.append(element.text.escapeXml())
-                context.builder.append("</code>")
+                resolved is CwtProperty -> {
+                    context.builder.append(resolved.value?.escapeXml() ?: PlsConstants.Strings.unresolved)
+                }
+                resolved is ParadoxScriptScriptedVariable && resolved.value != null -> {
+                    context.builder.append(resolved.value?.escapeXml() ?: PlsConstants.Strings.unresolved)
+                }
+                else -> {
+                    context.builder.append("<code>")
+                    context.builder.append(element.text.escapeXml())
+                    context.builder.append("</code>")
+                }
             }
         }
-        if (color != null) {
-            context.builder.append("</span>")
+    }
+
+    private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
+        //如果处理文本失败，则使用原始文本
+        //如果有颜色码，则使用该颜色渲染，否则保留颜色码
+
+        val color = if (getSettings().others.renderLocalisationColorfulText) element.colorConfig?.color else null
+        renderWithColorTo(color, context) r@{
+            //显示解析后的概念文本
+            run {
+                val concept = element.concept ?: return@run
+                return@r renderConceptTo(concept, context)
+            }
+
+            //直接显示命令文本，适用对应的颜色高亮
+            //（仅限快速文档）点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc），但不显示为超链接
+            context.builder.append("<code>")
+            element.forEachChild { c ->
+                if (c is ParadoxLocalisationCommandText) {
+                    renderElementText(c, context)
+                } else {
+                    context.builder.append(c.text.escapeXml())
+                }
+            }
+            context.builder.append("</code>")
         }
     }
 
@@ -147,79 +201,44 @@ object ParadoxLocalisationTextHtmlRenderer {
         context.builder.appendImgTag(iconUrl, iconWidth, iconHeight)
     }
 
-    private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
-        //显示解析后的概念文本
-        run r1@{
-            val concept = element.concept ?: return@r1
-            val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
-            val conceptColor = EditorColorsManager.getInstance().globalScheme.getAttributes(conceptAttributesKey).foregroundColor
-            val (referenceElement, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(concept)
-            val richTextList = when {
-                textElement is ParadoxLocalisationConceptText -> textElement.richTextList
-                textElement is ParadoxLocalisationProperty -> textElement.propertyValue?.richTextList
-                else -> null
+    private fun renderConceptTo(element: ParadoxLocalisationConcept, context: Context) {
+        val concept = element
+        val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
+        val conceptColor = EditorColorsManager.getInstance().globalScheme.getAttributes(conceptAttributesKey).foregroundColor
+        val (referenceElement, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(concept)
+        val richTextList = when {
+            textElement is ParadoxLocalisationConceptText -> textElement.richTextList
+            textElement is ParadoxLocalisationProperty -> textElement.propertyValue?.richTextList
+            else -> null
+        }
+        run {
+            if (richTextList == null) return@run
+            val newBuilder = DocumentationBuilder()
+            val oldBuilder = context.builder
+            context.builder = newBuilder
+            for (v in richTextList) {
+                renderTo(v, context)
             }
-            run r2@{
-                if (richTextList == null) return@r2
-                val newBuilder = DocumentationBuilder()
-                val oldBuilder = context.builder
-                context.builder = newBuilder
-                for (v in richTextList) {
-                    renderTo(v, context)
-                }
-                context.builder = oldBuilder
-                val conceptText = newBuilder.toString()
-                if (referenceElement !is ParadoxScriptDefinitionElement) return@r2
-                val definitionInfo = referenceElement.definitionInfo ?: return@r2
-                val definitionName = definitionInfo.name.orAnonymous()
-                val definitionType = definitionInfo.type
-                if (conceptColor != null) {
-                    context.builder.append("<span style=\"color: #").append(ColorUtil.toHex(conceptColor, true)).append("\">")
-                }
-                context.builder.appendDefinitionLink(context.gameType.orDefault(), definitionName, definitionType, context.element, conceptText)
-                if (conceptColor != null) {
-                    context.builder.append("</span>")
-                }
-                return
-            }
+            context.builder = oldBuilder
+            val conceptText = newBuilder.toString()
+            if (referenceElement !is ParadoxScriptDefinitionElement) return@run
+            val definitionInfo = referenceElement.definitionInfo ?: return@run
+            val definitionName = definitionInfo.name.orAnonymous()
+            val definitionType = definitionInfo.type
             if (conceptColor != null) {
                 context.builder.append("<span style=\"color: #").append(ColorUtil.toHex(conceptColor, true)).append("\">")
             }
-            context.builder.append(concept.name)
+            context.builder.appendDefinitionLink(context.gameType.orDefault(), definitionName, definitionType, context.element, conceptText)
             if (conceptColor != null) {
                 context.builder.append("</span>")
             }
             return
         }
-
-        //直接显示命令文本，适用对应的颜色高亮
-        //（仅限快速文档）点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc），但不显示为超链接
-        context.builder.append("<code>")
-        element.forEachChild { c ->
-            if (c is ParadoxLocalisationCommandText) {
-                renderElementText(c, context)
-            } else {
-                context.builder.append(c.text.escapeXml())
-            }
+        if (conceptColor != null) {
+            context.builder.append("<span style=\"color: #").append(ColorUtil.toHex(conceptColor, true)).append("\">")
         }
-        context.builder.append("</code>")
-    }
-
-    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context) {
-        //如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
-        val richTextList = element.richTextList
-        if (richTextList.isEmpty()) return
-        val color = if (getSettings().others.renderLocalisationColorfulText) element.colorConfig?.color else null
-        if (color != null) {
-            context.colorStack.addLast(color)
-            context.builder.append("<span style=\"color: #").append(ColorUtil.toHex(color, true)).append("\">")
-        }
-        for (richText in richTextList) {
-            ProgressManager.checkCanceled()
-            renderTo(richText, context)
-        }
-        if (color != null) {
-            context.colorStack.removeLast()
+        context.builder.append(concept.name)
+        if (conceptColor != null) {
             context.builder.append("</span>")
         }
     }

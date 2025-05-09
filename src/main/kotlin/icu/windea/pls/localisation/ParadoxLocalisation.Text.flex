@@ -6,7 +6,8 @@ import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 
-import static com.intellij.psi.TokenType.*;
+import static com.intellij.psi.TokenType.BAD_CHARACTER;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
 import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
@@ -71,11 +72,12 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
 
     private IElementType checkReference() {
-        yypushback(yylength() - 1);
         if (isReference()) {
+            yypushback(yylength() - 1);
             yybegin(IN_REFERENCE);
             return PROPERTY_REFERENCE_START;
         } else {
+            yypushback(yylength() - 1);
             beginNextState();
             return STRING_TOKEN;
         }
@@ -83,28 +85,30 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
     private boolean isColorfulText() {
         if (yylength() <= 1) return false;
-        return isExactLetter(yycharat(1));
+        return isExactWord(yycharat(1)); // exact letter after prefix
     }
 
     private IElementType checkColorfulText() {
-        yypushback(yylength() - 1);
         if (isColorfulText()) {
+            yypushback(yylength() - 1);
             yybegin(IN_COLOR_ID);
             return COLORFUL_TEXT_START;
         } else {
-            beginNextStateByDepth();
-            return STRING_TOKEN;
+            // skip into IN_COLORFUL_TEXT, rather than fallback
+            yypushback(yylength() - 1);
+            yybegin(IN_COLORFUL_TEXT);
+            return COLORFUL_TEXT_START;
         }
     }
 
     private boolean isCommand() {
         if (yylength() <= 1) return false;
-        return yycharat(yylength() - 1) == ']';
+        return yycharat(yylength() - 1) != '['; // not double quote
     }
 
     private IElementType checkCommand() {
-        yypushback(yylength() - 1);
         if (isCommand()) {
+            yypushback(yylength() - 1);
             yybegin(IN_COMMAND);
             return COMMAND_START;
         } else {
@@ -116,18 +120,34 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     private boolean isIcon() {
         if (yylength() <= 1) return false;
         char c = yycharat(1);
-        return isExactLetter(c) || isExactDigit(c) || c == '_' || c == '$';
+        return c == '$' || isExactWord(c);
     }
 
     private IElementType checkIcon() {
-        yypushback(yylength() - 1);
         if (isIcon()) {
+            yypushback(yylength() - 1);
             yybegin(IN_ICON);
             return ICON_START;
         } else {
+            yypushback(yylength() - 1);
             beginNextState();
             return STRING_TOKEN;
         }
+    }
+
+    private IElementType checkBlank() {
+        if (yystate() != YYINITIAL && yystate() != IN_COLORFUL_TEXT) {
+            return WHITE_SPACE;
+        }
+        return STRING_TOKEN;
+    }
+
+    private IElementType checkConceptTextEnd() {
+        if(yystate() == IN_CONCEPT_TEXT) {
+            beginNextStateByDepth();
+            return COMMAND_END;
+        }
+        return STRING_TOKEN;
     }
 
     private boolean isConceptQuoted() {
@@ -147,40 +167,43 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 %s CHECK_REFERENCE
 %s IN_REFERENCE
-%s IN_REFERENCE_PARAMETER_TOKEN
+%s IN_REFERENCE_ARGUMENT
 
 %s IN_SCRIPTED_VARIABLE_REFERENCE
 
 %s CHECK_COMMAND
 %s IN_COMMAND
 %s IN_COMMAND_TEXT
+%s IN_COMMAND_ARGUMENT
 
 %s CHECK_ICON
 %s IN_ICON
-%s IN_ICON_FRAME
+%s IN_ICON_ARGUMENT
 
 %s IN_CONCEPT_NAME
 %s IN_CONCEPT_TEXT
 
 %unicode
 
-STRING_TOKEN=.+ // fallback
+BLANK=\s+
+
+PLAIN_TEXT_TOKEN=[^\s§\$\[\]£}][^§\$\[\]£]*
 
 COLORFUL_TEXT_CHECK=§.?
-COLOR_TOKEN=[a-zA-Z0-9]
-
-REFERENCE_CHECK=\$\S*\$? //no blank in $...$
+COLOR_TOKEN=\w
+REFERENCE_CHECK=\$(\S*\$|.?) //no blank in $...$
 REFERENCE_TOKEN=[a-zA-Z0-9_.\-']+
-REFERENCE_PARAMETER_TOKEN=[^\"$£§\[\r\n\\]+
+REFERENCE_ARGUMENT_TOKEN=[^\"§\$\[\]\r\n\\]+
 
 SCRIPTED_VARIABLE_TOKEN=[a-zA-Z_][a-zA-Z0-9_]*
 
 COMMAND_CHECK=\[.?
-COMMAND_TEXT_TOKEN=[^\r\n\[\]]+
+COMMAND_TEXT_TOKEN=[^\r\n\[\]\|]+
+COMMAND_ARGUMENT_TOKEN=[^\"§\$\[\]\r\n\\]+
 
 ICON_CHECK=£.?
 ICON_TOKEN=[a-zA-Z0-9\-_\\/]+
-ICON_FRAME=[1-9][0-9]* // positive integer
+ICON_ARGUMENT_TOKEN=[1-9][0-9]* // positive integer
 
 CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
 
@@ -192,6 +215,9 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
     "£" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_ICON); }
+    {PLAIN_TEXT_TOKEN} { return STRING_TOKEN; }
+    {BLANK} { return checkBlank(); }
+    "]" { return checkConceptTextEnd(); }
 }
 
 // localisation colorful text rules
@@ -217,25 +243,25 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
-    "$" { setNextState(yystate()); return PROPERTY_REFERENCE_END; }
-    "|" { yybegin(IN_REFERENCE_PARAMETER_TOKEN); return PIPE; }
+    "$" { beginNextState(); return PROPERTY_REFERENCE_END; }
+    "|" { yybegin(IN_REFERENCE_ARGUMENT); return PIPE; }
     "@" { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE); return AT; }
     {REFERENCE_TOKEN} { return PROPERTY_REFERENCE_TOKEN; }
 }
-<IN_REFERENCE_PARAMETER_TOKEN>{
+<IN_REFERENCE_ARGUMENT>{
     "§" { setNextStateByDepth(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
     "$" { beginNextState(); return PROPERTY_REFERENCE_END; }
-    {REFERENCE_PARAMETER_TOKEN} { return PROPERTY_REFERENCE_PARAMETER_TOKEN; }
+    {REFERENCE_ARGUMENT_TOKEN} { return PROPERTY_REFERENCE_ARGUMENT_TOKEN; }
 }
 
 // scripted variable reference rules (in references)
 
 <IN_SCRIPTED_VARIABLE_REFERENCE>{
     "$" { beginNextState(); return PROPERTY_REFERENCE_END; }
-    "|" { yybegin(IN_REFERENCE_PARAMETER_TOKEN); return PIPE; }
+    "|" { yybegin(IN_REFERENCE_ARGUMENT); return PIPE; }
     {SCRIPTED_VARIABLE_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
 }
 
@@ -260,7 +286,16 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
 
     "]" { beginNextState(); return COMMAND_END; }
+    "|" { yybegin(IN_COMMAND_ARGUMENT); return PIPE; }
     {COMMAND_TEXT_TOKEN} { return COMMAND_TEXT_TOKEN; }
+}
+<IN_COMMAND_ARGUMENT>{
+    "§" { setNextStateByDepth(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
+    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+
+    "]" { beginNextState(); return COMMAND_END; }
+    {COMMAND_ARGUMENT_TOKEN} { return COMMAND_ARGUMENT_TOKEN; }
 }
 
 // localisation icon rules
@@ -275,17 +310,17 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
     "£" { beginNextState(); return ICON_END; }
-    "|" { yybegin(IN_ICON_FRAME); return PIPE; }
+    "|" { yybegin(IN_ICON_ARGUMENT); return PIPE; }
     {ICON_TOKEN} { return ICON_TOKEN; }
 }
-<IN_ICON_FRAME>{
+<IN_ICON_ARGUMENT>{
     "§" { setNextStateByDepth(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
     "£" { beginNextState(); return ICON_END; }
-    {ICON_FRAME} { return ICON_FRAME; }
+    {ICON_ARGUMENT_TOKEN} { return ICON_ARGUMENT_TOKEN; }
 }
 
 // [stellaris] localisation concept rules (as special commands)
@@ -299,9 +334,6 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
     "'" { return RIGHT_SINGLE_QUOTE; }
     "," { yybegin(IN_CONCEPT_TEXT); return COMMA; }
     {CONCEPT_NAME_TOKEN} { return CONCEPT_NAME_TOKEN; }
-}
-<IN_CONCEPT_TEXT> {
-    "]" { beginNextStateByDepth(); return COMMAND_END; }
 }
 
 // [ck3, vic3] localisation formatting rules

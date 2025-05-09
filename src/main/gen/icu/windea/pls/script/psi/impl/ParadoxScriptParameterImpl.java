@@ -12,6 +12,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.lang.references.ParadoxParameterPsiReference;
@@ -34,26 +35,27 @@ public class ParadoxScriptParameterImpl extends ASTWrapperPsiElement implements 
   }
 
   @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
+  public @Nullable PsiElement getIdElement() {
+    return ParadoxScriptPsiImplUtil.getIdElement(this);
+  }
+
+  @Override
+  public @NotNull Icon getIcon(@IconFlags int flags) {
     return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  @Nullable
-  public String getName() {
+  public @Nullable String getName() {
     return ParadoxScriptPsiImplUtil.getName(this);
   }
 
   @Override
-  @NotNull
-  public ParadoxScriptParameter setName(@NotNull String name) {
+  public @NotNull ParadoxScriptParameter setName(@NotNull String name) {
     return ParadoxScriptPsiImplUtil.setName(this, name);
   }
 
   @Override
-  @Nullable
-  public String getValue() {
+  public @Nullable String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
   }
 
@@ -63,32 +65,27 @@ public class ParadoxScriptParameterImpl extends ASTWrapperPsiElement implements 
   }
 
   @Override
-  @Nullable
-  public String getDefaultValue() {
+  public @Nullable String getDefaultValue() {
     return ParadoxScriptPsiImplUtil.getDefaultValue(this);
   }
 
   @Override
-  @Nullable
-  public ParadoxParameterPsiReference getReference() {
+  public @Nullable ParadoxParameterPsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 
   @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
+  public @NotNull ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  @NotNull
-  public GlobalSearchScope getResolveScope() {
+  public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  @NotNull
-  public SearchScope getUseScope() {
+  public @NotNull SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 

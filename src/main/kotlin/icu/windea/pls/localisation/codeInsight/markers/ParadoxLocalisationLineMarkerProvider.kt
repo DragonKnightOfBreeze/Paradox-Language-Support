@@ -39,7 +39,7 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
                 SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll()
             }
         }
-        val locationElement = element.propertyKey.propertyKeyId
+        val locationElement = element.propertyKey.idElement
         val lineMarkerInfo = createNavigationGutterIconBuilder(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltip)
             .setPopupTitle(PlsBundle.message("localisation.gutterIcon.localisation.title"))

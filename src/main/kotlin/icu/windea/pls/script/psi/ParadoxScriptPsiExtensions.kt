@@ -1,5 +1,6 @@
 package icu.windea.pls.script.psi
 
+import cn.yiiguxing.plugin.translate.util.elementType
 import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -46,10 +47,6 @@ fun ParadoxScriptExpressionElement.isExpression(): Boolean {
  */
 fun ParadoxScriptExpressionElement.isValidExpression(matchOptions: Int = ParadoxExpressionMatcher.Options.Default): Boolean {
     return ParadoxExpressionManager.getConfigs(this, orDefault = false, matchOptions = matchOptions).size == 1
-}
-
-fun PsiElement.isExpressionOrMemberContext(): Boolean {
-    return this is ParadoxScriptDefinitionElement || this is ParadoxScriptBlockElement || this is ParadoxScriptParameterCondition
 }
 
 fun ParadoxScriptExpressionElement.isResolvableExpression(): Boolean {
