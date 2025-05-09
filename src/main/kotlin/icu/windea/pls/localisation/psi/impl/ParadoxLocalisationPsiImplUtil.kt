@@ -10,6 +10,7 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.*
@@ -19,6 +20,7 @@ import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.references.*
 import icu.windea.pls.model.*
+import org.jetbrains.annotations.Unmodifiable
 import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -145,6 +147,15 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationPropertyKey, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.LocalisationProperty
+    }
+
+    //endregion
+
+    //region ParadoxLocalisationPropertyValue
+
+    @JvmStatic
+    fun getRichTextList(element: ParadoxLocalisationPropertyValue): List<ParadoxLocalisationRichText> {
+        return PsiTreeUtil.getChildrenOfTypeAsList(element, ParadoxLocalisationRichText::class.java)
     }
 
     //endregion

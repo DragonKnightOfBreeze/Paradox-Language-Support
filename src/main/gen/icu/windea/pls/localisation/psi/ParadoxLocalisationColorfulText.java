@@ -5,6 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.localisation.references.ParadoxLocalisationColorPsiReference;
@@ -14,22 +15,16 @@ public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRich
   @NotNull
   List<ParadoxLocalisationRichText> getRichTextList();
 
-  @Nullable
-  String getName();
+  @Nullable String getName();
 
-  @NotNull
-  ParadoxLocalisationColorfulText setName(@NotNull String name);
+  @NotNull ParadoxLocalisationColorfulText setName(@NotNull String name);
 
-  @Nullable
-  ParadoxLocalisationColorPsiReference getReference();
+  @Nullable ParadoxLocalisationColorPsiReference getReference();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }
