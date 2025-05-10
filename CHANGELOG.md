@@ -9,19 +9,19 @@
 * [ ] 允许为同一个模组配置多个模组依赖列表 / Allow to configure multiple mod dependency lists for the same mod
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
 
-## 1.4.0 检查
+## 1.4.0 TODO
 
 * [ ] 验证：本地化的HTML渲染和内嵌提示渲染，在重构代码后是否仍然正常工作
 * [X] 修复：本地化图标如果对应一个sprite，无法正常适用用法高亮
 * [X] 修复：本地化命令中的动态值无法点击查找使用，无法正常适用用法高亮
 * [X] 优化：InlayHintsProvider 中的 iconHeightLimit 的默认值改为36
-* [X] 优化：InlayHintsProvider 中的 iconHeightLimit 的默认值改为36
-* [ ] 优化：兼容job作为本地化连接的情况
+* [X] 优化：兼容job作为本地化连接的情况
+* [X] 优化：在必要时先尝试获取图标的原始高度
 
 ## 1.4.0
 
-* [X] (HIDDEN) 通过懒解析CWT文件中的选项注释来尝试优化性能 / Try to optimize performance by lazily parsing option comments in CWT files
-* [X] (HIDDEN) 通过懒解析本地化文件中的本地化文本来尝试优化性能与提高代码灵活性 / Try to optimize performance and improve code flexibility by lazily parsing localisation text in localisation files
+* [X] 通过懒解析CWT文件中的选项注释来尝试优化性能 / Try to optimize performance by lazily parsing option comments in CWT files
+* [X] 通过懒解析本地化文件中的本地化文本来尝试优化性能与提高代码灵活性 / Try to optimize performance and improve code flexibility by lazily parsing localisation text in localisation files
 * [X] #94 优化CWT文件解析器的性能 / Optimize performance for CWT file parser
 * [ ] #137 [VIC3/CK3] Support special localizations - Basic support
 * [X] #140 修复与本地化命令连接相关的一些问题（规则解析、代码导航等） / Fixed some problems about localisation command links (Config resolving, code navigation, etc.) 

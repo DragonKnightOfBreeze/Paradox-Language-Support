@@ -40,6 +40,10 @@ operator fun Color.component2() = green
 operator fun Color.component3() = blue
 operator fun Color.component4() = alpha
 
+val Icon.originalHeight: Int get() = this.toImage().getHeight(null).takeIf { it != -1 } ?: this.iconHeight
+
+val Icon.originalWidth: Int get() = this.toImage().getWidth(null).takeIf { it != -1 } ?: this.iconWidth
+
 fun Icon.resize(width: Int, height: Int): Icon {
     return IconUtil.toSize(this, width, height)
 }
@@ -71,11 +75,11 @@ fun <T : JComponent> T.withLocation(x: Int, y: Int): T {
     return this
 }
 
-fun <T: JComponent> T.registerClickListener(clickListener: ClickListener, allowDragWhileClicking: Boolean = false) {
+fun <T : JComponent> T.registerClickListener(clickListener: ClickListener, allowDragWhileClicking: Boolean = false) {
     clickListener.installOn(this, allowDragWhileClicking)
 }
 
-fun <T: JComponent> T.registerCopyProvider(copyProvider: CopyProvider) {
+fun <T : JComponent> T.registerCopyProvider(copyProvider: CopyProvider) {
     DataManager.registerDataProvider(this) { dataId ->
         if (PlatformDataKeys.COPY_PROVIDER.`is`(dataId)) copyProvider else null
     }
