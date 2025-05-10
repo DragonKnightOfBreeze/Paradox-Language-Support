@@ -15,7 +15,7 @@
 * [ ] #137 [VIC3/CK3] Support special localizations - Basic support
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-# 1.3.37
+## 1.3.37
 
 * [X] 完善Stellaris 4.0的CWT规则文件 / Optimize CWT config files for Stellaris 4.0
 * [X] #139 修复某些情况下无法正常渲染与预览DDS图片的问题 / Fixed a problem that DDS images could not be properly rendered and previewed in some situations
