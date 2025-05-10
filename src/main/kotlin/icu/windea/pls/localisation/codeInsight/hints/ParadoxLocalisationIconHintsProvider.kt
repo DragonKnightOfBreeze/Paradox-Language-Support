@@ -22,7 +22,7 @@ import javax.swing.*
  */
 class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Settings>() {
     data class Settings(
-        var iconHeightLimit: Int = 32
+        var iconHeightLimit: Int = 36
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationIconHintsSettingsKey")

@@ -26,7 +26,7 @@ import javax.swing.*
 class ParadoxDynamicValueLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = 30,
-        var iconHeightLimit: Int = 32
+        var iconHeightLimit: Int = 36
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxDynamicValueLocalizedNameHintsSettingsKey")

@@ -15,7 +15,8 @@
 * [X] 修复：本地化图标如果对应一个sprite，无法正常适用用法高亮
 * [X] 修复：本地化命令中的动态值无法点击查找使用，无法正常适用用法高亮
 * [X] 优化：InlayHintsProvider 中的 iconHeightLimit 的默认值改为36
-* [X] 优化：兼容job作为本地化连接的情况
+* [X] 优化：InlayHintsProvider 中的 iconHeightLimit 的默认值改为36
+* [ ] 优化：兼容job作为本地化连接的情况
 
 ## 1.4.0
 

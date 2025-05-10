@@ -25,7 +25,7 @@ import javax.swing.*
  */
 class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
-        var iconHeightLimit: Int = 32
+        var iconHeightLimit: Int = 36
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxModifierIconHintsSettingsKey")
