@@ -100,8 +100,9 @@
     <scriptedVariableExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxBaseScriptedVariableExtendedDocumentationProvider" order="last"/>
 
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxBaseDefinitionExtendedDocumentationProvider" order="last"/>
-    <definitionExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxOnActionExtendedDocumentationProvider"/>
     <definitionExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxGameRuleExtendedDocumentationProvider"/>
+    <definitionExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxOnActionExtendedDocumentationProvider"/>
+    <definitionExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxTextColorExtendedDocumentationProvider"/>
 
     <parameterExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxBaseParameterExtendedDocumentationProvider" order="last"/>
 

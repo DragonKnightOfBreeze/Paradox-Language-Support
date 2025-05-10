@@ -13,19 +13,19 @@
 * [X] (HIDDEN) 通过懒解析本地化文件中的本地化文本来尝试优化性能与提高代码灵活性 / Try to optimize performance and improve code flexibility by lazily parsing localisation text in localisation files
 * [X] #94 优化CWT文件解析器的性能 / Optimize performance for CWT file parser
 * [ ] #137 [VIC3/CK3] Support special localizations - Basic support
-* [X] 修复无法显示text color的装订线图标（指示对应的颜色）的问题 / Fixed a problem that cannot show the gutter icon (implies corresponding color) for text colors
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 TODO:
 
 * [ ] 验证本地化的HTML渲染和内嵌提示渲染，在重构代码后是否仍然正常工作
 
-# 1.3.36
+# 1.3.37
 
 * [X] 完善Stellaris 4.0的CWT规则文件 / Optimize CWT config files for Stellaris 4.0
 * [X] #139 修复某些情况下无法正常渲染与预览DDS图片的问题 / Fixed a problem that DDS images could not be properly rendered and previewed in some situations
 * [X] 可以分别配置是否启用内置、全局本地、项目本地的规则分组 / Allow to configure whether to enable built-in, global-local, and project-local config groups separately
-* [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
+* [X] 修复无法显示text color的装订线图标（指示对应的颜色）的问题 / Fixed a problem that cannot show the gutter icon (implies corresponding color) for text colors
+* [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.36
 

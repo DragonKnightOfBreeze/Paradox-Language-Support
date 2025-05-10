@@ -5,6 +5,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
@@ -44,5 +45,16 @@ class ParadoxOnActionExtendedDocumentationProvider : ParadoxDefinitionExtendedDo
         val config = configGroup.extendedOnActions.findFromPattern(definitionInfo.name, definition, configGroup) ?: return null
         val documentation = config.config.documentation?.orNull()
         return documentation
+    }
+}
+
+class ParadoxTextColorExtendedDocumentationProvider : ParadoxDefinitionExtendedDocumentationProvider {
+    override fun getDocumentationContent(definition: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo): String? {
+        val definitionName = definitionInfo.name
+        if (definitionName.isEmpty()) return null
+        if (definitionName.isParameterized()) return null
+        if (definitionInfo.type != "textcolor") return null
+        val info = ParadoxTextColorManager.getInfo(definition) ?: return null
+        return info.textWithColor
     }
 }
