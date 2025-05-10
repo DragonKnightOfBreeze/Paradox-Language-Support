@@ -2,7 +2,10 @@
 
 ## PLANNED
 
-* [ ] 提供对**魔法注释**的初步支持（可以用来生成脚本片段） / Provide initial support for **Magic Comments** (Can be used to generate script snippets)
+* [ ] 提供代码检查，用于高亮本地化文本中可能的格式错误（例如多余的`!`） / Provide the code inspection to highlight possible format errors in loc text (such as redundant `!`) 
+* [ ] 提供对魔法注释的初步支持 / Provide initial support for magic Comments
+* [ ] 提供用于生成并修补脚本的魔法注释，实现相关功能 / Provide magic comments to generate and patch scripts, implement related features
+* [ ] 提供用于切面式批量修补脚本的魔法注释，实现相关功能 / Provide magic comments to batch patch scripts in aop style, implement related features
 * [ ] 允许为同一个模组配置多个模组依赖列表 / Allow to configure multiple mod dependency lists for the same mod
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
 * [ ] #137 [VIC3/CK3] Support special localizations
