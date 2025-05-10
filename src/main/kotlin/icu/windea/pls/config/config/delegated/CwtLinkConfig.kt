@@ -119,4 +119,8 @@ private class CwtLinkConfigImpl(
 ) : UserDataHolderBase(), CwtLinkConfig {
     //not much memory will be used, so cached
     override val dataSourceExpression: CwtDataExpression? = dataSource?.let { CwtDataExpression.resolve(it, false) }
+
+    override fun toString(): String {
+        return "CwtLinkConfigImpl(name='$name')"
+    }
 }

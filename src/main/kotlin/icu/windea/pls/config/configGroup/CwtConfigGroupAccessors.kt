@@ -151,10 +151,6 @@ val CwtConfigGroup.aliasKeysGroupNoConst: MutableMap<String, MutableSet<String>>
 @Tags(Tag.Computed)
 val CwtConfigGroup.linksOfVariable: MutableList<CwtLinkConfig>
     by createKey(CwtConfigGroup.Keys) { mutableListOf() }
-//事件目标对应的本地化连接规则
-@Tags(Tag.Computed)
-val CwtConfigGroup.localisationLinksOfEventTarget: MutableList<CwtLinkConfig>
-    by createKey(CwtConfigGroup.Keys) { mutableListOf() }
 
 //必定支持作用域的CWT别名规则
 @Tags(Tag.Computed)

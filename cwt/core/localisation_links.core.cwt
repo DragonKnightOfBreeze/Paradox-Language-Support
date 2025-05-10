@@ -1,13 +1,13 @@
 localisation_links = {
     event_target = {
-        from_data = yes
         type = scope
+        from_data = yes
         prefix = event_target:
         data_source = value[event_target]
     }
     global_event_target = {
-        from_data = yes
         type = scope
+        from_data = yes
         prefix = event_target:
         data_source = value[global_event_target]
     }

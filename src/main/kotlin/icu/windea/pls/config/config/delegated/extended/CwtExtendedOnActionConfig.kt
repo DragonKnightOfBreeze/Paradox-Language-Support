@@ -33,4 +33,8 @@ private class CwtExtendedOnActionConfigImpl(
     override val config: CwtMemberConfig<*>,
     override val name: String,
     override val eventType: String
-) : UserDataHolderBase(), CwtExtendedOnActionConfig
+) : UserDataHolderBase(), CwtExtendedOnActionConfig {
+    override fun toString(): String {
+        return "CwtExtendedOnActionConfigImpl(name='$name')"
+    }
+}

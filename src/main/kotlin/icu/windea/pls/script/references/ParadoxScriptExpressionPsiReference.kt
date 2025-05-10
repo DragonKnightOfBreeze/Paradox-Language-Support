@@ -1,5 +1,6 @@
 package icu.windea.pls.script.references
 
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
@@ -10,9 +11,10 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.*
-import icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport
+import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
 import icu.windea.pls.script.psi.*
 
 /**
@@ -64,7 +66,12 @@ class ParadoxScriptExpressionPsiReference(
     }
 
     override fun getReferences(): Array<out PsiReference>? {
-        return ParadoxExpressionManager.getReferences(element, rangeInElement, config, config.expression, isKey)
+        ProgressManager.checkCanceled()
+        if (config.expression == null) return null
+        val expressionText = getExpressionText(element, rangeInElement)
+
+        val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expressionText, config, isKey)
+        return result.orNull()
     }
 
     //缓存解析结果以优化性能
@@ -91,12 +98,12 @@ class ParadoxScriptExpressionPsiReference(
 
     private fun doResolve(): PsiElement? {
         //根据对应的expression进行解析
-        return ParadoxExpressionManager.resolveExpression(element, rangeInElement, config, config.expression, isKey)
+        return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.expression, isKey)
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         //根据对应的expression进行解析
-        return ParadoxExpressionManager.multiResolveExpression(element, rangeInElement, config, config.expression, isKey)
+        return ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.expression, isKey)
             .mapToArray { PsiElementResolveResult(it) }
     }
 }

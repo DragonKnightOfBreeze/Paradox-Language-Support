@@ -1,20 +1,20 @@
 links = {
+    ###Event target
     event_target = {
-        desc = "Event target"
         from_data = yes
         type = scope
         prefix = event_target:
         data_source = value[event_target]
     }
+    ### Global event target
     global_event_target = {
-        desc = "Global event target"
         from_data = yes
         type = scope
         prefix = event_target:
         data_source = value[global_event_target]
     }
+    ###Hidden
     hidden = {
-        desc = "Hidden"
         from_data = yes
         type = scope
         prefix = hidden:

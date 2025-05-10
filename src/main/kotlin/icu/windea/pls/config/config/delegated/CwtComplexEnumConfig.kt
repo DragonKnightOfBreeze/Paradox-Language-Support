@@ -108,4 +108,8 @@ private class CwtComplexEnumConfigImpl(
             }
         }
     }
+
+    override fun toString(): String {
+        return "CwtComplexEnumConfigImpl(name='$name')"
+    }
 }

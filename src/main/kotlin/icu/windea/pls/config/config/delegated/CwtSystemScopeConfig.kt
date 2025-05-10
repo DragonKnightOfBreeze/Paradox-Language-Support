@@ -42,6 +42,6 @@ private class CwtSystemScopeConfigImpl(
     }
 
     override fun toString(): String {
-        return description.ifEmpty { id }
+        return "CwtSystemScopeConfigImpl(name='$name')"
     }
 }

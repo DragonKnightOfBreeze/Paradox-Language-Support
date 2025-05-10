@@ -145,7 +145,7 @@ object CwtLocationExpressionManager {
             if (valueElement.text.isParameterized()) {
                 return CwtImageLocationExpression.ResolveResult("", null, null, PlsBundle.message("parameterized"))
             }
-            val resolved = ParadoxExpressionManager.resolveExpression(valueElement, null, config, config.expression, false)
+            val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, config.expression, false)
             when {
                 //由filePath解析为图片文件
                 resolved is PsiFile && resolved.fileType == DdsFileType -> {
@@ -250,7 +250,7 @@ object CwtLocationExpressionManager {
             if (valueElement.text.isParameterized()) {
                 return CwtImageLocationExpression.ResolveAllResult("", emptySet(), null, PlsBundle.message("parameterized"))
             }
-            val resolved = ParadoxExpressionManager.resolveExpression(valueElement, null, config, config.expression, false)
+            val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, config.expression, false)
             when {
                 //由filePath解析为图片文件
                 resolved is PsiFile && resolved.fileType == DdsFileType -> {

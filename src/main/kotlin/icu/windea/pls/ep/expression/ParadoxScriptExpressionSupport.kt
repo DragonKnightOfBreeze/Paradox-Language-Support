@@ -12,6 +12,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.script.psi.*
 
 /**
@@ -25,19 +26,19 @@ import icu.windea.pls.script.psi.*
 interface ParadoxScriptExpressionSupport {
     fun supports(config: CwtConfig<*>): Boolean
 
-    fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
 
     }
 
-    fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+    fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
         return null
     }
 
-    fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
+    fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
         return resolve(element, rangeInElement, expressionText, config, isKey, false).toSingletonSetOrEmpty()
     }
 
-    fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {
+    fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {
         return null
     }
 
@@ -50,7 +51,7 @@ interface ParadoxScriptExpressionSupport {
 
         //这里需要尝试避免SOE
 
-        fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+        fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
             val gameType = config.configGroup.gameType
             withRecursionGuard("ParadoxScriptExpressionSupport.INSTANCE.annotate") {
                 EP_NAME.extensionList.forEach f@{ ep ->
@@ -63,7 +64,7 @@ interface ParadoxScriptExpressionSupport {
             }
         }
 
-        fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
+        fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null, exact: Boolean = true): PsiElement? {
             val gameType = config.configGroup.gameType
             withRecursionGuard("ParadoxScriptExpressionSupport.INSTANCE.resolve") {
                 EP_NAME.extensionList.forEach f@{ ep ->
@@ -78,7 +79,7 @@ interface ParadoxScriptExpressionSupport {
             return null
         }
 
-        fun multiResolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
+        fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
             val gameType = config.configGroup.gameType
             withRecursionGuard("ParadoxScriptExpressionSupport.INSTANCE.multiResolve") {
                 EP_NAME.extensionList.forEach f@{ ep ->
@@ -93,7 +94,7 @@ interface ParadoxScriptExpressionSupport {
             return emptySet()
         }
 
-        fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {
+        fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {
             val gameType = config.configGroup.gameType
             withRecursionGuard("ParadoxScriptExpressionSupport.INSTANCE.getReferences") {
                 EP_NAME.extensionList.forEach f@{ ep ->

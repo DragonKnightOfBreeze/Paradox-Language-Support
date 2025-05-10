@@ -36,5 +36,9 @@ private class CwtExtendedGameRuleConfigImpl(
         if (config !is CwtPropertyConfig) return@lazy null
         CwtConfigManipulator.inlineSingleAlias(config) ?: config
     }
+
+    override fun toString(): String {
+        return "CwtExtendedGameRuleConfigImpl(name='$name')"
+    }
 }
 

@@ -71,4 +71,8 @@ private class CwtModifierConfigImpl(
             config.supportedScopes
         }
     }
+
+    override fun toString(): String {
+        return "CwtModifierConfigImpl(name='$name')"
+    }
 }

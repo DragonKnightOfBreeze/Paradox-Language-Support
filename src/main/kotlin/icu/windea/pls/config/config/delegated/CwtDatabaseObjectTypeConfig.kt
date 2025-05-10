@@ -43,4 +43,8 @@ private class CwtDatabaseObjectTypeConfigImpl(
     override val name: String,
     override val type: String,
     override val swapType: String?
-) : UserDataHolderBase(), CwtDatabaseObjectTypeConfig
+) : UserDataHolderBase(), CwtDatabaseObjectTypeConfig {
+    override fun toString(): String {
+        return "CwtDatabaseObjectTypeConfigImpl(name='$name')"
+    }
+}

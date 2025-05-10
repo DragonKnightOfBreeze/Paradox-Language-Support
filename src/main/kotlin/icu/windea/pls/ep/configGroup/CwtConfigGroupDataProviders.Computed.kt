@@ -54,8 +54,6 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         run {
             configGroup.linksOfVariable += configGroup.links.values
                 .filter { it.forValue() && it.fromData && it.name == "variable" }
-            configGroup.localisationLinksOfEventTarget += configGroup.localisationLinks.values
-                .filter { it.forScope() && it.fromData && it.prefix == "event_target:" }
         }
 
         //bind `categoryConfigMap` for modifier configs

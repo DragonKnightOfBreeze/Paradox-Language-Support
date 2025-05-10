@@ -8,15 +8,21 @@ import com.intellij.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.expression.complex.*
+import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.psi.*
 
 class ParadoxLocalisationCommandExpressionSupport : ParadoxLocalisationExpressionSupport {
-    override fun supports(element: ParadoxLocalisationExpressionElement): Boolean {
-        return element.isCommandExpression()
+    override fun supports(element: ParadoxExpressionElement): Boolean {
+        return when (element) {
+            is ParadoxScriptExpressionElement -> false //NOTE 1.4.0 - unnecessary to support yet
+            is ParadoxLocalisationExpressionElement -> element.isCommandExpression()
+            else -> false
+        }
     }
 
-    override fun annotate(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder) {
         val configGroup = getConfigGroup(element.project, selectGameType(element))
         val value = element.value
         val textRange = TextRange.create(0, value.length)
@@ -24,7 +30,7 @@ class ParadoxLocalisationCommandExpressionSupport : ParadoxLocalisationExpressio
         ParadoxExpressionManager.annotateComplexExpression(element, commandExpression, holder)
     }
 
-    override fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {
         val configGroup = getConfigGroup(element.project, selectGameType(element))
         val range = TextRange.create(0, expressionText.length)
         val commandExpression = ParadoxCommandExpression.resolve(expressionText, range, configGroup)
@@ -38,11 +44,15 @@ class ParadoxLocalisationCommandExpressionSupport : ParadoxLocalisationExpressio
 }
 
 class ParadoxLocalisationDatabaseObjectExpressionSupport : ParadoxLocalisationExpressionSupport {
-    override fun supports(element: ParadoxLocalisationExpressionElement): Boolean {
-        return element.isDatabaseObjectExpression()
+    override fun supports(element: ParadoxExpressionElement): Boolean {
+        return when (element) {
+            is ParadoxScriptExpressionElement -> false //NOTE 1.4.0 - unnecessary to support yet
+            is ParadoxLocalisationExpressionElement -> element.isDatabaseObjectExpression()
+            else -> false
+        }
     }
 
-    override fun annotate(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder) {
         val configGroup = getConfigGroup(element.project, selectGameType(element))
         val value = element.value
         val textRange = TextRange.create(0, value.length)
@@ -50,7 +60,7 @@ class ParadoxLocalisationDatabaseObjectExpressionSupport : ParadoxLocalisationEx
         ParadoxExpressionManager.annotateComplexExpression(element, databaseObjectExpression, holder)
     }
 
-    override fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {
         val configGroup = getConfigGroup(element.project, selectGameType(element))
         val range = TextRange.create(0, expressionText.length)
         val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(expressionText, range, configGroup)

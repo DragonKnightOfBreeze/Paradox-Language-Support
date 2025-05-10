@@ -7,14 +7,14 @@ import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.script.psi.*
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 
 class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
         return config.expression?.type == CwtDataTypes.Block
     }
 
-    override fun resolve(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
+    override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         return config.pointer.element
     }
 

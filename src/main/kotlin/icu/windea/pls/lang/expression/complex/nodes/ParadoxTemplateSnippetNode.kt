@@ -102,7 +102,7 @@ class ParadoxTemplateSnippetNode(
             if(config.expression.type in CwtDataTypeGroups.DynamicValue) {
                 return ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.expression, configGroup)
             }
-            return ParadoxExpressionManager.resolveExpression(element, rangeInElement, config, config.expression)
+            return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.expression)
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
@@ -112,7 +112,7 @@ class ParadoxTemplateSnippetNode(
                 return ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.expression, configGroup)
                     ?.let { arrayOf(PsiElementResolveResult(it)) } ?: ResolveResult.EMPTY_ARRAY
             }
-            return ParadoxExpressionManager.multiResolveExpression(element, rangeInElement, config, config.expression)
+            return ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.expression)
                 .mapToArray { PsiElementResolveResult(it) }
         }
     }

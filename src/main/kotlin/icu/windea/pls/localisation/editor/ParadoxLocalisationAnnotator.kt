@@ -6,7 +6,6 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
@@ -85,6 +84,6 @@ class ParadoxLocalisationAnnotator : Annotator {
     }
 
     private fun annotateExpression(element: ParadoxLocalisationExpressionElement, holder: AnnotationHolder) {
-        ParadoxExpressionManager.annotateExpression(element, null, holder)
+        ParadoxExpressionManager.annotateLocalisationExpression(element, null, holder)
     }
 }

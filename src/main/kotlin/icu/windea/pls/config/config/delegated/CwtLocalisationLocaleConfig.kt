@@ -48,7 +48,7 @@ private class CwtLocalisationLocaleConfigImpl(
     }
 
     override fun toString(): String {
-        return description.ifEmpty { id }
+        return "CwtLocalisationLocaleConfigImpl(id='$id')"
     }
 }
 
@@ -70,6 +70,6 @@ private class AutoCwtLocalisationLocaleConfig(
     }
 
     override fun toString(): String {
-        return description.ifEmpty { id }
+        return "AutoCwtLocalisationLocaleConfig(id='$id')"
     }
 }

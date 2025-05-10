@@ -41,5 +41,9 @@ private class CwtLocationConfigImpl(
     override val key: String,
     override val value: String,
     override val required: Boolean = false,
-    override val primary: Boolean = false,
-) : UserDataHolderBase(), CwtLocationConfig
+    override val primary: Boolean = false
+) : UserDataHolderBase(), CwtLocationConfig {
+    override fun toString(): String {
+        return "CwtLocationConfigImpl(key='$key', value='$value')"
+    }
+}

@@ -10,6 +10,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.codeInsight.completion.*
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.editor.*
@@ -26,7 +27,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         return config.expression?.type == CwtDataTypes.TechnologyWithLevel
     }
 
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if (element !is ParadoxScriptStringExpressionElement) return
         val separatorIndex = expressionText.indexOf('@')
         if (separatorIndex == -1) return
@@ -56,7 +57,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
         }
     }
 
-    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
         if (element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
         val separatorIndex = expressionText.indexOf('@')
         if (separatorIndex == -1) return PsiReference.EMPTY_ARRAY

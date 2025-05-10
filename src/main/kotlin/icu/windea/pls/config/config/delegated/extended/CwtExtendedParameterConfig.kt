@@ -100,4 +100,8 @@ private class CwtExtendedParameterConfigImpl(
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(config, r, config.configGroup)
         return listOf(contextConfig)
     }
+
+    override fun toString(): String {
+        return "CwtExtendedParameterConfigImpl(name='$name', contextKey='$contextKey')"
+    }
 }

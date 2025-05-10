@@ -72,5 +72,9 @@ private class CwtAliasConfigImpl(
         inlined.singleAliasConfig = config.singleAliasConfig
         return inlined
     }
+
+    override fun toString(): String {
+        return "CwtAliasConfigImpl(name='$name')"
+    }
 }
 

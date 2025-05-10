@@ -33,4 +33,8 @@ private class CwtExtendedScriptedVariableConfigImpl(
     override val config: CwtMemberConfig<*>,
     override val name: String,
     override val hint: String?
-) : UserDataHolderBase(), CwtExtendedScriptedVariableConfig
+) : UserDataHolderBase(), CwtExtendedScriptedVariableConfig {
+    override fun toString(): String {
+        return "CwtExtendedScriptedVariableConfigImpl(name='$name')"
+    }
+}

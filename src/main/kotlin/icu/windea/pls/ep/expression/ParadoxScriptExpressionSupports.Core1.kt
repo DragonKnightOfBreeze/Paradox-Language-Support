@@ -10,6 +10,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.expression.complex.*
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
@@ -18,7 +19,7 @@ class ParadoxScriptTemplateExpressionSupport : ParadoxScriptExpressionSupport {
         return config.expression?.type == CwtDataTypes.TemplateExpression
     }
 
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if (element !is ParadoxScriptStringExpressionElement) return
         val configGroup = config.configGroup
         val range = TextRange.create(0, expressionText.length)
@@ -26,7 +27,7 @@ class ParadoxScriptTemplateExpressionSupport : ParadoxScriptExpressionSupport {
         ParadoxExpressionManager.annotateComplexExpression(element, templateExpression, holder, config)
     }
 
-    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
         if (element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
         val configGroup = config.configGroup
         val range = TextRange.create(0, expressionText.length)
@@ -45,7 +46,7 @@ class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptExpressionSuppor
         return config.expression?.type in CwtDataTypeGroups.DynamicValue
     }
 
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if (element !is ParadoxScriptStringExpressionElement) return
         val configGroup = config.configGroup
         val range = TextRange.create(0, expressionText.length)
@@ -53,7 +54,7 @@ class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptExpressionSuppor
         ParadoxExpressionManager.annotateComplexExpression(element, dynamicValueExpression, holder, config)
     }
 
-    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
         if (element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
         val configGroup = config.configGroup
         val range = TextRange.create(0, expressionText.length)
@@ -72,7 +73,7 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport 
         return config.expression?.type in CwtDataTypeGroups.ScopeField
     }
 
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if (element !is ParadoxScriptStringExpressionElement) return
         val configGroup = config.configGroup
         val range = TextRange.create(0, expressionText.length)
@@ -80,7 +81,7 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport 
         ParadoxExpressionManager.annotateComplexExpression(element, scopeFieldExpression, holder, config)
     }
 
-    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
         if (element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
         val configGroup = config.configGroup
         val range = TextRange.create(0, expressionText.length)
@@ -118,7 +119,7 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport 
         return config.expression?.type in CwtDataTypeGroups.ValueField
     }
 
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if (element !is ParadoxScriptStringExpressionElement) return
         val configGroup = config.configGroup
         val range = TextRange.create(0, expressionText.length)
@@ -126,7 +127,7 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport 
         ParadoxExpressionManager.annotateComplexExpression(element, valueFieldExpression, holder, config)
     }
 
-    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
         if (element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
         val configGroup = config.configGroup
         val range = TextRange.create(0, expressionText.length)
@@ -158,7 +159,7 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSuppo
         return config.expression?.type in CwtDataTypeGroups.VariableField
     }
 
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if (element !is ParadoxScriptStringExpressionElement) return
         val configGroup = config.configGroup
         val range = TextRange.create(0, expressionText.length)
@@ -166,7 +167,7 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSuppo
         ParadoxExpressionManager.annotateComplexExpression(element, variableFieldExpression, holder, config)
     }
 
-    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
         if (element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
         val configGroup = config.configGroup
         val range = TextRange.create(0, expressionText.length)
@@ -198,7 +199,7 @@ class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptExpressionSupp
         return config.expression?.type == CwtDataTypes.DatabaseObject
     }
 
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if (element !is ParadoxScriptStringExpressionElement) return
         val configGroup = config.configGroup
         val range = TextRange.create(0, expressionText.length)
@@ -206,7 +207,7 @@ class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptExpressionSupp
         ParadoxExpressionManager.annotateComplexExpression(element, databaseObjectExpression, holder, config)
     }
 
-    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
         if (element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
         val configGroup = config.configGroup
         val range = TextRange.create(0, expressionText.length)
@@ -225,7 +226,7 @@ class ParadoxScriptDefineReferenceExpressionSupport : ParadoxScriptExpressionSup
         return config.expression?.type == CwtDataTypes.DefineReference
     }
 
-    override fun annotate(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
+    override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         if (element !is ParadoxScriptStringExpressionElement) return
         val configGroup = config.configGroup
         val range = TextRange.create(0, expressionText.length)
@@ -233,7 +234,7 @@ class ParadoxScriptDefineReferenceExpressionSupport : ParadoxScriptExpressionSup
         ParadoxExpressionManager.annotateComplexExpression(element, defineReferenceExpression, holder, config)
     }
 
-    override fun getReferences(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
+    override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Array<out PsiReference>? {
         if (element !is ParadoxScriptStringExpressionElement) return PsiReference.EMPTY_ARRAY
         val configGroup = config.configGroup
         val range = TextRange.create(0, expressionText.length)

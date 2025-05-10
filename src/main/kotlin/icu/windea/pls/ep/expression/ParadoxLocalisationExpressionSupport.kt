@@ -11,6 +11,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
+import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -22,21 +23,21 @@ import icu.windea.pls.localisation.psi.*
  */
 @WithGameTypeEP
 interface ParadoxLocalisationExpressionSupport {
-    fun supports(element: ParadoxLocalisationExpressionElement): Boolean
+    fun supports(element: ParadoxExpressionElement): Boolean
 
-    fun annotate(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder) {
+    fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder) {
 
     }
 
-    fun resolve(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String): PsiElement? {
+    fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): PsiElement? {
         return null
     }
 
-    fun multiResolve(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String): Collection<PsiElement> {
+    fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Collection<PsiElement> {
         return resolve(element, rangeInElement, expressionText).toSingletonSetOrEmpty()
     }
 
-    fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {
+    fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {
         return null
     }
 
@@ -49,7 +50,7 @@ interface ParadoxLocalisationExpressionSupport {
 
         //目前来看，这里暂不需要尝试避免SOE
 
-        fun annotate(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder) {
+        fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder) {
             val gameType = selectGameType(element)
             EP_NAME.extensionList.forEach f@{ ep ->
                 if (!ep.supports(element)) return@f
@@ -58,7 +59,7 @@ interface ParadoxLocalisationExpressionSupport {
             }
         }
 
-        fun resolve(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String): PsiElement? {
+        fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): PsiElement? {
             val gameType = selectGameType(element)
             EP_NAME.extensionList.forEach f@{ ep ->
                 if (!ep.supports(element)) return@f
@@ -69,7 +70,7 @@ interface ParadoxLocalisationExpressionSupport {
             return null
         }
 
-        fun multiResolve(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String): Collection<PsiElement> {
+        fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Collection<PsiElement> {
             val gameType = selectGameType(element)
             EP_NAME.extensionList.forEach f@{ ep ->
                 if (!ep.supports(element)) return@f
@@ -80,7 +81,7 @@ interface ParadoxLocalisationExpressionSupport {
             return emptySet()
         }
 
-        fun getReferences(element: ParadoxLocalisationExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {
+        fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {
             val gameType = selectGameType(element)
             EP_NAME.extensionList.forEach f@{ ep ->
                 if (!ep.supports(element)) return@f
@@ -92,7 +93,7 @@ interface ParadoxLocalisationExpressionSupport {
         }
 
         fun complete(context: ProcessingContext, result: CompletionResultSet) {
-            val element = context.contextElement?.castOrNull<ParadoxLocalisationExpressionElement>() ?: return
+            val element = context.contextElement?.castOrNull<ParadoxExpressionElement>() ?: return
             val gameType by lazy { selectGameType(element) }
             EP_NAME.extensionList.forEach f@{ ep ->
                 if (!ep.supports(element)) return@f
