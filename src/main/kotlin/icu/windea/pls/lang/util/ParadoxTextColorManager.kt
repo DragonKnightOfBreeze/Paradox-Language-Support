@@ -13,7 +13,19 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxTextColorManager {
+    fun getInfo(name: String, project: Project, contextElement: PsiElement? = null): ParadoxTextColorInfo? {
+        val selector = selector(project, contextElement).definition().contextSensitive()
+        val definition = ParadoxDefinitionSearch.search(name, "textcolor", selector).find()
+        if (definition == null) return null
+        return doGetInfoFromCache(definition)
+    }
+
     fun getInfo(element: PsiElement): ParadoxTextColorInfo? {
+        if (element is ParadoxScriptDefinitionElement) {
+            val info = doGetInfoFromCache(element)
+            if (info != null) return info
+        }
+
         val colorId = when {
             //单个大写或小写字母，不限定位置
             element is ParadoxLocalisationPropertyReference -> element.propertyReferenceParameter?.text?.find { it.isExactLetter() }?.toString()
@@ -25,14 +37,8 @@ object ParadoxTextColorManager {
         return getInfo(colorId, element.project, element)
     }
 
-    fun getInfo(name: String, project: Project, contextElement: PsiElement? = null): ParadoxTextColorInfo? {
-        val selector = selector(project, contextElement).definition().contextSensitive()
-        val definition = ParadoxDefinitionSearch.search(name, "textcolor", selector).find()
-        if (definition == null) return null
-        return doGetInfoFromCache(definition)
-    }
-
     private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
+        if (definition !is ParadoxScriptProperty) return null
         return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedTextColorInfo) {
             val value = doGetInfo(definition)
             value.withDependencyItems(definition)
