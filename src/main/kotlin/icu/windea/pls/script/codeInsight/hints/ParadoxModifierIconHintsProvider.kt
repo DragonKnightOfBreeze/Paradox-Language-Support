@@ -18,6 +18,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxModifierIconHintsProvider.*
 import icu.windea.pls.script.psi.*
+import javax.imageio.ImageIO
 import javax.swing.*
 
 /**
@@ -66,9 +67,11 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
             if (iconUrl == null) return true
 
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            val icon = iconUrl.toFileUrl().toIconOrNull() ?: return true
+            val iconFileUrl = iconUrl.toFileUrl()
+            val icon = iconFileUrl.toIconOrNull() ?: return true
             //这里需要先尝试获取原始高度
-            if (icon.originalHeight <= settings.iconHeightLimit) {
+            val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
+            if (originalIconHeight <= settings.iconHeightLimit) {
                 //点击可以导航到声明处（DDS）
                 val presentation = psiSingleReference(smallScaledIcon(icon)) { iconFile.toPsiFile(project) }
                 val finalPresentation = presentation.toFinalPresentation(this, file.project, smaller = true)

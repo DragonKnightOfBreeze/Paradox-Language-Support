@@ -20,6 +20,7 @@ import java.awt.*
 import java.awt.event.*
 import java.util.*
 import java.util.concurrent.atomic.*
+import javax.imageio.*
 
 @Suppress("UnstableApiUsage")
 object ParadoxLocalisationTextInlayRenderer {
@@ -215,10 +216,12 @@ object ParadoxLocalisationTextInlayRenderer {
             else -> null
         } ?: ParadoxImageResolver.getDefaultUrl()
 
+        val iconFileUrl = iconUrl.toFileUrl()
         //找不到图标的话就直接跳过
-        val icon = iconUrl.toFileUrl().toIconOrNull() ?: return true
+        val icon = iconFileUrl.toIconOrNull() ?: return true
         //这里需要先尝试获取原始高度
-        if (icon.originalHeight <= context.iconHeightLimit) {
+        val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
+        if (originalIconHeight <= context.iconHeightLimit) {
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
             context.builder.add(presentation)

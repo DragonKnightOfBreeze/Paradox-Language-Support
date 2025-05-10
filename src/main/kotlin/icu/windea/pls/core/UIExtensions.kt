@@ -40,10 +40,6 @@ operator fun Color.component2() = green
 operator fun Color.component3() = blue
 operator fun Color.component4() = alpha
 
-val Icon.originalHeight: Int get() = this.toImage().getHeight(null).takeIf { it != -1 } ?: this.iconHeight
-
-val Icon.originalWidth: Int get() = this.toImage().getWidth(null).takeIf { it != -1 } ?: this.iconWidth
-
 fun Icon.resize(width: Int, height: Int): Icon {
     return IconUtil.toSize(this, width, height)
 }
