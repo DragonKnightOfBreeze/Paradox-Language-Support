@@ -21,7 +21,7 @@
 * [X] #139 修复某些情况下无法正常渲染与预览DDS图片的问题 / Fixed a problem that DDS images could not be properly rendered and previewed in some situations
 * [X] 可以分别配置是否启用内置、全局本地、项目本地的规则分组 / Allow to configure whether to enable built-in, global-local, and project-local config groups separately
 * [X] 修复无法显示text color的装订线图标（指示对应的颜色）的问题 / Fixed a problem that cannot show the gutter icon (implies corresponding color) for text colors
-* [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
+* [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.3.36
 
