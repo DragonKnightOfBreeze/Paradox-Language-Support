@@ -15,6 +15,7 @@
 * [X] #94 优化CWT文件解析器的性能 / Optimize performance for CWT file parser
 * [ ] #137 [VIC3/CK3] Support special localizations - Basic support
 * [X] #140 修复与本地化命令连接相关的一些问题（规则解析、代码导航等） / Fixed some problems about localisation command links (Config resolving, code navigation, etc.)
+* [X] #141 [Stellaris] Indexing process should not rely on non-indexed file data
 * [X] 通过懒解析CWT文件中的选项注释来尝试优化性能 / Try to optimize performance by lazily parsing option comments in CWT files
 * [X] 通过懒解析本地化文件中的本地化文本来尝试优化性能与提高代码灵活性 / Try to optimize performance and improve code flexibility by lazily parsing localisation text in localisation files
 * [X] 修复：本地化图标如果对应一个sprite，无法正常适用用法高亮 / FIX: Localisation icons could not be properly highlighted if it will be resolved to a sprite

@@ -4,6 +4,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -47,7 +48,9 @@ class ParadoxScriptedVariablePsiReference(
         val name = element.name ?: return null
         val selector = selector(project, element).scriptedVariable().contextSensitive()
         ParadoxLocalScriptedVariableSearch.search(name, selector).find()?.let { return it }
-        ParadoxGlobalScriptedVariableSearch.search(name, selector).find()?.let { return it }
+        if (resolveFromGlobal()) {
+            ParadoxGlobalScriptedVariableSearch.search(name, selector).find()?.let { return it }
+        }
         return null
     }
 
@@ -58,7 +61,13 @@ class ParadoxScriptedVariablePsiReference(
         val result = mutableListOf<ParadoxScriptScriptedVariable>()
         val selector = selector(project, element).scriptedVariable().contextSensitive()
         ParadoxLocalScriptedVariableSearch.search(name, selector).findAll().let { result += it }
-        ParadoxGlobalScriptedVariableSearch.search(name, selector).findAll().let { result += it }
+        if (resolveFromGlobal()) {
+            ParadoxGlobalScriptedVariableSearch.search(name, selector).findAll().let { result += it }
+        }
         return result.mapToArray { PsiElementResolveResult(it) }
     }
+
+    //Check whether IDE is indexing to avoid:
+    //java.lang.Throwable: Indexing process should not rely on non-indexed file data.
+    private fun resolveFromGlobal(): Boolean = PlsManager.indexing.get() != true
 }
