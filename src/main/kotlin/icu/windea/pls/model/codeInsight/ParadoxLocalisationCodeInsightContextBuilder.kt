@@ -1,9 +1,9 @@
 package icu.windea.pls.model.codeInsight
 
-import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.util.elementType
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.util.*

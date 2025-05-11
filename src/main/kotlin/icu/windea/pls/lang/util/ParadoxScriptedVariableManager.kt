@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.util
 
-import cn.yiiguxing.plugin.translate.util.elementType
 import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.stubs.*

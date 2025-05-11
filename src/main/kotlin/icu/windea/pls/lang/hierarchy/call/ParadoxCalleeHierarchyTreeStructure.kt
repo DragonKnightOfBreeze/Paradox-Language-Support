@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.hierarchy.call
 
-import cn.yiiguxing.plugin.translate.util.*
 import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
+import com.intellij.psi.util.elementType
 import com.intellij.ui.tree.*
 import icu.windea.pls.ep.inline.*
 import icu.windea.pls.lang.*

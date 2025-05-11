@@ -1,12 +1,12 @@
 package icu.windea.pls.lang.inspections.script.bug
 
-import cn.yiiguxing.plugin.translate.util.elementType
 import com.intellij.codeInsight.daemon.impl.actions.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.util.elementType
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*

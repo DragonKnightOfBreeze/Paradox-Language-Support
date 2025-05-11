@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.editor.folding
 
-import cn.yiiguxing.plugin.translate.util.elementType
 import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.util.elementType
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.annotations.*

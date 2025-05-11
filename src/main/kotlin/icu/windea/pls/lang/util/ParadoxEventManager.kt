@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.util
 
-import cn.yiiguxing.plugin.translate.util.elementType
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
