@@ -17,7 +17,7 @@
 * 可能对应（用于本地化命令的）预定义的作用域（如，`[Root.GetName]`中的`[Root]`）
 * 可能对应内置命令（详见：游戏的脚本文档日志目录中的`localizations.log`）
 * 至少在Stellaris中，可能对应类型为`scripted_loc`的定义（引用方式：`SCOPE.NAME`，`SCOPE`是作用域名称，`NAME`是`scripted_loc`的名字）
-* 在Stellaris以外的游戏中，拥有更加复杂的情况。
+* 以及其他更加复杂的情况
 
 对于本地化语言中引用的图标（`£energy£`）：
 
@@ -25,6 +25,7 @@
 * 可能对应同名的`gfx/interface/icons`下的dds文件（引用方式：`£NAME£`，`NAME`是不包括文件后缀名的文件名）
 * 可能对应名为`GFX_text_NAME`，类型为`sprite_type`的定义（引用方式：`£NAME£`，`NAME`是图标的名字）
 * 可能对应名为`GFX_NAME`，类型为`sprite_type`的定义（引用方式：`£NAME£`，`NAME`是图标的名字）
+* 以及其他更加复杂的情况
 
 关于属性引用、命令等的可能的参数的说明：
 

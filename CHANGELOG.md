@@ -10,19 +10,10 @@
 * [ ] 允许为同一个模组配置多个模组依赖列表 / Allow to configure multiple mod dependency lists for the same mod
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
 
-## TODO
-
-* [ ] 验证：本地化的HTML渲染和内嵌提示渲染，在重构代码后是否仍然正常工作
-* [ ] 验证：对CWT文件与本地化文件的语法解析，在重构代码中是否仍然正常工作
-* [ ] #137 [VIC3/CK3] Support special localizations - Basic support
-* [ ] 新功能：[VIC3/CK3] 支持本地化文本中的本地化格式（Localisation formatting）（示例：`#v text#!`，其中`v`对应规则表达式`<textformatting>`，`text`是富文本的组合）
-* [ ] 新功能：[VIC3/CK3] 支持本地化文本中的文本图标（Text icons）（示例：`@icon!`，其中`icon`对应规则表达式`texticon`；需要被渲染为图标）
-* [ ] 新功能：[VIC3/CK3] 支持通过规范的本地化命令声明的概念引用（Concepts）（示例：`[concept_name]` `[Concept('concept_name', '$other_loc_key$')]`）
-* [ ] （来自上一条）新功能：支持概念表达式（新的复杂表达式，一般在本地化文本中使用，其文本是概念的名字或别名，可以被解析为概念），实现相关功能（渲染、导航等）
-
 ## 1.4.0
 
 * [X] #94 优化CWT文件解析器的性能 / Optimize performance for CWT file parser
+* [ ] #137 [VIC3/CK3] Support special localizations - Basic support
 * [X] #140 修复与本地化命令连接相关的一些问题（规则解析、代码导航等） / Fixed some problems about localisation command links (Config resolving, code navigation, etc.)
 * [X] 通过懒解析CWT文件中的选项注释来尝试优化性能 / Try to optimize performance by lazily parsing option comments in CWT files
 * [X] 通过懒解析本地化文件中的本地化文本来尝试优化性能与提高代码灵活性 / Try to optimize performance and improve code flexibility by lazily parsing localisation text in localisation files
@@ -36,6 +27,13 @@
 * [X] 新功能：支持解析本地化文本中的属性引用&命令的传入参数中的文本颜色ID为引用 / NEW: Support parsing text color ids in arguments of references & commands in localisation text as references
 * [X] 新功能：新增代码检查，以在本地化文件中提示缺失指定的其他语言区域的本地化 / NEW: Add code inspection to prompt missing localisations for specified locales in localisation files *
 * [X] 新功能：新增代码检查，以提示不支持在内联脚本文件中使用参数条件块与带默认值的参数用法 / NEW: Add code inspection to prompt unsupported parameter condition blocks and parameter usages (with the default value) in inline script files *
+* [ ] 优化：提供扩展点以更加灵活地解析本地化图标 / OP: Provides EP to resolve localisation icons more flexibly
+* [ ] 新功能：[VIC3/CK3] 支持本地化文本中的本地化格式（Localisation formatting）（示例：`#v text#!`，其中`v`对应规则表达式`<textformatting>`，`text`是富文本的组合）
+* [ ] 新功能：[VIC3/CK3] 支持本地化文本中的文本图标（Text icons）（示例：`@icon!`，其中`icon`对应规则表达式`texticon`；需要被渲染为图标）
+* [ ] 新功能：[VIC3/CK3] 支持通过规范的本地化命令声明的概念引用（Concepts）（示例：`[concept_name]` `[Concept('concept_name', '$other_loc_key$')]`）
+* [ ] （来自上一条）新功能：支持概念表达式（新的复杂表达式，一般在本地化文本中使用，其文本是概念的名字或别名，可以被解析为概念），实现相关功能（渲染、导航等）
+* [ ] 验证：本地化的HTML渲染和内嵌提示渲染，在重构代码后是否仍然正常工作
+* [ ] 验证：对CWT文件与本地化文件的语法解析，在重构代码中是否仍然正常工作
 
 ## 1.3.37
 
