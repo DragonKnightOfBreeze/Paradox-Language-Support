@@ -157,12 +157,18 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.bug.group"
                      groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedParameterUsageInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedInlineMathUsage"
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedParameterCondition"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.unsupportedInlineMathUsage"
+                     bundle="messages.PlsBundle" key="inspection.script.unsupportedParameterCondition"
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.bug.group"
                      groupPathKey="inspection.script.groupPath"
-                     implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedInlineMathUsageInspection"/>
+                     implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedParameterConditionInspection"/>
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedInlineMath"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.unsupportedInlineMath"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.bug.group"
+                     groupPathKey="inspection.script.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedInlineMathInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedInlineScriptUsage"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.unsupportedInlineScriptUsage"

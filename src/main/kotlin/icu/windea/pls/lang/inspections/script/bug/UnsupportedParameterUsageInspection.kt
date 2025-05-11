@@ -6,6 +6,8 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.script.psi.*
 
 /**
  * （对于脚本文件）检查是否在不支持的地方使用了参数。
@@ -17,12 +19,8 @@ class UnsupportedParameterUsageInspection : LocalInspectionTool() {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if (element is ParadoxParameter || element is ParadoxConditionParameter) {
-                    val resolved = element.reference?.resolve()
-                    if (resolved == null) {
-                        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameterUsage.desc.1"))
-                    }
-                }
+                checkGeneral(element, holder)
+                checkInlineScript(element, holder)
             }
         }
     }
@@ -31,5 +29,18 @@ class UnsupportedParameterUsageInspection : LocalInspectionTool() {
         if (selectRootFile(file) == null) return false
         return true
     }
-}
 
+    private fun checkGeneral(element: PsiElement, holder: ProblemsHolder) {
+        if (element !is ParadoxParameter && element !is ParadoxConditionParameter) return
+        if (element.reference?.resolve() != null) return
+        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameterUsage.desc.1"))
+    }
+
+    private fun checkInlineScript(element: PsiElement, holder: ProblemsHolder) {
+        if (element !is ParadoxScriptParameter) return
+        if (element.defaultValue == null) return
+        val file = element.containingFile ?: return
+        if (ParadoxInlineScriptManager.getInlineScriptExpression(file) == null) return
+        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameterUsage.desc.2"))
+    }
+}
