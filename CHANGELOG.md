@@ -14,14 +14,7 @@
 
 * [ ] 验证：本地化的HTML渲染和内嵌提示渲染，在重构代码后是否仍然正常工作
 * [ ] 验证：对CWT文件与本地化文件的语法解析，在重构代码中是否仍然正常工作
-* [X] 修复：本地化图标如果对应一个sprite，无法正常适用用法高亮
-* [X] 修复：本地化命令中的动态值无法点击查找使用，无法正常适用用法高亮
-* [X] 修复：修复关于本地化的语言区域的一些问题
-* [X] 优化：`icon[path]`现在仅匹配直接位于path下的图标
-* [X] 优化：InlayHintsProvider 中的 iconHeightLimit 的默认值改为36
-* [X] 优化：兼容job作为本地化命令连接的情况
-* [X] 优化：在必要时先尝试获取图标的原始高度
-* [X] 新功能：支持解析本地化文本中的属性引用&命令的传入参数中的文本颜色ID为引用
+* [ ] #137 [VIC3/CK3] Support special localizations - Basic support
 * [ ] 新功能：[VIC3/CK3] 支持本地化文本中的本地化格式（Localisation formatting）（示例：`#v text#!`，其中`v`对应规则表达式`<textformatting>`，`text`是富文本的组合）
 * [ ] 新功能：[VIC3/CK3] 支持本地化文本中的文本图标（Text icons）（示例：`@icon!`，其中`icon`对应规则表达式`texticon`；需要被渲染为图标）
 * [ ] 新功能：[VIC3/CK3] 支持通过规范的本地化命令声明的概念引用（Concepts）（示例：`[concept_name]` `[Concept('concept_name', '$other_loc_key$')]`）
@@ -29,12 +22,18 @@
 
 ## 1.4.0
 
+* [X] #94 优化CWT文件解析器的性能 / Optimize performance for CWT file parser
+* [X] #140 修复与本地化命令连接相关的一些问题（规则解析、代码导航等） / Fixed some problems about localisation command links (Config resolving, code navigation, etc.)
 * [X] 通过懒解析CWT文件中的选项注释来尝试优化性能 / Try to optimize performance by lazily parsing option comments in CWT files
 * [X] 通过懒解析本地化文件中的本地化文本来尝试优化性能与提高代码灵活性 / Try to optimize performance and improve code flexibility by lazily parsing localisation text in localisation files
-* [X] #94 优化CWT文件解析器的性能 / Optimize performance for CWT file parser
-* [ ] #137 [VIC3/CK3] Support special localizations - Basic support
-* [X] #140 修复与本地化命令连接相关的一些问题（规则解析、代码导航等） / Fixed some problems about localisation command links (Config resolving, code navigation, etc.) 
-* [X] 其他优化与BUG修复 / Other optimizations and bug fixes
+* [X] 修复：本地化图标如果对应一个sprite，无法正常适用用法高亮 / Fix: Localisation icons could not be properly highlighted if it will be resolved to a sprite
+* [X] 修复：本地化命令中的动态值无法查找使用，无法正常适用用法高亮 / Fix: Dynamic values in localisation commands could not find usages, could not be properly highlighted
+* [X] 修复：修复关于本地化的语言区域的一些问题 / Fix: Fix some problems about localisation locales
+* [X] 优化：`icon[path]`现在仅匹配直接位于path下的图标 / OP: `icon[path]` now only matches icons directly under path
+* [X] 优化：内嵌提示设置中的 iconHeightLimit 的默认值改为36 / OP: Change the default value of iconHeightLimit in inlay hint settings to 36
+* [X] 优化：兼容job作为本地化命令连接的情况 / OP: Compatible with jobs as localisation command links
+* [X] 优化：在必要时先尝试获取图标的原始高度 / OP: Try to get the original height of the icon first when necessary
+* [X] 新功能：支持解析本地化文本中的属性引用&命令的传入参数中的文本颜色ID为引用 / New feature: Support parsing text color ids in arguments of references & commands in localisation text as references
 
 # 1.3.37
 
