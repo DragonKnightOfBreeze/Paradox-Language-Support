@@ -73,7 +73,6 @@ object PlsManager {
         runReadAction {
             val allEditors = EditorFactory.getInstance().allEditors
             for (editor in allEditors) {
-                val project = editor.project ?: continue
                 val file = editor.virtualFile ?: continue
                 if (onlyParadoxFiles && file.fileType !is ParadoxBaseFileType) continue
                 if (onlyInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) == null) continue
@@ -87,7 +86,6 @@ object PlsManager {
         if (files.isEmpty()) return
         val allEditors = EditorFactory.getInstance().allEditors
         val editors = allEditors.filter f@{ editor ->
-            val project = editor.project ?: return@f false
             val file = editor.virtualFile ?: return@f false
             if (file !in files) return@f false
             true
