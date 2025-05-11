@@ -17,12 +17,12 @@ class ParadoxIconReferenceExpressionSupport : ParadoxPathReferenceExpressionSupp
     }
 
     //icon[] -  filePath需要是不带扩展名的文件名（其扩展名必须是合法的图片的扩展名）
-    //icon[foo/bar] - filePath需要是不带扩展名的文件名（其扩展名必须是合法的图片的扩展名），且该文件需要位于目录foo/bar中
+    //icon[foo/bar] - filePath需要是不带扩展名的文件名（其扩展名必须是合法的图片的扩展名），且该文件需要**直接**位于目录foo/bar中
 
     override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean {
         val filePathWithoutExtension = getFilePathWithoutExtension(filePath) ?: return false
         val expression = configExpression.value ?: return true
-        return expression.matchesPath(filePathWithoutExtension, trim = true)
+        return expression.matchesPath(filePathWithoutExtension, strict = true, trim = true)
     }
 
     override fun extract(configExpression: CwtDataExpression, element: PsiElement?, filePath: String, ignoreCase: Boolean): String? {
@@ -61,6 +61,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         return configExpression.type == CwtDataTypes.FilePath
     }
 
+    //filepath - 匹配任意路经
     //filepath[./] - 匹配相对于脚本文件所在目录的路径
 
     override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean {
