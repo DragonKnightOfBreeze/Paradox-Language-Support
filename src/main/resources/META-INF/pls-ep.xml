@@ -23,6 +23,7 @@
     <extensionPoint qualifiedName="icu.windea.pls.scriptExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.localisationExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxLocalisationExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.pathReferenceExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.localisationIconSupport" interface="icu.windea.pls.ep.icon.ParadoxLocalisationIconSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.infoIndexSupport" interface="icu.windea.pls.ep.index.ParadoxIndexInfoSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionInheritSupport" interface="icu.windea.pls.ep.inherit.ParadoxDefinitionInheritSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inlineSupport" interface="icu.windea.pls.ep.inline.ParadoxInlineSupport" dynamic="true"/>
@@ -162,6 +163,9 @@
     <pathReferenceExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxFilePathReferenceExpressionSupport"/>
     <pathReferenceExpressionSupport implementation="icu.windea.pls.ep.expression.ParadoxFileNameReferenceExpressionSupport"/>
 
+    <localisationIconSupport implementation="icu.windea.pls.ep.icon.ParadoxBaseLocalisationIconSupport" order="last"/>
+    <localisationIconSupport implementation="icu.windea.pls.ep.icon.ParadoxBaseLocalisationIconSupport$Stellaris"/>
+
     <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxComplexEnumValueIndexInfoSupport"/>
     <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxDynamicValueIndexInfoSupport"/>
     <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxParameterIndexInfoSupport"/>
@@ -224,7 +228,7 @@
 
     <definitionPresentationProvider implementation="icu.windea.pls.ep.presentation.StellarisTechnologyPresentationProvider"/>
 
-    <priorityProvider implementation="icu.windea.pls.ep.priority.BaseFilePathBasedParadoxPriorityProvider"/>
+    <priorityProvider implementation="icu.windea.pls.ep.priority.ParadoxBasePriorityProvider"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">
