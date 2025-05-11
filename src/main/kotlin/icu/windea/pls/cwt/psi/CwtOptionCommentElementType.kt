@@ -24,9 +24,8 @@ class CwtOptionCommentElementType(debugName: String) : IReparseableElementType(d
         return node.firstChildNode
     }
 
-    @Deprecated("Deprecated in Java", ReplaceWith(""))
-    override fun isParsable(parent: ASTNode?, buffer: CharSequence, fileLanguage: Language, project: Project): Boolean {
-        return buffer.startsWith("##")/* && buffer.none { it == '\r' || it == '\n' }*/
+    override fun isReparseable(currentNode: ASTNode, newText: CharSequence, fileLanguage: Language, project: Project): Boolean {
+        return newText.startsWith("##") && newText.none { it == '\r' || it == '\n' }
     }
 
     override fun createNode(text: CharSequence?): ASTNode {

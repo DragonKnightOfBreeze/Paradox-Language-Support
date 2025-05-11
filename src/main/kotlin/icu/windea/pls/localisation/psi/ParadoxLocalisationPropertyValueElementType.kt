@@ -25,9 +25,8 @@ class ParadoxLocalisationPropertyValueElementType(debugName: String) : IReparsea
         return node.firstChildNode
     }
 
-    @Deprecated("Deprecated in Java", ReplaceWith(""))
-    override fun isParsable(parent: ASTNode?, buffer: CharSequence, fileLanguage: Language, project: Project): Boolean {
-        return true/* && buffer.none { it == '\r' || it == '\n' }*/
+    override fun isReparseable(currentNode: ASTNode, newText: CharSequence, fileLanguage: Language, project: Project): Boolean {
+        return newText.none { it == '\r' || it == '\n' }
     }
 
     override fun createNode(text: CharSequence?): ASTNode {
