@@ -219,7 +219,7 @@ object ParadoxLocalisationTextInlayRenderer {
         val iconFileUrl = iconUrl.toFileUrl()
         //找不到图标的话就直接跳过
         val icon = iconFileUrl.toIconOrNull() ?: return true
-        //这里需要先尝试获取原始高度
+        //这里需要尝试使用图标的原始高度
         val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
         if (originalIconHeight <= context.iconHeightLimit) {
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度

@@ -20,6 +20,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 import java.util.*
+import javax.imageio.*
 import javax.swing.*
 
 object ParadoxLocalisationTextHtmlRenderer {
@@ -45,11 +46,11 @@ object ParadoxLocalisationTextHtmlRenderer {
         renderTo(element, context)
     }
 
-     fun renderWithColor(color: Color?, context: Context, action: (Context) -> Unit): String {
+    fun renderWithColor(color: Color?, context: Context, action: (Context) -> Unit): String {
         return buildDocumentation { renderWithColorTo(color, context, action) }
     }
 
-     fun renderWithColorTo(color: Color?, context: Context, action: (Context) -> Unit) {
+    fun renderWithColorTo(color: Color?, context: Context, action: (Context) -> Unit) {
         if (color != null) {
             context.colorStack.addLast(color)
             context.builder.append("<span style=\"color: #").append(ColorUtil.toHex(color, true)).append("\">")
@@ -187,15 +188,22 @@ object ParadoxLocalisationTextHtmlRenderer {
             else -> null
         } ?: ParadoxImageResolver.getDefaultUrl()
 
+        val iconFileUrl = iconUrl.toFileUrl()
         //找不到图标的话就直接跳过
-        val icon = iconUrl.toFileUrl().toIconOrNull() ?: return
-        //如果图标大小在16*16到36*36之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
+        val icon = iconFileUrl.toIconOrNull() ?: return
+        //这里需要尝试使用图标的原始高度
+        val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
+        //如果图标高度在 locFontSize 到 locMaxTextIconSize 之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
         //实际上，本地化文本可以嵌入任意大小的图片
         val docFontSize = getDocumentationFontSize().size
-        val scale = when {
-            icon.iconHeight in 16..36 -> docFontSize.toFloat() / icon.iconHeight
-            else -> docFontSize.toFloat() / 18
+        val locFontSize = PlsConstants.Settings.locFontSize
+        val locMaxTextIconSize = PlsConstants.Settings.locTextIconSizeLimit
+        val scaleByDocFontSize = when {
+            originalIconHeight in locFontSize..locMaxTextIconSize -> docFontSize.toFloat() / originalIconHeight
+            else -> docFontSize.toFloat() / locFontSize
         }
+        val scaleByIcon = originalIconHeight.toFloat() / icon.iconHeight
+        val scale = scaleByDocFontSize * scaleByIcon
         val iconWidth = (icon.iconWidth * scale).toInt()
         val iconHeight = (icon.iconHeight * scale).toInt()
         context.builder.appendImgTag(iconUrl, iconWidth, iconHeight)

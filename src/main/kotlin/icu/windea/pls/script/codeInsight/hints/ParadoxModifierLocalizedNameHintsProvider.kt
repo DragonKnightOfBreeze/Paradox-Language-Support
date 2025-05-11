@@ -26,8 +26,8 @@ import javax.swing.*
  */
 class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
-        var textLengthLimit: Int = 30,
-        var iconHeightLimit: Int = 36
+        var textLengthLimit: Int = PlsConstants.Settings.textLengthLimit,
+        var iconHeightLimit: Int = PlsConstants.Settings.iconHeightLimit,
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxModifierLocalizedNameHintsSettingsKey")

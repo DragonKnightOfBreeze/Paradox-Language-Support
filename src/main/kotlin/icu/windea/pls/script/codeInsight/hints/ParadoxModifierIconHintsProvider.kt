@@ -26,7 +26,7 @@ import javax.swing.*
  */
 class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
-        var iconHeightLimit: Int = 36
+        var iconHeightLimit: Int = PlsConstants.Settings.iconHeightLimit
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxModifierIconHintsSettingsKey")
@@ -69,7 +69,7 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             val iconFileUrl = iconUrl.toFileUrl()
             val icon = iconFileUrl.toIconOrNull() ?: return true
-            //这里需要先尝试获取原始高度
+            //这里需要尝试使用图标的原始高度
             val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
             if (originalIconHeight <= settings.iconHeightLimit) {
                 //点击可以导航到声明处（DDS）
