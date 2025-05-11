@@ -112,7 +112,7 @@ object ParadoxEconomicCategoryManager {
 
     private fun collectParentData(contextElement: PsiElement, data: StellarisEconomicCategoryData, map: MutableMap<String, StellarisEconomicCategoryData> = mutableMapOf()): Map<String, StellarisEconomicCategoryData> {
         val parent = data.parent ?: return map
-        withRecursionGuard("ParadoxEconomicCategoryManager.collectParentData") {
+        withRecursionGuard {
             withRecursionCheck(parent) {
                 val selector = selector(contextElement.project, contextElement).definition().contextSensitive()
                 ParadoxDefinitionSearch.search(parent, "economic_category", selector).processQuery p@{

@@ -4,18 +4,11 @@ package icu.windea.pls.core
 
 import com.intellij.openapi.util.*
 
-class SmartRecursionGuard(val name: Any) {
-    val stackTrace = ArrayDeque<Any>()
-
-    companion object {
-        val cache: ThreadLocal<MutableMap<String, SmartRecursionGuard>> by lazy { ThreadLocal.withInitial { mutableMapOf() } }
-    }
-}
-
 /**
  * 执行一段代码，并通过[SmartRecursionGuard]尝试避免堆栈溢出。
  */
-inline fun <T> withRecursionGuard(name: String, action: SmartRecursionGuard.() -> T): T? {
+fun <T> withRecursionGuard(action: SmartRecursionGuard.() -> T): T? {
+    val name = action.hashCode()
     val recursionGuardCache = SmartRecursionGuard.cache.get()
     val cached = recursionGuardCache.get(name)
     try {
@@ -32,18 +25,26 @@ inline fun <T> withRecursionGuard(name: String, action: SmartRecursionGuard.() -
     }
 }
 
-/**
- * 如果指定的[key]未存在于[SmartRecursionGuard.stackTrace]中，则入栈并执行指定的一段代码[action]，否则直接返回null。
- */
-inline fun <T> SmartRecursionGuard.withRecursionCheck(key: Any, action: () -> T): T? {
-    if (stackTrace.contains(key)) {
-        return null
+class SmartRecursionGuard(val name: Any) {
+    val stackTrace = ArrayDeque<Any>()
+
+    /**
+     * 如果指定的[key]未存在于[SmartRecursionGuard.stackTrace]中，则入栈并执行指定的一段代码[action]，否则直接返回null。
+     */
+    inline fun <T> withRecursionCheck(key: Any, action: () -> T): T? {
+        if (stackTrace.contains(key)) {
+            return null
+        }
+        stackTrace.addLast(key)
+        try {
+            return action()
+        } finally {
+            stackTrace.removeLast()
+        }
     }
-    stackTrace.addLast(key)
-    try {
-        return action()
-    } finally {
-        stackTrace.removeLast()
+
+    companion object {
+        val cache: ThreadLocal<MutableMap<Int, SmartRecursionGuard>> by lazy { ThreadLocal.withInitial { mutableMapOf() } }
     }
 }
 

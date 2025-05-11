@@ -11,7 +11,7 @@ class ParadoxInlineScriptInlineSupport : ParadoxInlineSupport {
         if (element !is ParadoxScriptProperty) return null
         val info = ParadoxInlineScriptManager.getUsageInfo(element) ?: return null
         val expression = info.expression
-        return withRecursionGuard("ParadoxInlineScriptInlineSupport.inlineElement") a1@{
+        return withRecursionGuard a1@{
             withRecursionCheck(expression) a2@{
                 val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return@a2 null
                 val project = configContext.configGroup.project

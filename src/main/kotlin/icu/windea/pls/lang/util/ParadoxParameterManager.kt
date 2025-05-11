@@ -320,7 +320,7 @@ object ParadoxParameterManager {
         val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
         return parameterInfo.getOrPutUserData(Keys.inferredContextConfigsFromUsages) {
             ProgressManager.checkCanceled()
-            withRecursionGuard("ParadoxParameterManager.getInferredContextConfigs") {
+            withRecursionGuard {
                 withRecursionCheck(parameterElement) {
                     doGetInferredContextConfigsFromUsages(parameterElement)
                 }
