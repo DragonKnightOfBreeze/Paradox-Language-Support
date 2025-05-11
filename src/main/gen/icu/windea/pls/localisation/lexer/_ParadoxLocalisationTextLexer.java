@@ -8,9 +8,9 @@ import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
+import it.unimi.dsi.fastutil.ints.*;
 
-import static com.intellij.psi.TokenType.BAD_CHARACTER;
-import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static com.intellij.psi.TokenType.*;
 import static icu.windea.pls.core.StdlibExtensionsKt.*;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
@@ -529,8 +529,8 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
   /* user code: */
     private ParadoxGameType gameType;
 
-    private Deque<Integer> nextStateByDepthStack = new ArrayDeque<>();
-    private Deque<Integer> nextStateStack = new ArrayDeque<>();
+    private IntStack nextStateByDepthStack = null;
+    private IntStack nextStateStack = null;
 
     public _ParadoxLocalisationTextLexer() {
         this((java.io.Reader)null);
@@ -551,31 +551,37 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
     }
 
     private void setNextStateByDepth(int nextState) {
+        if (nextStateByDepthStack == null) {
+            nextStateByDepthStack = new IntArrayList();
+        }
         if (!isStateByDepth(nextState)) {
             nextState = nextStateByDepthStack.isEmpty() ? YYINITIAL : IN_COLORFUL_TEXT;
         }
-        nextStateByDepthStack.addLast(nextState);
+        nextStateByDepthStack.push(nextState);
     }
 
     private void beginNextStateByDepth() {
-        if (nextStateByDepthStack.isEmpty()) {
+        if (nextStateByDepthStack == null || nextStateByDepthStack.isEmpty()) {
             yybegin(YYINITIAL);
             return;
         }
-        int nextState = nextStateByDepthStack.removeLast();
+        int nextState = nextStateByDepthStack.popInt();
         yybegin(nextState);
     }
 
     private void setNextState(int nextState) {
-        nextStateStack.addLast(nextState);
+        if (nextStateStack == null) {
+            nextStateStack = new IntArrayList();
+        }
+        nextStateStack.push(nextState);
     }
 
     private void beginNextState() {
-        if (nextStateStack.isEmpty()) {
+        if (nextStateStack == null || nextStateStack.isEmpty()) {
             yybegin(YYINITIAL);
             return;
         }
-        int nextState = nextStateStack.removeLast();
+        int nextState = nextStateStack.popInt();
         yybegin(nextState);
     }
 
