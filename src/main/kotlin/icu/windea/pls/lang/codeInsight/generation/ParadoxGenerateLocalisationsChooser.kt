@@ -12,13 +12,13 @@ import java.awt.event.*
 import javax.swing.*
 
 class ParadoxGenerateLocalisationsChooser(
-    elements: Array<out Localisation>,
+    elements: Array<out Item>,
     project: Project
-) : MemberChooser<ParadoxGenerateLocalisationsChooser.Localisation>(elements, true, true, project, null, emptyArray()) {
+) : MemberChooser<ParadoxGenerateLocalisationsChooser.Item>(elements, true, true, project, null, emptyArray()) {
     val context get() = ParadoxLocalisationGenerator.currentContext.get()
 
     override fun isContainerNode(key: MemberChooserObject): Boolean {
-        return key !is Localisation
+        return key !is Item
     }
 
     override fun getAllContainersNodeName(): String {
@@ -54,22 +54,23 @@ class ParadoxGenerateLocalisationsChooser(
         }
     }
 
-    data class Localisation(
+    data class Item(
         val name: String,
         val info: ParadoxLocalisationCodeInsightInfo,
         val context: ParadoxLocalisationCodeInsightContext
     ) : MemberChooserObjectBase(name, PlsIcons.Nodes.Localisation), ClassMember {
-        override fun getParentNodeDelegate(): MemberChooserObject {
+        override fun getParentNodeDelegate(): MemberChooserObject? {
             return when (context.type) {
-                Type.File -> LocalisationReferences(context) //unexpected
                 Type.Definition -> Definition(context.name, context)
                 Type.Modifier -> Modifier(context.name, context)
                 Type.LocalisationReference -> LocalisationReferences(context)
                 Type.SyncedLocalisationReference -> SyncedLocalisationReferences(context)
+                Type.Localisation -> Localisation(context.name, context)
+                else -> null
             }
         }
 
-        override fun equals(other: Any?) = this === other || (other is Localisation && name == other.name)
+        override fun equals(other: Any?) = this === other || (other is Item && name == other.name)
 
         override fun hashCode() = name.hashCode()
     }
@@ -106,5 +107,14 @@ class ParadoxGenerateLocalisationsChooser(
         override fun equals(other: Any?) = this === other || (other is SyncedLocalisationReferences)
 
         override fun hashCode() = 0
+    }
+
+    data class Localisation(
+        val name: String,
+        val context: ParadoxLocalisationCodeInsightContext
+    ) : MemberChooserObjectBase(name, PlsIcons.Nodes.Localisation) {
+        override fun equals(other: Any?) = this === other || (other is Localisation && name == other.name)
+
+        override fun hashCode() = name.hashCode()
     }
 }

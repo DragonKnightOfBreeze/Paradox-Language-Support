@@ -21,7 +21,7 @@ import icu.windea.pls.lang.settings.PlsStrategies.LocalisationGeneration as Loca
 object ParadoxLocalisationGenerator {
     val currentContext = ThreadLocal<ParadoxLocalisationCodeInsightContext>()
 
-    fun showChooser(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Localisation>, project: Project): ParadoxGenerateLocalisationsChooser? {
+    fun showChooser(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Item>, project: Project): ParadoxGenerateLocalisationsChooser? {
         try {
             currentContext.set(context)
             return doShowChooser(members, project, context)
@@ -30,7 +30,7 @@ object ParadoxLocalisationGenerator {
         }
     }
 
-    private fun doShowChooser(members: List<ParadoxGenerateLocalisationsChooser.Localisation>, project: Project, context: ParadoxLocalisationCodeInsightContext): ParadoxGenerateLocalisationsChooser? {
+    private fun doShowChooser(members: List<ParadoxGenerateLocalisationsChooser.Item>, project: Project, context: ParadoxLocalisationCodeInsightContext): ParadoxGenerateLocalisationsChooser? {
         val memberArray = members.toTypedArray()
         val chooser = ParadoxGenerateLocalisationsChooser(memberArray, project)
         chooser.title = getChooserName(context)
@@ -42,13 +42,13 @@ object ParadoxLocalisationGenerator {
         return chooser
     }
 
-    fun getMembers(context: ParadoxLocalisationCodeInsightContext, locale: CwtLocalisationLocaleConfig): List<ParadoxGenerateLocalisationsChooser.Localisation> {
-        val members = mutableListOf<ParadoxGenerateLocalisationsChooser.Localisation>()
+    fun getMembers(context: ParadoxLocalisationCodeInsightContext, locale: CwtLocalisationLocaleConfig): List<ParadoxGenerateLocalisationsChooser.Item> {
+        val members = mutableListOf<ParadoxGenerateLocalisationsChooser.Item>()
         doGetMembers(members, context, locale)
         return members
     }
 
-    private fun doGetMembers(members: MutableList<ParadoxGenerateLocalisationsChooser.Localisation>, context: ParadoxLocalisationCodeInsightContext, locale: CwtLocalisationLocaleConfig) {
+    private fun doGetMembers(members: MutableList<ParadoxGenerateLocalisationsChooser.Item>, context: ParadoxLocalisationCodeInsightContext, locale: CwtLocalisationLocaleConfig) {
         val onlyMissing = context.fromInspection
         context.children.forEach { child ->
             doGetMembers(members, child, locale)
@@ -57,7 +57,7 @@ object ParadoxLocalisationGenerator {
             if (info.locale != locale) return@f
             if (onlyMissing && !info.missing) return@f //if from inspection, only missing localisations should be included here
             val name = info.name ?: return@f
-            members += ParadoxGenerateLocalisationsChooser.Localisation(name, info, context)
+            members += ParadoxGenerateLocalisationsChooser.Item(name, info, context)
         }
     }
 
@@ -76,7 +76,7 @@ object ParadoxLocalisationGenerator {
         }
     }
 
-    fun generate(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Localisation>, project: Project, file: PsiFile, locale: CwtLocalisationLocaleConfig) {
+    fun generate(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Item>, project: Project, file: PsiFile, locale: CwtLocalisationLocaleConfig) {
         val taskTitle = getProcessFileName(context)
         val task = object : Task.Modal(project, taskTitle, true) {
             var generatedFile: VirtualFile? = null
@@ -102,6 +102,7 @@ object ParadoxLocalisationGenerator {
                 Type.Modifier -> PlsBundle.message("generation.localisation.processName.2.missing", context.name)
                 Type.LocalisationReference -> PlsBundle.message("generation.localisation.processName.3.missing", context.name)
                 Type.SyncedLocalisationReference -> PlsBundle.message("generation.localisation.processName.4.missing", context.name)
+                Type.Localisation -> PlsBundle.message("generation.localisation.processName.5.missing", context.name)
             }
         } else {
             when (context.type) {
@@ -110,11 +111,12 @@ object ParadoxLocalisationGenerator {
                 Type.Modifier -> PlsBundle.message("generation.localisation.processName.2", context.name)
                 Type.LocalisationReference -> PlsBundle.message("generation.localisation.processName.3", context.name)
                 Type.SyncedLocalisationReference -> PlsBundle.message("generation.localisation.processName.4", context.name)
+                Type.Localisation -> PlsBundle.message("generation.localisation.processName.5", context.name)
             }
         }
     }
 
-    private fun generateFile(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Localisation>, project: Project, file: PsiFile, locale: CwtLocalisationLocaleConfig): VirtualFile {
+    private fun generateFile(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Item>, project: Project, file: PsiFile, locale: CwtLocalisationLocaleConfig): VirtualFile {
         val generatedFileName = getGeneratedFileName(context)
         val namesToDistinct = mutableSetOf<String>()
         val text = buildString {
@@ -140,6 +142,7 @@ object ParadoxLocalisationGenerator {
                 Type.Modifier -> PlsBundle.message("generation.localisation.fileName.2.missing", context.name)
                 Type.LocalisationReference -> PlsBundle.message("generation.localisation.fileName.3.missing", context.name)
                 Type.SyncedLocalisationReference -> PlsBundle.message("generation.localisation.fileName.4.missing", context.name)
+                Type.Localisation -> PlsBundle.message("generation.localisation.fileName.5.missing", context.name)
             }
         } else {
             when (context.type) {
@@ -148,6 +151,7 @@ object ParadoxLocalisationGenerator {
                 Type.Modifier -> PlsBundle.message("generation.localisation.fileName.2", context.name)
                 Type.LocalisationReference -> PlsBundle.message("generation.localisation.fileName.3", context.name)
                 Type.SyncedLocalisationReference -> PlsBundle.message("generation.localisation.fileName.4", context.name)
+                Type.Localisation -> PlsBundle.message("generation.localisation.fileName.5", context.name)
             }
         }
     }

@@ -62,14 +62,14 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 }
             }
 
-            private fun visitDefinition(definition: ParadoxScriptDefinitionElement) {
-                val context = ParadoxLocalisationCodeInsightContext.fromDefinition(definition, locales, fromInspection = true)
+            private fun visitDefinition(element: ParadoxScriptDefinitionElement) {
+                val context = ParadoxLocalisationCodeInsightContextBuilder.fromDefinition(element, locales, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
-                registerProblems(context, definition, holder)
+                registerProblems(context, element, holder)
             }
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                val context = ParadoxLocalisationCodeInsightContext.fromExpression(element, locales, forReference = false, fromInspection = true)
+                val context = ParadoxLocalisationCodeInsightContextBuilder.fromExpression(element, locales, forReference = false, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
                 registerProblems(context, element, holder)
             }

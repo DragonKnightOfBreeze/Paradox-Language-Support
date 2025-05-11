@@ -7,16 +7,13 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.actions.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.script.psi.*
 
-/**
- * 生成当前定义的所有（缺失的）本地化。
- */
 class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopupTemplateInjector {
     private val handler = ParadoxGenerateLocalisationsHandler()
 
@@ -30,13 +27,9 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (file !is ParadoxScriptFile) return
+        if (file !is ParadoxScriptFile && file !is ParadoxLocalisationFile) return
         if (file.fileInfo == null) return
         presentation.isVisible = true
-        if (file.definitionInfo != null) {
-            presentation.isEnabled = true
-            return
-        }
         val context = getContext(file, editor)
         handler.context = context
         val isEnabled = context != null
@@ -44,24 +37,41 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
     }
 
     private fun getContext(file: PsiFile, editor: Editor): ParadoxLocalisationCodeInsightContext? {
-        val locales = ParadoxLocaleManager.getLocaleConfigs()
-        val element = findElement(file, editor.caretModel.offset)
-        val contextElement = when {
-            element == null -> null
-            element.isDefinitionRootKeyOrName() -> element.findParentDefinition()
-            else -> element
+        when (file) {
+            is ParadoxScriptFile -> {
+                val locales = ParadoxLocaleManager.getLocaleConfigs()
+                val element = findElement(file, editor.caretModel.offset)
+                val contextElement = when {
+                    element == null -> null
+                    element.isDefinitionRootKeyOrName() -> element.findParentDefinition()
+                    else -> element
+                }
+                if (contextElement == null) return null
+                val context = when {
+                    contextElement is ParadoxScriptDefinitionElement -> ParadoxLocalisationCodeInsightContextBuilder.fromDefinition(contextElement, locales)
+                    contextElement is ParadoxScriptStringExpressionElement -> ParadoxLocalisationCodeInsightContextBuilder.fromExpression(contextElement, locales)
+                    else -> null
+                }
+                return context
+            }
+            is ParadoxLocalisationFile -> {
+                val locales = ParadoxLocaleManager.getLocaleConfigs()
+                val element = findElement(file, editor.caretModel.offset)
+                val contextElement = element
+                if (contextElement == null) return null
+                val context = ParadoxLocalisationCodeInsightContextBuilder.fromLocalisation(contextElement, locales)
+                return context
+            }
+            else -> return null
         }
-        val context = when {
-            contextElement == null -> null
-            contextElement is ParadoxScriptDefinitionElement -> ParadoxLocalisationCodeInsightContext.fromDefinition(contextElement, locales)
-            contextElement is ParadoxScriptStringExpressionElement -> ParadoxLocalisationCodeInsightContext.fromExpression(contextElement, locales)
-            else -> null
-        }
-        return context
     }
 
-    private fun findElement(file: PsiFile, offset: Int): ParadoxScriptExpressionElement? {
-        return ParadoxPsiManager.findScriptExpression(file, offset).castOrNull()
+    private fun findElement(file: ParadoxScriptFile, offset: Int): ParadoxScriptExpressionElement? {
+        return ParadoxPsiManager.findScriptExpression(file, offset)
+    }
+
+    private fun findElement(file: ParadoxLocalisationFile, offset: Int): ParadoxLocalisationProperty? {
+        return ParadoxPsiManager.findLocalisation(file, offset)
     }
 
     override fun createEditTemplateAction(dataContext: DataContext?): AnAction? {

@@ -326,6 +326,12 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
                      groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.MissingLocaleInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMissingLocalisation"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.localisation.missingLocalisation"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
+                     groupPathKey="inspection.localisation.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.localisation.common.MissingLocalisationInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedLocale"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="inspection.localisation.unsupportedLocale"

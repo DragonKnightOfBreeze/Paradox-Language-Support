@@ -42,13 +42,13 @@ class MissingImageInspection : LocalInspectionTool() {
             }
 
             private fun visitDefinition(definition: ParadoxScriptDefinitionElement) {
-                val context = ParadoxImageCodeInsightContext.fromDefinition(definition, fromInspection = true)
+                val context = ParadoxImageCodeInsightContextBuilder.fromDefinition(definition, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
                 registerProblems(context, definition, holder)
             }
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                val context = ParadoxImageCodeInsightContext.fromExpression(element, fromInspection = true)
+                val context = ParadoxImageCodeInsightContextBuilder.fromExpression(element, fromInspection = true)
                 if (context == null || context.infos.isEmpty()) return
                 registerProblems(context, element, holder)
             }

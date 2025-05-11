@@ -30,5 +30,7 @@ object ParadoxLocalisationTokenSets {
     val TEXT_TOKENS_TO_MERGE = TokenSet.create(STRING_TOKEN)
 
     @JvmField
+    val PROPERTY_CONTEXT = TokenSet.create(PROPERTY_LIST, PROPERTY)
+    @JvmField
     val RICH_TEXT_CONTEXT = TokenSet.create(PROPERTY_LIST, PROPERTY, PROPERTY_VALUE, PROPERTY_VALUE_TOKEN, COLORFUL_TEXT, COMMAND, CONCEPT_TEXT)
 }

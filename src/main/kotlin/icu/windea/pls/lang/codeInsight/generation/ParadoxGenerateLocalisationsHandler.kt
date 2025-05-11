@@ -46,7 +46,7 @@ class ParadoxGenerateLocalisationsHandler(
     private fun getFinalContext(file: PsiFile): ParadoxLocalisationCodeInsightContext? {
         if (forFile) {
             val locales = ParadoxLocaleManager.getLocaleConfigs()
-            return ParadoxLocalisationCodeInsightContext.fromFile(file, locales, fromInspection = fromInspection)
+            return ParadoxLocalisationCodeInsightContextBuilder.fromFile(file, locales, fromInspection = fromInspection)
         }
         return context
     }

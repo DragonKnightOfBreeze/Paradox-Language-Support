@@ -26,6 +26,7 @@ class GenerateLocalisationsFix(
             Type.Modifier -> PlsBundle.message("inspection.script.missingLocalisation.fix.2", contextName)
             Type.LocalisationReference -> PlsBundle.message("inspection.script.missingLocalisation.fix.3", contextName)
             Type.SyncedLocalisationReference -> PlsBundle.message("inspection.script.missingLocalisation.fix.4", contextName)
+            Type.Localisation -> PlsBundle.message("inspection.script.missingLocalisation.fix.5", contextName)
             else -> throw IllegalStateException()
         }
     }
