@@ -22,6 +22,7 @@
 * [X] 修复：本地化图标如果对应一个sprite，无法正常适用用法高亮 / FIX: Localisation icons could not be properly highlighted if it will be resolved to a sprite
 * [X] 修复：本地化命令中的动态值无法查找使用，无法正常适用用法高亮 / Fix: Dynamic values in localisation commands could not find usages, could not be properly highlighted
 * [X] 修复：修复关于本地化的语言区域的一些问题 / FIX: Fix some problems about localisation locales
+* [X] 修复：修复某些场合下可能无法提示动态值的问题 / FIX: Fix a problem that dynamic values may not be completed in some cases
 * [X] 优化：`icon[path]`现在优先匹配直接位于`path`下的图标 / OP: `icon[path]` now prefer to match icons directly under `path`
 * [X] 优化：内嵌提示设置中的 iconHeightLimit 的默认值改为36 / OP: Change the default value of iconHeightLimit in inlay hint settings to 36
 * [X] 优化：兼容job作为本地化命令连接的情况 / OP: Compatible with jobs as localisation command links

@@ -1437,6 +1437,7 @@ object ParadoxCompletionManager {
 
         val linkConfigs = configGroup.links.values.filter { it.forScope() && it.prefix == prefix }
             .sortedByPriority({ it.dataSourceExpression }, { configGroup })
+        context.configs = linkConfigs
 
         if (inDsNode is ParadoxScopeLinkNode) {
             completeForScopeLinkNode(inDsNode, context, result)
@@ -1451,12 +1452,11 @@ object ParadoxCompletionManager {
             completeScopeFieldExpression(context, result)
             return
         }
-
-        context.configs = linkConfigs
         for (linkConfig in linkConfigs) {
             context.config = linkConfig
             completeScriptExpression(context, result)
         }
+
         context.config = config
         context.configs = configs
     }
@@ -1546,6 +1546,7 @@ object ParadoxCompletionManager {
             else -> configGroup.links.values.filter { it.forValue() && it.prefix == prefix }
                 .sortedByPriority({ it.dataSourceExpression }, { configGroup })
         }
+        context.configs = linkConfigs
 
         if (inDsNode is ParadoxDynamicValueExpression) {
             completeDynamicValueExpression(context, result)
@@ -1559,12 +1560,11 @@ object ParadoxCompletionManager {
             completeScriptValueExpression(context, result)
             return
         }
-
-        context.configs = linkConfigs
         for (linkConfig in linkConfigs) {
             context.config = linkConfig
             completeScriptExpression(context, result)
         }
+
         context.config = config
         context.configs = configs
     }
@@ -1872,12 +1872,13 @@ object ParadoxCompletionManager {
 
         val linkConfigs = configGroup.localisationLinks.values.filter { it.forScope() && it.prefix == prefix }
             .sortedByPriority({ it.dataSourceExpression }, { configGroup })
-
         context.configs = linkConfigs
+
         for (linkConfig in linkConfigs) {
             context.config = linkConfig
             completeScriptExpression(context, result)
         }
+
         context.config = config
         context.configs = configs
     }
