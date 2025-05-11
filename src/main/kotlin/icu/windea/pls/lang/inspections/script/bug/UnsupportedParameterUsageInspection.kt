@@ -1,9 +1,14 @@
 package icu.windea.pls.lang.inspections.script.bug
 
+import cn.yiiguxing.plugin.translate.util.elementType
+import com.intellij.codeInsight.daemon.impl.actions.*
 import com.intellij.codeInspection.*
+import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
@@ -41,6 +46,22 @@ class UnsupportedParameterUsageInspection : LocalInspectionTool() {
         if (element.defaultValue == null) return
         val file = element.containingFile ?: return
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) == null) return
-        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameterUsage.desc.2"))
+        val fix = DeleteDefaultValueFix(element)
+        holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameterUsage.desc.2"), fix)
+    }
+
+    private class DeleteDefaultValueFix(
+        element: PsiElement
+    ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
+        override fun getText() = PlsBundle.message("inspection.script.unsupportedParameterUsage.fix.1")
+
+        override fun getFamilyName() = text
+
+        override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
+            val element = startElement.castOrNull<ParadoxScriptParameter>() ?: return
+            val e1 = element.findChild { it.elementType == ParadoxScriptElementTypes.PIPE } ?: return
+            val e2 = element.findChild(forward = false) { it.elementType == ParadoxScriptElementTypes.PARAMETER_END } ?: return
+            element.deleteChildRange(e1, e2)
+        }
     }
 }
