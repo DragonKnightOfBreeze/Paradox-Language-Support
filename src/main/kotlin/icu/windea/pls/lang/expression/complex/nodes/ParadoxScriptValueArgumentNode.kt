@@ -27,7 +27,7 @@ class ParadoxScriptValueArgumentNode(
         if (valueNode == null) return null
         if (text.isEmpty()) return null
         val reference = valueNode.getReference(element)
-        if (reference?.resolve() == null) return null //skip if script value cannot be resolved
+        if (reference == null) return null
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
         return Reference(element, rangeInElement, this)
     }
