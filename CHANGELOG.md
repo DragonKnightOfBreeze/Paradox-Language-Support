@@ -14,7 +14,8 @@
 
 * [ ] 验证：本地化的HTML渲染和内嵌提示渲染，在重构代码后是否仍然正常工作
 * [ ] 验证：对CWT文件与本地化文件的语法解析，在重构代码中是否仍然正常工作
-* [ ] 新功能：新增代码检查，以提示不能在内联脚本中使用参数条件块与带默认值的参数
+* [ ] 新功能：新增代码检查，以在本地化文件中提示缺失指定的其他语言区域的本地化
+* [ ] 新功能：新增代码检查，以提示不支持在内联脚本中使用参数条件块与带默认值的参数
 * [ ] #137 [VIC3/CK3] Support special localizations - Basic support
 * [ ] 新功能：[VIC3/CK3] 支持本地化文本中的本地化格式（Localisation formatting）（示例：`#v text#!`，其中`v`对应规则表达式`<textformatting>`，`text`是富文本的组合）
 * [ ] 新功能：[VIC3/CK3] 支持本地化文本中的文本图标（Text icons）（示例：`@icon!`，其中`icon`对应规则表达式`texticon`；需要被渲染为图标）
@@ -30,7 +31,7 @@
 * [X] 修复：本地化图标如果对应一个sprite，无法正常适用用法高亮 / FIX: Localisation icons could not be properly highlighted if it will be resolved to a sprite
 * [X] 修复：本地化命令中的动态值无法查找使用，无法正常适用用法高亮 / Fix: Dynamic values in localisation commands could not find usages, could not be properly highlighted
 * [X] 修复：修复关于本地化的语言区域的一些问题 / FIX: Fix some problems about localisation locales
-* [X] 优化：`icon[path]`现在仅匹配直接位于path下的图标 / OP: `icon[path]` now only matches icons directly under path
+* [X] 优化：`icon[path]`现在优先匹配直接位于`path`下的图标 / OP: `icon[path]` now prefer to match icons directly under `path`
 * [X] 优化：内嵌提示设置中的 iconHeightLimit 的默认值改为36 / OP: Change the default value of iconHeightLimit in inlay hint settings to 36
 * [X] 优化：兼容job作为本地化命令连接的情况 / OP: Compatible with jobs as localisation command links
 * [X] 优化：在必要时先尝试获取图标的原始高度 / OP: Try to get the original height of the icon first when necessary

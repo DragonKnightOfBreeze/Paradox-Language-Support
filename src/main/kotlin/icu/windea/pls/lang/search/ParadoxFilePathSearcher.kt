@@ -7,6 +7,7 @@ import com.intellij.psi.search.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
@@ -77,14 +78,16 @@ class ParadoxFilePathSearcher : QueryExecutorBase<VirtualFile, ParadoxFilePathSe
                 }
                 val resolvedFileNames = support.resolveFileName(configExpression, filePath)
                 if (resolvedFileNames.isNotNullOrEmpty()) {
+                    val resolvedFiles = sortedSetOf<VirtualFile>(compareBy { it.path })
                     FilenameIndex.processFilesByNames(resolvedFileNames, false, scope, null) p@{ file ->
                         ProgressManager.checkCanceled()
                         val fileInfo = ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
                         if (fileInfo == null) return@p true
                         if (gameType != null && selectGameType(file) != gameType) return@p true //check game type at file level
                         if (!support.matches(configExpression, contextElement, fileInfo.path.path)) return@p true
-                        consumer.process(file)
+                        resolvedFiles.add(file)
                     }
+                    resolvedFiles.process { consumer.process(it) }
                 }
             }
         }
