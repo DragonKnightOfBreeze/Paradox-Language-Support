@@ -224,3 +224,12 @@ fun createNotification(title: String, content: String, notificationType: Notific
     return NotificationGroupManager.getInstance().getNotificationGroup("pls")
         .createNotification(title, content, notificationType)
 }
+
+inline fun <T> withState(state: ThreadLocal<Boolean>, action: () -> T): T {
+    try {
+        state.set(true)
+        return action()
+    } finally {
+        state.remove()
+    }
+}

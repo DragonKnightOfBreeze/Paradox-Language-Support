@@ -8,7 +8,7 @@ import icu.windea.pls.localisation.psi.*
  */
 class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
     companion object {
-        private const val VERSION = 62 //1.4.0
+        private const val VERSION = 64 //1.4.0
         private const val CACHE_SIZE = 100 * 1024 //98000+ in stellaris@3.6
     }
 
@@ -23,7 +23,7 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
      */
     class ModifierIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
         companion object {
-            private const val VERSION = 62 //1.4.0
+            private const val VERSION = 64 //1.4.0
             private const val CACHE_SIZE = 2 * 1024
         }
 

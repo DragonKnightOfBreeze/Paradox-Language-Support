@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.ep.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
@@ -25,7 +26,7 @@ import java.io.*
  */
 class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
     companion object {
-        private const val VERSION = 62 //1.4.0
+        private const val VERSION = 64 //1.4.0
     }
 
     override fun getName() = ParadoxIndexManager.MergedName
@@ -33,11 +34,13 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
     override fun getVersion() = VERSION
 
     override fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        when (file) {
-            is ParadoxScriptFile -> indexDataForScriptFile(file, fileData)
-            is ParadoxLocalisationFile -> indexDataForLocalisationFile(file, fileData)
+        withState(PlsManager.processMergedIndex) {
+            when (file) {
+                is ParadoxScriptFile -> indexDataForScriptFile(file, fileData)
+                is ParadoxLocalisationFile -> indexDataForLocalisationFile(file, fileData)
+            }
+            compressData(fileData)
         }
-        compressData(fileData)
     }
 
     private fun indexDataForScriptFile(file: ParadoxScriptFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
@@ -61,7 +64,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
                     if (definitionInfoStack.isEmpty()) return@run
                     if (element is ParadoxScriptStringExpressionElement && element.isExpression()) {
                         ProgressManager.checkCanceled()
-                        val matchOptions = ParadoxExpressionMatcher.Options.SkipIndex or ParadoxExpressionMatcher.Options.SkipScope
+                        val matchOptions = Options.SkipIndex or Options.SkipScope
                         val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = matchOptions)
                         if (configs.isEmpty()) return@run
                         val definitionInfo = definitionInfoStack.lastOrNull() ?: return@run

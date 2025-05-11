@@ -7,6 +7,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.PlsManager
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
 
@@ -15,6 +16,9 @@ import icu.windea.pls.localisation.psi.*
  */
 class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationProperty, ParadoxLocalisationSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxLocalisationSearch.SearchParameters, consumer: Processor<in ParadoxLocalisationProperty>) {
+        //#141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
+        if(PlsManager.resolveForMergedIndex.get() == true) return
+
         ProgressManager.checkCanceled()
         if(queryParameters.project.isDefault) return
         val scope = queryParameters.selector.scope

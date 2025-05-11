@@ -32,9 +32,9 @@ object ParadoxIndexManager {
 
     val FilePathName = ID.create<String, ParadoxFilePathIndex.Info>("paradox.file.path.index")
     val FileLocaleName = ID.create<String, Void>("paradox.file.locale.index")
-    val DefineName = ID.create<Int, Map<String, Map<String, ParadoxDefineIndexInfo.Compact>>>("paradox.define.index")
-    val InlineScriptUsageName = ID.create<Int, Map<String, ParadoxInlineScriptUsageIndexInfo.Compact>>("paradox.inlineScriptUsage.index")
-    val MergedName = ID.create<Int, Map<String, List<ParadoxIndexInfo>>>("paradox.merged.index")
+    val DefineName = ID.create<String, Map<String, ParadoxDefineIndexInfo.Compact>>("paradox.define.index")
+    val InlineScriptUsageName = ID.create<String, ParadoxInlineScriptUsageIndexInfo.Compact>("paradox.inlineScriptUsage.index")
+    val MergedName = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.index")
 
     val excludeDirectoriesForFilePathIndex = listOf(
         "_CommonRedist",
@@ -50,7 +50,7 @@ object ParadoxIndexManager {
 
     val indexInfoMarkerKey = createKey<Boolean>("paradox.merged.info.index.marker")
 
-    fun <ID : ParadoxIndexInfoType<T>, T : ParadoxIndexInfo> processQueryForIndexInfo(
+    fun <ID : ParadoxIndexInfoType<T>, T : ParadoxIndexInfo> processQueryForMergedIndex(
         fileType: LanguageFileType,
         id: ID,
         project: Project,

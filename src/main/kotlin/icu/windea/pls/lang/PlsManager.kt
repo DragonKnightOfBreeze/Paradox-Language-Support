@@ -8,16 +8,21 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
 
 object PlsManager {
     //region ThreadLocals
 
     /**
-     * 用于标记当前线程是否正在编制索引。（更具体点，是否正在为脚本文件或者本地化文件编制基于文件的索引）
-     * @see icu.windea.pls.lang.index.ParadoxFileBasedIndex
+     * 用于标记当前线程是否正在为[ParadoxMergedIndex]编制索引。
      */
-    val indexing = ThreadLocal<Boolean>()
+    val processMergedIndex = ThreadLocal<Boolean>()
+
+    /**
+     * 用于标记当前线程是否正在为[ParadoxMergedIndex]编制索引并且正在解析引用。
+     */
+    val resolveForMergedIndex = ThreadLocal<Boolean>()
 
     /**
      * 用于标记是否是动态的上下文规则。（例如需要基于脚本上下文）

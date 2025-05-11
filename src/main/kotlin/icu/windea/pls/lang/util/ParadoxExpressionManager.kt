@@ -46,6 +46,7 @@ object ParadoxExpressionManager {
         val cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>(Keys)
 
         val cachedExpressionReferences by createKey<CachedValue<Array<out PsiReference>>>(Keys)
+        val cachedExpressionReferencesForMergedIndex by createKey<CachedValue<Array<out PsiReference>>>(Keys)
 
         val inBlockKeys by createKey<Set<String>>(this)
     }
@@ -777,7 +778,8 @@ object ParadoxExpressionManager {
         //尝试兼容可能包含参数的情况
         //if(element.text.isParameterized()) return PsiReference.EMPTY_ARRAY
 
-        val key = Keys.cachedExpressionReferences
+        val processMergedIndex = PlsManager.processMergedIndex.get() == true
+        val key = if (processMergedIndex) Keys.cachedExpressionReferencesForMergedIndex else Keys.cachedExpressionReferences
         return CachedValuesManager.getCachedValue(element, key) {
             val value = doGetExpressionReferences(element)
             value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
@@ -787,7 +789,9 @@ object ParadoxExpressionManager {
     private fun doGetExpressionReferences(element: ParadoxScriptExpressionElement): Array<out PsiReference> {
         //尝试基于CWT规则进行解析
         val isKey = element is ParadoxScriptPropertyKey
-        val configs = getConfigs(element, orDefault = isKey)
+        val processMergedIndex = PlsManager.processMergedIndex.get() == true
+        val matchOptions = if (processMergedIndex) Options.SkipIndex or Options.SkipScope else Options.Default
+        val configs = getConfigs(element, orDefault = isKey, matchOptions = matchOptions)
         val config = configs.firstOrNull() ?: return PsiReference.EMPTY_ARRAY
         val textRange = getExpressionTextRange(element) //unquoted text
         val reference = ParadoxScriptExpressionPsiReference(element, textRange, config, isKey)
@@ -800,7 +804,9 @@ object ParadoxExpressionManager {
         //尝试兼容可能包含参数的情况
         //if(text.isParameterized()) return PsiReference.EMPTY_ARRAY
 
-        val key = Keys.cachedExpressionReferences
+        val processMergedIndex = PlsManager.processMergedIndex.get() == true
+        val key = if (processMergedIndex) Keys.cachedExpressionReferencesForMergedIndex else Keys.cachedExpressionReferences
+        val matchOptions = if (processMergedIndex) Options.SkipIndex or Options.SkipScope else Options.Default
         return CachedValuesManager.getCachedValue(element, key) {
             val value = doGetExpressionReferences(element)
             value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
