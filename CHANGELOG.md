@@ -10,7 +10,7 @@
 * [ ] 允许为同一个模组配置多个模组依赖列表 / Allow to configure multiple mod dependency lists for the same mod
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
 
-## 1.4.0 TODO
+## TODO
 
 * [ ] 验证：本地化的HTML渲染和内嵌提示渲染，在重构代码后是否仍然正常工作
 * [ ] 验证：对CWT文件与本地化文件的语法解析，在重构代码中是否仍然正常工作
@@ -35,7 +35,7 @@
 * [X] 优化：在必要时先尝试获取图标的原始高度 / OP: Try to get the original height of the icon first when necessary
 * [X] 新功能：支持解析本地化文本中的属性引用&命令的传入参数中的文本颜色ID为引用 / NEW: Support parsing text color ids in arguments of references & commands in localisation text as references
 
-# 1.3.37
+## 1.3.37
 
 * [X] 完善Stellaris 4.0的CWT规则文件 / Optimize CWT config files for Stellaris 4.0
 * [X] #139 修复某些情况下无法正常渲染与预览DDS图片的问题 / Fixed a problem that DDS images could not be properly rendered and previewed in some situations
