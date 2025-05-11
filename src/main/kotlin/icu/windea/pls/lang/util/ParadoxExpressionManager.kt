@@ -45,6 +45,8 @@ object ParadoxExpressionManager {
         val cachedConfigsCache by createKey<CachedValue<MutableMap<String, List<CwtMemberConfig<*>>>>>(Keys)
         val cachedChildOccurrenceMapCache by createKey<CachedValue<MutableMap<String, Map<CwtDataExpression, Occurrence>>>>(Keys)
 
+        val cachedExpressionReferences by createKey<CachedValue<Array<out PsiReference>>>(Keys)
+
         val inBlockKeys by createKey<Set<String>>(this)
     }
 
@@ -775,7 +777,8 @@ object ParadoxExpressionManager {
         //尝试兼容可能包含参数的情况
         //if(element.text.isParameterized()) return PsiReference.EMPTY_ARRAY
 
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationExpressionReferences) {
+        val key = Keys.cachedExpressionReferences
+        return CachedValuesManager.getCachedValue(element, key) {
             val value = doGetExpressionReferences(element)
             value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
         }
@@ -797,7 +800,8 @@ object ParadoxExpressionManager {
         //尝试兼容可能包含参数的情况
         //if(text.isParameterized()) return PsiReference.EMPTY_ARRAY
 
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationExpressionReferences) {
+        val key = Keys.cachedExpressionReferences
+        return CachedValuesManager.getCachedValue(element, key) {
             val value = doGetExpressionReferences(element)
             value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
         }
