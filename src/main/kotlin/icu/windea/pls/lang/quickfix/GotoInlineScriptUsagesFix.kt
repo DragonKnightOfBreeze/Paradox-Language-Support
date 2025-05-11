@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.quickfix
 
+import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
@@ -25,4 +26,8 @@ class GotoInlineScriptUsagesFix : IntentionAndQuickFixAction() {
         if (expression == null) return
         GotoDeclarationAction.startFindUsages(editor, project, file)
     }
+
+    override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor) = IntentionPreviewInfo.EMPTY
+
+    override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
 }
