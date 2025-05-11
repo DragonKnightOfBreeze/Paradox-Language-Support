@@ -15,6 +15,7 @@ import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.search.scope.*
+import icu.windea.pls.lang.util.ParadoxLocalisationArgumentManager
 import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
@@ -204,11 +205,11 @@ object ParadoxLocalisationPsiImplUtil {
     }
 
     @JvmStatic
-    fun getReference(element: ParadoxLocalisationColorfulText): ParadoxLocalisationColorPsiReference? {
+    fun getReference(element: ParadoxLocalisationColorfulText): ParadoxLocalisationTextColorPsiReference? {
         return CachedValuesManager.getCachedValue(element) {
             val value = run {
                 val rangeInElement = element.idElement?.textRangeInParent ?: return@run null
-                ParadoxLocalisationColorPsiReference(element, rangeInElement)
+                ParadoxLocalisationTextColorPsiReference(element, rangeInElement)
             }
             CachedValueProvider.Result.create(value, element)
         }
@@ -253,6 +254,11 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationPropertyReferenceArgument): PsiElement? {
         return element.findChild { it.elementType == PROPERTY_REFERENCE_ARGUMENT_TOKEN }
+    }
+
+    @JvmStatic
+    fun getReferences(element: ParadoxLocalisationPropertyReferenceArgument): Array<out PsiReference> {
+        return ParadoxLocalisationArgumentManager.getReferences(element)
     }
 
     //endregion
@@ -347,6 +353,8 @@ object ParadoxLocalisationPsiImplUtil {
         return element.name
     }
 
+    //endregion
+
     //region ParadoxLocalisationCommandArgument
 
     @JvmStatic
@@ -354,8 +362,10 @@ object ParadoxLocalisationPsiImplUtil {
         return element.findChild { it.elementType == COMMAND_ARGUMENT_TOKEN }
     }
 
-    //endregion
-
+    @JvmStatic
+    fun getReferences(element: ParadoxLocalisationCommandArgument): Array<out PsiReference> {
+        return ParadoxLocalisationArgumentManager.getReferences(element)
+    }
     //endregion
 
     //region ParadoxLocalisationIcon

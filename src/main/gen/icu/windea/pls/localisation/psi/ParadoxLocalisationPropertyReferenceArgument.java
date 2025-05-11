@@ -5,12 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxLocalisationPropertyReferenceArgument extends ParadoxLocalisationArgument {
+public interface ParadoxLocalisationPropertyReferenceArgument extends ParadoxLocalisationArgument, ParadoxLocalisationTextColorAwareElement {
 
   @Nullable PsiElement getIdElement();
+
+  @NotNull PsiReference @NotNull [] getReferences();
 
   @NotNull ItemPresentation getPresentation();
 

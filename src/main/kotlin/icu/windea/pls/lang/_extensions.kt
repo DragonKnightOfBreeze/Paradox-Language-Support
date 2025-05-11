@@ -208,14 +208,6 @@ val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
 val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueIndexInfo?
     get() = ParadoxComplexEnumValueManager.getInfo(this)
 
-val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorInfo?
-    get() = ParadoxTextColorManager.getInfo(this)
-val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorInfo?
-    get() = ParadoxTextColorManager.getInfo(this)
-val ParadoxLocalisationCommand.colorConfig: ParadoxTextColorInfo?
-    get() = ParadoxTextColorManager.getInfo(this)
-
-
 /**
  * 获取定义的指定类型的数据。
  */

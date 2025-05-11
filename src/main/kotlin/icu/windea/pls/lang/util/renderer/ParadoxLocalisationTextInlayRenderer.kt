@@ -120,7 +120,7 @@ object ParadoxLocalisationTextInlayRenderer {
         //如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if (richTextList.isEmpty()) return true
-        val color = if (getSettings().others.renderLocalisationColorfulText) element.colorConfig?.color else null
+        val color = if (getSettings().others.renderLocalisationColorfulText) element.colorInfo?.color else null
         return renderWithColorTo(color, context) {
             var continueProcess = true
             for (richText in richTextList) {
@@ -137,7 +137,7 @@ object ParadoxLocalisationTextInlayRenderer {
 
     private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context): Boolean = with(context.factory) {
         //如果有颜色码，则使用该颜色渲染，否则保留颜色码
-        val color = if (getSettings().others.renderLocalisationColorfulText) element.colorConfig?.color else null
+        val color = if (getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         return renderWithColorTo(color, context) r@{
             //如果处理文本失败，则使用原始文本
             val resolved = element.reference?.resolve()
@@ -182,7 +182,7 @@ object ParadoxLocalisationTextInlayRenderer {
 
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context): Boolean = with(context.factory) {
         //如果有颜色码，则使用该颜色渲染，否则保留颜色码
-        val color = if (getSettings().others.renderLocalisationColorfulText) element.colorConfig?.color else null
+        val color = if (getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         return renderWithColorTo(color, context) r@{
             //显示解析后的概念文本
             run {

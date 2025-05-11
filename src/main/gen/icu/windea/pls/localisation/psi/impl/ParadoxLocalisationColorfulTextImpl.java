@@ -13,7 +13,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.localisation.references.ParadoxLocalisationColorPsiReference;
+import icu.windea.pls.localisation.references.ParadoxLocalisationTextColorPsiReference;
 
 public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationColorfulText {
 
@@ -54,7 +54,7 @@ public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationRich
   }
 
   @Override
-  public @Nullable ParadoxLocalisationColorPsiReference getReference() {
+  public @Nullable ParadoxLocalisationTextColorPsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
   }
 

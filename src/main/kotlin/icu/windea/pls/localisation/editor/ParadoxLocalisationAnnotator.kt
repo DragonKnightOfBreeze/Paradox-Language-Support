@@ -56,30 +56,31 @@ class ParadoxLocalisationAnnotator : Annotator {
     }
 
     private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
-        //颜色高亮
-        val location = element.idElement ?: return
-        val attributesKey = element.reference?.getAttributesKey() ?: return
-        holder.newSilentAnnotation(INFORMATION).range(location).textAttributes(attributesKey).create()
+        annotateTextColor(element, holder)
     }
 
     private fun annotatePropertyReference(element: ParadoxLocalisationPropertyReference, holder: AnnotationHolder) {
-        annotateByArgument(element.argumentElement, holder)
+        annotateByArgument(element, holder)
     }
 
     private fun annotateCommand(element: ParadoxLocalisationCommand, holder: AnnotationHolder) {
-        annotateByArgument(element.argumentElement, holder)
+        annotateByArgument(element, holder)
     }
 
-    private fun annotateByArgument(element: ParadoxLocalisationArgument?, holder: AnnotationHolder) {
-        if (element == null) return
-        val text = element.text
-        val textColorCharIndex = text.indexOfLast { ParadoxLocalisationArgumentManager.isTextColorChar(it) }
-        if(textColorCharIndex == -1) return
-        val colorId = text[textColorCharIndex]
-        val colorConfig = ParadoxTextColorManager.getInfo(colorId.toString(), element.project, element) ?: return
-        val attributesKey = Keys.getColorKey(colorConfig.color) ?: return
-        val colorIdOffset = element.startOffset + text.indexOf(colorId)
-        val range = TextRange.create(colorIdOffset, colorIdOffset + 1)
+    private fun annotateByArgument(element: ParadoxLocalisationArgumentAwareElement, holder: AnnotationHolder) {
+        val argumentElement = element.argumentElement ?: return
+        if (argumentElement is ParadoxLocalisationTextColorAwareElement) {
+            annotateTextColor(argumentElement, holder)
+        }
+    }
+
+    private fun annotateTextColor(element: ParadoxLocalisationTextColorAwareElement, holder: AnnotationHolder) {
+        //颜色高亮
+        val color = element.colorInfo?.color ?: return
+        val attributesKey = Keys.getColorKey(color) ?: return
+        val (idElement, idOffset) = ParadoxTextColorManager.getIdElementAndOffset(element) ?: return
+        if (idOffset == -1) return
+        val range = TextRange.from(idOffset + idElement.startOffset, 1)
         holder.newSilentAnnotation(INFORMATION).range(range).textAttributes(attributesKey).create()
     }
 

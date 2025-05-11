@@ -86,6 +86,9 @@ string ::= STRING_TOKEN {
 colorful_text ::= COLORFUL_TEXT_START COLOR_TOKEN colorful_text_item [COLORFUL_TEXT_END]{
   pin=1
   extends=rich_text
+  implements=[
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
+  ]
   methods=[getIdElement getName setName getReference]
 }
 private colorful_text_item ::= rich_text *
@@ -97,7 +100,10 @@ private colorful_text_item ::= rich_text *
 property_reference ::= PROPERTY_REFERENCE_START property_reference_name [PIPE property_reference_argument] PROPERTY_REFERENCE_END {
   pin=1
   extends=rich_text
-  implements=["com.intellij.psi.NavigatablePsiElement"]
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
+  ]
   methods=[
     getIdElement argument_element="property_reference_argument"
     getName setName getReference
@@ -105,8 +111,11 @@ property_reference ::= PROPERTY_REFERENCE_START property_reference_name [PIPE pr
 }
 private property_reference_name ::= PROPERTY_REFERENCE_TOKEN | command | scripted_variable_reference //can be parameterized, or @sv
 property_reference_argument ::= PROPERTY_REFERENCE_ARGUMENT_TOKEN {
-  implements=["icu.windea.pls.localisation.psi.ParadoxLocalisationArgument"]
-  methods=[getIdElement]
+  implements=[
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationArgument"
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
+  ]
+  methods=[getIdElement getReferences]
 }
 
 // scripted variable reference rules (in references)
@@ -124,7 +133,10 @@ scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_TOKEN {
 command ::= COMMAND_START command_expression ? COMMAND_END {
   pin=1
   extends=rich_text
-  implements="icu.windea.pls.localisation.psi.ParadoxLocalisationRichText"
+  implements=[
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationRichText"
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
+  ]
   methods=[
     argument_element="command_argument"
     getIcon
@@ -143,8 +155,11 @@ command_text ::= COMMAND_TEXT_TOKEN | property_reference { //can be parameterize
   ]
 }
 command_argument ::= COMMAND_ARGUMENT_TOKEN | property_reference { //can be parameterized
-  implements=["icu.windea.pls.localisation.psi.ParadoxLocalisationArgument"]
-  methods=[getIdElement getReferenceElement property_reference=""]
+  implements=[
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationArgument"
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
+  ]
+  methods=[getIdElement getReferenceElement property_reference="" getReferences]
 }
 
 // localisation icon rules
@@ -154,6 +169,7 @@ icon ::= ICON_START icon_name [PIPE icon_argument] ICON_END {
   extends=rich_text
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
+    "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
   ]
   methods=[
     getIdElement getReferenceElement argument_element="icon_argument"

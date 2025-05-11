@@ -1,6 +1,6 @@
 package icu.windea.pls.localisation.psi
 
-import com.intellij.psi.NavigatablePsiElement
+import com.intellij.psi.*
 
 /**
  * @see ParadoxLocalisationPropertyReferenceArgument

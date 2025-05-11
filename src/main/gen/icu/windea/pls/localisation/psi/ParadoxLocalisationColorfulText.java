@@ -8,9 +8,9 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.localisation.references.ParadoxLocalisationColorPsiReference;
+import icu.windea.pls.localisation.references.ParadoxLocalisationTextColorPsiReference;
 
-public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRichText {
+public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRichText, ParadoxLocalisationTextColorAwareElement {
 
   @NotNull
   List<ParadoxLocalisationRichText> getRichTextList();
@@ -21,7 +21,7 @@ public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRich
 
   @NotNull ParadoxLocalisationColorfulText setName(@NotNull String name);
 
-  @Nullable ParadoxLocalisationColorPsiReference getReference();
+  @Nullable ParadoxLocalisationTextColorPsiReference getReference();
 
   @NotNull ItemPresentation getPresentation();
 

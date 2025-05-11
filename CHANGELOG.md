@@ -2,6 +2,7 @@
 
 ## PLANNED
 
+* [ ] 优化：为本地化文本中的属性引用&命令的传入参数提供关于其中使用的格式标签的说明（文档注释、枚举、工具类等）
 * [ ] 提供代码检查，用于高亮本地化文本中可能的格式错误（例如多余的`!`） / Provide the code inspection to highlight possible format errors in loc text (such as redundant `!`) 
 * [ ] 提供对魔法注释的初步支持 / Provide initial support for magic Comments
 * [ ] 提供用于生成并修补脚本的魔法注释，实现相关功能 / Provide magic comments to generate and patch scripts, implement related features
@@ -20,7 +21,7 @@
 * [X] 优化：InlayHintsProvider 中的 iconHeightLimit 的默认值改为36
 * [X] 优化：兼容job作为本地化命令连接的情况
 * [X] 优化：在必要时先尝试获取图标的原始高度
-* [ ] 优化：为本地化文本中的属性引用&命令的传入参数提供关于其中使用的格式标签的说明（文档注释、枚举、工具类等）
+* [X] 新功能：支持解析本地化文本中的属性引用&命令的传入参数中的文本颜色ID为引用
 * [ ] 新功能：[VIC3/CK3] 支持本地化文本中的本地化格式（Localisation formatting）（示例：`#v text#!`，其中`v`对应规则表达式`<textformatting>`，`text`是富文本的组合）
 * [ ] 新功能：[VIC3/CK3] 支持本地化文本中的文本图标（Text icons）（示例：`@icon!`，其中`icon`对应规则表达式`texticon`；需要被渲染为图标）
 * [ ] 新功能：[VIC3/CK3] 支持通过规范的本地化命令声明的概念引用（Concepts）（示例：`[concept_name]` `[Concept('concept_name', '$other_loc_key$')]`）
