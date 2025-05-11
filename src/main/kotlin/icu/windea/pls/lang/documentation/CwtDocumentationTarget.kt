@@ -188,7 +188,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
     val contextElement = referenceElement
     val gameType = configGroup.gameType ?: return
     val project = configGroup.project
-    val usedLocale = ParadoxLocaleManager.getUsedLocaleInDocumentation(element)
+    val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
     val nameLocalisation = run {
         val keys = ParadoxModifierManager.getModifierNameKeys(name, contextElement)
         keys.firstNotNullOfOrNull { key ->

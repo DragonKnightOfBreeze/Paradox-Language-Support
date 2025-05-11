@@ -38,9 +38,8 @@ class ParadoxGenerateLocalisationsHandler(
             ParadoxLocalisationGenerator.generate(context, selectedElements, project, file, selected)
         }
 
-        val selectedLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         val allLocales = ParadoxLocaleManager.getLocaleConfigs()
-        val localePopup = ParadoxLocaleListPopup(selectedLocale, allLocales, onChosen)
+        val localePopup = ParadoxLocaleListPopup(allLocales, onChosen)
         JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
     }
 

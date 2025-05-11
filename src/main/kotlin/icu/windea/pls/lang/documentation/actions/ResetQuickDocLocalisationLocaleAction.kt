@@ -23,23 +23,22 @@ class ResetQuickDocLocalisationLocaleAction : AnAction(), HintManagerImpl.Action
         var isVisible = false
         var isEnabled = false
         run {
-            val browser = e.getData(DOCUMENTATION_BROWSER) ?: return@run
-            val target = browser.targetPointer.dereference() ?: return@run
-            val targetElement = target.targetElement ?: return@run
-            val locale = ParadoxLocaleManager.getLocaleInDocumentation(targetElement)
-            if (locale == null) return@run
+            val browser = e.getData(DOCUMENTATION_BROWSER)
+            val targetElement = browser?.targetPointer?.dereference()?.targetElement
+            if (targetElement == null) return@run
+            val locale = ParadoxLocaleManager.getLocaleConfigInDocumentation(targetElement)
             isVisible = true
-            isEnabled = true
+            isEnabled = locale != null
         }
         e.presentation.isEnabled = isEnabled
         e.presentation.isVisible = isVisible
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        val browser = e.getData(DOCUMENTATION_BROWSER) ?: return
-        val target = browser.targetPointer.dereference() ?: return
-        val targetElement = target.targetElement ?: return
-        val locale = ParadoxLocaleManager.getLocaleInDocumentation(targetElement)
+        val browser = e.getData(DOCUMENTATION_BROWSER)
+        val targetElement = browser?.targetPointer?.dereference()?.targetElement
+        if (targetElement == null) return
+        val locale = ParadoxLocaleManager.getLocaleConfigInDocumentation(targetElement)
         if (locale == null) return
         targetElement.putUserData(PlsKeys.documentationLocale, null)
         browser.reload()
