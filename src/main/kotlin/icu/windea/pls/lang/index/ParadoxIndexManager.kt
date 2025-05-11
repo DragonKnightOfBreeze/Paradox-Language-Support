@@ -1,20 +1,18 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.openapi.fileTypes.LanguageFileType
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.search.FileTypeIndex
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.SearchScope
+import com.intellij.openapi.fileTypes.*
+import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.vfs.*
+import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.createKey
-import icu.windea.pls.ep.index.ParadoxIndexInfoType
-import icu.windea.pls.lang.selectGameType
+import icu.windea.pls.core.util.*
+import icu.windea.pls.ep.index.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
 
@@ -26,18 +24,17 @@ object ParadoxIndexManager {
     val LocalisationNameForModifierKey = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.modifier")
     val SyncedLocalisationNameKey = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
 
-    val Define  by lazy { findFileBasedIndex<ParadoxDefineIndex>() }
     val FilePath by lazy { findFileBasedIndex<ParadoxFilePathIndex>() }
     val FileLocale by lazy { findFileBasedIndex<ParadoxFileLocaleIndex>() }
+    val Define by lazy { findFileBasedIndex<ParadoxDefineIndex>() }
     val InlineScriptUsage by lazy { findFileBasedIndex<ParadoxInlineScriptUsageIndex>() }
+    val Merged by lazy { findFileBasedIndex<ParadoxMergedIndex>() }
 
-    val DefineName = ID.create<String, Map<String, ParadoxDefineIndexInfo.Compact>>("paradox.define.index")
     val FilePathName = ID.create<String, ParadoxFilePathIndex.Info>("paradox.file.path.index")
     val FileLocaleName = ID.create<String, Void>("paradox.file.locale.index")
-    val InlineScriptUsageName = ID.create<String, ParadoxInlineScriptUsageIndexInfo.Compact>("paradox.inlineScriptUsage.index")
-
-    val Merged by lazy { findFileBasedIndex<ParadoxMergedIndex>() }
-    val MergedName = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.index")
+    val DefineName = ID.create<Int, Map<String, Map<String, ParadoxDefineIndexInfo.Compact>>>("paradox.define.index")
+    val InlineScriptUsageName = ID.create<Int, Map<String, ParadoxInlineScriptUsageIndexInfo.Compact>>("paradox.inlineScriptUsage.index")
+    val MergedName = ID.create<Int, Map<String, List<ParadoxIndexInfo>>>("paradox.merged.index")
 
     val excludeDirectoriesForFilePathIndex = listOf(
         "_CommonRedist",

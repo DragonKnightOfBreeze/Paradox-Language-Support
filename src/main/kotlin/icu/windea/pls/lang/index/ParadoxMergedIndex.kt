@@ -25,7 +25,7 @@ import java.io.*
  */
 class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
     companion object {
-        private const val VERSION = 60 //1.4.0
+        private const val VERSION = 62 //1.4.0
     }
 
     override fun getName() = ParadoxIndexManager.MergedName
@@ -156,9 +156,10 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
     }
 
     override fun useLazyIndex(file: VirtualFile): Boolean {
-        //be always lazy indexed, to avoid:
-        //java.lang.Throwable: Indexing process should not rely on non-indexed file data.
-        return true
+        if (ParadoxFileManager.isInjectedFile(file)) return true
+        if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true //inline script files should be lazy indexed
+        //if (file.fileType is ParadoxLocalisationFileType) return true //to prevent recursion, see #127
+        return false
     }
 
     fun <T : ParadoxIndexInfo> getFileData(file: VirtualFile, project: Project, id: ParadoxIndexInfoType<T>): List<T> {

@@ -71,10 +71,8 @@ class ParadoxLocalisationPropertyPsiReference(
         if (resolved != null) return resolved
 
         //尝试解析成parameter
-        if (!isIndexing()) {
-            val resolvedParameter = ParadoxLocalisationParameterSupport.resolveParameter(element)
-            if (resolvedParameter != null) return resolvedParameter
-        }
+        val resolvedParameter = ParadoxLocalisationParameterSupport.resolveParameter(element)
+        if (resolvedParameter != null) return resolvedParameter
 
         return null
     }
