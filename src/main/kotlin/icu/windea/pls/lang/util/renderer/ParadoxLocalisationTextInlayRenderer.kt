@@ -140,7 +140,7 @@ object ParadoxLocalisationTextInlayRenderer {
         val color = if (getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         return renderWithColorTo(color, context) r@{
             //如果处理文本失败，则使用原始文本
-            val resolved = element.reference?.resolve()
+            val resolved = element.reference?.resolveLocalisation() //直接解析为本地化以优化性能
                 ?: element.scriptedVariableReference?.reference?.resolve()
             val presentation = when {
                 resolved is ParadoxLocalisationProperty -> {

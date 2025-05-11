@@ -113,7 +113,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         val color = if (getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
 
         renderWithColorTo(color, context) {
-            val resolved = element.reference?.resolve()
+            val resolved = element.reference?.resolveLocalisation() //直接解析为本地化以优化性能
                 ?: element.scriptedVariableReference?.reference?.resolve()
             when {
                 resolved is ParadoxLocalisationProperty -> {
