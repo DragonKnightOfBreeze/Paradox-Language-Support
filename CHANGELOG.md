@@ -26,14 +26,14 @@
 * [X] #140 修复与本地化命令连接相关的一些问题（规则解析、代码导航等） / Fixed some problems about localisation command links (Config resolving, code navigation, etc.)
 * [X] 通过懒解析CWT文件中的选项注释来尝试优化性能 / Try to optimize performance by lazily parsing option comments in CWT files
 * [X] 通过懒解析本地化文件中的本地化文本来尝试优化性能与提高代码灵活性 / Try to optimize performance and improve code flexibility by lazily parsing localisation text in localisation files
-* [X] 修复：本地化图标如果对应一个sprite，无法正常适用用法高亮 / Fix: Localisation icons could not be properly highlighted if it will be resolved to a sprite
+* [X] 修复：本地化图标如果对应一个sprite，无法正常适用用法高亮 / FIX: Localisation icons could not be properly highlighted if it will be resolved to a sprite
 * [X] 修复：本地化命令中的动态值无法查找使用，无法正常适用用法高亮 / Fix: Dynamic values in localisation commands could not find usages, could not be properly highlighted
-* [X] 修复：修复关于本地化的语言区域的一些问题 / Fix: Fix some problems about localisation locales
+* [X] 修复：修复关于本地化的语言区域的一些问题 / FIX: Fix some problems about localisation locales
 * [X] 优化：`icon[path]`现在仅匹配直接位于path下的图标 / OP: `icon[path]` now only matches icons directly under path
 * [X] 优化：内嵌提示设置中的 iconHeightLimit 的默认值改为36 / OP: Change the default value of iconHeightLimit in inlay hint settings to 36
 * [X] 优化：兼容job作为本地化命令连接的情况 / OP: Compatible with jobs as localisation command links
 * [X] 优化：在必要时先尝试获取图标的原始高度 / OP: Try to get the original height of the icon first when necessary
-* [X] 新功能：支持解析本地化文本中的属性引用&命令的传入参数中的文本颜色ID为引用 / New feature: Support parsing text color ids in arguments of references & commands in localisation text as references
+* [X] 新功能：支持解析本地化文本中的属性引用&命令的传入参数中的文本颜色ID为引用 / NEW: Support parsing text color ids in arguments of references & commands in localisation text as references
 
 # 1.3.37
 
