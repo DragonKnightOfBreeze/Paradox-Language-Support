@@ -61,6 +61,10 @@ class ParadoxLocalisationIconPsiReference(
         val textSpriteSelector = selector(project, element).definition().contextSensitive()
         val textSprite = ParadoxDefinitionSearch.search(textSpriteName, "sprite", textSpriteSelector).find()
         if (textSprite != null) return textSprite
+        val resourceSpriteName = "GFX_resource_$iconName"
+        val resourceSpriteSelector = selector(project, element).definition().contextSensitive()
+        val resourceSprite = ParadoxDefinitionSearch.search(resourceSpriteName, "sprite", resourceSpriteSelector).find()
+        if (resourceSprite != null) return textSprite
         val spriteName = "GFX_$iconName"
         val spriteSelector = selector(project, element).definition().contextSensitive()
         val sprite = ParadoxDefinitionSearch.search(spriteName, "sprite", spriteSelector).find()
