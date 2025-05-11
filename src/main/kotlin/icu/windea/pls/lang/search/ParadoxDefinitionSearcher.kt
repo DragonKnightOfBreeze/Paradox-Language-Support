@@ -9,7 +9,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexManager
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
@@ -82,12 +82,12 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
             }
         } else {
             if (name == null) {
-                ParadoxDefinitionTypeIndex.KEY.processAllElements(typeExpression.type, project, scope) p@{ element ->
+                ParadoxIndexManager.DefinitionTypeKey.processAllElements(typeExpression.type, project, scope) p@{ element ->
                     if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(element, typeExpression.subtypes)) return@p true
                     consumer.process(element)
                 }
             } else {
-                ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) p@{ element ->
+                ParadoxIndexManager.DefinitionNameKey.processAllElements(name, project, scope) p@{ element ->
                     if (!matchesType(element, typeExpression.type)) return@p true
                     if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(element, typeExpression.subtypes)) return@p true
                     consumer.process(element)
@@ -110,9 +110,9 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
 
     private fun doProcessAllElements(name: String?, project: Project, scope: GlobalSearchScope, processor: Processor<ParadoxScriptDefinitionElement>): Boolean {
         if (name == null) {
-            return ParadoxDefinitionNameIndex.KEY.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
+            return ParadoxIndexManager.DefinitionNameKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
         } else {
-            return ParadoxDefinitionNameIndex.KEY.processAllElements(name, project, scope) { element -> processor.process(element) }
+            return ParadoxIndexManager.DefinitionNameKey.processAllElements(name, project, scope) { element -> processor.process(element) }
         }
     }
 }

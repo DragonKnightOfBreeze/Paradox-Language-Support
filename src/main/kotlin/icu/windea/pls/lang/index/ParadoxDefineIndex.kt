@@ -3,7 +3,6 @@ package icu.windea.pls.lang.index
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
@@ -16,15 +15,11 @@ import java.io.*
  * 用于索引预定义的命名空间与变量。
  */
 class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexInfo.Compact>>() {
-    @Suppress("CompanionObjectInExtension")
     companion object {
-        val INSTANCE by lazy { findFileBasedIndex<ParadoxDefineIndex>() }
-        val NAME = ID.create<String, Map<String, ParadoxDefineIndexInfo.Compact>>("paradox.define.index")
-
         private const val VERSION = 60 //1.4.0
     }
 
-    override fun getName() = NAME
+    override fun getName() = ParadoxIndexManager.DefineName
 
     override fun getVersion() = VERSION
 

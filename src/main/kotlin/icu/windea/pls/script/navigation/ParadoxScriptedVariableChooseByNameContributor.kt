@@ -5,7 +5,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexManager
 import icu.windea.pls.script.psi.*
 
 //com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
@@ -15,12 +15,12 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxScriptedVariableChooseByNameContributor : ChooseByNameContributorEx {
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
-        StubIndex.getInstance().processAllKeys(ParadoxScriptedVariableNameIndex.KEY, processor, scope, filter)
+        StubIndex.getInstance().processAllKeys(ParadoxIndexManager.ScriptedVariableNameKey, processor, scope, filter)
     }
 
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
         StubIndex.getInstance().processElements(
-            ParadoxScriptedVariableNameIndex.KEY, name, parameters.project, parameters.searchScope, parameters.idFilter,
+            ParadoxIndexManager.ScriptedVariableNameKey, name, parameters.project, parameters.searchScope, parameters.idFilter,
             ParadoxScriptScriptedVariable::class.java, processor
         )
     }

@@ -6,7 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexManager
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.script.psi.*
 
@@ -31,9 +31,9 @@ class ParadoxGlobalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScr
 
     private fun doProcessAllElements(name: String?, project: Project, scope: GlobalSearchScope, processor: Processor<ParadoxScriptScriptedVariable>): Boolean {
         if (name == null) {
-            return ParadoxScriptedVariableNameIndex.KEY.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
+            return ParadoxIndexManager.ScriptedVariableNameKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
         } else {
-            return ParadoxScriptedVariableNameIndex.KEY.processAllElements(name, project, scope) { element -> processor.process(element) }
+            return ParadoxIndexManager.ScriptedVariableNameKey.processAllElements(name, project, scope) { element -> processor.process(element) }
         }
     }
 }

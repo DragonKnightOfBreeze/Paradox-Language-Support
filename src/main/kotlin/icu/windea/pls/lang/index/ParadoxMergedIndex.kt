@@ -1,15 +1,11 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.psi.search.*
 import com.intellij.psi.util.*
-import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.index.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
@@ -28,38 +24,11 @@ import java.io.*
  * @see ParadoxIndexInfoSupport
  */
 class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
-    @Suppress("CompanionObjectInExtension")
     companion object {
-        val INSTANCE by lazy { findFileBasedIndex<ParadoxMergedIndex>() }
-        val NAME = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.index")
-
         private const val VERSION = 60 //1.4.0
-
-        private val markerKey = createKey<Boolean>("paradox.merged.info.index.marker")
-
-        fun <ID : ParadoxIndexInfoType<T>, T : ParadoxIndexInfo> processQuery(
-            fileType: LanguageFileType,
-            id: ID,
-            project: Project,
-            gameType: ParadoxGameType,
-            scope: GlobalSearchScope,
-            processor: (file: VirtualFile, fileData: List<T>) -> Boolean
-        ): Boolean {
-            ProgressManager.checkCanceled()
-            if (SearchScope.isEmptyScope(scope)) return true
-
-            return FileTypeIndex.processFiles(fileType, p@{ file ->
-                ProgressManager.checkCanceled()
-                if (selectGameType(file) != gameType) return@p true //check game type at file level
-
-                val fileData = INSTANCE.getFileData(file, project, id)
-                if (fileData.isEmpty()) return@p true
-                processor(file, fileData)
-            }, scope)
-        }
     }
 
-    override fun getName() = NAME
+    override fun getName() = ParadoxIndexManager.MergedName
 
     override fun getVersion() = VERSION
 
@@ -83,7 +52,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
                 if (element is ParadoxScriptDefinitionElement) {
                     val definitionInfo = element.definitionInfo
                     if (definitionInfo != null) {
-                        element.putUserData(markerKey, true)
+                        element.putUserData(ParadoxIndexManager.indexInfoMarkerKey, true)
                         definitionInfoStack.addLast(definitionInfo)
                     }
                 }
@@ -108,8 +77,8 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
             }
 
             override fun elementFinished(element: PsiElement) {
-                if (element.getUserData(markerKey) == true) {
-                    element.putUserData(markerKey, null)
+                if (element.getUserData(ParadoxIndexManager.indexInfoMarkerKey) == true) {
+                    element.putUserData(ParadoxIndexManager.indexInfoMarkerKey, null)
                     definitionInfoStack.removeLastOrNull()
                 }
             }

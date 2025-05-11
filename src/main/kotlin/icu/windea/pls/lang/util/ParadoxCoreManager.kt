@@ -18,7 +18,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.metadata.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexManager
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.model.*
 import java.nio.file.*
@@ -181,7 +181,7 @@ object ParadoxCoreManager {
             val _cachedLocaleConfig = file.getUserData(PlsKeys.localeConfig)
             if (_cachedLocaleConfig != null) return _cachedLocaleConfig.castOrNull()
 
-            val indexKey = ParadoxFileLocaleIndex.NAME
+            val indexKey = ParadoxIndexManager.FileLocaleName
             val localeId = FileBasedIndex.getInstance().getFileData(indexKey, file, project).keys.singleOrNull() ?: return null
             val localeConfig = getConfigGroup(project, null).localisationLocalesById.get(localeId)
             file.tryPutUserData(PlsKeys.localeConfig, localeConfig ?: EMPTY_OBJECT)

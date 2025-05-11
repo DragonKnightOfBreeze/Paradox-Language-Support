@@ -3,7 +3,7 @@ package icu.windea.pls.script.psi
 import com.intellij.lang.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexManager
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
@@ -39,7 +39,7 @@ class ParadoxScriptScriptedVariableStubElementType : ILightStubElementType<Parad
     }
 
     override fun indexStub(stub: ParadoxScriptScriptedVariableStub, sink: IndexSink) {
-        sink.occurrence(ParadoxScriptedVariableNameIndex.KEY, stub.name)
+        sink.occurrence(ParadoxIndexManager.ScriptedVariableNameKey, stub.name)
     }
 
     override fun serialize(stub: ParadoxScriptScriptedVariableStub, dataStream: StubOutputStream) {

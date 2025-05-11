@@ -11,7 +11,7 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexManager
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
@@ -77,9 +77,9 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
 
     private fun doProcessAllElements(name: String?, project: Project, scope: GlobalSearchScope, processor: Processor<ParadoxScriptScriptedVariable>): Boolean {
         if (name == null) {
-            return ParadoxScriptedVariableNameIndex.KEY.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
+            return ParadoxIndexManager.ScriptedVariableNameKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
         } else {
-            return ParadoxScriptedVariableNameIndex.KEY.processAllElements(name, project, scope) { element -> processor.process(element) }
+            return ParadoxIndexManager.ScriptedVariableNameKey.processAllElements(name, project, scope) { element -> processor.process(element) }
         }
     }
 }
