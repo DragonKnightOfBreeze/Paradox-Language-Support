@@ -182,7 +182,7 @@ object ParadoxExpressionManager {
         element.processChild { e ->
             if (isParameterElementInExpression(e)) {
                 if (parameterRanges == null) parameterRanges = mutableListOf()
-                parameterRanges.add(e.textRange)
+                parameterRanges!!.add(e.textRange)
             }
             true
         }
@@ -806,7 +806,6 @@ object ParadoxExpressionManager {
 
         val processMergedIndex = PlsManager.processMergedIndex.get() == true
         val key = if (processMergedIndex) Keys.cachedExpressionReferencesForMergedIndex else Keys.cachedExpressionReferences
-        val matchOptions = if (processMergedIndex) Options.SkipIndex or Options.SkipScope else Options.Default
         return CachedValuesManager.getCachedValue(element, key) {
             val value = doGetExpressionReferences(element)
             value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
