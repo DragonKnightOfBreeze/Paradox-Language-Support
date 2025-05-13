@@ -9,7 +9,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.PlsBundle
 import icu.windea.pls.lang.selectRootFile
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.script.psi.ParadoxScriptParameter
+import icu.windea.pls.script.psi.*
 
 /**
  * （对于脚本文件）检查是否在不支持的地方使用了参数条件块。
@@ -32,7 +32,7 @@ class UnsupportedParameterConditionInspection : LocalInspectionTool() {
     }
 
     private fun checkInlineScript(element: PsiElement, holder: ProblemsHolder) {
-        if (element !is ParadoxScriptParameter) return
+        if (element !is ParadoxScriptParameterCondition) return
         val file = element.containingFile ?: return
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) == null) return
         holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedParameterCondition.desc.1"))
