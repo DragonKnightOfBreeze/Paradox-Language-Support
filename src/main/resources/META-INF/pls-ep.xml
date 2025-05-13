@@ -66,6 +66,7 @@
     <overriddenConfigProvider implementation="icu.windea.pls.ep.config.CwtTriggerWithParametersAwareOverriddenConfigProvider"/>
 
     <relatedConfigProvider implementation="icu.windea.pls.ep.config.CwtBaseRelatedConfigProvider"/>
+    <relatedConfigProvider implementation="icu.windea.pls.ep.config.CwtInComplexExpressionRelatedConfigProvider"/>
     <relatedConfigProvider implementation="icu.windea.pls.ep.config.CwtExtendedRelatedConfigProvider"/>
 
     <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtBaseConfigContextProvider" order="last"/>

@@ -19,6 +19,10 @@ class ParadoxDynamicValueNode(
     override val configGroup: CwtConfigGroup,
     val configs: List<CwtConfig<*>>
 ) : ParadoxComplexExpressionNode.Base() {
+    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
+        return configs
+    }
+
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         val expression = configs.first().expression!! //first is ok
         val dynamicValueType = expression.value ?: return null

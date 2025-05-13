@@ -15,14 +15,14 @@ import icu.windea.pls.lang.codeInsight.navigation.*
  */
 @WithGameTypeEP
 interface CwtRelatedConfigProvider {
-    fun getRelatedConfigs(file: PsiFile, offset: Int): List<CwtConfig<*>>
+    fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>>
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtRelatedConfigProvider>("icu.windea.pls.relatedConfigProvider")
 
-        fun getRelatedConfigs(file: PsiFile, offset: Int): List<CwtConfig<*>> {
-            val gameType = selectGameType(file) ?: return emptyList()
-            val result = mutableListOf<CwtConfig<*>>()
+        fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
+            val gameType = selectGameType(file) ?: return emptySet()
+            val result = mutableSetOf<CwtConfig<*>>()
             EP_NAME.extensionList.forEach f@{ ep ->
                 if (!gameType.supportsByAnnotation(ep)) return@f
                 val r = ep.getRelatedConfigs(file, offset)

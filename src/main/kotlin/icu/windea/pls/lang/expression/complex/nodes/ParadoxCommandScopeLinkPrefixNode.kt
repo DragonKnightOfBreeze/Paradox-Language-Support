@@ -18,6 +18,10 @@ class ParadoxCommandScopeLinkPrefixNode(
     override val configGroup: CwtConfigGroup,
     override val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxComplexExpressionNode.Base(), ParadoxLinkPrefixNode {
+    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
+        return linkConfigs
+    }
+
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_PREFIX_KEY
     }

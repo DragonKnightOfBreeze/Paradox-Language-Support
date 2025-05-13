@@ -193,10 +193,10 @@ private fun ParadoxComplexExpressionNode.doProcessAllNodes(
 
 fun ParadoxComplexExpression.processAllNodesToValidate(
     errors: MutableList<ParadoxComplexExpressionError>,
-    context: ParadoxComplexExpressionProcessContext,
     processor: Processor<ParadoxComplexExpressionNode>
 ): Boolean {
     var result = true
+    val context = ParadoxComplexExpressionProcessContext()
     processAllNodes p@{
         when {
             it is ParadoxComplexExpression -> {

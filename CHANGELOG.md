@@ -28,18 +28,13 @@
 * [X] 优化：兼容job作为本地化命令连接的情况 / OP: Compatible with jobs as localisation command links
 * [X] 优化：在必要时先尝试获取图标的原始高度 / OP: Try to get the original height of the icon first when necessary
 * [X] 优化：提供扩展点以更加灵活地解析本地化图标 / OP: Provides EP to resolve localisation icons more flexibly
-* [X] 新功能：支持解析本地化文本中的属性引用&命令的传入参数中的文本颜色ID为引用
-  / NEW: Support parsing text color ids in arguments of references & commands in localisation text as references
-* [X] 新功能：新增代码检查，以在本地化文件中提示缺失指定的其他语言区域的本地化
-  / NEW: Add code inspection to prompt missing localisations for specified locales in localisation files *
-* [X] 新功能：新增代码检查，以提示不支持在内联脚本文件中使用参数条件块与带默认值的参数用法
-  / NEW: Add code inspection to prompt unsupported parameter condition blocks and parameter usages (with the default value) in inline script files
-* [ ] 新功能：[VIC3/CK3] 支持本地化文本中的本地化格式（示例：`#v text#!`，其中`v`对应规则表达式`<textformatting>`，`text`是富文本的组合）
-  / NEW: [VIC3/CK3] Support localisation formatting in localisation text (e.g., `#v text#!`, where `v` corresponds to the config expression `<textformatting>`, and `text` is a combination of rich text)
-* [ ] 新功能：[VIC3/CK3] 支持本地化文本中的文本图标（示例：`@icon!`，其中`icon`对应规则表达式`<texticon>`）
-  / NEW: [VIC3/CK3] Support text icons in localisation text (e.g., `@icon!`, where `icon` corresponds to the config expression `texticon`)
-* [ ] 新功能：[VIC3/CK3] 支持通过规范的本地化命令声明的概念引用（示例：`[concept_name]` `[Concept('concept_name', '$other_loc_key$')]`）
-  / NEW: [VIC3/CK3] Support concept references declared by standard localisation commands (e.g., `concept_name` `[Concept('concept_name', '$other_loc_key$')]`)
+* [ ] 优化：可以从复杂表达式节点所在位置导航到相关规则 / OP: Allow to navigate to related configs from the position of complex expression nodes
+* [X] 新功能：支持解析本地化文本中的属性引用&命令的传入参数中的文本颜色ID为引用 / NEW: Support parsing text color ids in arguments of references & commands in localisation text as references
+* [X] 新功能：新增代码检查，以在本地化文件中提示缺失指定的其他语言区域的本地化 / NEW: Add code inspection to prompt missing localisations for specified locales in localisation files *
+* [X] 新功能：新增代码检查，以提示不支持在内联脚本文件中使用参数条件块与带默认值的参数用法 / NEW: Add code inspection to prompt unsupported parameter condition blocks and parameter usages (with the default value) in inline script files
+* [ ] 新功能：[VIC3/CK3] 支持本地化文本中的本地化格式（示例：`#v text#!`，其中`v`对应规则表达式`<textformatting>`，`text`是富文本的组合） / NEW: [VIC3/CK3] Support localisation formatting in localisation text (e.g., `#v text#!`, where `v` corresponds to the config expression `<textformatting>`, and `text` is a combination of rich text)
+* [ ] 新功能：[VIC3/CK3] 支持本地化文本中的文本图标（示例：`@icon!`，其中`icon`对应规则表达式`<texticon>`） / NEW: [VIC3/CK3] Support text icons in localisation text (e.g., `@icon!`, where `icon` corresponds to the config expression `texticon`)
+* [ ] 新功能：[VIC3/CK3] 支持通过规范的本地化命令声明的概念引用（示例：`[concept_name]` `[Concept('concept_name', '$other_loc_key$')]`） / NEW: [VIC3/CK3] Support concept references declared by standard localisation commands (e.g., `concept_name` `[Concept('concept_name', '$other_loc_key$')]`)
 * [ ] 验证：本地化的HTML渲染和内嵌提示渲染，在重构代码后是否仍然正常工作
 * [ ] 验证：对CWT文件与本地化文件的语法解析，在重构代码中是否仍然正常工作
 * [ ] 验证：本地化文件中的缺失的本地化的代码检查&生成本地化的意图与快速修复，是否正常工作，以及性能如何

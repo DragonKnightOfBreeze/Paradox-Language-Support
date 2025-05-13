@@ -22,22 +22,26 @@ class ParadoxDataSourceNode(
     override val configGroup: CwtConfigGroup,
     val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxComplexExpressionNode.Base() {
-    val linkConfigsDynamicValue = linkConfigs.filter { it.expression?.type in CwtDataTypeGroups.DynamicValue }
-    val linkConfigsNotDynamicValue = linkConfigs.filter { it.expression?.type !in CwtDataTypeGroups.DynamicValue }
+    private val linkConfigsDynamicValue = linkConfigs.filter { it.expression?.type in CwtDataTypeGroups.DynamicValue }
+    private val linkConfigsNotDynamicValue = linkConfigs.filter { it.expression?.type !in CwtDataTypeGroups.DynamicValue }
+
+    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
+        return linkConfigs
+    }
 
     override fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? {
         if (text.isParameterized()) return null
         if (linkConfigs.isEmpty()) return null
         if (linkConfigs.size == 1) return linkConfigs.first()
         run {
-            if(linkConfigsNotDynamicValue.isEmpty()) return@run
+            if (linkConfigsNotDynamicValue.isEmpty()) return@run
             val resolved = linkConfigs.find {
                 ParadoxExpressionManager.resolveScriptExpression(element, rangeInExpression, it, it.expression, exact = false) != null
             }
-            if(resolved != null) return resolved
+            if (resolved != null) return resolved
         }
         run {
-            if(linkConfigsDynamicValue.isEmpty()) return@run
+            if (linkConfigsDynamicValue.isEmpty()) return@run
             return linkConfigsDynamicValue.first()
         }
         return linkConfigsNotDynamicValue.firstOrNull()
@@ -70,9 +74,10 @@ class ParadoxDataSourceNode(
         val linkConfigs: List<CwtLinkConfig>,
         val configGroup: CwtConfigGroup
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
+        private val linkConfigsDynamicValue = linkConfigs.filter { it.expression?.type in CwtDataTypeGroups.DynamicValue }
+        private val linkConfigsNotDynamicValue = linkConfigs.filter { it.expression?.type !in CwtDataTypeGroups.DynamicValue }
+
         val project = configGroup.project
-        val linkConfigsDynamicValue = linkConfigs.filter { it.expression?.type in CwtDataTypeGroups.DynamicValue }
-        val linkConfigsNotDynamicValue = linkConfigs.filter { it.expression?.type !in CwtDataTypeGroups.DynamicValue }
 
         override fun handleElementRename(newElementName: String): PsiElement {
             val element = element

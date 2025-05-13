@@ -10,20 +10,22 @@ import icu.windea.pls.core.*
 import icu.windea.pls.ep.modifier.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
+import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 
 class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
-    override fun getRelatedConfigs(file: PsiFile, offset: Int): List<CwtConfig<*>> {
+    override fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
+        //适用于脚本文件中的表达式
         //获取所有匹配的CWT规则，不存在匹配的CWT规则时，选用所有默认的CWT规则（对于propertyConfig来说是匹配key的，对于valueConfig来说是所有）
         //包括内联规则以及内联后的规则
         //包括其他一些相关的规则
-        //目前基本上仅适用于脚本文件中的目标
 
-        val result = mutableListOf<CwtConfig<*>>()
+        val result = mutableSetOf<CwtConfig<*>>()
         val configGroup = getConfigGroup(file.project, selectGameType(file))
 
         run r0@{
@@ -73,10 +75,45 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
     }
 }
 
+class CwtInComplexExpressionRelatedConfigProvider : CwtRelatedConfigProvider {
+    override fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
+        //适用于脚本文件与本地化文件中的复杂表达式（中的节点）
+
+        val element = when (file) {
+            is ParadoxScriptFile -> {
+                file.findElementAt(offset) {
+                    it.parentOfType<ParadoxScriptExpressionElement>(false)
+                }?.takeIf { it.isExpression() }
+            }
+            is ParadoxLocalisationFile -> {
+                file.findElementAt(offset) {
+                    it.parentOfType<ParadoxLocalisationExpressionElement>(false)
+                }?.takeIf { it.isComplexExpression() }
+            }
+            else -> null
+        }
+        if (element == null) return emptySet()
+
+        val configGroup = getConfigGroup(file.project, selectGameType(file))
+        val textRange = element.textRange
+        val finalOffset = when {
+            offset == textRange.endOffset -> offset - textRange.startOffset - 1
+            else -> offset - textRange.startOffset
+        }
+        if (finalOffset < 0) return emptySet()
+        val complexExpression = ParadoxComplexExpression.resolve(element, configGroup)
+        if (complexExpression == null) return emptySet()
+
+        //TODO 1.4.0
+
+        return emptySet()
+    }
+}
+
 class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
-    override fun getRelatedConfigs(file: PsiFile, offset: Int): List<CwtConfig<*>> {
+    override fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
+        //适用于封装变量的名字与引用，定义的顶层键、名字与引用，参数用法，以及脚本文件中的表达式
         //包括其他一些相关的规则（扩展的规则 - definitions gameRules onActions parameters complexEnumValues dynamicValues）
-        //目前基本上仅适用于脚本文件中的目标
 
         val result = mutableSetOf<CwtConfig<*>>()
         val configGroup = getConfigGroup(file.project, selectGameType(file))
@@ -169,6 +206,6 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             }
         }
 
-        return result.toList()
+        return result
     }
 }

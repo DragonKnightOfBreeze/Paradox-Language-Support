@@ -40,8 +40,7 @@ class ParadoxDynamicValueExpression private constructor(
 
     override fun validate(): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val context = ParadoxComplexExpressionProcessContext()
-        val result = processAllNodesToValidate(errors, context) {
+        val result = processAllNodesToValidate(errors) {
             when {
                 it is ParadoxDynamicValueNode -> it.text.isParameterAwareIdentifier('.') //兼容点号
                 else -> true

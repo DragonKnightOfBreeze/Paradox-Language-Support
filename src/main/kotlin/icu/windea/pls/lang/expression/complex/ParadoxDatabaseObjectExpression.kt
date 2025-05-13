@@ -41,8 +41,7 @@ class ParadoxDatabaseObjectExpression private constructor(
 
     override fun validate(): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val context = ParadoxComplexExpressionProcessContext()
-        val result = processAllNodesToValidate(errors, context) {
+        val result = processAllNodesToValidate(errors) {
             when {
                 it is ParadoxDatabaseObjectNode -> it.text.isParameterAwareIdentifier()
                 else -> true

@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -27,6 +28,10 @@ class ParadoxDatabaseObjectNode(
     val isBase: Boolean,
 ) : ParadoxComplexExpressionNode.Base() {
     val config = expression.typeNode?.config
+
+    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
+        return config.toSingletonSetOrEmpty()
+    }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return when (element.language) {
