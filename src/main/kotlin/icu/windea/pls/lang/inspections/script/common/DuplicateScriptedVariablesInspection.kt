@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.elementType
 import icu.windea.pls.*
 import icu.windea.pls.lang.quickfix.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 import org.jetbrains.annotations.*
 
@@ -33,7 +34,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (!inInlineMath && element.elementType !in ParadoxScriptTokenSets.MEMBER_CONTEXT) return //optimize
+                if (!inInlineMath && !ParadoxPsiManager.inMemberContext(element)) return //optimize
                 super.visitElement(element)
             }
 

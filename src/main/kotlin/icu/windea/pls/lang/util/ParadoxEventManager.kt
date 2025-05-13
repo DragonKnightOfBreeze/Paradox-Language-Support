@@ -160,7 +160,7 @@ object ParadoxEventManager {
         definition.block?.acceptChildren(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
-                if (element.elementType !in ParadoxScriptTokenSets.MEMBER_CONTEXT) return //optimize
+                if (!ParadoxPsiManager.inMemberContext(element)) return //optimize
                 super.visitElement(element)
             }
 

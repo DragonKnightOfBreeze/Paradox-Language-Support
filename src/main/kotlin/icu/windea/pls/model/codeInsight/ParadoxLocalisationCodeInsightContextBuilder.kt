@@ -35,7 +35,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
                             is ParadoxScriptDefinitionElement -> fromDefinition(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
                             is ParadoxScriptStringExpressionElement -> fromExpression(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
                         }
-                        if (element.elementType !in ParadoxScriptTokenSets.MEMBER_CONTEXT) return //optimize
+                        if (!ParadoxPsiManager.inMemberContext(element)) return //optimize
                         super.visitElement(element)
                     }
                 })
@@ -44,7 +44,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
                 file.accept(object : PsiRecursiveElementWalkingVisitor() {
                     override fun visitElement(element: PsiElement) {
                         if (element is ParadoxLocalisationProperty) fromLocalisation(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
-                        if (element.elementType !in ParadoxLocalisationTokenSets.PROPERTY_CONTEXT) return //optimize
+                        if (!ParadoxPsiManager.inLocalisationContext(element)) return //optimize
                         super.visitElement(element)
                     }
                 })

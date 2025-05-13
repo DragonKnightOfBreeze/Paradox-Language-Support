@@ -389,6 +389,18 @@ object ParadoxPsiManager {
 
     //region Misc Methods
 
+    fun inMemberContext(element: PsiElement): Boolean {
+        return element is ParadoxScriptFile || element.elementType in ParadoxScriptTokenSets.MEMBER_CONTEXT
+    }
+
+    fun inLocalisationContext(element: PsiElement): Boolean {
+        return element is ParadoxLocalisationFile || element.elementType in ParadoxLocalisationTokenSets.PROPERTY_CONTEXT
+    }
+
+    fun inRichTextContext(element: PsiElement): Boolean {
+        return element is ParadoxLocalisationFile || element.elementType in ParadoxLocalisationTokenSets.RICH_TEXT_CONTEXT
+    }
+
     /**
      * 判断当前位置应当是一个[ParadoxLocalisationLocale]，还是一个[ParadoxLocalisationPropertyKey]。
      */

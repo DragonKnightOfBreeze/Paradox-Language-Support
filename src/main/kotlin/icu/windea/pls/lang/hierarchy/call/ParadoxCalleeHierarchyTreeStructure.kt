@@ -12,6 +12,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
@@ -74,7 +75,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (!inInlineMath && element.elementType !in ParadoxScriptTokenSets.MEMBER_CONTEXT) return //optimize
+                if (!inInlineMath && !ParadoxPsiManager.inMemberContext(element)) return //optimize
                 super.visitElement(element)
             }
 

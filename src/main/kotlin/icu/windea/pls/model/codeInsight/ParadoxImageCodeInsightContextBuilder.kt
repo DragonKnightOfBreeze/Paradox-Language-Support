@@ -30,7 +30,7 @@ object ParadoxImageCodeInsightContextBuilder {
                     is ParadoxScriptDefinitionElement -> fromDefinition(element, fromInspection = fromInspection)?.let { children.add(it) }
                     is ParadoxScriptStringExpressionElement -> fromExpression(element, fromInspection = fromInspection)?.let { children.add(it) }
                 }
-                if (element.elementType !in ParadoxScriptTokenSets.MEMBER_CONTEXT) return //optimize
+                if (!ParadoxPsiManager.inMemberContext(element)) return //optimize
                 super.visitElement(element)
             }
         })
