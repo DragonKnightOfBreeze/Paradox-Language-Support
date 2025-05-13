@@ -748,7 +748,8 @@ object ParadoxExpressionManager {
 
         //merge text attributes from HighlighterColors.TEXT and attributesKey for token nodes (in case foreground is not set)
         if (expressionNode is ParadoxTokenNode) {
-            val schema = EditorColorsManager.getInstance().schemeForCurrentUITheme
+            val editorColorsManager = EditorColorsManager.getInstance()
+            val schema = editorColorsManager.activeVisibleScheme ?: editorColorsManager.schemeForCurrentUITheme
             val textAttributes1 = schema.getAttributes(HighlighterColors.TEXT)
             val textAttributes2 = schema.getAttributes(attributesKey)
             val textAttributes = TextAttributes.merge(textAttributes1, textAttributes2)

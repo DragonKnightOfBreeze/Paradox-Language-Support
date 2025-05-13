@@ -212,7 +212,9 @@ object ParadoxLocalisationTextHtmlRenderer {
     private fun renderConceptTo(element: ParadoxLocalisationConcept, context: Context) {
         val concept = element
         val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
-        val conceptColor = EditorColorsManager.getInstance().globalScheme.getAttributes(conceptAttributesKey).foregroundColor
+        val editorColorsManager = EditorColorsManager.getInstance()
+        val schema = editorColorsManager.schemeForCurrentUITheme
+        val conceptColor = schema.getAttributes(conceptAttributesKey).foregroundColor
         val (referenceElement, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(concept)
         val richTextList = when {
             textElement is ParadoxLocalisationConceptText -> textElement.richTextList
