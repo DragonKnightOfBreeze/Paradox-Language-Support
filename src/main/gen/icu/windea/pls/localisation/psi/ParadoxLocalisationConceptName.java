@@ -11,7 +11,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.model.ParadoxType;
 
-public interface ParadoxLocalisationConceptName extends ParadoxLocalisationExpressionElement, ContributedReferenceHost {
+public interface ParadoxLocalisationConceptName extends ContributedReferenceHost, ParadoxLocalisationExpressionElement {
 
   @Nullable
   ParadoxLocalisationPropertyReference getPropertyReference();

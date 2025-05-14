@@ -13,14 +13,9 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.localisation.references.ParadoxLocalisationTextIconPsiReference;
 import javax.swing.Icon;
 
-public interface ParadoxLocalisationTextIcon extends ParadoxLocalisationRichText, NavigatablePsiElement {
-
-  @Nullable
-  ParadoxLocalisationPropertyReference getPropertyReference();
+public interface ParadoxLocalisationTextIcon extends ParadoxLocalisationRichText, NavigatablePsiElement, ParadoxLocalisationParameterAwareElement {
 
   @Nullable PsiElement getIdElement();
-
-  @Nullable ParadoxLocalisationPropertyReference getReferenceElement();
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

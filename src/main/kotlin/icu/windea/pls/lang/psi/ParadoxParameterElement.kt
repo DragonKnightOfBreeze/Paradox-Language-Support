@@ -18,6 +18,9 @@ import javax.swing.*
  * [contextKey] 用于判断参数是否拥有相同的上下文，格式如下：
  * * 对于定义的参数：`<typeExpression>@<definitionName>`
  * * 对于内联脚本的参数：`inline_script@<inline_script_expression>`
+ *
+ * @see icu.windea.pls.script.psi.ParadoxParameter
+ * @see icu.windea.pls.script.psi.ParadoxConditionParameter
  * @see ParadoxParameterSupport
  */
 class ParadoxParameterElement(

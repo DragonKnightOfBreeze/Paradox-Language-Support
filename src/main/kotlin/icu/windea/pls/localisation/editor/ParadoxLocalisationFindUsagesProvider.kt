@@ -46,9 +46,9 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
                     }
                 }
             }
-            is ParadoxParameterElement -> {
+            is ParadoxLocalisationParameterElement -> {
                 when (location) {
-                    UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.parameter")
+                    UsageViewTypeLocation.INSTANCE -> PlsBundle.message("localisation.description.parameter")
                     else -> element.name
                 }
             }

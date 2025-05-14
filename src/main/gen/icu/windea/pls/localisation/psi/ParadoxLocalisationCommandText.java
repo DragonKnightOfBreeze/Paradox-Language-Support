@@ -12,11 +12,9 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.model.ParadoxType;
 
-public interface ParadoxLocalisationCommandText extends NavigatablePsiElement, ParadoxLocalisationExpressionElement, ContributedReferenceHost {
+public interface ParadoxLocalisationCommandText extends NavigatablePsiElement, ContributedReferenceHost, ParadoxLocalisationExpressionElement, ParadoxLocalisationParameterAwareElement {
 
   @Nullable PsiElement getIdElement();
-
-  @Nullable ParadoxLocalisationPropertyReference getReferenceElement();
 
   @NotNull String getName();
 

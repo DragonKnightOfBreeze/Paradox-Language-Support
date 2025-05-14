@@ -8,11 +8,9 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxLocalisationIconArgument extends ParadoxLocalisationArgument {
+public interface ParadoxLocalisationIconArgument extends ParadoxLocalisationArgument, ParadoxLocalisationParameterAwareElement {
 
   @Nullable PsiElement getIdElement();
-
-  @Nullable ParadoxLocalisationPropertyReference getReferenceElement();
 
   @NotNull ItemPresentation getPresentation();
 

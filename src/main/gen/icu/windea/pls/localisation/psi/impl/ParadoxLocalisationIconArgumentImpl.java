@@ -36,11 +36,6 @@ public class ParadoxLocalisationIconArgumentImpl extends ASTWrapperPsiElement im
   }
 
   @Override
-  public @Nullable ParadoxLocalisationPropertyReference getReferenceElement() {
-    return ParadoxLocalisationPsiImplUtil.getReferenceElement(this);
-  }
-
-  @Override
   public @NotNull ItemPresentation getPresentation() {
     return ParadoxLocalisationPsiImplUtil.getPresentation(this);
   }

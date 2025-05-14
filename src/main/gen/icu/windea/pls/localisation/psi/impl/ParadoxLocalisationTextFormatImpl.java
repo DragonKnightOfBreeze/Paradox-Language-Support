@@ -46,11 +46,6 @@ public class ParadoxLocalisationTextFormatImpl extends ParadoxLocalisationRichTe
   }
 
   @Override
-  public @Nullable ParadoxLocalisationPropertyReference getReferenceElement() {
-    return ParadoxLocalisationPsiImplUtil.getReferenceElement(this);
-  }
-
-  @Override
   public @NotNull Icon getIcon(@IconFlags int flags) {
     return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
   }

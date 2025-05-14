@@ -38,11 +38,6 @@ public class ParadoxLocalisationCommandTextImpl extends ASTWrapperPsiElement imp
   }
 
   @Override
-  public @Nullable ParadoxLocalisationPropertyReference getReferenceElement() {
-    return ParadoxLocalisationPsiImplUtil.getReferenceElement(this);
-  }
-
-  @Override
   public @NotNull String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }

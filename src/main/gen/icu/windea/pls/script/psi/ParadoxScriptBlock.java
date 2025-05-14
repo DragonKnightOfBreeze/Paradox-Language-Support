@@ -13,7 +13,7 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.model.ParadoxType;
 import javax.swing.Icon;
 
-public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlockElement, ContributedReferenceHost {
+public interface ParadoxScriptBlock extends ParadoxScriptValue, ContributedReferenceHost, ParadoxScriptBlockElement {
 
   @NotNull
   List<ParadoxScriptParameterCondition> getParameterConditionList();

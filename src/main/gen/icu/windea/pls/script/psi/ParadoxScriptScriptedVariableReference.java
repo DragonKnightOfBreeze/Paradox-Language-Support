@@ -5,7 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
-import icu.windea.pls.lang.psi.ParadoxParameterAwareElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
@@ -19,9 +18,6 @@ public interface ParadoxScriptScriptedVariableReference extends ParadoxScriptVal
 
   @NotNull
   List<ParadoxScriptInlineParameterCondition> getInlineParameterConditionList();
-
-  @NotNull
-  List<ParadoxScriptParameter> getParameterList();
 
   @Nullable PsiElement getIdElement();
 

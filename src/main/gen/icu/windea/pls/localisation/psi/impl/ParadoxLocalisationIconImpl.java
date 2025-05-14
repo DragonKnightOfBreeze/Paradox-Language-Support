@@ -46,11 +46,6 @@ public class ParadoxLocalisationIconImpl extends ParadoxLocalisationRichTextImpl
   }
 
   @Override
-  public @Nullable ParadoxLocalisationPropertyReference getReferenceElement() {
-    return ParadoxLocalisationPsiImplUtil.getReferenceElement(this);
-  }
-
-  @Override
   @Nullable
   public ParadoxLocalisationIconArgument getArgumentElement() {
     return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationIconArgument.class);

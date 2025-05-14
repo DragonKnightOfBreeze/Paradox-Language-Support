@@ -42,12 +42,6 @@ public class ParadoxScriptScriptedVariableReferenceImpl extends ParadoxScriptVal
   }
 
   @Override
-  @NotNull
-  public List<ParadoxScriptParameter> getParameterList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameter.class);
-  }
-
-  @Override
   public @Nullable PsiElement getIdElement() {
     return ParadoxScriptPsiImplUtil.getIdElement(this);
   }

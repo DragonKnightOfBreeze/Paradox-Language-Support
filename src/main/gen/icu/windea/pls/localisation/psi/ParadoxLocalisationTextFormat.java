@@ -13,14 +13,16 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.localisation.references.ParadoxLocalisationTextFormatPsiReference;
 import javax.swing.Icon;
 
-public interface ParadoxLocalisationTextFormat extends ParadoxLocalisationRichText, NavigatablePsiElement {
+public interface ParadoxLocalisationTextFormat extends ParadoxLocalisationRichText, NavigatablePsiElement, ParadoxLocalisationParameterAwareElement {
 
   @NotNull
   List<ParadoxLocalisationRichText> getRichTextList();
 
   @Nullable PsiElement getIdElement();
 
-  @Nullable ParadoxLocalisationPropertyReference getReferenceElement();
+  //WARNING: property_reference(...) is skipped
+  //matching property_reference(ParadoxLocalisationTextFormat, ...)
+  //methods are not found in ParadoxLocalisationPsiImplUtil
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

@@ -9,11 +9,9 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxLocalisationCommandArgument extends ParadoxLocalisationArgument, ParadoxLocalisationTextColorAwareElement {
+public interface ParadoxLocalisationCommandArgument extends ParadoxLocalisationArgument, ParadoxLocalisationTextColorAwareElement, ParadoxLocalisationParameterAwareElement {
 
   @Nullable PsiElement getIdElement();
-
-  @Nullable ParadoxLocalisationPropertyReference getReferenceElement();
 
   @NotNull PsiReference @NotNull [] getReferences();
 

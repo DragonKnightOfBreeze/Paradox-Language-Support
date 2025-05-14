@@ -1,7 +1,12 @@
-package icu.windea.pls.lang.psi
+package icu.windea.pls.script.psi
 
-import com.intellij.psi.*
-import icu.windea.pls.model.*
+import com.intellij.psi.ElementManipulators
+import com.intellij.psi.LiteralTextEscaper
+import com.intellij.psi.NavigatablePsiElement
+import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost
+import icu.windea.pls.lang.psi.ParadoxScriptExpressionLiteralTextEscaper
+import icu.windea.pls.lang.psi.ParadoxTypedElement
+import icu.windea.pls.model.ParadoxType
 
 interface ParadoxParameter : ParadoxTypedElement, NavigatablePsiElement, ParadoxLanguageInjectionHost {
     override fun getName(): String?
@@ -24,4 +29,3 @@ interface ParadoxParameter : ParadoxTypedElement, NavigatablePsiElement, Paradox
         return ParadoxScriptExpressionLiteralTextEscaper(this)
     }
 }
-

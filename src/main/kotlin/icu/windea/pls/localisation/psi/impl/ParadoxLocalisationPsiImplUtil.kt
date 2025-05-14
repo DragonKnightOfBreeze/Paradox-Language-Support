@@ -583,11 +583,6 @@ object ParadoxLocalisationPsiImplUtil {
     //endregion
 
     @JvmStatic
-    fun getReferenceElement(element: PsiElement): ParadoxLocalisationPropertyReference? {
-        return element.findChild<_>()
-    }
-
-    @JvmStatic
     fun getReference(element: PsiElement): PsiReference? {
         return element.references.singleOrNull()
     }

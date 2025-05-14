@@ -8,12 +8,15 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.navigation.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import java.util.*
 import javax.swing.*
 
 /**
  * 本地化的参数并不存在一个真正意义上的声明处，用这个模拟。
+ *
+ * @see ParadoxLocalisationPropertyReference
  * @see ParadoxLocalisationParameterSupport
  */
 class ParadoxLocalisationParameterElement(
@@ -34,7 +37,7 @@ class ParadoxLocalisationParameterElement(
     }
 
     override fun getTypeName(): String {
-        return PlsBundle.message("script.description.parameter")
+        return PlsBundle.message("localisation.description.parameter")
     }
 
     override fun getText(): String {

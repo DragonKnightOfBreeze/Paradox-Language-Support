@@ -34,7 +34,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
 
     private boolean isStateByDepth(int state) {
-        return state == YYINITIAL || state == IN_COLORFUL_TEXT || state == IN_CONCEPT_TEXT;
+        return state == YYINITIAL || state == IN_COLORFUL_TEXT || state == IN_CONCEPT_TEXT || state == IN_TEXT_FORMAT_TEXT;
     }
 
     private void setNextStateByDepth(int nextState) {
@@ -141,25 +141,40 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         }
     }
 
-    private boolean isConceptQuoted() {
-        return yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptQuoted.supports(this);
+    private boolean isTextFormat() {
+        if (yylength() <= 1) return false;
+        char c = yycharat(1);
+        return c == '$' || isExactWord(c);
     }
 
-
-
-    private IElementType checkBlank() {
-        if (yystate() != YYINITIAL && yystate() != IN_COLORFUL_TEXT) {
-            return WHITE_SPACE;
+    private IElementType checkTextFormat() {
+        if (isIcon()) {
+            yypushback(yylength() - 1);
+            yybegin(IN_TEXT_FORMAT_ID);
+            return TEXT_FORMAT_START;
+        } else {
+            yypushback(yylength() - 1);
+            beginNextState();
+            return STRING_TOKEN;
         }
-        return STRING_TOKEN;
     }
 
-    private IElementType checkConceptTextEnd() {
-        if(yystate() == IN_CONCEPT_TEXT) {
-            beginNextStateByDepth();
-            return COMMAND_END;
+    private boolean isTextIcon() {
+        if (yylength() <= 1) return false;
+        char c = yycharat(1);
+        return c == '$' || isExactWord(c);
+    }
+
+    private IElementType checkTextIcon() {
+        if (isIcon()) {
+            yypushback(yylength() - 1);
+            yybegin(IN_TEXT_ICON);
+            return TEXT_ICON_START;
+        } else {
+            yypushback(yylength() - 1);
+            beginNextState();
+            return STRING_TOKEN;
         }
-        return STRING_TOKEN;
     }
 %}
 
@@ -195,11 +210,14 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %s IN_TEXT_FORMAT_ID
 %s IN_TEXT_FORMAT_TEXT
 
+%s CHECK_TEXT_ICON
+%s IN_TEXT_ICON
+
 %unicode
 
 BLANK=\s+
 
-PLAIN_TEXT_TOKEN=[^\s§\$\[\]£}][^§\$\[\]£]*
+PLAIN_TEXT_TOKEN=[^\s§\$\[\]£#@][^§\$\[\]£#@]*
 
 COLORFUL_TEXT_CHECK=§.?
 COLOR_TOKEN=\w
@@ -219,17 +237,41 @@ ICON_ARGUMENT_TOKEN=[1-9][0-9]* // positive integer
 
 CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
 
+TEXT_FORMAT_CHECK=#.?
+TEXT_FORMAT_TOKEN=\w+
+
+TEXT_ICON_CHECK=@.?
+TEXT_ICON_TOKEN=\w+
+
 %%
 
-<YYINITIAL, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT> {
-    "§" { setNextStateByDepth(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+<YYINITIAL, IN_COLORFUL_TEXT, IN_CONCEPT_TEXT, IN_TEXT_FORMAT_TEXT> {
+    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
     "£" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_ICON); }
+    "#" {
+        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.supports(this)) return STRING_TOKEN;
+        setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT);
+    }
+    "#!" {
+        if (!ParadoxSyntaxConstraint.LocalisationTextFormat.supports(this)) return STRING_TOKEN;
+        beginNextStateByDepth(); return TEXT_FORMAT_END;
+    }
+    "@" {
+        if (!ParadoxSyntaxConstraint.LocalisationTextIcon.supports(this)) return STRING_TOKEN;
+        setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_ICON);
+    }
+    {BLANK} {
+        if (yystate() == YYINITIAL || yystate() == IN_COLORFUL_TEXT) return STRING_TOKEN;
+        return WHITE_SPACE;
+    }
     {PLAIN_TEXT_TOKEN} { return STRING_TOKEN; }
-    {BLANK} { return checkBlank(); }
-    "]" { return checkConceptTextEnd(); }
+    "]" {
+        if (yystate() != IN_CONCEPT_TEXT) return STRING_TOKEN;
+        beginNextStateByDepth(); return COMMAND_END;
+    }
 }
 
 // localisation colorful text rules
@@ -238,7 +280,7 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
     {COLORFUL_TEXT_CHECK} { return checkColorfulText(); }
 }
 <IN_COLOR_ID>{
-    "§" { setNextStateByDepth(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
 
     {COLOR_TOKEN} { yybegin(IN_COLORFUL_TEXT); return COLOR_TOKEN; }
@@ -251,7 +293,7 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
     {REFERENCE_CHECK} { return checkReference(); }
 }
 <IN_REFERENCE>{
-    "§" { setNextStateByDepth(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
@@ -261,7 +303,7 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
     {REFERENCE_TOKEN} { return PROPERTY_REFERENCE_TOKEN; }
 }
 <IN_REFERENCE_ARGUMENT>{
-    "§" { setNextStateByDepth(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
@@ -284,7 +326,7 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
 }
 <IN_COMMAND>{
     . {
-        if(isConceptQuoted()) {
+        if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptQuoted.supports(this)) {
             yybegin(IN_CONCEPT_NAME);
             return LEFT_SINGLE_QUOTE;
         }
@@ -293,7 +335,7 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
     }
 }
 <IN_COMMAND_TEXT>{
-    "§" { setNextStateByDepth(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
 
@@ -302,7 +344,7 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
     {COMMAND_TEXT_TOKEN} { return COMMAND_TEXT_TOKEN; }
 }
 <IN_COMMAND_ARGUMENT>{
-    "§" { setNextStateByDepth(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
 
@@ -316,7 +358,7 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
     {ICON_CHECK} { return checkIcon(); }
 }
 <IN_ICON>{
-    "§" { setNextStateByDepth(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
@@ -326,7 +368,7 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
     {ICON_TOKEN} { return ICON_TOKEN; }
 }
 <IN_ICON_ARGUMENT>{
-    "§" { setNextStateByDepth(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
@@ -338,13 +380,14 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
 // [stellaris] localisation concept rules (as special commands)
 
 <IN_CONCEPT_NAME> {
-    "§" { setNextStateByDepth(yystate()); yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
 
     "]" { beginNextState(); return COMMAND_END; }
     "'" { return RIGHT_SINGLE_QUOTE; }
-    "," { yybegin(IN_CONCEPT_TEXT); return COMMA; }
+    "," { setNextStateByDepth(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); return COMMA; }
+    {BLANK} { setNextStateByDepth(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE; }
     {CONCEPT_NAME_TOKEN} { return CONCEPT_NAME_TOKEN; }
 }
 
@@ -352,8 +395,29 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
 
 // TODO 1.4.0
 
+<IN_TEXT_FORMAT_ID> {
+    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
+    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+
+    "#" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT); }
+    "#!" { beginNextState(); return TEXT_FORMAT_END; }
+    {BLANK} { setNextStateByDepth(IN_TEXT_FORMAT_TEXT); yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE; }
+    {TEXT_FORMAT_TOKEN} { return TEXT_FORMAT_TOKEN; }
+}
+
 // [ck3, vic3] localisation text icon rules
 
-// TODO 1.4.0
+<CHECK_TEXT_ICON>{
+    {TEXT_ICON_CHECK} { return checkTextIcon(); }
+}
+<IN_TEXT_ICON>{
+    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
+    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+
+    "!" { beginNextState(); return TEXT_ICON_END; }
+    {TEXT_ICON_TOKEN} { return TEXT_ICON_TOKEN; }
+}
 
 [^] { return BAD_CHARACTER; }

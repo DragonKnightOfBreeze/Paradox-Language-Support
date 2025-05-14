@@ -7,6 +7,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.script.*
+import icu.windea.pls.script.psi.ParadoxParameter
 
 /**
  * 快速修复一些语法错误。

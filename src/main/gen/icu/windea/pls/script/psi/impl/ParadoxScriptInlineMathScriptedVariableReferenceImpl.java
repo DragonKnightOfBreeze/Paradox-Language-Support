@@ -37,12 +37,6 @@ public class ParadoxScriptInlineMathScriptedVariableReferenceImpl extends Parado
 
   @Override
   @NotNull
-  public List<ParadoxScriptInlineMathParameter> getInlineMathParameterList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineMathParameter.class);
-  }
-
-  @Override
-  @NotNull
   public List<ParadoxScriptInlineParameterCondition> getInlineParameterConditionList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptInlineParameterCondition.class);
   }

@@ -26,12 +26,14 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   public void visitCommandArgument(@NotNull ParadoxLocalisationCommandArgument o) {
     visitArgument(o);
     // visitTextColorAwareElement(o);
+    // visitParameterAwareElement(o);
   }
 
   public void visitCommandText(@NotNull ParadoxLocalisationCommandText o) {
     visitNavigatablePsiElement(o);
-    // visitExpressionElement(o);
     // visitContributedReferenceHost(o);
+    // visitExpressionElement(o);
+    // visitParameterAwareElement(o);
   }
 
   public void visitConcept(@NotNull ParadoxLocalisationConcept o) {
@@ -39,8 +41,8 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitConceptName(@NotNull ParadoxLocalisationConceptName o) {
-    visitExpressionElement(o);
-    // visitContributedReferenceHost(o);
+    visitContributedReferenceHost(o);
+    // visitExpressionElement(o);
   }
 
   public void visitConceptText(@NotNull ParadoxLocalisationConceptText o) {
@@ -51,10 +53,12 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     visitRichText(o);
     // visitNavigatablePsiElement(o);
     // visitArgumentAwareElement(o);
+    // visitParameterAwareElement(o);
   }
 
   public void visitIconArgument(@NotNull ParadoxLocalisationIconArgument o) {
     visitArgument(o);
+    // visitParameterAwareElement(o);
   }
 
   public void visitLocale(@NotNull ParadoxLocalisationLocale o) {
@@ -104,15 +108,21 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   public void visitTextFormat(@NotNull ParadoxLocalisationTextFormat o) {
     visitRichText(o);
     // visitNavigatablePsiElement(o);
+    // visitParameterAwareElement(o);
   }
 
   public void visitTextIcon(@NotNull ParadoxLocalisationTextIcon o) {
     visitRichText(o);
     // visitNavigatablePsiElement(o);
+    // visitParameterAwareElement(o);
   }
 
   public void visitTextRoot(@NotNull ParadoxLocalisationTextRoot o) {
     visitPsiElement(o);
+  }
+
+  public void visitContributedReferenceHost(@NotNull ContributedReferenceHost o) {
+    visitElement(o);
   }
 
   public void visitNavigatablePsiElement(@NotNull NavigatablePsiElement o) {
@@ -124,10 +134,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitArgument(@NotNull ParadoxLocalisationArgument o) {
-    visitPsiElement(o);
-  }
-
-  public void visitExpressionElement(@NotNull ParadoxLocalisationExpressionElement o) {
     visitPsiElement(o);
   }
 

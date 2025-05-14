@@ -56,9 +56,9 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
 scripted_variable_name ::= AT scripted_variable_name_part (<<processSnippet>> scripted_variable_name_part) * {
   pin=1;
   implements=[
-    "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
+    "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
   ]
-  methods=[getIdElement getName getValue]
+  methods=[getIdElement parameter="" getName getValue]
 }
 private scripted_variable_name_part ::= SCRIPTED_VARIABLE_NAME_TOKEN | parameter | inline_parameter_condition
 private scripted_variable_separator ::= EQUAL_SIGN
@@ -86,10 +86,10 @@ property_key ::= property_key_part (<<processSnippet>> property_key_part) * {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
-    "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
+    "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
   ]
   methods=[
-    getIdElement
+    getIdElement parameter=""
     getIcon getName getValue setValue getType getExpression getConfigExpression
     getReference getReferences toString
   ]
@@ -114,9 +114,12 @@ scripted_variable_reference ::= AT scripted_variable_reference_part <<postProces
   extends=value
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
-    "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
+    "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
   ]
-  methods=[getIdElement getIcon getName setName getValue getReference getType getExpression toString]
+  methods=[
+    getIdElement parameter=""
+    getIcon getName setName getValue getReference getType getExpression toString
+  ]
 }
 private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | parameter | inline_parameter_condition
 boolean ::= BOOLEAN_TOKEN {
@@ -129,16 +132,16 @@ boolean ::= BOOLEAN_TOKEN {
 int ::= INT_TOKEN {
   extends=value
   implements=[
-    "com.intellij.psi.PsiLiteralValue"
     "com.intellij.psi.ContributedReferenceHost"
+    "com.intellij.psi.PsiLiteralValue"
   ]
   methods=[getValue getIntValue getType getReference getReferences toString]
 }
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
-    "com.intellij.psi.PsiLiteralValue"
     "com.intellij.psi.ContributedReferenceHost"
+    "com.intellij.psi.PsiLiteralValue"
   ]
   methods=[getValue getFloatValue getType getReference getReferences toString]
 }
@@ -148,10 +151,10 @@ string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_pa
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
-    "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
+    "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
   ]
   methods=[
-    getIdElement
+    getIdElement parameter=""
     getIcon getValue setValue getStringValue getType getExpression getConfigExpression
     getReference getReferences toString
   ]
@@ -166,8 +169,8 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   recoverWhile="#auto"
   extends=value
   implements=[
-    "icu.windea.pls.script.psi.ParadoxScriptBlockElement"
     "com.intellij.psi.ContributedReferenceHost"
+    "icu.windea.pls.script.psi.ParadoxScriptBlockElement"
   ]
   methods=[
     property="" value="" getPropertyList getValueList
@@ -201,7 +204,7 @@ private block_value ::= scripted_variable_reference | boolean | int | float | st
 parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END {
   pin=2
   implements=[
-    "icu.windea.pls.lang.psi.ParadoxParameter"
+    "icu.windea.pls.script.psi.ParadoxParameter"
   ]
   methods=[getIdElement getIcon getName setName getValue getTextOffset getDefaultValue getReference]
 }
@@ -209,7 +212,7 @@ parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_default_value] PAR
 inline_math_parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END {
   extends=inline_math_factor
   pin=2
-  implements="icu.windea.pls.lang.psi.ParadoxParameter"
+  implements="icu.windea.pls.script.psi.ParadoxParameter"
   methods=[getIdElement getIcon getName setName getValue getTextOffset getDefaultValue getReference]
 }
 private parameter_default_value ::= PARAMETER_VALUE_TOKEN
@@ -231,7 +234,7 @@ private parameter_condition_expr ::= NESTED_LEFT_BRACKET parameter_condition_exp
 }
 parameter_condition_expression ::= NOT_SIGN ? parameter_condition_parameter
 parameter_condition_parameter ::= CONDITION_PARAMETER_TOKEN {
-  implements="icu.windea.pls.lang.psi.ParadoxConditionParameter"
+  implements="icu.windea.pls.script.psi.ParadoxConditionParameter"
   methods=[getIdElement getIcon getName setName getValue getTextOffset getReference]
 }
 private parameter_condition_item ::= COMMENT | parameter_condition_value | property | parameter_condition {
@@ -303,9 +306,12 @@ inline_math_scripted_variable_reference ::= inline_math_scripted_variable_refere
   extends=inline_math_factor
   implements=[
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
-    "icu.windea.pls.lang.psi.ParadoxParameterAwareElement"
+    "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
   ]
-  methods=[getIdElement getIcon getName setName getValue getReference getType getExpression]
+  methods=[
+    getIdElement inline_math_parameter=""
+    getIcon getName setName getValue getReference getType getExpression
+  ]
 }
 private inline_math_scripted_variable_reference_part ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter | inline_parameter_condition
 

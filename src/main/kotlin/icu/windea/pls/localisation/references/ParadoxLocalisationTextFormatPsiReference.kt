@@ -13,7 +13,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 
 /**
- * 本地化格式的PSI引用。
+ * 文本格式的PSI引用。
  *
  * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationTextFormatCompletionProvider
  */
