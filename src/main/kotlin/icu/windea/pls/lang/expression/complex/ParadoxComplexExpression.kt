@@ -4,9 +4,9 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -40,10 +40,15 @@ interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
 
     companion object Resolver {
         fun resolve(element: ParadoxExpressionElement, configGroup: CwtConfigGroup): ParadoxComplexExpression? {
-            return when(element) {
-                is ParadoxScriptExpressionElement -> TODO() //TODO 1.4.0
+            return when (element) {
+                is ParadoxScriptExpressionElement -> {
+                    val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
+                    val value = element.value
+                    val textRange = TextRange.create(0, value.length)
+                    resolveByConfig(value, textRange, configGroup, config)
+                }
                 is ParadoxLocalisationExpressionElement -> {
-                    if(!element.isComplexExpression()) return null
+                    if (!element.isComplexExpression()) return null
                     val value = element.value
                     val textRange = TextRange.create(0, value.length)
                     when {

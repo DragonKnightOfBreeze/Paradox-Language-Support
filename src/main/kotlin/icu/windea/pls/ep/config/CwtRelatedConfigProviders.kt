@@ -11,6 +11,7 @@ import icu.windea.pls.ep.modifier.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.expression.complex.*
+import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
@@ -96,17 +97,21 @@ class CwtInComplexExpressionRelatedConfigProvider : CwtRelatedConfigProvider {
 
         val configGroup = getConfigGroup(file.project, selectGameType(file))
         val textRange = element.textRange
-        val finalOffset = when {
-            offset == textRange.endOffset -> offset - textRange.startOffset - 1
-            else -> offset - textRange.startOffset
-        }
+        val finalOffset = offset - textRange.startOffset
         if (finalOffset < 0) return emptySet()
         val complexExpression = ParadoxComplexExpression.resolve(element, configGroup)
         if (complexExpression == null) return emptySet()
 
-        //TODO 1.4.0
-
-        return emptySet()
+        val result = mutableListOf<CwtConfig<*>>()
+        complexExpression.accept(object : ParadoxComplexExpressionVisitor() {
+            override fun visit(node: ParadoxComplexExpressionNode, parentNode: ParadoxComplexExpressionNode?): Boolean {
+                if(finalOffset in node.rangeInExpression) {
+                    result.addAll(0, node.getRelatedConfigs())
+                }
+                return super.visit(node, parentNode)
+            }
+        })
+        return result.toSet()
     }
 }
 
