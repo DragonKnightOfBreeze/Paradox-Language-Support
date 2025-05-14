@@ -87,10 +87,12 @@ object ParadoxLocalisationTextInlayRenderer {
     private fun renderTo(element: ParadoxLocalisationRichText, context: Context): Boolean {
         return when (element) {
             is ParadoxLocalisationString -> renderStringTo(element, context)
-            is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
-            is ParadoxLocalisationIcon -> renderIconTo(element, context)
-            is ParadoxLocalisationCommand -> renderCommandTo(element, context)
             is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, context)
+            is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
+            is ParadoxLocalisationCommand -> renderCommandTo(element, context)
+            is ParadoxLocalisationIcon -> renderIconTo(element, context)
+            is ParadoxLocalisationTextFormat -> renderTextFormatTo(element, context)
+            is ParadoxLocalisationTextIcon -> renderTextIconTo(element, context)
             else -> true
         }
     }
@@ -275,6 +277,34 @@ object ParadoxLocalisationTextInlayRenderer {
         }
         context.builder.add(smallText(element.name))
         return continueProcess(context)
+    }
+
+    private fun renderTextFormatTo(element: ParadoxLocalisationTextFormat, context: Context): Boolean = with(context.factory) {
+        //TODO 1.4.1+ 更完善的支持
+
+        //直接渲染其中的文本，暂不考虑适用文本格式
+        val richTextList = element.richTextList
+        if (richTextList.isEmpty()) return true
+        var continueProcess = true
+        for (richText in richTextList) {
+            ProgressManager.checkCanceled()
+            val r = renderTo(richText, context)
+            if (!r) {
+                continueProcess = false
+                break
+            }
+        }
+        continueProcess
+    }
+
+    private fun renderTextIconTo(element: ParadoxLocalisationTextIcon, context: Context): Boolean = with(context.factory) {
+        //TODO 1.4.1+ 更完善的支持
+
+        //直接显示原始文本，暂不考虑渲染文本图标
+        //点击其中的相关文本也能跳转到相关声明
+        val presentation = getElementPresentation(element, context)
+        if (presentation != null) context.builder.add(presentation)
+        continueProcess(context)
     }
 
     private fun mergePresentation(presentations: MutableList<InlayPresentation>): InlayPresentation? {

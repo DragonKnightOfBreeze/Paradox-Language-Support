@@ -82,10 +82,12 @@ object ParadoxLocalisationTextHtmlRenderer {
     private fun renderTo(element: ParadoxLocalisationRichText, context: Context) {
         when (element) {
             is ParadoxLocalisationString -> renderStringTo(element, context)
-            is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
-            is ParadoxLocalisationIcon -> renderIconTo(element, context)
-            is ParadoxLocalisationCommand -> renderCommandTo(element, context)
             is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, context)
+            is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
+            is ParadoxLocalisationCommand -> renderCommandTo(element, context)
+            is ParadoxLocalisationIcon -> renderIconTo(element, context)
+            is ParadoxLocalisationTextFormat -> renderTextFormatTo(element, context)
+            is ParadoxLocalisationTextIcon -> renderTextIconTo(element, context)
         }
     }
 
@@ -251,6 +253,30 @@ object ParadoxLocalisationTextHtmlRenderer {
         if (conceptColor != null) {
             context.builder.append("</span>")
         }
+    }
+
+    private fun renderTextFormatTo(element: ParadoxLocalisationTextFormat, context : Context) {
+        //TODO 1.4.1+ 更完善的支持
+
+        //直接渲染其中的文本，暂不考虑适用文本格式
+        val richTextList = element.richTextList
+        if (richTextList.isEmpty()) return
+        for (richText in richTextList) {
+            ProgressManager.checkCanceled()
+            renderTo(richText, context)
+        }
+    }
+
+    private fun renderTextIconTo(element: ParadoxLocalisationTextIcon, context: Context) {
+        //TODO 1.4.1+ 更完善的支持
+
+        //直接显示原始文本，暂不考虑渲染文本图标
+        //（仅限快速文档）点击其中的相关文本也能跳转到相关声明，但不显示为超链接
+        context.builder.append("<code>")
+        context.builder.append("@")
+        renderElementText(element, context)
+        context.builder.append("!")
+        context.builder.append("</code>")
     }
 
     private fun renderElementText(element: PsiElement, context: Context) {
