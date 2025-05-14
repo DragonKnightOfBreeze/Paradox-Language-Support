@@ -15,13 +15,13 @@ import icu.windea.pls.model.constants.*
 /**
  * 本地化格式的PSI引用。
  *
- * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationFormattingCompletionProvider
+ * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationTextFormatCompletionProvider
  */
 @WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3)
-class ParadoxLocalisationFormattingPsiReference(
-    element: ParadoxLocalisationFormatting,
+class ParadoxLocalisationTextFormatPsiReference(
+    element: ParadoxLocalisationTextFormat,
     rangeInElement: TextRange
-) : PsiPolyVariantReferenceBase<ParadoxLocalisationFormatting>(element, rangeInElement) {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationTextFormat>(element, rangeInElement) {
     val project by lazy { element.project }
 
     override fun handleElementRename(newElementName: String): PsiElement {
@@ -30,14 +30,14 @@ class ParadoxLocalisationFormattingPsiReference(
 
     //缓存解析结果以优化性能
 
-    private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationFormattingPsiReference, PsiElement> {
-        override fun resolve(ref: ParadoxLocalisationFormattingPsiReference, incompleteCode: Boolean): PsiElement? {
+    private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationTextFormatPsiReference, PsiElement> {
+        override fun resolve(ref: ParadoxLocalisationTextFormatPsiReference, incompleteCode: Boolean): PsiElement? {
             return ref.doResolve()
         }
     }
 
-    private object MultiResolver : ResolveCache.PolyVariantResolver<ParadoxLocalisationFormattingPsiReference> {
-        override fun resolve(ref: ParadoxLocalisationFormattingPsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
+    private object MultiResolver : ResolveCache.PolyVariantResolver<ParadoxLocalisationTextFormatPsiReference> {
+        override fun resolve(ref: ParadoxLocalisationTextFormatPsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
             return ref.doMultiResolve()
         }
     }
@@ -53,7 +53,7 @@ class ParadoxLocalisationFormattingPsiReference(
     private fun doResolve(): PsiElement? {
         val element = element
         val definitionName = element.name?.orNull() ?: return null
-        val definitionType = ParadoxDefinitionTypes.TextFormatting
+        val definitionType = ParadoxDefinitionTypes.TextFormat
         val definitionSelector = selector(project, element).definition().contextSensitive()
         val resolved = ParadoxDefinitionSearch.search(definitionName, definitionType, definitionSelector).find()
         return resolved
@@ -62,7 +62,7 @@ class ParadoxLocalisationFormattingPsiReference(
     private fun doMultiResolve(): Array<out ResolveResult> {
         val element = element
         val definitionName = element.name?.orNull() ?: return ResolveResult.EMPTY_ARRAY
-        val definitionType = ParadoxDefinitionTypes.TextFormatting
+        val definitionType = ParadoxDefinitionTypes.TextFormat
         val definitionSelector = selector(project, element).definition().contextSensitive()
         val resolved = ParadoxDefinitionSearch.search(definitionName, definitionType, definitionSelector).findAll()
         if (resolved.isEmpty()) return ResolveResult.EMPTY_ARRAY

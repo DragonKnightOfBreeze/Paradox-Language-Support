@@ -12,19 +12,14 @@ import javax.swing.Icon;
 
 public interface ParadoxLocalisationPropertyKey extends PsiElement {
 
-  @NotNull
-  PsiElement getIdElement();
+  @NotNull PsiElement getIdElement();
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

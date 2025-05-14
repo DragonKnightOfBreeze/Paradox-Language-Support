@@ -15,7 +15,6 @@ public interface ParadoxLocalisationElementTypes {
   IElementType CONCEPT = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT");
   IElementType CONCEPT_NAME = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_NAME");
   IElementType CONCEPT_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_TEXT");
-  IElementType FORMATTING = ParadoxLocalisationElementTypeFactory.getElementType("FORMATTING");
   IElementType ICON = ParadoxLocalisationElementTypeFactory.getElementType("ICON");
   IElementType ICON_ARGUMENT = ParadoxLocalisationElementTypeFactory.getElementType("ICON_ARGUMENT");
   IElementType LOCALE = ParadoxLocalisationElementTypeFactory.getElementType("LOCALE");
@@ -28,6 +27,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType RICH_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("RICH_TEXT");
   IElementType SCRIPTED_VARIABLE_REFERENCE = ParadoxLocalisationElementTypeFactory.getElementType("SCRIPTED_VARIABLE_REFERENCE");
   IElementType STRING = ParadoxLocalisationElementTypeFactory.getElementType("STRING");
+  IElementType TEXT_FORMAT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_FORMAT");
   IElementType TEXT_ICON = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_ICON");
   IElementType TEXT_ROOT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_ROOT");
 
@@ -43,9 +43,6 @@ public interface ParadoxLocalisationElementTypes {
   IElementType COMMAND_TEXT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_TEXT_TOKEN");
   IElementType COMMENT = ParadoxLocalisationElementTypeFactory.getTokenType("COMMENT");
   IElementType CONCEPT_NAME_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("CONCEPT_NAME_TOKEN");
-  IElementType FORMATTING_END = ParadoxLocalisationElementTypeFactory.getTokenType("FORMATTING_END");
-  IElementType FORMATTING_START = ParadoxLocalisationElementTypeFactory.getTokenType("FORMATTING_START");
-  IElementType FORMATTING_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("FORMATTING_TOKEN");
   IElementType ICON_ARGUMENT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_ARGUMENT_TOKEN");
   IElementType ICON_END = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_END");
   IElementType ICON_START = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_START");
@@ -65,6 +62,9 @@ public interface ParadoxLocalisationElementTypes {
   IElementType RIGHT_SINGLE_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_SINGLE_QUOTE");
   IElementType SCRIPTED_VARIABLE_REFERENCE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_TOKEN");
   IElementType STRING_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("STRING_TOKEN");
+  IElementType TEXT_FORMAT_END = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_FORMAT_END");
+  IElementType TEXT_FORMAT_START = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_FORMAT_START");
+  IElementType TEXT_FORMAT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_FORMAT_TOKEN");
   IElementType TEXT_ICON_END = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_ICON_END");
   IElementType TEXT_ICON_START = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_ICON_START");
   IElementType TEXT_ICON_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("TEXT_ICON_TOKEN");
@@ -92,9 +92,6 @@ public interface ParadoxLocalisationElementTypes {
       }
       else if (type == CONCEPT_TEXT) {
         return new ParadoxLocalisationConceptTextImpl(node);
-      }
-      else if (type == FORMATTING) {
-        return new ParadoxLocalisationFormattingImpl(node);
       }
       else if (type == ICON) {
         return new ParadoxLocalisationIconImpl(node);
@@ -128,6 +125,9 @@ public interface ParadoxLocalisationElementTypes {
       }
       else if (type == STRING) {
         return new ParadoxLocalisationStringImpl(node);
+      }
+      else if (type == TEXT_FORMAT) {
+        return new ParadoxLocalisationTextFormatImpl(node);
       }
       else if (type == TEXT_ICON) {
         return new ParadoxLocalisationTextIconImpl(node);

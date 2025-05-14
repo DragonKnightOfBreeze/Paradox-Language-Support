@@ -7,22 +7,28 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.localisation.references.ParadoxLocalisationTextFormatPsiReference;
 import javax.swing.Icon;
 
-public interface ParadoxLocalisationCommand extends ParadoxLocalisationRichText, NavigatablePsiElement, ParadoxLocalisationArgumentAwareElement {
+public interface ParadoxLocalisationTextFormat extends ParadoxLocalisationRichText, NavigatablePsiElement {
 
-  @Nullable
-  ParadoxLocalisationCommandText getCommandText();
+  @NotNull
+  List<ParadoxLocalisationRichText> getRichTextList();
 
-  @Nullable
-  ParadoxLocalisationConcept getConcept();
+  @Nullable PsiElement getIdElement();
 
-  @Nullable
-  ParadoxLocalisationCommandArgument getArgumentElement();
+  @Nullable ParadoxLocalisationPropertyReference getReferenceElement();
 
   @NotNull Icon getIcon(@IconFlags int flags);
+
+  @Nullable String getName();
+
+  @NotNull ParadoxLocalisationTextFormat setName(@NotNull String name);
+
+  @Nullable ParadoxLocalisationTextFormatPsiReference getReference();
 
   @NotNull ItemPresentation getPresentation();
 

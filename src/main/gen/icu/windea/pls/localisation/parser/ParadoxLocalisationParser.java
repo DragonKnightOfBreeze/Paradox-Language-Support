@@ -43,8 +43,8 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(COLORFUL_TEXT, COMMAND, FORMATTING, ICON,
-      PROPERTY_REFERENCE, RICH_TEXT, STRING, TEXT_ICON),
+    create_token_set_(COLORFUL_TEXT, COMMAND, ICON, PROPERTY_REFERENCE,
+      RICH_TEXT, STRING, TEXT_FORMAT, TEXT_ICON),
   };
 
   /* ********************************************************** */
@@ -250,40 +250,6 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // <<supportsFormatting>> FORMATTING_START formatting_name text_items ? FORMATTING_END
-  public static boolean formatting(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "formatting")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, FORMATTING, "<formatting>");
-    r = supportsFormatting(b, l + 1);
-    r = r && consumeToken(b, FORMATTING_START);
-    p = r; // pin = 2
-    r = r && report_error_(b, formatting_name(b, l + 1));
-    r = p && report_error_(b, formatting_3(b, l + 1)) && r;
-    r = p && consumeToken(b, FORMATTING_END) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // text_items ?
-  private static boolean formatting_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "formatting_3")) return false;
-    text_items(b, l + 1);
-    return true;
-  }
-
-  /* ********************************************************** */
-  // property_reference | FORMATTING_TOKEN
-  static boolean formatting_name(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "formatting_name")) return false;
-    if (!nextTokenIs(b, "", FORMATTING_TOKEN, PROPERTY_REFERENCE_START)) return false;
-    boolean r;
-    r = property_reference(b, l + 1);
-    if (!r) r = consumeToken(b, FORMATTING_TOKEN);
-    return r;
-  }
-
-  /* ********************************************************** */
   // ICON_START icon_name [PIPE icon_argument] ICON_END
   public static boolean icon(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "icon")) return false;
@@ -380,11 +346,12 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   // COMMENT | property
   static boolean property_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_item")) return false;
+    if (!nextTokenIs(b, "", COMMENT, PROPERTY_KEY_TOKEN)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_);
+    Marker m = enter_section_(b);
     r = consumeToken(b, COMMENT);
     if (!r) r = property(b, l + 1);
-    exit_section_(b, l, m, r, false, property_item_auto_recover_);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -560,7 +527,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // string | colorful_text | property_reference | icon | command | formatting | text_icon
+  // string | colorful_text | property_reference | icon | command | text_format | text_icon
   public static boolean rich_text(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rich_text")) return false;
     boolean r;
@@ -570,7 +537,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     if (!r) r = property_reference(b, l + 1);
     if (!r) r = icon(b, l + 1);
     if (!r) r = command(b, l + 1);
-    if (!r) r = formatting(b, l + 1);
+    if (!r) r = text_format(b, l + 1);
     if (!r) r = text_icon(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
@@ -613,6 +580,40 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // <<supportsTextFormat>> TEXT_FORMAT_START text_format_name text_items ? TEXT_FORMAT_END
+  public static boolean text_format(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "text_format")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, TEXT_FORMAT, "<text format>");
+    r = supportsTextFormat(b, l + 1);
+    r = r && consumeToken(b, TEXT_FORMAT_START);
+    p = r; // pin = 2
+    r = r && report_error_(b, text_format_name(b, l + 1));
+    r = p && report_error_(b, text_format_3(b, l + 1)) && r;
+    r = p && consumeToken(b, TEXT_FORMAT_END) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // text_items ?
+  private static boolean text_format_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "text_format_3")) return false;
+    text_items(b, l + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // property_reference | TEXT_FORMAT_TOKEN
+  static boolean text_format_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "text_format_name")) return false;
+    if (!nextTokenIs(b, "", PROPERTY_REFERENCE_START, TEXT_FORMAT_TOKEN)) return false;
+    boolean r;
+    r = property_reference(b, l + 1);
+    if (!r) r = consumeToken(b, TEXT_FORMAT_TOKEN);
+    return r;
+  }
+
+  /* ********************************************************** */
   // <<supportsTextIcon>> TEXT_ICON_START text_icon_name TEXT_ICON_END
   public static boolean text_icon(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "text_icon")) return false;
@@ -643,10 +644,8 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   static boolean text_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "text_item")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_);
     r = rich_text(b, l + 1);
     if (!r) r = consumeToken(b, COLORFUL_TEXT_END);
-    exit_section_(b, l, m, r, false, text_item_auto_recover_);
     return r;
   }
 
@@ -678,7 +677,5 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   static final Parser property_auto_recover_ = (b, l) -> !nextTokenIsFast(b, COMMENT, LOCALE_TOKEN, PROPERTY_KEY_TOKEN);
-  static final Parser property_item_auto_recover_ = property_auto_recover_;
   static final Parser property_list_auto_recover_ = property_auto_recover_;
-  static final Parser text_item_auto_recover_ = (b, l) -> !nextTokenIsFast(b, );
 }

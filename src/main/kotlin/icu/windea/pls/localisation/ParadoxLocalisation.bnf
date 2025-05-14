@@ -26,9 +26,7 @@ private property_item_list_with_locale ::= locale property_item * {
   pin=1
 }
 private property_item_list ::= property_item +
-private property_item ::= COMMENT | property {
-  recoverWhile="#auto"
-}
+private property_item ::= COMMENT | property
 
 locale ::= LOCALE_TOKEN COLON {
   pin=1
@@ -70,11 +68,9 @@ text_root ::= text_items {
   extraRoot=true
 }
 private text_items ::= text_item +
-private text_item ::= rich_text | COLORFUL_TEXT_END {
-  recoverWhile="#auto"
-}
+private text_item ::= rich_text | COLORFUL_TEXT_END
 
-rich_text ::= string | colorful_text | property_reference | icon | command | formatting | text_icon
+rich_text ::= string | colorful_text | property_reference | icon | command | text_format | text_icon
 
 string ::= STRING_TOKEN {
   extends=rich_text
@@ -207,9 +203,9 @@ concept_name ::= CONCEPT_NAME_TOKEN | property_reference { //can be parameterize
 }
 concept_text ::= text_items
 
-// [ck3, vic3] localisation formatting rules
+// [ck3, vic3] localisation text format rules
 
-formatting ::= <<supportsFormatting>> FORMATTING_START formatting_name text_items ? FORMATTING_END {
+text_format ::= <<supportsTextFormat>> TEXT_FORMAT_START text_format_name text_items ? TEXT_FORMAT_END {
   pin=2
   extends=rich_text
   implements=[
@@ -217,7 +213,7 @@ formatting ::= <<supportsFormatting>> FORMATTING_START formatting_name text_item
   ]
   methods=[getIdElement getReferenceElement getIcon getName setName getReference]
 }
-private formatting_name ::= property_reference | FORMATTING_TOKEN //can be parameterized?
+private text_format_name ::= property_reference | TEXT_FORMAT_TOKEN //can be parameterized?
 
 // [ck3, vic3] localisation text icon rules
 

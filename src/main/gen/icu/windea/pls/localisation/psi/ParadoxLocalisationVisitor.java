@@ -47,11 +47,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitFormatting(@NotNull ParadoxLocalisationFormatting o) {
-    visitRichText(o);
-    // visitNavigatablePsiElement(o);
-  }
-
   public void visitIcon(@NotNull ParadoxLocalisationIcon o) {
     visitRichText(o);
     // visitNavigatablePsiElement(o);
@@ -104,6 +99,11 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitString(@NotNull ParadoxLocalisationString o) {
     visitRichText(o);
+  }
+
+  public void visitTextFormat(@NotNull ParadoxLocalisationTextFormat o) {
+    visitRichText(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitTextIcon(@NotNull ParadoxLocalisationTextIcon o) {

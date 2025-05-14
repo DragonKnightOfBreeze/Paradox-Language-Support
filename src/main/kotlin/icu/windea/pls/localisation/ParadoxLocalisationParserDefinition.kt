@@ -41,7 +41,7 @@ open class ParadoxLocalisationParserDefinition : ParserDefinition {
             leftType == ICON_START || rightType == ICON_END -> MUST_NOT
             leftType == PIPE || rightType == PIPE -> MUST_NOT
             leftType == COMMA && rightType != TokenType.WHITE_SPACE -> MUST // [stellaris] localisation concept
-            leftType == FORMATTING_TOKEN && rightType != TokenType.WHITE_SPACE -> MUST // [ck3, vic3] localisation formatting
+            leftType == TEXT_FORMAT_TOKEN && rightType != TokenType.WHITE_SPACE -> MUST // [ck3, vic3] localisation text format
             else -> MAY
         }
     }

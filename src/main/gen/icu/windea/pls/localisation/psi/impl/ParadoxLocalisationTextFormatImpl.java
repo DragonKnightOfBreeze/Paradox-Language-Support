@@ -11,20 +11,21 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.localisation.references.ParadoxLocalisationFormattingPsiReference;
+import icu.windea.pls.localisation.references.ParadoxLocalisationTextFormatPsiReference;
 import javax.swing.Icon;
 
-public class ParadoxLocalisationFormattingImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationFormatting {
+public class ParadoxLocalisationTextFormatImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationTextFormat {
 
-  public ParadoxLocalisationFormattingImpl(@NotNull ASTNode node) {
+  public ParadoxLocalisationTextFormatImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
-    visitor.visitFormatting(this);
+    visitor.visitTextFormat(this);
   }
 
   @Override
@@ -40,56 +41,47 @@ public class ParadoxLocalisationFormattingImpl extends ParadoxLocalisationRichTe
   }
 
   @Override
-  @Nullable
-  public PsiElement getIdElement() {
+  public @Nullable PsiElement getIdElement() {
     return ParadoxLocalisationPsiImplUtil.getIdElement(this);
   }
 
   @Override
-  @Nullable
-  public ParadoxLocalisationPropertyReference getReferenceElement() {
+  public @Nullable ParadoxLocalisationPropertyReference getReferenceElement() {
     return ParadoxLocalisationPsiImplUtil.getReferenceElement(this);
   }
 
   @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
+  public @NotNull Icon getIcon(@IconFlags int flags) {
     return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  @Nullable
-  public String getName() {
+  public @Nullable String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }
 
   @Override
-  @NotNull
-  public ParadoxLocalisationFormatting setName(@NotNull String name) {
+  public @NotNull ParadoxLocalisationTextFormat setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
   }
 
   @Override
-  @Nullable
-  public ParadoxLocalisationFormattingPsiReference getReference() {
+  public @Nullable ParadoxLocalisationTextFormatPsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
   }
 
   @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
+  public @NotNull ItemPresentation getPresentation() {
     return ParadoxLocalisationPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  @NotNull
-  public GlobalSearchScope getResolveScope() {
+  public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxLocalisationPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  @NotNull
-  public SearchScope getUseScope() {
+  public @NotNull SearchScope getUseScope() {
     return ParadoxLocalisationPsiImplUtil.getUseScope(this);
   }
 

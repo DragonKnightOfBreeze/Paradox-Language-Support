@@ -32,6 +32,8 @@
         "localisationCommandScope.svg": "icons/nodes/localisationCommandScope.svg",
         "localisationCommandField.svg": "icons/nodes/localisationCommandField.svg",
         "localisationConcept.svg": "icons/nodes/localisationConcept.svg",
+        "localisationTextFormat.svg": "icons/nodes/localisationTextFormat.svg",
+        "localisationTextIcon.svg": "icons/nodes/localisationTextIcon.svg",
         "definition.svg": "icons/nodes/definition.svg",
         "localisation.svg": "icons/nodes/localisation.svg",
         "type.svg": "icons/nodes/type.svg",

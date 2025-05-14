@@ -10,19 +10,14 @@ import com.intellij.psi.search.SearchScope;
 
 public interface ParadoxLocalisationIconArgument extends ParadoxLocalisationArgument {
 
-  @Nullable
-  PsiElement getIdElement();
+  @Nullable PsiElement getIdElement();
 
-  @Nullable
-  ParadoxLocalisationPropertyReference getReferenceElement();
+  @Nullable ParadoxLocalisationPropertyReference getReferenceElement();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

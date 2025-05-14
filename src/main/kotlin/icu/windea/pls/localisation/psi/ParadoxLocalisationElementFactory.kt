@@ -83,9 +83,9 @@ object ParadoxLocalisationElementFactory {
     }
 
     @JvmStatic
-    fun createFormatting(project: Project, name: String): ParadoxLocalisationFormatting {
+    fun createTextFormat(project: Project, name: String): ParadoxLocalisationTextFormat {
         return createPropertyValue(project, "#$name #!").tokenElement
-            ?.findChild<ParadoxLocalisationFormatting>() ?: throw IncorrectOperationException()
+            ?.findChild<ParadoxLocalisationTextFormat>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic

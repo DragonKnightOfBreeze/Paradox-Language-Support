@@ -13,7 +13,7 @@ class ParadoxLocalisationBraceMatcher : PairedBraceMatcher {
         BracePair(COMMAND_START, COMMAND_END, true),
         BracePair(ICON_START, ICON_END, false),
         BracePair(LEFT_SINGLE_QUOTE, RIGHT_SINGLE_QUOTE, false),
-        BracePair(FORMATTING_START, FORMATTING_END, true),
+        BracePair(TEXT_FORMAT_START, TEXT_FORMAT_END, true),
         BracePair(TEXT_ICON_START, TEXT_ICON_END, false),
     )
 

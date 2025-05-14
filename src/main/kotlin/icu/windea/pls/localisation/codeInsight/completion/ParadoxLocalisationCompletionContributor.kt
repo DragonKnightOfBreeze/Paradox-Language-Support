@@ -41,9 +41,9 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
         val conceptNamePattern = psiElement(CONCEPT_NAME_TOKEN)
         extend(conceptNamePattern, ParadoxLocalisationConceptCompletionProvider())
 
-        //当用户可能正在输入一个 formatting 时提示
-        val formattingPattern = psiElement(FORMATTING_TOKEN)
-        extend(formattingPattern, ParadoxLocalisationFormattingCompletionProvider())
+        //当用户可能正在输入一个 textFormat 时提示
+        val textFormatPattern = psiElement(TEXT_FORMAT_TOKEN)
+        extend(textFormatPattern, ParadoxLocalisationTextFormatCompletionProvider())
 
         //当用户可能正在输入一个 textIcon 时提示
         val textIconPattern = psiElement(TEXT_ICON_TOKEN)

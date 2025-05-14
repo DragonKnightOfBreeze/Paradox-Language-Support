@@ -498,20 +498,20 @@ object ParadoxLocalisationPsiImplUtil {
 
     //endregion
 
-    //region
+    //region ParadoxLocalisationTextFormat
 
     @JvmStatic
-    fun getIdElement(element: ParadoxLocalisationFormatting): PsiElement? {
-        return element.findChild { it.elementType == FORMATTING_TOKEN }
+    fun getIdElement(element: ParadoxLocalisationTextFormat): PsiElement? {
+        return element.findChild { it.elementType == TEXT_FORMAT_TOKEN }
     }
 
     @JvmStatic
-    fun getIcon(element: ParadoxLocalisationFormatting, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.LocalisationFormatting
+    fun getIcon(element: ParadoxLocalisationTextFormat, @Iconable.IconFlags flags: Int): Icon {
+        return PlsIcons.Nodes.LocalisationTextFormat
     }
 
     @JvmStatic
-    fun getName(element: ParadoxLocalisationFormatting): String? {
+    fun getName(element: ParadoxLocalisationTextFormat): String? {
         val idElement = element.idElement
         if (idElement != null) return idElement.text
         val referenceElement = element.referenceElement
@@ -520,19 +520,19 @@ object ParadoxLocalisationPsiImplUtil {
     }
 
     @JvmStatic
-    fun setName(element: ParadoxLocalisationFormatting, name: String): ParadoxLocalisationFormatting {
+    fun setName(element: ParadoxLocalisationTextFormat, name: String): ParadoxLocalisationTextFormat {
         val idElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
-        val newIdElement = ParadoxLocalisationElementFactory.createFormatting(element.project, name).idElement ?: throw IllegalStateException()
+        val newIdElement = ParadoxLocalisationElementFactory.createTextFormat(element.project, name).idElement ?: throw IllegalStateException()
         idElement.replace(newIdElement)
         return element
     }
 
     @JvmStatic
-    fun getReference(element: ParadoxLocalisationFormatting): ParadoxLocalisationFormattingPsiReference? {
+    fun getReference(element: ParadoxLocalisationTextFormat): ParadoxLocalisationTextFormatPsiReference? {
         return CachedValuesManager.getCachedValue(element) {
             val value = run {
                 val rangeInElement = element.idElement?.textRangeInParent ?: return@run null
-                ParadoxLocalisationFormattingPsiReference(element, rangeInElement)
+                ParadoxLocalisationTextFormatPsiReference(element, rangeInElement)
             }
             CachedValueProvider.Result.create(value, element)
         }
@@ -540,7 +540,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     //endregion
 
-    //region
+    //region ParadoxLocalisationTextIcon
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationTextIcon): PsiElement? {
@@ -549,7 +549,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxLocalisationTextIcon, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.LocalisationFormatting
+        return PlsIcons.Nodes.LocalisationTextFormat
     }
 
     @JvmStatic

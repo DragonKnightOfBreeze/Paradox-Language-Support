@@ -191,9 +191,9 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %s IN_CONCEPT_NAME
 %s IN_CONCEPT_TEXT
 
-%s CHECK_FORMATTING
-%s IN_FORMATTING_ID
-%s IN_FORMATTING_TEXT
+%s CHECK_TEXT_FORMAT
+%s IN_TEXT_FORMAT_ID
+%s IN_TEXT_FORMAT_TEXT
 
 %unicode
 
@@ -348,7 +348,7 @@ CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
     {CONCEPT_NAME_TOKEN} { return CONCEPT_NAME_TOKEN; }
 }
 
-// [ck3, vic3] localisation formatting rules
+// [ck3, vic3] localisation text format rules
 
 // TODO 1.4.0
 

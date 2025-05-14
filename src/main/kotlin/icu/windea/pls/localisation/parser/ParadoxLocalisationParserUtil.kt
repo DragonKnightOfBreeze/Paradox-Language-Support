@@ -12,8 +12,8 @@ object ParadoxLocalisationParserUtil : GeneratedParserUtilBase() {
     }
 
     @JvmStatic
-    fun supportsFormatting(b: PsiBuilder, l: Int): Boolean {
-        return ParadoxSyntaxConstraint.LocalisationFormatting.supports(b)
+    fun supportsTextFormat(b: PsiBuilder, l: Int): Boolean {
+        return ParadoxSyntaxConstraint.LocalisationTextFormat.supports(b)
     }
 
     @JvmStatic

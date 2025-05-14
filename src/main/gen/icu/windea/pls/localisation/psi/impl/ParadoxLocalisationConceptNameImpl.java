@@ -39,68 +39,57 @@ public class ParadoxLocalisationConceptNameImpl extends ASTWrapperPsiElement imp
   }
 
   @Override
-  @Nullable
-  public PsiElement getIdElement() {
+  public @Nullable PsiElement getIdElement() {
     return ParadoxLocalisationPsiImplUtil.getIdElement(this);
   }
 
   @Override
-  @NotNull
-  public String getName() {
+  public @NotNull String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }
 
   @Override
-  @NotNull
-  public String getValue() {
+  public @NotNull String getValue() {
     return ParadoxLocalisationPsiImplUtil.getValue(this);
   }
 
   @Override
-  @NotNull
-  public ParadoxLocalisationConceptName setValue(@NotNull String value) {
+  public @NotNull ParadoxLocalisationConceptName setValue(@NotNull String value) {
     return ParadoxLocalisationPsiImplUtil.setValue(this, value);
   }
 
   @Override
-  @Nullable
-  public ParadoxType getType() {
+  public @Nullable ParadoxType getType() {
     return ParadoxLocalisationPsiImplUtil.getType(this);
   }
 
   @Override
-  @NotNull
-  public String getExpression() {
+  public @NotNull String getExpression() {
     return ParadoxLocalisationPsiImplUtil.getExpression(this);
   }
 
   @Override
-  @Nullable
-  public PsiReference getReference() {
+  public @Nullable PsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
   }
 
   @Override
-  @NotNull
-  public PsiReference[] getReferences() {
+  public @NotNull PsiReference @NotNull [] getReferences() {
     return ParadoxLocalisationPsiImplUtil.getReferences(this);
   }
 
   @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
+  public @NotNull ItemPresentation getPresentation() {
     return ParadoxLocalisationPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  @NotNull
-  public GlobalSearchScope getResolveScope() {
+  public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxLocalisationPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  @NotNull
-  public SearchScope getUseScope() {
+  public @NotNull SearchScope getUseScope() {
     return ParadoxLocalisationPsiImplUtil.getUseScope(this);
   }
 

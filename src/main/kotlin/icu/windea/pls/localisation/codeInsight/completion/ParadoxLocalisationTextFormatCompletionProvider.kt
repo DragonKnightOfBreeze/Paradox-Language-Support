@@ -16,13 +16,13 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 
 @WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3)
-class ParadoxLocalisationFormattingCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxLocalisationTextFormatCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val element = parameters.position.parent?.castOrNull<ParadoxLocalisationFormatting>() ?: return
+        val element = parameters.position.parent?.castOrNull<ParadoxLocalisationTextFormat>() ?: return
         if (element.text.isParameterized(conditionBlock = false)) return
 
-        val definitionType = ParadoxDefinitionTypes.TextFormatting
-        val icon = PlsIcons.Nodes.LocalisationFormatting //使用特定图标
+        val definitionType = ParadoxDefinitionTypes.TextFormat
+        val icon = PlsIcons.Nodes.LocalisationTextFormat //使用特定图标
         val tailText = " from <$definitionType>"
         val originalFile = context.parameters?.originalFile ?: return
         val project = originalFile.project

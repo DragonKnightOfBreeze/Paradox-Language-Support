@@ -6,7 +6,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.lexer.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.ParadoxGameType.*
-import icu.windea.pls.script.lexer.*
 
 enum class ParadoxSyntaxConstraint(
     vararg val gameTypes: ParadoxGameType
@@ -18,7 +17,7 @@ enum class ParadoxSyntaxConstraint(
     /**
      * `#{tag_name} {text}#!`
      */
-    LocalisationFormatting(Ck3, Vic3), // see #137
+    LocalisationTextFormat(Ck3, Vic3), // see #137
     /**
      * `@{text_icon_name}!`
      */
