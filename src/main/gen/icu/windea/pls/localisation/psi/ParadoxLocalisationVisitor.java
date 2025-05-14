@@ -13,12 +13,13 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitColorfulText(@NotNull ParadoxLocalisationColorfulText o) {
     visitRichText(o);
+    // visitNavigatablePsiElement(o);
     // visitTextColorAwareElement(o);
   }
 
   public void visitCommand(@NotNull ParadoxLocalisationCommand o) {
     visitRichText(o);
-    // visitRichText(o);
+    // visitNavigatablePsiElement(o);
     // visitArgumentAwareElement(o);
   }
 
@@ -28,12 +29,13 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitCommandText(@NotNull ParadoxLocalisationCommandText o) {
-    visitExpressionElement(o);
+    visitNavigatablePsiElement(o);
+    // visitExpressionElement(o);
     // visitContributedReferenceHost(o);
   }
 
   public void visitConcept(@NotNull ParadoxLocalisationConcept o) {
-    visitPsiElement(o);
+    visitNavigatablePsiElement(o);
   }
 
   public void visitConceptName(@NotNull ParadoxLocalisationConceptName o) {
@@ -43,6 +45,11 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitConceptText(@NotNull ParadoxLocalisationConceptText o) {
     visitPsiElement(o);
+  }
+
+  public void visitFormatting(@NotNull ParadoxLocalisationFormatting o) {
+    visitRichText(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitIcon(@NotNull ParadoxLocalisationIcon o) {
@@ -91,11 +98,17 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitScriptedVariableReference(@NotNull ParadoxLocalisationScriptedVariableReference o) {
-    visitParadoxScriptedVariableReference(o);
+    visitNavigatablePsiElement(o);
+    // visitParadoxScriptedVariableReference(o);
   }
 
   public void visitString(@NotNull ParadoxLocalisationString o) {
     visitRichText(o);
+  }
+
+  public void visitTextIcon(@NotNull ParadoxLocalisationTextIcon o) {
+    visitRichText(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitTextRoot(@NotNull ParadoxLocalisationTextRoot o) {
@@ -107,10 +120,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitPsiListLikeElement(@NotNull PsiListLikeElement o) {
-    visitElement(o);
-  }
-
-  public void visitParadoxScriptedVariableReference(@NotNull ParadoxScriptedVariableReference o) {
     visitElement(o);
   }
 

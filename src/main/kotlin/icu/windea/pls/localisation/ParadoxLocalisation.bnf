@@ -66,14 +66,15 @@ property_value ::= LEFT_QUOTE PROPERTY_VALUE_TOKEN ? RIGHT_QUOTE { // lazy-parsi
 
 // localisation text rules (lazy-parsing, from PROPERTY_VALUE_TOKEN)
 
-text_root ::= text_item + {
+text_root ::= text_items {
   extraRoot=true
 }
+private text_items ::= text_item +
 private text_item ::= rich_text | COLORFUL_TEXT_END {
   recoverWhile="#auto"
 }
 
-rich_text ::= string | colorful_text | property_reference | icon | command
+rich_text ::= string | colorful_text | property_reference | icon | command | formatting | text_icon
 
 string ::= STRING_TOKEN {
   extends=rich_text
@@ -83,15 +84,15 @@ string ::= STRING_TOKEN {
 // localisation colorful text rules
 
 // see: https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes
-colorful_text ::= COLORFUL_TEXT_START COLOR_TOKEN colorful_text_item [COLORFUL_TEXT_END]{
+colorful_text ::= COLORFUL_TEXT_START COLOR_TOKEN text_items ? [COLORFUL_TEXT_END] {
   pin=1
   extends=rich_text
   implements=[
+    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
   ]
   methods=[getIdElement getName setName getReference]
 }
-private colorful_text_item ::= rich_text *
 
 // localisation reference rules
 
@@ -122,6 +123,7 @@ property_reference_argument ::= PROPERTY_REFERENCE_ARGUMENT_TOKEN {
 
 scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_TOKEN {
   implements=[
+    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
   ]
   methods=[getIdElement getIcon getName setName getReference getType getExpression]
@@ -134,7 +136,7 @@ command ::= COMMAND_START command_expression ? COMMAND_END {
   pin=1
   extends=rich_text
   implements=[
-    "icu.windea.pls.localisation.psi.ParadoxLocalisationRichText"
+    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
   ]
   methods=[
@@ -146,6 +148,7 @@ command ::= COMMAND_START command_expression ? COMMAND_END {
 private command_expression ::= concept_expression | (command_text [PIPE command_argument])
 command_text ::= COMMAND_TEXT_TOKEN | property_reference { //can be parameterized
   implements=[
+    "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationExpressionElement"
     "com.intellij.psi.ContributedReferenceHost"
   ]
@@ -173,7 +176,7 @@ icon ::= ICON_START icon_name [PIPE icon_argument] ICON_END {
   ]
   methods=[
     getIdElement getReferenceElement argument_element="icon_argument"
-    getIcon getName setName getFrame getReference
+    getIcon getName setName getReference getFrame
   ]
 }
 private icon_name ::= command | property_reference | ICON_TOKEN //can be parameterized
@@ -185,8 +188,11 @@ icon_argument ::= ICON_ARGUMENT_TOKEN | property_reference { //can be parameteri
 // [stellaris] localisation concept rules (as special commands)
 
 private concept_expression ::= <<supportsConceptQuoted>> concept
-concept ::= LEFT_SINGLE_QUOTE concept_name ? RIGHT_SINGLE_QUOTE (COMMA concept_text) ? {
+concept ::= LEFT_SINGLE_QUOTE concept_name ? RIGHT_SINGLE_QUOTE (COMMA concept_text ?) ? {
   pin=1
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"
+  ]
   methods=[getIcon getName setName getReference]
 }
 concept_name ::= CONCEPT_NAME_TOKEN | property_reference { //can be parameterized
@@ -199,13 +205,28 @@ concept_name ::= CONCEPT_NAME_TOKEN | property_reference { //can be parameterize
     getName getValue setValue getType getExpression getReference getReferences
   ]
 }
-concept_text ::= rich_text *
+concept_text ::= text_items
 
 // [ck3, vic3] localisation formatting rules
 
-// TODO 1.4.0
+formatting ::= <<supportsFormatting>> FORMATTING_START formatting_name text_items ? FORMATTING_END {
+  pin=2
+  extends=rich_text
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"
+  ]
+  methods=[getIdElement getReferenceElement getIcon getName setName getReference]
+}
+private formatting_name ::= property_reference | FORMATTING_TOKEN //can be parameterized?
 
 // [ck3, vic3] localisation text icon rules
 
-// TODO 1.4.0
-
+text_icon ::= <<supportsTextIcon>> TEXT_ICON_START text_icon_name TEXT_ICON_END {
+  pin=2
+  extends=rich_text
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"
+  ]
+  methods=[getIdElement getReferenceElement getIcon getName setName getReference]
+}
+private text_icon_name ::= property_reference | TEXT_ICON_TOKEN //can be parameterized?

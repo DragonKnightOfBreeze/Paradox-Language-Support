@@ -20,28 +20,38 @@ public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedEle
   @Nullable
   ParadoxLocalisationPropertyValue getPropertyValue();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getName();
+  @NotNull
+  String getName();
 
-  @NotNull ParadoxLocalisationProperty setName(@NotNull String name);
+  @NotNull
+  ParadoxLocalisationProperty setName(@NotNull String name);
 
-  @NotNull PsiElement getNameIdentifier();
+  @NotNull
+  PsiElement getNameIdentifier();
 
   int getTextOffset();
 
-  @Nullable ParadoxLocalisationCategory getCategory();
+  @Nullable
+  ParadoxLocalisationCategory getCategory();
 
-  @Nullable String getValue();
+  @Nullable
+  String getValue();
 
-  @NotNull PsiElement setValue(@NotNull String value);
+  @NotNull
+  PsiElement setValue(@NotNull String value);
 
   boolean isEquivalentTo(@NotNull PsiElement another);
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

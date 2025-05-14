@@ -4,6 +4,7 @@ package icu.windea.pls.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.ContributedReferenceHost;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
@@ -11,30 +12,42 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.model.ParadoxType;
 
-public interface ParadoxLocalisationCommandText extends ParadoxLocalisationExpressionElement, ContributedReferenceHost {
+public interface ParadoxLocalisationCommandText extends NavigatablePsiElement, ParadoxLocalisationExpressionElement, ContributedReferenceHost {
 
-  @Nullable PsiElement getIdElement();
+  @Nullable
+  PsiElement getIdElement();
 
-  @Nullable ParadoxLocalisationPropertyReference getReferenceElement();
+  @Nullable
+  ParadoxLocalisationPropertyReference getReferenceElement();
 
-  @NotNull String getName();
+  @NotNull
+  String getName();
 
-  @NotNull String getValue();
+  @NotNull
+  String getValue();
 
-  @NotNull ParadoxLocalisationCommandText setValue(@NotNull String value);
+  @NotNull
+  ParadoxLocalisationCommandText setValue(@NotNull String value);
 
-  @Nullable ParadoxType getType();
+  @Nullable
+  ParadoxType getType();
 
-  @NotNull String getExpression();
+  @NotNull
+  String getExpression();
 
-  @Nullable PsiReference getReference();
+  @Nullable
+  PsiReference getReference();
 
-  @NotNull PsiReference @NotNull [] getReferences();
+  @NotNull
+  PsiReference[] getReferences();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

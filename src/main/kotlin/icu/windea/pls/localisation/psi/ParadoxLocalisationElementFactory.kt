@@ -39,6 +39,18 @@ object ParadoxLocalisationElementFactory {
     }
 
     @JvmStatic
+    fun createString(project: Project, text: String): ParadoxLocalisationString {
+        return createPropertyValue(project, text).tokenElement
+            ?.findChild<ParadoxLocalisationString>() ?: throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun createColorfulText(project: Project, name: String, value: String = ""): ParadoxLocalisationColorfulText {
+        return createPropertyValue(project, "§$name$value§!").tokenElement
+            ?.findChild<ParadoxLocalisationColorfulText>() ?: throw IncorrectOperationException()
+    }
+
+    @JvmStatic
     fun createPropertyReference(project: Project, name: String): ParadoxLocalisationPropertyReference {
         return createPropertyValue(project, "$$name$").tokenElement
             ?.findChild<ParadoxLocalisationPropertyReference>() ?: throw IncorrectOperationException()
@@ -58,6 +70,12 @@ object ParadoxLocalisationElementFactory {
     }
 
     @JvmStatic
+    fun createIcon(project: Project, name: String): ParadoxLocalisationIcon {
+        return createPropertyValue(project, "£$name£").tokenElement
+            ?.findChild<ParadoxLocalisationIcon>() ?: throw IncorrectOperationException()
+    }
+
+    @JvmStatic
     fun createConceptName(project: Project, name: String): ParadoxLocalisationConceptName {
         return createPropertyValue(project, "['$name']").tokenElement
             ?.findChild<ParadoxLocalisationCommand>()
@@ -65,20 +83,14 @@ object ParadoxLocalisationElementFactory {
     }
 
     @JvmStatic
-    fun createIcon(project: Project, name: String): ParadoxLocalisationIcon {
-        return createPropertyValue(project, "£$name£").tokenElement
-            ?.findChild<ParadoxLocalisationIcon>() ?: throw IncorrectOperationException()
+    fun createFormatting(project: Project, name: String): ParadoxLocalisationFormatting {
+        return createPropertyValue(project, "#$name #!").tokenElement
+            ?.findChild<ParadoxLocalisationFormatting>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
-    fun createColorfulText(project: Project, name: String, value: String = ""): ParadoxLocalisationColorfulText {
-        return createPropertyValue(project, "§$name$value§!").tokenElement
-            ?.findChild<ParadoxLocalisationColorfulText>() ?: throw IncorrectOperationException()
-    }
-
-    @JvmStatic
-    fun createString(project: Project, text: String): ParadoxLocalisationString {
-        return createPropertyValue(project, text).tokenElement
-            ?.findChild<ParadoxLocalisationString>() ?: throw IncorrectOperationException()
+    fun createTextIcon(project: Project, name: String): ParadoxLocalisationTextIcon {
+        return createPropertyValue(project, "@$name!").tokenElement
+            ?.findChild<ParadoxLocalisationTextIcon>() ?: throw IncorrectOperationException()
     }
 }

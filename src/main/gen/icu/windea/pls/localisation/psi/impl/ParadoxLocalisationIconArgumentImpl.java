@@ -31,27 +31,32 @@ public class ParadoxLocalisationIconArgumentImpl extends ASTWrapperPsiElement im
   }
 
   @Override
-  public @Nullable PsiElement getIdElement() {
+  @Nullable
+  public PsiElement getIdElement() {
     return ParadoxLocalisationPsiImplUtil.getIdElement(this);
   }
 
   @Override
-  public @Nullable ParadoxLocalisationPropertyReference getReferenceElement() {
+  @Nullable
+  public ParadoxLocalisationPropertyReference getReferenceElement() {
     return ParadoxLocalisationPsiImplUtil.getReferenceElement(this);
   }
 
   @Override
-  public @NotNull ItemPresentation getPresentation() {
+  @NotNull
+  public ItemPresentation getPresentation() {
     return ParadoxLocalisationPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  public @NotNull GlobalSearchScope getResolveScope() {
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
     return ParadoxLocalisationPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  public @NotNull SearchScope getUseScope() {
+  @NotNull
+  public SearchScope getUseScope() {
     return ParadoxLocalisationPsiImplUtil.getUseScope(this);
   }
 

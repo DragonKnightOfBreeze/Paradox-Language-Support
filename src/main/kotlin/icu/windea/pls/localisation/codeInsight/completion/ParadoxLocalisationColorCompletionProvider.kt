@@ -34,7 +34,7 @@ class ParadoxLocalisationColorCompletionProvider : CompletionProvider<Completion
             val element = colorConfig.pointer.element ?: continue
             val name = colorConfig.name
             val icon = colorConfig.icon
-            val tailText = " from <textcolor>"
+            val tailText = " from <text_color>"
             val typeFile = colorConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name).withIcon(icon)
                 .withTailText(tailText, true)

@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.localisation.references.ParadoxLocalisationPropertyPsiReference;
@@ -45,7 +44,8 @@ public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisatio
   }
 
   @Override
-  public @Nullable PsiElement getIdElement() {
+  @Nullable
+  public PsiElement getIdElement() {
     return ParadoxLocalisationPsiImplUtil.getIdElement(this);
   }
 
@@ -56,32 +56,38 @@ public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisatio
   }
 
   @Override
-  public @NotNull String getName() {
+  @NotNull
+  public String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }
 
   @Override
-  public @NotNull ParadoxLocalisationPropertyReference setName(@NotNull String name) {
+  @NotNull
+  public ParadoxLocalisationPropertyReference setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
   }
 
   @Override
-  public @Nullable ParadoxLocalisationPropertyPsiReference getReference() {
+  @Nullable
+  public ParadoxLocalisationPropertyPsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
   }
 
   @Override
-  public @NotNull ItemPresentation getPresentation() {
+  @NotNull
+  public ItemPresentation getPresentation() {
     return ParadoxLocalisationPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  public @NotNull GlobalSearchScope getResolveScope() {
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
     return ParadoxLocalisationPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  public @NotNull SearchScope getUseScope() {
+  @NotNull
+  public SearchScope getUseScope() {
     return ParadoxLocalisationPsiImplUtil.getUseScope(this);
   }
 

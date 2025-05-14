@@ -141,6 +141,12 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         }
     }
 
+    private boolean isConceptQuoted() {
+        return yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptQuoted.supports(this);
+    }
+
+
+
     private IElementType checkBlank() {
         if (yystate() != YYINITIAL && yystate() != IN_COLORFUL_TEXT) {
             return WHITE_SPACE;
@@ -154,10 +160,6 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
             return COMMAND_END;
         }
         return STRING_TOKEN;
-    }
-
-    private boolean isConceptQuoted() {
-        return yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptQuoted.supports(this);
     }
 %}
 
@@ -188,6 +190,10 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 %s IN_CONCEPT_NAME
 %s IN_CONCEPT_TEXT
+
+%s CHECK_FORMATTING
+%s IN_FORMATTING_ID
+%s IN_FORMATTING_TEXT
 
 %unicode
 

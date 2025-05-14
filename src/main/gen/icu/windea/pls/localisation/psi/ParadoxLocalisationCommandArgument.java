@@ -11,16 +11,22 @@ import com.intellij.psi.search.SearchScope;
 
 public interface ParadoxLocalisationCommandArgument extends ParadoxLocalisationArgument, ParadoxLocalisationTextColorAwareElement {
 
-  @Nullable PsiElement getIdElement();
+  @Nullable
+  PsiElement getIdElement();
 
-  @Nullable ParadoxLocalisationPropertyReference getReferenceElement();
+  @Nullable
+  ParadoxLocalisationPropertyReference getReferenceElement();
 
-  @NotNull PsiReference @NotNull [] getReferences();
+  @NotNull
+  PsiReference[] getReferences();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

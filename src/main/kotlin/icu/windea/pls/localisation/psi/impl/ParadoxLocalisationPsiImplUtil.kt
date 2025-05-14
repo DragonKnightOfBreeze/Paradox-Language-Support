@@ -199,7 +199,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun setName(element: ParadoxLocalisationColorfulText, name: String): ParadoxLocalisationColorfulText {
         val idElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
-        val newIdElement = ParadoxLocalisationElementFactory.createColorfulText(element.project, name).idElement!!
+        val newIdElement = ParadoxLocalisationElementFactory.createColorfulText(element.project, name).idElement ?: throw IllegalStateException()
         idElement.replace(newIdElement)
         return element
     }
@@ -391,15 +391,10 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun setName(element: ParadoxLocalisationIcon, name: String): ParadoxLocalisationIcon {
-        if (element.idElement == null) throw IncorrectOperationException() //不支持重命名
-        val newElement = ParadoxLocalisationElementFactory.createIcon(element.project, name)
-        return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun getFrame(element: ParadoxLocalisationIcon): Int {
-        //这里的帧数可以用$PARAM$表示，对应某个本地化参数，此时直接返回0
-        return element.argumentElement?.idElement?.text?.toIntOrNull() ?: 0
+        val idElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
+        val newIdElement = ParadoxLocalisationElementFactory.createIcon(element.project, name).idElement ?: throw IllegalStateException()
+        idElement.replace(newIdElement)
+        return element
     }
 
     @JvmStatic
@@ -411,6 +406,12 @@ object ParadoxLocalisationPsiImplUtil {
             }
             CachedValueProvider.Result.create(value, element)
         }
+    }
+
+    @JvmStatic
+    fun getFrame(element: ParadoxLocalisationIcon): Int {
+        //这里的帧数可以用$PARAM$表示，对应某个本地化参数，此时直接返回0
+        return element.argumentElement?.idElement?.text?.toIntOrNull() ?: 0
     }
 
     //endregion
@@ -493,6 +494,90 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getExpression(element: ParadoxLocalisationConceptName): String {
         return element.name
+    }
+
+    //endregion
+
+    //region
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxLocalisationFormatting): PsiElement? {
+        return element.findChild { it.elementType == FORMATTING_TOKEN }
+    }
+
+    @JvmStatic
+    fun getIcon(element: ParadoxLocalisationFormatting, @Iconable.IconFlags flags: Int): Icon {
+        return PlsIcons.Nodes.LocalisationFormatting
+    }
+
+    @JvmStatic
+    fun getName(element: ParadoxLocalisationFormatting): String? {
+        val idElement = element.idElement
+        if (idElement != null) return idElement.text
+        val referenceElement = element.referenceElement
+        val resolved = referenceElement?.reference?.resolveLocalisation() //直接解析为本地化以优化性能
+        return resolved?.value
+    }
+
+    @JvmStatic
+    fun setName(element: ParadoxLocalisationFormatting, name: String): ParadoxLocalisationFormatting {
+        val idElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
+        val newIdElement = ParadoxLocalisationElementFactory.createFormatting(element.project, name).idElement ?: throw IllegalStateException()
+        idElement.replace(newIdElement)
+        return element
+    }
+
+    @JvmStatic
+    fun getReference(element: ParadoxLocalisationFormatting): ParadoxLocalisationFormattingPsiReference? {
+        return CachedValuesManager.getCachedValue(element) {
+            val value = run {
+                val rangeInElement = element.idElement?.textRangeInParent ?: return@run null
+                ParadoxLocalisationFormattingPsiReference(element, rangeInElement)
+            }
+            CachedValueProvider.Result.create(value, element)
+        }
+    }
+
+    //endregion
+
+    //region
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxLocalisationTextIcon): PsiElement? {
+        return element.findChild { it.elementType == TEXT_ICON_TOKEN }
+    }
+
+    @JvmStatic
+    fun getIcon(element: ParadoxLocalisationTextIcon, @Iconable.IconFlags flags: Int): Icon {
+        return PlsIcons.Nodes.LocalisationFormatting
+    }
+
+    @JvmStatic
+    fun getName(element: ParadoxLocalisationTextIcon): String? {
+        val idElement = element.idElement
+        if (idElement != null) return idElement.text
+        val referenceElement = element.referenceElement
+        val resolved = referenceElement?.reference?.resolveLocalisation() //直接解析为本地化以优化性能
+        return resolved?.value
+    }
+
+    @JvmStatic
+    fun setName(element: ParadoxLocalisationTextIcon, name: String): ParadoxLocalisationTextIcon {
+        val idElement = element.idElement ?: throw IncorrectOperationException() //不支持重命名
+        val newIdElement = ParadoxLocalisationElementFactory.createTextIcon(element.project, name).idElement ?: throw IllegalStateException()
+        idElement.replace(newIdElement)
+        return element
+    }
+
+    @JvmStatic
+    fun getReference(element: ParadoxLocalisationTextIcon): ParadoxLocalisationTextIconPsiReference? {
+        return CachedValuesManager.getCachedValue(element) {
+            val value = run {
+                val rangeInElement = element.idElement?.textRangeInParent ?: return@run null
+                ParadoxLocalisationTextIconPsiReference(element, rangeInElement)
+            }
+            CachedValueProvider.Result.create(value, element)
+        }
     }
 
     //endregion

@@ -48,13 +48,16 @@ class ParadoxLocalisationIconPsiReference(
         val element = element
         val name = element.name
         if (name.isNullOrEmpty()) return null
-        return ParadoxLocalisationIconSupport.resolve(name, element, project)
+        val resolved = ParadoxLocalisationIconSupport.resolve(name, element, project)
+        return resolved
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         val element = element
         val name = element.name
         if (name.isNullOrEmpty()) return ResolveResult.EMPTY_ARRAY
-        return ParadoxLocalisationIconSupport.resolveAll(name, element, project).mapToArray { PsiElementResolveResult(it) }
+        val resolved = ParadoxLocalisationIconSupport.resolveAll(name, element, project)
+        if (resolved.isEmpty()) return ResolveResult.EMPTY_ARRAY
+        return resolved.mapToArray { PsiElementResolveResult(it) }
     }
 }

@@ -10,4 +10,14 @@ object ParadoxLocalisationParserUtil : GeneratedParserUtilBase() {
     fun supportsConceptQuoted(b: PsiBuilder, l: Int): Boolean {
         return ParadoxSyntaxConstraint.LocalisationConceptQuoted.supports(b)
     }
+
+    @JvmStatic
+    fun supportsFormatting(b: PsiBuilder, l: Int): Boolean {
+        return ParadoxSyntaxConstraint.LocalisationFormatting.supports(b)
+    }
+
+    @JvmStatic
+    fun supportsTextIcon(b: PsiBuilder, l: Int): Boolean {
+        return ParadoxSyntaxConstraint.LocalisationTextIcon.supports(b)
+    }
 }

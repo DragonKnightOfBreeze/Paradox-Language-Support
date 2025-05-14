@@ -9,22 +9,19 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.localisation.references.ParadoxLocalisationIconPsiReference;
+import icu.windea.pls.localisation.references.ParadoxLocalisationTextIconPsiReference;
 import javax.swing.Icon;
 
-public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText, NavigatablePsiElement, ParadoxLocalisationArgumentAwareElement {
+public interface ParadoxLocalisationTextIcon extends ParadoxLocalisationRichText, NavigatablePsiElement {
 
   @Nullable
-  ParadoxLocalisationRichText getRichText();
+  ParadoxLocalisationPropertyReference getPropertyReference();
 
   @Nullable
   PsiElement getIdElement();
 
   @Nullable
   ParadoxLocalisationPropertyReference getReferenceElement();
-
-  @Nullable
-  ParadoxLocalisationIconArgument getArgumentElement();
 
   @NotNull
   Icon getIcon(@IconFlags int flags);
@@ -33,12 +30,10 @@ public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText, Na
   String getName();
 
   @NotNull
-  ParadoxLocalisationIcon setName(@NotNull String name);
+  ParadoxLocalisationTextIcon setName(@NotNull String name);
 
   @Nullable
-  ParadoxLocalisationIconPsiReference getReference();
-
-  int getFrame();
+  ParadoxLocalisationTextIconPsiReference getReference();
 
   @NotNull
   ItemPresentation getPresentation();

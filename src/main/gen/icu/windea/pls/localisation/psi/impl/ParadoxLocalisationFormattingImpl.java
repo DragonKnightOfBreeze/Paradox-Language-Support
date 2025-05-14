@@ -8,22 +8,23 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import icu.windea.pls.localisation.references.ParadoxLocalisationFormattingPsiReference;
 import javax.swing.Icon;
 
-public class ParadoxLocalisationPropertyListImpl extends ASTWrapperPsiElement implements ParadoxLocalisationPropertyList {
+public class ParadoxLocalisationFormattingImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationFormatting {
 
-  public ParadoxLocalisationPropertyListImpl(@NotNull ASTNode node) {
+  public ParadoxLocalisationFormattingImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
-    visitor.visitPropertyList(this);
+    visitor.visitFormatting(this);
   }
 
   @Override
@@ -33,15 +34,21 @@ public class ParadoxLocalisationPropertyListImpl extends ASTWrapperPsiElement im
   }
 
   @Override
-  @Nullable
-  public ParadoxLocalisationLocale getLocale() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationLocale.class);
+  @NotNull
+  public List<ParadoxLocalisationRichText> getRichTextList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationRichText.class);
   }
 
   @Override
-  @NotNull
-  public List<ParadoxLocalisationProperty> getPropertyList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationProperty.class);
+  @Nullable
+  public PsiElement getIdElement() {
+    return ParadoxLocalisationPsiImplUtil.getIdElement(this);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxLocalisationPropertyReference getReferenceElement() {
+    return ParadoxLocalisationPsiImplUtil.getReferenceElement(this);
   }
 
   @Override
@@ -51,9 +58,21 @@ public class ParadoxLocalisationPropertyListImpl extends ASTWrapperPsiElement im
   }
 
   @Override
+  @Nullable
+  public String getName() {
+    return ParadoxLocalisationPsiImplUtil.getName(this);
+  }
+
+  @Override
   @NotNull
-  public List<ParadoxLocalisationProperty> getComponents() {
-    return ParadoxLocalisationPsiImplUtil.getComponents(this);
+  public ParadoxLocalisationFormatting setName(@NotNull String name) {
+    return ParadoxLocalisationPsiImplUtil.setName(this, name);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxLocalisationFormattingPsiReference getReference() {
+    return ParadoxLocalisationPsiImplUtil.getReference(this);
   }
 
   @Override

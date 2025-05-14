@@ -33,7 +33,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxLocalisationExpressionElement -> element.isComplexExpression()
                 is ParadoxLocalisationIcon -> true //<sprite>, etc.
                 is ParadoxLocalisationConcept -> true //<game_concept>
-                is ParadoxLocalisationTextColorAwareElement -> true //<textcolor>
+                is ParadoxLocalisationTextColorAwareElement -> true //<text_color>
                 else -> false
             }
         }
@@ -67,7 +67,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxDatabaseObjectNode.Reference -> true
                 is ParadoxLocalisationIconPsiReference -> true //<sprite>, etc.
                 is ParadoxLocalisationConceptPsiReference -> true //<game_concept>
-                is ParadoxLocalisationTextColorPsiReference -> true //<textcolor>
+                is ParadoxLocalisationTextColorPsiReference -> true //<text_color>
                 else -> false
             }
         }

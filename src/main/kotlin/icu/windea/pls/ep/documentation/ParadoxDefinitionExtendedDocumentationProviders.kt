@@ -53,7 +53,7 @@ class ParadoxTextColorExtendedDocumentationProvider : ParadoxDefinitionExtendedD
         val definitionName = definitionInfo.name
         if (definitionName.isEmpty()) return null
         if (definitionName.isParameterized()) return null
-        if (definitionInfo.type != "textcolor") return null
+        if (definitionInfo.type != "text_color") return null
         val info = ParadoxTextColorManager.getInfo(definition) ?: return null
         return info.textWithColor
     }
