@@ -1,6 +1,8 @@
 package icu.windea.pls.model.constraints
 
 import com.intellij.lang.*
+import com.intellij.openapi.vfs.*
+import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.lexer.*
@@ -28,6 +30,8 @@ enum class ParadoxSyntaxConstraint(
         val gameType = when (target) {
             is PsiBuilder -> target.getUserData(FileContextUtil.CONTAINING_FILE_KEY)?.fileInfo?.rootInfo?.gameType
             is _ParadoxLocalisationTextLexer -> target.gameType
+            is VirtualFile -> selectGameType(target)
+            is PsiFile -> selectGameType(target)
             else -> null
         }
         return gameType == null || gameType in this.gameTypes

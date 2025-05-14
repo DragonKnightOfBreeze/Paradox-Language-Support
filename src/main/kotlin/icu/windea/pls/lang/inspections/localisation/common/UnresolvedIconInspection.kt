@@ -63,3 +63,4 @@ class UnresolvedIconInspection : LocalInspectionTool() {
         }
     }
 }
+
