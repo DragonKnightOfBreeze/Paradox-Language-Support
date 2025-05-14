@@ -42,7 +42,7 @@ class ParadoxTemplateSnippetNode(
         //排除可解析的情况
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrors.unresolvedTemplateSnippet(rangeInExpression, text, configExpression.expressionString)
+        return ParadoxComplexExpressionError.Builder.unresolvedTemplateSnippet(rangeInExpression, text, configExpression.expressionString)
     }
 
     override fun getReference(element: ParadoxExpressionElement): PsiReference? {

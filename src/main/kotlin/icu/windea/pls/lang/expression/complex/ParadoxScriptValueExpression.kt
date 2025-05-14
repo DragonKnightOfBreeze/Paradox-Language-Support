@@ -53,7 +53,7 @@ class ParadoxScriptValueExpression private constructor(
 
     override fun validate(): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = processAllNodesToValidate(errors) {
+        val result = validateAllNodes(errors) {
             when {
                 it is ParadoxScriptValueNode -> it.text.isParameterAwareIdentifier()
                 it is ParadoxScriptValueArgumentNode -> it.text.isIdentifier()
@@ -69,7 +69,7 @@ class ParadoxScriptValueExpression private constructor(
                 malformed = true
             }
         }
-        if (malformed) errors += ParadoxComplexExpressionErrors.malformedScriptValueExpression(rangeInExpression, text)
+        if (malformed) errors += ParadoxComplexExpressionError.Builder.malformedScriptValueExpression(rangeInExpression, text)
         return errors
     }
 

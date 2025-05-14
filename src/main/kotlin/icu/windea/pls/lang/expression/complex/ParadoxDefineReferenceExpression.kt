@@ -35,7 +35,7 @@ class ParadoxDefineReferenceExpression private constructor(
 
     override fun validate(): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val result = processAllNodesToValidate(errors) {
+        val result = validateAllNodes(errors) {
             when {
                 it is ParadoxDefineNamespaceNode -> it.text.isParameterAwareIdentifier()
                 it is ParadoxDefineVariableNode -> it.text.isParameterAwareIdentifier()
@@ -43,7 +43,7 @@ class ParadoxDefineReferenceExpression private constructor(
             }
         }
         val malformed = !result || nodes.size != 4
-        if (malformed) errors += ParadoxComplexExpressionErrors.malformedDefineReferenceExpression(rangeInExpression, text)
+        if (malformed) errors += ParadoxComplexExpressionError.Builder.malformedDefineReferenceExpression(rangeInExpression, text)
         return errors
     }
 

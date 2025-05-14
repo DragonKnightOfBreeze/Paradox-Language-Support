@@ -57,7 +57,7 @@ class ParadoxDataSourceNode(
         //排除可解析的情况
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrors.unresolvedDataSource(rangeInExpression, text, configExpressions.joinToString())
+        return ParadoxComplexExpressionError.Builder.unresolvedDataSource(rangeInExpression, text, configExpressions.joinToString())
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {

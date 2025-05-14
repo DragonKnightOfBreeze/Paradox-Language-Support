@@ -31,16 +31,8 @@ class IncorrectDynamicValueExpressionInspection : LocalInspectionTool() {
                 val value = element.value
                 val textRange = TextRange.create(0, value.length)
                 val expression = ParadoxDynamicValueExpression.resolve(value, textRange, configGroup, config) ?: return
-                handleErrors(element, expression)
-            }
-
-            private fun handleErrors(element: ParadoxScriptStringExpressionElement, expression: ParadoxDynamicValueExpression) {
-                expression.errors.forEach { error -> handleError(element, error) }
-                expression.processAllNodes { node -> node.getUnresolvedError(element)?.let { error -> handleError(element, error) }.let { true } }
-            }
-
-            private fun handleError(element: ParadoxScriptStringExpressionElement, error: ParadoxComplexExpressionError) {
-                holder.registerExpressionError(error, element)
+                val errors = expression.getAllErrors(element)
+                errors.forEach { error -> error.register(element, holder) }
             }
         }
     }

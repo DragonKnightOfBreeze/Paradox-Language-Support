@@ -47,7 +47,7 @@ class ParadoxDatabaseObjectNode(
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
         val typeToSearch = if (isBase) config.type else config.swapType
-        return ParadoxComplexExpressionErrors.unresolvedDatabaseObject(rangeInExpression, text, typeToSearch)
+        return ParadoxComplexExpressionError.Builder.unresolvedDatabaseObject(rangeInExpression, text, typeToSearch)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {

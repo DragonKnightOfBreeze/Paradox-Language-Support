@@ -31,7 +31,7 @@ class ParadoxDefineVariableNode(
         if (text.isParameterized()) return null
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrors.unresolvedDefineVariable(rangeInExpression, text)
+        return ParadoxComplexExpressionError.Builder.unresolvedDefineVariable(rangeInExpression, text)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {

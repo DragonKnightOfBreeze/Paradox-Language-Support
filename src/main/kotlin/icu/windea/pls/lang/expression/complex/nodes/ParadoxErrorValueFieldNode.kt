@@ -14,6 +14,6 @@ class ParadoxErrorValueFieldNode(
         if (nodes.isNotEmpty()) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        return ParadoxComplexExpressionErrors.unresolvedValueField(rangeInExpression, text)
+        return ParadoxComplexExpressionError.Builder.unresolvedValueField(rangeInExpression, text)
     }
 }

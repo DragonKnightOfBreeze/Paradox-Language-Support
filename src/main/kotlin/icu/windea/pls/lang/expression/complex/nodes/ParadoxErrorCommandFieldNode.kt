@@ -14,6 +14,6 @@ class ParadoxErrorCommandFieldNode(
         if (nodes.isNotEmpty()) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        return ParadoxComplexExpressionErrors.unresolvedCommandField(rangeInExpression, text)
+        return ParadoxComplexExpressionError.Builder.unresolvedCommandField(rangeInExpression, text)
     }
 }

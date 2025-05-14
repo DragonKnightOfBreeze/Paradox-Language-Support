@@ -31,7 +31,7 @@ class ParadoxDefineNamespaceNode(
         if (text.isParameterized()) return null
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrors.unresolvedDefineNamespace(rangeInExpression, text)
+        return ParadoxComplexExpressionError.Builder.unresolvedDefineNamespace(rangeInExpression, text)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {

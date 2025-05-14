@@ -37,7 +37,7 @@ class ParadoxScriptValueNode(
         if (text.isParameterized()) return null
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrors.unresolvedScriptValue(rangeInExpression, text)
+        return ParadoxComplexExpressionError.Builder.unresolvedScriptValue(rangeInExpression, text)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {

@@ -40,7 +40,7 @@ class ParadoxDatabaseObjectTypeNode(
         if (text.isParameterized()) return null
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrors.unresolvedDatabaseObjectType(rangeInExpression, text)
+        return ParadoxComplexExpressionError.Builder.unresolvedDatabaseObjectType(rangeInExpression, text)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {

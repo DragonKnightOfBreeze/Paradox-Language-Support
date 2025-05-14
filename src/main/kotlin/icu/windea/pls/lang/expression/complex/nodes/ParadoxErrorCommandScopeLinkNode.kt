@@ -14,6 +14,6 @@ class ParadoxErrorCommandScopeLinkNode(
         if (nodes.isNotEmpty()) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        return ParadoxComplexExpressionErrors.unresolvedCommandScope(rangeInExpression, text)
+        return ParadoxComplexExpressionError.Builder.unresolvedCommandScope(rangeInExpression, text)
     }
 }
