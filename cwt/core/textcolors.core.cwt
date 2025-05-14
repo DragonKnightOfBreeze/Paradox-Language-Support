@@ -1,5 +1,5 @@
 types = {
-    type[textcolor] = {
+    type[text_color] = {
         skip_root_key = { bitmapfonts textcolors }
         path = "game/interface"
         path_extension = .gfx
@@ -7,7 +7,7 @@ types = {
 }
 
 ## color_type = rgb
-textcolor = {
+text_color = {
     ## cardinality = 3..3
     int[0..255]
 }
