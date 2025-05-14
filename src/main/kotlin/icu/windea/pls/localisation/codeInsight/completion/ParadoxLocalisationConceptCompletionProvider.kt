@@ -18,7 +18,7 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position.parent?.castOrNull<ParadoxLocalisationConceptName>() ?: return
-        if (element.text.isParameterized()) return
+        if (element.text.isParameterized(conditionBlock = false)) return
         if (element.isDatabaseObjectExpression()) return
 
         val file = parameters.originalFile

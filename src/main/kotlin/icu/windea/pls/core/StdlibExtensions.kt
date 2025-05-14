@@ -109,6 +109,18 @@ fun CharSequence.surroundsWith(prefix: CharSequence, suffix: CharSequence, ignor
     return endsWith(suffix, ignoreCase) && startsWith(prefix, ignoreCase) //先匹配后缀，这样可能会提高性能
 }
 
+fun CharSequence.addPrefix(prefix: CharSequence): String {
+    return prefix.toString() + this.toString()
+}
+
+fun CharSequence.addSuffix(suffix: CharSequence): String {
+    return this.toString() + suffix.toString()
+}
+
+fun CharSequence.addSurrounding(prefix: CharSequence, suffix: CharSequence): String {
+    return prefix.toString() + this.toString() + suffix.toString()
+}
+
 fun CharSequence.removeSurrounding(prefix: CharSequence, suffix: CharSequence): CharSequence {
     return removePrefix(prefix).removeSuffix(suffix)
 }

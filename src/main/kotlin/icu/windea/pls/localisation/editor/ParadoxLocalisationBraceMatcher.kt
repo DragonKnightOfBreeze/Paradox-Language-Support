@@ -8,11 +8,13 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 class ParadoxLocalisationBraceMatcher : PairedBraceMatcher {
     private val _bracePairs = arrayOf(
         BracePair(LEFT_QUOTE, RIGHT_QUOTE, true),
-        BracePair(PROPERTY_REFERENCE_START, PROPERTY_REFERENCE_END, true),
-        BracePair(ICON_START, ICON_END, false),
-        BracePair(COMMAND_START, COMMAND_END, true),
-        BracePair(LEFT_SINGLE_QUOTE, RIGHT_SINGLE_QUOTE, false),
         BracePair(COLORFUL_TEXT_START, COLORFUL_TEXT_END, false),
+        BracePair(PROPERTY_REFERENCE_START, PROPERTY_REFERENCE_END, true),
+        BracePair(COMMAND_START, COMMAND_END, true),
+        BracePair(ICON_START, ICON_END, false),
+        BracePair(LEFT_SINGLE_QUOTE, RIGHT_SINGLE_QUOTE, false),
+        BracePair(FORMATTING_START, FORMATTING_END, true),
+        BracePair(TEXT_ICON_START, TEXT_ICON_END, false),
     )
 
     override fun getPairs(): Array<BracePair> = _bracePairs

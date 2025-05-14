@@ -1,11 +1,15 @@
 package icu.windea.pls.ep.icon
 
+import com.intellij.codeInsight.completion.*
 import com.intellij.openapi.extensions.*
+import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.util.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -17,6 +21,8 @@ interface ParadoxLocalisationIconSupport {
 
     fun resolveAll(name: String, element: ParadoxLocalisationIcon, project: Project): Collection<PsiElement>
 
+    fun complete(context: ProcessingContext, result: CompletionResultSet)
+
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxLocalisationIconSupport>("icu.windea.pls.localisationIconSupport")
 
@@ -24,6 +30,7 @@ interface ParadoxLocalisationIconSupport {
             val gameType = selectGameType(element)
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!gameType.supportsByAnnotation(ep)) return@f null
+                ProgressManager.checkCanceled()
                 ep.resolve(name, element, project)
             }
         }
@@ -32,8 +39,18 @@ interface ParadoxLocalisationIconSupport {
             val gameType = selectGameType(element)
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!gameType.supportsByAnnotation(ep)) return@f null
+                ProgressManager.checkCanceled()
                 ep.resolveAll(name, element, project).orNull()
             }.orEmpty()
+        }
+
+        fun complete(context: ProcessingContext, result: CompletionResultSet) {
+            val gameType = context.gameType
+            EP_NAME.extensionList.forEach f@{ ep ->
+                if (!gameType.supportsByAnnotation(ep)) return@f
+                ProgressManager.checkCanceled()
+                ep.complete(context, result)
+            }
         }
     }
 }
