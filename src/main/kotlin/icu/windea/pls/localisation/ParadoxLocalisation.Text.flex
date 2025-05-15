@@ -148,7 +148,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
 
     private IElementType checkTextFormat() {
-        if (isIcon()) {
+        if (isTextFormat()) {
             yypushback(yylength() - 1);
             yybegin(IN_TEXT_FORMAT_ID);
             return TEXT_FORMAT_START;
@@ -166,7 +166,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     }
 
     private IElementType checkTextIcon() {
-        if (isIcon()) {
+        if (isTextIcon()) {
             yypushback(yylength() - 1);
             yybegin(IN_TEXT_ICON);
             return TEXT_ICON_START;
@@ -393,8 +393,9 @@ TEXT_ICON_TOKEN=\w+
 
 // [ck3, vic3] localisation text format rules
 
-// TODO 1.4.0
-
+<CHECK_TEXT_FORMAT>{
+    {TEXT_FORMAT_CHECK} { return checkTextFormat(); }
+}
 <IN_TEXT_FORMAT_ID> {
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }

@@ -30,6 +30,8 @@ class ParadoxLocalisationSyntaxHighlighter(
         private val COMMAND_ARGUMENT_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.COMMAND_ARGUMENT_KEY)
         private val ICON_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.ICON_KEY)
         private val CONCEPT_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.CONCEPT_KEY)
+        private val TEXT_FORMAT_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.TEXT_FORMAT_KEY)
+        private val TEXT_ICON_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.TEXT_ICON_KEY)
         private val STRING_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.STRING_KEY)
         private val VALID_ESCAPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.VALID_ESCAPE_KEY)
         private val INVALID_ESCAPE_KEYS = arrayOf(ParadoxLocalisationAttributesKeys.INVALID_ESCAPE_KEY)
@@ -39,9 +41,13 @@ class ParadoxLocalisationSyntaxHighlighter(
 
     override fun getTokenHighlights(tokenType: IElementType?) = when (tokenType) {
         COLON -> OPERATOR_KEYS
-        PROPERTY_REFERENCE_START, PROPERTY_REFERENCE_END, ICON_START, ICON_END -> MARKER_KEYS
-        COLORFUL_TEXT_START, COLORFUL_TEXT_END, COMMAND_START, COMMAND_END -> MARKER_KEYS
         PIPE, COMMA -> MARKER_KEYS
+        COLORFUL_TEXT_START, COLORFUL_TEXT_END -> MARKER_KEYS
+        PROPERTY_REFERENCE_START, PROPERTY_REFERENCE_END -> MARKER_KEYS
+        COMMAND_START, COMMAND_END -> MARKER_KEYS
+        ICON_START, ICON_END -> MARKER_KEYS
+        TEXT_FORMAT_START, TEXT_FORMAT_END -> MARKER_KEYS
+        TEXT_ICON_START, TEXT_ICON_END -> MARKER_KEYS
         COMMENT -> COMMENT_KEYS
         PROPERTY_NUMBER -> NUMBER_KEYS
         LOCALE_TOKEN -> LOCALE_KEYS
@@ -56,6 +62,8 @@ class ParadoxLocalisationSyntaxHighlighter(
         ICON_TOKEN -> ICON_KEYS
         ICON_ARGUMENT_TOKEN -> NUMBER_KEYS //use NUMBER_KEYS here
         CONCEPT_NAME_TOKEN -> CONCEPT_KEYS
+        TEXT_FORMAT_TOKEN -> TEXT_FORMAT_KEYS
+        TEXT_ICON_TOKEN -> TEXT_ICON_KEYS
         VALID_STRING_ESCAPE_TOKEN -> VALID_ESCAPE_KEYS
         INVALID_CHARACTER_ESCAPE_TOKEN, INVALID_UNICODE_ESCAPE_TOKEN -> INVALID_ESCAPE_KEYS
         BAD_CHARACTER -> BAD_CHARACTER_KEYS

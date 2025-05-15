@@ -65,7 +65,7 @@ class ParadoxGenerateLocalisationsChooser(
                 Type.Modifier -> Modifier(context.name, context)
                 Type.LocalisationReference -> LocalisationReferences(context)
                 Type.SyncedLocalisationReference -> SyncedLocalisationReferences(context)
-                Type.Localisation -> Localisation(context.name, context)
+                Type.Localisation -> Localisations(context)
                 else -> null
             }
         }
@@ -109,12 +109,11 @@ class ParadoxGenerateLocalisationsChooser(
         override fun hashCode() = 0
     }
 
-    data class Localisation(
-        val name: String,
+    data class Localisations(
         val context: ParadoxLocalisationCodeInsightContext
-    ) : MemberChooserObjectBase(name, PlsIcons.Nodes.Localisation) {
-        override fun equals(other: Any?) = this === other || (other is Localisation && name == other.name)
+    ) : MemberChooserObjectBase(PlsBundle.message("generation.localisation.localisations")) {
+        override fun equals(other: Any?) = this === other || (other is Localisations)
 
-        override fun hashCode() = name.hashCode()
+        override fun hashCode() = 0
     }
 }
