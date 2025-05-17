@@ -91,7 +91,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         constraint: ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?,
         consumer: Processor<in ParadoxScriptDefinitionElement>
     ) {
-        val indexKey = ParadoxIndexManager.DefinitionNameKey
+        val indexKey = constraint?.indexKey ?: ParadoxIndexManager.DefinitionNameKey
         val ignoreCase = constraint?.ignoreCase == true
         val finalName = if (ignoreCase) name?.lowercase() else name
         if (typeExpression == null) {
