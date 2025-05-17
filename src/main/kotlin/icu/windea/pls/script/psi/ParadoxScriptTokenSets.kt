@@ -17,7 +17,7 @@ object ParadoxScriptTokenSets {
     @JvmField
     val COMMENT_TOKENS = TokenSet.create(COMMENT)
     @JvmField
-    val LITERAL_TOKENS = TokenSet.EMPTY
+    val LITERAL_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, STRING_TOKEN)
 
     @JvmField
     val COMPARISON_TOKENS = TokenSet.create(LT_SIGN, GT_SIGN, LE_SIGN, GE_SIGN, NOT_EQUAL_SIGN)

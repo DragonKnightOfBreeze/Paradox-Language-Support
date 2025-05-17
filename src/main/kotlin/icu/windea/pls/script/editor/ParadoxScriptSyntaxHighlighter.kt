@@ -1,8 +1,5 @@
 package icu.windea.pls.script.editor
 
-import com.intellij.lexer.*
-import com.intellij.lexer.StringLiteralLexer.*
-import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
@@ -11,69 +8,38 @@ import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
 import icu.windea.pls.script.lexer.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.editor.ParadoxScriptAttributesKeyArrays as KA
 
 class ParadoxScriptSyntaxHighlighter(
     private val project: Project?,
     private val virtualFile: VirtualFile?
 ) : SyntaxHighlighter {
-    companion object {
-        private val BRACES_KEYS = arrayOf(ParadoxScriptAttributesKeys.BRACES_KEY)
-        private val OPERATOR_KEYS = arrayOf(ParadoxScriptAttributesKeys.OPERATOR_KEY)
-        private val MARKER_KEYS = arrayOf(ParadoxScriptAttributesKeys.MARKER_KEY)
-        private val PARAMETER_CONDITION_BRACKETS_KEYS = arrayOf(ParadoxScriptAttributesKeys.PARAMETER_CONDITION_BRACKETS_KEYS)
-        private val PARAMETER_CONDITION_EXPRESSION_BRACKETS_KEYS = arrayOf(ParadoxScriptAttributesKeys.PARAMETER_CONDITION_EXPRESSION_BRACKETS_KEYS)
-        private val INLINE_MATH_BRACES_KEYS = arrayOf(ParadoxScriptAttributesKeys.INLINE_MATH_BRACES_KEY)
-        private val INLINE_MATH_OPERATOR_KEYS = arrayOf(ParadoxScriptAttributesKeys.INLINE_MATH_OPERATOR_KEY)
-        private val KEYWORD_KEYS = arrayOf(ParadoxScriptAttributesKeys.KEYWORD_KEY)
-        private val COMMENT_KEYS = arrayOf(ParadoxScriptAttributesKeys.COMMENT_KEY)
-        private val SCRIPTED_VARIABLE_KEYS = arrayOf(ParadoxScriptAttributesKeys.SCRIPTED_VARIABLE_KEY)
-        private val PARAMETER_KEYS = arrayOf(ParadoxScriptAttributesKeys.PARAMETER_KEY)
-        private val CONDITION_PARAMETER_KEYS = arrayOf(ParadoxScriptAttributesKeys.CONDITION_PARAMETER_KEY)
-        private val PROPERTY_KEY_KEYS = arrayOf(ParadoxScriptAttributesKeys.PROPERTY_KEY_KEY)
-        private val COLOR_KEYS = arrayOf(ParadoxScriptAttributesKeys.COLOR_KEY)
-        private val NUMBER_KEYS = arrayOf(ParadoxScriptAttributesKeys.NUMBER_KEY)
-        private val STRING_KEYS = arrayOf(ParadoxScriptAttributesKeys.STRING_KEY)
-        private val VALID_ESCAPE_KEYS = arrayOf(ParadoxScriptAttributesKeys.VALID_ESCAPE_KEY)
-        private val INVALID_ESCAPE_KEYS = arrayOf(ParadoxScriptAttributesKeys.INVALID_ESCAPE_KEY)
-        private val BAD_CHARACTER_KEYS = arrayOf(ParadoxScriptAttributesKeys.BAD_CHARACTER_KEY)
-        private val EMPTY_KEYS = TextAttributesKey.EMPTY_ARRAY
-
-        private const val additionalValidEscapes = "$"
-    }
-
     override fun getTokenHighlights(tokenType: IElementType?) = when (tokenType) {
-        LEFT_BRACE, RIGHT_BRACE -> BRACES_KEYS
-        EQUAL_SIGN, NOT_EQUAL_SIGN, LE_SIGN, LT_SIGN, GE_SIGN, GT_SIGN, SAFE_EQUAL_SIGN -> OPERATOR_KEYS
-        PIPE, PARAMETER_START, PARAMETER_END -> MARKER_KEYS
-        LEFT_BRACKET, RIGHT_BRACKET -> PARAMETER_CONDITION_BRACKETS_KEYS
-        NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET -> PARAMETER_CONDITION_EXPRESSION_BRACKETS_KEYS
-        INLINE_MATH_START, INLINE_MATH_END -> INLINE_MATH_BRACES_KEYS
-        PLUS_SIGN, MINUS_SIGN, TIMES_SIGN, DIV_SIGN, MOD_SIGN -> INLINE_MATH_OPERATOR_KEYS
-        LABS_SIGN, RABS_SIGN, LP_SIGN, RP_SIGN -> INLINE_MATH_OPERATOR_KEYS
-        COMMENT -> COMMENT_KEYS
-        AT -> SCRIPTED_VARIABLE_KEYS
-        SCRIPTED_VARIABLE_NAME_TOKEN -> SCRIPTED_VARIABLE_KEYS
-        SCRIPTED_VARIABLE_REFERENCE_TOKEN -> SCRIPTED_VARIABLE_KEYS
-        INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN -> SCRIPTED_VARIABLE_KEYS
-        CONDITION_PARAMETER_TOKEN -> CONDITION_PARAMETER_KEYS
-        PARAMETER_TOKEN -> PARAMETER_KEYS
-        PROPERTY_KEY_TOKEN -> PROPERTY_KEY_KEYS
-        BOOLEAN_TOKEN -> KEYWORD_KEYS
-        COLOR_TOKEN -> COLOR_KEYS
-        INT_TOKEN, FLOAT_TOKEN, INT_NUMBER_TOKEN, FLOAT_NUMBER_TOKEN -> NUMBER_KEYS
-        STRING_TOKEN -> STRING_KEYS
-        VALID_STRING_ESCAPE_TOKEN -> VALID_ESCAPE_KEYS
-        INVALID_CHARACTER_ESCAPE_TOKEN, INVALID_UNICODE_ESCAPE_TOKEN -> INVALID_ESCAPE_KEYS
-        BAD_CHARACTER -> BAD_CHARACTER_KEYS
-        else -> EMPTY_KEYS
+        LEFT_BRACE, RIGHT_BRACE -> KA.BRACES_KEYS
+        EQUAL_SIGN, NOT_EQUAL_SIGN, LE_SIGN, LT_SIGN, GE_SIGN, GT_SIGN, SAFE_EQUAL_SIGN -> KA.OPERATOR_KEYS
+        PIPE, PARAMETER_START, PARAMETER_END -> KA.MARKER_KEYS
+        LEFT_BRACKET, RIGHT_BRACKET -> KA.PARAMETER_CONDITION_BRACKETS_KEYS
+        NESTED_LEFT_BRACKET, NESTED_RIGHT_BRACKET -> KA.PARAMETER_CONDITION_EXPRESSION_BRACKETS_KEYS
+        INLINE_MATH_START, INLINE_MATH_END -> KA.INLINE_MATH_BRACES_KEYS
+        PLUS_SIGN, MINUS_SIGN, TIMES_SIGN, DIV_SIGN, MOD_SIGN -> KA.INLINE_MATH_OPERATOR_KEYS
+        LABS_SIGN, RABS_SIGN, LP_SIGN, RP_SIGN -> KA.INLINE_MATH_OPERATOR_KEYS
+        COMMENT -> KA.COMMENT_KEYS
+        AT -> KA.SCRIPTED_VARIABLE_KEYS
+        SCRIPTED_VARIABLE_NAME_TOKEN -> KA.SCRIPTED_VARIABLE_KEYS
+        SCRIPTED_VARIABLE_REFERENCE_TOKEN -> KA.SCRIPTED_VARIABLE_KEYS
+        INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN -> KA.SCRIPTED_VARIABLE_KEYS
+        CONDITION_PARAMETER_TOKEN -> KA.CONDITION_PARAMETER_KEYS
+        PARAMETER_TOKEN -> KA.PARAMETER_KEYS
+        PROPERTY_KEY_TOKEN -> KA.PROPERTY_KEY_KEYS
+        BOOLEAN_TOKEN -> KA.KEYWORD_KEYS
+        COLOR_TOKEN -> KA.COLOR_KEYS
+        INT_TOKEN, FLOAT_TOKEN, INT_NUMBER_TOKEN, FLOAT_NUMBER_TOKEN -> KA.NUMBER_KEYS
+        STRING_TOKEN -> KA.STRING_KEYS
+        VALID_STRING_ESCAPE_TOKEN -> KA.VALID_ESCAPE_KEYS
+        INVALID_CHARACTER_ESCAPE_TOKEN, INVALID_UNICODE_ESCAPE_TOKEN -> KA.INVALID_ESCAPE_KEYS
+        BAD_CHARACTER -> KA.BAD_CHARACTER_KEYS
+        else -> KA.EMPTY_KEYS
     }
 
-    override fun getHighlightingLexer(): Lexer {
-        val lexer = LayeredLexer(ParadoxScriptLexer())
-        val lexer1 = StringLiteralLexer(NO_QUOTE_CHAR, PROPERTY_KEY_TOKEN, false, additionalValidEscapes, false, false)
-        lexer.registerSelfStoppingLayer(lexer1, arrayOf(PROPERTY_KEY_TOKEN), emptyArray())
-        val lexer2 = StringLiteralLexer(NO_QUOTE_CHAR, STRING_TOKEN, false, additionalValidEscapes, false, false)
-        lexer.registerSelfStoppingLayer(lexer2, arrayOf(STRING_TOKEN), emptyArray())
-        return lexer
-    }
+    override fun getHighlightingLexer() = ParadoxScriptLexerFactory.createHighlightingLexer(project)
 }

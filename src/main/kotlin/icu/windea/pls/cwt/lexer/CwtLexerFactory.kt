@@ -30,10 +30,10 @@ object CwtLexerFactory {
     fun createHighlightingLexer(project: Project? = null): LayeredLexer {
         val lexer = LayeredLexer(createLexer(project))
         val literalTypes = CwtTokenSets.LITERAL_TOKENS.types
-        literalTypes.forEach { lexer.registerSelfStoppingLayer(createStringLiteralLexer(it), arrayOf(it), emptyArray()) }
+        literalTypes.forEach { lexer.registerSelfStoppingLayer(createStringLiteralLexer(it), arrayOf(it), IElementType.EMPTY_ARRAY) }
         val optionCommentLexer = LayeredLexer(createOptionCommentLexer(project))
-        literalTypes.forEach { optionCommentLexer.registerSelfStoppingLayer(createStringLiteralLexer(it), arrayOf(it), emptyArray()) }
-        lexer.registerSelfStoppingLayer(optionCommentLexer, arrayOf(OPTION_COMMENT_TOKEN), emptyArray())
+        literalTypes.forEach { optionCommentLexer.registerSelfStoppingLayer(createStringLiteralLexer(it), arrayOf(it), IElementType.EMPTY_ARRAY) }
+        lexer.registerSelfStoppingLayer(optionCommentLexer, arrayOf(OPTION_COMMENT_TOKEN), IElementType.EMPTY_ARRAY)
         return lexer
     }
 
