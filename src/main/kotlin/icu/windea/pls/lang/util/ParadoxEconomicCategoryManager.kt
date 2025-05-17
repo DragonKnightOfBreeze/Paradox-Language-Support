@@ -14,17 +14,18 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.*
 import java.lang.invoke.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxEconomicCategoryManager {
-    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
-
     object Keys : KeyRegistry() {
         val cachedEconomicCategoryInfo by createKey<CachedValue<ParadoxEconomicCategoryInfo>>(this)
         val modifierCategories by createKey<Set<String>>(this)
     }
+
+    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
 
     /**
      * 输入[definition]的定义类型应当保证是`economic_category`。
@@ -106,7 +107,7 @@ object ParadoxEconomicCategoryManager {
 
     private fun getResources(contextElement: PsiElement): Set<String> {
         val selector = selector(contextElement.project, contextElement).definition()
-        return ParadoxDefinitionSearch.search("resource", selector).findAll()
+        return ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.Resource, selector).findAll()
             .mapTo(mutableSetOf()) { it.name }  //it.name is ok
     }
 
@@ -115,7 +116,7 @@ object ParadoxEconomicCategoryManager {
         withRecursionGuard {
             withRecursionCheck(parent) {
                 val selector = selector(contextElement.project, contextElement).definition().contextSensitive()
-                ParadoxDefinitionSearch.search(parent, "economic_category", selector).processQuery p@{
+                ParadoxDefinitionSearch.search(parent, ParadoxDefinitionTypes.EconomicCategory, selector).processQuery p@{
                     ProgressManager.checkCanceled()
                     val parentData = it.getData<StellarisEconomicCategoryData>() ?: return@p true
                     map.put(parent, parentData)

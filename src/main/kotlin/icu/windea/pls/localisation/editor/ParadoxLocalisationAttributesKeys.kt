@@ -70,11 +70,13 @@ object ParadoxLocalisationAttributesKeys {
     @JvmField
     val COMMAND_SCOPE_LINK_VALUE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMAND_SCOPE_LINK_VALUE")
     @JvmField
+    val COMMAND_FIELD_PREFIX_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMAND_FIELD_PREFIX", KEYWORD)
+    @JvmField
+    val COMMAND_FIELD_VALUE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.COMMAND_FIELD_VALUE")
+    @JvmField
     val DYNAMIC_VALUE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.DYNAMIC_VALUE", GLOBAL_VARIABLE)
     @JvmField
     val VARIABLE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.VARIABLE", GLOBAL_VARIABLE) //italic
-    @JvmField
-    val SCRIPTED_LOC_KEY = createTextAttributesKey("PARADOX_LOCALISATION.SCRIPTED_LOC", ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY)
 
     @JvmField
     val DATABASE_OBJECT_TYPE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.DATABASE_OBJECT_TYPE", KEYWORD)

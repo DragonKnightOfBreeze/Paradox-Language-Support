@@ -62,7 +62,7 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Set
             val localisation = keys.firstNotNullOfOrNull { key ->
                 val selector = selector(project, element).localisation().contextSensitive()
                     .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                    .withConstraint(ParadoxLocalisationConstraint.Modifier)
+                    .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
                 ParadoxLocalisationSearch.search(key, selector).find()
             } ?: return true
             val presentation = doCollect(localisation, editor, settings)

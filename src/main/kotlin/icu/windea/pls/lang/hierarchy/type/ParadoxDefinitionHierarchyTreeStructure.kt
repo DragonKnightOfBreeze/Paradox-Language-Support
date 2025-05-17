@@ -13,6 +13,8 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.settings.PlsStrategies.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType as NodeType
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyType as Type
@@ -229,19 +231,19 @@ class ParadoxDefinitionHierarchyTreeStructure(
         for ((nodeType, name) in groupingRules) {
             when {
                 nodeType == NodeType.EventType -> {
-                    if (definitionInfo.type != "event") return false
+                    if (definitionInfo.type != ParadoxDefinitionTypes.Event) return false
                     if (ParadoxEventManager.getType(definitionInfo) != name) return false
                 }
                 nodeType == NodeType.TechTier -> {
-                    if (definitionInfo.type != "technology") return false
+                    if (definitionInfo.type != ParadoxDefinitionTypes.Technology) return false
                     if (ParadoxTechnologyManager.Stellaris.getTier(definition) != name) return false
                 }
                 nodeType == NodeType.TechArea -> {
-                    if (definitionInfo.type != "technology") return false
+                    if (definitionInfo.type != ParadoxDefinitionTypes.Technology) return false
                     if (ParadoxTechnologyManager.Stellaris.getArea(definition) != name) return false
                 }
                 nodeType == NodeType.TechCategory -> {
-                    if (definitionInfo.type != "technology") return false
+                    if (definitionInfo.type != ParadoxDefinitionTypes.Technology) return false
                     if (!(ParadoxTechnologyManager.Stellaris.getCategories(definition).contains(name))) return false
                 }
                 else -> {}

@@ -198,18 +198,6 @@ val CwtConfigGroup.mockVariableConfig: CwtValueConfig
         CwtValueConfig.resolve(emptyPointer(), this, "value[variable]")
     }
 
-@Tags(Tag.Computed)
-val CwtConfigGroup.mockEventTargetConfig: CwtValueConfig
-    by createKey(CwtConfigGroup.Keys) {
-        CwtValueConfig.resolve(emptyPointer(), this, "value[event_target]")
-    }
-
-@Tags(Tag.Computed)
-val CwtConfigGroup.mockGlobalEventTargetConfig: CwtValueConfig
-    by createKey(CwtConfigGroup.Keys) {
-        CwtValueConfig.resolve(emptyPointer(), this, "value[global_event_target]")
-    }
-
 //endregion
 
 //region Modification Trackers

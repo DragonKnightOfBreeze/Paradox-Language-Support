@@ -6,6 +6,8 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.*
 
 /**
@@ -22,7 +24,7 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
         file as ParadoxScriptFile
         file.processProperty(inline = true) p@{ element ->
             val definitionInfo = element.definitionInfo ?: return@p true
-            if (definitionInfo.type != "event") return@p true
+            if (definitionInfo.type != ParadoxDefinitionTypes.Event) return@p true
             val nameField = definitionInfo.typeConfig.nameField
             val eventId = definitionInfo.name
             if (ParadoxEventManager.isValidEventId(eventId)) return@p true

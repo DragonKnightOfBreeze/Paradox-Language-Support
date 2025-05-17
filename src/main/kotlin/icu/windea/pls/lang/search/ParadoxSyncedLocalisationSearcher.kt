@@ -24,16 +24,17 @@ class ParadoxSyncedLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationP
         if (SearchScope.isEmptyScope(scope)) return
         val project = queryParameters.project
         val name = queryParameters.name
-        doProcessAllElements(name, project, scope) { element ->
+        processQueryForSyncedLocalisations(name, project, scope) { element ->
             consumer.process(element)
         }
     }
 
-    private fun doProcessAllElements(name: String?, project: Project, scope: GlobalSearchScope, processor: Processor<ParadoxLocalisationProperty>): Boolean {
+    private fun processQueryForSyncedLocalisations(name: String?, project: Project, scope: GlobalSearchScope, processor: Processor<ParadoxLocalisationProperty>): Boolean {
+        val indexKey = ParadoxIndexManager.SyncedLocalisationNameKey
         if (name == null) {
-            return ParadoxIndexManager.SyncedLocalisationNameKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
+            return indexKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
         } else {
-            return ParadoxIndexManager.SyncedLocalisationNameKey.processAllElements(name, project, scope) { element -> processor.process(element) }
+            return indexKey.processAllElements(name, project, scope) { element -> processor.process(element) }
         }
     }
 }

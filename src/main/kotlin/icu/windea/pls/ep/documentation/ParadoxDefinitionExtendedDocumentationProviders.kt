@@ -7,6 +7,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.*
 
 class ParadoxBaseDefinitionExtendedDocumentationProvider : ParadoxDefinitionExtendedDocumentationProvider {
@@ -27,7 +28,7 @@ class ParadoxGameRuleExtendedDocumentationProvider : ParadoxDefinitionExtendedDo
         val definitionName = definitionInfo.name
         if (definitionName.isEmpty()) return null
         if (definitionName.isParameterized()) return null
-        if (definitionInfo.type != "game_rule") return null
+        if (definitionInfo.type != ParadoxDefinitionTypes.GameRule) return null
         val configGroup = definitionInfo.configGroup
         val config = configGroup.extendedGameRules.findFromPattern(definitionName, definition, configGroup) ?: return null
         val documentation = config.config.documentation?.orNull()
@@ -40,7 +41,7 @@ class ParadoxOnActionExtendedDocumentationProvider : ParadoxDefinitionExtendedDo
         val definitionName = definitionInfo.name
         if (definitionName.isEmpty()) return null
         if (definitionName.isParameterized()) return null
-        if (definitionInfo.type != "on_action") return null
+        if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return null
         val configGroup = definitionInfo.configGroup
         val config = configGroup.extendedOnActions.findFromPattern(definitionInfo.name, definition, configGroup) ?: return null
         val documentation = config.config.documentation?.orNull()
@@ -53,7 +54,7 @@ class ParadoxTextColorExtendedDocumentationProvider : ParadoxDefinitionExtendedD
         val definitionName = definitionInfo.name
         if (definitionName.isEmpty()) return null
         if (definitionName.isParameterized()) return null
-        if (definitionInfo.type != "text_color") return null
+        if (definitionInfo.type != ParadoxDefinitionTypes.TextColor) return null
         val info = ParadoxTextColorManager.getInfo(definition) ?: return null
         return info.textWithColor
     }

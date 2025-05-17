@@ -41,7 +41,6 @@ class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
         }
         if (extraWords.isEmpty()) return
 
-        val project = queryParameters.project
         //这里不能直接使用target.useScope，否则文件高亮会出现问题
         val useScope = queryParameters.effectiveSearchScope
         val searchContext = UsageSearchContext.IN_CODE

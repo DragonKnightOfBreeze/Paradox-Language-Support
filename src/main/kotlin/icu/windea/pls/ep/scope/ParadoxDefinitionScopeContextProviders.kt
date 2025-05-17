@@ -5,6 +5,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.*
 
 class ParadoxDefaultDefinitionScopeContextProvider : ParadoxDefinitionScopeContextProvider {
@@ -40,7 +41,7 @@ class ParadoxBaseDefinitionScopeContextProvider : ParadoxDefinitionScopeContextP
 
 class ParadoxGameRuleScopeContextProvider : ParadoxDefinitionScopeContextProvider {
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
-        return definitionInfo.type == "game_rule"
+        return definitionInfo.type == ParadoxDefinitionTypes.GameRule
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
@@ -52,7 +53,7 @@ class ParadoxGameRuleScopeContextProvider : ParadoxDefinitionScopeContextProvide
 
 class ParadoxOnActionScopeContextProvider : ParadoxDefinitionScopeContextProvider {
     override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
-        return definitionInfo.type == "on_action"
+        return definitionInfo.type == ParadoxDefinitionTypes.OnAction
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {

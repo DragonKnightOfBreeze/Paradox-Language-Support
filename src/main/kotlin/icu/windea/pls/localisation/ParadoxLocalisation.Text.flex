@@ -394,6 +394,9 @@ TEXT_ICON_TOKEN=\w+
 
     "]" { beginNextState(); return COMMAND_END; }
     {BLANK} { setNextStateByDepth(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE; }
+
+    // there may not be a whitespace after COMMA
+    [^] { yypushback(yylength()); setNextStateByDepth(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); }
 }
 
 // [ck3, vic3] localisation text format rules
@@ -418,6 +421,9 @@ TEXT_ICON_TOKEN=\w+
     "#" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT); }
     "#!" { beginNextState(); return TEXT_FORMAT_END; }
     {BLANK} { setNextStateByDepth(IN_TEXT_FORMAT_TEXT); yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE; }
+
+    // there may not be a whitespace after TEXT_FORMAT_TOKEN
+    [^] { yypushback(yylength()); setNextStateByDepth(IN_TEXT_FORMAT_TEXT); yybegin(IN_TEXT_FORMAT_TEXT); }
 }
 
 // [ck3, vic3] localisation text icon rules

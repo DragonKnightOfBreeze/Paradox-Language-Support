@@ -14,7 +14,7 @@ class ParadoxDynamicScopeLinkNode(
     val linkConfigs: List<CwtLinkConfig>,
 ) : ParadoxComplexExpressionNode.Base(), ParadoxScopeLinkNode {
     val prefixNode get() = nodes.findIsInstance<ParadoxScopeLinkPrefixNode>()
-    val dataSourceNode get() = nodes.findIsInstance<ParadoxScopeLinkValueNode>()!!
+    val valueNode get() = nodes.findIsInstance<ParadoxScopeLinkValueNode>()!!
 
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return linkConfigs

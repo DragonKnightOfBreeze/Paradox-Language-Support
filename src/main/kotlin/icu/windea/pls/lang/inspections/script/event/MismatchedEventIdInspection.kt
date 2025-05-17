@@ -7,6 +7,8 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.*
 
 /**
@@ -35,7 +37,7 @@ class MismatchedEventIdInspection : LocalInspectionTool() {
                 val namespace = property.propertyValue?.castOrNull<ParadoxScriptString>()?.stringValue.orEmpty()
                 nextNamespace = namespace
                 namespace2Events.getOrPut(namespace) { mutableListOf() }
-            } else if (definitionInfo.type == "event") {
+            } else if (definitionInfo.type == ParadoxDefinitionTypes.Event) {
                 namespace2Events.getOrPut(nextNamespace) { mutableListOf() }.add(property)
             }
         }

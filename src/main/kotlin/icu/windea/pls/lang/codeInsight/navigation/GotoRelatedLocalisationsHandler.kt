@@ -64,7 +64,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                         val result = keys.firstNotNullOfOrNull { key ->
                             val selector = selector(project, element).localisation().contextSensitive()
                                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                                .withConstraint(ParadoxLocalisationConstraint.Modifier)
+                                .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
                             ParadoxLocalisationSearch.search(key, selector).findAll().orNull()
                         }
                         if (result != null) targets.addAll(result)
@@ -74,7 +74,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                         val result = keys.firstNotNullOfOrNull { key ->
                             val selector = selector(project, element).localisation().contextSensitive()
                                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                                .withConstraint(ParadoxLocalisationConstraint.Modifier)
+                                .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
                             ParadoxLocalisationSearch.search(key, selector).findAll().orNull()
                         }
                         if (result != null) targets.addAll(result)

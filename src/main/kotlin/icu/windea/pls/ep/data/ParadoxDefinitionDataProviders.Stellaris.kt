@@ -3,6 +3,7 @@ package icu.windea.pls.ep.data
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.util.data.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
 class StellarisEconomicCategoryData(data: ParadoxScriptData) : ParadoxDefinitionData {
     val parent: String? by data.get("parent")
@@ -21,7 +22,7 @@ class StellarisEconomicCategoryData(data: ParadoxScriptData) : ParadoxDefinition
     }
 
     @WithGameType(ParadoxGameType.Stellaris)
-    class Provider : ParadoxDefinitionDataProviderBase<StellarisEconomicCategoryData>("economic_category")
+    class Provider : ParadoxDefinitionDataProviderBase<StellarisEconomicCategoryData>(ParadoxDefinitionTypes.EconomicCategory)
 }
 
 class StellarisGameConceptData(data: ParadoxScriptData) : ParadoxDefinitionData {
@@ -30,7 +31,7 @@ class StellarisGameConceptData(data: ParadoxScriptData) : ParadoxDefinitionData 
     val alias: Set<String>? by data.get("alias")
 
     @WithGameType(ParadoxGameType.Stellaris)
-    class Provider : ParadoxDefinitionDataProviderBase<StellarisGameConceptData>("game_concept")
+    class Provider : ParadoxDefinitionDataProviderBase<StellarisGameConceptData>(ParadoxDefinitionTypes.GameConcept)
 }
 
 class StellarisTechnologyData(data: ParadoxScriptData) : ParadoxDefinitionData {
@@ -52,7 +53,7 @@ class StellarisTechnologyData(data: ParadoxScriptData) : ParadoxDefinitionData {
     val prerequisites: Set<String> by data.get("prerequisites", emptySet())
 
     @WithGameType(ParadoxGameType.Stellaris)
-    class Provider : ParadoxDefinitionDataProviderBase<StellarisTechnologyData>("technology")
+    class Provider : ParadoxDefinitionDataProviderBase<StellarisTechnologyData>(ParadoxDefinitionTypes.Technology)
 }
 
 class StellarisEventData(data: ParadoxScriptData) : ParadoxDefinitionData {
@@ -63,5 +64,5 @@ class StellarisEventData(data: ParadoxScriptData) : ParadoxDefinitionData {
     val showSoundClear: Boolean by data.get("show_sound_clear", false)
 
     @WithGameType(ParadoxGameType.Stellaris)
-    class Provider : ParadoxDefinitionDataProviderBase<StellarisEventData>("event")
+    class Provider : ParadoxDefinitionDataProviderBase<StellarisEventData>(ParadoxDefinitionTypes.Event)
 }

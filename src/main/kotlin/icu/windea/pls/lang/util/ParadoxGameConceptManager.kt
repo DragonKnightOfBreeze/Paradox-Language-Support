@@ -10,6 +10,7 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.*
 
 @WithGameType(ParadoxGameType.Stellaris)
@@ -18,7 +19,7 @@ object ParadoxGameConceptManager {
         val definitionSelector = selector(project, contextElement).definition()
             .contextSensitive()
             .filterBy { it.name == nameOrAlias || it.getData<StellarisGameConceptData>()?.alias.orEmpty().contains(nameOrAlias) }
-        return ParadoxDefinitionSearch.search("game_concept", definitionSelector).find()
+        return ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.GameConcept, definitionSelector).find()
     }
 
     /**

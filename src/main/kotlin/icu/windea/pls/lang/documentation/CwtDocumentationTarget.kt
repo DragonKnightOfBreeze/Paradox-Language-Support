@@ -194,7 +194,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
         keys.firstNotNullOfOrNull { key ->
             val selector = selector(project, contextElement).localisation().contextSensitive()
                 .preferLocale(usedLocale)
-                .withConstraint(ParadoxLocalisationConstraint.Modifier)
+                .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
         }
     }
@@ -203,7 +203,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
         keys.firstNotNullOfOrNull { key ->
             val selector = selector(project, contextElement).localisation().contextSensitive()
                 .preferLocale(usedLocale)
-                .withConstraint(ParadoxLocalisationConstraint.Modifier)
+                .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
         }
     }

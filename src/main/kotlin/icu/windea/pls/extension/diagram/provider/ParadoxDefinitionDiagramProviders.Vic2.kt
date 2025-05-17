@@ -13,6 +13,7 @@ import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.*
 
 
@@ -40,7 +41,7 @@ class Vic2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
         override fun updateDataModel(indicator: ProgressIndicator?) {
             provider as IrEventTreeDiagramProvider
-            val events = getDefinitions("event")
+            val events = getDefinitions(ParadoxDefinitionTypes.Event)
             if (events.isEmpty()) return
             //群星原版事件有5000+
             val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()

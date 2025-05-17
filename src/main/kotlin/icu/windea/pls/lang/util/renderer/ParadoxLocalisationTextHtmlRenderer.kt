@@ -273,9 +273,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         //直接显示原始文本，暂不考虑渲染文本图标
         //（仅限快速文档）点击其中的相关文本也能跳转到相关声明，但不显示为超链接
         context.builder.append("<code>")
-        context.builder.append("@")
         renderElementText(element, context)
-        context.builder.append("!")
         context.builder.append("</code>")
     }
 

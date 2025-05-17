@@ -97,6 +97,15 @@ fun <S : ChainedParadoxSelector<ParadoxDefineIndexInfo.Compact>> S.distinctByExp
     return distinctBy { if (it.variable == null) it.namespace else it.namespace + "." + it.variable }
 }
 
+fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.withConstraint(constraint: ParadoxIndexConstraint<T>): S {
+    selectors += ParadoxWithConstraintSelector(constraint)
+    return this
+}
+
+fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.getConstraint(): ParadoxIndexConstraint<T>? {
+    return selectors.findIsInstance<ParadoxWithConstraintSelector<T>>()?.constraint
+}
+
 fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.locale(locale: CwtLocalisationLocaleConfig?): S {
     if (locale != null) selectors += ParadoxLocaleSelector(locale)
     return this
@@ -105,15 +114,6 @@ fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.locale(locale: C
 fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.preferLocale(locale: CwtLocalisationLocaleConfig?, condition: Boolean = true): S {
     if (locale != null && condition) selectors += ParadoxPreferLocaleSelector(locale)
     return this
-}
-
-fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.withConstraint(constraint: ParadoxLocalisationConstraint): S {
-    selectors += ParadoxWithConstraintSelector(constraint)
-    return this
-}
-
-fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.getConstraint(): ParadoxLocalisationConstraint {
-    return selectors.findIsInstance<ParadoxWithConstraintSelector>()?.constraint ?: ParadoxLocalisationConstraint.Default
 }
 
 fun <S : ChainedParadoxSelector<VirtualFile>> S.withFileExtensions(fileExtensions: Set<String>): S {

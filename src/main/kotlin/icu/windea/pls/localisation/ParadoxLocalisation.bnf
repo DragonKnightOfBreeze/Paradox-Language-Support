@@ -80,7 +80,7 @@ string ::= STRING_TOKEN {
 // localisation colorful text rules
 
 // see: https://stellaris.paradoxwikis.com/Localisation_modding#Color_Codes
-colorful_text ::= COLORFUL_TEXT_START COLOR_TOKEN text_items ? [COLORFUL_TEXT_END] {
+colorful_text ::= COLORFUL_TEXT_START COLOR_TOKEN colorful_text_items ? [COLORFUL_TEXT_END] {
   pin=1
   extends=rich_text
   implements=[
@@ -89,6 +89,7 @@ colorful_text ::= COLORFUL_TEXT_START COLOR_TOKEN text_items ? [COLORFUL_TEXT_EN
   ]
   methods=[getIdElement getName setName getReference]
 }
+private colorful_text_items ::= rich_text +
 
 // localisation reference rules
 
@@ -212,11 +213,12 @@ concept_name ::= CONCEPT_NAME_TOKEN | property_reference {
     getName getValue setValue getType getExpression getReference getReferences
   ]
 }
-concept_text ::= text_items
+concept_text ::= concept_text_items
+private concept_text_items ::= rich_text +
 
 // [ck3, vic3] localisation text format rules
 
-text_format ::= <<supportsTextFormat>> TEXT_FORMAT_START text_format_name text_items ? TEXT_FORMAT_END {
+text_format ::= <<supportsTextFormat>> TEXT_FORMAT_START text_format_name text_format_text ? TEXT_FORMAT_END {
   pin=2
   extends=rich_text
   implements=[
@@ -227,6 +229,8 @@ text_format ::= <<supportsTextFormat>> TEXT_FORMAT_START text_format_name text_i
 }
 // can be parameterized?
 private text_format_name ::= property_reference | TEXT_FORMAT_TOKEN
+private text_format_text ::= text_format_text_items
+private text_format_text_items ::= rich_text +
 
 // [ck3, vic3] localisation text icon rules
 

@@ -14,7 +14,7 @@ class ParadoxDynamicValueFieldNode(
     val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxComplexExpressionNode.Base(), ParadoxValueFieldNode {
     val prefixNode get() = nodes.findIsInstance<ParadoxValueFieldPrefixNode>()
-    val dataSourceNode get() = nodes.findIsInstance<ParadoxValueFieldValueNode>()!!
+    val valueNode get() = nodes.findIsInstance<ParadoxValueFieldValueNode>()!!
 
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
         return linkConfigs

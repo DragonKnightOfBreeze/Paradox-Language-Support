@@ -17,6 +17,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.data.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
 
@@ -28,7 +29,7 @@ object ParadoxTechnologyManager {
     }
 
     fun getTechnologies(selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {
-        return ParadoxDefinitionSearch.search("technology", selector).findAll()
+        return ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.Technology, selector).findAll()
     }
 
     fun getName(element: ParadoxScriptDefinitionElement): String {
@@ -62,18 +63,18 @@ object ParadoxTechnologyManager {
 
         fun getAllCategories(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
             val selector = selector(project, context).definition().withGameType(gameType).contextSensitive().distinctByName()
-            return ParadoxDefinitionSearch.search("technology_category", selector).findAll()
+            return ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.TechnologyCategory, selector).findAll()
         }
 
         fun getAllAttributes(gameType: ParadoxGameType): Set<String> {
-            val eventConfig = getConfigGroup(gameType).types["technology"] ?: return emptySet()
+            val eventConfig = getConfigGroup(gameType).types[ParadoxDefinitionTypes.Technology] ?: return emptySet()
             return eventConfig.config.getOrPutUserData(Keys.technologyAllAttributes) {
                 eventConfig.subtypes.values.filter { it.inGroup("technology_attribute") }.map { it.name }.toSet()
             }
         }
 
         fun getAllAttributeConfigs(project: Project): Collection<CwtSubtypeConfig> {
-            val eventConfig = getConfigGroup(project, gameType).types["technology"] ?: return emptySet()
+            val eventConfig = getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.Technology] ?: return emptySet()
             return eventConfig.subtypes.values.filter { it.inGroup("technology_attribute") }
         }
 
@@ -122,12 +123,13 @@ object ParadoxTechnologyManager {
             //NOTE 1. 目前不兼容封装变量引用
 
             val name = definition.definitionInfo?.name
+            val type = ParadoxDefinitionTypes.Technology
             if (name.isNullOrEmpty()) return emptyList()
             val prerequisites = getPrerequisites(definition)
             if (prerequisites.isEmpty()) return emptyList()
             selector.withGameType(gameType)
             return buildList b@{
-                ParadoxDefinitionSearch.search("technology", selector).processQuery p@{ rDefinition ->
+                ParadoxDefinitionSearch.search(type, selector).processQuery p@{ rDefinition ->
                     ProgressManager.checkCanceled()
                     val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                     if (rDefinitionInfo.name.isEmpty()) return@p true
@@ -145,18 +147,19 @@ object ParadoxTechnologyManager {
             //NOTE 1. 目前不兼容封装变量引用 2. 这里需要从所有同名定义查找使用
 
             val name = definition.definitionInfo?.name
+            val type = ParadoxDefinitionTypes.Technology
             if (name.isNullOrEmpty()) return emptyList()
             selector.withGameType(gameType)
             return buildList b@{
-                ParadoxDefinitionSearch.search(name, "technology", selector).processQuery p0@{ definition0 ->
+                ParadoxDefinitionSearch.search(name, type, selector).processQuery p0@{ definition0 ->
                     ProgressManager.checkCanceled()
                     ReferencesSearch.search(definition0, selector.scope).processQuery p@{ ref ->
                         if (ref !is ParadoxScriptExpressionPsiReference) return@p true
                         val refElement = ref.element.castOrNull<ParadoxScriptString>() ?: return@p true
-                        val rDefinition = refElement.findParentByPath("prerequisites/-", definitionType = "technology") ?: return@p true
+                        val rDefinition = refElement.findParentByPath("prerequisites/-", definitionType = type) ?: return@p true
                         val rDefinitionInfo = rDefinition.definitionInfo ?: return@p true
                         if (rDefinitionInfo.name.isEmpty()) return@p true
-                        if (rDefinitionInfo.type != "technology") return@p true
+                        if (rDefinitionInfo.type != type) return@p true
                         this += rDefinition
                         true
                     }

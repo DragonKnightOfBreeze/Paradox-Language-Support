@@ -34,6 +34,8 @@ enum class ParadoxResolveConstraint {
                 is ParadoxLocalisationIcon -> true //<sprite>, etc.
                 is ParadoxLocalisationConcept -> true //<game_concept>
                 is ParadoxLocalisationTextColorAwareElement -> true //<text_color>
+                is ParadoxLocalisationTextFormat -> true //<text_format>
+                is ParadoxLocalisationTextIcon -> true //<text_icon>
                 else -> false
             }
         }
@@ -63,11 +65,12 @@ enum class ParadoxResolveConstraint {
                     }
                 }
                 is ParadoxScriptValueNode.Reference -> true //<script_value>
-                is ParadoxDynamicCommandFieldNode.Reference -> true //<scripted_loc>
                 is ParadoxDatabaseObjectNode.Reference -> true
                 is ParadoxLocalisationIconPsiReference -> true //<sprite>, etc.
                 is ParadoxLocalisationConceptPsiReference -> true //<game_concept>
                 is ParadoxLocalisationTextColorPsiReference -> true //<text_color>
+                is ParadoxLocalisationTextFormatPsiReference -> true //<text_format>
+                is ParadoxLocalisationTextIconPsiReference -> true //<text_icon>
                 else -> false
             }
         }
@@ -214,7 +217,6 @@ enum class ParadoxResolveConstraint {
                     }
                 }
                 is ParadoxDynamicValueNode.Reference -> true
-                is ParadoxDynamicCommandFieldNode.Reference -> true //value[variable]
                 else -> false
             }
         }

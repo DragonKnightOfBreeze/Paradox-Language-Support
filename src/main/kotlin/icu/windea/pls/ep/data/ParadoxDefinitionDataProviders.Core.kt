@@ -1,6 +1,8 @@
 package icu.windea.pls.ep.data
 
 import icu.windea.pls.lang.util.data.*
+import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
 class ParadoxSpriteData(data: ParadoxScriptData) : ParadoxDefinitionData {
     val textureFile: String? by data.get("textureFile")
@@ -8,5 +10,5 @@ class ParadoxSpriteData(data: ParadoxScriptData) : ParadoxDefinitionData {
     val noOfFrames: Int? by data.get("noOfFrames")
     val defaultFrame: Int? by data.get("default_frame")
 
-    class Provider : ParadoxDefinitionDataProviderBase<ParadoxSpriteData>("sprite")
+    class Provider : ParadoxDefinitionDataProviderBase<ParadoxSpriteData>(ParadoxDefinitionTypes.Sprite)
 }

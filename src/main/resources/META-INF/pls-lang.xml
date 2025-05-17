@@ -82,6 +82,7 @@
 
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxScriptedVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextFormatIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionTypeIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$ModifierIndex"/>

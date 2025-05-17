@@ -11,6 +11,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
+import icu.windea.pls.model.constraints.ParadoxIndexConstraint
 
 /**
  * 文本格式的PSI引用。
@@ -55,6 +56,7 @@ class ParadoxLocalisationTextFormatPsiReference(
         val definitionName = element.name?.orNull() ?: return null
         val definitionType = ParadoxDefinitionTypes.TextFormat
         val definitionSelector = selector(project, element).definition().contextSensitive()
+            .withConstraint(ParadoxIndexConstraint.Definition.TextFormat)
         val resolved = ParadoxDefinitionSearch.search(definitionName, definitionType, definitionSelector).find()
         return resolved
     }
@@ -64,6 +66,7 @@ class ParadoxLocalisationTextFormatPsiReference(
         val definitionName = element.name?.orNull() ?: return ResolveResult.EMPTY_ARRAY
         val definitionType = ParadoxDefinitionTypes.TextFormat
         val definitionSelector = selector(project, element).definition().contextSensitive()
+            .withConstraint(ParadoxIndexConstraint.Definition.TextFormat)
         val resolved = ParadoxDefinitionSearch.search(definitionName, definitionType, definitionSelector).findAll()
         if (resolved.isEmpty()) return ResolveResult.EMPTY_ARRAY
         return resolved.mapToArray { PsiElementResolveResult(it) }

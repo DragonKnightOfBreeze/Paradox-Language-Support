@@ -4,6 +4,7 @@ import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.options.colors.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
+import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
 
 class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(
@@ -39,7 +40,6 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("localisation.displayName.commandField"), ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.dynamicValue"), ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.variable"), ParadoxLocalisationAttributesKeys.VARIABLE_KEY),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.scriptedLoc"), ParadoxLocalisationAttributesKeys.SCRIPTED_LOC_KEY),
 
         AttributesDescriptor(PlsBundle.message("localisation.displayName.databaseObjectType"), ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.databaseObject"), ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY),
@@ -53,9 +53,11 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         "COMMAND_SCOPE_LINK_PREFIX" to ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_PREFIX_KEY,
         "COMMAND_SCOPE_LINK_VALUE" to ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_VALUE_KEY,
         "COMMAND_FIELD" to ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY,
+        "COMMAND_FIELD_PREFIX" to ParadoxLocalisationAttributesKeys.COMMAND_FIELD_PREFIX_KEY,
+        "COMMAND_FIELD_VALUE" to ParadoxLocalisationAttributesKeys.COMMAND_FIELD_VALUE_KEY,
         "DYNAMIC_VALUE" to ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE_KEY,
         "VARIABLE" to ParadoxLocalisationAttributesKeys.VARIABLE_KEY,
-        "SCRIPTED_LOC" to ParadoxLocalisationAttributesKeys.SCRIPTED_LOC_KEY,
+        "SCRIPTED_LOC" to ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY,
         "DATABASE_OBJECT_TYPE" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY,
         "DATABASE_OBJECT" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY,
     )

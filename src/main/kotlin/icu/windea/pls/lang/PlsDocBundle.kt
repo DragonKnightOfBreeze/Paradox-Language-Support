@@ -8,6 +8,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import org.jetbrains.annotations.*
 import java.util.function.*
 
@@ -77,7 +78,7 @@ object PlsDocBundle {
         run {
             val selector = selector(project, context).definition().contextSensitive()
                 .withGameType(gameType)
-            val definition = ParadoxDefinitionSearch.search(name, "technology_category", selector).find() ?: return@run
+            val definition = ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.TechnologyCategory, selector).find() ?: return@run
             val localizedName = ParadoxDefinitionManager.getPrimaryLocalisation(definition)
             if (localizedName != null) {
                 val text = ParadoxLocalisationTextRenderer.render(localizedName).orNull()

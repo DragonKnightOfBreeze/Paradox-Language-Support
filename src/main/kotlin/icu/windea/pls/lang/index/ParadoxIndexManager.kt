@@ -19,6 +19,7 @@ import icu.windea.pls.script.psi.*
 object ParadoxIndexManager {
     val ScriptedVariableNameKey = StubIndexKey.createIndexKey<String, ParadoxScriptScriptedVariable>("paradox.scriptedVariable.name.index")
     val DefinitionNameKey = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index")
+    val DefinitionNameForTextFormatKey = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.name.index.textFormat")
     val DefinitionTypeKey = StubIndexKey.createIndexKey<String, ParadoxScriptDefinitionElement>("paradox.definition.type.index")
     val LocalisationNameKey = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index")
     val LocalisationNameForModifierKey = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.modifier")

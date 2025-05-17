@@ -11,6 +11,7 @@ import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
 
@@ -34,7 +35,7 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
             .find { it.configExpression.type == CwtDataTypes.Definition } ?: return
         val definitionName = snippetNode.text
         val definitionType = snippetNode.configExpression.value ?: return
-        if (definitionType.substringBefore('.') != "job") return
+        if (definitionType.substringBefore('.') != ParadoxDefinitionTypes.Job) return
         val configGroup = modifierConfig.config.configGroup
         val selector = selector(configGroup.project, element).definition().contextSensitive()
         ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQuery p@{ definition ->

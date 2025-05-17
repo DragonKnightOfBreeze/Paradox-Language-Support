@@ -36,6 +36,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 
@@ -1172,7 +1173,7 @@ object ParadoxCompletionManager {
         val nodeRange = node.rangeInExpression
         val scopeLinkNode = node.castOrNull<ParadoxDynamicScopeLinkNode>()
         val prefixNode = scopeLinkNode?.prefixNode
-        val dsNode = scopeLinkNode?.dataSourceNode
+        val dsNode = scopeLinkNode?.valueNode
         val inDsNode = dsNode?.nodes?.first()
         val endOffset = dsNode?.rangeInExpression?.startOffset ?: -1
         if (prefixNode != null && dsNode != null && offsetInParent >= dsNode.rangeInExpression.startOffset) {
@@ -1218,13 +1219,13 @@ object ParadoxCompletionManager {
         val keywordOffset = context.keywordOffset
         val offsetInParent = context.offsetInParent!!
         val nodeRange = node.rangeInExpression
-        val valueFieldNode = node.castOrNull<ParadoxDynamicValueFieldNode>()
-        val prefixNode = valueFieldNode?.prefixNode
-        val dsNode = valueFieldNode?.dataSourceNode
+        val fieldNode = node.castOrNull<ParadoxDynamicValueFieldNode>()
+        val prefixNode = fieldNode?.prefixNode
+        val dsNode = fieldNode?.valueNode
         val inDsNode = dsNode?.nodes?.first()
         val endOffset = dsNode?.rangeInExpression?.startOffset ?: -1
         if (prefixNode != null && dsNode != null && offsetInParent >= dsNode.rangeInExpression.startOffset) {
-            //unlike scope link node, there is unnecessary to switch scope context
+            //unlike link node, there is unnecessary to switch scope context
 
             val keywordToUse = dsNode.text.substring(0, offsetInParent - endOffset)
             val resultToUse = result.withPrefixMatcher(keywordToUse)
@@ -1271,7 +1272,7 @@ object ParadoxCompletionManager {
         val nodeRange = node.rangeInExpression
         val scopeLinkNode = node.castOrNull<ParadoxDynamicCommandScopeLinkNode>()
         val prefixNode = scopeLinkNode?.prefixNode
-        val dsNode = scopeLinkNode?.dataSourceNode
+        val dsNode = scopeLinkNode?.valueNode
         val inDsNode = dsNode?.nodes?.first()
         val endOffset = dsNode?.rangeInExpression?.startOffset ?: -1
         if (prefixNode != null && dsNode != null && offsetInParent >= dsNode.rangeInExpression.startOffset) {
@@ -1317,18 +1318,39 @@ object ParadoxCompletionManager {
         val keywordOffset = context.keywordOffset
         val offsetInParent = context.offsetInParent!!
         val nodeRange = node.rangeInExpression
+        val fieldNode = node.castOrNull<ParadoxDynamicCommandFieldNode>()
+        val prefixNode = fieldNode?.prefixNode
+        val dsNode = fieldNode?.valueNode
+        val inDsNode = dsNode?.nodes?.first()
+        val endOffset = dsNode?.rangeInExpression?.startOffset ?: -1
+        if (prefixNode != null && dsNode != null && offsetInParent >= dsNode.rangeInExpression.startOffset) {
+            //unlike link node, there is unnecessary to switch scope context
 
-        val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
-        val resultToUse = result.withPrefixMatcher(keywordToUse)
-        context.keyword = keywordToUse
-        context.keywordOffset = node.rangeInExpression.startOffset
-        completePredefinedCommandField(context, resultToUse)
-        completeScriptedLoc(context, resultToUse)
-        completeVariable(context, resultToUse)
-        context.keyword = keyword
-        context.keywordOffset = keywordOffset
-
-        return false
+            val keywordToUse = dsNode.text.substring(0, offsetInParent - endOffset)
+            val resultToUse = result.withPrefixMatcher(keywordToUse)
+            context.keyword = keywordToUse
+            context.keywordOffset = dsNode.rangeInExpression.startOffset
+            completeCommandFieldValue(context, resultToUse, prefixNode.text, inDsNode)
+            context.keyword = keyword
+            context.keywordOffset = keywordOffset
+            return true
+        } else {
+            val inFirstNode = dsNode == null || dsNode.nodes.isEmpty()
+                || offsetInParent <= dsNode.nodes.first().rangeInExpression.endOffset
+            val keywordToUse = node.text.substring(0, offsetInParent - nodeRange.startOffset)
+            val resultToUse = result.withPrefixMatcher(keywordToUse)
+            context.keyword = keywordToUse
+            context.keywordOffset = node.rangeInExpression.startOffset
+            if (inFirstNode) {
+                completePredefinedCommandField(context, resultToUse)
+                completeCommandField(context, resultToUse)
+                completeCommandFieldPrefix(context, resultToUse)
+            }
+            completeCommandFieldValue(context, resultToUse, null, inDsNode)
+            context.keyword = keyword
+            context.keywordOffset = keywordOffset
+            return false
+        }
     }
 
     fun completeSystemScope(context: ProcessingContext, result: CompletionResultSet) {
@@ -1365,7 +1387,7 @@ object ParadoxCompletionManager {
 
             val name = linkConfig.name
             val element = linkConfig.pointer.element ?: continue
-            val tailText = " from scopes"
+            val tailText = " from links"
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withIcon(PlsIcons.Nodes.Scope)
@@ -1392,7 +1414,7 @@ object ParadoxCompletionManager {
 
             val name = linkConfig.prefix?.dropLast(1) ?: continue
             val element = linkConfig.pointer.element ?: continue
-            val tailText = "(...) from scope link ${linkConfig.name}"
+            val tailText = "(...) from link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
@@ -1415,7 +1437,7 @@ object ParadoxCompletionManager {
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
-            val tailText = " from scope link ${linkConfig.name}"
+            val tailText = " from link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
@@ -1474,7 +1496,7 @@ object ParadoxCompletionManager {
 
             val name = linkConfig.name
             val element = linkConfig.pointer.element ?: continue
-            val tailText = " from values"
+            val tailText = " from links"
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withIcon(PlsIcons.Nodes.ValueField)
@@ -1500,7 +1522,7 @@ object ParadoxCompletionManager {
 
             val name = linkConfig.prefix?.dropLast(1) ?: continue
             val element = linkConfig.pointer.element ?: continue
-            val tailText = "(...) from value link ${linkConfig.name}"
+            val tailText = "(...) from link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
@@ -1523,7 +1545,7 @@ object ParadoxCompletionManager {
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
-            val tailText = " from value link ${linkConfig.name}"
+            val tailText = " from link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
@@ -1567,58 +1589,6 @@ object ParadoxCompletionManager {
 
         context.config = config
         context.configs = configs
-    }
-
-    fun completeCommandScope(context: ProcessingContext, result: CompletionResultSet) {
-        ProgressManager.checkCanceled()
-        val configGroup = context.configGroup!!
-        val scopeContext = context.scopeContext
-
-        val localisationLinks = configGroup.localisationLinks.values.filter { it.forScope() && !it.fromData && !it.fromArgument }
-        for (localisationScope in localisationLinks) {
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, localisationScope.inputScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
-
-            //optimize: make first char uppercase (e.g., owner -> Owner)
-            val name = localisationScope.name.replaceFirstChar { it.uppercaseChar() }
-            val element = localisationScope.pointer.element ?: continue
-            val tailText = " from command scopes"
-            val typeFile = localisationScope.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.LocalisationCommandScope)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false) //忽略大小写
-                .withScopeMatched(scopeMatched)
-                .withPriority(ParadoxCompletionPriorities.scope)
-                .withCompletionId()
-            result.addElement(lookupElement, context)
-        }
-    }
-
-    fun completePredefinedCommandField(context: ProcessingContext, result: CompletionResultSet) {
-        ProgressManager.checkCanceled()
-        val configGroup = context.configGroup!!
-        val scopeContext = context.scopeContext
-
-        val localisationCommands = configGroup.localisationCommands
-        for (localisationCommand in localisationCommands.values) {
-            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, localisationCommand.supportedScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
-
-            val name = localisationCommand.name
-            val element = localisationCommand.pointer.element ?: continue
-            val tailText = " from command fields"
-            val typeFile = localisationCommand.pointer.containingFile
-            val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.LocalisationCommandField)
-                .withTailText(tailText, true)
-                .withTypeText(typeFile?.name, typeFile?.icon, true)
-                .withCaseSensitivity(false) //忽略大小写
-                .withScopeMatched(scopeMatched)
-                .withCompletionId()
-            result.addElement(lookupElement, context)
-        }
     }
 
     fun completeDatabaseObjectType(context: ProcessingContext, result: CompletionResultSet) {
@@ -1814,6 +1784,33 @@ object ParadoxCompletionManager {
         }
     }
 
+    fun completeCommandScope(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val configGroup = context.configGroup!!
+        val scopeContext = context.scopeContext
+
+        val localisationLinks = configGroup.localisationLinks.values.filter { it.forScope() && !it.fromData && !it.fromArgument }
+        for (localisationScope in localisationLinks) {
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, localisationScope.inputScopes, configGroup)
+            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+
+            //optimize: make first char uppercase (e.g., owner -> Owner)
+            val name = localisationScope.name.replaceFirstChar { it.uppercaseChar() }
+            val element = localisationScope.pointer.element ?: continue
+            val tailText = " from localisation links"
+            val typeFile = localisationScope.pointer.containingFile
+            val lookupElement = LookupElementBuilder.create(element, name)
+                .withIcon(PlsIcons.Nodes.LocalisationCommandScope)
+                .withTailText(tailText, true)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withCaseSensitivity(false) //忽略大小写
+                .withScopeMatched(scopeMatched)
+                .withPriority(ParadoxCompletionPriorities.scope)
+                .withCompletionId()
+            result.addElement(lookupElement, context)
+        }
+    }
+
     fun completeCommandScopeLinkPrefix(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
@@ -1827,7 +1824,7 @@ object ParadoxCompletionManager {
 
             val name = linkConfig.prefix?.dropLast(1) ?: continue
             val element = linkConfig.pointer.element ?: continue
-            val tailText = "(...) from command scope link ${linkConfig.name}"
+            val tailText = "(...) from localisation link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
@@ -1850,7 +1847,7 @@ object ParadoxCompletionManager {
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
-            val tailText = " from command scope link ${linkConfig.name}"
+            val tailText = " from localisation link ${linkConfig.name}"
             val typeFile = linkConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withBoldness(true)
@@ -1868,7 +1865,6 @@ object ParadoxCompletionManager {
         val configGroup = context.configGroup!!
         val config = context.config
         val configs = context.configs
-        val scopeContext = context.scopeContext
 
         val linkConfigs = configGroup.localisationLinks.values.filter { it.forScope() && it.prefix == prefix }
             .sortedByPriority({ it.dataSourceExpression }, { configGroup })
@@ -1883,50 +1879,122 @@ object ParadoxCompletionManager {
         context.configs = configs
     }
 
-    fun completeScriptedLoc(context: ProcessingContext, result: CompletionResultSet) {
+    fun completePredefinedCommandField(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val file = context.parameters?.originalFile ?: return
-        val project = file.project
+        val configGroup = context.configGroup!!
+        val scopeContext = context.scopeContext
 
-        val scriptedLocSelector = selector(project, file).definition().contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search("scripted_loc", scriptedLocSelector).processQueryAsync p@{ scriptedLoc ->
-            ProgressManager.checkCanceled()
-            val name = scriptedLoc.definitionInfo?.name ?: return@p true //不应该为空
-            val icon = PlsIcons.Nodes.Definition("scripted_loc")
-            val tailText = " from <scripted_loc>"
-            val typeFile = scriptedLoc.containingFile
-            val lookupElement = LookupElementBuilder.create(scriptedLoc, name).withIcon(icon)
+        val localisationCommands = configGroup.localisationCommands
+        for (localisationCommand in localisationCommands.values) {
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, localisationCommand.supportedScopes, configGroup)
+            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+
+            val name = localisationCommand.name
+            val element = localisationCommand.pointer.element ?: continue
+            val tailText = " from localisation commands"
+            val typeFile = localisationCommand.pointer.containingFile
+            val lookupElement = LookupElementBuilder.create(element, name)
+                .withIcon(PlsIcons.Nodes.LocalisationCommandField)
                 .withTailText(tailText, true)
-                .withTypeText(typeFile.name, typeFile.icon, true)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
+                .withScopeMatched(scopeMatched)
                 .withCompletionId()
             result.addElement(lookupElement, context)
-            true
         }
     }
 
-    fun completeVariable(context: ProcessingContext, result: CompletionResultSet) {
+    fun completeCommandField(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val file = context.parameters?.originalFile ?: return
-        val project = file.project
-        val contextElement = context.contextElement!!
-        val keyword = context.keyword
+        val configGroup = context.configGroup!!
+        val scopeContext = context.scopeContext
 
-        val variableSelector = selector(project, file).dynamicValue().contextSensitive().distinctByName()
-        ParadoxDynamicValueSearch.search("variable", variableSelector).processQueryAsync p@{ info ->
-            ProgressManager.checkCanceled()
-            if (info.name == keyword) return@p true //排除和当前输入的同名的
-            val element = ParadoxDynamicValueElement(contextElement, info, project)
-            val icon = PlsIcons.Nodes.Variable
-            val tailText = " from variables"
-            val lookupElement = LookupElementBuilder.create(element, info.name)
-                .withIcon(icon)
+        val linkConfigs = configGroup.localisationLinks.values.filter { it.forValue() && !it.fromData && !it.fromArgument }
+        for (linkConfig in linkConfigs) {
+            //排除input_scopes不匹配前一个scope的output_scope的情况
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+
+            val name = linkConfig.name
+            val element = linkConfig.pointer.element ?: continue
+            val tailText = " from localisation links"
+            val typeFile = linkConfig.pointer.containingFile
+            val lookupElement = LookupElementBuilder.create(element, name)
+                .withIcon(PlsIcons.Nodes.ValueField)
                 .withTailText(tailText, true)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false) //忽略大小写
+                .withScopeMatched(scopeMatched)
                 .withCompletionId()
             result.addElement(lookupElement, context)
-            true
         }
+    }
+
+    fun completeCommandFieldPrefix(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        val configGroup = context.configGroup!!
+        val scopeContext = context.scopeContext
+
+        val linkConfigsFromArgument = configGroup.localisationLinks.values.filter { it.forValue() && it.prefix != null && it.fromArgument }
+            .sortedByPriority({ it.dataSourceExpression }, { configGroup })
+        for (linkConfig in linkConfigsFromArgument) {
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+
+            val name = linkConfig.prefix?.dropLast(1) ?: continue
+            val element = linkConfig.pointer.element ?: continue
+            val tailText = "(...) from localisation link ${linkConfig.name}"
+            val typeFile = linkConfig.pointer.containingFile
+            val lookupElement = LookupElementBuilder.create(element, name)
+                .withBoldness(true)
+                .withTailText(tailText, true)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withPriority(ParadoxCompletionPriorities.prefix)
+                .withCompletionId()
+                .withInsertHandler { c, _ ->
+                    val editor = c.editor
+                    EditorModificationUtil.insertStringAtCaret(editor, "()", false, true, 1)
+                }
+            result.addElement(lookupElement, context)
+        }
+
+        val linkConfigsFromData = configGroup.localisationLinks.values.filter { it.forValue() && it.prefix != null && it.fromData }
+            .sortedByPriority({ it.dataSourceExpression }, { configGroup })
+        for (linkConfig in linkConfigsFromData) {
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+
+            val name = linkConfig.prefix ?: continue
+            val element = linkConfig.pointer.element ?: continue
+            val tailText = " from localisation link ${linkConfig.name}"
+            val typeFile = linkConfig.pointer.containingFile
+            val lookupElement = LookupElementBuilder.create(element, name)
+                .withBoldness(true)
+                .withTailText(tailText, true)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withPriority(ParadoxCompletionPriorities.prefix)
+                .withCompletionId()
+            result.addElement(lookupElement, context)
+        }
+    }
+
+    fun completeCommandFieldValue(context: ProcessingContext, result: CompletionResultSet, prefix: String?, inDsNode: ParadoxComplexExpressionNode?) {
+        ProgressManager.checkCanceled()
+        val configGroup = context.configGroup!!
+        val config = context.config
+        val configs = context.configs
+
+        val linkConfigs = configGroup.localisationLinks.values.filter { it.forValue() && it.prefix == prefix }
+            .sortedByPriority({ it.dataSourceExpression }, { configGroup })
+        context.configs = linkConfigs
+
+        for (linkConfig in linkConfigs) {
+            context.config = linkConfig
+            completeScriptExpression(context, result)
+        }
+
+        context.config = config
+        context.configs = configs
     }
 
     //endregion
@@ -1984,7 +2052,8 @@ object ParadoxCompletionManager {
             }
         }
         run r1@{
-            if (typeExpression != "game_rule") return@r1
+            val tGameRule = ParadoxDefinitionTypes.GameRule
+            if (typeExpression != tGameRule) return@r1
             configGroup.extendedGameRules.values.forEach f@{ config0 ->
                 ProgressManager.checkCanceled()
                 val name = config0.name
@@ -1994,14 +2063,15 @@ object ParadoxCompletionManager {
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withItemTextUnderlined(true) //used for completions from extended configs
-                    .withPatchableIcon(PlsIcons.Nodes.Definition("game_rule"))
+                    .withPatchableIcon(PlsIcons.Nodes.Definition(tGameRule))
                     .withPatchableTailText(tailText)
                     .forScriptExpression(context)
                 result.addElement(lookupElement, context)
             }
         }
         run r1@{
-            if (typeExpression != "on_action") return@r1
+            val tOnAction = ParadoxDefinitionTypes.OnAction
+            if (typeExpression != tOnAction) return@r1
             configGroup.extendedOnActions.values.forEach f@{ config0 ->
                 ProgressManager.checkCanceled()
                 val name = config0.name
@@ -2011,7 +2081,7 @@ object ParadoxCompletionManager {
                 val lookupElement = LookupElementBuilder.create(name).withPsiElement(element)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withItemTextUnderlined(true) //used for completions from extended configs
-                    .withPatchableIcon(PlsIcons.Nodes.Definition("on_action"))
+                    .withPatchableIcon(PlsIcons.Nodes.Definition(tOnAction))
                     .withPatchableTailText(tailText)
                     .forScriptExpression(context)
                 result.addElement(lookupElement, context)

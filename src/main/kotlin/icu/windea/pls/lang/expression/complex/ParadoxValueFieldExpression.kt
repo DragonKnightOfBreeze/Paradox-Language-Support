@@ -50,7 +50,7 @@ class ParadoxValueFieldExpression private constructor(
     val valueFieldNode: ParadoxValueFieldNode
         get() = nodes.last().cast()
     val scriptValueExpression: ParadoxScriptValueExpression?
-        get() = valueFieldNode.castOrNull<ParadoxDynamicValueFieldNode>()?.dataSourceNode?.nodes?.findIsInstance<ParadoxScriptValueExpression>()
+        get() = valueFieldNode.castOrNull<ParadoxDynamicValueFieldNode>()?.valueNode?.nodes?.findIsInstance<ParadoxScriptValueExpression>()
 
     override fun validate(): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()

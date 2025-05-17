@@ -11,6 +11,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.localisation.*
+import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 import icu.windea.pls.script.editor.*
 
 class ParadoxDynamicValueNode(
@@ -26,9 +28,19 @@ class ParadoxDynamicValueNode(
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         val expression = configs.first().expression!! //first is ok
         val dynamicValueType = expression.value ?: return null
-        return when (dynamicValueType) {
-            "variable" -> ParadoxScriptAttributesKeys.VARIABLE_KEY
-            else -> ParadoxScriptAttributesKeys.DYNAMIC_VALUE_KEY
+        return when (element.language) {
+            is ParadoxLocalisationLanguage -> {
+                when (dynamicValueType) {
+                    "variable" -> ParadoxLocalisationAttributesKeys.VARIABLE_KEY
+                    else -> ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE_KEY
+                }
+            }
+            else -> {
+                when (dynamicValueType) {
+                    "variable" -> ParadoxScriptAttributesKeys.VARIABLE_KEY
+                    else -> ParadoxScriptAttributesKeys.DYNAMIC_VALUE_KEY
+                }
+            }
         }
     }
 

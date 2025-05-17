@@ -5,6 +5,8 @@ import com.intellij.refactoring.util.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.*
 
 class ParadoxRefactoringElementDescriptorProvider : ElementDescriptionProvider {
@@ -16,7 +18,7 @@ class ParadoxRefactoringElementDescriptorProvider : ElementDescriptionProvider {
             element is ParadoxScriptDefinitionElement && element.definitionInfo != null -> {
                 val definitionInfo = element.definitionInfo ?: return null
                 when {
-                    definitionInfo.type == "sprite" -> PlsBundle.message("refactoring.sprite.desc", CommonRefactoringUtil.htmlEmphasize(definitionInfo.name))
+                    definitionInfo.type == ParadoxDefinitionTypes.Sprite -> PlsBundle.message("refactoring.sprite.desc", CommonRefactoringUtil.htmlEmphasize(definitionInfo.name))
                     else -> PlsBundle.message("refactoring.definition.desc", CommonRefactoringUtil.htmlEmphasize(definitionInfo.name))
                 }
             }

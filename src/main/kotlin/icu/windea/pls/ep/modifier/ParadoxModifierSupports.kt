@@ -27,6 +27,7 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
 
@@ -299,7 +300,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val modifierName = name
         val project = configGroup.project
         val selector = selector(project, element).definition().contextSensitive().distinctByName()
-        val economicCategories = ParadoxDefinitionSearch.search("economic_category", selector).findAll()
+        val economicCategories = ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.EconomicCategory, selector).findAll()
         for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
 
@@ -316,7 +317,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
         val selector = selector(project, element).definition().contextSensitive().distinctByName()
-        val economicCategories = ParadoxDefinitionSearch.search("economic_category", selector).findAll()
+        val economicCategories = ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.EconomicCategory, selector).findAll()
         for (economicCategory in economicCategories) {
             ProgressManager.checkCanceled()
 
@@ -340,7 +341,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         if (element !is ParadoxScriptStringExpressionElement) return
 
         val selector = selector(configGroup.project, element).definition().contextSensitive().distinctByName()
-        ParadoxDefinitionSearch.search("economic_category", selector).processQueryAsync p@{ economicCategory ->
+        ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.EconomicCategory, selector).processQueryAsync p@{ economicCategory ->
             ProgressManager.checkCanceled()
 
             val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return@p true
@@ -352,7 +353,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
 
             val tailText = " from economic category " + economicCategoryInfo.name
             val typeText = economicCategoryInfo.name
-            val typeIcon = PlsIcons.Nodes.Definition("economic_category")
+            val typeIcon = PlsIcons.Nodes.Definition(ParadoxDefinitionTypes.EconomicCategory)
             for (economicCategoryModifierInfo in economicCategoryInfo.modifiers) {
                 val name = economicCategoryModifierInfo.name
                 //排除重复的
@@ -394,12 +395,12 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         appendBr().appendIndent()
         append(PlsBundle.message("generatedFromEconomicCategory"))
         append(" ")
-        appendDefinitionLink(gameType, economicCategoryInfo.name, "economic_category", modifierElement)
+        appendDefinitionLink(gameType, economicCategoryInfo.name, ParadoxDefinitionTypes.EconomicCategory, modifierElement)
         if (modifierInfo.resource != null) {
             appendBr().appendIndent()
             append(PlsBundle.message("generatedFromResource"))
             append(" ")
-            appendDefinitionLink(gameType, modifierInfo.resource, "resource", modifierElement)
+            appendDefinitionLink(gameType, modifierInfo.resource, ParadoxDefinitionTypes.Resource, modifierElement)
         } else {
             appendBr().appendIndent()
             append(PlsBundle.message("forAiBudget"))
@@ -413,7 +414,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         val configGroup = definitionInfo.configGroup
         val project = configGroup.project
         val selector = selector(project, definition).definition().contextSensitive()
-        val economicCategory = ParadoxDefinitionSearch.search(definitionInfo.name, "economic_category", selector)
+        val economicCategory = ParadoxDefinitionSearch.search(definitionInfo.name, ParadoxDefinitionTypes.EconomicCategory, selector)
             .find()
             ?: return false
         val economicCategoryInfo = ParadoxEconomicCategoryManager.getInfo(economicCategory) ?: return false
@@ -426,7 +427,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
                     append(" ")
                     append(PlsBundle.message("fromResource"))
                     append(" ")
-                    appendDefinitionLink(gameType, modifierInfo.resource, "resource", definition)
+                    appendDefinitionLink(gameType, modifierInfo.resource, ParadoxDefinitionTypes.Resource, definition)
                 }
             } else {
                 grayed {

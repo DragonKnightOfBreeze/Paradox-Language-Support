@@ -1,104 +1,104 @@
 package icu.windea.pls.lang.expression.complex.nodes
 
-import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.resolve.*
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtLinkConfig
+import icu.windea.pls.config.config.forValue
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
+import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.editor.*
-import icu.windea.pls.script.psi.*
 
 class ParadoxDynamicCommandFieldNode(
     override val text: String,
     override val rangeInExpression: TextRange,
-    override val configGroup: CwtConfigGroup
+    override val nodes: List<ParadoxComplexExpressionNode> = emptyList(),
+    override val configGroup: CwtConfigGroup,
+    val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxComplexExpressionNode.Base(), ParadoxCommandFieldNode {
-    override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
-        return when (getReference(element).resolve()) {
-            is ParadoxScriptDefinitionElement -> ParadoxLocalisationAttributesKeys.SCRIPTED_LOC_KEY
-            is ParadoxDynamicValueElement -> ParadoxLocalisationAttributesKeys.VARIABLE_KEY
-            else -> null
-        }
-    }
+    val prefixNode get() = nodes.findIsInstance<ParadoxCommandFieldPrefixNode>()
+    val valueNode get() = nodes.findIsInstance<ParadoxCommandFieldValueNode>()!!
 
-    override fun getReference(element: ParadoxExpressionElement): Reference {
-        val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement, text, configGroup)
-    }
-
-    class Reference(
-        element: ParadoxExpressionElement,
-        rangeInElement: TextRange,
-        val name: String,
-        val configGroup: CwtConfigGroup
-    ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
-        val project = configGroup.project
-
-        override fun handleElementRename(newElementName: String): PsiElement {
-            return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-        }
-
-        //缓存解析结果以优化性能
-
-        private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {
-            override fun resolve(ref: Reference, incompleteCode: Boolean): PsiElement? {
-                return ref.doResolve()
-            }
-        }
-
-        private object MultiResolver : ResolveCache.PolyVariantResolver<Reference> {
-            override fun resolve(ref: Reference, incompleteCode: Boolean): Array<out ResolveResult> {
-                return ref.doMultiResolve()
-            }
-        }
-
-        override fun resolve(): PsiElement? {
-            return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
-        }
-
-        override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-            return ResolveCache.getInstance(project).resolveWithCaching(this, MultiResolver, false, false)
-        }
-
-        private fun doResolve(): PsiElement? {
-            run {
-                val selector = selector(project, element).definition().contextSensitive()
-                ParadoxDefinitionSearch.search(name, "scripted_loc", selector).find()?.let { return it }
-            }
-            run {
-                val configExpression = configGroup.mockVariableConfig.expression
-                ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpression, configGroup)?.let { return it }
-            }
-            return null
-        }
-
-        private fun doMultiResolve(): Array<out ResolveResult> {
-            run {
-                val selector = selector(project, element).definition().contextSensitive()
-                ParadoxDefinitionSearch.search(name, "scripted_loc", selector).findAll().orNull()
-                    ?.let { return it.mapToArray { e -> PsiElementResolveResult(e) } }
-            }
-            run {
-                val configExpression = configGroup.mockVariableConfig.expression
-                ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpression, configGroup)
-                    ?.let { return arrayOf(PsiElementResolveResult(it)) }
-            }
-            return ResolveResult.EMPTY_ARRAY
-        }
+    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
+        return linkConfigs
     }
 
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicCommandFieldNode? {
-            if (text.isParameterized()) return null
-            if (!text.isIdentifier()) return null
-            return ParadoxDynamicCommandFieldNode(text, textRange, configGroup)
+            val nodes = mutableListOf<ParadoxComplexExpressionNode>()
+            val offset = textRange.startOffset
+            var startIndex = 0
+
+            //匹配某一前缀的场合（如，"event_target:some_country"）
+            run r1@{
+                if (!text.contains(':')) return@r1
+                val linkConfigs = configGroup.links.values.filter { it.forValue() && it.fromData && it.prefix != null }
+                    .filter { text.startsWith(it.prefix!!) }
+                    .sortedByPriority({ it.dataSourceExpression }, { configGroup })
+                if (linkConfigs.isEmpty()) return@r1
+                run r2@{
+                    val nodeText = linkConfigs.first().prefix!!
+                    val nodeTextRange = TextRange.from(offset, nodeText.length)
+                    val node = ParadoxCommandFieldPrefixNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
+                    nodes += node
+                    startIndex += nodeText.length
+                }
+                run r2@{
+                    val nodeText = text.substring(startIndex)
+                    val nodeTextRange = TextRange.from(offset + startIndex, nodeText.length)
+                    val node = ParadoxCommandFieldValueNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
+                    nodes += node
+                }
+                return ParadoxDynamicCommandFieldNode(text, textRange, nodes, configGroup, linkConfigs)
+            }
+
+            //匹配某一前缀且使用传参格式的场合（如，"relations(root.owner)"）
+            run r1@{
+                if (!text.contains('(')) return@r1
+                val linkConfigs = configGroup.links.values.filter { it.forValue() && it.fromArgument && it.prefix != null }
+                    .filter { text.startsWith(it.prefix!!.dropLast(1) + '(') }
+                    .sortedByPriority({ it.dataSourceExpression }, { configGroup })
+                if (linkConfigs.isEmpty()) return@r1
+                run r2@{
+                    val nodeText = linkConfigs.first().prefix!!.dropLast(1)
+                    val nodeTextRange = TextRange.from(offset, nodeText.length)
+                    val node = ParadoxCommandFieldPrefixNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
+                    nodes += node
+                    startIndex += nodeText.length
+                }
+                run r2@{
+                    val nodeTextRange = TextRange.from(offset + startIndex, 1)
+                    val node = ParadoxOperatorNode("(", nodeTextRange, configGroup)
+                    nodes += node
+                    startIndex += 1
+                }
+                val valueEndIndex = if(text.endsWith(')')) text.length - 1 else text.length
+                run r2@{
+                    val nodeText = text.substring(startIndex, valueEndIndex)
+                    val nodeTextRange = TextRange.from(offset + startIndex, nodeText.length)
+                    val node = ParadoxCommandFieldValueNode.resolve(nodeText, nodeTextRange, configGroup, linkConfigs)
+                    nodes += node
+                    startIndex += nodeText.length
+                }
+                run r2@{
+                    val nodeTextRange = TextRange.from(offset + startIndex, text.length - valueEndIndex)
+                    val node = if(nodeTextRange.isEmpty) ParadoxErrorTokenNode("", nodeTextRange, configGroup)
+                    else ParadoxOperatorNode(")", nodeTextRange, configGroup)
+                    nodes += node
+                }
+                return ParadoxDynamicCommandFieldNode(text, textRange, nodes, configGroup, linkConfigs)
+            }
+
+            //没有前缀且允许没有前缀的场合
+            run r1@{
+                val linkConfigs = configGroup.links.values.filter { it.forValue() && it.fromData && it.prefix == null }
+                    .sortedByPriority({ it.dataSourceExpression }, { configGroup })
+                if (linkConfigs.isEmpty()) return@r1
+                val node = ParadoxCommandFieldValueNode.resolve(text, textRange, configGroup, linkConfigs)
+                nodes += node
+                return ParadoxDynamicCommandFieldNode(text, textRange, nodes, configGroup, linkConfigs)
+            }
+
+            return null
         }
     }
 }

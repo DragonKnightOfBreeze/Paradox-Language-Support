@@ -13,11 +13,11 @@ import icu.windea.pls.model.*
 import java.lang.invoke.*
 
 object ParadoxFilePathManager {
-    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
-
     object Keys : KeyRegistry() {
         val fileExtensions by createKey<Set<String>>(this)
     }
+
+    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
 
     const val scriptedVariablesPath = "common/scripted_variables"
 

@@ -16,6 +16,7 @@ import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.*
 import java.awt.*
 
@@ -43,7 +44,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
         override fun updateDataModel(indicator: ProgressIndicator?) {
             provider as StellarisEventTreeDiagramProvider
-            val events = getDefinitions("event")
+            val events = getDefinitions(ParadoxDefinitionTypes.Event)
             if (events.isEmpty()) return
             //群星原版事件有5000+
             val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
@@ -155,7 +156,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
     ) : ParadoxTechTreeDiagramProvider.DataModel(project, file, provider) {
         override fun updateDataModel(indicator: ProgressIndicator?) {
             provider as StellarisTechTreeDiagramProvider
-            val technologies = getDefinitions("technology")
+            val technologies = getDefinitions(ParadoxDefinitionTypes.Technology)
             if (technologies.isEmpty()) return
             //群星原版科技有400+
             val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()

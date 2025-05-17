@@ -8,6 +8,8 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.*
 
 class NonTriggeredEventInspection : LocalInspectionTool() {
@@ -21,7 +23,7 @@ class NonTriggeredEventInspection : LocalInspectionTool() {
         file as ParadoxScriptFile
         file.processProperty(inline = true) p@{ element ->
             val definitionInfo = element.definitionInfo ?: return@p true
-            if (definitionInfo.type != "event") return@p true
+            if (definitionInfo.type != ParadoxDefinitionTypes.Event) return@p true
             if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) return@p true //no "triggered" subtype declared, skip
             if ("triggered" in definitionInfo.subtypes) return@p true
             val fixes = buildList {
@@ -45,7 +47,7 @@ class NonTriggeredEventInspection : LocalInspectionTool() {
     private class Fix1(
         element: PsiElement
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
-        //add "is_triggered_only = yes" into declaration (after "id" field or at start) 
+        //add "is_triggered_only = yes" into declaration (after "id" field or at start)
 
         override fun getText() = PlsBundle.message("inspection.script.nonTriggeredEvent.fix.1")
 

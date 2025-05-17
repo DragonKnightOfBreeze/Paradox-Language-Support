@@ -28,6 +28,7 @@ import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 
@@ -299,7 +300,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: Parado
         keys.firstNotNullOfOrNull { key ->
             val selector = selector(project, element).localisation().contextSensitive()
                 .preferLocale(usedLocale)
-                .withConstraint(ParadoxLocalisationConstraint.Modifier)
+                .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
         }
     }
@@ -308,7 +309,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: Parado
         keys.firstNotNullOfOrNull { key ->
             val selector = selector(project, element).localisation().contextSensitive()
                 .preferLocale(usedLocale)
-                .withConstraint(ParadoxLocalisationConstraint.Modifier)
+                .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
             ParadoxLocalisationSearch.search(key, selector).find()
         }
     }
@@ -565,7 +566,7 @@ private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxS
             val nameOrFilePath = resolved.nameOrFilePath
             val gameType = definitionInfo.gameType
             val v = when {
-                nameOrFilePath.startsWith("GFX") -> buildDocumentation { appendDefinitionLink(gameType, nameOrFilePath, "sprite", element) }
+                nameOrFilePath.startsWith("GFX") -> buildDocumentation { appendDefinitionLink(gameType, nameOrFilePath, ParadoxDefinitionTypes.Sprite, element) }
                 else -> buildDocumentation { appendFilePathLink(gameType, nameOrFilePath, nameOrFilePath, element) }
             }
             map.put(key, v)
@@ -664,7 +665,7 @@ private fun DocumentationBuilder.addParametersForDefinition(element: ParadoxScri
 }
 
 private fun DocumentationBuilder.addEventTypeForOnAction(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-    if (definitionInfo.type != "on_action") return
+    if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return
     //有些游戏类型直接通过CWT文件指定了事件类型，而非CSV文件，忽略这种情况
     val configGroup = definitionInfo.configGroup
     val gameType = configGroup.gameType

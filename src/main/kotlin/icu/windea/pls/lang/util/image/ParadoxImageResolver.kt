@@ -15,6 +15,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.*
 import org.intellij.images.fileTypes.impl.*
 import kotlin.io.path.*
@@ -30,7 +31,7 @@ object ParadoxImageResolver {
         val definitionInfo = definition.definitionInfo ?: return null
         val newFrameInfo = when {
             frameInfo == null -> null
-            definitionInfo.type == "sprite" -> {
+            definitionInfo.type == ParadoxDefinitionTypes.Sprite -> {
                 val noOfFrames = definition.getData<ParadoxSpriteData>()?.noOfFrames
                 if (noOfFrames != null) frameInfo.copy(frames = noOfFrames) else frameInfo
             }

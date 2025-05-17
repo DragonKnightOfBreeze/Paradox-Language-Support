@@ -9,8 +9,10 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.index.ParadoxIndexManager
+import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
@@ -20,7 +22,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionElement, ParadoxDefinitionSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxDefinitionSearch.SearchParameters, consumer: Processor<in ParadoxScriptDefinitionElement>) {
         //#141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
-        if(PlsManager.resolveForMergedIndex.get() == true) return
+        if (PlsManager.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
         if (queryParameters.project.isDefault) return
@@ -32,9 +34,12 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         val project = queryParameters.project
         val gameType = queryParameters.selector.gameType ?: return
         val configGroup = getConfigGroup(project, gameType)
+        val constraint = queryParameters.selector.getConstraint()
 
-        if (forFile) processQueryForFileDefinitions(name, typeExpression, project, scope, configGroup) { consumer.process(it) }
-        processQueryForStubDefinitions(name, typeExpression, project, scope) { consumer.process(it) }
+        if (forFile && forFile(typeExpression, configGroup)) {
+            processQueryForFileDefinitions(name, typeExpression, project, scope, constraint) { consumer.process(it) }
+        }
+        processQueryForStubDefinitions(name, typeExpression, project, scope, constraint) { consumer.process(it) }
 
         if (typeExpression != null) {
             //如果存在切换类型，也要查找对应的切换类型的定义
@@ -44,11 +49,17 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
                 if (typeExpression.matches(baseTypeExpression)) {
                     ProgressManager.checkCanceled()
                     val swappedTypeExpression = ParadoxDefinitionTypeExpression.resolve(swappedTypeConfig.name)
-                    processQueryForFileDefinitions(name, swappedTypeExpression, project, scope, configGroup) { consumer.process(it) }
-                    processQueryForStubDefinitions(name, swappedTypeExpression, project, scope) { consumer.process(it) }
+                    if (forFile && forFile(typeExpression, configGroup)) {
+                        processQueryForFileDefinitions(name, swappedTypeExpression, project, scope, constraint) { consumer.process(it) }
+                    }
+                    processQueryForStubDefinitions(name, swappedTypeExpression, project, scope, constraint) { consumer.process(it) }
                 }
             }
         }
+    }
+
+    private fun forFile(typeExpression: ParadoxDefinitionTypeExpression?, configGroup: CwtConfigGroup): Boolean {
+        return typeExpression == null || configGroup.types.get(typeExpression.type)?.typePerFile == true
     }
 
     private fun processQueryForFileDefinitions(
@@ -56,16 +67,16 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         typeExpression: ParadoxDefinitionTypeExpression?,
         project: Project,
         scope: GlobalSearchScope,
-        configGroup: CwtConfigGroup,
+        constraint: ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?,
         processor: Processor<ParadoxScriptFile>
     ) {
-        if (typeExpression != null && configGroup.types.get(typeExpression.type)?.typePerFile != true) return
+        val ignoreCase = constraint?.ignoreCase == true
         FileTypeIndex.processFiles(ParadoxScriptFileType, p@{
             ProgressManager.checkCanceled()
             val file = it.toPsiFile(project) ?: return@p true
             if (file !is ParadoxScriptFile) return@p true
             val definitionInfo = file.definitionInfo ?: return@p true
-            if (name != null && definitionInfo.name != name) return@p true
+            if (name != null && !definitionInfo.name.equals(name, ignoreCase)) return@p true
             if (typeExpression != null && definitionInfo.type != typeExpression.type) return@p true
             if (typeExpression != null && typeExpression.subtypes.isNotEmpty() && !definitionInfo.subtypes.containsAll(typeExpression.subtypes)) return@p true
             processor.process(file)
@@ -77,20 +88,26 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         typeExpression: ParadoxDefinitionTypeExpression?,
         project: Project,
         scope: GlobalSearchScope,
+        constraint: ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?,
         consumer: Processor<in ParadoxScriptDefinitionElement>
     ) {
+        val indexKey = ParadoxIndexManager.DefinitionNameKey
+        val ignoreCase = constraint?.ignoreCase == true
+        val finalName = if (ignoreCase) name?.lowercase() else name
         if (typeExpression == null) {
-            doProcessAllElements(name, project, scope) { element ->
-                consumer.process(element)
+            if (finalName == null) {
+                indexKey.processAllElementsByKeys(project, scope) { _, element -> consumer.process(element) }
+            } else {
+                indexKey.processAllElements(finalName, project, scope) { element -> consumer.process(element) }
             }
         } else {
-            if (name == null) {
+            if (finalName == null) {
                 ParadoxIndexManager.DefinitionTypeKey.processAllElements(typeExpression.type, project, scope) p@{ element ->
                     if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(element, typeExpression.subtypes)) return@p true
                     consumer.process(element)
                 }
             } else {
-                ParadoxIndexManager.DefinitionNameKey.processAllElements(name, project, scope) p@{ element ->
+                indexKey.processAllElements(finalName, project, scope) p@{ element ->
                     if (!matchesType(element, typeExpression.type)) return@p true
                     if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(element, typeExpression.subtypes)) return@p true
                     consumer.process(element)
@@ -99,23 +116,11 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         }
     }
 
-    //private fun matchesName(element: ParadoxScriptDefinitionElement, name: String): Boolean {
-    //    return ParadoxDefinitionManager.getName(element) == name
-    //}
-
     private fun matchesType(element: ParadoxScriptDefinitionElement, type: String): Boolean {
         return ParadoxDefinitionManager.getType(element) == type
     }
 
     private fun matchesSubtypes(element: ParadoxScriptDefinitionElement, subtypes: List<String>): Boolean {
         return ParadoxDefinitionManager.getSubtypes(element)?.containsAll(subtypes) == true
-    }
-
-    private fun doProcessAllElements(name: String?, project: Project, scope: GlobalSearchScope, processor: Processor<ParadoxScriptDefinitionElement>): Boolean {
-        if (name == null) {
-            return ParadoxIndexManager.DefinitionNameKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
-        } else {
-            return ParadoxIndexManager.DefinitionNameKey.processAllElements(name, project, scope) { element -> processor.process(element) }
-        }
     }
 }

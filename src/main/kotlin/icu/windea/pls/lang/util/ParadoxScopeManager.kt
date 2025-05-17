@@ -453,13 +453,13 @@ object ParadoxScopeManager {
         when {
             //hidden:event_target:xxx = {...}
             dataType in CwtDataTypeGroups.ScopeField -> {
-                val nestedNode = node.dataSourceNode.nodes.findIsInstance<ParadoxScopeLinkNode>()
+                val nestedNode = node.valueNode.nodes.findIsInstance<ParadoxScopeLinkNode>()
                     ?: return getUnknownScopeContext(inputScopeContext)
                 return getSwitchedScopeContextOfNode(element, nestedNode, inputScopeContext)
             }
             //event_target:xxx = {...}
             dataType in CwtDataTypeGroups.DynamicValue -> {
-                val dynamicValueExpression = node.dataSourceNode.nodes.findIsInstance<ParadoxDynamicValueExpression>()
+                val dynamicValueExpression = node.valueNode.nodes.findIsInstance<ParadoxDynamicValueExpression>()
                     ?: return getUnknownScopeContext(inputScopeContext)
                 val configGroup = dynamicValueExpression.configGroup
                 val dynamicValueNode = dynamicValueExpression.dynamicValueNode

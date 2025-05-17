@@ -117,6 +117,8 @@ class ParadoxDistinctSelector<T, K>(
     }
 }
 
+class ParadoxWithConstraintSelector<T : PsiElement>(val constraint: ParadoxIndexConstraint<T>) : ParadoxSelector<T>
+
 class ParadoxLocaleSelector(
     val locale: CwtLocalisationLocaleConfig
 ) : ParadoxSelector<ParadoxLocalisationProperty> {
@@ -144,6 +146,4 @@ class ParadoxPreferLocaleSelector(
         return complexCompareBy({ selectLocale(it) }, { it.id }, { locale == it }) //同时也按照localeId来进行排序
     }
 }
-
-class ParadoxWithConstraintSelector(val constraint: ParadoxLocalisationConstraint) : ParadoxSelector<ParadoxLocalisationProperty>
 

@@ -11,6 +11,8 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import javax.swing.*
 
 /**
@@ -45,7 +47,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
                 if (!ignoredByConfigs) return false
                 val name = element.name
                 val configs = configGroup.extendedDefinitions.findFromPattern(name, element, configGroup).orEmpty()
-                val config = configs.find { ParadoxDefinitionTypeExpression.resolve(it.type).matches("concept") }
+                val config = configs.find { ParadoxDefinitionTypeExpression.resolve(it.type).matches(ParadoxDefinitionTypes.GameConcept) }
                 if (config != null) return true
                 return false
             }

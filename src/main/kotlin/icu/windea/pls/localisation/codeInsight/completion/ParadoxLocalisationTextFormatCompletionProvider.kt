@@ -24,7 +24,7 @@ class ParadoxLocalisationTextFormatCompletionProvider : CompletionProvider<Compl
         val definitionType = ParadoxDefinitionTypes.TextFormat
         val icon = PlsIcons.Nodes.LocalisationTextFormat //使用特定图标
         val tailText = " from <$definitionType>"
-        val originalFile = context.parameters?.originalFile ?: return
+        val originalFile = parameters.originalFile
         val project = originalFile.project
         val definitionSelector = selector(project, originalFile).definition().contextSensitive().distinctByName()
         ParadoxDefinitionSearch.Companion.search(definitionType, definitionSelector).processQueryAsync p@{ definition ->
@@ -38,6 +38,7 @@ class ParadoxLocalisationTextFormatCompletionProvider : CompletionProvider<Compl
                 .withTailText(tailText, true)
                 .withTypeText(typeFile.name, typeFile.icon, true)
                 .withCompletionId()
+                .withCaseSensitivity(false)
             result.addElement(lookupElement, context)
             true
         }

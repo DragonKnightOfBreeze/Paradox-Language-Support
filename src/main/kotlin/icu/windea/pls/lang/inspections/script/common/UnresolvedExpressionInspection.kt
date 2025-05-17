@@ -17,7 +17,9 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.*
 import icu.windea.pls.model.codeInsight.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -187,11 +189,11 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         val configs = configGroup.extendedDefinitions.findFromPattern(value, element, configGroup).orEmpty()
                         val config = configs.find { ParadoxDefinitionTypeExpression.resolve(it.type).matches(definitionType) }
                         if (config != null) return true
-                        if (definitionType == "game_rule") {
+                        if (definitionType == ParadoxDefinitionTypes.GameRule) {
                             val config1 = configGroup.extendedGameRules.findFromPattern(value, element, configGroup)
                             if (config1 != null) return true
                         }
-                        if (definitionType == "on_action") {
+                        if (definitionType == ParadoxDefinitionTypes.OnAction) {
                             val config1 = configGroup.extendedOnActions.findFromPattern(value, element, configGroup)
                             if (config1 != null) return true
                         }

@@ -8,6 +8,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
 import java.io.*
@@ -66,13 +67,13 @@ class ParadoxEventInOnActionIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEv
 
     override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         run {
-            if (definitionInfo.type != "on_action") return
+            if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return
             val expression = element.value
             if (expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
             val dataType = config.expression.type
             if (dataType != CwtDataTypes.Definition) return
             val definitionType = config.expression.value?.substringBefore('.') ?: return
-            if (definitionType != "event") return
+            if (definitionType != ParadoxDefinitionTypes.Event) return
         }
 
         val eventName = element.value
@@ -111,13 +112,13 @@ class ParadoxEventInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEvent
 
     override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         run {
-            if (definitionInfo.type != "event") return
+            if (definitionInfo.type != ParadoxDefinitionTypes.Event) return
             val expression = element.value
             if (expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
             val dataType = config.expression.type
             if (dataType != CwtDataTypes.Definition) return
             val definitionType = config.expression.value?.substringBefore('.') ?: return
-            if (definitionType != "event") return
+            if (definitionType != ParadoxDefinitionTypes.Event) return
         }
 
         val eventName = element.value
@@ -177,13 +178,13 @@ class ParadoxOnActionInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxOn
 
     override fun indexScriptExpression(element: ParadoxScriptStringExpressionElement, config: CwtMemberConfig<*>, definitionInfo: ParadoxDefinitionInfo, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         run {
-            if (definitionInfo.type != "event") return
+            if (definitionInfo.type != ParadoxDefinitionTypes.Event) return
             val expression = element.value
             if (expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
             val dataType = config.expression.type
             if (dataType != CwtDataTypes.Definition) return
             val definitionType = config.expression.value?.substringBefore('.') ?: return
-            if (definitionType != "on_action") return
+            if (definitionType != ParadoxDefinitionTypes.OnAction) return
         }
 
         val onActionName = element.value

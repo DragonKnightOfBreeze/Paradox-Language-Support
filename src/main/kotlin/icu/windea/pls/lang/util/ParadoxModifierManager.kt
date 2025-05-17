@@ -225,7 +225,7 @@ object ParadoxModifierManager {
         return keys.firstNotNullOfOrNull { key ->
             val selector = selector(project, element).localisation()
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                .withConstraint(ParadoxLocalisationConstraint.Modifier)
+                .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
             val localizedNames = mutableSetOf<String>()
             ParadoxLocalisationSearch.search(key, selector).processQueryAsync { localisation ->
                 ProgressManager.checkCanceled()

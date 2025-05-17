@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.ep.data.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 import kotlin.experimental.*
@@ -27,31 +28,30 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         val definitionName = definitionInfo.name
         if (definitionName.isEmpty()) return //ignore anonymous definitions
         val type = definitionInfo.type
-        val extraWords = mutableSetOf<String>()
-        extraWords.add(definitionName)
+        val words = mutableSetOf<String>()
+        words.add(definitionName)
         when {
-            type == "sprite" -> {
+            type == ParadoxDefinitionTypes.Sprite -> {
                 val gfxName = definitionName.removePrefix("GFX_")
-                if(gfxName.isNotNullOrEmpty()) extraWords.add(gfxName)
+                if (gfxName.isNotNullOrEmpty()) words.add(gfxName)
                 val gfxTextName = definitionName.removePrefix("GFX_text_")
-                if(gfxTextName.isNotNullOrEmpty()) extraWords.add(gfxTextName)
+                if (gfxTextName.isNotNullOrEmpty()) words.add(gfxTextName)
             }
-            type == "concept" -> {
+            type == ParadoxDefinitionTypes.GameConcept -> {
                 val data = target.getData<StellarisGameConceptData>()
-                data?.alias?.forEach { extraWords.add(it) }
+                data?.alias?.forEach { words.add(it) }
             }
         }
-        if (extraWords.isEmpty()) return
+        val ignoreCase = ParadoxIndexConstraint.Definition.entries.filter { it.ignoreCase }.any { it.predicate(type) }
 
         //这里不能直接使用target.useScope，否则文件高亮会出现问题
         val useScope = queryParameters.effectiveSearchScope
-        //这里searchContext必须包含IN_STRINGS，用于查找本地化图标引用
-        //否则因为它的前缀是"£"，会导致对应的偏移位置被跳过
-        //com.intellij.psi.impl.search.LowLevelSearchUtil.checkJavaIdentifier
         val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_STRINGS or UsageSearchContext.IN_COMMENTS
         val processor = getProcessor(target)
-        queryParameters.optimizer.wordRequests.removeIf { it.word in extraWords }
-        extraWords.forEach { word -> queryParameters.optimizer.searchWord(word, useScope, searchContext, true, target, processor) }
+        queryParameters.optimizer.wordRequests.removeIf { it.word in words }
+        for (extraWord in words) {
+            queryParameters.optimizer.searchWord(extraWord, useScope, searchContext, !ignoreCase, target, processor)
+        }
     }
 
     private fun getProcessor(target: PsiElement): RequestResultProcessor {

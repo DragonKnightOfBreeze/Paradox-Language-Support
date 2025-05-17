@@ -11,6 +11,8 @@ import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 
 /**
  * 提供概念的名字和别名的代码补全。
@@ -29,7 +31,7 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
         //提示concept的name或alias
         val conceptSelector = selector(project, file).definition().contextSensitive().distinctByName()
         val keysToDistinct = mutableSetOf<String>()
-        ParadoxDefinitionSearch.search("game_concept", conceptSelector).processQueryAsync p@{ concept ->
+        ParadoxDefinitionSearch.search(ParadoxDefinitionTypes.GameConcept, conceptSelector).processQueryAsync p@{ concept ->
             val tailText = " from concepts"
             val typeFile = concept.containingFile
             val icon = PlsIcons.Nodes.LocalisationConcept

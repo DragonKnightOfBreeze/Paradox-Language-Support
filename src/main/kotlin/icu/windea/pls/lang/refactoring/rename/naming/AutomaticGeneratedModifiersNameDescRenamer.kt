@@ -51,7 +51,7 @@ class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: S
                 val newKey = ParadoxModifierManager.getModifierNameKeys(newModifierName, element).firstOrNull() ?: return@run
                 val selector = selector(project, element).localisation()
                     .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                    .withConstraint(ParadoxLocalisationConstraint.Modifier)
+                    .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
                 val result = ParadoxLocalisationSearch.search(key, selector).findAll()
                 result.forEach { allRenames[it] = newKey }
             }
@@ -61,7 +61,7 @@ class AutomaticGeneratedModifiersNameDescRenamer(element: PsiElement, newName: S
                 val newKey = ParadoxModifierManager.getModifierDescKeys(newModifierName, element).firstOrNull() ?: return@run
                 val selector = selector(project, element).localisation()
                     .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                    .withConstraint(ParadoxLocalisationConstraint.Modifier)
+                    .withConstraint(ParadoxIndexConstraint.Localisation.Modifier)
                 val result = ParadoxLocalisationSearch.search(key, selector).findAll()
                 result.forEach { allRenames[it] = newKey }
             }

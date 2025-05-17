@@ -3,9 +3,10 @@ package icu.windea.pls.script.psi
 import com.intellij.lang.*
 import com.intellij.psi.stubs.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.index.ParadoxIndexManager
+import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.impl.*
 
@@ -39,6 +40,12 @@ class ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScript
     override fun indexStub(stub: ParadoxScriptPropertyStub, sink: IndexSink) {
         //Note that definition name can be empty (aka anonymous)
         sink.occurrence(ParadoxIndexManager.DefinitionNameKey, stub.name)
+        ParadoxIndexConstraint.Definition.entries.forEach { constraint ->
+            if (constraint.predicate(stub.name)) {
+                val name = if (constraint.ignoreCase) stub.name.lowercase() else stub.name
+                sink.occurrence(constraint.indexKey, name)
+            }
+        }
         sink.occurrence(ParadoxIndexManager.DefinitionTypeKey, stub.type)
     }
 

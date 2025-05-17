@@ -40,8 +40,8 @@ class ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Paradox
     override fun indexStub(stub: ParadoxLocalisationPropertyStub, sink: IndexSink) {
         when (stub.category) {
             ParadoxLocalisationCategory.Localisation -> {
-                //sink.occurrence(ParadoxLocalisationNameIndex.KEY, stub.name)
-                ParadoxLocalisationConstraint.entries.forEach { constraint ->
+                sink.occurrence(ParadoxIndexManager.LocalisationNameKey, stub.name)
+                ParadoxIndexConstraint.Localisation.entries.forEach { constraint ->
                     if (constraint.predicate(stub.name)) {
                         val name = if (constraint.ignoreCase) stub.name.lowercase() else stub.name
                         sink.occurrence(constraint.indexKey, name)

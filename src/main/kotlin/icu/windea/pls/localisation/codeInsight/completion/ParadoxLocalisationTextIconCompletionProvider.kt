@@ -24,7 +24,7 @@ class ParadoxLocalisationTextIconCompletionProvider : CompletionProvider<Complet
         val definitionType = ParadoxDefinitionTypes.TextIcon
         val icon = PlsIcons.Nodes.LocalisationTextIcon //使用特定图标
         val tailText = " from <$definitionType>"
-        val originalFile = context.parameters?.originalFile ?: return
+        val originalFile = parameters.originalFile
         val project = originalFile.project
         val definitionSelector = selector(project, originalFile).definition().contextSensitive().distinctByName()
         ParadoxDefinitionSearch.search(definitionType, definitionSelector).processQueryAsync p@{ definition ->

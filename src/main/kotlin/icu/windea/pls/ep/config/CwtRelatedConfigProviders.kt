@@ -16,6 +16,8 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 
@@ -147,12 +149,12 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
                 result += matchedConfigs
             }
             run r1@{
-                if (definitionInfo.type != "game_rule") return@r1
+                if (definitionInfo.type != ParadoxDefinitionTypes.GameRule) return@r1
                 val extendedConfig = configGroup.extendedGameRules.findFromPattern(definitionName, element, configGroup)
                 if (extendedConfig != null) result += extendedConfig
             }
             run r1@{
-                if (definitionInfo.type != "on_action") return@r1
+                if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return@r1
                 val extendedConfig = configGroup.extendedOnActions.findFromPattern(definitionName, element, configGroup)
                 if (extendedConfig != null) result += extendedConfig
             }
