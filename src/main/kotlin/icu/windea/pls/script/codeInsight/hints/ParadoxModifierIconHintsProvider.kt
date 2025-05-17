@@ -18,6 +18,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxModifierIconHintsProvider.*
 import icu.windea.pls.script.psi.*
+import javax.imageio.ImageIO
 import javax.swing.*
 
 /**
@@ -25,7 +26,7 @@ import javax.swing.*
  */
 class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
-        var iconHeightLimit: Int = 32
+        var iconHeightLimit: Int = PlsConstants.Settings.iconHeightLimit
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxModifierIconHintsSettingsKey")
@@ -65,10 +66,12 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
             val iconUrl = ParadoxImageResolver.resolveUrlByFile(iconFile)
             if (iconUrl == null) return true
 
-            //找不到图标的话就直接跳过
-            val icon = iconUrl.toFileUrl().toIconOrNull() ?: return true
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            if (icon.iconHeight <= settings.iconHeightLimit) {
+            val iconFileUrl = iconUrl.toFileUrl()
+            val icon = iconFileUrl.toIconOrNull() ?: return true
+            //这里需要尝试使用图标的原始高度
+            val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
+            if (originalIconHeight <= settings.iconHeightLimit) {
                 //点击可以导航到声明处（DDS）
                 val presentation = psiSingleReference(smallScaledIcon(icon)) { iconFile.toPsiFile(project) }
                 val finalPresentation = presentation.toFinalPresentation(this, file.project, smaller = true)

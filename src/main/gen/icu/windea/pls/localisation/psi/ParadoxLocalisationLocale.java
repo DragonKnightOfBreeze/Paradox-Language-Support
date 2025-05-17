@@ -15,6 +15,8 @@ import javax.swing.Icon;
 
 public interface ParadoxLocalisationLocale extends NavigatablePsiElement {
 
+  @NotNull PsiElement getIdElement();
+
   @NotNull Icon getIcon(@IconFlags int flags);
 
   @NotNull String getName();

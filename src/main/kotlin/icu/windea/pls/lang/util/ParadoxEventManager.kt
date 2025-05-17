@@ -17,6 +17,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 import icu.windea.pls.script.references.*
 
 object ParadoxEventManager {
@@ -159,7 +160,8 @@ object ParadoxEventManager {
         definition.block?.acceptChildren(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
-                if (element.isExpressionOrMemberContext()) super.visitElement(element)
+                if (!ParadoxPsiManager.inMemberContext(element)) return //optimize
+                super.visitElement(element)
             }
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {

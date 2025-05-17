@@ -62,4 +62,8 @@ private class CwtTypeImagesConfigImpl(
             result
         }
     }
+
+    override fun toString(): String {
+        return "CwtTypeImagesConfigImpl(locationConfigs=$locationConfigs)"
+    }
 }

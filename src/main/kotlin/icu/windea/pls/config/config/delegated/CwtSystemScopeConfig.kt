@@ -8,7 +8,6 @@ import icu.windea.pls.cwt.psi.*
 interface CwtSystemScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val id: String
     val baseId: String
-    val description: String
     val name: String
 
     companion object {
@@ -21,16 +20,14 @@ interface CwtSystemScopeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConf
 private fun doResolve(config: CwtPropertyConfig): CwtSystemScopeConfig {
     val id = config.key
     val baseId = config.properties?.find { p -> p.key == "base_id" }?.stringValue ?: id
-    val description = config.documentation.orEmpty()
     val name = config.stringValue ?: id
-    return CwtSystemScopeConfigImpl(config, id, baseId, description, name)
+    return CwtSystemScopeConfigImpl(config, id, baseId, name)
 }
 
 private class CwtSystemScopeConfigImpl(
     override val config: CwtPropertyConfig,
     override val id: String,
     override val baseId: String,
-    override val description: String,
     override val name: String
 ) : UserDataHolderBase(), CwtSystemScopeConfig {
     override fun equals(other: Any?): Boolean {
@@ -42,6 +39,6 @@ private class CwtSystemScopeConfigImpl(
     }
 
     override fun toString(): String {
-        return description.ifEmpty { id }
+        return "CwtSystemScopeConfigImpl(name='$name')"
     }
 }

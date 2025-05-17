@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 
@@ -13,12 +12,13 @@ object ParadoxLocaleManager {
     const val ID_AUTO = "auto"
     const val ID_AUTO_OS = "auto.os"
     const val ID_DEFAULT = "l_default"
+    const val ID_FALLBACK = "l_english"
 
     fun getPreferredLocaleConfig(): CwtLocalisationLocaleConfig {
-        return resolveLocaleConfig(getSettings().preferredLocale.orEmpty()) ?: getLocaleConfig("en") ?: throw IllegalStateException()
+        return getResolvedLocaleConfig(getSettings().preferredLocale.orEmpty()) ?: CwtLocalisationLocaleConfig.FALLBACK
     }
 
-    fun resolveLocaleConfig(id: String): CwtLocalisationLocaleConfig? {
+    fun getResolvedLocaleConfig(id: String): CwtLocalisationLocaleConfig? {
         val localesById = getConfigGroup(null).localisationLocalesById
         val locale = localesById[id]
         if (locale != null) return locale
@@ -27,12 +27,12 @@ object ParadoxLocaleManager {
             id.isEmpty() || id == ID_AUTO -> {
                 val ideLocale = DynamicBundle.getLocale()
                 val localesByCode = getConfigGroup(null).localisationLocalesByCode
-                localesByCode[ideLocale.language] ?: localesByCode["en"]
+                localesByCode[ideLocale.language] ?: CwtLocalisationLocaleConfig.FALLBACK
             }
             id == ID_AUTO_OS -> {
-                val userLanguage = System.getProperty("user.language") ?: "en"
+                val userLanguage = System.getProperty("user.language").orEmpty()
                 val localesByCode = getConfigGroup(null).localisationLocalesByCode
-                localesByCode[userLanguage] ?: localesByCode["en"]
+                localesByCode[userLanguage] ?: CwtLocalisationLocaleConfig.FALLBACK
             }
             else -> null
         }
@@ -70,15 +70,15 @@ object ParadoxLocaleManager {
         return locales
     }
 
-    fun getLocaleInDocumentation(element: PsiElement): CwtLocalisationLocaleConfig? {
+    fun getLocaleConfigInDocumentation(element: PsiElement): CwtLocalisationLocaleConfig? {
         val id = element.getUserData(PlsKeys.documentationLocale) ?: return null
-        val locale = getLocaleConfig(id)
+        val locale = getLocaleConfig(id, withAuto = true)
         return locale
     }
 
-    fun getUsedLocaleInDocumentation(element: PsiElement, defaultLocale: CwtLocalisationLocaleConfig? = null): CwtLocalisationLocaleConfig {
-        val id = element.getOrPutUserData(PlsKeys.documentationLocale) { defaultLocale?.id ?: ID_AUTO }
-        val locale = resolveLocaleConfig(id) ?: defaultLocale ?: getPreferredLocaleConfig()
+    fun getResolvedLocaleConfigInDocumentation(element: PsiElement, defaultLocale: CwtLocalisationLocaleConfig? = null): CwtLocalisationLocaleConfig {
+        val id = element.getUserData(PlsKeys.documentationLocale)
+        val locale = id?.let { getResolvedLocaleConfig(id) } ?: defaultLocale ?: getPreferredLocaleConfig()
         return locale
     }
 }

@@ -18,28 +18,20 @@ public interface CwtProperty extends CwtNamedElement, CwtMemberElement {
   @Nullable
   CwtValue getPropertyValue();
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull
-  String getName();
+  @NotNull String getName();
 
-  @NotNull
-  CwtProperty setName(@NotNull String name);
+  @NotNull CwtProperty setName(@NotNull String name);
 
-  @NotNull
-  PsiElement getNameIdentifier();
+  @NotNull PsiElement getNameIdentifier();
 
-  @Nullable
-  String getValue();
+  @Nullable String getValue();
 
-  @NotNull
-  CwtSeparatorType getSeparatorType();
+  @NotNull CwtSeparatorType getSeparatorType();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

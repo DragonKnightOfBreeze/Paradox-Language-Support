@@ -8,10 +8,16 @@ class LambdaTest {
     fun test() {
         val h1 = processWithHashCode()
         val h2 = processWithHashCode()
+        val h3 = processWithHashCode1()
         Assert.assertEquals(h1, h2)
+        Assert.assertNotEquals(h1, h3)
     }
 
     private fun processWithHashCode(): Int {
+        return process { 1 + 1 }
+    }
+
+    private fun processWithHashCode1(): Int {
         return process { 1 + 1 }
     }
 

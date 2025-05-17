@@ -19,8 +19,8 @@ import javax.swing.*
  */
 class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvider<Settings>() {
     data class Settings(
-        var textLengthLimit: Int = 30,
-        var iconHeightLimit: Int = 32
+        var textLengthLimit: Int = PlsConstants.Settings.textLengthLimit,
+        var iconHeightLimit: Int = PlsConstants.Settings.iconHeightLimit,
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationReferenceHintsSettingsKey")

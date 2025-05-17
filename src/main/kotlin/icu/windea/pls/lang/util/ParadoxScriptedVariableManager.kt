@@ -34,7 +34,8 @@ object ParadoxScriptedVariableManager {
                 if (element is ParadoxScriptScriptedVariable) {
                     result.add(element.createPointer(file))
                 }
-                if (element.isExpressionOrMemberContext()) super.visitElement(element)
+                if (!ParadoxPsiManager.inMemberContext(element)) return //optimize
+                super.visitElement(element)
             }
         })
         return result

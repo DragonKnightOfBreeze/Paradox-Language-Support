@@ -10,7 +10,7 @@ import com.intellij.psi.search.SearchScope;
 public interface CwtRootBlock extends CwtBlockElement {
 
   @NotNull
-  List<CwtDocumentationComment> getDocumentationCommentList();
+  List<CwtDocComment> getDocCommentList();
 
   @NotNull
   List<CwtOptionComment> getOptionCommentList();
@@ -21,20 +21,16 @@ public interface CwtRootBlock extends CwtBlockElement {
   @NotNull
   List<CwtValue> getValueList();
 
-  @NotNull
-  String getValue();
+  @NotNull String getValue();
 
   boolean isEmpty();
 
   boolean isNotEmpty();
 
-  @NotNull
-  List<PsiElement> getComponents();
+  @NotNull List<@NotNull PsiElement> getComponents();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

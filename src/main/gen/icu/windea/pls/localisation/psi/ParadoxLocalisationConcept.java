@@ -4,6 +4,7 @@ package icu.windea.pls.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
@@ -12,7 +13,7 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.localisation.references.ParadoxLocalisationConceptPsiReference;
 import javax.swing.Icon;
 
-public interface ParadoxLocalisationConcept extends PsiElement {
+public interface ParadoxLocalisationConcept extends NavigatablePsiElement {
 
   @Nullable
   ParadoxLocalisationConceptName getConceptName();

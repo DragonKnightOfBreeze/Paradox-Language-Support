@@ -90,6 +90,10 @@ object PlsIcons {
         val LocalisationCommandField = IconManager.getInstance().getIcon("/icons/nodes/localisationCommandField.svg")
         @JvmField
         val LocalisationConcept = IconManager.getInstance().getIcon("/icons/nodes/localisationConcept.svg")
+        @JvmStatic
+        val LocalisationTextFormat = IconManager.getInstance().getIcon("/icons/nodes/localisationTextFormat.svg")
+        @JvmStatic
+        val LocalisationTextIcon = IconManager.getInstance().getIcon("/icons/nodes/localisationTextIcon.svg") //same as LocalisationIcon
 
         @JvmField
         val Definition = IconManager.getInstance().getIcon("/icons/nodes/definition.svg")

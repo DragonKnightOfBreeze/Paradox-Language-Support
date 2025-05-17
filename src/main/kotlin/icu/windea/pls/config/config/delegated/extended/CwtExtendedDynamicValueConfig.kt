@@ -36,4 +36,8 @@ private class CwtExtendedDynamicValueConfigImpl(
     override val name: String,
     override val type: String,
     override val hint: String?
-) : UserDataHolderBase(), CwtExtendedDynamicValueConfig
+) : UserDataHolderBase(), CwtExtendedDynamicValueConfig {
+    override fun toString(): String {
+        return "CwtExtendedDynamicValueConfigImpl(name='$name', type='$type')"
+    }
+}

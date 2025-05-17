@@ -38,4 +38,8 @@ private class CwtScopeConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
     override val aliases: Set<String>
-) : UserDataHolderBase(), CwtScopeConfig
+) : UserDataHolderBase(), CwtScopeConfig {
+    override fun toString(): String {
+        return "CwtScopeConfigImpl(name='$name')"
+    }
+}

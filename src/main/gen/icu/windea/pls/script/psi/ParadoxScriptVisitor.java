@@ -5,20 +5,17 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
-import icu.windea.pls.lang.psi.ParadoxParameterAwareElement;
 import icu.windea.pls.lang.psi.ParadoxTypedElement;
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
 import com.intellij.psi.ContributedReferenceHost;
-import icu.windea.pls.lang.psi.ParadoxParameter;
 import com.intellij.psi.PsiListLikeElement;
-import icu.windea.pls.lang.psi.ParadoxConditionParameter;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitBlock(@NotNull ParadoxScriptBlock o) {
     visitValue(o);
-    // visitBlockElement(o);
     // visitContributedReferenceHost(o);
+    // visitBlockElement(o);
   }
 
   public void visitBoolean(@NotNull ParadoxScriptBoolean o) {
@@ -32,8 +29,8 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitFloat(@NotNull ParadoxScriptFloat o) {
     visitValue(o);
-    // visitPsiLiteralValue(o);
     // visitContributedReferenceHost(o);
+    // visitPsiLiteralValue(o);
   }
 
   public void visitInlineMath(@NotNull ParadoxScriptInlineMath o) {
@@ -87,8 +84,8 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitInt(@NotNull ParadoxScriptInt o) {
     visitValue(o);
-    // visitPsiLiteralValue(o);
     // visitContributedReferenceHost(o);
+    // visitPsiLiteralValue(o);
   }
 
   public void visitParameter(@NotNull ParadoxScriptParameter o) {

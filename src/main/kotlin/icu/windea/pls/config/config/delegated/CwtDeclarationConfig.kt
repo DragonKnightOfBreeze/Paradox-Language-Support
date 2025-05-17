@@ -57,4 +57,8 @@ private class CwtDeclarationConfigImpl(
     override val configForDeclaration: CwtPropertyConfig by lazy {
         CwtConfigManipulator.inlineSingleAlias(config) ?: config
     }
+
+    override fun toString(): String {
+        return "CwtDeclarationConfigImpl(name='$name')"
+    }
 }

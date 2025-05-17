@@ -11,7 +11,7 @@ class CwtColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("cwt.displayName.operator"), CwtAttributesKeys.OPERATOR_KEY),
         AttributesDescriptor(PlsBundle.message("cwt.displayName.comment"), CwtAttributesKeys.COMMENT_KEY),
         AttributesDescriptor(PlsBundle.message("cwt.displayName.optionComment"), CwtAttributesKeys.OPTION_COMMENT_KEY),
-        AttributesDescriptor(PlsBundle.message("cwt.displayName.documentationComment"), CwtAttributesKeys.DOCUMENTATION_COMMENT_KEY),
+        AttributesDescriptor(PlsBundle.message("cwt.displayName.documentationComment"), CwtAttributesKeys.DOC_COMMENT_KEY),
         AttributesDescriptor(PlsBundle.message("cwt.displayName.keyword"), CwtAttributesKeys.KEYWORD_KEY),
         AttributesDescriptor(PlsBundle.message("cwt.displayName.propertyKey"), CwtAttributesKeys.PROPERTY_KEY_KEY),
         AttributesDescriptor(PlsBundle.message("cwt.displayName.optionKey"), CwtAttributesKeys.OPTION_KEY_KEY),

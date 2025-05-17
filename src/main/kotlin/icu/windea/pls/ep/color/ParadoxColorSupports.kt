@@ -13,8 +13,20 @@ import java.awt.*
 
 class ParadoxScriptStringColorSupport : ParadoxColorSupport {
     override fun getColor(element: PsiElement): Color? {
-        if (element !is ParadoxScriptString) return null
-        return runCatchingCancelable { doGetColor(element) }.getOrNull()
+        val targetElement = getTargetElement(element) ?: return null
+        return runCatchingCancelable { doGetColor(targetElement) }.getOrNull()
+    }
+
+    override fun setColor(element: PsiElement, color: Color): Boolean {
+        val targetElement = getTargetElement(element) ?: return false
+        runCatchingCancelable { doSetColor(targetElement, color) }
+        return true
+    }
+
+    private fun getTargetElement(element: PsiElement): ParadoxScriptString? {
+        if(element.elementType != ParadoxScriptElementTypes.STRING_TOKEN) return null
+        if(element.prevSibling != null || element.nextSibling != null) return null
+        return element.parent?.castOrNull()
     }
 
     private fun doGetColor(element: ParadoxScriptString): Color? {
@@ -23,12 +35,6 @@ class ParadoxScriptStringColorSupport : ParadoxColorSupport {
         val colorType = ParadoxColorManager.getColorType(element) ?: return null
         if (colorType != "hex") return null
         return ParadoxColorManager.getColor(hex)
-    }
-
-    override fun setColor(element: PsiElement, color: Color): Boolean {
-        if (element !is ParadoxScriptString) return false
-        runCatchingCancelable { doSetColor(element, color) }
-        return true
     }
 
     private fun doSetColor(element: ParadoxScriptString, color: Color) {
@@ -49,9 +55,24 @@ class ParadoxScriptStringColorSupport : ParadoxColorSupport {
 
 class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
     override fun getColor(element: PsiElement): Color? {
-        if (element !is ParadoxScriptBlock) return null
+        val targetElement = getTargetElement(element) ?: return null
+        return runCatchingCancelable { doGetColorFromCache(targetElement) }.getOrNull()
+    }
+
+    override fun setColor(element: PsiElement, color: Color): Boolean {
+        val targetElement = getTargetElement(element) ?: return false
+        runCatchingCancelable { doSetColor(targetElement, color) }
+        return true
+    }
+
+    private fun getTargetElement(element: PsiElement): ParadoxScriptBlock? {
+        if(element.elementType != ParadoxScriptElementTypes.LEFT_BRACE) return null
+        return element.parent?.castOrNull()
+    }
+
+    private fun doGetColorFromCache(element: ParadoxScriptBlock): Color? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColor) {
-            val value = runCatchingCancelable { doGetColor(element) }.getOrNull()
+            val value = doGetColor(element)
             value.withDependencyItems(element)
         }
     }
@@ -61,30 +82,6 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
         val colorArgs = getColorArgs(element)
         if (colorType == null || colorArgs == null) return null
         return ParadoxColorManager.getColor(colorType, colorArgs)
-    }
-
-    private fun getColorType(element: ParadoxScriptBlock): String? {
-        val elementToGetOption: ParadoxScriptMemberElement? = when {
-            element.isPropertyValue() -> element.parent as? ParadoxScriptProperty
-            element.isBlockMember() -> element
-            else -> null
-        }
-        if (elementToGetOption == null) return null
-        return ParadoxColorManager.getColorType(elementToGetOption)
-    }
-
-    private fun getColorArgs(element: ParadoxScriptBlock): List<String>? {
-        return element.valueList
-            .takeIf { (it.size == 3 || it.size == 4) && it.all { v -> v.isValidExpression() } }
-            ?.map { it.resolved() ?: return null }
-            ?.takeIf { it.all { v -> v is ParadoxScriptInt || v is ParadoxScriptFloat } }
-            ?.map { it.value }
-    }
-
-    override fun setColor(element: PsiElement, color: Color): Boolean {
-        if (element !is ParadoxScriptBlock) return false
-        runCatchingCancelable { doSetColor(element, color) }
-        return true
     }
 
     private fun doSetColor(element: ParadoxScriptBlock, color: Color) {
@@ -106,14 +103,45 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
         documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
 
-    private fun Number.asFloat() = this.format(-4)
+    private fun getColorType(element: ParadoxScriptBlock): String? {
+        val elementToGetOption: ParadoxScriptMemberElement? = when {
+            element.isPropertyValue() -> element.parent as? ParadoxScriptProperty
+            element.isBlockMember() -> element
+            else -> null
+        }
+        if (elementToGetOption == null) return null
+        return ParadoxColorManager.getColorType(elementToGetOption)
+    }
+
+    private fun getColorArgs(element: ParadoxScriptBlock): List<String>? {
+        return element.valueList
+            .takeIf { (it.size == 3 || it.size == 4) && it.all { v -> v.isValidExpression() } }
+            ?.map { it.resolved() ?: return null }
+            ?.takeIf { it.all { v -> v is ParadoxScriptInt || v is ParadoxScriptFloat } }
+            ?.map { it.value }
+    }
 }
 
 class ParadoxScriptColorColorSupport : ParadoxColorSupport {
     override fun getColor(element: PsiElement): Color? {
-        if (element !is ParadoxScriptColor) return null
+        val targetElement = getTargetElement(element) ?: return null
+        return runCatchingCancelable { doGetColorFromCache(targetElement) }.getOrNull()
+    }
+
+    override fun setColor(element: PsiElement, color: Color): Boolean {
+        val targetElement = getTargetElement(element) ?: return false
+        runCatchingCancelable { doSetColor(targetElement, color) }
+        return true
+    }
+
+    private fun getTargetElement(element: PsiElement): ParadoxScriptColor? {
+        if(element.elementType != ParadoxScriptElementTypes.COLOR_TOKEN) return null
+        return element.parent?.castOrNull()
+    }
+
+    private fun doGetColorFromCache(element: ParadoxScriptColor): Color? {
         return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColor) {
-            val value = runCatchingCancelable { doGetColor(element) }.getOrNull()
+            val value = doGetColor(element)
             value.withDependencyItems(element)
         }
     }
@@ -122,12 +150,6 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
         val colorType = element.colorType
         val colorArgs = element.colorArgs
         return ParadoxColorManager.getColor(colorType, colorArgs)
-    }
-
-    override fun setColor(element: PsiElement, color: Color): Boolean {
-        if (element !is ParadoxScriptColor) return false
-        runCatchingCancelable { doSetColor(element, color) }
-        return true
     }
 
     private fun doSetColor(element: ParadoxScriptColor, color: Color) {

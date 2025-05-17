@@ -88,4 +88,8 @@ private class CwtSubtypeConfigImpl(
     override val displayName: String? = null,
     override val abbreviation: String? = null,
     override val onlyIfNot: Set<String>? = null
-) : UserDataHolderBase(), CwtSubtypeConfig
+) : UserDataHolderBase(), CwtSubtypeConfig {
+    override fun toString(): String {
+        return "CwtSubtypeConfigImpl(name='$name')"
+    }
+}

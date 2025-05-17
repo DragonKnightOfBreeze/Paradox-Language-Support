@@ -34,4 +34,8 @@ private class CwtLocalisationCommandConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
     override val supportedScopes: Set<String>
-) : UserDataHolderBase(), CwtLocalisationCommandConfig
+) : UserDataHolderBase(), CwtLocalisationCommandConfig {
+    override fun toString(): String {
+        return "CwtLocalisationCommandConfigImpl(name='$name')"
+    }
+}

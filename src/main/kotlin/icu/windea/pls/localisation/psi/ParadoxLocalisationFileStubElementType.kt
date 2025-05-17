@@ -58,7 +58,7 @@ class ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFile
     }
 
     companion object {
-        private const val VERSION = 59 //1.3.35
+        private const val VERSION = 65 //1.4.0
 
         @JvmField
         val INSTANCE = ParadoxLocalisationFileStubElementType()

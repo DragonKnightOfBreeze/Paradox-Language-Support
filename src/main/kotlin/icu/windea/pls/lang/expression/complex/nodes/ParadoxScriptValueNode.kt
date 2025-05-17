@@ -21,6 +21,10 @@ class ParadoxScriptValueNode(
     override val configGroup: CwtConfigGroup,
     val config: CwtConfig<*>
 ) : ParadoxComplexExpressionNode.Base() {
+    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
+        return config.toSingletonSet()
+    }
+
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
         if (text.isEmpty()) return null
         return ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY
@@ -33,7 +37,7 @@ class ParadoxScriptValueNode(
         if (text.isParameterized()) return null
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrors.unresolvedScriptValue(rangeInExpression, text)
+        return ParadoxComplexExpressionError.Builder.unresolvedScriptValue(rangeInExpression, text)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
@@ -80,11 +84,11 @@ class ParadoxScriptValueNode(
         }
 
         private fun doResolve(): PsiElement? {
-            return ParadoxExpressionManager.resolveExpression(element, rangeInElement, config, config.expression)
+            return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.expression)
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
-            return ParadoxExpressionManager.multiResolveExpression(element, rangeInElement, config, config.expression)
+            return ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.expression)
                 .mapToArray { PsiElementResolveResult(it) }
         }
     }

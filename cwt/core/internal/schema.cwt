@@ -74,14 +74,20 @@ links = {
         type = $enum:link_type$
         prefix = $scalar
         data_source = $data_expression
-        for_definition_type = $type$
         input_scopes = { $scope$ }
         output_scope = $scope$
+        for_definition_type = $type$
     }
 }
 
 localisation_links = {
     $localisation_link$ = {
+        desc = $scalar
+        from_data = $bool
+        from_argument = $bool
+        type = $enum:link_type$
+        prefix = $scalar
+        data_source = $data_expression
         input_scopes = { $scope$ }
         output_scope = $scope$
     }

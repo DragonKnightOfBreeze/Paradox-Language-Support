@@ -13,11 +13,32 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxTextColorManager {
-    fun getInfo(name: String, project: Project, contextElement: PsiElement? = null): ParadoxTextColorInfo? {
-        val selector = selector(project, contextElement).definition().contextSensitive()
-        val definition = ParadoxDefinitionSearch.search(name, "textcolor", selector).find()
-        if (definition == null) return null
-        return doGetInfoFromCache(definition)
+    fun getId(element: PsiElement): String? {
+        return when (element) {
+            is ParadoxLocalisationColorfulText -> element.idElement?.text
+            is ParadoxLocalisationArgumentAwareElement -> element.argumentElement?.let { getId(it) }
+            is ParadoxLocalisationPropertyReferenceArgument -> element.idElement?.let { doGetIdInArgument(it) }
+            is ParadoxLocalisationCommandArgument -> element.idElement?.let { doGetIdInArgument(it) }
+            else -> null
+        }
+    }
+
+    private fun doGetIdInArgument(element: PsiElement): String? {
+        return element.text.find { isIdInArgument(it) }?.toString()
+    }
+
+    fun getIdElementAndOffset(element: PsiElement): Tuple2<PsiElement, Int>? {
+        return when (element) {
+            is ParadoxLocalisationColorfulText -> element.idElement?.let { it to 0 }
+            is ParadoxLocalisationArgumentAwareElement -> element.argumentElement?.let { getIdElementAndOffset(it) }
+            is ParadoxLocalisationPropertyReferenceArgument -> element.idElement?.let { doGetIdOffset(element) }
+            is ParadoxLocalisationCommandArgument -> element.idElement?.let { doGetIdOffset(element) }
+            else -> null
+        }
+    }
+
+    private fun doGetIdOffset(element: PsiElement): Tuple2<PsiElement, Int>? {
+        return element to element.text.indexOfFirst { isIdInArgument(it) }
     }
 
     fun getInfo(element: PsiElement): ParadoxTextColorInfo? {
@@ -26,15 +47,16 @@ object ParadoxTextColorManager {
             if (info != null) return info
         }
 
-        val colorId = when {
-            //单个大写或小写字母，不限定位置
-            element is ParadoxLocalisationPropertyReference -> element.propertyReferenceParameter?.text?.find { it.isExactLetter() }?.toString()
-            //单个大写或小写字母
-            element is ParadoxLocalisationColorfulText -> element.name
-            else -> null
-        }
-        if (colorId.isNullOrEmpty()) return null
-        return getInfo(colorId, element.project, element)
+        val id = getId(element)
+        if (id.isNullOrEmpty()) return null
+        return getInfo(id, element.project, element)
+    }
+
+    fun getInfo(name: String, project: Project, contextElement: PsiElement? = null): ParadoxTextColorInfo? {
+        val selector = selector(project, contextElement).definition().contextSensitive()
+        val definition = ParadoxDefinitionSearch.search(name, "text_color", selector).find()
+        if (definition == null) return null
+        return doGetInfoFromCache(definition)
     }
 
     private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
@@ -49,7 +71,7 @@ object ParadoxTextColorManager {
         if (definition !is ParadoxScriptProperty) return null
         //要求输入的name必须是单个字母或数字
         val name = definition.name
-        if (name.singleOrNull()?.let { it.isExactLetter() || it.isExactDigit() } != true) return null
+        if (name.singleOrNull()?.let { isId(it) } != true) return null
         val gameType = selectGameType(definition) ?: return null
         val rgbList = definition.block?.valueList?.mapNotNull { it.intValue() } ?: return null
         val value = ParadoxTextColorInfo(name, gameType, definition.createPointer(), rgbList[0], rgbList[1], rgbList[2])
@@ -58,9 +80,17 @@ object ParadoxTextColorManager {
 
     fun getInfos(project: Project, contextElement: PsiElement? = null): List<ParadoxTextColorInfo> {
         val selector = selector(project, contextElement).definition().contextSensitive().distinctByName()
-        val definitions = ParadoxDefinitionSearch.search("textcolor", selector).findAll()
+        val definitions = ParadoxDefinitionSearch.search("text_color", selector).findAll()
         if (definitions.isEmpty()) return emptyList()
         return definitions.mapNotNull { definition -> doGetInfoFromCache(definition) } //it.name == it.definitionInfo.name
+    }
+
+    fun isId(c: Char): Boolean {
+        return c.isExactWord()
+    }
+
+    fun isIdInArgument(c: Char): Boolean {
+        return c.isExactLetter()
     }
 }
 

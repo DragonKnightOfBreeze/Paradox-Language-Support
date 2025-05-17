@@ -12,6 +12,8 @@ import javax.swing.Icon;
 
 public interface ParadoxLocalisationPropertyKey extends PsiElement {
 
+  @NotNull PsiElement getIdElement();
+
   @NotNull Icon getIcon(@IconFlags int flags);
 
   @NotNull ItemPresentation getPresentation();

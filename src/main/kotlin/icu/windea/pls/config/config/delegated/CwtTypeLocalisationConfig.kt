@@ -62,4 +62,8 @@ private class CwtTypeLocalisationConfigImpl(
             result
         }
     }
+
+    override fun toString(): String {
+        return "CwtTypeLocalisationConfigImpl(locationConfigs=$locationConfigs)"
+    }
 }

@@ -37,7 +37,7 @@ class ParadoxLocalisationRelatedDefinitionsLineMarkerProvider : RelatedItemLineM
         val tooltipLines = targets.mapNotNull { target ->
             target.definitionInfo?.let { "$prefix ${it.name}: ${it.typesText}" }
         }
-        val locationElement = element.propertyKey.propertyKeyId
+        val locationElement = element.propertyKey.idElement
         val lineMarkerInfo = createNavigationGutterIconBuilder(icon) { createGotoRelatedItem(targets) }
             .setTooltipText(tooltipLines.joinToString("<br>"))
             .setPopupTitle(PlsBundle.message("localisation.gutterIcon.relatedDefinitions.title"))

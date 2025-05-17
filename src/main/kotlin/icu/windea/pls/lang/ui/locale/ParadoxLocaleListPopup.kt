@@ -8,7 +8,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 
 class ParadoxLocaleListPopup(
-    val selectedLocale: CwtLocalisationLocaleConfig?,
     val allLocales: List<CwtLocalisationLocaleConfig>,
     private val onChosen: (selected: CwtLocalisationLocaleConfig) -> Unit
 ) : BaseListPopupStep<CwtLocalisationLocaleConfig>(PlsBundle.message("ui.popup.selectLocale.title"), allLocales) {

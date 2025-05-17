@@ -10,8 +10,9 @@ import com.intellij.psi.search.SearchScope;
 
 public interface ParadoxLocalisationPropertyValue extends PsiElement {
 
-  @NotNull
-  List<ParadoxLocalisationRichText> getRichTextList();
+  @Nullable PsiElement getTokenElement();
+
+  @NotNull List<@NotNull ParadoxLocalisationRichText> getRichTextList();
 
   @NotNull ItemPresentation getPresentation();
 

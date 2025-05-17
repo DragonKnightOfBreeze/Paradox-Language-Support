@@ -5,12 +5,14 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
+import com.intellij.psi.util.elementType
 import com.intellij.ui.tree.*
 import icu.windea.pls.ep.inline.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
@@ -73,9 +75,8 @@ class ParadoxCalleeHierarchyTreeStructure(
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (inInlineMath || element.isExpressionOrMemberContext()) {
-                    super.visitElement(element)
-                }
+                if (!inInlineMath && !ParadoxPsiManager.inMemberContext(element)) return //optimize
+                super.visitElement(element)
             }
 
             override fun elementFinished(element: PsiElement?) {

@@ -71,11 +71,11 @@ fun <T : JComponent> T.withLocation(x: Int, y: Int): T {
     return this
 }
 
-fun <T: JComponent> T.registerClickListener(clickListener: ClickListener, allowDragWhileClicking: Boolean = false) {
+fun <T : JComponent> T.registerClickListener(clickListener: ClickListener, allowDragWhileClicking: Boolean = false) {
     clickListener.installOn(this, allowDragWhileClicking)
 }
 
-fun <T: JComponent> T.registerCopyProvider(copyProvider: CopyProvider) {
+fun <T : JComponent> T.registerCopyProvider(copyProvider: CopyProvider) {
     DataManager.registerDataProvider(this) { dataId ->
         if (PlatformDataKeys.COPY_PROVIDER.`is`(dataId)) copyProvider else null
     }

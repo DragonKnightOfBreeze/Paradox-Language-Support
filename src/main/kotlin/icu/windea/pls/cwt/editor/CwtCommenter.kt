@@ -11,9 +11,9 @@ import icu.windea.pls.cwt.psi.*
  */
 class CwtCommenter : CodeDocumentationAwareCommenterEx {
     companion object {
-        const val LINE_COMMENT_PREFIX = "#"
+        const val DOC_COMMENT_PREFIX = "###"
         const val OPTION_COMMENT_PREFIX = "##"
-        const val DOCUMENTATION_COMMENT_PREFIX = "###"
+        const val LINE_COMMENT_PREFIX = "#"
     }
 
     override fun getLineCommentPrefix() = LINE_COMMENT_PREFIX
@@ -26,9 +26,9 @@ class CwtCommenter : CodeDocumentationAwareCommenterEx {
 
     override fun getCommentedBlockCommentSuffix() = null
 
-    override fun getDocumentationCommentPrefix() = DOCUMENTATION_COMMENT_PREFIX
+    override fun getDocumentationCommentPrefix() = DOC_COMMENT_PREFIX
 
-    override fun getDocumentationCommentLinePrefix() = DOCUMENTATION_COMMENT_PREFIX
+    override fun getDocumentationCommentLinePrefix() = DOC_COMMENT_PREFIX
 
     override fun getDocumentationCommentSuffix() = null
 
@@ -36,12 +36,9 @@ class CwtCommenter : CodeDocumentationAwareCommenterEx {
 
     override fun getBlockCommentTokenType() = null
 
-    override fun getDocumentationCommentTokenType() = CwtElementTypes.DOCUMENTATION_COMMENT
+    override fun getDocumentationCommentTokenType() = CwtElementTypes.DOC_COMMENT
 
-    override fun isDocumentationComment(element: PsiComment) = element is CwtDocumentationComment
+    override fun isDocumentationComment(element: PsiComment) = element is CwtDocComment
 
-    override fun isDocumentationCommentText(element: PsiElement): Boolean {
-        val elementType = element.elementType
-        return elementType == CwtElementTypes.DOCUMENTATION_TEXT || element == CwtElementTypes.DOCUMENTATION_TOKEN
-    }
+    override fun isDocumentationCommentText(element: PsiElement) = element.elementType == CwtElementTypes.DOC_COMMENT_TOKEN
 }

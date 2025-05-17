@@ -18,6 +18,7 @@ interface CwtLocalisationLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPrope
     companion object {
         val AUTO: CwtLocalisationLocaleConfig = AutoCwtLocalisationLocaleConfig(ParadoxLocaleManager.ID_AUTO)
         val AUTO_OS: CwtLocalisationLocaleConfig = AutoCwtLocalisationLocaleConfig(ParadoxLocaleManager.ID_AUTO_OS)
+        val FALLBACK: CwtLocalisationLocaleConfig = FallbackCwtLocalisationLocaleConfig(ParadoxLocaleManager.ID_FALLBACK)
 
         fun resolve(config: CwtPropertyConfig): CwtLocalisationLocaleConfig = doResolve(config)
     }
@@ -48,7 +49,7 @@ private class CwtLocalisationLocaleConfigImpl(
     }
 
     override fun toString(): String {
-        return description.ifEmpty { id }
+        return "CwtLocalisationLocaleConfigImpl(id='$id')"
     }
 }
 
@@ -57,7 +58,6 @@ private class AutoCwtLocalisationLocaleConfig(
 ) : UserDataHolderBase(), CwtLocalisationLocaleConfig {
     override val config: CwtPropertyConfig get() = throw UnsupportedOperationException()
     override val codes: List<String> get() = emptyList()
-
     override val description: String get() = PlsDocBundle.locale(id)
     override val text: String get() = description
 
@@ -70,6 +70,27 @@ private class AutoCwtLocalisationLocaleConfig(
     }
 
     override fun toString(): String {
-        return description.ifEmpty { id }
+        return "AutoCwtLocalisationLocaleConfig(id='$id')"
+    }
+}
+
+private class FallbackCwtLocalisationLocaleConfig(
+    override val id: String
+) : UserDataHolderBase(), CwtLocalisationLocaleConfig {
+    override val config: CwtPropertyConfig get() = throw UnsupportedOperationException()
+    override val codes: List<String> get() = emptyList()
+    override val description: String get() = PlsDocBundle.locale(id)
+    override val text get() = if(description.isEmpty()) id else "$id ($description)"
+
+    override fun equals(other: Any?): Boolean {
+        return this === other || other is CwtLocalisationLocaleConfig && id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+
+    override fun toString(): String {
+        return "FallbackCwtLocalisationLocaleConfig(id='$id')"
     }
 }

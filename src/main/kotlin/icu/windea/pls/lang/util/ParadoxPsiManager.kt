@@ -118,7 +118,7 @@ object ParadoxPsiManager {
             }
             val resolved = when {
                 reference == null -> null
-                reference is ParadoxLocalisationPropertyPsiReference -> reference.resolveLocalisation()
+                reference is ParadoxLocalisationPropertyPsiReference -> reference.resolveLocalisation() //直接解析为本地化以优化性能
                 else -> reference.resolve()
             }?.castOrNull<ParadoxLocalisationProperty>()
             if (resolved != null) return resolved
@@ -389,6 +389,18 @@ object ParadoxPsiManager {
 
     //region Misc Methods
 
+    fun inMemberContext(element: PsiElement): Boolean {
+        return element is ParadoxScriptFile || element.elementType in ParadoxScriptTokenSets.MEMBER_CONTEXT
+    }
+
+    fun inLocalisationContext(element: PsiElement): Boolean {
+        return element is ParadoxLocalisationFile || element.elementType in ParadoxLocalisationTokenSets.PROPERTY_CONTEXT
+    }
+
+    fun inRichTextContext(element: PsiElement): Boolean {
+        return element is ParadoxLocalisationFile || element.elementType in ParadoxLocalisationTokenSets.RICH_TEXT_CONTEXT
+    }
+
     /**
      * 判断当前位置应当是一个[ParadoxLocalisationLocale]，还是一个[ParadoxLocalisationPropertyKey]。
      */
@@ -470,10 +482,11 @@ object ParadoxPsiManager {
     fun findRichTextElementsToInline(element: PsiElement): Tuple2<PsiElement?, PsiElement?> {
         return when {
             element is ParadoxLocalisationPropertyValue -> {
-                val e1 = element.firstChild?.siblings(forward = true, withSelf = true)
+                val element0 = element.findChild { it.elementType == ParadoxLocalisationElementTypes.PROPERTY_VALUE_TOKEN }
+                val e1 = element0?.firstChild?.siblings(forward = true, withSelf = true)
                     ?.dropWhile { it.elementType != ParadoxLocalisationElementTypes.LEFT_QUOTE }?.drop(1)
                     ?.firstOrNull()
-                val e2 = element.lastChild?.siblings(forward = false, withSelf = true)
+                val e2 = element0?.lastChild?.siblings(forward = false, withSelf = true)
                     ?.dropWhile { it.elementType != ParadoxLocalisationElementTypes.RIGHT_QUOTE }?.drop(1)
                     ?.firstOrNull()
                 e1 to e2

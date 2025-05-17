@@ -7,7 +7,7 @@ import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.ep.index.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexManager
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.*
@@ -29,7 +29,7 @@ class ParadoxParameterSearcher : QueryExecutorBase<ParadoxParameterIndexInfo, Pa
             ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
             if (selectGameType(file) != gameType) return@p true //check game type at file level
 
-            val fileData = ParadoxMergedIndex.INSTANCE.getFileData(file, project, ParadoxIndexInfoType.Parameter)
+            val fileData = ParadoxIndexManager.Merged.getFileData(file, project, ParadoxIndexInfoType.Parameter)
             if (fileData.isEmpty()) return@p true
             fileData.forEach f@{ info ->
                 if (contextKey != info.contextKey) return@f

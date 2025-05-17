@@ -1,6 +1,7 @@
 package icu.windea.pls.script.editor
 
 import com.intellij.lang.cacheBuilder.*
+import icu.windea.pls.script.lexer.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptWordScanner : DefaultWordsScanner(

@@ -5,7 +5,7 @@ import com.intellij.openapi.extensions.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexManager
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
 
@@ -60,7 +60,7 @@ class ParadoxSyncedLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisati
             val project = selector.project
             val scope = selector.scope
             //保证返回结果的名字的唯一性
-            return ParadoxSyncedLocalisationNameIndex.KEY.processFirstElementByKeys(
+            return ParadoxIndexManager.SyncedLocalisationNameKey.processFirstElementByKeys(
                 project, scope,
                 keyPredicate = { key -> prefixMatcher.prefixMatches(key) },
                 predicate = { element -> selector.selectOne(element) },

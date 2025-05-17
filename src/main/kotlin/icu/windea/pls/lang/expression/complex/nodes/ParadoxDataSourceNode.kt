@@ -22,15 +22,29 @@ class ParadoxDataSourceNode(
     override val configGroup: CwtConfigGroup,
     val linkConfigs: List<CwtLinkConfig>
 ) : ParadoxComplexExpressionNode.Base() {
+    private val linkConfigsDynamicValue = linkConfigs.filter { it.expression?.type in CwtDataTypeGroups.DynamicValue }
+    private val linkConfigsNotDynamicValue = linkConfigs.filter { it.expression?.type !in CwtDataTypeGroups.DynamicValue }
+
+    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
+        return linkConfigs
+    }
+
     override fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? {
         if (text.isParameterized()) return null
         if (linkConfigs.isEmpty()) return null
         if (linkConfigs.size == 1) return linkConfigs.first()
-        if (linkConfigs.all { it.expression?.type in CwtDataTypeGroups.DynamicValue }) return linkConfigs.first()
-        if (element !is ParadoxScriptStringExpressionElement) return null
-        return linkConfigs.find { linkConfig ->
-            ParadoxExpressionManager.resolveExpression(element, rangeInExpression, linkConfig, linkConfig.expression, exact = false) != null
-        } ?: linkConfigs.firstOrNull()
+        run {
+            if (linkConfigsNotDynamicValue.isEmpty()) return@run
+            val resolved = linkConfigs.find {
+                ParadoxExpressionManager.resolveScriptExpression(element, rangeInExpression, it, it.expression, exact = false) != null
+            }
+            if (resolved != null) return resolved
+        }
+        run {
+            if (linkConfigsDynamicValue.isEmpty()) return@run
+            return linkConfigsDynamicValue.first()
+        }
+        return linkConfigsNotDynamicValue.firstOrNull()
     }
 
     override fun getUnresolvedError(element: ParadoxExpressionElement): ParadoxComplexExpressionError? {
@@ -43,7 +57,7 @@ class ParadoxDataSourceNode(
         //排除可解析的情况
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrors.unresolvedDataSource(rangeInExpression, text, configExpressions.joinToString())
+        return ParadoxComplexExpressionError.Builder.unresolvedDataSource(rangeInExpression, text, configExpressions.joinToString())
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
@@ -60,14 +74,14 @@ class ParadoxDataSourceNode(
         val linkConfigs: List<CwtLinkConfig>,
         val configGroup: CwtConfigGroup
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
+        private val linkConfigsDynamicValue = linkConfigs.filter { it.expression?.type in CwtDataTypeGroups.DynamicValue }
+        private val linkConfigsNotDynamicValue = linkConfigs.filter { it.expression?.type !in CwtDataTypeGroups.DynamicValue }
+
         val project = configGroup.project
 
         override fun handleElementRename(newElementName: String): PsiElement {
             val element = element
-            val resolvedElement = when {
-                element is ParadoxScriptStringExpressionElement -> element.resolved()
-                else -> element
-            }
+            val resolvedElement = if (element is ParadoxScriptExpressionElement) element.resolved() else element
             return when {
                 resolvedElement == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
                 resolvedElement.language is CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
@@ -100,27 +114,40 @@ class ParadoxDataSourceNode(
 
         private fun doResolve(): PsiElement? {
             val element = element
-            if (element !is ParadoxScriptStringExpressionElement) return null
-            if (linkConfigs.all { it.expression?.type in CwtDataTypeGroups.DynamicValue }) {
-                val configExpressions = linkConfigs.mapNotNull { it.expression }
-                return ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
+            run {
+                if (linkConfigsNotDynamicValue.isEmpty()) return@run
+                val resolved = linkConfigsNotDynamicValue.firstNotNullOfOrNull {
+                    ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, it, it.expression)
+                }
+                if (resolved != null) return resolved
             }
-            return linkConfigs.firstNotNullOfOrNull { linkConfig ->
-                ParadoxExpressionManager.resolveExpression(element, rangeInElement, linkConfig, linkConfig.expression)
+            run {
+                if (linkConfigsDynamicValue.isEmpty()) return@run
+                val configExpressions = linkConfigsDynamicValue.mapNotNull { it.expression }
+                if (configExpressions.isEmpty()) return@run
+                val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
+                return resolved
             }
+            return null
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             val element = element
-            if (element !is ParadoxScriptStringExpressionElement) return ResolveResult.EMPTY_ARRAY
-            if (linkConfigs.all { it.expression?.type in CwtDataTypeGroups.DynamicValue }) {
-                val configExpressions = linkConfigs.mapNotNull { it.expression }
-                return ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
-                    ?.let { arrayOf(PsiElementResolveResult(it)) } ?: ResolveResult.EMPTY_ARRAY
+            run {
+                if (linkConfigsNotDynamicValue.isEmpty()) return@run
+                val resolved = linkConfigsNotDynamicValue.flatMap {
+                    ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, it, it.expression)
+                }
+                if (resolved.isNotEmpty()) return resolved.mapToArray { PsiElementResolveResult(it) }
             }
-            return linkConfigs.flatMap { linkConfig ->
-                ParadoxExpressionManager.multiResolveExpression(element, rangeInElement, linkConfig, configExpression = linkConfig.expression)
-            }.mapToArray { PsiElementResolveResult(it) }
+            run {
+                if (linkConfigsDynamicValue.isEmpty()) return@run
+                val configExpressions = linkConfigsDynamicValue.mapNotNull { it.expression }
+                if (configExpressions.isEmpty()) return@run
+                val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
+                if (resolved != null) return arrayOf(PsiElementResolveResult(resolved))
+            }
+            return ResolveResult.EMPTY_ARRAY
         }
     }
 

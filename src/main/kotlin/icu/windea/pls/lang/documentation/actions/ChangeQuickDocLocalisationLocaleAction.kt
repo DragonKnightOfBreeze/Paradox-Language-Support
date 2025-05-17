@@ -26,11 +26,9 @@ class ChangeQuickDocLocalisationLocaleAction : AnAction(), ActionToIgnore {
         var isVisible = false
         var isEnabled = false
         run {
-            val browser = e.getData(DOCUMENTATION_BROWSER) ?: return@run
-            val target = browser.targetPointer.dereference() ?: return@run
-            val targetElement = target.targetElement ?: return@run
-            val locale = ParadoxLocaleManager.getLocaleInDocumentation(targetElement)
-            if (locale == null) return@run
+            val browser = e.getData(DOCUMENTATION_BROWSER)
+            val targetElement = browser?.targetPointer?.dereference()?.targetElement
+            if (targetElement == null) return@run
             isVisible = true
             isEnabled = true
         }
@@ -39,18 +37,15 @@ class ChangeQuickDocLocalisationLocaleAction : AnAction(), ActionToIgnore {
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        val browser = e.getData(DOCUMENTATION_BROWSER) ?: return
-        val target = browser.targetPointer.dereference() ?: return
-        val targetElement = target.targetElement ?: return
-        val locale = ParadoxLocaleManager.getLocaleInDocumentation(targetElement)
-        if (locale == null) return
-        val allLocales = mutableListOf<CwtLocalisationLocaleConfig>()
-        allLocales += ParadoxLocaleManager.getLocaleConfigs(withAuto = true)
+        val browser = e.getData(DOCUMENTATION_BROWSER)
+        val targetElement = browser?.targetPointer?.dereference()?.targetElement
+        if (targetElement == null) return
+        val allLocales = ParadoxLocaleManager.getLocaleConfigs(withAuto = true)
         val onChosen = { selected: CwtLocalisationLocaleConfig ->
             targetElement.putUserData(PlsKeys.documentationLocale, selected.id)
             browser.reload()
         }
-        val localePopup = ParadoxLocaleListPopup(locale, allLocales, onChosen = onChosen)
+        val localePopup = ParadoxLocaleListPopup(allLocales, onChosen = onChosen)
         JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(e.dataContext)
     }
 }

@@ -307,11 +307,11 @@ object CwtPsiImplUtil {
 
     //endregion
 
-    //region CwtDocumentationComment
+    //region CwtDocComment
 
     @JvmStatic
-    fun getTokenType(element: CwtDocumentationComment): IElementType {
-        return DOCUMENTATION_COMMENT
+    fun getTokenType(element: CwtDocComment): IElementType {
+        return DOC_COMMENT
     }
 
     //endregion
@@ -321,6 +321,21 @@ object CwtPsiImplUtil {
     @JvmStatic
     fun getTokenType(element: CwtOptionComment): IElementType {
         return OPTION_COMMENT
+    }
+
+    @JvmStatic
+    fun getTokenElement(element: CwtOptionComment): PsiElement? {
+        return element.findChild { it.elementType == OPTION_COMMENT_TOKEN }
+    }
+
+    @JvmStatic
+    fun getOption(element: CwtOptionComment): CwtOption? {
+        return element.tokenElement?.findChild<_>()
+    }
+
+    @JvmStatic
+    fun getOptionValue(element: CwtOptionComment): CwtValue? {
+        return element.tokenElement?.findChild<_>()
     }
 
     //endregion

@@ -188,7 +188,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
     val contextElement = referenceElement
     val gameType = configGroup.gameType ?: return
     val project = configGroup.project
-    val usedLocale = ParadoxLocaleManager.getUsedLocaleInDocumentation(element)
+    val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
     val nameLocalisation = run {
         val keys = ParadoxModifierManager.getModifierNameKeys(name, contextElement)
         keys.firstNotNullOfOrNull { key ->
@@ -380,13 +380,10 @@ private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) 
     while (true) {
         current = current.prevSibling ?: break
         when {
-            current is CwtDocumentationComment -> {
-                val documentationText = current.documentationText
-                if (documentationText != null) {
-                    if (documentationLines == null) documentationLines = LinkedList()
-                    val docText = documentationText.text.trimStart('#').trim() //这里接受HTML
-                    documentationLines.addFirst(docText)
-                }
+            current is CwtDocComment -> {
+                if (documentationLines == null) documentationLines = LinkedList()
+                val docText = current.text.trimStart('#').trim() //这里接受HTML
+                documentationLines.addFirst(docText)
             }
             current is CwtOptionComment -> {
                 val option = current.option

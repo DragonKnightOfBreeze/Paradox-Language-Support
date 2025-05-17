@@ -44,4 +44,8 @@ private class CwtModifierCategoryConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
     override val supportedScopes: Set<String>
-) : UserDataHolderBase(), CwtModifierCategoryConfig
+) : UserDataHolderBase(), CwtModifierCategoryConfig {
+    override fun toString(): String {
+        return "CwtModifierCategoryConfigImpl(name='$name')"
+    }
+}

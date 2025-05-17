@@ -216,7 +216,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     if (expressionElement != null) {
                         val locales = ParadoxLocaleManager.getLocaleConfigs()
                         val context = expectedConfigs.firstNotNullOfOrNull {
-                            ParadoxLocalisationCodeInsightContext.fromReference(expressionElement, it, locales, fromInspection = true)
+                            ParadoxLocalisationCodeInsightContextBuilder.fromReference(expressionElement, it, locales, fromInspection = true)
                         }
                         if (context != null) {
                             this += GenerateLocalisationsFix(expressionElement, context)

@@ -208,12 +208,6 @@ val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
 val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueIndexInfo?
     get() = ParadoxComplexEnumValueManager.getInfo(this)
 
-val ParadoxLocalisationPropertyReference.colorConfig: ParadoxTextColorInfo?
-    get() = ParadoxTextColorManager.getInfo(this)
-
-val ParadoxLocalisationColorfulText.colorConfig: ParadoxTextColorInfo?
-    get() = ParadoxTextColorManager.getInfo(this)
-
 /**
  * 获取定义的指定类型的数据。
  */
@@ -229,4 +223,13 @@ fun createNotification(content: String, notificationType: NotificationType): Not
 fun createNotification(title: String, content: String, notificationType: NotificationType): Notification {
     return NotificationGroupManager.getInstance().getNotificationGroup("pls")
         .createNotification(title, content, notificationType)
+}
+
+inline fun <T> withState(state: ThreadLocal<Boolean>, action: () -> T): T {
+    try {
+        state.set(true)
+        return action()
+    } finally {
+        state.remove()
+    }
 }

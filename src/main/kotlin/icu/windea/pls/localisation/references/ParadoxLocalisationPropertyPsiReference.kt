@@ -1,5 +1,3 @@
-@file:Suppress("SameParameterValue")
-
 package icu.windea.pls.localisation.references
 
 import com.intellij.openapi.util.*
@@ -43,6 +41,12 @@ class ParadoxLocalisationPropertyPsiReference(
         }
     }
 
+    private object LocResolver : ResolveCache.AbstractResolver<ParadoxLocalisationPropertyPsiReference, PsiElement> {
+        override fun resolve(ref: ParadoxLocalisationPropertyPsiReference, incompleteCode: Boolean): PsiElement? {
+            return ref.doResolve(onlyLocalisation = true)
+        }
+    }
+
     override fun resolve(): PsiElement? {
         return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false)
     }
@@ -52,10 +56,10 @@ class ParadoxLocalisationPropertyPsiReference(
     }
 
     fun resolveLocalisation(): ParadoxLocalisationProperty? {
-        return ResolveCache.getInstance(project).resolveWithCaching(this, Resolver, false, false).castOrNull()
+        return ResolveCache.getInstance(project).resolveWithCaching(this, LocResolver, false, false).castOrNull()
     }
 
-    private fun doResolve(): PsiElement? {
+    private fun doResolve(onlyLocalisation: Boolean = false): PsiElement? {
         val element = element
         val file = element.containingFile as? ParadoxLocalisationFile ?: return null
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
@@ -69,6 +73,7 @@ class ParadoxLocalisationPropertyPsiReference(
             SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector).find()
         }
         if (resolved != null) return resolved
+        if (onlyLocalisation) return null
 
         //尝试解析成parameter
         val resolvedParameter = ParadoxLocalisationParameterSupport.resolveParameter(element)
@@ -77,7 +82,7 @@ class ParadoxLocalisationPropertyPsiReference(
         return null
     }
 
-    private fun doMultiResolve(): Array<out ResolveResult> {
+    private fun doMultiResolve(onlyLocalisation: Boolean = false): Array<out ResolveResult> {
         val element = element
         val file = element.containingFile as? ParadoxLocalisationFile ?: return emptyArray()
         val category = ParadoxLocalisationCategory.resolve(file) ?: return emptyArray()
@@ -91,6 +96,7 @@ class ParadoxLocalisationPropertyPsiReference(
             SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll() //查找所有语言区域的
         }
         if (resolved.isNotEmpty()) return resolved.mapToArray { PsiElementResolveResult(it) }
+        if (onlyLocalisation) return ResolveResult.EMPTY_ARRAY
 
         //尝试解析成localisation_parameter
         val resolvedParameter = ParadoxLocalisationParameterSupport.resolveParameter(element)
@@ -99,5 +105,3 @@ class ParadoxLocalisationPropertyPsiReference(
         return ResolveResult.EMPTY_ARRAY
     }
 }
-
-

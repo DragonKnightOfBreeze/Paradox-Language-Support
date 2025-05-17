@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexManager
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.indexInfo.*
@@ -33,7 +33,7 @@ class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo.Compact, 
             ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
             if (selectGameType(file) != gameType) return@p true //check game type at file level
 
-            val fileData = ParadoxDefineIndex.INSTANCE.getFileData(file, project)
+            val fileData = ParadoxIndexManager.Define.getFileData(file, project)
             if (fileData.isEmpty()) return@p true
             if(namespace != null) {
                 val map = fileData[namespace]?: return@p true

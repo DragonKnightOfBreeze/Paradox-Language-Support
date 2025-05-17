@@ -34,10 +34,12 @@ object ParadoxLocalisationTextRenderer {
     private fun renderTo(element: ParadoxLocalisationRichText, context: Context) {
         when (element) {
             is ParadoxLocalisationString -> renderStringTo(element, context)
-            is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
-            is ParadoxLocalisationIcon -> renderIconTo(element, context)
-            is ParadoxLocalisationCommand -> renderCommandTo(element, context)
             is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, context)
+            is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
+            is ParadoxLocalisationCommand -> renderCommandTo(element, context)
+            is ParadoxLocalisationIcon -> renderIconTo(element, context)
+            is ParadoxLocalisationTextFormat -> renderTextFormatTo(element, context)
+            is ParadoxLocalisationTextIcon -> renderTextIconTo(element, context)
         }
     }
 
@@ -45,8 +47,15 @@ object ParadoxLocalisationTextRenderer {
         ParadoxEscapeManager.unescapeLocalisationString(element.text, context.builder, ParadoxEscapeManager.Type.Default)
     }
 
+    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context) {
+        //直接渲染其中的文本
+        for (v in element.richTextList) {
+            renderTo(v, context)
+        }
+    }
+
     private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {
-        val resolved = element.reference?.resolve()
+        val resolved = element.reference?.resolveLocalisation() //直接解析为本地化以优化性能
             ?: element.scriptedVariableReference?.reference?.resolve()
         when {
             resolved is ParadoxLocalisationProperty -> {
@@ -79,41 +88,50 @@ object ParadoxLocalisationTextRenderer {
         }
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context) {
-        //忽略
-        //builder.append(":${element.name}:")
-    }
-
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
         //显示解析后的概念文本
-        run r1@{
-            val concept = element.concept ?: return@r1
-            val (_, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(concept)
-            val richTextList = when {
-                textElement is ParadoxLocalisationConceptText -> textElement.richTextList
-                textElement is ParadoxLocalisationProperty -> textElement.propertyValue?.richTextList
-                else -> null
-            }
-            run r2@{
-                if (richTextList == null) return@r2
-                for (v in richTextList) {
-                    renderTo(v, context)
-                }
-                return
-            }
-            context.builder.append(concept.text)
-            return
+        run {
+            val concept = element.concept ?: return@run
+            return renderConceptTo(concept, context)
         }
 
         //直接显示命令文本
         context.builder.append(element.text)
     }
 
-    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context) {
+    private fun renderConceptTo(element: ParadoxLocalisationConcept, context: Context) {
+        val concept = element
+        val (_, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(concept)
+        val richTextList = when {
+            textElement is ParadoxLocalisationConceptText -> textElement.richTextList
+            textElement is ParadoxLocalisationProperty -> textElement.propertyValue?.richTextList
+            else -> null
+        }
+        run r2@{
+            if (richTextList == null) return@r2
+            for (v in richTextList) {
+                renderTo(v, context)
+            }
+            return
+        }
+        context.builder.append(concept.text)
+        return
+    }
+
+    private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context) {
+        //忽略
+        //builder.append(":${element.name}:")
+    }
+
+    private fun renderTextFormatTo(element: ParadoxLocalisationTextFormat, context: Context) {
         //直接渲染其中的文本
         for (v in element.richTextList) {
             renderTo(v, context)
         }
+    }
+
+    private fun renderTextIconTo(element: ParadoxLocalisationTextIcon, context: Context) {
+        //忽略
+        //builder.append(":${element.name}:")
     }
 }

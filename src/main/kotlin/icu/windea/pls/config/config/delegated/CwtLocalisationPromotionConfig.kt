@@ -35,4 +35,8 @@ private class CwtLocalisationPromotionConfigImpl(
     override val config: CwtPropertyConfig,
     override val name: String,
     override val supportedScopes: Set<String>
-) : UserDataHolderBase(), CwtLocalisationPromotionConfig
+) : UserDataHolderBase(), CwtLocalisationPromotionConfig {
+    override fun toString(): String {
+        return "CwtLocalisationPromotionConfigImpl(name='$name')"
+    }
+}

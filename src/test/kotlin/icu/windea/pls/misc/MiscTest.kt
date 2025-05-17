@@ -13,12 +13,12 @@ class MiscTest {
     private fun foo() {
         val a = Thread.currentThread().stackTrace
         println(a)
-        withRecursionGuard("a") {
+        withRecursionGuard {
             println()
         }
         println()
         println()
-        withRecursionGuard("b") {
+        withRecursionGuard {
             println()
             println()
         }

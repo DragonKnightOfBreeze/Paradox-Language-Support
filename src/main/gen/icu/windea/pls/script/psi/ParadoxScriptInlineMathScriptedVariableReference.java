@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
-import icu.windea.pls.lang.psi.ParadoxParameterAwareElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference;
@@ -17,39 +17,28 @@ import javax.swing.Icon;
 public interface ParadoxScriptInlineMathScriptedVariableReference extends ParadoxScriptInlineMathFactor, ParadoxScriptedVariableReference, ParadoxParameterAwareElement {
 
   @NotNull
-  List<ParadoxScriptInlineMathParameter> getInlineMathParameterList();
-
-  @NotNull
   List<ParadoxScriptInlineParameterCondition> getInlineParameterConditionList();
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @Nullable PsiElement getIdElement();
 
-  @Nullable
-  String getName();
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull
-  ParadoxScriptInlineMathScriptedVariableReference setName(@NotNull String name);
+  @Nullable String getName();
 
-  @Nullable
-  String getValue();
+  @NotNull ParadoxScriptInlineMathScriptedVariableReference setName(@NotNull String name);
 
-  @Nullable
-  ParadoxScriptedVariablePsiReference getReference();
+  @Nullable String getValue();
 
-  @NotNull
-  ParadoxType getType();
+  @Nullable ParadoxScriptedVariablePsiReference getReference();
 
-  @NotNull
-  String getExpression();
+  @NotNull ParadoxType getType();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull String getExpression();
 
-  @NotNull
-  GlobalSearchScope getResolveScope();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull GlobalSearchScope getResolveScope();
+
+  @NotNull SearchScope getUseScope();
 
 }

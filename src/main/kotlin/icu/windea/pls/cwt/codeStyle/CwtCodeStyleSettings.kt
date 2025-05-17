@@ -22,5 +22,5 @@ class CwtCodeStyleSettings(
     @JvmField
     var OPTION_COMMENT_ADD_SPACE = true
     @JvmField
-    var DOCUMENTATION_COMMENT_ADD_SPACE = true
+    var DOC_COMMENT_ADD_SPACE = true
 }

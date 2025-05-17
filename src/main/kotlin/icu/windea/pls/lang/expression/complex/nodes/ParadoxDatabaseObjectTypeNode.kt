@@ -7,6 +7,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.references.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
@@ -23,6 +24,10 @@ class ParadoxDatabaseObjectTypeNode(
     override val configGroup: CwtConfigGroup,
     val config: CwtDatabaseObjectTypeConfig?
 ) : ParadoxComplexExpressionNode.Base() {
+    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
+        return config.toSingletonSetOrEmpty()
+    }
+
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return when (element.language) {
             is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY
@@ -35,7 +40,7 @@ class ParadoxDatabaseObjectTypeNode(
         if (text.isParameterized()) return null
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrors.unresolvedDatabaseObjectType(rangeInExpression, text)
+        return ParadoxComplexExpressionError.Builder.unresolvedDatabaseObjectType(rangeInExpression, text)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {

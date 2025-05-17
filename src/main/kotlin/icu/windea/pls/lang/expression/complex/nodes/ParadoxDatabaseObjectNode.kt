@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -28,6 +29,10 @@ class ParadoxDatabaseObjectNode(
 ) : ParadoxComplexExpressionNode.Base() {
     val config = expression.typeNode?.config
 
+    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
+        return config.toSingletonSetOrEmpty()
+    }
+
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {
         return when (element.language) {
             is ParadoxLocalisationLanguage -> ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY
@@ -42,7 +47,7 @@ class ParadoxDatabaseObjectNode(
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
         val typeToSearch = if (isBase) config.type else config.swapType
-        return ParadoxComplexExpressionErrors.unresolvedDatabaseObject(rangeInExpression, text, typeToSearch)
+        return ParadoxComplexExpressionError.Builder.unresolvedDatabaseObject(rangeInExpression, text, typeToSearch)
     }
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {

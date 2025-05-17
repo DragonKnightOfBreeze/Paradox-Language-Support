@@ -41,15 +41,14 @@ class ParadoxDatabaseObjectExpression private constructor(
 
     override fun validate(): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
-        val context = ParadoxComplexExpressionProcessContext()
-        val result = processAllNodesToValidate(errors, context) {
+        val result = validateAllNodes(errors) {
             when {
                 it is ParadoxDatabaseObjectNode -> it.text.isParameterAwareIdentifier()
                 else -> true
             }
         }
         val malformed = !result || (nodes.size != 3 && nodes.size != 5)
-        if (malformed) errors += ParadoxComplexExpressionErrors.malformedDatabaseObjectExpression(rangeInExpression, text)
+        if (malformed) errors += ParadoxComplexExpressionError.Builder.malformedDatabaseObjectExpression(rangeInExpression, text)
         return errors
     }
 

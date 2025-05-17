@@ -51,12 +51,12 @@ class ParadoxTemplateSnippetPsiExpressionReference(
 
     private fun doResolve(): PsiElement? {
         val element = element
-        return ParadoxExpressionManager.resolveExpression(element, rangeInElement, config, configExpression)
+        return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, configExpression)
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         val element = element
-        return ParadoxExpressionManager.multiResolveExpression(element, rangeInElement, config, configExpression)
+        return ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, configExpression)
             .mapToArray { PsiElementResolveResult(it) }
     }
 }

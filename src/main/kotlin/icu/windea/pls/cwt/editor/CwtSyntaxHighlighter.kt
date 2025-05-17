@@ -1,22 +1,23 @@
 package icu.windea.pls.cwt.editor
 
-import com.intellij.lexer.*
-import com.intellij.lexer.StringLiteralLexer.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.fileTypes.*
+import com.intellij.openapi.project.*
 import com.intellij.psi.StringEscapesTokenTypes.*
 import com.intellij.psi.TokenType.*
 import com.intellij.psi.tree.*
-import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.cwt.lexer.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
-class CwtSyntaxHighlighter : SyntaxHighlighter {
+class CwtSyntaxHighlighter(
+    private val project: Project?
+) : SyntaxHighlighter {
     companion object {
         private val BRACES_KEYS = arrayOf(CwtAttributesKeys.BRACES_KEY)
         private val OPERATOR_KEYS = arrayOf(CwtAttributesKeys.OPERATOR_KEY)
         private val COMMENT_KEYS = arrayOf(CwtAttributesKeys.COMMENT_KEY)
         private val OPTION_COMMENT_KEYS = arrayOf(CwtAttributesKeys.OPTION_COMMENT_KEY)
-        private val DOCUMENTATION_COMMENT_KEYS = arrayOf(CwtAttributesKeys.DOCUMENTATION_COMMENT_KEY)
+        private val DOC_COMMENT_KEYS = arrayOf(CwtAttributesKeys.DOC_COMMENT_KEY)
         private val KEYWORD_KEYS = arrayOf(CwtAttributesKeys.KEYWORD_KEY)
         private val PROPERTY_KEY_KEYS = arrayOf(CwtAttributesKeys.PROPERTY_KEY_KEY)
         private val OPTION_KEY_KEYS = arrayOf(CwtAttributesKeys.OPTION_KEY_KEY)
@@ -26,16 +27,14 @@ class CwtSyntaxHighlighter : SyntaxHighlighter {
         private val INVALID_ESCAPE_KEYS = arrayOf(CwtAttributesKeys.INVALID_ESCAPE_KEY)
         private val BAD_CHARACTER_KEYS = arrayOf(CwtAttributesKeys.BAD_CHARACTER_KEY)
         private val EMPTY_KEYS = TextAttributesKey.EMPTY_ARRAY
-
-        private const val additionalValidEscapes = "$"
     }
 
     override fun getTokenHighlights(tokenType: IElementType?) = when (tokenType) {
         LEFT_BRACE, RIGHT_BRACE -> BRACES_KEYS
         EQUAL_SIGN, NOT_EQUAL_SIGN -> OPERATOR_KEYS
+        DOC_COMMENT_TOKEN -> DOC_COMMENT_KEYS
+        OPTION_COMMENT_TOKEN, OPTION_COMMENT_START -> OPTION_COMMENT_KEYS
         COMMENT -> COMMENT_KEYS
-        OPTION_START -> OPTION_COMMENT_KEYS
-        DOCUMENTATION_START, DOCUMENTATION_TOKEN -> DOCUMENTATION_COMMENT_KEYS
         PROPERTY_KEY_TOKEN -> PROPERTY_KEY_KEYS
         OPTION_KEY_TOKEN -> OPTION_KEY_KEYS
         BOOLEAN_TOKEN -> KEYWORD_KEYS
@@ -47,12 +46,5 @@ class CwtSyntaxHighlighter : SyntaxHighlighter {
         else -> EMPTY_KEYS
     }
 
-    override fun getHighlightingLexer(): Lexer {
-        val lexer = LayeredLexer(CwtLexer())
-        val lexer1 = StringLiteralLexer(NO_QUOTE_CHAR, PROPERTY_KEY_TOKEN, false, additionalValidEscapes, false, false)
-        lexer.registerSelfStoppingLayer(lexer1, arrayOf(PROPERTY_KEY_TOKEN), emptyArray())
-        val lexer2 = StringLiteralLexer(NO_QUOTE_CHAR, STRING_TOKEN, false, additionalValidEscapes, false, false)
-        lexer.registerSelfStoppingLayer(lexer2, arrayOf(STRING_TOKEN), emptyArray())
-        return lexer
-    }
+    override fun getHighlightingLexer() = CwtLexerFactory.createHighlightingLexer(project)
 }

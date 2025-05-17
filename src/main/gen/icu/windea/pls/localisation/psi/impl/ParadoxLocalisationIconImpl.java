@@ -35,9 +35,20 @@ public class ParadoxLocalisationIconImpl extends ParadoxLocalisationRichTextImpl
   }
 
   @Override
-  @NotNull
-  public List<ParadoxLocalisationRichText> getRichTextList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationRichText.class);
+  @Nullable
+  public ParadoxLocalisationRichText getRichText() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationRichText.class);
+  }
+
+  @Override
+  public @Nullable PsiElement getIdElement() {
+    return ParadoxLocalisationPsiImplUtil.getIdElement(this);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxLocalisationIconArgument getArgumentElement() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationIconArgument.class);
   }
 
   @Override
@@ -56,13 +67,13 @@ public class ParadoxLocalisationIconImpl extends ParadoxLocalisationRichTextImpl
   }
 
   @Override
-  public int getFrame() {
-    return ParadoxLocalisationPsiImplUtil.getFrame(this);
+  public @Nullable ParadoxLocalisationIconPsiReference getReference() {
+    return ParadoxLocalisationPsiImplUtil.getReference(this);
   }
 
   @Override
-  public @Nullable ParadoxLocalisationIconPsiReference getReference() {
-    return ParadoxLocalisationPsiImplUtil.getReference(this);
+  public int getFrame() {
+    return ParadoxLocalisationPsiImplUtil.getFrame(this);
   }
 
   @Override

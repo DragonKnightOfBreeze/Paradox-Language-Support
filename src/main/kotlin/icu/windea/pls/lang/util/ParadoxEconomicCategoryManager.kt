@@ -5,8 +5,6 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
@@ -114,7 +112,7 @@ object ParadoxEconomicCategoryManager {
 
     private fun collectParentData(contextElement: PsiElement, data: StellarisEconomicCategoryData, map: MutableMap<String, StellarisEconomicCategoryData> = mutableMapOf()): Map<String, StellarisEconomicCategoryData> {
         val parent = data.parent ?: return map
-        withRecursionGuard("ParadoxEconomicCategoryManager.collectParentData") {
+        withRecursionGuard {
             withRecursionCheck(parent) {
                 val selector = selector(contextElement.project, contextElement).definition().contextSensitive()
                 ParadoxDefinitionSearch.search(parent, "economic_category", selector).processQuery p@{

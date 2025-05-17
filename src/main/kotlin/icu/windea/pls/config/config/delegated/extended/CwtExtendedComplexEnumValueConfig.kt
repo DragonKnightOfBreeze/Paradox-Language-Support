@@ -36,4 +36,8 @@ private class CwtExtendedComplexEnumValueConfigImpl(
     override val name: String,
     override val type: String,
     override val hint: String?
-) : UserDataHolderBase(), CwtExtendedComplexEnumValueConfig
+) : UserDataHolderBase(), CwtExtendedComplexEnumValueConfig {
+    override fun toString(): String {
+        return "CwtExtendedComplexEnumValueConfigImpl(name='$name', type='$type')"
+    }
+}

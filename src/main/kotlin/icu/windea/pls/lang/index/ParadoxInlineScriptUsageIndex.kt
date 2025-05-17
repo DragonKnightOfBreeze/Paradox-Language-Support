@@ -2,7 +2,6 @@ package icu.windea.pls.lang.index
 
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
@@ -16,15 +15,11 @@ import java.io.*
  * 用于索引内联脚本的使用信息。
  */
 class ParadoxInlineScriptUsageIndex : ParadoxFileBasedIndex<ParadoxInlineScriptUsageIndexInfo.Compact>() {
-    @Suppress("CompanionObjectInExtension")
     companion object {
-        val INSTANCE by lazy { findFileBasedIndex<ParadoxInlineScriptUsageIndex>() }
-        val NAME = ID.create<String, ParadoxInlineScriptUsageIndexInfo.Compact>("paradox.inlineScriptUsage.index")
-
-        private const val VERSION = 59 //1.3.35
+        private const val VERSION = 65 //1.4.0
     }
 
-    override fun getName() = NAME
+    override fun getName() = ParadoxIndexManager.InlineScriptUsageName
 
     override fun getVersion() = VERSION
 

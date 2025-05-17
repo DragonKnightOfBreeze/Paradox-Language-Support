@@ -31,9 +31,9 @@ enum class ParadoxResolveConstraint {
             return when (element) {
                 is ParadoxScriptExpressionElement -> element.isResolvableExpression() && element.isExpression()
                 is ParadoxLocalisationExpressionElement -> element.isComplexExpression()
-                is ParadoxLocalisationIcon -> true
+                is ParadoxLocalisationIcon -> true //<sprite>, etc.
                 is ParadoxLocalisationConcept -> true //<game_concept>
-                is ParadoxLocalisationColorfulText -> true //<text_color>
+                is ParadoxLocalisationTextColorAwareElement -> true //<text_color>
                 else -> false
             }
         }
@@ -65,9 +65,9 @@ enum class ParadoxResolveConstraint {
                 is ParadoxScriptValueNode.Reference -> true //<script_value>
                 is ParadoxDynamicCommandFieldNode.Reference -> true //<scripted_loc>
                 is ParadoxDatabaseObjectNode.Reference -> true
-                is ParadoxLocalisationIconPsiReference -> true
+                is ParadoxLocalisationIconPsiReference -> true //<sprite>, etc.
                 is ParadoxLocalisationConceptPsiReference -> true //<game_concept>
-                is ParadoxLocalisationColorPsiReference -> true //<text_color>
+                is ParadoxLocalisationTextColorPsiReference -> true //<text_color>
                 else -> false
             }
         }

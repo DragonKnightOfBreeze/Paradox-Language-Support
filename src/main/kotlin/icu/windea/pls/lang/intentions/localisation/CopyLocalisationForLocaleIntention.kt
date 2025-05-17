@@ -134,9 +134,8 @@ class CopyLocalisationForLocaleIntention : IntentionAction, PriorityAction {
             }
         }
 
-        val selectedLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         val allLocales = ParadoxLocaleManager.getLocaleConfigs()
-        val localePopup = ParadoxLocaleListPopup(selectedLocale, allLocales, onChosen = onChosen)
+        val localePopup = ParadoxLocaleListPopup(allLocales, onChosen = onChosen)
         JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
     }
 

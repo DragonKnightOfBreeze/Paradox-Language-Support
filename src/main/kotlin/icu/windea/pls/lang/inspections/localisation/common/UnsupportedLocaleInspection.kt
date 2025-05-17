@@ -25,7 +25,7 @@ class UnsupportedLocaleInspection : LocalInspectionTool() {
                 ProgressManager.checkCanceled()
                 val localeConfig = selectLocale(element)
                 if (localeConfig != null) return
-                val location = element.localeId
+                val location = element.idElement
                 holder.registerProblem(location, PlsBundle.message("inspection.localisation.unsupportedLocale.desc", element.name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }

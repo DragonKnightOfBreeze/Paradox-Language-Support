@@ -37,38 +37,32 @@ public class ParadoxScriptScriptedVariableNameImpl extends ASTWrapperPsiElement 
   }
 
   @Override
-  @NotNull
-  public List<ParadoxScriptParameter> getParameterList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptParameter.class);
+  public @Nullable PsiElement getIdElement() {
+    return ParadoxScriptPsiImplUtil.getIdElement(this);
   }
 
   @Override
-  @Nullable
-  public String getName() {
+  public @Nullable String getName() {
     return ParadoxScriptPsiImplUtil.getName(this);
   }
 
   @Override
-  @Nullable
-  public String getValue() {
+  public @Nullable String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
   }
 
   @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
+  public @NotNull ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  @NotNull
-  public GlobalSearchScope getResolveScope() {
+  public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  @NotNull
-  public SearchScope getUseScope() {
+  public @NotNull SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 

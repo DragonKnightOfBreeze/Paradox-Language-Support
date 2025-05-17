@@ -4,6 +4,7 @@ package icu.windea.pls.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.NavigatablePsiElement;
 import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
@@ -14,7 +15,9 @@ import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference;
 import icu.windea.pls.model.ParadoxType;
 import javax.swing.Icon;
 
-public interface ParadoxLocalisationScriptedVariableReference extends ParadoxScriptedVariableReference {
+public interface ParadoxLocalisationScriptedVariableReference extends NavigatablePsiElement, ParadoxScriptedVariableReference {
+
+  @Nullable PsiElement getIdElement();
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

@@ -33,4 +33,8 @@ private class CwtExtendedDefinitionConfigImpl(
     override val config: CwtMemberConfig<*>,
     override val name: String,
     override val type: String
-) : UserDataHolderBase(), CwtExtendedDefinitionConfig
+) : UserDataHolderBase(), CwtExtendedDefinitionConfig {
+    override fun toString(): String {
+        return "CwtExtendedDefinitionConfigImpl(name='$name', type='$type')"
+    }
+}

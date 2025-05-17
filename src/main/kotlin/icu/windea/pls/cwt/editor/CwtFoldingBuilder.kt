@@ -30,7 +30,7 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         when (node.elementType) {
             COMMENT -> return //optimization
             OPTION_COMMENT -> return //optimization
-            DOCUMENTATION_COMMENT -> return //optimization
+            DOC_COMMENT -> return //optimization
             BLOCK -> descriptors.add(FoldingDescriptor(node, node.textRange))
             //BLOCK -> if(isSpanMultipleLines(node, document)) descriptors.add(FoldingDescriptor(node, node.textRange))
         }

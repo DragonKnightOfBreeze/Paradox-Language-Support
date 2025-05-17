@@ -6,7 +6,8 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.PlsManager
+import icu.windea.pls.lang.index.ParadoxIndexManager
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -14,6 +15,9 @@ import icu.windea.pls.localisation.psi.*
  */
 class ParadoxSyncedLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationProperty, ParadoxSyncedLocalisationSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxSyncedLocalisationSearch.SearchParameters, consumer: Processor<in ParadoxLocalisationProperty>) {
+        //#141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
+        if(PlsManager.resolveForMergedIndex.get() == true) return
+
         ProgressManager.checkCanceled()
         if(queryParameters.project.isDefault) return
         val scope = queryParameters.selector.scope
@@ -27,9 +31,9 @@ class ParadoxSyncedLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationP
 
     private fun doProcessAllElements(name: String?, project: Project, scope: GlobalSearchScope, processor: Processor<ParadoxLocalisationProperty>): Boolean {
         if (name == null) {
-            return ParadoxSyncedLocalisationNameIndex.KEY.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
+            return ParadoxIndexManager.SyncedLocalisationNameKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
         } else {
-            return ParadoxSyncedLocalisationNameIndex.KEY.processAllElements(name, project, scope) { element -> processor.process(element) }
+            return ParadoxIndexManager.SyncedLocalisationNameKey.processAllElements(name, project, scope) { element -> processor.process(element) }
         }
     }
 }

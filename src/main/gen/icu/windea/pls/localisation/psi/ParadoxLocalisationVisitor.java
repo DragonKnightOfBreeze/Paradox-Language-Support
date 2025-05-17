@@ -13,25 +13,36 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitColorfulText(@NotNull ParadoxLocalisationColorfulText o) {
     visitRichText(o);
+    // visitNavigatablePsiElement(o);
+    // visitTextColorAwareElement(o);
   }
 
   public void visitCommand(@NotNull ParadoxLocalisationCommand o) {
     visitRichText(o);
-    // visitRichText(o);
+    // visitNavigatablePsiElement(o);
+    // visitArgumentAwareElement(o);
+  }
+
+  public void visitCommandArgument(@NotNull ParadoxLocalisationCommandArgument o) {
+    visitArgument(o);
+    // visitTextColorAwareElement(o);
+    // visitParameterAwareElement(o);
   }
 
   public void visitCommandText(@NotNull ParadoxLocalisationCommandText o) {
-    visitExpressionElement(o);
+    visitNavigatablePsiElement(o);
     // visitContributedReferenceHost(o);
+    // visitExpressionElement(o);
+    // visitParameterAwareElement(o);
   }
 
   public void visitConcept(@NotNull ParadoxLocalisationConcept o) {
-    visitPsiElement(o);
+    visitNavigatablePsiElement(o);
   }
 
   public void visitConceptName(@NotNull ParadoxLocalisationConceptName o) {
-    visitExpressionElement(o);
-    // visitContributedReferenceHost(o);
+    visitContributedReferenceHost(o);
+    // visitExpressionElement(o);
   }
 
   public void visitConceptText(@NotNull ParadoxLocalisationConceptText o) {
@@ -41,6 +52,13 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   public void visitIcon(@NotNull ParadoxLocalisationIcon o) {
     visitRichText(o);
     // visitNavigatablePsiElement(o);
+    // visitArgumentAwareElement(o);
+    // visitParameterAwareElement(o);
+  }
+
+  public void visitIconArgument(@NotNull ParadoxLocalisationIconArgument o) {
+    visitArgument(o);
+    // visitParameterAwareElement(o);
   }
 
   public void visitLocale(@NotNull ParadoxLocalisationLocale o) {
@@ -62,6 +80,12 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   public void visitPropertyReference(@NotNull ParadoxLocalisationPropertyReference o) {
     visitRichText(o);
     // visitNavigatablePsiElement(o);
+    // visitArgumentAwareElement(o);
+  }
+
+  public void visitPropertyReferenceArgument(@NotNull ParadoxLocalisationPropertyReferenceArgument o) {
+    visitArgument(o);
+    // visitTextColorAwareElement(o);
   }
 
   public void visitPropertyValue(@NotNull ParadoxLocalisationPropertyValue o) {
@@ -73,11 +97,32 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitScriptedVariableReference(@NotNull ParadoxLocalisationScriptedVariableReference o) {
-    visitParadoxScriptedVariableReference(o);
+    visitNavigatablePsiElement(o);
+    // visitParadoxScriptedVariableReference(o);
   }
 
   public void visitString(@NotNull ParadoxLocalisationString o) {
     visitRichText(o);
+  }
+
+  public void visitTextFormat(@NotNull ParadoxLocalisationTextFormat o) {
+    visitRichText(o);
+    // visitNavigatablePsiElement(o);
+    // visitParameterAwareElement(o);
+  }
+
+  public void visitTextIcon(@NotNull ParadoxLocalisationTextIcon o) {
+    visitRichText(o);
+    // visitNavigatablePsiElement(o);
+    // visitParameterAwareElement(o);
+  }
+
+  public void visitTextRoot(@NotNull ParadoxLocalisationTextRoot o) {
+    visitPsiElement(o);
+  }
+
+  public void visitContributedReferenceHost(@NotNull ContributedReferenceHost o) {
+    visitElement(o);
   }
 
   public void visitNavigatablePsiElement(@NotNull NavigatablePsiElement o) {
@@ -88,11 +133,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitParadoxScriptedVariableReference(@NotNull ParadoxScriptedVariableReference o) {
-    visitElement(o);
-  }
-
-  public void visitExpressionElement(@NotNull ParadoxLocalisationExpressionElement o) {
+  public void visitArgument(@NotNull ParadoxLocalisationArgument o) {
     visitPsiElement(o);
   }
 

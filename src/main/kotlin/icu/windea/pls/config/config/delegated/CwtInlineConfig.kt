@@ -39,4 +39,8 @@ private class CwtInlineConfigImpl(
         inlined.inlineConfig = this
         return inlined
     }
+
+    override fun toString(): String {
+        return "CwtInlineConfigImpl(name='$name')"
+    }
 }

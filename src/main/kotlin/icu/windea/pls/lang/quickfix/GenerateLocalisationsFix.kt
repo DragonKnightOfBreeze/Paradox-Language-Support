@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.quickfix
 
 import com.intellij.codeInsight.intention.*
+import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
@@ -26,6 +27,7 @@ class GenerateLocalisationsFix(
             Type.Modifier -> PlsBundle.message("inspection.script.missingLocalisation.fix.2", contextName)
             Type.LocalisationReference -> PlsBundle.message("inspection.script.missingLocalisation.fix.3", contextName)
             Type.SyncedLocalisationReference -> PlsBundle.message("inspection.script.missingLocalisation.fix.4", contextName)
+            Type.Localisation -> PlsBundle.message("inspection.script.missingLocalisation.fix.5", contextName)
             else -> throw IllegalStateException()
         }
     }
@@ -39,6 +41,10 @@ class GenerateLocalisationsFix(
             handler.invoke(project, editor, file)
         }
     }
+
+    override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor) = IntentionPreviewInfo.EMPTY
+
+    override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
 
     //true so that we can run MissingLocalisationInspection on mod files scope and generate all missing localisations
     override fun availableInBatchMode() = true

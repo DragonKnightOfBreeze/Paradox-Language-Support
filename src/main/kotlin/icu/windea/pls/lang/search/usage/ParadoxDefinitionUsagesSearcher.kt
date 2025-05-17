@@ -27,20 +27,14 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         val definitionName = definitionInfo.name
         if (definitionName.isEmpty()) return //ignore anonymous definitions
         val type = definitionInfo.type
-        val project = queryParameters.project
         val extraWords = mutableSetOf<String>()
         extraWords.add(definitionName)
         when {
             type == "sprite" -> {
+                val gfxName = definitionName.removePrefix("GFX_")
+                if(gfxName.isNotNullOrEmpty()) extraWords.add(gfxName)
                 val gfxTextName = definitionName.removePrefix("GFX_text_")
-                if (gfxTextName.isNotEmpty()) {
-                    extraWords.add(gfxTextName)
-                } else {
-                    val gfxName = definitionName.removePrefix("GFX_")
-                    if (gfxTextName.isNotEmpty()) {
-                        extraWords.add(gfxName)
-                    }
-                }
+                if(gfxTextName.isNotNullOrEmpty()) extraWords.add(gfxTextName)
             }
             type == "concept" -> {
                 val data = target.getData<StellarisGameConceptData>()

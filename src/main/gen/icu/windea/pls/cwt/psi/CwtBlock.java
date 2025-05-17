@@ -11,10 +11,10 @@ import icu.windea.pls.config.CwtConfigType;
 import icu.windea.pls.model.CwtType;
 import javax.swing.Icon;
 
-public interface CwtBlock extends CwtValue, CwtBlockElement {
+public interface CwtBlock extends CwtValue, CwtNamedElement, CwtBlockElement {
 
   @NotNull
-  List<CwtDocumentationComment> getDocumentationCommentList();
+  List<CwtDocComment> getDocCommentList();
 
   @NotNull
   List<CwtOption> getOptionList();
@@ -28,38 +28,28 @@ public interface CwtBlock extends CwtValue, CwtBlockElement {
   @NotNull
   List<CwtValue> getValueList();
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull
-  String getName();
+  @NotNull String getName();
 
-  @NotNull
-  CwtBlock setName(@NotNull String name);
+  @NotNull CwtBlock setName(@NotNull String name);
 
-  @NotNull
-  String getValue();
+  @NotNull String getValue();
 
-  @NotNull
-  CwtValue setValue(@NotNull String value);
+  @NotNull CwtValue setValue(@NotNull String value);
 
   boolean isEmpty();
 
   boolean isNotEmpty();
 
-  @NotNull
-  List<PsiElement> getComponents();
+  @NotNull List<@NotNull PsiElement> getComponents();
 
-  @NotNull
-  CwtType getType();
+  @NotNull CwtType getType();
 
-  @Nullable
-  CwtConfigType getConfigType();
+  @Nullable CwtConfigType getConfigType();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

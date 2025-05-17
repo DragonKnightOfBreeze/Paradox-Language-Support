@@ -36,6 +36,11 @@ public class ParadoxLocalisationScriptedVariableReferenceImpl extends ASTWrapper
   }
 
   @Override
+  public @Nullable PsiElement getIdElement() {
+    return ParadoxLocalisationPsiImplUtil.getIdElement(this);
+  }
+
+  @Override
   public @NotNull Icon getIcon(@IconFlags int flags) {
     return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
   }

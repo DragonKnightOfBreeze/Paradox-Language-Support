@@ -42,7 +42,7 @@ class ParadoxTemplateSnippetNode(
         //排除可解析的情况
         val reference = getReference(element)
         if (reference == null || reference.resolveFirst() != null) return null
-        return ParadoxComplexExpressionErrors.unresolvedTemplateSnippet(rangeInExpression, text, configExpression.expressionString)
+        return ParadoxComplexExpressionError.Builder.unresolvedTemplateSnippet(rangeInExpression, text, configExpression.expressionString)
     }
 
     override fun getReference(element: ParadoxExpressionElement): PsiReference? {
@@ -99,21 +99,25 @@ class ParadoxTemplateSnippetNode(
         private fun doResolve(): PsiElement? {
             val element = element
             if (element !is ParadoxScriptStringExpressionElement) return null
-            if(config.expression.type in CwtDataTypeGroups.DynamicValue) {
-                return ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.expression, configGroup)
+            if (config.expression.type in CwtDataTypeGroups.DynamicValue) {
+                val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.expression, configGroup)
+                return resolved
             }
-            return ParadoxExpressionManager.resolveExpression(element, rangeInElement, config, config.expression)
+            val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.expression)
+            return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             val element = element
             if (element !is ParadoxScriptStringExpressionElement) return ResolveResult.EMPTY_ARRAY
-            if(config.expression.type in CwtDataTypeGroups.DynamicValue) {
-                return ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.expression, configGroup)
-                    ?.let { arrayOf(PsiElementResolveResult(it)) } ?: ResolveResult.EMPTY_ARRAY
+            if (config.expression.type in CwtDataTypeGroups.DynamicValue) {
+                val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.expression, configGroup)
+                if (resolved != null) return arrayOf(PsiElementResolveResult(resolved))
+                return ResolveResult.EMPTY_ARRAY
             }
-            return ParadoxExpressionManager.multiResolveExpression(element, rangeInElement, config, config.expression)
-                .mapToArray { PsiElementResolveResult(it) }
+            val resolved = ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.expression)
+            if (resolved.isNotEmpty()) return resolved.mapToArray { PsiElementResolveResult(it) }
+            return ResolveResult.EMPTY_ARRAY
         }
     }
 

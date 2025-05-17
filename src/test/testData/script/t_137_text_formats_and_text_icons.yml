@@ -1,0 +1,6 @@
+l_simp_chinese:
+  KEY: ""
+  KEY: "foo bar"
+  KEY: " foo bar"
+  KEY: " foo bar #v text#! @icon!"
+  KEY: " foo bar #v aaa bbb @icon! #! @icon! foo"

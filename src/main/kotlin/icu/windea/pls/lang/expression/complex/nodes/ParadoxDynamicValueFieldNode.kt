@@ -16,6 +16,10 @@ class ParadoxDynamicValueFieldNode(
     val prefixNode get() = nodes.findIsInstance<ParadoxValueFieldPrefixNode>()
     val dataSourceNode get() = nodes.findIsInstance<ParadoxValueFieldValueNode>()!!
 
+    override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
+        return linkConfigs
+    }
+
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup): ParadoxDynamicValueFieldNode? {
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
@@ -27,7 +31,7 @@ class ParadoxDynamicValueFieldNode(
                 if (!text.contains(':')) return@r1
                 val linkConfigs = configGroup.links.values.filter { it.forValue() && it.fromData && it.prefix != null }
                     .filter { text.startsWith(it.prefix!!) }
-                    .sortedByPriority({ it.dataSourceExpression!! }, { configGroup })
+                    .sortedByPriority({ it.dataSourceExpression }, { configGroup })
                 if (linkConfigs.isEmpty()) return@r1
                 run r2@{
                     val nodeText = linkConfigs.first().prefix!!
@@ -50,7 +54,7 @@ class ParadoxDynamicValueFieldNode(
                 if (!text.contains('(')) return@r1
                 val linkConfigs = configGroup.links.values.filter { it.forValue() && it.fromArgument && it.prefix != null }
                     .filter { text.startsWith(it.prefix!!.dropLast(1) + '(') }
-                    .sortedByPriority({ it.dataSourceExpression!! }, { configGroup })
+                    .sortedByPriority({ it.dataSourceExpression }, { configGroup })
                 if (linkConfigs.isEmpty()) return@r1
                 run r2@{
                     val nodeText = linkConfigs.first().prefix!!.dropLast(1)
@@ -85,7 +89,7 @@ class ParadoxDynamicValueFieldNode(
             //没有前缀且允许没有前缀的场合
             run r1@{
                 val linkConfigs = configGroup.links.values.filter { it.forValue() && it.fromData && it.prefix == null }
-                    .sortedByPriority({ it.dataSourceExpression!! }, { configGroup })
+                    .sortedByPriority({ it.dataSourceExpression }, { configGroup })
                 if (linkConfigs.isEmpty()) return@r1
                 val node = ParadoxValueFieldValueNode.resolve(text, textRange, configGroup, linkConfigs)
                 nodes += node

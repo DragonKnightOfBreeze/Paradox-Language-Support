@@ -55,7 +55,9 @@ private fun getModuleTextWithIcon(value: Any?): TextWithIcon? {
 private fun ItemPresentation.getColoredAttributes(): TextAttributes? {
     val coloredPresentation = this as? ColoredItemPresentation
     val textAttributesKey = coloredPresentation?.textAttributesKey ?: return null
-    return EditorColorsManager.getInstance().schemeForCurrentUITheme.getAttributes(textAttributesKey)
+    val editorColorsManager = EditorColorsManager.getInstance()
+    val schema = editorColorsManager.activeVisibleScheme ?: editorColorsManager.schemeForCurrentUITheme
+    return schema.getAttributes(textAttributesKey)
 }
 
 private fun ItemPresentation.getContainerText(): String? {

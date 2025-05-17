@@ -32,7 +32,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
                 val textRange = TextRange.create(0, expressionString.length)
                 val expression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return
                 val errors = expression.getAllErrors(element)
-                errors.forEach { error -> holder.registerExpressionError(error, element) }
+                errors.forEach { error -> error.register(element, holder) }
             }
         }
     }

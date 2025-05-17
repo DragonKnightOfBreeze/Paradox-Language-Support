@@ -12,39 +12,28 @@ import icu.windea.pls.config.CwtConfigType;
 import icu.windea.pls.model.CwtType;
 import javax.swing.Icon;
 
-public interface CwtString extends CwtValue, CwtNamedElement, PsiLiteralValue, CwtStringExpressionElement {
+public interface CwtString extends CwtValue, PsiLiteralValue, CwtNamedElement, CwtStringExpressionElement {
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull
-  String getName();
+  @NotNull String getName();
 
-  @NotNull
-  CwtString setName(@NotNull String name);
+  @NotNull CwtString setName(@NotNull String name);
 
-  @NotNull
-  PsiElement getNameIdentifier();
+  @NotNull PsiElement getNameIdentifier();
 
-  @NotNull
-  String getValue();
+  @NotNull String getValue();
 
-  @NotNull
-  CwtString setValue(@NotNull String value);
+  @NotNull CwtValue setValue(@NotNull String value);
 
-  @NotNull
-  String getStringValue();
+  @NotNull String getStringValue();
 
-  @NotNull
-  CwtType getType();
+  @NotNull CwtType getType();
 
-  @Nullable
-  CwtConfigType getConfigType();
+  @Nullable CwtConfigType getConfigType();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

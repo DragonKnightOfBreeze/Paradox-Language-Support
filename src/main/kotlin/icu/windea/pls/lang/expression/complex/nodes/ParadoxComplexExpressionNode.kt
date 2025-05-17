@@ -19,6 +19,8 @@ interface ParadoxComplexExpressionNode {
     val nodes: List<ParadoxComplexExpressionNode> get() = emptyList()
     val configGroup: CwtConfigGroup
 
+    fun getRelatedConfigs(): Collection<CwtConfig<*>> = emptyList()
+
     fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? = null
 
     fun getAttributesKeyConfig(element: ParadoxExpressionElement): CwtConfig<*>? = null

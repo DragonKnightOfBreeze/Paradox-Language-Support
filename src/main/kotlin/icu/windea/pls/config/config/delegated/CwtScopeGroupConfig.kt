@@ -41,4 +41,8 @@ private class CwtScopeGroupConfigImpl(
     override val name: String,
     override val values: Set<String>,
     override val valueConfigMap: Map<String, CwtValueConfig>
-) : UserDataHolderBase(), CwtScopeGroupConfig
+) : UserDataHolderBase(), CwtScopeGroupConfig {
+    override fun toString(): String {
+        return "CwtScopeGroupConfigImpl(name='$name')"
+    }
+}

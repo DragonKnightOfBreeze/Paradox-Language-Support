@@ -2,9 +2,11 @@ package icu.windea.pls.cwt.psi
 
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
+import icu.windea.pls.cwt.psi.CwtElementTypes.*
 
 object CwtElementFactory {
     @JvmStatic
@@ -22,8 +24,8 @@ object CwtElementFactory {
     @JvmStatic
     fun createOption(project: Project, text: String): CwtOption {
         return createRootBlock(project, "## $text")
-            .findChild<CwtOptionComment>()
-            ?.findChild<CwtOption>() ?: throw IncorrectOperationException()
+            .findChild<CwtOptionComment>()?.tokenElement
+            ?.findChild<_>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic

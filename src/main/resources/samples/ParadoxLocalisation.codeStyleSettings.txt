@@ -1,10 +1,13 @@
 l_english:
  # Comment
+ EMPTY:0 ""
  KEY:0 "Value"
  KEY_1:0 "Value\nNew line"
- KEY_WITH_REFERENCE:0 "Reference text: $KEY$ and $KEY|Y$"
- KEY_WITH_ICON:0 "Icon: £unity£ and £leader_skill|3£"
- KEY_WITH_COMMAND:0 "Command: [Root.Owner.event_target:some_event_target.GetName] [some_scripted_loc] [some_variable]"
- KEY_WITH_CONCEPT:0 "Concept: ['concept', concept text] ['civic:some_civic']"
  KEY_WITH_COLORFUL_TEXT:0 "Colorful text: §RRed text§!"
- EMPTY:0 ""
+ KEY_WITH_REFERENCE:0 "Reference text: $KEY$ and $KEY|Y$"
+ KEY_WITH_SV:0 "Scripted variable value: $@sv$"
+ KEY_WITH_COMMAND:0 "Command: [Root.Owner.event_target:some_event_target.GetName] [some_scripted_loc] [some_variable]"
+ KEY_WITH_ICON:0 "Icon: £unity£ and £leader_skill|3£"
+ KEY_WITH_CONCEPT:0 "Concept: ['concept', concept text] ['civic:some_civic']"
+ KEY_WITH_TEXT_FORMAT:0 "Text format: #v text#!"
+ KEY_WITH_TEXT_ICON:0 "Text icon: @icon!"

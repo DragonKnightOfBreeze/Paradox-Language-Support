@@ -31,6 +31,11 @@ public class ParadoxLocalisationStringImpl extends ParadoxLocalisationRichTextIm
   }
 
   @Override
+  public @NotNull PsiElement getIdElement() {
+    return ParadoxLocalisationPsiImplUtil.getIdElement(this);
+  }
+
+  @Override
   public @NotNull ItemPresentation getPresentation() {
     return ParadoxLocalisationPsiImplUtil.getPresentation(this);
   }

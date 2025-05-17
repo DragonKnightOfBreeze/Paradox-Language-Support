@@ -6,7 +6,7 @@ import com.intellij.psi.stubs.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexManager
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -17,12 +17,12 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
-        StubIndex.getInstance().processAllKeys(ParadoxDefinitionNameIndex.KEY, processor, scope, filter)
+        StubIndex.getInstance().processAllKeys(ParadoxIndexManager.DefinitionNameKey, processor, scope, filter)
     }
 
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
         StubIndex.getInstance().processElements(
-            ParadoxDefinitionNameIndex.KEY, name, parameters.project, parameters.searchScope, parameters.idFilter,
+            ParadoxIndexManager.DefinitionNameKey, name, parameters.project, parameters.searchScope, parameters.idFilter,
             ParadoxScriptDefinitionElement::class.java
         ) p@{
             val definitionInfo = it.definitionInfo ?: return@p true

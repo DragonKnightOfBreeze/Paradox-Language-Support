@@ -1,7 +1,7 @@
 package icu.windea.pls.model.constraints
 
 import com.intellij.psi.stubs.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexManager
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -12,6 +12,6 @@ enum class ParadoxLocalisationConstraint(
     val predicate: (String) -> Boolean,
     val ignoreCase: Boolean = false,
 ) {
-    Default(ParadoxLocalisationNameIndex.KEY, { true }),
-    Modifier(ParadoxLocalisationNameIndex.ModifierIndex.KEY, { it.startsWith("mod_", true) }, ignoreCase = true);
+    Default(ParadoxIndexManager.LocalisationNameKey, { true }),
+    Modifier(ParadoxIndexManager.LocalisationNameForModifierKey, { it.startsWith("mod_", true) }, ignoreCase = true);
 }

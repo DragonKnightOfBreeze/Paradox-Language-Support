@@ -228,4 +228,8 @@ private class CwtTypeConfigImpl(
     override val filePathPatternsForPriority: Set<String> by lazy {
         CwtConfigManager.getFilePathPatternsForPriority(this).optimized()
     }
+
+    override fun toString(): String {
+        return "CwtTypeConfigImpl(name='$name')"
+    }
 }

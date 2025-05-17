@@ -45,6 +45,17 @@ public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisatio
   }
 
   @Override
+  public @Nullable PsiElement getIdElement() {
+    return ParadoxLocalisationPsiImplUtil.getIdElement(this);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxLocalisationPropertyReferenceArgument getArgumentElement() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationPropertyReferenceArgument.class);
+  }
+
+  @Override
   public @NotNull String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }

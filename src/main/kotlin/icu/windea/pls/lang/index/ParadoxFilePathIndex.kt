@@ -20,27 +20,11 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInde
         val included: Boolean
     )
 
-    @Suppress("CompanionObjectInExtension")
     companion object {
-        val INSTANCE by lazy { findFileBasedIndex<ParadoxFilePathIndex>() }
-        val NAME = ID.create<String, Info>("paradox.file.path.index")
-
-        private const val VERSION = 59 //1.3.35
-
-        private val EXCLUDED_DIRECTORIES = listOf(
-            "_CommonRedist",
-            "crash_reporter",
-            "curated_save_games",
-            "pdx_browser",
-            "pdx_launcher",
-            "pdx_online_assets",
-            "previewer_assets",
-            "tweakergui_assets",
-            "jomini",
-        )
+        private const val VERSION = 65 //1.4.0
     }
 
-    override fun getName() = NAME
+    override fun getName() = ParadoxIndexManager.FilePathName
 
     override fun getVersion() = VERSION
 
@@ -97,7 +81,7 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInde
         val fileName = file.name
         if (fileName.startsWith('.')) return false //排除隐藏目录或文件
         if (file.isDirectory) {
-            if (fileName in EXCLUDED_DIRECTORIES) return false //排除一些特定的目录
+            if (fileName in ParadoxIndexManager.excludeDirectoriesForFilePathIndex) return false //排除一些特定的目录
             return true
         }
         val fileExtension = fileName.substringAfterLast('.')

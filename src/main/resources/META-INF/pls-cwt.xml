@@ -1,9 +1,9 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
     <fileType language="CWT" name="Cwt" fieldName="INSTANCE" extensions="cwt" implementationClass="icu.windea.pls.cwt.CwtFileType"/>
-    <lang.parserDefinition language="CWT" implementationClass="icu.windea.pls.cwt.psi.CwtParserDefinition"/>
+    <lang.parserDefinition language="CWT" implementationClass="icu.windea.pls.cwt.CwtParserDefinition"/>
 
-    <spellchecker.support language="CWT" implementationClass="icu.windea.pls.cwt.CwtSpellchecker"/>
+    <spellchecker.support language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSpellchecker"/>
     <lang.syntaxHighlighterFactory language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.cwt.editor.CwtColorSettingsPage"/>
     <lang.braceMatcher language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtBraceMatcher"/>
@@ -25,9 +25,13 @@
     <lang.surroundDescriptor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.surroundWith.CwtSurroundDescriptor"/>
     <lang.unwrapDescriptor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.unwrap.CwtUnwrapDescriptor"/>
 
-    <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtOptionKey" implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtOptionKeyManipulator"/>
-    <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtPropertyKey" implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtPropertyKeyManipulator"/>
-    <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtValue" implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtValueManipulator"/>
-    <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtString" implementationClass="icu.windea.pls.cwt.psi.manipulators.CwtStringManipulator"/>
+    <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtOptionKey"
+                             implementationClass="icu.windea.pls.cwt.psi.CwtOptionKeyManipulator"/>
+    <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtPropertyKey"
+                             implementationClass="icu.windea.pls.cwt.psi.CwtPropertyKeyManipulator"/>
+    <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtValue"
+                             implementationClass="icu.windea.pls.cwt.psi.CwtValueManipulator"/>
+    <lang.elementManipulator forClass="icu.windea.pls.cwt.psi.CwtString"
+                             implementationClass="icu.windea.pls.cwt.psi.CwtStringManipulator"/>
   </extensions>
 </idea-plugin>

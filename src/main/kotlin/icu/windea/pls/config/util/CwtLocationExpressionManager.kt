@@ -118,8 +118,8 @@ object CwtLocationExpressionManager {
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                 if (primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
-                return withRecursionGuard("CwtImageLocationExpressionImpl.resolve#1") {
-                    withRecursionCheck(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
+                return withRecursionGuard {
+                    withRecursionCheck("${resolvedDefinitionInfo.name}:${resolvedDefinitionInfo.type}") {
                         primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
                             val primaryLocationExpression = primaryImageConfig.locationExpression
                             val r = resolve(primaryLocationExpression, resolvedDefinition, resolvedDefinitionInfo, newFrameInfo, true)
@@ -145,7 +145,7 @@ object CwtLocationExpressionManager {
             if (valueElement.text.isParameterized()) {
                 return CwtImageLocationExpression.ResolveResult("", null, null, PlsBundle.message("parameterized"))
             }
-            val resolved = ParadoxExpressionManager.resolveExpression(valueElement, null, config, config.expression, false)
+            val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, config.expression, false)
             when {
                 //由filePath解析为图片文件
                 resolved is PsiFile && resolved.fileType == DdsFileType -> {
@@ -167,8 +167,8 @@ object CwtLocationExpressionManager {
                     }
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                     if (primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
-                    return withRecursionGuard("CwtImageLocationExpressionImpl.resolve#2") {
-                        withRecursionCheck(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
+                    return withRecursionGuard {
+                        withRecursionCheck("${resolvedDefinitionInfo.name}:${resolvedDefinitionInfo.type}") {
                             primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
                                 val primaryLocationExpression = primaryImageConfig.locationExpression
                                 val r = resolve(primaryLocationExpression, resolvedDefinition, resolvedDefinitionInfo, newFrameInfo, toFile)
@@ -214,20 +214,20 @@ object CwtLocationExpressionManager {
                 val resolvedDefinitionInfo = resolved.definitionInfo ?: return null
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                 if (primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
-                return withRecursionGuard("CwtImageLocationExpressionImpl.resolveAll#1") {
-                    withRecursionCheck(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
+                return withRecursionGuard action@{
+                    withRecursionCheck("${resolvedDefinitionInfo.name}:${resolvedDefinitionInfo.type}") {
                         var resolvedFilePath: String? = null
                         var resolvedElements: MutableSet<PsiElement>? = null
                         for (primaryImageConfig in primaryImageConfigs) {
                             val primaryLocationExpression = primaryImageConfig.locationExpression
                             val r = resolveAll(primaryLocationExpression, resolvedDefinition, resolvedDefinitionInfo, newFrameInfo, true) ?: continue
-                            if (r.message != null) return r
+                            if (r.message != null) return@action r
                             val (filePath, elements) = r
                             if (resolvedFilePath == null) resolvedFilePath = filePath
                             if (resolvedElements == null) resolvedElements = mutableSetOf()
                             resolvedElements.addAll(elements)
                         }
-                        if (resolvedFilePath == null) return null
+                        if (resolvedFilePath == null) return@action null
                         CwtImageLocationExpression.ResolveAllResult(resolvedFilePath, resolvedElements ?: emptySet(), newFrameInfo)
                     }
                 }
@@ -250,7 +250,7 @@ object CwtLocationExpressionManager {
             if (valueElement.text.isParameterized()) {
                 return CwtImageLocationExpression.ResolveAllResult("", emptySet(), null, PlsBundle.message("parameterized"))
             }
-            val resolved = ParadoxExpressionManager.resolveExpression(valueElement, null, config, config.expression, false)
+            val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, config.expression, false)
             when {
                 //由filePath解析为图片文件
                 resolved is PsiFile && resolved.fileType == DdsFileType -> {
@@ -272,21 +272,21 @@ object CwtLocationExpressionManager {
                     }
                     val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                     if (primaryImageConfigs.isEmpty()) return null //没有或者CWT规则不完善
-                    return withRecursionGuard("CwtImageLocationExpressionImpl.resolveAll#2") {
-                        withRecursionCheck(resolvedDefinitionInfo.name + ":" + resolvedDefinitionInfo.type) {
+                    return withRecursionGuard action@{
+                        withRecursionCheck("${resolvedDefinitionInfo.name}:${resolvedDefinitionInfo.type}") {
                             var resolvedFilePath: String? = null
                             var resolvedElements: MutableSet<PsiElement>? = null
                             for (primaryImageConfig in primaryImageConfigs) {
                                 val primaryLocationExpression = primaryImageConfig.locationExpression
                                 val r = resolveAll(primaryLocationExpression, resolvedDefinition, resolvedDefinitionInfo, newFrameInfo, toFile) ?: continue
-                                if (r.message != null) return r
+                                if (r.message != null) return@action r
                                 val (filePath, elements) = r
                                 if (resolvedFilePath == null) resolvedFilePath = filePath
                                 if (resolvedElements == null) resolvedElements = mutableSetOf()
-                                resolvedElements!!.addAll(elements)
+                                resolvedElements.addAll(elements)
                             }
-                            if (resolvedFilePath == null) return null
-                            CwtImageLocationExpression.ResolveAllResult(resolvedFilePath!!, resolvedElements ?: emptySet(), newFrameInfo)
+                            if (resolvedFilePath == null) return@action null
+                            CwtImageLocationExpression.ResolveAllResult(resolvedFilePath, resolvedElements ?: emptySet(), newFrameInfo)
                         }
                     }
                 }

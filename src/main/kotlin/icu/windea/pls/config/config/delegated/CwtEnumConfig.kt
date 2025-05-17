@@ -48,4 +48,8 @@ private class CwtEnumConfigImpl(
     override val name: String,
     override val values: Set<String>,
     override val valueConfigMap: Map<String, CwtValueConfig>
-) : UserDataHolderBase(), CwtEnumConfig
+) : UserDataHolderBase(), CwtEnumConfig {
+    override fun toString(): String {
+        return "CwtEnumConfigImpl(name='$name')"
+    }
+}

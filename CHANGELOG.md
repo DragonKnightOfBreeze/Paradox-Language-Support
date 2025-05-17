@@ -2,18 +2,48 @@
 
 ## PLANNED
 
-* [ ] 提供对**魔法注释**的初步支持（可以用来生成脚本片段） / Provide initial support for **Magic Comments** (Can be used to generate script snippets)
+* [ ] 新功能：[VIC3/CK3] 支持通过规范的本地化命令声明的概念引用（示例：`[concept_name]` `[Concept('concept_name', '$other_loc_key$')]`）
+* [ ] 新功能：支持更加复杂的本地化命令（例如，带有多个参数）
+* [ ] 优化：为本地化文本中的属性引用&命令的传入参数提供关于其中使用的格式标签的说明（文档注释、枚举、工具类等）
+* [ ] 优化：优化默认生成的一些PsiElement的PSI访问方法，如果必要，从后往前遍历子节点
+* [ ] 提供代码检查，用于高亮本地化文本中可能的格式错误（例如多余的`!`） / Provide the code inspection to highlight possible format errors in loc text (such as redundant `!`) 
+* [ ] 提供对魔法注释的初步支持 / Provide initial support for magic Comments
+* [ ] 提供用于生成并修补脚本的魔法注释，实现相关功能 / Provide magic comments to generate and patch scripts, implement related features
+* [ ] 提供用于切面式批量修补脚本的魔法注释，实现相关功能 / Provide magic comments to batch patch scripts in aop style, implement related features
 * [ ] 允许为同一个模组配置多个模组依赖列表 / Allow to configure multiple mod dependency lists for the same mod
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
-* [ ] #137 [VIC3/CK3] Support special localizations
+
+## TODO
+
+* [ ] 验证：本地化的HTML渲染和内嵌提示渲染，在重构代码后是否仍然正常工作
+* [ ] 验证：对CWT文件与本地化文件的语法解析，在重构代码中是否仍然正常工作
+* [ ] 验证：本地化文件中的缺失的本地化的代码检查&生成本地化的意图与快速修复，是否正常工作，以及性能如何
+* [ ] 验证：各种复杂表达式的解析、代码检查的逻辑，在重构代码后是否仍然正确
+* [ ] 验证：本地化文本中新支持的文本格式和文本图标，是否能正常解析，包括嵌套的情况
 
 ## 1.4.0
 
-* [ ] (HIDDEN) 通过懒解析CWT文件中的选项注释来优化性能 / Optimize performance by lazily parsing option comments in CWT files
-* [ ] (HIDDEN) 通过懒解析本地化文件中的本地化文本来优化性能与提高代码灵活性 / Optimize performance and improve code flexibility by lazily parsing localisation text in localisation files
-* [ ] #94 优化CWT文件解析器的性能 / Optimize performance for CWT file parser
-* [ ] #137 [VIC3/CK3] Support special localizations - Basic support
-* [X] 其他优化与BUG修复 / Other optimizations and bug fixes
+* [X] #94 优化CWT文件解析器的性能 / Optimize performance for CWT file parser
+* [X] #137 [VIC3/CK3] Support special localizations - Basic support
+* [X] #140 修复与本地化命令连接相关的一些问题（规则解析、代码导航等） / Fixed some problems about localisation command links (Config resolving, code navigation, etc.)
+* [X] #141 [Stellaris] Indexing process should not rely on non-indexed file data
+* [X] 通过懒解析CWT文件中的选项注释来尝试优化性能 / Try to optimize performance by lazily parsing option comments in CWT files
+* [X] 通过懒解析本地化文件中的本地化文本来尝试优化性能与提高代码灵活性 / Try to optimize performance and improve code flexibility by lazily parsing localisation text in localisation files
+* [X] 修复：本地化图标如果对应一个sprite，无法正常适用用法高亮 / FIX: Localisation icons could not be properly highlighted if it will be resolved to a sprite
+* [X] 修复：本地化命令中的动态值无法查找使用，无法正常适用用法高亮 / Fix: Dynamic values in localisation commands could not find usages, could not be properly highlighted
+* [X] 修复：修复关于本地化的语言区域的一些问题 / FIX: Fix some problems about localisation locales
+* [X] 修复：修复某些场合下可能无法提示动态值的问题 / FIX: Fix a problem that dynamic values may not be completed in some cases
+* [X] 优化：`icon[path]`现在优先匹配直接位于`path`下的图标 / OP: `icon[path]` now prefer to match icons directly under `path`
+* [X] 优化：内嵌提示设置中的 iconHeightLimit 的默认值改为36 / OP: Change the default value of iconHeightLimit in inlay hint settings to 36
+* [X] 优化：兼容job作为本地化命令连接的情况 / OP: Compatible with jobs as localisation command links
+* [X] 优化：在必要时先尝试获取图标的原始高度 / OP: Try to get the original height of the icon first when necessary
+* [X] 优化：提供扩展点以更加灵活地解析本地化图标 / OP: Provides EP to resolve localisation icons more flexibly
+* [X] 优化：可以从复杂表达式节点所在位置导航到相关规则 / OP: Allow to navigate to related configs from the position of complex expression nodes
+* [X] 新功能：支持解析本地化文本中的属性引用&命令的传入参数中的文本颜色ID为引用 / NEW: Support parsing text color ids in arguments of references & commands in localisation text as references
+* [X] 新功能：新增代码检查，以在本地化文件中提示缺失指定的其他语言区域的本地化 / NEW: Add code inspection to prompt missing localisations for specified locales in localisation files *
+* [X] 新功能：新增代码检查，以提示不支持在内联脚本文件中使用参数条件块与带默认值的参数用法 / NEW: Add code inspection to prompt unsupported parameter condition blocks and parameter usages (with the default value) in inline script files
+* [X] 新功能：[VIC3/CK3] 初步支持本地化文本中的文本格式（示例：`#v text#!`，其中`v`对应规则表达式`<text_format>`，`text`是富文本的组合） / NEW: [VIC3/CK3] Basic support for text formats in localisation text (e.g., `#v text#!`, where `v` corresponds to the config expression `<text_format>`, and `text` is a combination of rich text)
+* [X] 新功能：[VIC3/CK3] 初步支持本地化文本中的文本图标（示例：`@icon!`，其中`icon`对应规则表达式`<text_icon>`） / NEW: [VIC3/CK3] Basic support for text icons in localisation text (e.g., `@icon!`, where `icon` corresponds to the config expression `<text_icon>`)
 
 ## 1.3.37
 
@@ -1427,7 +1457,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
     * [X] 优化代码补全性能：尽可能确保提示本地化图标和属性引用时不会导致`ProcessCanceledException`
     * [X] 可以根据扩展的CWT规则显示和设置block所对应的颜色
     * [X] 脚本文件：可以显示类型信息以及导航到类型定义，如果可用 - 支持定义成员，显示其规则表达式以及导航到规则声明
-    * [X] 解析本地化颜色直接基于`textcolor`类型的定义，在`shared.cwt`中定义，移除内置规则中的`colors`
+    * [X] 解析本地化颜色直接基于`text_color`类型的定义，在`shared.cwt`中定义，移除内置规则中的`colors`
     * [X] 对于修正`X`，如果存在本地化`mod_X`，在文档注释中渲染对应的本地化文本
     * [X] 优化导入游戏或模组目录时弹出的对话框
     * [X] 优化导入游戏或模组目录时弹出的对话框 - 在文件选择器中提供额外的工具栏按钮，可以快速选中Steam游戏目录、Steam创意工坊目录等

@@ -4,8 +4,10 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.util.elementType
 import icu.windea.pls.*
 import icu.windea.pls.lang.quickfix.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 import org.jetbrains.annotations.*
 
@@ -32,9 +34,8 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (inInlineMath || element.isExpressionOrMemberContext()) {
-                    super.visitElement(element)
-                }
+                if (!inInlineMath && !ParadoxPsiManager.inMemberContext(element)) return //optimize
+                super.visitElement(element)
             }
 
             override fun elementFinished(element: PsiElement?) {

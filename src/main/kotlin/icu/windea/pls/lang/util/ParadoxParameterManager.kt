@@ -52,7 +52,7 @@ object ParadoxParameterManager {
      * 如果[direct]为true，则直接将占位符`$P$`替换成传入参数`P`的值。此时：
      *
      * * 值可以是多行字符串。
-     * * 如果值是用双引号括起时，替换时会被忽略。
+     * * 如果值是用双引号括起，替换时会被忽略。
      * * 允许重复的传入参数，按顺序进行替换。
      *
      * @param element 用于得到原始文本的PSI。
@@ -63,7 +63,7 @@ object ParadoxParameterManager {
             val oldText = element.text
             var newText = oldText
             args.forEach { (k,v) ->
-                newText = newText.replace("\$$k\$", v.unquote())
+                newText = newText.replace("$$k$", v.unquote())
             }
             return newText
         } else {
@@ -320,7 +320,7 @@ object ParadoxParameterManager {
         val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
         return parameterInfo.getOrPutUserData(Keys.inferredContextConfigsFromUsages) {
             ProgressManager.checkCanceled()
-            withRecursionGuard("ParadoxParameterManager.getInferredContextConfigs") {
+            withRecursionGuard {
                 withRecursionCheck(parameterElement) {
                     doGetInferredContextConfigsFromUsages(parameterElement)
                 }

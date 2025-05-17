@@ -29,7 +29,7 @@ class IncorrectCommandExpressionInspection : LocalInspectionTool() {
                 val textRange = TextRange.create(0, value.length)
                 val expression = ParadoxCommandExpression.resolve(value, textRange, configGroup) ?: return
                 val errors = expression.getAllErrors(element)
-                errors.forEach { error -> holder.registerExpressionError(error, element) }
+                errors.forEach { error -> error.register(element, holder) }
             }
         }
     }

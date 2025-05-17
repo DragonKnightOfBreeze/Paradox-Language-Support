@@ -14,7 +14,7 @@ object CwtAttributesKeys {
     @JvmField
     val OPTION_COMMENT_KEY = createTextAttributesKey("CWT.OPTION_COMMENT", DOC_COMMENT)
     @JvmField
-    val DOCUMENTATION_COMMENT_KEY = createTextAttributesKey("CWT.DOCUMENTATION_COMMENT", DOC_COMMENT)
+    val DOC_COMMENT_KEY = createTextAttributesKey("CWT.DOC_COMMENT", DOC_COMMENT)
     @JvmField
     val KEYWORD_KEY = createTextAttributesKey("CWT.KEYWORD", KEYWORD)
     @JvmField

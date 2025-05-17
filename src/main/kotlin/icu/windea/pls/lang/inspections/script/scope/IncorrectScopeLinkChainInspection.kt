@@ -41,10 +41,12 @@ class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
             }
 
             fun checkExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {
-                complexExpression.processAllNodes p1@{ node ->
-                    if (node is ParadoxComplexExpression) doCheckExpression(element, node)
-                    true
-                }
+                complexExpression.accept(object : ParadoxComplexExpressionVisitor() {
+                    override fun visit(node: ParadoxComplexExpressionNode, parentNode: ParadoxComplexExpressionNode?): Boolean {
+                        if (node is ParadoxComplexExpression) doCheckExpression(element, node)
+                        return super.visit(node, parentNode)
+                    }
+                })
             }
 
             private fun doCheckExpression(element: ParadoxExpressionElement, complexExpression: ParadoxComplexExpression) {

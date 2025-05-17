@@ -702,12 +702,7 @@ object ParadoxCompletionManager {
     //region Complex Expression Completion Methods
 
     inline fun <T> markIncomplete(action: () -> T): T {
-        try {
-            PlsManager.incompleteComplexExpression.set(true)
-            return action()
-        } finally {
-            PlsManager.incompleteComplexExpression.remove()
-        }
+        return withState(PlsManager.incompleteComplexExpression, action)
     }
 
     fun completeTemplateExpression(context: ProcessingContext, result: CompletionResultSet) {
@@ -1277,6 +1272,7 @@ object ParadoxCompletionManager {
         val scopeLinkNode = node.castOrNull<ParadoxDynamicCommandScopeLinkNode>()
         val prefixNode = scopeLinkNode?.prefixNode
         val dsNode = scopeLinkNode?.dataSourceNode
+        val inDsNode = dsNode?.nodes?.first()
         val endOffset = dsNode?.rangeInExpression?.startOffset ?: -1
         if (prefixNode != null && dsNode != null && offsetInParent >= dsNode.rangeInExpression.startOffset) {
             context.scopeContext = ParadoxScopeManager.getSwitchedScopeContextOfNode(element, node, scopeContext)
@@ -1287,7 +1283,7 @@ object ParadoxCompletionManager {
             val keywordOffset = context.keywordOffset
             context.keyword = keywordToUse
             context.keywordOffset = dsNode.rangeInExpression.startOffset
-            completeCommandScopeLinkValue(context, resultToUse, prefixNode.text)
+            completeCommandScopeLinkValue(context, resultToUse, prefixNode.text, inDsNode)
             context.keyword = keyword
             context.keywordOffset = keywordOffset
             context.scopeContext = scopeContext
@@ -1306,7 +1302,7 @@ object ParadoxCompletionManager {
                 completeCommandScope(context, resultToUse)
                 completeCommandScopeLinkPrefix(context, resultToUse)
             }
-            completeCommandScopeLinkValue(context, resultToUse, null)
+            completeCommandScopeLinkValue(context, resultToUse, null, inDsNode)
             context.keyword = keyword
             context.keywordOffset = keywordOffset
             return false
@@ -1389,6 +1385,7 @@ object ParadoxCompletionManager {
         val scopeContext = context.scopeContext
 
         val linkConfigsFromArgument = configGroup.links.values.filter { it.forScope() && it.prefix != null && it.fromArgument }
+            .sortedByPriority({ it.dataSourceExpression }, { configGroup })
         for (linkConfig in linkConfigsFromArgument) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
@@ -1411,6 +1408,7 @@ object ParadoxCompletionManager {
         }
 
         val linkConfigsFromData = configGroup.links.values.filter { it.forScope() && it.prefix != null && it.fromData }
+            .sortedByPriority({ it.dataSourceExpression }, { configGroup })
         for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
@@ -1438,6 +1436,8 @@ object ParadoxCompletionManager {
         val scopeContext = context.scopeContext
 
         val linkConfigs = configGroup.links.values.filter { it.forScope() && it.prefix == prefix }
+            .sortedByPriority({ it.dataSourceExpression }, { configGroup })
+        context.configs = linkConfigs
 
         if (inDsNode is ParadoxScopeLinkNode) {
             completeForScopeLinkNode(inDsNode, context, result)
@@ -1452,12 +1452,11 @@ object ParadoxCompletionManager {
             completeScopeFieldExpression(context, result)
             return
         }
-
-        context.configs = linkConfigs
         for (linkConfig in linkConfigs) {
             context.config = linkConfig
             completeScriptExpression(context, result)
         }
+
         context.config = config
         context.configs = configs
     }
@@ -1494,6 +1493,7 @@ object ParadoxCompletionManager {
         val scopeContext = context.scopeContext
 
         val linkConfigsFromArgument = configGroup.links.values.filter { it.forValue() && it.prefix != null && it.fromArgument }
+            .sortedByPriority({ it.dataSourceExpression }, { configGroup })
         for (linkConfig in linkConfigsFromArgument) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
@@ -1516,6 +1516,7 @@ object ParadoxCompletionManager {
         }
 
         val linkConfigsFromData = configGroup.links.values.filter { it.forValue() && it.prefix != null && it.fromData }
+            .sortedByPriority({ it.dataSourceExpression }, { configGroup })
         for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
@@ -1543,7 +1544,9 @@ object ParadoxCompletionManager {
         val linkConfigs = when {
             variableOnly -> configGroup.linksOfVariable
             else -> configGroup.links.values.filter { it.forValue() && it.prefix == prefix }
+                .sortedByPriority({ it.dataSourceExpression }, { configGroup })
         }
+        context.configs = linkConfigs
 
         if (inDsNode is ParadoxDynamicValueExpression) {
             completeDynamicValueExpression(context, result)
@@ -1557,12 +1560,11 @@ object ParadoxCompletionManager {
             completeScriptValueExpression(context, result)
             return
         }
-
-        context.configs = linkConfigs
         for (linkConfig in linkConfigs) {
             context.config = linkConfig
             completeScriptExpression(context, result)
         }
+
         context.config = config
         context.configs = configs
     }
@@ -1572,8 +1574,8 @@ object ParadoxCompletionManager {
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
 
-        val localisationLinks = configGroup.localisationLinks
-        for (localisationScope in localisationLinks.values) {
+        val localisationLinks = configGroup.localisationLinks.values.filter { it.forScope() && !it.fromData && !it.fromArgument }
+        for (localisationScope in localisationLinks) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, localisationScope.inputScopes, configGroup)
             if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
 
@@ -1817,7 +1819,31 @@ object ParadoxCompletionManager {
         val configGroup = context.configGroup!!
         val scopeContext = context.scopeContext
 
+        val linkConfigsFromArgument = configGroup.localisationLinks.values.filter { it.forScope() && it.prefix != null && it.fromArgument }
+            .sortedByPriority({ it.dataSourceExpression }, { configGroup })
+        for (linkConfig in linkConfigsFromArgument) {
+            val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
+            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+
+            val name = linkConfig.prefix?.dropLast(1) ?: continue
+            val element = linkConfig.pointer.element ?: continue
+            val tailText = "(...) from command scope link ${linkConfig.name}"
+            val typeFile = linkConfig.pointer.containingFile
+            val lookupElement = LookupElementBuilder.create(element, name)
+                .withBoldness(true)
+                .withTailText(tailText, true)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withPriority(ParadoxCompletionPriorities.prefix)
+                .withCompletionId()
+                .withInsertHandler { c, _ ->
+                    val editor = c.editor
+                    EditorModificationUtil.insertStringAtCaret(editor, "()", false, true, 1)
+                }
+            result.addElement(lookupElement, context)
+        }
+
         val linkConfigsFromData = configGroup.localisationLinks.values.filter { it.forScope() && it.prefix != null && it.fromData }
+            .sortedByPriority({ it.dataSourceExpression }, { configGroup })
         for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
@@ -1837,18 +1863,23 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun completeCommandScopeLinkValue(context: ProcessingContext, result: CompletionResultSet, prefix: String?) {
+    fun completeCommandScopeLinkValue(context: ProcessingContext, result: CompletionResultSet, prefix: String?, inDsNode: ParadoxComplexExpressionNode?) {
         ProgressManager.checkCanceled()
         val configGroup = context.configGroup!!
+        val config = context.config
         val configs = context.configs
+        val scopeContext = context.scopeContext
 
-        val linkConfigs = when {
-            prefix == null -> configGroup.localisationLinksOfEventTarget
-            else -> configGroup.localisationLinks.values.filter { it.forScope() && it.prefix == prefix }
+        val linkConfigs = configGroup.localisationLinks.values.filter { it.forScope() && it.prefix == prefix }
+            .sortedByPriority({ it.dataSourceExpression }, { configGroup })
+        context.configs = linkConfigs
+
+        for (linkConfig in linkConfigs) {
+            context.config = linkConfig
+            completeScriptExpression(context, result)
         }
 
-        context.configs = linkConfigs
-        completeDynamicValue(context, result)
+        context.config = config
         context.configs = configs
     }
 

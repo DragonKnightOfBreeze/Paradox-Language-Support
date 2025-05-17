@@ -14,6 +14,6 @@ class ParadoxErrorScopeLinkNode(
         if (nodes.isNotEmpty()) return null
         if (text.isEmpty()) return null
         if (text.isParameterized()) return null
-        return ParadoxComplexExpressionErrors.unresolvedScopeLink(rangeInExpression, text)
+        return ParadoxComplexExpressionError.Builder.unresolvedScopeLink(rangeInExpression, text)
     }
 }

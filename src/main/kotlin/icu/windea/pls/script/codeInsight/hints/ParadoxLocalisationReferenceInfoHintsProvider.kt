@@ -23,8 +23,8 @@ import javax.swing.*
  */
 class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
-        var textLengthLimit: Int = 30,
-        var iconHeightLimit: Int = 32
+        var textLengthLimit: Int = PlsConstants.Settings.textLengthLimit,
+        var iconHeightLimit: Int = PlsConstants.Settings.iconHeightLimit,
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationReferenceInfoHintsSettingsKey")
@@ -59,7 +59,7 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
         val config = ParadoxExpressionManager.getConfigs(element).firstOrNull()
             ?.takeIf { it.expression.type in expressionTypes }
             ?: return true
-        val resolved = ParadoxExpressionManager.resolveExpression(element, null, config, config.expression, true)
+        val resolved = ParadoxExpressionManager.resolveScriptExpression(element, null, config, config.expression, true)
         if (resolved is ParadoxLocalisationProperty) {
             val localisationInfo = resolved.localisationInfo
             if (localisationInfo != null) {

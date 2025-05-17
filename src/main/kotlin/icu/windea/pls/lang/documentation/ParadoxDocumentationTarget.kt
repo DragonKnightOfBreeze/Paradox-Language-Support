@@ -293,7 +293,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: Parado
     val render = getSettings().documentation.renderNameDescForModifiers
     val gameType = configGroup.gameType ?: return
     val project = configGroup.project
-    val usedLocale = ParadoxLocaleManager.getUsedLocaleInDocumentation(element)
+    val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
     val nameLocalisation = run {
         val keys = ParadoxModifierManager.getModifierNameKeys(name, element)
         keys.firstNotNullOfOrNull { key ->
@@ -518,7 +518,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: P
     val localisationInfos = definitionInfo.localisations
     if (localisationInfos.isEmpty()) return
     val project = element.project
-    val usedLocale = ParadoxLocaleManager.getUsedLocaleInDocumentation(element)
+    val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
     val map = mutableMapOf<String, String>()
     val sections = getSections(SECTIONS_LOC)
     val sectionKeys = mutableSetOf<String>()
@@ -728,7 +728,7 @@ private fun DocumentationBuilder.buildLocalisationSections(element: ParadoxLocal
     //加上渲染后的本地化文本
     if (!getSettings().documentation.renderLocalisationForLocalisations) return
     val locale = selectLocale(element)
-    val usedLocale = ParadoxLocaleManager.getUsedLocaleInDocumentation(element, locale)
+    val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element, locale)
     val usedElement = when {
         usedLocale == locale -> element
         else -> {

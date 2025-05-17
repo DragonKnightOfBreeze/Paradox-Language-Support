@@ -60,4 +60,7 @@ object ParadoxScriptTokenSets {
 
     @JvmField
     val BLOCK_OR_ROOT_BLOCK = TokenSet.create(BLOCK, ROOT_BLOCK)
+
+    @JvmField
+    val MEMBER_CONTEXT = TokenSet.create(ROOT_BLOCK, PROPERTY, BLOCK, PARAMETER_CONDITION)
 }

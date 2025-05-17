@@ -34,8 +34,8 @@ public class CwtBlockImpl extends CwtNamedElementImpl implements CwtBlock {
 
   @Override
   @NotNull
-  public List<CwtDocumentationComment> getDocumentationCommentList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, CwtDocumentationComment.class);
+  public List<CwtDocComment> getDocCommentList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, CwtDocComment.class);
   }
 
   @Override
@@ -63,32 +63,27 @@ public class CwtBlockImpl extends CwtNamedElementImpl implements CwtBlock {
   }
 
   @Override
-  @NotNull
-  public Icon getIcon(@IconFlags int flags) {
+  public @NotNull Icon getIcon(@IconFlags int flags) {
     return CwtPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  @NotNull
-  public String getName() {
+  public @NotNull String getName() {
     return CwtPsiImplUtil.getName(this);
   }
 
   @Override
-  @NotNull
-  public CwtBlock setName(@NotNull String name) {
+  public @NotNull CwtBlock setName(@NotNull String name) {
     return CwtPsiImplUtil.setName(this, name);
   }
 
   @Override
-  @NotNull
-  public String getValue() {
+  public @NotNull String getValue() {
     return CwtPsiImplUtil.getValue(this);
   }
 
   @Override
-  @NotNull
-  public CwtValue setValue(@NotNull String value) {
+  public @NotNull CwtValue setValue(@NotNull String value) {
     return CwtPsiImplUtil.setValue(this, value);
   }
 
@@ -103,32 +98,27 @@ public class CwtBlockImpl extends CwtNamedElementImpl implements CwtBlock {
   }
 
   @Override
-  @NotNull
-  public List<PsiElement> getComponents() {
+  public @NotNull List<@NotNull PsiElement> getComponents() {
     return CwtPsiImplUtil.getComponents(this);
   }
 
   @Override
-  @NotNull
-  public CwtType getType() {
+  public @NotNull CwtType getType() {
     return CwtPsiImplUtil.getType(this);
   }
 
   @Override
-  @Nullable
-  public CwtConfigType getConfigType() {
+  public @Nullable CwtConfigType getConfigType() {
     return CwtPsiImplUtil.getConfigType(this);
   }
 
   @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
+  public @NotNull ItemPresentation getPresentation() {
     return CwtPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  @NotNull
-  public SearchScope getUseScope() {
+  public @NotNull SearchScope getUseScope() {
     return CwtPsiImplUtil.getUseScope(this);
   }
 

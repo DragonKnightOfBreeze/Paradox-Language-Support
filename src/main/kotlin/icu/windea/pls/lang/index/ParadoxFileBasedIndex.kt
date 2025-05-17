@@ -7,7 +7,6 @@ import com.intellij.util.gist.*
 import com.intellij.util.indexing.*
 import com.intellij.util.io.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import java.io.*
 
 abstract class ParadoxFileBasedIndex<T> : FileBasedIndexExtension<String, T>() {
@@ -83,12 +82,7 @@ abstract class ParadoxFileBasedIndex<T> : FileBasedIndexExtension<String, T>() {
 
     private fun buildFileData(file: PsiFile): Map<String, T> {
         return buildMap {
-            try {
-                PlsManager.indexing.set(true)
-                indexData(file, this)
-            } finally {
-                PlsManager.indexing.remove()
-            }
+            indexData(file, this)
         }
     }
 
@@ -100,7 +94,7 @@ abstract class ParadoxFileBasedIndex<T> : FileBasedIndexExtension<String, T>() {
 
     protected abstract fun filterFile(file: VirtualFile): Boolean
 
-    open fun useLazyIndex(file: VirtualFile): Boolean = false
+    protected open fun useLazyIndex(file: VirtualFile): Boolean = false
 
     fun getFileData(file: VirtualFile, project: Project): Map<String, T> {
         val useLazyIndex = useLazyIndex(file)
