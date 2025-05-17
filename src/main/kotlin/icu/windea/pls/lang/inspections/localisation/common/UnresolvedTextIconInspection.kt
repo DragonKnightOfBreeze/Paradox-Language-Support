@@ -3,19 +3,27 @@ package icu.windea.pls.lang.inspections.localisation.common
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
+import javax.swing.*
 
 /**
  * 无法解析的文本图标的检查。
+ *
+ * @property ignoredNames （配置项）需要忽略的名字。使用GLOB模式。忽略大小写。
  */
 @WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3)
 class UnresolvedTextIconInspection : LocalInspectionTool() {
+    @JvmField
+    var ignoredNames = ""
+
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
@@ -26,11 +34,14 @@ class UnresolvedTextIconInspection : LocalInspectionTool() {
             }
 
             private fun visitIcon(element: ParadoxLocalisationTextIcon) {
-                val iconName = element.name ?: return
+                val name = element.name ?: return
+                ignoredNames.splitOptimized(';').forEach {
+                    if (name.matchesPattern(it, true)) return //忽略
+                }
                 val reference = element.reference
                 if (reference == null || reference.resolve() != null) return
                 val location = element.idElement ?: return
-                holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedTextIcon.desc", iconName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+                holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedTextIcon.desc", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
     }
@@ -39,5 +50,21 @@ class UnresolvedTextIconInspection : LocalInspectionTool() {
         if (!ParadoxSyntaxConstraint.LocalisationTextIcon.supports(file)) return false
         val fileInfo = file.fileInfo ?: return false
         return ParadoxFilePathManager.inLocalisationPath(fileInfo.path)
+    }
+
+    override fun createOptionsPanel(): JComponent {
+        return panel {
+            row {
+                label(PlsBundle.message("inspection.localisation.unresolvedTextIcon.option.ignoredNames"))
+            }
+            row {
+                textField()
+                    .bindText(::ignoredNames)
+                    .bindTextWhenChanged(::ignoredNames)
+                    .comment(PlsBundle.message("inspection.localisation.unresolvedTextIcon.option.ignoredNames.comment"))
+                    .align(Align.FILL)
+                    .resizableColumn()
+            }
+        }
     }
 }

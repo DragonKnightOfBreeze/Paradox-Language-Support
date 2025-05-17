@@ -28,6 +28,6 @@ class InsertStringFix(
     override fun startInWriteAction() = true
 
     override fun belongsToMyFamily(action: IntentionActionWithFixAllOption): Boolean {
-        return action is InsertStringFix && action.string == string
+        return action is InsertStringFix && action.name == name
     }
 }

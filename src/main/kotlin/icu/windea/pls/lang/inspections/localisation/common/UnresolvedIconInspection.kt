@@ -14,11 +14,11 @@ import javax.swing.*
 /**
  * 无法解析的图标的检查。
  *
- * @property ignoredIconNames （配置项）需要忽略的图标名的模式。使用GLOB模式。忽略大小写。
+ * @property ignoredNames （配置项）需要忽略的名字。使用GLOB模式。忽略大小写。
  */
 class UnresolvedIconInspection : LocalInspectionTool() {
     @JvmField
-    var ignoredIconNames = ""
+    var ignoredNames = ""
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
@@ -30,14 +30,14 @@ class UnresolvedIconInspection : LocalInspectionTool() {
             }
 
             private fun visitIcon(element: ParadoxLocalisationIcon) {
-                val iconName = element.name ?: return
-                ignoredIconNames.splitOptimized(';').forEach {
-                    if (iconName.matchesPattern(it, true)) return //忽略
+                val name = element.name ?: return
+                ignoredNames.splitOptimized(';').forEach {
+                    if (name.matchesPattern(it, true)) return //忽略
                 }
                 val reference = element.reference
                 if (reference == null || reference.resolve() != null) return
                 val location = element.idElement ?: return
-                holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedIcon.desc", iconName), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+                holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedIcon.desc", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
     }
@@ -50,13 +50,13 @@ class UnresolvedIconInspection : LocalInspectionTool() {
     override fun createOptionsPanel(): JComponent {
         return panel {
             row {
-                label(PlsBundle.message("inspection.localisation.unresolvedIcon.option.ignoredIconNames"))
+                label(PlsBundle.message("inspection.localisation.unresolvedIcon.option.ignoredNames"))
             }
             row {
                 textField()
-                    .bindText(::ignoredIconNames)
-                    .bindTextWhenChanged(::ignoredIconNames)
-                    .comment(PlsBundle.message("inspection.localisation.unresolvedIcon.option.ignoredIconNames.comment"))
+                    .bindText(::ignoredNames)
+                    .bindTextWhenChanged(::ignoredNames)
+                    .comment(PlsBundle.message("inspection.localisation.unresolvedIcon.option.ignoredNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()
             }

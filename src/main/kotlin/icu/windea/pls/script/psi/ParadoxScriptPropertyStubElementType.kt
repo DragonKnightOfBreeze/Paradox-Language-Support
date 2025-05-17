@@ -41,7 +41,7 @@ class ParadoxScriptPropertyStubElementType : ILightStubElementType<ParadoxScript
         //Note that definition name can be empty (aka anonymous)
         sink.occurrence(ParadoxIndexManager.DefinitionNameKey, stub.name)
         ParadoxIndexConstraint.Definition.entries.forEach { constraint ->
-            if (constraint.predicate(stub.name)) {
+            if (constraint.predicate(stub.type)) {
                 val name = if (constraint.ignoreCase) stub.name.lowercase() else stub.name
                 sink.occurrence(constraint.indexKey, name)
             }

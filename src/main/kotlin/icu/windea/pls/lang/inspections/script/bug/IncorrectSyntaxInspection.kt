@@ -1,20 +1,30 @@
-@file:Suppress("UNUSED_PARAMETER")
+package icu.windea.pls.lang.inspections.script.bug
 
-package icu.windea.pls.lang.inspections.script.common
-
-import com.intellij.codeInspection.*
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.*
+import com.intellij.codeInspection.LocalInspectionTool
+import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import com.intellij.psi.util.elementType
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.core.findChild
+import icu.windea.pls.lang.selectRootFile
+import icu.windea.pls.script.psi.ParadoxScriptFloat
+import icu.windea.pls.script.psi.ParadoxScriptInlineMath
+import icu.windea.pls.script.psi.ParadoxScriptInt
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
+import icu.windea.pls.script.psi.ParadoxScriptString
+import icu.windea.pls.script.psi.ParadoxScriptTokenSets
+import icu.windea.pls.script.psi.ParadoxScriptValue
 
 /**
- * 不正确的脚本语法的检查。
+ * 不正确的语法的检查。
  */
-class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
+class IncorrectSyntaxInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
@@ -32,7 +42,7 @@ class IncorrectScriptSyntaxInspection : LocalInspectionTool() {
                 if (canResolveToNumber(propertyKey)) return
                 val propertyValue = element.propertyValue ?: return
                 if (canResolveToNumber(propertyValue)) return
-                val message = PlsBundle.message("inspection.script.incorrectScriptSyntax.desc.1")
+                val message = PlsBundle.message("inspection.script.incorrectSyntax.desc.1")
                 holder.registerProblem(token, message, ProblemHighlightType.GENERIC_ERROR)
             }
 

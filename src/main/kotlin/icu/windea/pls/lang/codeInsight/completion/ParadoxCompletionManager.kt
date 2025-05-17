@@ -728,9 +728,11 @@ object ParadoxCompletionManager {
         val offset = context.offsetInParent!! - context.expressionOffset
         if (offset < 0) return //unexpected
         for (node in expression.nodes) {
+            ProgressManager.checkCanceled()
             val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
             if (node is ParadoxTemplateSnippetNode) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
@@ -742,6 +744,7 @@ object ParadoxCompletionManager {
                 }
             } else if (node is ParadoxTemplateSnippetConstantNode) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     //一般来说，仅适用于是第一个节点的情况（否则，仍然会匹配范围内的通配符）
                     val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
@@ -790,6 +793,7 @@ object ParadoxCompletionManager {
             val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
             if (node is ParadoxDynamicValueNode) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
@@ -799,6 +803,7 @@ object ParadoxCompletionManager {
                 }
             } else if (node is ParadoxScopeFieldExpression) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
@@ -841,6 +846,7 @@ object ParadoxCompletionManager {
             }
             if (node is ParadoxScopeLinkNode) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     context.scopeContext = scopeContextInExpression
                     completeForScopeLinkNode(node, context, result)
                     break
@@ -879,6 +885,7 @@ object ParadoxCompletionManager {
             val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
             if (node is ParadoxScriptValueNode) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
@@ -947,6 +954,7 @@ object ParadoxCompletionManager {
             }
             if (node is ParadoxScopeLinkNode) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     context.scopeContext = scopeContextInExpression
                     completeForScopeLinkNode(node, context, result)
                     break
@@ -955,6 +963,7 @@ object ParadoxCompletionManager {
                 }
             } else if (node is ParadoxValueFieldNode) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     context.scopeContext = scopeContextInExpression
                     val scopeNode = ParadoxScopeLinkNode.resolve(node.text, node.rangeInExpression, configGroup)
                     val afterPrefix = completeForScopeLinkNode(scopeNode, context, result)
@@ -995,6 +1004,7 @@ object ParadoxCompletionManager {
             }
             if (node is ParadoxScopeLinkNode) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     context.scopeContext = scopeContextInExpression
                     completeForScopeLinkNode(node, context, result)
                     break
@@ -1003,6 +1013,7 @@ object ParadoxCompletionManager {
                 }
             } else if (node is ParadoxDataSourceNode) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     context.scopeContext = scopeContextInExpression
                     val scopeNode = ParadoxScopeLinkNode.resolve(node.text, node.rangeInExpression, configGroup)
                     val afterPrefix = completeForScopeLinkNode(scopeNode, context, result)
@@ -1043,6 +1054,7 @@ object ParadoxCompletionManager {
             }
             if (node is ParadoxCommandScopeLinkNode) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     context.scopeContext = scopeContextInExpression
                     completeForCommandScopeLinkNode(node, context, result)
                     break
@@ -1051,6 +1063,7 @@ object ParadoxCompletionManager {
                 }
             } else if (node is ParadoxCommandFieldNode) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     context.scopeContext = scopeContextInExpression
                     val scopeNode = ParadoxCommandScopeLinkNode.resolve(node.text, node.rangeInExpression, configGroup)
                     val afterPrefix = completeForCommandScopeLinkNode(scopeNode, context, result)
@@ -1086,6 +1099,7 @@ object ParadoxCompletionManager {
             val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
             if (node is ParadoxDatabaseObjectTypeNode) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
@@ -1096,6 +1110,7 @@ object ParadoxCompletionManager {
                 }
             } else if (node is ParadoxDatabaseObjectNode) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
@@ -1130,12 +1145,14 @@ object ParadoxCompletionManager {
         if (offset < 0) return //unexpected
         for (node in expression.nodes) {
             if (node is ParadoxErrorNode && expression.nodes.size == 1) {
+                ProgressManager.checkCanceled()
                 completeDefinePrefix(context, result)
                 break
             }
             val inRange = offset >= node.rangeInExpression.startOffset && offset <= node.rangeInExpression.endOffset
             if (node is ParadoxDefineNamespaceNode) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
@@ -1146,6 +1163,7 @@ object ParadoxCompletionManager {
                 }
             } else if (node is ParadoxDefineVariableNode) {
                 if (inRange) {
+                    ProgressManager.checkCanceled()
                     val keywordToUse = node.text.substring(0, offset - node.rangeInExpression.startOffset)
                     val resultToUse = result.withPrefixMatcher(keywordToUse)
                     context.keyword = keywordToUse
@@ -1475,6 +1493,7 @@ object ParadoxCompletionManager {
             return
         }
         for (linkConfig in linkConfigs) {
+            ProgressManager.checkCanceled()
             context.config = linkConfig
             completeScriptExpression(context, result)
         }
@@ -1490,6 +1509,7 @@ object ParadoxCompletionManager {
 
         val linkConfigs = configGroup.links.values.filter { it.forValue() && !it.fromData && !it.fromArgument }
         for (linkConfig in linkConfigs) {
+            ProgressManager.checkCanceled()
             //排除input_scopes不匹配前一个scope的output_scope的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
@@ -1583,6 +1603,7 @@ object ParadoxCompletionManager {
             return
         }
         for (linkConfig in linkConfigs) {
+            ProgressManager.checkCanceled()
             context.config = linkConfig
             completeScriptExpression(context, result)
         }
@@ -1871,6 +1892,7 @@ object ParadoxCompletionManager {
         context.configs = linkConfigs
 
         for (linkConfig in linkConfigs) {
+            ProgressManager.checkCanceled()
             context.config = linkConfig
             completeScriptExpression(context, result)
         }
@@ -1911,6 +1933,7 @@ object ParadoxCompletionManager {
 
         val linkConfigs = configGroup.localisationLinks.values.filter { it.forValue() && !it.fromData && !it.fromArgument }
         for (linkConfig in linkConfigs) {
+            ProgressManager.checkCanceled()
             //排除input_scopes不匹配前一个scope的output_scope的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
             if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
@@ -1989,6 +2012,7 @@ object ParadoxCompletionManager {
         context.configs = linkConfigs
 
         for (linkConfig in linkConfigs) {
+            ProgressManager.checkCanceled()
             context.config = linkConfig
             completeScriptExpression(context, result)
         }

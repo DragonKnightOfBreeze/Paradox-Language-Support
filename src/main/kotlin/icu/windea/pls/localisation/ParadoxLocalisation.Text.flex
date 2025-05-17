@@ -126,7 +126,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     private boolean isIcon() {
         if (yylength() <= 1) return false;
         char c = yycharat(1);
-        return c == '$' || isExactWord(c);
+        return c == '[' || c == '$' || isExactWord(c);
     }
 
     private IElementType checkIcon() {
@@ -144,7 +144,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     private boolean isTextFormat() {
         if (yylength() <= 1) return false;
         char c = yycharat(1);
-        return c == '$' || isExactWord(c);
+        return c == '[' || c == '$' || isExactWord(c);
     }
 
     private IElementType checkTextFormat() {
@@ -162,7 +162,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
     private boolean isTextIcon() {
         if (yylength() <= 1) return false;
         char c = yycharat(1);
-        return c == '$' || isExactWord(c);
+        return c == '[' || c == '$' || isExactWord(c);
     }
 
     private IElementType checkTextIcon() {
@@ -209,7 +209,6 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 %s CHECK_TEXT_FORMAT
 %s IN_TEXT_FORMAT_ID
-%s IN_TEXT_FORMAT_BLANK
 %s IN_TEXT_FORMAT_TEXT
 
 %s CHECK_TEXT_ICON
@@ -223,15 +222,15 @@ PLAIN_TEXT_TOKEN=[^§\$\[\]£#@]+
 
 COLORFUL_TEXT_CHECK=§.?
 COLOR_TOKEN=\w
-REFERENCE_CHECK=\$(\S*\$|.?) //no blank in $...$
+REFERENCE_CHECK=\$(\S*\$|.?) // no blank in $...$
 REFERENCE_TOKEN=[a-zA-Z0-9_.\-']+
-REFERENCE_ARGUMENT_TOKEN=[^\"§\$\[\]\r\n\\]+
+REFERENCE_ARGUMENT_TOKEN=[^\"§\$\[\]\r\n\\]+ // pipe is allowed?
 
 SCRIPTED_VARIABLE_TOKEN=[a-zA-Z_][a-zA-Z0-9_]*
-
+// '[concept_state]'123'123
 COMMAND_CHECK=\[.?
-COMMAND_TEXT_TOKEN=[^\r\n\[\]\|]+
-COMMAND_ARGUMENT_TOKEN=[^\"§\$\[\]\r\n\\]+
+COMMAND_TEXT_TOKEN=([^\r\n\'\[\]]+)|('([^'\\\r\n]|\\[\s\S])*'?)
+COMMAND_ARGUMENT_TOKEN=[^\"§\$\[\]\r\n\\]+ // pipe is allowed?
 
 ICON_CHECK=£.?
 ICON_TOKEN=[a-zA-Z0-9\-_\\/]+
@@ -240,7 +239,7 @@ ICON_ARGUMENT_TOKEN=[1-9][0-9]* // positive integer
 CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
 
 TEXT_FORMAT_CHECK=#.?
-TEXT_FORMAT_TOKEN=\w+
+TEXT_FORMAT_TOKEN=[\w:;]+ // "italic;color:green" is allowed
 
 TEXT_ICON_CHECK=@.?
 TEXT_ICON_TOKEN=\w+
@@ -393,9 +392,9 @@ TEXT_ICON_TOKEN=\w+
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
 
     "]" { beginNextState(); return COMMAND_END; }
-    {BLANK} { setNextStateByDepth(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE; }
 
-    // there may not be a whitespace after COMMA
+    {BLANK} { setNextStateByDepth(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE; }
+    // there may not be a whitespace after COMMA (and such situation should be invalid)
     [^] { yypushback(yylength()); setNextStateByDepth(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); }
 }
 
@@ -407,22 +406,15 @@ TEXT_ICON_TOKEN=\w+
 <IN_TEXT_FORMAT_ID> {
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
-    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+    "$" { setNextState(yylength()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+    "[" { setNextState(yylength()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
     "#" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT); }
     "#!" { beginNextState(); return TEXT_FORMAT_END; }
-    {TEXT_FORMAT_TOKEN} { yybegin(IN_TEXT_FORMAT_BLANK); return TEXT_FORMAT_TOKEN; }
-}
-<IN_TEXT_FORMAT_BLANK> {
-    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
-    "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
-    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+    {TEXT_FORMAT_TOKEN} { return TEXT_FORMAT_TOKEN; }
 
-    "#" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT); }
-    "#!" { beginNextState(); return TEXT_FORMAT_END; }
     {BLANK} { setNextStateByDepth(IN_TEXT_FORMAT_TEXT); yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE; }
-
-    // there may not be a whitespace after TEXT_FORMAT_TOKEN
+    // there may not be a whitespace after TEXT_FORMAT_TOKEN (and such situation should be invalid)
     [^] { yypushback(yylength()); setNextStateByDepth(IN_TEXT_FORMAT_TEXT); yybegin(IN_TEXT_FORMAT_TEXT); }
 }
 
@@ -435,6 +427,7 @@ TEXT_ICON_TOKEN=\w+
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
     "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+    "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
     "!" { beginNextState(); return TEXT_ICON_END; }
     {TEXT_ICON_TOKEN} { return TEXT_ICON_TOKEN; }

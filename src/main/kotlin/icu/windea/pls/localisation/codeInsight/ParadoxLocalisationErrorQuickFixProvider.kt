@@ -15,14 +15,6 @@ class ParadoxLocalisationErrorQuickFixProvider : ErrorQuickFixProvider {
     override fun registerErrorQuickFix(errorElement: PsiErrorElement, builder: HighlightInfo.Builder) {
         if (errorElement.language !is ParadoxLocalisationLanguage) return
         when {
-            errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationIcon -> {
-                //ICON_END
-                builder.registerFix(InsertMissingTokenFix("£", errorElement.startOffset), null, null, null, null)
-            }
-            errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationPropertyReference -> {
-                //PROPERTY_REFERENCE_END
-                builder.registerFix(InsertMissingTokenFix("$", errorElement.startOffset), null, null, null, null)
-            }
             errorElement.prevSibling == null && errorElement.parent is ParadoxLocalisationPropertyValue -> {
                 //LEFT_QUOTE
                 builder.registerFix(InsertMissingTokenFix("\"", errorElement.endOffset), null, null, null, null)
@@ -30,6 +22,22 @@ class ParadoxLocalisationErrorQuickFixProvider : ErrorQuickFixProvider {
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationPropertyValue -> {
                 //RIGHT_QUOTE
                 builder.registerFix(InsertMissingTokenFix("\"", errorElement.startOffset), null, null, null, null)
+            }
+            errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationPropertyReference -> {
+                //PROPERTY_REFERENCE_END
+                builder.registerFix(InsertMissingTokenFix("$", errorElement.startOffset), null, null, null, null)
+            }
+            errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationIcon -> {
+                //ICON_END
+                builder.registerFix(InsertMissingTokenFix("£", errorElement.startOffset), null, null, null, null)
+            }
+            errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationTextFormat -> {
+                //TEXT_FORMAT_END
+                builder.registerFix(InsertMissingTokenFix("#!", errorElement.startOffset), null, null, null, null)
+            }
+            errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationTextIcon -> {
+                //TEXT_ICON_END
+                builder.registerFix(InsertMissingTokenFix("!", errorElement.startOffset), null, null, null, null)
             }
         }
     }

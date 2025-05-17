@@ -34,12 +34,6 @@ public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisatio
 
   @Override
   @Nullable
-  public ParadoxLocalisationCommand getCommand() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationCommand.class);
-  }
-
-  @Override
-  @Nullable
   public ParadoxLocalisationScriptedVariableReference getScriptedVariableReference() {
     return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationScriptedVariableReference.class);
   }

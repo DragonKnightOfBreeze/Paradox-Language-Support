@@ -50,7 +50,7 @@ class ParadoxDynamicCommandScopeLinkNode(
             //匹配某一前缀且使用传参格式的场合（如，"relations(root.owner)"）
             run r1@{
                 if (!text.contains('(')) return@r1
-                val linkConfigs = configGroup.links.values.filter { it.forScope() && it.fromArgument && it.prefix != null }
+                val linkConfigs = configGroup.localisationLinks.values.filter { it.forScope() && it.fromArgument && it.prefix != null }
                     .filter { text.startsWith(it.prefix!!.dropLast(1) + '(') }
                     .sortedByPriority({ it.dataSourceExpression }, { configGroup })
                 if (linkConfigs.isEmpty()) return@r1

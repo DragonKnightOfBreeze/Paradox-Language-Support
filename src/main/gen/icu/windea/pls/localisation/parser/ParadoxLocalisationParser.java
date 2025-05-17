@@ -48,7 +48,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   };
 
   /* ********************************************************** */
-  // COLORFUL_TEXT_START COLOR_TOKEN colorful_text_items ? [COLORFUL_TEXT_END]
+  // COLORFUL_TEXT_START COLOR_TOKEN colorful_text_items ? COLORFUL_TEXT_END ?
   public static boolean colorful_text(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "colorful_text")) return false;
     if (!nextTokenIs(b, COLORFUL_TEXT_START)) return false;
@@ -69,7 +69,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // [COLORFUL_TEXT_END]
+  // COLORFUL_TEXT_END ?
   private static boolean colorful_text_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "colorful_text_3")) return false;
     consumeToken(b, COLORFUL_TEXT_END);
@@ -77,15 +77,15 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // rich_text +
+  // concept_text_item +
   static boolean colorful_text_items(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "colorful_text_items")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = rich_text(b, l + 1);
+    r = concept_text_item(b, l + 1);
     while (r) {
       int c = current_position_(b);
-      if (!rich_text(b, l + 1)) break;
+      if (!concept_text_item(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "colorful_text_items", c)) break;
     }
     exit_section_(b, m, null, r);
@@ -128,7 +128,27 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // concept_expression | (command_text [PIPE command_argument])
+  // PIPE command_argument ?
+  static boolean command_argument_part(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "command_argument_part")) return false;
+    if (!nextTokenIs(b, PIPE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, PIPE);
+    r = r && command_argument_part_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // command_argument ?
+  private static boolean command_argument_part_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "command_argument_part_1")) return false;
+    command_argument(b, l + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // concept_expression | (command_text command_argument_part ?)
   static boolean command_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "command_expression")) return false;
     boolean r;
@@ -139,7 +159,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // command_text [PIPE command_argument]
+  // command_text command_argument_part ?
   private static boolean command_expression_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "command_expression_1")) return false;
     boolean r;
@@ -150,22 +170,11 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // [PIPE command_argument]
+  // command_argument_part ?
   private static boolean command_expression_1_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "command_expression_1_1")) return false;
-    command_expression_1_1_0(b, l + 1);
+    command_argument_part(b, l + 1);
     return true;
-  }
-
-  // PIPE command_argument
-  private static boolean command_expression_1_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "command_expression_1_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, PIPE);
-    r = r && command_argument(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
   }
 
   /* ********************************************************** */
@@ -266,6 +275,12 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // rich_text
+  static boolean concept_text_item(PsiBuilder b, int l) {
+    return rich_text(b, l + 1);
+  }
+
+  /* ********************************************************** */
   // rich_text +
   static boolean concept_text_items(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "concept_text_items")) return false;
@@ -282,7 +297,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ICON_START icon_name [PIPE icon_argument] ICON_END
+  // ICON_START icon_name icon_argument_part ? ICON_END
   public static boolean icon(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "icon")) return false;
     if (!nextTokenIs(b, ICON_START)) return false;
@@ -297,22 +312,11 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // [PIPE icon_argument]
+  // icon_argument_part ?
   private static boolean icon_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "icon_2")) return false;
-    icon_2_0(b, l + 1);
+    icon_argument_part(b, l + 1);
     return true;
-  }
-
-  // PIPE icon_argument
-  private static boolean icon_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "icon_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, PIPE);
-    r = r && icon_argument(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
   }
 
   /* ********************************************************** */
@@ -326,6 +330,26 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     if (!r) r = property_reference(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
+  }
+
+  /* ********************************************************** */
+  // PIPE icon_argument ?
+  static boolean icon_argument_part(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "icon_argument_part")) return false;
+    if (!nextTokenIs(b, PIPE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, PIPE);
+    r = r && icon_argument_part_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // icon_argument ?
+  private static boolean icon_argument_part_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "icon_argument_part_1")) return false;
+    icon_argument(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */
@@ -480,7 +504,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PROPERTY_REFERENCE_START property_reference_name [PIPE property_reference_argument] PROPERTY_REFERENCE_END
+  // PROPERTY_REFERENCE_START property_reference_name property_reference_argument_part ? PROPERTY_REFERENCE_END
   public static boolean property_reference(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_reference")) return false;
     if (!nextTokenIs(b, PROPERTY_REFERENCE_START)) return false;
@@ -495,22 +519,11 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // [PIPE property_reference_argument]
+  // property_reference_argument_part ?
   private static boolean property_reference_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_reference_2")) return false;
-    property_reference_2_0(b, l + 1);
+    property_reference_argument_part(b, l + 1);
     return true;
-  }
-
-  // PIPE property_reference_argument
-  private static boolean property_reference_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_reference_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, PIPE);
-    r = r && property_reference_argument(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
   }
 
   /* ********************************************************** */
@@ -523,6 +536,26 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, PROPERTY_REFERENCE_ARGUMENT_TOKEN);
     exit_section_(b, m, PROPERTY_REFERENCE_ARGUMENT, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // PIPE property_reference_argument ?
+  static boolean property_reference_argument_part(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_reference_argument_part")) return false;
+    if (!nextTokenIs(b, PIPE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, PIPE);
+    r = r && property_reference_argument_part_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // property_reference_argument ?
+  private static boolean property_reference_argument_part_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_reference_argument_part_1")) return false;
+    property_reference_argument(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */
@@ -612,7 +645,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // <<supportsTextFormat>> TEXT_FORMAT_START text_format_name text_format_text ? TEXT_FORMAT_END
+  // <<supportsTextFormat>> TEXT_FORMAT_START text_format_name text_format_text_items ? TEXT_FORMAT_END ?
   public static boolean text_format(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "text_format")) return false;
     boolean r, p;
@@ -622,45 +655,52 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     p = r; // pin = 2
     r = r && report_error_(b, text_format_name(b, l + 1));
     r = p && report_error_(b, text_format_3(b, l + 1)) && r;
-    r = p && consumeToken(b, TEXT_FORMAT_END) && r;
+    r = p && text_format_4(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // text_format_text ?
+  // text_format_text_items ?
   private static boolean text_format_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "text_format_3")) return false;
-    text_format_text(b, l + 1);
+    text_format_text_items(b, l + 1);
+    return true;
+  }
+
+  // TEXT_FORMAT_END ?
+  private static boolean text_format_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "text_format_4")) return false;
+    consumeToken(b, TEXT_FORMAT_END);
     return true;
   }
 
   /* ********************************************************** */
-  // property_reference | TEXT_FORMAT_TOKEN
+  // command | property_reference | TEXT_FORMAT_TOKEN
   static boolean text_format_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "text_format_name")) return false;
-    if (!nextTokenIs(b, "", PROPERTY_REFERENCE_START, TEXT_FORMAT_TOKEN)) return false;
     boolean r;
-    r = property_reference(b, l + 1);
+    r = command(b, l + 1);
+    if (!r) r = property_reference(b, l + 1);
     if (!r) r = consumeToken(b, TEXT_FORMAT_TOKEN);
     return r;
   }
 
   /* ********************************************************** */
-  // text_format_text_items
-  static boolean text_format_text(PsiBuilder b, int l) {
-    return text_format_text_items(b, l + 1);
+  // rich_text
+  static boolean text_format_text_item(PsiBuilder b, int l) {
+    return rich_text(b, l + 1);
   }
 
   /* ********************************************************** */
-  // rich_text +
+  // text_format_text_item +
   static boolean text_format_text_items(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "text_format_text_items")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = rich_text(b, l + 1);
+    r = text_format_text_item(b, l + 1);
     while (r) {
       int c = current_position_(b);
-      if (!rich_text(b, l + 1)) break;
+      if (!text_format_text_item(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "text_format_text_items", c)) break;
     }
     exit_section_(b, m, null, r);
@@ -683,23 +723,24 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // property_reference | TEXT_ICON_TOKEN
+  // command | property_reference | TEXT_ICON_TOKEN
   static boolean text_icon_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "text_icon_name")) return false;
-    if (!nextTokenIs(b, "", PROPERTY_REFERENCE_START, TEXT_ICON_TOKEN)) return false;
     boolean r;
-    r = property_reference(b, l + 1);
+    r = command(b, l + 1);
+    if (!r) r = property_reference(b, l + 1);
     if (!r) r = consumeToken(b, TEXT_ICON_TOKEN);
     return r;
   }
 
   /* ********************************************************** */
-  // rich_text | COLORFUL_TEXT_END
+  // rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
   static boolean text_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "text_item")) return false;
     boolean r;
     r = rich_text(b, l + 1);
     if (!r) r = consumeToken(b, COLORFUL_TEXT_END);
+    if (!r) r = consumeToken(b, TEXT_FORMAT_END);
     return r;
   }
 

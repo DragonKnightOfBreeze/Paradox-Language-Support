@@ -15,7 +15,7 @@ import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.search.scope.*
-import icu.windea.pls.lang.util.ParadoxLocalisationArgumentManager
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
@@ -359,6 +359,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationCommandArgument): PsiElement? {
+        if (element.firstChild?.nextSibling != null) return null // dynamic
         return element.findChild { it.elementType == COMMAND_ARGUMENT_TOKEN }
     }
 
@@ -372,6 +373,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationIcon): PsiElement? {
+        if (element.firstChild?.nextSibling != null) return null // dynamic
         return element.findChild { it.elementType == ICON_TOKEN }
     }
 
@@ -420,6 +422,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationIconArgument): PsiElement? {
+        if (element.firstChild?.nextSibling != null) return null // dynamic
         return element.findChild { it.elementType == ICON_ARGUMENT_TOKEN }
     }
 
@@ -502,6 +505,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationTextFormat): PsiElement? {
+        if (element.firstChild?.nextSibling != null) return null // dynamic
         return element.findChild { it.elementType == TEXT_FORMAT_TOKEN }
     }
 
@@ -544,6 +548,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationTextIcon): PsiElement? {
+        if (element.firstChild?.nextSibling != null) return null // dynamic
         return element.findChild { it.elementType == TEXT_ICON_TOKEN }
     }
 

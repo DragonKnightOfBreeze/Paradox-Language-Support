@@ -51,12 +51,6 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
                      groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectFileEncodingInspection"/>
-    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScriptSyntax"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectScriptSyntax"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
-                     implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectScriptSyntaxInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedExpression"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="inspection.script.unresolvedExpression"
@@ -151,6 +145,12 @@
                      implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectPathReferenceInspection"/>
     <!--endregion-->
     <!--region Paradox script/Possible Bugs-->
+    <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectSyntax"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.script.incorrectSyntax"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
+                     groupPathKey="inspection.script.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.script.bug.IncorrectSyntaxInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedParameterUsage"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.unsupportedParameterUsage"
@@ -362,20 +362,26 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
                      groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedConceptInspection"/>
-    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedTextIcon"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.unresolvedTextIcon"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
-                     implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedTextIconInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedTextFormat"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="inspection.localisation.unresolvedTextFormat"
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
                      groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedTextFormatInspection"/>
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedTextIcon"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.localisation.unresolvedTextIcon"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
+                     groupPathKey="inspection.localisation.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedTextIconInspection"/>
     <!--endregion-->
     <!--region Paradox localisation/Possible bugs-->
+    <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectSyntax"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.localisation.incorrectSyntax"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
+                     groupPathKey="inspection.localisation.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.localisation.bug.IncorrectSyntaxInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedRecursion"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.localisation.unsupportedRecursion"
