@@ -204,10 +204,12 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %s IN_ICON_ARGUMENT
 
 %s IN_CONCEPT_NAME
+%s IN_CONCEPT_BLANK
 %s IN_CONCEPT_TEXT
 
 %s CHECK_TEXT_FORMAT
 %s IN_TEXT_FORMAT_ID
+%s IN_TEXT_FORMAT_BLANK
 %s IN_TEXT_FORMAT_TEXT
 
 %s CHECK_TEXT_ICON
@@ -217,7 +219,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 
 BLANK=\s+
 
-PLAIN_TEXT_TOKEN=[^\s§\$\[\]£#@][^§\$\[\]£#@]*
+PLAIN_TEXT_TOKEN=[^§\$\[\]£#@]+
 
 COLORFUL_TEXT_CHECK=§.?
 COLOR_TOKEN=\w
@@ -262,10 +264,6 @@ TEXT_ICON_TOKEN=\w+
     "@" {
         if (!ParadoxSyntaxConstraint.LocalisationTextIcon.supports(this)) return STRING_TOKEN;
         setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_ICON);
-    }
-    {BLANK} {
-        if (yystate() == YYINITIAL || yystate() == IN_COLORFUL_TEXT) return STRING_TOKEN;
-        return WHITE_SPACE;
     }
     {PLAIN_TEXT_TOKEN} { return STRING_TOKEN; }
     "]" {
@@ -386,9 +384,16 @@ TEXT_ICON_TOKEN=\w+
 
     "]" { beginNextState(); return COMMAND_END; }
     "'" { return RIGHT_SINGLE_QUOTE; }
-    "," { setNextStateByDepth(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); return COMMA; }
-    {BLANK} { setNextStateByDepth(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE; }
+    "," { yybegin(IN_CONCEPT_BLANK); return COMMA; }
     {CONCEPT_NAME_TOKEN} { return CONCEPT_NAME_TOKEN; }
+}
+<IN_CONCEPT_BLANK> {
+    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
+    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+
+    "]" { beginNextState(); return COMMAND_END; }
+    {BLANK} { setNextStateByDepth(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE; }
 }
 
 // [ck3, vic3] localisation text format rules
@@ -403,8 +408,16 @@ TEXT_ICON_TOKEN=\w+
 
     "#" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT); }
     "#!" { beginNextState(); return TEXT_FORMAT_END; }
+    {TEXT_FORMAT_TOKEN} { yybegin(IN_TEXT_FORMAT_BLANK); return TEXT_FORMAT_TOKEN; }
+}
+<IN_TEXT_FORMAT_BLANK> {
+    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
+    "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
+    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
+
+    "#" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_TEXT_FORMAT); }
+    "#!" { beginNextState(); return TEXT_FORMAT_END; }
     {BLANK} { setNextStateByDepth(IN_TEXT_FORMAT_TEXT); yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE; }
-    {TEXT_FORMAT_TOKEN} { return TEXT_FORMAT_TOKEN; }
 }
 
 // [ck3, vic3] localisation text icon rules
