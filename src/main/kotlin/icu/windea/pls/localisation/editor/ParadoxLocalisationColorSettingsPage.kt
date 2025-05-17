@@ -4,7 +4,7 @@ import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.options.colors.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys
+import icu.windea.pls.script.editor.*
 
 class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
     private val _attributesDescriptors = arrayOf(

@@ -4,7 +4,6 @@ import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
-import com.intellij.psi.util.elementType
 import icu.windea.pls.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*

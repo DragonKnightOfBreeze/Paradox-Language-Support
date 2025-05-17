@@ -5,8 +5,7 @@ import com.intellij.refactoring.util.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxRefactoringElementDescriptorProvider : ElementDescriptionProvider {

@@ -1,7 +1,7 @@
 package icu.windea.pls.script.lexer
 
-import com.intellij.lexer.StringLiteralLexer
-import com.intellij.psi.tree.IElementType
+import com.intellij.lexer.*
+import com.intellij.psi.tree.*
 
 class ParadoxScriptStringLiteralLexer(
     originalLiteralToken: IElementType

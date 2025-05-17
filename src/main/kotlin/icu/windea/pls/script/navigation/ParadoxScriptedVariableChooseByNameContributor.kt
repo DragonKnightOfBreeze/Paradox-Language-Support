@@ -5,7 +5,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
-import icu.windea.pls.lang.index.ParadoxIndexManager
+import icu.windea.pls.lang.index.*
 import icu.windea.pls.script.psi.*
 
 //com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor

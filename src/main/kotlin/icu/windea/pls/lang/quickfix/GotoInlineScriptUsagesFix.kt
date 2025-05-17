@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.quickfix
 
-import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
+import com.intellij.codeInsight.intention.preview.*
 import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*

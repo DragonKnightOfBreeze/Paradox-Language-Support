@@ -2,7 +2,7 @@ package icu.windea.pls.lang.hierarchy.type
 
 import icu.windea.pls.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.constants.*
 
 @Suppress("InvalidBundleOrProperty")
 enum class ParadoxDefinitionHierarchyType(

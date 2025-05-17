@@ -7,7 +7,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.actions.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 class GenerateLocalisationsInFileAction : BaseCodeInsightAction(), GenerateActionPopupTemplateInjector {

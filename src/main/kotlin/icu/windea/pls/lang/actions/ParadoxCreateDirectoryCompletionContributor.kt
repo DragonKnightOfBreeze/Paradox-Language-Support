@@ -10,7 +10,7 @@ import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.ParadoxIndexManager
+import icu.windea.pls.lang.index.*
 
 /**
  * 用于在游戏或模组目录中创建目录时，提示可用项。

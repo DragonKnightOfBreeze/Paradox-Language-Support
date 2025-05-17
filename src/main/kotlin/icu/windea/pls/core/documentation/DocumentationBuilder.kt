@@ -2,8 +2,6 @@ package icu.windea.pls.core.documentation
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import icu.windea.pls.model.ParadoxLocalisationInfo
 
 class DocumentationBuilder : UserDataHolderBase() {
     val content: StringBuilder = StringBuilder()

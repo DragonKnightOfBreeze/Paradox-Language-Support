@@ -18,7 +18,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.metadata.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.ParadoxIndexManager
+import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.model.*
 import java.nio.file.*

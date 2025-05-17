@@ -1,6 +1,6 @@
 package icu.windea.pls.localisation
 
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.*
 import icu.windea.pls.lang.*
 
 object ParadoxLocalisationLanguage : ParadoxBaseLanguage("PARADOX_LOCALISATION") {

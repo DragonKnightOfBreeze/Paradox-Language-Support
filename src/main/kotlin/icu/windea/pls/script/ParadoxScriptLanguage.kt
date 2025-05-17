@@ -1,6 +1,6 @@
 package icu.windea.pls.script
 
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.*
 import icu.windea.pls.lang.*
 
 object ParadoxScriptLanguage : ParadoxBaseLanguage("PARADOX_SCRIPT") {

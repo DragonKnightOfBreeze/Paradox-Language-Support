@@ -1,8 +1,7 @@
 package icu.windea.pls.ep.data
 
 import icu.windea.pls.lang.util.data.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.constants.*
 
 class ParadoxSpriteData(data: ParadoxScriptData) : ParadoxDefinitionData {
     val textureFile: String? by data.get("textureFile")

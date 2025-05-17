@@ -1,8 +1,7 @@
 package icu.windea.pls.ep.icon
 
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.constants.*
 
 class ParadoxBaseLocalisationIconSupport : CompositeParadoxLocalisationIconSupport() {
     init {

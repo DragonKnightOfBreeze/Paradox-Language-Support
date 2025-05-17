@@ -8,14 +8,12 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.synced
-import icu.windea.pls.core.processQueryAsync
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.ParadoxLocalisationParameterSearch
-import icu.windea.pls.lang.search.selector.localisationParameter
-import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.*
+import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -48,7 +46,7 @@ object ParadoxLocalisationParameterManager {
         }
         return result
     }
-    
+
     fun getLocalisationReferenceElement(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>): ParadoxScriptString? {
         if (config !is CwtPropertyConfig || config.expression.type != CwtDataTypes.LocalisationParameter) return null
         val localisationReferencePropertyElement = findLocalisationPropertyFromParameterProperty(element, config)

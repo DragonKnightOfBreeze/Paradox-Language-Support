@@ -3,8 +3,8 @@ package icu.windea.pls.localisation.codeInsight.markers
 import com.intellij.codeInsight.daemon.*
 import com.intellij.navigation.*
 import com.intellij.openapi.editor.markup.*
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.util.NotNullLazyValue
+import com.intellij.openapi.progress.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*

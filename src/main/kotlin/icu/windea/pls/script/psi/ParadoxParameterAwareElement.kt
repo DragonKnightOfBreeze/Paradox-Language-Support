@@ -1,7 +1,7 @@
 package icu.windea.pls.script.psi
 
-import com.intellij.psi.PsiElement
-import icu.windea.pls.core.findChildren
+import com.intellij.psi.*
+import icu.windea.pls.core.*
 
 /**
  * 表示此PSI可以带有参数（[ParadoxParameter]）。

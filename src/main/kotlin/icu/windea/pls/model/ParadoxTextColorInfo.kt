@@ -1,7 +1,7 @@
 package icu.windea.pls.model
 
 import com.intellij.psi.*
-import com.intellij.ui.ColorUtil
+import com.intellij.ui.*
 import com.intellij.util.ui.*
 import icu.windea.pls.script.psi.*
 import java.awt.*

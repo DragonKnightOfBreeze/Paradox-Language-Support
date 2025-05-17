@@ -8,7 +8,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.constants.*
 import org.jetbrains.annotations.*
 import java.util.function.*
 

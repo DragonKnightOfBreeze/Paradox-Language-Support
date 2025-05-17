@@ -4,7 +4,6 @@ import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import com.intellij.psi.util.elementType
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.annotations.*
@@ -13,7 +12,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptTokenSets
 
 @WithBuiltInConfig("builtin/folding_settings.cwt", CwtFoldingSettingsConfig::class)
 abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {

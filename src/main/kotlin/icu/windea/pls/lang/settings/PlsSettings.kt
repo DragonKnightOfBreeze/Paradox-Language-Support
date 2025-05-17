@@ -6,7 +6,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.settings.PlsStrategies.*
-import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 /**

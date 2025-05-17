@@ -1,10 +1,9 @@
 package icu.windea.pls.script.lexer
 
-import com.intellij.lexer.LayeredLexer
-import com.intellij.lexer.StringLiteralLexer
-import com.intellij.openapi.project.Project
-import com.intellij.psi.tree.IElementType
-import icu.windea.pls.script.psi.ParadoxScriptTokenSets
+import com.intellij.lexer.*
+import com.intellij.openapi.project.*
+import com.intellij.psi.tree.*
+import icu.windea.pls.script.psi.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScriptLexerFactory {

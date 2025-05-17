@@ -11,7 +11,7 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.ParadoxIndexManager
+import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*

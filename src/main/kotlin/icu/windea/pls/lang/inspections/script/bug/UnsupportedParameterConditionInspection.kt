@@ -1,14 +1,11 @@
 package icu.windea.pls.lang.inspections.script.bug
 
-import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.lang.selectRootFile
-import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
+import com.intellij.psi.*
+import icu.windea.pls.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 /**

@@ -11,7 +11,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
+import icu.windea.pls.model.constraints.*
 
 /**
  * 文本格式的PSI引用。

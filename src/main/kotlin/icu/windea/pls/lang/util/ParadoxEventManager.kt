@@ -16,7 +16,7 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.references.*
 

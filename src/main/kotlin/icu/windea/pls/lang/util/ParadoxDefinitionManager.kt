@@ -10,7 +10,6 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.config.toOccurrence
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
@@ -24,7 +23,6 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.impl.*
 
 /**
  * 用于处理定义。

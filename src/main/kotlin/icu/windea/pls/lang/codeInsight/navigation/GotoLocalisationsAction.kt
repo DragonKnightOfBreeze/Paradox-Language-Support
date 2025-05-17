@@ -9,7 +9,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.actions.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.ParadoxLocalisationCategory
 
 /**
  * 导航到当前本地化的包括自身在内的相同名称的本地化。

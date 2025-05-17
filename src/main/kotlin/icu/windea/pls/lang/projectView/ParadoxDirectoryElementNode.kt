@@ -10,7 +10,7 @@ import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.ParadoxIndexManager
+import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 

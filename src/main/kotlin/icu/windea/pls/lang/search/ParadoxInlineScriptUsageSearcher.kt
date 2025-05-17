@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.ParadoxIndexManager
+import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.*

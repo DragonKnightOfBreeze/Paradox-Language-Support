@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.psi.stubs.*
-import icu.windea.pls.core.*
 import icu.windea.pls.script.psi.*
 
 /**

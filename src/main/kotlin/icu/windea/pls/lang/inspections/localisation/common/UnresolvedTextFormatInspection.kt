@@ -1,26 +1,18 @@
 package icu.windea.pls.lang.inspections.localisation.common
 
-import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType
-import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.PsiFile
-import com.intellij.ui.dsl.builder.Align
-import com.intellij.ui.dsl.builder.bindText
-import com.intellij.ui.dsl.builder.panel
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.core.annotations.WithGameType
-import icu.windea.pls.core.bindTextWhenChanged
-import icu.windea.pls.core.matchesPattern
-import icu.windea.pls.core.splitOptimized
-import icu.windea.pls.lang.fileInfo
-import icu.windea.pls.lang.util.ParadoxFilePathManager
-import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
-import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint
-import javax.swing.JComponent
+import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
+import com.intellij.psi.*
+import com.intellij.ui.dsl.builder.*
+import icu.windea.pls.*
+import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.*
+import icu.windea.pls.model.constraints.*
+import javax.swing.*
 
 /**
  * 无法解析的文本格式的检查。

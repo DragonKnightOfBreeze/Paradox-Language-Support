@@ -6,8 +6,8 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.PlsManager
-import icu.windea.pls.lang.index.ParadoxIndexManager
+import icu.windea.pls.lang.*
+import icu.windea.pls.lang.index.*
 import icu.windea.pls.localisation.psi.*
 
 /**

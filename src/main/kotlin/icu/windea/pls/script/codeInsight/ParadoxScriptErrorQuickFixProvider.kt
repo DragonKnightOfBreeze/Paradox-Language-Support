@@ -4,10 +4,9 @@ import com.intellij.codeInsight.daemon.impl.*
 import com.intellij.codeInsight.daemon.impl.analysis.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.script.*
-import icu.windea.pls.script.psi.ParadoxParameter
+import icu.windea.pls.script.psi.*
 
 /**
  * 快速修复一些语法错误。
