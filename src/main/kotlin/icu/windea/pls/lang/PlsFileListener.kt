@@ -110,6 +110,9 @@ class PlsFileListener : AsyncFileListener {
                 if (filesToClearLocale.isNotEmpty()) {
                     filesToClearLocale.forEach { clearLocale(it) }
                 }
+            }
+
+            override fun afterVfsChange() {
                 if (refreshInlineScripts) {
                     refreshForInlineScripts()
                 }

@@ -14,6 +14,10 @@
 * [ ] 允许为同一个模组配置多个模组依赖列表 / Allow to configure multiple mod dependency lists for the same mod
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
 
+## 1.4.1
+
+
+
 ## 1.4.0
 
 * [X] #94 优化CWT文件解析器的性能 / Optimize performance for CWT file parser
