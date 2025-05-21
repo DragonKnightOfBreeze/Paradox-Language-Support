@@ -217,39 +217,6 @@ some_effect = {
 
 ### 扩展
 
-```cwt
-types = {
-  type[some_type] = {
-    # ...
-    localisation = {
-      # key可以重名
-      # 按优先级排序（从上往下优先级从高到低）
-      loc2 = "#desc" # 对应此定义的名为"desc"的属性的值，所对应的本地化
-      loc1 = "$_desc" # "$"是定义名称的占位符，对应名为"${definitionName}_desc"的本地化
-    }
-    images = {
-      # key可以重名
-      # 按优先级排序（从上往下优先级从高到低）
-      # primary # 当其他定义需要基于另一个定义得到对应的DDS图片，而另一个定义有多种对应的DDS图片时，使用此DDS图片
-      pic1 = "#icon" # 对应此定义的名为"icon"的属性的值，所对应的DDS图片（基于值的类型）
-      pic2 = "#icon|#icon_argument,#frame" # icon_argument，对应此定义的名为"icon_argument"的属性的值，用于对DDS图片进行切割，获取最终需要的DDS图片
-      pic3 = "gfx/interfaces/icons/$.dds" # "$"是定义名称的占位符，对应相对于游戏或模组目录，其所对应的DDS图片
-      # pic4 = "#" # 如果此定义的值是字符串，则直接基于此定义的值，查找对应的DDS图片
-    }
-    # ...
-  }
-}
-```
-
-```cwt
-enums = {
-    complex_enum[pop_faction_parameters] = {
-        # ...
-        search_scope_type = definition # 查询作用域，例如，这里要求只能引用同一定义声明下的复杂枚举值，目前支持：definition
-    }
-}
-```
-
 通过规则文件抑制特定的代码检查：
 
 ```

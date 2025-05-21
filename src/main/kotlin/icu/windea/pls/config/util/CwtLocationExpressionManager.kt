@@ -17,40 +17,55 @@ import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 
 object CwtLocationExpressionManager {
+    fun resolvePlaceholder(locationExpression: CwtLocalisationLocationExpression, name: String): String {
+        val r = buildString { for (c in locationExpression.location) if (c == '$') append(name) else append(c) }
+        return if (locationExpression.forceUpperCase) r.uppercase() else r
+    }
+
+
+    fun resolvePlaceholder(locationExpression: CwtImageLocationExpression, name: String): String? {
+        val placeholder = locationExpression.placeholder
+        if (placeholder == null) return null
+        return buildString { for (c in placeholder) if (c == '$') append(name) else append(c) }
+    }
+
     fun resolve(
         locationExpression: CwtLocalisationLocationExpression,
         definition: ParadoxScriptDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
         selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
     ): CwtLocalisationLocationExpression.ResolveResult? {
-        val placeholder = locationExpression.placeholder
-        val path = locationExpression.path
-        if (placeholder != null) {
-            if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
-            val name = locationExpression.resolvePlaceholder(definitionInfo.name)!!
+        val (location, isPlaceholder, namePaths) = locationExpression
+
+        if (isPlaceholder) {
+            val nameText = when {
+                namePaths.isNullOrEmpty() -> definitionInfo.name
+                else -> namePaths.firstNotNullOfOrNull { definition.findByPath(location, ParadoxScriptValue::class.java, conditional = true, inline = true)?.stringValue() }
+            }
+            if (nameText.isNullOrEmpty()) return null
+            val name = resolvePlaceholder(locationExpression, definitionInfo.name)
+            if (name.isEmpty()) return null
             val resolved = ParadoxLocalisationSearch.search(name, selector).find()
             return CwtLocalisationLocationExpression.ResolveResult(name, resolved)
-        } else if (path != null) {
-            val valueElement = definition.findByPath(path, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
-            val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-            if (config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
-                return CwtLocalisationLocationExpression.ResolveResult("", null, PlsBundle.message("dynamic"))
-            }
-            if (valueElement !is ParadoxScriptString) {
-                return null
-            }
-            if (valueElement.text.isParameterized()) {
-                return CwtLocalisationLocationExpression.ResolveResult("", null, PlsBundle.message("parameterized"))
-            }
-            if (config.expression.type == CwtDataTypes.InlineLocalisation && valueElement.text.isLeftQuoted()) {
-                return CwtLocalisationLocationExpression.ResolveResult("", null, PlsBundle.message("inlined"))
-            }
-            val name = valueElement.value
-            val resolved = ParadoxLocalisationSearch.search(name, selector).find()
-            return CwtLocalisationLocationExpression.ResolveResult(name, resolved)
-        } else {
-            throw IllegalStateException() //不期望的结果
         }
+
+        val valueElement = definition.findByPath(location, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
+        val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
+        if (config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
+            return CwtLocalisationLocationExpression.ResolveResult("", null, PlsBundle.message("dynamic"))
+        }
+        if (valueElement !is ParadoxScriptString) {
+            return null
+        }
+        if (valueElement.text.isParameterized()) {
+            return CwtLocalisationLocationExpression.ResolveResult("", null, PlsBundle.message("parameterized"))
+        }
+        if (config.expression.type == CwtDataTypes.InlineLocalisation && valueElement.text.isLeftQuoted()) {
+            return CwtLocalisationLocationExpression.ResolveResult("", null, PlsBundle.message("inlined"))
+        }
+        val name = valueElement.stringValue
+        val resolved = ParadoxLocalisationSearch.search(name, selector).find()
+        return CwtLocalisationLocationExpression.ResolveResult(name, resolved)
     }
 
     fun resolveAll(
@@ -59,34 +74,37 @@ object CwtLocationExpressionManager {
         definitionInfo: ParadoxDefinitionInfo,
         selector: ChainedParadoxSelector<ParadoxLocalisationProperty>
     ): CwtLocalisationLocationExpression.ResolveAllResult? {
-        val placeholder = locationExpression.placeholder
-        val path = locationExpression.path
-        if (placeholder != null) {
-            if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
-            val name = locationExpression.resolvePlaceholder(definitionInfo.name)!!
+        val (location, isPlaceholder, namePaths) = locationExpression
+
+        if (isPlaceholder) {
+            val nameText = when {
+                namePaths.isNullOrEmpty() -> definitionInfo.name
+                else -> namePaths.firstNotNullOfOrNull { definition.findByPath(location, ParadoxScriptValue::class.java, conditional = true, inline = true)?.stringValue() }
+            }
+            if (nameText.isNullOrEmpty()) return null
+            val name = resolvePlaceholder(locationExpression, definitionInfo.name)
+            if (name.isEmpty()) return null
             val resolved = ParadoxLocalisationSearch.search(name, selector).findAll()
             return CwtLocalisationLocationExpression.ResolveAllResult(name, resolved)
-        } else if (path != null) {
-            val valueElement = definition.findByPath(path, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
-            val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-            if (config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
-                return CwtLocalisationLocationExpression.ResolveAllResult("", emptySet(), PlsBundle.message("dynamic"))
-            }
-            if (valueElement !is ParadoxScriptString) {
-                return null
-            }
-            if (valueElement.text.isParameterized()) {
-                return CwtLocalisationLocationExpression.ResolveAllResult("", emptySet(), PlsBundle.message("parameterized"))
-            }
-            if (config.expression.type == CwtDataTypes.InlineLocalisation && valueElement.text.isLeftQuoted()) {
-                return CwtLocalisationLocationExpression.ResolveAllResult("", emptySet(), PlsBundle.message("inlined"))
-            }
-            val name = valueElement.value
-            val resolved = ParadoxLocalisationSearch.search(name, selector).findAll()
-            return CwtLocalisationLocationExpression.ResolveAllResult(name, resolved)
-        } else {
-            throw IllegalStateException() //不期望的结果
         }
+
+        val valueElement = definition.findByPath(location, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
+        val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
+        if (config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
+            return CwtLocalisationLocationExpression.ResolveAllResult("", emptySet(), PlsBundle.message("dynamic"))
+        }
+        if (valueElement !is ParadoxScriptString) {
+            return null
+        }
+        if (valueElement.text.isParameterized()) {
+            return CwtLocalisationLocationExpression.ResolveAllResult("", emptySet(), PlsBundle.message("parameterized"))
+        }
+        if (config.expression.type == CwtDataTypes.InlineLocalisation && valueElement.text.isLeftQuoted()) {
+            return CwtLocalisationLocationExpression.ResolveAllResult("", emptySet(), PlsBundle.message("inlined"))
+        }
+        val name = valueElement.stringValue
+        val resolved = ParadoxLocalisationSearch.search(name, selector).findAll()
+        return CwtLocalisationLocationExpression.ResolveAllResult(name, resolved)
     }
 
     fun resolve(
@@ -109,7 +127,7 @@ object CwtLocationExpressionManager {
         if (placeholder != null) {
             if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             if (placeholder.startsWith("GFX_")) {
-                val spriteName = locationExpression.resolvePlaceholder(definitionInfo.name)!!
+                val spriteName = resolvePlaceholder(locationExpression, definitionInfo.name)!!
                 if (!toFile) {
                     val selector = selector(project, definition).definition().contextSensitive()
                     val resolved = ParadoxDefinitionSearch.search(spriteName, tSprite, selector).find()
@@ -132,7 +150,7 @@ object CwtLocationExpressionManager {
                 }
             }
             //假定这里的filePath以.dds结尾
-            val filePath = locationExpression.resolvePlaceholder(definitionInfo.name)!!
+            val filePath = resolvePlaceholder(locationExpression, definitionInfo.name)!!
             val selector = selector(project, definition).file().contextSensitive()
             val file = ParadoxFilePathSearch.search(filePath, null, selector).find()?.toPsiFile(project)
             return CwtImageLocationExpression.ResolveResult(filePath, file, newFrameInfo)
@@ -207,7 +225,7 @@ object CwtLocationExpressionManager {
         if (placeholder != null) {
             if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
             if (placeholder.startsWith("GFX_")) {
-                val spriteName = locationExpression.resolvePlaceholder(definitionInfo.name)!!
+                val spriteName = resolvePlaceholder(locationExpression, definitionInfo.name)!!
                 if (!toFile) {
                     val selector = selector(project, definition).definition().contextSensitive()
                     val resolved = ParadoxDefinitionSearch.search(spriteName, tSprite, selector).findAll()
@@ -238,7 +256,7 @@ object CwtLocationExpressionManager {
                 }
             }
             //假定这里的filePath以.dds结尾
-            val filePath = locationExpression.resolvePlaceholder(definitionInfo.name)!!
+            val filePath = resolvePlaceholder(locationExpression, definitionInfo.name)!!
             val selector = selector(project, definition).file().contextSensitive()
             val files = ParadoxFilePathSearch.search(filePath, null, selector).findAll()
                 .mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
@@ -288,10 +306,10 @@ object CwtLocationExpressionManager {
                                 val (filePath, elements) = r
                                 if (resolvedFilePath == null) resolvedFilePath = filePath
                                 if (resolvedElements == null) resolvedElements = mutableSetOf()
-                                resolvedElements.addAll(elements)
+                                resolvedElements!!.addAll(elements)
                             }
                             if (resolvedFilePath == null) return@action null
-                            CwtImageLocationExpression.ResolveAllResult(resolvedFilePath, resolvedElements ?: emptySet(), newFrameInfo)
+                            CwtImageLocationExpression.ResolveAllResult(resolvedFilePath!!, resolvedElements ?: emptySet(), newFrameInfo)
                         }
                     }
                 }

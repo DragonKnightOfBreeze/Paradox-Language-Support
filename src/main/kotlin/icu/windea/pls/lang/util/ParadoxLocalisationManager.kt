@@ -7,6 +7,7 @@ import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
@@ -107,7 +108,7 @@ object ParadoxLocalisationManager {
                 val definitionInfo = definition.definitionInfo ?: return@f2
                 val definitionName = definitionInfo.name.orNull() ?: return@f2
                 definitionInfo.localisations.forEach f3@{ l ->
-                    val resolved = l.locationExpression.resolvePlaceholder(definitionName) ?: return@f3
+                    val resolved = CwtLocationExpressionManager.resolvePlaceholder(l.locationExpression, definitionName) ?: return@f3
                     if(resolved != name) return@f3
                     result += definition
                     return@f2

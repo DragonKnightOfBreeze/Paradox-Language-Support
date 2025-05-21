@@ -57,7 +57,7 @@ object ParadoxImageCodeInsightContextBuilder {
                 else -> ParadoxImageCodeInsightInfo.Type.Optional
             }
             val name = resolved?.nameOrFilePath
-            val gfxName = expression.resolvePlaceholder(definitionInfo.name)?.takeIf { it.startsWith("GFX_") }
+            val gfxName = CwtLocationExpressionManager.resolvePlaceholder(expression, definitionInfo.name)?.takeIf { it.startsWith("GFX_") }
             val check = when {
                 info.required -> true
                 (inspection == null || inspection.checkPrimaryForDefinitions) && (info.primary || info.primaryByInference) -> true

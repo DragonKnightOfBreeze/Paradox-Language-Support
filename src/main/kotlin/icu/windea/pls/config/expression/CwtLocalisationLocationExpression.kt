@@ -1,7 +1,6 @@
 package icu.windea.pls.config.expression
 
 import com.google.common.cache.*
-import icu.windea.pls.config.expression.CwtLocalisationLocationExpression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.psi.*
@@ -9,21 +8,23 @@ import icu.windea.pls.localisation.psi.*
 /**
  * CWT本地化位置表达式。用于定位定义的相关本地化。
  *
- * 如果包含占位符`$`，将其替换成定义的名字后，尝试得到对应名字的本地化。
- * 否则尝试得到对应表达式路径的值对应的本地化。
+ * 示例：
  *
- * 示例：`"$"`, `"$_desc"`, `"$_DESC|u"` , `"title"`
+ * * `"$"` -> 用当前定义的名字替换占位符，从而解析为本地化的名字。
+ * * `"$_desc"` -> 用当前定义的名字替换占位符，从而解析为本地化的名字。
+ * * `"$_desc|name"` -> 在前者的基础上，改为用指定路径（`name`）的属性的值替换占位符，从而解析为本地化的名字。管道符后的路径可以有多个，逗号分割。
+ * * `"$_desc|name|u"` -> 在前者的基础上，强制解析为大写的本地化的名字。
+ * * `"title"` -> 得到当前定义声明中指定路径（`title`）的属性的值，从而解析为本地化的名字。
  *
- * @property placeholder 占位符文本。其中的`"$"`会在解析时被替换成定义的名字。
- * @property path 表达式路径。用于获取本地化的名字。
- * @property upperCase 本地化的名字是否强制大写。
+ * @property namePaths 用于获取名字文本的一组表达式路径。名字文本用于替换占位符。
+ * @property forceUpperCase 本地化的名字是否需要强制大写。
  */
-interface CwtLocalisationLocationExpression : CwtExpression {
-    val placeholder: String?
-    val path: String?
-    val upperCase: Boolean
+interface CwtLocalisationLocationExpression : CwtLocationExpression {
+    val namePaths: Set<String>?
+    val forceUpperCase: Boolean
 
-    fun resolvePlaceholder(name: String): String?
+    operator fun component3() = namePaths
+    operator fun component4() = forceUpperCase
 
     data class ResolveResult(
         val name: String,
@@ -51,34 +52,33 @@ interface CwtLocalisationLocationExpression : CwtExpression {
 
 private val cache = CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) }
 
-private fun doResolveEmpty() = CwtLocalisationLocationExpressionImpl("", path = "")
+private fun doResolveEmpty() = CwtLocalisationLocationExpressionImpl("", "")
 
 private fun doResolve(expressionString: String): CwtLocalisationLocationExpression {
-    return when {
-        expressionString.isEmpty() -> Resolver.EmptyExpression
-        expressionString.contains('$') -> {
-            val placeholder = expressionString.substringBefore('|')
-            val upperCase = expressionString.substringAfter('|', "") == "u"
-            CwtLocalisationLocationExpressionImpl(expressionString, placeholder = placeholder, upperCase = upperCase)
-        }
-        else -> {
-            val path = expressionString
-            CwtLocalisationLocationExpressionImpl(expressionString, path = path)
+    if (expressionString.isEmpty()) return CwtLocalisationLocationExpression.EmptyExpression
+    val tokens = expressionString.split('|')
+    if (tokens.size == 1) return CwtLocalisationLocationExpressionImpl(expressionString, expressionString)
+    val location = tokens.first()
+    val args = tokens.drop(1)
+    var namePaths: Set<String>? = null
+    var forceUpperCase = false
+    args.forEach { arg ->
+        if (arg == "u") {
+            forceUpperCase = true
+        } else {
+            namePaths = arg.toCommaDelimitedStringSet()
         }
     }
+    return CwtLocalisationLocationExpressionImpl(expressionString, location, namePaths, forceUpperCase)
 }
 
 private class CwtLocalisationLocationExpressionImpl(
     override val expressionString: String,
-    override val placeholder: String? = null,
-    override val path: String? = null,
-    override val upperCase: Boolean = false
+    override val location: String,
+    override val namePaths: Set<String>? = null,
+    override val forceUpperCase: Boolean = false,
 ) : CwtLocalisationLocationExpression {
-    override fun resolvePlaceholder(name: String): String? {
-        if (placeholder == null) return null
-        return buildString { for (c in placeholder) if (c == '$') append(name) else append(c) }
-            .letIf(upperCase) { it.uppercase() }
-    }
+    override val isPlaceholder: Boolean = location.contains('$')
 
     override fun equals(other: Any?): Boolean {
         return this === other || other is CwtLocalisationLocationExpression && expressionString == other.expressionString
