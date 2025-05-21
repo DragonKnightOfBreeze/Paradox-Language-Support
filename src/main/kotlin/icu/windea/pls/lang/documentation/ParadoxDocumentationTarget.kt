@@ -526,19 +526,19 @@ private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: P
     for ((key, locationExpression, required) in localisationInfos) {
         if (sectionKeys.contains(key)) continue
         val selector = selector(project, element).localisation().contextSensitive().preferLocale(usedLocale)
-        val resolved = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo, selector) ?: continue //发生意外，直接跳过
-        if (resolved.message != null) {
-            map.put(key, resolved.message)
-        } else if (resolved.element != null) {
-            map.put(key, buildDocumentation { appendLocalisationLink(definitionInfo.gameType, resolved.name, element) })
+        val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo, selector) ?: continue //发生意外，直接跳过
+        if (resolveResult.message != null) {
+            map.put(key, resolveResult.message)
+        } else if (resolveResult.element != null) {
+            map.put(key, buildDocumentation { appendLocalisationLink(definitionInfo.gameType, resolveResult.name, element) })
         } else if (required) {
-            map.putIfAbsent(key, resolved.name)
+            map.putIfAbsent(key, resolveResult.name)
         }
-        if (resolved.element != null) {
+        if (resolveResult.element != null) {
             sectionKeys.add(key)
             if (sections != null && getSettings().documentation.renderRelatedLocalisationsForDefinitions) {
                 //加上渲染后的相关本地化文本
-                val richText = ParadoxLocalisationTextHtmlRenderer.render(resolved.element, forDoc = true)
+                val richText = ParadoxLocalisationTextHtmlRenderer.render(resolveResult.element, forDoc = true)
                 sections.put(key, richText)
             }
         }

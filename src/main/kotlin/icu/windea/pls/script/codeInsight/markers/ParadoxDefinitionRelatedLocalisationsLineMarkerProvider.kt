@@ -41,14 +41,14 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
         for ((key, locationExpression) in localisationInfos) {
             ProgressManager.checkCanceled()
             val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            val resolved = CwtLocationExpressionManager.resolveAll(locationExpression, element, definitionInfo, selector) ?: continue
-            if (resolved.elements.isNotEmpty()) {
-                targets.addAll(resolved.elements)
+            val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo, selector) ?: continue
+            if (resolveResult.elements.isNotEmpty()) {
+                targets.addAll(resolveResult.elements)
             }
-            if (resolved.message != null) {
-                tooltipLines.add("$prefix $key = ${resolved.message}")
-            } else if (resolved.elements.isNotEmpty() && keys.add(key)) {
-                tooltipLines.add("$prefix $key = ${resolved.name}")
+            if (resolveResult.message != null) {
+                tooltipLines.add("$prefix $key = ${resolveResult.message}")
+            } else if (resolveResult.elements.isNotEmpty() && keys.add(key)) {
+                tooltipLines.add("$prefix $key = ${resolveResult.name}")
             }
         }
         if (keys.isEmpty()) return

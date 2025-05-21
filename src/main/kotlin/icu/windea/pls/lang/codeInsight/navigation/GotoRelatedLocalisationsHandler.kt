@@ -43,9 +43,9 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     //need read action here
                     runReadAction {
                         val selector = selector(project, definition).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                        val resolved = CwtLocationExpressionManager.resolveAll(locationExpression, definition, definitionInfo, selector)
-                        if (resolved != null && resolved.elements.isNotEmpty()) {
-                            targets.addAll(resolved.elements)
+                        val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, definition, definitionInfo, selector)
+                        if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
+                            targets.addAll(resolveResult.elements)
                         }
                     }
                 }

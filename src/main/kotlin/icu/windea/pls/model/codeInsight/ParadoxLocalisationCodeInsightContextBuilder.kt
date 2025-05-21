@@ -79,21 +79,21 @@ object ParadoxLocalisationCodeInsightContextBuilder {
             for (locale in locales) {
                 ProgressManager.checkCanceled()
                 val selector = selector(project, element).localisation().locale(locale) //use file as context
-                val resolved = CwtLocationExpressionManager.resolve(expression, element, definitionInfo, selector)
+                val resolveResult = CwtLocationExpressionManager.resolve(expression, element, definitionInfo, selector)
                 val type = when {
                     info.required -> ParadoxLocalisationCodeInsightInfo.Type.Required
                     info.primary -> ParadoxLocalisationCodeInsightInfo.Type.Primary
                     else -> ParadoxLocalisationCodeInsightInfo.Type.Optional
                 }
-                val name = resolved?.name
+                val name = resolveResult?.name
                 val check = when {
                     info.required -> true
                     (inspection == null || inspection.checkPrimaryForDefinitions) && (info.primary || info.primaryByInference) -> true
                     (inspection == null || inspection.checkOptionalForDefinitions) && !info.required -> true
                     else -> false
                 }
-                val missing = resolved?.element == null && resolved?.message == null
-                val dynamic = resolved?.message != null
+                val missing = resolveResult?.element == null && resolveResult?.message == null
+                val dynamic = resolveResult?.message != null
                 val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, info, locale, check, missing, dynamic)
                 codeInsightInfos += codeInsightInfo
             }

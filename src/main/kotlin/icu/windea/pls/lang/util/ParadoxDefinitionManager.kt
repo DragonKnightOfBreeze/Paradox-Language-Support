@@ -611,8 +611,8 @@ object ParadoxDefinitionManager {
         val project = definitionInfo.project
         for (primaryLocalisation in primaryLocalisations) {
             val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            val resolved = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo, selector)
-            val key = resolved?.name ?: continue
+            val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo, selector)
+            val key = resolveResult?.name ?: continue
             return key
         }
         return null
@@ -636,8 +636,8 @@ object ParadoxDefinitionManager {
         val project = definitionInfo.project
         for (primaryLocalisation in primaryLocalisations) {
             val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            val resolved = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo, selector)
-            val localisation = resolved?.element ?: continue
+            val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo, selector)
+            val localisation = resolveResult?.element ?: continue
             return localisation
         }
         return null
@@ -663,8 +663,8 @@ object ParadoxDefinitionManager {
         val result = mutableSetOf<ParadoxLocalisationProperty>()
         for (primaryLocalisation in primaryLocalisations) {
             val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            val resolved = CwtLocationExpressionManager.resolveAll(primaryLocalisation.locationExpression, element, definitionInfo, selector)
-            val localisations = resolved?.elements ?: continue
+            val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo, selector)
+            val localisations = resolveResult?.elements ?: continue
             result.addAll(localisations)
         }
         return result

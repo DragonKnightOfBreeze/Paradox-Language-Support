@@ -10,11 +10,10 @@ import icu.windea.pls.localisation.psi.*
  *
  * 示例：
  *
- * * `"$"` -> 用当前定义的名字替换占位符，从而解析为本地化的名字。
- * * `"$_desc"` -> 用当前定义的名字替换占位符，从而解析为本地化的名字。
- * * `"$_desc|name"` -> 在前者的基础上，改为用指定路径（`name`）的属性的值替换占位符，从而解析为本地化的名字。管道符后的路径可以有多个，逗号分割。
+ * * `"$_desc"` -> 用当前定义的名字替换占位符，解析为本地化的名字。
+ * * `"$_desc|name"` -> 在前者的基础上，改为用指定路径（`name`）的属性的值替换占位符，解析为本地化的名字。管道符后的路径可以有多个，逗号分割。
  * * `"$_desc|name|u"` -> 在前者的基础上，强制解析为大写的本地化的名字。
- * * `"title"` -> 得到当前定义声明中指定路径（`title`）的属性的值，从而解析为本地化的名字。
+ * * `"title"` -> 得到当前定义声明中指定路径（`title`）的属性的值，解析为本地化的名字。
  *
  * @property namePaths 用于获取名字文本的一组表达式路径。名字文本用于替换占位符。
  * @property forceUpperCase 本地化的名字是否需要强制大写。
@@ -26,17 +25,15 @@ interface CwtLocalisationLocationExpression : CwtLocationExpression {
     operator fun component3() = namePaths
     operator fun component4() = forceUpperCase
 
-    data class ResolveResult(
+    class ResolveResult(
         val name: String,
-        val element: ParadoxLocalisationProperty?,
-        val message: String? = null
-    )
-
-    data class ResolveAllResult(
-        val name: String,
-        val elements: Set<ParadoxLocalisationProperty>,
-        val message: String? = null
-    )
+        val message: String? = null,
+        resolveAction: () -> ParadoxLocalisationProperty? = { null },
+        resolveAllAction: () -> Collection<ParadoxLocalisationProperty> = { emptySet() },
+    ) {
+        val element: ParadoxLocalisationProperty? by lazy { resolveAction() }
+        val elements: Collection<ParadoxLocalisationProperty> by lazy { resolveAllAction() }
+    }
 
     companion object Resolver {
         val EmptyExpression: CwtLocalisationLocationExpression = doResolveEmpty()
