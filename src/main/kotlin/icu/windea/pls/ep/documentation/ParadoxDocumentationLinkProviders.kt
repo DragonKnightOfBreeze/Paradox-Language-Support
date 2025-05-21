@@ -17,8 +17,10 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
-    // e.g.
+    // e.g.,
     // cwt:stellaris:types/civic_or_origin/civic
+
+    // limited support only
 
     companion object {
         const val LINK_PREFIX = "cwt:"
@@ -148,12 +150,12 @@ class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
 }
 
 class ParadoxScriptedVariableLinkProvider : ParadoxDocumentationLinkProvider {
-    // e.g.
-    // pdx-sv:some_sv
-    // pdx-sv:stellaris:some_sv
+    // e.g.,
+    // pdx.sv:some_sv
+    // pdx.sv:stellaris:some_sv
 
     companion object {
-        const val LINK_PREFIX = "pdx-sv:"
+        const val LINK_PREFIX = "pdx.sv:"
     }
 
     override val linkPrefix = LINK_PREFIX
@@ -184,13 +186,13 @@ class ParadoxScriptedVariableLinkProvider : ParadoxDocumentationLinkProvider {
 }
 
 class ParadoxDefinitionLinkProvider : ParadoxDocumentationLinkProvider {
-    // e.g.
-    // pdx-def:origin_default
-    // pdx-def:civic_or_origin.origin/origin_default
-    // pdx-def:stellaris:civic_or_origin.origin/origin_default
+    // e.g.,
+    // pdx.d:origin_default
+    // pdx.d:civic_or_origin.origin/origin_default
+    // pdx.d:stellaris:civic_or_origin.origin/origin_default
 
     companion object {
-        const val LINK_PREFIX = "pdx-def:"
+        const val LINK_PREFIX = "pdx.d:"
     }
 
     override val linkPrefix = LINK_PREFIX
@@ -228,12 +230,12 @@ class ParadoxDefinitionLinkProvider : ParadoxDocumentationLinkProvider {
 }
 
 class ParadoxLocalisationLinkProvider : ParadoxDocumentationLinkProvider {
-    // e.g.
-    // pdx-loc:KEY
-    // pdx-loc:stellaris:KEY
+    // e.g.,
+    // pdx.l:KEY
+    // pdx.l:stellaris:KEY
 
     companion object {
-        const val LINK_PREFIX = "pdx-loc:"
+        const val LINK_PREFIX = "pdx.l:"
     }
 
     override val linkPrefix = LINK_PREFIX
@@ -266,12 +268,12 @@ class ParadoxLocalisationLinkProvider : ParadoxDocumentationLinkProvider {
 }
 
 class ParadoxFilePathLinkProvider : ParadoxDocumentationLinkProvider {
-    // e.g.
-    // pdx-path:path
-    // pdx-path:stellaris:path
+    // e.g.,
+    // pdx.p:path
+    // pdx.p:stellaris:path
 
     companion object {
-        const val LINK_PREFIX = "pdx-path:"
+        const val LINK_PREFIX = "pdx.p:"
     }
 
     override val linkPrefix = LINK_PREFIX
@@ -297,11 +299,11 @@ class ParadoxFilePathLinkProvider : ParadoxDocumentationLinkProvider {
 }
 
 class ParadoxModifierLinkProvider : ParadoxDocumentationLinkProvider {
-    // e.g.
-    // modifier:job_researcher_add
+    // e.g.,
+    // pdx.m:job_researcher_add
 
     companion object {
-        const val LINK_PREFIX = "modifier:"
+        const val LINK_PREFIX = "pdx.m:"
     }
 
     override val linkPrefix = LINK_PREFIX
