@@ -5,6 +5,7 @@ import com.intellij.injected.editor.*
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
+import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.util.text.*
@@ -17,6 +18,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.dds.*
 import icu.windea.pls.ep.data.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
@@ -26,6 +28,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
 import kotlinx.coroutines.*
+import org.intellij.images.fileTypes.impl.*
 import java.lang.Integer.*
 
 //from official documentation: Never acquire service instances prematurely or store them in fields for later use.

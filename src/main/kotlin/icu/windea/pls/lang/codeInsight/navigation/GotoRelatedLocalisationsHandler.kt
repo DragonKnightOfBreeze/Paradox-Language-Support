@@ -42,8 +42,8 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
                     ProgressManager.checkCanceled()
                     //need read action here
                     runReadAction {
-                        val selector = selector(project, definition).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                        val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, definition, definitionInfo, selector)
+                        val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
+                        val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, definition, definitionInfo) { preferLocale(preferredLocale) }
                         if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
                             targets.addAll(resolveResult.elements)
                         }

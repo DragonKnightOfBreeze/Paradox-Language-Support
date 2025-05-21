@@ -12,12 +12,11 @@
 
 ## 1.4.1
 
-* [ ] #143 cwt图片渲染规则待支持
+* [X] #143 cwt图片渲染规则待支持
 * [ ] #144 cwt规则的type_key_filter <> xxx失效
 * [ ] 进一步优化脚本文件与本地化文件的 lexer 和 parser 的实现
 * [X] 修复：优化`PlsFileListener`，尝试避免某些特殊情况下的 SOF
 * [ ] 优化：对于代码检查`不正确的本地化语法` ，标出可能的格式问题（例如多余的`!`） / OP: For code inspection `Incorrect script syntax`, mark possible format problems (e.g., extra `!`)
-* [ ] 优化：对于代码检查`不正确的命令表达式`，如果合适则提供快速修复，将开头的`[`转义为`[[` / OP: For code inspection `Incorrect command expression`, provide a quick fix to replace the start `[` with `[[`,  if appropriate 
 * [ ] 新功能：支持更加复杂的本地化命令（例如，带有多个参数、用引号括起的参数）
 * [ ] 新功能：[VIC3/CK3] 支持通过规范的本地化命令声明的概念引用（示例：`[concept_name]` `[Concept('concept_name', '$other_loc_key$')]`）
 

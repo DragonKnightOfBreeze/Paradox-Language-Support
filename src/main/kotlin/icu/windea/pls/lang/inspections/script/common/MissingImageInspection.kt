@@ -87,7 +87,8 @@ class MissingImageInspection : LocalInspectionTool() {
 
             private fun getMessage(codeInsightInfo: ParadoxImageCodeInsightInfo): String? {
                 val locationExpression = codeInsightInfo.relatedImageInfo?.locationExpression
-                val from = locationExpression?.path?.let { PlsBundle.message("inspection.script.missingImage.from.3", it) }
+                val fromProperty = locationExpression?.takeUnless { it.isPlaceholder }?.location
+                val from = fromProperty?.let { PlsBundle.message("inspection.script.missingImage.from.3", it) }
                     ?: codeInsightInfo.gfxName?.let { PlsBundle.message("inspection.script.missingImage.from.2", it) }
                     ?: codeInsightInfo.filePath?.let { PlsBundle.message("inspection.script.missingImage.from.1", it) }
                     ?: return null

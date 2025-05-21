@@ -40,9 +40,9 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
                     ProgressManager.checkCanceled()
                     //need read action here
                     runReadAction {
-                        val resolved = CwtLocationExpressionManager.resolveAll(locationExpression, definition, definitionInfo)
-                        if (resolved != null && resolved.elements.isNotEmpty()) {
-                            targets.addAll(resolved.elements)
+                        val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, definition, definitionInfo)
+                        if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
+                            targets.addAll(resolveResult.elements)
                         }
                     }
                 }

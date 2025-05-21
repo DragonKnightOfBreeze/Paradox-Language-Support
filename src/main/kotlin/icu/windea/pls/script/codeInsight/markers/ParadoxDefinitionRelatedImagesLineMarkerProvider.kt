@@ -36,14 +36,14 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : RelatedItemLineMarkerPr
         val targets = mutableSetOf<PsiElement>() //这里需要考虑基于引用相等去重
         for ((key, locationExpression) in imageInfos) {
             ProgressManager.checkCanceled()
-            val resolved = CwtLocationExpressionManager.resolveAll(locationExpression, element, definitionInfo) ?: continue
-            if (resolved.elements.isNotEmpty()) {
-                targets.addAll(resolved.elements)
+            val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) ?: continue
+            if (resolveResult.elements.isNotEmpty()) {
+                targets.addAll(resolveResult.elements)
             }
-            if (resolved.message != null) {
-                tooltipLines.add("$prefix $key = ${resolved.message}")
-            } else if (resolved.elements.isNotEmpty() && keys.add(key)) {
-                tooltipLines.add("$prefix $key = ${resolved.nameOrFilePath}")
+            if (resolveResult.message != null) {
+                tooltipLines.add("$prefix $key = ${resolveResult.message}")
+            } else if (resolveResult.elements.isNotEmpty() && keys.add(key)) {
+                tooltipLines.add("$prefix $key = ${resolveResult.nameOrFilePath}")
             }
         }
         if (keys.isEmpty()) return

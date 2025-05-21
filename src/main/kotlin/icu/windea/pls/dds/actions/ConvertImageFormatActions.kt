@@ -4,7 +4,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
-import icu.windea.pls.dds.support.*
+import icu.windea.pls.dds.DdsManager
 import org.intellij.images.fileTypes.impl.*
 
 class ConvertToPngAction : ConvertImageFormatAction("PNG") {

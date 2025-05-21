@@ -6,7 +6,7 @@ import com.intellij.openapi.progress.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.dds.support.*
+import icu.windea.pls.dds.DdsManager
 import icu.windea.pls.model.*
 import java.nio.file.*
 import javax.imageio.*

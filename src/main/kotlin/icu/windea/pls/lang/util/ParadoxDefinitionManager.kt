@@ -609,9 +609,9 @@ object ParadoxDefinitionManager {
         val primaryLocalisations = definitionInfo.primaryLocalisations
         if (primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
         val project = definitionInfo.project
+        val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
-            val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo, selector)
+            val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
             val key = resolveResult?.name ?: continue
             return key
         }
@@ -634,9 +634,9 @@ object ParadoxDefinitionManager {
         val primaryLocalisations = definitionInfo.primaryLocalisations
         if (primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
         val project = definitionInfo.project
+        val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
-            val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo, selector)
+            val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
             val localisation = resolveResult?.element ?: continue
             return localisation
         }
@@ -661,9 +661,9 @@ object ParadoxDefinitionManager {
         if (primaryLocalisations.isEmpty()) return emptySet() //没有或者CWT规则不完善
         val project = definitionInfo.project
         val result = mutableSetOf<ParadoxLocalisationProperty>()
+        val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
-            val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo, selector)
+            val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale)}
             val localisations = resolveResult?.elements ?: continue
             result.addAll(localisations)
         }

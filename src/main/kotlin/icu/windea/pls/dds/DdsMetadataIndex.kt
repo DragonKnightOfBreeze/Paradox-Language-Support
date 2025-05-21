@@ -5,7 +5,6 @@ import com.intellij.openapi.vfs.*
 import com.intellij.util.gist.*
 import com.intellij.util.io.*
 import icu.windea.pls.core.*
-import icu.windea.pls.dds.support.*
 import java.io.*
 import java.util.*
 

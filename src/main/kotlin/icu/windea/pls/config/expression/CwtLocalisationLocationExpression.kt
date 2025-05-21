@@ -11,15 +11,15 @@ import icu.windea.pls.localisation.psi.*
  * 示例：
  *
  * * `"$_desc"` -> 用当前定义的名字替换占位符，解析为本地化的名字。
- * * `"$_desc|name"` -> 在前者的基础上，改为用指定路径（`name`）的属性的值替换占位符，解析为本地化的名字。管道符后的路径可以有多个，逗号分割。
- * * `"$_desc|name|u"` -> 在前者的基础上，强制解析为大写的本地化的名字。
+ * * `"$_desc|$name"` -> 在前者的基础上，改为用指定路径（`name`）的属性的值替换占位符（如果值存在且可以获取），解析为本地化的名字。管道符后的路径可以有多个，逗号分割。
+ * * `"$_desc|$name|u"` -> 在前者的基础上，强制解析为大写的本地化的名字。
  * * `"title"` -> 得到当前定义声明中指定路径（`title`）的属性的值，解析为本地化的名字。
  *
  * @property namePaths 用于获取名字文本的一组表达式路径。名字文本用于替换占位符。
  * @property forceUpperCase 本地化的名字是否需要强制大写。
  */
 interface CwtLocalisationLocationExpression : CwtLocationExpression {
-    val namePaths: Set<String>?
+    val namePaths: Set<String>
     val forceUpperCase: Boolean
 
     operator fun component3() = namePaths
@@ -60,19 +60,19 @@ private fun doResolve(expressionString: String): CwtLocalisationLocationExpressi
     var namePaths: Set<String>? = null
     var forceUpperCase = false
     args.forEach { arg ->
-        if (arg == "u") {
+        if (arg.startsWith('$')) {
+            namePaths = arg.drop(1).toCommaDelimitedStringSet()
+        } else if (arg == "u") {
             forceUpperCase = true
-        } else {
-            namePaths = arg.toCommaDelimitedStringSet()
         }
     }
-    return CwtLocalisationLocationExpressionImpl(expressionString, location, namePaths, forceUpperCase)
+    return CwtLocalisationLocationExpressionImpl(expressionString, location, namePaths.orEmpty(), forceUpperCase)
 }
 
 private class CwtLocalisationLocationExpressionImpl(
     override val expressionString: String,
     override val location: String,
-    override val namePaths: Set<String>? = null,
+    override val namePaths: Set<String> = emptySet(),
     override val forceUpperCase: Boolean = false,
 ) : CwtLocalisationLocationExpression {
     override val isPlaceholder: Boolean = location.contains('$')

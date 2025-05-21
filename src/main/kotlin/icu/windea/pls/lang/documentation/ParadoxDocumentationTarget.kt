@@ -479,7 +479,7 @@ private fun DocumentationBuilder.addDefinitionInfo(definition: ParadoxScriptDefi
     val prefix = usePrefix ?: PlsConstants.Strings.definitionPrefix
     append(prefix).append(" ")
     val name = definitionInfo.name
-    if(usePrefix == null) {
+    if (usePrefix == null) {
         append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
     } else {
         appendDefinitionLink(gameType, name, definitionInfo.type, definition, name.escapeXml().orAnonymous())
@@ -525,8 +525,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: P
     val sectionKeys = mutableSetOf<String>()
     for ((key, locationExpression, required) in localisationInfos) {
         if (sectionKeys.contains(key)) continue
-        val selector = selector(project, element).localisation().contextSensitive().preferLocale(usedLocale)
-        val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo, selector) ?: continue //发生意外，直接跳过
+        val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) { preferLocale(usedLocale) } ?: continue //发生意外，直接跳过
         if (resolveResult.message != null) {
             map.put(key, resolveResult.message)
         } else if (resolveResult.element != null) {
@@ -534,11 +533,12 @@ private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: P
         } else if (required) {
             map.putIfAbsent(key, resolveResult.name)
         }
-        if (resolveResult.element != null) {
+        val resolvedElement = resolveResult.element
+        if (resolvedElement != null) {
             sectionKeys.add(key)
             if (sections != null && getSettings().documentation.renderRelatedLocalisationsForDefinitions) {
                 //加上渲染后的相关本地化文本
-                val richText = ParadoxLocalisationTextHtmlRenderer.render(resolveResult.element, forDoc = true)
+                val richText = ParadoxLocalisationTextHtmlRenderer.render(resolvedElement, forDoc = true)
                 sections.put(key, richText)
             }
         }
@@ -559,11 +559,11 @@ private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxS
     val sectionKeys = mutableSetOf<String>()
     for ((key, locationExpression, required) in imagesInfos) {
         if (sectionKeys.contains(key)) continue
-        val resolved = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) ?: continue //发生意外，直接跳过
-        if (resolved.message != null) {
-            map.put(key, resolved.message)
-        } else if (resolved.element != null) {
-            val nameOrFilePath = resolved.nameOrFilePath
+        val resolveResult = CwtLocationExpressionManager.resolve(locationExpression, element, definitionInfo) ?: continue //发生意外，直接跳过
+        if (resolveResult.message != null) {
+            map.put(key, resolveResult.message)
+        } else if (resolveResult.element != null) {
+            val nameOrFilePath = resolveResult.nameOrFilePath
             val gameType = definitionInfo.gameType
             val v = when {
                 nameOrFilePath.startsWith("GFX") -> buildDocumentation { appendDefinitionLink(gameType, nameOrFilePath, ParadoxDefinitionTypes.Sprite, element) }
@@ -571,18 +571,19 @@ private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxS
             }
             map.put(key, v)
         } else if (required) {
-            map.putIfAbsent(key, resolved.nameOrFilePath)
+            map.putIfAbsent(key, resolveResult.nameOrFilePath)
         }
-        if (resolved.element != null) {
+        val resolveElement = resolveResult.element
+        if (resolveElement != null) {
             sectionKeys.add(key)
             if (render && sections != null) {
                 //渲染图片
                 val url = when {
-                    resolved.element is ParadoxScriptDefinitionElement && resolved.element.definitionInfo != null -> {
-                        ParadoxImageResolver.resolveUrlByDefinition(resolved.element, resolved.frameInfo)
+                    resolveElement is ParadoxScriptDefinitionElement && resolveElement.definitionInfo != null -> {
+                        ParadoxImageResolver.resolveUrlByDefinition(resolveElement, resolveResult.frameInfo)
                     }
-                    resolved.element is PsiFile -> {
-                        ParadoxImageResolver.resolveUrlByFile(resolved.element.virtualFile, resolved.frameInfo)
+                    resolveElement is PsiFile -> {
+                        ParadoxImageResolver.resolveUrlByFile(resolveElement.virtualFile, resolveResult.frameInfo)
                     }
                     else -> null
                 }

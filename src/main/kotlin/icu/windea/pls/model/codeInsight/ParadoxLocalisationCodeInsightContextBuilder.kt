@@ -78,8 +78,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
             val expression = info.locationExpression
             for (locale in locales) {
                 ProgressManager.checkCanceled()
-                val selector = selector(project, element).localisation().locale(locale) //use file as context
-                val resolveResult = CwtLocationExpressionManager.resolve(expression, element, definitionInfo, selector)
+                val resolveResult = CwtLocationExpressionManager.resolve(expression, element, definitionInfo) { locale(locale)}
                 val type = when {
                     info.required -> ParadoxLocalisationCodeInsightInfo.Type.Required
                     info.primary -> ParadoxLocalisationCodeInsightInfo.Type.Primary

@@ -38,10 +38,10 @@ class AutomaticRelatedImagesRenamer(element: PsiElement, newName: String) : Auto
         val infos = definitionInfo.images.orNull() ?: return
         for (info in infos) {
             ProgressManager.checkCanceled()
-            val result = CwtLocationExpressionManager.resolveAll(info.locationExpression, element, definitionInfo) ?: continue
+            val resolveResult = CwtLocationExpressionManager.resolve(info.locationExpression, element, definitionInfo) ?: continue
             val rename = CwtLocationExpressionManager.resolvePlaceholder(info.locationExpression, newName) ?: continue
             val finalRename = if (rename.startsWith("GFX_")) rename else rename.substringAfterLast('/')
-            result.elements.forEach { allRenames[it] = finalRename }
+            resolveResult.elements.forEach { allRenames[it] = finalRename }
         }
     }
 }

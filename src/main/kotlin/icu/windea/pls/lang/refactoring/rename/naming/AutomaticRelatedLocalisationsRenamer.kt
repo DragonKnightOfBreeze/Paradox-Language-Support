@@ -39,7 +39,7 @@ class AutomaticRelatedLocalisationsRenamer(element: PsiElement, newName: String)
         val infos = definitionInfo.localisations.orNull() ?: return
         for (info in infos) {
             ProgressManager.checkCanceled()
-            val resolveResult = CwtLocationExpressionManager.resolve(info.locationExpression, element, definitionInfo, selector(definitionInfo.project, element).localisation()) ?: continue
+            val resolveResult = CwtLocationExpressionManager.resolve(info.locationExpression, element, definitionInfo) ?: continue
             val rename = CwtLocationExpressionManager.resolvePlaceholder(info.locationExpression, newName) ?: continue
             resolveResult.elements.forEach { allRenames[it] = rename }
         }
