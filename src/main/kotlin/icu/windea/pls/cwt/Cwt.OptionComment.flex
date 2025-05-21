@@ -57,7 +57,7 @@ STRING_TOKEN=([^#={}\s\"]+\"?)|({QUOTED_STRING_TOKEN})
 QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 
 // top option value can contain whitespaces
-TOP_STRING_TOKEN=([^#={}\s\"]([^#={}\r\n\"]*[^#={}\s\"])?\"?)|({QUOTED_STRING_TOKEN})
+TOP_STRING_TOKEN=([^#=<>{}\s\"]([^#=<>{}\r\n\"]*[^#=<>{}\s\"])?\"?)|({QUOTED_STRING_TOKEN})
 
 %%
 

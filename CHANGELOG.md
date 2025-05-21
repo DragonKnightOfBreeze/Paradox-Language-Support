@@ -13,7 +13,7 @@
 ## 1.4.1
 
 * [X] #143 cwt图片渲染规则待支持
-* [ ] #144 cwt规则的type_key_filter <> xxx失效
+* [X] #144 cwt规则的type_key_filter <> xxx失效
 * [ ] 进一步优化脚本文件与本地化文件的 lexer 和 parser 的实现
 * [X] 修复：优化`PlsFileListener`，尝试避免某些特殊情况下的 SOF
 * [ ] 优化：对于代码检查`不正确的本地化语法` ，标出可能的格式问题（例如多余的`!`） / OP: For code inspection `Incorrect script syntax`, mark possible format problems (e.g., extra `!`)
