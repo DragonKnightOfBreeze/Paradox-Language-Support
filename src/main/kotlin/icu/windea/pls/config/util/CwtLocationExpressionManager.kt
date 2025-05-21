@@ -40,30 +40,34 @@ object CwtLocationExpressionManager {
                 else -> namePaths.firstNotNullOfOrNull { definition.findByPath(location, ParadoxScriptValue::class.java, conditional = true, inline = true)?.stringValue() }
             }
             if (nameText.isNullOrEmpty()) return null
-            val name = resolvePlaceholder(locationExpression, definitionInfo.name)
+            val name = resolvePlaceholder(locationExpression, nameText)
             if (name.isNullOrEmpty()) return null
-            return CwtLocalisationLocationExpression.ResolveResult(name, null, {
-                ParadoxLocalisationSearch.search(name, selector).find()
-            }, {
-                ParadoxLocalisationSearch.search(name, selector).findAll()
-            })
+            return createLocalisationResolveResult(name, selector)
         }
 
         val valueElement = definition.findByPath(location, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
         val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
         if (config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
-            return CwtLocalisationLocationExpression.ResolveResult("", PlsBundle.message("dynamic"))
+            return createLocalisationResolveResult(PlsBundle.message("dynamic"))
         }
         if (valueElement !is ParadoxScriptString) {
             return null
         }
         if (valueElement.text.isParameterized()) {
-            return CwtLocalisationLocationExpression.ResolveResult("", PlsBundle.message("parameterized"))
+            return createLocalisationResolveResult(PlsBundle.message("parameterized"))
         }
         if (config.expression.type == CwtDataTypes.InlineLocalisation && valueElement.text.isLeftQuoted()) {
-            return CwtLocalisationLocationExpression.ResolveResult("", PlsBundle.message("inlined"))
+            return createLocalisationResolveResult(PlsBundle.message("inlined"))
         }
         val name = valueElement.stringValue
+        return createLocalisationResolveResult(name, selector)
+    }
+
+    private fun createLocalisationResolveResult(message: String): CwtLocalisationLocationExpression.ResolveResult {
+        return CwtLocalisationLocationExpression.ResolveResult("", message)
+    }
+
+    private fun createLocalisationResolveResult(name: String, selector: ChainedParadoxSelector<ParadoxLocalisationProperty>): CwtLocalisationLocationExpression.ResolveResult {
         return CwtLocalisationLocationExpression.ResolveResult(name, null, {
             ParadoxLocalisationSearch.search(name, selector).find()
         }, {
