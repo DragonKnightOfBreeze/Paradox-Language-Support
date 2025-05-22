@@ -35,6 +35,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField
     var checkOptionalForDefinitions = false
     @JvmField
+    var checkGeneratedModifiersForDefinitions = false
+    @JvmField
     var checkGeneratedModifierNamesForDefinitions = true
     @JvmField
     var checkGeneratedModifierDescriptionsForDefinitions = false
@@ -133,6 +135,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 
     override fun createOptionsPanel(): JComponent {
         lateinit var checkForDefinitionsCb: Cell<JBCheckBox>
+        lateinit var checkGeneratedModifiersForDefinitionsCb: Cell<JBCheckBox>
         lateinit var checkForModifiersCb: Cell<JBCheckBox>
         return panel {
             //checkForPreferredLocale
@@ -190,20 +193,30 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                             .enabledIf(checkForDefinitionsCb.selected)
                     }
                 }
-                //checkGeneratedModifierNamesForDefinitions
+                //checkGeneratedModifiersForDefinitions
                 row {
-                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifierNamesForDefinitions")).apply {
-                        bindSelected(::checkGeneratedModifierNamesForDefinitions)
-                            .actionListener { _, component -> checkGeneratedModifierNamesForDefinitions = component.isSelected }
-                            .enabledIf(checkForDefinitionsCb.selected)
-                    }
+                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifiersForDefinitions"))
+                        .bindSelected(::checkGeneratedModifiersForDefinitions)
+                        .actionListener { _, component -> checkGeneratedModifiersForDefinitions = component.isSelected }
+                        .also { checkGeneratedModifiersForDefinitionsCb = it }
+                        .enabledIf(checkForDefinitionsCb.selected)
                 }
-                //checkGeneratedModifierDescriptionsForDefinitions
-                row {
-                    checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifierDescriptionsForDefinitions")).apply {
-                        bindSelected(::checkGeneratedModifierDescriptionsForDefinitions)
-                            .actionListener { _, component -> checkGeneratedModifierDescriptionsForDefinitions = component.isSelected }
-                            .enabledIf(checkForDefinitionsCb.selected)
+                indent {
+                    //checkGeneratedModifierNamesForDefinitions
+                    row {
+                        checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifierNamesForDefinitions")).apply {
+                            bindSelected(::checkGeneratedModifierNamesForDefinitions)
+                                .actionListener { _, component -> checkGeneratedModifierNamesForDefinitions = component.isSelected }
+                                .enabledIf(checkGeneratedModifiersForDefinitionsCb.selected)
+                        }
+                    }
+                    //checkGeneratedModifierDescriptionsForDefinitions
+                    row {
+                        checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkGeneratedModifierDescriptionsForDefinitions")).apply {
+                            bindSelected(::checkGeneratedModifierDescriptionsForDefinitions)
+                                .actionListener { _, component -> checkGeneratedModifierDescriptionsForDefinitions = component.isSelected }
+                                .enabledIf(checkGeneratedModifiersForDefinitionsCb.selected)
+                        }
                     }
                 }
             }

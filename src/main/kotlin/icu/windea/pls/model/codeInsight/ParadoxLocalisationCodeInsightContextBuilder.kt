@@ -87,8 +87,8 @@ object ParadoxLocalisationCodeInsightContextBuilder {
                 val name = resolveResult?.name
                 val check = when {
                     info.required -> true
-                    (inspection == null || inspection.checkPrimaryForDefinitions) && (info.primary || info.primaryByInference) -> true
-                    (inspection == null || inspection.checkOptionalForDefinitions) && !info.required -> true
+                    checkPrimaryForDefinitions(inspection) && (info.primary || info.primaryByInference) -> true
+                    checkOptionalForDefinitions(inspection) && !info.required -> true
                     else -> false
                 }
                 val missing = resolveResult?.element == null && resolveResult?.message == null
@@ -103,7 +103,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
             val modifierName = info.name
             run {
                 val type = ParadoxLocalisationCodeInsightInfo.Type.GeneratedModifierName
-                val check = inspection == null || inspection.checkGeneratedModifierNamesForDefinitions
+                val check = checkGeneratedModifierNamesForDefinitions(inspection)
                 val keys = ParadoxModifierManager.getModifierNameKeys(modifierName, element)
                 val keyToUse = keys.firstOrNull() ?: return@run
                 for (locale in locales) {
@@ -115,7 +115,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
             }
             run {
                 val type = ParadoxLocalisationCodeInsightInfo.Type.GeneratedModifierDesc
-                val check = inspection == null || inspection.checkGeneratedModifierDescriptionsForDefinitions
+                val check = checkGeneratedModifierDescriptionsForDefinitions(inspection)
                 val keys = ParadoxModifierManager.getModifierDescKeys(modifierName, element)
                 val keyToUse = keys.firstOrNull() ?: return@run
                 for (locale in locales) {
@@ -186,7 +186,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
 
         run {
             val type = ParadoxLocalisationCodeInsightInfo.Type.ModifierName
-            val check = inspection == null || inspection.checkModifierNames
+            val check = checkModifierNames(inspection)
             val keys = ParadoxModifierManager.getModifierNameKeys(modifierName, element)
             val keyToUse = keys.firstOrNull() ?: return@run
             for (locale in locales) {
@@ -198,7 +198,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         }
         run {
             val type = ParadoxLocalisationCodeInsightInfo.Type.ModifierDesc
-            val check = inspection == null || inspection.checkModifierDescriptions
+            val check = checkModifierDescriptions(inspection)
             val keys = ParadoxModifierManager.getModifierDescKeys(modifierName, element)
             val keyToUse = keys.firstOrNull() ?: return@run
             for (locale in locales) {
@@ -250,6 +250,30 @@ object ParadoxLocalisationCodeInsightContextBuilder {
 
     private fun getMissingLocalisationInspection(context: PsiElement): MissingLocalisationInspection? {
         return getInspectionToolState("ParadoxScriptMissingLocalisation", context, context.project)?.enabledTool?.castOrNull()
+    }
+
+    private fun checkPrimaryForDefinitions(inspection: MissingLocalisationInspection?) : Boolean {
+        return inspection == null || inspection.checkForDefinitions
+    }
+
+    private fun checkOptionalForDefinitions(inspection: MissingLocalisationInspection?) : Boolean {
+        return inspection == null || inspection.checkOptionalForDefinitions
+    }
+
+    private fun checkGeneratedModifierNamesForDefinitions(inspection: MissingLocalisationInspection?) : Boolean {
+        return inspection == null || (inspection.checkGeneratedModifiersForDefinitions && inspection.checkGeneratedModifierNamesForDefinitions)
+    }
+
+    private fun checkGeneratedModifierDescriptionsForDefinitions(inspection: MissingLocalisationInspection?) : Boolean {
+        return inspection == null || (inspection.checkGeneratedModifiersForDefinitions && inspection.checkGeneratedModifierDescriptionsForDefinitions)
+    }
+
+    private fun checkModifierNames(inspection: MissingLocalisationInspection?) : Boolean {
+        return inspection == null || (inspection.checkForModifiers && inspection.checkModifierNames)
+    }
+
+    private fun checkModifierDescriptions(inspection: MissingLocalisationInspection?) : Boolean {
+        return inspection == null || (inspection.checkForModifiers && inspection.checkModifierDescriptions)
     }
 
     private fun checkForLocalisations(context: PsiElement): Boolean {
