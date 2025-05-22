@@ -109,7 +109,7 @@ class CreateReferenceAction : ToggleAction(), DumbAware {
             val endParent = endElement.parentOfType<ParadoxLocalisationPropertyValue>() ?: return null
             if (startParent !== endParent) return null
             if (start == end) return false
-            return startElement.elementType == PROPERTY_REFERENCE_START && endElement.elementType == PROPERTY_REFERENCE_END
+            return startElement.elementType == PARAMETER_START && endElement.elementType == PARAMETER_END
         }
     }
 }

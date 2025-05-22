@@ -17,7 +17,7 @@ object ParadoxTextColorManager {
         return when (element) {
             is ParadoxLocalisationColorfulText -> element.idElement?.text
             is ParadoxLocalisationArgumentAwareElement -> element.argumentElement?.let { getId(it) }
-            is ParadoxLocalisationPropertyReferenceArgument -> element.idElement?.let { doGetIdInArgument(it) }
+            is ParadoxLocalisationParameterArgument -> element.idElement?.let { doGetIdInArgument(it) }
             is ParadoxLocalisationCommandArgument -> element.idElement?.let { doGetIdInArgument(it) }
             else -> null
         }
@@ -31,7 +31,7 @@ object ParadoxTextColorManager {
         return when (element) {
             is ParadoxLocalisationColorfulText -> element.idElement?.let { it to 0 }
             is ParadoxLocalisationArgumentAwareElement -> element.argumentElement?.let { getIdElementAndOffset(it) }
-            is ParadoxLocalisationPropertyReferenceArgument -> element.idElement?.let { doGetIdOffset(element) }
+            is ParadoxLocalisationParameterArgument -> element.idElement?.let { doGetIdOffset(element) }
             is ParadoxLocalisationCommandArgument -> element.idElement?.let { doGetIdOffset(element) }
             else -> null
         }

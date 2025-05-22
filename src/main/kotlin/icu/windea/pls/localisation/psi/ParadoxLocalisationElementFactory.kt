@@ -51,14 +51,14 @@ object ParadoxLocalisationElementFactory {
     }
 
     @JvmStatic
-    fun createPropertyReference(project: Project, name: String): ParadoxLocalisationPropertyReference {
+    fun createParameter(project: Project, name: String): ParadoxLocalisationParameter {
         return createPropertyValue(project, "$$name$").tokenElement
-            ?.findChild<ParadoxLocalisationPropertyReference>() ?: throw IncorrectOperationException()
+            ?.findChild<ParadoxLocalisationParameter>() ?: throw IncorrectOperationException()
     }
 
     fun createScriptedVariableReference(project: Project, name: String): ParadoxLocalisationScriptedVariableReference {
         return createPropertyValue(project, "$@$name$").tokenElement
-            ?.findChild<ParadoxLocalisationPropertyReference>()
+            ?.findChild<ParadoxLocalisationParameter>()
             ?.findChild<ParadoxLocalisationScriptedVariableReference>() ?: throw IncorrectOperationException()
     }
 

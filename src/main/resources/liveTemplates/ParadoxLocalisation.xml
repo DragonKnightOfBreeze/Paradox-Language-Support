@@ -1,7 +1,7 @@
 <templateSet group="Paradox Localisation">
   <template name="sref"
             value="$$$SELECTION$$$"
-            description="Surround with property reference markers"
+            description="Surround with parameter markers"
             toReformat="false" toShortenFQNames="true">
     <context>
       <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
@@ -26,7 +26,7 @@
   </template>
   <template name="ref"
             value="$$$TEXT$$$$END$"
-            description="Insert a property reference fragment"
+            description="Insert a parameter fragment"
             toReformat="false" toShortenFQNames="true">
     <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
     <context>

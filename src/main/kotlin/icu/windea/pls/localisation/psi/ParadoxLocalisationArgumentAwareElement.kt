@@ -3,7 +3,7 @@ package icu.windea.pls.localisation.psi
 import com.intellij.psi.*
 
 /**
- * @see ParadoxLocalisationPropertyReference
+ * @see ParadoxLocalisationParameter
  * @see ParadoxLocalisationCommand
  * @see ParadoxLocalisationIcon
  */

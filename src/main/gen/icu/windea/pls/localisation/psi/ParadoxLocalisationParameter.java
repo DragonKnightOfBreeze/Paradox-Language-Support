@@ -11,7 +11,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.localisation.references.ParadoxLocalisationPropertyPsiReference;
 
-public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisationRichText, NavigatablePsiElement, ParadoxLocalisationArgumentAwareElement, ParadoxLocalisationCommandAwareElement {
+public interface ParadoxLocalisationParameter extends ParadoxLocalisationRichText, NavigatablePsiElement, ParadoxLocalisationArgumentAwareElement, ParadoxLocalisationCommandAwareElement {
 
   @Nullable
   ParadoxLocalisationScriptedVariableReference getScriptedVariableReference();
@@ -19,11 +19,11 @@ public interface ParadoxLocalisationPropertyReference extends ParadoxLocalisatio
   @Nullable PsiElement getIdElement();
 
   @Nullable
-  ParadoxLocalisationPropertyReferenceArgument getArgumentElement();
+  ParadoxLocalisationParameterArgument getArgumentElement();
 
   @NotNull String getName();
 
-  @NotNull ParadoxLocalisationPropertyReference setName(@NotNull String name);
+  @NotNull ParadoxLocalisationParameter setName(@NotNull String name);
 
   @Nullable ParadoxLocalisationPropertyPsiReference getReference();
 

@@ -311,7 +311,7 @@ object ParadoxPsiManager {
     }
 
     fun inlineLocalisation(element: PsiElement, rangeInElement: TextRange, declaration: ParadoxLocalisationProperty, project: Project) {
-        if (element !is ParadoxLocalisationPropertyReference) return
+        if (element !is ParadoxLocalisationParameter) return
 
         val toInline = declaration.propertyValue ?: return
         val newText = toInline.text.unquote()

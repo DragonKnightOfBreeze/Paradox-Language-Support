@@ -81,7 +81,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         if (isReference()) {
             yypushback(yylength() - 1);
             yybegin(IN_REFERENCE);
-            return PROPERTY_REFERENCE_START;
+            return PARAMETER_START;
         } else {
             yypushback(yylength() - 1);
             beginNextState();
@@ -294,24 +294,24 @@ TEXT_ICON_TOKEN=\w+
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
-    "$" { beginNextState(); return PROPERTY_REFERENCE_END; }
+    "$" { beginNextState(); return PARAMETER_END; }
     "|" { yybegin(IN_REFERENCE_ARGUMENT); return PIPE; }
     "@" { yybegin(IN_SCRIPTED_VARIABLE_REFERENCE); return AT; }
-    {REFERENCE_TOKEN} { return PROPERTY_REFERENCE_TOKEN; }
+    {REFERENCE_TOKEN} { return PARAMETER_TOKEN; }
 }
 <IN_REFERENCE_ARGUMENT>{
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextStateByDepth(); return COLORFUL_TEXT_END; }
     "[" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_COMMAND); }
 
-    "$" { beginNextState(); return PROPERTY_REFERENCE_END; }
-    {REFERENCE_ARGUMENT_TOKEN} { return PROPERTY_REFERENCE_ARGUMENT_TOKEN; }
+    "$" { beginNextState(); return PARAMETER_END; }
+    {REFERENCE_ARGUMENT_TOKEN} { return PARAMETER_ARGUMENT_TOKEN; }
 }
 
 // scripted variable reference rules (in references)
 
 <IN_SCRIPTED_VARIABLE_REFERENCE>{
-    "$" { beginNextState(); return PROPERTY_REFERENCE_END; }
+    "$" { beginNextState(); return PARAMETER_END; }
     "|" { yybegin(IN_REFERENCE_ARGUMENT); return PIPE; }
     {SCRIPTED_VARIABLE_TOKEN} { return SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
 }

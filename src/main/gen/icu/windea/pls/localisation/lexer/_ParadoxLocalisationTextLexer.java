@@ -55,8 +55,8 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  0,  0,  3,  3,  4,  4,  5,  5,  6,  6, 
-     7,  7,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 
+     0,  0,  1,  1,  2,  2,  0,  0,  3,  3,  4,  4,  5,  5,  6,  6,
+     7,  7,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14,
     15, 15,  0,  0, 16, 16, 17, 17,  0,  0, 18, 18, 19, 19
   };
 
@@ -617,7 +617,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
         if (isReference()) {
             yypushback(yylength() - 1);
             yybegin(IN_REFERENCE);
-            return PROPERTY_REFERENCE_START;
+            return PARAMETER_START;
         } else {
             yypushback(yylength() - 1);
             beginNextState();
@@ -1024,12 +1024,12 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 61: break;
           case 14:
-            { beginNextState(); return PROPERTY_REFERENCE_END;
+            { beginNextState(); return PARAMETER_END;
             }
           // fall through
           case 62: break;
           case 15:
-            { return PROPERTY_REFERENCE_TOKEN;
+            { return PARAMETER_TOKEN;
             }
           // fall through
           case 63: break;
@@ -1044,7 +1044,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 65: break;
           case 18:
-            { return PROPERTY_REFERENCE_ARGUMENT_TOKEN;
+            { return PARAMETER_ARGUMENT_TOKEN;
             }
           // fall through
           case 66: break;

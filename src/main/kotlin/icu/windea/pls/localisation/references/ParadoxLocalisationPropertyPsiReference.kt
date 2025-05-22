@@ -14,12 +14,12 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.ParadoxLocalisationCategory.*
 
 /**
- * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationPropertyReferenceCompletionProvider
+ * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationParameterCompletionProvider
  */
 class ParadoxLocalisationPropertyPsiReference(
-    element: ParadoxLocalisationPropertyReference,
+    element: ParadoxLocalisationParameter,
     rangeInElement: TextRange
-) : PsiPolyVariantReferenceBase<ParadoxLocalisationPropertyReference>(element, rangeInElement) {
+) : PsiPolyVariantReferenceBase<ParadoxLocalisationParameter>(element, rangeInElement) {
     val project by lazy { element.project }
 
     override fun handleElementRename(newElementName: String): PsiElement {

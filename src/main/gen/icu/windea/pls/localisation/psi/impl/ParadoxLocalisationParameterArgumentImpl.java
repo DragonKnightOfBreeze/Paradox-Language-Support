@@ -8,22 +8,21 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.localisation.references.ParadoxLocalisationPropertyPsiReference;
 
-public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationPropertyReference {
+public class ParadoxLocalisationParameterArgumentImpl extends ASTWrapperPsiElement implements ParadoxLocalisationParameterArgument {
 
-  public ParadoxLocalisationPropertyReferenceImpl(@NotNull ASTNode node) {
+  public ParadoxLocalisationParameterArgumentImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
-    visitor.visitPropertyReference(this);
+    visitor.visitParameterArgument(this);
   }
 
   @Override
@@ -33,35 +32,13 @@ public class ParadoxLocalisationPropertyReferenceImpl extends ParadoxLocalisatio
   }
 
   @Override
-  @Nullable
-  public ParadoxLocalisationScriptedVariableReference getScriptedVariableReference() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationScriptedVariableReference.class);
-  }
-
-  @Override
   public @Nullable PsiElement getIdElement() {
     return ParadoxLocalisationPsiImplUtil.getIdElement(this);
   }
 
   @Override
-  @Nullable
-  public ParadoxLocalisationPropertyReferenceArgument getArgumentElement() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationPropertyReferenceArgument.class);
-  }
-
-  @Override
-  public @NotNull String getName() {
-    return ParadoxLocalisationPsiImplUtil.getName(this);
-  }
-
-  @Override
-  public @NotNull ParadoxLocalisationPropertyReference setName(@NotNull String name) {
-    return ParadoxLocalisationPsiImplUtil.setName(this, name);
-  }
-
-  @Override
-  public @Nullable ParadoxLocalisationPropertyPsiReference getReference() {
-    return ParadoxLocalisationPsiImplUtil.getReference(this);
+  public @NotNull PsiReference @NotNull [] getReferences() {
+    return ParadoxLocalisationPsiImplUtil.getReferences(this);
   }
 
   @Override

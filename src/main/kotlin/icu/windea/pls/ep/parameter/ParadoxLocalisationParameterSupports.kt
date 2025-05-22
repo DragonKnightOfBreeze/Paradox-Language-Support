@@ -26,7 +26,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         return resolved
     }
 
-    override fun resolveParameter(element: ParadoxLocalisationPropertyReference): ParadoxLocalisationParameterElement? {
+    override fun resolveParameter(element: ParadoxLocalisationParameter): ParadoxLocalisationParameterElement? {
         val localisationElement = element.parentOfType<ParadoxLocalisationProperty>(withSelf = false) ?: return null
         val name = element.name
         val localisationName = localisationElement.name

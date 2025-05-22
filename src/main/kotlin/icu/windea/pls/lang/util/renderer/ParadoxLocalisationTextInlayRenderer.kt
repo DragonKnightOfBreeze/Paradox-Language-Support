@@ -45,7 +45,7 @@ object ParadoxLocalisationTextInlayRenderer {
         }
     }
 
-    fun render(element: ParadoxLocalisationPropertyReference, factory: PresentationFactory, editor: Editor, truncateLimit: Int, iconHeightLimit: Int): InlayPresentation? {
+    fun render(element: ParadoxLocalisationParameter, factory: PresentationFactory, editor: Editor, truncateLimit: Int, iconHeightLimit: Int): InlayPresentation? {
         //虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白
         return doRender(factory, editor, truncateLimit, iconHeightLimit) { context ->
             //context.guardStack.addLast(element.name) //不要加上这段代码
@@ -87,7 +87,7 @@ object ParadoxLocalisationTextInlayRenderer {
         return when (element) {
             is ParadoxLocalisationString -> renderStringTo(element, context)
             is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, context)
-            is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
+            is ParadoxLocalisationParameter -> renderParameterTo(element, context)
             is ParadoxLocalisationCommand -> renderCommandTo(element, context)
             is ParadoxLocalisationIcon -> renderIconTo(element, context)
             is ParadoxLocalisationTextFormat -> renderTextFormatTo(element, context)
@@ -136,7 +136,7 @@ object ParadoxLocalisationTextInlayRenderer {
         }
     }
 
-    private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context): Boolean = with(context.factory) {
+    private fun renderParameterTo(element: ParadoxLocalisationParameter, context: Context): Boolean = with(context.factory) {
         //如果有颜色码，则使用该颜色渲染，否则保留颜色码
         val color = if (getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         return renderWithColorTo(color, context) r@{

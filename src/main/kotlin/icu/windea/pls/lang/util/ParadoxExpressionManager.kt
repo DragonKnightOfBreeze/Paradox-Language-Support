@@ -191,7 +191,7 @@ object ParadoxExpressionManager {
 
     fun isParameterElementInExpression(element: PsiElement): Boolean {
         return element is ParadoxParameter || element is ParadoxScriptInlineParameterCondition
-            || element is ParadoxLocalisationPropertyReference
+            || element is ParadoxLocalisationParameter
     }
 
     fun isUnaryOperatorAwareParameter(text: String, parameterRanges: List<TextRange>): Boolean {

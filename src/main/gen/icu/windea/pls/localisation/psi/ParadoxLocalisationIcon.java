@@ -15,17 +15,10 @@ import javax.swing.Icon;
 
 public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText, NavigatablePsiElement, ParadoxLocalisationArgumentAwareElement, ParadoxLocalisationParameterAwareElement, ParadoxLocalisationCommandAwareElement {
 
-  @Nullable
-  ParadoxLocalisationRichText getRichText();
-
   @Nullable PsiElement getIdElement();
 
   @Nullable
   ParadoxLocalisationIconArgument getArgumentElement();
-
-  //WARNING: command(...) is skipped
-  //matching command(ParadoxLocalisationIcon, ...)
-  //methods are not found in ParadoxLocalisationPsiImplUtil
 
   @NotNull Icon getIcon(@IconFlags int flags);
 

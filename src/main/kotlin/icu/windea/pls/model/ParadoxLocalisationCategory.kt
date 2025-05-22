@@ -51,14 +51,14 @@ enum class ParadoxLocalisationCategory(
         }
 
         @JvmStatic
-        fun resolve(property: ParadoxLocalisationProperty): ParadoxLocalisationCategory? {
-            val root = property.fileInfo?.path ?: return null
+        fun resolve(element: ParadoxLocalisationProperty): ParadoxLocalisationCategory? {
+            val root = element.fileInfo?.path ?: return null
             return resolve(root)
         }
 
         @JvmStatic
-        fun resolve(propertyReference: ParadoxLocalisationPropertyReference): ParadoxLocalisationCategory? {
-            val root = propertyReference.fileInfo?.path ?: return null
+        fun resolve(element: ParadoxLocalisationParameter): ParadoxLocalisationCategory? {
+            val root = element.fileInfo?.path ?: return null
             return resolve(root)
         }
 

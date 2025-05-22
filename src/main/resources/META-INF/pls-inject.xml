@@ -42,7 +42,7 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationPropertyCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationPropertyKeyCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationStringCodeInjector"/>
-    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationPropertyReferenceCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationParameterCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationIconCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationCommandTextCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxLocalisationConceptCodeInjector"/>

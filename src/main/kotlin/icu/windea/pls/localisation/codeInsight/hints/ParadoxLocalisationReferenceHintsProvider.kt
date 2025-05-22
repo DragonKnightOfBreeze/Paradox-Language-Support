@@ -41,7 +41,7 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvid
     }
 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-        if (element !is ParadoxLocalisationPropertyReference) return true
+        if (element !is ParadoxLocalisationParameter) return true
         if (isIgnored(element)) return true
         val presentation = doCollect(element, editor, settings)
         val finalPresentation = presentation?.toFinalPresentation(this, file.project) ?: return true
@@ -50,11 +50,11 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvid
         return true
     }
 
-    private fun isIgnored(element: ParadoxLocalisationPropertyReference): Boolean {
+    private fun isIgnored(element: ParadoxLocalisationParameter): Boolean {
         return element.firstChild.siblings().any { it is ParadoxLocalisationCommand || it is ParadoxLocalisationScriptedVariableReference }
     }
 
-    private fun PresentationFactory.doCollect(element: ParadoxLocalisationPropertyReference, editor: Editor, settings: Settings): InlayPresentation? {
+    private fun PresentationFactory.doCollect(element: ParadoxLocalisationParameter, editor: Editor, settings: Settings): InlayPresentation? {
         return ParadoxLocalisationTextInlayRenderer.render(element, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
     }
 }

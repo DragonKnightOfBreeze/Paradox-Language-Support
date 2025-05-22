@@ -67,7 +67,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                     element is ParadoxLocalisationExpressionElement && element.isComplexExpression() -> {
                         addDescriptor(element) //definition
                     }
-                    element is ParadoxLocalisationPropertyReference -> {
+                    element is ParadoxLocalisationParameter -> {
                         addDescriptor(element) //localisation
                     }
                 }

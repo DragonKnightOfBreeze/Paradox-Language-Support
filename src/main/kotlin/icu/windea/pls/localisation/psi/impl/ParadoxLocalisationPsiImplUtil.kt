@@ -217,27 +217,27 @@ object ParadoxLocalisationPsiImplUtil {
 
     //endregion
 
-    //region ParadoxLocalisationPropertyReference
+    //region ParadoxLocalisationParameter
 
     @JvmStatic
-    fun getIdElement(element: ParadoxLocalisationPropertyReference): PsiElement? {
-        return element.findChild { it.elementType == PROPERTY_REFERENCE_TOKEN }
+    fun getIdElement(element: ParadoxLocalisationParameter): PsiElement? {
+        return element.findChild { it.elementType == PARAMETER_TOKEN }
     }
 
     @JvmStatic
-    fun getName(element: ParadoxLocalisationPropertyReference): String {
+    fun getName(element: ParadoxLocalisationParameter): String {
         return element.idElement?.text.orEmpty()
     }
 
     @JvmStatic
-    fun setName(element: ParadoxLocalisationPropertyReference, name: String): ParadoxLocalisationPropertyReference {
+    fun setName(element: ParadoxLocalisationParameter, name: String): ParadoxLocalisationParameter {
         if (element.idElement == null) throw IncorrectOperationException() //不支持重命名
-        val newElement = ParadoxLocalisationElementFactory.createPropertyReference(element.project, name)
+        val newElement = ParadoxLocalisationElementFactory.createParameter(element.project, name)
         return element.replace(newElement).cast()
     }
 
     @JvmStatic
-    fun getReference(element: ParadoxLocalisationPropertyReference): ParadoxLocalisationPropertyPsiReference? {
+    fun getReference(element: ParadoxLocalisationParameter): ParadoxLocalisationPropertyPsiReference? {
         return CachedValuesManager.getCachedValue(element) {
             val value = run {
                 val rangeInElement = element.idElement?.textRangeInParent ?: return@run null
@@ -249,15 +249,15 @@ object ParadoxLocalisationPsiImplUtil {
 
     //endregion
 
-    //region ParadoxLocalisationPropertyReferenceArgument
+    //region ParadoxLocalisationParameterArgument
 
     @JvmStatic
-    fun getIdElement(element: ParadoxLocalisationPropertyReferenceArgument): PsiElement? {
-        return element.findChild { it.elementType == PROPERTY_REFERENCE_ARGUMENT_TOKEN }
+    fun getIdElement(element: ParadoxLocalisationParameterArgument): PsiElement? {
+        return element.findChild { it.elementType == PARAMETER_ARGUMENT_TOKEN }
     }
 
     @JvmStatic
-    fun getReferences(element: ParadoxLocalisationPropertyReferenceArgument): Array<out PsiReference> {
+    fun getReferences(element: ParadoxLocalisationParameterArgument): Array<out PsiReference> {
         return ParadoxLocalisationArgumentManager.getReferences(element)
     }
 

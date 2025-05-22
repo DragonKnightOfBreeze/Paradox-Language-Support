@@ -6,7 +6,7 @@ import icu.windea.pls.model.*
 
 /**
  * @see ParadoxLocalisationColorfulText
- * @see ParadoxLocalisationPropertyReferenceArgument
+ * @see ParadoxLocalisationParameterArgument
  * @see ParadoxLocalisationCommandArgument
  */
 interface ParadoxLocalisationTextColorAwareElement : PsiElement {

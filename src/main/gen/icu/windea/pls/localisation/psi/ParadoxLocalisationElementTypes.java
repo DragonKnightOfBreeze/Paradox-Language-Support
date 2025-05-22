@@ -18,11 +18,11 @@ public interface ParadoxLocalisationElementTypes {
   IElementType ICON = ParadoxLocalisationElementTypeFactory.getElementType("ICON");
   IElementType ICON_ARGUMENT = ParadoxLocalisationElementTypeFactory.getElementType("ICON_ARGUMENT");
   IElementType LOCALE = ParadoxLocalisationElementTypeFactory.getElementType("LOCALE");
+  IElementType PARAMETER = ParadoxLocalisationElementTypeFactory.getElementType("PARAMETER");
+  IElementType PARAMETER_ARGUMENT = ParadoxLocalisationElementTypeFactory.getElementType("PARAMETER_ARGUMENT");
   IElementType PROPERTY = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY");
   IElementType PROPERTY_KEY = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY_KEY");
   IElementType PROPERTY_LIST = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY_LIST");
-  IElementType PROPERTY_REFERENCE = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY_REFERENCE");
-  IElementType PROPERTY_REFERENCE_ARGUMENT = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY_REFERENCE_ARGUMENT");
   IElementType PROPERTY_VALUE = ParadoxLocalisationElementTypeFactory.getElementType("PROPERTY_VALUE");
   IElementType RICH_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("RICH_TEXT");
   IElementType SCRIPTED_VARIABLE_REFERENCE = ParadoxLocalisationElementTypeFactory.getElementType("SCRIPTED_VARIABLE_REFERENCE");
@@ -50,13 +50,13 @@ public interface ParadoxLocalisationElementTypes {
   IElementType LEFT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("LEFT_QUOTE");
   IElementType LEFT_SINGLE_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("LEFT_SINGLE_QUOTE");
   IElementType LOCALE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("LOCALE_TOKEN");
+  IElementType PARAMETER_ARGUMENT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PARAMETER_ARGUMENT_TOKEN");
+  IElementType PARAMETER_END = ParadoxLocalisationElementTypeFactory.getTokenType("PARAMETER_END");
+  IElementType PARAMETER_START = ParadoxLocalisationElementTypeFactory.getTokenType("PARAMETER_START");
+  IElementType PARAMETER_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PARAMETER_TOKEN");
   IElementType PIPE = ParadoxLocalisationElementTypeFactory.getTokenType("PIPE");
   IElementType PROPERTY_KEY_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_KEY_TOKEN");
   IElementType PROPERTY_NUMBER = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_NUMBER");
-  IElementType PROPERTY_REFERENCE_ARGUMENT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_ARGUMENT_TOKEN");
-  IElementType PROPERTY_REFERENCE_END = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_END");
-  IElementType PROPERTY_REFERENCE_START = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_START");
-  IElementType PROPERTY_REFERENCE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_REFERENCE_TOKEN");
   IElementType PROPERTY_VALUE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_VALUE_TOKEN");
   IElementType RIGHT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_QUOTE");
   IElementType RIGHT_SINGLE_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_SINGLE_QUOTE");
@@ -102,6 +102,12 @@ public interface ParadoxLocalisationElementTypes {
       else if (type == LOCALE) {
         return new ParadoxLocalisationLocaleImpl(node);
       }
+      else if (type == PARAMETER) {
+        return new ParadoxLocalisationParameterImpl(node);
+      }
+      else if (type == PARAMETER_ARGUMENT) {
+        return new ParadoxLocalisationParameterArgumentImpl(node);
+      }
       else if (type == PROPERTY) {
         return new ParadoxLocalisationPropertyImpl(node);
       }
@@ -110,12 +116,6 @@ public interface ParadoxLocalisationElementTypes {
       }
       else if (type == PROPERTY_LIST) {
         return new ParadoxLocalisationPropertyListImpl(node);
-      }
-      else if (type == PROPERTY_REFERENCE) {
-        return new ParadoxLocalisationPropertyReferenceImpl(node);
-      }
-      else if (type == PROPERTY_REFERENCE_ARGUMENT) {
-        return new ParadoxLocalisationPropertyReferenceArgumentImpl(node);
       }
       else if (type == PROPERTY_VALUE) {
         return new ParadoxLocalisationPropertyValueImpl(node);

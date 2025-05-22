@@ -23,8 +23,8 @@ class ParadoxLocalisationErrorQuickFixProvider : ErrorQuickFixProvider {
                 //RIGHT_QUOTE
                 builder.registerFix(InsertMissingTokenFix("\"", errorElement.startOffset), null, null, null, null)
             }
-            errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationPropertyReference -> {
-                //PROPERTY_REFERENCE_END
+            errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationParameter -> {
+                //PARAMETER_END
                 builder.registerFix(InsertMissingTokenFix("$", errorElement.startOffset), null, null, null, null)
             }
             errorElement.nextSibling == null && errorElement.parent is ParadoxLocalisationIcon -> {

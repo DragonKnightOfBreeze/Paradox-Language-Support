@@ -36,7 +36,7 @@ object ParadoxLocalisationTextRenderer {
         when (element) {
             is ParadoxLocalisationString -> renderStringTo(element, context)
             is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, context)
-            is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
+            is ParadoxLocalisationParameter -> renderParameterTo(element, context)
             is ParadoxLocalisationCommand -> renderCommandTo(element, context)
             is ParadoxLocalisationIcon -> renderIconTo(element, context)
             is ParadoxLocalisationTextFormat -> renderTextFormatTo(element, context)
@@ -55,7 +55,7 @@ object ParadoxLocalisationTextRenderer {
         }
     }
 
-    private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {
+    private fun renderParameterTo(element: ParadoxLocalisationParameter, context: Context) {
         val resolved = element.reference?.resolveLocalisation() //直接解析为本地化以优化性能
             ?: element.scriptedVariableReference?.reference?.resolve()
         when {

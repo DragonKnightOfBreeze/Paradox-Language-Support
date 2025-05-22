@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.*
 interface ParadoxLocalisationParameterSupport {
     fun resolveParameter(localisationElement: ParadoxLocalisationProperty, name: String): ParadoxLocalisationParameterElement?
 
-    fun resolveParameter(element: ParadoxLocalisationPropertyReference): ParadoxLocalisationParameterElement?
+    fun resolveParameter(element: ParadoxLocalisationParameter): ParadoxLocalisationParameterElement?
 
     fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxLocalisationParameterElement?
 
@@ -35,7 +35,7 @@ interface ParadoxLocalisationParameterSupport {
             }
         }
 
-        fun resolveParameter(element: ParadoxLocalisationPropertyReference): ParadoxLocalisationParameterElement? {
+        fun resolveParameter(element: ParadoxLocalisationParameter): ParadoxLocalisationParameterElement? {
             return EP_NAME.extensionList.firstNotNullOfOrNull { ep ->
                 ep.resolveParameter(element)
             }

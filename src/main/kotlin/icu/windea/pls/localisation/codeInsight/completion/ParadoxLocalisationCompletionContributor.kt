@@ -21,9 +21,9 @@ class ParadoxLocalisationCompletionContributor : CompletionContributor() {
         val colorPattern = psiElement().atStartOf(psiElement().afterLeaf("§"))
         extend(colorPattern, ParadoxLocalisationColorCompletionProvider())
 
-        //当用户可能正在输入一个 propertyReference 的名字时提示
-        val propertyReferencePattern = psiElement(PROPERTY_REFERENCE_TOKEN)
-        extend(propertyReferencePattern, ParadoxLocalisationPropertyReferenceCompletionProvider())
+        //当用户可能正在输入一个 parameter 的名字时提示
+        val parameterPattern = psiElement(PARAMETER_TOKEN)
+        extend(parameterPattern, ParadoxLocalisationParameterCompletionProvider())
 
         //当用户可能正在输入一个 scriptedVariableReference 的名字时提示
         val scriptedVariableReferencePattern = psiElement().withElementType(SCRIPTED_VARIABLE_REFERENCE_TOKEN)

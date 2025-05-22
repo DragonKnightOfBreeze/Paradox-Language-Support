@@ -4,14 +4,12 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 
 /**
- * 表示此PSI可以带有本地化参数（[ParadoxLocalisationPropertyReference]）。
+ * 表示此PSI可以带有本地化参数（[ParadoxLocalisationParameter]）。
  *
  * 目前，不支持组合使用参数与字面量的情况，相关支持尚不完善。
  *
- * @see ParadoxLocalisationPropertyReference
+ * @see ParadoxLocalisationParameter
  */
 interface ParadoxLocalisationParameterAwareElement : PsiElement {
-    val referenceElement: ParadoxLocalisationPropertyReference? get() = this.findChild<_>()
-
-    //val parameters: List<ParadoxLocalisationPropertyReference> get() = this.findChildren<_>()
+    val referenceElement: ParadoxLocalisationParameter? get() = this.findChild<_>()
 }

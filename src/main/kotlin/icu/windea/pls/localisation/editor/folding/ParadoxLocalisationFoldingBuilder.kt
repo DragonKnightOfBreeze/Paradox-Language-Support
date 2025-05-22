@@ -16,7 +16,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
-            PROPERTY_REFERENCE -> ""
+            PARAMETER -> ""
             ICON -> ""
             COMMAND -> PlsConstants.Strings.commandFolder
             CONCEPT_TEXT -> "..."
@@ -28,7 +28,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         val settings = getSettings().folding
         return when (node.elementType) {
             COMMENT -> settings.commentByDefault
-            PROPERTY_REFERENCE -> settings.localisationReferencesFullyByDefault
+            PARAMETER -> settings.localisationReferencesFullyByDefault
             ICON -> settings.localisationIconsFullyByDefault
             COMMAND -> {
                 val conceptNode = node.findChildByType(CONCEPT)
@@ -56,7 +56,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
                 }
             }
             LOCALE -> return //optimization
-            PROPERTY_REFERENCE -> {
+            PARAMETER -> {
                 if (settings.localisationReferencesFully) {
                     descriptors.add(FoldingDescriptor(node, node.textRange))
                 }

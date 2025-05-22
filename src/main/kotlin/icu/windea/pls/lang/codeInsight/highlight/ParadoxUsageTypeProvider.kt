@@ -60,7 +60,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
             element is ParadoxScriptParameter -> return ParadoxUsageType.PARAMETER_REFERENCE_1
             element is ParadoxScriptInlineMathParameter -> return ParadoxUsageType.PARAMETER_REFERENCE_2
             element is ParadoxScriptParameterConditionParameter -> return ParadoxUsageType.PARAMETER_REFERENCE_3
-            element is ParadoxLocalisationPropertyReference -> return ParadoxUsageType.LOCALISATION_REFERENCE
+            element is ParadoxLocalisationParameter -> return ParadoxUsageType.LOCALISATION_REFERENCE
             element is ParadoxLocalisationIcon -> return ParadoxUsageType.LOCALISATION_ICON
             element is ParadoxLocalisationColorfulText -> return ParadoxUsageType.LOCALISATION_COLOR
             element is ParadoxLocalisationCommandText -> return ParadoxUsageType.LOCALISATION_COMMAND_TEXT

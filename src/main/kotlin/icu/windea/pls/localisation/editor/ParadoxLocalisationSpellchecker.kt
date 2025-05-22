@@ -14,7 +14,7 @@ class ParadoxLocalisationSpellchecker : SpellcheckingStrategy() {
         return when (element.elementType) {
             ParadoxLocalisationElementTypes.LOCALE_TOKEN -> emptyTokenizer
             ParadoxLocalisationElementTypes.PROPERTY_KEY_TOKEN -> compactTextTokenizer
-            ParadoxLocalisationElementTypes.PROPERTY_REFERENCE_TOKEN -> emptyTokenizer
+            ParadoxLocalisationElementTypes.PARAMETER_TOKEN -> emptyTokenizer
             ParadoxLocalisationElementTypes.ICON_TOKEN -> textTokenizer
             ParadoxLocalisationElementTypes.STRING_TOKEN -> textTokenizer
             ParadoxLocalisationElementTypes.COMMAND_TEXT_TOKEN -> textTokenizer

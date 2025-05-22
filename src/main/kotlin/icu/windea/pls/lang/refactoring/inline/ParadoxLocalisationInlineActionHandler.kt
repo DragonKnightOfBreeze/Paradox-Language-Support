@@ -58,7 +58,7 @@ class ParadoxLocalisationInlineActionHandler : InlineActionHandler() {
 
         run {
             if (reference == null) return@run
-            val referenceElement = reference.element.castOrNull<ParadoxLocalisationPropertyReference>() ?: return@run
+            val referenceElement = reference.element.castOrNull<ParadoxLocalisationParameter>() ?: return@run
             if (referenceElement.argumentElement != null) {
                 val message = PlsBundle.message("refactoring.localisation.withArgument", getRefactoringName())
                 CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)

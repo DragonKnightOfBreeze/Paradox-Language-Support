@@ -16,7 +16,7 @@ import javax.swing.*
 /**
  * 本地化的参数并不存在一个真正意义上的声明处，用这个模拟。
  *
- * @see ParadoxLocalisationPropertyReference
+ * @see ParadoxLocalisationParameter
  * @see ParadoxLocalisationParameterSupport
  */
 class ParadoxLocalisationParameterElement(

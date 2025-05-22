@@ -17,7 +17,7 @@ import icu.windea.pls.model.*
 /**
  * 提供属性引用名字的代码补全。
  */
-class ParadoxLocalisationPropertyReferenceCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ParadoxLocalisationParameterCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return
         val category = ParadoxLocalisationCategory.resolve(file) ?: return

@@ -21,7 +21,7 @@ class ParadoxLocalisationAnnotator : Annotator {
         when (element) {
             is ParadoxLocalisationProperty -> annotateProperty(element, holder)
             is ParadoxLocalisationColorfulText -> annotateColorfulText(element, holder)
-            is ParadoxLocalisationPropertyReference -> annotatePropertyReference(element, holder)
+            is ParadoxLocalisationParameter -> annotateParameter(element, holder)
             is ParadoxLocalisationCommand -> annotateCommand(element, holder)
             is ParadoxLocalisationExpressionElement -> annotateExpression(element, holder)
         }
@@ -59,7 +59,7 @@ class ParadoxLocalisationAnnotator : Annotator {
         annotateTextColor(element, holder)
     }
 
-    private fun annotatePropertyReference(element: ParadoxLocalisationPropertyReference, holder: AnnotationHolder) {
+    private fun annotateParameter(element: ParadoxLocalisationParameter, holder: AnnotationHolder) {
         annotateByArgument(element, holder)
     }
 

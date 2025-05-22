@@ -35,7 +35,7 @@ open class ParadoxLocalisationParserDefinition : ParserDefinition {
             rightType == LOCALE_TOKEN -> MUST_LINE_BREAK
             rightType == PROPERTY_KEY_TOKEN -> MUST_LINE_BREAK
             leftType == COLORFUL_TEXT_START && rightType == COLOR_TOKEN -> MUST_NOT
-            leftType == PROPERTY_REFERENCE_START || rightType == PROPERTY_REFERENCE_END -> MUST_NOT
+            leftType == PARAMETER_START || rightType == PARAMETER_END -> MUST_NOT
             leftType == AT && rightType == SCRIPTED_VARIABLE_REFERENCE_TOKEN -> MUST_NOT
             leftType == ICON_START || rightType == ICON_END -> MUST_NOT
             leftType == PIPE || rightType == PIPE -> MUST_NOT

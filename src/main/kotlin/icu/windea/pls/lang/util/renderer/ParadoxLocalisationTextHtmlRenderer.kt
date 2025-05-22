@@ -82,7 +82,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         when (element) {
             is ParadoxLocalisationString -> renderStringTo(element, context)
             is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, context)
-            is ParadoxLocalisationPropertyReference -> renderPropertyReferenceTo(element, context)
+            is ParadoxLocalisationParameter -> renderParameterTo(element, context)
             is ParadoxLocalisationCommand -> renderCommandTo(element, context)
             is ParadoxLocalisationIcon -> renderIconTo(element, context)
             is ParadoxLocalisationTextFormat -> renderTextFormatTo(element, context)
@@ -107,7 +107,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         }
     }
 
-    private fun renderPropertyReferenceTo(element: ParadoxLocalisationPropertyReference, context: Context) {
+    private fun renderParameterTo(element: ParadoxLocalisationParameter, context: Context) {
         //如果处理文本失败，则使用原始文本
         //如果有颜色码，则使用该颜色渲染，否则保留颜色码
 

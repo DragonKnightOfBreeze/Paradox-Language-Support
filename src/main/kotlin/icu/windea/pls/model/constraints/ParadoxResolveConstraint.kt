@@ -79,7 +79,7 @@ enum class ParadoxResolveConstraint {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
-                is ParadoxLocalisationPropertyReference -> true
+                is ParadoxLocalisationParameter -> true
                 else -> false
             }
         }
@@ -128,7 +128,7 @@ enum class ParadoxResolveConstraint {
     LocalisationParameter {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
-                is ParadoxLocalisationPropertyReference -> true
+                is ParadoxLocalisationParameter -> true
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
                 else -> false
             }
