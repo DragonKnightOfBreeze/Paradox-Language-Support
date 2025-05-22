@@ -21,9 +21,9 @@ import icu.windea.pls.localisation.psi.*
 class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH
 
-    override fun getText() = PlsBundle.message("intention.changeLocalisationLocale")
+    override fun getFamilyName() = PlsBundle.message("intention.changeLocalisationLocale")
 
-    override fun getFamilyName() = text
+    override fun getText() = familyName
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
         if (editor == null || file == null) return false

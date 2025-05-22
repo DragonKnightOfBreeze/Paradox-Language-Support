@@ -19,9 +19,9 @@ import icu.windea.pls.model.*
 class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH
 
-    override fun getText() = PlsBundle.message("intention.changeLocalisationColor")
+    override fun getFamilyName() = PlsBundle.message("intention.changeLocalisationColor")
 
-    override fun getFamilyName() = text
+    override fun getText() = familyName
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
         if (editor == null || file == null) return false
