@@ -6,13 +6,15 @@ import com.intellij.openapi.progress.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.dds.DdsManager
+import icu.windea.pls.dds.*
 import icu.windea.pls.model.*
+import java.lang.invoke.*
 import java.nio.file.*
 import javax.imageio.*
 import kotlin.io.path.*
 
 object ParadoxDdsImageResolver {
+    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
     private val ddsCache: Cache<String, Path> by lazy { CacheBuilder.newBuilder().buildCache() } //absPath - pngPath
 
     /**
@@ -32,7 +34,7 @@ object ParadoxDdsImageResolver {
             return pngAbsPath.toString()
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
-            thisLogger().warn("Resolve url for dds image failed. (dds absolute path: $absPath, dds relative path: $relPath, frame info: $frameInfo)", e)
+            logger.warn("Resolve url for dds image failed. (dds absolute path: $absPath, dds relative path: $relPath, frame info: $frameInfo)", e)
             return null
         }
     }

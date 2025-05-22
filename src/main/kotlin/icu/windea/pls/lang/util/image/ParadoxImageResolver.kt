@@ -6,7 +6,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
@@ -18,9 +17,12 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 import org.intellij.images.fileTypes.impl.*
+import java.lang.invoke.*
 import kotlin.io.path.*
 
 object ParadoxImageResolver {
+    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
+
     //支持切分PNG图片
     //切分数量由sprite声明中的属性noOfFrames的值确定
 
@@ -45,7 +47,7 @@ object ParadoxImageResolver {
         } catch (e: Exception) {
             //如果出现异常，那么返回默认图标
             if (e is ProcessCanceledException) throw e
-            thisLogger().warn("Resolve dds url failed. (definition name: ${definitionInfo.name.orAnonymous()})", e)
+            logger.warn("Resolve dds url failed. (definition name: ${definitionInfo.name.orAnonymous()})", e)
             return null
         }
     }
@@ -62,7 +64,7 @@ object ParadoxImageResolver {
         } catch (e: Exception) {
             //如果出现异常，那么返回默认图标
             if (e is ProcessCanceledException) throw e
-            thisLogger().warn("Resolve dds url failed. (dds file path: ${file.path})", e)
+            logger.warn("Resolve dds url failed. (dds file path: ${file.path})", e)
             return null
         }
     }
@@ -79,7 +81,7 @@ object ParadoxImageResolver {
         } catch (e: Exception) {
             //如果出现异常，那么返回默认图标
             if (e is ProcessCanceledException) throw e
-            thisLogger().warn("Resolve dds url failed. (dds file path: ${filePath})", e)
+            logger.warn("Resolve dds url failed. (dds file path: ${filePath})", e)
             return null
         }
     }
@@ -97,11 +99,11 @@ object ParadoxImageResolver {
 
     private fun doResolveUrlByFile(file: VirtualFile, frameInfo: ImageFrameInfo?): String? {
         return when (file.fileType) {
-            ImageFileType.INSTANCE -> {
+            is ImageFileType -> {
                 //accept normal image files (e.g., png file)
                 file.toNioPath().absolutePathString()
             }
-            DdsFileType -> {
+            is DdsFileType -> {
                 //convert dds file to png file and then return png file's actual url
                 val fileInfo = file.fileInfo
                 val ddsRelPath = fileInfo?.let { it.rootInfo.gameType.id + "/" + it.path.path }
@@ -115,13 +117,5 @@ object ParadoxImageResolver {
     private fun doResolveUrlByFilePath(filePath: String, project: Project, frameInfo: ImageFrameInfo?): String? {
         val file = ParadoxFilePathSearch.search(filePath, null, selector(project).file()).find() ?: return null
         return doResolveUrlByFile(file, frameInfo)
-    }
-
-    fun getDefaultUrl(): String {
-        return getUnknownPngUrl()
-    }
-
-    private fun getUnknownPngUrl(): String {
-        return PlsConstants.Paths.unknownPngFile.path
     }
 }

@@ -129,10 +129,6 @@ object PlsConstants {
         val images by lazy { data.resolve("images").also { runCatchingCancelable { it.createDirectory() } } }
         val imagesTemp by lazy { images.resolve("_temp").also { runCatchingCancelable { PathUtils.cleanDirectory(it) } } }
 
-        val unknownPng by lazy { data.resolve("unknown.png") }
-        val unknownPngClasspathUrl = "/tools/unknown.png".toClasspathUrl(locationClass)
-        val unknownPngFile by VirtualFileProvider(unknownPng) { VfsUtil.findFileByURL(unknownPngClasspathUrl)!! }
-
         val texconvExe by lazy { data.resolve("texconv.exe") }
         val texconvExeClasspathUrl = "/tools/texconv.exe".toClasspathUrl(locationClass)
         val texconvExeFile by VirtualFileProvider(texconvExe) { VfsUtil.findFileByURL(texconvExeClasspathUrl)!! }

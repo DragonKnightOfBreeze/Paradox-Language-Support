@@ -45,7 +45,6 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
             PlsConstants.Paths.data
             PlsConstants.Paths.images
             PlsConstants.Paths.imagesTemp
-            writeAction { runCatchingCancelable { PlsConstants.Paths.unknownPngFile } }
             writeAction { runCatchingCancelable { PlsConstants.Paths.texconvExeFile } }
         }
     }
@@ -82,7 +81,6 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
         project.configGroupLibrary.refreshRoots()
     }
 
-    @Suppress("KotlinConstantConditions")
     private val refreshOnProjectStartup = PlsConstants.Settings.refreshOnProjectStartup
     private val refreshedProjectIdsKey = createKey<MutableSet<String>>("pls.refreshedProjectIds")
     private val refreshedProjectIds by lazy { ApplicationManager.getApplication().getOrPutUserData(refreshedProjectIdsKey) { mutableSetOf() } }
