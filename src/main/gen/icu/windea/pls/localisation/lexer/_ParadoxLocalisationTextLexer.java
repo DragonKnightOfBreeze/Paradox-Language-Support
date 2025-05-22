@@ -54,8 +54,8 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  0,  0,  3,  3,  4,  4,  5,  5,  6,  6,
-     7,  7,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14,
+     0,  0,  1,  1,  2,  2,  0,  0,  3,  3,  4,  4,  5,  5,  6,  6, 
+     7,  7,  8,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 
     15, 15,  0,  0, 16, 16, 17, 17,  0,  0, 18, 18, 19, 19
   };
 
@@ -550,7 +550,6 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
   /* user code: */
     private ParadoxGameType gameType;
 
-    private IntStack nextStateByDepthStack = null;
     private IntStack nextStateStack = null;
 
     public _ParadoxLocalisationTextLexer() {
@@ -565,29 +564,6 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
 
     public ParadoxGameType getGameType() {
         return this.gameType;
-    }
-
-    private boolean isStateByDepth(int state) {
-        return state == YYINITIAL || state == IN_COLORFUL_TEXT || state == IN_CONCEPT_TEXT || state == IN_TEXT_FORMAT_TEXT;
-    }
-
-    private void setNextStateByDepth(int nextState) {
-        if (nextStateByDepthStack == null) {
-            nextStateByDepthStack = new IntArrayList();
-        }
-        if (!isStateByDepth(nextState)) {
-            nextState = nextStateByDepthStack.isEmpty() ? YYINITIAL : IN_COLORFUL_TEXT;
-        }
-        nextStateByDepthStack.push(nextState);
-    }
-
-    private void beginNextStateByDepth() {
-        if (nextStateByDepthStack == null || nextStateByDepthStack.isEmpty()) {
-            yybegin(YYINITIAL);
-            return;
-        }
-        int nextState = nextStateByDepthStack.popInt();
-        yybegin(nextState);
     }
 
     private void setNextState(int nextState) {
@@ -982,7 +958,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           case 51: break;
           case 6:
             { if (yystate() != IN_CONCEPT_TEXT) return STRING_TOKEN;
-        beginNextStateByDepth(); return RIGHT_BRACKET;
+        beginNextState(); return RIGHT_BRACKET;
             }
           // fall through
           case 52: break;
@@ -1007,7 +983,7 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 56: break;
           case 11:
-            { yypushback(yylength()); beginNextStateByDepth();
+            { yypushback(yylength()); beginNextState();
             }
           // fall through
           case 57: break;
@@ -1117,12 +1093,12 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 77: break;
           case 32:
-            { yypushback(yylength()); setNextStateByDepth(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT);
+            { yypushback(yylength()); setNextState(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT);
             }
           // fall through
           case 78: break;
           case 33:
-            { setNextStateByDepth(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE;
+            { setNextState(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE;
             }
           // fall through
           case 79: break;
@@ -1132,12 +1108,12 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 80: break;
           case 35:
-            { yypushback(yylength()); setNextStateByDepth(IN_TEXT_FORMAT_TEXT); yybegin(IN_TEXT_FORMAT_TEXT);
+            { yypushback(yylength()); setNextState(IN_TEXT_FORMAT_TEXT); yybegin(IN_TEXT_FORMAT_TEXT);
             }
           // fall through
           case 81: break;
           case 36:
-            { setNextStateByDepth(IN_TEXT_FORMAT_TEXT); yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE;
+            { setNextState(IN_TEXT_FORMAT_TEXT); yybegin(IN_TEXT_FORMAT_TEXT); return WHITE_SPACE;
             }
           // fall through
           case 82: break;
@@ -1178,12 +1154,12 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           case 89: break;
           case 44:
             { if (!ParadoxSyntaxConstraint.LocalisationTextFormat.supports(this)) return STRING_TOKEN;
-        beginNextStateByDepth(); return TEXT_FORMAT_END;
+        beginNextState(); return TEXT_FORMAT_END;
             }
           // fall through
           case 90: break;
           case 45:
-            { beginNextStateByDepth(); return COLORFUL_TEXT_END;
+            { beginNextState(); return COLORFUL_TEXT_END;
             }
           // fall through
           case 91: break;

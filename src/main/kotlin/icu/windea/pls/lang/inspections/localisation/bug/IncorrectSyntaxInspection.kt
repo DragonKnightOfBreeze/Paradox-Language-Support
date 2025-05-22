@@ -3,6 +3,7 @@ package icu.windea.pls.lang.inspections.localisation.bug
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
@@ -24,7 +25,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool() {
                 if (element.elementType != COLORFUL_TEXT_END) return
                 if (element.nextSibling == null && element.parent?.elementType == COLORFUL_TEXT) return
                 val message = PlsBundle.message("inspection.localisation.incorrectSyntax.desc.1")
-                val fix = getDeleteDanglingEndMarkerFix(element)
+                val fix = DeleteStringByElementTypeFix(element, PlsBundle.message("inspection.localisation.incorrectSyntax.fix.1", element.text))
                 holder.registerProblem(element, message, fix)
             }
 
@@ -32,7 +33,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool() {
                 if (element.elementType != TEXT_FORMAT_END) return
                 if (element.nextSibling == null && element.parent?.elementType == TEXT_FORMAT) return
                 val message = PlsBundle.message("inspection.localisation.incorrectSyntax.desc.2")
-                val fix = getDeleteDanglingEndMarkerFix(element)
+                val fix = DeleteStringByElementTypeFix(element, PlsBundle.message("inspection.localisation.incorrectSyntax.fix.1", element.text))
                 holder.registerProblem(element, message, fix)
             }
         }
@@ -41,10 +42,5 @@ class IncorrectSyntaxInspection : LocalInspectionTool() {
     private fun shouldCheckFile(file: PsiFile): Boolean {
         if (selectRootFile(file) == null) return false
         return true
-    }
-
-    private fun getDeleteDanglingEndMarkerFix(element: PsiElement): DeleteStringFix {
-        val name = PlsBundle.message("inspection.localisation.incorrectSyntax.fix.1")
-        return DeleteStringFix(element, name, deleteSelf = true)
     }
 }
