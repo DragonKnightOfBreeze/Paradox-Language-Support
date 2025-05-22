@@ -359,7 +359,6 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationCommandArgument): PsiElement? {
-        if (element.firstChild?.nextSibling != null) return null // dynamic
         return element.findChild { it.elementType == COMMAND_ARGUMENT_TOKEN }
     }
 
@@ -373,7 +372,6 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationIcon): PsiElement? {
-        if (element.firstChild?.nextSibling != null) return null // dynamic
         return element.findChild { it.elementType == ICON_TOKEN }
     }
 
@@ -422,7 +420,6 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationIconArgument): PsiElement? {
-        if (element.firstChild?.nextSibling != null) return null // dynamic
         return element.findChild { it.elementType == ICON_ARGUMENT_TOKEN }
     }
 
@@ -505,7 +502,6 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationTextFormat): PsiElement? {
-        if (element.firstChild?.nextSibling != null) return null // dynamic
         return element.findChild { it.elementType == TEXT_FORMAT_TOKEN }
     }
 
@@ -548,7 +544,6 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationTextIcon): PsiElement? {
-        if (element.firstChild?.nextSibling != null) return null // dynamic
         return element.findChild { it.elementType == TEXT_ICON_TOKEN }
     }
 
