@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.quickfix
 
-import com.intellij.codeInsight.daemon.impl.actions.*
+import com.intellij.codeInsight.intention.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
@@ -10,7 +10,7 @@ class InsertStringFix(
     private val string: String,
     private val caretOffset: Int,
     private val moveCaretToOffset: Boolean = false
-) : IntentionActionWithFixAllOption {
+) : IntentionAction, DumbAware {
     override fun getText() = name
 
     override fun getFamilyName() = text
@@ -26,8 +26,4 @@ class InsertStringFix(
     }
 
     override fun startInWriteAction() = true
-
-    override fun belongsToMyFamily(action: IntentionActionWithFixAllOption): Boolean {
-        return action is InsertStringFix && action.name == name
-    }
 }

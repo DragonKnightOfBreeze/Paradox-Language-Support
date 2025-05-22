@@ -13,18 +13,17 @@ class DeleteStringFix(
     private val name: String,
     private val string: String,
     private val offset: Int = 0,
-) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
+) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption, DumbAware {
     override fun getText() = name
 
     override fun getFamilyName() = text
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-        if (editor == null) return
         val lengthToDelete = string.length
         if (lengthToDelete == 0) return
         val element = startElement
         val offsetToDelete = element.startOffset + offset
-        val document = editor.document
+        val document = file.fileDocument
         val textToDelete = document.getText(TextRange.from(offsetToDelete, lengthToDelete))
         if (textToDelete != string) return
         document.deleteString(offsetToDelete, lengthToDelete)

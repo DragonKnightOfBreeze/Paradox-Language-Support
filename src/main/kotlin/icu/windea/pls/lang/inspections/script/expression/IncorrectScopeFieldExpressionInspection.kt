@@ -28,10 +28,11 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
                 val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return
                 val dataType = config.expression.type
                 if (dataType !in CwtDataTypeGroups.ScopeField) return
-                val expressionString = element.value
-                val textRange = TextRange.create(0, expressionString.length)
-                val expression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return
+                val value = element.value
+                val textRange = TextRange.create(0, value.length)
+                val expression = ParadoxScopeFieldExpression.resolve(value, textRange, configGroup) ?: return
                 val errors = expression.getAllErrors(element)
+                if (errors.isEmpty()) return
                 errors.forEach { error -> error.register(element, holder) }
             }
         }

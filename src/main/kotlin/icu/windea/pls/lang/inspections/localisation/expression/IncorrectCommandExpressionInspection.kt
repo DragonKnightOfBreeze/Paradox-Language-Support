@@ -1,9 +1,15 @@
 package icu.windea.pls.lang.inspections.localisation.expression
 
+import com.intellij.codeInsight.daemon.impl.actions.*
 import com.intellij.codeInspection.*
+import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
+import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.util.*
@@ -29,7 +35,9 @@ class IncorrectCommandExpressionInspection : LocalInspectionTool() {
                 val textRange = TextRange.create(0, value.length)
                 val expression = ParadoxCommandExpression.resolve(value, textRange, configGroup) ?: return
                 val errors = expression.getAllErrors(element)
-                errors.forEach { error -> error.register(element, holder) }
+                if (errors.isEmpty()) return
+                val fix = EscapeCommandFix(element)
+                errors.forEach { error -> error.register(element, holder, fix) }
             }
         }
     }
@@ -37,5 +45,19 @@ class IncorrectCommandExpressionInspection : LocalInspectionTool() {
     private fun shouldCheckFile(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
         return ParadoxFilePathManager.inLocalisationPath(fileInfo.path)
+    }
+
+    private class EscapeCommandFix(
+        element: PsiElement
+    ) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
+        override fun getText() = PlsBundle.message("fix.localisation.escapeCommand")
+
+        override fun getFamilyName() = text
+
+        override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
+            val commandElement = startElement.parent?.castOrNull<ParadoxLocalisationCommand>() ?: return
+            val startOffset = commandElement.startOffset
+            file.fileDocument.insertString(startOffset, "[")
+        }
     }
 }

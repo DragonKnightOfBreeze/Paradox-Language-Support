@@ -14,7 +14,7 @@ class DeleteStringByElementTypeFix(
     private val name: String,
     private val startElementType: IElementType? = null,
     private val endElementType: IElementType? = null,
-) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
+) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption, DumbAware {
     override fun getText() = name
 
     override fun getFamilyName() = text

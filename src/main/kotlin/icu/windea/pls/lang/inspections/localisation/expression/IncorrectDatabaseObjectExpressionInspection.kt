@@ -29,6 +29,7 @@ class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
                 val textRange = TextRange.create(0, value.length)
                 val expression = ParadoxDatabaseObjectExpression.resolve(value, textRange, configGroup) ?: return
                 val errors = expression.getAllErrors(element)
+                if (errors.isEmpty()) return
                 errors.forEach { error -> error.register(element, holder) }
             }
         }

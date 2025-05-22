@@ -32,6 +32,7 @@ class IncorrectVariableFieldExpressionInspection : LocalInspectionTool() {
                 val textRange = TextRange.create(0, value.length)
                 val expression = ParadoxVariableFieldExpression.resolve(value, textRange, configGroup) ?: return
                 val errors = expression.getAllErrors(element)
+                if (errors.isEmpty()) return
                 errors.forEach { error -> error.register(element, holder) }
             }
         }

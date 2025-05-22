@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.quickfix
 
-import com.intellij.codeInsight.daemon.impl.actions.*
 import com.intellij.codeInsight.intention.*
 import com.intellij.ide.*
 import com.intellij.openapi.editor.*
@@ -12,7 +11,7 @@ import com.intellij.psi.*
 class InsertMissingTokenFix(
     private val token: String,
     private val caretOffset: Int
-) : IntentionActionWithFixAllOption, LowPriorityAction {
+) : IntentionAction, DumbAware {
     override fun getText() = IdeBundle.message("quickfix.text.insert.0", token)
 
     override fun getFamilyName() = text
@@ -26,8 +25,4 @@ class InsertMissingTokenFix(
     }
 
     override fun startInWriteAction() = true
-
-    override fun belongsToMyFamily(action: IntentionActionWithFixAllOption): Boolean {
-        return action is InsertMissingTokenFix && action.token == token
-    }
 }
