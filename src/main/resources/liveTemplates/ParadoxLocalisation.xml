@@ -1,61 +1,54 @@
 <templateSet group="Paradox Localisation">
-  <template name="sref"
-            value="$$$SELECTION$$$"
-            description="Surround with parameter markers"
-            toReformat="false" toShortenFQNames="true">
-    <context>
-      <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
-    </context>
-  </template>
-  <template name="scmd"
-            value="[$SELECTION$]"
-            description="Surround with command markers"
-            toReformat="false" toShortenFQNames="true">
-    <context>
-      <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
-    </context>
-  </template>
-  <template name="scolor"
-            value="§$CODE$$SELECTION$§!"
-            description="Surround with colorful text markers"
+  <template name="scolor" value="§$CODE$$SELECTION$§!"
+            resource-bundle="messages.PlsBundle" key="localisation.template.scolor"
             toReformat="false" toShortenFQNames="true">
     <variable name="CODE" expression="complete()" alwaysStopAt="true"/>
     <context>
       <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
     </context>
   </template>
-  <template name="ref"
-            value="$$$TEXT$$$$END$"
-            description="Insert a parameter fragment"
+  <template name="sparam" value="$$$SELECTION$$$"
+            resource-bundle="messages.PlsBundle" key="localisation.template.sparam"
             toReformat="false" toShortenFQNames="true">
-    <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
     <context>
       <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
     </context>
   </template>
-  <template name="icon"
-            value="£$TEXT$£$END$"
-            description="Insert an icon fragment"
+  <template name="scmd" value="[$SELECTION$]"
+            resource-bundle="messages.PlsBundle" key="localisation.template.scmd"
             toReformat="false" toShortenFQNames="true">
-    <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
     <context>
       <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
     </context>
   </template>
-  <template name="cmd"
-            value="[$TEXT$]$END$"
-            description="Insert a command fragment"
-            toReformat="false" toShortenFQNames="true">
-    <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
-    <context>
-      <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
-    </context>
-  </template>
-  <template name="color"
-            value="§$CODE$$TEXT$§!$END$"
-            description="Insert a colorful text fragment"
+  <template name="color" value="§$CODE$$TEXT$§!$END$"
+            resource-bundle="messages.PlsBundle" key="localisation.template.color"
             toReformat="false" toShortenFQNames="true">
     <variable name="CODE" expression="complete()" alwaysStopAt="true"/>
+    <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context>
+      <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
+    </context>
+  </template>
+  <template name="param" value="$$$TEXT$$$$END$"
+            resource-bundle="messages.PlsBundle" key="localisation.template.param"
+            toReformat="false" toShortenFQNames="true">
+    <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context>
+      <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
+    </context>
+  </template>
+  <template name="cmd" value="[$TEXT$]$END$"
+            resource-bundle="messages.PlsBundle" key="localisation.template.cmd"
+            toReformat="false" toShortenFQNames="true">
+    <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
+    <context>
+      <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>
+    </context>
+  </template>
+  <template name="icon" value="£$TEXT$£$END$"
+            resource-bundle="messages.PlsBundle" key="localisation.template.icon"
+            toReformat="false" toShortenFQNames="true">
     <variable name="TEXT" expression="" defaultValue="" alwaysStopAt="true"/>
     <context>
       <option name="PARADOX_LOCALISATION_LOCALISATION_TEXT" value="true"/>

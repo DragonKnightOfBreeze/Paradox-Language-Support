@@ -13,6 +13,11 @@
 * [ ] 允许为同一个模组配置多个模组依赖列表 / Allow to configure multiple mod dependency lists for the same mod
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
 
+## TODO
+
+* [ ] 检查：预定义的动态模版，相关功能是否正常
+* [ ] 检查：复杂表达式的代码高亮以及颜色主题设置，相关功能是否正常
+
 ## 1.4.1
 
 * [X] #143 cwt图片渲染规则待支持
