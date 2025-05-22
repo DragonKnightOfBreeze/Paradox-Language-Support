@@ -16,13 +16,13 @@
 
 * [X] 检查：预定义的动态模版，相关功能是否正常
 * [ ] 检查：复杂表达式的代码高亮以及颜色主题设置，相关功能是否正常
-* [ ] 问题：封装变量引用的代码折叠规则失效？
 
 ## 1.4.1
 
 * [X] #143 cwt图片渲染规则待支持
 * [X] #144 cwt规则的type_key_filter <> xxx失效
 * [X] 修复：优化`PlsFileListener`，尝试避免某些特殊情况下的 SOF / FIX: Optimize `PlsFileListener` to avoid SOF in some special cases
+* [X] 修复：修复封装变量引用的代码折叠规则失效的问题 / FIX: Fixed the problem that the code folding rule for scripted variable references is inactive
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.4.0

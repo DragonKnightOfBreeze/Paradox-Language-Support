@@ -56,7 +56,8 @@
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxInlineScriptEditorNotificationProvider"/>
 
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.editor.folding.ParadoxVariableOperationExpressionFoldingBuilder"/>
-    <lang.foldingBuilder language="PARADOX" implementationClass="icu.windea.pls.lang.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
+    <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
+    <lang.foldingBuilder language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.editor.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
 
     <lang.refactoringSupport language="PARADOX" implementationClass="icu.windea.pls.lang.refactoring.ParadoxRefactoringSupportProvider"/>
     <applicationService serviceImplementation="icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings"/>

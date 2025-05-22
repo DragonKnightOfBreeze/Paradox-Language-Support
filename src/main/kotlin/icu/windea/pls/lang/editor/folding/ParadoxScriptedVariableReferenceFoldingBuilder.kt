@@ -33,10 +33,10 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
     }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        if(!getSettings().folding.scriptedVariableReferences) return FoldingDescriptor.EMPTY_ARRAY
+        if (!getSettings().folding.scriptedVariableReferences) return FoldingDescriptor.EMPTY_ARRAY
 
         if (quick) return FoldingDescriptor.EMPTY_ARRAY
-        if (!(root.language is ParadoxBaseLanguage)) return FoldingDescriptor.EMPTY_ARRAY
+        if (root.language !is ParadoxBaseLanguage) return FoldingDescriptor.EMPTY_ARRAY
         val foldingGroup = getFoldingGroup()
         val allDescriptors = mutableListOf<FoldingDescriptor>()
         root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
@@ -44,13 +44,17 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
                 if (element is ParadoxScriptedVariableReference) visitScriptedVariableReference(element)
                 //optimize performance
                 when (element) {
+                    is ParadoxScriptBlockElement -> pass()
                     is ParadoxScriptPropertyKey -> return
-                    is ParadoxScriptBlock -> pass()
                     is ParadoxScriptValue -> return
                     is ParadoxScriptParameterConditionExpression -> return
                     is ParadoxLocalisationLocale -> return
-                    is ParadoxLocalisationIcon -> return
-                    is ParadoxLocalisationCommand -> return
+                    is ParadoxLocalisationParameter -> pass()
+                    is ParadoxLocalisationColorfulText -> pass()
+                    is ParadoxLocalisationConcept -> pass()
+                    is ParadoxLocalisationConceptName -> return
+                    is ParadoxLocalisationTextFormat -> pass()
+                    is ParadoxLocalisationRichText -> return
                 }
                 super.visitElement(element)
             }
