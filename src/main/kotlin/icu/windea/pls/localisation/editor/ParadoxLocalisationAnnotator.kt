@@ -6,11 +6,9 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys as Keys
 
 @Suppress("UNUSED_PARAMETER")
@@ -19,7 +17,7 @@ class ParadoxLocalisationAnnotator : Annotator {
         checkSyntax(element, holder)
 
         when (element) {
-            is ParadoxLocalisationProperty -> annotateProperty(element, holder)
+            //is ParadoxLocalisationProperty -> annotateProperty(element, holder)
             is ParadoxLocalisationColorfulText -> annotateColorfulText(element, holder)
             is ParadoxLocalisationParameter -> annotateParameter(element, holder)
             is ParadoxLocalisationCommand -> annotateCommand(element, holder)
@@ -37,23 +35,14 @@ class ParadoxLocalisationAnnotator : Annotator {
         }
     }
 
-    private fun annotateProperty(element: ParadoxLocalisationProperty, holder: AnnotationHolder) {
-        val localisationInfo = element.localisationInfo
-        if (localisationInfo != null) annotateLocalisation(element, holder, localisationInfo)
-    }
-
-    private fun annotateLocalisation(element: ParadoxLocalisationProperty, holder: AnnotationHolder, localisationInfo: ParadoxLocalisationInfo) {
-        //颜色高亮（并非特别必要，注释掉）
-        //val category = localisationInfo.category
-        //val attributesKey = when(category) {
-        //	ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationAttributesKeys.LOCALISATION_KEY
-        //	ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxLocalisationAttributesKeys.SYNCED_LOCALISATION_KEY
-        //}
-        //holder.newSilentAnnotation(INFORMATION)
-        //	.range(element.propertyKey)
-        //	.textAttributes(attributesKey)
-        //	.create()
-    }
+    //private fun annotateProperty(element: ParadoxLocalisationProperty, holder: AnnotationHolder) {
+    //    val localisationInfo = element.localisationInfo
+    //    if (localisationInfo != null) annotateLocalisation(element, holder, localisationInfo)
+    //}
+    //
+    //private fun annotateLocalisation(element: ParadoxLocalisationProperty, holder: AnnotationHolder, localisationInfo: ParadoxLocalisationInfo) {
+    //    //目前不需要作任何处理
+    //}
 
     private fun annotateColorfulText(element: ParadoxLocalisationColorfulText, holder: AnnotationHolder) {
         annotateTextColor(element, holder)
