@@ -10,13 +10,19 @@
     <inspection_tool class="BashEvaluateExpression" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="BashReplaceWithDoubleBrackets" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="BooleanLiteralArgument" enabled="true" level="INFORMATION" enabled_by_default="true" />
+    <inspection_tool class="CanBeDumbAware" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoreClasses">
+        <set>
+          <option value="icu.windea.pls.lang.intentions.localisation.CopyLocalisationIntention" />
+        </set>
+      </option>
+    </inspection_tool>
     <inspection_tool class="CanBePrimaryConstructorProperty" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="CastConflictsWithInstanceof" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CheckTagEmptyBody" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="ComplexRedundantLet" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="ConstPropertyName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="ConstantJUnitAssertArgument" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="ConvertSecondaryConstructorToPrimary" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="ConvertTwoComparisonsToRangeCheck" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="INFORMATION_ATTRIBUTES" />
     <inspection_tool class="Destructure" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="DirectUseOfResultType" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
@@ -138,6 +144,7 @@
     <inspection_tool class="MultipleExceptionsDeclaredOnTestMethod" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="NonAsciiCharacters" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="ObjectPropertyName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="ObsoleteDispatchersEdt" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
     <inspection_tool class="PackageName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="ParameterizedParametersStaticCollection" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PrivatePropertyName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />

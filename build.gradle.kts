@@ -77,7 +77,7 @@ dependencies {
         //bundledPlugins("tslint")
 
         //TranslationPlugin - https://github.com/YiiGuxing/TranslationPlugin
-        plugin("cn.yiiguxing.plugin.translate:3.6.8")
+        plugin("cn.yiiguxing.plugin.translate:3.7.2")
     }
 
     //dds - https://github.com/iTitus/dds

@@ -15,7 +15,7 @@ or click `Translate Documentation` item in right-click menu.
 
 > [!warning]
 >
-> There is no guarantee that special markers will be preserved correctly after translation yet.
+> There is no guarantee that special markers will be preserved correctly after translation.
 
 ### Intention: Copy localisation(s) to the clipboard for locale...
 
@@ -27,4 +27,4 @@ and try to translate the localisation text into the specified locale before doin
 
 > [!warning]
 >
-> There is no guarantee that special markers will be preserved correctly after translation yet.
+> There is no guarantee that special markers will be preserved correctly after translation.
