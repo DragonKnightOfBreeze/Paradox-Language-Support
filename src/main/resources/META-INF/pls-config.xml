@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <iconProvider implementation="icu.windea.pls.config.configGroup.CwtConfigIconProvider" order="first"/>
+    <fileIconProvider implementation="icu.windea.pls.config.CwtConfigFileIconProvider" order="first"/>
     <editorNotificationProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupEditorNotificationProvider"/>
     <editorFloatingToolbarProvider implementation="icu.windea.pls.config.configGroup.ConfigGroupRefreshFloatingProvider"/>
     <additionalLibraryRootsProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupLibraryProvider"/>

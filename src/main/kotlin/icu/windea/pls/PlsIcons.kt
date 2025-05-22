@@ -142,8 +142,6 @@ object PlsIcons {
         @JvmField
         val PathReference = AllIcons.FileTypes.Any_type
         @JvmField
-        val Inline = AllIcons.FileTypes.AddAny
-        @JvmField
         val InlineScript = IconManager.getInstance().getIcon("/icons/nodes/inlineScript.svg")
         @JvmField
         val DatabaseObjectType = IconManager.getInstance().getIcon("/icons/nodes/databaseObjectType.svg")

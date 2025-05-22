@@ -35,7 +35,7 @@ object CwtConfigTypes {
     }
     val Inline = CwtConfigType("inline") {
         prefix = PlsConstants.Strings.inlinePrefix
-        icon = PlsIcons.Nodes.Inline
+        icon = PlsIcons.Nodes.InlineScript
     }
     val SingleAlias = CwtConfigType("single alias") {
         prefix = PlsConstants.Strings.singleAliasPrefix
