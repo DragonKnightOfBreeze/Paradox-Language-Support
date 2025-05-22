@@ -136,6 +136,8 @@ object PlsIcons {
         @JvmField
         val Alias = IconManager.getInstance().getIcon("/icons/nodes/alias.svg")
         @JvmField
+        val OnAction = IconManager.getInstance().getIcon("/icons/nodes/onAction.svg")
+        @JvmField
         val EventNamespace = IconManager.getInstance().getIcon("/icons/nodes/eventNamespace.svg")
         @JvmField
         val EventId = IconManager.getInstance().getIcon("/icons/nodes/eventId.svg")
@@ -155,6 +157,7 @@ object PlsIcons {
 
         @JvmStatic
         fun Definition(type: String?) = when (type) {
+            "on_action" -> OnAction
             "event" -> EventId
             "event_namespace" -> EventNamespace
             else -> Definition

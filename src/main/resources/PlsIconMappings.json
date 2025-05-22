@@ -54,6 +54,7 @@
         "tag.svg": "icons/nodes/tag.svg",
         "templateExpression.svg": "icons/nodes/templateExpression.svg",
         "alias.svg": "icons/nodes/alias.svg",
+        "onAction.svg": "icons/nodes/onAction.svg",
         "eventNamespace.svg": "icons/nodes/eventNamespace.svg",
         "eventId.svg": "icons/nodes/eventId.svg",
         "inlineScript.svg": "icons/nodes/inlineScript.svg",
