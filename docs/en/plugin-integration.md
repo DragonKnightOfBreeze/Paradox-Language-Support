@@ -17,11 +17,10 @@ or click `Translate Documentation` item in right-click menu.
 >
 > There is no guarantee that special markers will be preserved correctly after translation.
 
-### Intention: Copy localisation(s) to the clipboard for locale...
+### Intention: Copy translated localisation(s) to the clipboard
 
-When the cursor selection scope involves localisation(s),
-this intention can copy all involved localisation(s) to the clipboard,
-and try to translate the localisation text into the specified locale before doing so.
+When the cursor selection scope involves localisation(s), this intention can copy all involved localisation(s) to the system clipboard.
+Localisation text will be translated to the selected locale.
 
 ![](../images/plugin-integration/intention_copy_loc_for_locale.gif)
 

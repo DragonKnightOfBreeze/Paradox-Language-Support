@@ -2,15 +2,16 @@ package icu.windea.pls.lang.intentions.localisation
 
 import com.intellij.codeInsight.intention.*
 import com.intellij.codeInsight.intention.preview.*
-import com.intellij.notification.NotificationType
+import com.intellij.notification.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.createNotification
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
@@ -20,9 +21,7 @@ import java.awt.datatransfer.*
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
-open class CopyLocalisationIntention : IntentionAction, PriorityAction, DumbAware {
-    override fun getPriority() = PriorityAction.Priority.LOW
-
+open class CopyLocalisationIntention : IntentionAction, DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisation")
 
     override fun getText() = familyName

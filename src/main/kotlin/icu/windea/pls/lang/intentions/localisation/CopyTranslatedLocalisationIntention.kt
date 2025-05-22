@@ -1,11 +1,12 @@
 package icu.windea.pls.lang.intentions.localisation
 
 import cn.yiiguxing.plugin.translate.trans.*
+import cn.yiiguxing.plugin.translate.trans.Lang.Companion.isExplicit
 import com.intellij.notification.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.ide.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.progress.impl.*
 import com.intellij.openapi.progress.util.*
 import com.intellij.openapi.project.*
@@ -21,6 +22,8 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
 import java.lang.ref.*
+import java.util.concurrent.*
+import java.util.concurrent.atomic.*
 
 /**
  * 复制翻译后的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）到剪贴板。
@@ -33,60 +36,74 @@ class CopyTranslatedLocalisationIntention : CopyLocalisationIntention() {
 
     override fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: List<ParadoxLocalisationProperty>) {
         if (editor == null || file == null) return
-        val onChosen = { selected: CwtLocalisationLocaleConfig ->
-            try {
-                val textToCopy = doTranslate(project, editor, elements, selected)
-                createNotification(PlsBundle.message("intention.copyTranslatedLocalisation.notification.success", selected), NotificationType.INFORMATION).notify(project)
-                CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
-            } catch (e: Throwable) {
-                if (e is ProcessCanceledException) throw e
-                thisLogger().warn(e)
-                createNotification(PlsBundle.message("intention.copyTranslatedLocalisation.notification.failed", selected), NotificationType.WARNING).notify(project)
-            }
-        }
         val allLocales = ParadoxLocaleManager.getLocaleConfigs()
-        val localePopup = ParadoxLocaleListPopup(allLocales, onChosen = onChosen)
+        val localePopup = ParadoxLocaleListPopup(allLocales)
+        localePopup.doFinalStep { doTranslate(project, editor, elements, localePopup.selectedLocale) }
         JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
     }
 
-    private fun doTranslate(project: Project, editor: Editor, elements: List<ParadoxLocalisationProperty>, targetLocaleConfig: CwtLocalisationLocaleConfig): String? {
-        val targetLang = PlsTranslationManager.toLang(targetLocaleConfig)
-        val failedKeys = mutableSetOf<String>()
-        val throwableList = mutableListOf<Throwable>()
-        val total = elements.size
-        val textList = elements.map { element ->
-            if (targetLang == null) return@map element.text
-            val sourceLocaleConfig = selectLocale(element)
-            val sourceLang = PlsTranslationManager.toLang(sourceLocaleConfig)
-            if (sourceLang == null) return@map element.text
-            if (sourceLang == targetLang) return@map element.text
+    private fun doTranslate(project: Project, editor: Editor, elements: List<ParadoxLocalisationProperty>, targetLocale: CwtLocalisationLocaleConfig?) {
+        if (targetLocale == null) return
+        val translateService = TranslateService.getInstance()
+        val supportedTargetLangList = translateService.translator.supportedTargetLanguages
+        val targetLang = PlsTranslationManager.toLang(targetLocale, supportedTargetLangList)
+        val supportedSourceLangList = translateService.translator.supportedSourceLanguages
+        val snippetsList = elements.map { element -> PlsTranslationManager.toTranslatableStringSnippets(element, supportedSourceLangList)}
+        if (snippetsList.isEmpty()) return
 
-            val snippets = PlsTranslationManager.toTranslatableStringSnippets(element)
-            if (snippets.isEmpty()) return@map element.text
-
-            val editorRef = WeakReference(editor)
-            val indicator = Indicator(project, editorRef, total, targetLocaleConfig)
-            val translateService = TranslateService.getInstance()
+        val snippetsToTranslate = mutableListOf<TranslatableStringSnippet>()
+        snippetsList.forEach { snippets ->
             snippets.forEach { snippet ->
-                if (indicator.checkProcessCanceledAndEditorDisposed()) return null
                 if (!snippet.shouldTranslate) return@forEach
-                translateService.translate(snippet.text, sourceLang, targetLang, object : TranslateListener {
-                    override fun onSuccess(translation: Translation) {
-                        if (indicator.checkProcessCanceledAndEditorDisposed()) return
-                        translation.translation?.also { snippet.text = it }
-                        indicator.updateProgress()
-                    }
-
-                    override fun onError(throwable: Throwable) {
-                        if (indicator.checkProcessCanceledAndEditorDisposed()) return
-                        throw throwable
-                    }
-                })
+                if (!targetLang.isExplicit()) return@forEach
+                if (snippet.lang == targetLang) return@forEach
+                snippetsToTranslate.add(snippet)
             }
-            indicator.processFinish()
-            snippets.joinToString("") { it.text }
         }
-        return textList.joinToString("\n")
+
+        if (snippetsToTranslate.isEmpty()) {
+            val textToCopy = snippetsList.joinToString("\n") { snippets -> snippets.joinToString("") { snippet -> snippet.text } }
+            createNotification(PlsBundle.message("intention.copyTranslatedLocalisation.notification.success", targetLocale), NotificationType.INFORMATION).notify(project)
+            CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
+            return
+        }
+
+        val editorRef = WeakReference(editor)
+        val indicator = Indicator(project, editorRef, snippetsToTranslate.size, targetLocale)
+        val errorRef = AtomicReference<Throwable>()
+        val countDownLatch = CountDownLatch(snippetsToTranslate.size)
+        snippetsToTranslate.forEach { snippet ->
+            if (indicator.checkProcessCanceledAndEditorDisposed()) return
+            translateService.translate(snippet.text, snippet.lang, targetLang, object : TranslateListener {
+                override fun onSuccess(translation: Translation) {
+                    if (indicator.checkProcessCanceledAndEditorDisposed()) return
+                    translation.translation?.also { snippet.text = it }
+                    indicator.updateProgress()
+                    countDownLatch.countDown()
+                }
+
+                override fun onError(throwable: Throwable) {
+                    if (indicator.checkProcessCanceledAndEditorDisposed()) return
+                    errorRef.compareAndSet(null, throwable)
+                    countDownLatch.countDown()
+                }
+            })
+        }
+
+        ApplicationManager.getApplication().executeOnPooledThread action@{
+            countDownLatch.await()
+            indicator.processFinish()
+            val error = errorRef.get()
+            if (error == null) {
+                val textToCopy = snippetsList.joinToString("\n") { snippets -> snippets.joinToString("") { snippet -> snippet.text } }
+                createNotification(PlsBundle.message("intention.copyTranslatedLocalisation.notification.success", targetLocale), NotificationType.INFORMATION).notify(project)
+                CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
+            } else {
+                thisLogger().warn(error)
+                createNotification(PlsBundle.message("intention.copyTranslatedLocalisation.notification.failed", targetLocale), NotificationType.WARNING).notify(project)
+                return@action
+            }
+        }
     }
 
     private class Indicator(
