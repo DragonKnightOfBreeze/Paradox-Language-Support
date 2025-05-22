@@ -2,6 +2,9 @@
 
 ## PLANNED
 
+* [ ] 优化：进一步优化脚本文件与本地化文件的 lexer 和 parser 的实现
+* [ ] 新功能：支持更加复杂的本地化命令（例如，带有多个参数、用引号括起的参数）
+* [ ] 新功能：[VIC3/CK3] 支持通过规范的本地化命令声明的概念引用（示例：`[concept_name]` `[Concept('concept_name', '$other_loc_key$')]`）
 * [ ] 优化：为本地化文本中的属性引用&命令的传入参数提供关于其中使用的格式标签的说明（文档注释、枚举、工具类等）
 * [ ] 优化：优化默认生成的一些PsiElement的PSI访问方法，如果必要，从后往前遍历子节点
 * [ ] 提供对魔法注释的初步支持 / Provide initial support for magic Comments
@@ -15,10 +18,7 @@
 * [X] #143 cwt图片渲染规则待支持
 * [X] #144 cwt规则的type_key_filter <> xxx失效
 * [X] 修复：优化`PlsFileListener`，尝试避免某些特殊情况下的 SOF / FIX: Optimize `PlsFileListener` to avoid SOF in some special cases
-* [ ] 优化：进一步优化脚本文件与本地化文件的 lexer 和 parser 的实现
 * [ ] 优化：对于代码检查`不正确的本地化语法` ，标出可能的格式问题（例如多余的`!`） / OP: For code inspection `Incorrect script syntax`, mark possible format problems (e.g., extra `!`)
-* [ ] 新功能：支持更加复杂的本地化命令（例如，带有多个参数、用引号括起的参数）
-* [ ] 新功能：[VIC3/CK3] 支持通过规范的本地化命令声明的概念引用（示例：`[concept_name]` `[Concept('concept_name', '$other_loc_key$')]`）
 
 ## 1.4.0
 
