@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package icu.windea.pls.inject.injectors
 
 import com.intellij.openapi.fileChooser.tree.*

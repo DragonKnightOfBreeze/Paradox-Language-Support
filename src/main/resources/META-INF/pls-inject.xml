@@ -21,6 +21,9 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.LineCommentCopyPastePreProcessorCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.CommentByLineCommentHandlerCodeInjector"/>
 
+    <!--code injectors to fix bugs-->
+    <!--<codeInjector implementation="icu.windea.pls.inject.injectors.ImageDescriptorKtCodeInjector"/>-->
+
     <!--code injectors to provide additional features-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
 
