@@ -11,5 +11,5 @@ import icu.windea.pls.core.*
  * @see ParadoxLocalisationParameter
  */
 interface ParadoxLocalisationParameterAwareElement : PsiElement {
-    val referenceElement: ParadoxLocalisationParameter? get() = this.findChild<_>()
+    val parameterList: List<ParadoxLocalisationParameter> get() = this.findChildren<_>()
 }

@@ -39,7 +39,7 @@ class IntroduceLocalScriptedVariableHandler : ContextAwareRefactoringActionHandl
         //要求对应的int_token或float_token在定义声明内
         val parentDefinition = element.findParentDefinition()?.castOrNull<ParadoxScriptProperty>() ?: return false
         val command = Runnable {
-            //用封装属性引用（variableReference）替换当前位置的int或float
+            //用封装参数（variableReference）替换当前位置的int或float
             var newVariableReference = ParadoxScriptElementFactory.createVariableReference(project, name)
             newVariableReference = element.parent.replace(newVariableReference).cast()
 

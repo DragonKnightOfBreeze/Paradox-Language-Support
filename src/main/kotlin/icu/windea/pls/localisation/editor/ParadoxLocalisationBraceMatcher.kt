@@ -10,7 +10,7 @@ class ParadoxLocalisationBraceMatcher : PairedBraceMatcher {
         BracePair(LEFT_QUOTE, RIGHT_QUOTE, true),
         BracePair(COLORFUL_TEXT_START, COLORFUL_TEXT_END, false),
         BracePair(PARAMETER_START, PARAMETER_END, true),
-        BracePair(COMMAND_START, COMMAND_END, true),
+        BracePair(LEFT_BRACKET, RIGHT_BRACKET, true),
         BracePair(ICON_START, ICON_END, false),
         BracePair(LEFT_SINGLE_QUOTE, RIGHT_SINGLE_QUOTE, false),
         BracePair(TEXT_FORMAT_START, TEXT_FORMAT_END, true),

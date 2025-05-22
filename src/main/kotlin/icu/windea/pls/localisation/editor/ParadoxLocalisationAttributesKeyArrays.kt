@@ -17,17 +17,15 @@ object ParadoxLocalisationAttributesKeyArrays {
     @JvmField
     val PROPERTY_KEY_KEYS = arrayOf(K.PROPERTY_KEY_KEY)
     @JvmField
+    val ARGUMENT_KEYS = arrayOf(K.ARGUMENT_KEY)
+    @JvmField
     val COLOR_ID_KEYS = arrayOf(K.COLOR_KEY)
     @JvmField
     val PARAMETER_KEYS = arrayOf(K.PARAMETER_KEY)
     @JvmField
-    val PARAMETER_ARGUMENT_KEYS = arrayOf(K.PARAMETER_ARGUMENT_KEY)
-    @JvmField
     val SCRIPTED_VARIABLE_KEYS = arrayOf(K.SCRIPTED_VARIABLE_KEY)
     @JvmField
     val COMMAND_KEYS = arrayOf(K.COMMAND_KEY)
-    @JvmField
-    val COMMAND_ARGUMENT_KEYS = arrayOf(K.COMMAND_ARGUMENT_KEY)
     @JvmField
     val ICON_KEYS = arrayOf(K.ICON_KEY)
     @JvmField

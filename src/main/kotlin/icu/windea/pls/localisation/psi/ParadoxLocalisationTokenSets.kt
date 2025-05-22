@@ -33,4 +33,7 @@ object ParadoxLocalisationTokenSets {
     val PROPERTY_CONTEXT = TokenSet.create(PROPERTY_LIST, PROPERTY)
     @JvmField
     val RICH_TEXT_CONTEXT = TokenSet.create(PROPERTY_LIST, PROPERTY, PROPERTY_VALUE, PROPERTY_VALUE_TOKEN, COLORFUL_TEXT, COMMAND, CONCEPT_TEXT)
+
+    @JvmField
+    val EXTRA_TEMPLATE_TYPES = TokenSet.create(PARAMETER, COMMAND)
 }

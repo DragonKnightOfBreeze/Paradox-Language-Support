@@ -4,6 +4,7 @@ package icu.windea.pls.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.ContributedReferenceHost;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
@@ -11,10 +12,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.model.ParadoxType;
 
-public interface ParadoxLocalisationConceptName extends ContributedReferenceHost, ParadoxLocalisationExpressionElement {
-
-  @Nullable
-  ParadoxLocalisationParameter getParameter();
+public interface ParadoxLocalisationConceptName extends NavigatablePsiElement, ContributedReferenceHost, ParadoxLocalisationExpressionElement, ParadoxLocalisationParameterAwareElement {
 
   @Nullable PsiElement getIdElement();
 

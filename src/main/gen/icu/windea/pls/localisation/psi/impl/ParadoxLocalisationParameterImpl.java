@@ -44,9 +44,8 @@ public class ParadoxLocalisationParameterImpl extends ParadoxLocalisationRichTex
   }
 
   @Override
-  @Nullable
-  public ParadoxLocalisationParameterArgument getArgumentElement() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationParameterArgument.class);
+  public @Nullable ParadoxLocalisationParameterArgument getArgumentElement() {
+    return ParadoxLocalisationPsiImplUtil.getArgumentElement(this);
   }
 
   @Override

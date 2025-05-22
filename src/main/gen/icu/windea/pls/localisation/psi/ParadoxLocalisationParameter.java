@@ -18,8 +18,7 @@ public interface ParadoxLocalisationParameter extends ParadoxLocalisationRichTex
 
   @Nullable PsiElement getIdElement();
 
-  @Nullable
-  ParadoxLocalisationParameterArgument getArgumentElement();
+  @Nullable ParadoxLocalisationParameterArgument getArgumentElement();
 
   @NotNull String getName();
 

@@ -109,7 +109,7 @@ class CreateCommandAction : ToggleAction(), DumbAware {
             val endParent = endElement.parentOfType<ParadoxLocalisationPropertyValue>() ?: return null
             if (startParent !== endParent) return null
             if (start == end) return false
-            return startElement.elementType == COMMAND_START && endElement.elementType == COMMAND_END
+            return startElement.elementType == LEFT_BRACKET && endElement.elementType == RIGHT_BRACKET
         }
     }
 }

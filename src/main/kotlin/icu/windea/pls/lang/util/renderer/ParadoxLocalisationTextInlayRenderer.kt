@@ -59,6 +59,19 @@ object ParadoxLocalisationTextInlayRenderer {
         }
     }
 
+    private fun renderWithColorTo(color: Color?, context: Context, action: (Context) -> Boolean): Boolean {
+        val textAttributesKey = if (color != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(color) else null
+        val oldBuilder = context.builder
+        context.builder = mutableListOf()
+        val continueProcess = action(context)
+        val newBuilder = context.builder
+        context.builder = oldBuilder
+        val presentation = mergePresentation(newBuilder) ?: return true
+        val finalPresentation = if (textAttributesKey != null) WithAttributesPresentation(presentation, textAttributesKey, context.editor) else presentation
+        context.builder.add(finalPresentation)
+        return continueProcess
+    }
+
     private fun doRender(factory: PresentationFactory, editor: Editor, truncateLimit: Int, iconHeightLimit: Int, action: (Context) -> Boolean): InlayPresentation? {
         val context = Context(editor, factory, mutableListOf())
         context.truncateLimit = truncateLimit
@@ -90,29 +103,15 @@ object ParadoxLocalisationTextInlayRenderer {
             is ParadoxLocalisationParameter -> renderParameterTo(element, context)
             is ParadoxLocalisationCommand -> renderCommandTo(element, context)
             is ParadoxLocalisationIcon -> renderIconTo(element, context)
+            is ParadoxLocalisationConcept -> renderConceptTo(element, context)
             is ParadoxLocalisationTextFormat -> renderTextFormatTo(element, context)
             is ParadoxLocalisationTextIcon -> renderTextIconTo(element, context)
             else -> true
         }
     }
 
-    private fun renderWithColorTo(color: Color?, context: Context, action: (Context) -> Boolean): Boolean {
-        val textAttributesKey = if (color != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(color) else null
-        val oldBuilder = context.builder
-        context.builder = mutableListOf()
-        val continueProcess = action(context)
-        val newBuilder = context.builder
-        context.builder = oldBuilder
-        val presentation = mergePresentation(newBuilder) ?: return true
-        val finalPresentation = if (textAttributesKey != null) WithAttributesPresentation(presentation, textAttributesKey, context.editor) else presentation
-        context.builder.add(finalPresentation)
-        return continueProcess
-    }
-
     private fun renderStringTo(element: ParadoxLocalisationString, context: Context): Boolean = with(context.factory) {
-        val text = buildString {
-            ParadoxEscapeManager.unescapeLocalisationString(element.text, this, ParadoxEscapeManager.Type.Inlay)
-        }
+        val text = ParadoxEscapeManager.unescapeStringForLocalisation(element.text, ParadoxEscapeManager.Type.Inlay)
         context.builder.add(truncatedSmallText(text, context))
         return continueProcess(context)
     }
@@ -185,12 +184,6 @@ object ParadoxLocalisationTextInlayRenderer {
         //如果有颜色码，则使用该颜色渲染，否则保留颜色码
         val color = if (getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         return renderWithColorTo(color, context) r@{
-            //显示解析后的概念文本
-            run {
-                val concept = element.concept ?: return@run
-                return@r renderConceptTo(concept, context)
-            }
-
             //直接显示命令文本，适用对应的颜色高亮
             //点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）
             val presentations = mutableListOf<InlayPresentation>()
@@ -241,6 +234,7 @@ object ParadoxLocalisationTextInlayRenderer {
     }
 
     private fun renderConceptTo(element: ParadoxLocalisationConcept, context: Context): Boolean = with(context.factory) {
+        //尝试渲染概念文本
         val (referenceElement, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(element)
         val richTextList = when {
             textElement is ParadoxLocalisationConceptText -> textElement.richTextList
@@ -248,7 +242,7 @@ object ParadoxLocalisationTextInlayRenderer {
             else -> null
         }
         run r2@{
-            if (richTextList == null) return@r2
+            if (richTextList.isNullOrEmpty()) return@r2
             val newBuilder = mutableListOf<InlayPresentation>()
             val oldBuilder = context.builder
             context.builder = newBuilder
@@ -280,6 +274,7 @@ object ParadoxLocalisationTextInlayRenderer {
             if (!continueProcess) return false
             return continueProcess(context)
         }
+
         context.builder.add(smallText(element.name))
         return continueProcess(context)
     }
@@ -288,8 +283,8 @@ object ParadoxLocalisationTextInlayRenderer {
         //TODO 1.4.1+ 更完善的支持（适用文本格式）
 
         //直接渲染其中的文本
-        val richTextList = element.richTextList
-        if (richTextList.isEmpty()) return true
+        val richTextList = element.textFormatText?.richTextList
+        if (richTextList.isNullOrEmpty()) return true
         var continueProcess = true
         for (richText in richTextList) {
             ProgressManager.checkCanceled()

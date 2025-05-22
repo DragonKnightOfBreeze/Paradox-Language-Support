@@ -8,7 +8,7 @@ object ParadoxEscapeManager {
         Default, Html, Inlay
     }
 
-    fun unescapeScriptExpression(value: String, builder: StringBuilder, type: Type = Type.Default) {
+    fun unescapeStringForScriptTo(value: String, builder: StringBuilder, type: Type = Type.Default) {
         var isEscape = false
         value.forEach f@{ c ->
             if (isEscape) {
@@ -47,7 +47,11 @@ object ParadoxEscapeManager {
         }
     }
 
-    fun unescapeLocalisationString(value: String, builder: StringBuilder, type: Type = Type.Default) {
+    fun unescapeStringForScript(value: String, type: Type = Type.Default): String {
+        return buildString { unescapeStringForScriptTo(value, this, type) }
+    }
+
+    fun unescapeStringForLocalisationTo(value: String, builder: StringBuilder, type: Type = Type.Default) {
         var isEscape = false
         var isLeftBracket = false
         value.forEach f@{ c ->
@@ -95,6 +99,10 @@ object ParadoxEscapeManager {
                 else -> builder.append(c)
             }
         }
+    }
+
+    fun unescapeStringForLocalisation(value: String, type: Type = Type.Default): String {
+        return buildString { unescapeStringForLocalisationTo(value, this, type) }
     }
 
     fun parseScriptExpressionCharacters(chars: String, out: StringBuilder, sourceOffsets: IntArray?): Boolean {

@@ -39,13 +39,15 @@ object ParadoxLocalisationTextRenderer {
             is ParadoxLocalisationParameter -> renderParameterTo(element, context)
             is ParadoxLocalisationCommand -> renderCommandTo(element, context)
             is ParadoxLocalisationIcon -> renderIconTo(element, context)
+            is ParadoxLocalisationConcept -> renderConceptTo(element, context)
             is ParadoxLocalisationTextFormat -> renderTextFormatTo(element, context)
             is ParadoxLocalisationTextIcon -> renderTextIconTo(element, context)
         }
     }
 
     private fun renderStringTo(element: ParadoxLocalisationString, context: Context) {
-        ParadoxEscapeManager.unescapeLocalisationString(element.text, context.builder, ParadoxEscapeManager.Type.Default)
+        val text = ParadoxEscapeManager.unescapeStringForLocalisation(element.text, ParadoxEscapeManager.Type.Default)
+        context.builder.append(text)
     }
 
     private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context) {
@@ -90,32 +92,27 @@ object ParadoxLocalisationTextRenderer {
     }
 
     private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
-        //显示解析后的概念文本
-        run {
-            val concept = element.concept ?: return@run
-            return renderConceptTo(concept, context)
-        }
-
         //直接显示命令文本
         context.builder.append(element.text)
     }
 
     private fun renderConceptTo(element: ParadoxLocalisationConcept, context: Context) {
-        val concept = element
-        val (_, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(concept)
+        //尝试渲染概念文本
+        val (_, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(element)
         val richTextList = when {
             textElement is ParadoxLocalisationConceptText -> textElement.richTextList
             textElement is ParadoxLocalisationProperty -> textElement.propertyValue?.richTextList
             else -> null
         }
         run r2@{
-            if (richTextList == null) return@r2
-            for (v in richTextList) {
-                renderTo(v, context)
+            if (richTextList.isNullOrEmpty()) return@r2
+            for (richText in richTextList) {
+                renderTo(richText, context)
             }
             return
         }
-        context.builder.append(concept.text)
+
+        context.builder.append(element.text)
         return
     }
 
@@ -126,8 +123,10 @@ object ParadoxLocalisationTextRenderer {
 
     private fun renderTextFormatTo(element: ParadoxLocalisationTextFormat, context: Context) {
         //直接渲染其中的文本
-        for (v in element.richTextList) {
-            renderTo(v, context)
+        val richTextList = element.textFormatText?.richTextList
+        if (richTextList.isNullOrEmpty()) return
+        for (richText in richTextList) {
+            renderTo(richText, context)
         }
     }
 

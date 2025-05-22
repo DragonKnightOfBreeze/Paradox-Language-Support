@@ -401,6 +401,13 @@ object ParadoxPsiManager {
         return element is ParadoxLocalisationFile || element.elementType in ParadoxLocalisationTokenSets.RICH_TEXT_CONTEXT
     }
 
+    fun checkIdElementInLocalisationFile(element: PsiElement?): Boolean {
+        if (element == null) return false
+        if (element.nextSibling.elementType in ParadoxLocalisationTokenSets.EXTRA_TEMPLATE_TYPES) return false
+        if (element.prevSibling.elementType in ParadoxLocalisationTokenSets.EXTRA_TEMPLATE_TYPES) return false
+        return true
+    }
+
     /**
      * 判断当前位置应当是一个[ParadoxLocalisationLocale]，还是一个[ParadoxLocalisationPropertyKey]。
      */

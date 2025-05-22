@@ -42,7 +42,7 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
         val targetFile = dialog.file.toPsiFile(project) ?: return true //不期望的结果
         if (targetFile !is ParadoxScriptFile) return true
         val command = Runnable {
-            //用封装属性引用（variableReference）替换当前位置的int或float
+            //用封装参数（variableReference）替换当前位置的int或float
             val createdVariableReference = ParadoxScriptElementFactory.createVariableReference(project, variableName)
             val newVariableReference = element.parent.replace(createdVariableReference)
 

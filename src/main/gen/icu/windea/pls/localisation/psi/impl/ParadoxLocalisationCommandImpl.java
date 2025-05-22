@@ -39,15 +39,8 @@ public class ParadoxLocalisationCommandImpl extends ParadoxLocalisationRichTextI
   }
 
   @Override
-  @Nullable
-  public ParadoxLocalisationConcept getConcept() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationConcept.class);
-  }
-
-  @Override
-  @Nullable
-  public ParadoxLocalisationCommandArgument getArgumentElement() {
-    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationCommandArgument.class);
+  public @Nullable ParadoxLocalisationCommandArgument getArgumentElement() {
+    return ParadoxLocalisationPsiImplUtil.getArgumentElement(this);
   }
 
   @Override

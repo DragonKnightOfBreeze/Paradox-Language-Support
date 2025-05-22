@@ -8,7 +8,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
@@ -18,12 +17,13 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.localisation.references.ParadoxLocalisationConceptPsiReference;
 import javax.swing.Icon;
 
-public class ParadoxLocalisationConceptImpl extends ASTWrapperPsiElement implements ParadoxLocalisationConcept {
+public class ParadoxLocalisationConceptImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationConcept {
 
   public ParadoxLocalisationConceptImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
     visitor.visitConcept(this);
   }

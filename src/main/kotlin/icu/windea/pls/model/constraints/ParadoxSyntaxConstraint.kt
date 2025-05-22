@@ -15,7 +15,7 @@ enum class ParadoxSyntaxConstraint(
     /**
      * `['{concept_name}']` or `['{concept_name}', {concept_text}]`
      */
-    LocalisationConceptQuoted(Stellaris),
+    LocalisationConcept(Stellaris),
     /**
      * `#{tag_name} {text}#!`
      */

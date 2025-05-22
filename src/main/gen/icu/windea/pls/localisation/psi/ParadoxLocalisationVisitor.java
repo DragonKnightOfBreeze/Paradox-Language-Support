@@ -37,12 +37,15 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitConcept(@NotNull ParadoxLocalisationConcept o) {
-    visitNavigatablePsiElement(o);
+    visitRichText(o);
+    // visitNavigatablePsiElement(o);
   }
 
   public void visitConceptName(@NotNull ParadoxLocalisationConceptName o) {
-    visitContributedReferenceHost(o);
+    visitNavigatablePsiElement(o);
+    // visitContributedReferenceHost(o);
     // visitExpressionElement(o);
+    // visitParameterAwareElement(o);
   }
 
   public void visitConceptText(@NotNull ParadoxLocalisationConceptText o) {
@@ -114,6 +117,10 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     // visitCommandAwareElement(o);
   }
 
+  public void visitTextFormatText(@NotNull ParadoxLocalisationTextFormatText o) {
+    visitPsiElement(o);
+  }
+
   public void visitTextIcon(@NotNull ParadoxLocalisationTextIcon o) {
     visitRichText(o);
     // visitNavigatablePsiElement(o);
@@ -123,10 +130,6 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitTextRoot(@NotNull ParadoxLocalisationTextRoot o) {
     visitPsiElement(o);
-  }
-
-  public void visitContributedReferenceHost(@NotNull ContributedReferenceHost o) {
-    visitElement(o);
   }
 
   public void visitNavigatablePsiElement(@NotNull NavigatablePsiElement o) {

@@ -5,6 +5,7 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.codeInsight.completion.*
+import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.localisation.psi.*
 
 /**
@@ -13,6 +14,7 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxLocalisationExpressionCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position.parentOfType<ParadoxLocalisationExpressionElement>() ?: return
+        if (element.text.isParameterized(conditionBlock = false)) return
         if (!element.isComplexExpression()) return
         val offsetInParent = parameters.offset - element.startOffset
         val keyword = element.getKeyword(offsetInParent)

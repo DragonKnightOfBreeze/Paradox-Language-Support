@@ -8,24 +8,20 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.localisation.references.ParadoxLocalisationTextIconPsiReference;
-import javax.swing.Icon;
 
-public class ParadoxLocalisationTextIconImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationTextIcon {
+public class ParadoxLocalisationTextFormatTextImpl extends ASTWrapperPsiElement implements ParadoxLocalisationTextFormatText {
 
-  public ParadoxLocalisationTextIconImpl(@NotNull ASTNode node) {
+  public ParadoxLocalisationTextFormatTextImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxLocalisationVisitor visitor) {
-    visitor.visitTextIcon(this);
+    visitor.visitTextFormatText(this);
   }
 
   @Override
@@ -35,28 +31,9 @@ public class ParadoxLocalisationTextIconImpl extends ParadoxLocalisationRichText
   }
 
   @Override
-  public @Nullable PsiElement getIdElement() {
-    return ParadoxLocalisationPsiImplUtil.getIdElement(this);
-  }
-
-  @Override
-  public @NotNull Icon getIcon(@IconFlags int flags) {
-    return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
-  }
-
-  @Override
-  public @Nullable String getName() {
-    return ParadoxLocalisationPsiImplUtil.getName(this);
-  }
-
-  @Override
-  public @NotNull ParadoxLocalisationTextIcon setName(@NotNull String name) {
-    return ParadoxLocalisationPsiImplUtil.setName(this, name);
-  }
-
-  @Override
-  public @Nullable ParadoxLocalisationTextIconPsiReference getReference() {
-    return ParadoxLocalisationPsiImplUtil.getReference(this);
+  @NotNull
+  public List<ParadoxLocalisationRichText> getRichTextList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationRichText.class);
   }
 
   @Override

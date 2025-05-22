@@ -35,9 +35,9 @@ public class ParadoxLocalisationTextFormatImpl extends ParadoxLocalisationRichTe
   }
 
   @Override
-  @NotNull
-  public List<ParadoxLocalisationRichText> getRichTextList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationRichText.class);
+  @Nullable
+  public ParadoxLocalisationTextFormatText getTextFormatText() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxLocalisationTextFormatText.class);
   }
 
   @Override

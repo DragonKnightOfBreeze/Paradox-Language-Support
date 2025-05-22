@@ -28,29 +28,27 @@ public interface ParadoxLocalisationElementTypes {
   IElementType SCRIPTED_VARIABLE_REFERENCE = ParadoxLocalisationElementTypeFactory.getElementType("SCRIPTED_VARIABLE_REFERENCE");
   IElementType STRING = ParadoxLocalisationElementTypeFactory.getElementType("STRING");
   IElementType TEXT_FORMAT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_FORMAT");
+  IElementType TEXT_FORMAT_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_FORMAT_TEXT");
   IElementType TEXT_ICON = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_ICON");
   IElementType TEXT_ROOT = ParadoxLocalisationElementTypeFactory.getElementType("TEXT_ROOT");
 
+  IElementType ARGUMENT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("ARGUMENT_TOKEN");
   IElementType AT = ParadoxLocalisationElementTypeFactory.getTokenType("AT");
   IElementType COLON = ParadoxLocalisationElementTypeFactory.getTokenType("COLON");
   IElementType COLORFUL_TEXT_END = ParadoxLocalisationElementTypeFactory.getTokenType("COLORFUL_TEXT_END");
   IElementType COLORFUL_TEXT_START = ParadoxLocalisationElementTypeFactory.getTokenType("COLORFUL_TEXT_START");
   IElementType COLOR_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("COLOR_TOKEN");
   IElementType COMMA = ParadoxLocalisationElementTypeFactory.getTokenType("COMMA");
-  IElementType COMMAND_ARGUMENT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_ARGUMENT_TOKEN");
-  IElementType COMMAND_END = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_END");
-  IElementType COMMAND_START = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_START");
   IElementType COMMAND_TEXT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("COMMAND_TEXT_TOKEN");
   IElementType COMMENT = ParadoxLocalisationElementTypeFactory.getTokenType("COMMENT");
   IElementType CONCEPT_NAME_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("CONCEPT_NAME_TOKEN");
-  IElementType ICON_ARGUMENT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_ARGUMENT_TOKEN");
   IElementType ICON_END = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_END");
   IElementType ICON_START = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_START");
   IElementType ICON_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("ICON_TOKEN");
+  IElementType LEFT_BRACKET = ParadoxLocalisationElementTypeFactory.getTokenType("LEFT_BRACKET");
   IElementType LEFT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("LEFT_QUOTE");
   IElementType LEFT_SINGLE_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("LEFT_SINGLE_QUOTE");
   IElementType LOCALE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("LOCALE_TOKEN");
-  IElementType PARAMETER_ARGUMENT_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PARAMETER_ARGUMENT_TOKEN");
   IElementType PARAMETER_END = ParadoxLocalisationElementTypeFactory.getTokenType("PARAMETER_END");
   IElementType PARAMETER_START = ParadoxLocalisationElementTypeFactory.getTokenType("PARAMETER_START");
   IElementType PARAMETER_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PARAMETER_TOKEN");
@@ -58,6 +56,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType PROPERTY_KEY_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_KEY_TOKEN");
   IElementType PROPERTY_NUMBER = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_NUMBER");
   IElementType PROPERTY_VALUE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("PROPERTY_VALUE_TOKEN");
+  IElementType RIGHT_BRACKET = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_BRACKET");
   IElementType RIGHT_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_QUOTE");
   IElementType RIGHT_SINGLE_QUOTE = ParadoxLocalisationElementTypeFactory.getTokenType("RIGHT_SINGLE_QUOTE");
   IElementType SCRIPTED_VARIABLE_REFERENCE_TOKEN = ParadoxLocalisationElementTypeFactory.getTokenType("SCRIPTED_VARIABLE_REFERENCE_TOKEN");
@@ -128,6 +127,9 @@ public interface ParadoxLocalisationElementTypes {
       }
       else if (type == TEXT_FORMAT) {
         return new ParadoxLocalisationTextFormatImpl(node);
+      }
+      else if (type == TEXT_FORMAT_TEXT) {
+        return new ParadoxLocalisationTextFormatTextImpl(node);
       }
       else if (type == TEXT_ICON) {
         return new ParadoxLocalisationTextIconImpl(node);

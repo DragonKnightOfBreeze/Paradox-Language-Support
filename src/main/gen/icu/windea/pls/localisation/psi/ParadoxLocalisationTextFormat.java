@@ -15,8 +15,8 @@ import javax.swing.Icon;
 
 public interface ParadoxLocalisationTextFormat extends ParadoxLocalisationRichText, NavigatablePsiElement, ParadoxLocalisationParameterAwareElement, ParadoxLocalisationCommandAwareElement {
 
-  @NotNull
-  List<ParadoxLocalisationRichText> getRichTextList();
+  @Nullable
+  ParadoxLocalisationTextFormatText getTextFormatText();
 
   @Nullable PsiElement getIdElement();
 

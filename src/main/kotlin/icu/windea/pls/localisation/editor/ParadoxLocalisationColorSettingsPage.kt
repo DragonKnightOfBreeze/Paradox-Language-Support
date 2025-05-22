@@ -14,12 +14,11 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("localisation.displayName.number"), ParadoxLocalisationAttributesKeys.NUMBER_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.locale"), ParadoxLocalisationAttributesKeys.LOCALE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.propertyKey"), ParadoxLocalisationAttributesKeys.PROPERTY_KEY_KEY),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.argument"), ParadoxLocalisationAttributesKeys.ARGUMENT_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.color"), ParadoxLocalisationAttributesKeys.COLOR_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.parameter"), ParadoxLocalisationAttributesKeys.PARAMETER_KEY),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.parameterArgument"), ParadoxLocalisationAttributesKeys.PARAMETER_ARGUMENT_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.scriptedVariable"), ParadoxLocalisationAttributesKeys.SCRIPTED_VARIABLE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.command"), ParadoxLocalisationAttributesKeys.COMMAND_KEY),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.commandArgument"), ParadoxLocalisationAttributesKeys.COMMAND_ARGUMENT_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.icon"), ParadoxLocalisationAttributesKeys.ICON_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.concept"), ParadoxLocalisationAttributesKeys.CONCEPT_KEY), //#008080
         AttributesDescriptor(PlsBundle.message("localisation.displayName.textFormat"), ParadoxLocalisationAttributesKeys.TEXT_FORMAT_KEY),

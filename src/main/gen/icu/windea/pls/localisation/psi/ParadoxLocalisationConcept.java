@@ -13,7 +13,7 @@ import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.localisation.references.ParadoxLocalisationConceptPsiReference;
 import javax.swing.Icon;
 
-public interface ParadoxLocalisationConcept extends NavigatablePsiElement {
+public interface ParadoxLocalisationConcept extends ParadoxLocalisationRichText, NavigatablePsiElement {
 
   @Nullable
   ParadoxLocalisationConceptName getConceptName();

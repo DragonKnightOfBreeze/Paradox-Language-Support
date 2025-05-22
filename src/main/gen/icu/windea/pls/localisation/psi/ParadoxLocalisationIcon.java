@@ -17,8 +17,7 @@ public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText, Na
 
   @Nullable PsiElement getIdElement();
 
-  @Nullable
-  ParadoxLocalisationIconArgument getArgumentElement();
+  @Nullable ParadoxLocalisationIconArgument getArgumentElement();
 
   @NotNull Icon getIcon(@IconFlags int flags);
 
