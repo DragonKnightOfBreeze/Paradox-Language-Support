@@ -9,7 +9,7 @@ import kotlin.io.path.*
 object PlsConstants {
     const val pluginId = "icu.windea.pls"
 
-    val locationClass = PlsBundle::class.java
+    val locationClass = PlsConstants::class.java
 
     val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
 
@@ -21,6 +21,10 @@ object PlsConstants {
 
     //val eraseMarker = TextAttributes()
     //val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
+
+    object Ids {
+        const val translationPlugin = "cn.yiiguxing.plugin.translate"
+    }
 
     object Strings {
         const val anonymous = "(anonymous)"

@@ -45,7 +45,7 @@ object PlsTranslationManager {
 
     fun shouldTranslate(element: ParadoxLocalisationRichText): Boolean {
         return when (element) {
-            is ParadoxLocalisationString -> true
+            is ParadoxLocalisationString -> element.text.isNotBlank()
             is ParadoxLocalisationColorfulText -> element.richTextList.any { shouldTranslate(it) }
             is ParadoxLocalisationConcept -> element.conceptText?.richTextList?.any { shouldTranslate(it) } ?: false
             is ParadoxLocalisationTextFormat -> element.textFormatText?.richTextList?.any { shouldTranslate(it) } ?: false

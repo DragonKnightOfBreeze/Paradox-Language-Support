@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.*
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
-@WithExtension("cn.yiiguxing.plugin.translate")
+@WithExtension(PlsConstants.Ids.translationPlugin)
 class CopyTranslatedLocalisationIntention : CopyLocalisationIntention() {
     override fun getFamilyName() = PlsBundle.message("intention.copyTranslatedLocalisation")
 
@@ -52,18 +52,18 @@ class CopyTranslatedLocalisationIntention : CopyLocalisationIntention() {
         if (snippetsList.isEmpty()) return
 
         val snippetsToTranslate = mutableListOf<TranslatableStringSnippet>()
-        snippetsList.forEach { snippets ->
-            snippets.forEach { snippet ->
-                if (!snippet.shouldTranslate) return@forEach
-                if (!targetLang.isExplicit()) return@forEach
-                if (snippet.lang == targetLang) return@forEach
+        for (snippets in snippetsList) {
+            for (snippet in snippets) {
+                if (!snippet.shouldTranslate) continue
+                if (!targetLang.isExplicit()) continue
+                if (snippet.lang == targetLang) continue
                 snippetsToTranslate.add(snippet)
             }
         }
 
         if (snippetsToTranslate.isEmpty()) {
             val textToCopy = snippetsList.joinToString("\n") { snippets -> snippets.joinToString("") { snippet -> snippet.text } }
-            createNotification(PlsBundle.message("intention.copyTranslatedLocalisation.notification.success", targetLocale), NotificationType.INFORMATION).notify(project)
+            createNotification(PlsBundle.message("intention.copyTranslatedLocalisation.notification.1", targetLocale), NotificationType.INFORMATION).notify(project)
             CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
             return
         }
@@ -72,7 +72,7 @@ class CopyTranslatedLocalisationIntention : CopyLocalisationIntention() {
         val indicator = Indicator(project, editorRef, snippetsToTranslate.size, targetLocale)
         val errorRef = AtomicReference<Throwable>()
         val countDownLatch = CountDownLatch(snippetsToTranslate.size)
-        snippetsToTranslate.forEach { snippet ->
+        for (snippet in snippetsToTranslate) {
             if (indicator.checkProcessCanceledAndEditorDisposed()) return
             translateService.translate(snippet.text, snippet.lang, targetLang, object : TranslateListener {
                 override fun onSuccess(translation: Translation) {
@@ -96,11 +96,11 @@ class CopyTranslatedLocalisationIntention : CopyLocalisationIntention() {
             val error = errorRef.get()
             if (error == null) {
                 val textToCopy = snippetsList.joinToString("\n") { snippets -> snippets.joinToString("") { snippet -> snippet.text } }
-                createNotification(PlsBundle.message("intention.copyTranslatedLocalisation.notification.success", targetLocale), NotificationType.INFORMATION).notify(project)
+                createNotification(PlsBundle.message("intention.copyTranslatedLocalisation.notification.0", targetLocale), NotificationType.INFORMATION).notify(project)
                 CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
             } else {
                 thisLogger().warn(error)
-                createNotification(PlsBundle.message("intention.copyTranslatedLocalisation.notification.failed", targetLocale), NotificationType.WARNING).notify(project)
+                createNotification(PlsBundle.message("intention.copyTranslatedLocalisation.notification.2", targetLocale), NotificationType.WARNING).notify(project)
                 return@action
             }
         }
