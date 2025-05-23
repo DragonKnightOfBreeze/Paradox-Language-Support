@@ -409,12 +409,7 @@ object CwtConfigManager {
             is CwtSchemaExpression.Template -> {
                 value.matchesPattern(schemaExpression.pattern)
             }
-            is CwtSchemaExpression.Type -> {
-                true //fast check
-            }
-            is CwtSchemaExpression.Constraint -> {
-                false //fast check
-            }
+            else -> true //fast check
         }
     }
 }
