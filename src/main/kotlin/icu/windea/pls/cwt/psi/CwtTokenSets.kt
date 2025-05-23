@@ -22,5 +22,5 @@ object CwtTokenSets {
     @JvmField
     val STRING_TOKENS = TokenSet.create(STRING_TOKEN)
     @JvmField
-    val KEY_OR_STRING_TOKENS = TokenSet.create(PROPERTY_KEY_TOKEN, STRING_TOKEN)
+    val KEY_OR_STRING_TOKENS = TokenSet.create(OPTION_KEY_TOKEN, PROPERTY_KEY_TOKEN, STRING_TOKEN)
 }

@@ -21,12 +21,8 @@ class CwtKeywordCompletionProvider : CompletionProvider<CompletionParameters>() 
         val contextElement = position.parent?.castOrNull<CwtString>() ?: return
         if (contextElement.text.isLeftQuoted()) return
 
-        //判断当前文件是否是规则文件
-
-        ParadoxCompletionManager.initializeContext(parameters, context)
-
-        val r = CwtConfigCompletionManager.initializeContext(parameters, context, contextElement)
-        if (r) return
+        val r = CwtConfigCompletionManager.initializeContext(contextElement, parameters, context)
+        if (!r) return
 
         lookupElements.forEach { lookupElement ->
             result.addElement(lookupElement, context)

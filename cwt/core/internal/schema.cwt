@@ -1,7 +1,6 @@
 priorities = {
     $path = $enum:priority$
 }
-$enum:priority$ = { fios lios ordered }
 
 sysstem_scopes = {
     $system_scope$ = {
@@ -16,6 +15,12 @@ localisation_locales = {
 }
 
 types = {
+    ## replace_scopes = $scope_context
+    ## push_scope = $scope
+    ## type_key_filter = $any
+    ## type_key_regex = $scalar
+    ## starts_with = $scalar
+    ## graph_related_types = $any
     type[$type$] = {
         skip_root_key = { $scalar }
         base_type = $type$
@@ -29,22 +34,40 @@ types = {
         type_per_file = $bool
         unique = $bool
         severity = $enum:severity$
+        ## replace_scopes = $scope_context
+        ## push_scope = $scope
+        ## type_key_filter = $any
+        ## type_key_regex = $scalar
+        ## starts_with = $scalar
+        ## only_if_not = $scalar
+        ## group = $scalar
         subtype[$subtype$] = $any
         localisation = {
             subtype[$subtype$] = {
+                ## required
+                ## optional
+                ## primary
                 $scalar = $scalar
             }
+            ## required
+            ## optional
+            ## primary
             $scalar = $scalar
         }
         images = {
             subtype[$subtype$] = {
+                ## required
+                ## optional
+                ## primary
                 $scalar = $scalar
             }
+            ## required
+            ## optional
+            ## primary
             $scalar = $scalar
         }
     }
 }
-$enum:severity$ = { error warning info hint }
 
 enums = {
     enum[$enum$] = {
@@ -103,8 +126,6 @@ localisation_commands = {
     $localisation_command$ = { $scope$ }
 }
 
-$enum:link_type$ = { scope value both }
-
 modifier_categories = {
     $modifier_category$ = {
         supported_scopes = $scope$
@@ -141,6 +162,7 @@ scripted_variables = {
 
 ## extended
 definitions = {
+    ## type = $scalar
     $definition$
 }
 
@@ -157,19 +179,28 @@ on_actions = {
 
 ## extended
 inline_scripts = {
+    ## context_configs_type = $enum:context_configs_type$
     $inline_script$
+    ## context_configs_type = $enum:context_configs_type$
     $inline_script$ = $declaration
 }
 
 ## extended
 parameters = {
+    ## context_key = $scalar
+    ## context_configs_type = $enum:context_configs_type$
+    ## inherit
     $parameter$
+    ## context_key = $scalar
+    ## context_configs_type = $enum:context_configs_type$
+    ## inherit
     $parameter$ = $declaration
 }
 
 ## extended
 complex_enum_values = {
     $complex_enum$ = {
+        ## hint = $scalar
         $complex_enum_value$
     }
 }
@@ -177,6 +208,7 @@ complex_enum_values = {
 ## extended
 dynamic_values = {
     $dynamic_value_type$ = {
+        ## hint = $scalar
         $dynamic_value$
     }
 }
@@ -187,7 +219,10 @@ alias_name[$alias_name$:$alias_sub_name$] = $declaration
 
 inline[$inline$] = $declaration
 
-$type$ = $declaration
+## cardinality = $cardinality
+## replace_scopes = $scope_context
+## push_scope = $scope
+$$type = $declaration
 
 $$data_expression = {
     bool
@@ -249,3 +284,8 @@ $$data_expression = {
     re:$re$
     re.i:$re$
 }
+
+$enum:priority$ = { fios lios ordered }
+$enum:severity$ = { error warning info hint }
+$enum:link_type$ = { scope value both }
+$enum:context_configs_type$ = { single multiple }

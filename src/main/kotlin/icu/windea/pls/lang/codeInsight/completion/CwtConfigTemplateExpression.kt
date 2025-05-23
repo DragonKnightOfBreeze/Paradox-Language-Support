@@ -18,7 +18,12 @@ sealed class CwtConfigTemplateExpression(
     }
 
     override fun calculateLookupItems(context: ExpressionContext): Array<out LookupElement>? {
-        return CwtConfigCompletionManager.completeByTemplateExpression(this, context)
+        val lookupElements = mutableListOf<LookupElement>()
+        CwtConfigCompletionManager.completeByTemplateExpression(this, context) {
+            lookupElements.add(it)
+            true
+        }
+        return lookupElements.toTypedArray()
     }
 
     override fun requiresCommittedPSI(): Boolean {
