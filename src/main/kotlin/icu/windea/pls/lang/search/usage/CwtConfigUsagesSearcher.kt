@@ -6,6 +6,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
@@ -21,7 +22,7 @@ class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
         val target = queryParameters.elementToSearch
         if (target !is CwtProperty) return
         val extraWords = mutableSetOf<String>()
-        val configType = target.configType
+        val configType = CwtConfigManager.getConfigType(target)
         when (configType) {
             CwtConfigTypes.Alias, CwtConfigTypes.Modifier, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> {
                 val aliasSubName = target.name.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")

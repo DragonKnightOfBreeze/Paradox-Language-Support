@@ -6,6 +6,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 
 class CwtSchemaConfig(
+    val file: CwtFileConfig,
     val properties: List<CwtPropertyConfig>,
     val enums: Map<String, CwtPropertyConfig>,
     val constraints: Map<String, CwtPropertyConfig>
@@ -23,7 +24,7 @@ class CwtSchemaConfig(
                     else -> properties += prop
                 }
             }
-            val schemaConfig = CwtSchemaConfig(properties, enums, constraints)
+            val schemaConfig = CwtSchemaConfig(fileConfig, properties, enums, constraints)
             configGroup.schemas += schemaConfig
         }
     }

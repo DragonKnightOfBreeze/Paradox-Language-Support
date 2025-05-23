@@ -66,12 +66,6 @@ inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T
     }
 }
 
-val CwtMemberElement.configPath: CwtConfigPath?
-    get() = CwtConfigManager.getConfigPath(this)
-
-val CwtMemberElement.configType: CwtConfigType?
-    get() = CwtConfigManager.getConfigType(this)
-
 fun <T : CwtMemberElement> T.bindConfig(config: CwtConfig<*>): T {
     this.putUserData(PlsKeys.bindingConfig, config)
     return this

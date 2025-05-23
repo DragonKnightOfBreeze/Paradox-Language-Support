@@ -91,9 +91,11 @@ object CwtConfigManager {
     }
 
     fun getConfigPath(element: PsiElement): CwtConfigPath? {
+        if (element.language !is CwtLanguage) return null
         if (element is CwtFile || element is CwtRootBlock) return CwtConfigPath.Empty
-        if (element !is CwtMemberElement) return null
-        return doGetConfigPathFromCache(element)
+        val memberElement = element.parentOfType<CwtMemberElement>(withSelf = true)
+        if (memberElement == null) return null
+        return doGetConfigPathFromCache(memberElement)
     }
 
     private fun doGetConfigPathFromCache(element: CwtMemberElement): CwtConfigPath? {
@@ -127,8 +129,10 @@ object CwtConfigManager {
     }
 
     fun getConfigType(element: PsiElement): CwtConfigType? {
-        if (element !is CwtMemberElement) return null
-        return doGetConfigTypeFromCache(element)
+        if (element.language !is CwtLanguage) return null
+        val memberElement = element.parentOfType<CwtMemberElement>(withSelf = true)
+        if (memberElement == null) return null
+        return doGetConfigTypeFromCache(memberElement)
     }
 
     private fun doGetConfigTypeFromCache(element: CwtMemberElement): CwtConfigType? {
@@ -147,7 +151,7 @@ object CwtConfigManager {
     private fun doGetConfigType(element: CwtMemberElement, file: PsiFile): CwtConfigType? {
         val filePath = getFilePath(file) ?: return null
         if (filePath.startsWith("internal/")) return null //排除内部规则文件
-        val configPath = element.configPath
+        val configPath = getConfigPath(element)
         if (configPath == null || configPath.isEmpty()) return null
         return when {
             element is CwtProperty && configPath.path.matchesAntPattern("types/type[*]") -> {

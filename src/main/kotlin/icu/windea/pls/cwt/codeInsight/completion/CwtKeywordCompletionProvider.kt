@@ -22,7 +22,7 @@ class CwtKeywordCompletionProvider : CompletionProvider<CompletionParameters>() 
         if (contextElement.text.isLeftQuoted()) return
 
         val r = CwtConfigCompletionManager.initializeContext(contextElement, parameters, context)
-        if (!r) return
+        if (r) return
 
         lookupElements.forEach { lookupElement ->
             result.addElement(lookupElement, context)

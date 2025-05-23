@@ -9,7 +9,7 @@ fun CwtValue.isPropertyValue(): Boolean {
 
 fun CwtValue.isBlockValue(): Boolean {
     val parent = parent
-    return parent is CwtBlockElement && parent.parentOfTypes(CwtOption::class, CwtOptionComment::class) == null
+    return parent is CwtRootBlock || (parent is CwtBlock && parent.parent !is CwtOption)
 }
 
 fun CwtValue.isOptionValue(): Boolean {
@@ -19,6 +19,5 @@ fun CwtValue.isOptionValue(): Boolean {
 
 fun CwtValue.isOptionBlockValue(): Boolean {
     val parent = parent
-    if (parent is CwtOption) return true
-    return parent is CwtBlockElement && parent.parentOfTypes(CwtOption::class, CwtOptionComment::class) != null
+    return parent.elementType == CwtElementTypes.OPTION_COMMENT_TOKEN || (parent is CwtBlock && parent.parent is CwtOption)
 }

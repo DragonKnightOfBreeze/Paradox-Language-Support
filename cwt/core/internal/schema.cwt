@@ -155,29 +155,29 @@ database_object_types = {
     }
 }
 
-## extended
+# extended
 scripted_variables = {
     $scripted_variable$
 }
 
-## extended
+# extended
 definitions = {
     ## type = $scalar
     $definition$
 }
 
-## extended
+# extended
 game_rules = {
     $game_rule$
     $game_rule$ = $declaration
 }
 
-## extended
+# extended
 on_actions = {
     $on_action$
 }
 
-## extended
+# extended
 inline_scripts = {
     ## context_configs_type = $enum:context_configs_type$
     $inline_script$
@@ -185,7 +185,7 @@ inline_scripts = {
     $inline_script$ = $declaration
 }
 
-## extended
+# extended
 parameters = {
     ## context_key = $scalar
     ## context_configs_type = $enum:context_configs_type$
@@ -197,7 +197,7 @@ parameters = {
     $parameter$ = $declaration
 }
 
-## extended
+# extended
 complex_enum_values = {
     $complex_enum$ = {
         ## hint = $scalar
@@ -205,7 +205,7 @@ complex_enum_values = {
     }
 }
 
-## extended
+# extended
 dynamic_values = {
     $dynamic_value_type$ = {
         ## hint = $scalar
@@ -222,7 +222,7 @@ inline[$inline$] = $declaration
 ## cardinality = $cardinality
 ## replace_scopes = $scope_context
 ## push_scope = $scope
-$$type = $declaration
+$$declaration = $declaration
 
 $$data_expression = {
     bool

@@ -7,7 +7,7 @@ import com.intellij.psi.util.*
 import com.intellij.refactoring.util.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.cwt.psi.*
 
 class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
@@ -33,10 +33,10 @@ class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
         }
         return when (element) {
             is CwtProperty -> {
-                val configType = element.configType?.takeIf { it.isReference }
+                val configType = CwtConfigManager.getConfigType(element)?.takeIf { it.isReference }
                 when (location) {
                     UsageViewTypeLocation.INSTANCE -> configType?.description ?: PlsBundle.message("cwt.description.property")
-                    else -> element.configType?.getShortName(element.name) ?: element.name
+                    else -> CwtConfigManager.getConfigType(element)?.getShortName(element.name) ?: element.name
                 }
             }
             is CwtString -> {

@@ -14,7 +14,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.util.*
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.cwt.*
@@ -81,7 +81,7 @@ private fun computeLocalDocumentation(element: PsiElement, originalElement: PsiE
 private fun getPropertyDoc(element: CwtProperty, originalElement: PsiElement?, quickNavigation: Boolean): String {
     return buildDocumentation {
         val name = element.name
-        val configType = element.configType
+        val configType = CwtConfigManager.getConfigType(element)
         val project = element.project
         val configGroup = getConfigGroup(element, originalElement, project)
         if (!quickNavigation) initSections(3)
