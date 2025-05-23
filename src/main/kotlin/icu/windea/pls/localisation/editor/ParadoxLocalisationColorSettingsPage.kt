@@ -30,9 +30,11 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 
         AttributesDescriptor(PlsBundle.message("localisation.displayName.systemCommandScope"), ParadoxLocalisationAttributesKeys.SYSTEM_COMMAND_SCOPE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.commandScope"), ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.commandField"), ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.commandScopeLinkPrefix"), ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_PREFIX_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.commandScopeLinkValue"), ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_VALUE_KEY),
-        AttributesDescriptor(PlsBundle.message("localisation.displayName.commandField"), ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.commandFieldPrefix"), ParadoxLocalisationAttributesKeys.COMMAND_FIELD_PREFIX_KEY),
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.commandFieldValue"), ParadoxLocalisationAttributesKeys.COMMAND_FIELD_VALUE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.dynamicValue"), ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.variable"), ParadoxLocalisationAttributesKeys.VARIABLE_KEY),
 
@@ -45,9 +47,9 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         "OPERATOR" to ParadoxLocalisationAttributesKeys.OPERATOR_KEY,
         "SYSTEM_COMMAND_SCOPE" to ParadoxLocalisationAttributesKeys.SYSTEM_COMMAND_SCOPE_KEY,
         "COMMAND_SCOPE" to ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY,
+        "COMMAND_FIELD" to ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY,
         "COMMAND_SCOPE_LINK_PREFIX" to ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_PREFIX_KEY,
         "COMMAND_SCOPE_LINK_VALUE" to ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_LINK_VALUE_KEY,
-        "COMMAND_FIELD" to ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY,
         "COMMAND_FIELD_PREFIX" to ParadoxLocalisationAttributesKeys.COMMAND_FIELD_PREFIX_KEY,
         "COMMAND_FIELD_VALUE" to ParadoxLocalisationAttributesKeys.COMMAND_FIELD_VALUE_KEY,
         "DYNAMIC_VALUE" to ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE_KEY,
