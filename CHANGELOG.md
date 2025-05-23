@@ -3,9 +3,9 @@
 ## PLANNED
 
 * [ ] 优化：进一步优化脚本文件与本地化文件的 lexer 和 parser 的实现
-* [ ] 新功能：支持更加复杂的本地化命令（例如，带有多个参数、用引号括起的参数）
-* [ ] 新功能：[VIC3/CK3] 支持通过规范的本地化命令声明的概念引用（示例：`[concept_name]` `[Concept('concept_name', '$other_loc_key$')]`）
 * [ ] 优化：为本地化文本中的属性引用&命令的传入参数提供关于其中使用的格式标签的说明（文档注释、枚举、工具类等）
+* [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持
+* [ ] 新功能：支持更加复杂的本地化命令（例如，带有多个参数、用引号括起的参数）
 * [ ] 提供对魔法注释的初步支持 / Provide initial support for magic Comments
 * [ ] 提供用于生成并修补脚本的魔法注释，实现相关功能 / Provide magic comments to generate and patch scripts, implement related features
 * [ ] 提供用于切面式批量修补脚本的魔法注释，实现相关功能 / Provide magic comments to batch patch scripts in aop style, implement related features
