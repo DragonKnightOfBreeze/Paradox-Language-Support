@@ -26,7 +26,7 @@ object ParadoxGameConceptManager {
      * * locationElement: [ParadoxScriptDefinitionElement]
      * * textElement: [ParadoxLocalisationConceptText] or [ParadoxLocalisationProperty]
      */
-    fun getReferenceElementAndTextElement(element: ParadoxLocalisationConcept): Tuple2<PsiElement?, PsiElement?> {
+    fun getReferenceElementAndTextElement(element: ParadoxLocalisationConceptCommand): Tuple2<PsiElement?, PsiElement?> {
         val conceptText = element.conceptText
         run r1@{
             val resolved = element.reference?.resolve() ?: return@r1

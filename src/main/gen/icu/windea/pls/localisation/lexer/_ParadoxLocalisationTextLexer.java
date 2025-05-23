@@ -3,7 +3,6 @@
 
 package icu.windea.pls.localisation.lexer;
 
-import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
@@ -1033,12 +1032,12 @@ public class _ParadoxLocalisationTextLexer implements FlexLexer {
           // fall through
           case 66: break;
           case 21:
-            { if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConcept.supports(this)) {
-            yybegin(IN_CONCEPT_NAME);
-            return LEFT_SINGLE_QUOTE;
-        }
-        yypushback(1);
-        yybegin(IN_COMMAND_TEXT);
+            { if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.supports(this)) {
+                    yybegin(IN_CONCEPT_NAME);
+                    return LEFT_SINGLE_QUOTE;
+                }
+                yypushback(1);
+                yybegin(IN_COMMAND_TEXT);
             }
           // fall through
           case 67: break;

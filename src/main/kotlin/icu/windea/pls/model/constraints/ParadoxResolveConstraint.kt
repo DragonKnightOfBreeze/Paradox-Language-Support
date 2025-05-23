@@ -32,7 +32,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxScriptExpressionElement -> element.isResolvableExpression() && element.isExpression()
                 is ParadoxLocalisationExpressionElement -> element.isComplexExpression()
                 is ParadoxLocalisationIcon -> true //<sprite>, etc.
-                is ParadoxLocalisationConcept -> true //<game_concept>
+                is ParadoxLocalisationConceptCommand -> true //<game_concept>
                 is ParadoxLocalisationTextColorAwareElement -> true //<text_color>
                 is ParadoxLocalisationTextFormat -> true //<text_format>
                 is ParadoxLocalisationTextIcon -> true //<text_icon>

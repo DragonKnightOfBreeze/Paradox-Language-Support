@@ -12,7 +12,7 @@ public interface ParadoxLocalisationElementTypes {
   IElementType COMMAND = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND");
   IElementType COMMAND_ARGUMENT = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND_ARGUMENT");
   IElementType COMMAND_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("COMMAND_TEXT");
-  IElementType CONCEPT = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT");
+  IElementType CONCEPT_COMMAND = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_COMMAND");
   IElementType CONCEPT_NAME = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_NAME");
   IElementType CONCEPT_TEXT = ParadoxLocalisationElementTypeFactory.getElementType("CONCEPT_TEXT");
   IElementType ICON = ParadoxLocalisationElementTypeFactory.getElementType("ICON");
@@ -83,8 +83,8 @@ public interface ParadoxLocalisationElementTypes {
       else if (type == COMMAND_TEXT) {
         return new ParadoxLocalisationCommandTextImpl(node);
       }
-      else if (type == CONCEPT) {
-        return new ParadoxLocalisationConceptImpl(node);
+      else if (type == CONCEPT_COMMAND) {
+        return new ParadoxLocalisationConceptCommandImpl(node);
       }
       else if (type == CONCEPT_NAME) {
         return new ParadoxLocalisationConceptNameImpl(node);

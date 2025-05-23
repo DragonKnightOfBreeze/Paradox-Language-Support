@@ -35,7 +35,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
                 if (conceptNode == null) {
                     settings.localisationCommandsByDefault
                 } else {
-                    settings.localisationConceptsByDefault
+                    settings.localisationConceptCommandsByDefault
                 }
             }
             CONCEPT_TEXT -> settings.localisationConceptTextsByDefault
@@ -73,7 +73,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
                         descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.commandFolder))
                     }
                 } else {
-                    if (settings.localisationConcepts) {
+                    if (settings.localisationConceptCommands) {
                         val conceptTextNode = conceptNode.findChildByType(CONCEPT_TEXT)
                         if (conceptTextNode == null) {
                             descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.conceptFolder))

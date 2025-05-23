@@ -30,10 +30,10 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if (element is ParadoxLocalisationConcept) visitConcept(element)
+                if (element is ParadoxLocalisationConceptCommand) visitConceptCommand(element)
             }
 
-            private fun visitConcept(element: ParadoxLocalisationConcept) {
+            private fun visitConceptCommand(element: ParadoxLocalisationConceptCommand) {
                 if (isIgnoredByConfigs(element)) return
                 val location = element.conceptName ?: return
                 val reference = element.reference
@@ -42,7 +42,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
                 holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedConcept.desc", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
 
-            private fun isIgnoredByConfigs(element: ParadoxLocalisationConcept): Boolean {
+            private fun isIgnoredByConfigs(element: ParadoxLocalisationConceptCommand): Boolean {
                 if (!ignoredByConfigs) return false
                 val name = element.name
                 val configs = configGroup.extendedDefinitions.findFromPattern(name, element, configGroup).orEmpty()

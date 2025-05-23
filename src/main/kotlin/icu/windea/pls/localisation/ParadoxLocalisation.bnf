@@ -70,7 +70,7 @@ text_root ::= text_items {
 private text_items ::= text_item +
 private text_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 
-rich_text ::= string | colorful_text | parameter | icon | command | concept | text_format | text_icon
+rich_text ::= string | colorful_text | parameter | icon | command | concept_command | text_format | text_icon
 
 string ::= STRING_TOKEN {
   extends=rich_text
@@ -198,9 +198,9 @@ icon_argument ::= (ARGUMENT_TOKEN | parameter) + {
   methods=[getIdElement parameter=""]
 }
 
-// [stellaris] localisation concept rules (as special commands)
+// [stellaris] localisation concept command rules (as special command rules)
 
-concept ::= <<isConcept>> LEFT_BRACKET LEFT_SINGLE_QUOTE concept_name ? RIGHT_SINGLE_QUOTE concept_text_part ? RIGHT_BRACKET {
+concept_command ::= <<isConceptCommand>> LEFT_BRACKET LEFT_SINGLE_QUOTE concept_name ? RIGHT_SINGLE_QUOTE concept_text_part ? RIGHT_BRACKET {
   pin=2
   extends=rich_text
   implements=[
@@ -218,7 +218,7 @@ concept_name ::= (CONCEPT_NAME_TOKEN | parameter) + {
   ]
   methods=[
     getIdElement parameter=""
-    getName getValue setValue getType getExpression getReference getReferences
+    getIcon getName getValue setValue getType getExpression getReference getReferences
   ]
 }
 private concept_text_part ::= COMMA concept_text ?

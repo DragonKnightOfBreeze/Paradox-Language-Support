@@ -51,7 +51,7 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
                     is ParadoxLocalisationLocale -> return
                     is ParadoxLocalisationParameter -> pass()
                     is ParadoxLocalisationColorfulText -> pass()
-                    is ParadoxLocalisationConcept -> pass()
+                    is ParadoxLocalisationConceptCommand -> pass()
                     is ParadoxLocalisationConceptName -> return
                     is ParadoxLocalisationTextFormat -> pass()
                     is ParadoxLocalisationRichText -> return

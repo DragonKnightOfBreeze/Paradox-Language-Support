@@ -7,33 +7,49 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.ContributedReferenceHost;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.model.ParadoxType;
+import javax.swing.Icon;
 
 public interface ParadoxLocalisationConceptName extends NavigatablePsiElement, ContributedReferenceHost, ParadoxLocalisationExpressionElement, ParadoxLocalisationParameterAwareElement {
 
-  @Nullable PsiElement getIdElement();
+  @Nullable
+  PsiElement getIdElement();
 
-  @NotNull String getName();
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getValue();
+  @NotNull
+  String getName();
 
-  @NotNull ParadoxLocalisationConceptName setValue(@NotNull String value);
+  @NotNull
+  String getValue();
 
-  @Nullable ParadoxType getType();
+  @NotNull
+  ParadoxLocalisationConceptName setValue(@NotNull String value);
 
-  @NotNull String getExpression();
+  @Nullable
+  ParadoxType getType();
 
-  @Nullable PsiReference getReference();
+  @NotNull
+  String getExpression();
 
-  @NotNull PsiReference @NotNull [] getReferences();
+  @Nullable
+  PsiReference getReference();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  PsiReference[] getReferences();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
+
+  @NotNull
+  SearchScope getUseScope();
 
 }

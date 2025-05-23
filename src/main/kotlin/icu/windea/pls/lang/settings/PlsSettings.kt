@@ -120,8 +120,8 @@ class PlsSettingsState : BaseState() {
      * @property localisationIconsFullyByDefault 是否默认折叠本地化图标。完全折叠。
      * @property localisationCommands 是否允许折叠本地化命令。
      * @property localisationCommandsByDefault 是否默认折叠本地化命令。
-     * @property localisationConcepts 是否允许折叠本地化概念。
-     * @property localisationConceptsByDefault 是否默认折叠本地化概念。
+     * @property localisationConceptCommands 是否允许折叠本地化概念命令。
+     * @property localisationConceptCommandsByDefault 是否默认折叠本地化概念命令。
      * @property localisationConceptTexts 是否允许折叠本地化概念的自定义文本。
      * @property localisationConceptTextsByDefault 是否默认折叠本地化概念的自定义文本。
      * @property scriptedVariableReferences 是否允许折叠封装变量引用。折叠为解析后的值。
@@ -141,8 +141,8 @@ class PlsSettingsState : BaseState() {
         var localisationIconsFullyByDefault by property(false)
         var localisationCommands by property(false)
         var localisationCommandsByDefault by property(false)
-        var localisationConcepts by property(false)
-        var localisationConceptsByDefault by property(false)
+        var localisationConceptCommands by property(false)
+        var localisationConceptCommandsByDefault by property(false)
         var localisationConceptTexts by property(false)
         var localisationConceptTextsByDefault by property(false)
         var scriptedVariableReferences by property(true)

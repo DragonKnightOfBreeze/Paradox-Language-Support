@@ -103,7 +103,7 @@ object ParadoxLocalisationTextInlayRenderer {
             is ParadoxLocalisationParameter -> renderParameterTo(element, context)
             is ParadoxLocalisationCommand -> renderCommandTo(element, context)
             is ParadoxLocalisationIcon -> renderIconTo(element, context)
-            is ParadoxLocalisationConcept -> renderConceptTo(element, context)
+            is ParadoxLocalisationConceptCommand -> renderConceptTo(element, context)
             is ParadoxLocalisationTextFormat -> renderTextFormatTo(element, context)
             is ParadoxLocalisationTextIcon -> renderTextIconTo(element, context)
             else -> true
@@ -233,7 +233,7 @@ object ParadoxLocalisationTextInlayRenderer {
         continueProcess(context)
     }
 
-    private fun renderConceptTo(element: ParadoxLocalisationConcept, context: Context): Boolean = with(context.factory) {
+    private fun renderConceptTo(element: ParadoxLocalisationConceptCommand, context: Context): Boolean = with(context.factory) {
         //尝试渲染概念文本
         val (referenceElement, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(element)
         val richTextList = when {

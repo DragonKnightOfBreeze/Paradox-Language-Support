@@ -39,7 +39,7 @@ object ParadoxLocalisationTextRenderer {
             is ParadoxLocalisationParameter -> renderParameterTo(element, context)
             is ParadoxLocalisationCommand -> renderCommandTo(element, context)
             is ParadoxLocalisationIcon -> renderIconTo(element, context)
-            is ParadoxLocalisationConcept -> renderConceptTo(element, context)
+            is ParadoxLocalisationConceptCommand -> renderConceptTo(element, context)
             is ParadoxLocalisationTextFormat -> renderTextFormatTo(element, context)
             is ParadoxLocalisationTextIcon -> renderTextIconTo(element, context)
         }
@@ -96,7 +96,7 @@ object ParadoxLocalisationTextRenderer {
         context.builder.append(element.text)
     }
 
-    private fun renderConceptTo(element: ParadoxLocalisationConcept, context: Context) {
+    private fun renderConceptTo(element: ParadoxLocalisationConceptCommand, context: Context) {
         //尝试渲染概念文本
         val (_, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(element)
         val richTextList = when {

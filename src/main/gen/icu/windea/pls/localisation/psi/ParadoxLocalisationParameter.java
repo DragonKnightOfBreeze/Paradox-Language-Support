@@ -6,7 +6,6 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.localisation.references.ParadoxLocalisationPropertyPsiReference;
@@ -16,20 +15,28 @@ public interface ParadoxLocalisationParameter extends ParadoxLocalisationRichTex
   @Nullable
   ParadoxLocalisationScriptedVariableReference getScriptedVariableReference();
 
-  @Nullable PsiElement getIdElement();
+  @Nullable
+  PsiElement getIdElement();
 
-  @Nullable ParadoxLocalisationParameterArgument getArgumentElement();
+  @Nullable
+  ParadoxLocalisationParameterArgument getArgumentElement();
 
-  @NotNull String getName();
+  @NotNull
+  String getName();
 
-  @NotNull ParadoxLocalisationParameter setName(@NotNull String name);
+  @NotNull
+  ParadoxLocalisationParameter setName(@NotNull String name);
 
-  @Nullable ParadoxLocalisationPropertyPsiReference getReference();
+  @Nullable
+  ParadoxLocalisationPropertyPsiReference getReference();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

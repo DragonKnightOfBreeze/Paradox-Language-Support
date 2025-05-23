@@ -295,13 +295,13 @@ TEXT_ICON_TOKEN=\w+
 }
 <IN_COMMAND>{
     . {
-            if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConcept.supports(this)) {
-                yybegin(IN_CONCEPT_NAME);
-                return LEFT_SINGLE_QUOTE;
+                if(yycharat(0) == '\'' && ParadoxSyntaxConstraint.LocalisationConceptCommand.supports(this)) {
+                    yybegin(IN_CONCEPT_NAME);
+                    return LEFT_SINGLE_QUOTE;
+                }
+                yypushback(1);
+                yybegin(IN_COMMAND_TEXT);
             }
-            yypushback(1);
-            yybegin(IN_COMMAND_TEXT);
-        }
 }
 <IN_COMMAND_TEXT>{
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
@@ -346,7 +346,7 @@ TEXT_ICON_TOKEN=\w+
     {ARGUMENT_TOKEN} { return ARGUMENT_TOKEN; }
 }
 
-// [stellaris] localisation concept rules (as special commands)
+// [stellaris] localisation concept command rules (as special command rules)
 
 <IN_CONCEPT_NAME> {
     "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }

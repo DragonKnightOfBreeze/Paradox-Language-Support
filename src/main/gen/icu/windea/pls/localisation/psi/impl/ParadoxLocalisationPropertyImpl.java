@@ -51,22 +51,26 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
   }
 
   @Override
-  public @NotNull Icon getIcon(@IconFlags int flags) {
+  @NotNull
+  public Icon getIcon(@IconFlags int flags) {
     return ParadoxLocalisationPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  public @NotNull String getName() {
+  @NotNull
+  public String getName() {
     return ParadoxLocalisationPsiImplUtil.getName(this);
   }
 
   @Override
-  public @NotNull ParadoxLocalisationProperty setName(@NotNull String name) {
+  @NotNull
+  public ParadoxLocalisationProperty setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
   }
 
   @Override
-  public @NotNull PsiElement getNameIdentifier() {
+  @NotNull
+  public PsiElement getNameIdentifier() {
     return ParadoxLocalisationPsiImplUtil.getNameIdentifier(this);
   }
 
@@ -76,17 +80,20 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
   }
 
   @Override
-  public @Nullable ParadoxLocalisationCategory getCategory() {
+  @Nullable
+  public ParadoxLocalisationCategory getCategory() {
     return ParadoxLocalisationPsiImplUtil.getCategory(this);
   }
 
   @Override
-  public @Nullable String getValue() {
+  @Nullable
+  public String getValue() {
     return ParadoxLocalisationPsiImplUtil.getValue(this);
   }
 
   @Override
-  public @NotNull PsiElement setValue(@NotNull String value) {
+  @NotNull
+  public PsiElement setValue(@NotNull String value) {
     return ParadoxLocalisationPsiImplUtil.setValue(this, value);
   }
 
@@ -96,22 +103,26 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
   }
 
   @Override
-  public @NotNull String toString() {
+  @NotNull
+  public String toString() {
     return ParadoxLocalisationPsiImplUtil.toString(this);
   }
 
   @Override
-  public @NotNull ItemPresentation getPresentation() {
+  @NotNull
+  public ItemPresentation getPresentation() {
     return ParadoxLocalisationPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  public @NotNull GlobalSearchScope getResolveScope() {
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
     return ParadoxLocalisationPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  public @NotNull SearchScope getUseScope() {
+  @NotNull
+  public SearchScope getUseScope() {
     return ParadoxLocalisationPsiImplUtil.getUseScope(this);
   }
 

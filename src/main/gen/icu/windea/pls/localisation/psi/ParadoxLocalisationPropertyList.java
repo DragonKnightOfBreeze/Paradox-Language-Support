@@ -19,14 +19,19 @@ public interface ParadoxLocalisationPropertyList extends PsiListLikeElement {
   @NotNull
   List<ParadoxLocalisationProperty> getPropertyList();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
-  @NotNull List<@NotNull ParadoxLocalisationProperty> getComponents();
+  @NotNull
+  List<ParadoxLocalisationProperty> getComponents();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

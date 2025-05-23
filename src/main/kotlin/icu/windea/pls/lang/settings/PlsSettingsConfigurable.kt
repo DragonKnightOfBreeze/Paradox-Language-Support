@@ -286,14 +286,14 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(getSettings().folding::localisationCommandsByDefault)
                         .enabledIf(cb.selected)
                 }
-                //localisationConcepts & localisationConceptsByDefault
+                //localisationConceptCommands & localisationConceptCommandsByDefault
                 row {
                     lateinit var cb: JBCheckBox
-                    checkBox(PlsBundle.message("settings.folding.localisationConcepts"))
-                        .bindSelected(getSettings().folding::localisationConcepts)
+                    checkBox(PlsBundle.message("settings.folding.localisationConceptCommands"))
+                        .bindSelected(getSettings().folding::localisationConceptCommands)
                         .applyToComponent { cb = this }
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(getSettings().folding::localisationConceptsByDefault)
+                        .bindSelected(getSettings().folding::localisationConceptCommandsByDefault)
                         .enabledIf(cb.selected)
                 }
                 //localisationConceptTexts & localisationConceptTextsByDefault

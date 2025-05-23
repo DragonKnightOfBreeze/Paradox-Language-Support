@@ -36,7 +36,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
     // visitParameterAwareElement(o);
   }
 
-  public void visitConcept(@NotNull ParadoxLocalisationConcept o) {
+  public void visitConceptCommand(@NotNull ParadoxLocalisationConceptCommand o) {
     visitRichText(o);
     // visitNavigatablePsiElement(o);
   }
