@@ -25,8 +25,8 @@ class ParadoxTemplateExpression private constructor(
                     config.template
                 }
                 else -> {
-                    if (config.expression?.type != CwtDataTypes.TemplateExpression) return null
-                    val templateString = config.expression?.expressionString ?: return null
+                    if (config.configExpression?.type != CwtDataTypes.TemplateExpression) return null
+                    val templateString = config.configExpression?.expressionString ?: return null
                     CwtTemplateExpression.resolve(templateString)
                 }
             }.takeIf { it.expressionString.isNotEmpty() } ?: return null

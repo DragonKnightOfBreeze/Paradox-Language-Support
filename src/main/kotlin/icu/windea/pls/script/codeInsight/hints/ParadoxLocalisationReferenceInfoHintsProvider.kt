@@ -57,9 +57,9 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
         if (element !is ParadoxScriptStringExpressionElement) return true
         if (!element.isExpression()) return true
         val config = ParadoxExpressionManager.getConfigs(element).firstOrNull()
-            ?.takeIf { it.expression.type in expressionTypes }
+            ?.takeIf { it.configExpression.type in expressionTypes }
             ?: return true
-        val resolved = ParadoxExpressionManager.resolveScriptExpression(element, null, config, config.expression, true)
+        val resolved = ParadoxExpressionManager.resolveScriptExpression(element, null, config, config.configExpression, true)
         if (resolved is ParadoxLocalisationProperty) {
             val localisationInfo = resolved.localisationInfo
             if (localisationInfo != null) {

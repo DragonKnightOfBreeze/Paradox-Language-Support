@@ -48,7 +48,7 @@ object ParadoxLocalisationParameterManager {
     }
 
     fun getLocalisationReferenceElement(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>): ParadoxScriptString? {
-        if (config !is CwtPropertyConfig || config.expression.type != CwtDataTypes.LocalisationParameter) return null
+        if (config !is CwtPropertyConfig || config.configExpression.type != CwtDataTypes.LocalisationParameter) return null
         val localisationReferencePropertyElement = findLocalisationPropertyFromParameterProperty(element, config)
         return localisationReferencePropertyElement?.propertyValue?.castOrNull()
     }

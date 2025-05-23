@@ -99,23 +99,23 @@ class ParadoxTemplateSnippetNode(
         private fun doResolve(): PsiElement? {
             val element = element
             if (element !is ParadoxScriptStringExpressionElement) return null
-            if (config.expression.type in CwtDataTypeGroups.DynamicValue) {
-                val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.expression, configGroup)
+            if (config.configExpression.type in CwtDataTypeGroups.DynamicValue) {
+                val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.configExpression, configGroup)
                 return resolved
             }
-            val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.expression)
+            val resolved = ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.configExpression)
             return resolved
         }
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             val element = element
             if (element !is ParadoxScriptStringExpressionElement) return ResolveResult.EMPTY_ARRAY
-            if (config.expression.type in CwtDataTypeGroups.DynamicValue) {
-                val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.expression, configGroup)
+            if (config.configExpression.type in CwtDataTypeGroups.DynamicValue) {
+                val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, config.configExpression, configGroup)
                 if (resolved != null) return arrayOf(PsiElementResolveResult(resolved))
                 return ResolveResult.EMPTY_ARRAY
             }
-            val resolved = ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.expression)
+            val resolved = ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.configExpression)
             if (resolved.isNotEmpty()) return resolved.mapToArray { PsiElementResolveResult(it) }
             return ResolveResult.EMPTY_ARRAY
         }

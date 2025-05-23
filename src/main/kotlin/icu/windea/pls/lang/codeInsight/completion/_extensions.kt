@@ -263,7 +263,7 @@ private fun getIconToUse(icon: Icon?, config: CwtConfig<*>?): Icon? {
         }
         is CwtAliasConfig -> {
             val aliasConfig = config
-            val type = aliasConfig.expression.type
+            val type = aliasConfig.configExpression.type
             if (type !in CwtDataTypeGroups.ConstantLike) return icon
             val aliasName = aliasConfig.name
             return when {
@@ -287,12 +287,12 @@ private fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(context: 
     val hasRemainList = mutableListOf<Boolean>()
     for (entry in entryConfigs) {
         val constantConfigGroup = entry.configs
-            ?.filter { it is CwtPropertyConfig && it.expression.type == CwtDataTypes.Constant }
-            ?.groupBy { it.expression }
+            ?.filter { it is CwtPropertyConfig && it.configExpression.type == CwtDataTypes.Constant }
+            ?.groupBy { it.configExpression }
             .orEmpty()
         if (constantConfigGroup.isEmpty()) continue //skip
         val configList = entry.configs
-            ?.distinctBy { it.expression }
+            ?.distinctBy { it.configExpression }
             .orEmpty()
         val hasRemain = constantConfigGroup.size != configList.size
         constantConfigGroupList.add(constantConfigGroup)

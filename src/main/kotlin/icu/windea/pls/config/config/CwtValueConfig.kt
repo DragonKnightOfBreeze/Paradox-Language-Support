@@ -11,8 +11,6 @@ import icu.windea.pls.model.*
 interface CwtValueConfig : CwtMemberConfig<CwtValue> {
     val propertyConfig: CwtPropertyConfig?
 
-    override val expression: CwtDataExpression get() = valueExpression
-
     companion object Resolver
 }
 

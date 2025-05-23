@@ -179,7 +179,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         val inspection = if (fromInspection) getMissingLocalisationInspection(element) else null
 
         if (!(inspection == null || inspection.checkForModifiers)) return null
-        if (config.expression.type != CwtDataTypes.Modifier) return null
+        if (config.configExpression.type != CwtDataTypes.Modifier) return null
         val modifierName = element.value
         val project = config.configGroup.project
         val codeInsightInfos = mutableListOf<ParadoxLocalisationCodeInsightInfo>()
@@ -222,9 +222,9 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         if (!inspectionState) return null
 
         val contextType = when {
-            config.expression.type == CwtDataTypes.Localisation -> Type.LocalisationReference
-            config.expression.type == CwtDataTypes.SyncedLocalisation -> Type.SyncedLocalisationReference
-            config.expression.type == CwtDataTypes.InlineLocalisation && !element.text.isLeftQuoted() -> Type.LocalisationReference
+            config.configExpression.type == CwtDataTypes.Localisation -> Type.LocalisationReference
+            config.configExpression.type == CwtDataTypes.SyncedLocalisation -> Type.SyncedLocalisationReference
+            config.configExpression.type == CwtDataTypes.InlineLocalisation && !element.text.isLeftQuoted() -> Type.LocalisationReference
             else -> null
         }
         if (contextType == null) return null

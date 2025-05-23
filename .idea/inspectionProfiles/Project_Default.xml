@@ -14,7 +14,7 @@
       <option name="ignoreClasses">
         <set>
           <option value="icu.windea.pls.lang.inspections.localisation.common.UnresolvedConceptInspection" />
-          <option value="icu.windea.pls.lang.intentions.localisation.CopyLocalisationIntention" />
+          <option value="icu.windea.pls.lang.intentions.localisation.ChangeLocalisationColorIntention" />
         </set>
       </option>
     </inspection_tool>

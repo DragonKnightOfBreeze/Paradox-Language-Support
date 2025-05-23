@@ -25,7 +25,7 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
                 if (element.text.isParameterized()) return
                 //得到完全匹配的CWT规则
                 val config = ParadoxExpressionManager.getConfigs(element, orDefault = false).firstOrNull() ?: return
-                val configExpression = config.expression
+                val configExpression = config.configExpression
                 val dataType = configExpression.type
                 if (dataType == CwtDataTypes.AbsoluteFilePath) return
                 if (dataType !in CwtDataTypeGroups.PathReference) return

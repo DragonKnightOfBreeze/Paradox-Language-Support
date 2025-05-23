@@ -33,7 +33,7 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val forLocalisation: Boolean
 
     val dataSourceExpression: CwtDataExpression?
-    override val expression: CwtDataExpression? get() = dataSourceExpression
+    override val configExpression: CwtDataExpression? get() = dataSourceExpression
 
     //type = null -> default to "scope"
 

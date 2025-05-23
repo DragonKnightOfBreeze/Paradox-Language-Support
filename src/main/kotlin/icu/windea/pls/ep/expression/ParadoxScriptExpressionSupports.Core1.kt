@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptTemplateExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.TemplateExpression
+        return config.configExpression?.type == CwtDataTypes.TemplateExpression
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -43,7 +43,7 @@ class ParadoxScriptTemplateExpressionSupport : ParadoxScriptExpressionSupport {
 
 class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type in CwtDataTypeGroups.DynamicValue
+        return config.configExpression?.type in CwtDataTypeGroups.DynamicValue
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -70,7 +70,7 @@ class ParadoxScriptDynamicValueExpressionSupport : ParadoxScriptExpressionSuppor
 
 class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type in CwtDataTypeGroups.ScopeField
+        return config.configExpression?.type in CwtDataTypeGroups.ScopeField
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -91,7 +91,7 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport 
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        val configExpression = context.config?.expression ?: return
+        val configExpression = context.config?.configExpression ?: return
         when (configExpression.type) {
             CwtDataTypes.Scope -> {
                 context.scopeName = configExpression.value
@@ -116,7 +116,7 @@ class ParadoxScriptScopeFieldExpressionSupport : ParadoxScriptExpressionSupport 
 
 class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type in CwtDataTypeGroups.ValueField
+        return config.configExpression?.type in CwtDataTypeGroups.ValueField
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -137,7 +137,7 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport 
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        val configExpression = context.config?.expression ?: return
+        val configExpression = context.config?.configExpression ?: return
         when (configExpression.type) {
             CwtDataTypes.IntValueField -> {
                 context.isInt = true
@@ -156,7 +156,7 @@ class ParadoxScriptValueFieldExpressionSupport : ParadoxScriptExpressionSupport 
 
 class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type in CwtDataTypeGroups.VariableField
+        return config.configExpression?.type in CwtDataTypeGroups.VariableField
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -177,7 +177,7 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSuppo
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
-        val configExpression = context.config?.expression ?: return
+        val configExpression = context.config?.configExpression ?: return
         when (configExpression.type) {
             CwtDataTypes.IntVariableField -> {
                 context.isInt = true
@@ -196,7 +196,7 @@ class ParadoxScriptVariableFieldExpressionSupport : ParadoxScriptExpressionSuppo
 
 class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.DatabaseObject
+        return config.configExpression?.type == CwtDataTypes.DatabaseObject
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -223,7 +223,7 @@ class ParadoxScriptDatabaseObjectExpressionSupport : ParadoxScriptExpressionSupp
 
 class ParadoxScriptDefineReferenceExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.DefineReference
+        return config.configExpression?.type == CwtDataTypes.DefineReference
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {

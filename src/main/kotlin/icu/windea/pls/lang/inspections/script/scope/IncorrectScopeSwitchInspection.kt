@@ -33,7 +33,7 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
                 val config = configs.firstOrNull()
                 if (config == null) return
                 val definitionInfo by lazy { element.findParentDefinition()?.definitionInfo }
-                if (config is CwtPropertyConfig && config.expression.type == CwtDataTypes.ScopeField) {
+                if (config is CwtPropertyConfig && config.configExpression.type == CwtDataTypes.ScopeField) {
                     val resultScopeContext = ParadoxScopeManager.getSwitchedScopeContext(element)
                     if (resultScopeContext == null) return
                     val links = resultScopeContext.links

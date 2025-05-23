@@ -28,14 +28,14 @@ class ParadoxInferredScopeContextAwareDefinitionIndexInfoSupport : ParadoxIndexI
         run {
             val expression = element.value
             if (expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
-            val dataType = config.expression.type
+            val dataType = config.configExpression.type
             if (dataType != CwtDataTypes.Definition) return
-            val definitionType = config.expression.value?.substringBefore('.') ?: return
+            val definitionType = config.configExpression.value?.substringBefore('.') ?: return
             if (definitionType !in Constants.DEFINITION_TYPES) return
         }
 
         val definitionName = element.value
-        val typeExpression = config.expression.value ?: return
+        val typeExpression = config.configExpression.value ?: return
         val info = ParadoxInferredScopeContextAwareDefinitionIndexInfo(definitionName, typeExpression, element.startOffset, definitionInfo.gameType)
         addToFileData(info, fileData)
     }
@@ -70,14 +70,14 @@ class ParadoxEventInOnActionIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEv
             if (definitionInfo.type != ParadoxDefinitionTypes.OnAction) return
             val expression = element.value
             if (expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
-            val dataType = config.expression.type
+            val dataType = config.configExpression.type
             if (dataType != CwtDataTypes.Definition) return
-            val definitionType = config.expression.value?.substringBefore('.') ?: return
+            val definitionType = config.configExpression.value?.substringBefore('.') ?: return
             if (definitionType != ParadoxDefinitionTypes.Event) return
         }
 
         val eventName = element.value
-        val typeExpression = config.expression.value ?: return
+        val typeExpression = config.configExpression.value ?: return
         val containingOnActionName = definitionInfo.name
         val info = ParadoxEventInOnActionIndexInfo(eventName, typeExpression, containingOnActionName, element.startOffset, definitionInfo.gameType)
         addToFileData(info, fileData)
@@ -115,9 +115,9 @@ class ParadoxEventInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxEvent
             if (definitionInfo.type != ParadoxDefinitionTypes.Event) return
             val expression = element.value
             if (expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
-            val dataType = config.expression.type
+            val dataType = config.configExpression.type
             if (dataType != CwtDataTypes.Definition) return
-            val definitionType = config.expression.value?.substringBefore('.') ?: return
+            val definitionType = config.configExpression.value?.substringBefore('.') ?: return
             if (definitionType != ParadoxDefinitionTypes.Event) return
         }
 
@@ -181,9 +181,9 @@ class ParadoxOnActionInEventIndexInfoSupport : ParadoxIndexInfoSupport<ParadoxOn
             if (definitionInfo.type != ParadoxDefinitionTypes.Event) return
             val expression = element.value
             if (expression.isEmpty() || expression.isParameterized()) return //skip if expression is empty or parameterized
-            val dataType = config.expression.type
+            val dataType = config.configExpression.type
             if (dataType != CwtDataTypes.Definition) return
-            val definitionType = config.expression.value?.substringBefore('.') ?: return
+            val definitionType = config.configExpression.value?.substringBefore('.') ?: return
             if (definitionType != ParadoxDefinitionTypes.OnAction) return
         }
 

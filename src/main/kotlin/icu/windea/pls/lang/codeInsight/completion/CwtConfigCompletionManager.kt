@@ -105,7 +105,6 @@ object CwtConfigCompletionManager {
 
         val schema = configGroup.schemas.firstOrNull() ?: return false
         val contextConfigs = CwtConfigManager.getContextConfigs(memberElement, containerElement, schema)
-        if (contextConfigs.isEmpty()) return false
 
         val isOptionKey = contextElement is CwtOptionKey || (contextElement is CwtString && contextElement.isOptionBlockValue())
         val isOptionBlockValue = contextElement is CwtString && contextElement.isOptionBlockValue()
@@ -328,7 +327,6 @@ object CwtConfigCompletionManager {
                 true
             }
             is CwtSchemaExpression.Constraint -> true
-            else -> true
         }
     }
 

@@ -19,6 +19,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             PARAMETER -> ""
             ICON -> ""
             COMMAND -> PlsConstants.Strings.commandFolder
+            CONCEPT_COMMAND -> PlsConstants.Strings.conceptCommandFolder
             CONCEPT_TEXT -> "..."
             else -> null
         }
@@ -30,14 +31,8 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             COMMENT -> settings.commentByDefault
             PARAMETER -> settings.localisationReferencesFullyByDefault
             ICON -> settings.localisationIconsFullyByDefault
-            COMMAND -> {
-                val conceptNode = node.findChildByType(CONCEPT)
-                if (conceptNode == null) {
-                    settings.localisationCommandsByDefault
-                } else {
-                    settings.localisationConceptCommandsByDefault
-                }
-            }
+            COMMAND -> settings.localisationCommandsByDefault
+            CONCEPT_COMMAND -> settings.localisationConceptCommandsByDefault
             CONCEPT_TEXT -> settings.localisationConceptTextsByDefault
             else -> false
         }
@@ -49,43 +44,41 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
-        when (node.elementType) {
-            COMMENT -> {
-                if (settings.comment) {
+        run {
+            when (node.elementType) {
+                COMMENT -> {
+                    if (!settings.comment) return@run
                     ParadoxFoldingManager.addCommentFoldingDescriptor(node, document, descriptors)
                 }
-            }
-            LOCALE -> return //optimization
-            PARAMETER -> {
-                if (settings.localisationReferencesFully) {
+                LOCALE -> {
+                    return //optimization
+                }
+                PARAMETER -> {
+                    if (!settings.localisationReferencesFully) return@run
                     descriptors.add(FoldingDescriptor(node, node.textRange))
                 }
-            }
-            ICON -> {
-                if (settings.localisationIconsFully) {
+                ICON -> {
+                    if (!settings.localisationIconsFully) return@run
                     descriptors.add(FoldingDescriptor(node, node.textRange))
                 }
-            }
-            COMMAND -> {
-                val conceptNode = node.findChildByType(CONCEPT)
-                if (conceptNode == null) {
-                    if (settings.localisationCommands) {
-                        descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.commandFolder))
-                    }
-                } else {
-                    if (settings.localisationConceptCommands) {
-                        val conceptTextNode = conceptNode.findChildByType(CONCEPT_TEXT)
-                        if (conceptTextNode == null) {
-                            descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.conceptFolder))
-                        } else {
-                            descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.conceptWithTextFolder))
-                        }
+                COMMAND -> {
+                    if (!settings.localisationCommands) return@run
+                    descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.commandFolder))
+                }
+                CONCEPT_COMMAND -> {
+                    if (!settings.localisationConceptCommands) return@run
+                    val conceptTextNode = node.findChildByType(CONCEPT_TEXT)
+                    if (conceptTextNode == null) {
+                        descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.conceptCommandFolder))
+                    } else {
+                        descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.conceptCommandWithTextFolder))
                     }
                 }
-            }
-            CONCEPT_NAME -> return //optimization
-            CONCEPT_TEXT -> {
-                if (settings.localisationConceptTexts) {
+                CONCEPT_NAME -> {
+                    return //optimization
+                }
+                CONCEPT_TEXT -> {
+                    if (!settings.localisationConceptTexts) return@run
                     descriptors.add(FoldingDescriptor(node, node.textRange))
                 }
             }

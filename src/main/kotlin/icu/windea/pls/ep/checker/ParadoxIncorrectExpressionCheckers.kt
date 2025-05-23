@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
-        val configExpression = config.expression
+        val configExpression = config.configExpression
         if (configExpression.type != CwtDataTypes.Int) return //for int only
         val expression = element.expression ?: return
         val (min0, max0) = configExpression.intRange ?: return
@@ -39,7 +39,7 @@ class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
 
 class ParadoxRangedFloatChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
-        val configExpression = config.expression
+        val configExpression = config.configExpression
         if (configExpression.type != CwtDataTypes.Int && configExpression.type != CwtDataTypes.Float) return //for int and float
         val expression = element.expression ?: return
         val (min0, max0) = configExpression.floatRange ?: return
@@ -58,7 +58,7 @@ class ParadoxRangedFloatChecker : ParadoxIncorrectExpressionChecker {
 
 class ParadoxColorFieldChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
-        val configExpression = config.expression
+        val configExpression = config.configExpression
         if (configExpression.type != CwtDataTypes.ColorField) return
         val expression = element.expression ?: return
         if (element !is ParadoxScriptColor) return
@@ -72,7 +72,7 @@ class ParadoxColorFieldChecker : ParadoxIncorrectExpressionChecker {
 
 class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
-        val configExpression = config.expression
+        val configExpression = config.configExpression
         if (configExpression.type != CwtDataTypes.Scope) return
         if (element !is ParadoxScriptStringExpressionElement) return
         val expectedScope = configExpression.value ?: return
@@ -92,7 +92,7 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
 
 class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
-        val configExpression = config.expression
+        val configExpression = config.configExpression
         if (configExpression.type != CwtDataTypes.ScopeGroup) return
         if (element !is ParadoxScriptStringExpressionElement) return
         val expectedScopeGroup = configExpression.value ?: return
@@ -113,7 +113,7 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
 @WithGameType(ParadoxGameType.Stellaris)
 class StellarisTechnologyWithLevelChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
-        val configExpression = config.expression
+        val configExpression = config.configExpression
         if (configExpression.type != CwtDataTypes.TechnologyWithLevel) return
         if (element !is ParadoxScriptStringExpressionElement) return
         val (technologyName, technologyLevel) = element.value.split('@', limit = 2).takeIf { it.size == 2 } ?: return

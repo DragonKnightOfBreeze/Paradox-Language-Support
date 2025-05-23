@@ -177,8 +177,8 @@ object ParadoxEventManager {
             }
 
             private fun isEventConfig(config: CwtMemberConfig<*>): Boolean {
-                return config.expression.type == CwtDataTypes.Definition
-                    && config.expression.value?.substringBefore('.') == ParadoxDefinitionTypes.Event
+                return config.configExpression.type == CwtDataTypes.Definition
+                    && config.configExpression.value?.substringBefore('.') == ParadoxDefinitionTypes.Event
             }
         })
         return result

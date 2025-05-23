@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.Parameter
+        return config.configExpression?.type == CwtDataTypes.Parameter
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -43,7 +43,7 @@ class ParadoxScriptParameterExpressionSupport : ParadoxScriptExpressionSupport {
 
 class ParadoxScriptLocalisationParameterExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.LocalisationParameter
+        return config.configExpression?.type == CwtDataTypes.LocalisationParameter
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {

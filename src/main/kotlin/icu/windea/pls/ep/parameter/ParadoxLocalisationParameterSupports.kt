@@ -42,7 +42,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
     }
 
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxLocalisationParameterElement? {
-        if (config !is CwtPropertyConfig || config.expression.type != CwtDataTypes.LocalisationParameter) return null
+        if (config !is CwtPropertyConfig || config.configExpression.type != CwtDataTypes.LocalisationParameter) return null
         val localisationReferenceElement = ParadoxLocalisationParameterManager.getLocalisationReferenceElement(element, config) ?: return null
         val name = rangeInElement?.substring(element.text) ?: element.name
         val localisationName = localisationReferenceElement.name

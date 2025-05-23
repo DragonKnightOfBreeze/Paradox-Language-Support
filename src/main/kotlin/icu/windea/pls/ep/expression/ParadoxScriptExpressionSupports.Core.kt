@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.Localisation
+        return config.configExpression?.type == CwtDataTypes.Localisation
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -58,7 +58,7 @@ class ParadoxScriptLocalisationExpressionSupport : ParadoxScriptExpressionSuppor
 
 class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.Localisation
+        return config.configExpression?.type == CwtDataTypes.Localisation
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -91,7 +91,7 @@ class ParadoxScriptSyncedLocalisationExpressionSupport : ParadoxScriptExpression
 
 class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.InlineLocalisation
+        return config.configExpression?.type == CwtDataTypes.InlineLocalisation
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -127,7 +127,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
 
 class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.Definition
+        return config.configExpression?.type == CwtDataTypes.Definition
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -140,7 +140,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
         val configGroup = config.configGroup
         val project = configGroup.project
-        val typeExpression = config.expression?.value ?: return null
+        val typeExpression = config.configExpression?.value ?: return null
         val selector = selector(project, element).definition().contextSensitive(exact)
         return ParadoxDefinitionSearch.search(expressionText, typeExpression, selector).find()
     }
@@ -148,7 +148,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport 
     override fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
         val configGroup = config.configGroup
         val project = configGroup.project
-        val typeExpression = config.expression?.value ?: return emptySet()
+        val typeExpression = config.configExpression?.value ?: return emptySet()
         val selector = selector(project, element).definition().contextSensitive()
         return ParadoxDefinitionSearch.search(expressionText, typeExpression, selector).findAll()
     }
@@ -162,7 +162,7 @@ class ParadoxScriptDefinitionExpressionSupport : ParadoxScriptExpressionSupport 
 
 class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type in CwtDataTypeGroups.PathReference
+        return config.configExpression?.type in CwtDataTypeGroups.PathReference
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -173,7 +173,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        val configExpression = config.expression ?: return null
+        val configExpression = config.configExpression ?: return null
         val configGroup = config.configGroup
         val project = configGroup.project
         if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
@@ -187,7 +187,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
     }
 
     override fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
-        val configExpression = config.expression ?: return emptySet()
+        val configExpression = config.configExpression ?: return emptySet()
         val configGroup = config.configGroup
         val project = configGroup.project
         if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
@@ -209,12 +209,12 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
 
 class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.EnumValue
+        return config.configExpression?.type == CwtDataTypes.EnumValue
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         val configGroup = config.configGroup
-        val enumName = config.expression?.value ?: return
+        val enumName = config.configExpression?.value ?: return
         val attributesKey = when {
             configGroup.enums[enumName] != null -> ParadoxScriptAttributesKeys.ENUM_VALUE_KEY
             configGroup.complexEnums[enumName] != null -> ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE_KEY
@@ -226,7 +226,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        val enumName = config.expression?.value ?: return null
+        val enumName = config.configExpression?.value ?: return null
         val configGroup = config.configGroup
         val project = configGroup.project
         //尝试解析为简单枚举
@@ -259,7 +259,7 @@ class ParadoxScriptEnumValueExpressionSupport : ParadoxScriptExpressionSupport {
 
 class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.Modifier
+        return config.configExpression?.type == CwtDataTypes.Modifier
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
@@ -283,13 +283,13 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport {
 
 class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        val type = config.expression?.type ?: return false
+        val type = config.configExpression?.type ?: return false
         return type == CwtDataTypes.AliasName || type == CwtDataTypes.AliasKeysField
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         val configGroup = config.configGroup
-        val configExpression = config.expression
+        val configExpression = config.configExpression
         val aliasName = configExpression?.value ?: return
         val aliasMap = configGroup.aliasGroups.get(aliasName) ?: return
         val aliasSubName = ParadoxExpressionManager.getAliasSubName(element, expressionText, false, aliasName, configGroup) ?: return
@@ -298,41 +298,41 @@ class ParadoxScriptAliasNameExpressionSupport : ParadoxScriptExpressionSupport {
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
-        val aliasName = config.expression?.value ?: return null
+        val aliasName = config.configExpression?.value ?: return null
         val configGroup = config.configGroup
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return null
         val aliasSubName = ParadoxExpressionManager.getAliasSubName(element, expressionText, element.text.isLeftQuoted(), aliasName, configGroup)
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return null
-        return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, alias, alias.expression, isKey, exact)
+        return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, alias, alias.configExpression, isKey, exact)
     }
 
     override fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {
-        val aliasName = config.expression?.value ?: return emptySet()
+        val aliasName = config.configExpression?.value ?: return emptySet()
         val configGroup = config.configGroup
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return emptySet()
         val aliasSubName = ParadoxExpressionManager.getAliasSubName(element, expressionText, element.text.isLeftQuoted(), aliasName, configGroup)
         val alias = aliasGroup[aliasSubName]?.firstOrNull() ?: return emptySet()
-        return ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, alias, alias.expression, isKey)
+        return ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, alias, alias.configExpression, isKey)
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return //排除可能带参数的情况
 
         val config = context.config ?: return
-        val aliasName = config.expression?.value ?: return
+        val aliasName = config.configExpression?.value ?: return
         ParadoxCompletionManager.completeAliasName(context, result, aliasName)
     }
 }
 
 class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.Constant
+        return config.configExpression?.type == CwtDataTypes.Constant
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {
         val annotated = annotateByAliasName(element, rangeInElement, holder, config)
         if (annotated) return
-        val configExpression = config.expression ?: return
+        val configExpression = config.configExpression ?: return
         if (rangeInElement == null) {
             if (element is ParadoxScriptPropertyKey && configExpression.isKey) return //unnecessary
             if (element is ParadoxScriptString && !configExpression.isKey) return //unnecessary
@@ -353,7 +353,7 @@ class ParadoxScriptConstantExpressionSupport : ParadoxScriptExpressionSupport {
             config is CwtAliasConfig -> config
             else -> null
         } ?: return false
-        val type = aliasConfig.expression.type
+        val type = aliasConfig.configExpression.type
         if (type !in CwtDataTypeGroups.ConstantLike) return false
         val aliasName = aliasConfig.name
         val attributesKey = when {

@@ -38,10 +38,10 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
                 }
 
                 val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
-                val configExpression = config.expression
+                val configExpression = config.configExpression
                 val type = configExpression.type
                 //in invocation expression
-                if (config.expression.type == CwtDataTypes.Parameter) {
+                if (config.configExpression.type == CwtDataTypes.Parameter) {
                     return ParadoxUsageType.PARAMETER_REFERENCE_4
                 }
                 //in script value expression
@@ -52,7 +52,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
                     }
                 }
                 //in invocation expression (for localisation parameters)
-                if (config.expression.type == CwtDataTypes.LocalisationParameter) {
+                if (config.configExpression.type == CwtDataTypes.LocalisationParameter) {
                     return ParadoxUsageType.PARAMETER_REFERENCE_6
                 }
                 return ParadoxUsageType.FROM_CONFIG_EXPRESSION(configExpression)

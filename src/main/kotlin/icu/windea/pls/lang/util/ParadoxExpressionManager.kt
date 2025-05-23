@@ -229,7 +229,7 @@ object ParadoxExpressionManager {
         matchOptions: Int = Options.Default
     ): List<CwtMemberConfig<*>> {
         val result = doGetConfigsForConfigContext(element, rootConfigs, elementPathFromRoot, configGroup, matchOptions)
-        return result.sortedByPriority({ it.expression }, { it.configGroup })
+        return result.sortedByPriority({ it.configExpression }, { it.configGroup })
     }
 
     private fun doGetConfigsForConfigContext(
@@ -328,7 +328,7 @@ object ParadoxExpressionManager {
                 ProgressManager.checkCanceled()
                 val resultValuesMatchKey = mutableListOf<ResultValue<CwtMemberConfig<*>>>()
                 result.forEach f@{ config ->
-                    val matchResult = ParadoxExpressionMatcher.matches(elementToMatch, expression, config.expression, config, configGroup, matchOptions)
+                    val matchResult = ParadoxExpressionMatcher.matches(elementToMatch, expression, config.configExpression, config, configGroup, matchOptions)
                     if (matchResult == ParadoxExpressionMatcher.Result.NotMatch) return@f
                     resultValuesMatchKey += ResultValue(config, matchResult)
                 }
@@ -395,7 +395,7 @@ object ParadoxExpressionManager {
         }
         return configsMap.getOrPut(cacheKey) {
             val result = doGetConfigs(memberElement, orDefault, matchOptions).optimized()
-            result.sortedByPriority({ it.expression }, { it.configGroup })
+            result.sortedByPriority({ it.configExpression }, { it.configGroup })
         }
     }
 
@@ -555,7 +555,7 @@ object ParadoxExpressionManager {
         run r1@{
             if (newResult.size <= 1) return@r1
             if (expression.type != ParadoxType.String) return@r1
-            val result1 = newResult.filter { isConstantMatch(expression, it.expression, configGroup) }
+            val result1 = newResult.filter { isConstantMatch(expression, it.configExpression, configGroup) }
             if (result1.isEmpty()) return@r1
             newResult = result1
         }
@@ -573,7 +573,7 @@ object ParadoxExpressionManager {
                 if (configs1.size <= 1) return@r1
                 configs.forEach f2@{ config ->
                     val valueConfig = config.valueConfig ?: return@f2
-                    val matchResult = ParadoxExpressionMatcher.matches(blockElement, blockExpression, valueConfig.expression, valueConfig, configGroup, matchOptions)
+                    val matchResult = ParadoxExpressionMatcher.matches(blockElement, blockExpression, valueConfig.configExpression, valueConfig, configGroup, matchOptions)
                     if (matchResult.get(matchOptions)) return@f2
                     configsToRemove += config
                 }
@@ -595,7 +595,7 @@ object ParadoxExpressionManager {
                 }
                 //这里需要再次进行匹配
                 overriddenConfigs.forEach { c ->
-                    val matchResult = ParadoxExpressionMatcher.matches(element, expression, c.expression, c, configGroup, matchOptions)
+                    val matchResult = ParadoxExpressionMatcher.matches(element, expression, c.configExpression, c, configGroup, matchOptions)
                     if (matchResult.get(matchOptions)) {
                         result1 += c
                     }
@@ -642,7 +642,7 @@ object ParadoxExpressionManager {
         if (configs.isEmpty()) return emptyMap()
         val configGroup = configs.first().configGroup
         //这里需要先按优先级排序
-        val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority({ it.expression }, { configGroup })
+        val childConfigs = configs.flatMap { it.configs.orEmpty() }.sortedByPriority({ it.configExpression }, { configGroup })
         if (childConfigs.isEmpty()) return emptyMap()
         val project = configGroup.project
         val blockElement = when {
@@ -653,7 +653,7 @@ object ParadoxExpressionManager {
         if (blockElement == null) return emptyMap()
         val occurrenceMap = mutableMapOf<CwtDataExpression, Occurrence>()
         for (childConfig in childConfigs) {
-            occurrenceMap.put(childConfig.expression, childConfig.toOccurrence(element, project))
+            occurrenceMap.put(childConfig.configExpression, childConfig.toOccurrence(element, project))
         }
         ProgressManager.checkCanceled()
         //注意这里需要考虑内联和可选的情况
@@ -672,10 +672,10 @@ object ParadoxExpressionManager {
             val matched = childConfigs.find { childConfig ->
                 if (childConfig is CwtPropertyConfig && data !is ParadoxScriptProperty) return@find false
                 if (childConfig is CwtValueConfig && data !is ParadoxScriptValue) return@find false
-                ParadoxExpressionMatcher.matches(data, expression, childConfig.expression, childConfig, configGroup).get()
+                ParadoxExpressionMatcher.matches(data, expression, childConfig.configExpression, childConfig, configGroup).get()
             }
             if (matched == null) return@p true
-            val occurrence = occurrenceMap[matched.expression]
+            val occurrence = occurrenceMap[matched.configExpression]
             if (occurrence == null) return@p true
             occurrence.actual += 1
             true

@@ -23,7 +23,7 @@ sealed interface CwtMemberConfig<out T : CwtMemberElement> : CwtConfig<T> {
     var parentConfig: CwtMemberConfig<*>?
 
     val valueExpression: CwtDataExpression
-    override val expression: CwtDataExpression get() = valueExpression
+    override val configExpression: CwtDataExpression get() = valueExpression
 
     override fun toString(): String
 
@@ -127,7 +127,7 @@ val CwtMemberConfig<*>.cardinality: CwtCardinalityExpression?
         val option = findOption("cardinality")
         if (option == null) {
             //如果没有注明且类型是常量，则推断为 1..~1
-            if (expression.type == CwtDataTypes.Constant) {
+            if (configExpression.type == CwtDataTypes.Constant) {
                 return@action CwtCardinalityExpression.resolve("1..~1")
             }
         }

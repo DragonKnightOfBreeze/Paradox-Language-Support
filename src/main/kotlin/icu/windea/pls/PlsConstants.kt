@@ -79,8 +79,8 @@ object PlsConstants {
         val parameterConditionFolder = { expression: String -> "[[$expression]...]" }
         const val inlineMathFolder = "@[...]"
         const val commandFolder = "[...]"
-        const val conceptFolder = "['...']"
-        const val conceptWithTextFolder = "['...', ...]"
+        const val conceptCommandFolder = "['...']"
+        const val conceptCommandWithTextFolder = "['...', ...]"
 
         const val suppressInspectionsTagName = "noinspection"
     }

@@ -24,7 +24,7 @@ class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressio
     private val typeExpression = "<technology.repeatable>"
 
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.TechnologyWithLevel
+        return config.configExpression?.type == CwtDataTypes.TechnologyWithLevel
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtConfig<*>) {

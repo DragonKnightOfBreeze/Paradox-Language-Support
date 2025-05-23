@@ -50,7 +50,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
                 }
                 if (element !is ParadoxScriptStringExpressionElement) continue
                 val name = element.value
-                val configExpression = config.expression
+                val configExpression = config.configExpression
                 when {
                     configExpression.type in CwtDataTypeGroups.DynamicValue -> {
                         val type = configExpression.value
@@ -202,7 +202,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             val matchOptions = Options.Default or Options.AcceptDefinition
             val configs = ParadoxExpressionManager.getConfigs(element, orDefault, matchOptions)
             for (config in configs) {
-                val configExpression = config.expression
+                val configExpression = config.configExpression
                 when {
                     configExpression.expressionString == ParadoxInlineScriptManager.inlineScriptPathExpressionString -> {
                         val extendedConfig = configGroup.extendedInlineScripts.findFromPattern(name, element, configGroup) ?: continue

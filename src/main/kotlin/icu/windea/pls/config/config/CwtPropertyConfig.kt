@@ -16,7 +16,7 @@ interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     val valueConfig: CwtValueConfig?
 
     val keyExpression: CwtDataExpression
-    override val expression: CwtDataExpression get() = keyExpression
+    override val configExpression: CwtDataExpression get() = keyExpression
 
     companion object Resolver
 }

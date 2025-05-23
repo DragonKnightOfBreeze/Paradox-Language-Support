@@ -130,7 +130,7 @@ class ParadoxScriptAnnotator : Annotator {
         val config = ParadoxExpressionManager.getConfigs(element, orDefault = isKey).firstOrNull()
         if (config != null) {
             //如果不是字符串，除非是定义引用，否则不作高亮
-            if (element !is ParadoxScriptStringExpressionElement && config.expression.type != CwtDataTypes.Definition) return
+            if (element !is ParadoxScriptStringExpressionElement && config.configExpression.type != CwtDataTypes.Definition) return
 
             //高亮脚本表达式
             annotateExpression(element, holder, config)

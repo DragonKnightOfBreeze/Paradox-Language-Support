@@ -238,7 +238,7 @@ object ParadoxCompletionManager {
 
         return buildString {
             if (withConfigExpression) {
-                val configExpression = config?.expression
+                val configExpression = config?.configExpression
                 if (configExpression != null) {
                     append(" by ").append(configExpression)
                 }
@@ -372,7 +372,7 @@ object ParadoxCompletionManager {
 
     fun completeScriptExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-        val configExpression = context.config!!.expression ?: return
+        val configExpression = context.config!!.configExpression ?: return
         val config = context.config!!
         val configGroup = context.configGroup!!
         val scopeMatched = context.scopeMatched
@@ -481,7 +481,7 @@ object ParadoxCompletionManager {
     fun completeDefinition(context: ProcessingContext, result: CompletionResultSet) {
         val config = context.config ?: return
         val scopeContext = context.scopeContext
-        val typeExpression = config.expression?.value ?: return
+        val typeExpression = config.configExpression?.value ?: return
         val configGroup = config.configGroup
         val project = configGroup.project
         val contextElement = context.contextElement
@@ -520,7 +520,7 @@ object ParadoxCompletionManager {
         val contextFile = context.parameters?.originalFile ?: return
         val project = contextFile.project
         val config = context.config ?: return
-        val configExpression = config.expression ?: return
+        val configExpression = config.configExpression ?: return
         val contextElement = context.contextElement
         val pathReferenceExpressionSupport = ParadoxPathReferenceExpressionSupport.get(configExpression)
         if (pathReferenceExpressionSupport != null) {
@@ -559,7 +559,7 @@ object ParadoxCompletionManager {
 
     fun completeEnumValue(context: ProcessingContext, result: CompletionResultSet) {
         val config = context.config ?: return
-        val enumName = config.expression?.value ?: return
+        val enumName = config.configExpression?.value ?: return
         val configGroup = config.configGroup
         val project = configGroup.project
         val contextElement = context.contextElement!!
@@ -639,7 +639,7 @@ object ParadoxCompletionManager {
 
     fun completeConstant(context: ProcessingContext, result: CompletionResultSet) {
         val config = context.config ?: return
-        val configExpression = config.expression ?: return
+        val configExpression = config.configExpression ?: return
         val icon = when {
             configExpression.isKey -> PlsIcons.Nodes.Property
             else -> PlsIcons.Nodes.Value
@@ -1742,7 +1742,7 @@ object ParadoxCompletionManager {
             val configGroup = context.configGroup!!
             val project = configGroup.project
 
-            val configExpression = config.expression ?: return
+            val configExpression = config.configExpression ?: return
             val dynamicValueType = configExpression.value ?: return
             //提示预定义的value
             run {
@@ -2050,7 +2050,7 @@ object ParadoxCompletionManager {
         ProgressManager.checkCanceled()
 
         val config = context.config ?: return
-        val typeExpression = config.expression?.value ?: return
+        val typeExpression = config.configExpression?.value ?: return
         val configGroup = config.configGroup
         val tailText = getExpressionTailText(context, config)
 
@@ -2169,7 +2169,7 @@ object ParadoxCompletionManager {
         ProgressManager.checkCanceled()
 
         val config = context.config ?: return
-        val enumName = config.expression?.value ?: return
+        val enumName = config.configExpression?.value ?: return
         val configGroup = config.configGroup
         val tailText = getExpressionTailText(context, config)
 
@@ -2194,7 +2194,7 @@ object ParadoxCompletionManager {
         ProgressManager.checkCanceled()
 
         val config = context.config ?: return
-        val dynamicValueType = config.expression?.value ?: return
+        val dynamicValueType = config.configExpression?.value ?: return
         val configGroup = config.configGroup
         val tailText = getExpressionTailText(context, config)
 

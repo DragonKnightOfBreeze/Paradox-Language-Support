@@ -214,8 +214,8 @@ object CwtConfigManipulator {
     fun mergeValueConfig(c1: CwtValueConfig, c2: CwtValueConfig): CwtValueConfig? {
         if (c1 === c2) return c1 //reference equality
         if (c1.pointer == c2.pointer) return c1 //value equality (should be)
-        if (c1.expression.type == CwtDataTypes.Block || c2.expression.type == CwtDataTypes.Block) return null //cannot merge non-same clauses
-        val expressionString = CwtDataExpressionMerger.merge(c1.expression, c2.expression, c1.configGroup)
+        if (c1.configExpression.type == CwtDataTypes.Block || c2.configExpression.type == CwtDataTypes.Block) return null //cannot merge non-same clauses
+        val expressionString = CwtDataExpressionMerger.merge(c1.configExpression, c2.configExpression, c1.configGroup)
         if (expressionString == null) return null
         return CwtValueConfig.resolve(
             pointer = emptyPointer(),
@@ -230,7 +230,7 @@ object CwtConfigManipulator {
         if (configs.isEmpty()) return false
         for (config in configs) {
             val e1 = configExpression //expect
-            val e2 = config.expression //actual (e.g., from parameterized key)
+            val e2 = config.configExpression //actual (e.g., from parameterized key)
             val e3 = CwtDataExpressionMerger.merge(e1, e2, config.configGroup) ?: continue //merged
             if (e3 == e2.expressionString) return true
         }

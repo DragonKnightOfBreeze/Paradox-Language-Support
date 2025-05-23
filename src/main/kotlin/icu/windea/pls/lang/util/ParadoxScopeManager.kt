@@ -140,7 +140,7 @@ object ParadoxScopeManager {
         val configs = ParadoxExpressionManager.getConfigs(element, matchOptions = Options.Default or Options.AcceptDefinition)
         configs.forEach { config ->
             val configGroup = config.configGroup
-            if (config.expression.type == CwtDataTypes.AliasKeysField) return true
+            if (config.configExpression.type == CwtDataTypes.AliasKeysField) return true
             if (isScopeContextSupportedAsRoot(config, configGroup)) return true
             if (isScopeContextSupportedAsChild(config, configGroup)) return true
         }
@@ -238,7 +238,7 @@ object ParadoxScopeManager {
         val overriddenScopeContext = ParadoxOverriddenScopeContextProvider.getOverriddenScopeContext(element, config, parentScopeContext)
         if (overriddenScopeContext != null) return overriddenScopeContext
 
-        if (config is CwtPropertyConfig && config.expression.type == CwtDataTypes.ScopeField) {
+        if (config is CwtPropertyConfig && config.configExpression.type == CwtDataTypes.ScopeField) {
             if (parentScopeContext == null) return null
             val expressionElement = element.castOrNull<ParadoxScriptProperty>()?.propertyKey ?: return null
             val expressionString = expressionElement.value
@@ -448,7 +448,7 @@ object ParadoxScopeManager {
         if (linkConfig.outputScope != null) return inputScopeContext.resolveNext(linkConfig.outputScope)
 
         //output_scope = null -> transfer scope based on data source
-        val dataType = linkConfig.expression?.type
+        val dataType = linkConfig.configExpression?.type
         if (dataType == null) return inputScopeContext
         when {
             //hidden:event_target:xxx = {...}
@@ -464,7 +464,7 @@ object ParadoxScopeManager {
                 val configGroup = dynamicValueExpression.configGroup
                 val dynamicValueNode = dynamicValueExpression.dynamicValueNode
                 val name = dynamicValueNode.text
-                val configExpressions = dynamicValueNode.configs.mapNotNullTo(mutableSetOf()) { it.expression }
+                val configExpressions = dynamicValueNode.configs.mapNotNullTo(mutableSetOf()) { it.configExpression }
                 val expressionElement = when {
                     element is ParadoxScriptProperty -> element.propertyKey
                     else -> element.castOrNull<ParadoxScriptStringExpressionElement>()

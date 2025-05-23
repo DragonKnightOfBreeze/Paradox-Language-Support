@@ -77,7 +77,7 @@ class ParadoxBaseParameterInferredConfigProvider : ParadoxParameterInferredConfi
         }
         val parentElement = parameterInfo.parentElement
         val configGroup = expressionContextConfigs.first().configGroup
-        val passingConfig = inlinedContextConfigs.find { it.expression.type == CwtDataTypes.ParameterValue }
+        val passingConfig = inlinedContextConfigs.find { it.configExpression.type == CwtDataTypes.ParameterValue }
         if (passingConfig != null) {
             //处理参数传递的情况
             if (passingConfig !is CwtValueConfig) return null
@@ -151,13 +151,13 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
         val configGroup = expressionConfig.configGroup
         return when {
             node is ParadoxDataSourceNode -> {
-                node.linkConfigs.mapNotNull { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
+                node.linkConfigs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
             }
             node is ParadoxDynamicValueNode -> {
-                node.configs.mapNotNull { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
+                node.configs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
             }
             node is ParadoxScriptValueNode -> {
-                node.config.toSingletonList().mapNotNull { it.expression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
+                node.config.toSingletonList().mapNotNull { it.configExpression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
             }
             node is ParadoxScopeLinkNode -> {
                 CwtValueConfig.resolve(emptyPointer(), configGroup, "scope_field").toSingletonList()

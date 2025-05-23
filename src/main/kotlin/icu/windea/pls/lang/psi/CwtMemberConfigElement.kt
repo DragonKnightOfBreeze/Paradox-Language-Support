@@ -29,7 +29,7 @@ class CwtMemberConfigElement(
     }
 
     override fun getName(): String {
-        return config.expression.expressionString
+        return config.configExpression.expressionString
     }
 
     override fun getTypeName(): String {

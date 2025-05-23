@@ -92,7 +92,7 @@ object ParadoxInlineScriptManager {
     }
 
     fun isInlineScriptExpressionConfig(config: CwtConfig<*>): Boolean {
-        return config.expression == inlineScriptPathExpression
+        return config.configExpression == inlineScriptPathExpression
     }
 
     fun getInlineScriptFilePath(pathReference: String): String? {

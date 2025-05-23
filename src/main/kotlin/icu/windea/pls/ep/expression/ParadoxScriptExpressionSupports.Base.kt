@@ -11,7 +11,7 @@ import icu.windea.pls.lang.psi.*
 
 class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.Block
+        return config.configExpression?.type == CwtDataTypes.Block
     }
 
     override fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?, exact: Boolean): PsiElement? {
@@ -25,7 +25,7 @@ class ParadoxScriptBlockExpressionSupport : ParadoxScriptExpressionSupport {
 
 class ParadoxScriptBoolExpressionSupport : ParadoxScriptExpressionSupport {
     override fun supports(config: CwtConfig<*>): Boolean {
-        return config.expression?.type == CwtDataTypes.Bool
+        return config.configExpression?.type == CwtDataTypes.Bool
     }
 
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {

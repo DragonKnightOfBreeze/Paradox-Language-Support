@@ -97,7 +97,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
             val pc = c1.memberConfig.parentConfig?.memberConfig?.castOrNull<CwtPropertyConfig>()
             if (pc?.key != "complex_trigger_modifier") return true
             c1.configs?.forEach { c2 ->
-                if (c2 is CwtPropertyConfig && c2.expression == configExpression) {
+                if (c2 is CwtPropertyConfig && c2.configExpression == configExpression) {
                     val valueExpression = c2.valueExpression
                     when {
                         valueExpression.type == CwtDataTypes.Int -> return true

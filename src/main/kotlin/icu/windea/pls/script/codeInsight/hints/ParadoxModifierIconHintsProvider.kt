@@ -51,7 +51,7 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
         if (element !is ParadoxScriptStringExpressionElement) return true
         if (!element.isExpression()) return true
         val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return true
-        val type = config.expression.type
+        val type = config.configExpression.type
         if (type == CwtDataTypes.Modifier) {
             val name = element.value
             if (name.isEmpty()) return true

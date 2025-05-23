@@ -45,16 +45,25 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
-        when (node.elementType) {
-            COMMENT -> {
-                if (settings.comment) {
+        run {
+            when (node.elementType) {
+                COMMENT -> {
+                    if (!settings.comment) return@run
                     ParadoxFoldingManager.addCommentFoldingDescriptor(node, document, descriptors)
                 }
+                SCRIPTED_VARIABLE -> {
+                    return //optimization
+                }
+                BLOCK -> {
+                    descriptors.add(FoldingDescriptor(node, node.textRange))
+                }
+                PARAMETER_CONDITION -> {
+                    descriptors.add(FoldingDescriptor(node, node.textRange))
+                }
+                INLINE_MATH -> {
+                    descriptors.add(FoldingDescriptor(node, node.textRange))
+                }
             }
-            SCRIPTED_VARIABLE -> return //optimization
-            BLOCK -> descriptors.add(FoldingDescriptor(node, node.textRange))
-            PARAMETER_CONDITION -> descriptors.add(FoldingDescriptor(node, node.textRange))
-            INLINE_MATH -> descriptors.add(FoldingDescriptor(node, node.textRange))
         }
         val children = node.getChildren(null)
         for (child in children) {

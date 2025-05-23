@@ -46,7 +46,7 @@ object CwtLocationExpressionManager {
 
         val valueElement = definition.findByPath(location, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
         val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-        if (config.expression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
+        if (config.configExpression.type !in CwtDataTypeGroups.LocalisationLocationResolved) {
             return createLocalisationResolveResult(PlsBundle.message("dynamic"))
         }
         if (valueElement !is ParadoxScriptString) {
@@ -55,7 +55,7 @@ object CwtLocationExpressionManager {
         if (valueElement.text.isParameterized()) {
             return createLocalisationResolveResult(PlsBundle.message("parameterized"))
         }
-        if (config.expression.type == CwtDataTypes.InlineLocalisation && valueElement.text.isLeftQuoted()) {
+        if (config.configExpression.type == CwtDataTypes.InlineLocalisation && valueElement.text.isLeftQuoted()) {
             return createLocalisationResolveResult(PlsBundle.message("inlined"))
         }
         val name = valueElement.stringValue
@@ -136,7 +136,7 @@ object CwtLocationExpressionManager {
 
         val valueElement = definition.findByPath(location, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
         val config = ParadoxExpressionManager.getConfigs(valueElement, orDefault = false).firstOrNull() as? CwtValueConfig ?: return null
-        if (config.expression.type !in CwtDataTypeGroups.ImageLocationResolved) {
+        if (config.configExpression.type !in CwtDataTypeGroups.ImageLocationResolved) {
             return createImageResolveResult(PlsBundle.message("dynamic"))
         }
         if (valueElement !is ParadoxScriptString) {
@@ -145,7 +145,7 @@ object CwtLocationExpressionManager {
         if (valueElement.text.isParameterized()) {
             return createImageResolveResult(PlsBundle.message("parameterized"))
         }
-        val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, config.expression, false)
+        val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, config.configExpression, false)
         when {
             //由filePath解析为图片文件
             resolved is PsiFile && ParadoxImageManager.isImageFile(resolved) -> {

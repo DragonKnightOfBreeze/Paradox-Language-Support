@@ -26,7 +26,7 @@ class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
 
             private fun visitExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return
-                val dataType = config.expression.type
+                val dataType = config.configExpression.type
                 val value = element.value
                 val textRange = TextRange.create(0, value.length)
                 val complexExpression = when {

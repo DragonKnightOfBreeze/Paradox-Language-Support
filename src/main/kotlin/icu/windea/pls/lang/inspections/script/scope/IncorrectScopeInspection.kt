@@ -41,7 +41,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                             propertyKey.expression, supportedScopes.joinToString(), parentScopeContext.scope.id
                         )
                         holder.registerProblem(propertyKey, description)
-                    } else if (element is ParadoxScriptString && config.expression.type == CwtDataTypes.AliasKeysField) {
+                    } else if (element is ParadoxScriptString && config.configExpression.type == CwtDataTypes.AliasKeysField) {
                         val description = PlsBundle.message(
                             "inspection.script.incorrectScope.desc.2",
                             element.expression, supportedScopes.joinToString(), parentScopeContext.scope.id
@@ -52,15 +52,15 @@ class IncorrectScopeInspection : LocalInspectionTool() {
             }
 
             private fun getSupportedScopes(element: ParadoxScriptMemberElement, config: CwtMemberConfig<*>): Set<String>? {
-                if (config.expression.type == CwtDataTypes.AliasKeysField) {
+                if (config.configExpression.type == CwtDataTypes.AliasKeysField) {
                     val configGroup = config.configGroup
-                    val aliasName = config.expression.value ?: return null
+                    val aliasName = config.configExpression.value ?: return null
                     val aliasSubName = element.name ?: return null
                     val aliasConfig = configGroup.aliasGroups.get(aliasName)?.get(aliasSubName)?.singleOrNull() ?: return null
                     val supportedScopes = aliasConfig.supportedScopes
                     return supportedScopes
                 }
-                if (config.expression.type == CwtDataTypes.Modifier) {
+                if (config.configExpression.type == CwtDataTypes.Modifier) {
                     val expressionElement = getExpressionElement(element) ?: return null
                     if (expressionElement !is ParadoxScriptStringExpressionElement) return null
                     ProgressManager.checkCanceled()
@@ -69,7 +69,7 @@ class IncorrectScopeInspection : LocalInspectionTool() {
                     val modifierCategories = ParadoxModifierSupport.getModifierCategories(resolved)
                     return modifierCategories?.let { ParadoxScopeManager.getSupportedScopes(it) }
                 }
-                if (config.expression.type == CwtDataTypes.Definition) {
+                if (config.configExpression.type == CwtDataTypes.Definition) {
                     val expressionElement = getExpressionElement(element) ?: return null
                     ProgressManager.checkCanceled()
                     val resolved = expressionElement.reference?.resolve()

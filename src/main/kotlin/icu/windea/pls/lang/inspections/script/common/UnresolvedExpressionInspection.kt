@@ -78,7 +78,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         //判断是否需要忽略
                         if (isIgnoredByConfigs(element.propertyKey, expectedConfigs)) return true
                     }
-                    val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.expression.expressionString }
+                    val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
                     val expect = if (showExpectInfo) expectedExpressions.truncate(PlsConstants.Settings.itemLimit).joinToString() else null
                     val message = when {
                         expect == null -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.1", propertyKey.expression)
@@ -123,7 +123,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         //判断是否需要忽略
                         if (isIgnoredByConfigs(element, expectedConfigs)) return true
                     }
-                    val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.expression.expressionString }
+                    val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
                     val expect = if (showExpectInfo) expectedExpressions.truncate(PlsConstants.Settings.itemLimit).joinToString() else null
                     val message = when {
                         expect == null -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.1", element.expression)
@@ -175,14 +175,14 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             }
 
             private fun isExcluded(memberConfigs: List<CwtMemberConfig<*>>): Boolean {
-                return memberConfigs.all { it.expression.type in CwtDataTypeGroups.PathReference }
+                return memberConfigs.all { it.configExpression.type in CwtDataTypeGroups.PathReference }
             }
 
             private fun isIgnoredByConfigs(element: ParadoxScriptExpressionElement, memberConfigs: List<CwtMemberConfig<*>>): Boolean {
                 if (!ignoredByConfigs) return false
                 val value = element.value
                 for (memberConfig in memberConfigs) {
-                    val configExpression = memberConfig.expression
+                    val configExpression = memberConfig.configExpression
                     if (configExpression.type in CwtDataTypeGroups.DefinitionAware) {
                         val definitionType = configExpression.value ?: continue
                         val configs = configGroup.extendedDefinitions.findFromPattern(value, element, configGroup).orEmpty()
@@ -203,7 +203,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
 
             private fun continueCheck(configs: List<CwtMemberConfig<*>>): Boolean {
                 //any规则不需要再向下检查
-                if (configs.any { it.expression.type == CwtDataTypes.Any }) return false
+                if (configs.any { it.configExpression.type == CwtDataTypes.Any }) return false
                 return true
             }
 

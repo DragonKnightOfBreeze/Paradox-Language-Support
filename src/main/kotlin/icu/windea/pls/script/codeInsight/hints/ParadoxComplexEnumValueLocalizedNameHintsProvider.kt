@@ -62,9 +62,9 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
         }
 
         val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return true
-        val type = config.expression.type
+        val type = config.configExpression.type
         if (type != CwtDataTypes.EnumValue) return true
-        val enumName = config.expression.value ?: return true
+        val enumName = config.configExpression.value ?: return true
         val presentation = doCollect(name, enumName, file, editor, settings) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset

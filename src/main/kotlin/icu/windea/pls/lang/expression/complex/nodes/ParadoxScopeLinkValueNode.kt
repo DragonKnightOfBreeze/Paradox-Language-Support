@@ -31,7 +31,7 @@ class ParadoxScopeLinkValueNode(
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()
             run {
-                val scopeFieldConfig = linkConfigs.find { it.expression?.type in CwtDataTypeGroups.ScopeField }
+                val scopeFieldConfig = linkConfigs.find { it.configExpression?.type in CwtDataTypeGroups.ScopeField }
                 if (scopeFieldConfig == null) return@run
                 val node = ParadoxScopeLinkNode.resolve(text, textRange, configGroup)
                 nodes += node

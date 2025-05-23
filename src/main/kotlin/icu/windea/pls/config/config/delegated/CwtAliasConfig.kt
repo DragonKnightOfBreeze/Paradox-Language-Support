@@ -21,7 +21,7 @@ interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val outputScope: String?
 
     val subNameExpression: CwtDataExpression
-    override val expression: CwtDataExpression get() = subNameExpression
+    override val configExpression: CwtDataExpression get() = subNameExpression
 
     fun inline(config: CwtPropertyConfig): CwtPropertyConfig
 

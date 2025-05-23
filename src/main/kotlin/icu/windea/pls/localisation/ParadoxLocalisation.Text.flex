@@ -1,5 +1,7 @@
 package icu.windea.pls.localisation.lexer;
 
+import java.util.*;
+import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxGameType;
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;

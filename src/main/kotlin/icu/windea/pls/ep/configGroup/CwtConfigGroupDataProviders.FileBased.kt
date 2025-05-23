@@ -259,7 +259,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                     }
                     run {
                         val aliasConfig = CwtAliasConfig.resolve(property) ?: return@run
-                        CwtConfigCollector.processConfigWithConfigExpression(aliasConfig, aliasConfig.expression)
+                        CwtConfigCollector.processConfigWithConfigExpression(aliasConfig, aliasConfig.configExpression)
                         configGroup.aliasGroups.getOrInit(aliasConfig.name).getOrInit(aliasConfig.subName) += aliasConfig
                     }
                     run {

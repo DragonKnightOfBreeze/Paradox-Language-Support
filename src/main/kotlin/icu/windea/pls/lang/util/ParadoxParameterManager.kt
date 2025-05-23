@@ -197,7 +197,7 @@ object ParadoxParameterManager {
             ) return@f true
             //如果作为传入参数的值，则认为是可选的
             if (parameterInfo.expressionConfigs
-                    .any { it is CwtValueConfig && it.propertyConfig?.expression?.type == CwtDataTypes.Parameter }
+                    .any { it is CwtValueConfig && it.propertyConfig?.configExpression?.type == CwtDataTypes.Parameter }
             ) return@f true
             false
         }
@@ -306,7 +306,7 @@ object ParadoxParameterManager {
         val configs = contextConfigs.singleOrNull()?.configs
         if (configs.isNullOrEmpty()) return null
         if (configs.any { it !is CwtValueConfig || it.isBlock }) return PlsBundle.message("complex")
-        return configs.mapTo(mutableSetOf()) { it.expression.expressionString }.joinToString(" | ")
+        return configs.mapTo(mutableSetOf()) { it.configExpression.expressionString }.joinToString(" | ")
     }
 
     /**

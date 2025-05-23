@@ -75,7 +75,7 @@ interface ParadoxComplexExpression : ParadoxComplexExpressionNode {
         }
 
         fun resolveByConfig(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxComplexExpression? {
-            val dataType = config.expression?.type ?: return null
+            val dataType = config.configExpression?.type ?: return null
             return resolveByDataType(expressionString, range, configGroup, dataType, config)
         }
     }

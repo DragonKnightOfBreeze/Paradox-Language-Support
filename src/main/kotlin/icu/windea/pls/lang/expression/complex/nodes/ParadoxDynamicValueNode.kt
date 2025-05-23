@@ -26,7 +26,7 @@ class ParadoxDynamicValueNode(
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey? {
-        val expression = configs.first().expression!! //first is ok
+        val expression = configs.first().configExpression!! //first is ok
         val dynamicValueType = expression.value ?: return null
         return when (element.language) {
             is ParadoxLocalisationLanguage -> {
@@ -57,14 +57,14 @@ class ParadoxDynamicValueNode(
         val configs: List<CwtConfig<*>>,
         val configGroup: CwtConfigGroup
     ) : PsiReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
-        val configExpressions = configs.mapNotNull { it.expression }
+        val configExpressions = configs.mapNotNull { it.configExpression }
 
         override fun handleElementRename(newElementName: String): PsiElement {
             return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
         }
 
         override fun resolve(): PsiElement? {
-            val configExpressions = configs.mapNotNullTo(mutableSetOf()) { it.expression }
+            val configExpressions = configs.mapNotNullTo(mutableSetOf()) { it.configExpression }
             return ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
         }
     }
@@ -72,7 +72,7 @@ class ParadoxDynamicValueNode(
     companion object Resolver {
         fun resolve(text: String, textRange: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueNode? {
             //text may contain parameters
-            if (configs.any { c -> c.expression?.type !in CwtDataTypeGroups.DynamicValue }) return null
+            if (configs.any { c -> c.configExpression?.type !in CwtDataTypeGroups.DynamicValue }) return null
             return ParadoxDynamicValueNode(text, textRange, configGroup, configs)
         }
     }

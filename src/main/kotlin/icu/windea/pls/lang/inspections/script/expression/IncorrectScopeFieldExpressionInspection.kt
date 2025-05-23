@@ -26,7 +26,7 @@ class IncorrectScopeFieldExpressionInspection : LocalInspectionTool() {
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
                 val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return
-                val dataType = config.expression.type
+                val dataType = config.configExpression.type
                 if (dataType !in CwtDataTypeGroups.ScopeField) return
                 val value = element.value
                 val textRange = TextRange.create(0, value.length)

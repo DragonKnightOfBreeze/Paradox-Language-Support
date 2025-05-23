@@ -45,7 +45,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 if (text.isParameterized()) return //skip if expression is parameterized
                 val valueConfig = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return //match or single
                 if (isIgnoredByConfigs(element, valueConfig)) return
-                val configExpression = valueConfig.expression
+                val configExpression = valueConfig.configExpression
                 val location = element
                 if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
                     val filePath = element.value
@@ -75,7 +75,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
             private fun isIgnoredByConfigs(element: ParadoxScriptStringExpressionElement, memberConfig: CwtMemberConfig<*>): Boolean {
                 if (!ignoredByConfigs) return false
                 val value = element.value
-                val configExpression = memberConfig.expression
+                val configExpression = memberConfig.configExpression
                 if (configExpression.expressionString != ParadoxInlineScriptManager.inlineScriptPathExpressionString) {
                     val config = configGroup.extendedInlineScripts.findFromPattern(value, element, configGroup)
                     if (config != null) return true

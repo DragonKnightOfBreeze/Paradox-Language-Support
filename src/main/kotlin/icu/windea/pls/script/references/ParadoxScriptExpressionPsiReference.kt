@@ -46,7 +46,7 @@ class ParadoxScriptExpressionPsiReference(
             resolved == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
             resolved is PsiFileSystemItem -> {
                 //https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/#33
-                val configExpression = config.expression ?: throw IncorrectOperationException()
+                val configExpression = config.configExpression ?: throw IncorrectOperationException()
                 val ep = ParadoxPathReferenceExpressionSupport.get(configExpression) ?: throw IncorrectOperationException()
                 val fileInfo = resolved.fileInfo ?: throw IncorrectOperationException()
                 val newFilePath = fileInfo.path.parent + "/" + newElementName
@@ -67,7 +67,7 @@ class ParadoxScriptExpressionPsiReference(
 
     override fun getReferences(): Array<out PsiReference>? {
         ProgressManager.checkCanceled()
-        if (config.expression == null) return null
+        if (config.configExpression == null) return null
         val expressionText = getExpressionText(element, rangeInElement)
 
         val result = ParadoxScriptExpressionSupport.getReferences(element, rangeInElement, expressionText, config, isKey)
@@ -98,12 +98,12 @@ class ParadoxScriptExpressionPsiReference(
 
     private fun doResolve(): PsiElement? {
         //根据对应的expression进行解析
-        return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.expression, isKey)
+        return ParadoxExpressionManager.resolveScriptExpression(element, rangeInElement, config, config.configExpression, isKey)
     }
 
     private fun doMultiResolve(): Array<out ResolveResult> {
         //根据对应的expression进行解析
-        return ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.expression, isKey)
+        return ParadoxExpressionManager.multiResolveScriptExpression(element, rangeInElement, config, config.configExpression, isKey)
             .mapToArray { PsiElementResolveResult(it) }
     }
 }
