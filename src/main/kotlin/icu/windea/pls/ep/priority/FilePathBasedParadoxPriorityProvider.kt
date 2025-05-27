@@ -141,6 +141,6 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
                 if (k.matchesAntPattern(it)) v else null
             }
         }
-        return null
+        return result
     }
 }

@@ -347,10 +347,30 @@ object CwtConfigManager {
     }
 
     fun matchesFilePathPattern(config: CwtFilePathMatchableConfig, filePath: ParadoxPath): Boolean {
-        //TODO 1.3.35+ check performance
+        //1.4.2 optimized, DO NOT use config.filePathPatterns here
 
-        val filePathPatterns = getFilePathPatterns(config)
-        return filePathPatterns.any { filePath.path.matchesAntPattern(it) }
+        val pathPatterns = config.pathPatterns
+        val paths = config.paths
+        val pathFile = config.pathFile
+        val pathExtension = config.pathExtension
+        val pathStrict = config.pathStrict
+        if (pathPatterns.isNotEmpty()) {
+            if (pathPatterns.any { filePath.path.matchesAntPattern(it) }) return true
+        }
+        if (pathFile.isNotNullOrEmpty()) {
+            if (pathFile != filePath.fileName) return false
+        } else if (pathExtension.isNotNullOrEmpty()) {
+            if (filePath.fileExtension == null || !pathExtension.equals(filePath.fileExtension, true)) return false
+        }
+        if (paths.isNotEmpty()) {
+            for (path in paths) {
+                if (path.matchesPath(filePath.path, strict = pathStrict)) return true
+            }
+            return false
+        } else {
+            if (pathFile.isNullOrEmpty() && pathExtension.isNullOrEmpty()) return false
+            return true
+        }
     }
 
     fun getConfigByPathExpression(configGroup: CwtConfigGroup, pathExpression: String): List<CwtMemberConfig<*>> {
