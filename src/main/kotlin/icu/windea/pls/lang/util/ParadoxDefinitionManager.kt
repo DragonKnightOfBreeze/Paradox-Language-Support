@@ -112,8 +112,6 @@ object ParadoxDefinitionManager {
         rootKey: String?,
         rootKeyPrefix: Lazy<String?>?
     ): Boolean {
-        val configGroup = typeConfig.configGroup
-
         //判断definition是否需要是scriptFile还是scriptProperty
         run {
             if (typeConfig.typePerFile) {
@@ -128,6 +126,7 @@ object ParadoxDefinitionManager {
 
         //判断definition的propertyValue是否需要是block
         run {
+            val configGroup = typeConfig.configGroup
             val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config ?: return@run
             val propertyValue = element.castOrNull<ParadoxScriptProperty>()?.propertyValue ?: return@run
             //兼容进行代码补全时用户输入未完成的情况
@@ -152,8 +151,6 @@ object ParadoxDefinitionManager {
         rootKey: String?,
         rootKeyPrefix: Lazy<String?>?
     ): Boolean {
-        val configGroup = typeConfig.configGroup
-
         //判断definition是否需要是scriptFile还是scriptProperty
         run {
             val elementType = node.tokenType
@@ -169,6 +166,7 @@ object ParadoxDefinitionManager {
 
         //判断definition的propertyValue是否需要是block
         run {
+            val configGroup = typeConfig.configGroup
             val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config ?: return@run
             val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES) ?: return@run
             val isBlock = propertyValue.tokenType == BLOCK
@@ -451,12 +449,12 @@ object ParadoxDefinitionManager {
         propertyConfig: CwtPropertyConfig,
         matchOptions: Int
     ): Boolean {
-        val configGroup = propertyConfig.configGroup
 
         //aliasName和aliasSubName需要匹配
         val aliasName = propertyConfig.keyExpression.value ?: return false
         val key = propertyElement.name
         val quoted = propertyElement.propertyKey.text.isLeftQuoted()
+        val configGroup = propertyConfig.configGroup
         val aliasSubName = ParadoxExpressionManager.getAliasSubName(propertyElement, key, quoted, aliasName, configGroup, matchOptions) ?: return false
         val aliasGroup = configGroup.aliasGroups[aliasName] ?: return false
         val aliases = aliasGroup[aliasSubName] ?: return false
@@ -577,7 +575,7 @@ object ParadoxDefinitionManager {
 
     fun getInfoFromStub(element: ParadoxScriptDefinitionElement, project: Project): ParadoxDefinitionInfo? {
         val stub = runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub } ?: return null
-        //if(!stub.isValid()) return null //这里不用再次判断
+        if (!(stub.isValidDefinition)) return null
         val name = stub.name
         val type = stub.type
         val gameType = stub.gameType
@@ -608,7 +606,6 @@ object ParadoxDefinitionManager {
         val definitionInfo = element.definitionInfo ?: return null
         val primaryLocalisations = definitionInfo.primaryLocalisations
         if (primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
-        val project = definitionInfo.project
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
             val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
@@ -633,7 +630,6 @@ object ParadoxDefinitionManager {
         val definitionInfo = element.definitionInfo ?: return null
         val primaryLocalisations = definitionInfo.primaryLocalisations
         if (primaryLocalisations.isEmpty()) return null //没有或者CWT规则不完善
-        val project = definitionInfo.project
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
             val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
@@ -659,11 +655,10 @@ object ParadoxDefinitionManager {
         val definitionInfo = element.definitionInfo ?: return emptySet()
         val primaryLocalisations = definitionInfo.primaryLocalisations
         if (primaryLocalisations.isEmpty()) return emptySet() //没有或者CWT规则不完善
-        val project = definitionInfo.project
         val result = mutableSetOf<ParadoxLocalisationProperty>()
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for (primaryLocalisation in primaryLocalisations) {
-            val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale)}
+            val resolveResult = CwtLocationExpressionManager.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
             val localisations = resolveResult?.elements ?: continue
             result.addAll(localisations)
         }

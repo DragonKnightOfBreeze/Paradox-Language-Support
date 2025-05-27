@@ -18,6 +18,8 @@
 
 ## 1.4.2
 
+* [X] 优化：优化插件性能 / OP: Optimize plugin performance
+
 ## 1.4.1
 
 * [X] #143 cwt图片渲染规则待支持
