@@ -200,22 +200,37 @@ private block_value ::= scripted_variable_reference | boolean | int | float | st
 // * values (can be quoted)
 // * inline math expressions
 
-// icu.windea.pls.script.psi.ParadoxScriptParserUtil.doParameter
-parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END {
-  pin=2
+parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER_END {
+  pin=1
   implements=[
     "icu.windea.pls.script.psi.ParadoxParameter"
+    "icu.windea.pls.script.psi.ParadoxScriptArgumentAwareElement"
   ]
-  methods=[getIdElement getIcon getName setName getValue getTextOffset getDefaultValue getReference]
+  methods=[
+    getIdElement getArgumentElement parameter_argument=""
+    getIcon getName setName getValue getTextOffset getDefaultValue getReference
+  ]
 }
-// icu.windea.pls.script.psi.ParadoxScriptParserUtil.doInlineMathParameter
-inline_math_parameter ::= PARAMETER_START PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END {
+inline_math_parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER_END {
   extends=inline_math_factor
-  pin=2
-  implements="icu.windea.pls.script.psi.ParadoxParameter"
-  methods=[getIdElement getIcon getName setName getValue getTextOffset getDefaultValue getReference]
+  pin=1
+  implements=[
+    "icu.windea.pls.script.psi.ParadoxParameter"
+    "icu.windea.pls.script.psi.ParadoxScriptArgumentAwareElement"
+  ]
+  methods=[
+    getIdElement getArgumentElement parameter_argument=""
+    getIcon getName setName getValue getTextOffset getDefaultValue getReference
+  ]
 }
-private parameter_default_value ::= PARAMETER_VALUE_TOKEN
+private parameter_name ::= PARAMETER_TOKEN
+private parameter_argument_part ::= PIPE parameter_argument ?
+parameter_argument ::= ARGUMENT_TOKEN {
+  implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptArgument"
+  ]
+  methods=[getIdElement]
+}
 
 // parameter condition rules
 
@@ -250,7 +265,7 @@ inline_parameter_condition ::= LEFT_BRACKET <<processInlineParameterCondition>> 
 }
 private inline_parameter_condition_item ::= <<processInlineParameterConditionItem>> inline_parameter_condition_snippet <<postProcessInlineParameterConditionItem>>
 private inline_parameter_condition_snippet ::= inline_parameter_condition_item_part (<<processSnippet>> inline_parameter_condition_item_part) *
-private inline_parameter_condition_item_part ::= PARAMETER_VALUE_TOKEN | parameter | inline_parameter_condition
+private inline_parameter_condition_item_part ::= ARGUMENT_TOKEN | parameter | inline_parameter_condition
 
 // inline math rules
 

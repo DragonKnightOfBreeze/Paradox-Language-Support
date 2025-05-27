@@ -61,7 +61,7 @@ class ParadoxScriptAnnotator : Annotator {
 
     private fun annotateParameterValue(element: PsiElement, holder: AnnotationHolder) {
         val elementType = element.elementType
-        if (elementType != ParadoxScriptElementTypes.PARAMETER_VALUE_TOKEN) return
+        if (elementType != ParadoxScriptElementTypes.ARGUMENT_TOKEN) return
         val templateElement = element.parent?.parent ?: return
         val attributesKey = when {
             element.text.startsWith("@") -> Keys.SCRIPTED_VARIABLE_KEY

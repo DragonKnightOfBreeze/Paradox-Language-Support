@@ -11,7 +11,6 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference;
@@ -42,57 +41,68 @@ public class ParadoxScriptInlineMathScriptedVariableReferenceImpl extends Parado
   }
 
   @Override
-  public @Nullable PsiElement getIdElement() {
+  @Nullable
+  public PsiElement getIdElement() {
     return ParadoxScriptPsiImplUtil.getIdElement(this);
   }
 
   @Override
-  public @NotNull Icon getIcon(@IconFlags int flags) {
+  @NotNull
+  public Icon getIcon(@IconFlags int flags) {
     return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  public @Nullable String getName() {
+  @Nullable
+  public String getName() {
     return ParadoxScriptPsiImplUtil.getName(this);
   }
 
   @Override
-  public @NotNull ParadoxScriptInlineMathScriptedVariableReference setName(@NotNull String name) {
+  @NotNull
+  public ParadoxScriptInlineMathScriptedVariableReference setName(@NotNull String name) {
     return ParadoxScriptPsiImplUtil.setName(this, name);
   }
 
   @Override
-  public @Nullable String getValue() {
+  @Nullable
+  public String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
   }
 
   @Override
-  public @Nullable ParadoxScriptedVariablePsiReference getReference() {
+  @Nullable
+  public ParadoxScriptedVariablePsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 
   @Override
-  public @NotNull ParadoxType getType() {
+  @NotNull
+  public ParadoxType getType() {
     return ParadoxScriptPsiImplUtil.getType(this);
   }
 
   @Override
-  public @NotNull String getExpression() {
+  @NotNull
+  public String getExpression() {
     return ParadoxScriptPsiImplUtil.getExpression(this);
   }
 
   @Override
-  public @NotNull ItemPresentation getPresentation() {
+  @NotNull
+  public ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  public @NotNull GlobalSearchScope getResolveScope() {
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  public @NotNull SearchScope getUseScope() {
+  @NotNull
+  public SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 

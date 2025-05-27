@@ -714,6 +714,11 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
+    fun getArgumentElement(element: ParadoxScriptParameter): ParadoxScriptParameterArgument? {
+        return element.findChild<_>(forward = false)
+    }
+
+    @JvmStatic
     fun getIcon(element: ParadoxScriptParameter, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.Parameter
     }
@@ -743,8 +748,7 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getDefaultValue(element: ParadoxScriptParameter): String? {
         //兼容默认值为空字符串的情况
-        if (element.findChild { it.elementType == PIPE }?.takeIf { it.nextSibling?.elementType == PARAMETER_END } != null) return ""
-        return element.defaultValueToken?.text
+        return element.argumentElement?.idElement?.text
     }
 
     @JvmStatic
@@ -760,6 +764,11 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxScriptInlineMathParameter): PsiElement? {
         return element.findChild { it.elementType == PARAMETER_TOKEN }
+    }
+
+    @JvmStatic
+    fun getArgumentElement(element: ParadoxScriptInlineMathParameter): ParadoxScriptParameterArgument? {
+        return element.findChild<_>(forward = false)
     }
 
     @JvmStatic
@@ -792,14 +801,22 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getDefaultValue(element: ParadoxScriptInlineMathParameter): String? {
         //兼容默认值为空字符串的情况
-        if (element.findChild { it.elementType == PIPE }?.takeIf { it.nextSibling?.elementType == PARAMETER_END } != null) return ""
-        return element.defaultValueToken?.text
+        return element.argumentElement?.idElement?.text
     }
 
     @JvmStatic
     fun getReference(element: ParadoxScriptInlineMathParameter): ParadoxParameterPsiReference? {
         val nameElement = element.idElement ?: return null
         return ParadoxParameterPsiReference(element, nameElement.textRangeInParent)
+    }
+
+    //endregion
+
+    //region ParadoxScriptParameterArgument
+
+    @JvmStatic
+    fun getIdElement(element: ParadoxScriptParameterArgument): PsiElement? {
+        return element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
     }
 
     //endregion

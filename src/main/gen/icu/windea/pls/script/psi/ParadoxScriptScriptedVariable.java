@@ -21,28 +21,38 @@ public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement
   @Nullable
   ParadoxScriptValue getScriptedVariableValue();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
-  @Nullable String getName();
+  @Nullable
+  String getName();
 
-  @NotNull ParadoxScriptScriptedVariable setName(@NotNull String name);
+  @NotNull
+  ParadoxScriptScriptedVariable setName(@NotNull String name);
 
-  @Nullable PsiElement getNameIdentifier();
+  @Nullable
+  PsiElement getNameIdentifier();
 
   int getTextOffset();
 
-  @Nullable String getValue();
+  @Nullable
+  String getValue();
 
-  @Nullable String getUnquotedValue();
+  @Nullable
+  String getUnquotedValue();
 
-  @NotNull ParadoxType getType();
+  @NotNull
+  ParadoxType getType();
 
   boolean isEquivalentTo(@NotNull PsiElement another);
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

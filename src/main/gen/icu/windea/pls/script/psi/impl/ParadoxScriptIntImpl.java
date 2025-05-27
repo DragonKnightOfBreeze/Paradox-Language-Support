@@ -33,7 +33,8 @@ public class ParadoxScriptIntImpl extends ParadoxScriptValueImpl implements Para
   }
 
   @Override
-  public @NotNull String getValue() {
+  @NotNull
+  public String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
   }
 
@@ -43,37 +44,44 @@ public class ParadoxScriptIntImpl extends ParadoxScriptValueImpl implements Para
   }
 
   @Override
-  public @NotNull ParadoxType getType() {
+  @NotNull
+  public ParadoxType getType() {
     return ParadoxScriptPsiImplUtil.getType(this);
   }
 
   @Override
-  public @Nullable PsiReference getReference() {
+  @Nullable
+  public PsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 
   @Override
-  public @NotNull PsiReference @NotNull [] getReferences() {
+  @NotNull
+  public PsiReference[] getReferences() {
     return ParadoxScriptPsiImplUtil.getReferences(this);
   }
 
   @Override
-  public @NotNull String toString() {
+  @NotNull
+  public String toString() {
     return ParadoxScriptPsiImplUtil.toString(this);
   }
 
   @Override
-  public @NotNull ItemPresentation getPresentation() {
+  @NotNull
+  public ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  public @NotNull GlobalSearchScope getResolveScope() {
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  public @NotNull SearchScope getUseScope() {
+  @NotNull
+  public SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 

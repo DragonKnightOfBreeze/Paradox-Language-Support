@@ -51,22 +51,26 @@ public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementI
   }
 
   @Override
-  public @NotNull Icon getIcon(@IconFlags int flags) {
+  @NotNull
+  public Icon getIcon(@IconFlags int flags) {
     return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  public @Nullable String getName() {
+  @Nullable
+  public String getName() {
     return ParadoxScriptPsiImplUtil.getName(this);
   }
 
   @Override
-  public @NotNull ParadoxScriptScriptedVariable setName(@NotNull String name) {
+  @NotNull
+  public ParadoxScriptScriptedVariable setName(@NotNull String name) {
     return ParadoxScriptPsiImplUtil.setName(this, name);
   }
 
   @Override
-  public @Nullable PsiElement getNameIdentifier() {
+  @Nullable
+  public PsiElement getNameIdentifier() {
     return ParadoxScriptPsiImplUtil.getNameIdentifier(this);
   }
 
@@ -76,17 +80,20 @@ public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementI
   }
 
   @Override
-  public @Nullable String getValue() {
+  @Nullable
+  public String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
   }
 
   @Override
-  public @Nullable String getUnquotedValue() {
+  @Nullable
+  public String getUnquotedValue() {
     return ParadoxScriptPsiImplUtil.getUnquotedValue(this);
   }
 
   @Override
-  public @NotNull ParadoxType getType() {
+  @NotNull
+  public ParadoxType getType() {
     return ParadoxScriptPsiImplUtil.getType(this);
   }
 
@@ -96,22 +103,26 @@ public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementI
   }
 
   @Override
-  public @NotNull String toString() {
+  @NotNull
+  public String toString() {
     return ParadoxScriptPsiImplUtil.toString(this);
   }
 
   @Override
-  public @NotNull ItemPresentation getPresentation() {
+  @NotNull
+  public ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  public @NotNull GlobalSearchScope getResolveScope() {
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  public @NotNull SearchScope getUseScope() {
+  @NotNull
+  public SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 

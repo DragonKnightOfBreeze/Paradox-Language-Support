@@ -16,10 +16,13 @@ public interface ParadoxScriptInlineMathAbsExpression extends ParadoxScriptInlin
   @Nullable
   ParadoxScriptInlineMathFactor getInlineMathFactor();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

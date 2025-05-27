@@ -16,10 +16,13 @@ public interface ParadoxScriptInlineMathBiExpression extends ParadoxScriptInline
   @NotNull
   List<ParadoxScriptInlineMathFactor> getInlineMathFactorList();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

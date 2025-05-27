@@ -154,7 +154,7 @@ WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\[\s\S])*\"?
 STRING_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
 QUOTED_STRING_TOKEN=([^\"$\\]|\\[\s\S])+ // without arounding quotes
 
-PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ // compatible with leading '@'
+ARGUMENT_TOKEN=[^#$=<>?{}\[\]\s]+ // compatible with leading '@'
 
 %%
 
@@ -260,7 +260,7 @@ PARAMETER_VALUE_TOKEN=[^#$=<>?{}\[\]\s]+ // compatible with leading '@'
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
     "$" { exitState(parameterStateRef); return PARAMETER_END; }
-    {PARAMETER_VALUE_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return PARAMETER_VALUE_TOKEN; }
+    {ARGUMENT_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return ARGUMENT_TOKEN; }
 }
 <IN_PARAMETER_DEFAULT_VALUE_END> {
     \s|"#" { yypushback(yylength()); exitState(parameterStateRef); }

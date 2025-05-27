@@ -308,36 +308,26 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PARAMETER_START PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END
+  // PARAMETER_START parameter_name parameter_argument_part ? PARAMETER_END
   public static boolean inline_math_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_parameter")) return false;
     if (!nextTokenIs(b, PARAMETER_START)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, INLINE_MATH_PARAMETER, null);
-    r = consumeTokens(b, 2, PARAMETER_START, PARAMETER_TOKEN);
-    p = r; // pin = 2
-    r = r && report_error_(b, inline_math_parameter_2(b, l + 1));
+    r = consumeToken(b, PARAMETER_START);
+    p = r; // pin = 1
+    r = r && report_error_(b, parameter_name(b, l + 1));
+    r = p && report_error_(b, inline_math_parameter_2(b, l + 1)) && r;
     r = p && consumeToken(b, PARAMETER_END) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // [PIPE parameter_default_value]
+  // parameter_argument_part ?
   private static boolean inline_math_parameter_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_parameter_2")) return false;
-    inline_math_parameter_2_0(b, l + 1);
+    parameter_argument_part(b, l + 1);
     return true;
-  }
-
-  // PIPE parameter_default_value
-  private static boolean inline_math_parameter_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_parameter_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, PIPE);
-    r = r && parameter_default_value(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
   }
 
   /* ********************************************************** */
@@ -453,11 +443,11 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PARAMETER_VALUE_TOKEN | parameter | inline_parameter_condition
+  // ARGUMENT_TOKEN | parameter | inline_parameter_condition
   static boolean inline_parameter_condition_item_part(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_parameter_condition_item_part")) return false;
     boolean r;
-    r = consumeToken(b, PARAMETER_VALUE_TOKEN);
+    r = consumeToken(b, ARGUMENT_TOKEN);
     if (!r) r = parameter(b, l + 1);
     if (!r) r = inline_parameter_condition(b, l + 1);
     return r;
@@ -510,36 +500,58 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PARAMETER_START PARAMETER_TOKEN [PIPE parameter_default_value] PARAMETER_END
+  // PARAMETER_START parameter_name parameter_argument_part ? PARAMETER_END
   public static boolean parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter")) return false;
     if (!nextTokenIs(b, PARAMETER_START)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, PARAMETER, null);
-    r = consumeTokens(b, 2, PARAMETER_START, PARAMETER_TOKEN);
-    p = r; // pin = 2
-    r = r && report_error_(b, parameter_2(b, l + 1));
+    r = consumeToken(b, PARAMETER_START);
+    p = r; // pin = 1
+    r = r && report_error_(b, parameter_name(b, l + 1));
+    r = p && report_error_(b, parameter_2(b, l + 1)) && r;
     r = p && consumeToken(b, PARAMETER_END) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // [PIPE parameter_default_value]
+  // parameter_argument_part ?
   private static boolean parameter_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_2")) return false;
-    parameter_2_0(b, l + 1);
+    parameter_argument_part(b, l + 1);
     return true;
   }
 
-  // PIPE parameter_default_value
-  private static boolean parameter_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_2_0")) return false;
+  /* ********************************************************** */
+  // ARGUMENT_TOKEN
+  public static boolean parameter_argument(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_argument")) return false;
+    if (!nextTokenIs(b, ARGUMENT_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, ARGUMENT_TOKEN);
+    exit_section_(b, m, PARAMETER_ARGUMENT, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // PIPE parameter_argument ?
+  static boolean parameter_argument_part(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_argument_part")) return false;
+    if (!nextTokenIs(b, PIPE)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, PIPE);
-    r = r && parameter_default_value(b, l + 1);
+    r = r && parameter_argument_part_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // parameter_argument ?
+  private static boolean parameter_argument_part_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_argument_part_1")) return false;
+    parameter_argument(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */
@@ -648,9 +660,9 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PARAMETER_VALUE_TOKEN
-  static boolean parameter_default_value(PsiBuilder b, int l) {
-    return consumeToken(b, PARAMETER_VALUE_TOKEN);
+  // PARAMETER_TOKEN
+  static boolean parameter_name(PsiBuilder b, int l) {
+    return consumeToken(b, PARAMETER_TOKEN);
   }
 
   /* ********************************************************** */

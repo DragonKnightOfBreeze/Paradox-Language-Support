@@ -18,30 +18,43 @@ public interface ParadoxScriptString extends ParadoxScriptValue, PsiLiteralValue
   @NotNull
   List<ParadoxScriptInlineParameterCondition> getInlineParameterConditionList();
 
-  @Nullable PsiElement getIdElement();
+  @Nullable
+  PsiElement getIdElement();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getValue();
+  @NotNull
+  String getValue();
 
-  @NotNull ParadoxScriptString setValue(@NotNull String value);
+  @NotNull
+  ParadoxScriptString setValue(@NotNull String value);
 
-  @NotNull String getStringValue();
+  @NotNull
+  String getStringValue();
 
-  @NotNull ParadoxType getType();
+  @NotNull
+  ParadoxType getType();
 
-  @NotNull String getExpression();
+  @NotNull
+  String getExpression();
 
-  @Nullable String getConfigExpression();
+  @Nullable
+  String getConfigExpression();
 
-  @Nullable PsiReference getReference();
+  @Nullable
+  PsiReference getReference();
 
-  @NotNull PsiReference @NotNull [] getReferences();
+  @NotNull
+  PsiReference[] getReferences();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

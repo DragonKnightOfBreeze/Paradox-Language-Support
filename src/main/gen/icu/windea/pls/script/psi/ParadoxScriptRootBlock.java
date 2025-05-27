@@ -22,18 +22,23 @@ public interface ParadoxScriptRootBlock extends ParadoxScriptBlockElement {
   @NotNull
   List<ParadoxScriptValue> getValueList();
 
-  @NotNull String getValue();
+  @NotNull
+  String getValue();
 
   boolean isEmpty();
 
   boolean isNotEmpty();
 
-  @NotNull List<@NotNull PsiElement> getComponents();
+  @NotNull
+  List<PsiElement> getComponents();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

@@ -264,7 +264,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationParameterArgument): PsiElement? {
-        val idElement = element.findChild { it.elementType == ARGUMENT_TOKEN }
+        val idElement = element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
         return idElement
     }
 
@@ -380,7 +380,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationCommandArgument): PsiElement? {
-        val idElement = element.findChild { it.elementType == ARGUMENT_TOKEN }
+        val idElement = element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
         if (!ParadoxPsiManager.checkIdElementInLocalisationFile(idElement)) return null
         return idElement
     }
@@ -447,7 +447,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationIconArgument): PsiElement? {
-        val idElement = element.findChild { it.elementType == ARGUMENT_TOKEN }
+        val idElement = element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
         if (!ParadoxPsiManager.checkIdElementInLocalisationFile(idElement)) return null
         return idElement
     }

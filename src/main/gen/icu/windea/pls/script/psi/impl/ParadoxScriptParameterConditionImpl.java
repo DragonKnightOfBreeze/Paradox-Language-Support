@@ -57,12 +57,14 @@ public class ParadoxScriptParameterConditionImpl extends ASTWrapperPsiElement im
   }
 
   @Override
-  public @NotNull Icon getIcon(@IconFlags int flags) {
+  @NotNull
+  public Icon getIcon(@IconFlags int flags) {
     return ParadoxScriptPsiImplUtil.getIcon(this, flags);
   }
 
   @Override
-  public @Nullable String getConditionExpression() {
+  @Nullable
+  public String getConditionExpression() {
     return ParadoxScriptPsiImplUtil.getConditionExpression(this);
   }
 
@@ -77,27 +79,32 @@ public class ParadoxScriptParameterConditionImpl extends ASTWrapperPsiElement im
   }
 
   @Override
-  public @NotNull List<@NotNull PsiElement> getComponents() {
+  @NotNull
+  public List<PsiElement> getComponents() {
     return ParadoxScriptPsiImplUtil.getComponents(this);
   }
 
   @Override
-  public @Nullable String getPresentationText() {
+  @Nullable
+  public String getPresentationText() {
     return ParadoxScriptPsiImplUtil.getPresentationText(this);
   }
 
   @Override
-  public @NotNull ItemPresentation getPresentation() {
+  @NotNull
+  public ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  public @NotNull GlobalSearchScope getResolveScope() {
+  @NotNull
+  public GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  public @NotNull SearchScope getUseScope() {
+  @NotNull
+  public SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 

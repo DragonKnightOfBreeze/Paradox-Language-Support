@@ -13,16 +13,22 @@ import icu.windea.pls.model.ParadoxType;
 
 public interface ParadoxScriptInlineMathNumber extends ParadoxScriptInlineMathFactor, PsiLiteralValue, ParadoxTypedElement {
 
-  @NotNull String getValue();
+  @NotNull
+  String getValue();
 
-  @NotNull ParadoxType getType();
+  @NotNull
+  ParadoxType getType();
 
-  @NotNull String getExpression();
+  @NotNull
+  String getExpression();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

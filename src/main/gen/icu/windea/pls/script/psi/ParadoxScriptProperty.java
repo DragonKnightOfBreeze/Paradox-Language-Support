@@ -21,32 +21,44 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @Nullable
   ParadoxScriptValue getPropertyValue();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
-  @NotNull String getName();
+  @NotNull
+  String getName();
 
-  @NotNull ParadoxScriptProperty setName(@NotNull String name);
+  @NotNull
+  ParadoxScriptProperty setName(@NotNull String name);
 
-  @Nullable PsiElement getNameIdentifier();
+  @Nullable
+  PsiElement getNameIdentifier();
 
-  @Nullable String getValue();
+  @Nullable
+  String getValue();
 
   int getDepth();
 
-  @Nullable ParadoxScriptBlock getBlock();
+  @Nullable
+  ParadoxScriptBlock getBlock();
 
-  @NotNull ParadoxType getType();
+  @NotNull
+  ParadoxType getType();
 
-  @Nullable String getConfigExpression();
+  @Nullable
+  String getConfigExpression();
 
-  @NotNull String getExpression();
+  @NotNull
+  String getExpression();
 
   boolean isEquivalentTo(@NotNull PsiElement another);
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

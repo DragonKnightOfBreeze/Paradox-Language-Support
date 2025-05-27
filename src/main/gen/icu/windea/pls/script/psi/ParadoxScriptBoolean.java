@@ -14,12 +14,16 @@ public interface ParadoxScriptBoolean extends ParadoxScriptValue, PsiLiteralValu
 
   boolean getBooleanValue();
 
-  @NotNull ParadoxType getType();
+  @NotNull
+  ParadoxType getType();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

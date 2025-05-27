@@ -25,6 +25,7 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_PARAMETER_CONDITION = ParadoxScriptElementTypeFactory.getElementType("INLINE_PARAMETER_CONDITION");
   IElementType INT = ParadoxScriptElementTypeFactory.getElementType("INT");
   IElementType PARAMETER = ParadoxScriptElementTypeFactory.getElementType("PARAMETER");
+  IElementType PARAMETER_ARGUMENT = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_ARGUMENT");
   IElementType PARAMETER_CONDITION = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION");
   IElementType PARAMETER_CONDITION_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION_EXPRESSION");
   IElementType PARAMETER_CONDITION_PARAMETER = ParadoxScriptElementTypeFactory.getElementType("PARAMETER_CONDITION_PARAMETER");
@@ -37,6 +38,7 @@ public interface ParadoxScriptElementTypes {
   IElementType STRING = ParadoxScriptElementTypeFactory.getElementType("STRING");
   IElementType VALUE = ParadoxScriptElementTypeFactory.getElementType("VALUE");
 
+  IElementType ARGUMENT_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("ARGUMENT_TOKEN");
   IElementType AT = ParadoxScriptElementTypeFactory.getTokenType("@");
   IElementType BOOLEAN_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("BOOLEAN_TOKEN");
   IElementType COLOR_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("COLOR_TOKEN");
@@ -68,7 +70,6 @@ public interface ParadoxScriptElementTypes {
   IElementType PARAMETER_END = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_END");
   IElementType PARAMETER_START = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_START");
   IElementType PARAMETER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_TOKEN");
-  IElementType PARAMETER_VALUE_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("PARAMETER_VALUE_TOKEN");
   IElementType PIPE = ParadoxScriptElementTypeFactory.getTokenType("|");
   IElementType PLUS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("PLUS_SIGN");
   IElementType PROPERTY_KEY_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("PROPERTY_KEY_TOKEN");
@@ -129,6 +130,9 @@ public interface ParadoxScriptElementTypes {
       }
       else if (type == PARAMETER) {
         return new ParadoxScriptParameterImpl(node);
+      }
+      else if (type == PARAMETER_ARGUMENT) {
+        return new ParadoxScriptParameterArgumentImpl(node);
       }
       else if (type == PARAMETER_CONDITION) {
         return new ParadoxScriptParameterConditionImpl(node);

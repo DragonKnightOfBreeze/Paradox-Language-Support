@@ -66,10 +66,10 @@ object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
 
     @JvmStatic
     fun processInlineParameterConditionItem(b: PsiBuilder, l: Int): Boolean {
-        //remapping token types to PARAMETER_VALUE_TOKEN for inline parameter condition items
+        //remapping token types to ARGUMENT_TOKEN for inline parameter condition items
         if (b !is Builder) return true
         b.setTokenTypeRemapper m@{ t, _, _, _ ->
-            if (t in TokenSets.SNIPPET_TYPES) return@m PARAMETER_VALUE_TOKEN
+            if (t in TokenSets.SNIPPET_TYPES) return@m ARGUMENT_TOKEN
             t
         }
         return true

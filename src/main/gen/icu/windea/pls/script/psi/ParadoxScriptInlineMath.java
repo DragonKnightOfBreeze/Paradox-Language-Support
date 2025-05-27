@@ -17,16 +17,22 @@ public interface ParadoxScriptInlineMath extends ParadoxScriptValue {
   @Nullable
   ParadoxScriptInlineMathFactor getInlineMathFactor();
 
-  @NotNull String getValue();
+  @NotNull
+  String getValue();
 
-  @NotNull ParadoxType getType();
+  @NotNull
+  ParadoxType getType();
 
-  @NotNull String getExpression();
+  @NotNull
+  String getExpression();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }

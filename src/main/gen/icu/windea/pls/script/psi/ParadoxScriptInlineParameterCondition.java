@@ -21,16 +21,22 @@ public interface ParadoxScriptInlineParameterCondition extends PsiElement {
   @Nullable
   ParadoxScriptParameterConditionExpression getParameterConditionExpression();
 
-  @NotNull Icon getIcon(@IconFlags int flags);
+  @NotNull
+  Icon getIcon(@IconFlags int flags);
 
-  @Nullable String getConditionExpression();
+  @Nullable
+  String getConditionExpression();
 
-  @Nullable String getPresentationText();
+  @Nullable
+  String getPresentationText();
 
-  @NotNull ItemPresentation getPresentation();
+  @NotNull
+  ItemPresentation getPresentation();
 
-  @NotNull GlobalSearchScope getResolveScope();
+  @NotNull
+  GlobalSearchScope getResolveScope();
 
-  @NotNull SearchScope getUseScope();
+  @NotNull
+  SearchScope getUseScope();
 
 }
