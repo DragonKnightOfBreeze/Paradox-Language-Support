@@ -18,7 +18,6 @@ sealed interface CwtMemberConfig<out T : CwtMemberElement> : CwtConfig<T> {
     val valueType: CwtType
     val configs: List<CwtMemberConfig<*>>?
     val optionConfigs: List<CwtOptionMemberConfig<*>>?
-    val documentation: String?
 
     var parentConfig: CwtMemberConfig<*>?
 

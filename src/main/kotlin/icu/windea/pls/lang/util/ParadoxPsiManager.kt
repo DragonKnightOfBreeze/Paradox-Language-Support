@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
@@ -500,6 +501,28 @@ object ParadoxPsiManager {
             }
             else -> null to null
         }
+    }
+
+    fun getDocumentation(element: PsiElement, documentationElementType: IElementType): String? {
+        //如果某行注释以'#'开始，则输出时需要全部忽略
+        //如果某行注释以'\'结束，则输出时不要在这里换行
+
+        var lines: MutableList<String>? = null
+        var current: PsiElement = element
+        while (true) {
+            current = current.prevSibling ?: break
+            when {
+                current.elementType == documentationElementType -> {
+                    if (lines == null) lines = ArrayDeque()
+                    val line = current.text.trimStart('#').trim()
+                    lines.addFirst(line)
+                }
+                current is PsiWhiteSpace || current is PsiComment -> continue
+                else -> break
+            }
+        }
+        if (lines.isNullOrEmpty()) return null
+        return lines.joinToString("\n").replace("\\\n", "")
     }
 
     //endregion

@@ -139,8 +139,7 @@ object CwtConfigManipulator {
             value = PlsConstants.Strings.blockFolder,
             valueType = CwtType.Block,
             configs = configs,
-            optionConfigs = config?.optionConfigs,
-            documentation = config?.documentation
+            optionConfigs = config?.optionConfigs
         )
     }
 
@@ -221,8 +220,7 @@ object CwtConfigManipulator {
             pointer = emptyPointer(),
             configGroup = c1.configGroup,
             value = expressionString,
-            optionConfigs = mergeOptions(c1.optionConfigs, c2.optionConfigs),
-            documentation = mergeDocumentations(c1.documentation, c2.documentation)
+            optionConfigs = mergeOptions(c1.optionConfigs, c2.optionConfigs)
         )
     }
 
@@ -240,14 +238,6 @@ object CwtConfigManipulator {
     private fun mergeOptions(a: List<CwtOptionMemberConfig<*>>?, b: List<CwtOptionMemberConfig<*>>?): List<CwtOptionMemberConfig<*>> {
         //keep duplicate options here (no affect to features)
         return merge(a, b)
-    }
-
-    private fun mergeDocumentations(a: String?, b: String?): String? {
-        val d1 = a?.orNull()
-        val d2 = b?.orNull()
-        if (d1 == null || d2 == null) return d1 ?: d2
-        if (d1 == d2) return d1
-        return "$d1\n<br><br>\n$d2"
     }
 
     //endregion

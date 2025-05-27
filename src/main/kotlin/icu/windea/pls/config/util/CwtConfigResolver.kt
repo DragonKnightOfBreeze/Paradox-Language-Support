@@ -8,7 +8,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
-import java.util.*
 
 private val logger = logger<CwtConfigResolver>()
 
@@ -47,8 +46,8 @@ object CwtConfigResolver {
         val valueType = valueElement.type
         val separatorType = propertyElement.separatorType
         val configs = doGetConfigs(valueElement, file, fileConfig)
-        val (optionConfigs, documentation) = doGetOptionConfigsAndDocumentation(propertyElement, file, fileConfig)
-        val config = CwtPropertyConfig.resolve(pointer, configGroup, key, value, valueType, separatorType, configs, optionConfigs, documentation)
+        val optionConfigs = doGetOptionConfigs(propertyElement, file, fileConfig)
+        val config = CwtPropertyConfig.resolve(pointer, configGroup, key, value, valueType, separatorType, configs, optionConfigs)
         CwtConfigCollector.postHandleConfig(config)
         CwtConfigCollector.processConfigWithConfigExpression(config, config.keyExpression)
         CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
@@ -67,8 +66,8 @@ object CwtConfigResolver {
         val value: String = valueElement.value
         val valueType = valueElement.type
         val configs = doGetConfigs(valueElement, file, fileConfig)
-        val (optionConfigs, documentation) = doGetOptionConfigsAndDocumentation(valueElement, file, fileConfig)
-        val config = CwtValueConfig.resolve(pointer, configGroup, value, valueType, configs, optionConfigs, documentation)
+        val optionConfigs = doGetOptionConfigs(valueElement, file, fileConfig)
+        val config = CwtValueConfig.resolve(pointer, configGroup, value, valueType, configs, optionConfigs)
         CwtConfigCollector.postHandleConfig(config)
         CwtConfigCollector.processConfigWithConfigExpression(config, config.valueExpression)
         configs?.forEach { it.parentConfig = config }
@@ -94,11 +93,8 @@ object CwtConfigResolver {
         return configs.optimized() //optimized to optimize memory
     }
 
-    private fun doGetOptionConfigsAndDocumentation(element: PsiElement, file: CwtFile, fileConfig: CwtFileConfig): Tuple2<List<CwtOptionMemberConfig<*>>?, String?> {
+    private fun doGetOptionConfigs(element: PsiElement, file: CwtFile, fileConfig: CwtFileConfig): List<CwtOptionMemberConfig<*>>? {
         var optionConfigs: MutableList<CwtOptionMemberConfig<*>>? = null
-        var documentationLines: MutableList<String>? = null
-        var html = false
-
         var current: PsiElement = element
         while (true) {
             current = current.prevSibling ?: break
@@ -106,7 +102,6 @@ object CwtConfigResolver {
                 current is CwtOptionComment -> {
                     val option = current.option
                     if (option != null) {
-                        if (option.name == "format" && option.value == "html") html = true
                         if (optionConfigs == null) optionConfigs = mutableListOf()
                         val resolved = resolveOption(option, file, fileConfig) ?: continue
                         optionConfigs.add(0, resolved)
@@ -117,17 +112,11 @@ object CwtConfigResolver {
                         optionConfigs.add(0, resolved)
                     }
                 }
-                current is CwtDocComment -> {
-                    if (documentationLines == null) documentationLines = LinkedList()
-                    val docText = current.text.trimStart('#').trim() //这里接受HTML
-                    documentationLines.add(0, docText)
-                }
                 current is PsiWhiteSpace || current is PsiComment -> continue
                 else -> break
             }
         }
-        val documentation = getDocumentation(documentationLines, html)
-        return optionConfigs?.optimized() to documentation //optimized to optimize memory
+        return optionConfigs?.optimized() //optimized to optimize memory
     }
 
     private fun resolveOption(optionElement: CwtOption, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionConfig? {

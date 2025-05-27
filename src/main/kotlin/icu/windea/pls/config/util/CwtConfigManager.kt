@@ -10,11 +10,13 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import java.util.*
 
@@ -23,7 +25,7 @@ object CwtConfigManager {
         val cachedConfigPath by createKey<CachedValue<CwtConfigPath>>(Keys)
         val cachedConfigType by createKey<CachedValue<CwtConfigType>>(Keys)
         val filePathPatterns by createKey<Set<String>>(Keys)
-        val filePathsForPriority by createKey<Set<String>>(Keys)
+        val filePathPatternsForPriority by createKey<Set<String>>(Keys)
     }
 
     /**
@@ -262,7 +264,20 @@ object CwtConfigManager {
         }
     }
 
+    fun getDocumentation(config: CwtMemberConfig<*>): String? {
+        return doGetDocumentation(config) //DO NOT be cached here
+    }
+
+    private fun doGetDocumentation(config: CwtMemberConfig<*>): String? {
+        val element = config.pointer.element ?: return null
+        return ParadoxPsiManager.getDocumentation(element, CwtElementTypes.DOC_COMMENT)
+    }
+
     fun getFilePathPatterns(config: CwtFilePathMatchableConfig): Set<String> {
+        return config.getOrPutUserData(Keys.filePathPatterns) { doGetFilePathPatterns(config) }
+    }
+
+    private fun doGetFilePathPatterns(config: CwtFilePathMatchableConfig): Set<String> {
         val paths = config.paths
         val pathFile = config.pathFile
         val pathExtension = config.pathExtension
@@ -303,10 +318,14 @@ object CwtConfigManager {
         if (pathPatterns.isNotEmpty()) {
             result += pathPatterns
         }
-        return result
+        return result.optimized()
     }
 
     fun getFilePathPatternsForPriority(config: CwtFilePathMatchableConfig): Set<String> {
+        return config.getOrPutUserData(Keys.filePathPatternsForPriority) { doGetFilePathPatternsForPriority(config) }
+    }
+
+    private fun doGetFilePathPatternsForPriority(config: CwtFilePathMatchableConfig): Set<String> {
         val paths = config.paths
         val pathFile = config.pathFile
         val pathStrict = config.pathStrict
@@ -324,13 +343,13 @@ object CwtConfigManager {
         if (pathPatterns.isNotEmpty()) {
             result += pathPatterns.map { it.substringBefore("/**", "").orNull() ?: it.substringBeforeLast("/") }
         }
-        return result
+        return result.optimized()
     }
 
     fun matchesFilePathPattern(config: CwtFilePathMatchableConfig, filePath: ParadoxPath): Boolean {
         //TODO 1.3.35+ check performance
 
-        val filePathPatterns = config.filePathPatterns
+        val filePathPatterns = getFilePathPatterns(config)
         return filePathPatterns.any { filePath.path.matchesAntPattern(it) }
     }
 

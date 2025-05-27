@@ -14,7 +14,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.cwt.*
@@ -29,7 +29,6 @@ import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
-import java.util.*
 
 //org.jetbrains.kotlin.idea.k2.codeinsight.quickDoc.KotlinDocumentationTarget
 
@@ -373,31 +372,8 @@ private fun DocumentationBuilder.addScopeContext(element: PsiElement, referenceE
 }
 
 private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
-    //渲染文档注释（可能需要作为HTML）
-    var current: PsiElement = element
-    var documentationLines: LinkedList<String>? = null
-    var html = false
-    while (true) {
-        current = current.prevSibling ?: break
-        when {
-            current is CwtDocComment -> {
-                if (documentationLines == null) documentationLines = LinkedList()
-                val docText = current.text.trimStart('#').trim() //这里接受HTML
-                documentationLines.addFirst(docText)
-            }
-            current is CwtOptionComment -> {
-                val option = current.option
-                if (option != null) {
-                    if (option.name == "format" && option.value == "html") html = true
-                }
-            }
-            current is PsiWhiteSpace || current is PsiComment -> continue
-            else -> break
-        }
-    }
-    if (documentationLines.isNullOrEmpty()) return
-    //如果CWT规则文件中的一行文档注释以`\`结束，则解析时不在这里换行
-    val documentation = getDocumentation(documentationLines, html)
+    val documentation = ParadoxPsiManager.getDocumentation(element, CwtElementTypes.DOC_COMMENT)
+    if (documentation.isNullOrEmpty()) return
     content {
         append(documentation)
     }

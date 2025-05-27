@@ -10,7 +10,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.dataExpression.*
-import icu.windea.pls.model.*
 
 val Project.configGroupLibrary: CwtConfigGroupLibrary
     get() = this.getOrPutUserData(PlsKeys.configGroupLibrary) { CwtConfigGroupLibrary(this) }
@@ -56,6 +55,12 @@ private fun CwtMemberConfig<*>.doProcessDescendants(processor: (CwtMemberConfig<
     this.configs?.process { it.doProcessDescendants(processor) }?.also { if (!it) return false }
     return true
 }
+
+val CwtMemberConfig<*>.documentation: String? get() = CwtConfigManager.getDocumentation(this)
+
+val CwtFilePathMatchableConfig.filePathPatterns: Set<String> get() = CwtConfigManager.getFilePathPatterns(this)
+
+val CwtFilePathMatchableConfig.filePathPatternsForPriority: Set<String> get() = CwtConfigManager.getFilePathPatternsForPriority(this)
 
 inline fun <T> Collection<T>.sortedByPriority(crossinline expressionProvider: (T) -> CwtDataExpression?, crossinline configGroupProvider: (T) -> CwtConfigGroup): List<T> {
     if (size <= 1) return toListOrThis()

@@ -222,13 +222,6 @@ private class CwtTypeConfigImpl(
     override val localisation: CwtTypeLocalisationConfig?,
     override val images: CwtTypeImagesConfig?,
 ) : UserDataHolderBase(), CwtTypeConfig {
-    override val filePathPatterns: Set<String> by lazy {
-        CwtConfigManager.getFilePathPatterns(this).optimized()
-    }
-    override val filePathPatternsForPriority: Set<String> by lazy {
-        CwtConfigManager.getFilePathPatternsForPriority(this).optimized()
-    }
-
     override fun toString(): String {
         return "CwtTypeConfigImpl(name='$name')"
     }

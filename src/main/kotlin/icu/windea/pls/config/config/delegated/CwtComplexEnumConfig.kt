@@ -86,13 +86,6 @@ private class CwtComplexEnumConfigImpl(
     override val searchScopeType: String?,
     override val nameConfig: CwtPropertyConfig,
 ) : UserDataHolderBase(), CwtComplexEnumConfig {
-    override val filePathPatterns: Set<String> by lazy {
-        CwtConfigManager.getFilePathPatterns(this).optimized()
-    }
-    override val filePathPatternsForPriority: Set<String> by lazy {
-        CwtConfigManager.getFilePathPatternsForPriority(this).optimized()
-    }
-
     override val enumNameConfigs: List<CwtMemberConfig<*>> by lazy {
         buildList {
             nameConfig.processDescendants {
