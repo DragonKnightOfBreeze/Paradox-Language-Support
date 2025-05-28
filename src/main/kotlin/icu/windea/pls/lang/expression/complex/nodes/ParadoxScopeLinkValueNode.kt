@@ -40,7 +40,7 @@ class ParadoxScopeLinkValueNode(
                 if (nodes.isNotEmpty()) return@run
                 val configs = linkConfigs.filter { it.dataSourceExpression?.type in CwtDataTypeGroups.DynamicValue }
                 if (configs.isEmpty()) return@run
-                val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs)!!
+                val node = ParadoxDynamicValueExpression.resolve(text, textRange, configGroup, configs) ?: return@run
                 nodes += node
             }
             run {

@@ -89,8 +89,8 @@ class ParadoxVariableFieldExpression(
                 }
                 //handle mismatch situation
                 if (!incomplete && nodes.isEmpty() && node is ParadoxErrorNode) return null
-                nodes.add(node)
-                if (dotNode != null) nodes.add(dotNode)
+                nodes += node
+                if (dotNode != null) nodes += dotNode
             }
             if (!incomplete && nodes.isEmpty()) return null
             return expression

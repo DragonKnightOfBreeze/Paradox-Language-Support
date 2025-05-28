@@ -121,8 +121,8 @@ class ParadoxScriptValueExpression private constructor(
                     }
                     else -> throw InternalError()
                 }
-                nodes.add(node)
-                if (pipeNode != null) nodes.add(pipeNode)
+                nodes += node
+                if (pipeNode != null) nodes += pipeNode
                 n++
             }
             if (!incomplete && nodes.isEmpty()) return null

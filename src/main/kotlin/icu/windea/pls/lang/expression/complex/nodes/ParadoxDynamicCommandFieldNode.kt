@@ -26,7 +26,7 @@ class ParadoxDynamicCommandFieldNode(
             val offset = textRange.startOffset
             var startIndex = 0
 
-            //匹配某一前缀的场合（如，"event_target:some_country"）
+            //匹配某一前缀的场合（如 "event_target:some_country"）
             run r1@{
                 if (!text.contains(':')) return@r1
                 val linkConfigs = configGroup.localisationLinks.values.filter { it.forValue() && it.fromData && it.prefix != null }

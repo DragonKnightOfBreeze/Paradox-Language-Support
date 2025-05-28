@@ -57,7 +57,7 @@ class ParadoxDynamicValueExpression private constructor(
         }
 
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {
-            if(configs.any { it.configExpression?.type !in CwtDataTypeGroups.DynamicValue }) return null
+            if (configs.any { it.configExpression?.type !in CwtDataTypeGroups.DynamicValue }) return null
 
             val incomplete = PlsManager.incompleteComplexExpression.get() ?: false
             if (!incomplete && expressionString.isEmpty()) return null
@@ -77,20 +77,27 @@ class ParadoxDynamicValueExpression private constructor(
                     tokenIndex = textLength
                 }
                 //resolve dynamicValueNode
-                val nodeText = expressionString.substring(0, tokenIndex)
-                val nodeTextRange = TextRange.create(offset, tokenIndex + offset)
-                val node = ParadoxDynamicValueNode.resolve(nodeText, nodeTextRange, configGroup, configs)
-                if (node == null) return null //unexpected
-                nodes.add(node)
+                run {
+                    val nodeText = expressionString.substring(0, tokenIndex)
+                    val nodeTextRange = TextRange.create(offset, tokenIndex + offset)
+                    val node = ParadoxDynamicValueNode.resolve(nodeText, nodeTextRange, configGroup, configs) ?: return null
+                    nodes += node
+                }
                 if (tokenIndex != textLength) {
-                    //resolve at token
-                    val atNode = ParadoxMarkerNode("@", TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset), configGroup)
-                    nodes.add(atNode)
-                    //resolve scope expression
-                    val expString = expressionString.substring(tokenIndex + 1)
-                    val expTextRange = TextRange.create(tokenIndex + 1 + offset, textLength + offset)
-                    val expNode = ParadoxScopeFieldExpression.resolve(expString, expTextRange, configGroup)!!
-                    nodes.add(expNode)
+                    run {
+                        //resolve at token
+                        val nodeTextRange = TextRange.create(tokenIndex + offset, tokenIndex + 1 + offset)
+                        val node = ParadoxMarkerNode("@", nodeTextRange, configGroup)
+                        nodes += node
+                    }
+                    run {
+                        //resolve scope expression
+                        val nodeText = expressionString.substring(tokenIndex + 1)
+                        val nodeTextRange = TextRange.create(tokenIndex + 1 + offset, textLength + offset)
+                        val node = ParadoxScopeFieldExpression.resolve(nodeText, nodeTextRange, configGroup)
+                            ?: ParadoxErrorTokenNode(nodeText, nodeTextRange, configGroup)
+                        nodes += node
+                    }
                 }
                 break
             }
