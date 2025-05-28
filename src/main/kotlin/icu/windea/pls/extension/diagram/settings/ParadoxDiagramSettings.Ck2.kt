@@ -44,8 +44,8 @@ class Ck2EventTreeDiagramSettings(
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val eventTypes = runReadAction { ParadoxEventManager.getAllTypes(ParadoxGameType.Ck2) }
-        eventTypes.forEach { settings.type.putIfAbsent(it, true) }
+        val types = runReadAction { ParadoxEventManager.getAllTypes(ParadoxGameType.Ck2) }
+        settings.type.retainSettings(types)
         settings.updateSettings()
 
         row {

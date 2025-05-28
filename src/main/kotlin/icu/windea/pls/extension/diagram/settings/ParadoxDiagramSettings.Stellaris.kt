@@ -46,8 +46,8 @@ class StellarisEventTreeDiagramSettings(
 
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
-        val eventTypes = runReadAction { ParadoxEventManager.getAllTypes(ParadoxGameType.Stellaris) }
-        eventTypes.forEach { settings.type.putIfAbsent(it, true) }
+        val types = runReadAction { ParadoxEventManager.getAllTypes(ParadoxGameType.Stellaris) }
+        settings.type.retainSettings(types)
         settings.updateSettings()
 
         row {
@@ -102,11 +102,11 @@ class StellarisTechTreeDiagramSettings(
     override val groupBuilder: Panel.() -> Unit = {
         val settings = state
         val tiers = runReadAction { ParadoxTechnologyManager.Stellaris.getAllTiers(project, null) }
-        tiers.forEach { settings.tier.putIfAbsent(it.name, true) }
+        settings.tier.retainSettings(tiers) { it.name }
         val areas = runReadAction { ParadoxTechnologyManager.Stellaris.getAllResearchAreas() }
-        areas.forEach { settings.area.putIfAbsent(it, true) }
+        settings.area.retainSettings(areas)
         val categories = runReadAction { ParadoxTechnologyManager.Stellaris.getAllCategories(project, null) }
-        categories.forEach { settings.category.putIfAbsent(it.name, true) }
+        settings.category.retainSettings(categories) { it.name }
         settings.updateSettings()
 
         val areaNameProviders = mutableMapOf<String, () -> String?>()

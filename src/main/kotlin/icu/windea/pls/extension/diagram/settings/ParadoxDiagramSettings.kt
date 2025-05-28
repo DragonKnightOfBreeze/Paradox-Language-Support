@@ -28,6 +28,19 @@ abstract class ParadoxDiagramSettings<T : ParadoxDiagramSettings.State>(
 
     abstract val groupBuilder: Panel.() -> Unit
 
+    protected fun MutableMap<String, Boolean>.retainSettings(keys: Collection<String>) {
+        val settings = keys.associateWith { this[it] ?: true }
+        this.clear()
+        this.putAll(settings)
+    }
+
+    protected fun <T> MutableMap<String, Boolean>.retainSettings(collection: Collection<T>, keySelector: (T) -> String) {
+        val keys = collection.mapTo(mutableSetOf()) { keySelector(it) }
+        val settings = keys.associateWith { this[it] ?: true }
+        this.clear()
+        this.putAll(settings)
+    }
+
     protected fun Panel.checkBoxGroup(
         map: MutableMap<String, Boolean>,
         groupText: String,

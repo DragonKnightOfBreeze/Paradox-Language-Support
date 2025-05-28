@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ParadoxDiagramSettings.Ck2.EventTree">
-    <eventType>
+    <attribute>
+      <entry key="hidden" value="true" />
+      <entry key="triggered" value="true" />
+    </attribute>
+    <type>
       <entry key="scopeless" value="true" />
       <entry key="character" value="true" />
       <entry key="long_character" value="true" />
@@ -11,64 +15,66 @@
       <entry key="diploresponse" value="true" />
       <entry key="unit" value="true" />
       <entry key="society_quest" value="true" />
-    </eventType>
-    <type>
-      <entry key="hidden" value="true" />
-      <entry key="triggered" value="true" />
     </type>
   </component>
   <component name="ParadoxDiagramSettings.Ck3.EventTree">
-    <eventType>
+    <attribute>
+      <entry key="hidden" value="true" />
+    </attribute>
+    <type>
       <entry key="character" value="true" />
       <entry key="faith" value="true" />
-    </eventType>
-    <type>
-      <entry key="hidden" value="true" />
     </type>
   </component>
   <component name="ParadoxDiagramSettings.Eu4.EventTree">
-    <eventType>
+    <attribute>
+      <entry key="hidden" value="true" />
+      <entry key="triggered" value="true" />
+    </attribute>
+    <type>
       <entry key="scopeless" value="true" />
       <entry key="country" value="true" />
       <entry key="province" value="true" />
-    </eventType>
-    <type>
-      <entry key="hidden" value="true" />
-      <entry key="triggered" value="true" />
     </type>
   </component>
   <component name="ParadoxDiagramSettings.Hoi4.EventTree">
-    <eventType>
+    <attribute>
+      <entry key="hidden" value="true" />
+    </attribute>
+    <type>
       <entry key="scopeless" value="true" />
       <entry key="country" value="true" />
       <entry key="state" value="true" />
       <entry key="news" value="true" />
       <entry key="unit_leader" value="true" />
       <entry key="operative_leader" value="true" />
-    </eventType>
-    <type>
-      <entry key="hidden" value="true" />
     </type>
   </component>
   <component name="ParadoxDiagramSettings.Ir.EventTree">
-    <eventType>
+    <attribute>
+      <entry key="hidden" value="true" />
+    </attribute>
+    <type>
       <entry key="scopeless" value="true" />
       <entry key="country" value="true" />
       <entry key="major_country" value="true" />
       <entry key="province" value="true" />
       <entry key="character" value="true" />
       <entry key="state" value="true" />
-    </eventType>
-    <type>
-      <entry key="hidden" value="true" />
     </type>
   </component>
   <component name="ParadoxDiagramSettings.Stellaris.EventTree">
-    <eventType>
+    <attribute>
+      <entry key="hidden" value="true" />
+      <entry key="triggered" value="true" />
+      <entry key="major" value="true" />
+      <entry key="diplomatic" value="true" />
+    </attribute>
+    <type>
       <entry key="scopeless" value="true" />
       <entry key="country" value="true" />
       <entry key="observer" value="true" />
-      <entry key="pop" value="true" />
+      <entry key="pop_group" value="true" />
       <entry key="pop_faction" value="true" />
       <entry key="planet" value="true" />
       <entry key="first_contact" value="true" />
@@ -82,12 +88,6 @@
       <entry key="leader" value="true" />
       <entry key="situation" value="true" />
       <entry key="agreement" value="true" />
-    </eventType>
-    <type>
-      <entry key="hidden" value="true" />
-      <entry key="triggered" value="true" />
-      <entry key="major" value="true" />
-      <entry key="diplomatic" value="true" />
     </type>
   </component>
   <component name="ParadoxDiagramSettings.Stellaris.TechTree">
@@ -96,49 +96,34 @@
       <entry key="society" value="true" />
       <entry key="engineering" value="true" />
     </area>
-    <type>
+    <attribute>
       <entry key="start" value="true" />
       <entry key="rare" value="true" />
       <entry key="dangerous" value="true" />
       <entry key="insight" value="true" />
       <entry key="repeatable" value="true" />
-    </type>
-  </component>
-  <component name="ParadoxDiagramSettings.Stellaris.TechnologyTree">
-    <area>
-      <entry key="physics" value="true" />
-      <entry key="society" value="true" />
-      <entry key="engineering" value="true" />
-    </area>
-    <type>
-      <entry key="start" value="true" />
-      <entry key="rare" value="true" />
-      <entry key="dangerous" value="true" />
-      <entry key="insight" value="true" />
-      <entry key="repeatable" value="true" />
-    </type>
+    </attribute>
   </component>
   <component name="ParadoxDiagramSettings.Vic2.EventTree">
-    <eventType>
+    <attribute>
+      <entry key="triggered" value="true" />
+      <entry key="major" value="true" />
+    </attribute>
+    <type>
       <entry key="scopeless" value="true" />
       <entry key="country" value="true" />
       <entry key="province" value="true" />
-    </eventType>
-    <type>
-      <entry key="triggered" value="true" />
-      <entry key="major" value="true" />
     </type>
   </component>
   <component name="ParadoxDiagramSettings.Vic3.EventTree">
-    <eventType>
+    <attribute>
+      <entry key="hidden" value="true" />
+    </attribute>
+    <type>
       <entry key="scopeless" value="true" />
       <entry key="country" value="true" />
-      <entry key="province" value="true" />
       <entry key="state" value="true" />
       <entry key="character" value="true" />
-    </eventType>
-    <type>
-      <entry key="hidden" value="true" />
     </type>
   </component>
 </project>
