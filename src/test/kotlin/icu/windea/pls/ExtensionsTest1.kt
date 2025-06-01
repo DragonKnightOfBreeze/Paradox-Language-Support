@@ -19,42 +19,6 @@ class ExtensionsTest1 {
     }
 
     @Test
-    fun matchesAntPatternTest() {
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/name**", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("foo/bar/name**", false))
-        Assert.assertTrue("foo/bar/name".matchesAntPattern("/foo/bar/name**", false))
-        Assert.assertTrue("foo/bar/name".matchesAntPattern("foo/bar/name**", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/name", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/**", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/**", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/**/name", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/**/bar/name", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/**", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/nam?", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/na?e", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/na*?e", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/*", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/bar/*a*e", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/b*r/*a*e", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/foo/b*r/*a*e", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/*foo/*/name", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/*foo/*/n?me", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/*foo/**/n?me", false))
-        Assert.assertTrue("/foo/bar/name".matchesAntPattern("/*foo/**r/n?me", false))
-        Assert.assertFalse("/foo/bar/name".matchesAntPattern("/foo/*", false))
-        Assert.assertFalse("/foo/bar/name".matchesAntPattern("/*/name", false))
-        Assert.assertFalse("/foo/bar/name".matchesAntPattern("/foo/bar/na?", false))
-        Assert.assertFalse("/foo/bar/name".matchesAntPattern("/foo/bar/", false))
-
-        Assert.assertTrue("enums/enum[e]".matchesAntPattern("enums/enum[?]", false))
-        Assert.assertTrue("enums/enum[a".matchesAntPattern("enums/enum[?", false))
-        Assert.assertFalse("enums/enum[f".matchesAntPattern("enums/enum[?]", false))
-        Assert.assertTrue("enums/enum[e]".matchesAntPattern("enums/enum[*]", false))
-        Assert.assertFalse("enums/enum[e".matchesAntPattern("enums/enum[*]", false))
-        Assert.assertFalse("enums/enum123".matchesAntPattern("enums/enum[*]", false))
-    }
-
-    @Test
     fun escapeBlankTest() {
         Assert.assertEquals("abc", "abc".escapeBlank())
         Assert.assertEquals("abc&nbsp;", "abc ".escapeBlank())

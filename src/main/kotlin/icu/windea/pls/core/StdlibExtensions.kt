@@ -197,28 +197,6 @@ fun String.substringInLast(prefix: String, suffix: String, missingDelimiterValue
     return substring(prefixIndex + prefix.length, suffixIndex)
 }
 
-fun String.trimFast(c: Char): String {
-    var startIndex = 0
-    var endIndex = length - 1
-    var startFound = false
-    while (startIndex <= endIndex) {
-        val index = if (!startFound) startIndex else endIndex
-        val match = this[index] == c
-        if (!startFound) {
-            if (!match)
-                startFound = true
-            else
-                startIndex += 1
-        } else {
-            if (!match)
-                break
-            else
-                endIndex -= 1
-        }
-    }
-    return substring(startIndex, endIndex + 1)
-}
-
 private val blankRegex = "\\s+".toRegex()
 
 fun String.splitByBlank(limit: Int = 0): List<String> {
@@ -494,66 +472,18 @@ private fun String.patternToRegexString(): String {
 }
 
 /**
- * 判断当前输入是否匹配指定的ANT表达式。使用"?"匹配单个子路径中的单个字符，使用"*"匹配单个子路径中的任意个字符，使用"**"匹配任意个字符。
+ * 判断当前输入是否匹配指定的ANT表达式。使用 "?" 匹配单个子路径中的单个字符，"*" 匹配单个子路径中的任意个字符，"**" 匹配任意个子路径。
  */
 fun String.matchesAntPattern(pattern: String, ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
-    if (pattern.isEmpty() && this.isNotEmpty()) return false
-    if (pattern == "**") return true
-    val cache = if (ignoreCase) antPatternToRegexCache2 else antPatternToRegexCache1
-    val path0 = this.let { if (trimSeparator) it.trimFast('/') else it }
-    val pattern0 = pattern.let { if (trimSeparator) it.trimFast('/') else it }
-    return cache.get(pattern0).matches(path0)
-}
-
-private val antPatternToRegexCache1 = CacheBuilder.newBuilder().maximumSize(10000)
-    .buildCache<String, Regex> { it.antPatternToRegexString().toRegex() }
-private val antPatternToRegexCache2 = CacheBuilder.newBuilder().maximumSize(10000)
-    .buildCache<String, Regex> { it.antPatternToRegexString().toRegex(RegexOption.IGNORE_CASE) }
-
-private fun String.antPatternToRegexString(): String {
-    val s = this
-    var r = buildString {
-        append("\\Q")
-        var i = 0
-        while (i < s.length) {
-            val c = s[i]
-            when {
-                c == '*' -> {
-                    val nc = s.getOrNull(i + 1)
-                    if (nc == '*') {
-                        i++
-                        append("\\E.*\\Q")
-                    } else {
-                        append("\\E[^/]*\\Q")
-                    }
-                }
-                c == '?' -> append("\\E[^/]\\Q")
-                else -> append(c)
-            }
-            i++
-        }
-        append("\\E")
-    }
-    r = r.replace("\\E\\Q", "")
-    r = r.replace("/\\E.*\\Q/", "\\E(/[^/]*)*\\Q")
-    return r
+    return PatternMatchers.AntMatcher.matches(this, pattern, ignoreCase, trimSeparator)
 }
 
 /**
  * 判断当前输入是否匹配指定的正则表达式。
  */
 fun String.matchesRegex(pattern: String, ignoreCase: Boolean = false): Boolean {
-    if (pattern.isEmpty() && this.isNotEmpty()) return false
-    val cache = if (ignoreCase) regexCache2 else regexCache1
-    val path0 = this
-    val pattern0 = pattern
-    return cache.get(pattern0).matches(path0)
+    return PatternMatchers.RegexMatcher.matches(this, pattern, ignoreCase)
 }
-
-private val regexCache1 = CacheBuilder.newBuilder().maximumSize(10000)
-    .buildCache<String, Regex> { it.toRegex() }
-private val regexCache2 = CacheBuilder.newBuilder().maximumSize(10000)
-    .buildCache<String, Regex> { it.toRegex(RegexOption.IGNORE_CASE) }
 
 /**
  * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。使用"/"作为路径分隔符。
