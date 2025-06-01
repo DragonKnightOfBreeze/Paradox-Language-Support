@@ -2,11 +2,9 @@
 
 ## Unreleased
 
-* [ ] 优化：优化插件性能 / OP: Optimize plugin performance
 * [ ] 优化：通过快速文档为参数和命令提供其中使用的格式标签的说明 / OP: Provide information about format tags used in parameters and commands through quick documentation
 * [ ] 新功能：支持来自规则仓库的规则分组，且允许配置仓库链接 / NEW: Support config groups from config repositories, and allow to configure repository urls
 * [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
-* [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 TODO
 
@@ -26,6 +24,9 @@ PLANNED
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
 
 ## 1.4.2
+
+* [X] 优化：优化插件性能 / OP: Optimize plugin performance
+* [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.4.1
 

@@ -228,7 +228,7 @@ tasks {
         }
     }
     test {
-        exclude("Cwt*")
-        exclude("ByteBuddy*")
+        exclude("**/Cwt*.class")
+        exclude("**/ByteBuddy*.class")
     }
 }
