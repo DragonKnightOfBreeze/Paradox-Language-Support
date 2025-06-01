@@ -1,0 +1,28 @@
+name: Release Plugin
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  publish:
+    name: Publish Plugin
+    runs-on: ubuntu-latest
+
+    if: !contains(github.event.release.prerelease, 'true')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download plugin artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Paradox-Language-Support-${{ github.sha }}.zip
+
+      - name: Publish to JetBrains Marketplace
+        run: |
+          ./gradlew publishPlugin \
+            --stacktrace \
+            --info \
+            -PintellijPublishToken=${{ secrets.IDEA_TOKEN }}

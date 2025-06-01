@@ -1,0 +1,46 @@
+name: Build Plugin
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  GRADLE_OPTS: -Dfile.encoding=UTF-8
+  JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8
+
+jobs:
+  build:
+    name: Build Plugin
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JBR 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'jbr'
+          cache: 'gradle'
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build --stacktrace --info
+
+      # - name: Run tests
+      #   run: ./gradlew test --stacktrace --info
+
+      - name: Build plugin
+        run: ./gradlew buildPlugin --stacktrace --info
+
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Paradox-Language-Support-${{ github.sha }}.zip
+          path: build/distributions/Paradox-Language-Support-*.zip
+          retention-days: 7
