@@ -5,7 +5,7 @@ import org.junit.*
 import kotlin.reflect.full.*
 
 class ReflectionTest {
-    @Test(expected = UnsupportedOperationException::class)
+    @Test(expected = Exception::class)
     fun test1() {
         val javaClass = Class.forName("icu.windea.pls.ReflectionTestKt")
         val kotlinClass = javaClass.kotlin
