@@ -7,6 +7,8 @@ interface PatternMatchers {
     object AntMatcher {
         /**
          * 判断当前输入是否匹配指定的ANT表达式。使用 "?" 匹配单个子路径中的单个字符，"*" 匹配单个子路径中的任意个字符，"**" 匹配任意个子路径。
+         *
+         * 这个实现的耗时约为基于正则时的一半。
          */
         fun matches(input: String, pattern: String, ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
             if (pattern.isEmpty() && input.isNotEmpty()) return false

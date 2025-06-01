@@ -473,6 +473,8 @@ private fun String.patternToRegexString(): String {
 
 /**
  * 判断当前输入是否匹配指定的ANT表达式。使用 "?" 匹配单个子路径中的单个字符，"*" 匹配单个子路径中的任意个字符，"**" 匹配任意个子路径。
+ *
+ * 这个实现的耗时约为基于正则时的一半。
  */
 fun String.matchesAntPattern(pattern: String, ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
     return PatternMatchers.AntMatcher.matches(this, pattern, ignoreCase, trimSeparator)
