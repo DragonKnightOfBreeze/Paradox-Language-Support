@@ -13,3 +13,7 @@ insert_final_newline = false
 
 [*.template]
 insert_final_newline = false
+
+[*.kts]
+ij_any_line_comment_add_space = true
+ij_any_line_comment_add_space_on_reformat = true

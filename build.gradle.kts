@@ -3,10 +3,10 @@ import org.jetbrains.intellij.platform.gradle.*
 import org.jetbrains.kotlin.gradle.dsl.*
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "2.1.10"
-    id("org.jetbrains.intellij.platform") version "2.5.0"
-    id("org.jetbrains.grammarkit") version "2022.3.2.2"
-    id("org.jetbrains.changelog") version "2.2.1"
+    id("org.jetbrains.kotlin.jvm") version "2.1.10" // https://kotlinlang.org/docs/gradle.html
+    id("org.jetbrains.intellij.platform") version "2.5.0" // https://github.com/JetBrains/intellij-platform-plugin
+    id("org.jetbrains.grammarkit") version "2022.3.2.2" // https://github.com/JetBrains/grammarkit
+    id("org.jetbrains.changelog") version "2.2.1" // https://github.com/JetBrains/gradle-changelog-plugin
 }
 
 group = providers.gradleProperty("pluginGroup").get()
@@ -21,10 +21,10 @@ fun String.toChangeLogText(): String {
         .takeWhile { !it.startsWith("## ") }
         .mapNotNull {
             when {
-                it.contains("(HIDDEN)") -> null //hidden
-                it.matches(regex1) -> null //undo
-                it.matches(regex2) -> "*" + it.substring(5) //done
-                it.matches(regex3) -> null //horizontal line
+                it.contains("(HIDDEN)") -> null // hidden
+                it.matches(regex1) -> null // undo
+                it.matches(regex2) -> "*" + it.substring(5) // done
+                it.matches(regex3) -> null // horizontal line
                 else -> it
             }
         }
@@ -64,45 +64,52 @@ dependencies {
     intellijPlatform {
         val type = providers.gradleProperty("platformType")
         val version = providers.gradleProperty("platformVersion")
-        create(type, version)
+        create(type, version) // https://github.com/JetBrains/intellij-platform-plugin
 
         testFramework(TestFrameworkType.Platform)
 
         bundledPlugins("com.intellij.platform.images")
         bundledPlugins("com.intellij.diagram")
         bundledPlugins("com.intellij.java")
-        //bundledPlugins("org.jetbrains.kotlin")
-        //bundledPlugins("org.intellij.plugins.markdown")
-        //bundledPlugins("JavaScript")
-        //bundledPlugins("tslint")
+        // bundledPlugins("org.jetbrains.kotlin")
+        // bundledPlugins("org.intellij.plugins.markdown")
+        // bundledPlugins("JavaScript")
+        // bundledPlugins("tslint")
 
-        //TranslationPlugin - https://github.com/YiiGuxing/TranslationPlugin
+        // TranslationPlugin - https://github.com/YiiGuxing/TranslationPlugin
         plugin("cn.yiiguxing.plugin.translate:3.7.2")
     }
 
-    //dds - https://github.com/iTitus/dds
+    // dds - https://github.com/iTitus/dds
     implementation("io.github.ititus:dds:3.1.0")
     implementation("io.github.ititus:ddsiio:3.1.0")
-    //jackson-csv
+    // javassist - https://github.com/jboss-javassist/javassist
+    implementation("org.javassist:javassist:3.30.2-GA")
+    // jackson-csv - https://github.com/FasterXML/jackson-dataformats-text/tree/master/csv
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.17.2") {
         exclude(module = "jackson-annotations")
         exclude(module = "jackson-core")
         exclude(module = "jackson-databind")
     }
-    ////sqlite
-    //implementation("org.xerial:sqlite-jdbc:3.40.1.0")
-    //javassist
-    implementation("org.javassist:javassist:3.30.2-GA")
-
-    //junit & opentest4j
+    // junit - https://github.com/junit-team/junit4
     testImplementation("junit:junit:4.13.2")
+    // opentest4j - https://github.com/ota4j-team/opentest4j
     testImplementation("org.opentest4j:opentest4j:1.3.0")
 
-    //sqlite
+    // AI 集成
+
+    // LangChain4J 核心库 - https://github.com/langchain4j/langchain4j
+    // implementation("dev.langchain4j:langchain4j:0.31.0")
+    // OpenAI 适配器 - https://github.com/langchain4j/langchain4j-open-ai
+    // implementation("dev.langchain4j:langchain4j-open-ai:0.31.0")
+    // 本地模型支持 - https://github.com/langchain4j/langchain4j-ollama
+    // implementation("dev.langchain4j:langchain4j-ollama:0.31.0")
+
+    // 目前仅作参考
+
+    // sqlite - https://github.com/xerial/sqlite-jdbc
     testImplementation("org.xerial:sqlite-jdbc:3.46.0.0")
-    //javassist
-    testImplementation("org.javassist:javassist:3.30.2-GA")
-    //byte-buddy
+    // byte-buddy - https://github.com/raphw/byte-buddy
     testImplementation("net.bytebuddy:byte-buddy:1.14.17")
     testImplementation("net.bytebuddy:byte-buddy-agent:1.15.0")
 }
@@ -122,12 +129,14 @@ kotlin {
     jvmToolchain(21)
     compilerOptions {
         jvmTarget = JvmTarget.JVM_21
-        freeCompilerArgs.addAll(listOf(
-            "-Xjvm-default=all",
-            "-Xinline-classes",
-            "-opt-in=kotlin.RequiresOptIn",
-            "-opt-in=kotlin.ExperimentalStdlibApi",
-        ))
+        freeCompilerArgs.addAll(
+            listOf(
+                "-Xjvm-default=all",
+                "-Xinline-classes",
+                "-opt-in=kotlin.RequiresOptIn",
+                "-opt-in=kotlin.ExperimentalStdlibApi",
+            )
+        )
     }
 }
 
@@ -155,18 +164,18 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
     jar {
-        //添加项目文档和许可证
+        // 添加项目文档和许可证
         from("README.md", "README_en.md", "LICENSE")
-        //排除特定文件
+        // 排除特定文件
         excludesInJar.forEach { exclude(it) }
 
-        //添加规则文件
+        // 添加规则文件
         cwtConfigDirs.forEach { (cwtConfigDir, toDir) ->
             into("config/$toDir") {
                 from("cwt/$cwtConfigDir") {
                     includeEmptyDirs = false
                     include("**/*.cwt", "**/LICENSE", "**/*.md")
-                    //打平config子目录中的文件
+                    // 打平config子目录中的文件
                     eachFile {
                         val i = path.indexOf("/config", ignoreCase = true)
                         if (i != -1) path = path.removeRange(i, i + 7)
@@ -174,19 +183,19 @@ tasks {
                 }
             }
         }
-        //添加相关的文档和许可证
+        // 添加相关的文档和许可证
         into("config") {
             from("cwt/README.md", "cwt/LICENSE")
         }
     }
     instrumentedJar {
-        //排除特定文件
+        // 排除特定文件
         excludesInJar.forEach { exclude(it) }
     }
     buildPlugin {
-        //排除特定文件
+        // 排除特定文件
         excludesInZip.forEach { exclude(it) }
-        //重命名插件包
+        // 重命名插件包
         archiveBaseName = providers.gradleProperty("pluginPackageName")
     }
     runIde {
