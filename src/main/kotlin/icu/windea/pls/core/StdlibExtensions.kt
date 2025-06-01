@@ -498,6 +498,7 @@ fun String.matchesRegex(pattern: String, ignoreCase: Boolean = false): Boolean {
 @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolean = false, trim: Boolean = false): Boolean {
     //这个方法的执行速度应当非常非常快
+
     val path = if (trim) this.trimFast('/') else this
     val length = path.length
     val otherLength = other.length

@@ -5,13 +5,14 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.util.*
+import kotlin.collections.ArrayDeque
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationTextRenderer {
     class Context(
         var builder: StringBuilder
     ) {
-        val guardStack = LinkedList<String>() //防止StackOverflow
+        val guardStack = ArrayDeque<String>() //防止StackOverflow
     }
 
     fun render(element: ParadoxLocalisationProperty): String {

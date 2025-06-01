@@ -10,7 +10,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import java.util.*
 
 /**
  * @see ParadoxExpressionPath
@@ -22,7 +21,7 @@ object ParadoxExpressionPathManager {
     fun get(element: PsiElement, maxDepth: Int = -1): ParadoxExpressionPath? {
         var current: PsiElement = element
         var depth = 0
-        val originalSubPaths = LinkedList<String>()
+        val originalSubPaths = ArrayDeque<String>()
         while (current !is PsiFile) {
             when {
                 current is ParadoxScriptProperty -> {
@@ -55,7 +54,7 @@ object ParadoxExpressionPathManager {
     fun get(node: LighterASTNode, tree: LighterAST, file: VirtualFile, maxDepth: Int = -1): ParadoxExpressionPath? {
         var current: LighterASTNode = node
         var depth = 0
-        val originalSubPaths = LinkedList<String>()
+        val originalSubPaths = ArrayDeque<String>()
         while (current !is PsiFile) {
             when {
                 current.tokenType == PROPERTY -> {
@@ -101,7 +100,7 @@ object ParadoxExpressionPathManager {
                 is ParadoxScriptString -> {
                     val v = e.value.takeUnless { it.isParameterized() } ?: return result ?: emptyList()
                     if (result == null) result = mutableListOf()
-                    result!! += v
+                    result += v
                 }
                 else -> return result ?: emptyList()
             }

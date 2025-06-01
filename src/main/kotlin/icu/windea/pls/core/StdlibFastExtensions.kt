@@ -3,6 +3,8 @@ package icu.windea.pls.core
 import it.unimi.dsi.fastutil.objects.*
 
 fun String.trimFast(c: Char): String {
+    //Should be very fast
+
     var startIndex = 0
     var endIndex = length - 1
     var startFound = false
@@ -24,13 +26,15 @@ fun String.trimFast(c: Char): String {
     return substring(startIndex, endIndex + 1)
 }
 
-fun CharSequence.splitFast(delimiter: Char, ignoreCase: Boolean = false, limit: Int = 0): List<String> {
+fun String.splitFast(delimiter: Char, ignoreCase: Boolean = false, limit: Int = 0): List<String> {
+    //Should be very fast
+
     require(limit >= 0) { "Limit must be non-negative, but was $limit" }
 
     var currentOffset = 0
     var nextIndex = indexOf(delimiter, currentOffset, ignoreCase)
     if (nextIndex == -1 || limit == 1) {
-        return listOf(this.toString())
+        return listOf(this)
     }
 
     val isLimited = limit > 0

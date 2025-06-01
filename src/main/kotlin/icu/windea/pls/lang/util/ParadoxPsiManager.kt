@@ -15,7 +15,9 @@ import icu.windea.pls.localisation.references.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import java.util.LinkedList
 import kotlin.Pair
+import kotlin.collections.ArrayDeque
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxPsiManager {
@@ -503,7 +505,28 @@ object ParadoxPsiManager {
         }
     }
 
-    fun getDocumentation(element: PsiElement, documentationElementType: IElementType): String? {
+    fun getLineCommentText(element: PsiElement, lineSeparator: String = "\n"): String? {
+        //认为当前元素之前，之间没有空行的非行尾行注释，可以视为文档注释的一部分
+
+        var lines: LinkedList<String>? = null
+        var prevElement = element.prevSibling ?: element.parent?.prevSibling //兼容comment在rootBlock之外的特殊情况
+        while (prevElement != null) {
+            val text = prevElement.text
+            if (prevElement !is PsiWhiteSpace) {
+                if (prevElement !is PsiComment) break
+                val docText = text.trimStart('#').trim().escapeXml()
+                if (lines == null) lines = LinkedList()
+                lines.addFirst(docText)
+            } else {
+                if (text.containsBlankLine()) break
+            }
+            prevElement = prevElement.prevSibling
+        }
+        if (lines.isNullOrEmpty()) return null
+        return lines.joinToString(lineSeparator)
+    }
+
+    fun getDocCommentText(element: PsiElement, documentationElementType: IElementType, lineSeparator: String = "\n"): String? {
         //如果某行注释以'#'开始，则输出时需要全部忽略
         //如果某行注释以'\'结束，则输出时不要在这里换行
 
@@ -522,7 +545,7 @@ object ParadoxPsiManager {
             }
         }
         if (lines.isNullOrEmpty()) return null
-        return lines.joinToString("\n").replace("\\\n", "")
+        return lines.joinToString(lineSeparator).replace("\\$lineSeparator", "")
     }
 
     //endregion

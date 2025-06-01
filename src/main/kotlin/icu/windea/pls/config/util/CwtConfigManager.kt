@@ -18,7 +18,6 @@ import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import java.util.*
 
 object CwtConfigManager {
     object Keys : KeyRegistry() {
@@ -112,7 +111,7 @@ object CwtConfigManager {
     private fun doGetConfigPath(element: CwtMemberElement): CwtConfigPath? {
         var current: PsiElement = element
         var depth = 0
-        val subPaths = LinkedList<String>()
+        val subPaths = ArrayDeque<String>()
         while (current !is PsiFile) {
             when {
                 current is CwtProperty -> {
@@ -270,7 +269,7 @@ object CwtConfigManager {
 
     private fun doGetDocumentation(config: CwtMemberConfig<*>): String? {
         val element = config.pointer.element ?: return null
-        return ParadoxPsiManager.getDocumentation(element, CwtElementTypes.DOC_COMMENT)
+        return ParadoxPsiManager.getDocCommentText(element, CwtElementTypes.DOC_COMMENT, "<br>")
     }
 
     fun getFilePathPatterns(config: CwtFilePathMatchableConfig): Set<String> {
@@ -347,27 +346,31 @@ object CwtConfigManager {
     }
 
     fun matchesFilePathPattern(config: CwtFilePathMatchableConfig, filePath: ParadoxPath): Boolean {
+        //This method should be very fast
         //1.4.2 optimized, DO NOT use config.filePathPatterns here
 
         val pathPatterns = config.pathPatterns
-        val paths = config.paths
-        val pathFile = config.pathFile
-        val pathExtension = config.pathExtension
-        val pathStrict = config.pathStrict
         if (pathPatterns.isNotEmpty()) {
             if (pathPatterns.any { filePath.path.matchesAntPattern(it) }) return true
         }
+        val pathFile = config.pathFile
         if (pathFile.isNotNullOrEmpty()) {
             if (pathFile != filePath.fileName) return false
-        } else if (pathExtension.isNotNullOrEmpty()) {
-            if (filePath.fileExtension == null || !pathExtension.equals(filePath.fileExtension, true)) return false
+        } else {
+            val pathExtension = config.pathExtension
+            if (pathExtension.isNotNullOrEmpty()) {
+                if (filePath.fileExtension == null || !pathExtension.equals(filePath.fileExtension, true)) return false
+            }
         }
+        val paths = config.paths
         if (paths.isNotEmpty()) {
+            val pathStrict = config.pathStrict
             for (path in paths) {
                 if (path.matchesPath(filePath.path, strict = pathStrict)) return true
             }
             return false
         } else {
+            val pathExtension = config.pathExtension
             if (pathFile.isNullOrEmpty() && pathExtension.isNullOrEmpty()) return false
             return true
         }

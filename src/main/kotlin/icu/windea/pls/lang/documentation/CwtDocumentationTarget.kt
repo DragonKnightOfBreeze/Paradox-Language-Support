@@ -372,7 +372,7 @@ private fun DocumentationBuilder.addScopeContext(element: PsiElement, referenceE
 }
 
 private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
-    val documentation = ParadoxPsiManager.getDocumentation(element, CwtElementTypes.DOC_COMMENT)
+    val documentation = ParadoxPsiManager.getDocCommentText(element, CwtElementTypes.DOC_COMMENT, "<br>")
     if (documentation.isNullOrEmpty()) return
     content {
         append(documentation)

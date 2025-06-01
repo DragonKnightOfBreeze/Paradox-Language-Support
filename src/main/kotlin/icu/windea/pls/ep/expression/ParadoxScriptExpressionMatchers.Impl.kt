@@ -98,53 +98,54 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
 class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
     override fun matches(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, config: CwtConfig<*>?, configGroup: CwtConfigGroup, options: Int): Result? {
         val project = configGroup.project
+        val dataType = configExpression.type
         return when {
-            configExpression.type == CwtDataTypes.PercentageField -> {
+            dataType == CwtDataTypes.PercentageField -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 val r = ParadoxTypeManager.isPercentageField(expression.value)
                 Result.of(r)
             }
-            configExpression.type == CwtDataTypes.DateField -> {
+            dataType == CwtDataTypes.DateField -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 val r = ParadoxTypeManager.isDateField(expression.value)
                 Result.of(r)
             }
-            configExpression.type == CwtDataTypes.Localisation -> {
+            dataType == CwtDataTypes.Localisation -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (!expression.value.isParameterAwareIdentifier('.', '-', '\'')) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 ParadoxExpressionMatcher.Impls.getLocalisationMatchResult(element, expression, project)
             }
-            configExpression.type == CwtDataTypes.SyncedLocalisation -> {
+            dataType == CwtDataTypes.SyncedLocalisation -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (!expression.value.isParameterAwareIdentifier('.', '-', '\'')) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 ParadoxExpressionMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
             }
-            configExpression.type == CwtDataTypes.InlineLocalisation -> {
+            dataType == CwtDataTypes.InlineLocalisation -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.quoted) return Result.FallbackMatch //"quoted_string" -> any string
                 if (!expression.value.isParameterAwareIdentifier('.', '-', '\'')) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 ParadoxExpressionMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
             }
-            configExpression.type == CwtDataTypes.Definition -> {
+            dataType == CwtDataTypes.Definition -> {
                 //can be an integer here (e.g., for <technology_tier>)
                 if (!expression.type.isStringType() && expression.type != ParadoxType.Int) return Result.NotMatch
                 if (!expression.value.isParameterAwareIdentifier('.', '-')) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 ParadoxExpressionMatcher.Impls.getDefinitionMatchResult(element, expression, configExpression, project)
             }
-            configExpression.type == CwtDataTypes.AbsoluteFilePath -> {
+            dataType == CwtDataTypes.AbsoluteFilePath -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 Result.ExactMatch
             }
-            configExpression.type in CwtDataTypeGroups.PathReference -> {
+            dataType in CwtDataTypeGroups.PathReference -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 ParadoxExpressionMatcher.Impls.getPathReferenceMatchResult(element, expression, configExpression, project)
             }
-            configExpression.type == CwtDataTypes.EnumValue -> {
+            dataType == CwtDataTypes.EnumValue -> {
                 if (expression.type.isBlockLikeType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 val name = expression.value
@@ -164,7 +165,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 }
                 Result.NotMatch
             }
-            configExpression.type in CwtDataTypeGroups.DynamicValue -> {
+            dataType in CwtDataTypeGroups.DynamicValue -> {
                 if (expression.type.isBlockLikeType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 //dynamicValue的值必须合法
@@ -174,7 +175,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (dynamicValueType == null) return Result.NotMatch
                 Result.FallbackMatch
             }
-            configExpression.type in CwtDataTypeGroups.ScopeField -> {
+            dataType in CwtDataTypeGroups.ScopeField -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 val textRange = TextRange.create(0, expression.value.length)
@@ -183,11 +184,11 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (scopeFieldExpression.getAllErrors(null).isNotEmpty()) return Result.PartialMatch
                 ParadoxExpressionMatcher.Impls.getScopeFieldMatchResult(element, scopeFieldExpression, configExpression, configGroup)
             }
-            configExpression.type in CwtDataTypeGroups.ValueField -> {
+            dataType in CwtDataTypeGroups.ValueField -> {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
-                if (configExpression.type == CwtDataTypes.ValueField) {
+                if (dataType == CwtDataTypes.ValueField) {
                     if (expression.type.isFloatType() || ParadoxTypeManager.resolve(expression.value).isFloatType()) return Result.ExactMatch
-                } else if (configExpression.type == CwtDataTypes.IntValueField) {
+                } else if (dataType == CwtDataTypes.IntValueField) {
                     if (expression.type.isIntType() || ParadoxTypeManager.resolve(expression.value).isIntType()) return Result.ExactMatch
                 }
 
@@ -199,11 +200,11 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (valueFieldExpression.getAllErrors(null).isNotEmpty()) return Result.PartialMatch
                 Result.ExactMatch
             }
-            configExpression.type in CwtDataTypeGroups.VariableField -> {
+            dataType in CwtDataTypeGroups.VariableField -> {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
-                if (configExpression.type == CwtDataTypes.VariableField) {
+                if (dataType == CwtDataTypes.VariableField) {
                     if (expression.type.isFloatType() || ParadoxTypeManager.resolve(expression.value).isFloatType()) return Result.ExactMatch
-                } else if (configExpression.type == CwtDataTypes.IntVariableField) {
+                } else if (dataType == CwtDataTypes.IntVariableField) {
                     if (expression.type.isIntType() || ParadoxTypeManager.resolve(expression.value).isIntType()) return Result.ExactMatch
                 }
 
@@ -215,7 +216,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (variableFieldExpression.getAllErrors(null).isNotEmpty()) return Result.PartialMatch
                 Result.ExactMatch
             }
-            configExpression.type == CwtDataTypes.DatabaseObject -> {
+            dataType == CwtDataTypes.DatabaseObject -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 val textRange = TextRange.create(0, expression.value.length)
@@ -224,7 +225,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (databaseObjectExpression.getAllErrors(null).isNotEmpty()) return Result.PartialMatch
                 Result.ExactMatch
             }
-            configExpression.type == CwtDataTypes.DefineReference -> {
+            dataType == CwtDataTypes.DefineReference -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 val textRange = TextRange.create(0, expression.value.length)
@@ -233,65 +234,65 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (defineReferenceExpression.getAllErrors(null).isNotEmpty()) return Result.PartialMatch
                 Result.ExactMatch
             }
-            configExpression.type == CwtDataTypes.Modifier -> {
+            dataType == CwtDataTypes.Modifier -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (!expression.value.isParameterAwareIdentifier()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 ParadoxExpressionMatcher.Impls.getModifierMatchResult(element, expression, configGroup)
             }
-            configExpression.type == CwtDataTypes.SingleAliasRight -> {
+            dataType == CwtDataTypes.SingleAliasRight -> {
                 Result.NotMatch //不在这里处理
             }
-            configExpression.type == CwtDataTypes.AliasKeysField -> {
+            dataType == CwtDataTypes.AliasKeysField -> {
                 if (!expression.type.isStringLikeType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 val aliasName = configExpression.value ?: return Result.NotMatch
                 val aliasSubName = ParadoxExpressionManager.getAliasSubName(element, expression.value, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
                 ParadoxExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup)
             }
-            configExpression.type == CwtDataTypes.AliasName -> {
+            dataType == CwtDataTypes.AliasName -> {
                 if (!expression.type.isStringLikeType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 val aliasName = configExpression.value ?: return Result.NotMatch
                 val aliasSubName = ParadoxExpressionManager.getAliasSubName(element, expression.value, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
                 ParadoxExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup)
             }
-            configExpression.type == CwtDataTypes.AliasMatchLeft -> {
+            dataType == CwtDataTypes.AliasMatchLeft -> {
                 return Result.NotMatch //不在这里处理
             }
-            configExpression.type == CwtDataTypes.Any -> {
+            dataType == CwtDataTypes.Any -> {
                 Result.FallbackMatch
             }
-            configExpression.type == CwtDataTypes.Parameter -> {
+            dataType == CwtDataTypes.Parameter -> {
                 //匹配参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
                 if (!expression.type.isStringLikeType()) return Result.NotMatch
                 if (!expression.value.isParameterAwareIdentifier()) return Result.NotMatch
                 Result.ExactMatch
             }
-            configExpression.type == CwtDataTypes.ParameterValue -> {
+            dataType == CwtDataTypes.ParameterValue -> {
                 //匹配参数值（只要不是子句即可匹配）
                 if (expression.type == ParadoxType.Block) return Result.NotMatch
                 Result.ExactMatch
             }
-            configExpression.type == CwtDataTypes.LocalisationParameter -> {
+            dataType == CwtDataTypes.LocalisationParameter -> {
                 //匹配本地化参数名（即使对应的定义声明中不存在对应名字的参数，也可以匹配）
                 if (!expression.type.isStringLikeType()) return Result.NotMatch
                 if (!expression.value.isParameterAwareIdentifier('.', '-', '\'')) return Result.NotMatch
                 Result.ExactMatch
             }
-            configExpression.type == CwtDataTypes.ShaderEffect -> {
+            dataType == CwtDataTypes.ShaderEffect -> {
                 //TODO 1.2.2+ 暂时作为一般的字符串处理
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 Result.FallbackMatch
             }
-            configExpression.type == CwtDataTypes.StellarisNameFormat -> {
+            dataType == CwtDataTypes.StellarisNameFormat -> {
                 //TODO 1.2.2+ 需要考虑进一步的支持
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 Result.FallbackMatch
             }
-            configExpression.type == CwtDataTypes.TechnologyWithLevel -> {
+            dataType == CwtDataTypes.TechnologyWithLevel -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.value.length > 1 && expression.value.indexOf('@') >= 1) return Result.ExactMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch

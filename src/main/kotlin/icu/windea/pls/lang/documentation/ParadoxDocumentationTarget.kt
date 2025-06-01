@@ -167,7 +167,6 @@ private fun getDefinitionDoc(element: ParadoxScriptProperty, definitionInfo: Par
 }
 
 private fun getLocalisationPropertyDoc(element: ParadoxLocalisationProperty, originalElement: PsiElement?, quickNavigation: Boolean): String {
-    val name = element.name
     val localisationInfo = element.localisationInfo
     if (localisationInfo != null) return getLocalisationDoc(element, localisationInfo, originalElement, quickNavigation)
 
@@ -518,7 +517,6 @@ private fun DocumentationBuilder.addSuperDefinitionInfo(definition: ParadoxScrip
 private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
     val localisationInfos = definitionInfo.localisations
     if (localisationInfos.isEmpty()) return
-    val project = element.project
     val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
     val map = mutableMapOf<String, String>()
     val sections = getSections(SECTIONS_LOC)
@@ -788,7 +786,7 @@ private fun DocumentationBuilder.buildDocumentationContent(element: ParadoxScrip
 private fun DocumentationBuilder.buildLineCommentContent(element: PsiElement) {
     //加上单行注释文本
     if (!getSettings().documentation.renderLineComment) return
-    val docText = getLineCommentDocText(element)
+    val docText = ParadoxPsiManager.getLineCommentText(element, "<br>")
     if (docText.isNotNullOrEmpty()) {
         content {
             append(docText)
