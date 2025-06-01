@@ -1,6 +1,18 @@
 # Changelog
 
-## PLANNED
+## Unreleased
+
+* [ ] 优化：优化插件性能 / OP: Optimize plugin performance
+* [ ] 优化：通过快速文档为参数和命令提供其中使用的格式标签的说明 / OP: Provide information about format tags used in parameters and commands through quick documentation
+* [ ] 新功能：支持来自规则仓库的规则分组，且允许配置仓库链接 / NEW: Support config groups from config repositories, and allow to configure repository urls
+* [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
+* [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
+
+TODO
+
+* [ ] CWT文档注释，解析 渲染，代码重构后功能是否仍然正常
+
+PLANNED
 
 * [ ] 进一步优化脚本文件与本地化文件的 lexer 和 parser 的实现
 * [ ] 兼容更加复杂的本地化命令（例如，带有多个参数、用引号括起的参数）
@@ -13,17 +25,7 @@
 * [ ] 提供对魔法注释的初步支持，用于批量处理和生成脚本文件和本地化文件的内容
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
 
-TODO
-
-* [ ] CWT文档注释，解析 渲染，代码重构后功能是否仍然正常
-
 ## 1.4.2
-
-* [ ] 优化：优化插件性能 / OP: Optimize plugin performance
-* [ ] 优化：通过快速文档为参数和命令提供其中使用的格式标签的说明 / OP: Provide information about format tags used in parameters and commands through quick documentation
-* [ ] 新功能：支持来自规则仓库的规则分组，且允许配置仓库链接 / NEW: Support config groups from config repositories, and allow to configure repository urls
-* [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
-* [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.4.1
 

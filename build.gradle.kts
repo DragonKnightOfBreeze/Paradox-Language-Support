@@ -154,7 +154,6 @@ changelog {
     headerParserRegex.set("""[a-zA-Z0-9.]+""".toRegex())
     groups.empty()
     keepUnreleasedSection = true
-    unreleasedTerm = "PLANNED"
     repositoryUrl = properties("pluginRepositoryUrl")
 }
 

@@ -33,6 +33,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+
   # Run Gradle Wrapper Validation Action to verify the wrapper's checksum
   # Run verifyPlugin, IntelliJ Plugin Verifier, and test Gradle tasks
   # Build plugin and provide the artifact for the next workflow jobs
@@ -46,8 +47,19 @@ jobs:
     steps:
 
     # Check out the current repository
-    - name: Fetch Sources
+    - name: Checkout
       uses: actions/checkout@v4
+
+    # Gradle cache
+    - name: Cache Gradle
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: gradle-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties') }}
+        restore-keys: |
+          gradle-${{ runner.os }}-
 
     # Validate wrapper
     - name: Gradle Wrapper Validation
@@ -63,6 +75,10 @@ jobs:
     # Setup Gradle
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
+
+    # Set gradlew executable permission
+    - name: Set gradlew executable permission
+      run: chmod +x gradlew
 
     # Set environment variables
     - name: Export Properties
@@ -113,19 +129,34 @@ jobs:
     steps:
 
     # Check out the current repository
-    - name: Fetch Sources
+    - name: Checkout
       uses: actions/checkout@v4
+
+    # Gradle cache
+    - name: Cache Gradle
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: gradle-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties') }}
+        restore-keys: |
+          gradle-${{ runner.os }}-
 
     # Set up Java environment for the next steps
     - name: Setup Java
       uses: actions/setup-java@v4
       with:
         distribution: zulu
-        java-version: 11
+        java-version: 21
 
     # Setup Gradle
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
+
+    # Set gradlew executable permission
+    - name: Set gradlew executable permission
+      run: chmod +x gradlew
 
     # Run tests
     - name: Run Tests
@@ -160,6 +191,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    # Gradle cache
+    - name: Cache Gradle
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: gradle-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties') }}
+        restore-keys: |
+          gradle-${{ runner.os }}-
+
     # Free GitHub Actions Environment Disk Space
     - name: Maximize Build Space
       uses: jlumbroso/free-disk-space@main
@@ -181,6 +223,10 @@ jobs:
     # Setup Gradle
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
+
+    # Set gradlew executable permission
+    - name: Set gradlew executable permission
+      run: chmod +x gradlew
 
     # Cache Plugin Verifier IDEs
     - name: Setup Plugin Verifier IDEs Cache
@@ -206,7 +252,7 @@ jobs:
   # If accepted and published, release workflow would be triggered
   releaseDraft:
     name: Release Draft
-    if: github.ref_name == 'master' && github.event_name != 'pull_request'
+    # if: ${{ github.ref_name == 'master' && github.event_name != 'pull_request' }}
     needs: [ build, test, verify ]
     runs-on: ubuntu-latest
     permissions:
