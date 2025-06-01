@@ -9,6 +9,7 @@ on:
     types: [ released ]
 
 jobs:
+
   # Prepare and publish the plugin to JetBrains Marketplace repository
   release:
     name: Publish Plugin
@@ -37,8 +38,6 @@ jobs:
     # Setup Gradle
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
-      with:
-        gradle-home-cache-cleanup: true
 
     # Set environment variables
     - name: Export Properties
