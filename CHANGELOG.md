@@ -13,7 +13,7 @@
 * [ ] 提供对魔法注释的初步支持，用于批量处理和生成脚本文件和本地化文件的内容
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
 
-## TODO
+TODO
 
 * [ ] CWT文档注释，解析 渲染，代码重构后功能是否仍然正常
 

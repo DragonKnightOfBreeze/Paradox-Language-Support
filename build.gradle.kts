@@ -9,49 +9,11 @@ plugins {
     id("org.jetbrains.changelog") version "2.2.1" // https://github.com/JetBrains/gradle-changelog-plugin
 }
 
-group = providers.gradleProperty("pluginGroup").get()
-version = providers.gradleProperty("pluginVersion").get()
+fun properties(key: String) = providers.gradleProperty(key)
+fun envVars(key: String) = providers.environmentVariable(key)
 
-fun String.toChangeLogText(): String {
-    val regex1 = """[-*] \[ ].*""".toRegex()
-    val regex2 = """[-*] \[[xX]].*""".toRegex()
-    val regex3 = """[-*]{3,}""".toRegex()
-    return lines().asSequence()
-        .dropWhile { !it.startsWith("## $version") }.drop(1)
-        .takeWhile { !it.startsWith("## ") }
-        .mapNotNull {
-            when {
-                it.contains("(HIDDEN)") -> null // hidden
-                it.matches(regex1) -> null // undo
-                it.matches(regex2) -> "*" + it.substring(5) // done
-                it.matches(regex3) -> null // horizontal line
-                else -> it
-            }
-        }
-        .joinToString("\n").trim()
-        .let { markdownToHTML(it) }
-}
-
-intellijPlatform {
-    pluginConfiguration {
-        id = providers.gradleProperty("pluginId")
-        name = providers.gradleProperty("pluginName")
-        version = providers.gradleProperty("pluginVersion")
-        description = provider { projectDir.resolve("DESCRIPTION.md").readText() }
-        changeNotes = provider { projectDir.resolve("CHANGELOG.md").readText().toChangeLogText() }
-        ideaVersion {
-            sinceBuild = providers.gradleProperty("sinceBuild")
-            untilBuild = provider { null }
-        }
-    }
-    publishing {
-        token = providers.environmentVariable("IDEA_TOKEN")
-    }
-}
-
-grammarKit {
-    jflexRelease = provider { "1.7.0-2" }
-}
+group = properties("pluginGroup").get()
+version = properties("pluginVersion").get()
 
 repositories {
     mavenCentral()
@@ -62,8 +24,8 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        val type = providers.gradleProperty("platformType")
-        val version = providers.gradleProperty("platformVersion")
+        val type = properties("platformType")
+        val version = properties("platformVersion")
         create(type, version) // https://github.com/JetBrains/intellij-platform-plugin
 
         testFramework(TestFrameworkType.Platform)
@@ -140,6 +102,66 @@ kotlin {
     }
 }
 
+intellijPlatform {
+    pluginConfiguration {
+        id = properties("pluginId")
+        name = properties("pluginName")
+        version = properties("pluginVersion")
+        description = projectDir.resolve("DESCRIPTION.md").readText()
+        // local variable for configuration cache compatibility
+        val changelog = project.changelog
+        // Get the latest available change notes from the changelog file
+        changeNotes = properties("pluginVersion").map { pluginVersion ->
+            with(changelog) {
+                @Suppress("UNCHECKED_CAST")
+                fun handleChangelogItem(changelogItem: Changelog.Item) {
+                    val items = changelogItem.javaClass.getDeclaredField("items").also { it.trySetAccessible() }.get(changelogItem)
+                        as? MutableMap<String, Set<String>> ?: return
+                    items.keys.forEach { key ->
+                        val item = items[key]
+                        if (item.isNullOrEmpty()) return@forEach
+                        val finalItem = item.mapNotNull {
+                            when {
+                                it.contains("HIDDEN") -> null // hidden
+                                it.startsWith("[ ]") -> null // undo
+                                it.startsWith("[x]") || it.startsWith("[X]") -> it.drop(3).trim() // done
+                                else -> it.trim()
+                            }
+                        }.toSet()
+                        items[key] = finalItem
+                    }
+                }
+
+                val changelogItem = getOrNull(pluginVersion) ?: getUnreleased()
+                handleChangelogItem(changelogItem)
+                renderItem(changelogItem.withHeader(false).withEmptySections(false), Changelog.OutputType.HTML)
+            }
+        }
+
+        ideaVersion {
+            sinceBuild = properties("sinceBuild")
+            untilBuild = null
+        }
+    }
+    publishing {
+        token = envVars("IDEA_TOKEN")
+    }
+}
+
+// Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
+changelog {
+    header = version
+    headerParserRegex.set("""[a-zA-Z0-9.]+""".toRegex())
+    groups.empty()
+    keepUnreleasedSection = true
+    unreleasedTerm = "PLANNED"
+    repositoryUrl = properties("pluginRepositoryUrl")
+}
+
+grammarKit {
+    jflexRelease = "1.7.0-2"
+}
+
 val excludesInJar = listOf(
     "icu/windea/pls/dev",
     "icu/windea/pls/core/data/CsvExtensions*.class",
@@ -196,14 +218,13 @@ tasks {
         // 排除特定文件
         excludesInZip.forEach { exclude(it) }
         // 重命名插件包
-        archiveBaseName = providers.gradleProperty("pluginPackageName")
+        archiveBaseName = properties("pluginPackageName")
     }
     runIde {
         jvmArgumentProviders += CommandLineArgumentProvider {
             listOf(
                 "-Didea.is.internal=true",
                 "-Dpls.is.debug=true",
-                "-Xmx4G",
             )
         }
     }
