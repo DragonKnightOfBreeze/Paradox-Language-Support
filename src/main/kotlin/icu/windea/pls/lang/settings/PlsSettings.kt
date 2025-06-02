@@ -29,7 +29,7 @@ class PlsSettingsState : BaseState() {
     var preferredLocale by string(ParadoxLocaleManager.ID_AUTO)
     var ignoredFileNames by string("readme.txt,changelog.txt,license.txt,credits.txt")
 
-    val ignoredFileNameSet by ::ignoredFileNames.observe { it?.toCommaDelimitedStringSet(caseInsensitiveStringSet()).orEmpty() }
+    val ignoredFileNameSet by ::ignoredFileNames.fromCommandDelimitedString(true)
 
     @get:Property(surroundWithTag = false)
     var documentation by property(DocumentationState())

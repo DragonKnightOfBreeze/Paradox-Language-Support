@@ -6,6 +6,7 @@ import com.intellij.openapi.options.ex.Settings
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.extension.diagram.settings.PlsDiagramSettingsConfigurable
 import icu.windea.pls.integrations.*
 
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {
@@ -47,11 +48,13 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                     checkBox(PlsBundle.message("settings.integrations.translation.from.ai")).selected(true).enabled(false)
                     link(PlsBundle.message("settings.integrations.translation.from.ai.link")) {
                         DataManager.getInstance().dataContextFromFocusAsync.then {
-                            Settings.KEY.getData(it)?.let { settings ->
-                                //settings.find(PlsAiSettingsConfigurable::class.java)?.let { configurable ->
-                                //    settings.select(configurable)
-                                //}
-                            }
+                            //Settings.KEY.getData(it)?.let { settings ->
+                            //    settings.find(PlsAiSettingsConfigurable::class.java)?.let { configurable ->
+                            //        settings.select(configurable)
+                            //    }
+                            //}
+                            //or?
+                            //ShowSettingsUtil.getInstance().showSettingsDialog(project, PlsAiSettingsConfigurable::class.java)
                         }
                     }
                 }.visible(false) //TODO 2.0.0-dev

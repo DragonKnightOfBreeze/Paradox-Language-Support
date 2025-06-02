@@ -5,9 +5,9 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
-import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.bindTextWhenChanged
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
@@ -25,9 +25,8 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     var checkForPreferredLocale = true
     @JvmField
     var checkForSpecificLocales = true
-    @OptionTag(converter = CommaDelimitedStringSetConverter::class)
     @JvmField
-    var locales = mutableSetOf<String>()
+    var locales = ""
     @JvmField
     var checkForDefinitions = true
     @JvmField
@@ -47,13 +46,15 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField
     var checkModifierDescriptions = false
 
+    var localeSet: Set<String> by ::locales.fromCommandDelimitedString()
+
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
         val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
         val locales = mutableSetOf<CwtLocalisationLocaleConfig>()
         if (checkForPreferredLocale) locales.add(ParadoxLocaleManager.getPreferredLocaleConfig())
-        if (checkForSpecificLocales) this.locales.mapNotNullTo(locales) { allLocaleMap.get(it) }
+        if (checkForSpecificLocales) localeSet.mapNotNullTo(locales) { allLocaleMap.get(it) }
         if (locales.isEmpty()) return PsiElementVisitor.EMPTY_VISITOR
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -154,13 +155,15 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 checkBox(PlsBundle.message("inspection.script.missingLocalisation.option.checkForSpecificLocales"))
                     .bindSelected(::checkForSpecificLocales)
                     .actionListener { _, component -> checkForSpecificLocales = component.isSelected }
+                val cb = textField().bindText(::locales).bindTextWhenChanged(::locales).visible(false).component
                 cell(ActionLink(PlsBundle.message("inspection.script.missingLocalisation.option.checkForSpecificLocales.configure")) {
                     val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
-                    val selectedLocales = locales.mapNotNull { allLocaleMap.get(it) }
+                    val selectedLocales = localeSet.mapNotNull { allLocaleMap.get(it) }
                     val dialog = ParadoxLocaleCheckBoxDialog(selectedLocales, allLocaleMap.values)
                     if (dialog.showAndGet()) {
-                        val newLocales = dialog.localeStatusMap.mapNotNullTo(mutableSetOf()) { (k, v) -> if (v) k.id else null }
-                        locales = newLocales
+                        val newLocaleSet = dialog.localeStatusMap.mapNotNullTo(mutableSetOf()) { (k, v) -> if (v) k.id else null }
+                        localeSet = newLocaleSet
+                        cb.text = locales //通知UI locales 已经被更改
                     }
                 })
             }

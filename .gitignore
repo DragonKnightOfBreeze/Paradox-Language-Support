@@ -1,3 +1,4 @@
+*.java~
 lib/
 tmp/
 cwt/cwtools-*-config

@@ -1,5 +1,6 @@
 package icu.windea.pls.core.util
 
+import icu.windea.pls.core.EMPTY_OBJECT
 import kotlin.properties.*
 import kotlin.reflect.*
 
@@ -8,16 +9,19 @@ import kotlin.reflect.*
  *
  * 监听另一个属性的更改，如果发生，此属性的值也会同步进行更改。
  */
-class ObservableProperty<T, V>(private val target: KMutableProperty0<T>, private val transform: (T) -> V) : ReadOnlyProperty<Any?, V> {
+open class ObservableProperty<T, V>(
+    protected val target: KMutableProperty0<T>,
+    protected val transform: (T) -> V
+) : ReadOnlyProperty<Any?, V> {
     @Volatile
-    private var targetValue: T? = null
+    protected var targetValue: T? = null
     @Volatile
-    private var value: Any? = UNINITIALIZED_VALUE
+    protected var value: Any? = EMPTY_OBJECT
 
     @Suppress("UNCHECKED_CAST")
     override fun getValue(thisRef: Any?, property: KProperty<*>): V {
         val newTargetValue = target.get()
-        if (value === UNINITIALIZED_VALUE) {
+        if (value === EMPTY_OBJECT) {
             targetValue = newTargetValue
             value = transform(newTargetValue)
             return value as V
@@ -33,6 +37,6 @@ class ObservableProperty<T, V>(private val target: KMutableProperty0<T>, private
     }
 }
 
-private val UNINITIALIZED_VALUE = Any()
-
-fun <T, V> KMutableProperty0<T>.observe(transform: (T) -> V) = ObservableProperty(this, transform)
+fun <T, V> KMutableProperty0<T>.observe(transform: (T) -> V): ObservableProperty<T, V> {
+    return ObservableProperty(this, transform)
+}
