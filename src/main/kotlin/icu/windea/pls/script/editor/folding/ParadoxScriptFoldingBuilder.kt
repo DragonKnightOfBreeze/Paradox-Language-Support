@@ -11,6 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.editor.folding.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -29,7 +30,7 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
-        val settings = getSettings().folding
+        val settings = PlsFacade.getSettings().folding
         return when (node.elementType) {
             COMMENT -> settings.commentByDefault
             BLOCK -> false
@@ -40,7 +41,7 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
-        val settings = getSettings().folding
+        val settings = PlsFacade.getSettings().folding
         collectDescriptorsRecursively(root.node, document, descriptors, settings)
     }
 

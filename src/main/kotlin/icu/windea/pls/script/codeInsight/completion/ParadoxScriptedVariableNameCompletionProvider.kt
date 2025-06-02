@@ -10,6 +10,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.script.psi.*
 
 /**
@@ -17,7 +18,7 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxScriptedVariableNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!getSettings().completion.completeScriptedVariableNames) return
+        if (!PlsFacade.getSettings().completion.completeScriptedVariableNames) return
 
         val position = parameters.position
         val element = position.parent?.castOrNull<ParadoxScriptScriptedVariable>() ?: return

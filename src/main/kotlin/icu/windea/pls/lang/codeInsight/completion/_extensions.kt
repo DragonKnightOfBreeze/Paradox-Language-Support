@@ -25,6 +25,7 @@ import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.cwt.codeStyle.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.ui.clause.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -155,7 +156,7 @@ fun <T : LookupElement> T.withForceInsertCurlyBraces(forceInsertCurlyBraces: Boo
 }
 
 fun LookupElementBuilder.withDefinitionLocalizedNamesIfNecessary(element: ParadoxScriptDefinitionElement): LookupElementBuilder {
-    if (getSettings().completion.completeByLocalizedName) {
+    if (PlsFacade.getSettings().completion.completeByLocalizedName) {
         ProgressManager.checkCanceled()
         localizedNames = ParadoxDefinitionManager.getLocalizedNames(element)
     }
@@ -163,7 +164,7 @@ fun LookupElementBuilder.withDefinitionLocalizedNamesIfNecessary(element: Parado
 }
 
 fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: String, element: PsiElement): LookupElementBuilder {
-    if (getSettings().completion.completeByLocalizedName) {
+    if (PlsFacade.getSettings().completion.completeByLocalizedName) {
         ProgressManager.checkCanceled()
         localizedNames = ParadoxModifierManager.getModifierLocalizedNames(modifierName, element, element.project)
     }
@@ -172,10 +173,10 @@ fun LookupElementBuilder.withModifierLocalizedNamesIfNecessary(modifierName: Str
 
 fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): LookupElement? {
     //check whether scope is matched again here
-    if ((!scopeMatched || !context.scopeMatched) && getSettings().completion.completeOnlyScopeIsMatched) return null
+    if ((!scopeMatched || !context.scopeMatched) && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) return null
 
     val config = context.config
-    val completeWithValue = getSettings().completion.completeWithValue
+    val completeWithValue = PlsFacade.getSettings().completion.completeWithValue
     val targetConfig = when {
         config is CwtPropertyConfig -> config
         config is CwtAliasConfig -> config.config
@@ -236,7 +237,7 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
     val extraElements = mutableListOf<LookupElement>()
 
     //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
-    if (isKey == true && !isKeyOnly && isBlock && config != null && getSettings().completion.completeWithClauseTemplate) {
+    if (isKey == true && !isKeyOnly && isBlock && config != null && PlsFacade.getSettings().completion.completeWithClauseTemplate) {
         val entryConfigs = ParadoxExpressionManager.getEntryConfigs(config)
         if (entryConfigs.isNotEmpty()) {
             val extraTailText = buildString {
@@ -327,7 +328,7 @@ private fun LookupElementBuilder.withExpandClauseTemplateInsertHandler(context: 
             val hasRemain = descriptorsContext.descriptorsInfo.hasRemain
 
             val customSettings = CodeStyle.getCustomSettings(file, ParadoxScriptCodeStyleSettings::class.java)
-            val multiline = descriptors.size > getSettings().completion.clauseTemplate.maxMemberCountInOneLine
+            val multiline = descriptors.size > PlsFacade.getSettings().completion.clauseTemplate.maxMemberCountInOneLine
             val around = customSettings.SPACE_AROUND_PROPERTY_SEPARATOR
 
             val documentManager = PsiDocumentManager.getInstance(project)
@@ -426,7 +427,7 @@ fun CompletionResultSet.addBlockScriptExpressionElement(context: ProcessingConte
     addElement(lookupElement)
 
     //进行提示并在提示后插入子句内联模版（仅当子句中允许键为常量字符串的属性时才会提示）
-    if (getSettings().completion.completeWithClauseTemplate) {
+    if (PlsFacade.getSettings().completion.completeWithClauseTemplate) {
         val config = context.config!!
         val entryConfigs = ParadoxExpressionManager.getEntryConfigs(config)
         if (entryConfigs.isNotEmpty()) {

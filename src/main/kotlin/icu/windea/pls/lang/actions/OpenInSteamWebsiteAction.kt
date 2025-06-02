@@ -5,6 +5,7 @@ import com.intellij.ide.actions.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
@@ -14,9 +15,7 @@ import icu.windea.pls.model.*
 class OpenInSteamWebsiteAction : DumbAwareAction() {
     //仅限游戏或模组的根目录
 
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         e.presentation.isEnabledAndVisible = false
@@ -49,8 +48,8 @@ class OpenInSteamWebsiteAction : DumbAwareAction() {
         val rootInfo = fileInfo.rootInfo
         val steamId = rootInfo.steamId ?: return null
         return when (rootInfo) {
-            is ParadoxRootInfo.Game -> getDataProvider().getSteamGameStoreUrl(steamId)
-            is ParadoxRootInfo.Mod -> getDataProvider().getSteamWorkshopUrl(steamId)
+            is ParadoxRootInfo.Game -> PlsFacade.getDataProvider().getSteamGameStoreUrl(steamId)
+            is ParadoxRootInfo.Mod -> PlsFacade.getDataProvider().getSteamWorkshopUrl(steamId)
         }
     }
 }

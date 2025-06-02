@@ -5,8 +5,8 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.*
 import icu.windea.pls.core.actions.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import kotlinx.coroutines.*
@@ -72,6 +72,6 @@ class ParadoxLocalisationFloatingToolbar(
     }
 
     private fun shouldShowFloatingToolbar(): Boolean {
-        return getSettings().others.showLocalisationFloatingToolbar
+        return PlsFacade.getSettings().others.showLocalisationFloatingToolbar
     }
 }

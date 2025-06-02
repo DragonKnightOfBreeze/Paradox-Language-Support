@@ -1,5 +1,7 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
+    <applicationConfigurable id="pls.config" parentId="pls" bundle="messages.PlsBundle" key="settings.config" instance="icu.windea.pls.config.settings.PlsConfigSettingsConfigurable"/>
+
     <fileIconProvider implementation="icu.windea.pls.config.CwtConfigFileIconProvider" order="first"/>
     <editorNotificationProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupEditorNotificationProvider"/>
     <editorFloatingToolbarProvider implementation="icu.windea.pls.config.configGroup.ConfigGroupRefreshFloatingProvider"/>
@@ -9,9 +11,15 @@
 
   <!--ExternalSystem.ProjectRefreshActionGroup-->
   <actions>
+    <action id="Pls.SyncConfigGroupFromRemote" class="icu.windea.pls.config.configGroup.ConfigGroupSyncFromRemoteAction">
+      <keyboard-shortcut keymap="$default" first-keystroke="alt t"/>
+      <add-to-group group-id="Pls.Tools"/>
+      <add-to-group group-id="EditorContextBarMenu"/>
+    </action>
+
     <group id="Pls.ConfigGroupRefreshActionGroup">
       <action id="Pls.ConfigGroupRefreshAction" class="icu.windea.pls.config.configGroup.ConfigGroupRefreshAction">
-        <keyboard-shortcut first-keystroke="control shift G" keymap="$default"/>
+        <keyboard-shortcut first-keystroke="control shift g" keymap="$default"/>
       </action>
       <action id="Pls.HideConfigGroupRefreshAction" class="icu.windea.pls.config.configGroup.HideConfigGroupRefreshAction"/>
     </group>

@@ -1,6 +1,6 @@
 package icu.windea.pls.model
 
-import icu.windea.pls.lang.*
+import icu.windea.pls.*
 
 /**
  * @property id ID。
@@ -51,4 +51,4 @@ val ParadoxGameType?.title get() = this?.title ?: "Core"
 
 val ParadoxGameType?.prefix get() = if (this == null) "" else "${id}:"
 
-fun ParadoxGameType?.orDefault() = this ?: getSettings().defaultGameType
+fun ParadoxGameType?.orDefault() = this ?: PlsFacade.getSettings().defaultGameType

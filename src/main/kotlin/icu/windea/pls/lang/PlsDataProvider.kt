@@ -1,6 +1,7 @@
 package icu.windea.pls.lang
 
 import com.intellij.openapi.components.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import kotlinx.coroutines.*
@@ -34,7 +35,7 @@ class PlsDataProvider {
     private val steamPathCache = ConcurrentHashMap<String, String>()
 
     private fun initForPaths() {
-        val coroutineScope = getCoroutineScope()
+        val coroutineScope = PlsFacade.getCoroutineScope()
         coroutineScope.launch {
             launch {
                 getSteamPath()

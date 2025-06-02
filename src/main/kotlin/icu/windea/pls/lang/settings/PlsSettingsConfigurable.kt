@@ -3,7 +3,6 @@ package icu.windea.pls.lang.settings
 import com.intellij.openapi.application.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.ui.*
-import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDescriptor
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.panel
@@ -14,23 +13,23 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.PlsStrategies.*
-import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.model.*
 import java.awt.event.*
 
-@Suppress("UnstableApiUsage")
 class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings")), SearchableConfigurable {
     override fun getId() = "pls"
 
+    private val groupNameGeneral = "general"
+
     override fun createPanel(): DialogPanel {
-        val settings = getSettings()
+        val settings = PlsFacade.getSettings()
         return panel {
             //general
             group(PlsBundle.message("settings.general")) {
                 //defaultGameType
                 row {
-                    label(PlsBundle.message("settings.general.defaultGameType")).widthGroup("general")
+                    label(PlsBundle.message("settings.general.defaultGameType")).widthGroup(groupNameGeneral)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameType.tooltip") }
                     var defaultGameType = settings.defaultGameType
                     comboBox(ParadoxGameType.entries).bindItem(settings::defaultGameType.toNullableProperty())
@@ -67,7 +66,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 }
                 //preferredLocale
                 row {
-                    label(PlsBundle.message("settings.general.preferredLocale")).widthGroup("general")
+                    label(PlsBundle.message("settings.general.preferredLocale")).widthGroup(groupNameGeneral)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.preferredLocale.tooltip") }
                     var preferredLocale = settings.preferredLocale
                     localeComboBox(withAuto = true).bindItem(settings::preferredLocale.toNullableProperty())
@@ -81,7 +80,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 }
                 //ignoredFileNames
                 row {
-                    label(PlsBundle.message("settings.general.ignoredFileNames")).widthGroup("general")
+                    label(PlsBundle.message("settings.general.ignoredFileNames")).widthGroup(groupNameGeneral)
                         .applyToComponent { toolTipText = PlsBundle.message("settings.general.ignoredFileNames.tooltip") }
                     var ignoredFileNameSet = settings.ignoredFileNameSet
                     expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
@@ -234,10 +233,10 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.comment"))
-                        .bindSelected(getSettings().folding::comment)
+                        .bindSelected(PlsFacade.getSettings().folding::comment)
                         .applyToComponent { cb = this }
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(getSettings().folding::commentByDefault)
+                        .bindSelected(PlsFacade.getSettings().folding::commentByDefault)
                         .enabledIf(cb.selected)
                 }
                 //parameterConditionBlocks & parameterConditionBlocksByDefault
@@ -246,7 +245,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .selected(true)
                         .enabled(false)
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(getSettings().folding::parameterConditionBlocksByDefault)
+                        .bindSelected(PlsFacade.getSettings().folding::parameterConditionBlocksByDefault)
                 }
                 //inlineMathBlocks & inlineMathBlocksByDefault
                 row {
@@ -254,76 +253,76 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .selected(true)
                         .enabled(false)
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(getSettings().folding::inlineMathBlocksByDefault)
+                        .bindSelected(PlsFacade.getSettings().folding::inlineMathBlocksByDefault)
                 }
                 //localisationReferencesFully & localisationReferencesFullyByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.localisationReferencesFully"))
-                        .bindSelected(getSettings().folding::localisationReferencesFully)
+                        .bindSelected(PlsFacade.getSettings().folding::localisationReferencesFully)
                         .applyToComponent { cb = this }
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(getSettings().folding::localisationReferencesFullyByDefault)
+                        .bindSelected(PlsFacade.getSettings().folding::localisationReferencesFullyByDefault)
                         .enabledIf(cb.selected)
                 }
                 //localisationIconsFully & localisationIconsFullyByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.localisationIconsFully"))
-                        .bindSelected(getSettings().folding::localisationIconsFully)
+                        .bindSelected(PlsFacade.getSettings().folding::localisationIconsFully)
                         .applyToComponent { cb = this }
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(getSettings().folding::localisationIconsFullyByDefault)
+                        .bindSelected(PlsFacade.getSettings().folding::localisationIconsFullyByDefault)
                         .enabledIf(cb.selected)
                 }
                 //localisationCommands & localisationCommandsByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.localisationCommands"))
-                        .bindSelected(getSettings().folding::localisationCommands)
+                        .bindSelected(PlsFacade.getSettings().folding::localisationCommands)
                         .applyToComponent { cb = this }
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(getSettings().folding::localisationCommandsByDefault)
+                        .bindSelected(PlsFacade.getSettings().folding::localisationCommandsByDefault)
                         .enabledIf(cb.selected)
                 }
                 //localisationConceptCommands & localisationConceptCommandsByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.localisationConceptCommands"))
-                        .bindSelected(getSettings().folding::localisationConceptCommands)
+                        .bindSelected(PlsFacade.getSettings().folding::localisationConceptCommands)
                         .applyToComponent { cb = this }
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(getSettings().folding::localisationConceptCommandsByDefault)
+                        .bindSelected(PlsFacade.getSettings().folding::localisationConceptCommandsByDefault)
                         .enabledIf(cb.selected)
                 }
                 //localisationConceptTexts & localisationConceptTextsByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.localisationConceptTexts"))
-                        .bindSelected(getSettings().folding::localisationConceptTexts)
+                        .bindSelected(PlsFacade.getSettings().folding::localisationConceptTexts)
                         .applyToComponent { cb = this }
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(getSettings().folding::localisationConceptTextsByDefault)
+                        .bindSelected(PlsFacade.getSettings().folding::localisationConceptTextsByDefault)
                         .enabledIf(cb.selected)
                 }
                 //scriptedVariableReferences & scriptedVariableReferencesByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.scriptedVariableReferences"))
-                        .bindSelected(getSettings().folding::scriptedVariableReferences)
+                        .bindSelected(PlsFacade.getSettings().folding::scriptedVariableReferences)
                         .applyToComponent { cb = this }
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(getSettings().folding::scriptedVariableReferencesByDefault)
+                        .bindSelected(PlsFacade.getSettings().folding::scriptedVariableReferencesByDefault)
                         .enabledIf(cb.selected)
                 }
                 //variableOperationExpressions & variableOperationExpressionsByDefault
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.folding.variableOperationExpressions"))
-                        .bindSelected(getSettings().folding::variableOperationExpressions)
+                        .bindSelected(PlsFacade.getSettings().folding::variableOperationExpressions)
                         .applyToComponent { cb = this }
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(getSettings().folding::variableOperationExpressionsByDefault)
+                        .bindSelected(PlsFacade.getSettings().folding::variableOperationExpressionsByDefault)
                         .enabledIf(cb.selected)
                 }
             }
@@ -498,44 +497,6 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
             }
             //others
             collapsibleGroup(PlsBundle.message("settings.others")) {
-                lateinit var cbLocal: JBCheckBox
-                //enableBuiltInConfigGroups
-                row {
-                    checkBox(PlsBundle.message("settings.others.enableBuiltInConfigGroups"))
-                        .bindSelected(settings.others::enableBuiltInConfigGroups)
-                        .onApply { onConfigDirectoriesChanged() }
-                }
-                //enableLocalConfigGroups
-                row {
-                    checkBox(PlsBundle.message("settings.others.enableLocalConfigGroups"))
-                        .bindSelected(settings.others::enableLocalConfigGroups)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.others.enableLocalConfigGroups.tooltip") }
-                        .onApply { onConfigDirectoriesChanged() }
-                        .applyToComponent { cbLocal = this }
-                }
-                //enableProjectLocalConfigGroups
-                row {
-                    checkBox(PlsBundle.message("settings.others.enableProjectLocalConfigGroups"))
-                        .bindSelected(settings.others::enableProjectLocalConfigGroups)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.others.enableProjectLocalConfigGroups.tooltip") }
-                        .onApply { onConfigDirectoriesChanged() }
-                }
-                //localConfigDirectory
-                row {
-                    label(PlsBundle.message("settings.others.localConfigDirectory"))
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.others.localConfigDirectory.tooltip") }
-                    val descriptor = ParadoxDirectoryDescriptor()
-                        .withTitle(PlsBundle.message("settings.others.localConfigDirectory.title"))
-                        .asBrowseFolderDescriptor()
-                    textFieldWithBrowseButton(descriptor, null)
-                        .bindText(settings.others::localConfigDirectory.toNonNullableProperty(""))
-                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
-                        .align(Align.FILL)
-                        .onApply { onConfigDirectoriesChanged() }
-                }.enabledIf(cbLocal.selected)
-
-                separator()
-
                 //showEditorContextToolbar
                 row {
                     checkBox(PlsBundle.message("settings.others.showEditorContextToolbar"))
@@ -575,11 +536,6 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     private fun onDefaultGameDirectoriesChanged(oldDefaultGameDirectories: MutableMap<String, String>, newDefaultGameDirectories: MutableMap<String, String>) {
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC).onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
-    }
-
-    private fun onConfigDirectoriesChanged() {
-        val messageBus = ApplicationManager.getApplication().messageBus
-        messageBus.syncPublisher(ParadoxConfigDirectoriesListener.TOPIC).onChange()
     }
 
     //NOTE 如果应用更改时涉及多个相关字段，下面这些回调可能同一回调会被多次调用，不过目前看来问题不大

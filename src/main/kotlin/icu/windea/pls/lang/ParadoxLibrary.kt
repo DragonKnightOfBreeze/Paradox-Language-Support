@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import javax.swing.*
 
 //each library each project
@@ -67,7 +68,7 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
 
         val newRoots = mutableSetOf<VirtualFile>()
         val projectFileIndex = ProjectFileIndex.getInstance(project)
-        val profilesSettings = getProfilesSettings()
+        val profilesSettings = PlsFacade.getProfilesSettings()
         profilesSettings.modSettings.values.forEach f@{ modSettings ->
             val modDirectory = modSettings.modDirectory ?: return@f
             val modFile = modDirectory.toVirtualFile(false) ?: return@f

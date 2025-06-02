@@ -3,6 +3,7 @@ package icu.windea.pls.tools.actions
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
@@ -10,9 +11,7 @@ import java.awt.datatransfer.*
 import java.nio.file.*
 
 abstract class CopyPathAction : DumbAwareAction() {
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         val presentation = e.presentation
@@ -45,28 +44,28 @@ abstract class CopyPathAction : DumbAwareAction() {
 
     class Steam : CopyPathAction() {
         override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
-            return getDataProvider().getSteamPath()?.toPathOrNull()
+            return PlsFacade.getDataProvider().getSteamPath()?.toPathOrNull()
         }
     }
 
     class SteamGame : CopyPathAction() {
         override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
             val gameType = fileInfo.rootInfo.gameType
-            return getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)?.toPathOrNull()
+            return PlsFacade.getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)?.toPathOrNull()
         }
     }
 
     class SteamWorkshop : CopyPathAction() {
         override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
             val gameType = fileInfo.rootInfo.gameType
-            return getDataProvider().getSteamWorkshopPath(gameType.steamId)?.toPathOrNull()
+            return PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId)?.toPathOrNull()
         }
     }
 
     class GameData : CopyPathAction() {
         override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
             val gameType = fileInfo.rootInfo.gameType
-            return getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull()
+            return PlsFacade.getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull()
         }
     }
 

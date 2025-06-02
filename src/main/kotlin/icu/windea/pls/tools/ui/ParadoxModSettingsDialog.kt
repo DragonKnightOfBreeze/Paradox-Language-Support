@@ -8,9 +8,10 @@ import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDe
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -23,7 +24,7 @@ class ParadoxModSettingsDialog(
     val oldGameType = settings.finalGameType
 
     val defaultGameVersion get() = ParadoxCoreManager.getGameVersionFromGameDirectory(defaultGameDirectory)
-    val defaultGameDirectory get() = getSettings().defaultGameDirectories[oldGameType.id]
+    val defaultGameDirectory get() = PlsFacade.getSettings().defaultGameDirectories[oldGameType.id]
 
     val graph = PropertyGraph()
     val gameTypeProperty = graph.property(oldGameType)
@@ -52,7 +53,7 @@ class ParadoxModSettingsDialog(
                 label(PlsBundle.message("mod.settings.name")).widthGroup("left")
                 textField()
                     .text(settings.name.orEmpty())
-                    .columns(36)
+                    .columns(COLUMNS_LARGE)
                     .align(Align.FILL)
                     .enabled(false)
             }
@@ -61,13 +62,13 @@ class ParadoxModSettingsDialog(
                 label(PlsBundle.message("mod.settings.version")).widthGroup("left")
                 textField()
                     .text(settings.version.orEmpty())
-                    .columns(18)
+                    .columns(COLUMNS_SHORT)
                     .enabled(false)
                 //supportedVersion
                 label(PlsBundle.message("mod.settings.supportedVersion")).widthGroup("right")
                 textField()
                     .text(settings.supportedVersion.orEmpty())
-                    .columns(18)
+                    .columns(COLUMNS_SHORT)
                     .enabled(false)
                     .visible(settings.supportedVersion.orEmpty().isNotEmpty())
             }
@@ -76,7 +77,7 @@ class ParadoxModSettingsDialog(
                 label(PlsBundle.message("mod.settings.gameType")).widthGroup("left")
                 comboBox(ParadoxGameType.entries)
                     .bindItem(gameTypeProperty)
-                    .columns(18)
+                    .columns(COLUMNS_SHORT)
                     .onApply { settings.gameType = gameTypeProperty.get() } //set game type to non-default on apply
                     .enabled(settings.inferredGameType == null) //disabled if game type can be inferred
                 //gameVersion
@@ -84,7 +85,7 @@ class ParadoxModSettingsDialog(
                 textField()
                     .applyToComponent { defaultGameVersion?.orNull()?.let { emptyText.setText(it) } }
                     .bindText(gameVersionProperty)
-                    .columns(18)
+                    .columns(COLUMNS_SHORT)
                     .enabled(false)
             }
             row {
@@ -97,7 +98,7 @@ class ParadoxModSettingsDialog(
                 textFieldWithBrowseButton(descriptor, project)
                     .applyToComponent { defaultGameDirectory?.orNull()?.let { jbTextField.emptyText.setText(it) } }
                     .bindText(gameDirectoryProperty)
-                    .columns(36)
+                    .columns(COLUMNS_LARGE)
                     .align(Align.FILL)
                     .validationOnApply { ParadoxCoreManager.validateGameDirectory(this, gameType, gameDirectory) }
             }
@@ -116,7 +117,7 @@ class ParadoxModSettingsDialog(
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(descriptor, project)
                     .text(settings.modDirectory.orEmpty())
-                    .columns(36)
+                    .columns(COLUMNS_LARGE)
                     .align(Align.FILL)
                     .enabled(false)
             }
@@ -151,7 +152,7 @@ class ParadoxModSettingsDialog(
         settings.gameType = gameType
         settings.gameDirectory = gameDirectory
         settings.modDependencies = modDependencies
-        getProfilesSettings().updateSettings()
+        PlsFacade.getProfilesSettings().updateSettings()
 
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(settings)

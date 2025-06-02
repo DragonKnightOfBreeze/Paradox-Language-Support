@@ -2,6 +2,7 @@ package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.psi.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
@@ -47,7 +48,7 @@ object ParadoxDynamicValueManager {
     fun getHintFromExtendedConfig(name: String, type: String, contextElement: PsiElement): String? {
         if (name.isEmpty()) return null
         val gameType = selectGameType(contextElement) ?: return null
-        val configGroup = getConfigGroup(contextElement.project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(contextElement.project, gameType)
         val configs = configGroup.extendedDynamicValues[type] ?: return null
         val config = configs.findFromPattern(name, contextElement, configGroup) ?: return null
         return config.hint

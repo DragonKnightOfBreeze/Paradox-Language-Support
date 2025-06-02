@@ -13,6 +13,7 @@ import com.intellij.pom.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.*
+import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
@@ -42,7 +43,7 @@ class ParadoxCallHierarchyNodeDescriptor(
         val oldText = myHighlightedText
         myHighlightedText = CompositeAppearance()
         val file = element.containingFile
-        val hierarchySettings = getSettings().hierarchy
+        val hierarchySettings = PlsFacade.getSettings().hierarchy
         when (element) {
             is ParadoxScriptScriptedVariable -> {
                 val name = element.name.orAnonymous()

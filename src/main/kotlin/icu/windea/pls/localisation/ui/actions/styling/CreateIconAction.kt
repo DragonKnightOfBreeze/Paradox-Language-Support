@@ -19,6 +19,8 @@ class CreateIconAction : ToggleAction(), DumbAware {
     private val unwrapActionName: String
         get() = PlsBundle.message("action.Pls.ParadoxLocalisation.Styling.CreateIcon.unwrap.text")
 
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
     override fun isSelected(event: AnActionEvent): Boolean {
         val file = event.getData(CommonDataKeys.PSI_FILE)
         val editor = event.getData(CommonDataKeys.EDITOR)
@@ -90,10 +92,6 @@ class CreateIconAction : ToggleAction(), DumbAware {
             // Restore original icon, as it will be disabled in popups, and we still want to show in GeneratePopup
             event.presentation.icon = originalIcon
         }
-    }
-
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
     }
 
     companion object {

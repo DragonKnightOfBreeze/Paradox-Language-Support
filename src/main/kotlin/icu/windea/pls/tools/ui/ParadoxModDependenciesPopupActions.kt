@@ -9,6 +9,7 @@ import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import java.awt.datatransfer.*
 import java.nio.file.*
 
@@ -24,9 +25,7 @@ interface ParadoxModDependenciesPopupActions {
             templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.OpenModPath.description")
         }
 
-        override fun getActionUpdateThread(): ActionUpdateThread {
-            return ActionUpdateThread.EDT
-        }
+        override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
         override fun update(e: AnActionEvent) {
             val presentation = e.presentation
@@ -62,9 +61,7 @@ interface ParadoxModDependenciesPopupActions {
             templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteam.description")
         }
 
-        override fun getActionUpdateThread(): ActionUpdateThread {
-            return ActionUpdateThread.EDT
-        }
+        override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
         override fun update(e: AnActionEvent) {
             val presentation = e.presentation
@@ -84,13 +81,13 @@ interface ParadoxModDependenciesPopupActions {
 
         private fun getTargetUrl(): String? {
             val steamId = getSteamId() ?: return null
-            return getDataProvider().getSteamWorkshopUrlInSteam(steamId)
+            return PlsFacade.getDataProvider().getSteamWorkshopUrlInSteam(steamId)
         }
 
         private fun getSteamId(): String? {
             val selectedRow = table.selectedRow
             val item = table.model.getItem(table.convertRowIndexToModel(selectedRow))
-            return getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteId
+            return PlsFacade.getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteId
         }
     }
 
@@ -105,9 +102,7 @@ interface ParadoxModDependenciesPopupActions {
             templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.OpenModPageInSteamWebsite.description")
         }
 
-        override fun getActionUpdateThread(): ActionUpdateThread {
-            return ActionUpdateThread.EDT
-        }
+        override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
         override fun update(e: AnActionEvent) {
             val presentation = e.presentation
@@ -127,13 +122,13 @@ interface ParadoxModDependenciesPopupActions {
 
         private fun getTargetUrl(): String? {
             val steamId = getSteamId() ?: return null
-            return getDataProvider().getSteamWorkshopUrl(steamId)
+            return PlsFacade.getDataProvider().getSteamWorkshopUrl(steamId)
         }
 
         private fun getSteamId(): String? {
             val selectedRow = table.selectedRow
             val item = table.model.getItem(table.convertRowIndexToModel(selectedRow))
-            return getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteId
+            return PlsFacade.getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteId
         }
     }
 
@@ -148,9 +143,7 @@ interface ParadoxModDependenciesPopupActions {
             templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.CopyModPath.description")
         }
 
-        override fun getActionUpdateThread(): ActionUpdateThread {
-            return ActionUpdateThread.EDT
-        }
+        override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
         override fun update(e: AnActionEvent) {
             val presentation = e.presentation
@@ -186,9 +179,7 @@ interface ParadoxModDependenciesPopupActions {
             templatePresentation.description = PlsBundle.message("mod.dependencies.popup.action.CopyModPageUrl.description")
         }
 
-        override fun getActionUpdateThread(): ActionUpdateThread {
-            return ActionUpdateThread.EDT
-        }
+        override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
         override fun update(e: AnActionEvent) {
             val presentation = e.presentation
@@ -207,13 +198,13 @@ interface ParadoxModDependenciesPopupActions {
 
         private fun getTargetUrl(): String? {
             val steamId = getSteamId() ?: return null
-            return getDataProvider().getSteamWorkshopUrlInSteam(steamId)
+            return PlsFacade.getDataProvider().getSteamWorkshopUrlInSteam(steamId)
         }
 
         private fun getSteamId(): String? {
             val selectedRow = table.selectedRow
             val item = table.model.getItem(table.convertRowIndexToModel(selectedRow))
-            return getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteId
+            return PlsFacade.getProfilesSettings().modDescriptorSettings.getValue(item.modDirectory.orEmpty()).remoteId
         }
     }
 }

@@ -3,7 +3,6 @@
 ## Unreleased
 
 * [ ] 优化：通过快速文档为参数和命令提供其中使用的格式标签的说明 / OP: Provide information about format tags used in parameters and commands through quick documentation
-* [ ] 新功能：支持来自规则仓库的规则分组，且允许配置仓库链接 / NEW: Support config groups from config repositories, and allow to configure repository urls
 * [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
 
 TODO
@@ -26,6 +25,10 @@ PLANNED
 ## 1.4.2
 
 * [X] 优化：优化插件性能 / OP: Optimize plugin performance
+* [ ] 进一步优化本地化文件的 lexer 和 parser 的实现 / OP: Further optimization for lexer and parser implementations of localisation files
+* [ ] 优化：区分出单独的规则与集成的设置页面 / OP: Move config related and integrations settings into separate settings pages
+* [ ] 优化：整理与完善本地化的复制、替换、生成、翻译等操作 / OP: Optimize and improve localisation related actions such as copying, replacing, generating and translating
+* [ ] 新功能：支持来自规则仓库的远程规则分组，允许配置仓库地址 / NEW: Support remote config groups from config repositories, and allow to configure repository urls
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.4.1

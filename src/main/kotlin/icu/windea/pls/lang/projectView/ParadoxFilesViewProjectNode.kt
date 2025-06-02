@@ -8,6 +8,7 @@ import com.intellij.openapi.module.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 
@@ -26,7 +27,7 @@ class ParadoxFilesViewProjectNode(
     override fun getChildren(): Collection<AbstractTreeNode<*>> {
         //如果项目中存在游戏或模组目录，则仅使用这个游戏或模组目录对应的游戏类型作为子节点
         val rootPaths = mutableSetOf<String>()
-        val profilesSettings = getProfilesSettings()
+        val profilesSettings = PlsFacade.getProfilesSettings()
         rootPaths += profilesSettings.gameDescriptorSettings.keys
         rootPaths += profilesSettings.modDescriptorSettings.keys
         val projectFileIndex = ProjectFileIndex.getInstance(project)

@@ -7,7 +7,7 @@ import com.intellij.openapi.fileEditor.impl.text.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 import kotlinx.coroutines.*
 
@@ -39,7 +39,7 @@ class ParadoxLocalisationTextEditorCustomizer : TextEditorCustomizer {
     }
 
     private fun shouldShowFloatingToolbar(): Boolean {
-        return getSettings().others.showLocalisationFloatingToolbar
+        return PlsFacade.getSettings().others.showLocalisationFloatingToolbar
     }
 
     private fun isParadoxScratchFile(file: VirtualFile, project: Project): Boolean {

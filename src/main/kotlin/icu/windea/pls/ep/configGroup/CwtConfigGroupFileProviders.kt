@@ -4,8 +4,8 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 fun CwtConfigGroupFileProvider.isBuiltIn(): Boolean {
@@ -18,10 +18,10 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
         val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return null
         val gameTypeId = relativePath.substringBefore('/')
         if (gameTypeId == "core") {
-            return getConfigGroup(project, null)
+            return PlsFacade.getConfigGroup(project, null)
         } else {
             val gameType = ParadoxGameType.resolve(gameTypeId) ?: return null
-            return getConfigGroup(project, gameType)
+            return PlsFacade.getConfigGroup(project, gameType)
         }
     }
 
@@ -50,7 +50,12 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
 /**
  * 用于提供插件内置的规则分组。
  *
- * 对应的路径：`config/${gameType}`（位于插件压缩包中的内置规则jar包中）
+ * 对应的路径：`config/{gameType}`
+ *
+ * * 位于插件压缩包中的插件jar包中。
+ * * `{gameType}`为游戏类型ID，对于公用规则分组则为`core`。
+ *
+ * 注意：即使不启用插件内置的规则分组，`config/core`目录下公用的规则文件仍然启用。 TODO 1.4.2
  */
 class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     private val rootDirectory by lazy { doGetRootDirectory() }
@@ -60,10 +65,51 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     }
 
     private fun doGetRootDirectory(): VirtualFile? {
-        if (!getSettings().others.enableBuiltInConfigGroups) return null
+        if (!PlsFacade.getConfigSettings().enableBuiltInConfigGroups) return null
         val rootPath = "/config"
         val rootUrl = rootPath.toClasspathUrl(PlsConstants.locationClass)
         val file = VfsUtil.findFileByURL(rootUrl)
+        return file?.takeIf { it.isDirectory }
+    }
+
+    override fun getHintMessage() = PlsBundle.message("configGroup.hint.0")
+
+    override fun getNotificationMessage() = PlsBundle.message("configGroup.notification.0")
+}
+
+/**
+ * 用于提供来自远程仓库的规则分组。
+ *
+ * 对应的路径：`{localConfigDirectory}/{configRepositoryDirectorName}`
+ *
+ * * `{localConfigDirectory}`可以配置。
+ * * `{configRepositoryDirectorName}`为本地仓库目录的名字，，对于公用规则分组则为`core`。
+ *
+ * 更改配置后，PLS会自动从配置的远程仓库中克隆和拉取这些规则分组。
+ * 在自动或手动同步后，才允许刷新规则分组数据。
+ *
+ * @see PlsConfigRepositoryManager
+ */
+class RemoteCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
+    private val rootDirectory by lazy { doGetRootDirectory() }
+
+    override fun getRootDirectory(project: Project): VirtualFile? {
+        return rootDirectory
+    }
+
+    override fun getDirectoryName(project: Project, gameType: ParadoxGameType?): String {
+        // should be `cwtools-{gameType}-config` or `core`
+        if (gameType == null) return "core"
+        return PlsFacade.getConfigSettings().configRepositoryDirectorNames[gameType.id]?.orNull()
+            ?: PlsConfigRepositoryManager.getDefaultConfigRepositoryDirectoryName(gameType)
+    }
+
+    private fun doGetRootDirectory(): VirtualFile? {
+        if (!PlsFacade.getConfigSettings().enableRemoteConfigGroups) return null
+        val directory = PlsFacade.getConfigSettings().remoteConfigDirectory
+        val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
+        val path = absoluteDirectory.toPathOrNull() ?: return null
+        val file = VfsUtil.findFile(path, true)
         return file?.takeIf { it.isDirectory }
     }
 
@@ -75,12 +121,14 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 /**
  * 用于提供全局的本地规则分组。
  *
- * 对应的路径：`{rootPath}/{gameType}`[^1]（可在插件的配置页面中配置`rootPath`对应的文件路径）
+ * 对应的路径：`{localConfigDirectory}/{gameType}`
+ * * `{localConfigDirectory}`可以配置。
+ * * `{gameType}`为游戏类型ID，对于公用规则分组则为`core`。
  */
 class LocalCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override fun getRootDirectory(project: Project): VirtualFile? {
-        if (!getSettings().others.enableLocalConfigGroups) return null
-        val directory = getSettings().others.localConfigDirectory
+        if (!PlsFacade.getConfigSettings().enableLocalConfigGroups) return null
+        val directory = PlsFacade.getConfigSettings().localConfigDirectory
         val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
         val path = absoluteDirectory.toPathOrNull() ?: return null
         val file = VfsUtil.findFile(path, true)
@@ -95,13 +143,16 @@ class LocalCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 /**
  * 用于提供项目的本地规则分组。
  *
- * 对应的路径：`.config/${gameType}`（位于项目根目录中）
+ * 对应的路径：`{projectLocalConfigDirectoryName}/{gameType}`
+ *
+ * * `{projectLocalConfigDirectoryName}`位于项目根目录中，且可以配置。
+ * * `{gameType}`为游戏类型ID，对于公用规则分组则为`core`。
  */
 class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override fun getRootDirectory(project: Project): VirtualFile? {
-        if (!getSettings().others.enableProjectLocalConfigGroups) return null
+        if (!PlsFacade.getConfigSettings().enableProjectLocalConfigGroups) return null
         val projectRootDirectory = project.guessProjectDir() ?: return null
-        val rootPath = ".config"
+        val rootPath = PlsFacade.getConfigSettings().projectLocalConfigDirectoryName?.orNull() ?: ".config"
         val file = VfsUtil.findRelativeFile(projectRootDirectory, rootPath)
         return file?.takeIf { it.isDirectory }
     }

@@ -4,6 +4,7 @@ import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -34,7 +35,7 @@ class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
         val tokens = remain.split('/')
         val category = tokens.getOrNull(0) ?: return null
         val project = contextElement.project
-        val configGroup = getConfigGroup(project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         return when (category) {
             "types" -> {
                 if (tokens.isEmpty() || tokens.size > 3) return null

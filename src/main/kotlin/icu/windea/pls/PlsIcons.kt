@@ -192,5 +192,7 @@ object PlsIcons {
         val ModSettings = IconManager.getInstance().getIcon("/icons/actions/modSettings.svg") // from general/gear.svg, fill #5D8DC3
         @JvmField
         val RefreshConfigGroups = IconManager.getInstance().getIcon("/icons/actions/refreshConfigGroups.svg") // from icons/refresh.svg, fill #5D8DC3
+        @JvmField
+        val SyncConfigGroupsFromRemote = IconManager.getInstance().getIcon("/icons/actions/syncConfigGroupsFromRemote.svg") // from icons/clone.svg, fill #5D8DC3
     }
 }

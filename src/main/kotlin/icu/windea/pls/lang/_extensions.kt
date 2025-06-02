@@ -4,8 +4,6 @@ import com.intellij.extapi.psi.*
 import com.intellij.injected.editor.*
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
-import com.intellij.openapi.components.*
-import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.util.text.*
@@ -14,44 +12,19 @@ import com.intellij.psi.*
 import com.intellij.testFramework.*
 import com.intellij.util.text.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.dds.*
 import icu.windea.pls.ep.data.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
-import kotlinx.coroutines.*
-import org.intellij.images.fileTypes.impl.*
 import java.lang.Integer.*
-
-//from official documentation: Never acquire service instances prematurely or store them in fields for later use.
-
-@Service(Service.Level.PROJECT)
-private class PlsProjectService(val project: Project, val coroutineScope: CoroutineScope)
-
-@Service(Service.Level.APP)
-private class PlsApplicationService(val coroutineScope: CoroutineScope)
-
-fun getCoroutineScope(project: Project) = project.service<PlsProjectService>().coroutineScope
-
-fun getCoroutineScope() = service<PlsApplicationService>().coroutineScope
-
-fun getSettings() = service<PlsSettings>().state
-
-fun getProfilesSettings() = service<PlsProfilesSettings>().state
-
-fun getDataProvider() = service<PlsDataProvider>()
-
-fun getConfigGroup(gameType: ParadoxGameType?) = getDefaultProject().service<CwtConfigGroupService>().getConfigGroup(gameType)
-
-fun getConfigGroup(project: Project, gameType: ParadoxGameType?) = project.service<CwtConfigGroupService>().getConfigGroup(gameType)
 
 fun Char.isIdentifierChar(): Boolean {
     return StringUtil.isJavaIdentifierPart(this)
@@ -159,7 +132,7 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
 }
 
 private fun String.toLocale(from: PsiElement): CwtLocalisationLocaleConfig? {
-    return getConfigGroup(from.project, null).localisationLocalesById.get(this)
+    return PlsFacade.getConfigGroup(from.project, null).localisationLocalesById.get(this)
 }
 
 /**

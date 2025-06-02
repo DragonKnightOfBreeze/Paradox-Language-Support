@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -82,26 +83,26 @@ object ParadoxEventManager {
     }
 
     fun getAllTypes(gameType: ParadoxGameType): Set<String> {
-        val eventConfig = getConfigGroup(gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
+        val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
         return eventConfig.config.getOrPutUserData(Keys.eventAllTypes) {
             eventConfig.subtypes.values.filter { it.inGroup("event_type") }.map { it.name }.toSet()
         }
     }
 
     fun getAllTypeConfigs(project: Project, gameType: ParadoxGameType): Collection<CwtSubtypeConfig> {
-        val eventConfig = getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
+        val eventConfig = PlsFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
         return eventConfig.subtypes.values.filter { it.inGroup("event_type") }
     }
 
     fun getAllAttributes(gameType: ParadoxGameType): Set<String> {
-        val eventConfig = getConfigGroup(gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
+        val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
         return eventConfig.config.getOrPutUserData(Keys.eventAllAttributes) {
             eventConfig.subtypes.values.filter { it.inGroup("event_attribute") }.map { it.name }.toSet()
         }
     }
 
     fun getAllAttributeConfigs(project: Project, gameType: ParadoxGameType): Collection<CwtSubtypeConfig> {
-        val eventConfig = getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
+        val eventConfig = PlsFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.Event] ?: return emptySet()
         return eventConfig.subtypes.values.filter { it.inGroup("event_attribute") }
     }
 

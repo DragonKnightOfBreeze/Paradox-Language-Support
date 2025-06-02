@@ -7,6 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -80,7 +81,7 @@ class ParadoxPredefinedModifierSupport : ParadoxModifierSupport {
 
             //排除不匹配modifier的supported_scopes的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
             val tailText = ParadoxCompletionManager.getExpressionTailText(context, modifierConfig.config, withConfigExpression = false)
             val template = modifierConfig.template
@@ -150,7 +151,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
 
             //排除不匹配modifier的supported_scopes的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, modifierConfig.supportedScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
             val tailText = ParadoxCompletionManager.getExpressionTailText(context, modifierConfig.config, withConfigExpression = true)
             val template = modifierConfig.template
@@ -349,7 +350,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
             val modifierCategories = ParadoxModifierManager.resolveModifierCategory(economicCategoryInfo.modifierCategory, configGroup)
             val supportedScopes = ParadoxScopeManager.getSupportedScopes(modifierCategories)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) return@p true
 
             val tailText = " from economic category " + economicCategoryInfo.name
             val typeText = economicCategoryInfo.name
@@ -379,7 +380,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
     override fun getModifierCategories(modifierElement: ParadoxModifierElement): Map<String, CwtModifierCategoryConfig>? {
         val economicCategoryInfo = modifierElement.economicCategoryInfo ?: return null
         val modifierCategory = economicCategoryInfo.modifierCategory //may be null
-        val configGroup = getConfigGroup(modifierElement.project, modifierElement.gameType)
+        val configGroup = PlsFacade.getConfigGroup(modifierElement.project, modifierElement.gameType)
         return ParadoxModifierManager.resolveModifierCategory(modifierCategory, configGroup)
     }
 

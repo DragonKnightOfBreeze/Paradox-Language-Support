@@ -9,6 +9,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configContext.*
@@ -141,7 +142,7 @@ object ParadoxExpressionMatcher {
             val psiFile = element.containingFile ?: return Result.NotMatch
             val project = psiFile.project
             val rootFile = selectRootFile(psiFile) ?: return Result.NotMatch
-            val configGroup = getConfigGroup(project, selectGameType(rootFile))
+            val configGroup = PlsFacade.getConfigGroup(project, selectGameType(rootFile))
             val cache = configGroup.configMatchResultCache.value.get(rootFile)
             return cache.get(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
         }

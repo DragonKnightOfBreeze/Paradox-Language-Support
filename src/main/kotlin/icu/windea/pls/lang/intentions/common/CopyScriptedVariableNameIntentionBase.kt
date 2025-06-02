@@ -13,7 +13,7 @@ abstract class CopyScriptedVariableNameIntentionBase : ModCommandAction {
     override fun getFamilyName() = PlsBundle.message("intention.copyScriptedVariableName")
 
     override fun getPresentation(context: ActionContext): Presentation? {
-        val text = getText(context) ?: return null
+        getText(context) ?: return null
         return Presentation.of(familyName)
     }
 

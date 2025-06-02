@@ -7,6 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configContext.*
@@ -59,7 +60,7 @@ object ParadoxInlineScriptManager {
         val fileInfo = file.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
         val project = file.project
-        val configGroup = getConfigGroup(project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val inlineConfigs = configGroup.inlineConfigGroup[inlineScriptKey] ?: return null
         val propertyValue = element.propertyValue ?: return null
         val matchOptions = Options.SkipIndex or Options.SkipScope
@@ -149,7 +150,7 @@ object ParadoxInlineScriptManager {
     }
 
     fun getInferredContextConfigs(contextElement: ParadoxScriptMemberElement, inlineScriptExpression: String, context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>> {
-        if (!getSettings().inference.configContextForInlineScripts) return emptyList()
+        if (!PlsFacade.getSettings().inference.configContextForInlineScripts) return emptyList()
         return withRecursionGuard {
             withRecursionCheck(inlineScriptExpression) {
                 context.inlineScriptHasConflict = false
@@ -177,7 +178,7 @@ object ParadoxInlineScriptManager {
 
     private fun doGetInferredContextConfigsFromUsages(contextElement: ParadoxScriptMemberElement, context: CwtConfigContext, inlineScriptExpression: String, matchOptions: Int): List<CwtMemberConfig<*>> {
         // infer & merge
-        val fastInference = getSettings().inference.configContextForInlineScriptsFast
+        val fastInference = PlsFacade.getSettings().inference.configContextForInlineScriptsFast
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         val project = context.configGroup.project
         val selector = selector(project, contextElement).inlineScriptUsage()

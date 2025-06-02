@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
@@ -33,7 +34,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         val typeExpression = queryParameters.typeExpression?.orNull()?.let { ParadoxDefinitionTypeExpression.resolve(it) }
         val project = queryParameters.project
         val gameType = queryParameters.selector.gameType ?: return
-        val configGroup = getConfigGroup(project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val constraint = queryParameters.selector.getConstraint()
 
         if (forFile && forFile(typeExpression, configGroup)) {

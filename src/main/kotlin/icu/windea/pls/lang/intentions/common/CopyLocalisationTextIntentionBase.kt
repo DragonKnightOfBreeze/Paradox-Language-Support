@@ -12,7 +12,7 @@ abstract class CopyLocalisationTextIntentionBase : ModCommandAction {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationText")
 
     override fun getPresentation(context: ActionContext): Presentation? {
-        val text = getText(context) ?: return null
+        getText(context) ?: return null
         return Presentation.of(familyName)
     }
 

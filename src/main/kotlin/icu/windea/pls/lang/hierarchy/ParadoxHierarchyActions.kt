@@ -11,6 +11,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.hierarchy.type.*
 import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.settings.PlsSettings
 import java.awt.*
 import javax.swing.*
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyType as Type
@@ -22,9 +23,7 @@ interface ParadoxHierarchyActions {
         val browser: HierarchyBrowserBaseEx,
         val settings: ParadoxHierarchyBrowserSettings
     ) : ComboBoxAction() {
-        override fun getActionUpdateThread(): ActionUpdateThread {
-            return ActionUpdateThread.EDT
-        }
+        override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
         override fun update(e: AnActionEvent) {
             val presentation = e.presentation
@@ -67,15 +66,13 @@ interface ParadoxHierarchyActions {
     class ChangeGroupingStrategyAction(
         val browser: HierarchyBrowserBaseEx
     ) : ComboBoxAction() {
-        override fun getActionUpdateThread(): ActionUpdateThread {
-            return ActionUpdateThread.EDT
-        }
+        override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
         override fun update(e: AnActionEvent) {
             val type = browser.castOrNull<ParadoxDefinitionHierarchyBrowser>()?.type
             val strategy = when (type) {
-                Type.EventTreeInvoker, Type.EventTreeInvoked -> getSettings().hierarchy.eventTreeGrouping
-                Type.TechTreePre, Type.TechTreePost -> getSettings().hierarchy.techTreeGrouping
+                Type.EventTreeInvoker, Type.EventTreeInvoked -> PlsFacade.getSettings().hierarchy.eventTreeGrouping
+                Type.TechTreePre, Type.TechTreePost -> PlsFacade.getSettings().hierarchy.techTreeGrouping
                 else -> null
             }
 
@@ -116,8 +113,8 @@ interface ParadoxHierarchyActions {
         private inner class MenuAction(val strategy: PlsStrategies.Grouping) : AnAction(strategy.text) {
             override fun actionPerformed(e: AnActionEvent) {
                 when (strategy) {
-                    is PlsStrategies.EventTreeGrouping -> getSettings().hierarchy.eventTreeGrouping = strategy
-                    is PlsStrategies.TechTreeGrouping -> getSettings().hierarchy.techTreeGrouping = strategy
+                    is PlsStrategies.EventTreeGrouping -> PlsFacade.getSettings().hierarchy.eventTreeGrouping = strategy
+                    is PlsStrategies.TechTreeGrouping -> PlsFacade.getSettings().hierarchy.techTreeGrouping = strategy
                 }
 
                 // invokeLater is called to update state of button before long tree building operation

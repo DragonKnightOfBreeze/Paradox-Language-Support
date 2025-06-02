@@ -2,8 +2,8 @@ package icu.windea.pls.ep.metadata
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
@@ -39,8 +39,8 @@ class ParadoxModDescriptorBasedMetadataProvider : ParadoxMetadataProvider {
 
         private fun doGetGameType(): ParadoxGameType {
             return inferredGameType
-                ?: getProfilesSettings().modDescriptorSettings.get(rootFile.path)?.gameType
-                ?: getSettings().defaultGameType
+                ?: PlsFacade.getProfilesSettings().modDescriptorSettings.get(rootFile.path)?.gameType
+                ?: PlsFacade.getSettings().defaultGameType
         }
     }
 }
@@ -90,8 +90,8 @@ class ParadoxModMetadataBasedMetadataProvider : ParadoxMetadataProvider {
 
         private fun doGetGameType(): ParadoxGameType {
             return inferredGameType
-                ?: getProfilesSettings().modDescriptorSettings.get(rootFile.path)?.gameType
-                ?: getSettings().defaultGameType
+                ?: PlsFacade.getProfilesSettings().modDescriptorSettings.get(rootFile.path)?.gameType
+                ?: PlsFacade.getSettings().defaultGameType
         }
     }
 }

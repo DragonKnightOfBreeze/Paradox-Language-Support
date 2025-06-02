@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.searches.*
 import com.intellij.psi.util.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -54,11 +55,11 @@ object ParadoxTechnologyManager {
         }
 
         fun getAllResearchAreas(): Set<String> {
-            return getConfigGroup(gameType).enums.get("research_area")?.values.orEmpty()
+            return PlsFacade.getConfigGroup(gameType).enums.get("research_area")?.values.orEmpty()
         }
 
         fun getAllResearchAreaConfigs(project: Project): Collection<CwtValueConfig> {
-            return getConfigGroup(project, gameType).enums.get("research_area")?.valueConfigMap?.values.orEmpty()
+            return PlsFacade.getConfigGroup(project, gameType).enums.get("research_area")?.valueConfigMap?.values.orEmpty()
         }
 
         fun getAllCategories(project: Project, context: Any?): Set<ParadoxScriptDefinitionElement> {
@@ -67,14 +68,14 @@ object ParadoxTechnologyManager {
         }
 
         fun getAllAttributes(gameType: ParadoxGameType): Set<String> {
-            val eventConfig = getConfigGroup(gameType).types[ParadoxDefinitionTypes.Technology] ?: return emptySet()
+            val eventConfig = PlsFacade.getConfigGroup(gameType).types[ParadoxDefinitionTypes.Technology] ?: return emptySet()
             return eventConfig.config.getOrPutUserData(Keys.technologyAllAttributes) {
                 eventConfig.subtypes.values.filter { it.inGroup("technology_attribute") }.map { it.name }.toSet()
             }
         }
 
         fun getAllAttributeConfigs(project: Project): Collection<CwtSubtypeConfig> {
-            val eventConfig = getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.Technology] ?: return emptySet()
+            val eventConfig = PlsFacade.getConfigGroup(project, gameType).types[ParadoxDefinitionTypes.Technology] ?: return emptySet()
             return eventConfig.subtypes.values.filter { it.inGroup("technology_attribute") }
         }
 

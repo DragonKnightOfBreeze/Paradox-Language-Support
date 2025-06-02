@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -64,7 +65,7 @@ object ParadoxDefinitionManager {
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path
         val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
-        val configGroup = getConfigGroup(project, gameType) //这里需要指定project
+        val configGroup = PlsFacade.getConfigGroup(project, gameType) //这里需要指定project
         val elementPath = ParadoxExpressionPathManager.get(element, PlsConstants.Settings.maxDefinitionDepth) ?: return null
         if (elementPath.path.isParameterized()) return null //忽略表达式路径带参数的情况
         val rootKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxExpressionPathManager.getKeyPrefixes(element).firstOrNull() } else null
@@ -490,7 +491,7 @@ object ParadoxDefinitionManager {
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.path
         val elementPath = ParadoxExpressionPath.Empty
-        val configGroup = getConfigGroup(project, gameType) //这里需要指定project
+        val configGroup = PlsFacade.getConfigGroup(project, gameType) //这里需要指定project
         val typeConfig = getMatchedTypeConfig(node, tree, configGroup, path, elementPath, rootKey, null)
         if (typeConfig == null) return null
         //NOTE 这里不处理需要内联的情况
@@ -524,7 +525,7 @@ object ParadoxDefinitionManager {
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.path
-        val configGroup = getConfigGroup(project, gameType) //这里需要指定project
+        val configGroup = PlsFacade.getConfigGroup(project, gameType) //这里需要指定project
         val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile, PlsConstants.Settings.maxDefinitionDepth)
         if (elementPath == null) return null
         val rootKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(node, tree).firstOrNull() }
@@ -579,7 +580,7 @@ object ParadoxDefinitionManager {
         val name = stub.name
         val type = stub.type
         val gameType = stub.gameType
-        val configGroup = getConfigGroup(project, gameType) //这里需要指定project
+        val configGroup = PlsFacade.getConfigGroup(project, gameType) //这里需要指定project
         val typeConfig = configGroup.types[type] ?: return null
         val subtypes = stub.subtypes
         val subtypeConfigs = subtypes?.mapNotNull { typeConfig.subtypes[it] }

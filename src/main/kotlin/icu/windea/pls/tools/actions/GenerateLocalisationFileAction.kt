@@ -14,6 +14,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
@@ -28,9 +29,7 @@ class GenerateLocalisationFileAction : AnAction() {
         val files: MutableMap<String, VirtualFile> = mutableMapOf()
     )
 
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         var visible = false
@@ -95,7 +94,7 @@ class GenerateLocalisationFileAction : AnAction() {
                 val fileDocumentManager = FileDocumentManager.getInstance()
                 val documentManager = PsiDocumentManager.getInstance(project)
 
-                val generationSettings = getSettings().generation
+                val generationSettings = PlsFacade.getSettings().generation
                 val strategy = generationSettings.localisationStrategy
 
                 //文件名以及文件所在的某个父目录中可以带有语言区域

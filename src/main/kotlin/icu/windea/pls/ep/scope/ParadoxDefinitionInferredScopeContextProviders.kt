@@ -17,6 +17,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.search.scope.*
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
@@ -40,7 +41,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!getSettings().inference.scopeContext) return null
+        if (!PlsFacade.getSettings().inference.scopeContext) return null
         return doGetScopeContextFromCache(definition)
     }
 
@@ -147,7 +148,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!getSettings().inference.scopeContextForEvents) return null
+        if (!PlsFacade.getSettings().inference.scopeContextForEvents) return null
         return doGetScopeContextFromCache(definition)
     }
 
@@ -255,7 +256,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!getSettings().inference.scopeContextForEvents) return null
+        if (!PlsFacade.getSettings().inference.scopeContextForEvents) return null
         return doGetScopeContextFromCache(definition)
     }
 
@@ -404,7 +405,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
     }
 
     override fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
-        if (!getSettings().inference.scopeContextForOnActions) return null
+        if (!PlsFacade.getSettings().inference.scopeContextForOnActions) return null
         return doGetScopeContextFromCache(definition)
     }
 

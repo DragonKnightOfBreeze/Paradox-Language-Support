@@ -12,6 +12,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.model.codeInsight.*
@@ -160,7 +161,7 @@ object ParadoxLocalisationGenerator {
         append(indent)
         append(localisationName)
         append(": \"")
-        val generationSettings = getSettings().generation
+        val generationSettings = PlsFacade.getSettings().generation
         val strategy = generationSettings.localisationStrategy
         val text = when (strategy) {
             LocalisationGenerationStrategy.EmptyText -> ""

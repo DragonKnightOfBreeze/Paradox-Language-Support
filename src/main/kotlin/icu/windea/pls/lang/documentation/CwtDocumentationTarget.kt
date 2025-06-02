@@ -11,6 +11,7 @@ import com.intellij.pom.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -113,7 +114,7 @@ private fun getMemberConfigDoc(element: CwtMemberConfigElement, originalElement:
         val name = element.name
         val configType = null
         val project = element.project
-        val configGroup = getConfigGroup(project, element.gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, element.gameType)
         if (!quickNavigation) initSections(3)
         buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup)
         if (quickNavigation) return@buildDocumentation
@@ -183,7 +184,7 @@ private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiEle
 }
 
 private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
-    val render = getSettings().documentation.renderNameDescForModifiers
+    val render = PlsFacade.getSettings().documentation.renderNameDescForModifiers
     val contextElement = referenceElement
     val gameType = configGroup.gameType ?: return
     val project = configGroup.project
@@ -236,7 +237,7 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
 }
 
 private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceElement: PsiElement, name: String, configGroup: CwtConfigGroup) {
-    val render = getSettings().documentation.renderIconForModifiers
+    val render = PlsFacade.getSettings().documentation.renderIconForModifiers
     val contextElement = referenceElement
     val gameType = configGroup.gameType ?: return
     val project = configGroup.project
@@ -269,7 +270,7 @@ private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceE
 private fun DocumentationBuilder.addScope(element: PsiElement, name: String, configType: CwtConfigType?, configGroup: CwtConfigGroup) {
     //即使是在CWT文件中，如果可以推断得到CWT规则组，也显示作用域信息
 
-    if (!getSettings().documentation.showScopes) return
+    if (!PlsFacade.getSettings().documentation.showScopes) return
 
     //为link提示名字、描述、输入作用域、输出作用域的文档注释
     //为alias modifier localisation_command等提供分类、支持的作用域的文档注释
@@ -358,7 +359,7 @@ private fun DocumentationBuilder.addScopeContext(element: PsiElement, referenceE
     //@Suppress("DEPRECATION")
     //if(DocumentationManager.IS_FROM_LOOKUP.get(element) == true) return
 
-    if (!getSettings().documentation.showScopeContext) return
+    if (!PlsFacade.getSettings().documentation.showScopeContext) return
 
     val sections = getSections(0) ?: return
     val gameType = configGroup.gameType ?: return
@@ -382,7 +383,7 @@ private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) 
 private fun getConfigGroup(element: PsiElement, originalElement: PsiElement?, project: Project): CwtConfigGroup? {
     if (originalElement != null && originalElement.language is ParadoxBaseLanguage) {
         val gameType = selectGameType(originalElement)
-        if (gameType != null) return getConfigGroup(project, gameType)
+        if (gameType != null) return PlsFacade.getConfigGroup(project, gameType)
     }
     if (element.language is CwtLanguage) {
         return CwtConfigManager.getContainingConfigGroup(element, forRepo = true)

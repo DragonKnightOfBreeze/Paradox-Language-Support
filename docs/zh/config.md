@@ -16,7 +16,7 @@ PLS基于由CWT规则文件组成的规则分组，实现了诸多语言功能�
 
 #### 内置的规则分组 {#builtin-config-groups}
 
-* 路径：`config/{gameType}`[^1]（位于插件压缩包中的内置规则jar包中）
+* 路径：`config/{gameType}`[^1]（位于插件压缩包中的插件jar包中）
 * 是否启用：始终启用
 * 是否可自定义：否
 

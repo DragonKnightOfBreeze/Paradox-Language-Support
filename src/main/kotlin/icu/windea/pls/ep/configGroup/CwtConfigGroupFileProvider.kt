@@ -4,15 +4,28 @@ import com.intellij.openapi.extensions.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.model.*
 
 /**
  * 用于获取规则分组中的文件。
  */
 interface CwtConfigGroupFileProvider {
+    /**
+     * 得到规则的根目录，其中所有规则分组目录的父目录。
+     */
     fun getRootDirectory(project: Project): VirtualFile?
 
     /**
-     * @return 规则文件[file]所在的规则分组。
+     * 基于游戏类型，得到规则的根目录中的对应的规则分组的目录的名字。
+     */
+    fun getDirectoryName(project: Project, gameType: ParadoxGameType?): String {
+        return gameType.id
+    }
+
+    //TODO 1.4.2 应用 getDirectoryName
+
+    /**
+     * 得到规则文件[file]所在的规则分组。
      */
     fun getContainingConfigGroup(file: VirtualFile, project: Project): CwtConfigGroup?
 

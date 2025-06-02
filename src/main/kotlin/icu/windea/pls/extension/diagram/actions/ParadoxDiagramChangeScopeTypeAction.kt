@@ -20,6 +20,8 @@ class ParadoxDiagramChangeScopeTypeAction(
         private val DESELECTED_ICON = DeselectedVisibilityIcon()
     }
 
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
     override fun getActionName(): String {
         return PlsDiagramBundle.message("action.changeScopeType.name", scopeType.text)
     }
@@ -32,10 +34,6 @@ class ParadoxDiagramChangeScopeTypeAction(
         val currentScopeType = settings.scopeType
         val selected = ParadoxSearchScopeTypes.get(currentScopeType).id == scopeType.id
         return if (selected) SELECTED_ICON else DESELECTED_ICON
-    }
-
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
     }
 
     override fun update(e: AnActionEvent) {

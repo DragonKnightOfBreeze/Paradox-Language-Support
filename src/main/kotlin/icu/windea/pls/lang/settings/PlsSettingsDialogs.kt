@@ -7,7 +7,6 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -29,7 +28,6 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
         return panel {
             properties.forEach f@{ (gameTypeId, gameDirectoryProperty) ->
                 val gameType = ParadoxGameType.resolve(gameTypeId) ?: return@f
-                val gameDirectory by gameDirectoryProperty
                 row {
                     //gameDirectory
                     label(gameType.title + ":").widthGroup("left")
@@ -39,9 +37,9 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
                         .apply { putUserData(PlsDataKeys.gameType, gameType) }
                     textFieldWithBrowseButton(descriptor, null)
                         .bindText(gameDirectoryProperty)
-                        .columns(36)
+                        .columns(COLUMNS_LARGE)
                         .align(Align.FILL)
-                        .validationOnApply { ParadoxCoreManager.validateGameDirectory(this, gameType, gameDirectory) }
+                        .validationOnApply { ParadoxCoreManager.validateGameDirectory(this, gameType, gameDirectoryProperty.get()) }
                 }
             }
 
@@ -97,7 +95,7 @@ class ClauseTemplateSettingsDialog : DialogWrapper(null) {
     }
 
     override fun createCenterPanel(): JComponent {
-        val settings = getSettings().completion.clauseTemplate
+        val settings = PlsFacade.getSettings().completion.clauseTemplate
         return panel {
             //maxExpressionCountInOneLine
             row {

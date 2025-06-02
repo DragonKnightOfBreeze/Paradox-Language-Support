@@ -12,6 +12,7 @@ import icu.windea.pls.ep.documentation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.localisation.editor.*
@@ -95,7 +96,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         //如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if (richTextList.isEmpty()) return
-        val color = if (getSettings().others.renderLocalisationColorfulText) element.colorInfo?.color else null
+        val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.colorInfo?.color else null
         renderWithColorTo(color, context) {
             for (richText in richTextList) {
                 ProgressManager.checkCanceled()
@@ -108,7 +109,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         //如果处理文本失败，则使用原始文本
         //如果有颜色码，则使用该颜色渲染，否则保留颜色码
 
-        val color = if (getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
+        val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         renderWithColorTo(color, context) {
             val resolved = element.reference?.resolveLocalisation() //直接解析为本地化以优化性能
                 ?: element.scriptedVariableReference?.reference?.resolve()
@@ -153,7 +154,7 @@ object ParadoxLocalisationTextHtmlRenderer {
         //如果处理文本失败，则使用原始文本
         //如果有颜色码，则使用该颜色渲染，否则保留颜色码
 
-        val color = if (getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
+        val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         renderWithColorTo(color, context) r@{
             //直接显示命令文本，适用对应的颜色高亮
             //（仅限快速文档）点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc），但不显示为超链接

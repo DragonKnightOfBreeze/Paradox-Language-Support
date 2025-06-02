@@ -4,9 +4,11 @@ import com.intellij.lang.*
 import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -29,11 +31,11 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
     }
 
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
-        return getSettings().folding.scriptedVariableReferencesByDefault
+        return PlsFacade.getSettings().folding.scriptedVariableReferencesByDefault
     }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        if (!getSettings().folding.scriptedVariableReferences) return FoldingDescriptor.EMPTY_ARRAY
+        if (!PlsFacade.getSettings().folding.scriptedVariableReferences) return FoldingDescriptor.EMPTY_ARRAY
 
         if (quick) return FoldingDescriptor.EMPTY_ARRAY
         if (root.language !is ParadoxBaseLanguage) return FoldingDescriptor.EMPTY_ARRAY

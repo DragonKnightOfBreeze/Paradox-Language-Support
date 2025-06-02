@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -32,7 +33,7 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
 
         val file = holder.file
         val project = holder.project
-        val configGroup = getConfigGroup(project, selectGameType(file))
+        val configGroup = PlsFacade.getConfigGroup(project, selectGameType(file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()

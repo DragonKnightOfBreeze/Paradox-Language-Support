@@ -22,9 +22,7 @@ import java.io.*
 //org.intellij.images.actions.EditExternallyAction
 
 internal class EditExternallyAction : DumbAwareAction() {
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
         val imageFile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return

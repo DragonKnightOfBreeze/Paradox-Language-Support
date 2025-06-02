@@ -9,6 +9,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configContext.*
@@ -49,14 +50,14 @@ object ParadoxModifierManager {
         val name = element.value
         val gameType = selectGameType(element) ?: return null
         val project = element.project
-        val configGroup = getConfigGroup(project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         return resolveModifier(name, element, configGroup)
     }
 
     fun resolveModifier(name: String, element: PsiElement): ParadoxModifierElement? {
         val gameType = selectGameType(element) ?: return null
         val project = element.project
-        val configGroup = getConfigGroup(project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         return resolveModifier(name, element, configGroup)
     }
 
@@ -175,7 +176,7 @@ object ParadoxModifierManager {
         val gameType = selectGameType(element) ?: return null
         val rootFile = selectRootFile(element) ?: return null
         val project = element.project
-        val configGroup = getConfigGroup(project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val cache = configGroup.modifierInfoCache.get(rootFile)
         val cacheKey = name
         val modifierInfo = cache.get(cacheKey) {
@@ -189,7 +190,7 @@ object ParadoxModifierManager {
         val gameType = modifierElement.gameType
         val rootFile = selectRootFile(modifierElement) ?: return null
         val project = modifierElement.project
-        val configGroup = getConfigGroup(project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val cache = configGroup.modifierInfoCache.get(rootFile)
         val cacheKey = modifierElement.name
         val modifierInfo = cache.get(cacheKey) {

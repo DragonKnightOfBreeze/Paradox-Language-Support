@@ -3,14 +3,13 @@ package icu.windea.pls.tools.actions
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import java.awt.datatransfer.*
 
 abstract class CopyUrlAction : DumbAwareAction() {
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         val presentation = e.presentation
@@ -44,14 +43,14 @@ abstract class CopyUrlAction : DumbAwareAction() {
     class GameStorePage : CopyUrlAction() {
         override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
             val steamId = fileInfo.rootInfo.gameType.steamId
-            return getDataProvider().getSteamGameStoreUrl(steamId)
+            return PlsFacade.getDataProvider().getSteamGameStoreUrl(steamId)
         }
     }
 
     class GameWorkshopPage : CopyUrlAction() {
         override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
             val steamId = fileInfo.rootInfo.steamId ?: return null
-            return getDataProvider().getSteamGameWorkshopUrl(steamId)
+            return PlsFacade.getDataProvider().getSteamGameWorkshopUrl(steamId)
         }
     }
 
@@ -66,7 +65,7 @@ abstract class CopyUrlAction : DumbAwareAction() {
 
         override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
             val steamId = fileInfo.rootInfo.steamId ?: return null
-            return getDataProvider().getSteamWorkshopUrl(steamId)
+            return PlsFacade.getDataProvider().getSteamWorkshopUrl(steamId)
         }
     }
 }

@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
@@ -91,7 +92,7 @@ object ParadoxLocalisationManager {
         val name = element.name.orNull() ?: return emptyList()
         val project = element.project
         val gameType = selectGameType(element) ?: return emptyList()
-        val configGroup = getConfigGroup(project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val patterns = configGroup.relatedLocalisationPatterns
         val namesToSearch = mutableSetOf<String>()
         patterns.forEach { (prefix, suffix) ->

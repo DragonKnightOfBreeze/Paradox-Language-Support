@@ -11,6 +11,7 @@ import com.intellij.patterns.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configContext.*
@@ -76,7 +77,7 @@ object ParadoxCompletionManager {
         context.gameType = gameType
 
         val project = parameters.originalFile.project
-        val configGroup = getConfigGroup(project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         context.configGroup = configGroup
     }
 
@@ -392,7 +393,7 @@ object ParadoxCompletionManager {
                 scopeContext == null -> true
                 else -> ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
             }
-            if (!scopeMatched1 && getSettings().completion.completeOnlyScopeIsMatched) return
+            if (!scopeMatched1 && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) return
             context.scopeMatched = scopeMatched1
         }
 
@@ -498,7 +499,7 @@ object ParadoxCompletionManager {
             //排除不匹配可能存在的supported_scopes的情况
             val supportedScopes = ParadoxDefinitionSupportedScopesProvider.getSupportedScopes(definition, definitionInfo)
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, supportedScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) return@p true
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) return@p true
 
             val name = definitionInfo.name
             val typeFile = definition.containingFile
@@ -904,7 +905,7 @@ object ParadoxCompletionManager {
                     context.keywordOffset = node.rangeInExpression.startOffset
                     ParadoxParameterManager.completeArguments(element, context, resultToUse)
                 }
-            } else if (node is ParadoxScriptValueArgumentValueNode && getSettings().inference.configContextForParameters) {
+            } else if (node is ParadoxScriptValueArgumentValueNode && PlsFacade.getSettings().inference.configContextForParameters) {
                 if (inRange && expression.scriptValueNode.text.isNotEmpty()) {
                     //尝试提示传入参数的值
                     run {
@@ -1401,7 +1402,7 @@ object ParadoxCompletionManager {
         val linksConfigs = configGroup.links.values.filter { it.forScope() && !it.fromData && !it.fromArgument }
         for (linkConfig in linksConfigs) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.name
             val element = linkConfig.pointer.element ?: continue
@@ -1428,7 +1429,7 @@ object ParadoxCompletionManager {
             .sortedByPriority({ it.dataSourceExpression }, { configGroup })
         for (linkConfig in linkConfigsFromArgument) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix?.dropLast(1) ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1451,7 +1452,7 @@ object ParadoxCompletionManager {
             .sortedByPriority({ it.dataSourceExpression }, { configGroup })
         for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1512,7 +1513,7 @@ object ParadoxCompletionManager {
             ProgressManager.checkCanceled()
             //排除input_scopes不匹配前一个scope的output_scope的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.name
             val element = linkConfig.pointer.element ?: continue
@@ -1538,7 +1539,7 @@ object ParadoxCompletionManager {
             .sortedByPriority({ it.dataSourceExpression }, { configGroup })
         for (linkConfig in linkConfigsFromArgument) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix?.dropLast(1) ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1561,7 +1562,7 @@ object ParadoxCompletionManager {
             .sortedByPriority({ it.dataSourceExpression }, { configGroup })
         for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1813,7 +1814,7 @@ object ParadoxCompletionManager {
         val localisationLinks = configGroup.localisationLinks.values.filter { it.forScope() && !it.fromData && !it.fromArgument }
         for (localisationScope in localisationLinks) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, localisationScope.inputScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
             //optimize: make first char uppercase (e.g., owner -> Owner)
             val name = localisationScope.name.replaceFirstChar { it.uppercaseChar() }
@@ -1841,7 +1842,7 @@ object ParadoxCompletionManager {
             .sortedByPriority({ it.dataSourceExpression }, { configGroup })
         for (linkConfig in linkConfigsFromArgument) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix?.dropLast(1) ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1864,7 +1865,7 @@ object ParadoxCompletionManager {
             .sortedByPriority({ it.dataSourceExpression }, { configGroup })
         for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1909,7 +1910,7 @@ object ParadoxCompletionManager {
         val localisationCommands = configGroup.localisationCommands
         for (localisationCommand in localisationCommands.values) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, localisationCommand.supportedScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
             val name = localisationCommand.name
             val element = localisationCommand.pointer.element ?: continue
@@ -1936,7 +1937,7 @@ object ParadoxCompletionManager {
             ProgressManager.checkCanceled()
             //排除input_scopes不匹配前一个scope的output_scope的情况
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.name
             val element = linkConfig.pointer.element ?: continue
@@ -1962,7 +1963,7 @@ object ParadoxCompletionManager {
             .sortedByPriority({ it.dataSourceExpression }, { configGroup })
         for (linkConfig in linkConfigsFromArgument) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix?.dropLast(1) ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -1985,7 +1986,7 @@ object ParadoxCompletionManager {
             .sortedByPriority({ it.dataSourceExpression }, { configGroup })
         for (linkConfig in linkConfigsFromData) {
             val scopeMatched = ParadoxScopeManager.matchesScope(scopeContext, linkConfig.inputScopes, configGroup)
-            if (!scopeMatched && getSettings().completion.completeOnlyScopeIsMatched) continue
+            if (!scopeMatched && PlsFacade.getSettings().completion.completeOnlyScopeIsMatched) continue
 
             val name = linkConfig.prefix ?: continue
             val element = linkConfig.pointer.element ?: continue
@@ -2026,7 +2027,7 @@ object ParadoxCompletionManager {
     //region Extended Completion Methods
 
     fun completeExtendedScriptedVariable(context: ProcessingContext, result: CompletionResultSet) {
-        if (!getSettings().completion.completeByExtendedConfigs) return
+        if (!PlsFacade.getSettings().completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
         val configGroup = context.configGroup ?: return
@@ -2046,7 +2047,7 @@ object ParadoxCompletionManager {
     }
 
     fun completeExtendedDefinition(context: ProcessingContext, result: CompletionResultSet) {
-        if (!getSettings().completion.completeByExtendedConfigs) return
+        if (!PlsFacade.getSettings().completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
         val config = context.config ?: return
@@ -2114,7 +2115,7 @@ object ParadoxCompletionManager {
     }
 
     fun completeExtendedInlineScript(context: ProcessingContext, result: CompletionResultSet) {
-        if (!getSettings().completion.completeByExtendedConfigs) return
+        if (!PlsFacade.getSettings().completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
         val config = context.config ?: return
@@ -2138,7 +2139,7 @@ object ParadoxCompletionManager {
     }
 
     fun completeExtendedParameter(context: ProcessingContext, result: CompletionResultSet) {
-        if (!getSettings().completion.completeByExtendedConfigs) return
+        if (!PlsFacade.getSettings().completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
         val configGroup = context.configGroup ?: return
@@ -2165,7 +2166,7 @@ object ParadoxCompletionManager {
     }
 
     fun completeExtendedComplexEnumValue(context: ProcessingContext, result: CompletionResultSet) {
-        if (!getSettings().completion.completeByExtendedConfigs) return
+        if (!PlsFacade.getSettings().completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
         val config = context.config ?: return
@@ -2190,7 +2191,7 @@ object ParadoxCompletionManager {
     }
 
     fun completeExtendedDynamicValue(context: ProcessingContext, result: CompletionResultSet) {
-        if (!getSettings().completion.completeByExtendedConfigs) return
+        if (!PlsFacade.getSettings().completion.completeByExtendedConfigs) return
         ProgressManager.checkCanceled()
 
         val config = context.config ?: return

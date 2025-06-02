@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configContext.*
@@ -41,7 +42,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         var suppressed: PsiElement? = null
         val file = holder.file
         val project = holder.project
-        val configGroup = getConfigGroup(project, selectGameType(file))
+        val configGroup = PlsFacade.getConfigGroup(project, selectGameType(file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()

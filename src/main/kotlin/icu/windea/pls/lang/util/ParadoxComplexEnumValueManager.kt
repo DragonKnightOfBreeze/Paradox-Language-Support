@@ -7,6 +7,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -45,7 +46,7 @@ object ParadoxComplexEnumValueManager {
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path
         val gameType = fileInfo.rootInfo.gameType
-        val configGroup = getConfigGroup(project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val complexEnumConfig = getMatchedComplexEnumConfig(element, configGroup, path)
         if (complexEnumConfig == null) return null
         val name = getName(element.value) ?: return null
@@ -239,7 +240,7 @@ object ParadoxComplexEnumValueManager {
     fun getHintFromExtendedConfig(name: String, enumName: String, contextElement: PsiElement): String? {
         if (name.isEmpty()) return null
         val gameType = selectGameType(contextElement) ?: return null
-        val configGroup = getConfigGroup(contextElement.project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(contextElement.project, gameType)
         val configs = configGroup.extendedComplexEnumValues[enumName] ?: return null
         val config = configs.findFromPattern(name, contextElement, configGroup) ?: return null
         return config.hint

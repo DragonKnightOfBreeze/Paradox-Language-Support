@@ -8,8 +8,8 @@ import com.intellij.ui.*
 import com.intellij.ui.scale.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.tools.actions.*
 import java.awt.event.*
@@ -66,7 +66,7 @@ class ParadoxModDependenciesTable(
             TableSpeedSearch.installOn(table) { e ->
                 val element = e as ParadoxModDependencySettingsState
                 val modDirectory = element.modDirectory.orEmpty()
-                val modDescriptorSettings = getProfilesSettings().modDescriptorSettings.getValue(modDirectory)
+                val modDescriptorSettings = PlsFacade.getProfilesSettings().modDescriptorSettings.getValue(modDirectory)
                 modDescriptorSettings.name.orEmpty()
             }
 

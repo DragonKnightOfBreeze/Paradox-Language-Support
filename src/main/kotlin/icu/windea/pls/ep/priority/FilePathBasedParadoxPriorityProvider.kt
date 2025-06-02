@@ -1,5 +1,6 @@
 package icu.windea.pls.ep.priority
 
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -50,7 +51,7 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
         if (searchParameters !is ParadoxDefinitionSearch.SearchParameters) return null
         val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return null
         val gameType = searchParameters.selector.gameType ?: return null
-        val configGroup = getConfigGroup(searchParameters.project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(searchParameters.project, gameType)
         val typeConfig = configGroup.types.get(definitionType) ?: return null
         return doGetForcedDefinitionPriority(typeConfig)
     }
@@ -81,7 +82,7 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
             }
             target is ParadoxComplexEnumValueElement -> {
                 val enumName = target.enumName
-                val configGroup = getConfigGroup(target.project, target.gameType)
+                val configGroup = PlsFacade.getConfigGroup(target.project, target.gameType)
                 val config = configGroup.complexEnums[enumName] ?: return emptySet()
                 config.filePathPatternsForPriority
             }
@@ -107,14 +108,14 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
             searchParameters is ParadoxDefinitionSearch.SearchParameters -> {
                 val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return emptySet()
                 val gameType = searchParameters.selector.gameType ?: return emptySet()
-                val configGroup = getConfigGroup(searchParameters.project, gameType)
+                val configGroup = PlsFacade.getConfigGroup(searchParameters.project, gameType)
                 val config = configGroup.types.get(definitionType) ?: return emptySet()
                 config.filePathPatternsForPriority
             }
             searchParameters is ParadoxComplexEnumValueSearch.SearchParameters -> {
                 val enumName = searchParameters.enumName
                 val gameType = searchParameters.selector.gameType ?: return emptySet()
-                val configGroup = getConfigGroup(searchParameters.project, gameType)
+                val configGroup = PlsFacade.getConfigGroup(searchParameters.project, gameType)
                 val config = configGroup.complexEnums.get(enumName) ?: return emptySet()
                 config.filePathPatternsForPriority
             }

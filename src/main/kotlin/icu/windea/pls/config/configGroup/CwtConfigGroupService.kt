@@ -11,6 +11,7 @@ import icu.windea.pls.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.settings.PlsProfilesSettings
 import icu.windea.pls.model.*
 import kotlinx.coroutines.*
 import java.util.concurrent.*
@@ -23,7 +24,7 @@ class CwtConfigGroupService(private val project: Project) {
 
     fun init() {
         //preload config groups
-        val coroutineScope = getCoroutineScope(project)
+        val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
             readAction {
                 getConfigGroup(null)
@@ -125,12 +126,12 @@ class CwtConfigGroupService(private val project: Project) {
     private fun getRootFilePaths(configGroups: Collection<CwtConfigGroup>): Set<String> {
         val gameTypes = configGroups.mapNotNullTo(mutableSetOf()) { it.gameType }
         val rootFilePaths = mutableSetOf<String>()
-        getProfilesSettings().gameDescriptorSettings.values.forEach f@{ settings ->
+        PlsFacade.getProfilesSettings().gameDescriptorSettings.values.forEach f@{ settings ->
             val gameType = settings.gameType ?: return@f
             if (gameType !in gameTypes) return@f
             settings.gameDirectory?.let { gameDirectory -> rootFilePaths.add(gameDirectory) }
         }
-        getProfilesSettings().modDescriptorSettings.values.forEach f@{ settings ->
+        PlsFacade.getProfilesSettings().modDescriptorSettings.values.forEach f@{ settings ->
             val gameType = settings.finalGameType
             if (gameType !in gameTypes) return@f
             settings.modDirectory?.let { modDirectory -> rootFilePaths.add(modDirectory) }

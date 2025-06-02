@@ -8,6 +8,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
@@ -38,7 +39,7 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSe
 
         val info = ParadoxComplexEnumValueManager.getInfo(element)
         if (info != null) {
-            val configGroup = getConfigGroup(file.project, info.gameType)
+            val configGroup = PlsFacade.getConfigGroup(file.project, info.gameType)
             val presentation = doCollect(info.enumName, configGroup) ?: return true
             val finalPresentation = presentation.toFinalPresentation(this, file.project)
             val endOffset = element.endOffset

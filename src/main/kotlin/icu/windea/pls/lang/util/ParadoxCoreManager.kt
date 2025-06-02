@@ -13,6 +13,7 @@ import com.intellij.testFramework.*
 import com.intellij.ui.layout.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -183,7 +184,7 @@ object ParadoxCoreManager {
 
             val indexKey = ParadoxIndexManager.FileLocaleName
             val localeId = FileBasedIndex.getInstance().getFileData(indexKey, file, project).keys.singleOrNull() ?: return null
-            val localeConfig = getConfigGroup(project, null).localisationLocalesById.get(localeId)
+            val localeConfig = PlsFacade.getConfigGroup(project, null).localisationLocalesById.get(localeId)
             file.tryPutUserData(PlsKeys.localeConfig, localeConfig ?: EMPTY_OBJECT)
             return localeConfig
         }
@@ -196,7 +197,7 @@ object ParadoxCoreManager {
             val steamWorkshopDir = parentDir ?: return@r
             val steamId = steamWorkshopDir.name
             val gameType = ParadoxGameType.entries.find { it.steamId == steamId } ?: return@r
-            if (getDataProvider().getSteamWorkshopPath(steamId) != steamWorkshopDir.toNioPath().absolutePathString()) return@r
+            if (PlsFacade.getDataProvider().getSteamWorkshopPath(steamId) != steamWorkshopDir.toNioPath().absolutePathString()) return@r
             return gameType
         }
         runCatchingCancelable r@{
@@ -205,14 +206,14 @@ object ParadoxCoreManager {
             val gameDataDir = modDir.parent ?: return@r
             val gameName = gameDataDir.name
             val gameType = ParadoxGameType.entries.find { it.title == gameName } ?: return@r
-            if (getDataProvider().getGameDataPath(gameName) != gameDataDir.toNioPath().absolutePathString()) return@r
+            if (PlsFacade.getDataProvider().getGameDataPath(gameName) != gameDataDir.toNioPath().absolutePathString()) return@r
             return gameType
         }
         return null
     }
 
     fun getQuickGameDirectory(gameType: ParadoxGameType): String? {
-        val path = getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)
+        val path = PlsFacade.getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)
         if (path == null || path.toPathOrNull()?.takeIf { it.exists() } == null) return null
         return path
     }

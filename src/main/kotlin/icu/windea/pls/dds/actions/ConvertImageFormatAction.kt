@@ -32,9 +32,7 @@ import java.util.function.Consumer
 abstract class ConvertImageFormatAction(
     val targetFormatName: String,
 ) : DumbAwareAction() {
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     protected abstract fun isAvailableForFile(file: VirtualFile): Boolean
 

@@ -40,7 +40,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
 
     @Suppress("UnstableApiUsage")
     private fun handlePaths() {
-        val coroutineScope = getCoroutineScope()
+        val coroutineScope = PlsFacade.getCoroutineScope()
         coroutineScope.launch {
             PlsConstants.Paths.data
             PlsConstants.Paths.images

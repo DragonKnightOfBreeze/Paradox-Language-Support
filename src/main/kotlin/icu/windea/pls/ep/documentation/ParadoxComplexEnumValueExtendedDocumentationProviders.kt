@@ -1,5 +1,6 @@
 package icu.windea.pls.ep.documentation
 
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -11,7 +12,7 @@ class ParadoxBaseComplexEnumValueExtendedDocumentationProvider : ParadoxComplexE
         val name = element.name
         if (name.isEmpty()) return null
         if (name.isParameterized()) return null
-        val configGroup = getConfigGroup(element.project, element.gameType)
+        val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
         val configs = configGroup.extendedComplexEnumValues[element.enumName] ?: return null
         val config = configs.findFromPattern(name, element, configGroup) ?: return null
         val documentation = config.config.documentation?.orNull()

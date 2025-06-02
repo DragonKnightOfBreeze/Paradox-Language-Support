@@ -5,6 +5,7 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.*
+import icu.windea.pls.PlsConstants
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
@@ -14,7 +15,7 @@ import icu.windea.pls.model.*
 
 @WithGameType(ParadoxGameType.Vic3)
 @Service(Service.Level.PROJECT)
-@State(name = "ParadoxDiagramSettings.Vic3.EventTree", storages = [Storage("paradox-language-support.xml")])
+@State(name = "ParadoxDiagramSettings.Vic3.EventTree", storages = [Storage(PlsConstants.pluginSettingsFileName)])
 class Vic3EventTreeDiagramSettings(
     project: Project
 ) : ParadoxEventTreeDiagramSettings<Vic3EventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Vic3) {

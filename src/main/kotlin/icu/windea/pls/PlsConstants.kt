@@ -9,6 +9,8 @@ import kotlin.io.path.*
 object PlsConstants {
     const val pluginId = "icu.windea.pls"
 
+    const val pluginSettingsFileName = "paradox-language-support.xml"
+
     val locationClass = PlsConstants::class.java
 
     val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
@@ -116,14 +118,14 @@ object PlsConstants {
     }
 
     object Samples {
-        val cwtColorSettings = "/samples/Cwt.colorSettings.txt".toClasspathUrl(locationClass).readText()
-        val cwtCodeStyleSettings = "/samples/Cwt.codeStyleSettings.txt".toClasspathUrl(locationClass).readText()
+        val cwtColorSettings by lazy { "/samples/Cwt.colorSettings.txt".toClasspathUrl(locationClass).readText() }
+        val cwtCodeStyleSettings by lazy { "/samples/Cwt.codeStyleSettings.txt".toClasspathUrl(locationClass).readText() }
 
-        val paradoxLocalisationColorSettings = "/samples/ParadoxLocalisation.colorSettings.txt".toClasspathUrl(locationClass).readText()
-        val paradoxLocalisationCodeStyleSettings = "/samples/ParadoxLocalisation.codeStyleSettings.txt".toClasspathUrl(locationClass).readText()
+        val paradoxLocalisationColorSettings by lazy { "/samples/ParadoxLocalisation.colorSettings.txt".toClasspathUrl(locationClass).readText() }
+        val paradoxLocalisationCodeStyleSettings by lazy { "/samples/ParadoxLocalisation.codeStyleSettings.txt".toClasspathUrl(locationClass).readText() }
 
-        val paradoxScriptColorSettings = "/samples/ParadoxScript.colorSettings.txt".toClasspathUrl(locationClass).readText()
-        val paradoxScriptCodeStyleSettings = "/samples/ParadoxScript.codeStyleSettings.txt".toClasspathUrl(locationClass).readText()
+        val paradoxScriptColorSettings by lazy { "/samples/ParadoxScript.colorSettings.txt".toClasspathUrl(locationClass).readText() }
+        val paradoxScriptCodeStyleSettings by lazy { "/samples/ParadoxScript.codeStyleSettings.txt".toClasspathUrl(locationClass).readText() }
     }
 
     object Paths {
@@ -134,7 +136,7 @@ object PlsConstants {
         val imagesTemp by lazy { images.resolve("_temp").also { runCatchingCancelable { PathUtils.cleanDirectory(it) } } }
 
         val texconvExe by lazy { data.resolve("texconv.exe") }
-        val texconvExeClasspathUrl = "/tools/texconv.exe".toClasspathUrl(locationClass)
+        val texconvExeClasspathUrl by lazy { "/tools/texconv.exe".toClasspathUrl(locationClass) }
         val texconvExeFile by VirtualFileProvider(texconvExe) { VfsUtil.findFileByURL(texconvExeClasspathUrl)!! }
     }
 }

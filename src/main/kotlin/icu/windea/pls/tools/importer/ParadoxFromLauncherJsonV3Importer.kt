@@ -28,12 +28,12 @@ class ParadoxFromLauncherJsonV3Importer : ParadoxModImporter {
         val settings = table.model.settings
         val gameType = settings.gameType.orDefault()
         if (defaultSelected == null) {
-            val gameDataPath = getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull()
+            val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull()
             val playlistsPath = gameDataPath?.resolve("playlists")
             val playlistsFile = playlistsPath?.toVirtualFile(false)
             if (playlistsFile != null) defaultSelected = playlistsFile
         }
-        val workshopDirPath = getDataProvider().getSteamWorkshopPath(gameType.steamId)?.toPathOrNull() ?: return
+        val workshopDirPath = PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId)?.toPathOrNull() ?: return
         if (!workshopDirPath.exists()) {
             run {
                 val title = settings.qualifiedName ?: return@run

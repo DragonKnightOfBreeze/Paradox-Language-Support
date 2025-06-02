@@ -5,6 +5,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -15,7 +16,6 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.configGroup.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
@@ -68,7 +68,7 @@ object CwtConfigManager {
                 null
             } ?: return null
         val gameType = ParadoxGameType.resolve(gameTypeId)
-        return getConfigGroup(project, gameType)
+        return PlsFacade.getConfigGroup(project, gameType)
     }
 
     fun getFilePath(element: PsiElement): String? {

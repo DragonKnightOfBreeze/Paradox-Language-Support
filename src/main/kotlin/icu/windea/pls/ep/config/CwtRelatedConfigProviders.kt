@@ -2,6 +2,7 @@ package icu.windea.pls.ep.config
 
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -28,7 +29,7 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
         //包括其他一些相关的规则
 
         val result = mutableSetOf<CwtConfig<*>>()
-        val configGroup = getConfigGroup(file.project, selectGameType(file))
+        val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
 
         run r0@{
             val element = ParadoxPsiManager.findScriptExpression(file, offset) ?: return@r0
@@ -96,7 +97,7 @@ class CwtInComplexExpressionRelatedConfigProvider : CwtRelatedConfigProvider {
         }
         if (element == null) return emptySet()
 
-        val configGroup = getConfigGroup(file.project, selectGameType(file))
+        val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
         val textRange = element.textRange
         val finalOffset = offset - textRange.startOffset
         if (finalOffset < 0) return emptySet()
@@ -122,7 +123,7 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
         //包括其他一些相关的规则（扩展的规则 - definitions gameRules onActions parameters complexEnumValues dynamicValues）
 
         val result = mutableSetOf<CwtConfig<*>>()
-        val configGroup = getConfigGroup(file.project, selectGameType(file))
+        val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
 
         run r0@{
             val findOptions = ParadoxPsiManager.FindScriptedVariableOptions.run { BY_NAME or BY_REFERENCE }

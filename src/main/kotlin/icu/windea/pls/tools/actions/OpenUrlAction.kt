@@ -3,13 +3,12 @@ package icu.windea.pls.tools.actions
 import com.intellij.ide.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 abstract class OpenUrlAction : DumbAwareAction() {
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         val presentation = e.presentation
@@ -43,28 +42,28 @@ abstract class OpenUrlAction : DumbAwareAction() {
     class GameStorePageInSteam : OpenUrlAction() {
         override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
             val steamId = fileInfo.rootInfo.gameType.steamId
-            return getDataProvider().getSteamGameStoreUrlInSteam(steamId)
+            return PlsFacade.getDataProvider().getSteamGameStoreUrlInSteam(steamId)
         }
     }
 
     class GameStorePageInSteamWebsite : OpenUrlAction() {
         override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
             val steamId = fileInfo.rootInfo.gameType.steamId
-            return getDataProvider().getSteamGameStoreUrl(steamId)
+            return PlsFacade.getDataProvider().getSteamGameStoreUrl(steamId)
         }
     }
 
     class GameWorkshopPageInSteam : OpenUrlAction() {
         override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
             val steamId = fileInfo.rootInfo.gameType.steamId
-            return getDataProvider().getSteamGameWorkshopUrlInSteam(steamId)
+            return PlsFacade.getDataProvider().getSteamGameWorkshopUrlInSteam(steamId)
         }
     }
 
     class GameWorkshopPageInSteamWebsite : OpenUrlAction() {
         override fun getTargetUrl(fileInfo: ParadoxFileInfo): String {
             val steamId = fileInfo.rootInfo.gameType.steamId
-            return getDataProvider().getSteamGameWorkshopUrl(steamId)
+            return PlsFacade.getDataProvider().getSteamGameWorkshopUrl(steamId)
         }
     }
 
@@ -79,7 +78,7 @@ abstract class OpenUrlAction : DumbAwareAction() {
 
         override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
             val steamId = fileInfo.rootInfo.steamId ?: return null
-            return getDataProvider().getSteamWorkshopUrlInSteam(steamId)
+            return PlsFacade.getDataProvider().getSteamWorkshopUrlInSteam(steamId)
         }
     }
 
@@ -94,7 +93,7 @@ abstract class OpenUrlAction : DumbAwareAction() {
 
         override fun getTargetUrl(fileInfo: ParadoxFileInfo): String? {
             val steamId = fileInfo.rootInfo.steamId ?: return null
-            return getDataProvider().getSteamWorkshopUrl(steamId)
+            return PlsFacade.getDataProvider().getSteamWorkshopUrl(steamId)
         }
     }
 }

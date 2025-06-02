@@ -3,6 +3,7 @@ package icu.windea.pls.script.codeInsight.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
+import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -18,7 +19,7 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxVariableNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!getSettings().completion.completeVariableNames) return
+        if (!PlsFacade.getSettings().completion.completeVariableNames) return
 
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptString>() ?: return

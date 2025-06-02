@@ -18,9 +18,7 @@ class ParadoxDiagramScopeTypesActionGroup(
         templatePresentation.icon = AllIcons.General.Filter
     }
 
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun getChildren(e: AnActionEvent?): Array<AnAction> {
         val provider = builder.provider

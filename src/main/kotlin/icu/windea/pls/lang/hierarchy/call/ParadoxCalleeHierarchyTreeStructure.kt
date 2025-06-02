@@ -6,6 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.ui.tree.*
+import icu.windea.pls.*
 import icu.windea.pls.ep.inline.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
@@ -41,7 +42,7 @@ class ParadoxCalleeHierarchyTreeStructure(
     }
 
     private fun searchElement(element: PsiElement, descriptor: HierarchyNodeDescriptor, descriptors: MutableMap<String, ParadoxCallHierarchyNodeDescriptor>) {
-        val hierarchySettings = getSettings().hierarchy
+        val hierarchySettings = PlsFacade.getSettings().hierarchy
         val scopeType = getHierarchySettings().scopeType
         val scope = ParadoxSearchScopeTypes.get(scopeType).getGlobalSearchScope(myProject, element)
             ?: GlobalSearchScope.allScope(myProject)

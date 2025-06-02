@@ -74,7 +74,8 @@
       "actions": {
         "gameSettings.svg": "icons/actions/gameSettings.svg",
         "modSettings.svg": "icons/actions/modSettings.svg",
-        "refreshConfigGroups.svg": "icons/actions/refreshConfigGroups.svg"
+        "refreshConfigGroups.svg": "icons/actions/refreshConfigGroups.svg",
+        "syncConfigGroupsFromRemote.svg": "icons/actions/syncConfigGroupsFromRemote.svg"
       }
     }
   }

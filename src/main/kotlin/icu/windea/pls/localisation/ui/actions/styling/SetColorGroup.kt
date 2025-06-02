@@ -15,6 +15,8 @@ class SetColorGroup : DefaultActionGroup() {
             .build(CacheLoader.from<ParadoxTextColorInfo, SetColorAction> { SetColorAction(it) })
     }
 
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
     override fun update(e: AnActionEvent) {
         val editor = e.getData(CommonDataKeys.EDITOR)
         if (editor == null) return
@@ -27,9 +29,5 @@ class SetColorGroup : DefaultActionGroup() {
             removeAll()
             addAll(actions)
         }
-    }
-
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
     }
 }

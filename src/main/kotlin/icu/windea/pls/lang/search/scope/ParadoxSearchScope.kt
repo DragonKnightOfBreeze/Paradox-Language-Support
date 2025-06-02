@@ -6,6 +6,7 @@ import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.psi.search.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
@@ -41,13 +42,13 @@ sealed class ParadoxSearchScope(
             when (rootInfo) {
                 is ParadoxRootInfo.Game -> {
                     val gameDirectory = rootInfo.rootFile
-                    val settings = getProfilesSettings().gameSettings.get(gameDirectory.path)
+                    val settings = PlsFacade.getProfilesSettings().gameSettings.get(gameDirectory.path)
                     val dependencyDirectories = getDependencyDirectories(settings)
                     return ParadoxGameWithDependenciesSearchScope(project, contextFile, gameDirectory, dependencyDirectories)
                 }
                 is ParadoxRootInfo.Mod -> {
                     val modDirectory = rootInfo.rootFile
-                    val settings = getProfilesSettings().modSettings.get(modDirectory.path)
+                    val settings = PlsFacade.getProfilesSettings().modSettings.get(modDirectory.path)
                     val gameDirectory = settings?.finalGameDirectory?.toVirtualFile(false)
                     val dependencyDirectories = getDependencyDirectories(settings, modDirectory)
                     return ParadoxModWithDependenciesSearchScope(project, contextFile, modDirectory, gameDirectory, dependencyDirectories)
@@ -101,7 +102,7 @@ sealed class ParadoxSearchScope(
             if (!ProjectFileIndex.getInstance(project).isInContent(contextFile)) return EMPTY_SCOPE //use empty scope here
             val modDirectory = rootInfo.castOrNull<ParadoxRootInfo.Mod>()?.rootFile
             if (modDirectory == null) return ParadoxModWithDependenciesSearchScope(project, contextFile, null, null, emptySet())
-            val settings = getProfilesSettings().gameSettings.get(modDirectory.path)
+            val settings = PlsFacade.getProfilesSettings().gameSettings.get(modDirectory.path)
             val gameDirectory = settings?.gameDirectory?.toVirtualFile(false)
             val dependencyDirectories = getDependencyDirectories(settings)
             return ParadoxModWithDependenciesSearchScope(project, contextFile, modDirectory, gameDirectory, dependencyDirectories)
@@ -115,7 +116,7 @@ sealed class ParadoxSearchScope(
             if (!ProjectFileIndex.getInstance(project).isInContent(contextFile)) return EMPTY_SCOPE //use empty scope here
             val gameDirectory = rootInfo.castOrNull<ParadoxRootInfo.Game>()?.rootFile
             if (gameDirectory == null) return ParadoxGameWithDependenciesSearchScope(project, contextFile, null, emptySet())
-            val settings = getProfilesSettings().modSettings.get(gameDirectory.path)
+            val settings = PlsFacade.getProfilesSettings().modSettings.get(gameDirectory.path)
             val dependencyDirectories = getDependencyDirectories(settings)
             return ParadoxGameWithDependenciesSearchScope(project, contextFile, gameDirectory, dependencyDirectories)
         }

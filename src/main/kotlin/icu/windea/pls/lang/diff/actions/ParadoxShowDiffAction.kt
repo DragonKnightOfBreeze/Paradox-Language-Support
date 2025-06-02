@@ -5,7 +5,9 @@ import com.intellij.diff.chains.*
 import com.intellij.diff.util.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.settings.PlsStrategies.DiffGroup as DiffGroupStrategy
 
 //com.intellij.diff.actions.BaseShowDiffAction
@@ -15,9 +17,7 @@ abstract class ParadoxShowDiffAction : AnAction() {
         isEnabledInModalContext = true
     }
 
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
 
     override fun actionPerformed(e: AnActionEvent) {
@@ -33,7 +33,7 @@ abstract class ParadoxShowDiffAction : AnAction() {
     protected abstract fun getDiffRequestChain(e: AnActionEvent): DiffRequestChain?
 
     protected fun getDefaultIndex(producers: List<DiffRequestProducer>, currentIndex: Int): Int {
-        val defaultDiffGroup = getSettings().others.defaultDiffGroup
+        val defaultDiffGroup = PlsFacade.getSettings().others.defaultDiffGroup
         return when (defaultDiffGroup) {
             DiffGroupStrategy.VsCopy -> currentIndex
             DiffGroupStrategy.First -> 0

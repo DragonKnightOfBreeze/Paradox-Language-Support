@@ -4,7 +4,6 @@ import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 /**
@@ -13,7 +12,7 @@ import icu.windea.pls.model.*
  * 由插件自动根据游戏信息与模组信息进行配置。
  */
 @Service(Service.Level.APP)
-@State(name = "ParadoxProfilesSettings", storages = [Storage("paradox-language-support.xml")])
+@State(name = "ParadoxProfilesSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
 class PlsProfilesSettings : SimplePersistentStateComponent<PlsProfilesSettingsState>(PlsProfilesSettingsState())
 
 class PlsProfilesSettingsState : BaseState() {
@@ -97,7 +96,7 @@ interface ParadoxGameDescriptorAwareSettingsState {
     val gameDirectory: String?
 
     val gameDescriptorSettings: ParadoxGameDescriptorSettingsState?
-        get() = gameDirectory?.let { getProfilesSettings().gameDescriptorSettings.get(it) }
+        get() = gameDirectory?.let { PlsFacade.getProfilesSettings().gameDescriptorSettings.get(it) }
 
     val gameType: ParadoxGameType? get() = gameDescriptorSettings?.gameType
     val gameVersion: String? get() = gameDescriptorSettings?.gameVersion
@@ -107,7 +106,7 @@ interface ParadoxModDescriptorAwareSettingsState {
     val modDirectory: String?
 
     val modDescriptorSettings: ParadoxModDescriptorSettingsState?
-        get() = modDirectory?.orNull()?.let { getProfilesSettings().modDescriptorSettings.get(it) }
+        get() = modDirectory?.orNull()?.let { PlsFacade.getProfilesSettings().modDescriptorSettings.get(it) }
 
     val name: String? get() = modDescriptorSettings?.name
     val version: String? get() = modDescriptorSettings?.version
@@ -159,13 +158,13 @@ class ParadoxModDependencySettingsState : BaseState(), ParadoxModDescriptorAware
 }
 
 val ParadoxModDescriptorSettingsState.finalGameType: ParadoxGameType
-    get() = inferredGameType ?: gameType ?: getSettings().defaultGameType
+    get() = inferredGameType ?: gameType ?: PlsFacade.getSettings().defaultGameType
 
 val ParadoxModDescriptorAwareSettingsState.finalGameType: ParadoxGameType
-    get() = inferredGameType ?: gameType ?: getSettings().defaultGameType
+    get() = inferredGameType ?: gameType ?: PlsFacade.getSettings().defaultGameType
 
 val ParadoxModSettingsState.finalGameDirectory: String?
-    get() = gameDirectory?.orNull() ?: getSettings().defaultGameDirectories[finalGameType.id]
+    get() = gameDirectory?.orNull() ?: PlsFacade.getSettings().defaultGameDirectories[finalGameType.id]
         ?.orNull()
 
 val ParadoxGameOrModSettingsState.qualifiedName: String?

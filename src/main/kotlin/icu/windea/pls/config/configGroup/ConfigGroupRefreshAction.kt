@@ -17,6 +17,8 @@ class ConfigGroupRefreshAction : DumbAwareAction(), TooltipDescriptionProvider {
         templatePresentation.description = PlsBundle.message("configGroup.refresh.action.desc")
     }
 
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
     override fun update(e: AnActionEvent) {
         val presentation = e.presentation
         presentation.isEnabledAndVisible = false
@@ -37,6 +39,5 @@ class ConfigGroupRefreshAction : DumbAwareAction(), TooltipDescriptionProvider {
         configGroupService.refreshConfigGroups(configGroups)
         FloatingToolbarProvider.EP_NAME.findExtensionOrFail(ConfigGroupRefreshFloatingProvider::class.java).updateToolbarComponents(project)
     }
-
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 }
+

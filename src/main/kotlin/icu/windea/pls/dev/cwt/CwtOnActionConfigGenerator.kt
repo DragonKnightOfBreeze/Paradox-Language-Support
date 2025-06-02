@@ -1,5 +1,6 @@
 package icu.windea.pls.dev.cwt
 
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import java.io.*
@@ -20,7 +21,7 @@ class CwtOnActionConfigGenerator(
             val oldName = oldItemRegex.matchEntire(it)?.groupValues?.getOrNull(1)
             if (oldName != null) oldItems.add(oldName)
         }
-        val gamePath = getDataProvider().getSteamGamePath(gameType.id, gameType.title) ?: throw IllegalStateException()
+        val gamePath = PlsFacade.getDataProvider().getSteamGamePath(gameType.id, gameType.title) ?: throw IllegalStateException()
         val newItems = mutableSetOf<String>()
         val txtDirFile = File(gamePath, txtDirPath)
         txtDirFile.walk().filter { it.isFile && it.extension == "txt" }.forEach { txtFile ->

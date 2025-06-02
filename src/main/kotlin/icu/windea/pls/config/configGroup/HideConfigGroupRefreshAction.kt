@@ -17,6 +17,8 @@ class HideConfigGroupRefreshAction : DumbAwareAction() {
         templatePresentation.text = PlsBundle.message("configGroup.refresh.action.hide.text")
     }
 
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
     override fun update(e: AnActionEvent) {
         val presentation = e.presentation
         presentation.isEnabledAndVisible = false
@@ -36,6 +38,4 @@ class HideConfigGroupRefreshAction : DumbAwareAction() {
         configGroups.forEach { configGroup -> configGroup.changed.set(false) }
         FloatingToolbarProvider.EP_NAME.findExtensionOrFail(ConfigGroupRefreshFloatingProvider::class.java).updateToolbarComponents(project)
     }
-
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 }

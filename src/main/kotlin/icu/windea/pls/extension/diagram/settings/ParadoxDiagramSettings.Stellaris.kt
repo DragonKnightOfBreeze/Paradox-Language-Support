@@ -5,6 +5,7 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.xmlb.annotations.*
+import icu.windea.pls.PlsConstants
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
@@ -14,7 +15,7 @@ import icu.windea.pls.model.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 @Service(Service.Level.PROJECT)
-@State(name = "ParadoxDiagramSettings.Stellaris.EventTree", storages = [Storage("paradox-language-support.xml")])
+@State(name = "ParadoxDiagramSettings.Stellaris.EventTree", storages = [Storage(PlsConstants.pluginSettingsFileName)])
 class StellarisEventTreeDiagramSettings(
     project: Project
 ) : ParadoxEventTreeDiagramSettings<StellarisEventTreeDiagramSettings.State>(project, State(), ParadoxGameType.Stellaris) {
@@ -64,7 +65,7 @@ class StellarisEventTreeDiagramSettings(
 
 @WithGameType(ParadoxGameType.Stellaris)
 @Service(Service.Level.PROJECT)
-@State(name = "ParadoxDiagramSettings.Stellaris.TechTree", storages = [Storage("paradox-language-support.xml")])
+@State(name = "ParadoxDiagramSettings.Stellaris.TechTree", storages = [Storage(PlsConstants.pluginSettingsFileName)])
 class StellarisTechTreeDiagramSettings(
     project: Project
 ) : ParadoxTechTreeDiagramSettings<StellarisTechTreeDiagramSettings.State>(project, State(), ParadoxGameType.Stellaris) {

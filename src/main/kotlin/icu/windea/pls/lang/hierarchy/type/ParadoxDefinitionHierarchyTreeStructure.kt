@@ -11,6 +11,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.settings.PlsStrategies.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.constants.*
@@ -75,7 +76,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
     }
 
     private fun buildEventTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>) {
-        val groupingStrategy = getSettings().hierarchy.eventTreeGrouping
+        val groupingStrategy = PlsFacade.getSettings().hierarchy.eventTreeGrouping
         when (descriptor.nodeType) {
             NodeType.Type -> {
                 when (groupingStrategy) {
@@ -110,7 +111,7 @@ class ParadoxDefinitionHierarchyTreeStructure(
     }
 
     private fun buildTechTreeChildren(descriptor: ParadoxDefinitionHierarchyNodeDescriptor, descriptors: MutableList<HierarchyNodeDescriptor>) {
-        val groupingStrategy = getSettings().hierarchy.techTreeGrouping
+        val groupingStrategy = PlsFacade.getSettings().hierarchy.techTreeGrouping
         when (descriptor.nodeType) {
             NodeType.Type -> {
                 when (groupingStrategy) {

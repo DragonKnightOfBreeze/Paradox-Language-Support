@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.configContext.*
@@ -21,7 +22,7 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        if (!getSettings().completion.completeDefinitionNames) return
+        if (!PlsFacade.getSettings().completion.completeDefinitionNames) return
 
         val position = parameters.position
         val element = position.parent.castOrNull<ParadoxScriptStringExpressionElement>() ?: return
@@ -42,7 +43,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
         context.expressionOffset = ParadoxExpressionManager.getExpressionOffset(element)
 
         val gameType = selectGameType(file) ?: return
-        val configGroup = getConfigGroup(project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         context.configGroup = configGroup
 
         when {

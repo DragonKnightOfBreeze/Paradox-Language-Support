@@ -2,7 +2,7 @@ package icu.windea.pls.model
 
 import com.intellij.openapi.vcs.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.*
 import icu.windea.pls.lang.util.*
 
 enum class ParadoxFileType {
@@ -38,7 +38,7 @@ enum class ParadoxFileType {
         }
 
         private fun isIgnored(fileName: String): Boolean {
-            return getSettings().ignoredFileNameSet.contains(fileName)
+            return PlsFacade.getSettings().ignoredFileNameSet.contains(fileName)
         }
 
         //NOTE PLS use its own logic to resolve actual file type, so folders.cwt will be ignored

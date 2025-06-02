@@ -32,7 +32,7 @@ class ParadoxModDependencySettingsDialog(
                 label(PlsBundle.message("mod.dependency.settings.name")).widthGroup("left")
                 textField()
                     .text(settings.name.orEmpty())
-                    .columns(36)
+                    .columns(COLUMNS_LARGE)
                     .align(Align.FILL)
                     .enabled(false)
             }
@@ -41,13 +41,13 @@ class ParadoxModDependencySettingsDialog(
                 label(PlsBundle.message("mod.dependency.settings.version")).widthGroup("left")
                 textField()
                     .text(settings.version.orEmpty())
-                    .columns(18)
+                    .columns(COLUMNS_SHORT)
                     .enabled(false)
                 //supportedVersion
                 label(PlsBundle.message("mod.dependency.settings.supportedVersion")).widthGroup("right")
                 textField()
                     .text(settings.supportedVersion.orEmpty())
-                    .columns(18)
+                    .columns(COLUMNS_SHORT)
                     .enabled(false)
                     .visible(settings.supportedVersion.orEmpty().isNotEmpty())
             }
@@ -56,7 +56,7 @@ class ParadoxModDependencySettingsDialog(
                 label(PlsBundle.message("mod.dependency.settings.gameType")).widthGroup("left")
                 comboBox(ParadoxGameType.entries)
                     .bindItem(gameTypeProperty)
-                    .columns(18)
+                    .columns(COLUMNS_SHORT)
                     .enabled(false)
             }
             row {

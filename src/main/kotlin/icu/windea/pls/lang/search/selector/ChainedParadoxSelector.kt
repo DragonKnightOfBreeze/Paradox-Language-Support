@@ -2,6 +2,7 @@ package icu.windea.pls.lang.search.selector
 
 import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.scope.*
@@ -24,8 +25,8 @@ class ChainedParadoxSelector<T>(
     val settings: ParadoxGameOrModSettingsState? by lazy {
         val rootInfo = file?.fileInfo?.rootInfo
         when (rootInfo) {
-            is ParadoxRootInfo.Game -> getProfilesSettings().gameSettings.get(rootInfo.rootFile.path)
-            is ParadoxRootInfo.Mod -> getProfilesSettings().modSettings.get(rootInfo.rootFile.path)
+            is ParadoxRootInfo.Game -> PlsFacade.getProfilesSettings().gameSettings.get(rootInfo.rootFile.path)
+            is ParadoxRootInfo.Mod -> PlsFacade.getProfilesSettings().modSettings.get(rootInfo.rootFile.path)
             else -> null
         }
     }

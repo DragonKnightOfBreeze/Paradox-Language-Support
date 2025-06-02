@@ -9,9 +9,9 @@ import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 
@@ -36,7 +36,7 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
         if (editor == null || file == null) return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
-        val locales = getConfigGroup(project, null).localisationLocalesById.values.toTypedArray()
+        val locales = PlsFacade.getConfigGroup(project, null).localisationLocalesById.values.toTypedArray()
         JBPopupFactory.getInstance().createListPopup(Popup(element, locales)).showInBestPositionFor(editor)
     }
 

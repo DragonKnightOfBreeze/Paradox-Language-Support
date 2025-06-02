@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.fileChooser.actions.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.actions.*
@@ -20,9 +21,7 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
 
     open val expand: Boolean = false
 
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     protected abstract fun setVisible(e: AnActionEvent): Boolean
 
@@ -66,7 +65,7 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
             val gameType = e.gameTypeProperty?.get() ?: e.gameType
             if (gameType == null) return false
             if (targetPath == null) {
-                targetPath = getDataProvider().getSteamPath()?.toPathOrNull()
+                targetPath = PlsFacade.getDataProvider().getSteamPath()?.toPathOrNull()
             }
             return true
         }
@@ -82,7 +81,7 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
             if (gameType == null) return false
             if (this.targetPath == null || this.gameType != gameType) {
                 this.gameType = gameType
-                this.targetPath = getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)?.toPathOrNull()
+                this.targetPath = PlsFacade.getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)?.toPathOrNull()
             }
             return true
         }
@@ -99,7 +98,7 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
             if (gameType == null) return false
             if (this.targetPath == null || this.gameType != gameType) {
                 this.gameType = gameType
-                this.targetPath = getDataProvider().getSteamWorkshopPath(gameType.steamId)?.toPathOrNull()
+                this.targetPath = PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId)?.toPathOrNull()
             }
             return true
         }
@@ -116,7 +115,7 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
             if (gameType == null) return false
             if (this.targetPath == null || this.gameType != gameType) {
                 this.gameType = gameType
-                this.targetPath = getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull()
+                this.targetPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull()
             }
             return true
         }

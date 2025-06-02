@@ -4,6 +4,7 @@ import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.annotations.*
@@ -24,7 +25,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
         if (root.language !is ParadoxScriptLanguage) return FoldingDescriptor.EMPTY_ARRAY
         val project = root.project
         val gameType = selectGameType(root) ?: return FoldingDescriptor.EMPTY_ARRAY
-        val configGroup = getConfigGroup(project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val foldingSettings = configGroup.foldingSettings
         if (foldingSettings.isEmpty()) return FoldingDescriptor.EMPTY_ARRAY
         val settingsMap = foldingSettings.get(getGroupName()) ?: return FoldingDescriptor.EMPTY_ARRAY

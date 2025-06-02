@@ -6,6 +6,7 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
@@ -21,13 +22,11 @@ import icu.windea.pls.tools.ui.*
  * @see icu.windea.pls.tools.ui.ParadoxGameSettingsDialog
  */
 class OpenGameSettingsAction : DumbAwareAction() {
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         //基于插件设置判断是否需要显示在编辑器悬浮工具栏中
-        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !getSettings().others.showEditorContextToolbar) {
+        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !PlsFacade.getSettings().others.showEditorContextToolbar) {
             e.presentation.isEnabledAndVisible = false
             return
         }
@@ -63,7 +62,7 @@ class OpenGameSettingsAction : DumbAwareAction() {
         ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
 
         val modPath = rootInfo.rootFile.path
-        val gameSettings = getProfilesSettings().gameSettings.get(modPath) ?: return
+        val gameSettings = PlsFacade.getProfilesSettings().gameSettings.get(modPath) ?: return
         val dialog = ParadoxGameSettingsDialog(project, gameSettings)
         dialog.show()
     }

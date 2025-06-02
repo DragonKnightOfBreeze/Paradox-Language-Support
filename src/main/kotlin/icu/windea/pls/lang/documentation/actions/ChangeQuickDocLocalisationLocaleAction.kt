@@ -16,9 +16,7 @@ import icu.windea.pls.lang.util.*
 //com.intellij.codeInsight.documentation.actions.CopyQuickDocAction
 
 class ChangeQuickDocLocalisationLocaleAction : AnAction(), ActionToIgnore {
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     //use local-cached locale (on documentationTarget.element)
 

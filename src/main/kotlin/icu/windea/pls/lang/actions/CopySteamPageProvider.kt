@@ -4,6 +4,7 @@ import com.intellij.ide.actions.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
@@ -20,8 +21,8 @@ class CopySteamPageProvider : DumbAwareCopyPathProvider() {
         val rootInfo = fileInfo.rootInfo
         val steamId = rootInfo.steamId ?: return null
         return when (rootInfo) {
-            is ParadoxRootInfo.Game -> getDataProvider().getSteamGameStoreUrl(steamId)
-            is ParadoxRootInfo.Mod -> getDataProvider().getSteamWorkshopUrl(steamId)
+            is ParadoxRootInfo.Game -> PlsFacade.getDataProvider().getSteamGameStoreUrl(steamId)
+            is ParadoxRootInfo.Mod -> PlsFacade.getDataProvider().getSteamWorkshopUrl(steamId)
         }
     }
 }

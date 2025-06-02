@@ -86,10 +86,10 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
         val steamId = fileInfo.rootInfo.steamId
         if (steamId != null) {
             append(" | ")
-            appendLink(getDataProvider().getSteamWorkshopUrlInSteam(steamId), PlsBundle.message("text.steamLinkLabel"))
+            appendLink(PlsFacade.getDataProvider().getSteamWorkshopUrlInSteam(steamId), PlsBundle.message("text.steamLinkLabel"))
             appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
             append(" | ")
-            appendLink(getDataProvider().getSteamWorkshopUrl(steamId), PlsBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标
+            appendLink(PlsFacade.getDataProvider().getSteamWorkshopUrl(steamId), PlsBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标
         }
     }
     append("</span>")

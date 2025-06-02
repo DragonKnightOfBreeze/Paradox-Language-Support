@@ -78,9 +78,7 @@ interface ParadoxModDependenciesToolbarActions {
             registerCustomShortcutSet(CustomShortcutSet.fromString("ENTER"), null)
         }
 
-        override fun getActionUpdateThread(): ActionUpdateThread {
-            return ActionUpdateThread.EDT
-        }
+        override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
         override fun update(e: AnActionEvent) {
             e.presentation.isEnabled = table.selectedRowCount == 1
@@ -101,9 +99,7 @@ interface ParadoxModDependenciesToolbarActions {
             templatePresentation.text = PlsBundle.message("mod.dependencies.toolbar.action.enableAll")
         }
 
-        override fun getActionUpdateThread(): ActionUpdateThread {
-            return ActionUpdateThread.EDT
-        }
+        override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
         override fun actionPerformed(e: AnActionEvent) {
             val selectedRows = table.selectedRows
@@ -128,9 +124,7 @@ interface ParadoxModDependenciesToolbarActions {
             templatePresentation.text = PlsBundle.message("mod.dependencies.toolbar.action.disableAll")
         }
 
-        override fun getActionUpdateThread(): ActionUpdateThread {
-            return ActionUpdateThread.EDT
-        }
+        override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
         override fun actionPerformed(e: AnActionEvent) {
             val selectedRows = table.selectedRows
@@ -156,9 +150,7 @@ interface ParadoxModDependenciesToolbarActions {
             registerCustomShortcutSet(CustomShortcutSet.fromString("alt I"), null)
         }
 
-        override fun getActionUpdateThread(): ActionUpdateThread {
-            return ActionUpdateThread.EDT
-        }
+        override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
         override fun actionPerformed(e: AnActionEvent) {
             val popup = ParadoxModDependenciesImportPopup(project, table)
@@ -175,9 +167,7 @@ interface ParadoxModDependenciesToolbarActions {
             registerCustomShortcutSet(CustomShortcutSet.fromString("alt E"), null)
         }
 
-        override fun getActionUpdateThread(): ActionUpdateThread {
-            return ActionUpdateThread.EDT
-        }
+        override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
         override fun actionPerformed(e: AnActionEvent) {
             //导出全部，而非当前选中的行

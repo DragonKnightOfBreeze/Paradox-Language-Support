@@ -15,6 +15,7 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icons.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configContext.*
@@ -288,7 +289,7 @@ object ParadoxParameterManager {
     fun getParameterInfo(parameterElement: ParadoxParameterElement): ParadoxParameterInfo? {
         val rootFile = selectRootFile(parameterElement) ?: return null
         val project = parameterElement.project
-        val configGroup = getConfigGroup(project, parameterElement.gameType)
+        val configGroup = PlsFacade.getConfigGroup(project, parameterElement.gameType)
         val cache = configGroup.parameterInfoCache.get(rootFile)
         val cacheKey = parameterElement.name + "@" + parameterElement.contextKey
         val parameterInfo = cache.get(cacheKey) {
@@ -316,7 +317,7 @@ object ParadoxParameterManager {
         val fromConfig = getInferredContextConfigsFromConfig(parameterElement)
         if (fromConfig.isNotEmpty()) return fromConfig
 
-        if (!getSettings().inference.configContextForParameters) return emptyList()
+        if (!PlsFacade.getSettings().inference.configContextForParameters) return emptyList()
         val parameterInfo = getParameterInfo(parameterElement) ?: return emptyList()
         return parameterInfo.getOrPutUserData(Keys.inferredContextConfigsFromUsages) {
             ProgressManager.checkCanceled()
@@ -336,14 +337,14 @@ object ParadoxParameterManager {
     }
 
     private fun doGetInferredContextConfigsFromConfig(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        val configGroup = getConfigGroup(parameterElement.project, parameterElement.gameType)
+        val configGroup = PlsFacade.getConfigGroup(parameterElement.project, parameterElement.gameType)
         val configs = configGroup.extendedParameters.findFromPattern(parameterElement.name, parameterElement, configGroup).orEmpty()
         val config = configs.findLast { it.contextKey.matchFromPattern(parameterElement.contextKey, parameterElement, configGroup) } ?: return emptyList()
         return config.getContextConfigs(parameterElement)
     }
 
     private fun doGetInferredContextConfigsFromUsages(parameterElement: ParadoxParameterElement): List<CwtMemberConfig<*>> {
-        val fastInference = getSettings().inference.configContextForParametersFast
+        val fastInference = PlsFacade.getSettings().inference.configContextForParametersFast
         val result = Ref.create<List<CwtMemberConfig<*>>>()
         ParadoxParameterSupport.processContext(parameterElement, true) p@{ context ->
             ProgressManager.checkCanceled()
@@ -359,7 +360,7 @@ object ParadoxParameterManager {
     }
 
     private fun doGetInferredContextConfigsFromUsages(parameterName: String, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>> {
-        val fastInference = getSettings().inference.configContextForParametersFast
+        val fastInference = PlsFacade.getSettings().inference.configContextForParametersFast
         val parameterInfos = parameterContextInfo.parameters.get(parameterName)
         if (parameterInfos.isNullOrEmpty()) return emptyList()
         val result = Ref.create<List<CwtMemberConfig<*>>>()

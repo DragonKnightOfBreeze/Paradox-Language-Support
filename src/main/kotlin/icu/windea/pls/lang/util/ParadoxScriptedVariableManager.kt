@@ -4,6 +4,7 @@ import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -70,7 +71,7 @@ object ParadoxScriptedVariableManager {
     fun getHintFromExtendedConfig(name: String, contextElement: PsiElement): String? {
         if (name.isNotEmpty()) return null
         val gameType = selectGameType(contextElement) ?: return null
-        val configGroup = getConfigGroup(contextElement.project, gameType)
+        val configGroup = PlsFacade.getConfigGroup(contextElement.project, gameType)
         val config = configGroup.extendedScriptedVariables.findFromPattern(name, contextElement, configGroup) ?: return null
         return config.hint
     }

@@ -12,6 +12,8 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.settings.PlsProfilesSettings
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.*
 import icu.windea.pls.tools.ui.*
 import java.util.function.Function
@@ -31,7 +33,7 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(rootFile)
         if (!isInProject) return null
 
-        val modSettings = getProfilesSettings().modSettings.get(rootFile.path) ?: return null
+        val modSettings = PlsFacade.getProfilesSettings().modSettings.get(rootFile.path) ?: return null
         if (modSettings.finalGameDirectory.isNotNullOrEmpty()) return null
 
         return Function f@{ fileEditor ->
@@ -43,7 +45,7 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
                 dialog.show()
             }
             panel.createActionLabel(PlsBundle.message("editor.notification.1.action.2")) action@{
-                val settings = getSettings()
+                val settings = PlsFacade.getSettings()
                 val defaultGameDirectories = settings.defaultGameDirectories
                 ParadoxGameType.entries.forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
                 val defaultList = defaultGameDirectories.toMutableEntryList()

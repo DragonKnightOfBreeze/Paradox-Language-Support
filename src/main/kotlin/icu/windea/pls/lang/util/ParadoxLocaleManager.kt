@@ -3,10 +3,10 @@ package icu.windea.pls.lang.util
 import com.intellij.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
 
 object ParadoxLocaleManager {
     const val ID_AUTO = "auto"
@@ -15,23 +15,23 @@ object ParadoxLocaleManager {
     const val ID_FALLBACK = "l_english"
 
     fun getPreferredLocaleConfig(): CwtLocalisationLocaleConfig {
-        return getResolvedLocaleConfig(getSettings().preferredLocale.orEmpty()) ?: CwtLocalisationLocaleConfig.FALLBACK
+        return getResolvedLocaleConfig(PlsFacade.getSettings().preferredLocale.orEmpty()) ?: CwtLocalisationLocaleConfig.FALLBACK
     }
 
     fun getResolvedLocaleConfig(id: String): CwtLocalisationLocaleConfig? {
-        val localesById = getConfigGroup(null).localisationLocalesById
+        val localesById = PlsFacade.getConfigGroup(null).localisationLocalesById
         val locale = localesById[id]
         if (locale != null) return locale
 
         return when {
             id.isEmpty() || id == ID_AUTO -> {
                 val ideLocale = DynamicBundle.getLocale()
-                val localesByCode = getConfigGroup(null).localisationLocalesByCode
+                val localesByCode = PlsFacade.getConfigGroup(null).localisationLocalesByCode
                 localesByCode[ideLocale.language] ?: CwtLocalisationLocaleConfig.FALLBACK
             }
             id == ID_AUTO_OS -> {
                 val userLanguage = System.getProperty("user.language").orEmpty()
-                val localesByCode = getConfigGroup(null).localisationLocalesByCode
+                val localesByCode = PlsFacade.getConfigGroup(null).localisationLocalesByCode
                 localesByCode[userLanguage] ?: CwtLocalisationLocaleConfig.FALLBACK
             }
             else -> null
@@ -43,7 +43,7 @@ object ParadoxLocaleManager {
             if (id == ID_AUTO) return CwtLocalisationLocaleConfig.AUTO
             if (id == ID_AUTO_OS) return CwtLocalisationLocaleConfig.AUTO_OS
         }
-        val localesById = getConfigGroup(null).localisationLocalesById
+        val localesById = PlsFacade.getConfigGroup(null).localisationLocalesById
         val locale = localesById[id] ?: return null
         if (!withDefault) {
             if (locale.id == ID_DEFAULT) return null
@@ -57,7 +57,7 @@ object ParadoxLocaleManager {
             locales += CwtLocalisationLocaleConfig.AUTO
             locales += CwtLocalisationLocaleConfig.AUTO_OS
         }
-        val localesById = getConfigGroup(null).localisationLocalesById
+        val localesById = PlsFacade.getConfigGroup(null).localisationLocalesById
         var locales0 = localesById.values.toList()
         if (!withDefault) {
             locales0 = locales0.filter { it.id != ID_DEFAULT }

@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.priority
 
 import com.intellij.openapi.extensions.*
+import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
@@ -45,8 +46,8 @@ interface ParadoxPriorityProvider {
             val rootInfo = rootFile?.fileInfo?.rootInfo
             val rootPath = rootFile?.path
             val settings = when (rootInfo) {
-                is ParadoxRootInfo.Game -> getProfilesSettings().gameSettings.get(rootPath)
-                is ParadoxRootInfo.Mod -> getProfilesSettings().modSettings.get(rootPath)
+                is ParadoxRootInfo.Game -> PlsFacade.getProfilesSettings().gameSettings.get(rootPath)
+                is ParadoxRootInfo.Mod -> PlsFacade.getProfilesSettings().modSettings.get(rootPath)
                 else -> null
             }
             return Comparator c@{ o1, o2 ->

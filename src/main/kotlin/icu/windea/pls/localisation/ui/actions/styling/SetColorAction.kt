@@ -17,9 +17,7 @@ class SetColorAction(
 ) : ToggleAction(colorConfig.text, null, colorConfig.icon) {
     private val setColorActionBaseName = PlsBundle.message("action.Pls.Localisation.Styling.SetColor.text")
 
-    override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.BGT
-    }
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(event: AnActionEvent) {
         val editor = event.editor ?: return

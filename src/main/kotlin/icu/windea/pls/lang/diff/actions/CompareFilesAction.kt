@@ -24,6 +24,7 @@ import icu.windea.pls.lang.actions.*
 import icu.windea.pls.lang.diff.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import java.awt.*
@@ -51,7 +52,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
 
     override fun update(e: AnActionEvent) {
         //基于插件设置判断是否需要显示在编辑器悬浮工具栏中
-        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !getSettings().others.showEditorContextToolbar) {
+        if (e.place == ActionPlaces.CONTEXT_TOOLBAR && !PlsFacade.getSettings().others.showEditorContextToolbar) {
             e.presentation.isEnabledAndVisible = false
             return
         }
