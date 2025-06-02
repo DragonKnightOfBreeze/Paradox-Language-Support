@@ -282,9 +282,14 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // rich_text
+  // rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
   static boolean concept_text_item(PsiBuilder b, int l) {
-    return rich_text(b, l + 1);
+    if (!recursion_guard_(b, l, "concept_text_item")) return false;
+    boolean r;
+    r = rich_text(b, l + 1);
+    if (!r) r = consumeToken(b, COLORFUL_TEXT_END);
+    if (!r) r = consumeToken(b, TEXT_FORMAT_END);
+    return r;
   }
 
   /* ********************************************************** */
@@ -777,9 +782,14 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // rich_text
+  // rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
   static boolean text_format_text_item(PsiBuilder b, int l) {
-    return rich_text(b, l + 1);
+    if (!recursion_guard_(b, l, "text_format_text_item")) return false;
+    boolean r;
+    r = rich_text(b, l + 1);
+    if (!r) r = consumeToken(b, COLORFUL_TEXT_END);
+    if (!r) r = consumeToken(b, TEXT_FORMAT_END);
+    return r;
   }
 
   /* ********************************************************** */

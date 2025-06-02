@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.localisation.references.ParadoxLocalisationTextIconPsiReference;
@@ -14,28 +15,20 @@ import javax.swing.Icon;
 
 public interface ParadoxLocalisationTextIcon extends ParadoxLocalisationRichText, NavigatablePsiElement, ParadoxLocalisationParameterAwareElement, ParadoxLocalisationCommandAwareElement {
 
-  @Nullable
-  PsiElement getIdElement();
+  @Nullable PsiElement getIdElement();
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-  @Nullable
-  String getName();
+  @Nullable String getName();
 
-  @NotNull
-  ParadoxLocalisationTextIcon setName(@NotNull String name);
+  @NotNull ParadoxLocalisationTextIcon setName(@NotNull String name);
 
-  @Nullable
-  ParadoxLocalisationTextIconPsiReference getReference();
+  @Nullable ParadoxLocalisationTextIconPsiReference getReference();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

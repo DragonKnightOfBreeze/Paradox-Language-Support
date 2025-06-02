@@ -16,6 +16,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %{
     private ParadoxGameType gameType;
 
+    //TODO 1.4.2+ 这里的状态栈处理可能有些问题，不过除非对于存在语法错误的场景，否则问题应当不大
     private IntStack nextStateStack = null;
 
     public _ParadoxLocalisationTextLexer() {
@@ -361,14 +362,10 @@ TEXT_ICON_TOKEN=\w+
     {CONCEPT_NAME_TOKEN} { return CONCEPT_NAME_TOKEN; }
 }
 <IN_CONCEPT_BLANK> {
-    "§" { yypushback(yylength()); yybegin(CHECK_COLORFUL_TEXT); }
     "§!" { beginNextState(); return COLORFUL_TEXT_END; }
-    "$" { setNextState(yystate()); yypushback(yylength()); yybegin(CHECK_REFERENCE); }
-
-    "]" { beginNextState(); return RIGHT_BRACKET; }
 
     {BLANK} { setNextState(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); return WHITE_SPACE; }
-    // there may not be a whitespace after COMMA (and such situation should be invalid)
+    // there may not be a whitespace after COMMA (and such situation will be treat as valid)
     [^] { yypushback(yylength()); setNextState(IN_CONCEPT_TEXT); yybegin(IN_CONCEPT_TEXT); }
 }
 

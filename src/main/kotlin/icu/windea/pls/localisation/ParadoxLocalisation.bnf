@@ -223,7 +223,7 @@ concept_name ::= (CONCEPT_NAME_TOKEN | parameter) + {
 }
 private concept_text_part ::= COMMA concept_text ?
 concept_text ::= concept_text_item +
-private concept_text_item ::= rich_text
+private concept_text_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 
 // [ck3, vic3] localisation text format rules
 
@@ -244,7 +244,7 @@ text_format ::= TEXT_FORMAT_START text_format_name text_format_text_part ? TEXT_
 private text_format_name ::= (TEXT_FORMAT_TOKEN | parameter) + | command
 private text_format_text_part ::= text_format_text
 text_format_text ::= text_format_text_item +
-private text_format_text_item ::= rich_text
+private text_format_text_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
 
 // [ck3, vic3] localisation text icon rules
 
