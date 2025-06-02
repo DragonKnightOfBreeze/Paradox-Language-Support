@@ -5,9 +5,7 @@ import com.intellij.diff.chains.*
 import com.intellij.diff.util.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.settings.PlsSettings
+import icu.windea.pls.*
 import icu.windea.pls.lang.settings.PlsStrategies.DiffGroup as DiffGroupStrategy
 
 //com.intellij.diff.actions.BaseShowDiffAction

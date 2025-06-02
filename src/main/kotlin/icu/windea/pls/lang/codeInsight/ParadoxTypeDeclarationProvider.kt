@@ -2,7 +2,7 @@ package icu.windea.pls.lang.codeInsight
 
 import com.intellij.codeInsight.navigation.actions.*
 import com.intellij.psi.*
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.collections.*

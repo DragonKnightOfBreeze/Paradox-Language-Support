@@ -4,8 +4,6 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import java.util.*
-import kotlin.collections.ArrayDeque
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationTextRenderer {

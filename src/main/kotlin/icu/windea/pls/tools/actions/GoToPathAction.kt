@@ -5,9 +5,8 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.fileChooser.actions.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.actions.*
 import icu.windea.pls.model.*
 import java.nio.file.*

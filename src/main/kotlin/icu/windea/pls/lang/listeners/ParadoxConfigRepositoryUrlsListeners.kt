@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.listeners
 
-import icu.windea.pls.config.util.PlsConfigRepositoryManager
+import icu.windea.pls.config.util.*
 
 /**
  * 当更改远程规则仓库地址后，进行同步。如果远程规则目录未配置，将会被直接跳过。

@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.listeners
 
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 

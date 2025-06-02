@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.listeners
 
-import com.intellij.util.messages.Topic
+import com.intellij.util.messages.*
 
 /**
  * 监听规则仓库地址的更改。

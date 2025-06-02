@@ -8,8 +8,6 @@ import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.settings.PlsProfilesSettings
 import java.awt.datatransfer.*
 import java.nio.file.*
 

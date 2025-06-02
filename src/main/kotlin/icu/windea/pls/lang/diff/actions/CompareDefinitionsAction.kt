@@ -26,7 +26,6 @@ import icu.windea.pls.lang.actions.*
 import icu.windea.pls.lang.diff.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*

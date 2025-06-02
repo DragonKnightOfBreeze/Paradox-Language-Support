@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*

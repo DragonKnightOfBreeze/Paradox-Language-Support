@@ -2,7 +2,7 @@ package icu.windea.pls.ep.config
 
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*

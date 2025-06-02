@@ -12,7 +12,6 @@ import com.intellij.openapi.command.impl.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import com.intellij.ui.*
 import com.intellij.util.*
 import icu.windea.pls.*
@@ -24,11 +23,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.cwt.codeStyle.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.ui.clause.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*

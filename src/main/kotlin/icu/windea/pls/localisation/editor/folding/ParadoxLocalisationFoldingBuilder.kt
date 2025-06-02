@@ -7,10 +7,8 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.editor.folding.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 

@@ -1,6 +1,6 @@
 package icu.windea.pls.dds.support
 
-import icu.windea.pls.dds.DdsManager
+import icu.windea.pls.dds.*
 import javax.imageio.*
 
 /**

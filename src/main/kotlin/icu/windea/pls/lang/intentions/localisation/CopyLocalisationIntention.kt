@@ -3,7 +3,6 @@ package icu.windea.pls.lang.intentions.localisation
 import com.intellij.codeInsight.intention.*
 import com.intellij.codeInsight.intention.preview.*
 import com.intellij.notification.*
-import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*

@@ -1,7 +1,7 @@
 package icu.windea.pls.integrations.settings
 
 import com.intellij.openapi.components.*
-import icu.windea.pls.PlsConstants
+import icu.windea.pls.*
 
 /**
  * PLS集成设置。

@@ -17,7 +17,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.search.scope.*
-import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*

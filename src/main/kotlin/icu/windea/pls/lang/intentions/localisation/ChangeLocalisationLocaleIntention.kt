@@ -9,7 +9,6 @@ import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.util.*
