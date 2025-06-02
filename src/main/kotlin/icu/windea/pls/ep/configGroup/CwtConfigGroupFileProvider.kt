@@ -10,6 +10,8 @@ import icu.windea.pls.model.*
  * 用于获取规则分组中的文件。
  */
 interface CwtConfigGroupFileProvider {
+    fun isEnabled(): Boolean
+
     /**
      * 得到规则的根目录，其中所有规则分组目录的父目录。
      */

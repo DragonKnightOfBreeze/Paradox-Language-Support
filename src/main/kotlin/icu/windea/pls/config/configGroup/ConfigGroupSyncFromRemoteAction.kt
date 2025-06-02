@@ -27,6 +27,6 @@ class ConfigGroupSyncFromRemoteAction : DumbAwareAction() {
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        PlsConfigRepositoryManager.syncFromConfigRepositoryUrls()
+        PlsConfigRepositoryManager.syncFromUrls()
     }
 }

@@ -155,6 +155,8 @@
               topic="icu.windea.pls.lang.listeners.ParadoxConfigDirectoriesListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateConfigGroupOnConfigDirectoriesChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxConfigDirectoriesListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxSyncOnConfigRepositoryUrlsChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxConfigRepositoryUrlsListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxRefreshOnModGameTypeChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxModGameTypeListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnGameSettingsChangedListener"

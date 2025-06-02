@@ -83,6 +83,7 @@
     <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.ComputedCwtConfigGroupDataProvider" order="last"/>
 
     <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.BuiltInCwtConfigGroupFileProvider" order="first"/>
+    <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.RemoteCwtConfigGroupFileProvider"/>
     <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.LocalCwtConfigGroupFileProvider"/>
     <configGroupFileProvider implementation="icu.windea.pls.ep.configGroup.ProjectCwtConfigGroupFileProvider"/>
 

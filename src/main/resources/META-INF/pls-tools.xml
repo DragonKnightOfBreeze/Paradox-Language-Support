@@ -28,8 +28,8 @@
     </action>
     <action id="Pls.OpenModSettings" class="icu.windea.pls.tools.actions.OpenModSettingsAction" icon="icu.windea.pls.PlsIcons.Actions.ModSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
-      <add-to-group group-id="Pls.Tools" anchor="first"/>
-      <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
+      <add-to-group group-id="Pls.Tools" relative-to-action="Pls.OpenGameSettings" anchor="after"/>
+      <add-to-group group-id="EditorContextBarMenu" relative-to-action="Pls.OpenGameSettings" anchor="after"/>
     </action>
 
     <group id="Pls.OpenPath" popup="true">

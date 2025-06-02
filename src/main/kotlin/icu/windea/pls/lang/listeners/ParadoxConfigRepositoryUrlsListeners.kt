@@ -11,6 +11,6 @@ class ParadoxSyncOnConfigRepositoryUrlsChangedListener: ParadoxConfigRepositoryU
     }
 
     private fun doSync() {
-        PlsConfigRepositoryManager.syncFromConfigRepositoryUrls()
+        PlsConfigRepositoryManager.syncFromUrls()
     }
 }

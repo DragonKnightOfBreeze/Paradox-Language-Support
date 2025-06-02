@@ -57,10 +57,12 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
     }
 
     override fun doOKAction() {
-        super.doOKAction()
+        val newValues = properties.map { it.value.get() }
+        if(resultList.map { it.value } == newValues) return super.doOKAction() //unchanged
 
         resultList.clear()
         properties.mapTo(resultList) { (k, p) -> Entry(k, p.get()) }
+        super.doOKAction()
     }
 }
 

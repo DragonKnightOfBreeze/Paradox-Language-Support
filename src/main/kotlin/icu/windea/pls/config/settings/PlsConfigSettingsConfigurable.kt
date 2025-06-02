@@ -56,7 +56,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .bindText(settings::remoteConfigDirectory.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                     .align(Align.FILL)
-                    .onApply { onConfigDirectoriesChanged() }
+                    .onApply { onRemoteConfigDirectoriesChanged() }
             }.enabledIf(cbRemote.selected)
             //configRepositoryUrls
             row {
@@ -121,7 +121,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
     }
 
     private fun getDefaultRepoUrl(gameType: ParadoxGameType): String {
-        return PlsConfigRepositoryManager.getDefaultConfigRepositoryUrl(gameType)
+        return PlsConfigRepositoryManager.getDefaultUrl(gameType)
     }
 
     private fun onConfigDirectoriesChanged() {

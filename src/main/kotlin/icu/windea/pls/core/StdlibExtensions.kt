@@ -618,7 +618,7 @@ enum class CommandType {
 
 class CommandExecutionException(message: String) : IllegalStateException(message)
 
-@Throws(IOException::class, InterruptedException::class)
+@Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
 fun executeCommand(
     command: String,
     commandType: CommandType? = null,
