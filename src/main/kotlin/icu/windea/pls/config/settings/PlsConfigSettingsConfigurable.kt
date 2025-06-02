@@ -48,7 +48,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             //remoteConfigDirectory
             row {
                 label(PlsBundle.message("settings.config.remoteConfigDirectory")).widthGroup(groupName)
-                    .applyToComponent { toolTipText = PlsBundle.message("settings.config.remoteConfigDirectory.tooltip") }
+                    .applyToComponent { toolTipText = PlsBundle.message("settings.config.remoteConfigDirectory.tip") }
                 val descriptor = ParadoxDirectoryDescriptor()
                     .withTitle(PlsBundle.message("settings.config.remoteConfigDirectory.title"))
                     .asBrowseFolderDescriptor()
@@ -61,7 +61,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             //configRepositoryUrls
             row {
                 label(PlsBundle.message("settings.config.configRepositoryUrls")).widthGroup(groupName)
-                    .applyToComponent { toolTipText = PlsBundle.message("settings.config.configRepositoryUrls.tooltip") }
+                    .applyToComponent { toolTipText = PlsBundle.message("settings.config.configRepositoryUrls.tip") }
                 val configRepositoryUrls = settings.configRepositoryUrls
                 ParadoxGameType.entries.forEach { configRepositoryUrls.putIfAbsent(it.id, getDefaultRepoUrl(it)) }
                 val defaultList = configRepositoryUrls.toMutableEntryList()
@@ -91,7 +91,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             //localConfigDirectory
             row {
                 label(PlsBundle.message("settings.config.localConfigDirectory")).widthGroup(groupName)
-                    .applyToComponent { toolTipText = PlsBundle.message("settings.config.localConfigDirectory.tooltip") }
+                    .applyToComponent { toolTipText = PlsBundle.message("settings.config.localConfigDirectory.tip") }
                 val descriptor = ParadoxDirectoryDescriptor()
                     .withTitle(PlsBundle.message("settings.config.localConfigDirectory.title"))
                     .asBrowseFolderDescriptor()
@@ -111,7 +111,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             //projectLocalConfigDirectoryName
             row {
                 label(PlsBundle.message("settings.config.projectLocalConfigDirectoryName")).widthGroup(groupName)
-                    .applyToComponent { toolTipText = PlsBundle.message("settings.config.projectLocalConfigDirectoryName.tooltip") }
+                    .applyToComponent { toolTipText = PlsBundle.message("settings.config.projectLocalConfigDirectoryName.tip") }
                 textField()
                     .bindText(settings::projectLocalConfigDirectoryName.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(".config") }

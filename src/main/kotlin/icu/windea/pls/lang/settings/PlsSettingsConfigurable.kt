@@ -30,7 +30,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 //defaultGameType
                 row {
                     label(PlsBundle.message("settings.general.defaultGameType")).widthGroup(groupNameGeneral)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameType.tooltip") }
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameType.tip") }
                     var defaultGameType = settings.defaultGameType
                     comboBox(ParadoxGameType.entries).bindItem(settings::defaultGameType.toNullableProperty())
                         .onApply {
@@ -44,7 +44,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 //defaultGameDirectories
                 row {
                     label(PlsBundle.message("settings.general.defaultGameDirectories")).widthGroup("general")
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameDirectories.tooltip") }
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.defaultGameDirectories.tip") }
                     val defaultGameDirectories = settings.defaultGameDirectories
                     ParadoxGameType.entries.forEach { defaultGameDirectories.putIfAbsent(it.id, "") }
                     val defaultList = defaultGameDirectories.toMutableEntryList()
@@ -67,7 +67,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 //preferredLocale
                 row {
                     label(PlsBundle.message("settings.general.preferredLocale")).widthGroup(groupNameGeneral)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.preferredLocale.tooltip") }
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.preferredLocale.tip") }
                     var preferredLocale = settings.preferredLocale
                     localeComboBox(withAuto = true).bindItem(settings::preferredLocale.toNullableProperty())
                         .onApply {
@@ -81,7 +81,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 //ignoredFileNames
                 row {
                     label(PlsBundle.message("settings.general.ignoredFileNames")).widthGroup(groupNameGeneral)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.ignoredFileNames.tooltip") }
+                        .applyToComponent { toolTipText = PlsBundle.message("settings.general.ignoredFileNames.tip") }
                     var ignoredFileNameSet = settings.ignoredFileNameSet
                     expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                         .bindText(settings::ignoredFileNames.toNonNullableProperty(""))
@@ -107,61 +107,61 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderLineComment"))
                         .bindSelected(settings.documentation::renderLineComment)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderLineComment.tooltip") }
+                    contextHelp(PlsBundle.message("settings.documentation.renderLineComment.tip"))
                 }
                 //renderRelatedLocalisationsForDefinitions
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDefinitions"))
                         .bindSelected(settings.documentation::renderRelatedLocalisationsForDefinitions)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDefinitions.tooltip") }
+                    contextHelp(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDefinitions.tip"))
                 }
                 //renderRelatedImagesForDefinitions
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderRelatedImagesForDefinitions"))
                         .bindSelected(settings.documentation::renderRelatedImagesForDefinitions)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderRelatedImagesForDefinitions.tooltip") }
+                    contextHelp(PlsBundle.message("settings.documentation.renderRelatedImagesForDefinitions.tip"))
                 }
                 //renderNameDescForModifiers
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderNameDescForModifiers"))
                         .bindSelected(settings.documentation::renderNameDescForModifiers)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderNameDescForModifiers.tooltip") }
+                    contextHelp(PlsBundle.message("settings.documentation.renderNameDescForModifiers.tip"))
                 }
                 //renderLocalisationForLocalisations
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderIconForModifiers"))
                         .bindSelected(settings.documentation::renderIconForModifiers)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderIconForModifiers.tooltip") }
+                    contextHelp(PlsBundle.message("settings.documentation.renderIconForModifiers.tip"))
                 }
                 //renderLocalisationForLocalisations
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderLocalisationForLocalisations"))
                         .bindSelected(settings.documentation::renderLocalisationForLocalisations)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.renderLocalisationForLocalisations.tooltip") }
+                    contextHelp(PlsBundle.message("settings.documentation.renderLocalisationForLocalisations.tip"))
                 }
                 //showScopes
                 row {
                     checkBox(PlsBundle.message("settings.documentation.showScopes"))
                         .bindSelected(settings.documentation::showScopes)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showScopes.tooltip") }
+                    contextHelp(PlsBundle.message("settings.documentation.showScopes.tip"))
                 }
                 //showScopeContext
                 row {
                     checkBox(PlsBundle.message("settings.documentation.showScopeContext"))
                         .bindSelected(settings.documentation::showScopeContext)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showScopeContext.tooltip") }
+                    contextHelp(PlsBundle.message("settings.documentation.showScopeContext.tip"))
                 }
                 //showParameters
                 row {
                     checkBox(PlsBundle.message("settings.documentation.showParameters"))
                         .bindSelected(settings.documentation::showParameters)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showParameters.tooltip") }
+                    contextHelp(PlsBundle.message("settings.documentation.showParameters.tip"))
                 }
                 //showGeneratedModifiers
                 row {
                     checkBox(PlsBundle.message("settings.documentation.showGeneratedModifiers"))
                         .bindSelected(settings.documentation::showGeneratedModifiers)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.documentation.showGeneratedModifiers.tooltip") }
+                    contextHelp(PlsBundle.message("settings.documentation.showGeneratedModifiers.tip"))
                 }
             }
             //completion
@@ -195,13 +195,13 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeWithValue"))
                         .bindSelected(settings.completion::completeWithValue)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeWithValue.tooltip") }
+                    contextHelp(PlsBundle.message("settings.completion.completeWithValue.tip"))
                 }
                 //completeWithClauseTemplate
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeWithClauseTemplate"))
                         .bindSelected(settings.completion::completeWithClauseTemplate)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeWithClauseTemplate.tooltip") }
+                    contextHelp(PlsBundle.message("settings.completion.completeWithClauseTemplate.tip"))
 
                     link(PlsBundle.message("settings.completion.clauseTemplate.link")) {
                         val dialog = ClauseTemplateSettingsDialog()
@@ -212,19 +212,19 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeOnlyScopeIsMatched"))
                         .bindSelected(settings.completion::completeOnlyScopeIsMatched)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeOnlyScopeIsMatched.tooltip") }
+                    contextHelp(PlsBundle.message("settings.completion.completeOnlyScopeIsMatched.tip"))
                 }
                 //completeByLocalizedName
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeByLocalizedName"))
                         .bindSelected(settings.completion::completeByLocalizedName)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeByLocalizedName.tooltip") }
+                    contextHelp(PlsBundle.message("settings.completion.completeByLocalizedName.tip"))
                 }
                 //completeByExtendedConfigs
                 row {
                     checkBox(PlsBundle.message("settings.completion.completeByExtendedConfigs"))
                         .bindSelected(settings.completion::completeByExtendedConfigs)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.completion.completeByExtendedCwtConfigs.tooltip") }
+                    PlsBundle.message("settings.completion.completeByExtendedCwtConfigs.tip")
                 }
             }
             //folding
@@ -450,49 +450,51 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.inference.configContextForParameters"))
                         .bindSelected(settings.inference::configContextForParameters)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextForParameters.tooltip") }
                         .onApply { refreshForParameterInference() }
                         .applyToComponent { cb = this }
+                    contextHelp(PlsBundle.message("settings.inference.configContextForParameters.tip"))
+
                     checkBox(PlsBundle.message("settings.inference.configContextFast"))
                         .bindSelected(settings.inference::configContextForParametersFast)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextFast.tooltip") }
                         .onApply { refreshForParameterInference() }
                         .enabledIf(cb.selected)
+                    contextHelp(PlsBundle.message("settings.inference.configContextFast.tip"))
                 }
                 //configContextForInlineScripts & configContextForInlineScriptsFast
                 row {
                     lateinit var cb: JBCheckBox
                     checkBox(PlsBundle.message("settings.inference.configContextForInlineScripts"))
                         .bindSelected(settings.inference::configContextForInlineScripts)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextForInlineScripts.tooltip") }
                         .onApply { refreshForInlineScriptInference() }
                         .applyToComponent { cb = this }
+                    contextHelp(PlsBundle.message("settings.inference.configContextForInlineScripts.tip"))
+
                     checkBox(PlsBundle.message("settings.inference.configContextFast"))
                         .bindSelected(settings.inference::configContextForInlineScriptsFast)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.configContextFast.tooltip") }
                         .onApply { refreshForInlineScriptInference() }
                         .enabledIf(cb.selected)
+                    contextHelp(PlsBundle.message("settings.inference.configContextFast.tip"))
                 }
                 //scopeContext
                 row {
                     checkBox(PlsBundle.message("settings.inference.scopeContext"))
                         .bindSelected(settings.inference::scopeContext)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContext.tooltip") }
                         .onApply { refreshForScopeContextInference() }
+                    contextHelp(PlsBundle.message("settings.inference.scopeContext.tip"))
                 }
                 //scopeContextForEvents
                 row {
                     checkBox(PlsBundle.message("settings.inference.scopeContextForEvents"))
                         .bindSelected(settings.inference::scopeContextForEvents)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContextForEvents.tooltip") }
                         .onApply { refreshForScopeContextInference() }
+                    contextHelp(PlsBundle.message("settings.inference.scopeContextForEvents.tip"))
                 }
                 //scopeContextForOnActions
                 row {
                     checkBox(PlsBundle.message("settings.inference.scopeContextForOnActions"))
                         .bindSelected(settings.inference::scopeContextForOnActions)
-                        .applyToComponent { toolTipText = PlsBundle.message("settings.inference.scopeContextForOnActions.tooltip") }
                         .onApply { refreshForScopeContextInference() }
+                    contextHelp(PlsBundle.message("settings.inference.scopeContextForOnActions.tip"))
                 }
             }
             //others

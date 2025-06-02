@@ -101,7 +101,7 @@ class ClauseTemplateSettingsDialog : DialogWrapper(null) {
             //maxExpressionCountInOneLine
             row {
                 label(PlsBundle.message("settings.completion.clauseTemplate.dialog.maxMemberCountInOneLine")).applyToComponent {
-                    toolTipText = PlsBundle.message("settings.completion.clauseTemplate.dialog.maxMemberCountInOneLine.tooltip")
+                    toolTipText = PlsBundle.message("settings.completion.clauseTemplate.dialog.maxMemberCountInOneLine.tip")
                 }
                 intTextField(1..10).bindIntText(settings::maxMemberCountInOneLine)
             }
