@@ -23,7 +23,6 @@ import java.awt.event.*
 class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.config")), SearchableConfigurable {
     override fun getId() = "pls.config"
 
-    private val groupNameCheckBox = "pls.config.checkBox"
     private val groupName = "pls.config"
 
     override fun createPanel(): DialogPanel {
@@ -34,16 +33,17 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             lateinit var cbProjectLocal: JBCheckBox
             //enableBuiltInConfigGroups
             row {
-                checkBox(PlsBundle.message("settings.config.enableBuiltInConfigGroups")).widthGroup(groupNameCheckBox)
+                checkBox(PlsBundle.message("settings.config.enableBuiltInConfigGroups"))
                     .bindSelected(settings::enableBuiltInConfigGroups)
                     .onApply { onConfigDirectoriesChanged() }
             }
             //enableRemoteConfigGroups
             row {
-                checkBox(PlsBundle.message("settings.config.enableRemoteConfigGroups")).widthGroup(groupNameCheckBox)
+                checkBox(PlsBundle.message("settings.config.enableRemoteConfigGroups"))
                     .bindSelected(settings::enableRemoteConfigGroups)
                     .onApply { onConfigDirectoriesChanged() }
                     .applyToComponent { cbRemote = this }
+                comment(PlsBundle.message("settings.config.remoteConfigDirectory.comment"))
             }
             //remoteConfigDirectory
             row {
@@ -83,7 +83,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             }.enabledIf(cbRemote.selected)
             //enableLocalConfigGroups
             row {
-                checkBox(PlsBundle.message("settings.config.enableLocalConfigGroups")).widthGroup(groupNameCheckBox)
+                checkBox(PlsBundle.message("settings.config.enableLocalConfigGroups"))
                     .bindSelected(settings::enableLocalConfigGroups)
                     .onApply { onConfigDirectoriesChanged() }
                     .applyToComponent { cbLocal = this }
@@ -103,7 +103,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             }.enabledIf(cbLocal.selected)
             //enableProjectLocalConfigGroups
             row {
-                checkBox(PlsBundle.message("settings.config.enableProjectLocalConfigGroups")).widthGroup(groupNameCheckBox)
+                checkBox(PlsBundle.message("settings.config.enableProjectLocalConfigGroups"))
                     .bindSelected(settings::enableProjectLocalConfigGroups)
                     .onApply { onConfigDirectoriesChanged() }
                     .applyToComponent { cbProjectLocal = this }

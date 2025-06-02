@@ -39,6 +39,7 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
                         .bindText(gameDirectoryProperty)
                         .columns(COLUMNS_LARGE)
                         .align(Align.FILL)
+                        .resizableColumn()
                         .validationOnApply { ParadoxCoreManager.validateGameDirectory(this, gameType, gameDirectoryProperty.get()) }
                 }
             }

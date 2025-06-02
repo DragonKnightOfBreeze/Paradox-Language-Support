@@ -26,7 +26,7 @@ PLANNED
 
 * [X] 优化：优化插件性能 / OP: Optimize plugin performance
 * [ ] 进一步优化本地化文件的 lexer 和 parser 的实现 / OP: Further optimization for lexer and parser implementations of localisation files
-* [ ] 优化：区分出单独的规则与集成的设置页面 / OP: Move config related and integrations settings into separate settings pages
+* [X] 优化：区分出单独的规则与集成的设置页面 / OP: Move config related and integrations settings into separate settings pages
 * [ ] 优化：整理与完善本地化的复制、替换、生成、翻译等操作 / OP: Optimize and improve localisation related actions such as copying, replacing, generating and translating
 * [ ] 新功能：支持来自规则仓库的远程规则分组，允许配置仓库地址 / NEW: Support remote config groups from config repositories, and allow to configure repository urls
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes

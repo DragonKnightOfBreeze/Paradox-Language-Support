@@ -29,13 +29,14 @@ class ConfigRepositoryUrlsDialog(val list: MutableList<Entry<String, String>>) :
                     textField()
                         .bindText(configRepositoryUrlProperty)
                         .columns(COLUMNS_LARGE)
-                        .align(Align.FILL)
-                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
+                        .align(AlignX.FILL)
+                        .resizableColumn()
+                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) } // If not configured, do not use default repo urls
                         .validationOnApply { PlsConfigRepositoryManager.validateConfigRepositoryUrl(this, gameType, configRepositoryUrlProperty.get()) }
 
                     button(PlsBundle.message("reset")) {
                         configRepositoryUrlProperty.set(PlsConfigRepositoryManager.getDefaultConfigRepositoryUrl(gameType))
-                    }
+                    }.align(AlignX.RIGHT)
                 }
             }
         }

@@ -4,9 +4,7 @@ import com.intellij.openapi.components.*
 import icu.windea.pls.*
 
 /**
- * PLS规则设置。
- *
- * 可以在插件的设置页面（`Settings > Languages & Frameworks > Paradox Language Support > Config Related`）中进行配置。
+ * PLS规则设置。可以在插件的对应设置页面中进行配置。
  */
 @Service(Service.Level.APP)
 @State(name = "PlsConfigSettings", storages = [Storage(PlsConstants.pluginSettingsFileName)])
