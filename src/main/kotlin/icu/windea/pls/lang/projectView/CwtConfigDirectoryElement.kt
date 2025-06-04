@@ -14,12 +14,13 @@ class CwtConfigDirectoryElement(
 ) : RootsProvider {
     override fun getRoots(): Collection<VirtualFile> {
         val roots = mutableSetOf<VirtualFile>()
-        val gameTypeId = gameType.id
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
+            if (!fileProvider.isEnabled) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            val dir = rootDirectory.findChild(gameTypeId) ?: return@f
-            val file = VfsUtil.findRelativeFile(dir, path) ?: return@f
+            val directoryName = fileProvider.getDirectoryName(project, gameType)
+            val relativePath = "$directoryName/$path"
+            val file = VfsUtil.findRelativeFile(rootDirectory, relativePath) ?: return@f
             if (file.isDirectory) roots += file
         }
         return roots
@@ -34,4 +35,4 @@ class CwtConfigDirectoryElement(
         return Objects.hash(project, path, gameType)
     }
 }
-    
+

@@ -64,6 +64,7 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
 
     private fun doComputeRoots(): Set<VirtualFile> {
         //这里仅需要收集不在项目中的根目录（规则目录）
+        //即使对应的规则分组未启用，也要显示
 
         val newRoots = mutableSetOf<VirtualFile>()
         val projectFileIndex = ProjectFileIndex.getInstance(project)

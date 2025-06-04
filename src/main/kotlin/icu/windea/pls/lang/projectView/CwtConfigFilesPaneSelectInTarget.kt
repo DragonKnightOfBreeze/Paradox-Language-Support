@@ -15,6 +15,7 @@ class CwtConfigFilesPaneSelectInTarget(private val project: Project) : ProjectVi
         if (vFile == null || !vFile.isValid) return false
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
+            if (!fileProvider.isEnabled) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val relativePath = VfsUtil.getRelativePath(vFile, rootDirectory) ?: return@f
             if (relativePath.isNotNullOrEmpty()) return true

@@ -80,13 +80,14 @@ object CwtConfigManager {
     fun getFilePath(file: VirtualFile, project: Project): String? {
         if (file.fileType !is CwtFileType) return null
         val configGroup = getContainingConfigGroup(file, project) ?: return null
-        val gameTypeId = configGroup.gameType.id
+        val gameType = configGroup.gameType
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return@f
-            val filePath = relativePath.removePrefixOrNull("$gameTypeId/") ?: return@f
-            return filePath
+            val directoryName = fileProvider.getDirectoryName(project, gameType)
+            val directory = rootDirectory.findChild(directoryName) ?: return@f
+            val relativePath = VfsUtil.getRelativePath(file, directory) ?: return@f
+            return relativePath
         }
         return null
     }

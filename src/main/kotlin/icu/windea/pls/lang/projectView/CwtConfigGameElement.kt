@@ -13,12 +13,13 @@ class CwtConfigGameElement(
 ) : RootsProvider {
     override fun getRoots(): Collection<VirtualFile> {
         val roots = mutableSetOf<VirtualFile>()
-        val gameTypeId = gameType.id
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
+            if (!fileProvider.isEnabled) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            val file = rootDirectory.findChild(gameTypeId) ?: return@f
-            if (file.isDirectory) roots += file
+            val directoryName = fileProvider.getDirectoryName(project, gameType)
+            val nodeFile = rootDirectory.findChild(directoryName) ?: return@f
+            if (nodeFile.isDirectory) roots += nodeFile
         }
         return roots
     }

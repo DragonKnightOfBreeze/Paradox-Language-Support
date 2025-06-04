@@ -5,6 +5,7 @@ import com.intellij.psi.impl.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.configGroup.*
+import icu.windea.pls.ep.configGroup.BuiltInCwtConfigGroupFileProvider
 import icu.windea.pls.model.*
 
 class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
@@ -19,7 +20,7 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         val configGroups = mutableSetOf<CwtConfigGroup>()
         fileProviders.forEach f@{ fileProvider ->
-            if (fileProvider.isBuiltIn()) return@f
+            if (fileProvider is BuiltInCwtConfigGroupFileProvider) return@f
             val configGroup = fileProvider.getContainingConfigGroup(vFile, project) ?: return@f
             if (configGroup.gameType == null) {
                 ParadoxGameType.entries.forEach { gameType ->

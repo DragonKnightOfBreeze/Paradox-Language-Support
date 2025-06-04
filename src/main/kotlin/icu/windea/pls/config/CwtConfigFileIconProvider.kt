@@ -9,7 +9,7 @@ import icu.windea.pls.ep.configGroup.*
 import javax.swing.*
 
 /**
- * 为规则分组所在的目录以及其中的规则文件提供特殊的图标。
+ * 为规则目录以及其中的规则文件提供特殊的图标。
  */
 class CwtConfigFileIconProvider : FileIconProvider, DumbAware {
     override fun getIcon(file: VirtualFile, flags: Int, project: Project?): Icon? {

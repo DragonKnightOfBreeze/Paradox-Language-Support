@@ -10,7 +10,9 @@ import icu.windea.pls.model.*
  * 用于获取规则分组中的文件。
  */
 interface CwtConfigGroupFileProvider {
-    fun isEnabled(): Boolean
+    val type: Type
+
+    val isEnabled: Boolean
 
     /**
      * 得到规则的根目录，其中所有规则分组目录的父目录。
@@ -24,11 +26,13 @@ interface CwtConfigGroupFileProvider {
         return gameType.id
     }
 
-    //TODO 1.4.2 应用 getDirectoryName
-
     /**
-     * 得到规则文件[file]所在的规则分组。
+     * 基于规则分组的目录的名字，得到对应的游戏类型。
      */
+    fun getGameTypeIdFromDirectoryName(project: Project, directoryName: String): String? {
+        return directoryName.takeIf { ParadoxGameType.canResolve(it) }
+    }
+
     fun getContainingConfigGroup(file: VirtualFile, project: Project): CwtConfigGroup?
 
     fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean
@@ -36,6 +40,10 @@ interface CwtConfigGroupFileProvider {
     fun getHintMessage(): String
 
     fun getNotificationMessage(): String
+
+    enum class Type {
+        BuiltIn, Remote, Local
+    }
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<CwtConfigGroupFileProvider>("icu.windea.pls.configGroupFileProvider")

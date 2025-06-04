@@ -28,6 +28,11 @@ object PlsConfigRepositoryManager {
         return "cwtools-${gameType.id}-config"
     }
 
+    fun getGameTypeIdFromDefaultDirectoryName(directoryName: String): String? {
+        if (directoryName == "core") return directoryName
+        return directoryName.removeSurroundingOrNull("cwtools-", "-config")?.takeIf { ParadoxGameType.canResolve(it) }
+    }
+
     fun validateUrl(builder: ValidationInfoBuilder, gameType: ParadoxGameType, url: String): ValidationInfo? {
         //规则仓库URL应当包含对应的游戏类型ID
 

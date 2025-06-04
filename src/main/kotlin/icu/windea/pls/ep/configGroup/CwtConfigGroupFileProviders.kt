@@ -9,28 +9,31 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
-fun CwtConfigGroupFileProvider.isBuiltIn(): Boolean {
-    return this is BuiltInCwtConfigGroupFileProvider
-}
-
 abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
     override fun getContainingConfigGroup(file: VirtualFile, project: Project): CwtConfigGroup? {
         val rootDirectory = getRootDirectory(project) ?: return null
         val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return null
-        val gameTypeId = relativePath.substringBefore('/')
-        if (gameTypeId == "core") {
-            return PlsFacade.getConfigGroup(project, null)
-        } else {
-            val gameType = ParadoxGameType.resolve(gameTypeId) ?: return null
-            return PlsFacade.getConfigGroup(project, gameType)
-        }
+        val directoryName = relativePath.substringBefore('/')
+        val gameTypeId = getGameTypeIdFromDirectoryName(project, directoryName) ?: return null
+        val gameType = ParadoxGameType.resolve(gameTypeId)
+        return PlsFacade.getConfigGroup(project, gameType)
     }
 
     override fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean {
-        val gameTypeId = configGroup.gameType.id
-        val rootDirectory = getRootDirectory(configGroup.project) ?: return true
-        if (gameTypeId != "core") rootDirectory.findChild("core")?.let { doProcessFiles(it, consumer) }
-        rootDirectory.findChild(gameTypeId)?.let { doProcessFiles(it, consumer) }
+        val gameType = configGroup.gameType
+        val project = configGroup.project
+
+        //根据配置已启用，或者是内置的公用规则分组
+        val isEnabledFinal = isEnabled || (type == CwtConfigGroupFileProvider.Type.BuiltIn && gameType == null)
+        if (!isEnabledFinal) return true
+
+        val rootDirectory = getRootDirectory(project) ?: return true
+        val coreDirectoryName = getDirectoryName(project, null)
+        if (gameType != null) {
+            rootDirectory.findChild(coreDirectoryName)?.let { doProcessFiles(it, consumer) }
+        }
+        val directoryName = getDirectoryName(project, gameType)
+        rootDirectory.findChild(directoryName)?.let { doProcessFiles(it, consumer) }
         return true
     }
 
@@ -56,21 +59,21 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
  * * 位于插件压缩包中的插件jar包中。
  * * `{gameType}`为游戏类型ID，对于公用规则分组则为`core`。
  *
- * 注意：即使不启用插件内置的规则分组，`config/core`目录下公用的规则文件仍然会启用。 TODO 1.4.2
+ * 注意：即使不启用插件内置的规则分组，`config/core`目录下公用的规则文件仍然会启用。
  */
 class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     private val rootDirectory by lazy { doGetRootDirectory() }
 
-    override fun isEnabled(): Boolean {
-        return PlsFacade.getConfigSettings().enableBuiltInConfigGroups
-    }
+    override val type get() = CwtConfigGroupFileProvider.Type.BuiltIn
+
+    override val isEnabled get() = PlsFacade.getConfigSettings().enableBuiltInConfigGroups
 
     override fun getRootDirectory(project: Project): VirtualFile? {
         return rootDirectory
     }
 
     private fun doGetRootDirectory(): VirtualFile? {
-        if (!isEnabled()) return null
+        if (!isEnabled) return null
         val rootPath = "/config"
         val rootUrl = rootPath.toClasspathUrl(PlsConstants.locationClass)
         val file = VfsUtil.findFileByURL(rootUrl)
@@ -96,12 +99,12 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * @see PlsConfigRepositoryManager
  */
 class RemoteCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
-    override fun isEnabled(): Boolean {
-        return PlsFacade.getConfigSettings().enableRemoteConfigGroups
-    }
+    override val type get() = CwtConfigGroupFileProvider.Type.Remote
+
+    override val isEnabled get() = PlsFacade.getConfigSettings().enableRemoteConfigGroups
 
     override fun getRootDirectory(project: Project): VirtualFile? {
-        if (!isEnabled()) return null
+        if (!isEnabled) return null
         val directory = PlsFacade.getConfigSettings().remoteConfigDirectory
         val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
         val path = absoluteDirectory.toPathOrNull() ?: return null
@@ -112,9 +115,21 @@ class RemoteCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override fun getDirectoryName(project: Project, gameType: ParadoxGameType?): String {
         // should be `cwtools-{gameType}-config` or `core`
         if (gameType == null) return "core"
-        return PlsFacade.getConfigSettings().configRepositoryUrls[gameType.id]?.orNull()
+        val fromConfig = PlsFacade.getConfigSettings().configRepositoryUrls[gameType.id]?.orNull()
             ?.let { PlsGitManager.getRepositoryPathFromUrl(it) }
-            ?: PlsConfigRepositoryManager.getDefaultDirectoryName(gameType)
+        if (fromConfig != null) return fromConfig
+        val fromDefault = PlsConfigRepositoryManager.getDefaultDirectoryName(gameType)
+        return fromDefault
+    }
+
+    override fun getGameTypeIdFromDirectoryName(project: Project, directoryName: String): String? {
+        if (directoryName == "core") return null
+        val fromDefault = PlsConfigRepositoryManager.getGameTypeIdFromDefaultDirectoryName(directoryName)
+        if (fromDefault != null) return fromDefault
+        val fromConfig = PlsFacade.getConfigSettings().configRepositoryUrls.entries
+            .find { PlsGitManager.getRepositoryPathFromUrl(it.value) == directoryName }
+            ?.key
+        return fromConfig
     }
 
     override fun getHintMessage() = PlsBundle.message("configGroup.hint.1")
@@ -130,12 +145,12 @@ class RemoteCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * * `{gameType}`为游戏类型ID，对于公用规则分组则为`core`。
  */
 class LocalCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
-    override fun isEnabled(): Boolean {
-        return PlsFacade.getConfigSettings().enableLocalConfigGroups
-    }
+    override val type get() = CwtConfigGroupFileProvider.Type.Local
+
+    override val isEnabled get() = PlsFacade.getConfigSettings().enableLocalConfigGroups
 
     override fun getRootDirectory(project: Project): VirtualFile? {
-        if (!isEnabled()) return null
+        if (!isEnabled) return null
         val directory = PlsFacade.getConfigSettings().localConfigDirectory
         val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
         val path = absoluteDirectory.toPathOrNull() ?: return null
@@ -157,12 +172,12 @@ class LocalCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * * `{gameType}`为游戏类型ID，对于公用规则分组则为`core`。
  */
 class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
-    override fun isEnabled(): Boolean {
-        return PlsFacade.getConfigSettings().enableProjectLocalConfigGroups
-    }
+    override val type get() = CwtConfigGroupFileProvider.Type.Local
+
+    override val isEnabled get() = PlsFacade.getConfigSettings().enableProjectLocalConfigGroups
 
     override fun getRootDirectory(project: Project): VirtualFile? {
-        if (!isEnabled()) return null
+        if (!isEnabled) return null
         val projectRootDirectory = project.guessProjectDir() ?: return null
         val rootPath = PlsFacade.getConfigSettings().projectLocalConfigDirectoryName?.orNull() ?: ".config"
         val file = VfsUtil.findRelativeFile(projectRootDirectory, rootPath)

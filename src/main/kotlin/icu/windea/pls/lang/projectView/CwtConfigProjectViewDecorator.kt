@@ -6,7 +6,7 @@ import icu.windea.pls.*
 import icu.windea.pls.ep.configGroup.*
 
 /**
- * 在项目视图中为规则分组所在的目录提供特定的图标和额外的信息文本。
+ * 在项目视图中为规则目录提供特定的图标和额外的信息文本。
  */
 class CwtConfigProjectViewDecorator : ProjectViewNodeDecorator {
     override fun decorate(node: ProjectViewNode<*>, data: PresentationData) {
