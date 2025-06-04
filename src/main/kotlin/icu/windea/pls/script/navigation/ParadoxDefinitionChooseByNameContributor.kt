@@ -10,21 +10,24 @@ import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.script.psi.*
 
-//com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
-
 /**
- * 用于让`Navigate | Class or Navigate | Symbol`可以查找到匹配名字的定义。
+ * 用于在随处搜索（Search Everywhere）中查找对应名字的本定义。
  */
 class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
+    //com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
+
+    private val indexKey = ParadoxIndexManager.DefinitionNameKey
+
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
-        StubIndex.getInstance().processAllKeys(ParadoxIndexManager.DefinitionNameKey, processor, scope, filter)
+        StubIndex.getInstance().processAllKeys(indexKey, processor, scope, filter)
     }
 
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
-        StubIndex.getInstance().processElements(
-            ParadoxIndexManager.DefinitionNameKey, name, parameters.project, parameters.searchScope, parameters.idFilter,
-            ParadoxScriptDefinitionElement::class.java
-        ) p@{
+        val project = parameters.project
+        val scope = parameters.searchScope
+        val idFilter = parameters.idFilter
+        val requiredClass = ParadoxScriptDefinitionElement::class.java
+        StubIndex.getInstance().processElements(indexKey, name, project, scope, idFilter, requiredClass) p@{
             val definitionInfo = it.definitionInfo ?: return@p true
             processor.process(ParadoxDefinitionNavigationElement(it, definitionInfo))
         }

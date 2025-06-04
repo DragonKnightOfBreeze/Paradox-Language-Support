@@ -47,15 +47,18 @@ class ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Paradox
                         sink.occurrence(constraint.indexKey, name)
                     }
                 }
+                sink.occurrence(ParadoxIndexManager.LocalisationTextKey, stub.text)
             }
             ParadoxLocalisationCategory.SyncedLocalisation -> {
                 sink.occurrence(ParadoxIndexManager.SyncedLocalisationNameKey, stub.name)
+                sink.occurrence(ParadoxIndexManager.SyncedLocalisationTextKey, stub.text)
             }
         }
     }
 
     override fun serialize(stub: ParadoxLocalisationPropertyStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name)
+        dataStream.writeUTFFast(stub.name)
         dataStream.writeByte(stub.category.optimizeValue())
         dataStream.writeName(stub.locale)
         dataStream.writeByte(stub.gameType.optimizeValue())
@@ -63,10 +66,11 @@ class ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Paradox
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
         val name = dataStream.readNameString().orEmpty()
+        val text = dataStream.readUTFFast()
         val category = dataStream.readByte().deoptimizeValue<ParadoxLocalisationCategory>()
         val locale = dataStream.readNameString()
         val gameType = dataStream.readByte().deoptimizeValue<ParadoxGameType>()
-        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, category, locale, gameType)
+        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, text, category, locale, gameType)
     }
 
     override fun isAlwaysLeaf(root: StubBase<*>): Boolean {

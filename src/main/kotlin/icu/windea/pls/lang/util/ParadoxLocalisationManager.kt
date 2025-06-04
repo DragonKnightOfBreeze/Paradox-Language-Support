@@ -52,8 +52,9 @@ object ParadoxLocalisationManager {
         val gameType = selectGameType(file) ?: return null
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
         val name = psi.name
+        val text = psi.value?.let { getTextToIndex(it) }.orEmpty()
         val locale = selectLocale(file)?.id
-        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, category, locale, gameType)
+        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, text, category, locale, gameType)
     }
 
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub? {
@@ -62,12 +63,17 @@ object ParadoxLocalisationManager {
         val gameType = selectGameType(file) ?: return null
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
         val name = getNameFromNode(node, tree) ?: return null
+        val text = getTextFromNode(node, tree)?.let { getTextToIndex(it) }.orEmpty()
         val locale = selectLocale(file)?.id
-        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, category, locale, gameType)
+        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, text, category, locale, gameType)
     }
 
     private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {
         return node.firstChild(tree, PROPERTY_KEY)?.firstChild(tree, PROPERTY_KEY_TOKEN)?.internNode(tree)?.toString()
+    }
+
+    private fun getTextFromNode(node: LighterASTNode, tree: LighterAST): String? {
+        return node.firstChild(tree, PROPERTY_VALUE)?.firstChild(tree, PROPERTY_VALUE_TOKEN)?.internNode(tree)?.toString()
     }
 
     fun getInfoFromStub(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
@@ -77,6 +83,13 @@ object ParadoxLocalisationManager {
         val category = stub.category
         val gameType = stub.gameType
         return ParadoxLocalisationInfo(name, category, gameType)
+    }
+
+    @Suppress("KotlinConstantConditions")
+    fun getTextToIndex(text: String): String? {
+        val limit = PlsConstants.Settings.maxLocalisationTextLengthToIndex
+        if (limit > 0 && text.length > limit) return null
+        return text
     }
 
     fun isSpecialLocalisation(element: ParadoxLocalisationProperty): Boolean {
@@ -97,7 +110,7 @@ object ParadoxLocalisationManager {
         patterns.forEach { (prefix, suffix) ->
             name.removeSurroundingOrNull(prefix, suffix)?.let { namesToSearch += it }
         }
-        if(namesToSearch.isEmpty()) return emptyList()
+        if (namesToSearch.isEmpty()) return emptyList()
         val selector = selector(project, element).definition().contextSensitive()
         val result = mutableListOf<ParadoxScriptDefinitionElement>()
         namesToSearch.forEach f1@{ nameToSearch ->
@@ -109,7 +122,7 @@ object ParadoxLocalisationManager {
                 val definitionName = definitionInfo.name.orNull() ?: return@f2
                 definitionInfo.localisations.forEach f3@{ l ->
                     val resolved = CwtLocationExpressionManager.resolvePlaceholder(l.locationExpression, definitionName) ?: return@f3
-                    if(resolved != name) return@f3
+                    if (resolved != name) return@f3
                     result += definition
                     return@f2
                 }

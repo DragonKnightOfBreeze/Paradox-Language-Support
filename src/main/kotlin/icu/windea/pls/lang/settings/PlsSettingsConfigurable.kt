@@ -521,6 +521,11 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(settings.others::renderLocalisationColorfulText)
                         .onApply { refreshOnlyForOpenedFiles() }
                 }
+                //searchEverywhereByLocalisationText
+                row {
+                    checkBox(PlsBundle.message("settings.others.searchEverywhereByLocalisationText"))
+                        .bindSelected(settings.others::searchEverywhereByLocalisationText)
+                }
                 //defaultDiffGroup
                 row {
                     label(PlsBundle.message("settings.others.defaultDiffGroup"))

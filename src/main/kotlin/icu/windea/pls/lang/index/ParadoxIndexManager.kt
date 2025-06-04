@@ -25,6 +25,9 @@ object ParadoxIndexManager {
     val LocalisationNameForModifierKey = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.name.index.modifier")
     val SyncedLocalisationNameKey = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.name.index")
 
+    val LocalisationTextKey = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.localisation.text.index")
+    val SyncedLocalisationTextKey = StubIndexKey.createIndexKey<String, ParadoxLocalisationProperty>("paradox.syncedLocalisation.text.index")
+
     val FilePath by lazy { findFileBasedIndex<ParadoxFilePathIndex>() }
     val FileLocale by lazy { findFileBasedIndex<ParadoxFileLocaleIndex>() }
     val Define by lazy { findFileBasedIndex<ParadoxDefineIndex>() }
