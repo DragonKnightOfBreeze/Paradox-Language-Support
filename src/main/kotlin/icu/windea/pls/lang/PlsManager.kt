@@ -36,7 +36,7 @@ object PlsManager {
 
     //endregion
 
-    //region Vfs Related Methods
+    //region Vfs Methods
 
     fun isExcludedRootFilePath(rootFilePath: String): Boolean {
         //see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90
@@ -87,7 +87,24 @@ object PlsManager {
         return files
     }
 
+    //endregion
+
+    //region VFS Refresh Methods
+
+    @Volatile
+    private var refreshStatus = false //防止抖动（否则可能出现SOF）
+
     fun reparseAndRefreshFiles(files: Set<VirtualFile>, reparse: Boolean = true, refresh: Boolean = true) {
+        if (!refreshStatus) return
+        try {
+            refreshStatus = true
+            doReparseAndRefreshFiles(files, reparse, refresh)
+        } finally {
+            refreshStatus = false
+        }
+    }
+
+    private fun doReparseAndRefreshFiles(files: Set<VirtualFile>, reparse: Boolean, refresh: Boolean) {
         if (files.isEmpty()) return
         val allEditors = EditorFactory.getInstance().allEditors
         val editors = allEditors.filter f@{ editor ->

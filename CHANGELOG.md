@@ -8,7 +8,9 @@
 TODO
 
 * [ ] CWT文档注释，解析 渲染，代码重构后功能是否仍然正常
-* [ ] 远程规则分组，相关功能是否正常
+* [ ] 远程规则分组，相关功能是否正常，包括项目视图、外部库等
+* [ ] 本地化的复制、替换、生成、翻译等操作，验证功能是否正常
+* [ ] 刷新规则数据后，是否正常，不再有SOF
 
 PLANNED
 
@@ -25,6 +27,7 @@ PLANNED
 
 ## 1.4.2
 
+* [X] 修复：尝试避免某些特殊情况下的 SOF / FIX: Try to avoid SOF in some special cases
 * [X] 优化：优化插件性能 / OP: Optimize plugin performance
 * [X] 优化：进一步优化本地化文件的 lexer 和 parser 的实现 / OP: Further optimization for lexer and parser implementations of localisation files
 * [X] 优化：区分出单独的规则与集成的设置页面 / OP: Move config related and integrations settings into separate settings pages
