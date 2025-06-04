@@ -1,18 +1,16 @@
 package icu.windea.pls.lang.intentions.localisation
 
-import com.intellij.codeInsight.intention.*
-import com.intellij.codeInsight.intention.preview.*
 import com.intellij.notification.*
-import com.intellij.openapi.editor.*
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.config.config.CwtLocalisationLocaleConfig
 import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.*
+import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.psi.*
+import kotlinx.coroutines.launch
 import java.awt.datatransfer.*
 
 /**
@@ -20,52 +18,24 @@ import java.awt.datatransfer.*
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
-open class CopyLocalisationIntention : IntentionAction, DumbAware {
+class CopyLocalisationIntention : CopyLocalisationIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisation")
 
-    override fun getText() = familyName
-
-    override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        if (editor == null || file == null) return false
-        val selectionStart = editor.selectionModel.selectionStart
-        val selectionEnd = editor.selectionModel.selectionEnd
-        if (file.language !is ParadoxLocalisationLanguage) return false
-        val hasElements = if (selectionStart == selectionEnd) {
-            val originalElement = file.findElementAt(selectionStart)
-            originalElement?.parentOfType<ParadoxLocalisationProperty>() != null
-        } else {
-            val originalStartElement = file.findElementAt(selectionStart) ?: return false
-            val originalEndElement = file.findElementAt(selectionEnd)
-            hasLocalisationPropertiesBetween(originalStartElement, originalEndElement)
+    override fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: List<ParadoxLocalisationProperty>) {
+        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        coroutineScope.launch {
+            val text = getText(project, file, elements) ?: return@launch
+            copyText(project, text)
         }
-        return hasElements
     }
 
-    override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        if (editor == null || file == null) return
-        val selectionStart = editor.selectionModel.selectionStart
-        val selectionEnd = editor.selectionModel.selectionEnd
-        val elements = if (selectionStart == selectionEnd) {
-            val originalElement = file.findElementAt(selectionStart)
-            originalElement?.parentOfType<ParadoxLocalisationProperty>().toSingletonListOrEmpty()
-        } else {
-            val originalStartElement = file.findElementAt(selectionStart) ?: return
-            val originalEndElement = file.findElementAt(selectionEnd)
-            findLocalisationPropertiesBetween(originalStartElement, originalEndElement)
-        }
-        if (elements.isEmpty()) return
-
-        doInvoke(project, editor, file, elements)
+    private fun getText(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>): String? {
+        val text = elements.joinToString("\n") { it.text }
+        return text
     }
 
-    protected open fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: List<ParadoxLocalisationProperty>) {
-        val textToCopy = elements.joinToString("\n") { it.text }
+    private fun copyText(project: Project, text: String) {
         createNotification(PlsBundle.message("intention.copyLocalisation.notification.success"), NotificationType.INFORMATION).notify(project)
-        CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
+        CopyPasteManager.getInstance().setContents(StringSelection(text))
     }
-
-    override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
-
-    override fun startInWriteAction() = false
 }
-

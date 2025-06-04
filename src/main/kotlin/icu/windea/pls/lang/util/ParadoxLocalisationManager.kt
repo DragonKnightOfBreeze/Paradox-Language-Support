@@ -3,12 +3,14 @@ package icu.windea.pls.lang.util
 import com.intellij.lang.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
+import com.intellij.platform.util.coroutines.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*

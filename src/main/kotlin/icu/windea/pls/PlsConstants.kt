@@ -24,10 +24,6 @@ object PlsConstants {
     //val eraseMarker = TextAttributes()
     //val onlyForegroundAttributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
 
-    object Ids {
-        const val translationPlugin = "cn.yiiguxing.plugin.translate"
-    }
-
     object Strings {
         const val anonymous = "(anonymous)"
         const val unknown = "(unknown)"

@@ -2,6 +2,7 @@ package icu.windea.pls.lang.intentions.localisation
 
 import cn.yiiguxing.plugin.translate.trans.*
 import cn.yiiguxing.plugin.translate.trans.Lang.Companion.isExplicit
+import com.intellij.codeInspection.util.IntentionFamilyName
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
@@ -14,7 +15,6 @@ import com.intellij.openapi.ui.popup.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.core.annotations.*
 import icu.windea.pls.extension.translation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.ui.locale.*
@@ -30,9 +30,8 @@ import java.util.concurrent.atomic.*
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
-@WithExtension(PlsConstants.Ids.translationPlugin)
-class CopyTranslatedLocalisationIntention : CopyLocalisationIntention() {
-    override fun getFamilyName() = PlsBundle.message("intention.copyTranslatedLocalisation")
+class CopyLocalisationWithTranslationIntention : CopyLocalisationIntentionBase() {
+    override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationWithTranslation")
 
     override fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: List<ParadoxLocalisationProperty>) {
         if (editor == null || file == null) return
@@ -63,7 +62,7 @@ class CopyTranslatedLocalisationIntention : CopyLocalisationIntention() {
 
         if (snippetsToTranslate.isEmpty()) {
             val textToCopy = snippetsList.joinToString("\n") { snippets -> snippets.joinToString("") { snippet -> snippet.text } }
-            createNotification(PlsBundle.message("intention.copyTranslatedLocalisation.notification.1", targetLocale), NotificationType.INFORMATION).notify(project)
+            createNotification(PlsBundle.message("intention.copyLocalisationWithTranslation.notification.1", targetLocale), NotificationType.INFORMATION).notify(project)
             CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
             return
         }
@@ -96,11 +95,11 @@ class CopyTranslatedLocalisationIntention : CopyLocalisationIntention() {
             val error = errorRef.get()
             if (error == null) {
                 val textToCopy = snippetsList.joinToString("\n") { snippets -> snippets.joinToString("") { snippet -> snippet.text } }
-                createNotification(PlsBundle.message("intention.copyTranslatedLocalisation.notification.0", targetLocale), NotificationType.INFORMATION).notify(project)
+                createNotification(PlsBundle.message("intention.copyLocalisationWithTranslation.notification.0", targetLocale), NotificationType.INFORMATION).notify(project)
                 CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
             } else {
                 thisLogger().warn(error)
-                createNotification(PlsBundle.message("intention.copyTranslatedLocalisation.notification.2", targetLocale), NotificationType.WARNING).notify(project)
+                createNotification(PlsBundle.message("intention.copyLocalisationWithTranslation.notification.2", targetLocale), NotificationType.WARNING).notify(project)
                 return@action
             }
         }
@@ -111,7 +110,7 @@ class CopyTranslatedLocalisationIntention : CopyLocalisationIntention() {
         val editorRef: WeakReference<Editor>,
         val total: Int,
         localeConfig: CwtLocalisationLocaleConfig
-    ) : BackgroundableProcessIndicator(project, PlsBundle.message("intention.copyTranslatedLocalisation.indicator.title", localeConfig), null, null, true) {
+    ) : BackgroundableProcessIndicator(project, PlsBundle.message("intention.copyLocalisationWithTranslation.indicator.title", localeConfig), null, null, true) {
         var current = 0
 
         init {
@@ -136,7 +135,7 @@ class CopyTranslatedLocalisationIntention : CopyLocalisationIntention() {
         }
 
         private fun setProgressText() {
-            text = PlsBundle.message("intention.copyTranslatedLocalisation.indicator.text", current, total)
+            text = PlsBundle.message("intention.copyLocalisationWithTranslation.indicator.text", current, total)
         }
 
         fun checkProcessCanceledAndEditorDisposed(): Boolean {
