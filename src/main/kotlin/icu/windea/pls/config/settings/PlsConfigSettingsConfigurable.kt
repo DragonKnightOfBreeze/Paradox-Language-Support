@@ -24,8 +24,10 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
     override fun getId() = "pls.config"
 
     private val groupName = "pls.config"
+    private val callbackLock = mutableSetOf<String>()
 
     override fun createPanel(): DialogPanel {
+        callbackLock.clear()
         val settings = PlsFacade.getConfigSettings()
         return panel {
             lateinit var cbRemote: JBCheckBox
@@ -125,11 +127,15 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
     }
 
     private fun onConfigDirectoriesChanged() {
+        if (!callbackLock.add("onConfigDirectoriesChanged")) return
+
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxConfigDirectoriesListener.TOPIC).onChange()
     }
 
     private fun onRemoteConfigDirectoriesChanged() {
+        if (!callbackLock.add("onRemoteConfigDirectoriesChanged")) return
+
         val rootDirectory = PlsFacade.getConfigSettings().remoteConfigDirectory?.orNull()
         if (rootDirectory == null) return
 

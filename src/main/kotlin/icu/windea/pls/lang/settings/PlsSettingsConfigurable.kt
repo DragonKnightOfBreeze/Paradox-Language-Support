@@ -21,8 +21,10 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     override fun getId() = "pls"
 
     private val groupNameGeneral = "general"
+    private val callbackLock = mutableSetOf<String>()
 
     override fun createPanel(): DialogPanel {
+        callbackLock.clear()
         val settings = PlsFacade.getSettings()
         return panel {
             //general
@@ -536,11 +538,15 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     }
 
     private fun onDefaultGameTypeChanged(oldDefaultGameType: ParadoxGameType, newDefaultGameType: ParadoxGameType) {
+        if (!callbackLock.add("onDefaultGameTypeChanged")) return
+
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxDefaultGameTypeListener.TOPIC).onChange(oldDefaultGameType, newDefaultGameType)
     }
 
     private fun onDefaultGameDirectoriesChanged(oldDefaultGameDirectories: MutableMap<String, String>, newDefaultGameDirectories: MutableMap<String, String>) {
+        if (!callbackLock.add("onDefaultGameDirectoriesChanged")) return
+
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC).onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
     }
@@ -548,22 +554,30 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     //NOTE 如果应用更改时涉及多个相关字段，下面这些回调可能同一回调会被多次调用，不过目前看来问题不大
 
     private fun refreshForFilesByFileNames(fileNames: MutableSet<String>) {
+        if (!callbackLock.add("refreshForFilesByFileNames")) return
+
         val files = PlsManager.findFilesByFileNames(fileNames)
         PlsManager.reparseAndRefreshFiles(files)
     }
 
     private fun refreshOnlyForOpenedFiles() {
+        if (!callbackLock.add("refreshOnlyForOpenedFiles")) return
+
         val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
         PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
     }
 
     private fun refreshForParameterInference() {
+        if (!callbackLock.add("refreshForParameterInference")) return
+
         ParadoxModificationTrackers.ParameterConfigInferenceTracker.incModificationCount()
         val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
         PlsManager.reparseAndRefreshFiles(openedFiles)
     }
 
     private fun refreshForInlineScriptInference() {
+        if (!callbackLock.add("refreshForInlineScriptInference")) return
+
         ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
         ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
         ParadoxModificationTrackers.InlineScriptConfigInferenceTracker.incModificationCount()
@@ -572,6 +586,8 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     }
 
     private fun refreshForScopeContextInference() {
+        if (!callbackLock.add("refreshForScopeContextInference")) return
+
         ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
         val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
         PlsManager.reparseAndRefreshFiles(openedFiles)
