@@ -55,7 +55,8 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
     override fun getHintMessage(): String? {
         val messageIndex = getMessageIndex()
         if (messageIndex < 0) return null
-        return PlsBundle.message("configGroup.hint", messageIndex)
+        return if(isEnabled) PlsBundle.message("configGroup.hint", messageIndex)
+        else PlsBundle.message("configGroup.hintDisabled", messageIndex)
     }
 
     override fun getNotificationMessage(configGroup: CwtConfigGroup): String? {
