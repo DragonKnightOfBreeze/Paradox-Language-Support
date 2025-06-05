@@ -527,6 +527,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 row {
                     checkBox(PlsBundle.message("settings.others.searchEverywhereByLocalisationText"))
                         .bindSelected(settings.others::searchEverywhereByLocalisationText)
+                    contextHelp(PlsBundle.message("settings.others.searchEverywhereByLocalisationText.tip", PlsConstants.Settings.maxLocalisationTextLengthToIndex))
                 }
                 //defaultDiffGroup
                 row {

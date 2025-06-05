@@ -21,7 +21,7 @@ class ParadoxSyncedLocalisationChooseByNameContributor : ChooseByNameContributor
     //com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
 
     private val indexKey = ParadoxIndexManager.SyncedLocalisationNameKey
-    private val indexKeyByText = ParadoxIndexManager.LocalisationTextKey
+    private val indexKeyByText = ParadoxIndexManager.SyncedLocalisationTextKey
 
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         StubIndex.getInstance().processAllKeys(indexKey, processor, scope, filter)

@@ -247,7 +247,7 @@ class PlsSettingsState : BaseState() {
      * @property showLocalisationFloatingToolbar 是否在选中本地化文本时显示悬浮工具栏。
      * @property highlightLocalisationColorId 是否用对应的颜色高亮本地化颜色ID。
      * @property renderLocalisationColorfulText 是否用对应的颜色渲染本地化彩色文本。
-     * @property searchEverywhereByLocalisationText 是否可以在`Search Everywhere`中通过本地化文本搜索对应的本地化。
+     * @property searchEverywhereByLocalisationText 是否可以在`Search Everywhere`中通过本地化文本搜索对应的本地化（最大的文本长度默认为60）。
      * @property defaultDiffGroup 进行DIFF时，初始打开的DIFF分组。默认初始打开VS副本的DIFF分组。
      */
     @Tag("others")

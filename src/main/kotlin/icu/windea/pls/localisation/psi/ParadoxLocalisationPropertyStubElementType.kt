@@ -58,7 +58,7 @@ class ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Paradox
 
     override fun serialize(stub: ParadoxLocalisationPropertyStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name)
-        dataStream.writeUTFFast(stub.name)
+        dataStream.writeUTFFast(stub.text)
         dataStream.writeByte(stub.category.optimizeValue())
         dataStream.writeName(stub.locale)
         dataStream.writeByte(stub.gameType.optimizeValue())
