@@ -17,6 +17,13 @@ variable_operation_expressions = {
         variables = { VALUE = v }
         expression = "change_variable = { which = $EXPR$ value = $VALUE$ }$END$"
     }
+    # since: stellaris 4.0.15 (so how is it different from change_variable?)
+    add_variable = {
+        key = addv
+        example = "add_variable = { which = expr value = v }"
+        variables = { VALUE = v }
+        expression = "add_variable = { which = $EXPR$ value = $VALUE$ }$END$"
+    }
     subtract_variable = {
         key = subv
         example = "subtract_variable = { which = expr value = v }"

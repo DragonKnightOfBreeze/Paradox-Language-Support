@@ -87,14 +87,14 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
         if (steamId != null) {
             append(" | ")
             val dataProvider = PlsFacade.getDataProvider()
-            val workshopUrlInSteam = when(rootInfo) {
+            val workshopUrlInSteam = when (rootInfo) {
                 is ParadoxRootInfo.Game -> dataProvider.getSteamGameWorkshopUrlInSteam(steamId)
                 is ParadoxRootInfo.Mod -> dataProvider.getSteamWorkshopUrlInSteam(steamId)
             }
             appendLink(workshopUrlInSteam, PlsBundle.message("text.steamLinkLabel"))
             appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
             append(" | ")
-            val workshopUrl = when(rootInfo) {
+            val workshopUrl = when (rootInfo) {
                 is ParadoxRootInfo.Game -> dataProvider.getSteamGameWorkshopUrl(steamId)
                 is ParadoxRootInfo.Mod -> dataProvider.getSteamWorkshopUrl(steamId)
             }
@@ -125,8 +125,11 @@ fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): Doc
     //规则分组信息
     val gameType = configGroup.gameType
     append("[").append(gameType.title).append(" Config]")
-    grayed {
-        append(" ").append(fileProvider.getHintMessage())
+    val hintMessage = fileProvider.getHintMessage()
+    if (hintMessage.isNotNullOrEmpty()) {
+        grayed {
+            append(" ").append(hintMessage)
+        }
     }
     appendBr()
     //文件信息（相对于规则分组根目录的路径）

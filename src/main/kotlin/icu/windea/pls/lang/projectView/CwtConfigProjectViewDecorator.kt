@@ -17,7 +17,9 @@ class CwtConfigProjectViewDecorator : ProjectViewNodeDecorator {
             if (data.locationString != null) return //忽略存在locationString的情况
             data.setIcon(PlsIcons.General.ConfigGroupDirectory)
             if (node.parent is SyntheticLibraryElementNode) {
-                data.locationString = fileProvider.getHintMessage()
+                val hintMessage = fileProvider.getHintMessage()
+                if (hintMessage.isNullOrEmpty()) return
+                data.locationString = hintMessage
             }
         }
     }

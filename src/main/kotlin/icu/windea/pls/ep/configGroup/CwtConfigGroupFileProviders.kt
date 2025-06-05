@@ -49,6 +49,21 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
             }
         })
     }
+
+    protected open fun getMessageIndex(): Int = -1
+
+    override fun getHintMessage(): String? {
+        val messageIndex = getMessageIndex()
+        if (messageIndex < 0) return null
+        return PlsBundle.message("configGroup.hint", messageIndex)
+    }
+
+    override fun getNotificationMessage(configGroup: CwtConfigGroup): String? {
+        val messageIndex = getMessageIndex()
+        if (messageIndex < 0) return null
+        return configGroup.gameType?.let { PlsBundle.message("configGroup.notification", messageIndex, it) }
+            ?: PlsBundle.message("configGroup.notificationShared", messageIndex)
+    }
 }
 
 /**
@@ -80,9 +95,7 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         return file?.takeIf { it.isDirectory }
     }
 
-    override fun getHintMessage() = PlsBundle.message("configGroup.hint.0")
-
-    override fun getNotificationMessage() = PlsBundle.message("configGroup.notification.0")
+    override fun getMessageIndex() = 0
 }
 
 /**
@@ -132,9 +145,7 @@ class RemoteCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         return fromConfig
     }
 
-    override fun getHintMessage() = PlsBundle.message("configGroup.hint.1")
-
-    override fun getNotificationMessage() = PlsBundle.message("configGroup.notification.1")
+    override fun getMessageIndex() = 1
 }
 
 /**
@@ -158,9 +169,7 @@ class LocalCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         return file?.takeIf { it.isDirectory }
     }
 
-    override fun getHintMessage() = PlsBundle.message("configGroup.hint.2")
-
-    override fun getNotificationMessage() = PlsBundle.message("configGroup.notification.2")
+    override fun getMessageIndex() = 2
 }
 
 /**
@@ -184,8 +193,6 @@ class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         return file?.takeIf { it.isDirectory }
     }
 
-    override fun getHintMessage() = PlsBundle.message("configGroup.hint.3")
-
-    override fun getNotificationMessage() = PlsBundle.message("configGroup.notification.3")
+    override fun getMessageIndex() = 3
 }
 

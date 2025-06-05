@@ -37,9 +37,9 @@ interface CwtConfigGroupFileProvider {
 
     fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean
 
-    fun getHintMessage(): String
+    fun getHintMessage(): String? = null
 
-    fun getNotificationMessage(): String
+    fun getNotificationMessage(configGroup: CwtConfigGroup): String? = null
 
     enum class Type {
         BuiltIn, Remote, Local

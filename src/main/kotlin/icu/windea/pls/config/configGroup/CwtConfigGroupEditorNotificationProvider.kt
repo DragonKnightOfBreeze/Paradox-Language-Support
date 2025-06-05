@@ -19,9 +19,11 @@ class CwtConfigGroupEditorNotificationProvider : EditorNotificationProvider, Dum
         if (file.fileType !is CwtFileType) return null
 
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        val fileProvider = fileProviders.find { it.getContainingConfigGroup(file, project) != null }
-        if (fileProvider == null) return null
-        val message = fileProvider.getNotificationMessage()
+        val (fileProvider, configGroup) = fileProviders.firstNotNullOfOrNull { fileProvider ->
+            fileProvider.getContainingConfigGroup(file, project)?.let { configGroup -> fileProvider to configGroup }
+        } ?: return null
+        val message = fileProvider.getNotificationMessage(configGroup)
+        if (message.isNullOrEmpty()) return null
 
         return Function f@{ fileEditor ->
             if (fileEditor !is TextEditor) return@f null
