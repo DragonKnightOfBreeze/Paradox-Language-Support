@@ -32,10 +32,10 @@ class CwtConfigDirectoryElementNode(
             if (!fileProvider.isEnabled) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val directoryName = fileProvider.getDirectoryName(project, gameType)
-            val relativePath = "$directoryName/${value.path}"
-            val nodeFile = VfsUtil.findRelativeFile(rootDirectory, relativePath) ?: return@f
-            if(!nodeFile.isDirectory) return@f
-            return nodeFile == file
+            val relativePaths = "$directoryName/${value.path}".split('/').toTypedArray()
+            val nodeFile = VfsUtil.findRelativeFile(rootDirectory, *relativePaths) ?: return@f
+            if (!nodeFile.isDirectory) return@f
+            if (nodeFile == file) return true
         }
         return false
     }
@@ -47,10 +47,10 @@ class CwtConfigDirectoryElementNode(
             if (!fileProvider.isEnabled) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val directoryName = fileProvider.getDirectoryName(project, gameType)
-            val relativePath = "$directoryName/${value.path}"
-            val nodeFile = VfsUtil.findRelativeFile(rootDirectory, relativePath) ?: return@f
-            if(!nodeFile.isDirectory) return@f
-            return VfsUtil.isAncestor(nodeFile, file, false)
+            val relativePaths = "$directoryName/${value.path}".split('/').toTypedArray()
+            val nodeFile = VfsUtil.findRelativeFile(rootDirectory, *relativePaths) ?: return@f
+            if (!nodeFile.isDirectory) return@f
+            if (VfsUtil.isAncestor(nodeFile, file, false)) return true
         }
         return false
     }
@@ -65,9 +65,9 @@ class CwtConfigDirectoryElementNode(
             if (!fileProvider.isEnabled) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val directoryName = fileProvider.getDirectoryName(project, gameType)
-            val relativePath = "$directoryName/${value.path}"
-            val nodeFile = VfsUtil.findRelativeFile(rootDirectory, relativePath) ?: return@f
-            if(!nodeFile.isDirectory) return@f
+            val relativePaths = "$directoryName/${value.path}".split('/').toTypedArray()
+            val nodeFile = VfsUtil.findRelativeFile(rootDirectory, *relativePaths) ?: return@f
+            if (!nodeFile.isDirectory) return@f
             nodeFile.children.forEach { file ->
                 if (file.isDirectory) {
                     if (!directoryNames.add(file.name)) return@f
@@ -91,9 +91,9 @@ class CwtConfigDirectoryElementNode(
             if (!fileProvider.isEnabled) return@f
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
             val directoryName = fileProvider.getDirectoryName(project, gameType)
-            val relativePath = "$directoryName/${value.path}"
-            val nodeFile = VfsUtil.findRelativeFile(rootDirectory, relativePath) ?: return@f
-            if(!nodeFile.isDirectory) return@f
+            val relativePaths = "$directoryName/${value.path}".split('/').toTypedArray()
+            val nodeFile = VfsUtil.findRelativeFile(rootDirectory, *relativePaths) ?: return@f
+            if (!nodeFile.isDirectory) return@f
             return true
         }
         return false

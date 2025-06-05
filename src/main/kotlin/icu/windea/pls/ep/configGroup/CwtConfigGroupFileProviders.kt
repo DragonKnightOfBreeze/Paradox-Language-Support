@@ -20,20 +20,25 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
     }
 
     override fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean {
+        //根据配置已启用，或者是内置的公用规则分组
+
         val gameType = configGroup.gameType
         val project = configGroup.project
 
-        //根据配置已启用，或者是内置的公用规则分组
-        val isEnabledFinal = isEnabled || (type == CwtConfigGroupFileProvider.Type.BuiltIn && gameType == null)
-        if (!isEnabledFinal) return true
+        if (!isEnabled && type != CwtConfigGroupFileProvider.Type.BuiltIn) return true
 
         val rootDirectory = getRootDirectory(project) ?: return true
-        val coreDirectoryName = getDirectoryName(project, null)
-        if (gameType != null) {
+        if (gameType == null) {
+            val coreDirectoryName = getDirectoryName(project, null)
             rootDirectory.findChild(coreDirectoryName)?.let { doProcessFiles(it, consumer) }
+        } else {
+            val coreDirectoryName = getDirectoryName(project, null)
+            rootDirectory.findChild(coreDirectoryName)?.let { doProcessFiles(it, consumer) }
+            if (isEnabled) {
+                val directoryName = getDirectoryName(project, gameType)
+                rootDirectory.findChild(directoryName)?.let { doProcessFiles(it, consumer) }
+            }
         }
-        val directoryName = getDirectoryName(project, gameType)
-        rootDirectory.findChild(directoryName)?.let { doProcessFiles(it, consumer) }
         return true
     }
 
@@ -55,15 +60,26 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
     override fun getHintMessage(): String? {
         val messageIndex = getMessageIndex()
         if (messageIndex < 0) return null
-        return if(isEnabled) PlsBundle.message("configGroup.hint", messageIndex)
-        else PlsBundle.message("configGroup.hintDisabled", messageIndex)
+        return PlsBundle.message("configGroup.hint", messageIndex)
     }
 
     override fun getNotificationMessage(configGroup: CwtConfigGroup): String? {
         val messageIndex = getMessageIndex()
         if (messageIndex < 0) return null
-        return configGroup.gameType?.let { PlsBundle.message("configGroup.notification", messageIndex, it) }
-            ?: PlsBundle.message("configGroup.notificationShared", messageIndex)
+        val gameType = configGroup.gameType
+        return if (gameType != null) {
+            if (isEnabled) {
+                PlsBundle.message("configGroup.notification", messageIndex, gameType)
+            } else {
+                PlsBundle.message("configGroup.notificationDisabled", messageIndex, gameType)
+            }
+        } else {
+            if (isEnabled || type == CwtConfigGroupFileProvider.Type.BuiltIn) {
+                PlsBundle.message("configGroup.notificationShared", messageIndex)
+            } else {
+                PlsBundle.message("configGroup.notificationSharedDisabled", messageIndex)
+            }
+        }
     }
 }
 
@@ -89,7 +105,6 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     }
 
     private fun doGetRootDirectory(): VirtualFile? {
-        if (!isEnabled) return null
         val rootPath = "/config"
         val rootUrl = rootPath.toClasspathUrl(PlsConstants.locationClass)
         val file = VfsUtil.findFileByURL(rootUrl)
@@ -118,7 +133,6 @@ class RemoteCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val isEnabled get() = PlsFacade.getConfigSettings().enableRemoteConfigGroups
 
     override fun getRootDirectory(project: Project): VirtualFile? {
-        if (!isEnabled) return null
         val directory = PlsFacade.getConfigSettings().remoteConfigDirectory
         val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
         val path = absoluteDirectory.toPathOrNull() ?: return null
@@ -162,7 +176,6 @@ class LocalCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val isEnabled get() = PlsFacade.getConfigSettings().enableLocalConfigGroups
 
     override fun getRootDirectory(project: Project): VirtualFile? {
-        if (!isEnabled) return null
         val directory = PlsFacade.getConfigSettings().localConfigDirectory
         val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
         val path = absoluteDirectory.toPathOrNull() ?: return null
@@ -187,7 +200,6 @@ class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val isEnabled get() = PlsFacade.getConfigSettings().enableProjectLocalConfigGroups
 
     override fun getRootDirectory(project: Project): VirtualFile? {
-        if (!isEnabled) return null
         val projectRootDirectory = project.guessProjectDir() ?: return null
         val rootPath = PlsFacade.getConfigSettings().projectLocalConfigDirectoryName?.orNull() ?: ".config"
         val file = VfsUtil.findRelativeFile(projectRootDirectory, rootPath)
@@ -196,4 +208,3 @@ class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 
     override fun getMessageIndex() = 3
 }
-

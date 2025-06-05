@@ -9,8 +9,8 @@ object PlsTranslationManager {
         return EP_NAME.extensionList.find { it.supports() }
     }
 
-    fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig): String? {
+    suspend fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig, callback: TranslateCallback) {
         val toolProvider = findTool() ?: throw UnsupportedOperationException("Unsupported: No translation tool found.")
-        return toolProvider.translate(text, sourceLocale, targetLocale)
+        return toolProvider.translate(text, sourceLocale, targetLocale, callback)
     }
 }

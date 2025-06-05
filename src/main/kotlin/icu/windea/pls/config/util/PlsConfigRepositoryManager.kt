@@ -96,8 +96,7 @@ object PlsConfigRepositoryManager {
         val project = openProjects.firstOrNull() ?: return
 
         //NOTE 这里需要先验证是否真的需要刷新
-        val valid = isValidToSync()
-        if (!valid) return
+        if (!isValidToSync()) return
 
         val settings = PlsFacade.getConfigSettings()
         val urlMap = settings.configRepositoryUrls.orNull() ?: return

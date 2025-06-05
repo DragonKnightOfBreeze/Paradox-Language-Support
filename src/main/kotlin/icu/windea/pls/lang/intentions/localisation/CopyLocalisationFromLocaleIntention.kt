@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.intentions.localisation
 
 import com.intellij.notification.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import com.intellij.platform.ide.progress.*
@@ -29,37 +30,49 @@ class CopyLocalisationFromLocaleIntention : CopyLocalisationIntentionBase() {
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig?) {
         if (selectedLocale == null) return
-        withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationFromLocale.progress.title", selectedLocale)) {
-            val elementsAndSnippets = elements.map { it to ParadoxLocalisationSnippets.from(it) }
+        withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationFromLocale.progress.title", selectedLocale)) action@{
+            val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationSnippets.from(it) } }
             val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
             val errorRef = AtomicReference<Throwable>()
+
             if (elementsAndSnippetsToHandle.isNotEmpty()) {
                 reportProgress(elementsAndSnippetsToHandle.size) { reporter ->
                     elementsAndSnippetsToHandle.forEachConcurrent f@{ (_, snippets) ->
-                        reporter.itemStep(PlsBundle.message("intention.copyLocalisationFromLocale.progress.step")) {
+                        reporter.itemStep(PlsBundle.message("intention.localisation.search.progress.step", snippets.key)) {
                             runCatchingCancelable { doHandleText(project, file, snippets, selectedLocale) }.onFailure { errorRef.set(it) }.getOrThrow()
                         }
                     }
                 }
             }
 
-            if (errorRef.get() == null) {
-                val textToCopy = elementsAndSnippets.joinToString("\n") { (_, snippets) -> snippets.joinWithNewText() }
-                CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
-                val content = PlsBundle.message("intention.copyLocalisationFromLocale.notification.0", selectedLocale)
-                createNotification(content, NotificationType.INFORMATION).notify(project)
-            } else {
-                val errorDetails = errorRef.get().message?.let { "<br>$it" }.orEmpty()
-                val content = PlsBundle.message("intention.copyLocalisationFromLocale.notification.1", selectedLocale) + errorDetails
-                createNotification(content, NotificationType.WARNING).notify(project)
+            if (errorRef.get() != null) {
+                return@action createFailedNotification(project, selectedLocale, errorRef.get())
             }
+
+            val textToCopy = elementsAndSnippets.joinToString("\n") { (_, snippets) -> snippets.joinWithNewText() }
+            CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
+            createSuccessNotification(project, selectedLocale)
         }
     }
 
-    private fun doHandleText(project: Project, file: PsiFile?, snippets: ParadoxLocalisationSnippets, selectedLocale: CwtLocaleConfig) {
-        val selector = selector(project, file).localisation().contextSensitive().locale(selectedLocale)
-        val e = ParadoxLocalisationSearch.search(snippets.key, selector).find() ?: return
-        val newText = e.value ?: return
+    private suspend fun doHandleText(project: Project, file: PsiFile?, snippets: ParadoxLocalisationSnippets, selectedLocale: CwtLocaleConfig) {
+        val newText = readAction {
+            val selector = selector(project, file).localisation().contextSensitive().locale(selectedLocale)
+            val e = ParadoxLocalisationSearch.search(snippets.key, selector).find() ?: return@readAction null
+            e.value
+        }
+        if (newText == null) return
         snippets.newText = newText
+    }
+
+    private fun createSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig) {
+        val content = PlsBundle.message("intention.copyLocalisationFromLocale.notification.0", selectedLocale)
+        createNotification(content, NotificationType.INFORMATION).notify(project)
+    }
+
+    private fun createFailedNotification(project: Project, selectedLocale: CwtLocaleConfig, error: Throwable) {
+        val errorDetails = error.message?.let { "<br>$it" }.orEmpty()
+        val content = PlsBundle.message("intention.copyLocalisationFromLocale.notification.1", selectedLocale) + errorDetails
+        createNotification(content, NotificationType.WARNING).notify(project)
     }
 }

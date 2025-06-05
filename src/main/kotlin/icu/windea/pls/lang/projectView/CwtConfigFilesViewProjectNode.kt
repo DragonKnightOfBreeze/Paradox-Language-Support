@@ -42,7 +42,7 @@ class CwtConfigFilesViewProjectNode(
             val relativePath = VfsUtil.getRelativePath(file, rootDirectory) ?: return@f
             val directoryName = relativePath.substringBefore('/')
             val gameTypeId = fileProvider.getGameTypeIdFromDirectoryName(project, directoryName) ?: return@f
-            return ParadoxGameType.canResolve(gameTypeId)
+            if (ParadoxGameType.canResolve(gameTypeId)) return true
         }
         return false
     }

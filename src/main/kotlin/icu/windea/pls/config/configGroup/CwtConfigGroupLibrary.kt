@@ -71,7 +71,6 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
             val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            if(!rootDirectory.exists()) return@f
             if(projectFileIndex.isInContent(rootDirectory)) return@f
             newRoots += rootDirectory
         }

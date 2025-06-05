@@ -5,15 +5,9 @@
 * [ ] 优化：通过快速文档为参数和命令提供其中使用的格式标签的说明 / OP: Provide information about format tags used in parameters and commands through quick documentation
 * [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
 
-TODO
-
-* [X] CWT文档注释，解析 渲染，代码重构后功能是否仍然正常
-* [X] 远程规则分组，相关功能是否正常，包括项目视图、外部库等
-* [ ] 本地化的复制、替换、生成、翻译等操作，验证功能是否正常
-* [X] 刷新规则数据后，是否正常，不再有SOF
-
 PLANNED
 
+* [ ] 更新参考文档，更加详细，尽可能全面地介绍插件的功能
 * [ ] 进一步优化脚本文件与本地化文件的 lexer 和 parser 的实现
 * [ ] 兼容更加复杂的本地化命令（例如，带有多个参数、用引号括起的参数）
 * [ ] 兼容通过内联脚本声明的定义，兼容相关语言功能（定义的名字在参数值中，而定义的声明在内联脚本文件中）
@@ -31,7 +25,7 @@ PLANNED
 * [X] 优化：优化插件性能 / OP: Optimize plugin performance
 * [X] 优化：进一步优化本地化文件的 lexer 和 parser 的实现 / OP: Further optimization for lexer and parser implementations of localisation files
 * [X] 优化：区分出单独的规则与集成的设置页面 / OP: Move config related and integrations settings into separate settings pages
-* [ ] 优化：整理与完善本地化的复制、替换、生成、翻译等操作 / OP: Optimize and improve localisation related actions such as copying, replacing, generating and translating
+* [X] 优化：整理与完善本地化的复制、替换、生成、翻译等操作 / OP: Optimize and improve localisation related actions such as copying, replacing, generating and translating
 * [X] 新功能：支持来自规则仓库的远程规则分组，允许配置仓库地址 / NEW: Support remote config groups from config repositories, and allow to configure repository urls
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 

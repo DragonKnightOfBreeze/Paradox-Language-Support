@@ -12,7 +12,6 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import icu.windea.pls.*
 import icu.windea.pls.config.util.*
-import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.ui.*
@@ -139,8 +138,8 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
     private fun onRemoteConfigDirectoriesChanged() {
         if (!callbackLock.add("onRemoteConfigDirectoriesChanged")) return
 
-        val rootDirectory = PlsFacade.getConfigSettings().remoteConfigDirectory?.orNull()
-        if (rootDirectory == null) return
+        //NOTE 这里需要先验证是否真的需要刷新
+        if (!PlsConfigRepositoryManager.isValidToSync()) return
 
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxConfigRepositoryUrlsListener.TOPIC).onChange()

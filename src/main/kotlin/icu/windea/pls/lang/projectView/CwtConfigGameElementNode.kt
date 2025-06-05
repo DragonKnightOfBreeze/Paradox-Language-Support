@@ -34,7 +34,7 @@ class CwtConfigGameElementNode(
             val directoryName = fileProvider.getDirectoryName(project, gameType)
             val nodeFile = rootDirectory.findChild(directoryName) ?: return@f
             if (!nodeFile.isDirectory) return@f
-            return nodeFile == file
+            if (nodeFile == file) return true
         }
         return false
     }
@@ -48,7 +48,7 @@ class CwtConfigGameElementNode(
             val directoryName = fileProvider.getDirectoryName(project, gameType)
             val nodeFile = rootDirectory.findChild(directoryName) ?: return@f
             if (!nodeFile.isDirectory) return@f
-            return VfsUtil.isAncestor(nodeFile, file, false)
+            if (VfsUtil.isAncestor(nodeFile, file, false)) return true
         }
         return false
     }

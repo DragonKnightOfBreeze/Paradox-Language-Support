@@ -1,12 +1,14 @@
 package icu.windea.pls.lang.intentions.localisation
 
 import com.intellij.notification.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
 
@@ -18,9 +20,17 @@ import java.awt.datatransfer.*
 class CopyLocalisationIntention : CopyLocalisationIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisation")
 
+    override fun createLocalePopup(): ParadoxLocaleListPopup? {
+        return null
+    }
+
     override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig?) {
-        val textToCopy = elements.joinToString("\n") { it.text }
+        val textToCopy = readAction { elements.joinToString("\n") { it.text } }
         CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
+        createSuccessNotification(project)
+    }
+
+    private fun createSuccessNotification(project: Project) {
         val content = PlsBundle.message("intention.copyLocalisation.notification.0")
         createNotification(content, NotificationType.INFORMATION).notify(project)
     }

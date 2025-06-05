@@ -2,9 +2,10 @@ package icu.windea.pls.integrations.translation.providers
 
 import cn.yiiguxing.plugin.translate.trans.*
 import cn.yiiguxing.plugin.translate.trans.Lang.Companion.isExplicit
+import com.intellij.openapi.application.*
 import icu.windea.pls.config.config.*
-import java.util.concurrent.*
-import java.util.concurrent.atomic.*
+import icu.windea.pls.integrations.translation.*
+import kotlinx.coroutines.*
 
 /**
  * 参见：[Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)
@@ -14,29 +15,25 @@ class PlsTranslationPluginToolProvider : PlsTranslationToolProvider {
         return true // see pls-extension-translation.xml
     }
 
-    override fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig): String? {
+    override suspend fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig, callback: TranslateCallback) {
         val translateService = TranslateService.getInstance()
         val supportedSourceLanguages = translateService.translator.supportedSourceLanguages
         val supportedTargetLanguages = translateService.translator.supportedTargetLanguages
         val sourceLang = toLang(sourceLocale, supportedSourceLanguages)
-        val targetLang = PlsTranslationPluginManager.toLang(targetLocale, supportedTargetLanguages)
-        val countDownLatch = CountDownLatch(1)
-        val resultRef = AtomicReference<String>()
-        val errorRef = AtomicReference<Throwable>()
-        translateService.translate(text, sourceLang, targetLang, object : TranslateListener {
-            override fun onSuccess(translation: Translation) {
-                translation.translation?.let { resultRef.set(it) }
-                countDownLatch.countDown()
-            }
+        val targetLang = toLang(targetLocale, supportedTargetLanguages)
 
-            override fun onError(throwable: Throwable) {
-                errorRef.set(throwable)
-                countDownLatch.countDown()
-            }
-        })
-        countDownLatch.await()
-        if(errorRef.get() != null) throw errorRef.get()
-        return resultRef.get()
+        //NOTE 使用 TranslateService 之前，必须先转到EDT
+        withContext(Dispatchers.UI) {
+            translateService.translate(text, sourceLang, targetLang, object : TranslateListener {
+                override fun onSuccess(translation: Translation) {
+                    callback(translation.translation, null)
+                }
+
+                override fun onError(throwable: Throwable) {
+                    callback(null, throwable)
+                }
+            })
+        }
     }
 
     private fun toLang(localeConfig: CwtLocaleConfig?, supportedLangList: Collection<Lang> = emptyList()): Lang {
