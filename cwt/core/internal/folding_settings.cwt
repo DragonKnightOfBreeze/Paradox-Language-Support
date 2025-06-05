@@ -23,7 +23,7 @@ variable_operation_expressions = {
         keys = { which value }
         placeholder = "$which$ += $value$"
     }
-    # since: stellaris 4.0.15 (so how is it different from change_variable?)
+    # since: stellaris v4.0.15 (so how is it different from change_variable?)
     add_variable = {
         keys = { which value }
         placeholder = "$which$ += $value$"

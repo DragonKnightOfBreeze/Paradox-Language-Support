@@ -32,11 +32,11 @@ locales = {
         codes = { "zh" "zh-CN" }
     }
     l_japanese = {
-        # Since: stellaris v3.4
+        # since: stellaris v3.4
         codes = { "ja" }
     }
     l_korean = {
-        # Since: stellaris v3.4
+        # since: stellaris v3.4
         codes = { "ko" }
     }
 }
