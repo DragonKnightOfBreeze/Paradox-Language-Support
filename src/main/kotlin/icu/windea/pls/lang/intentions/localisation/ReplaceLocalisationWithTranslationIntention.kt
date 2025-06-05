@@ -3,7 +3,8 @@ package icu.windea.pls.lang.intentions.localisation
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.command.*
-import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.*
 import com.intellij.platform.ide.progress.*
 import com.intellij.platform.util.coroutines.*
@@ -22,6 +23,11 @@ import kotlin.coroutines.*
 
 class ReplaceLocalisationWithTranslationIntention : ReplaceLocalisationIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.replaceLocalisationWithTranslation")
+
+    override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
+        if (PlsTranslationManager.findTool() == null) return false
+        return super.isAvailable(project, editor, file)
+    }
 
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig?) {
