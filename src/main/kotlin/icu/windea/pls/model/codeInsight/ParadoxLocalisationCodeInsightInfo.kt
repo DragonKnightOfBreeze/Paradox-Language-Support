@@ -7,7 +7,7 @@ data class ParadoxLocalisationCodeInsightInfo(
     val type: Type,
     val name: String?,
     val relatedLocalisationInfo: ParadoxDefinitionInfo.RelatedLocalisationInfo?,
-    val locale: CwtLocalisationLocaleConfig,
+    val locale: CwtLocaleConfig,
     val check: Boolean,
     val missing: Boolean,
     val dynamic: Boolean

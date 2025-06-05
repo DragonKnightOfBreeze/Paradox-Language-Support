@@ -679,7 +679,7 @@ private fun DocumentationBuilder.addEventTypeForOnAction(element: ParadoxScriptP
 private fun DocumentationBuilder.buildLocalisationLocaleDefinition(name: String) {
     definition {
         //加上元素定义信息
-        append(PlsConstants.Strings.localisationLocalePrefix).append(" <b>").append(name).append("</b>")
+        append(PlsConstants.Strings.localePrefix).append(" <b>").append(name).append("</b>")
     }
 }
 

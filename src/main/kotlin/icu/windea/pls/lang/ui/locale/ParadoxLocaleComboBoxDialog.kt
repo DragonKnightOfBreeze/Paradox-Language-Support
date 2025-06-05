@@ -8,10 +8,10 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 
 class ParadoxLocaleComboBoxDialog(
-    val selectedLocale: CwtLocalisationLocaleConfig?,
-    val allLocales: Collection<CwtLocalisationLocaleConfig>
+    val selectedLocale: CwtLocaleConfig?,
+    val allLocales: Collection<CwtLocaleConfig>
 ) : DialogWrapper(null, false) {
-    var locale: CwtLocalisationLocaleConfig? = selectedLocale
+    var locale: CwtLocaleConfig? = selectedLocale
 
     init {
         title = PlsBundle.message("ui.dialog.selectLocale.title")

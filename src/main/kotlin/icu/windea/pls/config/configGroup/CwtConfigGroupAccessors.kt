@@ -32,9 +32,9 @@ val CwtConfigGroup.priorities: MutableMap<String, ParadoxPriority>
 
 val CwtConfigGroup.systemScopes: MutableMap<@CaseInsensitive String, CwtSystemScopeConfig>
     by createKey(CwtConfigGroup.Keys) { caseInsensitiveStringKeyMap() }
-val CwtConfigGroup.localisationLocalesById: MutableMap<String, CwtLocalisationLocaleConfig>
+val CwtConfigGroup.localisationLocalesById: MutableMap<String, CwtLocaleConfig>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
-val CwtConfigGroup.localisationLocalesByCode: MutableMap<String, CwtLocalisationLocaleConfig>
+val CwtConfigGroup.localisationLocalesByCode: MutableMap<String, CwtLocaleConfig>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
 
 //type - typeConfig

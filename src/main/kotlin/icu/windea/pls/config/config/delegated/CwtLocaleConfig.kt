@@ -7,7 +7,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 
-interface CwtLocalisationLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
+interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val id: String
     val codes: List<String>
     val description: String
@@ -16,32 +16,32 @@ interface CwtLocalisationLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPrope
     val shortId: String get() = id.removePrefix("l_")
 
     companion object {
-        val AUTO: CwtLocalisationLocaleConfig = AutoCwtLocalisationLocaleConfig(ParadoxLocaleManager.ID_AUTO)
-        val AUTO_OS: CwtLocalisationLocaleConfig = AutoCwtLocalisationLocaleConfig(ParadoxLocaleManager.ID_AUTO_OS)
-        val FALLBACK: CwtLocalisationLocaleConfig = FallbackCwtLocalisationLocaleConfig(ParadoxLocaleManager.ID_FALLBACK)
+        val AUTO: CwtLocaleConfig = AutoCwtLocaleConfig(ParadoxLocaleManager.ID_AUTO)
+        val AUTO_OS: CwtLocaleConfig = AutoCwtLocaleConfig(ParadoxLocaleManager.ID_AUTO_OS)
+        val FALLBACK: CwtLocaleConfig = FallbackCwtLocaleConfig(ParadoxLocaleManager.ID_FALLBACK)
 
-        fun resolve(config: CwtPropertyConfig): CwtLocalisationLocaleConfig = doResolve(config)
+        fun resolve(config: CwtPropertyConfig): CwtLocaleConfig = doResolve(config)
     }
 }
 
 //Implementations (interned if necessary)
 
-private fun doResolve(config: CwtPropertyConfig): CwtLocalisationLocaleConfig {
+private fun doResolve(config: CwtPropertyConfig): CwtLocaleConfig {
     val id = config.key
     val codes = config.properties?.find { p -> p.key == "codes" }?.values?.mapNotNull { v -> v.stringValue }.orEmpty()
-    return CwtLocalisationLocaleConfigImpl(config, id, codes)
+    return CwtLocaleConfigImpl(config, id, codes)
 }
 
-private class CwtLocalisationLocaleConfigImpl(
+private class CwtLocaleConfigImpl(
     override val config: CwtPropertyConfig,
     override val id: String,
     override val codes: List<String>
-) : UserDataHolderBase(), CwtLocalisationLocaleConfig {
+) : UserDataHolderBase(), CwtLocaleConfig {
     override val description: String get() = PlsDocBundle.locale(id)
     override val text get() = if(description.isEmpty()) id else "$id ($description)"
 
     override fun equals(other: Any?): Boolean {
-        return this === other || other is CwtLocalisationLocaleConfig && id == other.id
+        return this === other || other is CwtLocaleConfig && id == other.id
     }
 
     override fun hashCode(): Int {
@@ -53,16 +53,16 @@ private class CwtLocalisationLocaleConfigImpl(
     }
 }
 
-private class AutoCwtLocalisationLocaleConfig(
+private class AutoCwtLocaleConfig(
     override val id: String
-) : UserDataHolderBase(), CwtLocalisationLocaleConfig {
+) : UserDataHolderBase(), CwtLocaleConfig {
     override val config: CwtPropertyConfig get() = throw UnsupportedOperationException()
     override val codes: List<String> get() = emptyList()
     override val description: String get() = PlsDocBundle.locale(id)
     override val text: String get() = description
 
     override fun equals(other: Any?): Boolean {
-        return this === other || other is CwtLocalisationLocaleConfig && id == other.id
+        return this === other || other is CwtLocaleConfig && id == other.id
     }
 
     override fun hashCode(): Int {
@@ -74,16 +74,16 @@ private class AutoCwtLocalisationLocaleConfig(
     }
 }
 
-private class FallbackCwtLocalisationLocaleConfig(
+private class FallbackCwtLocaleConfig(
     override val id: String
-) : UserDataHolderBase(), CwtLocalisationLocaleConfig {
+) : UserDataHolderBase(), CwtLocaleConfig {
     override val config: CwtPropertyConfig get() = throw UnsupportedOperationException()
     override val codes: List<String> get() = emptyList()
     override val description: String get() = PlsDocBundle.locale(id)
     override val text get() = if(description.isEmpty()) id else "$id ($description)"
 
     override fun equals(other: Any?): Boolean {
-        return this === other || other is CwtLocalisationLocaleConfig && id == other.id
+        return this === other || other is CwtLocaleConfig && id == other.id
     }
 
     override fun hashCode(): Int {

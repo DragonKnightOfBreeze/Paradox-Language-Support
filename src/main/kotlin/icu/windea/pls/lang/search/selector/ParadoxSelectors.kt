@@ -120,7 +120,7 @@ class ParadoxDistinctSelector<T, K>(
 class ParadoxWithConstraintSelector<T : PsiElement>(val constraint: ParadoxIndexConstraint<T>) : ParadoxSelector<T>
 
 class ParadoxLocaleSelector(
-    val locale: CwtLocalisationLocaleConfig
+    val locale: CwtLocaleConfig
 ) : ParadoxSelector<ParadoxLocalisationProperty> {
     override fun selectOne(target: ParadoxLocalisationProperty): Boolean {
         return locale == selectLocale(target)
@@ -132,7 +132,7 @@ class ParadoxLocaleSelector(
 }
 
 class ParadoxPreferLocaleSelector(
-    val locale: CwtLocalisationLocaleConfig
+    val locale: CwtLocaleConfig
 ) : ParadoxSelector<ParadoxLocalisationProperty> {
     override fun selectOne(target: ParadoxLocalisationProperty): Boolean {
         return locale == selectLocale(target)

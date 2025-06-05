@@ -41,13 +41,13 @@ object ParadoxLocalisationGenerator {
         return chooser
     }
 
-    fun getMembers(context: ParadoxLocalisationCodeInsightContext, locale: CwtLocalisationLocaleConfig): List<ParadoxGenerateLocalisationsChooser.Item> {
+    fun getMembers(context: ParadoxLocalisationCodeInsightContext, locale: CwtLocaleConfig): List<ParadoxGenerateLocalisationsChooser.Item> {
         val members = mutableListOf<ParadoxGenerateLocalisationsChooser.Item>()
         doGetMembers(members, context, locale)
         return members
     }
 
-    private fun doGetMembers(members: MutableList<ParadoxGenerateLocalisationsChooser.Item>, context: ParadoxLocalisationCodeInsightContext, locale: CwtLocalisationLocaleConfig) {
+    private fun doGetMembers(members: MutableList<ParadoxGenerateLocalisationsChooser.Item>, context: ParadoxLocalisationCodeInsightContext, locale: CwtLocaleConfig) {
         val onlyMissing = context.fromInspection
         context.children.forEach { child ->
             doGetMembers(members, child, locale)
@@ -75,7 +75,7 @@ object ParadoxLocalisationGenerator {
         }
     }
 
-    fun generate(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Item>, project: Project, file: PsiFile, locale: CwtLocalisationLocaleConfig) {
+    fun generate(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Item>, project: Project, file: PsiFile, locale: CwtLocaleConfig) {
         val taskTitle = getProcessFileName(context)
         val task = object : Task.Modal(project, taskTitle, true) {
             var generatedFile: VirtualFile? = null
@@ -115,7 +115,7 @@ object ParadoxLocalisationGenerator {
         }
     }
 
-    private fun generateFile(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Item>, project: Project, file: PsiFile, locale: CwtLocalisationLocaleConfig): VirtualFile {
+    private fun generateFile(context: ParadoxLocalisationCodeInsightContext, members: List<ParadoxGenerateLocalisationsChooser.Item>, project: Project, file: PsiFile, locale: CwtLocaleConfig): VirtualFile {
         val generatedFileName = getGeneratedFileName(context)
         val namesToDistinct = mutableSetOf<String>()
         val text = buildString {

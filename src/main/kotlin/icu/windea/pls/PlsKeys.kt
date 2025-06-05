@@ -27,7 +27,7 @@ val PlsKeys.injectedRootInfo by createKey<ParadoxRootInfo>(PlsKeys)
 //用于为临时文件（VirtualFile）嵌入文件信息
 val PlsKeys.injectedFileInfo by createKey<ParadoxFileInfo>(PlsKeys)
 //用于为脚本文件（VirtualFile）嵌入语言区域
-val PlsKeys.injectedLocaleConfig by createKey<CwtLocalisationLocaleConfig>(PlsKeys)
+val PlsKeys.injectedLocaleConfig by createKey<CwtLocaleConfig>(PlsKeys)
 //用于为脚本文件（VirtualFile）嵌入表达式路径前缀
 val PlsKeys.injectedElementPathPrefix by createKey<ParadoxExpressionPath>(PlsKeys)
 

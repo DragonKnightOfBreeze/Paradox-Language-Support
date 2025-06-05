@@ -1,9 +1,9 @@
-# Localisation Locale Config
-# Used to provide language features for localisation locales, e.g. "l_english"
+# Locale Config
+# Used to provide language features for locales, e.g. "l_english"
 
 # See vanilla game file: localisation/languages.yml
 
-localisation_locales = {
+locales = {
     l_default = {
         codes = {}
     }

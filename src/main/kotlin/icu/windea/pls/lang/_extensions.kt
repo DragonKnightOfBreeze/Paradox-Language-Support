@@ -111,10 +111,10 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
     }
 }
 
-tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
+tailrec fun selectLocale(from: Any?): CwtLocaleConfig? {
     return when {
         from == null -> null
-        from is CwtLocalisationLocaleConfig -> from
+        from is CwtLocaleConfig -> from
         from is VirtualFile -> from.getUserData(PlsKeys.injectedLocaleConfig)
         from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
         from is PsiFile -> ParadoxCoreManager.getLocaleConfig(from.virtualFile ?: return null, from.project)
@@ -130,7 +130,7 @@ tailrec fun selectLocale(from: Any?): CwtLocalisationLocaleConfig? {
     }
 }
 
-private fun String.toLocale(from: PsiElement): CwtLocalisationLocaleConfig? {
+private fun String.toLocale(from: PsiElement): CwtLocaleConfig? {
     return PlsFacade.getConfigGroup(from.project, null).localisationLocalesById.get(this)
 }
 

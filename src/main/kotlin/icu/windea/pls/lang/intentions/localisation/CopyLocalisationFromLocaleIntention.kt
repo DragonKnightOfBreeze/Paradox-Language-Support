@@ -1,23 +1,22 @@
 package icu.windea.pls.lang.intentions.localisation
 
 import com.intellij.notification.*
-import com.intellij.openapi.editor.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.popup.*
 import com.intellij.platform.ide.progress.*
+import com.intellij.platform.util.coroutines.*
+import com.intellij.platform.util.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.ui.locale.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import kotlinx.coroutines.*
 import java.awt.datatransfer.*
+import java.util.concurrent.atomic.*
 
 /**
  * 复制来自特定语言区域的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）到剪贴板。
@@ -27,44 +26,40 @@ import java.awt.datatransfer.*
 class CopyLocalisationFromLocaleIntention : CopyLocalisationIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationFromLocale")
 
-    override fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: List<ParadoxLocalisationProperty>) {
-        if (editor == null) return
-        val allLocales = ParadoxLocaleManager.getLocaleConfigs()
-        val localePopup = ParadoxLocaleListPopup(allLocales)
-        localePopup.doFinalStep {
-            val selectedLocale = localePopup.selectedLocale ?: return@doFinalStep
-            val coroutineScope = PlsFacade.getCoroutineScope(project)
-            coroutineScope.launch {
-                val text = getText(project, file, elements, selectedLocale) ?: return@launch
-                copyText(project, text, selectedLocale)
+    @Suppress("UnstableApiUsage")
+    override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig?) {
+        if (selectedLocale == null) return
+        withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationFromLocale.progress.title", selectedLocale)) {
+            val elementsAndSnippets = elements.map { it to ParadoxLocalisationSnippets.from(it) }
+            val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
+            val errorRef = AtomicReference<Throwable>()
+            if (elementsAndSnippetsToHandle.isNotEmpty()) {
+                reportProgress(elementsAndSnippetsToHandle.size) { reporter ->
+                    elementsAndSnippetsToHandle.forEachConcurrent f@{ (_, snippets) ->
+                        reporter.itemStep(PlsBundle.message("intention.copyLocalisationFromLocale.progress.step")) {
+                            runCatchingCancelable { doHandleText(project, file, snippets, selectedLocale) }.onFailure { errorRef.set(it) }.getOrThrow()
+                        }
+                    }
+                }
+            }
+
+            if (errorRef.get() == null) {
+                val textToCopy = elementsAndSnippets.joinToString("\n") { (_, snippets) -> snippets.joinWithNewText() }
+                CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
+                val content = PlsBundle.message("intention.copyLocalisationFromLocale.notification.0", selectedLocale)
+                createNotification(content, NotificationType.INFORMATION).notify(project)
+            } else {
+                val errorDetails = errorRef.get().message?.let { "<br>$it" }.orEmpty()
+                val content = PlsBundle.message("intention.copyLocalisationFromLocale.notification.1", selectedLocale) + errorDetails
+                createNotification(content, NotificationType.WARNING).notify(project)
             }
         }
-        JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
     }
 
-    private suspend fun getText(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, locale: CwtLocalisationLocaleConfig): String? {
-        return withBackgroundProgress(project, "Copy localisation(s) to the clipboard from specified locale (target locale: ${locale})") {
-            elements.map { it to ParadoxLocalisationSnippets.from(it) }
-                .filter { (_, snippets) -> snippets.text.isNotBlank() }
-                .map { (_, snippets) ->
-                    async {
-                        val newText = getNewText(project, file, snippets, locale) ?: return@async
-                        snippets.newText = newText
-                    }
-                }.awaitAll()
-            elements.map { it to ParadoxLocalisationSnippets.from(it) }.joinToString("\n") { it.second.renderNew() }
-        }
-    }
-
-    private fun getNewText(project: Project, file: PsiFile?, snippets: ParadoxLocalisationSnippets, locale: CwtLocalisationLocaleConfig): String? {
-        val selector = selector(project, file).localisation().contextSensitive().locale(locale)
-        val e = ParadoxLocalisationSearch.search(snippets.key, selector).find() ?: return null
-        val newText = e.value ?: return null
-        return newText
-    }
-
-    private fun copyText(project: Project, text: String, locale: CwtLocalisationLocaleConfig) {
-        createNotification(PlsBundle.message("intention.copyLocalisationFromLocale.notification.success", locale), NotificationType.INFORMATION).notify(project)
-        CopyPasteManager.getInstance().setContents(StringSelection(text))
+    private fun doHandleText(project: Project, file: PsiFile?, snippets: ParadoxLocalisationSnippets, selectedLocale: CwtLocaleConfig) {
+        val selector = selector(project, file).localisation().contextSensitive().locale(selectedLocale)
+        val e = ParadoxLocalisationSearch.search(snippets.key, selector).find() ?: return
+        val newText = e.value ?: return
+        snippets.newText = newText
     }
 }

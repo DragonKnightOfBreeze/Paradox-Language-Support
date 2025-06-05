@@ -1,15 +1,15 @@
 package icu.windea.pls.lang.intentions.localisation
 
-import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiFile
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import com.intellij.openapi.project.*
+import com.intellij.psi.*
+import icu.windea.pls.*
+import icu.windea.pls.config.config.*
+import icu.windea.pls.localisation.psi.*
 
 class ReplaceLocalisationFromLocaleIntention : ReplaceLocalisationIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.replaceLocalisationFromLocale")
 
-    override fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: List<ParadoxLocalisationProperty>) {
-        TODO("Not yet implemented")
+    override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig?) {
+        //TODO 1.4.2
     }
 }

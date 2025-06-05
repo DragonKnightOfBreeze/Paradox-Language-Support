@@ -9,7 +9,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 
-@WithBuiltInConfig("builtin/postfix_template_settings.cwt", CwtPostfixTemplateSettingsConfig::class)
+@WithInternalConfig("builtin/postfix_template_settings.cwt", CwtPostfixTemplateSettingsConfig::class)
 abstract class ParadoxExpressionEditablePostfixTemplate(
     val setting: CwtPostfixTemplateSettingsConfig,
     provider: PostfixTemplateProvider

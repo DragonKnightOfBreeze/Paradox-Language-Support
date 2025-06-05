@@ -12,11 +12,11 @@ class ParadoxLocalisationSnippets(
     @Volatile
     var newText: String = text
 
-    fun render(): String {
+    fun join(): String {
         return "$prefix \"$text\"" // KEY:0 "TEXT"
     }
 
-    fun renderNew(): String {
+    fun joinWithNewText(): String {
         return "$prefix \"$newText\"" // KEY:0 "NEW TEXT"
     }
 

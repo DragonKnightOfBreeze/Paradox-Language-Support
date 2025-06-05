@@ -8,8 +8,8 @@ sysstem_scopes = {
     }
 }
 
-localisation_locales = {
-    $localisation_locale$ = {
+locales = {
+    $locale$ = {
         codes = { $scalar }
     }
 }

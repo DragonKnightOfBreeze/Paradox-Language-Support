@@ -76,13 +76,13 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.systemScopes[systemScopeConfig.id] = systemScopeConfig
                     }
                 }
-                key == "localisation_locales" -> {
+                key == "locales" -> {
                     val configs = property.properties ?: continue
                     for (config in configs) {
-                        val localisationLocaleConfig = CwtLocalisationLocaleConfig.resolve(config)
-                        configGroup.localisationLocalesById[localisationLocaleConfig.id] = localisationLocaleConfig
-                        localisationLocaleConfig.codes.forEach { code ->
-                            configGroup.localisationLocalesByCode[code] = localisationLocaleConfig
+                        val localeConfig = CwtLocaleConfig.resolve(config)
+                        configGroup.localisationLocalesById[localeConfig.id] = localeConfig
+                        localeConfig.codes.forEach { code ->
+                            configGroup.localisationLocalesByCode[code] = localeConfig
                         }
                     }
                 }

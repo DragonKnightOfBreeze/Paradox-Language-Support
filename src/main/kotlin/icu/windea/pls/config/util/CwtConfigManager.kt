@@ -233,8 +233,8 @@ object CwtConfigManager {
             element is CwtProperty && configPath.path.matchesAntPattern("system_scopes/*") -> {
                 CwtConfigTypes.SystemScope
             }
-            element is CwtProperty && configPath.path.matchesAntPattern("localisation_locales/*") -> {
-                CwtConfigTypes.LocalisationLocale
+            element is CwtProperty && configPath.path.matchesAntPattern("locales/*") -> {
+                CwtConfigTypes.Locale
             }
             configPath.path.matchesAntPattern("scripted_variables/*") -> {
                 CwtConfigTypes.ExtendedScriptedVariable

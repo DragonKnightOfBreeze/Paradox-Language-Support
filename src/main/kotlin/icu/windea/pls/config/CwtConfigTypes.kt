@@ -105,9 +105,9 @@ object CwtConfigTypes {
         description = PlsBundle.message("cwt.description.systemScope")
         icon = PlsIcons.Nodes.SystemScope
     }
-    val LocalisationLocale = CwtConfigType("localisation locale", isReference = true) {
-        prefix = PlsConstants.Strings.localisationLocalePrefix
-        description = PlsBundle.message("cwt.description.localisationLocale")
+    val Locale = CwtConfigType("locale", isReference = true) {
+        prefix = PlsConstants.Strings.localePrefix
+        description = PlsBundle.message("cwt.description.locale")
         icon = PlsIcons.Nodes.LocalisationLocale
     }
 

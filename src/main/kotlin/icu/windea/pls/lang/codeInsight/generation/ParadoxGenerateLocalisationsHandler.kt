@@ -20,7 +20,7 @@ class ParadoxGenerateLocalisationsHandler(
     val fromInspection: Boolean = false,
 ) : CodeInsightActionHandler {
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
-        val onChosen = action@{ selected: CwtLocalisationLocaleConfig ->
+        val onChosen = action@{ selected: CwtLocaleConfig ->
             val context = getFinalContext(file)
             if (context == null) {
                 HintManager.getInstance().showErrorHint(editor, PlsBundle.message("generation.localisation.noMembersHint"))

@@ -2,4 +2,13 @@
   <extensions defaultExtensionNs="com.intellij">
     <applicationConfigurable id="pls.integrations" parentId="pls" bundle="messages.PlsBundle" key="settings.integrations" instance="icu.windea.pls.integrations.settings.PlsIntegrationsSettingsConfigurable"/>
   </extensions>
+
+  <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.integrations.translationToolProvider" interface="icu.windea.pls.integrations.translation.providers.PlsTranslationToolProvider" dynamic="true"/>
+  </extensionPoints>
+
+  <extensions defaultExtensionNs="icu.windea.pls.integrations">
+    <!-- see pls-extension-translation.xml -->
+    <!--<translationToolProvider implementation="icu.windea.pls.integrations.translation.providers.PlsTranslationPluginToolProvider"/>-->
+  </extensions>
 </idea-plugin>

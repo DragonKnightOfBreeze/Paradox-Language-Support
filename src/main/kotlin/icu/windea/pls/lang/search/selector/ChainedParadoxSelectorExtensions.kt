@@ -106,12 +106,12 @@ fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.getConstraint(): ParadoxIn
     return selectors.findIsInstance<ParadoxWithConstraintSelector<T>>()?.constraint
 }
 
-fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.locale(locale: CwtLocalisationLocaleConfig?): S {
+fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.locale(locale: CwtLocaleConfig?): S {
     if (locale != null) selectors += ParadoxLocaleSelector(locale)
     return this
 }
 
-fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.preferLocale(locale: CwtLocalisationLocaleConfig?, condition: Boolean = true): S {
+fun <S : ChainedParadoxSelector<ParadoxLocalisationProperty>> S.preferLocale(locale: CwtLocaleConfig?, condition: Boolean = true): S {
     if (locale != null && condition) selectors += ParadoxPreferLocaleSelector(locale)
     return this
 }

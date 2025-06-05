@@ -34,7 +34,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
         val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
-        val locales = mutableSetOf<CwtLocalisationLocaleConfig>()
+        val locales = mutableSetOf<CwtLocaleConfig>()
         if (checkForPreferredLocale) locales.add(ParadoxLocaleManager.getPreferredLocaleConfig())
         if (checkForSpecificLocales) localeSet.mapNotNullTo(locales) { allLocaleMap.get(it) }
         if (locales.isEmpty()) return PsiElementVisitor.EMPTY_VISITOR

@@ -1,20 +1,28 @@
-package icu.windea.pls.extension.translation
+package icu.windea.pls.integrations.translation.providers
 
-import cn.yiiguxing.plugin.translate.trans.*
+import cn.yiiguxing.plugin.translate.trans.Lang
 import cn.yiiguxing.plugin.translate.trans.Lang.Companion.isExplicit
-import com.intellij.psi.util.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.psi.*
+import com.intellij.psi.util.endOffset
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.integrations.translation.TranslatableStringSnippet
+import icu.windea.pls.lang.selectLocale
+import icu.windea.pls.localisation.psi.ParadoxLocalisationColorfulText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationConceptCommand
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
+import icu.windea.pls.localisation.psi.ParadoxLocalisationRichText
+import icu.windea.pls.localisation.psi.ParadoxLocalisationString
+import icu.windea.pls.localisation.psi.ParadoxLocalisationTextFormat
 
-object PlsTranslationManager {
-    fun toLang(localeConfig: CwtLocalisationLocaleConfig?, supportedLangList: Collection<Lang> = emptyList()): Lang {
+object PlsTranslationPluginManager {
+    fun toLang(localeConfig: CwtLocaleConfig?, supportedLangList: Collection<Lang> = emptyList()): Lang {
         if (localeConfig == null) return Lang.AUTO
         if (localeConfig.id == "l_default") {
-            return Lang.default
+            return Lang.Companion.default
         }
         for (code in localeConfig.codes) {
-            val lang = Lang[code]
+            val lang = Lang.Companion[code]
             if (lang.isExplicit() && lang in supportedLangList) return lang
         }
         return Lang.AUTO

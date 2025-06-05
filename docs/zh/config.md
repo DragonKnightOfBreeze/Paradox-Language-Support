@@ -112,7 +112,7 @@ priorities = {
 
 TODO
 
-#### Localisation Locales
+#### Locales
 
 TODO
 

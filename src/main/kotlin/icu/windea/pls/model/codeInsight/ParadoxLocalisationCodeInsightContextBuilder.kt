@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.*
 object ParadoxLocalisationCodeInsightContextBuilder {
     fun fromFile(
         file: PsiFile,
-        locales: Collection<CwtLocalisationLocaleConfig>,
+        locales: Collection<CwtLocaleConfig>,
         fromInspection: Boolean = false,
     ): ParadoxLocalisationCodeInsightContext? {
         if (file !is ParadoxScriptFile && file !is ParadoxLocalisationFile) return null
@@ -63,7 +63,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
 
     fun fromDefinition(
         element: ParadoxScriptDefinitionElement,
-        locales: Collection<CwtLocalisationLocaleConfig>,
+        locales: Collection<CwtLocaleConfig>,
         fromInspection: Boolean = false,
     ): ParadoxLocalisationCodeInsightContext? {
         val inspection = if (fromInspection) getMissingLocalisationInspection(element) else null
@@ -132,7 +132,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
 
     fun fromLocalisation(
         element: ParadoxLocalisationProperty,
-        locales: Collection<CwtLocalisationLocaleConfig>,
+        locales: Collection<CwtLocaleConfig>,
         fromInspection: Boolean = false,
     ): ParadoxLocalisationCodeInsightContext? {
         val inspectionState = if (fromInspection) checkForLocalisations(element) else true
@@ -155,7 +155,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
 
     fun fromExpression(
         element: ParadoxScriptStringExpressionElement,
-        locales: Collection<CwtLocalisationLocaleConfig>,
+        locales: Collection<CwtLocaleConfig>,
         forReference: Boolean = true,
         fromInspection: Boolean = false,
     ): ParadoxLocalisationCodeInsightContext? {
@@ -173,7 +173,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
     fun fromModifier(
         element: ParadoxScriptStringExpressionElement,
         config: CwtMemberConfig<*>,
-        locales: Collection<CwtLocalisationLocaleConfig>,
+        locales: Collection<CwtLocaleConfig>,
         fromInspection: Boolean = false,
     ): ParadoxLocalisationCodeInsightContext? {
         val inspection = if (fromInspection) getMissingLocalisationInspection(element) else null
@@ -215,7 +215,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
     fun fromReference(
         element: ParadoxScriptStringExpressionElement,
         config: CwtMemberConfig<*>,
-        locales: Collection<CwtLocalisationLocaleConfig>,
+        locales: Collection<CwtLocaleConfig>,
         fromInspection: Boolean = false,
     ): ParadoxLocalisationCodeInsightContext? {
         val inspectionState = if (fromInspection) checkForReferences(element) else true
@@ -242,7 +242,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
         return ParadoxLocalisationCodeInsightContext(contextType, name, codeInsightInfos, fromInspection = fromInspection)
     }
 
-    private fun isMissing(name: String, project: Project, context: PsiElement, locale: CwtLocalisationLocaleConfig): Boolean {
+    private fun isMissing(name: String, project: Project, context: PsiElement, locale: CwtLocaleConfig): Boolean {
         val selector = selector(project, context).localisation().locale(locale)
         val missing = ParadoxLocalisationSearch.search(name, selector).findFirst() == null
         return missing

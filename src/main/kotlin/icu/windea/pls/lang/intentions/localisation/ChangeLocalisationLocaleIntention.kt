@@ -49,17 +49,17 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
 
     private class Popup(
         private val value: ParadoxLocalisationLocale,
-        values: Array<CwtLocalisationLocaleConfig>
-    ) : BaseListPopupStep<CwtLocalisationLocaleConfig>(PlsBundle.message("intention.changeLocalisationLocale.title"), *values) {
-        override fun getIconFor(value: CwtLocalisationLocaleConfig) = PlsIcons.Nodes.LocalisationLocale
+        values: Array<CwtLocaleConfig>
+    ) : BaseListPopupStep<CwtLocaleConfig>(PlsBundle.message("intention.changeLocalisationLocale.title"), *values) {
+        override fun getIconFor(value: CwtLocaleConfig) = PlsIcons.Nodes.LocalisationLocale
 
-        override fun getTextFor(value: CwtLocalisationLocaleConfig) = value.text
+        override fun getTextFor(value: CwtLocaleConfig) = value.text
 
         override fun getDefaultOptionIndex() = 0
 
         override fun isSpeedSearchEnabled(): Boolean = true
 
-        override fun onChosen(selectedValue: CwtLocalisationLocaleConfig, finalChoice: Boolean): PopupStep<*>? {
+        override fun onChosen(selectedValue: CwtLocaleConfig, finalChoice: Boolean): PopupStep<*>? {
             runUndoTransparentWriteAction { value.setName(selectedValue.id) }
             return FINAL_CHOICE
         }

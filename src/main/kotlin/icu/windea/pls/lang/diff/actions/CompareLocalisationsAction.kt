@@ -227,7 +227,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
     class MyRequestProducer(
         request: DiffRequest,
         val otherLocalisationName: String,
-        val locale: CwtLocalisationLocaleConfig,
+        val locale: CwtLocaleConfig,
         val otherFile: VirtualFile,
         val icon: Icon,
         val isCurrent: Boolean

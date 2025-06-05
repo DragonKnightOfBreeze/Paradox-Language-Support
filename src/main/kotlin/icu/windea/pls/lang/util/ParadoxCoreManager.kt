@@ -167,7 +167,7 @@ object ParadoxCoreManager {
         return relPath to ""
     }
 
-    fun getLocaleConfig(file: VirtualFile, project: Project): CwtLocalisationLocaleConfig? {
+    fun getLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
         //使用简单缓存与文件索引以优化性能（避免直接访问PSI）
 
         //首先尝试获取注入的localeConfig
