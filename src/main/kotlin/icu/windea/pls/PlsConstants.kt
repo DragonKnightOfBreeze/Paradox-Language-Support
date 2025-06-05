@@ -105,9 +105,6 @@ object PlsConstants {
         /** 内嵌提示中的本地化文本的默认图标高度限制 */
         const val iconHeightLimit = locTextIconSizeLimit
 
-        /** 基于本地化文本（移除了大部分特殊格式）索引（同步）本地化时，最大的文本长度 */
-        const val maxLocalisationTextLengthToIndex = 60
-
         /** 默认的封装变量的名字（执行重构与生成操作时会用到） */
         const val defaultScriptedVariableName = "var"
         /** 定义相对于脚本文件的最大深度（用于优化性能） */

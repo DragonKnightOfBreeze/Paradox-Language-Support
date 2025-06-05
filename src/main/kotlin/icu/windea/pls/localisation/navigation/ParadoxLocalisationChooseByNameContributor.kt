@@ -11,23 +11,14 @@ import icu.windea.pls.localisation.psi.*
 
 /**
  * 用于在随处搜索（Search Everywhere）中查找对应名字的本地化。
- *
- * 如果启用了对应的配置，也可以查找对应本地化文本（移除了大部分特殊格式）的本地化。
- *
- * @see icu.windea.pls.lang.settings.PlsSettingsState.OthersState.searchEverywhereByLocalisationText
- * @see icu.windea.pls.PlsConstants.Settings.maxLocalisationTextLengthToIndex
  */
 class ParadoxLocalisationChooseByNameContributor : ChooseByNameContributorEx {
     //com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
 
     private val indexKey = ParadoxIndexManager.LocalisationNameKey
-    private val indexKeyByText = ParadoxIndexManager.LocalisationTextKey
 
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         StubIndex.getInstance().processAllKeys(indexKey, processor, scope, filter)
-        if (PlsFacade.getSettings().others.searchEverywhereByLocalisationText) {
-            StubIndex.getInstance().processAllKeys(indexKeyByText, processor, scope, filter)
-        }
     }
 
     override fun processElementsWithName(name: String, processor: Processor<in NavigationItem>, parameters: FindSymbolParameters) {
@@ -36,8 +27,5 @@ class ParadoxLocalisationChooseByNameContributor : ChooseByNameContributorEx {
         val idFilter = parameters.idFilter
         val requiredClass = ParadoxLocalisationProperty::class.java
         StubIndex.getInstance().processElements(indexKey, name, project, scope, idFilter, requiredClass, processor)
-        if (PlsFacade.getSettings().others.searchEverywhereByLocalisationText) {
-            StubIndex.getInstance().processElements(indexKeyByText, name, project, scope, idFilter, requiredClass, processor)
-        }
     }
 }

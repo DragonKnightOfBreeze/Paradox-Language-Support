@@ -5,7 +5,6 @@ import icu.windea.pls.model.*
 
 interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationProperty> {
     val name: String
-    val text: String
     val category: ParadoxLocalisationCategory
     val locale: String?
     val gameType: ParadoxGameType
@@ -22,7 +21,6 @@ interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationPrope
     class Impl(
         parent: StubElement<*>,
         override val name: String,
-        override val text: String,
         override val category: ParadoxLocalisationCategory,
         override val locale: String?,
         override val gameType: ParadoxGameType,
@@ -34,7 +32,6 @@ interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationPrope
         parent: StubElement<*>
     ) : Base(parent) {
         override val name: String get() = ""
-        override val text: String get() = ""
         override val category: ParadoxLocalisationCategory get() = ParadoxLocalisationCategory.placeholder()
         override val locale: String? get() = null
         override val gameType: ParadoxGameType get() = ParadoxGameType.placeholder()

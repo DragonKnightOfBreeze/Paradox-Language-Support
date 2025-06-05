@@ -3,14 +3,12 @@ package icu.windea.pls.lang.util
 import com.intellij.lang.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
-import com.intellij.platform.util.coroutines.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -54,9 +52,8 @@ object ParadoxLocalisationManager {
         val gameType = selectGameType(file) ?: return null
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
         val name = psi.name
-        val text = psi.value?.let { getTextToIndex(it) }.orEmpty()
         val locale = selectLocale(file)?.id
-        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, text, category, locale, gameType)
+        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, category, locale, gameType)
     }
 
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub? {
@@ -65,17 +62,12 @@ object ParadoxLocalisationManager {
         val gameType = selectGameType(file) ?: return null
         val category = ParadoxLocalisationCategory.resolve(file) ?: return null
         val name = getNameFromNode(node, tree) ?: return null
-        val text = getTextFromNode(node, tree)?.let { getTextToIndex(it) }.orEmpty()
         val locale = selectLocale(file)?.id
-        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, text, category, locale, gameType)
+        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, category, locale, gameType)
     }
 
     private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {
         return node.firstChild(tree, PROPERTY_KEY)?.firstChild(tree, PROPERTY_KEY_TOKEN)?.internNode(tree)?.toString()
-    }
-
-    private fun getTextFromNode(node: LighterASTNode, tree: LighterAST): String? {
-        return node.firstChild(tree, PROPERTY_VALUE)?.firstChild(tree, PROPERTY_VALUE_TOKEN)?.internNode(tree)?.toString()
     }
 
     fun getInfoFromStub(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
@@ -85,13 +77,6 @@ object ParadoxLocalisationManager {
         val category = stub.category
         val gameType = stub.gameType
         return ParadoxLocalisationInfo(name, category, gameType)
-    }
-
-    @Suppress("KotlinConstantConditions")
-    fun getTextToIndex(text: String): String? {
-        val limit = PlsConstants.Settings.maxLocalisationTextLengthToIndex
-        if (limit > 0 && text.length > limit) return null
-        return text
     }
 
     fun isSpecialLocalisation(element: ParadoxLocalisationProperty): Boolean {

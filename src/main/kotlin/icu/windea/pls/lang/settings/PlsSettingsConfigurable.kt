@@ -523,12 +523,6 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(settings.others::renderLocalisationColorfulText)
                         .onApply { refreshOnlyForOpenedFiles() }
                 }
-                //searchEverywhereByLocalisationText
-                row {
-                    checkBox(PlsBundle.message("settings.others.searchEverywhereByLocalisationText"))
-                        .bindSelected(settings.others::searchEverywhereByLocalisationText)
-                    contextHelp(PlsBundle.message("settings.others.searchEverywhereByLocalisationText.tip", PlsConstants.Settings.maxLocalisationTextLengthToIndex))
-                }
                 //defaultDiffGroup
                 row {
                     label(PlsBundle.message("settings.others.defaultDiffGroup"))

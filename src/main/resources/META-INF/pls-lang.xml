@@ -89,9 +89,6 @@
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$ModifierIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxSyncedLocalisationNameIndex"/>
 
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationTextIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxSyncedLocalisationTextIndex"/>
-
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFilePathIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFileLocaleIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxMergedIndex"/>
