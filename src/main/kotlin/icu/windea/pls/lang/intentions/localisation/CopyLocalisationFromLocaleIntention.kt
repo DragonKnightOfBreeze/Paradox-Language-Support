@@ -2,6 +2,7 @@ package icu.windea.pls.lang.intentions.localisation
 
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import com.intellij.platform.ide.progress.*
@@ -71,6 +72,8 @@ class CopyLocalisationFromLocaleIntention : CopyLocalisationIntentionBase() {
     }
 
     private fun createFailedNotification(project: Project, selectedLocale: CwtLocaleConfig, error: Throwable) {
+        thisLogger().warn(error)
+
         val errorDetails = error.message?.let { "<br>$it" }.orEmpty()
         val content = PlsBundle.message("intention.copyLocalisationFromLocale.notification.1", selectedLocale) + errorDetails
         createNotification(content, NotificationType.WARNING).notify(project)
