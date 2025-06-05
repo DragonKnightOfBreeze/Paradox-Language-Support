@@ -58,7 +58,10 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .bindText(settings::remoteConfigDirectory.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                     .align(Align.FILL)
-                    .onApply { onRemoteConfigDirectoriesChanged() }
+                    .onApply {
+                        onConfigDirectoriesChanged()
+                        onRemoteConfigDirectoriesChanged()
+                    }
             }.enabledIf(cbRemote.selected)
             //configRepositoryUrls
             row {
