@@ -25,7 +25,7 @@ class MissingImageInspection : LocalInspectionTool() {
     @JvmField
     var checkGeneratedModifierIconsForDefinitions = false
     @JvmField
-    var checkForModifiers = true
+    var checkForModifiers = false
     @JvmField
     var checkModifierIcons = true
 
