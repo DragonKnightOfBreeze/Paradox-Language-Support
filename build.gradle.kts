@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.*
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.10" // https://kotlinlang.org/docs/gradle.html
-    id("org.jetbrains.intellij.platform") version "2.5.0" // https://github.com/JetBrains/intellij-platform-plugin
+    id("org.jetbrains.intellij.platform") version "2.6.0" // https://github.com/JetBrains/intellij-platform-plugin
     id("org.jetbrains.grammarkit") version "2022.3.2.2" // https://github.com/JetBrains/grammarkit
     id("org.jetbrains.changelog") version "2.2.1" // https://github.com/JetBrains/gradle-changelog-plugin
 }
