@@ -1,8 +1,7 @@
 package icu.windea.pls.integrations.settings
 
 import com.intellij.openapi.components.*
-import com.intellij.util.xmlb.annotations.Property
-import com.intellij.util.xmlb.annotations.Tag
+import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 
 /**

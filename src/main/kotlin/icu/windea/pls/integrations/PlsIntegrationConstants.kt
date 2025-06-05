@@ -1,6 +1,6 @@
 package icu.windea.pls.integrations
 
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.*
 
 object PlsIntegrationConstants {
     object Texconv {

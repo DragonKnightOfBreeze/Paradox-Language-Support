@@ -5,7 +5,6 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
-import icu.windea.pls.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.localisation.psi.*
 

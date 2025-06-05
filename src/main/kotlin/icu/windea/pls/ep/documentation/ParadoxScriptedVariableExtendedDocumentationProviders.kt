@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.documentation
 
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*

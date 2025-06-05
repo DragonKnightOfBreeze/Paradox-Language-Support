@@ -16,7 +16,6 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import kotlinx.coroutines.*
 import java.util.concurrent.atomic.*
 
 class ReplaceLocalisationFromLocaleIntention : ReplaceLocalisationIntentionBase() {

@@ -1,12 +1,10 @@
 package icu.windea.pls.integrations.settings
 
-import com.intellij.ide.DataManager
+import com.intellij.ide.*
 import com.intellij.openapi.options.*
-import com.intellij.openapi.options.ex.Settings
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.extension.diagram.settings.PlsDiagramSettingsConfigurable
 import icu.windea.pls.integrations.*
 
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {

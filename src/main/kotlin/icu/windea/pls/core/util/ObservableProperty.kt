@@ -1,6 +1,6 @@
 package icu.windea.pls.core.util
 
-import icu.windea.pls.core.EMPTY_OBJECT
+import icu.windea.pls.core.*
 import kotlin.properties.*
 import kotlin.reflect.*
 

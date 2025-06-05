@@ -5,7 +5,6 @@ import com.intellij.psi.impl.*
 import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.configGroup.*
-import icu.windea.pls.ep.configGroup.BuiltInCwtConfigGroupFileProvider
 import icu.windea.pls.model.*
 
 class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {

@@ -12,8 +12,6 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.settings.PlsProfilesSettings
-import icu.windea.pls.lang.settings.PlsSettings
 import icu.windea.pls.model.*
 import icu.windea.pls.tools.ui.*
 import java.util.function.Function
