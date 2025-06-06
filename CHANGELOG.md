@@ -1576,7 +1576,7 @@ mult = modifier:$MODIFIER$ # 脚本参数作为某个复杂表达式中的整个
 * [X] 优化DDS图片渲染：监听DDS文件内容的更改以移除缓存
 * [X] 优化DDS图片渲染：现在可以渲染切分后的DDS图片（如果需要）
 * [X] 脚本文件：可以显示类型信息以及导航到类型定义，如果可用
-* [X] 对模组描述符文件`descriptor.mod`提供插件额外提供的（共用的）规则支持
+* [X] 对模组描述符文件`descriptor.mod`提供插件额外提供的（共享的）规则支持
 * [X] 不再通过`ParadoxFileTypeOverrider`自动添加或移除文件的BOM，而是基于`ParadoxUtf8BomOptionProvider`判断创建文件时是否需要添加BOM
 * [X] 同一本地化文件中允许有多个语言区域，以及各自的本地化（如游戏目录中的`localisation/languages.yml`），提供重复的语言区域的代码检查
 * [X] 支持解析和提示filePath和iconName（相对于游戏或模组根路径的文件路径，仅文件）

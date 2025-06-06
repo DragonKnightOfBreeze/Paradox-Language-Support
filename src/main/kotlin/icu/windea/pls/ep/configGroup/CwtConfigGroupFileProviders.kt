@@ -20,7 +20,7 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
     }
 
     override fun processFiles(configGroup: CwtConfigGroup, consumer: (String, VirtualFile) -> Boolean): Boolean {
-        //根据配置已启用，或者是内置的公用规则分组
+        //根据配置已启用，或者是内置的共享的规则分组
 
         val gameType = configGroup.gameType
         val project = configGroup.project
@@ -86,12 +86,12 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
 /**
  * 用于提供插件内置的规则分组。
  *
- * 对应的路径：`config/{gameType}`
+ * 位置：`config/{gameType}`
  *
  * * 位于插件压缩包中的插件jar包中。
- * * `{gameType}`为游戏类型ID，对于公用规则分组则为`core`。
+ * * `{gameType}`为游戏类型ID，对于共享的规则分组则为`core`。
  *
- * 注意：即使不启用插件内置的规则分组，`config/core`目录下公用的规则文件仍然会启用。
+ * 注意：共享的内置规则分组总是会被启用。
  */
 class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     private val rootDirectory by lazy { doGetRootDirectory() }
@@ -117,10 +117,10 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 /**
  * 用于提供来自远程仓库的规则分组。
  *
- * 对应的路径：`{localConfigDirectory}/{configRepositoryDirectorName}`
+ * 位置：`{remoteConfigDirectory}/{directoryName}`
  *
- * * `{localConfigDirectory}`可以配置。
- * * `{configRepositoryDirectorName}`为本地仓库目录的名字，，对于公用规则分组则为`core`。
+ * * `{remoteConfigDirectory}`可以配置。
+ * * `{directoryName}`为仓库目录的名字，对于共享的规则分组则为`core`。
  *
  * 更改配置后，PLS会自动从配置的远程仓库中克隆和拉取这些规则分组。
  * 在自动或手动同步后，才允许刷新规则分组数据。
@@ -166,9 +166,10 @@ class RemoteCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 /**
  * 用于提供全局的本地规则分组。
  *
- * 对应的路径：`{localConfigDirectory}/{gameType}`
+ * 位置：`{localConfigDirectory}/{gameType}`
+ *
  * * `{localConfigDirectory}`可以配置。
- * * `{gameType}`为游戏类型ID，对于公用规则分组则为`core`。
+ * * `{gameType}`为游戏类型ID，对于共享的规则分组则为`core`。
  */
 class LocalCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val type get() = CwtConfigGroupFileProvider.Type.Local
@@ -189,10 +190,10 @@ class LocalCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 /**
  * 用于提供项目的本地规则分组。
  *
- * 对应的路径：`{projectLocalConfigDirectoryName}/{gameType}`
+ * 位置：`{projectLocalConfigDirectoryName}/{gameType}`
  *
  * * `{projectLocalConfigDirectoryName}`位于项目根目录中，且可以配置。
- * * `{gameType}`为游戏类型ID，对于公用规则分组则为`core`。
+ * * `{gameType}`为游戏类型ID，对于共享的规则分组则为`core`。
  */
 class ProjectCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val type get() = CwtConfigGroupFileProvider.Type.Local

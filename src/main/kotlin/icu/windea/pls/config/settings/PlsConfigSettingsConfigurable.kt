@@ -37,6 +37,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                 checkBox(PlsBundle.message("settings.config.enableBuiltInConfigGroups"))
                     .bindSelected(settings::enableBuiltInConfigGroups)
                     .onApply { onConfigDirectoriesChanged() }
+                contextHelp(PlsBundle.message("settings.config.enableBuiltInConfigGroups.tip"))
             }
             //enableRemoteConfigGroups
             row {
@@ -45,6 +46,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .onApply { onConfigDirectoriesChanged() }
                     .applyToComponent { cbRemote = this }
                 comment(PlsBundle.message("settings.config.remoteConfigDirectory.comment"))
+                contextHelp(PlsBundle.message("settings.config.enableRemoteConfigGroups.tip"))
             }
             //remoteConfigDirectory
             row {
@@ -91,6 +93,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .bindSelected(settings::enableLocalConfigGroups)
                     .onApply { onConfigDirectoriesChanged() }
                     .applyToComponent { cbLocal = this }
+                contextHelp(PlsBundle.message("settings.config.enableLocalConfigGroups.tip"))
             }
             //localConfigDirectory
             row {
@@ -111,6 +114,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .bindSelected(settings::enableProjectLocalConfigGroups)
                     .onApply { onConfigDirectoriesChanged() }
                     .applyToComponent { cbProjectLocal = this }
+                contextHelp(PlsBundle.message("settings.config.enableProjectLocalConfigGroups.tip"))
             }
             //projectLocalConfigDirectoryName
             row {
