@@ -2,22 +2,27 @@
 
 ## Unreleased
 
-* [ ] 优化：通过快速文档为参数和命令提供其中使用的格式标签的说明 / OP: Provide information about format tags used in parameters and commands through quick documentation
-* [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
-
-PLANNED
-
 * [ ] 更新参考文档，更加详细，尽可能全面地介绍插件的功能
-* [ ] 进一步优化脚本文件与本地化文件的 lexer 和 parser 的实现
 * [ ] 兼容更加复杂的本地化命令（例如，带有多个参数、用引号括起的参数）
 * [ ] 兼容通过内联脚本声明的定义，兼容相关语言功能（定义的名字在参数值中，而定义的声明在内联脚本文件中）
-* [ ] 支持可以配置通过何种工具处理和转化DDS图片（Texconv、Image Magick）
-* [ ] 支持可以配置通过何种方案翻译本地化文本（Translation插件、AI）
 * [ ] 支持为同一个模组配置多个模组依赖列表
 * [ ] 支持通过内置方案、手动乃至AI解决模组冲突，合并模组文件，提供相关的全局代码检查和操作
 * [ ] 支持直接在IDE中启动游戏，且启用的模组来自可配置的模组列表
-* [ ] 提供对魔法注释的初步支持，用于批量处理和生成脚本文件和本地化文件的内容
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
+
+## 2.0.0-dev
+
+* [ ] 优化：通过快速文档为参数和命令提供其中使用的格式标签的说明 / OP: Provide information about format tags used in parameters and commands through quick documentation
+* [ ] 优化：也为复杂枚举值与动态值提供快速文档与内嵌提示，来自同名的本地化，可以配置 / OP: Also provide quick documentation and inlay hints for complex enum values and dynamic values, from the same name localisation, which is configurable
+* [ ] 优化：支持通过多种工具处理DDS图片，且可以配置 / OP: Support to handle DDS images by various tools, which is configurable
+* [ ] 优化：支持通过多种工具翻译本地化文本，且可以配置 / OP: Support to translate localisation text by various tools, which is configurable
+* [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
+* [ ] 新功能：集成AI，提供对应的设置页面 / NEW: Integrate AI, provide corresponding settings page
+* [ ] 新功能：提供AI驱动的本地化翻译功能 / NEW: Provide AI-driven localisation translation features
+* [ ] 新功能：提供AI驱动的本地化润色功能 / NEW: Provide AI-driven localisation colorization features
+* [ ] 新功能：提供AI驱动的脚本/本地化生成功能 / NEW: Provide AI-driven script/translation generation features
+* [ ] 新功能：魔提供对魔法注释的初步支持，用于批量处理和生成脚本文件和本地化文件的内容
+* [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.4.2
 
