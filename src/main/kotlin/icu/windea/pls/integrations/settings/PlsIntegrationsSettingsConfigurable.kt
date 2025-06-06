@@ -2,14 +2,14 @@ package icu.windea.pls.integrations.settings
 
 import com.intellij.ide.*
 import com.intellij.openapi.options.*
-import com.intellij.openapi.options.ex.Settings
+import com.intellij.openapi.options.ex.*
 import com.intellij.openapi.ui.*
 import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDescriptor
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.ai.settings.*
 import icu.windea.pls.integrations.*
-import icu.windea.pls.lang.ui.ParadoxDirectoryDescriptor
+import icu.windea.pls.lang.ui.*
 
 @Suppress("UnstableApiUsage")
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {
@@ -30,23 +30,6 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                         .comment(PlsBundle.message("settings.integrations.image.from.texconv.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Texconv.url)
                 }
-                //enableMagick
-                row {
-                    checkBox(PlsBundle.message("settings.integrations.image.from.magick")).bindSelected(settings.image::enableMagick)
-                        .comment(PlsBundle.message("settings.integrations.image.from.magick.comment"), MAX_LINE_LENGTH_WORD_WRAP)
-                    browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Magick.url)
-                }
-                //magickPath
-                row {
-                    label(PlsBundle.message("settings.integrations.image.magickPath")).widthGroup(groupNameImage)
-                    val descriptor = ParadoxDirectoryDescriptor()
-                        .withTitle(PlsBundle.message("settings.integrations.image.magickPath.title"))
-                        .asBrowseFolderDescriptor()
-                    textFieldWithBrowseButton(descriptor, null)
-                        .bindText(settings.image::magickPath.toNonNullableProperty(""))
-                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
-                        .align(Align.FILL)
-                }
                 //enablePaintNet
                 row {
                     checkBox(PlsBundle.message("settings.integrations.image.from.paint.net")).bindSelected(settings.image::enablePaintNet)
@@ -61,6 +44,23 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                         .asBrowseFolderDescriptor()
                     textFieldWithBrowseButton(descriptor, null)
                         .bindText(settings.image::paintNetPath.toNonNullableProperty(""))
+                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
+                        .align(Align.FILL)
+                }
+                //enableMagick
+                row {
+                    checkBox(PlsBundle.message("settings.integrations.image.from.magick")).bindSelected(settings.image::enableMagick)
+                        .comment(PlsBundle.message("settings.integrations.image.from.magick.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+                    browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Magick.url)
+                }
+                //magickPath
+                row {
+                    label(PlsBundle.message("settings.integrations.image.magickPath")).widthGroup(groupNameImage)
+                    val descriptor = ParadoxDirectoryDescriptor()
+                        .withTitle(PlsBundle.message("settings.integrations.image.magickPath.title"))
+                        .asBrowseFolderDescriptor()
+                    textFieldWithBrowseButton(descriptor, null)
+                        .bindText(settings.image::magickPath.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                         .align(Align.FILL)
                 }
