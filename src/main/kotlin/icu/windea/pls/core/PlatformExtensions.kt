@@ -8,6 +8,8 @@ import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInsight.template.*
 import com.intellij.codeInspection.*
 import com.intellij.codeInspection.ex.*
+import com.intellij.credentialStore.CredentialAttributes
+import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.injected.editor.*
 import com.intellij.lang.*
 import com.intellij.lang.injection.*
@@ -908,5 +910,15 @@ fun getInspectionToolState(shortName: String, element: PsiElement?, project: Pro
 }
 
 val ScopeToolState.enabledTool: InspectionProfileEntry? get() = if (isEnabled) tool.tool else null
+
+//endregion
+
+//region Settings Extensions
+
+//以下的委托方法用于读写需要保存为密码的配置项
+
+inline operator fun CredentialAttributes.getValue(thisRef: Any?, property: KProperty<*>): String? = PasswordSafe.instance.getPassword(this)
+
+inline operator fun CredentialAttributes.setValue(thisRef: Any?, property: KProperty<*>, value: String?) = PasswordSafe.instance.setPassword(this, value)
 
 //endregion

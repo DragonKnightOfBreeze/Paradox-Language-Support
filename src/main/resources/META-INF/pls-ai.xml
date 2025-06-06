@@ -1,0 +1,5 @@
+<idea-plugin>
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationConfigurable id="pls.ai" parentId="pls" bundle="messages.PlsAiBundle" key="settings.ai" instance="icu.windea.pls.ai.settings.PlsAiSettingsConfigurable"/>
+  </extensions>
+</idea-plugin>
