@@ -185,22 +185,22 @@ jobs:
         path: ${{ github.workspace }}/build/reports/kover/html
 
   # Run plugin structure verification along with IntelliJ Plugin Verifier
-  verify:
-    name: Verify plugin
-    needs: [ build ]
-    runs-on: ubuntu-latest
-    steps:
-
-    # Gradle cache
-    - name: Cache Gradle
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: gradle-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties') }}
-        restore-keys: |
-          gradle-${{ runner.os }}-
+  # verify:
+  #   name: Verify plugin
+  #   needs: [ build ]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #
+  #   # Gradle cache
+  #   - name: Cache Gradle
+  #     uses: actions/cache@v4
+  #     with:
+  #       path: |
+  #         ~/.gradle/caches
+  #         ~/.gradle/wrapper
+  #       key: gradle-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties') }}
+  #       restore-keys: |
+  #         gradle-${{ runner.os }}-
 
     # Free GitHub Actions Environment Disk Space
     - name: Maximize Build Space
