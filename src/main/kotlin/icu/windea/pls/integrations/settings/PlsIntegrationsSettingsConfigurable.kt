@@ -1,17 +1,18 @@
 package icu.windea.pls.integrations.settings
 
 import com.intellij.ide.*
+import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.options.ex.*
 import com.intellij.openapi.ui.*
-import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDescriptor
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.ui.layout.selected
 import icu.windea.pls.*
 import icu.windea.pls.ai.settings.*
 import icu.windea.pls.integrations.*
-import icu.windea.pls.lang.ui.*
+import icu.windea.pls.integrations.image.providers.*
 
 @Suppress("UnstableApiUsage")
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {
@@ -45,13 +46,13 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 //paintNetPath
                 row {
                     label(PlsBundle.message("settings.integrations.image.paintNetPath")).widthGroup(groupNameImage)
-                    val descriptor = ParadoxDirectoryDescriptor()
+                    val descriptor = FileChooserDescriptorFactory.singleFile()
                         .withTitle(PlsBundle.message("settings.integrations.image.paintNetPath.title"))
-                        .asBrowseFolderDescriptor()
                     textFieldWithBrowseButton(descriptor, null)
                         .bindText(settings.image::paintNetPath.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                         .align(Align.FILL)
+                        .validationOnInput { validatePaintNetPath(this, it) }
                 }.enabledIf(cbPaintNet.selected)
                 //enableMagick
                 row {
@@ -63,13 +64,13 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 //magickPath
                 row {
                     label(PlsBundle.message("settings.integrations.image.magickPath")).widthGroup(groupNameImage)
-                    val descriptor = ParadoxDirectoryDescriptor()
+                    val descriptor = FileChooserDescriptorFactory.singleFile()
                         .withTitle(PlsBundle.message("settings.integrations.image.magickPath.title"))
-                        .asBrowseFolderDescriptor()
                     textFieldWithBrowseButton(descriptor, null)
                         .bindText(settings.image::magickPath.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                         .align(Align.FILL)
+                        .validationOnInput { validateMagickPath(this, it) }
                 }.enabledIf(cbMagick.selected)
             }
             //translation tools
@@ -110,5 +111,22 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 }
             }.visible(false) //TODO 2.0.0-dev+
         }
+    }
+
+    private fun validatePaintNetPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
+        val path = button.text.trim()
+        if (path.isEmpty()) return null
+        val tool = PlsImageToolProvider.EP_NAME.findExtension(PlsPaintNetToolProvider::class.java) ?: return null
+        if (tool.validatePath(path)) return null
+        val exeFileName = PlsIntegrationConstants.PaintNet.exeFileName
+        return builder.warning(PlsBundle.message("settings.integrations.image.paintNetPath.incorrect", exeFileName))
+    }
+
+    private fun validateMagickPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
+        val path = button.text.trim()
+        if (path.isEmpty()) return null
+        val tool = PlsImageToolProvider.EP_NAME.findExtension(PlsMagickToolProvider::class.java) ?: return null
+        if (tool.validatePath(path)) return null
+        return builder.warning(PlsBundle.message("settings.integrations.image.magickPath.incorrect"))
     }
 }

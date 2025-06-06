@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.settings
 
+import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.ui.*
-import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDescriptor
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -31,9 +31,8 @@ class DefaultGameDirectoriesDialog(val list: MutableList<Entry<String, String>>)
                 row {
                     //gameDirectory
                     label(gameType.title + ":").widthGroup("left")
-                    val descriptor = ParadoxDirectoryDescriptor()
+                    val descriptor = FileChooserDescriptorFactory.singleDir()
                         .withTitle(PlsBundle.message("gameDirectory.title"))
-                        .asBrowseFolderDescriptor()
                         .apply { putUserData(PlsDataKeys.gameType, gameType) }
                     textFieldWithBrowseButton(descriptor, null)
                         .bindText(gameDirectoryProperty)

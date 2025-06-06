@@ -1,15 +1,14 @@
 package icu.windea.pls.tools.ui
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
-import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDescriptor
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.ui.*
 import icu.windea.pls.model.*
 
 @Suppress("UnstableApiUsage")
@@ -48,9 +47,8 @@ class ParadoxGameSettingsDialog(
             row {
                 //gameDirectory
                 label(PlsBundle.message("game.settings.gameDirectory")).widthGroup("left")
-                val descriptor = ParadoxDirectoryDescriptor()
+                val descriptor = FileChooserDescriptorFactory.singleDir()
                     .withTitle(PlsBundle.message("game.settings.gameDirectory.title"))
-                    .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(descriptor, project)
                     .text(settings.gameDirectory.orEmpty())

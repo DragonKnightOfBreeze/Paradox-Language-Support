@@ -48,10 +48,10 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
         val s = path.toString().quote()
         val o = outputDirectoryPath.toString().quote()
         val ft = targetFormat
-        val command = "$exe $s -ft $ft -o $o -y" // -y: overwrite existing files
         val wd = texconvExeWd
 
-        val result = executeCommand(command, CommandType.CMD, workDirectory = wd)
+        val command = "$exe $s -ft $ft -o $o -y" // -y: overwrite existing files
+        val result = executeCommand(command, CommandType.CMD, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
         val lines = result.lines()
         val outputPath = lines.firstNotNullOfOrNull { it.removePrefixOrNull("writing ")?.trim()?.toPathOrNull() }
         val hasWarnings = lines.any { it.startsWith("WARNING: ") }

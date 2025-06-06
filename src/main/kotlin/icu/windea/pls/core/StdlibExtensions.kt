@@ -264,12 +264,9 @@ fun String.quote(quote: Char = '"'): String {
     if (start && end) return s
     return buildString {
         append(quote)
-        s.forEach { c ->
-            when (c) {
-                quote -> append("\\$quote")
-                '\\' -> append("\\\\")
-                else -> append(c)
-            }
+        s.forEachIndexed { i, c ->
+            if (c == quote && !s.isEscapedCharAt(i)) append('\\')
+            append(c)
         }
         append(quote)
     }
@@ -280,23 +277,14 @@ fun String.unquote(quote: Char = '"'): String {
     if (s.isEmpty() || s == quote.toString()) return ""
     val start = isLeftQuoted(quote)
     val end = isRightQuoted(quote)
+    if (!start && !end) return s
     return buildString {
-        var escape = false
+        var offset = if (start) 1 else 0
         s.forEachIndexed f@{ i, c ->
             if (start && i == 0) return@f
             if (end && i == s.lastIndex) return@f
-            if (escape) {
-                escape = false
-                when (c) {
-                    quote -> append(c)
-                    '\\' -> append(c)
-                    else -> append('\\').append(c)
-                }
-            } else if (c == '\\') {
-                escape = true
-            } else {
-                append(c)
-            }
+            if (c == quote && s.isEscapedCharAt(i)) deleteCharAt(i - 1 - offset++)
+            append(c)
         }
     }
 }

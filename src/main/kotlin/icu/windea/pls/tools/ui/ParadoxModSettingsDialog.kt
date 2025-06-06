@@ -1,16 +1,15 @@
 package icu.windea.pls.tools.ui
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
-import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDescriptor
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.ui.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
@@ -81,7 +80,7 @@ class ParadoxModSettingsDialog(
                 //gameVersion
                 label(PlsBundle.message("mod.settings.gameVersion")).widthGroup("right")
                 textField()
-                    .applyToComponent { defaultGameVersion?.orNull()?.let { emptyText.setText(it) } }
+                    .applyToComponent { defaultGameVersion?.orNull()?.let { emptyText.text = it } }
                     .bindText(gameVersionProperty)
                     .columns(COLUMNS_SHORT)
                     .enabled(false)
@@ -89,12 +88,11 @@ class ParadoxModSettingsDialog(
             row {
                 //gameDirectory
                 label(PlsBundle.message("mod.settings.gameDirectory")).widthGroup("left")
-                val descriptor = ParadoxDirectoryDescriptor()
+                val descriptor = FileChooserDescriptorFactory.singleDir()
                     .withTitle(PlsBundle.message("gameDirectory.title"))
-                    .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(descriptor, project)
-                    .applyToComponent { defaultGameDirectory?.orNull()?.let { jbTextField.emptyText.setText(it) } }
+                    .applyToComponent { defaultGameDirectory?.orNull()?.let { jbTextField.emptyText.text = it } }
                     .bindText(gameDirectoryProperty)
                     .columns(COLUMNS_LARGE)
                     .align(Align.FILL)
@@ -109,9 +107,8 @@ class ParadoxModSettingsDialog(
             row {
                 //modDirectory
                 label(PlsBundle.message("mod.settings.modDirectory")).widthGroup("left")
-                val descriptor = ParadoxDirectoryDescriptor()
+                val descriptor = FileChooserDescriptorFactory.singleDir()
                     .withTitle(PlsBundle.message("mod.settings.modDirectory.title"))
-                    .asBrowseFolderDescriptor()
                     .apply { putUserData(PlsDataKeys.gameTypeProperty, gameTypeProperty) }
                 textFieldWithBrowseButton(descriptor, project)
                     .text(settings.modDirectory.orEmpty())

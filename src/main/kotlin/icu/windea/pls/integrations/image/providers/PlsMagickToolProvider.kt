@@ -19,20 +19,28 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
 
     override fun isEnabled(): Boolean {
         val settings = PlsFacade.getIntegrationsSettings().image
-        return settings.enableMagick && settings.magickPath.isNotNullOrEmpty()
+        return settings.enableMagick && settings.magickPath?.trim().isNotNullOrEmpty()
     }
 
     override fun validate(): Boolean {
         val settings = PlsFacade.getIntegrationsSettings().image
-        val magickPath = settings.magickPath
+        val magickPath = settings.magickPath?.trim()
         if (magickPath.isNullOrEmpty()) return false
-        return runCatchingCancelable { doValidate(magickPath) }.getOrDefault(false)
+        return validatePath(magickPath)
     }
 
-    private fun doValidate(magickPath: String): Boolean {
-        val exe = magickPath.quote()
+    override fun validatePath(path: String): Boolean {
+        return runCatchingCancelable { doValidatePath(path) }.getOrDefault(false)
+    }
+
+    private fun doValidatePath(path: String): Boolean {
+        val fullExePath = path.toPath()
+        val exe = fullExePath.name
+        val wd = fullExePath.parent?.toFile()
+
         val command = "$exe -version"
-        val result = executeCommand(command)
+        val result = executeCommand(command, CommandType.AUTO, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
+
         return result.contains("ImageMagick") || result.contains("Version")
     }
 
@@ -52,22 +60,7 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
     //    magick input.jpg watermark.png -gravity southeast -geometry +10+10 -composite output.jpg
 
     override fun open(file: VirtualFile): Boolean {
-        return runCatchingCancelable { doOpen(file) }.getOrDefault(false)
-    }
-
-    private fun doOpen(file: VirtualFile): Boolean {
-        // 尝试用 ImageMagick 打开图片文件（通常为预览或外部查看）
-        // 这里只能调用系统的 magick display 命令，适配 Windows/Linux
-
-        val settings = PlsFacade.getIntegrationsSettings().image
-        val magickPath = settings.magickPath
-        if (magickPath.isNullOrEmpty()) return false
-
-        val exe = magickPath.quote()
-        val filePath = file.path.quote()
-        val command = "$exe display $filePath"
-        executeCommand(command)
-        return true
+        return false // unsupported, just return false
     }
 
     override fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
@@ -77,20 +70,21 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
         val settings = PlsFacade.getIntegrationsSettings().image
-        val magickPath = settings.magickPath!!
+        val magickPath = settings.magickPath?.trim()!!
         val tempParentPath = PlsConstants.Paths.imagesTemp
         val outputDirectoryPath = tempParentPath.resolve(UUID.randomUUID().toString())
         outputDirectoryPath.createDirectories()
 
-        val exe = magickPath.quote()
+        val fullExePath = magickPath.toPath()
+        val exe = fullExePath.name
         val inputPath = path.toString().quote()
         val outputFileName = targetFileName ?: (path.nameWithoutExtension + "." + targetFormat)
         val outputPath = outputDirectoryPath.resolve(outputFileName)
         val outputPathStr = outputPath.toString().quote()
-        val command = "$exe $inputPath $outputPathStr"
-        val wd = magickPath.toPathOrNull()?.parent?.toFile()
+        val wd = fullExePath.parent?.toFile()
 
-        val result = executeCommand(command, workDirectory = wd)
+        val command = "$exe $inputPath $outputPathStr"
+        val result = executeCommand(command, CommandType.AUTO, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
 
         thisLogger().info("Execute magick command.\nCommand: $command\nCommand result: $result")
 

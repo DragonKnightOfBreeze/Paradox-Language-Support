@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.integrations.*
 import org.apache.commons.io.file.*
 import java.nio.file.*
 import java.util.*
@@ -19,7 +20,7 @@ class PlsPaintNetToolProvider : PlsCommandBasedImageToolProvider() {
 
     override fun isEnabled(): Boolean {
         val settings = PlsFacade.getIntegrationsSettings().image
-        return settings.enablePaintNet && settings.paintNetPath.isNotNullOrEmpty()
+        return settings.enablePaintNet && settings.paintNetPath?.trim().isNotNullOrEmpty()
     }
 
     override fun isAvailable(): Boolean {
@@ -28,17 +29,19 @@ class PlsPaintNetToolProvider : PlsCommandBasedImageToolProvider() {
 
     override fun validate(): Boolean {
         val settings = PlsFacade.getIntegrationsSettings().image
-        val paintNetPath = settings.paintNetPath
+        val paintNetPath = settings.paintNetPath?.trim()
         if (paintNetPath.isNullOrEmpty()) return false
-        return runCatchingCancelable { doValidate(paintNetPath) }.getOrDefault(false)
+        return validatePath(paintNetPath)
     }
 
-    private fun doValidate(paintNetPath: String): Boolean {
-        val exe = paintNetPath.quote()
-        val command = "$exe /?"
-        val result = executeCommand(command, CommandType.CMD)
-        // Paint.NET 命令行会输出帮助信息，简单判断有输出即可
-        return result.isNotBlank()
+    override fun validatePath(path: String): Boolean {
+        return doValidatePath(path)
+    }
+
+    private fun doValidatePath(path: String): Boolean {
+        val fullExePath = path.toPath()
+        val exe = fullExePath.name
+        return exe == PlsIntegrationConstants.PaintNet.exeFileName //仅验证可执行文件的文件名
     }
 
     // 常用命令示例（Paint.NET）：
@@ -57,13 +60,17 @@ class PlsPaintNetToolProvider : PlsCommandBasedImageToolProvider() {
         // 调用 Paint.NET 打开图片文件
 
         val settings = PlsFacade.getIntegrationsSettings().image
-        val paintNetPath = settings.paintNetPath
+        val paintNetPath = settings.paintNetPath?.trim()
         if (paintNetPath.isNullOrEmpty()) return false
 
-        val exe = paintNetPath.quote()
+        val fullExePath = paintNetPath.toPath()
+        val exe = fullExePath.name
         val filePath = file.path.quote()
+        val wd = fullExePath.parent?.toFile()
+
         val command = "$exe /open $filePath"
-        executeCommand(command, CommandType.CMD)
+        executeCommand(command, CommandType.CMD, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
+
         return true
     }
 
@@ -73,21 +80,22 @@ class PlsPaintNetToolProvider : PlsCommandBasedImageToolProvider() {
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
         val settings = PlsFacade.getIntegrationsSettings().image
-        val paintNetPath = settings.paintNetPath!!
+        val paintNetPath = settings.paintNetPath?.trim()!!
         val tempParentPath = PlsConstants.Paths.imagesTemp
         val outputDirectoryPath = tempParentPath.resolve(UUID.randomUUID().toString())
         outputDirectoryPath.createDirectories()
 
-        val exe = paintNetPath.quote()
+        val fullExePath = paintNetPath.toPath()
+        val exe = fullExePath.name
         val inputPath = path.toString().quote()
         val outputFileName = targetFileName ?: (path.nameWithoutExtension + "." + targetFormat)
         val outputPath = outputDirectoryPath.resolve(outputFileName)
         val outputPathStr = outputPath.toString().quote()
+        val wd = fullExePath.parent?.toFile()
+
         // Paint.NET 支持 /autoheadless /open /saveas 参数进行批处理
         val command = "$exe /autoheadless /open $inputPath /saveas $outputPathStr"
-        val wd = paintNetPath.toPathOrNull()?.parent?.toFile()
-
-        val result = executeCommand(command, CommandType.CMD, workDirectory = wd)
+        val result = executeCommand(command, CommandType.CMD, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
 
         thisLogger().info("Execute paint.net command.\nCommand: $command\nCommand result: $result")
 

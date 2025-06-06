@@ -15,6 +15,8 @@ abstract class PlsCommandBasedImageToolProvider : PlsImageToolProvider {
 
     open fun validate(): Boolean = true
 
+    open fun validatePath(path: String): Boolean = true
+
     final override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
         try {
             val tempParentPath = PlsConstants.Paths.imagesTemp

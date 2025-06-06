@@ -19,9 +19,6 @@
 
   <actions>
     <action id="Pls.OpenIn.PaintNet" class="icu.windea.pls.integrations.image.actions.OpenInPaintNetAction">
-      <add-to-group group-id="RevealGroup" anchor="after" relative-to-action="Pls.OpenIn.Magick"/>
-    </action>
-    <action id="Pls.OpenIn.Magick" class="icu.windea.pls.integrations.image.actions.OpenInMagickAction">
       <add-to-group group-id="RevealGroup" anchor="after" relative-to-action="OpenInAssociatedApplication"/>
     </action>
   </actions>

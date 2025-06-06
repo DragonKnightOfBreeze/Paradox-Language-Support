@@ -1,9 +1,9 @@
 package icu.windea.pls.config.settings
 
 import com.intellij.openapi.application.*
+import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.ui.*
-import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDescriptor
 import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
@@ -14,7 +14,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.listeners.*
-import icu.windea.pls.lang.ui.*
 import icu.windea.pls.model.*
 import java.awt.event.*
 
@@ -53,9 +52,8 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             row {
                 label(PlsBundle.message("settings.config.remoteConfigDirectory")).widthGroup(groupName)
                     .applyToComponent { toolTipText = PlsBundle.message("settings.config.remoteConfigDirectory.tip") }
-                val descriptor = ParadoxDirectoryDescriptor()
+                val descriptor = FileChooserDescriptorFactory.singleDir()
                     .withTitle(PlsBundle.message("settings.config.remoteConfigDirectory.title"))
-                    .asBrowseFolderDescriptor()
                 textFieldWithBrowseButton(descriptor, null)
                     .bindText(settings::remoteConfigDirectory.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
@@ -100,9 +98,8 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             row {
                 label(PlsBundle.message("settings.config.localConfigDirectory")).widthGroup(groupName)
                     .applyToComponent { toolTipText = PlsBundle.message("settings.config.localConfigDirectory.tip") }
-                val descriptor = ParadoxDirectoryDescriptor()
+                val descriptor = FileChooserDescriptorFactory.singleDir()
                     .withTitle(PlsBundle.message("settings.config.localConfigDirectory.title"))
-                    .asBrowseFolderDescriptor()
                 textFieldWithBrowseButton(descriptor, null)
                     .bindText(settings::localConfigDirectory.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }

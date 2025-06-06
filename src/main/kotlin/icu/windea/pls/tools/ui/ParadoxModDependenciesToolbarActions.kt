@@ -12,7 +12,6 @@ import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.ui.*
 import icu.windea.pls.model.*
 
 interface ParadoxModDependenciesToolbarActions {
@@ -24,7 +23,7 @@ interface ParadoxModDependenciesToolbarActions {
             //添加模组依赖时可以多选
             val settings = table.model.settings
             val gameType = settings.gameType.orDefault()
-            val descriptor = ParadoxDirectoryDescriptor(chooseMultiple = true)
+            val descriptor = FileChooserDescriptorFactory.multiDirs()
                 .withTitle(PlsBundle.message("mod.dependencies.add.title"))
                 .apply { putUserData(PlsDataKeys.gameType, gameType) }
             FileChooser.chooseFiles(descriptor, project, table, null) { files ->
