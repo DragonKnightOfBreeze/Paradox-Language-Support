@@ -23,7 +23,7 @@ class PlsPaintNetToolProvider : PlsCommandBasedImageToolProvider() {
     }
 
     override fun isAvailable(): Boolean {
-        return OS.isWindows
+        return OS.value == OS.Windows
     }
 
     override fun validate(): Boolean {

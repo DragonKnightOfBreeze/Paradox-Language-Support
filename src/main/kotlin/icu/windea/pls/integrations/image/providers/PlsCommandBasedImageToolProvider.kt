@@ -2,7 +2,6 @@ package icu.windea.pls.integrations.image.providers
 
 import com.intellij.openapi.progress.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import org.apache.commons.io.*
 import java.io.*
 import java.nio.file.*
@@ -33,7 +32,6 @@ abstract class PlsCommandBasedImageToolProvider : PlsImageToolProvider {
     }
 
     final override fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
-        if (!OS.isWindows) return false //only available on windows
         try {
             convertImageFormat(path, targetPath.parent, targetPath.name, sourceFormat, targetFormat)
             return true

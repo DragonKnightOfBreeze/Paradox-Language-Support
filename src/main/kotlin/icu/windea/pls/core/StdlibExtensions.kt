@@ -614,7 +614,7 @@ fun executeCommand(
     timeout: Long? = null,
 ): String {
     if (commandType == CommandType.CMD || commandType == CommandType.POWER_SHELL) {
-        if (!OS.isWindows) throw UnsupportedOperationException()
+        if (OS.value != OS.Windows) throw UnsupportedOperationException()
     }
     val commandArray = getCommandArray(command, commandType)
     val process = Runtime.getRuntime().exec(commandArray, environmentVariables, workDirectory)
@@ -630,10 +630,9 @@ fun executeCommand(
 }
 
 private fun getCommandArray(command: String, commandType: CommandType?): Array<String> {
-    val commandType0 = when {
-        commandType == CommandType.AUTO && OS.isWindows -> CommandType.CMD
-        commandType == CommandType.AUTO && !OS.isWindows -> CommandType.SHELL
-        else -> commandType
+    val commandType0 = if (commandType != CommandType.AUTO) commandType else when (OS.value) {
+        OS.Windows -> CommandType.CMD
+        OS.Linux -> CommandType.SHELL
     }
     return when (commandType0) {
         CommandType.CMD -> arrayOf("cmd", "/c", command)

@@ -35,8 +35,7 @@ class ToolBasedDdsSupport : DdsSupport {
     }
 
     override fun createImageReader(extension: Any?, spi: DdsImageReaderSpi): ImageReader? {
-        val tool = PlsImageManager.findTool()
-        if (tool == null) return null
+        if (PlsImageManager.findTool() == null) return null
         return ImageReader(spi, this)
     }
 
@@ -70,12 +69,10 @@ class ToolBasedDdsSupport : DdsSupport {
     }
 
     override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
-        val tool = PlsImageManager.findTool() ?: return false
-        return tool.convertImageFormat(inputStream, outputStream, sourceFormat, targetFormat)
+        return PlsImageManager.convertImageFormat(inputStream, outputStream, sourceFormat, targetFormat)
     }
 
     override fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
-        val tool = PlsImageManager.findTool() ?: return false
-        return tool.convertImageFormat(path, targetPath, sourceFormat, targetFormat)
+        return PlsImageManager.convertImageFormat(path, targetPath, sourceFormat, targetFormat)
     }
 }

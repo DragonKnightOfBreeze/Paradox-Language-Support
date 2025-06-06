@@ -2,8 +2,6 @@
 
 package icu.windea.pls.core
 
-import org.apache.commons.lang3.SystemUtils
-
 enum class OS {
     Windows,
     Linux,
@@ -12,10 +10,10 @@ enum class OS {
     companion object {
         @JvmField
         val name = System.getProperty("os.name")
+        @JvmField
+        val version = System.getProperty("os.version")
 
         @JvmField
-        val isWindows = name.isNullOrEmpty() || name.contains("windows", true)
-        @JvmField
-        val isLinux = name.isNotNullOrEmpty() && name.contains("linux", true)
+        val value = if (name.isNullOrEmpty() || name.contains("windows", true)) Windows else Linux
     }
 }

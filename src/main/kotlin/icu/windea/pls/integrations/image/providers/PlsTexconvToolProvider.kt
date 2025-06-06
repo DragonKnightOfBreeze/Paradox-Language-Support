@@ -25,7 +25,7 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
     }
 
     override fun isAvailable(): Boolean {
-        return OS.isWindows
+        return OS.value == OS.Windows
     }
 
     override fun open(file: VirtualFile): Boolean {

@@ -32,12 +32,12 @@ object PlsImageManager {
     }
 
     fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
-        val tool = findRequiredTool()
+        val tool = findTool() ?: return false
         return tool.convertImageFormat(inputStream, outputStream, sourceFormat, targetFormat)
     }
 
     fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
-        val tool = findRequiredTool()
+        val tool = findTool() ?: return false
         return tool.convertImageFormat(path, targetPath, sourceFormat, targetFormat)
     }
 }

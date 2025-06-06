@@ -48,18 +48,17 @@ class PlsDataProvider {
     }
 
     private fun doGetSteamPath(): Path? {
-        return when {
-            OS.isWindows -> {
+        return when (OS.value) {
+            OS.Windows -> {
                 //查找注册表
                 val command = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/WOW6432Node/Valve/Steam').InstallPath"
                 val commandResult = runCatchingCancelable { executeCommand(command, CommandType.POWER_SHELL) }.getOrNull()
                 commandResult?.toPathOrNull()?.formatted()
             }
-            OS.isLinux -> {
+            OS.Linux -> {
                 //默认路经（不准确，但是已经足够）
                 Path("~", ".local", "share", "Steam").formatted()
             }
-            else -> null
         }
     }
 
@@ -71,8 +70,8 @@ class PlsDataProvider {
     }
 
     private fun doGetSteamGamePath(steamId: String, gameName: String): Path? {
-        return when {
-            OS.isWindows -> {
+        return when (OS.value) {
+            OS.Windows -> {
                 //查找注册表
                 val command = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/Steam App ${steamId}').InstallLocation"
                 val commandResult = runCatchingCancelable { executeCommand(command, CommandType.POWER_SHELL) }.getOrNull()
@@ -83,12 +82,11 @@ class PlsDataProvider {
                 val steamPath = getSteamPath()?.toString() ?: return null
                 Path(steamPath, "steamapps", "common", gameName).formatted()
             }
-            OS.isLinux -> {
+            OS.Linux -> {
                 //默认路经（不准确，可以放在不同库目录下）
                 val steamPath = getSteamPath()?.toString() ?: return null
                 Path(steamPath, "steamapps", "common", gameName).formatted()
             }
-            else -> null
         }
     }
 
@@ -114,10 +112,9 @@ class PlsDataProvider {
 
     private fun doGetGameDataPath(gameName: String): Path? {
         //实际上应当基于launcher-settings.json中的gameDataPath
-        return when {
-            OS.isWindows -> Path("~", "Documents", "Paradox Interactive", gameName).formatted()
-            OS.isLinux -> Path("~", ".local", "share", "Paradox Interactive", gameName).formatted()
-            else -> null
+        return when (OS.value) {
+            OS.Windows -> Path("~", "Documents", "Paradox Interactive", gameName).formatted()
+            OS.Linux -> Path("~", ".local", "share", "Paradox Interactive", gameName).formatted()
         }
     }
 
