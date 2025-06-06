@@ -15,6 +15,25 @@ class PlsTranslationPluginToolProvider : PlsTranslationToolProvider {
         return true // see pls-extension-translation.xml
     }
 
+    override suspend fun translate(text: String, sourceLocale: String?, targetLocale: String, callback: TranslateCallback) {
+        val sourceLang = if(sourceLocale == null) Lang.AUTO else Lang[sourceLocale]
+        val targetLang = Lang[targetLocale]
+        val translateService = TranslateService.getInstance()
+
+        //NOTE 使用 TranslateService 之前，必须先转到 EDT
+        withContext(Dispatchers.UI) {
+            translateService.translate(text, sourceLang, targetLang, object : TranslateListener {
+                override fun onSuccess(translation: Translation) {
+                    callback(translation.translation, null)
+                }
+
+                override fun onError(throwable: Throwable) {
+                    callback(null, throwable)
+                }
+            })
+        }
+    }
+
     override suspend fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig, callback: TranslateCallback) {
         val translateService = TranslateService.getInstance()
         val supportedSourceLanguages = translateService.translator.supportedSourceLanguages
@@ -22,7 +41,7 @@ class PlsTranslationPluginToolProvider : PlsTranslationToolProvider {
         val sourceLang = toLang(sourceLocale, supportedSourceLanguages)
         val targetLang = toLang(targetLocale, supportedTargetLanguages)
 
-        //NOTE 使用 TranslateService 之前，必须先转到EDT
+        //NOTE 使用 TranslateService 之前，必须先转到 EDT
         withContext(Dispatchers.UI) {
             translateService.translate(text, sourceLang, targetLang, object : TranslateListener {
                 override fun onSuccess(translation: Translation) {

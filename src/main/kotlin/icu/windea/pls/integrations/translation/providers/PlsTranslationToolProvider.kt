@@ -10,6 +10,8 @@ import icu.windea.pls.integrations.translation.*
 interface PlsTranslationToolProvider {
     fun supports(): Boolean
 
+    suspend fun translate(text: String, sourceLocale: String?, targetLocale: String, callback: TranslateCallback)
+
     suspend fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig, callback: TranslateCallback)
 
     companion object INSTANCE {

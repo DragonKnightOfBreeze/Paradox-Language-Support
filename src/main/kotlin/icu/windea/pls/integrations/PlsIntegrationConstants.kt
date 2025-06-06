@@ -26,6 +26,6 @@ object PlsIntegrationConstants {
 
     object Tiger {
         val name get() = PlsBundle.message("integrations.tiger.name")
-        const val url = "ttps://github.com/amtep/tiger"
+        const val url = "https://github.com/amtep/tiger"
     }
 }
