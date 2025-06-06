@@ -13,13 +13,15 @@
 TODO
 
 * [ ] 因为 PlsDataProvider 中路经相关方法更改，需要验证相关功能是否正常（是否仍然能正确推断创意工坊目录下的模组的游戏类型）
+* [ ] 图形工具，使用非texconv时，相关功能是否正常
 
 ## 2.0.0-dev
 
 * [ ] 优化：通过快速文档为参数和命令提供其中使用的格式标签的说明 / OP: Provide information about format tags used in parameters and commands through quick documentation
 * [ ] 优化：也为复杂枚举值与动态值提供快速文档与内嵌提示，来自同名的本地化，可以配置 / OP: Also provide quick documentation and inlay hints for complex enum values and dynamic values, from the same name localisation, which is configurable
-* [ ] 优化：支持通过多种工具处理DDS图片，且可以配置 / OP: Support to handle DDS images by various tools, which is configurable
-* [ ] 优化：支持通过多种工具翻译本地化文本，且可以配置 / OP: Support to translate localisation text by various tools, which is configurable
+* [ ] 优化：可以配置处理图片时使用的工具（默认且内置：Texconv，可选：Image Magick、Paint.NET） / OP: Can configure the tool used to process images (Default and built-in: Texconv, Available: Image Magick or Paint.NET)
+* [ ] 优化：可以配置翻译本地化文本时使用的工具（目前仅限Translation Plugin） / OP: Can configure the tool used to translate localisation text (Currently limited to Translation Plugin)
+* [ ] 新功能：如果可用，提供操作以直接使用Image Magick或者Paint.NET打开图片 / NEW: If available, provide actions to directly to open images by Image Magick or Paint.NET
 * [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
 * [ ] 新功能：集成AI，提供对应的设置页面 / NEW: Integrate AI, provide corresponding settings page
 * [ ] 新功能：提供AI驱动的本地化翻译功能 / NEW: Provide AI-driven localisation translation features

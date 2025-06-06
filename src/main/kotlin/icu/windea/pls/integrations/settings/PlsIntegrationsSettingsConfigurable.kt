@@ -27,10 +27,12 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 }
                 row {
                     checkBox(PlsBundle.message("settings.integrations.image.from.magick")).bindSelected(settings.image::enableMagick)
+                        .comment(PlsBundle.message("settings.integrations.image.from.magick.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Magick.url)
                 }
                 row {
                     checkBox(PlsBundle.message("settings.integrations.image.from.paint.net")).bindSelected(settings.image::enablePaintNet)
+                        .comment(PlsBundle.message("settings.integrations.image.from.paint.net.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.PaintNet.url)
                 }
             }

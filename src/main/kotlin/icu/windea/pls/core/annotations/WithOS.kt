@@ -1,12 +1,12 @@
 package icu.windea.pls.core.annotations
 
-import icu.windea.pls.model.*
+import icu.windea.pls.core.OS
 
 /**
- * 注明此功能仅适用于特定的游戏类型。
+ * 注明此功能仅适用于特定的OS。
  */
 @MustBeDocumented
 @Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FUNCTION)
-annotation class WithGameType(
-    vararg val value: ParadoxGameType
+annotation class WithOS(
+    vararg val value: OS
 )

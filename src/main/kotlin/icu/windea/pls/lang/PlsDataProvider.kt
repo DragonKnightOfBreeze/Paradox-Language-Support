@@ -52,7 +52,7 @@ class PlsDataProvider {
             OS.isWindows -> {
                 //查找注册表
                 val command = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/WOW6432Node/Valve/Steam').InstallPath"
-                val commandResult = runCatchingCancelable { executeCommand(command) }.getOrNull()
+                val commandResult = runCatchingCancelable { executeCommand(command, CommandType.POWER_SHELL) }.getOrNull()
                 commandResult?.toPathOrNull()?.formatted()
             }
             OS.isLinux -> {
@@ -75,7 +75,7 @@ class PlsDataProvider {
             OS.isWindows -> {
                 //查找注册表
                 val command = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/Steam App ${steamId}').InstallLocation"
-                val commandResult = runCatchingCancelable { executeCommand(command) }.getOrNull()
+                val commandResult = runCatchingCancelable { executeCommand(command, CommandType.POWER_SHELL) }.getOrNull()
                 val fromCommandResult = commandResult?.toPathOrNull()?.formatted()
                 if (fromCommandResult != null) return fromCommandResult
 

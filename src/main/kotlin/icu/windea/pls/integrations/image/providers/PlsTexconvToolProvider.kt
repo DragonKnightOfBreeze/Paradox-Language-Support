@@ -3,6 +3,7 @@ package icu.windea.pls.integrations.image.providers
 import com.intellij.openapi.diagnostic.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.WithOS
 import org.apache.commons.io.file.*
 import java.nio.file.*
 import java.util.*
@@ -11,6 +12,7 @@ import kotlin.io.path.*
 /**
  * 参见：[Texconv · microsoft/DirectXTex Wiki](https://github.com/microsoft/DirectXTex/wiki/Texconv)
  */
+@WithOS(OS.Windows)
 class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
     private val logger = thisLogger()
 
@@ -29,8 +31,7 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
      * @param targetFormat 参见：[File and pixel format options](https://github.com/microsoft/DirectXTex/wiki/Texconv#file-and-pixel-format-options)
      */
     override fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
-        return runCatchingCancelable { doConvertImageFormat(path, targetDirectoryPath, targetFileName, targetFormat) }
-            .onFailure { logger.warn(it) }.getOrThrow()
+        return runCatchingCancelable { doConvertImageFormat(path, targetDirectoryPath, targetFileName, targetFormat) }.onFailure { logger.warn(it) }.getOrThrow()
     }
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
@@ -45,18 +46,20 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
         val command = "$exe $s -ft $ft -o $o -y" // -y: overwrite existing files
         val wd = texconvExeWd
 
-        val r = executeCommand(command, CommandType.CMD, workDirectory = wd)
-        val lines = r.lines()
+        val result = executeCommand(command, CommandType.CMD, workDirectory = wd)
+        val lines = result.lines()
         val outputPath = lines.firstNotNullOfOrNull { it.removePrefixOrNull("writing ")?.trim()?.toPathOrNull() }
         val hasWarnings = lines.any { it.startsWith("WARNING: ") }
 
         if (hasWarnings) {
-            logger.warn("Execute texconv command with warnings.\nCommand: $command\nCommand result: $r")
+            logger.warn("Execute texconv command with warnings.\nCommand: $command\nCommand result: $result")
         } else {
-            logger.info("Execute texconv command.\nCommand: $command\nCommand result: $r")
+            logger.info("Execute texconv command.\nCommand: $command\nCommand result: $result")
         }
 
-        if (outputPath == null) throw IllegalStateException()
+        if (outputPath == null || outputPath.notExists()) {
+            throw IllegalStateException("Failed to convert image: output file not found.\nCommand: $command\nResult: $result")
+        }
 
         if (targetDirectoryPath == null) {
             if (targetFileName == null) return outputPath

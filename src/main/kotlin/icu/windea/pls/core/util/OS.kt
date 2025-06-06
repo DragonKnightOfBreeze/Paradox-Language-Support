@@ -2,9 +2,18 @@
 
 package icu.windea.pls.core
 
-object OS {
-    val name by lazy { System.getProperty("os.name") }
+enum class OS {
+    Windows,
+    Linux,
+    ;
 
-    val isWindows by lazy { name.isNullOrEmpty() || name.contains("windows", true) }
-    val isLinux by lazy { name.isNotNullOrEmpty() && name.contains("linux", true) }
+    companion object {
+        @JvmField
+        val name = System.getProperty("os.name")
+
+        @JvmField
+        val isWindows = name.isNullOrEmpty() || name.contains("windows", true)
+        @JvmField
+        val isLinux = name.isNotNullOrEmpty() && name.contains("linux", true)
+    }
 }

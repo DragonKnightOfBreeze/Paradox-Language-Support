@@ -631,7 +631,7 @@ fun executeCommand(
 
 private fun getCommandArray(command: String, commandType: CommandType?): Array<String> {
     val commandType0 = when {
-        commandType == CommandType.AUTO && OS.isWindows -> CommandType.POWER_SHELL
+        commandType == CommandType.AUTO && OS.isWindows -> CommandType.CMD
         commandType == CommandType.AUTO && !OS.isWindows -> CommandType.SHELL
         else -> commandType
     }
