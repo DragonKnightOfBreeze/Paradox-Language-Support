@@ -10,13 +10,11 @@ import java.util.*
 import kotlin.io.path.*
 
 abstract class PlsCommandBasedImageToolProvider : PlsImageToolProvider {
-    final override fun supports(): Boolean {
-        return isEnabled() && validate()
-    }
+    final override fun supports(): Boolean = isAvailable() && validate()
 
-    abstract fun isEnabled(): Boolean
+    open fun isAvailable(): Boolean = true
 
-    abstract fun validate(): Boolean
+    open fun validate(): Boolean = true
 
     final override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
         try {

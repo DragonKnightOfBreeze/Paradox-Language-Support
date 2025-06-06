@@ -1,9 +1,10 @@
 package icu.windea.pls.integrations.image.providers
 
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.WithOS
+import icu.windea.pls.core.annotations.*
 import org.apache.commons.io.file.*
 import java.nio.file.*
 import java.util.*
@@ -20,11 +21,15 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
     private val texconvExeWd by lazy { PlsConstants.Paths.texconvExe.parent?.toFile() }
 
     override fun isEnabled(): Boolean {
+        return true // always true
+    }
+
+    override fun isAvailable(): Boolean {
         return OS.isWindows
     }
 
-    override fun validate(): Boolean {
-        return true // built-in, no need to validate
+    override fun open(file: VirtualFile): Boolean {
+        return false // unsupported, just return false
     }
 
     /**

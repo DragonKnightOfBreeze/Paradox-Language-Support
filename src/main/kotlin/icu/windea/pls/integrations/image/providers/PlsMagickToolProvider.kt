@@ -1,6 +1,7 @@
 package icu.windea.pls.integrations.image.providers
 
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
@@ -49,6 +50,10 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
     //    magick input.png -colorspace Gray output.jpg
     // 6. 添加水印：
     //    magick input.jpg watermark.png -gravity southeast -geometry +10+10 -composite output.jpg
+
+    override fun open(file: VirtualFile): Boolean {
+        TODO("Not yet implemented")
+    }
 
     override fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
         return runCatchingCancelable { doConvertImageFormat(path, targetDirectoryPath, targetFileName, targetFormat) }

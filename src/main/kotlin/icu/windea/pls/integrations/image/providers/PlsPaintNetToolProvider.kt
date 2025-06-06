@@ -1,9 +1,10 @@
 package icu.windea.pls.integrations.image.providers
 
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.WithOS
+import icu.windea.pls.core.annotations.*
 import org.apache.commons.io.file.*
 import java.nio.file.*
 import java.util.*
@@ -19,6 +20,10 @@ class PlsPaintNetToolProvider : PlsCommandBasedImageToolProvider() {
     override fun isEnabled(): Boolean {
         val settings = PlsFacade.getIntegrationsSettings().image
         return settings.enablePaintNet && settings.paintNetPath.isNotNullOrEmpty()
+    }
+
+    override fun isAvailable(): Boolean {
+        return OS.isWindows
     }
 
     override fun validate(): Boolean {
@@ -43,6 +48,10 @@ class PlsPaintNetToolProvider : PlsCommandBasedImageToolProvider() {
     // 2. 批量处理（可多次使用/open和/saveas参数）：
     //    paintdotnet.exe /autoheadless /open input1.png /saveas out1.jpg /open input2.png /saveas out2.jpg
     // 3. 其它命令可参考官方文档：https://www.getpaint.net/doc/latest/CommandLine.html
+
+    override fun open(file: VirtualFile): Boolean {
+        TODO("Not yet implemented")
+    }
 
     override fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
         return runCatchingCancelable { doConvertImageFormat(path, targetDirectoryPath, targetFileName, targetFormat) }.onFailure { thisLogger().warn(it) }.getOrThrow()
