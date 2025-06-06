@@ -32,6 +32,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             lateinit var cbRemote: JBCheckBox
             lateinit var cbLocal: JBCheckBox
             lateinit var cbProjectLocal: JBCheckBox
+
             //enableBuiltInConfigGroups
             row {
                 checkBox(PlsBundle.message("settings.config.enableBuiltInConfigGroups"))
