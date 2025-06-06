@@ -64,7 +64,7 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
             val gameType = e.gameTypeProperty?.get() ?: e.gameType
             if (gameType == null) return false
             if (targetPath == null) {
-                targetPath = PlsFacade.getDataProvider().getSteamPath()?.toPathOrNull()
+                targetPath = PlsFacade.getDataProvider().getSteamPath()
             }
             return true
         }
@@ -80,7 +80,7 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
             if (gameType == null) return false
             if (this.targetPath == null || this.gameType != gameType) {
                 this.gameType = gameType
-                this.targetPath = PlsFacade.getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)?.toPathOrNull()
+                this.targetPath = PlsFacade.getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)
             }
             return true
         }
@@ -97,7 +97,7 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
             if (gameType == null) return false
             if (this.targetPath == null || this.gameType != gameType) {
                 this.gameType = gameType
-                this.targetPath = PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId)?.toPathOrNull()
+                this.targetPath = PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId)
             }
             return true
         }
@@ -114,7 +114,7 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
             if (gameType == null) return false
             if (this.targetPath == null || this.gameType != gameType) {
                 this.gameType = gameType
-                this.targetPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull()
+                this.targetPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)
             }
             return true
         }

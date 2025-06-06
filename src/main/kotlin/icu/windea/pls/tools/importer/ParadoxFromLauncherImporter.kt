@@ -10,6 +10,7 @@ import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.*
 import icu.windea.pls.tools.ui.*
 import java.nio.file.*
+import kotlin.io.path.exists
 
 private const val dbPath = "launcher-v2.sqlite"
 
@@ -32,7 +33,7 @@ open class ParadoxFromLauncherImporter : ParadoxModImporter {
     override fun execute(project: Project, table: ParadoxModDependenciesTable) {
         val settings = table.model.settings
         val gameType = settings.gameType.orDefault()
-        val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull() ?: return
+        val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title) ?: return
         if (!gameDataPath.exists()) {
             run {
                 val title = settings.qualifiedName ?: return@run

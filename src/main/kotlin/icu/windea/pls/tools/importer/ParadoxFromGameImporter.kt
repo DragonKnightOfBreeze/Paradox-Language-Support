@@ -14,6 +14,7 @@ import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.tools.ui.*
+import kotlin.io.path.exists
 
 private const val dlcLoadJsonPath = "dlc_load.json"
 private const val collectionName = "Paradox"
@@ -29,7 +30,7 @@ class ParadoxFromGameImporter : ParadoxModImporter {
     override fun execute(project: Project, table: ParadoxModDependenciesTable) {
         val settings = table.model.settings
         val gameType = settings.gameType.orDefault()
-        val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull() ?: return
+        val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title) ?: return
         if (!gameDataPath.exists()) {
             run {
                 val title = settings.qualifiedName ?: return@run

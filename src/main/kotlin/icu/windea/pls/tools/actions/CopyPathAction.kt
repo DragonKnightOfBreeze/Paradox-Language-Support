@@ -4,7 +4,6 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import java.awt.datatransfer.*
@@ -44,28 +43,28 @@ abstract class CopyPathAction : DumbAwareAction() {
 
     class Steam : CopyPathAction() {
         override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
-            return PlsFacade.getDataProvider().getSteamPath()?.toPathOrNull()
+            return PlsFacade.getDataProvider().getSteamPath()
         }
     }
 
     class SteamGame : CopyPathAction() {
         override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
             val gameType = fileInfo.rootInfo.gameType
-            return PlsFacade.getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)?.toPathOrNull()
+            return PlsFacade.getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)
         }
     }
 
     class SteamWorkshop : CopyPathAction() {
         override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
             val gameType = fileInfo.rootInfo.gameType
-            return PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId)?.toPathOrNull()
+            return PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId)
         }
     }
 
     class GameData : CopyPathAction() {
         override fun getTargetPath(fileInfo: ParadoxFileInfo): Path? {
             val gameType = fileInfo.rootInfo.gameType
-            return PlsFacade.getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull()
+            return PlsFacade.getDataProvider().getGameDataPath(gameType.title)
         }
     }
 

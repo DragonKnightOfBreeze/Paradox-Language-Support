@@ -5,37 +5,20 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import kotlinx.coroutines.*
+import java.nio.file.*
 import java.util.concurrent.*
+import kotlin.io.path.*
 
 /**
  * 用于提供一些需要动态获取的数据。
  */
 @Service
 class PlsDataProvider {
-    val OS: String = System.getProperty("os.name", "Windows")
+    private val steamPathCache = ConcurrentHashMap<String, Path>()
+    private val EMPTY_PATH = Path.of("")
+
     fun init() {
         //preload cached values
-        initForPaths()
-    }
-
-    //region Paths
-
-    //直接得到steam的安装路径
-    //powershell -command "Get-ItemProperty -Path 'HKLM:\SOFTWARE\Wow6432Node\Valve\Steam' | Select-Object InstallPath | Format-Table -HideTableHeaders"
-    //直接得到steam游戏的安装路径
-    //powershell -command "Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App ${steamId}' | Select-Object InstallLocation | Format-Table -HideTableHeaders"
-
-    //游戏安装目录：steamapps/common
-    //其子目录是游戏名
-    //创意工坊安装目录：steamapps/common/content
-    //其子目录是游戏的steamid
-
-    //游戏模组安装目录：~\Documents\Paradox Interactive\${gameName}\mod
-
-    //使用不会自动清理的缓存
-    private val steamPathCache = ConcurrentHashMap<String, String>()
-
-    private fun initForPaths() {
         val coroutineScope = PlsFacade.getCoroutineScope()
         coroutineScope.launch {
             launch {
@@ -43,71 +26,99 @@ class PlsDataProvider {
             }
             ParadoxGameType.entries.forEach { gameType ->
                 launch {
-                    getSteamGamePath(gameType.steamId)
+                    getSteamGamePath(gameType.steamId, gameType.title)
                 }
             }
         }
     }
 
+    //region Paths
+
+    //Steam的实际安装路径：（通过特定命令获取）
+    //Steam游戏的实际安装路径：（通过特定命令获取）
+    //Steam游戏的默认安装路径：steamapps/common（其子目录是游戏名）
+    //创意工坊安装目录：steamapps/common/content（其子目录是游戏的steamId）
+    //游戏模组安装目录：~\Documents\Paradox Interactive\${gameName}\mod
+
     /**
      * 得到Steam目录的路径。
      */
-    fun getSteamPath(): String? {
-        val result = steamPathCache.computeIfAbsent("") { doGetSteamPath() }.orNull()
-        return result
+    fun getSteamPath(): Path? {
+        return steamPathCache.getOrPut("") { doGetSteamPath() ?: EMPTY_PATH }.takeIf { it !== EMPTY_PATH }
     }
 
-    private fun doGetSteamPath(): String {
-        if(!OS.contains("Windows")) return ""
-        val command = """Get-ItemProperty -Path 'HKLM:\SOFTWARE\Wow6432Node\Valve\Steam' | Select-Object InstallPath | Format-Table -HideTableHeaders"""
-        return runCatchingCancelable { executeCommand(command, CommandType.POWER_SHELL) }.getOrDefault("")
+    private fun doGetSteamPath(): Path? {
+        return when {
+            OS.isWindows -> {
+                //查找注册表
+                val command = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/WOW6432Node/Valve/Steam').InstallPath"
+                val commandResult = runCatchingCancelable { executeCommand(command) }.getOrNull()
+                commandResult?.toPathOrNull()?.formatted()
+            }
+            OS.isLinux -> {
+                //默认路经（不准确，但是已经足够）
+                Path("~", ".local", "share", "Steam").formatted()
+            }
+            else -> null
+        }
     }
 
     /**
      * 得到指定ID对应的Steam游戏目录的路径。
      */
-    fun getSteamGamePath(steamId: String, gameName: String? = null): String? {
-        val result = steamPathCache.computeIfAbsent(steamId) { doGetSteamGamePath(steamId) }.orNull()
-        if (result != null) return result
-        if (gameName != null) return doGetFallbackSteamGamePath(gameName)
-        return null
+    fun getSteamGamePath(steamId: String, gameName: String): Path? {
+        return steamPathCache.getOrPut(steamId) { doGetSteamGamePath(steamId, gameName) ?: EMPTY_PATH }.takeIf { it !== EMPTY_PATH }
     }
 
-    private fun doGetSteamGamePath(steamId: String): String {
-        if(!OS.contains("Windows")) return "";
-        val command = """Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App ${steamId}' | Select-Object InstallLocation | Format-Table -HideTableHeaders"""
-        return runCatchingCancelable { executeCommand(command, CommandType.POWER_SHELL) }.getOrDefault("")
-    }
+    private fun doGetSteamGamePath(steamId: String, gameName: String): Path? {
+        return when {
+            OS.isWindows -> {
+                //查找注册表
+                val command = "(Get-ItemProperty -Path 'HKLM:/SOFTWARE/Microsoft/Windows/CurrentVersion/Uninstall/Steam App ${steamId}').InstallLocation"
+                val commandResult = runCatchingCancelable { executeCommand(command) }.getOrNull()
+                val fromCommandResult = commandResult?.toPathOrNull()?.formatted()
+                if (fromCommandResult != null) return fromCommandResult
 
-    private fun doGetFallbackSteamGamePath(gameName: String): String? {
-        //不准确，可以放在不同库目录下
-        val steamPath = getSteamPath() ?: return null
-        var path = """$steamPath\steamapps\common\$gameName"""
-        if(!OS.contains("Windows")) path = path.replace("\\", "/");
-        return path
+                //默认路经（不准确，可以放在不同库目录下）
+                val steamPath = getSteamPath()?.toString() ?: return null
+                Path(steamPath, "steamapps", "common", gameName).formatted()
+            }
+            OS.isLinux -> {
+                //默认路经（不准确，可以放在不同库目录下）
+                val steamPath = getSteamPath()?.toString() ?: return null
+                Path(steamPath, "steamapps", "common", gameName).formatted()
+            }
+            else -> null
+        }
     }
 
     /**
      * 得到指定ID对应的Steam创意工坊目录的路径。
      */
-    fun getSteamWorkshopPath(steamId: String): String? {
+    fun getSteamWorkshopPath(steamId: String): Path? {
+        return doGetSteamWorkshopPath(steamId)
+    }
+
+    private fun doGetSteamWorkshopPath(steamId: String): Path? {
         //不准确，可以放在不同库目录下
-        val steamPath = getSteamPath() ?: return null
-        var path = """$steamPath\steamapps\workshop\content\$steamId"""
-        if(!OS.contains("Windows")) path = path.replace("\\", "/");
-        return path
+        val steamPath = getSteamPath()?.toString() ?: return null
+        return Path(steamPath, "steamapps", "workshop", "content", steamId).formatted()
     }
 
     /**
      * 得到指定游戏名对应的游戏数据目录的路径。
      */
-    fun getGameDataPath(gameName: String): String? {
+    fun getGameDataPath(gameName: String): Path? {
+        return doGetGameDataPath(gameName)
+    }
+
+    private fun doGetGameDataPath(gameName: String): Path? {
         //实际上应当基于launcher-settings.json中的gameDataPath
-        val userHome = System.getProperty("user.home") ?: return null
-        // Note: needs to be symlinked to install path.
-        var path = """$userHome\Documents\Paradox Interactive\$gameName"""
-        if(!OS.contains("Windows")) path = path.replace("\\", "/");
-        return path
+        return when {
+            OS.isWindows -> Path("~", "Documents", "Paradox Interactive", gameName).formatted()
+            OS.isLinux -> Path("~", ".local", "share", "Paradox Interactive", gameName).formatted()
+            else -> null
+        }
     }
 
     //endregion

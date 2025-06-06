@@ -10,6 +10,10 @@
 * [ ] 支持直接在IDE中启动游戏，且启用的模组来自可配置的模组列表
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
 
+TODO
+
+* [ ] 因为 PlsDataProvider 中路经相关方法更改，需要验证相关功能是否正常（是否仍然能正确推断创意工坊目录下的模组的游戏类型）
+
 ## 2.0.0-dev
 
 * [ ] 优化：通过快速文档为参数和命令提供其中使用的格式标签的说明 / OP: Provide information about format tags used in parameters and commands through quick documentation

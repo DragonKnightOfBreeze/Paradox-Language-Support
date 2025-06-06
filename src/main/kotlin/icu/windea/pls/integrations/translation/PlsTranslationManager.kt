@@ -8,13 +8,17 @@ object PlsTranslationManager {
         return PlsTranslationToolProvider.EP_NAME.extensionList.findLast { it.supports() }
     }
 
+    fun findRequiredTool(): PlsTranslationToolProvider {
+        return findTool() ?: throw UnsupportedOperationException("Unsupported: No available translation tool found.")
+    }
+
     suspend fun translate(text: String, sourceLocale: String?, targetLocale: String, callback: TranslateCallback) {
-        val tool = findTool() ?: throw UnsupportedOperationException("Unsupported: No available translation tool found.")
+        val tool = findRequiredTool()
         return tool.translate(text, sourceLocale, targetLocale, callback)
     }
 
     suspend fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig, callback: TranslateCallback) {
-        val tool = findTool() ?: throw UnsupportedOperationException("Unsupported: No available translation tool found.")
+        val tool = findRequiredTool()
         return tool.translate(text, sourceLocale, targetLocale, callback)
     }
 }

@@ -3,6 +3,7 @@ package icu.windea.pls.lang
 import icu.windea.pls.core.*
 import java.io.*
 import java.nio.file.*
+import kotlin.io.path.exists
 
 object PlsGitManager {
     fun getRepositoryPathFromUrl(url: String): String {

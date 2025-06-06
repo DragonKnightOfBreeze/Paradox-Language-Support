@@ -22,7 +22,7 @@ class CwtOnActionConfigGenerator(
         }
         val gamePath = PlsFacade.getDataProvider().getSteamGamePath(gameType.id, gameType.title) ?: throw IllegalStateException()
         val newItems = mutableSetOf<String>()
-        val txtDirFile = File(gamePath, txtDirPath)
+        val txtDirFile = gamePath.resolve(txtDirPath).toFile()
         txtDirFile.walk().filter { it.isFile && it.extension == "txt" }.forEach { txtFile ->
             val newItemRegex = """(\w+)\s*=\s*\{.*""".toRegex()
             txtFile.forEachLine {

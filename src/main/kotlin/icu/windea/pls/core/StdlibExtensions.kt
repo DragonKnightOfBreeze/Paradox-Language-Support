@@ -535,24 +535,18 @@ fun String.normalizePath(): String {
     return s.trimEnd('/')
 }
 
-fun Path.exists(): Boolean {
-    return Files.exists(this)
-}
-
-fun Path.notExists(): Boolean {
-    return Files.notExists(this)
-}
+inline fun Path.formatted() = absolute().normalize()
 
 fun Path.create(): Path {
-    if (isDirectory()) {
-        createDirectories()
-    } else {
-        parent?.createDirectories()
-        try {
-            Files.createFile(this)
-        } catch (e: FileAlreadyExistsException) {
-            //ignored
+    try {
+        if (isDirectory()) {
+            createDirectories()
+        } else {
+            createParentDirectories()
+            createFile()
         }
+    } catch (e: FileAlreadyExistsException) {
+        //ignored
     }
     return this
 }
@@ -637,7 +631,7 @@ fun executeCommand(
 
 private fun getCommandArray(command: String, commandType: CommandType?): Array<String> {
     val commandType0 = when {
-        commandType == CommandType.AUTO && OS.isWindows -> CommandType.CMD
+        commandType == CommandType.AUTO && OS.isWindows -> CommandType.POWER_SHELL
         commandType == CommandType.AUTO && !OS.isWindows -> CommandType.SHELL
         else -> commandType
     }

@@ -15,6 +15,7 @@ import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.*
 import icu.windea.pls.tools.model.*
 import icu.windea.pls.tools.ui.*
+import kotlin.io.path.exists
 
 /**
  * 从启动器JSON配置文件导入模组配置。
@@ -28,12 +29,12 @@ class ParadoxFromLauncherJsonV3Importer : ParadoxModImporter {
         val settings = table.model.settings
         val gameType = settings.gameType.orDefault()
         if (defaultSelected == null) {
-            val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)?.toPathOrNull()
+            val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)
             val playlistsPath = gameDataPath?.resolve("playlists")
             val playlistsFile = playlistsPath?.toVirtualFile(false)
             if (playlistsFile != null) defaultSelected = playlistsFile
         }
-        val workshopDirPath = PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId)?.toPathOrNull() ?: return
+        val workshopDirPath = PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId) ?: return
         if (!workshopDirPath.exists()) {
             run {
                 val title = settings.qualifiedName ?: return@run
