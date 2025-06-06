@@ -10,8 +10,8 @@
 
   <extensions defaultExtensionNs="icu.windea.pls.integrations">
     <imageToolProvider implementation="icu.windea.pls.integrations.image.providers.PlsTexconvToolProvider"/>
-    <imageToolProvider implementation="icu.windea.pls.integrations.image.providers.PlsMagickToolProviderImpl"/>
-    <imageToolProvider implementation="icu.windea.pls.integrations.image.providers.PlsPaintNetToolProviderImpl"/>
+    <imageToolProvider implementation="icu.windea.pls.integrations.image.providers.PlsMagickToolProvider"/>
+    <imageToolProvider implementation="icu.windea.pls.integrations.image.providers.PlsPaintNetToolProvider"/>
 
     <!-- see pls-extension-translation.xml -->
     <!--<translationToolProvider implementation="icu.windea.pls.integrations.translation.providers.PlsTranslationPluginToolProvider"/>-->
