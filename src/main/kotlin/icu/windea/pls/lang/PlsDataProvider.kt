@@ -12,6 +12,7 @@ import java.util.concurrent.*
  */
 @Service
 class PlsDataProvider {
+    val OS: String = System.getProperty("os.name", "Windows")
     fun init() {
         //preload cached values
         initForPaths()
@@ -57,6 +58,7 @@ class PlsDataProvider {
     }
 
     private fun doGetSteamPath(): String {
+        if(!OS.contains("Windows")) return ""
         val command = """Get-ItemProperty -Path 'HKLM:\SOFTWARE\Wow6432Node\Valve\Steam' | Select-Object InstallPath | Format-Table -HideTableHeaders"""
         return runCatchingCancelable { executeCommand(command, CommandType.POWER_SHELL) }.getOrDefault("")
     }
@@ -72,6 +74,7 @@ class PlsDataProvider {
     }
 
     private fun doGetSteamGamePath(steamId: String): String {
+        if(!OS.contains("Windows")) return "";
         val command = """Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App ${steamId}' | Select-Object InstallLocation | Format-Table -HideTableHeaders"""
         return runCatchingCancelable { executeCommand(command, CommandType.POWER_SHELL) }.getOrDefault("")
     }
@@ -79,7 +82,9 @@ class PlsDataProvider {
     private fun doGetFallbackSteamGamePath(gameName: String): String? {
         //不准确，可以放在不同库目录下
         val steamPath = getSteamPath() ?: return null
-        return """$steamPath\steamapps\common\$gameName"""
+        var path = """$steamPath\steamapps\common\$gameName"""
+        if(!OS.contains("Windows")) path = path.replace("\\", "/");
+        return path
     }
 
     /**
@@ -88,7 +93,9 @@ class PlsDataProvider {
     fun getSteamWorkshopPath(steamId: String): String? {
         //不准确，可以放在不同库目录下
         val steamPath = getSteamPath() ?: return null
-        return """$steamPath\steamapps\workshop\content\$steamId"""
+        var path = """$steamPath\steamapps\workshop\content\$steamId"""
+        if(!OS.contains("Windows")) path = path.replace("\\", "/");
+        return path
     }
 
     /**
@@ -97,7 +104,10 @@ class PlsDataProvider {
     fun getGameDataPath(gameName: String): String? {
         //实际上应当基于launcher-settings.json中的gameDataPath
         val userHome = System.getProperty("user.home") ?: return null
-        return """$userHome\Documents\Paradox Interactive\$gameName"""
+        // Note: needs to be symlinked to install path.
+        var path = """$userHome\Documents\Paradox Interactive\$gameName"""
+        if(!OS.contains("Windows")) path = path.replace("\\", "/");
+        return path
     }
 
     //endregion
