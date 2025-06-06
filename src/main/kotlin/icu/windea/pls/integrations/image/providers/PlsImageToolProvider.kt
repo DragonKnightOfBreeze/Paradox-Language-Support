@@ -7,6 +7,8 @@ import java.nio.file.*
 
 /**
  * 提供图片处理工具，用于转化、渲染特殊格式的图片，尤其是DDS图片。
+ *
+ * 注意：具体的操作方法不会再次验证工具是否受支持（[supports]）。
  */
 interface PlsImageToolProvider {
     fun isEnabled(): Boolean

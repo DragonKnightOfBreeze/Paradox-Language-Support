@@ -5,7 +5,7 @@
 
   <extensions defaultExtensionNs="icu.windea.pls.dds">
     <support implementation="icu.windea.pls.dds.support.DefaultDdsSupport" order="last"/>
-    <support implementation="icu.windea.pls.dds.support.DirectXTexBasedDdsSupport"/>
+    <support implementation="icu.windea.pls.dds.support.ToolBasedDdsSupport"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">

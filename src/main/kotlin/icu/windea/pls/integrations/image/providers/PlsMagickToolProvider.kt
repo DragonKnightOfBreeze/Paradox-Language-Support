@@ -52,7 +52,22 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
     //    magick input.jpg watermark.png -gravity southeast -geometry +10+10 -composite output.jpg
 
     override fun open(file: VirtualFile): Boolean {
-        TODO("Not yet implemented")
+        return runCatchingCancelable { doOpen(file) }.getOrDefault(false)
+    }
+
+    private fun doOpen(file: VirtualFile): Boolean {
+        // 尝试用 ImageMagick 打开图片文件（通常为预览或外部查看）
+        // 这里只能调用系统的 magick display 命令，适配 Windows/Linux
+
+        val settings = PlsFacade.getIntegrationsSettings().image
+        val magickPath = settings.magickPath
+        if (magickPath.isNullOrEmpty()) return false
+
+        val exe = magickPath.quote()
+        val filePath = file.path.quote()
+        val command = "$exe display $filePath"
+        executeCommand(command)
+        return true
     }
 
     override fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {

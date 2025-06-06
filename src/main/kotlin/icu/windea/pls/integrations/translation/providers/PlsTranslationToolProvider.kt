@@ -6,6 +6,8 @@ import icu.windea.pls.integrations.translation.*
 
 /**
  * 提供翻译工具，用于翻译本地化文本。
+ *
+ * 注意：具体的操作方法不会再次验证工具是否受支持（[supports]）。
  */
 interface PlsTranslationToolProvider {
     fun supports(): Boolean

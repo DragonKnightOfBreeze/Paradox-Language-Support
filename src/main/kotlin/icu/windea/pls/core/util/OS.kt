@@ -2,6 +2,8 @@
 
 package icu.windea.pls.core
 
+import org.apache.commons.lang3.SystemUtils
+
 enum class OS {
     Windows,
     Linux,

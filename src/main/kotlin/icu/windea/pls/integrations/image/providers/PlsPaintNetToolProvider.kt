@@ -50,7 +50,21 @@ class PlsPaintNetToolProvider : PlsCommandBasedImageToolProvider() {
     // 3. 其它命令可参考官方文档：https://www.getpaint.net/doc/latest/CommandLine.html
 
     override fun open(file: VirtualFile): Boolean {
-        TODO("Not yet implemented")
+        return runCatchingCancelable { doOpen(file) }.getOrDefault(false)
+    }
+
+    private fun doOpen(file: VirtualFile): Boolean {
+        // 调用 Paint.NET 打开图片文件
+
+        val settings = PlsFacade.getIntegrationsSettings().image
+        val paintNetPath = settings.paintNetPath
+        if (paintNetPath.isNullOrEmpty()) return false
+
+        val exe = paintNetPath.quote()
+        val filePath = file.path.quote()
+        val command = "$exe /open $filePath"
+        executeCommand(command, CommandType.CMD)
+        return true
     }
 
     override fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
