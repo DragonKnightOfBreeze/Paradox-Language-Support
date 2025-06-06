@@ -4,10 +4,15 @@
   </extensions>
 
   <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.integrations.imageToolProvider" interface="icu.windea.pls.integrations.image.providers.PlsImageToolProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.integrations.translationToolProvider" interface="icu.windea.pls.integrations.translation.providers.PlsTranslationToolProvider" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls.integrations">
+    <imageToolProvider implementation="icu.windea.pls.integrations.image.providers.PlsTexconvToolProvider"/>
+    <imageToolProvider implementation="icu.windea.pls.integrations.image.providers.PlsMagickToolProviderImpl"/>
+    <imageToolProvider implementation="icu.windea.pls.integrations.image.providers.PlsPaintNetToolProviderImpl"/>
+
     <!-- see pls-extension-translation.xml -->
     <!--<translationToolProvider implementation="icu.windea.pls.integrations.translation.providers.PlsTranslationPluginToolProvider"/>-->
   </extensions>

@@ -5,7 +5,9 @@ import com.intellij.openapi.options.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.ai.settings.PlsAiSettingsConfigurable
 import icu.windea.pls.integrations.*
+
 
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {
     override fun getId() = "pls.integrations"
@@ -26,11 +28,11 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 row {
                     checkBox(PlsBundle.message("settings.integrations.image.from.magick")).bindSelected(settings.image::enableMagick)
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Magick.url)
-                }.visible(false) //TODO 2.0.0-dev
+                }
                 row {
                     checkBox(PlsBundle.message("settings.integrations.image.from.paint.net")).bindSelected(settings.image::enablePaintNet)
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.PaintNet.url)
-                }.visible(false) //TODO 2.0.0-dev
+                }
             }
             //translation tools
             group(PlsBundle.message("settings.integrations.translation")) {
@@ -51,11 +53,11 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                             //        settings.select(configurable)
                             //    }
                             //}
-                            //or?
-                            //ShowSettingsUtil.getInstance().showSettingsDialog(project, PlsAiSettingsConfigurable::class.java)
+
+                            ShowSettingsUtil.getInstance().showSettingsDialog(null, PlsAiSettingsConfigurable::class.java)
                         }
                     }
-                }.visible(false) //TODO 2.0.0-dev
+                }
             }
             //lint tools
             group(PlsBundle.message("settings.integrations.lint")) {

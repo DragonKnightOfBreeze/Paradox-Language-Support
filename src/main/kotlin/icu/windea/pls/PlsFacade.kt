@@ -2,6 +2,7 @@ package icu.windea.pls
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
+import icu.windea.pls.ai.settings.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.settings.*
 import icu.windea.pls.core.*
@@ -38,6 +39,8 @@ object PlsFacade {
     fun getConfigSettings() = service<PlsConfigSettings>().state
 
     fun getIntegrationsSettings() = service<PlsIntegrationsSettings>().state
+
+    fun getAiSettings() = service<PlsAiSettings>().state
 
     fun getProfilesSettings() = service<PlsProfilesSettings>().state
 }
