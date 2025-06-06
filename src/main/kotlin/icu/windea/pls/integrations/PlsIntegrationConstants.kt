@@ -8,12 +8,6 @@ object PlsIntegrationConstants {
         const val url = "https://github.com/microsoft/DirectXTex/wiki/Texconv"
     }
 
-    object PaintNet {
-        val name get() = PlsBundle.message("integrations.paint.net.name")
-        const val url = "https://www.getpaint.net"
-        const val exeFileName = "PaintDotNet.exe"
-    }
-
     object Magick {
         val name get() = PlsBundle.message("integrations.magick.name")
         const val url = "https://www.imagemagick.org"

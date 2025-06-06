@@ -10,16 +10,9 @@
 
   <extensions defaultExtensionNs="icu.windea.pls.integrations">
     <imageToolProvider implementation="icu.windea.pls.integrations.image.providers.PlsTexconvToolProvider"/>
-    <imageToolProvider implementation="icu.windea.pls.integrations.image.providers.PlsPaintNetToolProvider"/>
     <imageToolProvider implementation="icu.windea.pls.integrations.image.providers.PlsMagickToolProvider"/>
 
     <!-- see pls-extension-translation.xml -->
     <!--<translationToolProvider implementation="icu.windea.pls.integrations.translation.providers.PlsTranslationPluginToolProvider"/>-->
   </extensions>
-
-  <actions>
-    <action id="Pls.OpenIn.PaintNet" class="icu.windea.pls.integrations.image.actions.OpenInPaintNetAction">
-      <add-to-group group-id="RevealGroup" anchor="after" relative-to-action="OpenInAssociatedApplication"/>
-    </action>
-  </actions>
 </idea-plugin>

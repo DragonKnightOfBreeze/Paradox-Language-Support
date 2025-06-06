@@ -25,7 +25,6 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
         return panel {
             //image tools
             group(PlsBundle.message("settings.integrations.image")) {
-                lateinit var cbPaintNet: JBCheckBox
                 lateinit var cbMagick: JBCheckBox
 
                 row {
@@ -36,24 +35,6 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                         .comment(PlsBundle.message("settings.integrations.image.from.texconv.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Texconv.url)
                 }
-                //enablePaintNet
-                row {
-                    checkBox(PlsBundle.message("settings.integrations.image.from.paint.net")).bindSelected(settings.image::enablePaintNet)
-                        .comment(PlsBundle.message("settings.integrations.image.from.paint.net.comment"), MAX_LINE_LENGTH_WORD_WRAP)
-                        .applyToComponent { cbPaintNet = this }
-                    browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.PaintNet.url)
-                }
-                //paintNetPath
-                row {
-                    label(PlsBundle.message("settings.integrations.image.paintNetPath")).widthGroup(groupNameImage)
-                    val descriptor = FileChooserDescriptorFactory.singleFile()
-                        .withTitle(PlsBundle.message("settings.integrations.image.paintNetPath.title"))
-                    textFieldWithBrowseButton(descriptor, null)
-                        .bindText(settings.image::paintNetPath.toNonNullableProperty(""))
-                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
-                        .align(Align.FILL)
-                        .validationOnInput { validatePaintNetPath(this, it) }
-                }.enabledIf(cbPaintNet.selected)
                 //enableMagick
                 row {
                     checkBox(PlsBundle.message("settings.integrations.image.from.magick")).bindSelected(settings.image::enableMagick)
@@ -111,15 +92,6 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 }
             }.visible(false) //TODO 2.0.0-dev+
         }
-    }
-
-    private fun validatePaintNetPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
-        val path = button.text.trim()
-        if (path.isEmpty()) return null
-        val tool = PlsImageToolProvider.EP_NAME.findExtension(PlsPaintNetToolProvider::class.java) ?: return null
-        if (tool.validatePath(path)) return null
-        val exeFileName = PlsIntegrationConstants.PaintNet.exeFileName
-        return builder.warning(PlsBundle.message("settings.integrations.image.paintNetPath.incorrect", exeFileName))
     }
 
     private fun validateMagickPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
