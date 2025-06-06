@@ -5,10 +5,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.fileChooser.actions.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.actions.*
-import icu.windea.pls.model.*
 import java.nio.file.*
 
 /**
@@ -54,69 +51,6 @@ abstract class GoToPathAction : FileChooserAction(), LightEditCompatible {
             val targetPath = targetPath ?: return
             val file = VfsUtil.findFile(targetPath, true) ?: return
             fileChooser.select(file, if (expand) Runnable { fileChooser.expand(file, null) } else null)
-        }
-    }
-
-    class Steam : GoToPathAction() {
-        override var targetPath: Path? = null
-
-        override fun setVisible(e: AnActionEvent): Boolean {
-            val gameType = e.gameTypeProperty?.get() ?: e.gameType
-            if (gameType == null) return false
-            if (targetPath == null) {
-                targetPath = PlsFacade.getDataProvider().getSteamPath()
-            }
-            return true
-        }
-    }
-
-    class SteamGame : GoToPathAction() {
-        private var gameType: ParadoxGameType? = null
-
-        override var targetPath: Path? = null
-
-        override fun setVisible(e: AnActionEvent): Boolean {
-            val gameType = e.gameTypeProperty?.get() ?: e.gameType
-            if (gameType == null) return false
-            if (this.targetPath == null || this.gameType != gameType) {
-                this.gameType = gameType
-                this.targetPath = PlsFacade.getDataProvider().getSteamGamePath(gameType.steamId, gameType.title)
-            }
-            return true
-        }
-    }
-
-    class SteamWorkshop : GoToPathAction() {
-        private var gameType: ParadoxGameType? = null
-
-        override var targetPath: Path? = null
-        override val expand: Boolean = true
-
-        override fun setVisible(e: AnActionEvent): Boolean {
-            val gameType = e.gameTypeProperty?.get() ?: e.gameType
-            if (gameType == null) return false
-            if (this.targetPath == null || this.gameType != gameType) {
-                this.gameType = gameType
-                this.targetPath = PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId)
-            }
-            return true
-        }
-    }
-
-    class GameData : GoToPathAction() {
-        private var gameType: ParadoxGameType? = null
-
-        override var targetPath: Path? = null
-        override val expand: Boolean = true
-
-        override fun setVisible(e: AnActionEvent): Boolean {
-            val gameType = e.gameTypeProperty?.get() ?: e.gameType
-            if (gameType == null) return false
-            if (this.targetPath == null || this.gameType != gameType) {
-                this.gameType = gameType
-                this.targetPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)
-            }
-            return true
         }
     }
 }
