@@ -2,15 +2,20 @@ package icu.windea.pls.integrations.settings
 
 import com.intellij.ide.*
 import com.intellij.openapi.options.*
+import com.intellij.openapi.options.ex.Settings
 import com.intellij.openapi.ui.*
+import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.asBrowseFolderDescriptor
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.ai.settings.PlsAiSettingsConfigurable
+import icu.windea.pls.ai.settings.*
 import icu.windea.pls.integrations.*
+import icu.windea.pls.lang.ui.ParadoxDirectoryDescriptor
 
-
+@Suppress("UnstableApiUsage")
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {
     override fun getId() = "pls.integrations"
+
+    private val groupNameImage = "pls.integrations.image"
 
     override fun createPanel(): DialogPanel {
         val settings = PlsFacade.getIntegrationsSettings()
@@ -25,15 +30,39 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                         .comment(PlsBundle.message("settings.integrations.image.from.texconv.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Texconv.url)
                 }
+                //enableMagick
                 row {
                     checkBox(PlsBundle.message("settings.integrations.image.from.magick")).bindSelected(settings.image::enableMagick)
                         .comment(PlsBundle.message("settings.integrations.image.from.magick.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Magick.url)
                 }
+                //magickPath
+                row {
+                    label(PlsBundle.message("settings.integrations.image.magickPath")).widthGroup(groupNameImage)
+                    val descriptor = ParadoxDirectoryDescriptor()
+                        .withTitle(PlsBundle.message("settings.integrations.image.magickPath.title"))
+                        .asBrowseFolderDescriptor()
+                    textFieldWithBrowseButton(descriptor, null)
+                        .bindText(settings.image::magickPath.toNonNullableProperty(""))
+                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
+                        .align(Align.FILL)
+                }
+                //enablePaintNet
                 row {
                     checkBox(PlsBundle.message("settings.integrations.image.from.paint.net")).bindSelected(settings.image::enablePaintNet)
                         .comment(PlsBundle.message("settings.integrations.image.from.paint.net.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.PaintNet.url)
+                }
+                //paintNetPath
+                row {
+                    label(PlsBundle.message("settings.integrations.image.paintNetPath")).widthGroup(groupNameImage)
+                    val descriptor = ParadoxDirectoryDescriptor()
+                        .withTitle(PlsBundle.message("settings.integrations.image.paintNetPath.title"))
+                        .asBrowseFolderDescriptor()
+                    textFieldWithBrowseButton(descriptor, null)
+                        .bindText(settings.image::paintNetPath.toNonNullableProperty(""))
+                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
+                        .align(Align.FILL)
                 }
             }
             //translation tools
@@ -50,13 +79,15 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                     checkBox(PlsBundle.message("settings.integrations.translation.from.ai")).selected(true).enabled(false)
                     link(PlsBundle.message("settings.integrations.translation.from.ai.link")) {
                         DataManager.getInstance().dataContextFromFocusAsync.then {
-                            //Settings.KEY.getData(it)?.let { settings ->
-                            //    settings.find(PlsAiSettingsConfigurable::class.java)?.let { configurable ->
-                            //        settings.select(configurable)
-                            //    }
-                            //}
+                            //直接转到AI设置页面
+                            Settings.KEY.getData(it)?.let { settings ->
+                                settings.find(PlsAiSettingsConfigurable::class.java)?.let { configurable ->
+                                    settings.select(configurable)
+                                }
+                            }
 
-                            ShowSettingsUtil.getInstance().showSettingsDialog(null, PlsAiSettingsConfigurable::class.java)
+                            //这会嵌套打开AI设置页面
+                            //ShowSettingsUtil.getInstance().showSettingsDialog(null, PlsAiSettingsConfigurable::class.java)
                         }
                     }
                 }
