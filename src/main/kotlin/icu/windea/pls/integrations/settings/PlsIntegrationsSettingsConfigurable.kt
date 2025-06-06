@@ -68,7 +68,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                     checkBox(PlsBundle.message("settings.integrations.lint.tiger")).bindSelected(settings.lint::enableTiger)
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Tiger.url)
                 }
-            }.visible(false) //TODO 2.0.0-dev
+            }.visible(false) //TODO 2.0.0-dev+
         }
     }
 }
