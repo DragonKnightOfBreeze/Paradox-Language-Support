@@ -11,7 +11,7 @@ import java.util.*
 import kotlin.io.path.*
 
 /**
- * 参见：[Paint.NET](https://www.paint.net)
+ * 参见：[Paint.NET](https://www.getpaint.net)
  */
 @WithOS(OS.Windows)
 class PlsPaintNetToolProvider : PlsCommandBasedImageToolProvider() {

@@ -22,7 +22,7 @@ class PlsIntegrationsSettingsState : BaseState() {
     /**
      * @property enableMagick 是否使用 <a href="https://www.imagemagick.org">Image Magick</a> 作为图片处理工具。
      * @property magickPath Image Magick 的执行文件路径。
-     * @property enablePaintNet 是否使用 <a href="https://www.paint.net">Paint.NET</a> 作为图片处理工具。
+     * @property enablePaintNet 是否使用 <a href="https://www.getpaint.net">Paint.NET</a> 作为图片处理工具。
      * @property paintNetPath Paint.NET 的执行文件路径。
      */
     @Tag("image")

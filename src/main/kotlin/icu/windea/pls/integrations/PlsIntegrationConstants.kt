@@ -15,7 +15,7 @@ object PlsIntegrationConstants {
 
     object PaintNet {
         val name get() = PlsBundle.message("integrations.paint.net.name")
-        const val url = "https://www.paint.net"
+        const val url = "https://www.getpaint.net"
     }
 
     object TranslationPlugin {
