@@ -25,13 +25,9 @@ class CwtConfigGroupService(private val project: Project) {
         //preload config groups
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
-            launch {
-                readAction { getConfigGroup(null) }
-            }
+            readAction { getConfigGroup(null) }
             ParadoxGameType.entries.forEach { gameType ->
-                launch {
-                    readAction { getConfigGroup(gameType) }
-                }
+                readAction { getConfigGroup(gameType) }
             }
         }
     }
