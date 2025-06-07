@@ -19,8 +19,6 @@ import icu.windea.pls.script.psi.*
  * 复杂枚举值信息的内嵌提示（枚举名）。
  */
 class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
-
-
     private val settingsKey = SettingsKey<NoSettings>("ParadoxComplexEnumValueInfoHintsSettingsKey")
 
     override val name: String get() = PlsBundle.message("script.hints.complexEnumValueInfo")
@@ -51,6 +49,7 @@ class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSe
         val type = config.configExpression.type
         if (type != CwtDataTypes.EnumValue) return true
         val enumName = config.configExpression.value ?: return true
+        if (enumName in config.configGroup.enums) return true //only for complex enums
         val presentation = doCollect(enumName, configGroup) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset

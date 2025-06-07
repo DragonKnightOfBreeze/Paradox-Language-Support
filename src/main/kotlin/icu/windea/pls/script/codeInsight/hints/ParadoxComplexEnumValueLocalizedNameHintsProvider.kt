@@ -10,6 +10,7 @@ import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
@@ -65,6 +66,7 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
         val type = config.configExpression.type
         if (type != CwtDataTypes.EnumValue) return true
         val enumName = config.configExpression.value ?: return true
+        if (enumName in config.configGroup.enums) return true //only for complex enums
         val presentation = doCollect(name, enumName, file, editor, settings) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset
