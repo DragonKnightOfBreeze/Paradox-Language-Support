@@ -41,6 +41,8 @@
     <codeInsight.typeInfo language="PARADOX" implementationClass="icu.windea.pls.lang.codeInsight.ParadoxTypeProvider"/>
     <codeInsight.containerProvider implementation="icu.windea.pls.lang.codeInsight.ParadoxContainerProvider"/>
     <typeDeclarationProvider implementation="icu.windea.pls.lang.codeInsight.ParadoxTypeDeclarationProvider"/>
+    <targetElementEvaluator language="PARADOX" implementationClass="icu.windea.pls.lang.codeInsight.ParadoxTargetElementEvaluator"/>
+
     <codeInsight.template.postfixTemplateProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.template.postfix.ParadoxPostfixTemplateProvider"/>
 
     <createDirectoryCompletionContributor implementation="icu.windea.pls.lang.actions.ParadoxCreateDirectoryCompletionContributor"/>

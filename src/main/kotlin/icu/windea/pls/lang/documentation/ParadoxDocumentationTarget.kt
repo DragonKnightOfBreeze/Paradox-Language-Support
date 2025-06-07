@@ -85,6 +85,7 @@ private fun computeLocalDocumentation(element: PsiElement, originalElement: PsiE
         is ParadoxLocalisationProperty -> getLocalisationPropertyDoc(element, originalElement, quickNavigation)
         is ParadoxLocalisationIcon -> getLocalisationIconDoc(element, originalElement, quickNavigation)
         is ParadoxLocalisationColorfulText -> getLocalisationColorDoc(element, originalElement, quickNavigation)
+        is ParadoxLocalisationArgument -> getLocalisationArgumentDoc(element, originalElement, quickNavigation)
         else -> null
     }
 }
@@ -203,6 +204,16 @@ private fun getLocalisationColorDoc(element: ParadoxLocalisationColorfulText, or
     return buildDocumentation {
         //加上元素定义信息
         buildLocalisationColorDefinition(name)
+    }
+}
+
+private fun getLocalisationArgumentDoc(element: ParadoxLocalisationArgument, originalElement: PsiElement?, quickNavigation: Boolean): String? {
+    if (quickNavigation) return null
+    if (element is ParadoxLocalisationIconArgument) return null
+    return buildDocumentation {
+        initSections(1)
+        buildLocalisationArgumentInfo(element)
+        buildSections()
     }
 }
 
@@ -817,24 +828,27 @@ private fun DocumentationBuilder.buildLocalisationColorDefinition(name: String) 
     }
 }
 
-private fun DocumentationBuilder.buildDocumentationContent(element: ParadoxParameterElement) {
-    ParadoxParameterExtendedDocumentationProvider.getAllDocumentationContent(element).forEach { content { append(it) } }
-}
-
-private fun DocumentationBuilder.buildDocumentationContent(element: ParadoxComplexEnumValueElement) {
-    ParadoxComplexEnumValueExtendedDocumentationProvider.getAllDocumentationContent(element).forEach { content { append(it) } }
-}
-
-private fun DocumentationBuilder.buildDocumentationContent(element: ParadoxDynamicValueElement) {
-    ParadoxDynamicValueExtendedDocumentationProvider.getAllDocumentationContent(element).forEach { content { append(it) } }
-}
-
-private fun DocumentationBuilder.buildDocumentationContent(element: ParadoxScriptScriptedVariable) {
-    ParadoxScriptedVariableExtendedDocumentationProvider.getAllDocumentationContent(element).forEach { content { append(it) } }
+private fun DocumentationBuilder.buildLocalisationArgumentInfo(element: ParadoxLocalisationArgument) {
+    val sections = getSections(SECTIONS_INFO) ?: return
+    ParadoxLocalisationArgumentManager.getInfo(element)?.let {
+        sections.put(PlsBundle.message("sectionTitle.formattingTags"), it)
+    }
 }
 
 private fun DocumentationBuilder.buildDocumentationContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
     ParadoxDefinitionExtendedDocumentationProvider.getAllDocumentationContent(element, definitionInfo).forEach { content { append(it) } }
+}
+
+private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
+    val contents = when (element) {
+        is ParadoxParameterElement -> ParadoxParameterExtendedDocumentationProvider.getAllDocumentationContent(element)
+        is ParadoxComplexEnumValueElement -> ParadoxComplexEnumValueExtendedDocumentationProvider.getAllDocumentationContent(element)
+        is ParadoxDynamicValueElement -> ParadoxDynamicValueExtendedDocumentationProvider.getAllDocumentationContent(element)
+        is ParadoxScriptScriptedVariable -> ParadoxScriptedVariableExtendedDocumentationProvider.getAllDocumentationContent(element)
+        else -> emptyList()
+    }
+    if (contents.isEmpty()) return
+    contents.forEach { content { append(it) } }
 }
 
 private fun DocumentationBuilder.buildLineCommentContent(element: PsiElement) {

@@ -3,6 +3,8 @@ package icu.windea.pls.lang.util
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.references.*
 
@@ -27,5 +29,47 @@ object ParadoxLocalisationArgumentManager {
         }
         if (references.isEmpty()) return PsiReference.EMPTY_ARRAY
         return references.toTypedArray()
+    }
+
+    fun getInfo(element: ParadoxLocalisationArgument): String? {
+        return getFormattingTagInfos(element.text).joinToString("<br>")
+    }
+
+    fun getFormattingTagInfos(text: String): Set<String> {
+        // see:
+        // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/137
+
+        if (text.isEmpty()) return emptySet()
+        val set = mutableSetOf<String>()
+        var i = 0
+        while (i < text.length) {
+            val c = text[i]
+            when {
+                c == '*' || c == '^' -> {
+                    set += PlsDocBundle.message("formattingTag.1")
+                }
+                c == '=' -> {
+                    set += PlsDocBundle.message("formattingTag.2")
+                }
+                c.isExactDigit() -> {
+                    set += PlsDocBundle.message("formattingTag.3")
+                }
+                c == '%' -> {
+                    if (text.getOrNull(i + 1) != '%') {
+                        set += PlsDocBundle.message("formattingTag.4")
+                    } else {
+                        set += PlsDocBundle.message("formattingTag.5")
+                    }
+                }
+                c == '+' -> {
+                    set += PlsDocBundle.message("formattingTag.6")
+                }
+                c == '-' -> {
+                    set += PlsDocBundle.message("formattingTag.7")
+                }
+            }
+            i++
+        }
+        return set
     }
 }
