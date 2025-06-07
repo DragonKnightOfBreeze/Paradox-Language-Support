@@ -8,6 +8,7 @@ import com.intellij.openapi.ui.popup.*
 import com.intellij.platform.ide.documentation.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
@@ -27,6 +28,7 @@ class ChangeQuickDocLocalisationLocaleAction : AnAction(), ActionToIgnore {
             val browser = e.getData(DOCUMENTATION_BROWSER)
             val targetElement = browser?.targetPointer?.dereference()?.targetElement
             if (targetElement == null) return@run
+            if (targetElement.language !is ParadoxBaseLanguage) return@run
             isVisible = true
             isEnabled = true
         }
@@ -38,6 +40,7 @@ class ChangeQuickDocLocalisationLocaleAction : AnAction(), ActionToIgnore {
         val browser = e.getData(DOCUMENTATION_BROWSER)
         val targetElement = browser?.targetPointer?.dereference()?.targetElement
         if (targetElement == null) return
+        if (targetElement.language !is ParadoxBaseLanguage) return
         val allLocales = ParadoxLocaleManager.getLocaleConfigs(withAuto = true)
         val onChosen = { selected: CwtLocaleConfig ->
             targetElement.putUserData(PlsKeys.documentationLocale, selected.id)

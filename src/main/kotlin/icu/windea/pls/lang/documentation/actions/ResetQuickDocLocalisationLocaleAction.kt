@@ -6,6 +6,7 @@ import com.intellij.codeInsight.hint.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.platform.ide.documentation.*
 import icu.windea.pls.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.util.*
 
@@ -24,6 +25,7 @@ class ResetQuickDocLocalisationLocaleAction : AnAction(), HintManagerImpl.Action
             val browser = e.getData(DOCUMENTATION_BROWSER)
             val targetElement = browser?.targetPointer?.dereference()?.targetElement
             if (targetElement == null) return@run
+            if (targetElement.language !is ParadoxBaseLanguage) return@run
             val locale = ParadoxLocaleManager.getLocaleConfigInDocumentation(targetElement)
             isVisible = true
             isEnabled = locale != null
@@ -36,6 +38,7 @@ class ResetQuickDocLocalisationLocaleAction : AnAction(), HintManagerImpl.Action
         val browser = e.getData(DOCUMENTATION_BROWSER)
         val targetElement = browser?.targetPointer?.dereference()?.targetElement
         if (targetElement == null) return
+        if (targetElement.language !is ParadoxBaseLanguage) return
         val locale = ParadoxLocaleManager.getLocaleConfigInDocumentation(targetElement)
         if (locale == null) return
         targetElement.putUserData(PlsKeys.documentationLocale, null)
