@@ -53,9 +53,11 @@ class PlsSettingsState : BaseState() {
      * @property renderNameDescForModifiers 是否需要为修正渲染相关本地化文本到文档中。
      * @property renderIconForModifiers 是否需要为修正渲染图标到文档中。
      * @property renderLocalisationForLocalisations 是否需要为本地化渲染本地化文本到文档中。
+     * @property renderRelatedLocalisationsForComplexEnumValues 是否需要为复杂枚举值渲染相关本地化文本到文档中（同名的本地化）。
+     * @property renderRelatedLocalisationsForDynamicValues 是否需要为动态值渲染相关本地化文本到文档中（同名的本地化）。
      * @property showScopes 是否需要在文档中显示作用域信息（如果支持且存在）。
      * @property showScopeContext 是否需要在文档中显示作用域上下文（如果支持且存在）。
-     * @property showParameters 是否需要在文档中显示参数信息（如果支持且存在。）
+     * @property showParameters 是否需要在文档中显示参数信息（如果支持且存在）。
      * @property showGeneratedModifiers 是否需要在文档中显示生成的修正的信息（如果支持且存在）。
      */
     @Tag("documentation")
@@ -66,6 +68,8 @@ class PlsSettingsState : BaseState() {
         var renderNameDescForModifiers by property(true)
         var renderIconForModifiers by property(true)
         var renderLocalisationForLocalisations by property(true)
+        var renderRelatedLocalisationsForComplexEnumValues by property(true)
+        var renderRelatedLocalisationsForDynamicValues by property(true)
         var showScopes by property(true)
         var showScopeContext by property(true)
         var showParameters by property(true)

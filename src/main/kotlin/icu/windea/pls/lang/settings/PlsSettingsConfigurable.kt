@@ -141,6 +141,18 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(settings.documentation::renderLocalisationForLocalisations)
                     contextHelp(PlsBundle.message("settings.documentation.renderLocalisationForLocalisations.tip"))
                 }
+                //renderRelatedLocalisationsForComplexEnumValues
+                row {
+                    checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForComplexEnumValues"))
+                        .bindSelected(settings.documentation::renderRelatedLocalisationsForComplexEnumValues)
+                    contextHelp(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForComplexEnumValues.tip"))
+                }
+                //renderRelatedLocalisationsForDynamicValues
+                row {
+                    checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDynamicValues"))
+                        .bindSelected(settings.documentation::renderRelatedLocalisationsForDynamicValues)
+                    contextHelp(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDynamicValues.tip"))
+                }
                 //showScopes
                 row {
                     checkBox(PlsBundle.message("settings.documentation.showScopes"))

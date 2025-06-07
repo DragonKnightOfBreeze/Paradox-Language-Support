@@ -18,7 +18,7 @@ TODO
 ## 2.0.0-dev
 
 * [ ] 优化：通过快速文档为参数和命令提供其中使用的格式标签的说明 / OP: Provide information about format tags used in parameters and commands through quick documentation
-* [ ] 优化：也为复杂枚举值与动态值提供快速文档与内嵌提示，来自同名的本地化，可以配置 / OP: Also provide quick documentation and inlay hints for complex enum values and dynamic values, from the same name localisation, which is configurable
+* [X] 优化：也为复杂枚举值与动态值提供快速文档与内嵌提示，来自同名的本地化 / OP: Also provide quick documentation and inlay hints for complex enum values and dynamic values, from the same name localisation
 * [X] 优化：可以配置处理图片时使用的工具（默认且内置：Texconv，可选：Image Magick） / OP: Can configure the tool used to process images (Default and built-in: Texconv, Available: Image Magick)
 * [X] 优化：可以配置翻译本地化文本时使用的工具（目前仅限Translation Plugin） / OP: Can configure the tool used to translate localisation text (Currently limited to Translation Plugin)
 * [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files

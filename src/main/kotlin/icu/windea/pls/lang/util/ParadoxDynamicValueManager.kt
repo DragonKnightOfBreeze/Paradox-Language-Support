@@ -4,11 +4,15 @@ import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.search.*
+import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 object ParadoxDynamicValueManager {
     const val EVENT_TARGET_PREFIX = "event_target:"
@@ -43,6 +47,12 @@ object ParadoxDynamicValueManager {
         val readWriteAccess = getReadWriteAccess(configExpression)
         val dynamicValueTypes = configExpressions.mapNotNullTo(mutableSetOf()) { it.value }
         return ParadoxDynamicValueElement(element, name, dynamicValueTypes, readWriteAccess, gameType, configGroup.project)
+    }
+
+    fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig): ParadoxLocalisationProperty? {
+        val selector = selector(contextElement.project, contextElement).localisation().contextSensitive()
+            .preferLocale(locale)
+        return ParadoxLocalisationSearch.search(name, selector).find()
     }
 
     fun getHintFromExtendedConfig(name: String, type: String, contextElement: PsiElement): String? {

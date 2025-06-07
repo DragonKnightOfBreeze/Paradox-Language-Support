@@ -14,6 +14,9 @@ import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.search.*
+import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.*
@@ -234,6 +237,12 @@ object ParadoxComplexEnumValueManager {
 
     fun getName(expression: String): String? {
         return expression.orNull()
+    }
+
+    fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig): ParadoxLocalisationProperty? {
+        val selector = selector(contextElement.project, contextElement).localisation().contextSensitive()
+            .preferLocale(locale)
+        return ParadoxLocalisationSearch.search(name, selector).find()
     }
 
     fun getHintFromExtendedConfig(name: String, enumName: String, contextElement: PsiElement): String? {

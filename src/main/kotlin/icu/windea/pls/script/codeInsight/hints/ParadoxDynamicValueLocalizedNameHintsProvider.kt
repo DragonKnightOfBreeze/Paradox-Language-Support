@@ -55,24 +55,36 @@ class ParadoxDynamicValueLocalizedNameHintsProvider : ParadoxScriptHintsProvider
         val resolved = element.references.filter { resolveConstraint.canResolve(it) }.mapNotNull { it.resolve() }.lastOrNull()
             ?.castOrNull<ParadoxDynamicValueElement>()
             ?: return true
-        val presentation = doCollect(resolved, file, editor, settings) ?: return true
+        val name = resolved.name
+        if (name.isEmpty()) return true
+        if (name.isParameterized()) return true
+
+        val presentation = doCollect(resolved.name, resolved.dynamicValueTypes, file, editor, settings) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
         return true
     }
 
-    private fun PresentationFactory.doCollect(element: ParadoxDynamicValueElement, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
-        val name = element.name
-        if (name.isEmpty()) return null
-        if (name.isParameterized()) return null
-        for (type in element.dynamicValueTypes) {
-            val hint = ParadoxDynamicValueManager.getHintFromExtendedConfig(name, type, file) //just use file as contextElement here
-            if(hint.isNullOrEmpty()) continue
-            val hintElement = ParadoxLocalisationElementFactory.createProperty(file.project, "hint", hint)
-            //it's necessary to inject fileInfo (so that gameType can be got later)
-            hintElement.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
-            return ParadoxLocalisationTextInlayRenderer.render(hintElement, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
+    private fun PresentationFactory.doCollect(name: String, types: Set<String>, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
+        val hintElement = getNameLocalisationToUse(name, types, file) ?: return null
+        //it's necessary to inject fileInfo (so that gameType can be got later)
+        hintElement.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
+        return ParadoxLocalisationTextInlayRenderer.render(hintElement, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
+    }
+
+    private fun getNameLocalisationToUse(name: String, types: Set<String>, file: PsiFile): ParadoxLocalisationProperty? {
+        run {
+            val hint = types.firstNotNullOfOrNull { type ->
+                ParadoxDynamicValueManager.getHintFromExtendedConfig(name, type, file) //just use file as contextElement here
+            }
+            if (hint.isNullOrEmpty()) return@run
+            return ParadoxLocalisationElementFactory.createProperty(file.project, "hint", hint)
+        }
+        run {
+            val nameLocalisation = ParadoxComplexEnumValueManager.getNameLocalisation(name, file, ParadoxLocaleManager.getPreferredLocaleConfig())
+            if (nameLocalisation == null) return@run
+            return nameLocalisation
         }
         return null
     }

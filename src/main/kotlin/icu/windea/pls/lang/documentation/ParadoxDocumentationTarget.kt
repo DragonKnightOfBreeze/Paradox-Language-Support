@@ -105,7 +105,7 @@ private fun getLocalisationParameterDoc(element: ParadoxLocalisationParameterEle
 
 private fun getComplexEnumValueDoc(element: ParadoxComplexEnumValueElement, originalElement: PsiElement?, quickNavigation: Boolean): String {
     return buildDocumentation {
-        if (!quickNavigation) initSections(1)
+        if (!quickNavigation) initSections(3)
         buildComplexEnumValueDefinition(element)
         if (quickNavigation) return@buildDocumentation
         buildDocumentationContent(element)
@@ -115,7 +115,7 @@ private fun getComplexEnumValueDoc(element: ParadoxComplexEnumValueElement, orig
 
 private fun getDynamicValueDoc(element: ParadoxDynamicValueElement, originalElement: PsiElement?, quickNavigation: Boolean): String {
     return buildDocumentation {
-        if (!quickNavigation) initSections(1)
+        if (!quickNavigation) initSections(3)
         buildDynamicValueDefinition(element)
         if (quickNavigation) return@buildDocumentation
         buildDocumentationContent(element)
@@ -228,6 +228,52 @@ private fun DocumentationBuilder.buildLocalisationParameterDefinition(element: P
     }
 }
 
+private fun DocumentationBuilder.buildComplexEnumValueDefinition(element: ParadoxComplexEnumValueElement) {
+    definition {
+        val name = element.name
+        val enumName = element.enumName
+        val gameType = element.gameType
+        val configGroup = PlsFacade.getConfigGroup(element.project, gameType)
+        append(PlsConstants.Strings.complexEnumValuePrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        val complexEnumConfig = configGroup.complexEnums[enumName]
+        if (complexEnumConfig != null) {
+            val typeLink = "${gameType.prefix}complex_enums/${enumName}"
+            append(": ").appendCwtConfigLink(typeLink, enumName)
+        } else {
+            append(": ").append(enumName)
+        }
+
+        //加上相关本地化信息：同名的本地化
+        addRelatedLocalisationsForComplexEnumValue(element)
+
+        //加上作用域上下文信息
+        addScopeContext(element, name, configGroup)
+    }
+}
+
+private fun DocumentationBuilder.addRelatedLocalisationsForComplexEnumValue(element: ParadoxComplexEnumValueElement) {
+    val render = PlsFacade.getSettings().documentation.renderRelatedLocalisationsForComplexEnumValues
+    val gameType = element.gameType
+    val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
+    val nameLocalisation = ParadoxComplexEnumValueManager.getNameLocalisation(element.name, element, usedLocale)
+    //如果没找到的话，不要在文档中显示相关信息
+    run {
+        if (nameLocalisation == null) return@run
+        appendBr()
+        append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ")
+        append("name = ").appendLocalisationLink(gameType, nameLocalisation.name, element)
+    }
+    run rs@{
+        val sections = getSections(SECTIONS_LOC)
+        if (sections == null || !render) return@rs
+        run {
+            if (nameLocalisation == null) return@run
+            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
+            sections.put("name", richText)
+        }
+    }
+}
+
 private fun DocumentationBuilder.buildDynamicValueDefinition(element: ParadoxDynamicValueElement) {
     val name = element.name
     val dynamicValueTypes = element.dynamicValueTypes
@@ -248,26 +294,34 @@ private fun DocumentationBuilder.buildDynamicValueDefinition(element: ParadoxDyn
             }
         }
 
+        //加上相关本地化信息：同名的本地化
+        addRelatedLocalisationsForDynamicValue(element)
+
+        //加上作用域上下文信息
         addScopeContext(element, name, configGroup)
     }
 }
 
-private fun DocumentationBuilder.buildComplexEnumValueDefinition(element: ParadoxComplexEnumValueElement) {
-    definition {
-        val name = element.name
-        val enumName = element.enumName
-        val gameType = element.gameType
-        val configGroup = PlsFacade.getConfigGroup(element.project, gameType)
-        append(PlsConstants.Strings.complexEnumValuePrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
-        val complexEnumConfig = configGroup.complexEnums[enumName]
-        if (complexEnumConfig != null) {
-            val typeLink = "${gameType.prefix}complex_enums/${enumName}"
-            append(": ").appendCwtConfigLink(typeLink, enumName)
-        } else {
-            append(": ").append(enumName)
+private fun DocumentationBuilder.addRelatedLocalisationsForDynamicValue(element: ParadoxDynamicValueElement) {
+    val render = PlsFacade.getSettings().documentation.renderRelatedLocalisationsForDynamicValues
+    val gameType = element.gameType
+    val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
+    val nameLocalisation = ParadoxDynamicValueManager.getNameLocalisation(element.name, element, usedLocale)
+    //如果没找到的话，不要在文档中显示相关信息
+    run {
+        if (nameLocalisation == null) return@run
+        appendBr()
+        append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ")
+        append("name = ").appendLocalisationLink(gameType, nameLocalisation.name, element)
+    }
+    run rs@{
+        val sections = getSections(SECTIONS_LOC)
+        if (sections == null || !render) return@rs
+        run {
+            if (nameLocalisation == null) return@run
+            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
+            sections.put("name", richText)
         }
-
-        addScopeContext(element, name, configGroup)
     }
 }
 
