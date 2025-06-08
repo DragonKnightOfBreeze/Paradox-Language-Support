@@ -4,7 +4,6 @@ import com.intellij.openapi.diagnostic.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.console.CommandType
 import org.apache.commons.io.file.*
 import java.nio.file.*
 import java.util.*
@@ -38,7 +37,7 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
         val exe = fullExePath.name
         val wd = fullExePath.parent?.toFile()
 
-        val command = "$exe -version"
+        val command = "./$exe -version"
         val result = executeCommand(command, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
 
         return result.contains("ImageMagick") || result.contains("Version")
@@ -80,7 +79,7 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
         val input = path.toString().quote()
         val output = outputPath.toString().quote()
 
-        val command = "$exe $input $output"
+        val command = "./$exe $input $output"
         val result = executeCommand(command, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
 
         logger.info("Execute magick command.\nCommand: $command\nCommand result: $result")
