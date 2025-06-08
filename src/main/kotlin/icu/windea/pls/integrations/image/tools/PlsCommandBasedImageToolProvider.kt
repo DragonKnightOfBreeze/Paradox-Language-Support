@@ -1,4 +1,4 @@
-package icu.windea.pls.integrations.image.providers
+package icu.windea.pls.integrations.image.tools
 
 import com.intellij.openapi.progress.*
 import icu.windea.pls.*

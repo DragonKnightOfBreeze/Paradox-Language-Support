@@ -6,6 +6,6 @@
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls.integrations">
-    <translationToolProvider implementation="icu.windea.pls.integrations.translation.providers.PlsTranslationPluginToolProvider"/>
+    <translationToolProvider implementation="icu.windea.pls.integrations.translation.tools.PlsTranslationPluginToolProvider"/>
   </extensions>
 </idea-plugin>

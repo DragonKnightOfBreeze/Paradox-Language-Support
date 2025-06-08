@@ -1,7 +1,7 @@
 package icu.windea.pls.integrations.translation
 
 import icu.windea.pls.config.config.*
-import icu.windea.pls.integrations.translation.providers.*
+import icu.windea.pls.integrations.translation.tools.*
 
 object PlsTranslationManager {
     fun findTool(): PlsTranslationToolProvider? {

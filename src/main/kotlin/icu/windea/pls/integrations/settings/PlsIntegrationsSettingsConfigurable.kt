@@ -12,7 +12,7 @@ import com.intellij.ui.layout.selected
 import icu.windea.pls.*
 import icu.windea.pls.ai.settings.*
 import icu.windea.pls.integrations.*
-import icu.windea.pls.integrations.image.providers.*
+import icu.windea.pls.integrations.image.tools.*
 
 @Suppress("UnstableApiUsage")
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {

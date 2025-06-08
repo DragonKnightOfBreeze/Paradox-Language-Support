@@ -1,4 +1,4 @@
-package icu.windea.pls.integrations.translation.providers
+package icu.windea.pls.integrations.translation.tools
 
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.config.config.*

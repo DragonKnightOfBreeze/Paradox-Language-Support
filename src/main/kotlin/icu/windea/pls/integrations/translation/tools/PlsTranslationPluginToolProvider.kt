@@ -1,4 +1,4 @@
-package icu.windea.pls.integrations.translation.providers
+package icu.windea.pls.integrations.translation.tools
 
 import cn.yiiguxing.plugin.translate.trans.*
 import cn.yiiguxing.plugin.translate.trans.Lang.Companion.isExplicit
