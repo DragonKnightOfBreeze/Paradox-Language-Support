@@ -40,9 +40,8 @@ abstract class NavigateToFix(
 
                 override fun isSpeedSearchEnabled(): Boolean = true
 
-                override fun onChosen(selectedValue: PsiElement, finalChoice: Boolean): PopupStep<*>? {
+                override fun onChosen(selectedValue: PsiElement, finalChoice: Boolean) = doFinalStep {
                     navigateTo(editor, selectedValue)
-                    return FINAL_CHOICE
                 }
             }
             JBPopupFactory.getInstance().createListPopup(popup).showInBestPositionFor(editor)

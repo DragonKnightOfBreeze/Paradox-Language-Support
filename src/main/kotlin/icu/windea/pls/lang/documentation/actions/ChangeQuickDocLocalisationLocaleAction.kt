@@ -46,7 +46,7 @@ class ChangeQuickDocLocalisationLocaleAction : AnAction(), ActionToIgnore {
             targetElement.putUserData(PlsKeys.documentationLocale, selected.id)
             browser.reload()
         }
-        val localePopup = ParadoxLocaleListPopup(allLocales, onChosen = onChosen)
+        val localePopup = ParadoxLocaleListPopup(allLocales, callback = onChosen)
         JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(e.dataContext)
     }
 }

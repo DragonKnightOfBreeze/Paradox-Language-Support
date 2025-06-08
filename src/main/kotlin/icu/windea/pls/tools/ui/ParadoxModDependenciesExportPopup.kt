@@ -1,7 +1,6 @@
 package icu.windea.pls.tools.ui
 
 import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import icu.windea.pls.*
 import icu.windea.pls.tools.exporter.*
@@ -29,7 +28,7 @@ class ParadoxModDependenciesExportPopup(
         return true
     }
 
-    override fun onChosen(selectedValue: ParadoxModExporter, finalChoice: Boolean): PopupStep<*>? {
-        return doFinalStep { selectedValue.execute(project, table) }
+    override fun onChosen(selectedValue: ParadoxModExporter, finalChoice: Boolean) = doFinalStep {
+        selectedValue.execute(project, table)
     }
 }

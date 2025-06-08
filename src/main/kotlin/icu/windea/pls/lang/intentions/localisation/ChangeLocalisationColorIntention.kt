@@ -58,9 +58,10 @@ class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
 
         override fun isSpeedSearchEnabled(): Boolean = true
 
-        override fun onChosen(selectedValue: ParadoxTextColorInfo, finalChoice: Boolean): PopupStep<*>? {
-            runUndoTransparentWriteAction { value.setName(selectedValue.name) }
-            return FINAL_CHOICE
+        override fun onChosen(selectedValue: ParadoxTextColorInfo, finalChoice: Boolean) = doFinalStep {
+            runUndoTransparentWriteAction {
+                value.setName(selectedValue.name)
+            }
         }
     }
 }

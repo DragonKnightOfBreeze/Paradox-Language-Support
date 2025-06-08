@@ -59,9 +59,10 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
 
         override fun isSpeedSearchEnabled(): Boolean = true
 
-        override fun onChosen(selectedValue: CwtLocaleConfig, finalChoice: Boolean): PopupStep<*>? {
-            runUndoTransparentWriteAction { value.setName(selectedValue.id) }
-            return FINAL_CHOICE
+        override fun onChosen(selectedValue: CwtLocaleConfig, finalChoice: Boolean) = doFinalStep {
+            runUndoTransparentWriteAction {
+                value.setName(selectedValue.id)
+            }
         }
     }
 }
