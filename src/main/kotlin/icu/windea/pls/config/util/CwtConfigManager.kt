@@ -12,6 +12,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.console.CommandType
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
@@ -58,7 +59,7 @@ object CwtConfigManager {
     private fun doGetContainingConfigGroupForRepo(file: VirtualFile, project: Project): CwtConfigGroup? {
         val workDirectory = file.toNioPath().toFile().parentFile ?: return null
         val command = "git remote -v"
-        val commandResult = executeCommand(command, CommandType.AUTO, null, workDirectory)
+        val commandResult = executeCommand(command, workDirectory = workDirectory)
         val gameTypeId = commandResult.lines()
             .mapNotNull { it.splitByBlank(3).getOrNull(1) }
             .firstNotNullOfOrNull t@{

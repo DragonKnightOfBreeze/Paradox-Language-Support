@@ -1,10 +1,10 @@
 package icu.windea.pls.integrations.image.providers
 
 import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.console.CommandType
 import org.apache.commons.io.file.*
 import java.nio.file.*
 import java.util.*
@@ -39,7 +39,7 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
         val wd = fullExePath.parent?.toFile()
 
         val command = "$exe -version"
-        val result = executeCommand(command, CommandType.AUTO, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
+        val result = executeCommand(command, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
 
         return result.contains("ImageMagick") || result.contains("Version")
     }
@@ -59,34 +59,31 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
     // 6. 添加水印：
     //    magick input.jpg watermark.png -gravity southeast -geometry +10+10 -composite output.jpg
 
-    override fun open(file: VirtualFile): Boolean {
-        return false // unsupported, just return false
-    }
-
     override fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
         return runCatchingCancelable { doConvertImageFormat(path, targetDirectoryPath, targetFileName, targetFormat) }
-            .onFailure { thisLogger().warn(it) }.getOrThrow()
+            .onFailure { logger.warn(it) }.getOrThrow()
     }
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
         val settings = PlsFacade.getIntegrationsSettings().image
         val magickPath = settings.magickPath?.trim()!!
+
         val tempParentPath = PlsConstants.Paths.imagesTemp
         val outputDirectoryPath = tempParentPath.resolve(UUID.randomUUID().toString())
         outputDirectoryPath.createDirectories()
-
-        val fullExePath = magickPath.toPath()
-        val exe = fullExePath.name
-        val inputPath = path.toString().quote()
         val outputFileName = targetFileName ?: (path.nameWithoutExtension + "." + targetFormat)
         val outputPath = outputDirectoryPath.resolve(outputFileName)
-        val outputPathStr = outputPath.toString().quote()
+
+        val fullExePath = magickPath.toPath()
         val wd = fullExePath.parent?.toFile()
+        val exe = fullExePath.name.quoteIfNecessary()
+        val input = path.toString().quote()
+        val output = outputPath.toString().quote()
 
-        val command = "$exe $inputPath $outputPathStr"
-        val result = executeCommand(command, CommandType.AUTO, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
+        val command = "$exe $input $output"
+        val result = executeCommand(command, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
 
-        thisLogger().info("Execute magick command.\nCommand: $command\nCommand result: $result")
+        logger.info("Execute magick command.\nCommand: $command\nCommand result: $result")
 
         if (outputPath.notExists()) {
             throw IllegalStateException("Failed to convert image: output file not found.\nCommand: $command\nResult: $result")

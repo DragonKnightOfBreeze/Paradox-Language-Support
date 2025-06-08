@@ -4,13 +4,13 @@ package icu.windea.pls.core
 
 import com.google.common.cache.*
 import com.intellij.openapi.util.text.*
+import icu.windea.pls.core.console.*
 import icu.windea.pls.core.util.*
 import java.io.*
 import java.net.*
 import java.nio.charset.*
 import java.nio.file.*
 import java.util.*
-import java.util.concurrent.*
 import kotlin.contracts.*
 import kotlin.io.path.*
 import kotlin.math.*
@@ -583,49 +583,23 @@ typealias FloatRange = ClosedRange<Float>
 
 operator fun FloatRange.contains(element: Float?) = element != null && contains(element)
 
-enum class CommandType {
-    AUTO,
-    SHELL,
-    CMD,
-    POWER_SHELL,
-    ;
-}
-
-class CommandExecutionException(message: String) : IllegalStateException(message)
-
 @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
 fun executeCommand(
     command: String,
     commandType: CommandType? = null,
-    environmentVariables: Array<out String>? = null,
+    environment: Map<String, String> = emptyMap(),
     workDirectory: File? = null,
-    timeout: Long? = null,
+    timeout: Long? = null
 ): String {
-    if (commandType == CommandType.CMD || commandType == CommandType.POWER_SHELL) {
-        if (OS.value != OS.Windows) throw UnsupportedOperationException()
-    }
-    val commandArray = getCommandArray(command, commandType)
-    val process = Runtime.getRuntime().exec(commandArray, environmentVariables, workDirectory)
-    if (timeout == null) {
-        process.waitFor()
-    } else {
-        process.waitFor(timeout, TimeUnit.MILLISECONDS)
-    }
-    val result = process.inputStream.bufferedReader().readText().trim()
-    if (result.isNotEmpty() || process.exitValue() == 0) return result
-    val errorResult = process.errorStream.bufferedReader().readText().trim()
-    throw CommandExecutionException(errorResult)
+    return CommandExecutor(environment, workDirectory, timeout).execute(command, commandType)
 }
 
-private fun getCommandArray(command: String, commandType: CommandType?): Array<String> {
-    val commandType0 = if (commandType != CommandType.AUTO) commandType else when (OS.value) {
-        OS.Windows -> CommandType.CMD
-        OS.Linux -> CommandType.SHELL
-    }
-    return when (commandType0) {
-        CommandType.CMD -> arrayOf("cmd", "/c", command)
-        CommandType.SHELL -> arrayOf("/bin/sh", "-c", command)
-        CommandType.POWER_SHELL -> arrayOf("powershell", "-command", command)
-        else -> arrayOf(command)
-    }
+@Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
+fun executeCommand(
+    commands: List<String>,
+    environment: Map<String, String> = emptyMap(),
+    workDirectory: File? = null,
+    timeout: Long? = null
+): String {
+    return CommandExecutor(environment, workDirectory, timeout).execute(commands)
 }

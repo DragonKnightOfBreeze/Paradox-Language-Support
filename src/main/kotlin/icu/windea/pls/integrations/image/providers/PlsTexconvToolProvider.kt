@@ -1,7 +1,6 @@
 package icu.windea.pls.integrations.image.providers
 
 import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
@@ -28,32 +27,29 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
         return OS.value == OS.Windows
     }
 
-    override fun open(file: VirtualFile): Boolean {
-        return false // unsupported, just return false
-    }
-
     /**
      * @param targetFormat 参见：[File and pixel format options](https://github.com/microsoft/DirectXTex/wiki/Texconv#file-and-pixel-format-options)
      */
     override fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
-        return runCatchingCancelable { doConvertImageFormat(path, targetDirectoryPath, targetFileName, targetFormat) }.onFailure { logger.warn(it) }.getOrThrow()
+        return runCatchingCancelable { doConvertImageFormat(path, targetDirectoryPath, targetFileName, targetFormat) }
+            .onFailure { logger.warn(it) }.getOrThrow()
     }
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
         val tempParentPath = PlsConstants.Paths.imagesTemp
         val outputDirectoryPath = tempParentPath.resolve(UUID.randomUUID().toString())
         outputDirectoryPath.createDirectories()
+        val outputFileName = targetFileName ?: (path.nameWithoutExtension + "." + targetFormat)
+        val outputPath = outputDirectoryPath.resolve(outputFileName)
 
-        val exe = texconvExe.name
-        val s = path.toString().quote()
-        val o = outputDirectoryPath.toString().quote()
-        val ft = targetFormat
         val wd = texconvExeWd
+        val exe = texconvExe.name.quoteIfNecessary()
+        val input = path.toString().quote()
+        val output = outputDirectoryPath.toString().quote()
 
-        val command = "$exe $s -ft $ft -o $o -y" // -y: overwrite existing files
-        val result = executeCommand(command, CommandType.CMD, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
+        val command = "$exe $input -o $output -ft $targetFormat -y" // -y: overwrite existing files
+        val result = executeCommand(command, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
         val lines = result.lines()
-        val outputPath = lines.firstNotNullOfOrNull { it.removePrefixOrNull("writing ")?.trim()?.toPathOrNull() }
         val hasWarnings = lines.any { it.startsWith("WARNING: ") }
 
         if (hasWarnings) {
@@ -62,7 +58,7 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
             logger.info("Execute texconv command.\nCommand: $command\nCommand result: $result")
         }
 
-        if (outputPath == null || outputPath.notExists()) {
+        if (outputPath.notExists()) {
             throw IllegalStateException("Failed to convert image: output file not found.\nCommand: $command\nResult: $result")
         }
 

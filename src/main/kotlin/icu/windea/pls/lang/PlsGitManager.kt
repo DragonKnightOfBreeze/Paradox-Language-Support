@@ -1,6 +1,8 @@
 package icu.windea.pls.lang
 
 import icu.windea.pls.core.*
+import icu.windea.pls.core.console.CommandExecutionException
+import icu.windea.pls.core.console.CommandType
 import java.io.*
 import java.nio.file.*
 import kotlin.io.path.exists
@@ -33,18 +35,18 @@ object PlsGitManager {
 
     @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
     fun lsRemote(url: String): String {
-        return executeCommand("git ls-remote $url", CommandType.AUTO)
+        return executeCommand("git ls-remote $url")
     }
 
     @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
     fun clone(url: String, workDirectory: Path): String {
         val wd = workDirectory.normalize().toAbsolutePath().toFile()
-        return executeCommand("git clone $url", CommandType.AUTO, workDirectory = wd)
+        return executeCommand("git clone $url", workDirectory = wd)
     }
 
     @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
     fun pull(url: String, workDirectory: Path): String {
         val wd = workDirectory.normalize().toAbsolutePath().toFile()
-        return executeCommand("git pull $url", CommandType.AUTO, workDirectory = wd)
+        return executeCommand("git pull $url", workDirectory = wd)
     }
 }

@@ -1,7 +1,6 @@
 package icu.windea.pls.integrations.image.providers
 
 import com.intellij.openapi.extensions.*
-import com.intellij.openapi.vfs.*
 import java.io.*
 import java.nio.file.*
 
@@ -14,8 +13,6 @@ interface PlsImageToolProvider {
     fun isEnabled(): Boolean
 
     fun supports(): Boolean
-
-    fun open(file: VirtualFile): Boolean
 
     fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean
 
