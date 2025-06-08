@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.util
 
+import fleet.multiplatform.shims.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import java.time.format.*
@@ -7,7 +8,7 @@ import java.time.format.*
 object ParadoxTypeManager {
     private val percentageFieldRegex = """[1-9]?[0-9]+%""".toRegex()
     private val colorFieldRegex = """(?:rgb|rgba|hsb|hsv|hsl)[ \t]*\{[\d. \t]*}""".toRegex()
-    private val dateFieldFormater = DateTimeFormatter.ofPattern("yyyy.M.d")
+    private val dateFieldFormatters = ConcurrentHashMap<String, DateTimeFormatter>()
 
     fun resolve(value: String): ParadoxType {
         return when {
@@ -69,9 +70,11 @@ object ParadoxTypeManager {
         return value.matches(colorFieldRegex)
     }
 
-    fun isDateField(expression: String): Boolean {
+    fun isDateField(expression: String, datePattern: String?): Boolean {
         return try {
-            dateFieldFormater.parse(expression)
+            val pattern = datePattern?.orNull() ?: "y.M.d"
+            val dateTimeFormatter = dateFieldFormatters.getOrPut(pattern) { DateTimeFormatter.ofPattern(pattern) }
+            dateTimeFormatter.parse(expression)
             true
         } catch (e: Exception) {
             false

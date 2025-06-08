@@ -107,7 +107,8 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             }
             dataType == CwtDataTypes.DateField -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
-                val r = ParadoxTypeManager.isDateField(expression.value)
+                val datePattern = configExpression.value
+                val r = ParadoxTypeManager.isDateField(expression.value, datePattern)
                 Result.of(r)
             }
             dataType == CwtDataTypes.Localisation -> {

@@ -27,6 +27,7 @@ class CoreCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
     override val rules: List<Rule> = listOf(
         rule(CwtDataTypes.PercentageField, "percentage_field"),
         rule(CwtDataTypes.DateField, "date_field"),
+        rule(CwtDataTypes.DateField, "date_field[", "]") { value = it.orNull() },
 
         rule(CwtDataTypes.Localisation, "localisation"),
         rule(CwtDataTypes.SyncedLocalisation, "localisation_synced"),
