@@ -10,16 +10,28 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
-sealed class ParadoxSearchScope(
-    project: Project?
+open class ParadoxSearchScope(
+    project: Project?,
+    val contextFile: VirtualFile?,
 ) : GlobalSearchScope(project) {
     override fun isSearchInModuleContent(aModule: Module): Boolean {
         return true
     }
 
     override fun isSearchInLibraries(): Boolean {
+        return true
+    }
+
+    override fun contains(file: VirtualFile): Boolean {
+        val topFile = file.findTopHostFileOrThis()
+        if (!ParadoxFileManager.canReference(contextFile, topFile)) return false //判断上下文文件能否引用另一个文件中的内容
+        return containsFromTop(topFile)
+    }
+
+    protected open fun containsFromTop(topFile: VirtualFile): Boolean {
         return true
     }
 
@@ -54,6 +66,12 @@ sealed class ParadoxSearchScope(
                     return ParadoxModWithDependenciesSearchScope(project, contextFile, modDirectory, gameDirectory, dependencyDirectories)
                 }
             }
+        }
+
+        @JvmStatic
+        fun allScope(project: Project, context: Any?): GlobalSearchScope {
+            val file = selectFile(context) ?: return EMPTY_SCOPE //use empty scope here
+            return allScope(project).intersectWith(ParadoxSearchScope(project, file))
         }
 
         @JvmStatic

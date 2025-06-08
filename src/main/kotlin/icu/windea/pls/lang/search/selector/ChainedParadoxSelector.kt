@@ -31,15 +31,17 @@ class ChainedParadoxSelector<T>(
         }
     }
     val defaultScope: GlobalSearchScope by lazy {
-        ParadoxSearchScope.fromFile(project, file) ?: GlobalSearchScope.allScope(project)
+        ParadoxSearchScope.fromFile(project, file) ?: ParadoxSearchScope.allScope(project, file)
     }
     val scope: GlobalSearchScope by lazy {
+        //NOTE 这里需要保证适用 ParadoxFileManager.canReference()
         val selectorScopes = selectors.filterIsInstance<ParadoxSearchScopeAwareSelector<*>>().mapNotNull { it.getGlobalSearchScope() }
-        when {
+        val mergedScope = when {
             selectorScopes.isEmpty() -> defaultScope
-            selectorScopes.size == 1 -> selectorScopes[0]
-            else -> selectorScopes.reduce { a, b -> a.intersectWith(b) }
+            selectorScopes.size == 1 -> selectorScopes[0].intersectWith(ParadoxSearchScope.allScope(project, file))
+            else -> selectorScopes.reduce { a, b -> a.intersectWith(b) }.intersectWith(ParadoxSearchScope.allScope(project, file))
         }
+        mergedScope
     }
 
     val selectors = mutableListOf<ParadoxSelector<T>>()

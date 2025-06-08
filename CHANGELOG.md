@@ -30,7 +30,7 @@ TODO
 * [ ] 新功能：提供AI驱动的本地化润色功能 / NEW: Provide AI-driven localisation colorization features
 * [ ] 新功能：提供AI驱动的脚本/本地化生成功能 / NEW: Provide AI-driven script/translation generation features
 * [ ] 新功能：提供对魔法注释的初步支持，用于批量处理脚本与本地化文件的内容 / NEW: Provide support for magic comments, which are used to batch process of scripts and localisation files 
-* [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
+* [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.4.2
 

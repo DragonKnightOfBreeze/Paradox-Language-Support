@@ -23,7 +23,7 @@ object ParadoxFileManager {
      * 判断目标文件能否引用另一个文件中的内容。
      *
      * 游戏目录下可以存在多个入口目录，
-     * 插件认为模组目录以及主要入口目录（游戏目录或其game子目录）不能引用次要入口目录下的文件中的内容。
+     * 插件认为模组目录以及游戏目录的主要入口目录（游戏目录或其game子目录）不能引用游戏目录的次要入口目录下的文件中的内容。
      */
     fun canReference(targetFile: VirtualFile?, otherFile: VirtualFile?): Boolean {
         val target = targetFile?.fileInfo ?: return true
