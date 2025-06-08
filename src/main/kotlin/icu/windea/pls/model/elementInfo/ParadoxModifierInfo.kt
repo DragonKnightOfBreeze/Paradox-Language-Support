@@ -16,7 +16,7 @@ data class ParadoxModifierInfo(
     val modificationTracker by lazy { support?.getModificationTracker(this) }
 
     companion object {
-        val EMPTY = ParadoxModifierInfo("", ParadoxGameType.placeholder(), getDefaultProject())
+        val EMPTY by lazy { ParadoxModifierInfo("", ParadoxGameType.placeholder(), getDefaultProject()) }
     }
 }
 
