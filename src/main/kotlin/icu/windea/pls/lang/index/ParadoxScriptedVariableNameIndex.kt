@@ -8,7 +8,7 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScriptScriptedVariable>() {
     companion object {
-        private const val VERSION = 65 //1.4.0
+        private const val VERSION = 70 //2.0.0-dev
         private const val CACHE_SIZE = 2 * 1024
     }
 

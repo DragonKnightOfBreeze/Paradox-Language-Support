@@ -8,7 +8,7 @@ import icu.windea.pls.localisation.psi.*
  */
 class ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
     companion object {
-        private const val VERSION = 66 //1.4.2
+        private const val VERSION = 70 //2.0.0-dev
         private const val CACHE_SIZE = 2 * 1024
     }
 

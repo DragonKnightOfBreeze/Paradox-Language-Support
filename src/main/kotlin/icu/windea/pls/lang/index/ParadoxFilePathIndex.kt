@@ -21,7 +21,7 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInde
     )
 
     companion object {
-        private const val VERSION = 65 //1.4.0
+        private const val VERSION = 70 //2.0.0-dev
     }
 
     override fun getName() = ParadoxIndexManager.FilePathName

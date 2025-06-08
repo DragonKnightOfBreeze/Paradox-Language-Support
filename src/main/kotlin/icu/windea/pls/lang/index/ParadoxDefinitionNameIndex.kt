@@ -8,7 +8,7 @@ import icu.windea.pls.script.psi.*
  */
 class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinitionElement>() {
     companion object {
-        private const val VERSION = 65 //1.4.0
+        private const val VERSION = 70 //2.0.0-dev
         private const val CACHE_SIZE = 20 * 1024 //38000+ in stellaris@3.6
     }
 
@@ -23,7 +23,7 @@ class ParadoxDefinitionNameIndex : StringStubIndexExtension<ParadoxScriptDefinit
      */
     class TextFormatIndex : StringStubIndexExtension<ParadoxScriptDefinitionElement>() {
         companion object {
-            private const val VERSION = 65 //1.4.0
+            private const val VERSION = 70 //2.0.0-dev
             private const val CACHE_SIZE = 2 * 1024
         }
 
