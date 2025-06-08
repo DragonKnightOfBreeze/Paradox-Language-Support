@@ -111,6 +111,12 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindSelected(settings.documentation::renderLineComment)
                     contextHelp(PlsBundle.message("settings.documentation.renderLineComment.tip"))
                 }
+                //renderRelatedLocalisationsForScriptedVariables
+                row {
+                    checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForScriptedVariables"))
+                        .bindSelected(settings.documentation::renderRelatedLocalisationsForScriptedVariables)
+                    contextHelp(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForScriptedVariables.tip"))
+                }
                 //renderRelatedLocalisationsForDefinitions
                 row {
                     checkBox(PlsBundle.message("settings.documentation.renderRelatedLocalisationsForDefinitions"))

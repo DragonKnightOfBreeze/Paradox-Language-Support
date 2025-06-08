@@ -136,7 +136,7 @@ object ParadoxEventManager {
         }
     }
 
-    fun getLocalizedName(definition: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
+    fun getLocalizedNameElement(definition: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
         return ParadoxDefinitionManager.getPrimaryLocalisation(definition)
     }
 

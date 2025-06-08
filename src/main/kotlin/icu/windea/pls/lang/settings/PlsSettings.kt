@@ -48,13 +48,14 @@ class PlsSettingsState : BaseState() {
 
     /**
      * @property renderLineComment 是否需要渲染之前的单行注释文本到文档中。
+     * @property renderRelatedLocalisationsForScriptedVariables 是否需要为脚本变量渲染相关本地化文本到文档中（同名的本地化。
      * @property renderRelatedLocalisationsForDefinitions 是否需要为定义渲染相关本地化文本到文档中。
      * @property renderRelatedImagesForDefinitions 是否需要为定义渲染相关图片到文档中。
      * @property renderNameDescForModifiers 是否需要为修正渲染相关本地化文本到文档中。
      * @property renderIconForModifiers 是否需要为修正渲染图标到文档中。
      * @property renderLocalisationForLocalisations 是否需要为本地化渲染本地化文本到文档中。
-     * @property renderRelatedLocalisationsForComplexEnumValues 是否需要为复杂枚举值渲染相关本地化文本到文档中（同名的本地化）。
-     * @property renderRelatedLocalisationsForDynamicValues 是否需要为动态值渲染相关本地化文本到文档中（同名的本地化）。
+     * @property renderRelatedLocalisationsForComplexEnumValues 是否需要为复杂枚举值渲染相关本地化文本到文档中（使用同名的本地化）。
+     * @property renderRelatedLocalisationsForDynamicValues 是否需要为动态值渲染相关本地化文本到文档中（使用同名的本地化）。
      * @property showScopes 是否需要在文档中显示作用域信息（如果支持且存在）。
      * @property showScopeContext 是否需要在文档中显示作用域上下文（如果支持且存在）。
      * @property showParameters 是否需要在文档中显示参数信息（如果支持且存在）。
@@ -63,6 +64,7 @@ class PlsSettingsState : BaseState() {
     @Tag("documentation")
     class DocumentationState : BaseState() {
         var renderLineComment by property(false)
+        var renderRelatedLocalisationsForScriptedVariables by property(true)
         var renderRelatedLocalisationsForDefinitions by property(true)
         var renderRelatedImagesForDefinitions by property(true)
         var renderNameDescForModifiers by property(true)

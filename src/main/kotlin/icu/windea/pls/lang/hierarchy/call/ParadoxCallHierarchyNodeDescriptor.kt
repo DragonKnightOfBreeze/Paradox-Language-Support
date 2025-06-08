@@ -14,6 +14,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.*
 import icu.windea.pls.*
+import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
@@ -100,6 +101,7 @@ class ParadoxCallHierarchyNodeDescriptor(
                 val name = element.name
                 if (name.isNullOrEmpty()) return null
                 ParadoxScriptedVariableManager.getHintFromExtendedConfig(name, file)
+                    ?: ParadoxScriptedVariableManager.getLocalizedName(element)
             }
             is ParadoxScriptDefinitionElement -> {
                 ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()

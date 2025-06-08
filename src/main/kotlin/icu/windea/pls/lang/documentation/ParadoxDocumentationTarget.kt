@@ -482,6 +482,32 @@ private fun DocumentationBuilder.buildScriptedVariableDefinition(element: Parado
             is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
             is ParadoxScriptValue -> append(" = ").append(valueElement.value.escapeXml())
         }
+
+        //加上相关本地化信息：同名的本地化
+        addRelatedLocalisationsForScriptedVariable(element, name)
+    }
+}
+
+private fun DocumentationBuilder.addRelatedLocalisationsForScriptedVariable(element: ParadoxScriptScriptedVariable, name: String) {
+    val render = PlsFacade.getSettings().documentation.renderRelatedLocalisationsForScriptedVariables
+    val gameType = selectGameType(element) ?: return
+    val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
+    val nameLocalisation = ParadoxScriptedVariableManager.getNameLocalisation(name, element, usedLocale)
+    //如果没找到的话，不要在文档中显示相关信息
+    run {
+        if (nameLocalisation == null) return@run
+        appendBr()
+        append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ")
+        append("name = ").appendLocalisationLink(gameType, nameLocalisation.name, element)
+    }
+    run rs@{
+        val sections = getSections(SECTIONS_LOC)
+        if (sections == null || !render) return@rs
+        run {
+            if (nameLocalisation == null) return@run
+            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
+            sections.put("name", richText)
+        }
     }
 }
 

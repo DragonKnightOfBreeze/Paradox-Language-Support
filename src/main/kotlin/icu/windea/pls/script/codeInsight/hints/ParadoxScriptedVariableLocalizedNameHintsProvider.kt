@@ -44,22 +44,25 @@ class ParadoxScriptedVariableLocalizedNameHintsProvider : ParadoxScriptHintsProv
         //only for scripted variables, not for scripted variable references
 
         if (element !is ParadoxScriptScriptedVariable) return true
-        val presentation = doCollect(element, file, editor, settings) ?: return true
+        val name = element.name
+        if (name.isNullOrEmpty()) return true
+        if (name.isParameterized()) return true
+
+        val presentation = doCollect(name, file, editor, settings) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.scriptedVariableName.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
         return true
     }
 
-    private fun PresentationFactory.doCollect(element: ParadoxScriptScriptedVariable, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
-        val name = element.name
-        if (name.isNullOrEmpty()) return null
-        if (name.isParameterized()) return null
-        val hint = ParadoxScriptedVariableManager.getHintFromExtendedConfig(name, file) //just use file as contextElement here
-        if (hint.isNullOrEmpty()) return null
-        val hintElement = ParadoxLocalisationElementFactory.createProperty(file.project, "hint", hint)
-        //it's necessary to inject fileInfo (so that gameType can be got later)
-        hintElement.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
+    private fun PresentationFactory.doCollect(name: String, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
+        val hintElement = getNameLocalisationToUse(name, file) ?: return null
         return ParadoxLocalisationTextInlayRenderer.render(hintElement, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
+    }
+
+    private fun getNameLocalisationToUse(name: String, file: PsiFile): ParadoxLocalisationProperty? {
+        ParadoxScriptedVariableManager.getNameLocalisationFromExtendedConfig(name, file)?.let { return it }
+        ParadoxScriptedVariableManager.getNameLocalisation(name, file, ParadoxLocaleManager.getPreferredLocaleConfig())?.let { return it }
+        return null
     }
 }

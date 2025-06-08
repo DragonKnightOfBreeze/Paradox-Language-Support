@@ -26,6 +26,7 @@ abstract class CopyScriptedVariableLocalizedNameIntentionBase : ModCommandAction
         val element = findElement(context) ?: return null
         val name = element.name?.orNull() ?: return null
         return ParadoxScriptedVariableManager.getHintFromExtendedConfig(name, context.file)?.orNull()
+            ?: ParadoxScriptedVariableManager.getLocalizedName(element)?.orNull()
     }
 
     private fun findElement(context: ActionContext): ParadoxScriptScriptedVariable? {

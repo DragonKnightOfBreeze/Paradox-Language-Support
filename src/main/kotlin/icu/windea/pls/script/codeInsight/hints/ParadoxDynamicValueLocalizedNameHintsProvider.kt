@@ -72,21 +72,8 @@ class ParadoxDynamicValueLocalizedNameHintsProvider : ParadoxScriptHintsProvider
     }
 
     private fun getNameLocalisationToUse(name: String, types: Set<String>, file: PsiFile): ParadoxLocalisationProperty? {
-        run {
-            val hint = types.firstNotNullOfOrNull { type ->
-                ParadoxDynamicValueManager.getHintFromExtendedConfig(name, type, file) //just use file as contextElement here
-            }
-            if (hint.isNullOrEmpty()) return@run
-            val hintLocalisation = ParadoxLocalisationElementFactory.createProperty(file.project, "hint", hint)
-            //it's necessary to inject fileInfo here (so that gameType can be got later)
-            hintLocalisation.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, file.fileInfo)
-            return hintLocalisation
-        }
-        run {
-            val nameLocalisation = ParadoxComplexEnumValueManager.getNameLocalisation(name, file, ParadoxLocaleManager.getPreferredLocaleConfig())
-            if (nameLocalisation == null) return@run
-            return nameLocalisation
-        }
+        ParadoxDynamicValueManager.getNameLocalisationFromExtendedConfig(name, types, file)?.let { return it }
+        ParadoxDynamicValueManager.getNameLocalisation(name, file, ParadoxLocaleManager.getPreferredLocaleConfig())?.let { return it }
         return null
     }
 }

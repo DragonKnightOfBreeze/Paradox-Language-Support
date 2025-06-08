@@ -12,7 +12,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.localisation.psi.*
 
 object ParadoxDynamicValueManager {
     const val EVENT_TARGET_PREFIX = "event_target:"
@@ -53,6 +53,17 @@ object ParadoxDynamicValueManager {
         val selector = selector(contextElement.project, contextElement).localisation().contextSensitive()
             .preferLocale(locale)
         return ParadoxLocalisationSearch.search(name, selector).find()
+    }
+
+    fun getNameLocalisationFromExtendedConfig(name: String, types: Set<String>, contextElement: PsiElement): ParadoxLocalisationProperty? {
+        val hint = types.firstNotNullOfOrNull { type ->
+            getHintFromExtendedConfig(name, type, contextElement) //just use file as contextElement here
+        }
+        if (hint.isNullOrEmpty()) return null
+        val hintLocalisation = ParadoxLocalisationElementFactory.createProperty(contextElement.project, "hint", hint)
+        //it's necessary to inject fileInfo here (so that gameType can be got later)
+        hintLocalisation.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, contextElement.fileInfo)
+        return hintLocalisation
     }
 
     fun getHintFromExtendedConfig(name: String, type: String, contextElement: PsiElement): String? {
