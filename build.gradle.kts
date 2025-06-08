@@ -167,11 +167,8 @@ grammarKit {
 
 val excludesInJar = listOf(
     "icu/windea/pls/dev",
-    "icu/windea/pls/core/data/CsvExtensions*.class",
 )
-val excludesInZip = listOf(
-    "lib/jackson-dataformat-csv-*.jar",
-)
+val excludesInZip = emptyList<String>()
 val cwtConfigDirs = listOf(
     "core" to "core",
     "cwtools-ck2-config" to "ck2",
