@@ -49,9 +49,7 @@ dependencies {
     implementation("org.javassist:javassist:3.30.2-GA")
     // jackson-csv - https://github.com/FasterXML/jackson-dataformats-text/tree/master/csv
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.17.2") {
-        exclude(module = "jackson-annotations")
-        exclude(module = "jackson-core")
-        exclude(module = "jackson-databind")
+        exclude(group = "com.fasterxml.jackson.core")
     }
     // junit - https://github.com/junit-team/junit4
     testImplementation("junit:junit:4.13.2")
@@ -60,12 +58,18 @@ dependencies {
 
     // AI 集成
 
-    // LangChain4J 核心库 - https://github.com/langchain4j/langchain4j
-    // implementation("dev.langchain4j:langchain4j:0.31.0")
-    // OpenAI 适配器 - https://github.com/langchain4j/langchain4j-open-ai
-    // implementation("dev.langchain4j:langchain4j-open-ai:0.31.0")
-    // 本地模型支持 - https://github.com/langchain4j/langchain4j-ollama
-    // implementation("dev.langchain4j:langchain4j-ollama:0.31.0")
+    // LangChain4J - https://github.com/langchain4j/langchain4j
+    implementation("dev.langchain4j:langchain4j:1.0.1") {
+        exclude(group = "com.fasterxml.jackson.core")
+    }
+    implementation("dev.langchain4j:langchain4j-open-ai:1.0.1") {
+        exclude(group = "com.fasterxml.jackson.core")
+    }
+    implementation("dev.langchain4j:langchain4j-kotlin:1.0.1-beta6") {
+        exclude(group = "org.jetbrains.kotlin")
+        exclude(group = "org.jetbrains.kotlinx")
+        exclude(group = "com.fasterxml.jackson.core")
+    }
 
     // 目前仅作参考
 

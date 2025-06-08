@@ -18,6 +18,8 @@ TODO
 ## 2.0.0-dev
 
 * [X] #148 更改`date_field`的默认日期模式为`y.M.d`，且允许声明日期模式（`date_field[y.M.d]`） / OP: Change the default date format of `date_field` to `y.M.d`, and allow declaring date formats (`date_field[y.M.d]`)
+* [X] 修复：修复插件可能无法正确解析json，从而无法识别游戏目录的问题 / OP: Fix a bug that plugin may not be able to correctly parse json, causing the game directory to be incorrectly recognized
+* [ ] 优化：尝试避免打开尺寸过大的DDS图片时造成的UI冻结 / OP: Try to avoid UI freezing when opening large DDS images
 * [X] 优化：通过快速文档为本地化参数和命令的传入参数提供其中使用的格式标签的说明 / OP: Provide information about format tags used in arguments of localisation parameters and commands by quick documentation
 * [X] 优化：也为复杂枚举值与动态值提供快速文档与内嵌提示，来自同名的本地化 / OP: Also provide quick documentation and inlay hints for complex enum values and dynamic values, from the same name localisation
 * [X] 优化：可以配置处理图片时使用的工具（默认且内置：Texconv，可选：Image Magick） / OP: Can configure the tool used to process images (Default and built-in: Texconv, Available: Image Magick)

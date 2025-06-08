@@ -9,5 +9,5 @@ data class ParadoxLauncherSettingsInfo(
     val modPath: String = "mod",
     val dlcPath: String = "",
     val exePath: String,
-    val exeArgs: List<String>
+    val exeArgs: List<String> = emptyList()
 )

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.*
 
 val jsonMapper by lazy {
     jacksonObjectMapper().apply {
+        findAndRegisterModules()
         disable(SerializationFeature.INDENT_OUTPUT)
         enable(JsonGenerator.Feature.IGNORE_UNKNOWN)
         enable(JsonParser.Feature.IGNORE_UNDEFINED)
