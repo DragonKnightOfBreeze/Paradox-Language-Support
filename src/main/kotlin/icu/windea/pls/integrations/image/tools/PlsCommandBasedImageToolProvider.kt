@@ -22,9 +22,11 @@ abstract class PlsCommandBasedImageToolProvider : PlsImageToolProvider {
             val tempParentPath = PlsConstants.Paths.imagesTemp
             tempParentPath.createDirectories()
             val path = tempParentPath.resolve(UUID.randomUUID().toString() + "." + sourceFormat)
-            path.outputStream(StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING).use { IOUtils.copy(inputStream, it) }
+            path.outputStream(StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
+                .use { IOUtils.copy(inputStream.buffered(), it.buffered()) }
             val targetPath = convertImageFormat(path, null, null, sourceFormat, targetFormat)
-            targetPath.inputStream(StandardOpenOption.READ).use { IOUtils.copy(it, outputStream) }
+            targetPath.inputStream(StandardOpenOption.READ)
+                .use { IOUtils.copy(it.buffered(), outputStream.buffered()) }
             path.deleteIfExists()
             return true
         } catch (e: Exception) {

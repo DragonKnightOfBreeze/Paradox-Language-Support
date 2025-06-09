@@ -27,9 +27,10 @@ object ParadoxDdsImageResolver {
         try {
             //如果存在基于DDS文件绝对路径的缓存数据，则使用缓存的PNG文件绝对路径
             val finalAbsPath = absPath.normalizePath()
-            val pngAbsPath = getPngAbsPath(finalAbsPath, relPath, frameInfo)
+            val cacheKey = getCacheKey(finalAbsPath, frameInfo)
+            val pngAbsPath = ddsCache.get(cacheKey) { getPngAbsPath(finalAbsPath, relPath, frameInfo) }
             if (pngAbsPath.notExists()) {
-                doConvertDdsToPng(finalAbsPath.toPath(), pngAbsPath, frameInfo)
+                ddsCache.invalidate(cacheKey)
             }
             return pngAbsPath.toString()
         } catch (e: Exception) {
@@ -40,25 +41,12 @@ object ParadoxDdsImageResolver {
     }
 
     private fun getPngAbsPath(absPath: String, relPath: String?, frameInfo: ImageFrameInfo?): Path {
-        val cacheKey = getCacheKey(absPath, frameInfo)
-        return ddsCache.get(cacheKey) { doGetPngAbsPath(absPath, relPath, frameInfo) }
-    }
-
-    private fun getCacheKey(absPath: String, frameInfo: ImageFrameInfo?): String {
-        if (frameInfo != null) {
-            return "$absPath@${frameInfo.frame}_${frameInfo.frames}"
-        } else {
-            return absPath
-        }
-    }
-
-    private fun doGetPngAbsPath(absPath: String, relPath: String?, frameInfo: ImageFrameInfo?): Path {
-        val pngAbsPath = doResolvePngAbsPath(absPath, relPath, frameInfo)
-        doConvertDdsToPng(absPath.toPath(), pngAbsPath, frameInfo)
+        val pngAbsPath = resolvePngAbsPath(absPath, relPath, frameInfo)
+        convertDdsToPng(absPath.toPath(), pngAbsPath, frameInfo)
         return pngAbsPath
     }
 
-    private fun doResolvePngAbsPath(absPath: String, relPath: String?, frameInfo: ImageFrameInfo?): Path {
+    private fun resolvePngAbsPath(absPath: String, relPath: String?, frameInfo: ImageFrameInfo?): Path {
         val imagesPath = PlsConstants.Paths.images
         imagesPath.createDirectories()
         if (relPath != null) {
@@ -83,7 +71,7 @@ object ParadoxDdsImageResolver {
         }
     }
 
-    private fun doConvertDdsToPng(absPath: Path, pngAbsPath: Path, frameInfo: ImageFrameInfo?) {
+    private fun convertDdsToPng(absPath: Path, pngAbsPath: Path, frameInfo: ImageFrameInfo?) {
         pngAbsPath.deleteIfExists()
         pngAbsPath.create()
         Files.newOutputStream(pngAbsPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING).use { outputStream ->
@@ -106,6 +94,14 @@ object ParadoxDdsImageResolver {
         val finalAbsPath = absPath.normalizePath()
         val cacheKey = getCacheKey(finalAbsPath, frameInfo)
         ddsCache.invalidate(cacheKey)
+    }
+
+    fun getCacheKey(absPath: String, frameInfo: ImageFrameInfo?): String {
+        if (frameInfo != null) {
+            return "$absPath@${frameInfo.frame}_${frameInfo.frames}"
+        } else {
+            return absPath
+        }
     }
 }
 

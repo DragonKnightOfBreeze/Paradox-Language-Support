@@ -5,6 +5,8 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
 import icu.windea.pls.dds.*
 import io.github.ititus.dds.*
+import io.github.ititus.ddsiio.*
+import java.awt.image.*
 import java.io.*
 import java.nio.file.*
 import java.nio.file.StandardOpenOption.*
@@ -34,8 +36,21 @@ class DefaultDdsSupport : DdsSupport {
         return ddsMetadata
     }
 
-    override fun createImageReader(extension: Any?, spi: DdsImageReaderSpi): ImageReader? {
-        return null //unnecessary to implement
+    override fun createImageReader(extension: Any?, spi: DdsImageReaderSpi): ImageReader {
+        return ImageReader(spi, this)
+    }
+
+    class ImageReader(
+        spi: DdsImageReaderSpi,
+        private val support: DefaultDdsSupport,
+    ) : DdsImageReader(spi) {
+        override fun read(imageIndex: Int, param: ImageReadParam?): BufferedImage? {
+            return doRead(imageIndex, param)
+        }
+
+        private fun doRead(imageIndex: Int, param: ImageReadParam?): BufferedImage? {
+            return super.read(imageIndex, param)
+        }
     }
 
     override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
@@ -51,7 +66,7 @@ class DefaultDdsSupport : DdsSupport {
     override fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
         try {
             val inputStream = path.inputStream(READ)
-            val outputStream by lazy { targetPath.outputStream(WRITE, CREATE, TRUNCATE_EXISTING) }
+            val outputStream = targetPath.outputStream(WRITE, CREATE, TRUNCATE_EXISTING)
             doConvertImageFormat(inputStream, outputStream, targetFormat)
             return targetPath.exists()
         } catch (e: Exception) {
@@ -62,13 +77,13 @@ class DefaultDdsSupport : DdsSupport {
 
     @Suppress("NAME_SHADOWING")
     private fun doConvertImageFormat(inputStream: InputStream, outputStream: OutputStream, targetFormat: String): OutputStream {
-        inputStream.use { inputStream ->
+        inputStream.buffered().use { inputStream ->
             val imageInputStream = ImageIO.createImageInputStream(inputStream)
             val imageReader = ImageIO.getImageReaders(imageInputStream).next()
             imageReader.input = imageInputStream
             val numImages = imageReader.getNumImages(false)
             if (numImages == 0) throw IllegalStateException()
-            outputStream.use { outputStream ->
+            outputStream.buffered().use { outputStream ->
                 repeat(numImages) { i ->
                     val image0 = imageReader.read(i)
                     ImageIO.write(image0, targetFormat, outputStream)

@@ -34,12 +34,4 @@ object DdsManager {
         }
         if (!r) throw UnsupportedOperationException()
     }
-
-    @Throws(UnsupportedOperationException::class)
-    fun convertImageFormat(file: VirtualFile, targetDirectory: VirtualFile, targetFileName: String, sourceFormat: String, targetFormat: String): VirtualFile? {
-        val path = file.toNioPath()
-        val targetPath = targetDirectory.toNioPath().resolve(targetFileName)
-        convertImageFormat(path, targetPath, sourceFormat, targetFormat)
-        return VfsUtil.findFile(targetPath, true)
-    }
 }

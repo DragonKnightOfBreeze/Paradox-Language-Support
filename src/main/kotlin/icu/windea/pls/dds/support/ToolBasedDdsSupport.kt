@@ -46,9 +46,13 @@ class ToolBasedDdsSupport : DdsSupport {
         val stream: ImageInputStream? by memberProperty<DdsImageReader, _>("stream")
 
         override fun read(imageIndex: Int, param: ImageReadParam?): BufferedImage {
+            return doRead(imageIndex, param)
+        }
+
+        private fun doRead(imageIndex: Int, param: ImageReadParam?): BufferedImage {
             val stream = stream
             val image = try {
-                doRead(stream)
+                doReadFromStream(stream)
             } catch (e: Exception) {
                 if (e is ProcessCanceledException) throw e
                 thisLogger().warn(e)
@@ -57,14 +61,14 @@ class ToolBasedDdsSupport : DdsSupport {
             return image ?: super.read(imageIndex, param)
         }
 
-        private fun doRead(stream: ImageInputStream?): BufferedImage? {
+        private fun doReadFromStream(stream: ImageInputStream?): BufferedImage? {
             if (stream == null) return null
             val inputStream = ImageInputStreamAdapter(stream)
             val outputStream = ByteArrayOutputStream()
-            val r = support.convertImageFormat(inputStream, outputStream, "dds", "png")
+            val r = support.convertImageFormat(inputStream.buffered(), outputStream.buffered(), "dds", "png")
             if (!r) return null
             val input = ByteArrayInputStream(outputStream.toByteArray())
-            return ImageIO.read(input)
+            return ImageIO.read(input.buffered())
         }
     }
 
