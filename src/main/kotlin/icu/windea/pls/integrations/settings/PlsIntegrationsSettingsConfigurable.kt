@@ -144,7 +144,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
     private fun validateCk3TigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
         val path = button.text.trim()
         if (path.isEmpty()) return null
-        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsCk3TigerToolProvider::class.java) ?: return null
+        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsTigerToolProvider.Ck3::class.java) ?: return null
         if (tool.validatePath(path)) return null
         return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
     }
@@ -152,7 +152,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
     private fun validateIrTigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
         val path = button.text.trim()
         if (path.isEmpty()) return null
-        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsIrTigerToolProvider::class.java) ?: return null
+        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsTigerToolProvider.Ir::class.java) ?: return null
         if (tool.validatePath(path)) return null
         return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
     }
@@ -160,7 +160,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
     private fun validateVic3TigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
         val path = button.text.trim()
         if (path.isEmpty()) return null
-        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsVic3TigerToolProvider::class.java) ?: return null
+        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsTigerToolProvider.Vic3::class.java) ?: return null
         if (tool.validatePath(path)) return null
         return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
     }

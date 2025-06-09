@@ -24,9 +24,9 @@ TODO
 * [X] 优化：为封装变量、复杂枚举值和动态值提供快速文档与内嵌提示，来自同名的本地化 / OP: Also provide quick documentation and inlay hints for scripted variables, complex enum values and dynamic values, from the same name localisation
 * [X] 优化：可以配置处理图片时使用的工具（默认且内置：Texconv，可选：Image Magick） / OP: Can configure the tool used to process images (Default and built-in: Texconv, Available: Image Magick)
 * [X] 优化：可以配置翻译本地化文本时使用的工具（目前仅限Translation Plugin） / OP: Can configure the tool used to translate localisation text (Currently limited to Translation Plugin)
-* [ ] 优化：可以配置启用的代码检查工具（目仅限Tiger） / OP: Can configure which code inspection tools to enable (Currently limited to Tiger)
+* [X] 优化：可以配置要启用的代码检查工具（目前仅限Tiger） / OP: Can configure which code inspection tools to enable (Currently limited to Tiger)
 * [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
-* [ ] 新功能：集成AI，提供对应的设置页面 / NEW: Integrate AI, provide corresponding settings page
+* [X] 新功能：集成AI，提供对应的设置页面 / NEW: Integrate AI, provide corresponding settings page
 * [ ] 新功能：提供AI驱动的本地化翻译功能 / NEW: Provide AI-driven localisation translation features
 * [ ] 新功能：提供AI驱动的本地化润色功能 / NEW: Provide AI-driven localisation colorization features
 * [ ] 新功能：提供AI驱动的脚本/本地化生成功能 / NEW: Provide AI-driven script/translation generation features

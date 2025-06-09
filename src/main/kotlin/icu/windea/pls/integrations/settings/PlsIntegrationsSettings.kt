@@ -37,6 +37,9 @@ class PlsIntegrationsSettingsState : BaseState() {
 
     /**
      * @property enableTiger 是否启用 <a href="https://github.com/amtep/tiger">Tiger</a> 作为检查工具。
+     * @property ck3TigerPath ck3-tiger 的可执行文件的路径。
+     * @property irTigerPath imperator-tiger 的可执行文件的路径。
+     * @property vic3TigerPath vic3-tiger 的可执行文件的路径。
      */
     @Tag("lint")
     class LintState: BaseState() {
