@@ -24,7 +24,7 @@ object PlsImageManager {
     }
 
     fun findTool(): PlsImageToolProvider? {
-        return PlsImageToolProvider.EP_NAME.extensionList.findLast { it.isEnabled() && it.supports() }
+        return PlsImageToolProvider.EP_NAME.extensionList.findLast { it.isEnabled() && it.isAvailable() && it.isValid() }
     }
 
     fun findRequiredTool(): PlsImageToolProvider {

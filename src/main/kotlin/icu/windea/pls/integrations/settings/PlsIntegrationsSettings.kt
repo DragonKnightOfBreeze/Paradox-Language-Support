@@ -26,7 +26,7 @@ class PlsIntegrationsSettingsState : BaseState() {
     @Tag("image")
     class ImageState: BaseState() {
         var enableMagick by property(false)
-        var magickPath by string() // e.g., .../magick.exe
+        var magickPath by string() // e.g., /path/to/magick.exe
     }
 
     //目前没有需要配置的项
@@ -41,5 +41,8 @@ class PlsIntegrationsSettingsState : BaseState() {
     @Tag("lint")
     class LintState: BaseState() {
         var enableTiger by property(false)
+        var ck3TigerPath by string() //e.g., /path/to/ck3-tiger
+        var irTigerPath by string() //e.g., /path/to/imperator-tiger
+        var vic3TigerPath by string() //e.g., /path/to/vic3-tiger
     }
 }

@@ -13,12 +13,14 @@ import icu.windea.pls.*
 import icu.windea.pls.ai.settings.*
 import icu.windea.pls.integrations.*
 import icu.windea.pls.integrations.image.tools.*
+import icu.windea.pls.integrations.lint.tools.*
 
 @Suppress("UnstableApiUsage")
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {
     override fun getId() = "pls.integrations"
 
     private val groupNameImage = "pls.integrations.image"
+    private val groupNameLint = "pls.integrations.lint"
 
     override fun createPanel(): DialogPanel {
         val settings = PlsFacade.getIntegrationsSettings()
@@ -51,7 +53,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                         .bindText(settings.image::magickPath.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                         .align(Align.FILL)
-                        .validationOnInput { validateMagickPath(this, it) }
+                        .validationOnApply { validateMagickPath(this, it) }
                 }.enabledIf(cbMagick.selected)
             }
             //translation tools
@@ -83,14 +85,51 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
             }
             //lint tools
             group(PlsBundle.message("settings.integrations.lint")) {
+                lateinit var cbTiger: JBCheckBox
+
                 row {
                     comment(PlsBundle.message("settings.integrations.lint.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 }
+                //enableTiger
                 row {
                     checkBox(PlsBundle.message("settings.integrations.lint.tiger")).bindSelected(settings.lint::enableTiger)
+                        .applyToComponent { cbTiger = this }
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Tiger.url)
                 }
-            }.visible(false) //TODO 2.0.0-dev+
+                //ck3TigerPath
+                row {
+                    label(PlsBundle.message("settings.integrations.lint.ck3TigerPath")).widthGroup(groupNameLint)
+                    val descriptor = FileChooserDescriptorFactory.singleFile()
+                        .withTitle(PlsBundle.message("settings.integrations.lint.ck3TigerPath.title"))
+                    textFieldWithBrowseButton(descriptor, null)
+                        .bindText(settings.lint::ck3TigerPath.toNonNullableProperty(""))
+                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
+                        .align(Align.FILL)
+                        .validationOnApply { validateCk3TigerPath(this, it) }
+                }.enabledIf(cbTiger.selected)
+                //irTigerPath
+                row {
+                    label(PlsBundle.message("settings.integrations.lint.irTigerPath")).widthGroup(groupNameLint)
+                    val descriptor = FileChooserDescriptorFactory.singleFile()
+                        .withTitle(PlsBundle.message("settings.integrations.lint.irTigerPath.title"))
+                    textFieldWithBrowseButton(descriptor, null)
+                        .bindText(settings.lint::irTigerPath.toNonNullableProperty(""))
+                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
+                        .align(Align.FILL)
+                        .validationOnApply { validateIrTigerPath(this, it) }
+                }.enabledIf(cbTiger.selected)
+                //vic3TigerPath
+                row {
+                    label(PlsBundle.message("settings.integrations.lint.vic3TigerPath")).widthGroup(groupNameLint)
+                    val descriptor = FileChooserDescriptorFactory.singleFile()
+                        .withTitle(PlsBundle.message("settings.integrations.lint.vic3TigerPath.title"))
+                    textFieldWithBrowseButton(descriptor, null)
+                        .bindText(settings.lint::vic3TigerPath.toNonNullableProperty(""))
+                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
+                        .align(Align.FILL)
+                        .validationOnApply { validateVic3TigerPath(this, it) }
+                }.enabledIf(cbTiger.selected)
+            }
         }
     }
 
@@ -99,6 +138,30 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
         if (path.isEmpty()) return null
         val tool = PlsImageToolProvider.EP_NAME.findExtension(PlsMagickToolProvider::class.java) ?: return null
         if (tool.validatePath(path)) return null
-        return builder.warning(PlsBundle.message("settings.integrations.image.magickPath.incorrect"))
+        return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
+    }
+
+    private fun validateCk3TigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
+        val path = button.text.trim()
+        if (path.isEmpty()) return null
+        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsCk3TigerToolProvider::class.java) ?: return null
+        if (tool.validatePath(path)) return null
+        return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
+    }
+
+    private fun validateIrTigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
+        val path = button.text.trim()
+        if (path.isEmpty()) return null
+        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsIrTigerToolProvider::class.java) ?: return null
+        if (tool.validatePath(path)) return null
+        return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
+    }
+
+    private fun validateVic3TigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
+        val path = button.text.trim()
+        if (path.isEmpty()) return null
+        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsVic3TigerToolProvider::class.java) ?: return null
+        if (tool.validatePath(path)) return null
+        return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
     }
 }

@@ -9,14 +9,6 @@ import java.util.*
 import kotlin.io.path.*
 
 abstract class PlsCommandBasedImageToolProvider : PlsImageToolProvider {
-    final override fun supports(): Boolean = isAvailable() && validate()
-
-    open fun isAvailable(): Boolean = true
-
-    open fun validate(): Boolean = true
-
-    open fun validatePath(path: String): Boolean = true
-
     final override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
         try {
             val tempParentPath = PlsConstants.Paths.imagesTemp

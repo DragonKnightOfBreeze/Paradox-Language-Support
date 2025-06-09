@@ -1,0 +1,924 @@
+﻿[
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "unknown-field",
+    "locations": [
+      {
+        "column": 3,
+        "from": "MOD",
+        "fullpath": ".\\common\\state_traits\\401_gate_mana_traits.txt",
+        "length": 23,
+        "line": "\t\tsome_non_existing_trait = 0.5",
+        "linenr": 29,
+        "path": "common\\state_traits\\401_gate_mana_traits.txt",
+        "tag": null
+      }
+    ],
+    "message": "unknown modifier `some_non_existing_trait`",
+    "severity": "error"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "missing-localization",
+    "locations": [
+      {
+        "column": 1,
+        "from": "MOD",
+        "fullpath": ".\\common\\country_definitions\\400_gate_countries.txt",
+        "length": 7,
+        "line": "GATE_NS = {",
+        "linenr": 72,
+        "path": "common\\country_definitions\\400_gate_countries.txt",
+        "tag": null
+      }
+    ],
+    "message": "missing english localization key GATE_NS_ADJ",
+    "severity": "warning"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "missing-localization",
+    "locations": [
+      {
+        "column": 1,
+        "from": "MOD",
+        "fullpath": ".\\common\\goods\\400_gate_goods.txt",
+        "length": 4,
+        "line": "mana = {",
+        "linenr": 1,
+        "path": "common\\goods\\400_gate_goods.txt",
+        "tag": null
+      }
+    ],
+    "message": "missing english localization key trade_route_import_lens_option_mana_tooltip",
+    "severity": "warning"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "strict-scopes",
+    "locations": [
+      {
+        "column": 3,
+        "from": "MOD",
+        "fullpath": ".\\common\\history\\global\\402_mana_density.txt",
+        "length": 27,
+        "line": "\t\tgate_propogate_mana_density = yes",
+        "linenr": 45,
+        "path": "common\\history\\global\\402_mana_density.txt",
+        "tag": null
+      },
+      {
+        "column": 2,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": 21,
+        "line": "\tscope:undefined_scope = {",
+        "linenr": 85,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "here"
+      },
+      {
+        "column": 5,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": null,
+        "line": "\t\t\t\tadd_mana_density = {",
+        "linenr": 29,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "from here"
+      },
+      {
+        "column": 1,
+        "from": "Vic3",
+        "fullpath": "C:\\SteamLibrary\\steamapps\\common\\Victoria 3\\game\\common\\history\\global\\00_global.txt",
+        "length": 6,
+        "line": "GLOBAL = {",
+        "linenr": 2,
+        "path": "common\\history\\global\\00_global.txt",
+        "tag": "scopes initialized here"
+      }
+    ],
+    "message": "`gate_propogate_mana_density` expects scope:undefined_scope to be set",
+    "severity": "warning"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "strict-scopes",
+    "locations": [
+      {
+        "column": 3,
+        "from": "MOD",
+        "fullpath": ".\\common\\history\\global\\402_mana_density.txt",
+        "length": 27,
+        "line": "\t\tgate_propogate_mana_density = yes",
+        "linenr": 49,
+        "path": "common\\history\\global\\402_mana_density.txt",
+        "tag": null
+      },
+      {
+        "column": 2,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": 21,
+        "line": "\tscope:undefined_scope = {",
+        "linenr": 85,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "here"
+      },
+      {
+        "column": 5,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": null,
+        "line": "\t\t\t\tadd_mana_density = {",
+        "linenr": 29,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "from here"
+      },
+      {
+        "column": 1,
+        "from": "Vic3",
+        "fullpath": "C:\\SteamLibrary\\steamapps\\common\\Victoria 3\\game\\common\\history\\global\\00_global.txt",
+        "length": 6,
+        "line": "GLOBAL = {",
+        "linenr": 2,
+        "path": "common\\history\\global\\00_global.txt",
+        "tag": "scopes initialized here"
+      }
+    ],
+    "message": "`gate_propogate_mana_density` expects scope:undefined_scope to be set",
+    "severity": "warning"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "strict-scopes",
+    "locations": [
+      {
+        "column": 3,
+        "from": "MOD",
+        "fullpath": ".\\common\\history\\global\\402_mana_density.txt",
+        "length": 27,
+        "line": "\t\tgate_propogate_mana_density = yes",
+        "linenr": 53,
+        "path": "common\\history\\global\\402_mana_density.txt",
+        "tag": null
+      },
+      {
+        "column": 2,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": 21,
+        "line": "\tscope:undefined_scope = {",
+        "linenr": 85,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "here"
+      },
+      {
+        "column": 5,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": null,
+        "line": "\t\t\t\tadd_mana_density = {",
+        "linenr": 29,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "from here"
+      },
+      {
+        "column": 1,
+        "from": "Vic3",
+        "fullpath": "C:\\SteamLibrary\\steamapps\\common\\Victoria 3\\game\\common\\history\\global\\00_global.txt",
+        "length": 6,
+        "line": "GLOBAL = {",
+        "linenr": 2,
+        "path": "common\\history\\global\\00_global.txt",
+        "tag": "scopes initialized here"
+      }
+    ],
+    "message": "`gate_propogate_mana_density` expects scope:undefined_scope to be set",
+    "severity": "warning"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "strict-scopes",
+    "locations": [
+      {
+        "column": 3,
+        "from": "MOD",
+        "fullpath": ".\\common\\history\\global\\402_mana_density.txt",
+        "length": 27,
+        "line": "\t\tgate_propogate_mana_density = yes",
+        "linenr": 57,
+        "path": "common\\history\\global\\402_mana_density.txt",
+        "tag": null
+      },
+      {
+        "column": 2,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": 21,
+        "line": "\tscope:undefined_scope = {",
+        "linenr": 85,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "here"
+      },
+      {
+        "column": 5,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": null,
+        "line": "\t\t\t\tadd_mana_density = {",
+        "linenr": 29,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "from here"
+      },
+      {
+        "column": 1,
+        "from": "Vic3",
+        "fullpath": "C:\\SteamLibrary\\steamapps\\common\\Victoria 3\\game\\common\\history\\global\\00_global.txt",
+        "length": 6,
+        "line": "GLOBAL = {",
+        "linenr": 2,
+        "path": "common\\history\\global\\00_global.txt",
+        "tag": "scopes initialized here"
+      }
+    ],
+    "message": "`gate_propogate_mana_density` expects scope:undefined_scope to be set",
+    "severity": "warning"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "strict-scopes",
+    "locations": [
+      {
+        "column": 9,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\402_on_monthly.txt",
+        "length": 27,
+        "line": "        gate_propogate_mana_density = yes",
+        "linenr": 43,
+        "path": "common\\on_actions\\402_on_monthly.txt",
+        "tag": null
+      },
+      {
+        "column": 2,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": 21,
+        "line": "\tscope:undefined_scope = {",
+        "linenr": 85,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "here"
+      },
+      {
+        "column": 5,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": null,
+        "line": "\t\t\t\tadd_mana_density = {",
+        "linenr": 29,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "from here"
+      },
+      {
+        "column": 9,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\402_on_monthly.txt",
+        "length": 28,
+        "line": "        on_monthly_gate_mana_density",
+        "linenr": 7,
+        "path": "common\\on_actions\\402_on_monthly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 1,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\402_on_monthly.txt",
+        "length": 16,
+        "line": "on_monthly_pulse = {",
+        "linenr": 2,
+        "path": "common\\on_actions\\402_on_monthly.txt",
+        "tag": "scopes initialized here"
+      }
+    ],
+    "message": "`gate_propogate_mana_density` expects scope:undefined_scope to be set",
+    "severity": "warning"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "strict-scopes",
+    "locations": [
+      {
+        "column": 13,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\402_on_monthly.txt",
+        "length": 27,
+        "line": "            gate_propogate_mana_density = yes",
+        "linenr": 46,
+        "path": "common\\on_actions\\402_on_monthly.txt",
+        "tag": null
+      },
+      {
+        "column": 2,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": 21,
+        "line": "\tscope:undefined_scope = {",
+        "linenr": 85,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "here"
+      },
+      {
+        "column": 5,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": null,
+        "line": "\t\t\t\tadd_mana_density = {",
+        "linenr": 29,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "from here"
+      },
+      {
+        "column": 9,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\402_on_monthly.txt",
+        "length": 28,
+        "line": "        on_monthly_gate_mana_density",
+        "linenr": 7,
+        "path": "common\\on_actions\\402_on_monthly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 1,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\402_on_monthly.txt",
+        "length": 16,
+        "line": "on_monthly_pulse = {",
+        "linenr": 2,
+        "path": "common\\on_actions\\402_on_monthly.txt",
+        "tag": "scopes initialized here"
+      }
+    ],
+    "message": "`gate_propogate_mana_density` expects scope:undefined_scope to be set",
+    "severity": "warning"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "strict-scopes",
+    "locations": [
+      {
+        "column": 13,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\402_on_monthly.txt",
+        "length": 27,
+        "line": "            gate_propogate_mana_density = yes",
+        "linenr": 50,
+        "path": "common\\on_actions\\402_on_monthly.txt",
+        "tag": null
+      },
+      {
+        "column": 2,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": 21,
+        "line": "\tscope:undefined_scope = {",
+        "linenr": 85,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "here"
+      },
+      {
+        "column": 5,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": null,
+        "line": "\t\t\t\tadd_mana_density = {",
+        "linenr": 29,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "from here"
+      },
+      {
+        "column": 9,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\402_on_monthly.txt",
+        "length": 28,
+        "line": "        on_monthly_gate_mana_density",
+        "linenr": 7,
+        "path": "common\\on_actions\\402_on_monthly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 1,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\402_on_monthly.txt",
+        "length": 16,
+        "line": "on_monthly_pulse = {",
+        "linenr": 2,
+        "path": "common\\on_actions\\402_on_monthly.txt",
+        "tag": "scopes initialized here"
+      }
+    ],
+    "message": "`gate_propogate_mana_density` expects scope:undefined_scope to be set",
+    "severity": "warning"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "strict-scopes",
+    "locations": [
+      {
+        "column": 13,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\402_on_monthly.txt",
+        "length": 27,
+        "line": "            gate_propogate_mana_density = yes",
+        "linenr": 54,
+        "path": "common\\on_actions\\402_on_monthly.txt",
+        "tag": null
+      },
+      {
+        "column": 2,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": 21,
+        "line": "\tscope:undefined_scope = {",
+        "linenr": 85,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "here"
+      },
+      {
+        "column": 5,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": null,
+        "line": "\t\t\t\tadd_mana_density = {",
+        "linenr": 29,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "from here"
+      },
+      {
+        "column": 9,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\402_on_monthly.txt",
+        "length": 28,
+        "line": "        on_monthly_gate_mana_density",
+        "linenr": 7,
+        "path": "common\\on_actions\\402_on_monthly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 1,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\402_on_monthly.txt",
+        "length": 16,
+        "line": "on_monthly_pulse = {",
+        "linenr": 2,
+        "path": "common\\on_actions\\402_on_monthly.txt",
+        "tag": "scopes initialized here"
+      }
+    ],
+    "message": "`gate_propogate_mana_density` expects scope:undefined_scope to be set",
+    "severity": "warning"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "strict-scopes",
+    "locations": [
+      {
+        "column": 4,
+        "from": "MOD",
+        "fullpath": ".\\events\\gate_events\\mana_saturation_events.txt",
+        "length": 16,
+        "line": "\t\t\tadd_mana_density = {",
+        "linenr": 299,
+        "path": "events\\gate_events\\mana_saturation_events.txt",
+        "tag": null
+      },
+      {
+        "column": 2,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": 21,
+        "line": "\tscope:undefined_scope = {",
+        "linenr": 85,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "here"
+      },
+      {
+        "column": 4,
+        "from": "MOD",
+        "fullpath": ".\\events\\gate_events\\mana_saturation_events.txt",
+        "length": null,
+        "line": "\t\t\tadd_mana_density = {",
+        "linenr": 299,
+        "path": "events\\gate_events\\mana_saturation_events.txt",
+        "tag": "from here"
+      },
+      {
+        "column": 14,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 22,
+        "line": "        20 = gate_mana_saturation.4",
+        "linenr": 13,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 9,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 43,
+        "line": "        on_yearly_gate_mana_saturation_other_events",
+        "linenr": 3,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 1,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 23,
+        "line": "on_yearly_pulse_country = {",
+        "linenr": 1,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "scopes initialized here"
+      }
+    ],
+    "message": "`add_mana_density` expects scope:undefined_scope to be set",
+    "severity": "warning"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "strict-scopes",
+    "locations": [
+      {
+        "column": 4,
+        "from": "MOD",
+        "fullpath": ".\\events\\gate_events\\mana_saturation_events.txt",
+        "length": 16,
+        "line": "\t\t\tadd_mana_density = {",
+        "linenr": 355,
+        "path": "events\\gate_events\\mana_saturation_events.txt",
+        "tag": null
+      },
+      {
+        "column": 2,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": 21,
+        "line": "\tscope:undefined_scope = {",
+        "linenr": 85,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "here"
+      },
+      {
+        "column": 4,
+        "from": "MOD",
+        "fullpath": ".\\events\\gate_events\\mana_saturation_events.txt",
+        "length": null,
+        "line": "\t\t\tadd_mana_density = {",
+        "linenr": 355,
+        "path": "events\\gate_events\\mana_saturation_events.txt",
+        "tag": "from here"
+      },
+      {
+        "column": 14,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 22,
+        "line": "        20 = gate_mana_saturation.5",
+        "linenr": 14,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 9,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 43,
+        "line": "        on_yearly_gate_mana_saturation_other_events",
+        "linenr": 3,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 1,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 23,
+        "line": "on_yearly_pulse_country = {",
+        "linenr": 1,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "scopes initialized here"
+      }
+    ],
+    "message": "`add_mana_density` expects scope:undefined_scope to be set",
+    "severity": "warning"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "strict-scopes",
+    "locations": [
+      {
+        "column": 4,
+        "from": "MOD",
+        "fullpath": ".\\events\\gate_events\\mana_saturation_events.txt",
+        "length": 16,
+        "line": "\t\t\tadd_mana_density = {",
+        "linenr": 411,
+        "path": "events\\gate_events\\mana_saturation_events.txt",
+        "tag": null
+      },
+      {
+        "column": 2,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": 21,
+        "line": "\tscope:undefined_scope = {",
+        "linenr": 85,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "here"
+      },
+      {
+        "column": 4,
+        "from": "MOD",
+        "fullpath": ".\\events\\gate_events\\mana_saturation_events.txt",
+        "length": null,
+        "line": "\t\t\tadd_mana_density = {",
+        "linenr": 411,
+        "path": "events\\gate_events\\mana_saturation_events.txt",
+        "tag": "from here"
+      },
+      {
+        "column": 14,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 22,
+        "line": "        20 = gate_mana_saturation.6",
+        "linenr": 15,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 9,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 43,
+        "line": "        on_yearly_gate_mana_saturation_other_events",
+        "linenr": 3,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 1,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 23,
+        "line": "on_yearly_pulse_country = {",
+        "linenr": 1,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "scopes initialized here"
+      }
+    ],
+    "message": "`add_mana_density` expects scope:undefined_scope to be set",
+    "severity": "warning"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "strict-scopes",
+    "locations": [
+      {
+        "column": 4,
+        "from": "MOD",
+        "fullpath": ".\\events\\gate_events\\mana_saturation_events.txt",
+        "length": 16,
+        "line": "\t\t\tadd_mana_density = {",
+        "linenr": 470,
+        "path": "events\\gate_events\\mana_saturation_events.txt",
+        "tag": null
+      },
+      {
+        "column": 2,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": 21,
+        "line": "\tscope:undefined_scope = {",
+        "linenr": 85,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "here"
+      },
+      {
+        "column": 4,
+        "from": "MOD",
+        "fullpath": ".\\events\\gate_events\\mana_saturation_events.txt",
+        "length": null,
+        "line": "\t\t\tadd_mana_density = {",
+        "linenr": 470,
+        "path": "events\\gate_events\\mana_saturation_events.txt",
+        "tag": "from here"
+      },
+      {
+        "column": 14,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 22,
+        "line": "        20 = gate_mana_saturation.7",
+        "linenr": 16,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 9,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 43,
+        "line": "        on_yearly_gate_mana_saturation_other_events",
+        "linenr": 3,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 1,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 23,
+        "line": "on_yearly_pulse_country = {",
+        "linenr": 1,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "scopes initialized here"
+      }
+    ],
+    "message": "`add_mana_density` expects scope:undefined_scope to be set",
+    "severity": "warning"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "strict-scopes",
+    "locations": [
+      {
+        "column": 4,
+        "from": "MOD",
+        "fullpath": ".\\events\\gate_events\\mana_saturation_events.txt",
+        "length": 16,
+        "line": "\t\t\tadd_mana_density = {",
+        "linenr": 529,
+        "path": "events\\gate_events\\mana_saturation_events.txt",
+        "tag": null
+      },
+      {
+        "column": 2,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": 21,
+        "line": "\tscope:undefined_scope = {",
+        "linenr": 85,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "here"
+      },
+      {
+        "column": 4,
+        "from": "MOD",
+        "fullpath": ".\\events\\gate_events\\mana_saturation_events.txt",
+        "length": null,
+        "line": "\t\t\tadd_mana_density = {",
+        "linenr": 529,
+        "path": "events\\gate_events\\mana_saturation_events.txt",
+        "tag": "from here"
+      },
+      {
+        "column": 14,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 22,
+        "line": "        20 = gate_mana_saturation.8",
+        "linenr": 17,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 9,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 43,
+        "line": "        on_yearly_gate_mana_saturation_other_events",
+        "linenr": 3,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 1,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 23,
+        "line": "on_yearly_pulse_country = {",
+        "linenr": 1,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "scopes initialized here"
+      }
+    ],
+    "message": "`add_mana_density` expects scope:undefined_scope to be set",
+    "severity": "warning"
+  },
+  {
+    "confidence": "reasonable",
+    "info": null,
+    "key": "strict-scopes",
+    "locations": [
+      {
+        "column": 4,
+        "from": "MOD",
+        "fullpath": ".\\events\\gate_events\\mana_saturation_events.txt",
+        "length": 16,
+        "line": "\t\t\tadd_mana_density = {",
+        "linenr": 591,
+        "path": "events\\gate_events\\mana_saturation_events.txt",
+        "tag": null
+      },
+      {
+        "column": 2,
+        "from": "MOD",
+        "fullpath": ".\\common\\scripted_effects\\400_mana_saturation.txt",
+        "length": 21,
+        "line": "\tscope:undefined_scope = {",
+        "linenr": 85,
+        "path": "common\\scripted_effects\\400_mana_saturation.txt",
+        "tag": "here"
+      },
+      {
+        "column": 4,
+        "from": "MOD",
+        "fullpath": ".\\events\\gate_events\\mana_saturation_events.txt",
+        "length": null,
+        "line": "\t\t\tadd_mana_density = {",
+        "linenr": 591,
+        "path": "events\\gate_events\\mana_saturation_events.txt",
+        "tag": "from here"
+      },
+      {
+        "column": 14,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 22,
+        "line": "        20 = gate_mana_saturation.9",
+        "linenr": 18,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 9,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 43,
+        "line": "        on_yearly_gate_mana_saturation_other_events",
+        "linenr": 3,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "triggered from here"
+      },
+      {
+        "column": 1,
+        "from": "MOD",
+        "fullpath": ".\\common\\on_actions\\401_on_yearly.txt",
+        "length": 23,
+        "line": "on_yearly_pulse_country = {",
+        "linenr": 1,
+        "path": "common\\on_actions\\401_on_yearly.txt",
+        "tag": "scopes initialized here"
+      }
+    ],
+    "message": "`add_mana_density` expects scope:undefined_scope to be set",
+    "severity": "warning"
+  },
+  {
+    "confidence": "weak",
+    "info": null,
+    "key": "logic",
+    "locations": [
+      {
+        "column": 11,
+        "from": "MOD",
+        "fullpath": ".\\events\\gate_events\\mbudye_events.txt",
+        "length": null,
+        "line": "\t\t\t\t\tOR = {",
+        "linenr": 37,
+        "path": "events\\gate_events\\mbudye_events.txt",
+        "tag": null
+      }
+    ],
+    "message": "OR with only one item inside is probably not what you intended",
+    "severity": "warning"
+  }
+]

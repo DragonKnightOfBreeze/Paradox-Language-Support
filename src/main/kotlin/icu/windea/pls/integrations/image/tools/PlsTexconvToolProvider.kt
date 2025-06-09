@@ -1,6 +1,6 @@
 package icu.windea.pls.integrations.image.tools
 
-import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
@@ -14,8 +14,6 @@ import kotlin.io.path.*
  */
 @WithOS(OS.Windows)
 class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
-    private val logger = thisLogger()
-
     private val texconvExe by lazy { PlsConstants.Paths.texconvExeFile }
     private val texconvExeWd by lazy { PlsConstants.Paths.texconvExe.parent?.toFile() }
 
@@ -27,12 +25,16 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
         return OS.value == OS.Windows
     }
 
+    override fun isValid(): Boolean {
+        return true
+    }
+
     /**
      * @param targetFormat 参见：[File and pixel format options](https://github.com/microsoft/DirectXTex/wiki/Texconv#file-and-pixel-format-options)
      */
     override fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
         return runCatchingCancelable { doConvertImageFormat(path, targetDirectoryPath, targetFileName, targetFormat) }
-            .onFailure { logger.warn(it) }.getOrThrow()
+            .onFailure { thisLogger().warn(it) }.getOrThrow()
     }
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
@@ -53,9 +55,9 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
         val hasWarnings = lines.any { it.startsWith("WARNING: ") }
 
         if (hasWarnings) {
-            logger.warn("Execute texconv command with warnings.\nCommand: $command\nCommand result: $result")
+            thisLogger().warn("Execute texconv command with warnings.\nCommand: $command\nCommand result: $result")
         } else {
-            logger.info("Execute texconv command.\nCommand: $command\nCommand result: $result")
+            thisLogger().info("Execute texconv command.\nCommand: $command\nCommand result: $result")
         }
 
         if (outputPath.notExists()) {

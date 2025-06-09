@@ -8,7 +8,6 @@
 * [ ] 支持为同一个模组配置多个模组依赖列表
 * [ ] 支持通过内置方案、手动乃至AI解决模组冲突，合并模组文件，提供相关的全局代码检查和操作
 * [ ] 支持直接在IDE中启动游戏，且启用的模组来自可配置的模组列表
-* [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
 
 TODO
 
@@ -17,6 +16,7 @@ TODO
 
 ## 2.0.0-dev
 
+* [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
 * [X] #148 更改`date_field`的默认日期模式为`y.M.d`，且允许声明日期模式（`date_field[y.M.d]`） / OP: Change the default date format of `date_field` to `y.M.d`, and allow declaring date formats (`date_field[y.M.d]`)
 * [X] 修复：修复插件可能无法正确解析json，从而无法识别游戏目录的问题 / OP: Fix a bug that plugin may not be able to correctly parse json, causing the game directory to be incorrectly recognized
 * [ ] 优化：尝试避免打开尺寸过大的DDS图片时造成的UI冻结 / OP: Try to avoid UI freezing when opening large DDS images
@@ -24,6 +24,7 @@ TODO
 * [X] 优化：为封装变量、复杂枚举值和动态值提供快速文档与内嵌提示，来自同名的本地化 / OP: Also provide quick documentation and inlay hints for scripted variables, complex enum values and dynamic values, from the same name localisation
 * [X] 优化：可以配置处理图片时使用的工具（默认且内置：Texconv，可选：Image Magick） / OP: Can configure the tool used to process images (Default and built-in: Texconv, Available: Image Magick)
 * [X] 优化：可以配置翻译本地化文本时使用的工具（目前仅限Translation Plugin） / OP: Can configure the tool used to translate localisation text (Currently limited to Translation Plugin)
+* [ ] 优化：可以配置启用的代码检查工具（目仅限Tiger） / OP: Can configure which code inspection tools to enable (Currently limited to Tiger)
 * [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
 * [ ] 新功能：集成AI，提供对应的设置页面 / NEW: Integrate AI, provide corresponding settings page
 * [ ] 新功能：提供AI驱动的本地化翻译功能 / NEW: Provide AI-driven localisation translation features
