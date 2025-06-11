@@ -21,6 +21,9 @@ import kotlinx.coroutines.*
 import java.util.concurrent.atomic.*
 import kotlin.coroutines.*
 
+/**
+ * 替换为翻译后的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
+ */
 class ReplaceLocalisationWithTranslationIntention : ReplaceLocalisationIntentionBase() {
     override fun getFamilyName() = PlsBundle.message("intention.replaceLocalisationWithTranslation")
 

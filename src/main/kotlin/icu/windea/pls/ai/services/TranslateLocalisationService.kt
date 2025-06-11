@@ -9,7 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import kotlinx.coroutines.flow.*
 
-class TranslateLocalisationService : PlsAiService {
+object TranslateLocalisationService : PlsAiService {
     fun translate(request: TranslateLocalisationsRequest): Flow<ParadoxLocalisationData>? {
         val chatModel = PlsChatModelManager.getStreamingChatModel() ?: return null
 

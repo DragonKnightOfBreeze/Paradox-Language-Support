@@ -13,6 +13,7 @@ TODO
 
 * [X] 因为 PlsDataProvider 中路经相关方法更改，需要验证相关功能是否正常（是否仍然能正确推断创意工坊目录下的模组的游戏类型）
 * [X] 图形工具，使用非texconv时，相关功能是否正常
+* [ ] 基于AI的本地化翻译的意向，验证功能是否正常，并且在设置有误或者未联网时是否有比较好的交互体验
 
 ## 2.0.0-dev
 
@@ -27,9 +28,9 @@ TODO
 * [X] 优化：可以配置要启用的代码检查工具（目前仅限Tiger） / OP: Can configure which code inspection tools to enable (Currently limited to Tiger)
 * [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
 * [X] 新功能：集成AI，提供对应的设置页面 / NEW: Integrate AI, provide corresponding settings page
-* [ ] 新功能：提供AI驱动的本地化翻译功能 / NEW: Provide AI-driven localisation translation features
-* [ ] 新功能：提供AI驱动的本地化润色功能 / NEW: Provide AI-driven localisation colorization features
-* [ ] 新功能：提供AI驱动的脚本/本地化生成功能 / NEW: Provide AI-driven script/translation generation features
+* [ ] 新功能：提供AI驱动的本地化翻译功能（意向） / NEW: Provide AI-driven localisation translation features (intentions)
+* [ ] 新功能：提供AI驱动的本地化润色功能（意向） / NEW: Provide AI-driven localisation colorization features (intentions)
+* [ ] 新功能：提供AI驱动的脚本/本地化生成功能（操作） / NEW: Provide AI-driven script/translation generation features (actions)
 * [ ] 新功能：提供对魔法注释的初步支持，用于批量处理脚本与本地化文件的内容 / NEW: Provide support for magic comments, which are used to batch process of scripts and localisation files 
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
