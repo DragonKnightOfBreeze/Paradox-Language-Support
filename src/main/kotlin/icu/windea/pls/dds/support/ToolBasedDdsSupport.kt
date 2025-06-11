@@ -65,7 +65,7 @@ class ToolBasedDdsSupport : DdsSupport {
             if (stream == null) return null
             val inputStream = ImageInputStreamAdapter(stream)
             val outputStream = ByteArrayOutputStream()
-            val r = support.convertImageFormat(inputStream.buffered(), outputStream.buffered(), "dds", "png")
+            val r = support.convertImageFormat(inputStream.buffered(), outputStream, "dds", "png")
             if (!r) return null
             val input = ByteArrayInputStream(outputStream.toByteArray())
             return ImageIO.read(input.buffered())

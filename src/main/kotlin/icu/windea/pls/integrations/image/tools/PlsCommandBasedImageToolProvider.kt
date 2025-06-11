@@ -15,10 +15,10 @@ abstract class PlsCommandBasedImageToolProvider : PlsImageToolProvider {
             tempParentPath.createDirectories()
             val path = tempParentPath.resolve(UUID.randomUUID().toString() + "." + sourceFormat)
             path.outputStream(StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
-                .use { IOUtils.copy(inputStream.buffered(), it.buffered()) }
+                .use { IOUtils.copy(inputStream.buffered(), it) }
             val targetPath = convertImageFormat(path, null, null, sourceFormat, targetFormat)
             targetPath.inputStream(StandardOpenOption.READ)
-                .use { IOUtils.copy(it.buffered(), outputStream.buffered()) }
+                .use { IOUtils.copy(it.buffered(), outputStream) }
             path.deleteIfExists()
             return true
         } catch (e: Exception) {

@@ -83,7 +83,7 @@ class DefaultDdsSupport : DdsSupport {
             imageReader.input = imageInputStream
             val numImages = imageReader.getNumImages(false)
             if (numImages == 0) throw IllegalStateException()
-            outputStream.buffered().use { outputStream ->
+            outputStream.use { outputStream ->
                 repeat(numImages) { i ->
                     val image0 = imageReader.read(i)
                     ImageIO.write(image0, targetFormat, outputStream)
