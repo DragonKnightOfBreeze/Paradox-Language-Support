@@ -76,7 +76,6 @@ object CwtConfigResolver {
 
     private fun doGetConfigs(valueElement: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): List<CwtMemberConfig<*>>? {
         if (valueElement !is CwtBlock) return null
-
         val configs = mutableListOf<CwtMemberConfig<*>>()
         valueElement.forEachChild f@{ e ->
             when {
@@ -130,20 +129,19 @@ object CwtConfigResolver {
         val value = optionValueElement.value
         val valueType: CwtType = optionValueElement.type
         val separatorType = optionElement.separatorType
-        val optionConfigs = doGetOptionConfigs(optionValueElement, file, fileConfig)
+        val optionConfigs = doGetOptionConfigsInOption(optionValueElement, file, fileConfig)
         return CwtOptionConfig.resolve(key, value, valueType, separatorType, optionConfigs)
     }
 
     private fun resolveOptionValue(optionValueElement: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): CwtOptionValueConfig {
         val value = optionValueElement.value
         val valueType = optionValueElement.type
-        val optionConfigs = doGetOptionConfigs(optionValueElement, file, fileConfig)
+        val optionConfigs = doGetOptionConfigsInOption(optionValueElement, file, fileConfig)
         return CwtOptionValueConfig.resolve(value, valueType, optionConfigs)
     }
 
-    private fun doGetOptionConfigs(optionValueElement: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): List<CwtOptionMemberConfig<*>>? {
+    private fun doGetOptionConfigsInOption(optionValueElement: CwtValue, file: CwtFile, fileConfig: CwtFileConfig): List<CwtOptionMemberConfig<*>>? {
         if (optionValueElement !is CwtBlock) return null
-
         val optionConfigs = mutableListOf<CwtOptionMemberConfig<*>>()
         optionValueElement.forEachChild f@{ e ->
             when {
