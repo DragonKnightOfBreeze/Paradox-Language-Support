@@ -4,10 +4,9 @@ import com.intellij.*
 import org.jetbrains.annotations.*
 import java.util.function.*
 
-@NonNls
-private const val BUNDLE = "messages.PlsAiBundle"
-
 object PlsAiBundle {
+    @NonNls
+    private const val BUNDLE = "messages.PlsAiBundle"
     private val INSTANCE = DynamicBundle(PlsAiBundle::class.java, BUNDLE)
 
     @JvmStatic

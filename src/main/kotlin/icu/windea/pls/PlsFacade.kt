@@ -40,8 +40,6 @@ object PlsFacade {
 
     fun getIntegrationsSettings() = service<PlsIntegrationsSettings>().state
 
-    fun getAiSettings() = service<PlsAiSettings>().state
-
     fun getProfilesSettings() = service<PlsProfilesSettings>().state
 }
 

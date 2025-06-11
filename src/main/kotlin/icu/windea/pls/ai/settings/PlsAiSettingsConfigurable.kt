@@ -3,8 +3,8 @@ package icu.windea.pls.ai.settings
 import com.intellij.openapi.options.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
-import icu.windea.pls.*
 import icu.windea.pls.ai.*
+import icu.windea.pls.ai.util.*
 
 class PlsAiSettingsConfigurable : BoundConfigurable(PlsAiBundle.message("settings.ai")), SearchableConfigurable {
     override fun getId() = "pls.ai"
@@ -12,11 +12,16 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsAiBundle.message("setting
     private val groupNameOpenAI = "pls.ai.openAI"
 
     override fun createPanel(): DialogPanel {
-        val settings = PlsFacade.getAiSettings()
+        val settings = PlsAiManager.getSettings()
         return panel {
+            //enable
             row {
                 checkBox(PlsAiBundle.message("settings.ai.enable")).bindSelected(settings::enable)
                     .comment(PlsAiBundle.message("settings.ai.enable.comment", MAX_LINE_LENGTH_WORD_WRAP))
+            }
+            row {
+                checkBox(PlsAiBundle.message("settings.ai.withContext")).bindSelected(settings::withContext)
+                    .comment(PlsAiBundle.message("settings.ai.withContext.comment", MAX_LINE_LENGTH_WORD_WRAP))
             }
 
             //openAI

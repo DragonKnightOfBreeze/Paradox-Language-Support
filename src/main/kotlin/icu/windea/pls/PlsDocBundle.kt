@@ -1,21 +1,29 @@
-package icu.windea.pls.lang
+package icu.windea.pls
 
-import com.intellij.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.renderer.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import org.jetbrains.annotations.*
-import java.util.function.*
-
-@NonNls
-private const val BUNDLE = "messages.PlsDocBundle"
+import com.intellij.DynamicBundle
+import com.intellij.openapi.project.Project
+import icu.windea.pls.core.orNull
+import icu.windea.pls.lang.search.ParadoxDefinitionSearch
+import icu.windea.pls.lang.search.ParadoxLocalisationSearch
+import icu.windea.pls.lang.search.selector.contextSensitive
+import icu.windea.pls.lang.search.selector.definition
+import icu.windea.pls.lang.search.selector.localisation
+import icu.windea.pls.lang.search.selector.preferLocale
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.lang.search.selector.withGameType
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
+import icu.windea.pls.lang.util.ParadoxLocaleManager
+import icu.windea.pls.lang.util.renderer.ParadoxLocalisationTextRenderer
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import org.jetbrains.annotations.Nls
+import org.jetbrains.annotations.NonNls
+import org.jetbrains.annotations.PropertyKey
+import java.util.function.Supplier
 
 object PlsDocBundle {
+    @NonNls
+    private const val BUNDLE = "messages.PlsDocBundle"
     private val INSTANCE = DynamicBundle(PlsDocBundle::class.java, BUNDLE)
 
     @JvmStatic
@@ -63,7 +71,7 @@ object PlsDocBundle {
             val selector = selector(project, context).localisation().contextSensitive()
                 .withGameType(gameType)
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            val localisation = ParadoxLocalisationSearch.search(name.uppercase(), selector).find() ?: return@run
+            val localisation = ParadoxLocalisationSearch.Companion.search(name.uppercase(), selector).find() ?: return@run
             val text = ParadoxLocalisationTextRenderer.render(localisation).orNull()
             if (text != null) return text
         }
@@ -78,7 +86,7 @@ object PlsDocBundle {
         run {
             val selector = selector(project, context).definition().contextSensitive()
                 .withGameType(gameType)
-            val definition = ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.TechnologyCategory, selector).find() ?: return@run
+            val definition = ParadoxDefinitionSearch.Companion.search(name, ParadoxDefinitionTypes.TechnologyCategory, selector).find() ?: return@run
             val localizedName = ParadoxDefinitionManager.getPrimaryLocalisation(definition)
             if (localizedName != null) {
                 val text = ParadoxLocalisationTextRenderer.render(localizedName).orNull()

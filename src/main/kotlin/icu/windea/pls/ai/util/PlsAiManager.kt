@@ -1,25 +1,16 @@
 package icu.windea.pls.ai.util
 
-import icu.windea.pls.*
+import com.intellij.openapi.components.*
+import com.intellij.openapi.diagnostic.*
+import icu.windea.pls.ai.settings.*
+import java.lang.invoke.*
 
 object PlsAiManager {
-    fun isEnabled(): Boolean {
-        return PlsFacade.getAiSettings().enable
-    }
+    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
 
-    fun translateLocalisation() {
-        TODO() //TODO 2.0.0-dev
-    }
+    fun getSettings(): PlsAiSettingsState = service<PlsAiSettings>().state
 
-    fun colorizeLocalisation() {
-        TODO() //TODO 2.0.0-dev
-    }
+    fun isEnabled(): Boolean = getSettings().enable
 
-    fun generateScript() {
-        TODO() //TODO 2.0.0-dev
-    }
-
-    fun generateLocalisation() {
-        TODO() //TODO 2.0.0-dev
-    }
+    fun withContext(): Boolean = getSettings().withContext
 }

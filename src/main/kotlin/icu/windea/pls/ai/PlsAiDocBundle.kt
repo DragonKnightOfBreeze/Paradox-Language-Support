@@ -1,13 +1,13 @@
-package icu.windea.pls
+package icu.windea.pls.ai
 
 import com.intellij.*
 import org.jetbrains.annotations.*
 import java.util.function.*
 
-object PlsBundle {
+object PlsAiDocBundle {
     @NonNls
-    private const val BUNDLE = "messages.PlsBundle"
-    private val INSTANCE = DynamicBundle(PlsBundle::class.java, BUNDLE)
+    private const val BUNDLE = "messages.PlsAiDocBundle"
+    private val INSTANCE = DynamicBundle(PlsAiDocBundle::class.java, BUNDLE)
 
     @JvmStatic
     fun message(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): @Nls String {

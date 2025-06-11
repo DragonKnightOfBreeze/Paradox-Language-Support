@@ -42,19 +42,22 @@ dependencies {
         plugin("cn.yiiguxing.plugin.translate:3.7.2")
     }
 
-    // dds - https://github.com/iTitus/dds
-    implementation("io.github.ititus:dds:3.1.0")
-    implementation("io.github.ititus:ddsiio:3.1.0")
-    // javassist - https://github.com/jboss-javassist/javassist
-    implementation("org.javassist:javassist:3.30.2-GA")
-    // jackson-csv - https://github.com/FasterXML/jackson-dataformats-text/tree/master/csv
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.17.2") {
-        exclude(group = "com.fasterxml.jackson.core")
-    }
     // junit - https://github.com/junit-team/junit4
     testImplementation("junit:junit:4.13.2")
     // opentest4j - https://github.com/ota4j-team/opentest4j
     testImplementation("org.opentest4j:opentest4j:1.3.0")
+
+    // dds - https://github.com/iTitus/dds
+    implementation("io.github.ititus:dds:3.1.0")
+    implementation("io.github.ititus:ddsiio:3.1.0")
+
+    // javassist - https://github.com/jboss-javassist/javassist
+    implementation("org.javassist:javassist:3.30.2-GA")
+
+    // jackson-csv - https://github.com/FasterXML/jackson-dataformats-text/tree/master/csv
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.17.2") {
+        exclude(group = "com.fasterxml.jackson.core")
+    }
 
     // AI 集成
 
@@ -75,9 +78,14 @@ dependencies {
 
     // sqlite - https://github.com/xerial/sqlite-jdbc
     testImplementation("org.xerial:sqlite-jdbc:3.46.0.0")
+
     // byte-buddy - https://github.com/raphw/byte-buddy
     testImplementation("net.bytebuddy:byte-buddy:1.14.17")
     testImplementation("net.bytebuddy:byte-buddy-agent:1.15.0")
+
+    // jte - https://github.com/casid/jte
+    implementation("gg.jte:jte:3.2.1")
+    compileOnly("gg.jte:jte-kotlin:3.2.1")
 }
 
 sourceSets {

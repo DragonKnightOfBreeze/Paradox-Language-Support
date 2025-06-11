@@ -15,9 +15,11 @@ class PlsAiSettings : SimplePersistentStateComponent<PlsAiSettingsState>(PlsAiSe
 
 /**
  * @property enable 是否启用基于AI的各种功能。
+ * @property withContext 是否在提示中附加上下文信息。
  */
 class PlsAiSettingsState : BaseState() {
     var enable by property(false)
+    var withContext by property(false)
 
     @get:Property(surroundWithTag = false)
     var openAI by property(OpenAiState())
