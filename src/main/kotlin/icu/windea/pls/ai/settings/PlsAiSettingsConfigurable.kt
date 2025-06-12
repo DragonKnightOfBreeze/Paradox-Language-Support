@@ -12,8 +12,10 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsAiBundle.message("setting
     override fun getId() = "pls.ai"
 
     private val groupNameOpenAI = "pls.ai.openAI"
+    private val callbackLock = mutableSetOf<String>()
 
     override fun createPanel(): DialogPanel {
+        callbackLock.clear()
         val settings = PlsAiManager.getSettings()
         return panel {
             //enable
@@ -34,23 +36,26 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsAiBundle.message("setting
                     label(PlsAiBundle.message("settings.ai.openAI.modelName")).widthGroup(groupNameOpenAI)
                     textField().bindText(settings.openAI::modelName.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(PlsAiSettingsManager.getDefaultOpenAiModelName()) }
+                        .onApply { onOpenAiSettingsChanged() }
                 }
                 //apiEndpoint
                 row {
                     label(PlsAiBundle.message("settings.ai.openAI.apiEndpoint")).widthGroup(groupNameOpenAI)
                     textField().bindText(settings.openAI::apiEndpoint.toNonNullableProperty("")).align(Align.FILL)
                         .applyToComponent { setEmptyState(PlsAiSettingsManager.getDefaultOpenAiApiEndpoint()) }
+                        .onApply { onOpenAiSettingsChanged() }
                 }
                 //apiKey
                 row {
                     label(PlsAiBundle.message("settings.ai.openAI.apiKey")).widthGroup(groupNameOpenAI)
                     passwordField().bindText(settings.openAI::apiKey.toNonNullableProperty("")).align(Align.FILL)
                         .validationOnInput { validateOpenAiApiKey(this, it) }
+                        .onApply { onOpenAiSettingsChanged() }
                 }
             }
 
             //features
-            group("") {
+            collapsibleGroup(PlsAiBundle.message("settings.ai.features")) {
                 //batchSizeOfLocalisations
                 row {
                     label(PlsAiBundle.message("settings.ai.features.batchSizeOfLocalisations"))
@@ -77,5 +82,12 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsAiBundle.message("setting
         //如果启用AI集成，但是这里的验证并未通过，相关功能仍然可用，只是使用后会给出警告
         if (field.password.isEmpty()) return builder.warning("settings.ai.openAI.apiKey.1")
         return null
+    }
+
+    private fun onOpenAiSettingsChanged() {
+        if (!callbackLock.add("onOpenAiSettingsChanged")) return
+
+        PlsChatModelManager.invalidateChatModel(PlsChatModelType.OPEN_AI)
+        PlsChatModelManager.invalidateStreamingChatModel(PlsChatModelType.OPEN_AI)
     }
 }
