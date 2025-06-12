@@ -53,8 +53,6 @@ object PlsChatModelManager {
             .apiKey(apiKey)
             .supportedCapabilities(Capability.RESPONSE_FORMAT_JSON_SCHEMA)
             .strictJsonSchema(true)
-            .logRequests(true)
-            .logResponses(true)
             .build()
     }
 
@@ -67,8 +65,6 @@ object PlsChatModelManager {
             .modelName(modelName)
             .baseUrl(apiEndpoint)
             .apiKey(apiKey)
-            .logRequests(true)
-            .logResponses(true)
             .build()
     }
 }

@@ -18,7 +18,7 @@ class ParadoxLocaleListPopup(
 
     override fun isSpeedSearchEnabled() = true
 
-    override fun onChosen(selectedValue: CwtLocaleConfig, finalChoice: Boolean): PopupStep<*> {
+    override fun onChosen(selectedValue: CwtLocaleConfig, finalChoice: Boolean): PopupStep<*>? {
         selectedLocale = selectedValue
         return FINAL_CHOICE
     }

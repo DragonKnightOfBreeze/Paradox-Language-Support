@@ -28,6 +28,7 @@ class PlsAiSettingsState : BaseState() {
      * @property modelName 模型名称。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
      * @property apiEndpoint API端点。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
      * @property apiKey API密钥。密文保存。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
+     * @property valid 当前配置是否合法。
      */
     @Tag("openAI")
     class OpenAiState : BaseState() {

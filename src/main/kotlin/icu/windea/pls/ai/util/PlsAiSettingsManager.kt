@@ -17,8 +17,9 @@ object PlsAiSettingsManager {
     }
 
     private fun isValidForOpenAI(): Boolean {
-        val settings = PlsAiManager.getSettings().openAI
-        return settings.apiKey.isNotNullOrEmpty() // modelName 和 apiEndpoint 为空时使用默认值
+        // modelName 和 apiEndpoint 为空时使用默认值
+        // apiKey 为空时直接报错
+        return true
     }
 
     fun getDefaultOpenAiModelName(): String {

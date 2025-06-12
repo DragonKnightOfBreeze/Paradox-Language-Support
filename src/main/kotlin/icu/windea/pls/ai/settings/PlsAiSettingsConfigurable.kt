@@ -2,7 +2,7 @@ package icu.windea.pls.ai.settings
 
 import com.intellij.openapi.options.*
 import com.intellij.openapi.ui.*
-import com.intellij.ui.components.JBPasswordField
+import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.ai.*
@@ -44,16 +44,25 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsAiBundle.message("setting
                 row {
                     label(PlsAiBundle.message("settings.ai.openAI.apiKey")).widthGroup(groupNameOpenAI)
                     passwordField().bindText(settings.openAI::apiKey.toNonNullableProperty("")).align(Align.FILL)
-                        .validationOnApply { validateOpenAiApiKey(this, it) }
+                        .validationOnInput { validateOpenAiApiKey(this, it, false) }
+                        .validationOnApply { validateOpenAiApiKey(this, it, true) }
                 }
             }
         }
     }
 
     @Suppress("DialogTitleCapitalization")
-    private fun validateOpenAiApiKey(builder: ValidationInfoBuilder, field: JBPasswordField): ValidationInfo? {
-        val v = field.password
-        if (v.isEmpty()) return builder.warning("settings.ai.openAI.apiKey.empty")
+    private fun validateOpenAiApiKey(builder: ValidationInfoBuilder, field: JBPasswordField, onApply: Boolean): ValidationInfo? {
+        if(onApply) {
+            if(!PlsAiManager.getSettings().enable) return null
+            if(field.password.isEmpty()) {
+                return builder.error("settings.ai.openAI.apiKey.2")
+            }
+        } else {
+            if(field.password.isEmpty()) {
+                return builder.warning("settings.ai.openAI.apiKey.1")
+            }
+        }
         return null
     }
 }

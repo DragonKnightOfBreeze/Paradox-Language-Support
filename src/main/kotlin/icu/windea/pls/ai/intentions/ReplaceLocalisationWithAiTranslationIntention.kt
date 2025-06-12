@@ -41,30 +41,37 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
             val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
             val errorRef = AtomicReference<Throwable>()
             var withWarnings = false
-            val elementsAndSnippetsChunked = elementsAndSnippetsToHandle.chunked(PlsAiConstantSettings.maxLineLength)
 
             reportSequentialProgress { seqReporter ->
                 seqReporter.nextStep(50) {
-                    reportProgress(elementsAndSnippetsChunked.size) { reporter ->
-                        elementsAndSnippetsChunked.forEachConcurrent { list ->
+                    val total = elementsAndSnippetsToHandle.size.toDouble()
+                    var current = 0
+                    val elementsAndSnippetsChunked = elementsAndSnippetsToHandle.chunked(PlsAiConstantSettings.maxLineLength)
+                    reportRawProgress p@{ reporter ->
+                        reporter.text(PlsAiBundle.message("intention.localisation.translate.progress.initStep"))
+
+                        elementsAndSnippetsChunked.forEachConcurrent f@{ list ->
+                            val inputElements = list.map { (element) -> element }
                             val inputText = list.joinToString("\n") { (_, snippets) -> snippets.join() }
                             var i = 0
-                            reporter.itemStep(PlsAiBundle.message("intention.localisation.translate.progress.step")) {
-                                val request = PlsAiTranslateLocalisationsRequest(elements, inputText, selectedLocale, file, project)
-                                val resultFlow = PlsAiTranslateLocalisationService.translate(request) ?: return@itemStep
-                                runCatchingCancelable {
-                                    resultFlow.collect { data ->
-                                        val (_, currentSnippets) = list[i]
-                                        if (currentSnippets.key != data.key) { //不期望的结果，直接报错，中断收集
-                                            throw IllegalStateException()
-                                        }
-                                        currentSnippets.newText = data.text
-                                        i++
+                            val request = PlsAiTranslateLocalisationsRequest(inputElements, inputText, selectedLocale, file, project)
+                            val resultFlow = PlsAiTranslateLocalisationService.translate(request) ?: return@f
+                            runCatchingCancelable {
+                                resultFlow.collect { data ->
+                                    val (_, currentSnippets) = list[i]
+                                    if (currentSnippets.key != data.key) { //不期望的结果，直接报错，中断收集
+                                        throw IllegalStateException()
                                     }
-                                }.onFailure { errorRef.set(it) }.getOrNull()
-                            }
-                            if (i != elementsAndSnippetsChunked.size) { //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
+                                    currentSnippets.newText = data.text
+                                    i++
+                                    current++
+                                    reporter.text(PlsAiBundle.message("intention.localisation.translate.progress.step", data.key))
+                                    reporter.fraction(current / total)
+                                }
+                            }.onFailure { errorRef.set(it) }.getOrNull()
+                            if (i != list.size) { //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
                                 withWarnings = true
+                                current += list.size - i
                             }
                         }
                     }

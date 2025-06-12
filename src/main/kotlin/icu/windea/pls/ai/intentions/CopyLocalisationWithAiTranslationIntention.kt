@@ -14,7 +14,7 @@ import icu.windea.pls.ai.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.services.*
 import icu.windea.pls.ai.settings.*
-import icu.windea.pls.ai.util.PlsAiManager
+import icu.windea.pls.ai.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
@@ -44,15 +44,19 @@ class CopyLocalisationWithAiTranslationIntention : CopyLocalisationIntentionBase
             val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
             val errorRef = AtomicReference<Throwable>()
             var withWarnings = false
-            val elementsAndSnippetsChunked = elementsAndSnippetsToHandle.chunked(PlsAiConstantSettings.maxLineLength)
 
-            reportProgress(elementsAndSnippetsChunked.size) { reporter ->
-                elementsAndSnippetsChunked.forEachConcurrent { list ->
-                    val inputText = list.joinToString("\n") { (_, snippets) -> snippets.join() }
-                    var i = 0
-                    reporter.itemStep(PlsAiBundle.message("intention.localisation.translate.progress.step")) {
+            if (elementsAndSnippetsToHandle.isNotEmpty()) {
+                val total = elementsAndSnippetsToHandle.size.toDouble()
+                var current = 0
+                val elementsAndSnippetsChunked = elementsAndSnippetsToHandle.chunked(PlsAiConstantSettings.maxLineLength)
+                reportRawProgress p@{ reporter ->
+                    reporter.text(PlsAiBundle.message("intention.localisation.translate.progress.initStep"))
+
+                    elementsAndSnippetsChunked.forEachConcurrent f@{ list ->
+                        val inputText = list.joinToString("\n") { (_, snippets) -> snippets.join() }
+                        var i = 0
                         val request = PlsAiTranslateLocalisationsRequest(elements, inputText, selectedLocale, file, project)
-                        val resultFlow = PlsAiTranslateLocalisationService.translate(request) ?: return@itemStep
+                        val resultFlow = PlsAiTranslateLocalisationService.translate(request) ?: return@f
                         runCatchingCancelable {
                             resultFlow.collect { data ->
                                 val (_, currentSnippets) = list[i]
@@ -61,11 +65,15 @@ class CopyLocalisationWithAiTranslationIntention : CopyLocalisationIntentionBase
                                 }
                                 currentSnippets.newText = data.text
                                 i++
+                                current++
+                                reporter.text(PlsAiBundle.message("intention.localisation.translate.progress.step", data.key))
+                                reporter.fraction(current / total)
                             }
                         }.onFailure { errorRef.set(it) }.getOrNull()
-                    }
-                    if (i != elementsAndSnippetsChunked.size) { //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
-                        withWarnings = true
+                        if (i != list.size) { //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
+                            withWarnings = true
+                            current += list.size - i
+                        }
                     }
                 }
             }

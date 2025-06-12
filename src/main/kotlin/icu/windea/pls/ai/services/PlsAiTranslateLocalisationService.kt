@@ -1,5 +1,6 @@
 package icu.windea.pls.ai.services
 
+import com.intellij.openapi.diagnostic.*
 import dev.langchain4j.data.message.*
 import dev.langchain4j.kotlin.model.chat.*
 import icu.windea.pls.ai.*
@@ -8,8 +9,11 @@ import icu.windea.pls.ai.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import kotlinx.coroutines.flow.*
+import java.lang.invoke.*
 
 object PlsAiTranslateLocalisationService : PlsAiService {
+    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
+
     fun supports(): Boolean {
         return PlsAiManager.isEnabled() && PlsChatModelManager.getStreamingChatModel() != null
     }
@@ -17,6 +21,7 @@ object PlsAiTranslateLocalisationService : PlsAiService {
     fun translate(request: PlsAiTranslateLocalisationsRequest): Flow<ParadoxLocalisationData>? {
         val chatModel = PlsChatModelManager.getStreamingChatModel() ?: return null
 
+        logger.info("[AI REQUEST] Translate localisation...")
         return chatModel.chatFlow f2@{
             messages += getSystemMessage(request)
             messages += getUserMessage(request)
@@ -52,11 +57,13 @@ object PlsAiTranslateLocalisationService : PlsAiService {
                 contextLines.forEach { appendLine(it) }
             }
         }
+        logger.info("System message: \n$text")
         return SystemMessage.from(text)
     }
 
     private fun getUserMessage(request: PlsAiTranslateLocalisationsRequest): UserMessage {
         val text = request.text
+        logger.info("User message: \n$text")
         return UserMessage.from(text)
     }
 }
