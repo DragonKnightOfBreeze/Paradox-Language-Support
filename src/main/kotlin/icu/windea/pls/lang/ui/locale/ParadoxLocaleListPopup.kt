@@ -2,13 +2,13 @@
 
 package icu.windea.pls.lang.ui.locale
 
+import com.intellij.openapi.ui.popup.PopupStep
 import com.intellij.openapi.ui.popup.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 
 class ParadoxLocaleListPopup(
-    val allLocales: List<CwtLocaleConfig>,
-    private val callback: (selected: CwtLocaleConfig) -> Unit = {}
+    val allLocales: List<CwtLocaleConfig>
 ) : BaseListPopupStep<CwtLocaleConfig>(PlsBundle.message("ui.popup.selectLocale.title"), allLocales) {
     var selectedLocale: CwtLocaleConfig? = null
 
@@ -18,8 +18,8 @@ class ParadoxLocaleListPopup(
 
     override fun isSpeedSearchEnabled() = true
 
-    override fun onChosen(selectedValue: CwtLocaleConfig, finalChoice: Boolean) = doFinalStep {
+    override fun onChosen(selectedValue: CwtLocaleConfig, finalChoice: Boolean): PopupStep<*> {
         selectedLocale = selectedValue
-        callback(selectedValue)
+        return FINAL_CHOICE
     }
 }

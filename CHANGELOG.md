@@ -18,6 +18,7 @@ TODO
 ## 2.0.0-dev
 
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
+* [ ] #151 Local variable, defined inside inline_script but passed from the outside as a parameter is not recognized.
 * [X] #148 更改`date_field`的默认日期模式为`y.M.d`，且允许声明日期模式（`date_field[y.M.d]`） / OP: Change the default date format of `date_field` to `y.M.d`, and allow declaring date formats (`date_field[y.M.d]`)
 * [X] 修复：修复插件可能无法正确解析json，从而无法识别游戏目录的问题 / OP: Fix a bug that plugin may not be able to correctly parse json, causing the game directory to be incorrectly recognized
 * [ ] 优化：尝试避免打开尺寸过大的DDS图片时造成的UI冻结 / OP: Try to avoid UI freezing when opening large DDS images

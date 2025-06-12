@@ -88,11 +88,11 @@ abstract class ManipulateLocalisationIntentionBase : IntentionAction, DumbAware 
             }
         } else {
             if (editor == null) return
-            localePopup.doFinalStep {
-                val selectedLocale = localePopup.selectedLocale ?: return@doFinalStep
+            localePopup.doFinalStep action@{
+                val selected = localePopup.selectedLocale ?: return@action
                 val coroutineScope = PlsFacade.getCoroutineScope(project)
                 coroutineScope.launch {
-                    doHandle(project, file, elements, selectedLocale)
+                    doHandle(project, file, elements, selected)
                 }
             }
             JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)

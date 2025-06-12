@@ -20,7 +20,10 @@ class ParadoxGenerateLocalisationsHandler(
     val fromInspection: Boolean = false,
 ) : CodeInsightActionHandler {
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
-        val onChosen = action@{ selected: CwtLocaleConfig ->
+        val allLocales = ParadoxLocaleManager.getLocaleConfigs()
+        val localePopup = ParadoxLocaleListPopup(allLocales)
+        localePopup.doFinalStep action@{
+            val selected = localePopup.selectedLocale ?: return@action
             val context = getFinalContext(file)
             if (context == null) {
                 HintManager.getInstance().showErrorHint(editor, PlsBundle.message("generation.localisation.noMembersHint"))
@@ -37,9 +40,6 @@ class ParadoxGenerateLocalisationsHandler(
             PsiDocumentManager.getInstance(project).commitAllDocuments()
             ParadoxLocalisationGenerator.generate(context, selectedElements, project, file, selected)
         }
-
-        val allLocales = ParadoxLocaleManager.getLocaleConfigs()
-        val localePopup = ParadoxLocaleListPopup(allLocales, onChosen)
         JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
     }
 

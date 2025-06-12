@@ -7,7 +7,6 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.platform.ide.documentation.*
 import icu.windea.pls.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.ui.locale.*
@@ -42,11 +41,12 @@ class ChangeQuickDocLocalisationLocaleAction : AnAction(), ActionToIgnore {
         if (targetElement == null) return
         if (targetElement.language !is ParadoxBaseLanguage) return
         val allLocales = ParadoxLocaleManager.getLocaleConfigs(withAuto = true)
-        val onChosen = { selected: CwtLocaleConfig ->
+        val localePopup = ParadoxLocaleListPopup(allLocales)
+        localePopup.doFinalStep action@{
+            val selected = localePopup.selectedLocale ?: return@action
             targetElement.putUserData(PlsKeys.documentationLocale, selected.id)
             browser.reload()
         }
-        val localePopup = ParadoxLocaleListPopup(allLocales, callback = onChosen)
         JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(e.dataContext)
     }
 }
