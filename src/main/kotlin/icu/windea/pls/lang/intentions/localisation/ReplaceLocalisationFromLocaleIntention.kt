@@ -3,7 +3,7 @@ package icu.windea.pls.lang.intentions.localisation
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.command.*
-import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.project.*
 import com.intellij.platform.ide.progress.*
 import com.intellij.platform.util.coroutines.*
@@ -33,36 +33,20 @@ class ReplaceLocalisationFromLocaleIntention : ReplaceLocalisationIntentionBase(
             val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
             val errorRef = AtomicReference<Throwable>()
 
-            reportSequentialProgress { seqReporter ->
-                seqReporter.nextStep(50) {
-                    reportProgress(elementsAndSnippetsToHandle.size) { reporter ->
-                        elementsAndSnippetsToHandle.forEachConcurrent f@{ (_, snippets) ->
-                            reporter.itemStep(PlsBundle.message("intention.localisation.search.progress.step", snippets.key)) {
-                                runCatchingCancelable { doHandleText(project, file, snippets, selectedLocale) }.onFailure { errorRef.set(it) }.getOrThrow()
-                            }
+            if (elementsAndSnippetsToHandle.isNotEmpty()) {
+                reportProgress(elementsAndSnippetsToHandle.size) { reporter ->
+                    elementsAndSnippetsToHandle.forEachConcurrent f@{ (element, snippets) ->
+                        reporter.itemStep(PlsBundle.message("intention.localisation.search.replace.progress.step", snippets.key)) {
+                            runCatchingCancelable { doHandleText(project, file, snippets, selectedLocale) }.onFailure { errorRef.compareAndSet(null, it) }.getOrThrow()
+                            runCatchingCancelable { doReplaceText(project, file, element, snippets) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
                         }
                     }
-                }
-
-                if (errorRef.get() != null) {
-                    return@action createFailedNotification(project, selectedLocale, errorRef.get())
-                }
-
-                seqReporter.nextStep(100) {
-                    reportProgress(elementsAndSnippetsToHandle.size) { reporter ->
-                        elementsAndSnippetsToHandle.forEachConcurrent f@{ (element, snippets) ->
-                            reporter.itemStep(PlsBundle.message("intention.localisation.replace.progress.step", snippets.key)) {
-                                runCatchingCancelable { doReplaceText(project, file, element, snippets) }.onFailure { errorRef.set(it) }.getOrNull()
-                            }
-                        }
-                    }
-                }
-
-                if (errorRef.get() != null) {
-                    return@action createFailedNotification(project, selectedLocale, errorRef.get())
                 }
             }
 
+            if (errorRef.get() != null) {
+                return@action createFailedNotification(project, selectedLocale, errorRef.get())
+            }
             createSuccessNotification(project, selectedLocale)
         }
     }

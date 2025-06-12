@@ -39,34 +39,19 @@ class ReplaceLocalisationWithTranslationIntention : ReplaceLocalisationIntention
             val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
             val errorRef = AtomicReference<Throwable>()
 
-            reportSequentialProgress { seqReporter ->
-                seqReporter.nextStep(50) {
-                    reportProgress(elementsAndSnippetsToHandle.size) { reporter ->
-                        elementsAndSnippetsToHandle.forEachConcurrent f@{ (element, snippets) ->
-                            reporter.itemStep(PlsBundle.message("intention.localisation.translate.progress.step", snippets.key)) {
-                                runCatchingCancelable { doHandleText(element, snippets, selectedLocale) }.onFailure { errorRef.set(it) }.getOrThrow()
-                            }
+            if (elementsAndSnippetsToHandle.isNotEmpty()) {
+                reportProgress(elementsAndSnippetsToHandle.size) { reporter ->
+                    elementsAndSnippetsToHandle.forEachConcurrent f@{ (element, snippets) ->
+                        reporter.itemStep(PlsBundle.message("intention.localisation.translate.replace.progress.step", snippets.key)) {
+                            runCatchingCancelable { doHandleText(element, snippets, selectedLocale) }.onFailure { errorRef.compareAndSet(null, it) }.getOrThrow()
+                            runCatchingCancelable { doReplaceText(element, snippets, file, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
                         }
                     }
                 }
+            }
 
-                if (errorRef.get() != null) {
-                    return@action createFailedNotification(project, selectedLocale, errorRef.get())
-                }
-
-                seqReporter.nextStep(100) {
-                    reportProgress(elementsAndSnippetsToHandle.size) { reporter ->
-                        elementsAndSnippetsToHandle.forEachConcurrent f@{ (element, snippets) ->
-                            reporter.itemStep(PlsBundle.message("intention.localisation.replace.progress.step", snippets.key)) {
-                                runCatchingCancelable { doReplaceText(project, file, element, snippets) }.onFailure { errorRef.set(it) }.getOrNull()
-                            }
-                        }
-                    }
-                }
-
-                if (errorRef.get() != null) {
-                    return@action createFailedNotification(project, selectedLocale, errorRef.get())
-                }
+            if (errorRef.get() != null) {
+                return@action createFailedNotification(project, selectedLocale, errorRef.get())
             }
 
             createSuccessNotification(project, selectedLocale)
@@ -90,7 +75,7 @@ class ReplaceLocalisationWithTranslationIntention : ReplaceLocalisationIntention
     }
 
     @Suppress("UnstableApiUsage")
-    private suspend fun doReplaceText(project: Project, file: PsiFile?, element: ParadoxLocalisationProperty, snippets: ParadoxLocalisationSnippets) {
+    private suspend fun doReplaceText(element: ParadoxLocalisationProperty, snippets: ParadoxLocalisationSnippets, file: PsiFile?, project: Project) {
         val newText = snippets.newText
         writeCommandAction(project, PlsBundle.message("intention.localisation.command.replace")) {
             element.setValue(newText)

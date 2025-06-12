@@ -59,11 +59,11 @@ class CopyLocalisationWithAiTranslationIntention : CopyLocalisationIntentionBase
                         val resultFlow = PlsAiTranslateLocalisationService.translate(request) ?: return@f
                         runCatchingCancelable {
                             resultFlow.collect { data ->
-                                val (_, currentSnippets) = list[i]
-                                if (currentSnippets.key != data.key) { //不期望的结果，直接报错，中断收集
-                                    throw IllegalStateException()
+                                val (_, snippets) = list[i]
+                                if (snippets.key != data.key) { //不期望的结果，直接报错，中断收集
+                                    throw IllegalStateException("Output key ${data.key} mismatch input key ${snippets.key}")
                                 }
-                                currentSnippets.newText = data.text
+                                snippets.newText = data.text
                                 i++
                                 current++
                                 reporter.text(PlsAiBundle.message("intention.localisation.translate.progress.step", data.key))
