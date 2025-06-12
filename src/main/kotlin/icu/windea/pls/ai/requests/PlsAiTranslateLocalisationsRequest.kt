@@ -9,6 +9,7 @@ import icu.windea.pls.localisation.psi.*
 class PlsAiTranslateLocalisationsRequest(
     val localisations: List<ParadoxLocalisationProperty>,
     val text: String,
+    val description: String?,
     val targetLocale: CwtLocaleConfig,
     val file: PsiFile?,
     val project: Project

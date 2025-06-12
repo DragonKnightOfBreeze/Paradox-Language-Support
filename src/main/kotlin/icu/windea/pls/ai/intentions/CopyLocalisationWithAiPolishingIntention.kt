@@ -49,7 +49,7 @@ class CopyLocalisationWithAiPolishingIntention : ManipulateLocalisationIntention
             if (elementsAndSnippetsToHandle.isNotEmpty()) {
                 val total = elementsAndSnippetsToHandle.size.toDouble()
                 var current = 0
-                val chunkSize = PlsAiManager.getSettings().batchSizeOfLocalisations
+                val chunkSize = PlsAiManager.getSettings().features.batchSizeOfLocalisations
                 val elementsAndSnippetsChunked = elementsAndSnippetsToHandle.chunked(chunkSize)
                 val aiService = PlsAiManager.getPolishLocalisationService()
                 reportRawProgress p@{ reporter ->

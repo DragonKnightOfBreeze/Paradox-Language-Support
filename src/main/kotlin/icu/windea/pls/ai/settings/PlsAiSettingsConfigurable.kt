@@ -27,15 +27,6 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsAiBundle.message("setting
                     .comment(PlsAiBundle.message("settings.ai.withContext.comment"), MAX_LINE_LENGTH_WORD_WRAP)
             }
 
-            separator()
-
-            //batchSizeOfLocalisations
-            row {
-                label(PlsAiBundle.message("settings.ai.batchSizeOfLocalisations"))
-                intTextField(1..PlsAiSettingsManager.getMaxBatchSizeOfLocalisations(), 1).bindIntText(settings::batchSizeOfLocalisations)
-                contextHelp(PlsAiBundle.message("settings.ai.batchSizeOfLocalisations.tip"))
-            }
-
             //openAI
             group(PlsAiBundle.message("settings.ai.openAI")) {
                 //modelName
@@ -55,6 +46,26 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsAiBundle.message("setting
                     label(PlsAiBundle.message("settings.ai.openAI.apiKey")).widthGroup(groupNameOpenAI)
                     passwordField().bindText(settings.openAI::apiKey.toNonNullableProperty("")).align(Align.FILL)
                         .validationOnInput { validateOpenAiApiKey(this, it) }
+                }
+            }
+
+            //features
+            group("") {
+                //batchSizeOfLocalisations
+                row {
+                    label(PlsAiBundle.message("settings.ai.features.batchSizeOfLocalisations"))
+                    intTextField(1..PlsAiSettingsManager.getMaxBatchSizeOfLocalisations(), 1).bindIntText(settings.features::batchSizeOfLocalisations)
+                    contextHelp(PlsAiBundle.message("settings.ai.features.batchSizeOfLocalisations.tip"))
+                }
+                //translateLocalisationsWithDescription
+                row {
+                    checkBox(PlsAiBundle.message("settings.ai.features.translateLocalisationsWithDescription")).bindSelected(settings.features::translateLocalisationsWithDescription)
+                    contextHelp(PlsAiBundle.message("settings.ai.features.translateLocalisationsWithDescription.tip"))
+                }
+                //polishLocalisationsWithDescription
+                row {
+                    checkBox(PlsAiBundle.message("settings.ai.features.polishLocalisationsWithDescription")).bindSelected(settings.features::polishLocalisationsWithDescription)
+                    contextHelp(PlsAiBundle.message("settings.ai.features.polishLocalisationsWithDescription.tip"))
                 }
             }
         }

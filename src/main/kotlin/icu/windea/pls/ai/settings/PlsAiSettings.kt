@@ -22,10 +22,11 @@ class PlsAiSettingsState : BaseState() {
     var enable by property(false)
     var withContext by property(false)
 
-    var batchSizeOfLocalisations by property(PlsAiSettingsManager.getDefaultBatchSizeOfLocalisations())
-
     @get:Property(surroundWithTag = false)
     var openAI by property(OpenAiState())
+
+    @get:Property(surroundWithTag = false)
+    var features by property(FeaturesState())
 
     /**
      * @property modelName 模型名称。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
@@ -37,5 +38,12 @@ class PlsAiSettingsState : BaseState() {
         var modelName by string() // e.g., gpt-4o-mini or deepseek-chat
         var apiEndpoint by string() // e.g., https://api.openai.com or https://api.deepseek.com
         var apiKey by CredentialAttributes("PLS_AI_OPEN_AI_API_KEY")
+    }
+
+    @Tag("features")
+    class FeaturesState : BaseState() {
+        var batchSizeOfLocalisations by property(PlsAiSettingsManager.getDefaultBatchSizeOfLocalisations())
+        var translateLocalisationsWithDescription by property(false)
+        var polishLocalisationsWithDescription by property(true)
     }
 }

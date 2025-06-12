@@ -6,6 +6,7 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.ui.popup.*
 import com.intellij.platform.ide.progress.*
 import com.intellij.platform.util.coroutines.*
 import com.intellij.platform.util.progress.*
@@ -27,15 +28,19 @@ import java.util.concurrent.atomic.*
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
-class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopup() {
+class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopupAndPopup<String>() {
     override fun getFamilyName() = PlsAiBundle.message("intention.copyLocalisationWithAiTranslation")
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
         return super.isAvailable(project, editor, file) && PlsAiManager.isAvailable()
     }
 
+    override fun createPopup(project: Project, editor: Editor?, file: PsiFile?, callback: (String) -> Unit): JBPopup {
+        return PlsAiManager.getTranslateLocalisationService().createDescriptionPopup(project, editor, file, callback)
+    }
+
     @Suppress("UnstableApiUsage")
-    override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig) {
+    override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig, data: String?) {
         withBackgroundProgress(project, PlsAiBundle.message("intention.copyLocalisationWithAiTranslation.progress.title", selectedLocale)) action@{
             val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationSnippets.from(it) } }
             val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
@@ -45,7 +50,7 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
             if (elementsAndSnippetsToHandle.isNotEmpty()) {
                 val total = elementsAndSnippetsToHandle.size.toDouble()
                 var current = 0
-                val chunkSize = PlsAiManager.getSettings().batchSizeOfLocalisations
+                val chunkSize = PlsAiManager.getSettings().features.batchSizeOfLocalisations
                 val elementsAndSnippetsChunked = elementsAndSnippetsToHandle.chunked(chunkSize)
                 val aiService = PlsAiManager.getTranslateLocalisationService()
                 reportRawProgress p@{ reporter ->
@@ -56,7 +61,7 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
                         val inputText = list.joinToString("\n") { (_, snippets) -> snippets.join() }
                         var i = 0
                         runCatchingCancelable {
-                            val request = PlsAiTranslateLocalisationsRequest(inputElements, inputText, selectedLocale, file, project)
+                            val request = PlsAiTranslateLocalisationsRequest(inputElements, inputText, data, selectedLocale, file, project)
                             val resultFlow = aiService.translate(request)
                             aiService.checkResultFlow(resultFlow)
                             resultFlow.collect { data ->

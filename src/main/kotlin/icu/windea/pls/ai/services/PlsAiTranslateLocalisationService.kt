@@ -2,6 +2,17 @@ package icu.windea.pls.ai.services
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.popup.JBPopup
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.psi.PsiFile
+import com.intellij.ui.components.JBTextField
+import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.COLUMNS_LARGE
+import com.intellij.ui.dsl.builder.MAX_LINE_LENGTH_WORD_WRAP
+import com.intellij.ui.dsl.builder.columns
+import com.intellij.ui.dsl.builder.panel
 import dev.langchain4j.data.message.*
 import dev.langchain4j.kotlin.model.chat.*
 import icu.windea.pls.ai.*
@@ -11,6 +22,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.awt.Dimension
 import java.lang.invoke.*
 
 @Service
@@ -60,6 +72,7 @@ class PlsAiTranslateLocalisationService : PlsAiManipulateLocalisationService() {
             appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.tip.1"))
             appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.tip.2"))
             appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.tip.3", request.targetLocale))
+            request.description?.orNull()?.let { appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.tip.4", optimizeDescription(it))) }
             if (contextLines.isNotEmpty()) {
                 appendLine(PlsAiDocBundle.message("systemMessage.context"))
                 contextLines.forEach { appendLine(it) }
@@ -69,9 +82,38 @@ class PlsAiTranslateLocalisationService : PlsAiManipulateLocalisationService() {
         return SystemMessage.from(text)
     }
 
+    private fun optimizeDescription(string: String): String {
+        return string.trim().replace("\n", " ") //再次去除首尾空白，并且将换行符替换为空格
+    }
+
     private fun getUserMessage(request: PlsAiTranslateLocalisationsRequest): UserMessage {
         val text = request.text
         logger.info("User message: \n$text")
         return UserMessage.from(text)
+    }
+
+    fun createDescriptionPopup(project: Project, editor: Editor?, file: PsiFile?, callback: (String) -> Unit): JBPopup {
+        val textField = JBTextField()
+        val panel = panel {
+            row {
+                cell(textField).align(AlignX.FILL).columns(COLUMNS_LARGE).focused()
+                    .comment(PlsAiBundle.message("intention.localisation.translate.popup.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+            }
+        }
+        val popup = JBPopupFactory.getInstance()
+            .createComponentPopupBuilder(panel, textField)
+            .setRequestFocus(true)
+            .setResizable(true)
+            .setMovable(true)
+            .setCancelOnClickOutside(false)
+            .setCancelOnOtherWindowOpen(false)
+            .setMinSize(Dimension(640, 60))
+            .setTitle(PlsAiBundle.message("intention.localisation.translate.popup.title"))
+            .createPopup()
+        textField.addActionListener {
+            popup.closeOk(null)
+            callback(textField.text.trim())
+        }
+        return popup
     }
 }
