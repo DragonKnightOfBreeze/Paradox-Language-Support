@@ -102,7 +102,7 @@ class PlsAiPolishLocalisationService : PlsAiManipulateLocalisationService() {
             .setMovable(true)
             .setCancelOnClickOutside(false)
             .setCancelOnOtherWindowOpen(false)
-            .setMinSize(Dimension(640, 60))
+            .setMinSize(Dimension(640, 120))
             .setTitle(PlsAiBundle.message("intention.localisation.polish.popup.title"))
             .createPopup()
         textField.addActionListener {

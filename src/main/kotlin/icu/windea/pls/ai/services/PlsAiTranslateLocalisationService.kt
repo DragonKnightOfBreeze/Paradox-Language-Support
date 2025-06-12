@@ -107,7 +107,7 @@ class PlsAiTranslateLocalisationService : PlsAiManipulateLocalisationService() {
             .setMovable(true)
             .setCancelOnClickOutside(false)
             .setCancelOnOtherWindowOpen(false)
-            .setMinSize(Dimension(640, 60))
+            .setMinSize(Dimension(640, 120))
             .setTitle(PlsAiBundle.message("intention.localisation.translate.popup.title"))
             .createPopup()
         textField.addActionListener {
