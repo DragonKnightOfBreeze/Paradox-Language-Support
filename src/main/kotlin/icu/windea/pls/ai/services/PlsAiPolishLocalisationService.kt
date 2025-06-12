@@ -8,17 +8,17 @@ import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.*
 import java.lang.invoke.*
 
-object PlsAiTranslateLocalisationService : PlsAiService {
+object PlsAiPolishLocalisationService : PlsAiService {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
 
-    fun translate(request: PlsAiTranslateLocalisationsRequest): Flow<ParadoxLocalisationData>? {
+    fun polish(request: PlsAiPolishLocalisationsRequest): Flow<ParadoxLocalisationData>? {
         val chatModel = PlsChatModelManager.getStreamingChatModel() ?: return null
 
-        logger.info("[AI REQUEST] Translate localisation...")
+        logger.info("[AI REQUEST] Polish localisation...")
         return chatModel.chatFlow f2@{
             messages += getSystemMessage(request)
             messages += getUserMessage(request)
@@ -39,7 +39,7 @@ object PlsAiTranslateLocalisationService : PlsAiService {
         }
     }
 
-    private fun getSystemMessage(request: PlsAiTranslateLocalisationsRequest): SystemMessage {
+    private fun getSystemMessage(request: PlsAiPolishLocalisationsRequest): SystemMessage {
         val text = buildString {
             val contextLines = if (PlsAiManager.getSettings().withContext) {
                 buildList {
@@ -51,11 +51,11 @@ object PlsAiTranslateLocalisationService : PlsAiService {
                 emptyList()
             }
             if (contextLines.isEmpty()) {
-                append(PlsAiDocBundle.message("systemMessage.translateLocalisation.0", request.gameType, request.targetLocale))
-                appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.tip"))
+                append(PlsAiDocBundle.message("systemMessage.polishLocalisation.0", request.gameType))
+                appendLine(PlsAiDocBundle.message("systemMessage.polishLocalisation.tip"))
             } else {
-                appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.1", request.gameType, request.targetLocale))
-                appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.tip"))
+                appendLine(PlsAiDocBundle.message("systemMessage.polishLocalisation.1", request.gameType))
+                appendLine(PlsAiDocBundle.message("systemMessage.polishLocalisation.tip"))
                 appendLine(PlsAiDocBundle.message("systemMessage.context"))
                 contextLines.forEach { appendLine(it) }
             }
@@ -64,7 +64,7 @@ object PlsAiTranslateLocalisationService : PlsAiService {
         return SystemMessage.from(text)
     }
 
-    private fun getUserMessage(request: PlsAiTranslateLocalisationsRequest): UserMessage {
+    private fun getUserMessage(request: PlsAiPolishLocalisationsRequest): UserMessage {
         val text = request.text
         logger.info("User message: \n$text")
         return UserMessage.from(text)

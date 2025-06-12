@@ -14,5 +14,18 @@
       <categoryKey>intention.localisation.category</categoryKey>
       <className>icu.windea.pls.ai.intentions.ReplaceLocalisationWithAiTranslationIntention</className>
     </intentionAction>
+
+    <intentionAction>
+      <language>PARADOX_LOCALISATION</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>intention.localisation.category</categoryKey>
+      <className>icu.windea.pls.ai.intentions.CopyLocalisationWithAiPolishingIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_LOCALISATION</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>intention.localisation.category</categoryKey>
+      <className>icu.windea.pls.ai.intentions.ReplaceLocalisationWithAiPolishingIntention</className>
+    </intentionAction>
   </extensions>
 </idea-plugin>

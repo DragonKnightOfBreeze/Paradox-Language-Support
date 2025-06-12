@@ -25,8 +25,8 @@ import java.util.concurrent.atomic.*
 /**
  * （基于AI）替换为翻译后的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
  */
-class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntentionBase() {
-    override fun getFamilyName() = PlsAiBundle.message("intention.replaceLocalisationWithAiTranslation")
+class ReplaceLocalisationWithAiPolishingIntention : ReplaceLocalisationIntentionBase() {
+    override fun getFamilyName() = PlsAiBundle.message("intention.replaceLocalisationWithAiPolishing")
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
         return super.isAvailable(project, editor, file) && PlsAiManager.isAvailable()
@@ -35,7 +35,7 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig?) {
         if (selectedLocale == null) return
-        withBackgroundProgress(project, PlsAiBundle.message("intention.replaceLocalisationWithAiTranslation.progress.title", selectedLocale)) action@{
+        withBackgroundProgress(project, PlsAiBundle.message("intention.replaceLocalisationWithAiPolishing.progress.title", selectedLocale)) action@{
             val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationSnippets.from(it) } }
             val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
             val errorRef = AtomicReference<Throwable>()
@@ -47,14 +47,14 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
                 val chunkSize = PlsAiManager.getSettings().batchSizeOfLocalisations
                 val elementsAndSnippetsChunked = elementsAndSnippetsToHandle.chunked(chunkSize)
                 reportRawProgress p@{ reporter ->
-                    reporter.text(PlsAiBundle.message("intention.localisation.translate.replace.progress.initStep"))
+                    reporter.text(PlsAiBundle.message("intention.localisation.polish.progress.initStep"))
 
                     elementsAndSnippetsChunked.forEachConcurrent f@{ list ->
                         val inputElements = list.map { (element) -> element }
                         val inputText = list.joinToString("\n") { (_, snippets) -> snippets.join() }
                         var i = 0
-                        val request = PlsAiTranslateLocalisationsRequest(inputElements, inputText, selectedLocale, file, project)
-                        val resultFlow = PlsAiTranslateLocalisationService.translate(request) ?: return@f
+                        val request = PlsAiPolishLocalisationsRequest(inputElements, inputText, null, file, project)
+                        val resultFlow = PlsAiPolishLocalisationService.polish(request) ?: return@f
                         runCatchingCancelable {
                             resultFlow.collect { data ->
                                 val (element, snippets) = list[i]
@@ -63,7 +63,7 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
                                 }
                                 i++
                                 current++
-                                reporter.text(PlsAiBundle.message("intention.localisation.translate.replace.progress.step", data.key))
+                                reporter.text(PlsAiBundle.message("intention.localisation.polish.replace.progress.step", data.key))
                                 reporter.fraction(current / total)
 
                                 snippets.newText = data.text
@@ -98,12 +98,12 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
     }
 
     private fun createSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig) {
-        val content = PlsAiBundle.message("intention.replaceLocalisationWithAiTranslation.notification.0", selectedLocale)
+        val content = PlsAiBundle.message("intention.replaceLocalisationWithAiPolishing.notification.0", selectedLocale)
         createNotification(content, NotificationType.INFORMATION).notify(project)
     }
 
     private fun createSuccessWithWarningsNotification(project: Project, selectedLocale: CwtLocaleConfig) {
-        val content = PlsAiBundle.message("intention.replaceLocalisationWithAiTranslation.notification.2", selectedLocale)
+        val content = PlsAiBundle.message("intention.replaceLocalisationWithAiPolishing.notification.2", selectedLocale)
         createNotification(content, NotificationType.WARNING).notify(project)
     }
 
@@ -111,7 +111,7 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
         thisLogger().warn(error)
 
         val errorDetails = error.message?.let { "<br>$it" }.orEmpty()
-        val content = PlsAiBundle.message("intention.replaceLocalisationWithAiTranslation.notification.1", selectedLocale) + errorDetails
+        val content = PlsAiBundle.message("intention.replaceLocalisationWithAiPolishing.notification.1", selectedLocale) + errorDetails
         createNotification(content, NotificationType.WARNING).notify(project)
     }
 }

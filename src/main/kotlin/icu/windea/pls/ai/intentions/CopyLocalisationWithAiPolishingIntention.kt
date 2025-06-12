@@ -2,9 +2,9 @@ package icu.windea.pls.ai.intentions
 
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
-import com.intellij.openapi.command.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import com.intellij.platform.ide.progress.*
 import com.intellij.platform.util.coroutines.*
@@ -20,13 +20,16 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.intentions.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import java.awt.datatransfer.StringSelection
 import java.util.concurrent.atomic.*
 
 /**
- * （基于AI）替换为翻译后的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
+ * （基于AI）复制润色后的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）到剪贴板。
+ *
+ * 复制的文本格式为：`KEY:0 "TEXT"`
  */
-class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntentionBase() {
-    override fun getFamilyName() = PlsAiBundle.message("intention.replaceLocalisationWithAiTranslation")
+class CopyLocalisationWithAiPolishingIntention : CopyLocalisationIntentionBase() {
+    override fun getFamilyName() = PlsAiBundle.message("intention.copyLocalisationWithAiPolishing")
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
         return super.isAvailable(project, editor, file) && PlsAiManager.isAvailable()
@@ -35,7 +38,7 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig?) {
         if (selectedLocale == null) return
-        withBackgroundProgress(project, PlsAiBundle.message("intention.replaceLocalisationWithAiTranslation.progress.title", selectedLocale)) action@{
+        withBackgroundProgress(project, PlsAiBundle.message("intention.copyLocalisationWithAiPolishing.progress.title", selectedLocale)) action@{
             val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationSnippets.from(it) } }
             val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
             val errorRef = AtomicReference<Throwable>()
@@ -47,29 +50,27 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
                 val chunkSize = PlsAiManager.getSettings().batchSizeOfLocalisations
                 val elementsAndSnippetsChunked = elementsAndSnippetsToHandle.chunked(chunkSize)
                 reportRawProgress p@{ reporter ->
-                    reporter.text(PlsAiBundle.message("intention.localisation.translate.replace.progress.initStep"))
+                    reporter.text(PlsAiBundle.message("intention.localisation.polish.progress.initStep"))
 
                     elementsAndSnippetsChunked.forEachConcurrent f@{ list ->
-                        val inputElements = list.map { (element) -> element }
                         val inputText = list.joinToString("\n") { (_, snippets) -> snippets.join() }
                         var i = 0
-                        val request = PlsAiTranslateLocalisationsRequest(inputElements, inputText, selectedLocale, file, project)
-                        val resultFlow = PlsAiTranslateLocalisationService.translate(request) ?: return@f
+                        val request = PlsAiPolishLocalisationsRequest(elements, inputText, null, file, project)
+                        val resultFlow = PlsAiPolishLocalisationService.polish(request) ?: return@f
                         runCatchingCancelable {
                             resultFlow.collect { data ->
-                                val (element, snippets) = list[i]
+                                val (_, snippets) = list[i]
                                 if (snippets.key != data.key) { //不期望的结果，直接报错，中断收集
                                     throw IllegalStateException("Output key ${data.key} mismatch input key ${snippets.key}")
                                 }
                                 i++
                                 current++
-                                reporter.text(PlsAiBundle.message("intention.localisation.translate.replace.progress.step", data.key))
+                                reporter.text(PlsAiBundle.message("intention.localisation.polish.progress.step", data.key))
                                 reporter.fraction(current / total)
 
                                 snippets.newText = data.text
-                                runCatchingCancelable { doReplaceText(project, file, element, snippets) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
                             }
-                        }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
+                        }.onFailure { errorRef.set(it) }.getOrNull()
                         if (i != list.size) { //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
                             withWarnings = true
                             current += list.size - i
@@ -82,6 +83,8 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
                 return@action createFailedNotification(project, selectedLocale, errorRef.get())
             }
 
+            val textToCopy = elementsAndSnippets.joinToString("\n") { (_, snippets) -> snippets.joinWithNewText() }
+            CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
             if (withWarnings) {
                 return@action createSuccessWithWarningsNotification(project, selectedLocale)
             }
@@ -89,21 +92,13 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
         }
     }
 
-    @Suppress("UnstableApiUsage")
-    private suspend fun doReplaceText(project: Project, file: PsiFile?, element: ParadoxLocalisationProperty, snippets: ParadoxLocalisationSnippets) {
-        val newText = snippets.newText
-        writeCommandAction(project, PlsAiBundle.message("intention.localisation.command.replace")) {
-            element.setValue(newText)
-        }
-    }
-
     private fun createSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig) {
-        val content = PlsAiBundle.message("intention.replaceLocalisationWithAiTranslation.notification.0", selectedLocale)
+        val content = PlsAiBundle.message("intention.copyLocalisationWithAiPolishing.notification.0", selectedLocale)
         createNotification(content, NotificationType.INFORMATION).notify(project)
     }
 
     private fun createSuccessWithWarningsNotification(project: Project, selectedLocale: CwtLocaleConfig) {
-        val content = PlsAiBundle.message("intention.replaceLocalisationWithAiTranslation.notification.2", selectedLocale)
+        val content = PlsAiBundle.message("intention.copyLocalisationWithAiPolishing.notification.2", selectedLocale)
         createNotification(content, NotificationType.WARNING).notify(project)
     }
 
@@ -111,7 +106,7 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
         thisLogger().warn(error)
 
         val errorDetails = error.message?.let { "<br>$it" }.orEmpty()
-        val content = PlsAiBundle.message("intention.replaceLocalisationWithAiTranslation.notification.1", selectedLocale) + errorDetails
+        val content = PlsAiBundle.message("intention.copyLocalisationWithAiPolishing.notification.1", selectedLocale) + errorDetails
         createNotification(content, NotificationType.WARNING).notify(project)
     }
 }

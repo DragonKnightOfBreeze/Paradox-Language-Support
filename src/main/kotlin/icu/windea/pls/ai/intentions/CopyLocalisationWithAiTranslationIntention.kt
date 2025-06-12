@@ -13,7 +13,6 @@ import com.intellij.psi.*
 import icu.windea.pls.ai.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.services.*
-import icu.windea.pls.ai.settings.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
@@ -48,7 +47,8 @@ class CopyLocalisationWithAiTranslationIntention : CopyLocalisationIntentionBase
             if (elementsAndSnippetsToHandle.isNotEmpty()) {
                 val total = elementsAndSnippetsToHandle.size.toDouble()
                 var current = 0
-                val elementsAndSnippetsChunked = elementsAndSnippetsToHandle.chunked(PlsAiConstantSettings.maxLineLength)
+                val chunkSize = PlsAiManager.getSettings().batchSizeOfLocalisations
+                val elementsAndSnippetsChunked = elementsAndSnippetsToHandle.chunked(chunkSize)
                 reportRawProgress p@{ reporter ->
                     reporter.text(PlsAiBundle.message("intention.localisation.translate.progress.initStep"))
 
@@ -63,11 +63,12 @@ class CopyLocalisationWithAiTranslationIntention : CopyLocalisationIntentionBase
                                 if (snippets.key != data.key) { //不期望的结果，直接报错，中断收集
                                     throw IllegalStateException("Output key ${data.key} mismatch input key ${snippets.key}")
                                 }
-                                snippets.newText = data.text
                                 i++
                                 current++
                                 reporter.text(PlsAiBundle.message("intention.localisation.translate.progress.step", data.key))
                                 reporter.fraction(current / total)
+
+                                snippets.newText = data.text
                             }
                         }.onFailure { errorRef.set(it) }.getOrNull()
                         if (i != list.size) { //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）

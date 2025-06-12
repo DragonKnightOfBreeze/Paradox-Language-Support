@@ -4,6 +4,7 @@ import com.intellij.credentialStore.*
 import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
+import icu.windea.pls.ai.util.*
 import icu.windea.pls.core.*
 
 /**
@@ -21,6 +22,8 @@ class PlsAiSettingsState : BaseState() {
     var enable by property(false)
     var withContext by property(false)
 
+    var batchSizeOfLocalisations by property(PlsAiSettingsManager.getDefaultBatchSizeOfLocalisations())
+
     @get:Property(surroundWithTag = false)
     var openAI by property(OpenAiState())
 
@@ -28,7 +31,6 @@ class PlsAiSettingsState : BaseState() {
      * @property modelName 模型名称。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
      * @property apiEndpoint API端点。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
      * @property apiKey API密钥。密文保存。可以自由输入，保存设置时会发起请求以验证，但不强制通过验证。
-     * @property valid 当前配置是否合法。
      */
     @Tag("openAI")
     class OpenAiState : BaseState() {

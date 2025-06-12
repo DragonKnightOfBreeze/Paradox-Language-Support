@@ -30,7 +30,7 @@ TODO
 * [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
 * [X] 新功能：集成AI，提供对应的设置页面 / NEW: Integrate AI, provide corresponding settings page
 * [X] 新功能：提供AI驱动的本地化翻译功能（意向） / NEW: Provide AI-driven localisation translation features (intentions)
-* [ ] 新功能：提供AI驱动的本地化润色功能（意向） / NEW: Provide AI-driven localisation colorization features (intentions)
+* [X] 新功能：提供AI驱动的本地化润色功能（意向） / NEW: Provide AI-driven localisation colorization features (intentions)
 * [ ] 新功能：提供AI驱动的脚本/本地化生成功能（操作） / NEW: Provide AI-driven script/translation generation features (actions)
 * [ ] 新功能：提供对魔法注释的初步支持，用于批量处理脚本与本地化文件的内容 / NEW: Provide support for magic comments, which are used to batch process of scripts and localisation files 
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes

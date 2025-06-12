@@ -10,23 +10,23 @@ object PlsChatModelManager {
     private val chatModels: Cache<String, Any> = CacheBuilder.newBuilder().build()
     private val streamingChatModels: Cache<String, Any> = CacheBuilder.newBuilder().build()
 
-    fun getChatModel(type: PlsChatModelType = PlsAiSettingsManager.getChatModelTypeToUse()): ChatModel? {
+    fun getChatModel(type: PlsChatModelType = PlsAiManager.getChatModelTypeToUse()): ChatModel? {
         return chatModels.get(type.name) {
             createChatModel(type) ?: EMPTY_OBJECT
         } as? ChatModel
     }
 
-    fun getStreamingChatModel(type: PlsChatModelType = PlsAiSettingsManager.getChatModelTypeToUse()): StreamingChatModel? {
+    fun getStreamingChatModel(type: PlsChatModelType = PlsAiManager.getChatModelTypeToUse()): StreamingChatModel? {
         return streamingChatModels.get(type.name) {
             createStreamingChatModel(type) ?: EMPTY_OBJECT
         } as? StreamingChatModel
     }
 
-    fun invalidateChatModel(type: PlsChatModelType = PlsAiSettingsManager.getChatModelTypeToUse()) {
+    fun invalidateChatModel(type: PlsChatModelType = PlsAiManager.getChatModelTypeToUse()) {
         chatModels.invalidate(type.name)
     }
 
-    fun invalidateStreamingChatModel(type: PlsChatModelType = PlsAiSettingsManager.getChatModelTypeToUse()) {
+    fun invalidateStreamingChatModel(type: PlsChatModelType = PlsAiManager.getChatModelTypeToUse()) {
         streamingChatModels.invalidate(type.name)
     }
 
