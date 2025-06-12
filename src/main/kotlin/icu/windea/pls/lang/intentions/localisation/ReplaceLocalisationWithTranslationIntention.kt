@@ -76,7 +76,7 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
     @Suppress("UnstableApiUsage")
     private suspend fun doReplaceText(element: ParadoxLocalisationProperty, snippets: ParadoxLocalisationSnippets, file: PsiFile?, project: Project) {
         val newText = snippets.newText
-        writeCommandAction(project, PlsBundle.message("intention.localisation.command.replace")) {
+        writeCommandAction(project, PlsBundle.message("intention.localisation.command.translate.replace")) {
             element.setValue(newText)
         }
     }

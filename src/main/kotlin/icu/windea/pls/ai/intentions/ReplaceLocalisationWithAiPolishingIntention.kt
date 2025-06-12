@@ -6,14 +6,13 @@ import com.intellij.openapi.command.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.popup.JBPopup
+import com.intellij.openapi.ui.popup.*
 import com.intellij.platform.ide.progress.*
 import com.intellij.platform.util.coroutines.*
 import com.intellij.platform.util.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.ai.*
 import icu.windea.pls.ai.requests.*
-import icu.windea.pls.ai.services.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
@@ -95,7 +94,7 @@ class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntent
     @Suppress("UnstableApiUsage")
     private suspend fun doReplaceText(project: Project, file: PsiFile?, element: ParadoxLocalisationProperty, snippets: ParadoxLocalisationSnippets) {
         val newText = snippets.newText
-        writeCommandAction(project, PlsAiBundle.message("intention.localisation.command.replace")) {
+        writeCommandAction(project, PlsAiBundle.message("intention.localisation.polish.replace.command")) {
             element.setValue(newText)
         }
     }

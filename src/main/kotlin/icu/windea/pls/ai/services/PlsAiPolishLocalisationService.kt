@@ -67,7 +67,7 @@ class PlsAiPolishLocalisationService : PlsAiManipulateLocalisationService() {
             appendLine(PlsAiDocBundle.message("systemMessage.polishLocalisation.tip.1"))
             appendLine(PlsAiDocBundle.message("systemMessage.polishLocalisation.tip.2"))
             appendLine(PlsAiDocBundle.message("systemMessage.polishLocalisation.tip.3"))
-            request.description?.orNull()?.let { appendLine(PlsAiDocBundle.message("systemMessage.polishLocalisation.tip.4", it)) }
+            request.description?.orNull()?.let { appendLine(PlsAiDocBundle.message("systemMessage.polishLocalisation.tip.4", optimizeDescription(it))) }
             if (contextLines.isNotEmpty()) {
                 appendLine(PlsAiDocBundle.message("systemMessage.context"))
                 contextLines.forEach { appendLine(it) }
@@ -75,6 +75,10 @@ class PlsAiPolishLocalisationService : PlsAiManipulateLocalisationService() {
         }.trim()
         logger.info("System message: \n$text")
         return SystemMessage.from(text)
+    }
+
+    private fun optimizeDescription(string: String): String {
+        return string.trim().replace("\n", " ") //再次去除首尾空白，并且将换行符替换为空格
     }
 
     private fun getUserMessage(request: PlsAiPolishLocalisationsRequest): UserMessage {
