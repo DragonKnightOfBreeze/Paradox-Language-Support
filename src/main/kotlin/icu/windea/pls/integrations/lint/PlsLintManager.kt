@@ -6,6 +6,6 @@ import icu.windea.pls.model.*
 
 object PlsLintManager {
     fun findTools(gameType: ParadoxGameType?): List<PlsLintToolProvider> {
-        return PlsLintToolProvider.EP_NAME.extensions.filter { it.isEnabled() && it.isAvailable(gameType) && it.isValid() }.optimized()
+        return PlsLintToolProvider.EP_NAME.extensions.filter { it.isEnabled() && it.isSupported(gameType) && it.isValid() }.optimized()
     }
 }

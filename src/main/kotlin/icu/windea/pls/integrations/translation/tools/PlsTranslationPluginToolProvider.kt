@@ -11,7 +11,7 @@ import kotlinx.coroutines.*
  * 参见：[Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)
  */
 class PlsTranslationPluginToolProvider : PlsTranslationToolProvider {
-    override fun supports(): Boolean {
+    override fun isSupported(): Boolean {
         return true // see pls-extension-translation.xml
     }
 

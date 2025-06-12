@@ -9,8 +9,12 @@ import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import kotlinx.coroutines.flow.*
 
-object TranslateLocalisationService : PlsAiService {
-    fun translate(request: TranslateLocalisationsRequest): Flow<ParadoxLocalisationData>? {
+object PlsAiTranslateLocalisationService : PlsAiService {
+    fun supports(): Boolean {
+        return PlsAiManager.isEnabled() && PlsChatModelManager.getStreamingChatModel() != null
+    }
+
+    fun translate(request: PlsAiTranslateLocalisationsRequest): Flow<ParadoxLocalisationData>? {
         val chatModel = PlsChatModelManager.getStreamingChatModel() ?: return null
 
         return chatModel.chatFlow f2@{
@@ -27,9 +31,9 @@ object TranslateLocalisationService : PlsAiService {
         })
     }
 
-    fun getSystemMessage(request: TranslateLocalisationsRequest): SystemMessage {
+    private fun getSystemMessage(request: PlsAiTranslateLocalisationsRequest): SystemMessage {
         val text = buildString {
-            val contextLines = if (PlsAiManager.withContext()) {
+            val contextLines = if (PlsAiManager.getSettings().withContext) {
                 buildList {
                     request.filePath?.let { this += PlsAiDocBundle.message("systemMessage.translateLocalisation.context.0", it) }
                     request.fileName?.let { this += PlsAiDocBundle.message("systemMessage.translateLocalisation.context.1", it) }
@@ -51,7 +55,7 @@ object TranslateLocalisationService : PlsAiService {
         return SystemMessage.from(text)
     }
 
-    fun getUserMessage(request: TranslateLocalisationsRequest): UserMessage {
+    private fun getUserMessage(request: PlsAiTranslateLocalisationsRequest): UserMessage {
         val text = request.text
         return UserMessage.from(text)
     }

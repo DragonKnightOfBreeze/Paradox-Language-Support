@@ -12,5 +12,5 @@ object PlsAiManager {
 
     fun isEnabled(): Boolean = getSettings().enable
 
-    fun withContext(): Boolean = getSettings().withContext
+    fun isAvailable(): Boolean = isEnabled() && PlsAiSettingsManager.isValid()
 }

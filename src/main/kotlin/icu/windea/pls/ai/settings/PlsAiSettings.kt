@@ -31,10 +31,8 @@ class PlsAiSettingsState : BaseState() {
      */
     @Tag("openAI")
     class OpenAiState : BaseState() {
-        //这里不提供默认值，因为这会纠结于是默认使用OpenAI，还是默认使用DeepSeek……
-
-        var modelName by string()
-        var apiEndpoint by string()
+        var modelName by string() // e.g., gpt-4o-mini or deepseek-chat
+        var apiEndpoint by string() // e.g., https://api.openai.com or https://api.deepseek.com
         var apiKey by CredentialAttributes("PLS_AI_OPEN_AI_API_KEY")
     }
 }

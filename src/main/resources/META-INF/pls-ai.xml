@@ -1,5 +1,18 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
     <applicationConfigurable id="pls.ai" parentId="pls" bundle="messages.PlsAiBundle" key="settings.ai" instance="icu.windea.pls.ai.settings.PlsAiSettingsConfigurable"/>
+
+    <intentionAction>
+      <language>PARADOX_LOCALISATION</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>intention.localisation.category</categoryKey>
+      <className>icu.windea.pls.ai.intentions.CopyLocalisationWithAiTranslationIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_LOCALISATION</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>intention.localisation.category</categoryKey>
+      <className>icu.windea.pls.ai.intentions.ReplaceLocalisationWithAiTranslationIntention</className>
+    </intentionAction>
   </extensions>
 </idea-plugin>

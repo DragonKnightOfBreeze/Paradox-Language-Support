@@ -23,7 +23,7 @@ abstract class PlsTigerToolProvider : PlsCommandBasedLintToolProvider() {
         return PlsFacade.getIntegrationsSettings().lint.enableTiger
     }
 
-    final override fun isAvailable(gameType: ParadoxGameType?): Boolean {
+    final override fun isSupported(gameType: ParadoxGameType?): Boolean {
         return gameType == forGameType
     }
 

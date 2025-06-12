@@ -10,27 +10,23 @@ object PlsChatModelManager {
     private val chatModels: Cache<String, Any> = CacheBuilder.newBuilder().build()
     private val streamingChatModels: Cache<String, Any> = CacheBuilder.newBuilder().build()
 
-    fun getChatModelTypeToUse(): PlsChatModelType {
-        return PlsChatModelType.OPEN_AI
-    }
-
-    fun getChatModel(type: PlsChatModelType = getChatModelTypeToUse()): ChatModel? {
+    fun getChatModel(type: PlsChatModelType = PlsAiSettingsManager.getChatModelTypeToUse()): ChatModel? {
         return chatModels.get(type.name) {
             createChatModel(type) ?: EMPTY_OBJECT
         } as? ChatModel
     }
 
-    fun getStreamingChatModel(type: PlsChatModelType = getChatModelTypeToUse()): StreamingChatModel? {
+    fun getStreamingChatModel(type: PlsChatModelType = PlsAiSettingsManager.getChatModelTypeToUse()): StreamingChatModel? {
         return streamingChatModels.get(type.name) {
             createStreamingChatModel(type) ?: EMPTY_OBJECT
         } as? StreamingChatModel
     }
 
-    fun invalidateChatModel(type: PlsChatModelType = getChatModelTypeToUse()) {
+    fun invalidateChatModel(type: PlsChatModelType = PlsAiSettingsManager.getChatModelTypeToUse()) {
         chatModels.invalidate(type.name)
     }
 
-    fun invalidateStreamingChatModel(type: PlsChatModelType = getChatModelTypeToUse()) {
+    fun invalidateStreamingChatModel(type: PlsChatModelType = PlsAiSettingsManager.getChatModelTypeToUse()) {
         streamingChatModels.invalidate(type.name)
     }
 
@@ -48,8 +44,8 @@ object PlsChatModelManager {
 
     private fun createOpenAiChatModel(): OpenAiChatModel? {
         val settings = PlsAiManager.getSettings().openAI
-        val modelName = settings.modelName?.orNull() ?: return null
-        val apiEndpoint = settings.apiEndpoint?.orNull() ?: return null
+        val modelName = settings.modelName?.orNull() ?: PlsAiSettingsManager.getDefaultOpenAiModelName()
+        val apiEndpoint = settings.apiEndpoint?.orNull() ?: PlsAiSettingsManager.getDefaultOpenAiApiEndpoint()
         val apiKey = settings.apiKey?.orNull() ?: return null
         return OpenAiChatModel.builder()
             .modelName(modelName)

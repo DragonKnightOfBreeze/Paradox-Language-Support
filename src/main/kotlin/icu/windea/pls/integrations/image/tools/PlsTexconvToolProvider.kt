@@ -21,7 +21,7 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
         return true // always true
     }
 
-    override fun isAvailable(): Boolean {
+    override fun isSupported(): Boolean {
         return OS.value == OS.Windows
     }
 

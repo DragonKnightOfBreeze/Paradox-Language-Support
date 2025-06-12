@@ -18,7 +18,7 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
         return PlsFacade.getIntegrationsSettings().image.enableMagick
     }
 
-    override fun isAvailable(): Boolean {
+    override fun isSupported(): Boolean {
         return true
     }
 

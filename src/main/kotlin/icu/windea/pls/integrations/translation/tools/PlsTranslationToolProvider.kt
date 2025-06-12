@@ -7,10 +7,10 @@ import icu.windea.pls.integrations.translation.*
 /**
  * 提供翻译工具。用于翻译本地化文本。
  *
- * 注意：具体的操作方法不会再次验证工具是否受支持（[supports]）。
+ * 注意：具体的操作方法不会再次验证工具是否受支持（[isSupported]）。
  */
 interface PlsTranslationToolProvider {
-    fun supports(): Boolean
+    fun isSupported(): Boolean
 
     suspend fun translate(text: String, sourceLocale: String?, targetLocale: String, callback: TranslateCallback)
 

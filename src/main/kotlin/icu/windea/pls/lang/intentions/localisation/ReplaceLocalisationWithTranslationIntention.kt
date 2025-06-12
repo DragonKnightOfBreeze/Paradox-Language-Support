@@ -28,8 +28,7 @@ class ReplaceLocalisationWithTranslationIntention : ReplaceLocalisationIntention
     override fun getFamilyName() = PlsBundle.message("intention.replaceLocalisationWithTranslation")
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        if (PlsTranslationManager.findTool() == null) return false
-        return super.isAvailable(project, editor, file)
+        return super.isAvailable(project, editor, file) && PlsTranslationManager.findTool() != null
     }
 
     @Suppress("UnstableApiUsage")

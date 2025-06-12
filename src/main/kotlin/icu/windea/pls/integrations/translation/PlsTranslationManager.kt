@@ -5,7 +5,7 @@ import icu.windea.pls.integrations.translation.tools.*
 
 object PlsTranslationManager {
     fun findTool(): PlsTranslationToolProvider? {
-        return PlsTranslationToolProvider.EP_NAME.extensionList.findLast { it.supports() }
+        return PlsTranslationToolProvider.EP_NAME.extensionList.findLast { it.isSupported() }
     }
 
     fun findRequiredTool(): PlsTranslationToolProvider {

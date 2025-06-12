@@ -14,9 +14,9 @@ import icu.windea.pls.ai.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.services.*
 import icu.windea.pls.ai.settings.*
+import icu.windea.pls.ai.util.PlsAiManager
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.integrations.translation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.intentions.localisation.*
 import icu.windea.pls.localisation.psi.*
@@ -30,8 +30,7 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
     override fun getFamilyName() = PlsAiBundle.message("intention.replaceLocalisationWithAiTranslation")
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        if (PlsTranslationManager.findTool() == null) return false
-        return super.isAvailable(project, editor, file)
+        return super.isAvailable(project, editor, file) && PlsAiManager.isAvailable()
     }
 
     @Suppress("UnstableApiUsage")
@@ -51,8 +50,8 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
                             val inputText = list.joinToString("\n") { (_, snippets) -> snippets.join() }
                             var i = 0
                             reporter.itemStep(PlsAiBundle.message("intention.localisation.translate.progress.step")) {
-                                val request = TranslateLocalisationsRequest(elements, inputText, selectedLocale, file, project)
-                                val resultFlow = TranslateLocalisationService.translate(request) ?: return@itemStep
+                                val request = PlsAiTranslateLocalisationsRequest(elements, inputText, selectedLocale, file, project)
+                                val resultFlow = PlsAiTranslateLocalisationService.translate(request) ?: return@itemStep
                                 runCatchingCancelable {
                                     resultFlow.collect { data ->
                                         val (_, currentSnippets) = list[i]

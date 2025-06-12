@@ -1,15 +1,13 @@
 package icu.windea.pls.ai.requests
 
-import com.intellij.openapi.project.Project
 import com.intellij.psi.*
-import icu.windea.pls.config.config.CwtLocaleConfig
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
+import org.apache.tools.ant.*
 
-class TranslateLocalisationsRequest(
+class PlsAiColorizeLocalisationsRequest(
     val localisations: List<ParadoxLocalisationProperty>,
-    val text: String,
-    val targetLocale: CwtLocaleConfig,
+    val description: String?,
     val file: PsiFile?,
     val project: Project
 ) : PlsAiRequest {
