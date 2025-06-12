@@ -12,7 +12,6 @@ import com.intellij.platform.util.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.ai.*
 import icu.windea.pls.ai.requests.*
-import icu.windea.pls.ai.services.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
@@ -25,7 +24,7 @@ import java.util.concurrent.atomic.*
 /**
  * （基于AI）替换为翻译后的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
  */
-class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntentionBase() {
+class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopup() {
     override fun getFamilyName() = PlsAiBundle.message("intention.replaceLocalisationWithAiTranslation")
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
@@ -33,8 +32,7 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
     }
 
     @Suppress("UnstableApiUsage")
-    override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig?) {
-        if (selectedLocale == null) return
+    override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig) {
         withBackgroundProgress(project, PlsAiBundle.message("intention.replaceLocalisationWithAiTranslation.progress.title", selectedLocale)) action@{
             val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationSnippets.from(it) } }
             val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
@@ -46,6 +44,7 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
                 var current = 0
                 val chunkSize = PlsAiManager.getSettings().batchSizeOfLocalisations
                 val elementsAndSnippetsChunked = elementsAndSnippetsToHandle.chunked(chunkSize)
+                val aiService = PlsAiManager.getTranslateLocalisationService()
                 reportRawProgress p@{ reporter ->
                     reporter.text(PlsAiBundle.message("intention.localisation.translate.replace.progress.initStep"))
 
@@ -53,14 +52,13 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
                         val inputElements = list.map { (element) -> element }
                         val inputText = list.joinToString("\n") { (_, snippets) -> snippets.join() }
                         var i = 0
-                        val request = PlsAiTranslateLocalisationsRequest(inputElements, inputText, selectedLocale, file, project)
-                        val resultFlow = PlsAiTranslateLocalisationService.translate(request) ?: return@f
                         runCatchingCancelable {
+                            val request = PlsAiTranslateLocalisationsRequest(inputElements, inputText, selectedLocale, file, project)
+                            val resultFlow = aiService.translate(request)
+                            aiService.checkResultFlow(resultFlow)
                             resultFlow.collect { data ->
                                 val (element, snippets) = list[i]
-                                if (snippets.key != data.key) { //不期望的结果，直接报错，中断收集
-                                    throw IllegalStateException("Output key ${data.key} mismatch input key ${snippets.key}")
-                                }
+                                aiService.checkOutputData(snippets, data)
                                 i++
                                 current++
                                 reporter.text(PlsAiBundle.message("intention.localisation.translate.replace.progress.step", data.key))
@@ -110,7 +108,7 @@ class ReplaceLocalisationWithAiTranslationIntention : ReplaceLocalisationIntenti
     private fun createFailedNotification(project: Project, selectedLocale: CwtLocaleConfig, error: Throwable) {
         thisLogger().warn(error)
 
-        val errorDetails = error.message?.let { "<br>$it" }.orEmpty()
+        val errorDetails = error.message?.let { PlsAiBundle.message("intention.localisation.error", it) }.orEmpty()
         val content = PlsAiBundle.message("intention.replaceLocalisationWithAiTranslation.notification.1", selectedLocale) + errorDetails
         createNotification(content, NotificationType.WARNING).notify(project)
     }

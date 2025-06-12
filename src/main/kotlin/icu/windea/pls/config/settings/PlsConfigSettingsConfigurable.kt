@@ -45,8 +45,8 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .bindSelected(settings::enableRemoteConfigGroups)
                     .onApply { onConfigDirectoriesChanged() }
                     .applyToComponent { cbRemote = this }
-                comment(PlsBundle.message("settings.config.remoteConfigDirectory.comment"))
                 contextHelp(PlsBundle.message("settings.config.enableRemoteConfigGroups.tip"))
+                comment(PlsBundle.message("settings.config.remoteConfigDirectory.comment", MAX_LINE_LENGTH_WORD_WRAP))
             }
             //remoteConfigDirectory
             row {

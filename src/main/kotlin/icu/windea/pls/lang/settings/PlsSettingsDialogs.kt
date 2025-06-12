@@ -81,10 +81,10 @@ class DefinitionTypeBindingsInCallHierarchyDialog(val list: MutableList<Entry<St
                 cell(EntryListTableModel.createStringMapPanel(resultList, keyName, valueName)).align(Align.FILL)
             }.resizableRow()
             row {
-                comment(PlsBundle.message("settings.hierarchy.definitionTypeBindings.dialog.comment.1"))
+                comment(PlsBundle.message("settings.hierarchy.definitionTypeBindings.dialog.comment.1"), MAX_LINE_LENGTH_WORD_WRAP)
             }
             row {
-                comment(PlsBundle.message("settings.hierarchy.definitionTypeBindings.dialog.comment.2"))
+                comment(PlsBundle.message("settings.hierarchy.definitionTypeBindings.dialog.comment.2"), MAX_LINE_LENGTH_WORD_WRAP)
             }
         }
     }

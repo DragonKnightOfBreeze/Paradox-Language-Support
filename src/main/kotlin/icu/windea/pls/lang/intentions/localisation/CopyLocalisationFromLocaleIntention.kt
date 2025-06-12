@@ -2,7 +2,7 @@ package icu.windea.pls.lang.intentions.localisation
 
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
-import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import com.intellij.platform.ide.progress.*
@@ -25,12 +25,11 @@ import java.util.concurrent.atomic.*
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
-class CopyLocalisationFromLocaleIntention : CopyLocalisationIntentionBase() {
+class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.WithLocalePopup() {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationFromLocale")
 
     @Suppress("UnstableApiUsage")
-    override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig?) {
-        if (selectedLocale == null) return
+    override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig) {
         withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationFromLocale.progress.title", selectedLocale)) action@{
             val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationSnippets.from(it) } }
             val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
@@ -74,7 +73,7 @@ class CopyLocalisationFromLocaleIntention : CopyLocalisationIntentionBase() {
     private fun createFailedNotification(project: Project, selectedLocale: CwtLocaleConfig, error: Throwable) {
         thisLogger().warn(error)
 
-        val errorDetails = error.message?.let { "<br>$it" }.orEmpty()
+        val errorDetails = error.message?.let { PlsBundle.message("intention.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("intention.copyLocalisationFromLocale.notification.1", selectedLocale) + errorDetails
         createNotification(content, NotificationType.WARNING).notify(project)
     }

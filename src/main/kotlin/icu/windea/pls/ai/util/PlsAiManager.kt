@@ -1,10 +1,9 @@
 package icu.windea.pls.ai.util
 
 import com.intellij.openapi.components.*
-import com.intellij.openapi.diagnostic.*
-import icu.windea.pls.ai.PlsChatModelType
+import icu.windea.pls.ai.*
+import icu.windea.pls.ai.services.*
 import icu.windea.pls.ai.settings.*
-import java.lang.invoke.*
 
 object PlsAiManager {
     fun getSettings(): PlsAiSettingsState = service<PlsAiSettings>().state
@@ -15,17 +14,9 @@ object PlsAiManager {
 
     fun isEnabled(): Boolean = getSettings().enable
 
-    fun isAvailable(): Boolean = isEnabled() && isValid()
+    fun isAvailable(): Boolean = isEnabled() && PlsAiSettingsManager.isValid()
 
-    fun isValid(type: PlsChatModelType = getChatModelTypeToUse()): Boolean {
-        return when (type) {
-            PlsChatModelType.OPEN_AI -> isValidForOpenAI()
-        }
-    }
+    fun getTranslateLocalisationService() = service<PlsAiTranslateLocalisationService>()
 
-    private fun isValidForOpenAI(): Boolean {
-        // modelName 和 apiEndpoint 为空时使用默认值
-        // apiKey 为空时直接报错
-        return true
-    }
+    fun getPolishLocalisationService() = service<PlsAiPolishLocalisationService>()
 }

@@ -1,5 +1,6 @@
 package icu.windea.pls.ai.services
 
+import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
 import dev.langchain4j.data.message.*
 import dev.langchain4j.kotlin.model.chat.*
@@ -12,7 +13,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.lang.invoke.*
 
-object PlsAiTranslateLocalisationService : PlsAiService {
+@Service
+class PlsAiTranslateLocalisationService : PlsAiManipulateLocalisationService() {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
 
     fun translate(request: PlsAiTranslateLocalisationsRequest): Flow<ParadoxLocalisationData>? {
@@ -51,15 +53,18 @@ object PlsAiTranslateLocalisationService : PlsAiService {
                 emptyList()
             }
             if (contextLines.isEmpty()) {
-                append(PlsAiDocBundle.message("systemMessage.translateLocalisation.0", request.gameType, request.targetLocale))
-                appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.tip"))
+                appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.0", request.gameType, request.targetLocale))
             } else {
                 appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.1", request.gameType, request.targetLocale))
-                appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.tip"))
+            }
+            appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.tip.1"))
+            appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.tip.2"))
+            appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.tip.3", request.targetLocale))
+            if (contextLines.isNotEmpty()) {
                 appendLine(PlsAiDocBundle.message("systemMessage.context"))
                 contextLines.forEach { appendLine(it) }
             }
-        }
+        }.trim()
         logger.info("System message: \n$text")
         return SystemMessage.from(text)
     }

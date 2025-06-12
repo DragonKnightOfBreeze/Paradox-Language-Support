@@ -6,9 +6,7 @@ import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
 
@@ -17,14 +15,10 @@ import java.awt.datatransfer.*
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
-class CopyLocalisationIntention : CopyLocalisationIntentionBase() {
+class CopyLocalisationIntention : ManipulateLocalisationIntentionBase.Default() {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisation")
 
-    override fun createLocalePopup(): ParadoxLocaleListPopup? {
-        return null
-    }
-
-    override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig?) {
+    override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>) {
         val textToCopy = readAction { elements.joinToString("\n") { it.text } }
         CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
         createSuccessNotification(project)

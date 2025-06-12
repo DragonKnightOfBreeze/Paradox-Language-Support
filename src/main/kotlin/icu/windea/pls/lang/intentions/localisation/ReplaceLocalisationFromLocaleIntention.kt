@@ -22,12 +22,11 @@ import java.util.concurrent.atomic.*
 /**
  * 替换为来自特定语言区域的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
  */
-class ReplaceLocalisationFromLocaleIntention : ReplaceLocalisationIntentionBase() {
+class ReplaceLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.WithLocalePopup() {
     override fun getFamilyName() = PlsBundle.message("intention.replaceLocalisationFromLocale")
 
     @Suppress("UnstableApiUsage")
-    override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig?) {
-        if (selectedLocale == null) return
+    override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig) {
         withBackgroundProgress(project, PlsBundle.message("intention.replaceLocalisationFromLocale.progress.title", selectedLocale)) action@{
             val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationSnippets.from(it) } }
             val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
@@ -77,7 +76,7 @@ class ReplaceLocalisationFromLocaleIntention : ReplaceLocalisationIntentionBase(
     private fun createFailedNotification(project: Project, selectedLocale: CwtLocaleConfig, error: Throwable) {
         thisLogger().warn(error)
 
-        val errorDetails = error.message?.let { "<br>$it" }.orEmpty()
+        val errorDetails = error.message?.let { PlsBundle.message("intention.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("intention.replaceLocalisationFromLocale.notification.1", selectedLocale) + errorDetails
         createNotification(content, NotificationType.WARNING).notify(project)
     }

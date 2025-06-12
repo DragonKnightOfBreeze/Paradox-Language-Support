@@ -74,20 +74,33 @@ abstract class ManipulateLocalisationIntentionBase : IntentionAction, DumbAware 
         }
     }
 
-    protected open fun createLocalePopup(): ParadoxLocaleListPopup? {
-        val allLocales = ParadoxLocaleManager.getLocaleConfigs()
-        return ParadoxLocaleListPopup(allLocales)
-    }
+    protected abstract fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: List<ParadoxLocalisationProperty>)
 
-    protected open fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: List<ParadoxLocalisationProperty>) {
-        val localePopup = createLocalePopup()
-        if (localePopup == null) {
+    //默认不显示预览，因为可能涉及异步调用
+    override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
+
+    override fun startInWriteAction() = false
+
+    abstract class Default : ManipulateLocalisationIntentionBase() {
+        final override fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: List<ParadoxLocalisationProperty>) {
             val coroutineScope = PlsFacade.getCoroutineScope(project)
             coroutineScope.launch {
-                doHandle(project, file, elements, null)
+                doHandle(project, file, elements)
             }
-        } else {
+        }
+
+        protected abstract suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>)
+    }
+
+    abstract class WithLocalePopup : ManipulateLocalisationIntentionBase() {
+        protected open fun createLocalePopup(project: Project, editor: Editor?, file: PsiFile?): ParadoxLocaleListPopup {
+            val allLocales = ParadoxLocaleManager.getLocaleConfigs()
+            return ParadoxLocaleListPopup(allLocales)
+        }
+
+        final override fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: List<ParadoxLocalisationProperty>) {
             if (editor == null) return
+            val localePopup = createLocalePopup(project, editor, file)
             localePopup.doFinalStep action@{
                 val selected = localePopup.selectedLocale ?: return@action
                 val coroutineScope = PlsFacade.getCoroutineScope(project)
@@ -97,12 +110,31 @@ abstract class ManipulateLocalisationIntentionBase : IntentionAction, DumbAware 
             }
             JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
         }
+
+        protected abstract suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig)
     }
 
-    protected abstract suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig?)
+    abstract class WithPopup<T> : ManipulateLocalisationIntentionBase() {
+        protected abstract fun createPopup(project: Project, editor: Editor?, file: PsiFile?, callback: (T) -> Unit): JBPopup?
 
-    //默认不显示预览，因为可能涉及异步调用
-    override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
+        final override fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: List<ParadoxLocalisationProperty>) {
+            if (editor == null) return
+            val popup = createPopup(project, editor, file) {
+                val coroutineScope = PlsFacade.getCoroutineScope(project)
+                coroutineScope.launch {
+                    doHandle(project, file, elements, it)
+                }
+            }
+            if (popup != null) {
+                popup.showInBestPositionFor(editor)
+            } else {
+                val coroutineScope = PlsFacade.getCoroutineScope(project)
+                coroutineScope.launch {
+                    doHandle(project, file, elements, null)
+                }
+            }
+        }
 
-    override fun startInWriteAction() = false
+        protected abstract suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, data: T?)
+    }
 }

@@ -87,7 +87,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                     var ignoredFileNameSet = settings.ignoredFileNameSet
                     expandableTextField({ it.toCommaDelimitedStringList() }, { it.toCommaDelimitedString() })
                         .bindText(settings::ignoredFileNames.toNonNullableProperty(""))
-                        .comment(PlsBundle.message("settings.general.ignoredFileNames.comment"))
+                        .comment(PlsBundle.message("settings.general.ignoredFileNames.comment", MAX_LINE_LENGTH_WORD_WRAP))
                         .align(Align.FILL)
                         .resizableColumn()
                         .onApply {
