@@ -5,6 +5,7 @@ import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.codeInsight.lookup.*
+import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
@@ -35,6 +36,7 @@ import icu.windea.pls.lang.util.ParadoxPsiManager.findMemberElementsToInline
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.codeStyle.*
+import icu.windea.pls.script.injection.ParadoxParameterValueInjectionInfo
 import icu.windea.pls.script.psi.*
 import java.util.*
 
@@ -391,6 +393,32 @@ object ParadoxParameterManager {
             ?.filterNot { it !is CwtValueConfig || it.isBlock }
         if (configs.isNullOrEmpty()) return emptyList()
         return configs.cast()
+    }
+
+    fun getParameterValueInjectionInfoFromInjectedFile(injectedFile: PsiFile): ParadoxParameterValueInjectionInfo? {
+        val vFile = selectFile(injectedFile) ?: return null
+        if (!ParadoxFileManager.isInjectedFile(vFile)) return null
+        val host = InjectedLanguageManager.getInstance(injectedFile.project).getInjectionHost(injectedFile)
+        if (host == null) return null
+
+        val file0 = vFile.toPsiFile(injectedFile.project) ?: injectedFile //actual PsiFile of VirtualFileWindow
+        val injectionInfos = host.getUserData(PlsKeys.parameterValueInjectionInfos)
+        if (injectionInfos.isNullOrEmpty()) return null
+        val injectionInfo = when {
+            host is ParadoxScriptStringExpressionElement -> {
+                val shreds = file0.getShreds()
+                val shred = shreds?.singleOrNull()
+                val rangeInsideHost = shred?.rangeInsideHost ?: return null
+                //it.rangeInsideHost may not equal to rangeInsideHost, but inside (e.g., there are escaped double quotes)
+                injectionInfos.find { it.rangeInsideHost.startOffset in rangeInsideHost }
+            }
+            host is ParadoxParameter -> {
+                //just use the only one
+                injectionInfos.singleOrNull()
+            }
+            else -> null
+        }
+        return injectionInfo
     }
 }
 

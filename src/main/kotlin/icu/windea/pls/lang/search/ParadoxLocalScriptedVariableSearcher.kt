@@ -24,15 +24,15 @@ import icu.windea.pls.script.psi.*
 class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxLocalScriptedVariableSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxLocalScriptedVariableSearch.SearchParameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {
         ProgressManager.checkCanceled()
-        if(queryParameters.project.isDefault) return
+        if (queryParameters.project.isDefault) return
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
         val project = queryParameters.project
         val name = queryParameters.name
         val selector = queryParameters.selector
         val file = selector.file ?: return
-        val fileInfo = file.fileInfo ?: return
-        if ("common/scripted_variables".matchesPath(fileInfo.path.path)) return //skip global scripted variables
+        val fileInfo = file.fileInfo //NOTE fileInfo can be null here (e.g., injected files)
+        if (fileInfo != null && "common/scripted_variables".matchesPath(fileInfo.path.path)) return //skip global scripted variables
 
         val startOffset = selector.context?.castOrNull<PsiElement>()?.startOffset ?: -1
         val fileScope = GlobalSearchScope.fileScope(project, file)
@@ -42,13 +42,72 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
         }.let { if (!it) return }
 
         val processedFiles = mutableSetOf(file)
-        processQueryForInlineScriptUsageFiles(queryParameters, file, processedFiles, consumer)
+        processQueryForInlineScripts(queryParameters, file, processedFiles, consumer)
     }
 
-    private fun processQueryForInlineScriptUsageFiles(queryParameters: ParadoxLocalScriptedVariableSearch.SearchParameters, file: VirtualFile, processedFiles: MutableSet<VirtualFile>, consumer: Processor<in ParadoxScriptScriptedVariable>): Boolean {
-        //see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/93
+    private fun processQueryForInlineScripts(
+        queryParameters: ParadoxLocalScriptedVariableSearch.SearchParameters,
+        file: VirtualFile,
+        processedFiles: MutableSet<VirtualFile>,
+        consumer: Processor<in ParadoxScriptScriptedVariable>
+    ): Boolean {
+        //see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/93 - inline script files -> invoker file
+        //see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/151 - inline script arguments -> related inline script file
+
         ProgressManager.checkCanceled()
+
+        val psiFile = file.toPsiFile(queryParameters.project) ?: return true
+
+        if (ParadoxFileManager.isInjectedFile(file)) {
+            run {
+                //input file is an injected file (from argument value)
+                val injectionInfo = ParadoxParameterManager.getParameterValueInjectionInfoFromInjectedFile(psiFile) ?: return@run
+                val parameterElement = injectionInfo.parameterElement ?: return@run
+                if (parameterElement.parent !is ParadoxScriptStringExpressionElement) return@run //must be argument value, rather than parameter default value
+                val inlineScriptExpression = parameterElement.contextKey.removePrefixOrNull("inline_script@")?.orNull() ?: return@run
+                return doProcessQueryForInlineScriptFiles(queryParameters, file, inlineScriptExpression, processedFiles, consumer)
+            }
+            return true
+        }
+
+        if (ParadoxFileManager.isLightFile(file)) return true //skip for other in-memory files
+
+        //input file is an inline script file
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return true
+        return doProcessQueryForInlineScriptUsageFiles(queryParameters, file, inlineScriptExpression, processedFiles, consumer)
+    }
+
+    private fun doProcessQueryForInlineScriptFiles(
+        queryParameters: ParadoxLocalScriptedVariableSearch.SearchParameters,
+        file: VirtualFile,
+        inlineScriptExpression: String,
+        processedFiles: MutableSet<VirtualFile>,
+        consumer: Processor<in ParadoxScriptScriptedVariable>
+    ): Boolean {
+        val name = queryParameters.name
+        val project = queryParameters.project
+        val context = queryParameters.selector.context
+        ProgressManager.checkCanceled()
+        ParadoxInlineScriptManager.processInlineScriptFile(inlineScriptExpression, project, context) p@{ inlineScriptFile ->
+            ProgressManager.checkCanceled()
+            val fileScope = GlobalSearchScope.fileScope(project, inlineScriptFile.virtualFile)
+            doProcessAllElements(name, project, fileScope) p@{ element ->
+                //do not skip scripted variables after related parameter, do not check that currently
+                consumer.process(element)
+            }.let { if (!it) return@p false }
+            true
+        }
+
+        return doProcessQueryForInlineScriptUsageFiles(queryParameters, file, inlineScriptExpression, processedFiles, consumer)
+    }
+
+    private fun doProcessQueryForInlineScriptUsageFiles(
+        queryParameters: ParadoxLocalScriptedVariableSearch.SearchParameters,
+        file: VirtualFile,
+        inlineScriptExpression: String,
+        processedFiles: MutableSet<VirtualFile>,
+        consumer: Processor<in ParadoxScriptScriptedVariable>
+    ): Boolean {
         val name = queryParameters.name
         val project = queryParameters.project
         val selector = selector(project, file).inlineScriptUsage()
@@ -63,15 +122,15 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
             true
         }
         if (uFile2StartOffsetMap.isEmpty()) return true
-        return uFile2StartOffsetMap.process p1@{ (uFile, startOffset) ->
+        return uFile2StartOffsetMap.process p@{ (uFile, startOffset) ->
             ProgressManager.checkCanceled()
             val fileScope = GlobalSearchScope.fileScope(project, uFile)
             doProcessAllElements(name, project, fileScope) p@{ element ->
                 if (startOffset >= 0 && element.startOffset >= startOffset) return@p true //skip scripted variables after current inline script invocation
                 consumer.process(element)
-            }.let { if (!it) return@p1 false }
+            }.let { if (!it) return@p false }
 
-            processQueryForInlineScriptUsageFiles(queryParameters, uFile, processedFiles, consumer) //inline script invocation can be recursive
+            processQueryForInlineScripts(queryParameters, uFile, processedFiles, consumer) //inline script invocation can be recursive
         }
     }
 

@@ -219,13 +219,7 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         //兼容适用语言注入功能的 VirtualFileWindow
         //兼容通过编辑代码碎片的意图操作打开的 LightVirtualFile
 
-        val vFile = selectFile(file) ?: return null
-        if (!ParadoxFileManager.isInjectedFile(vFile)) return null
-        val host = InjectedLanguageManager.getInstance(file.project).getInjectionHost(file)
-        if (host == null) return null
-
-        val file0 = vFile.toPsiFile(file.project) ?: file //actual PsiFile of VirtualFileWindow
-        val injectionInfo = getInjectionInfo(file0, host)
+        val injectionInfo = ParadoxParameterManager.getParameterValueInjectionInfoFromInjectedFile(file)
         if (injectionInfo == null) return null
 
         val gameType = selectGameType(file) ?: return null
@@ -240,25 +234,6 @@ class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
         configContext.parameterElement = parameterElement
         configContext.parameterValueQuoted = injectionInfo.parameterValueQuoted
         return configContext
-    }
-
-    private fun getInjectionInfo(file: PsiFile, host: PsiElement): ParadoxParameterValueInjectionInfo? {
-        val injectionInfos = host.getUserData(PlsKeys.parameterValueInjectionInfos)
-        if (injectionInfos.isNullOrEmpty()) return null
-        return when {
-            host is ParadoxScriptStringExpressionElement -> {
-                val shreds = file.getShreds()
-                val shred = shreds?.singleOrNull()
-                val rangeInsideHost = shred?.rangeInsideHost ?: return null
-                //it.rangeInsideHost may not equal to rangeInsideHost, but inside (e.g., there are escaped double quotes)
-                injectionInfos.find { it.rangeInsideHost.startOffset in rangeInsideHost }
-            }
-            host is ParadoxParameter -> {
-                //just use the only one
-                injectionInfos.singleOrNull()
-            }
-            else -> null
-        }
     }
 
     override fun getCacheKey(context: CwtConfigContext, matchOptions: Int): String? {
