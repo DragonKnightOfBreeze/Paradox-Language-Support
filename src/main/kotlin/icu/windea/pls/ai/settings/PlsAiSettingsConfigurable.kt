@@ -76,11 +76,10 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsAiBundle.message("setting
         }
     }
 
-    @Suppress("DialogTitleCapitalization")
     private fun validateOpenAiApiKey(builder: ValidationInfoBuilder, field: JBPasswordField): ValidationInfo? {
         //目前仅在输入时验证，不在应用时验证
         //如果启用AI集成，但是这里的验证并未通过，相关功能仍然可用，只是使用后会给出警告
-        if (field.password.isEmpty()) return builder.warning("settings.ai.openAI.apiKey.1")
+        if (field.password.isEmpty()) return builder.warning(PlsAiBundle.message("settings.ai.openAI.apiKey.1"))
         return null
     }
 

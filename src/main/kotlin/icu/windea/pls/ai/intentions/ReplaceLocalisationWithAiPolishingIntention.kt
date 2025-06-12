@@ -112,7 +112,8 @@ class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntent
     private fun createFailedNotification(project: Project, error: Throwable) {
         thisLogger().warn(error)
 
-        val errorDetails = error.message?.let { PlsAiBundle.message("intention.localisation.error", it) }.orEmpty()
+        val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
+        val errorDetails = errorMessage?.let { PlsAiBundle.message("intention.localisation.error", it) }.orEmpty()
         val content = PlsAiBundle.message("intention.replaceLocalisationWithAiPolishing.notification.1") + errorDetails
         createNotification(content, NotificationType.WARNING).notify(project)
     }

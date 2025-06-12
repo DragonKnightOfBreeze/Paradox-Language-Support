@@ -113,7 +113,8 @@ class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationInte
     private fun createFailedNotification(project: Project, selectedLocale: CwtLocaleConfig, error: Throwable) {
         thisLogger().warn(error)
 
-        val errorDetails = error.message?.let { PlsAiBundle.message("intention.localisation.error", it) }.orEmpty()
+        val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
+        val errorDetails = errorMessage?.let { PlsAiBundle.message("intention.localisation.error", it) }.orEmpty()
         val content = PlsAiBundle.message("intention.replaceLocalisationWithAiTranslation.notification.1", selectedLocale) + errorDetails
         createNotification(content, NotificationType.WARNING).notify(project)
     }
