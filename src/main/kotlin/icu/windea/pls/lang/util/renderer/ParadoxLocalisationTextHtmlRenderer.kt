@@ -172,15 +172,17 @@ object ParadoxLocalisationTextHtmlRenderer {
     private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context) {
         //尝试渲染图标
         run {
-            val resolved = element.reference?.resolve()
+            val resolved = element.reference?.resolve() ?: return@run
             val iconFrame = element.frame
             val frameInfo = ImageFrameInfo.of(iconFrame)
             val iconUrl = when {
                 resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, frameInfo)
-                resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, frameInfo)
+                resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, resolved.project, frameInfo)
                 else -> null
             }
-            if (iconUrl == null) return@run
+
+            if (iconUrl == null) return
+
             val iconFileUrl = iconUrl.toFileUrl()
             val icon = iconFileUrl.toIconOrNull() ?: return@run
             //这里需要尝试使用图标的原始高度
@@ -302,7 +304,7 @@ object ParadoxLocalisationTextHtmlRenderer {
                 val link = ParadoxDocumentationLinkProvider.create(resolved)
                 if (link != null) {
                     //如果没有颜色，这里需要使用文档的默认前景色，以显示为普通文本
-                    val usedColor = if(context.colorStack.isEmpty()) defaultColor else null
+                    val usedColor = if (context.colorStack.isEmpty()) defaultColor else null
                     renderWithColorTo(usedColor, context) {
                         context.builder.append(link)
                     }

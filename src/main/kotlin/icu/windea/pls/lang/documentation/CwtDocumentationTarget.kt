@@ -260,7 +260,7 @@ private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceE
         if (sections == null || render) return@rs
         run {
             if (iconFile == null) return@run
-            val url = ParadoxImageResolver.resolveUrlByFile(iconFile) ?: return@run
+            val url = ParadoxImageResolver.resolveUrlByFile(iconFile, project) ?: return@run
             sections.put("icon", buildDocumentation { appendImgTag(url) })
         }
     }

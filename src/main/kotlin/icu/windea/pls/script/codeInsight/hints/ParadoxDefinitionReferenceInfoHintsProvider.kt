@@ -15,7 +15,7 @@ import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 定义引用信息的内嵌提示（对应定义的名字和类型、本地化名字）。
+ * 定义引用信息的内嵌提示（对应定义的名字和类型）。
  */
 class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
     private val settingsKey = SettingsKey<NoSettings>("ParadoxDefinitionReferenceInfoHintsSettingsKey")

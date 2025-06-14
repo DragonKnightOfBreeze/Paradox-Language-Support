@@ -17,6 +17,9 @@ import icu.windea.pls.script.codeInsight.hints.ParadoxScriptedVariableLocalizedN
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
+/**
+ * 封装变量的本地化名字的内嵌提示。
+ */
 class ParadoxScriptedVariableLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = PlsConstants.Settings.textLengthLimit,
@@ -28,6 +31,9 @@ class ParadoxScriptedVariableLocalizedNameHintsProvider : ParadoxScriptHintsProv
     override val name: String get() = PlsBundle.message("script.hints.scriptedVariableLocalizedName")
     override val description: String get() = PlsBundle.message("script.hints.scriptedVariableLocalizedName.description")
     override val key: SettingsKey<Settings> get() = settingsKey
+
+    override val renderLocalisation: Boolean get() = true
+    override val renderIcon: Boolean get() = true
 
     override fun createSettings() = Settings()
 

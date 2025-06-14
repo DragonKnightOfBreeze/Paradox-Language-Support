@@ -35,6 +35,8 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
     override val description: String get() = PlsBundle.message("script.hints.modifierIcon.description")
     override val key: SettingsKey<Settings> get() = settingsKey
 
+    override val renderIcon: Boolean get() = true
+
     override fun createSettings() = Settings()
 
     override fun createConfigurable(settings: Settings): ImmediateConfigurable {
@@ -63,8 +65,10 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
                 val iconSelector = selector(project, element).file().contextSensitive()
                 ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
             } ?: return true
-            val iconUrl = ParadoxImageResolver.resolveUrlByFile(iconFile)
-            if (iconUrl == null) return true
+            val iconUrl = ParadoxImageResolver.resolveUrlByFile(iconFile, project)
+
+            //如果无法解析（包括对应文件不存在的情况）就直接跳过
+            if(!ParadoxImageResolver.canResolve(iconUrl)) return true
 
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             val iconFileUrl = iconUrl.toFileUrl()
@@ -74,7 +78,7 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
             if (originalIconHeight <= settings.iconHeightLimit) {
                 //点击可以导航到声明处（DDS）
                 val presentation = psiSingleReference(smallScaledIcon(icon)) { iconFile.toPsiFile(project) }
-                val finalPresentation = presentation.toFinalPresentation(this, file.project, smaller = true)
+                val finalPresentation = presentation.toFinalPresentation(this, project, smaller = true)
                 val endOffset = element.endOffset
                 sink.addInlineElement(endOffset, true, finalPresentation, false)
             }

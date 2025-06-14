@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 定义的本地化名字的内嵌提示（来自相关的本地化文本）。
+ * 定义的本地化名字的内嵌提示。
  */
 class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
@@ -29,6 +29,9 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<S
     override val name: String get() = PlsBundle.message("script.hints.definitionLocalizedName")
     override val description: String get() = PlsBundle.message("script.hints.definitionLocalizedName.description")
     override val key: SettingsKey<Settings> get() = settingsKey
+
+    override val renderLocalisation: Boolean get() = true
+    override val renderIcon: Boolean get() = true
 
     override fun createSettings() = Settings()
 

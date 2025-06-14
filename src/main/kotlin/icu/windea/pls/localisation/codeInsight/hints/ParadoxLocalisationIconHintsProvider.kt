@@ -17,6 +17,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import javax.imageio.*
 import javax.swing.*
+import kotlin.io.path.*
 
 /**
  * 本地化图标的内嵌提示（显示选用的图标，如果大小合适且存在，只是显示图标而已）。
@@ -31,6 +32,8 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
     override val name: String get() = PlsBundle.message("localisation.hints.localisationIcon")
     override val description: String get() = PlsBundle.message("localisation.hints.localisationIcon.description")
     override val key: SettingsKey<Settings> get() = settingsKey
+
+    override val renderIcon: Boolean get() = true
 
     override fun createSettings() = Settings()
 
@@ -49,11 +52,15 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
             val resolved = element.reference?.resolve()
             val iconFrame = element.frame
             val frameInfo = ImageFrameInfo.of(iconFrame)
+            val project = file.project
             val iconUrl = when {
                 resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, frameInfo)
-                resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, frameInfo)
+                resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, project, frameInfo)
                 else -> null
-            } ?: return true //找不到图标的话就直接跳过
+            }
+
+            //如果无法解析（包括对应文件不存在的情况）就直接跳过
+            if(!ParadoxImageResolver.canResolve(iconUrl)) return true
 
             val iconFileUrl = iconUrl.toFileUrl()
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
@@ -63,7 +70,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
             if (originalIconHeight <= settings.iconHeightLimit) {
                 //点击可以导航到声明处（定义或DDS）
                 val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
-                val finalPresentation = presentation.toFinalPresentation(this, file.project, smaller = true)
+                val finalPresentation = presentation.toFinalPresentation(this, project, smaller = true)
                 val endOffset = element.endOffset
                 sink.addInlineElement(endOffset, true, finalPresentation, false)
             }

@@ -16,8 +16,9 @@ class DdsDocumentationProvider : AbstractDocumentationProvider() {
         if (DumbService.isDumb(element.project)) return null
 
         val file = element.virtualFile
-        val pngUrl = ParadoxImageResolver.resolveUrlByFile(file) ?: return null //无法将DDS转换成PNG时直接返回
-        val metadata = DdsMetadataIndex.getMetadata(file, element.project)
+        val project = element.project
+        val pngUrl = ParadoxImageResolver.resolveUrlByFile(file, project) ?: return null //无法将DDS转换成PNG时直接返回
+        val metadata = DdsMetadataIndex.getMetadata(file, project)
         return buildDocumentation {
             append(HtmlChunk.tag("img").attr("src", pngUrl.toFileUrl().toString()))
             if (metadata != null) {

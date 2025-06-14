@@ -19,6 +19,7 @@ import java.awt.*
 import java.awt.event.*
 import java.util.concurrent.atomic.*
 import javax.imageio.*
+import kotlin.io.path.*
 
 @Suppress("UnstableApiUsage", "RedundantWith")
 object ParadoxLocalisationTextInlayRenderer {
@@ -202,15 +203,18 @@ object ParadoxLocalisationTextInlayRenderer {
     private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context): Boolean = with(context.factory) {
         //尝试渲染图标
         run {
-            val resolved = element.reference?.resolve()
+            val resolved = element.reference?.resolve() ?: return@run
             val iconFrame = element.frame
             val frameInfo = ImageFrameInfo.of(iconFrame)
             val iconUrl = when {
                 resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, frameInfo)
-                resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, frameInfo)
+                resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, resolved.project, frameInfo)
                 else -> null
             }
-            if (iconUrl == null) return@run
+
+            //如果无法解析（包括对应文件不存在的情况）就直接跳过
+            if(!ParadoxImageResolver.canResolve(iconUrl)) return true
+
             val iconFileUrl = iconUrl.toFileUrl()
             //找不到图标的话就直接跳过
             val icon = iconFileUrl.toIconOrNull() ?: return@run
@@ -218,7 +222,7 @@ object ParadoxLocalisationTextInlayRenderer {
             val iconHeight = icon.iconHeight
             val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { iconHeight }
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            if (originalIconHeight > context.iconHeightLimit) return@run //图标过大，不再尝试渲染
+            if (originalIconHeight > context.iconHeightLimit) return true //图标过大，不再尝试渲染
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
             context.builder.add(presentation)

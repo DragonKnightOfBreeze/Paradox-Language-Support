@@ -18,7 +18,7 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 定义引用信息的内嵌提示（对应定义的名字和类型、本地化名字）。
+ * 定义引用的本地化名字的内嵌提示。
  */
 class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
@@ -38,6 +38,9 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
     override val name: String get() = PlsBundle.message("script.hints.definitionReferenceLocalizedName")
     override val description: String get() = PlsBundle.message("script.hints.definitionReferenceLocalizedName.description")
     override val key: SettingsKey<Settings> get() = settingsKey
+
+    override val renderLocalisation: Boolean get() = true
+    override val renderIcon: Boolean get() = true
 
     override fun createSettings() = Settings()
 

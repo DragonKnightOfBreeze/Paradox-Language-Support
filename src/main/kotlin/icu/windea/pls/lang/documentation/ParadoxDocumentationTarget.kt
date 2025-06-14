@@ -430,7 +430,7 @@ private fun DocumentationBuilder.addModifierIcon(element: ParadoxModifierElement
         if (sections == null || !render) return@rs
         run {
             if (iconFile == null) return@run
-            val url = ParadoxImageResolver.resolveUrlByFile(iconFile) ?: return@run
+            val url = ParadoxImageResolver.resolveUrlByFile(iconFile, project) ?: return@run
             sections.put("icon", buildDocumentation { appendImgTag(url) })
         }
     }
@@ -672,7 +672,7 @@ private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxS
                         ParadoxImageResolver.resolveUrlByDefinition(resolveElement, resolveResult.frameInfo)
                     }
                     resolveElement is PsiFile -> {
-                        ParadoxImageResolver.resolveUrlByFile(resolveElement.virtualFile, resolveResult.frameInfo)
+                        ParadoxImageResolver.resolveUrlByFile(resolveElement.virtualFile, resolveElement.project, resolveResult.frameInfo)
                     }
                     else -> null
                 }

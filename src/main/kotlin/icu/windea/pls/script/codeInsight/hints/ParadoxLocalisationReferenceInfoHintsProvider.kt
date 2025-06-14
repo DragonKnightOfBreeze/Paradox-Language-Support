@@ -42,6 +42,9 @@ class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider
     override val description: String get() = PlsBundle.message("script.hints.localisationReferenceInfo.description")
     override val key: SettingsKey<Settings> get() = settingsKey
 
+    override val renderLocalisation: Boolean get() = true
+    override val renderIcon: Boolean get() = true
+
     override fun createSettings() = Settings()
 
     override fun createConfigurable(settings: Settings): ImmediateConfigurable {

@@ -21,6 +21,7 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
+import kotlin.io.path.exists
 
 /**
  * 提供事件树图表。
@@ -141,8 +142,13 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                         nodeItem is PsiFile -> {
                             //事件图片
                             val frameInfo = nodeElement.getUserData(PlsKeys.imageFrameInfo)
-                            val iconUrl = ParadoxImageResolver.resolveUrlByFile(nodeItem.virtualFile, frameInfo) ?: return null
-                            val icon = iconUrl.toFileUrl().toIconOrNull()
+                            val iconUrl = ParadoxImageResolver.resolveUrlByFile(nodeItem.virtualFile, nodeItem.project, frameInfo)
+
+                            //如果无法解析（包括对应文件不存在的情况）就直接跳过
+                            if(!ParadoxImageResolver.canResolve(iconUrl)) return null
+
+                            val iconFileUrl = iconUrl.toFileUrl()
+                            val icon = iconFileUrl.toIconOrNull()
                             icon?.toLabel()
                         }
                         else -> null

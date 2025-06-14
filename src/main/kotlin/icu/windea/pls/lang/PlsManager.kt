@@ -2,6 +2,7 @@ package icu.windea.pls.lang
 
 import com.intellij.codeInsight.daemon.*
 import com.intellij.codeInsight.daemon.impl.*
+import com.intellij.codeInsight.hints.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.vfs.*
@@ -10,6 +11,11 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.localisation.*
+import icu.windea.pls.localisation.codeInsight.hints.*
+import icu.windea.pls.script.*
+import icu.windea.pls.script.codeInsight.hints.*
+import kotlinx.coroutines.*
 
 object PlsManager {
     //region ThreadLocals
@@ -128,6 +134,35 @@ object PlsManager {
                 //refresh inlay hints
                 editors.forEach { editor -> InlayHintsPassFactoryInternal.clearModificationStamp(editor) }
             }
+        }
+    }
+
+    @Suppress("UnstableApiUsage")
+    suspend fun refreshInlayHintsImagesChangedIfNecessary() {
+        val settings = InlayHintsSettings.instance()
+        val enabledScriptProviders = InlayHintsProviderExtension.allForLanguage(ParadoxScriptLanguage)
+            .filter { it is ParadoxScriptHintsProvider<*> && it.renderIcon }
+            .filter { settings.hintsEnabled(it.key, ParadoxScriptLanguage) }
+        val enabledLocalisationProviders = InlayHintsProviderExtension.allForLanguage(ParadoxLocalisationLanguage)
+            .filter { it is ParadoxLocalisationHintsProvider<*> && it.renderIcon }
+            .filter { settings.hintsEnabled(it.key, ParadoxLocalisationLanguage) }
+        val refreshScriptFile = enabledScriptProviders.isNotEmpty()
+        val refreshLocalisationFile = enabledLocalisationProviders.isNotEmpty()
+        if (!refreshScriptFile && !refreshLocalisationFile) return
+
+        val allEditors = EditorFactory.getInstance().allEditors
+        val editors = allEditors.filter f@{ editor ->
+            val file = editor.virtualFile ?: return@f false
+            when (file.fileType) {
+                ParadoxScriptFileType -> refreshScriptFile
+                ParadoxLocalisationFileType -> refreshLocalisationFile
+                else -> false
+            }
+        }
+        if (editors.isEmpty()) return
+
+        withContext(Dispatchers.UI) {
+            editors.forEach { editor -> InlayHintsPassFactoryInternal.clearModificationStamp(editor) }
         }
     }
 

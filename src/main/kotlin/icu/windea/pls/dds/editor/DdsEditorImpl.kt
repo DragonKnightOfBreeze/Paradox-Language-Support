@@ -1,11 +1,11 @@
 package icu.windea.pls.dds.editor
 
-import com.intellij.openapi.application.*
+import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
-import com.intellij.openapi.vfs.newvfs.*
+import com.intellij.openapi.vfs.newvfs.RefreshQueue
 import icu.windea.pls.dds.*
 import icu.windea.pls.lang.util.image.*
 import org.intellij.images.editor.*
@@ -134,10 +134,6 @@ class DdsEditorImpl(
 
     fun propertyChanged(event: VirtualFilePropertyEvent) {
         if (file != event.file) return
-        if (file.fileType != DdsFileType) return
-
-        val ddsAbsPath = file.toNioPath().absolutePathString()
-        ParadoxDdsImageResolver.invalidateUrl(ddsAbsPath)
 
         // Change document
         file.refresh(true, false) {
@@ -154,16 +150,8 @@ class DdsEditorImpl(
 
     fun contentsChanged(event: VirtualFileEvent) {
         if (file != event.file) return
-        if (file.fileType != DdsFileType) return
-
-        val ddsAbsPath = file.toNioPath().absolutePathString()
-        ParadoxDdsImageResolver.invalidateUrl(ddsAbsPath)
 
         // Change document
-        refreshFile()
-    }
-
-    fun refreshFile() {
         val postRunnable = Runnable { setValue(file) }
         RefreshQueue.getInstance().refresh(true, false, postRunnable, ModalityState.current(), file)
     }
