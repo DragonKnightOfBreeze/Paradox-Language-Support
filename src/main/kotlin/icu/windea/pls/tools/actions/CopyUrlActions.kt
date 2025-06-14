@@ -1,9 +1,7 @@
 package icu.windea.pls.tools.actions
 
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.model.ParadoxFileInfo
-import icu.windea.pls.model.ParadoxRootInfo
-import icu.windea.pls.model.steamId
+import icu.windea.pls.*
+import icu.windea.pls.model.*
 
 interface CopyUrlActions {
     class GameStorePage : CopyUrlAction() {

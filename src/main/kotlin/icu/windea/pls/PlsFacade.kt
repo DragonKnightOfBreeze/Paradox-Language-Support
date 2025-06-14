@@ -2,7 +2,6 @@ package icu.windea.pls
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
-import icu.windea.pls.ai.settings.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.settings.*
 import icu.windea.pls.core.*

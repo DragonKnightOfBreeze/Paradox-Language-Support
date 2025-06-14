@@ -14,7 +14,7 @@ import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.tools.ui.*
-import kotlin.io.path.exists
+import kotlin.io.path.*
 
 private const val dlcLoadJsonPath = "dlc_load.json"
 private const val collectionName = "Paradox"

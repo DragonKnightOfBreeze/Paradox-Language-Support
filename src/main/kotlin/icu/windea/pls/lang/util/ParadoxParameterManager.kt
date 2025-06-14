@@ -5,7 +5,7 @@ import com.intellij.application.options.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.codeInsight.lookup.*
-import com.intellij.lang.injection.InjectedLanguageManager
+import com.intellij.lang.injection.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
@@ -36,7 +36,7 @@ import icu.windea.pls.lang.util.ParadoxPsiManager.findMemberElementsToInline
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.codeStyle.*
-import icu.windea.pls.script.injection.ParadoxParameterValueInjectionInfo
+import icu.windea.pls.script.injection.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 

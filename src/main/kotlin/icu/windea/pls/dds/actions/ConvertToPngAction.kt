@@ -1,7 +1,7 @@
 package icu.windea.pls.dds.actions
 
 import com.intellij.openapi.vfs.*
-import com.intellij.openapi.vfs.VfsUtil.findFile
+import com.intellij.openapi.vfs.VfsUtil.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.dds.*

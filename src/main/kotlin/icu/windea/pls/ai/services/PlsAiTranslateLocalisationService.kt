@@ -2,17 +2,12 @@ package icu.windea.pls.ai.services
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.popup.JBPopup
-import com.intellij.openapi.ui.popup.JBPopupFactory
-import com.intellij.psi.PsiFile
-import com.intellij.ui.components.JBTextField
-import com.intellij.ui.dsl.builder.AlignX
-import com.intellij.ui.dsl.builder.COLUMNS_LARGE
-import com.intellij.ui.dsl.builder.MAX_LINE_LENGTH_WORD_WRAP
-import com.intellij.ui.dsl.builder.columns
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.openapi.editor.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.ui.popup.*
+import com.intellij.psi.*
+import com.intellij.ui.components.*
+import com.intellij.ui.dsl.builder.*
 import dev.langchain4j.data.message.*
 import dev.langchain4j.kotlin.model.chat.*
 import icu.windea.pls.ai.*
@@ -22,7 +17,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.model.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import java.awt.Dimension
+import java.awt.*
 import java.lang.invoke.*
 
 @Service

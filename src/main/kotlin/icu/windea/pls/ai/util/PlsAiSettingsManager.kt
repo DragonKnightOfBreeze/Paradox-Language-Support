@@ -1,7 +1,7 @@
 package icu.windea.pls.ai.util
 
 import com.intellij.*
-import icu.windea.pls.ai.PlsChatModelType
+import icu.windea.pls.ai.*
 import icu.windea.pls.ai.util.PlsAiManager.getChatModelTypeToUse
 import java.util.*
 

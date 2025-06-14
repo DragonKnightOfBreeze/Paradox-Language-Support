@@ -3,9 +3,7 @@ package icu.windea.pls.lang.search.scope
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 
 @Suppress("EqualsOrHashCode")
 class ParadoxModWithDependenciesSearchScope(

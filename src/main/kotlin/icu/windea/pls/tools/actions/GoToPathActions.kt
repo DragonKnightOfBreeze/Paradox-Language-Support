@@ -1,11 +1,10 @@
 package icu.windea.pls.tools.actions
 
-import com.intellij.openapi.actionSystem.AnActionEvent
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.lang.actions.gameType
-import icu.windea.pls.lang.actions.gameTypeProperty
-import icu.windea.pls.model.ParadoxGameType
-import java.nio.file.Path
+import com.intellij.openapi.actionSystem.*
+import icu.windea.pls.*
+import icu.windea.pls.lang.actions.*
+import icu.windea.pls.model.*
+import java.nio.file.*
 
 interface GoToPathActions {
     class Steam : GoToPathAction() {

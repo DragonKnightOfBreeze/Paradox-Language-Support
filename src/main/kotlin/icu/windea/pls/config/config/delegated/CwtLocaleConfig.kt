@@ -3,9 +3,8 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
-import icu.windea.pls.PlsDocBundle
+import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 
 interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {

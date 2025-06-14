@@ -8,8 +8,8 @@ import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInsight.template.*
 import com.intellij.codeInspection.*
 import com.intellij.codeInspection.ex.*
-import com.intellij.credentialStore.CredentialAttributes
-import com.intellij.ide.passwordSafe.PasswordSafe
+import com.intellij.credentialStore.*
+import com.intellij.ide.passwordSafe.*
 import com.intellij.injected.editor.*
 import com.intellij.lang.*
 import com.intellij.lang.injection.*

@@ -4,13 +4,12 @@ import com.intellij.notification.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.*
 import icu.windea.pls.tools.ui.*
 import java.nio.file.*
-import kotlin.io.path.exists
+import kotlin.io.path.*
 
 private const val dbPath = "launcher-v2.sqlite"
 

@@ -3,7 +3,7 @@ package icu.windea.pls.integrations.lint.tools
 import com.intellij.openapi.extensions.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.integrations.lint.*
-import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.*
 
 /**
  * 提供检查工具。用于提供额外的代码检查。

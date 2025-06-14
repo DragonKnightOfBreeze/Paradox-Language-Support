@@ -15,7 +15,7 @@ import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.*
 import icu.windea.pls.tools.model.*
 import icu.windea.pls.tools.ui.*
-import kotlin.io.path.exists
+import kotlin.io.path.*
 
 /**
  * 从启动器JSON配置文件导入模组配置。

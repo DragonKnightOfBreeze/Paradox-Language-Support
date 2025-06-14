@@ -1,7 +1,7 @@
 package icu.windea.pls.model
 
-import icu.windea.pls.core.isExactDigit
-import icu.windea.pls.lang.isIdentifier
+import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 
 /**
  * 用作输出的本地化数据。

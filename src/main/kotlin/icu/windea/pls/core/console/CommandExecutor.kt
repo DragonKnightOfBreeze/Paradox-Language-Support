@@ -5,8 +5,6 @@ import io.ktor.utils.io.charsets.Charset
 import java.io.*
 import java.util.concurrent.*
 import kotlin.text.Charsets
-import kotlin.text.isNotEmpty
-import kotlin.text.trim
 
 class CommandExecutor(
     val environment: Map<String, String> = emptyMap(),

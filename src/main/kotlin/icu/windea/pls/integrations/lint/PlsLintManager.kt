@@ -1,6 +1,6 @@
 package icu.windea.pls.integrations.lint
 
-import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.integrations.lint.tools.*
 import icu.windea.pls.model.*
 
