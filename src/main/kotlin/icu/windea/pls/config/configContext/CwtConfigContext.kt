@@ -85,10 +85,9 @@ class CwtConfigContext(
 private val CwtConfigGroup.configsCache by createKey(CwtConfigContext.Keys) {
     createCachedValue(project) {
         createNestedCache<VirtualFile, _, _, _> {
-            CacheBuilder.newBuilder().buildCache<String, List<CwtMemberConfig<*>>>()
+            CacheBuilder.newBuilder().softValues().buildCache<String, List<CwtMemberConfig<*>>>()
         }.withDependencyItems(
-            ParadoxModificationTrackers.ScriptFileTracker,
-            ParadoxModificationTrackers.LocalisationFileTracker,
+            ParadoxModificationTrackers.FileTracker,
             ParadoxModificationTrackers.ParameterConfigInferenceTracker,
             ParadoxModificationTrackers.InlineScriptConfigInferenceTracker,
         )

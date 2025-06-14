@@ -245,8 +245,7 @@ private val CwtConfigGroup.configMatchResultCache by createKey(CwtConfigContext.
         createNestedCache<VirtualFile, _, _, _> {
             CacheBuilder.newBuilder().buildCache<String, Result>()
         }.withDependencyItems(
-            ParadoxModificationTrackers.ScriptFileTracker,
-            ParadoxModificationTrackers.LocalisationFileTracker,
+            ParadoxModificationTrackers.FileTracker
         )
     }
 }

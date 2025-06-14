@@ -84,8 +84,8 @@ dependencies {
     testImplementation("net.bytebuddy:byte-buddy-agent:1.15.0")
 
     // jte - https://github.com/casid/jte
-    implementation("gg.jte:jte:3.2.1")
-    compileOnly("gg.jte:jte-kotlin:3.2.1")
+    testImplementation("gg.jte:jte:3.2.1")
+    testCompileOnly("gg.jte:jte-kotlin:3.2.1")
 }
 
 sourceSets {

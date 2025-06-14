@@ -4,6 +4,10 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.util.data.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
+import icu.windea.pls.core.annotations.*
+import icu.windea.pls.lang.util.data.*
+import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.*
 
 class StellarisEconomicCategoryData(data: ParadoxScriptData) : ParadoxDefinitionData {
     val parent: String? by data.get("parent")
