@@ -63,6 +63,13 @@ abstract class ParadoxScriptHintsProvider<T : Any> : ParadoxHintsProvider<T>() {
         return presentation
     }
 
+    protected fun Panel.createTypeInfoRow(subtypeProperty: KMutableProperty0<Boolean>) {
+        row {
+            checkBox(PlsBundle.message("script.hints.settings.showTypes")).selected(true).enabled(false)
+            checkBox(PlsBundle.message("script.hints.settings.showSubtypes")).bindSelected(subtypeProperty)
+        }
+    }
+
     protected fun Panel.createTextLengthLimitRow(property: KMutableProperty0<Int>) {
         row {
             label(PlsBundle.message("script.hints.settings.textLengthLimit")).widthGroup("left")
