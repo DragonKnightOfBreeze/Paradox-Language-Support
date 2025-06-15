@@ -11,7 +11,7 @@ abstract class PlsAiManipulateLocalisationService : PlsAiService {
         contract {
             returns() implies (resultFlow != null)
         }
-        if (resultFlow == null) { //resultFlow返回null，这意味着AI设置不合法，例如API KEY未填写（但不包括API kEY已填写但不合法的情况）
+        if (resultFlow == null) { //resultFlow返回null，这意味着AI设置不合法，例如API KEY未填写（但不包括API kEY已填写但正确的情况）
             throw IllegalStateException(PlsAiBundle.message("intention.localisation.error.1"))
         }
     }
