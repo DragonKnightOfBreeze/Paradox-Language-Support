@@ -12,6 +12,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import kotlinx.coroutines.*
@@ -95,7 +96,7 @@ object ParadoxDdsImageResolver {
     private fun convertDdsToPngAsyncIfNecessary(project: Project, absPath: Path, pngAbsPath: Path, frameInfo: ImageFrameInfo?) {
         if (pngAbsPath.exists()) return
 
-        if (absPath.fileSize() <= PlsSettingConstants.largeDddSize) {
+        if (absPath.fileSize() <= PlsInternalSettings.largeDddSize) {
             convertDdsToPng(absPath, pngAbsPath, frameInfo)
             return
         }

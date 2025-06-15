@@ -14,6 +14,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.dds.support.*
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.model.constants.*
 import kotlinx.coroutines.*
 import javax.imageio.spi.*
@@ -82,8 +83,6 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
         project.configGroupLibrary.refreshRoots()
     }
 
-    @Suppress("KotlinConstantConditions")
-    private val refreshOnProjectStartup = PlsSettingConstants.refreshOnProjectStartup
     private val refreshedProjectIdsKey = createKey<MutableSet<String>>("pls.refreshedProjectIds")
     private val refreshedProjectIds by lazy { ApplicationManager.getApplication().getOrPutUserData(refreshedProjectIdsKey) { mutableSetOf() } }
 
@@ -95,7 +94,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
 
         //TODO 1.3.37+ 也许有更好的方式来解决这个问题
 
-        if (!refreshOnProjectStartup) return
+        if (!PlsInternalSettings.refreshOnProjectStartup) return
         if (!refreshedProjectIds.add(project.locationHash)) return
 
         val fileEditorManager = FileEditorManager.getInstance(project) ?: return

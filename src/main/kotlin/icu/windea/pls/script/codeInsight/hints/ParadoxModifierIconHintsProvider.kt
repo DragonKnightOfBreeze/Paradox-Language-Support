@@ -14,9 +14,9 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.image.*
-import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxModifierIconHintsProvider.*
 import icu.windea.pls.script.psi.*
 import javax.imageio.*
@@ -27,7 +27,7 @@ import javax.swing.*
  */
 class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
-        var iconHeightLimit: Int = PlsSettingConstants.iconHeightLimit
+        var iconHeightLimit: Int = PlsInternalSettings.iconHeightLimit
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxModifierIconHintsSettingsKey")

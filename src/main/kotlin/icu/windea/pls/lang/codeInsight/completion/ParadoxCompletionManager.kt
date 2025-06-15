@@ -32,6 +32,7 @@ import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.localisation.psi.*
@@ -81,7 +82,7 @@ object ParadoxCompletionManager {
     }
 
     fun addRootKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
-        val elementPath = ParadoxExpressionPathManager.get(memberElement, PlsSettingConstants.maxDefinitionDepth) ?: return
+        val elementPath = ParadoxExpressionPathManager.get(memberElement, PlsInternalSettings.maxDefinitionDepth) ?: return
         if (elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
         val rootKeyPrefix = lazy { context.contextElement?.let { ParadoxExpressionPathManager.getKeyPrefixes(it).firstOrNull() } }
         context.isKey = true

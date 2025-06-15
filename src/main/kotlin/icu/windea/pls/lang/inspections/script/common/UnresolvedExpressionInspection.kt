@@ -16,6 +16,7 @@ import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.quickfix.*
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.model.constants.*
@@ -79,7 +80,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if (isIgnoredByConfigs(element.propertyKey, expectedConfigs)) return true
                     }
                     val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
-                    val expect = if (showExpectInfo) expectedExpressions.truncate(PlsSettingConstants.itemLimit).joinToString() else null
+                    val expect = if (showExpectInfo) expectedExpressions.truncate(PlsInternalSettings.itemLimit).joinToString() else null
                     val message = when {
                         expect == null -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.1", propertyKey.expression)
                         expect.isNotEmpty() -> PlsBundle.message("inspection.script.unresolvedExpression.desc.1.2", propertyKey.expression, expect)
@@ -124,7 +125,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                         if (isIgnoredByConfigs(element, expectedConfigs)) return true
                     }
                     val expectedExpressions = expectedConfigs.mapTo(mutableSetOf()) { it.configExpression.expressionString }
-                    val expect = if (showExpectInfo) expectedExpressions.truncate(PlsSettingConstants.itemLimit).joinToString() else null
+                    val expect = if (showExpectInfo) expectedExpressions.truncate(PlsInternalSettings.itemLimit).joinToString() else null
                     val message = when {
                         expect == null -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.1", element.expression)
                         expect.isNotEmpty() -> PlsBundle.message("inspection.script.unresolvedExpression.desc.2.2", element.expression, expect)
