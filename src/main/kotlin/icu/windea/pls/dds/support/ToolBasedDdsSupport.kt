@@ -9,6 +9,7 @@ import icu.windea.pls.core.io.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.integrations.image.*
 import icu.windea.pls.integrations.image.tools.*
+import icu.windea.pls.lang.*
 import io.github.ititus.ddsiio.*
 import org.apache.commons.io.*
 import org.apache.commons.io.file.*

@@ -1,7 +1,7 @@
 package icu.windea.pls.integrations.image.tools
 
 import com.intellij.openapi.progress.*
-import icu.windea.pls.model.constants.PlsPathConstants
+import icu.windea.pls.model.constants.*
 import org.apache.commons.io.*
 import java.io.*
 import java.nio.file.*

@@ -6,7 +6,7 @@ import com.intellij.psi.*
 import com.intellij.refactoring.rename.*
 import com.intellij.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.constants.PlsPatternConstants
+import icu.windea.pls.model.constants.*
 
 class ParadoxLocalisationPropertyRenameInputValidator : RenameInputValidator {
     private val elementPattern = psiElement(ParadoxLocalisationProperty::class.java)

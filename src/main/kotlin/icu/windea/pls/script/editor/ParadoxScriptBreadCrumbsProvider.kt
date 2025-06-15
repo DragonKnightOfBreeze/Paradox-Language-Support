@@ -3,7 +3,7 @@ package icu.windea.pls.script.editor
 import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.ui.breadcrumbs.*
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 

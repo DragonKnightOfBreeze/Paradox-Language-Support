@@ -23,7 +23,6 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 import javax.swing.*
-import kotlin.io.path.exists
 
 /**
  * 提供群星的科技树图表。

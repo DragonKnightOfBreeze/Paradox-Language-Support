@@ -16,7 +16,7 @@ import com.intellij.ui.dsl.builder.MutableProperty
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.*
 import com.intellij.util.ui.*
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.*
 import icu.windea.pls.core.util.*
 import java.awt.*
 import java.awt.image.*

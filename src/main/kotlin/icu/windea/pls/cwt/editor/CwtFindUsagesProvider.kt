@@ -9,7 +9,7 @@ import com.intellij.usageView.*
 import icu.windea.pls.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.*
 
 class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
     override fun getType(element: PsiElement): String {

@@ -33,12 +33,12 @@ import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
-import icu.windea.pls.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.lang.*
+import icu.windea.pls.model.constants.*
 import it.unimi.dsi.fastutil.Hash
 import it.unimi.dsi.fastutil.objects.*
 import java.io.*

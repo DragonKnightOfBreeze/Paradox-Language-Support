@@ -5,7 +5,6 @@ package icu.windea.pls.lang.documentation.actions
 import com.intellij.codeInsight.hint.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.platform.ide.documentation.*
-import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.util.*

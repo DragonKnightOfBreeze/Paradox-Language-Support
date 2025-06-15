@@ -1,7 +1,5 @@
 package icu.windea.pls.model.constants
 
-import icu.windea.pls.PlsFacade
-
 object PlsConstants {
     const val pluginId = "icu.windea.pls"
     const val pluginSettingsFileName = "paradox-language-support.xml"

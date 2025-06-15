@@ -11,7 +11,7 @@ import icu.windea.pls.lang.editor.folding.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.*
 
 class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {

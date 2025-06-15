@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import com.intellij.refactoring.rename.*
 import com.intellij.util.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.model.constants.PlsPatternConstants
+import icu.windea.pls.model.constants.*
 
 class ParadoxParameterRenameInputValidator : RenameInputValidator {
     private val elementPattern = PlatformPatterns.psiElement(ParadoxParameterElement::class.java)

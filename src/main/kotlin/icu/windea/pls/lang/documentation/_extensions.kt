@@ -14,7 +14,6 @@ import com.intellij.platform.backend.documentation.*
 import com.intellij.platform.backend.presentation.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*

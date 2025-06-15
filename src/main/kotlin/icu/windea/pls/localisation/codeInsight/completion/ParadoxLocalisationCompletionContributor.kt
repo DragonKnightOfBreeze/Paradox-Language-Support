@@ -2,11 +2,10 @@ package icu.windea.pls.localisation.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.patterns.PlatformPatterns.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.*
 
 class ParadoxLocalisationCompletionContributor : CompletionContributor() {
     init {

@@ -13,7 +13,7 @@ import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupport {

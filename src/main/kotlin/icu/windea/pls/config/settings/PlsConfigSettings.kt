@@ -1,8 +1,7 @@
 package icu.windea.pls.config.settings
 
 import com.intellij.openapi.components.*
-import icu.windea.pls.*
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.*
 
 /**
  * PLS规则设置。可以在插件的对应设置页面中进行配置。

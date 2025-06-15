@@ -6,7 +6,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings as Settings
 
 class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {

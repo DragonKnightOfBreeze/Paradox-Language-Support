@@ -28,7 +28,7 @@ class ParadoxInlineViewDescriptor(
                     else -> null
                 }
             }
-            // key or value of "inline_script = some/inline_script " 
+            // key or value of "inline_script = some/inline_script "
             element is ParadoxScriptStringExpressionElement -> PlsBundle.message("inline.inlineScript.elements.header")
             element is ParadoxLocalisationProperty -> PlsBundle.message("inline.localisation.elements.header")
             else -> null

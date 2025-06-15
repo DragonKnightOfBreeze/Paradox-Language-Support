@@ -7,15 +7,15 @@ import com.intellij.codeInsight.hints.presentation.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
-import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceInfoHintsProvider.Settings
+import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceInfoHintsProvider.*
 import icu.windea.pls.script.psi.*
-import javax.swing.JComponent
+import javax.swing.*
 
 /**
  * 定义引用信息的内嵌提示（对应定义的名字和类型）。

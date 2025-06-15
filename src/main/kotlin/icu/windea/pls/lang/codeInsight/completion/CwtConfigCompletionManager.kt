@@ -24,7 +24,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.codeStyle.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.*
 
 object CwtConfigCompletionManager {
     object Keys : KeyRegistry()

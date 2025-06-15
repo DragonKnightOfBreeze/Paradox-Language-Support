@@ -9,7 +9,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 

@@ -15,7 +15,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.lang.settings.PlsStrategies.LocalisationGeneration as LocalisationGenerationStrategy
 
 object ParadoxLocalisationGenerator {

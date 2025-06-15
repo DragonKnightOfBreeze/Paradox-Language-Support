@@ -11,7 +11,7 @@ import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 
 /**

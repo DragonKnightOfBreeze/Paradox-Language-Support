@@ -5,7 +5,7 @@ import com.intellij.patterns.PlatformPatterns.*
 import com.intellij.psi.*
 import com.intellij.refactoring.rename.*
 import com.intellij.util.*
-import icu.windea.pls.model.constants.PlsPatternConstants
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptedVariableRenameInputValidator : RenameInputValidator {

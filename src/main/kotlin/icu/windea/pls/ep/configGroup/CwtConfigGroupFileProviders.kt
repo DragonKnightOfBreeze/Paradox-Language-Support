@@ -3,7 +3,6 @@ package icu.windea.pls.ep.configGroup
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
-import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*

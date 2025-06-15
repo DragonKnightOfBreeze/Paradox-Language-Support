@@ -1,19 +1,17 @@
 package icu.windea.pls.dds.editor
 
-import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.application.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
-import com.intellij.openapi.vfs.newvfs.RefreshQueue
+import com.intellij.openapi.vfs.newvfs.*
 import icu.windea.pls.dds.*
-import icu.windea.pls.lang.util.image.*
 import org.intellij.images.editor.*
 import org.intellij.images.thumbnail.actionSystem.*
 import org.intellij.images.vfs.*
 import java.awt.*
 import javax.swing.*
-import kotlin.io.path.*
 
 //org.intellij.images.editor.impl.ImageEditorImpl
 

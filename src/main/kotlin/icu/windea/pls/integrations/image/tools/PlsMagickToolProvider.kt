@@ -4,7 +4,7 @@ import com.intellij.openapi.diagnostic.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.model.constants.PlsPathConstants
+import icu.windea.pls.model.constants.*
 import org.apache.commons.io.file.*
 import java.nio.file.*
 import java.util.*

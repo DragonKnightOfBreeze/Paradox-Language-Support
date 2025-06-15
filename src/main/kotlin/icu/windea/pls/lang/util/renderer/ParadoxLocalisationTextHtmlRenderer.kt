@@ -17,8 +17,7 @@ import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.localisation.editor.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.PlsSettingConstants
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 import javax.imageio.*

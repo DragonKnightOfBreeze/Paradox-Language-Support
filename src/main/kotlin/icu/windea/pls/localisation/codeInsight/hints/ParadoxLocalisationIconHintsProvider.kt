@@ -14,7 +14,7 @@ import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationIconHintsProvider.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.PlsSettingConstants
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 import javax.imageio.*
 import javax.swing.*

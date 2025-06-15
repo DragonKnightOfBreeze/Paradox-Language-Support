@@ -21,7 +21,6 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
-import kotlin.io.path.exists
 
 /**
  * 提供事件树图表。

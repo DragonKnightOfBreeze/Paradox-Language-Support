@@ -4,13 +4,12 @@ import com.intellij.injected.editor.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.vcs.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.*
 import java.lang.invoke.*
 
 object ParadoxFilePathManager {

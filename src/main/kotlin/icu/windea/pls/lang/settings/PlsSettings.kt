@@ -2,14 +2,13 @@ package icu.windea.pls.lang.settings
 
 import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.annotations.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.settings.PlsStrategies.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.*
 
 /**
  * PLS设置。可以在插件的对应设置页面中进行配置。

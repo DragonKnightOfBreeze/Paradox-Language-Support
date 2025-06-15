@@ -3,7 +3,7 @@ package icu.windea.pls.script.editor
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.options.colors.*
 import icu.windea.pls.*
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.*
 
 class ParadoxScriptColorSettingsPage : ColorSettingsPage {

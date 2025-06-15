@@ -16,7 +16,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.constants.PlsSettingConstants
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxModifierLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*

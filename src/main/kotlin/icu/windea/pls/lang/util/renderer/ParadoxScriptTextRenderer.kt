@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.util.renderer
 
 import icu.windea.pls.core.*
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxScriptTextRenderer {

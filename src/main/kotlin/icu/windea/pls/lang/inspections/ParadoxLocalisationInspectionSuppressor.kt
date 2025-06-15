@@ -8,7 +8,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.*
 
 //com.intellij.lang.properties.codeInspection.PropertiesInspectionSuppressor
 //org.intellij.grammar.inspection.BnfInspectionSuppressor

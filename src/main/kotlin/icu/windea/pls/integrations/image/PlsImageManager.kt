@@ -2,10 +2,9 @@ package icu.windea.pls.integrations.image
 
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.integrations.image.tools.*
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.*
 import org.intellij.images.fileTypes.impl.*
 import java.io.*
 import java.nio.file.*

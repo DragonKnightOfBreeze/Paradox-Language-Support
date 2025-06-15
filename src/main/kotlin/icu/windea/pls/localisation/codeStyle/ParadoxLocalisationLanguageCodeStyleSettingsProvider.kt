@@ -5,7 +5,7 @@ import com.intellij.psi.codeStyle.*
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
 import icu.windea.pls.core.*
 import icu.windea.pls.localisation.*
-import icu.windea.pls.model.constants.PlsStringConstants
+import icu.windea.pls.model.constants.*
 
 class ParadoxLocalisationLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     override fun getLanguage() = ParadoxLocalisationLanguage
