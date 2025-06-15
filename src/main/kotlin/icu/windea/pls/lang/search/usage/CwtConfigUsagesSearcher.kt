@@ -21,25 +21,7 @@ class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
         val target = queryParameters.elementToSearch
         if (target !is CwtProperty) return
-        val extraWords = mutableSetOf<String>()
-        val configType = CwtConfigManager.getConfigType(target)
-        when (configType) {
-            CwtConfigTypes.Alias, CwtConfigTypes.Modifier, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> {
-                val aliasSubName = target.name.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")
-                if (aliasSubName.isNotNullOrEmpty()) extraWords.add(aliasSubName)
-            }
-            CwtConfigTypes.Inline -> {
-                val inlineName = target.name.removeSurroundingOrNull("inline[", "]")
-                if (inlineName.isNotNullOrEmpty()) extraWords.add(inlineName)
-            }
-            CwtConfigTypes.Link -> {
-                val prefixProperty = target.propertyValue?.castOrNull<CwtBlock>()
-                    ?.findChild<CwtProperty> { it.name == "prefix" }
-                val prefix = prefixProperty?.propertyValue?.castOrNull<CwtString>()?.stringValue
-                if (prefix.isNotNullOrEmpty()) extraWords.add(prefix)
-            }
-            else -> return
-        }
+        val extraWords = getExtraWords(target)
         if (extraWords.isEmpty()) return
 
         //这里不能直接使用target.useScope，否则文件高亮会出现问题
@@ -48,5 +30,27 @@ class CwtConfigUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
         for (extraWord in extraWords) {
             queryParameters.optimizer.searchWord(extraWord, useScope, searchContext, false, target) //忽略大小写
         }
+    }
+
+    private fun getExtraWords(target: CwtProperty): Set<String> {
+        val extraWords = mutableSetOf<String>()
+        val configType = CwtConfigManager.getConfigType(target)
+        when (configType) {
+            CwtConfigTypes.Alias, CwtConfigTypes.Modifier, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> {
+                val aliasSubName = target.name.removeSurroundingOrNull("alias[", "]")?.substringAfter(':', "")?.orNull()
+                if (aliasSubName != null) extraWords.add(aliasSubName)
+            }
+            CwtConfigTypes.Inline -> {
+                val inlineName = target.name.removeSurroundingOrNull("inline[", "]")?.orNull()
+                if (inlineName != null) extraWords.add(inlineName)
+            }
+            CwtConfigTypes.Link -> {
+                val prefixProperty = target.propertyValue?.castOrNull<CwtBlock>()?.findChild<CwtProperty> { it.name == "prefix" }
+                val prefix = prefixProperty?.propertyValue?.castOrNull<CwtString>()?.stringValue?.orNull()
+                if (prefix != null) extraWords.add(prefix)
+            }
+            else -> pass()
+        }
+        return extraWords
     }
 }

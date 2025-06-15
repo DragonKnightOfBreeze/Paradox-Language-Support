@@ -1,6 +1,8 @@
 package icu.windea.pls.ep.icon
 
 import icu.windea.pls.core.*
+import icu.windea.pls.core.annotations.*
+import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 
 class ParadoxBaseLocalisationIconSupport : CompositeParadoxLocalisationIconSupport() {
@@ -10,6 +12,7 @@ class ParadoxBaseLocalisationIconSupport : CompositeParadoxLocalisationIconSuppo
         fromImageFile("icon[gfx/interface/icons/]")
     }
 
+    @WithGameType(ParadoxGameType.Stellaris)
     class Stellaris : CompositeParadoxLocalisationIconSupport() {
         init {
             fromDefinition(ParadoxDefinitionTypes.Job, { it.removePrefixOrNull("job_") }, { it.addPrefix("job_") })

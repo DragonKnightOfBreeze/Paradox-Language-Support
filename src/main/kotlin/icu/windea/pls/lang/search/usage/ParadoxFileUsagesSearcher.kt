@@ -7,6 +7,7 @@ import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.core.*
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
 import kotlin.experimental.*
@@ -25,12 +26,7 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
         val filePath = fileInfo.path.path
         val project = queryParameters.project
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        val extraWords = mutableSetOf<String>()
-        configGroup.filePathExpressions.forEach { configExpression ->
-            ParadoxPathReferenceExpressionSupport.get(configExpression)
-                ?.extract(configExpression, target, filePath)
-                ?.let { extraWords.add(it) }
-        }
+        val extraWords = getExtraWords(target, filePath, configGroup)
         if (extraWords.isEmpty()) return
 
         //这里不能直接使用target.useScope，否则文件高亮会出现问题
@@ -39,5 +35,14 @@ class ParadoxFileUsagesSearcher : QueryExecutorBase<PsiReference, ReferencesSear
         for (extraWord in extraWords) {
             queryParameters.optimizer.searchWord(extraWord, useScope, searchContext, true, target)
         }
+    }
+
+    private fun getExtraWords(target: PsiFile, filePath: String, configGroup: CwtConfigGroup): Set<String> {
+        val extraWords = mutableSetOf<String>()
+        configGroup.filePathExpressions.forEach { configExpression ->
+            val name = ParadoxPathReferenceExpressionSupport.get(configExpression)?.extract(configExpression, target, filePath)?.orNull()
+            if (name != null) extraWords.add(name)
+        }
+        return extraWords
     }
 }
