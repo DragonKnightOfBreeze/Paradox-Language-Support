@@ -43,7 +43,7 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
             val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
             val fileConfig = CwtConfigResolver.resolve(psiFile, configGroup)
             processFile(fileConfig, configGroup)
-            configGroup.files[filePath] = fileConfig
+            //configGroup.files[filePath] = fileConfig //TODO 2.0.0-dev+ 目前并不需要缓存文件规则
         }
 
         return true
