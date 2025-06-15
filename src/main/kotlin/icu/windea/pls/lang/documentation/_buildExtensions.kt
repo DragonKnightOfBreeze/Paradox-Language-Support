@@ -88,14 +88,14 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
             append(" | ")
             val dataProvider = PlsFacade.getDataProvider()
             val workshopUrlInSteam = when (rootInfo) {
-                is ParadoxRootInfo.Game -> dataProvider.getSteamGameWorkshopUrlInSteam(steamId)
+                is ParadoxRootInfo.Game -> dataProvider.getSteamGameStoreUrlInSteam(steamId)
                 is ParadoxRootInfo.Mod -> dataProvider.getSteamWorkshopUrlInSteam(steamId)
             }
-            appendLink(workshopUrlInSteam, PlsBundle.message("text.steamLinkLabel"))
+            appendLink(workshopUrlInSteam, PlsBundle.message("text.steamLinkLabel")) //自带外部链接图标
             appendExternalLinkIcon() // 使用翻译插件翻译文档注释后，这里会出现不必要的换行 - 已被修复
             append(" | ")
             val workshopUrl = when (rootInfo) {
-                is ParadoxRootInfo.Game -> dataProvider.getSteamGameWorkshopUrl(steamId)
+                is ParadoxRootInfo.Game -> dataProvider.getSteamGameStoreUrl(steamId)
                 is ParadoxRootInfo.Mod -> dataProvider.getSteamWorkshopUrl(steamId)
             }
             appendLink(workshopUrl, PlsBundle.message("text.steamWebsiteLinkLabel")) //自带外部链接图标
