@@ -16,7 +16,7 @@ import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.codeInsight.*
 import icu.windea.pls.model.constants.*
