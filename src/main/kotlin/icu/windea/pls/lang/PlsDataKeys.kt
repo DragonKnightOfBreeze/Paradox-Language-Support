@@ -1,4 +1,4 @@
-package icu.windea.pls
+package icu.windea.pls.lang
 
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.observable.properties.*

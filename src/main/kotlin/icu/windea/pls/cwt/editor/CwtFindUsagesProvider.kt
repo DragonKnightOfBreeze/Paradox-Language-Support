@@ -9,6 +9,7 @@ import com.intellij.usageView.*
 import icu.windea.pls.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.model.constants.PlsStringConstants
 
 class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
     override fun getType(element: PsiElement): String {
@@ -28,7 +29,7 @@ class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
         if (element.elementType == CwtElementTypes.LEFT_BRACE) {
             return when (location) {
                 UsageViewTypeLocation.INSTANCE -> PlsBundle.message("cwt.description.block")
-                else -> PlsConstants.Strings.blockFolder
+                else -> PlsStringConstants.blockFolder
             }
         }
         return when (element) {

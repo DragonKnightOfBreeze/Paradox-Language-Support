@@ -3,6 +3,7 @@ package icu.windea.pls.ep.configGroup
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
@@ -106,7 +107,7 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 
     private fun doGetRootDirectory(): VirtualFile? {
         val rootPath = "/config"
-        val rootUrl = rootPath.toClasspathUrl(PlsConstants.locationClass)
+        val rootUrl = rootPath.toClasspathUrl()
         val file = VfsUtil.findFileByURL(rootUrl)
         return file?.takeIf { it.isDirectory }
     }

@@ -14,12 +14,12 @@ import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.localisation.editor.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.*
 import java.awt.*
 import java.awt.event.*
 import java.util.concurrent.atomic.*
 import javax.imageio.*
-import kotlin.io.path.*
 
 @Suppress("UnstableApiUsage", "RedundantWith")
 object ParadoxLocalisationTextInlayRenderer {
@@ -166,10 +166,10 @@ object ParadoxLocalisationTextInlayRenderer {
                     }
                 }
                 resolved is CwtProperty -> {
-                    smallText(resolved.value ?: PlsConstants.Strings.unresolved)
+                    smallText(resolved.value ?: PlsStringConstants.unresolved)
                 }
                 resolved is ParadoxScriptScriptedVariable && resolved.value != null -> {
-                    smallText(resolved.value ?: PlsConstants.Strings.unresolved)
+                    smallText(resolved.value ?: PlsStringConstants.unresolved)
                 }
                 else -> {
                     truncatedSmallText(element.text, context)

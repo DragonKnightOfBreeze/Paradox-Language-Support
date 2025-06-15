@@ -1,7 +1,7 @@
 package icu.windea.pls.integrations.image.tools
 
 import com.intellij.openapi.progress.*
-import icu.windea.pls.*
+import icu.windea.pls.model.constants.PlsPathConstants
 import org.apache.commons.io.*
 import java.io.*
 import java.nio.file.*
@@ -11,7 +11,7 @@ import kotlin.io.path.*
 abstract class PlsCommandBasedImageToolProvider : PlsImageToolProvider {
     final override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
         try {
-            val tempParentPath = PlsConstants.Paths.imagesTemp
+            val tempParentPath = PlsPathConstants.imagesTemp
             tempParentPath.createDirectories()
             val path = tempParentPath.resolve(UUID.randomUUID().toString() + "." + sourceFormat)
             path.outputStream(StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)

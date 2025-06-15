@@ -13,6 +13,7 @@ import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.*
 
 /**
@@ -30,7 +31,7 @@ class ParadoxLocalisationRelatedDefinitionsLineMarkerProvider : RelatedItemLineM
         val category = element.category
         if (category != ParadoxLocalisationCategory.Localisation) return
         val icon = PlsIcons.Gutter.RelatedDefinitions
-        val prefix = PlsConstants.Strings.relatedDefinitionPrefix
+        val prefix = PlsStringConstants.relatedDefinitionPrefix
         val targets = ParadoxLocalisationManager.getRelatedDefinitions(element)
         if (targets.isEmpty()) return
         ProgressManager.checkCanceled()

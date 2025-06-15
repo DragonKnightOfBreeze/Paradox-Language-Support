@@ -21,6 +21,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
 import java.lang.Integer.*
@@ -57,11 +58,11 @@ fun String.isInlineUsage(): Boolean {
     return this.equals(ParadoxInlineScriptManager.inlineScriptKey, true)
 }
 
-fun String?.orAnonymous() = if (isNullOrEmpty()) PlsConstants.Strings.anonymous else this
+fun String?.orAnonymous() = if (isNullOrEmpty()) PlsStringConstants.anonymous else this
 
-fun String?.orUnknown() = if (isNullOrEmpty()) PlsConstants.Strings.unknown else this
+fun String?.orUnknown() = if (isNullOrEmpty()) PlsStringConstants.unknown else this
 
-fun String?.orUnresolved() = if (isNullOrEmpty()) PlsConstants.Strings.unresolved else this
+fun String?.orUnresolved() = if (isNullOrEmpty()) PlsStringConstants.unresolved else this
 
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
     return when {

@@ -13,6 +13,8 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.dds.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsPathConstants
+import icu.windea.pls.model.constants.PlsSettingConstants
 import kotlinx.coroutines.*
 import java.lang.invoke.*
 import java.nio.file.*
@@ -66,7 +68,7 @@ object ParadoxDdsImageResolver {
     }
 
     private fun resolvePngAbsPath(relPath: String?, absPath: String, frameInfo: ImageFrameInfo?): Path {
-        val imagesPath = PlsConstants.Paths.images
+        val imagesPath = PlsPathConstants.images
         imagesPath.createDirectories()
         if (relPath != null) {
             //路径：~/.pls/images/${relPathWithoutExtension}@${frame}_${frames}@${uuid}.png
@@ -94,7 +96,7 @@ object ParadoxDdsImageResolver {
     private fun convertDdsToPngAsyncIfNecessary(project: Project, absPath: Path, pngAbsPath: Path, frameInfo: ImageFrameInfo?) {
         if (pngAbsPath.exists()) return
 
-        if (absPath.fileSize() <= PlsConstants.Settings.largeDddSize) {
+        if (absPath.fileSize() <= PlsSettingConstants.largeDddSize) {
             convertDdsToPng(absPath, pngAbsPath, frameInfo)
             return
         }

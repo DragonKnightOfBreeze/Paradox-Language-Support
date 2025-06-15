@@ -15,6 +15,7 @@ import icu.windea.pls.cwt.navigation.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
@@ -23,7 +24,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtRootBlock): String {
-        return PlsConstants.Strings.blockFolder
+        return PlsStringConstants.blockFolder
     }
 
     @JvmStatic
@@ -281,7 +282,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: CwtBlock): String {
-        return PlsConstants.Strings.blockFolder
+        return PlsStringConstants.blockFolder
     }
 
     @JvmStatic

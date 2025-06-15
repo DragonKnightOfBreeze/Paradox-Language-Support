@@ -12,6 +12,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderer.*
+import icu.windea.pls.model.constants.PlsSettingConstants
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
@@ -22,8 +23,8 @@ import javax.swing.*
  */
 class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
-        var textLengthLimit: Int = PlsConstants.Settings.textLengthLimit,
-        var iconHeightLimit: Int = PlsConstants.Settings.iconHeightLimit,
+        var textLengthLimit: Int = PlsSettingConstants.textLengthLimit,
+        var iconHeightLimit: Int = PlsSettingConstants.iconHeightLimit,
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxDefinitionReferenceLocalizedNameHintsSettingsKey")

@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.lookup.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.config.config.*
@@ -10,7 +9,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.model.*
-import javax.swing.*
 
 object PlsProcessingContextKeys : KeyRegistry()
 
@@ -41,15 +39,3 @@ var ProcessingContext.dataSourceNodeToCheck: ParadoxComplexExpressionNode? by cr
 var ProcessingContext.contextKey: String? by createKey(PlsProcessingContextKeys)
 var ProcessingContext.argumentNames: MutableSet<String>? by createKey(PlsProcessingContextKeys)
 var ProcessingContext.node: ParadoxComplexExpressionNode? by createKey(PlsProcessingContextKeys)
-
-object PlsLookupElementKeys : KeyRegistry()
-
-var LookupElement.completionId: String? by createKey(PlsLookupElementKeys)
-var LookupElement.extraLookupElements: List<LookupElement>? by createKey(PlsLookupElementKeys)
-
-var LookupElement.priority: Double? by createKey(PlsLookupElementKeys)
-var LookupElement.patchableIcon: Icon? by createKey(PlsLookupElementKeys)
-var LookupElement.patchableTailText: String? by createKey(PlsLookupElementKeys)
-var LookupElement.localizedNames: Set<String>? by createKey(PlsLookupElementKeys)
-var LookupElement.scopeMatched: Boolean by createKey(PlsLookupElementKeys) { true }
-var LookupElement.forceInsertCurlyBraces: Boolean by createKey(PlsLookupElementKeys) { false }

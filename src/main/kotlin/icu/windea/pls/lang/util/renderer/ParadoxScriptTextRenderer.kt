@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.util.renderer
 
-import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.*
 
 object ParadoxScriptTextRenderer {
@@ -15,13 +15,13 @@ object ParadoxScriptTextRenderer {
 
     fun renderTo(element: ParadoxScriptProperty, builder: StringBuilder, renderInBlock: Boolean = false, conditional: Boolean = false, inline: Boolean = false) {
         val propertyKey = element.propertyKey
-        builder.append(propertyKey.value()?.quoteIfNecessary() ?: PlsConstants.Strings.unresolved)
+        builder.append(propertyKey.value()?.quoteIfNecessary() ?: PlsStringConstants.unresolved)
         builder.append(" = ")
         val propertyValue = element.propertyValue
         if (propertyValue != null) {
             renderTo(propertyValue, builder, renderInBlock, conditional, inline)
         } else {
-            builder.append(PlsConstants.Strings.unresolved)
+            builder.append(PlsStringConstants.unresolved)
         }
     }
 
@@ -40,7 +40,7 @@ object ParadoxScriptTextRenderer {
                 }
                 builder.append("}")
             }
-            else -> builder.append(element.value()?.quoteIfNecessary() ?: PlsConstants.Strings.unresolved)
+            else -> builder.append(element.value()?.quoteIfNecessary() ?: PlsStringConstants.unresolved)
         }
     }
 }

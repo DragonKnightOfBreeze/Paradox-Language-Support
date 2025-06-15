@@ -11,14 +11,15 @@ import icu.windea.pls.lang.editor.folding.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.model.constants.PlsStringConstants
 
 class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
             PARAMETER -> ""
             ICON -> ""
-            COMMAND -> PlsConstants.Strings.commandFolder
-            CONCEPT_COMMAND -> PlsConstants.Strings.conceptCommandFolder
+            COMMAND -> PlsStringConstants.commandFolder
+            CONCEPT_COMMAND -> PlsStringConstants.conceptCommandFolder
             CONCEPT_TEXT -> "..."
             else -> null
         }
@@ -62,15 +63,15 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
                 }
                 COMMAND -> {
                     if (!settings.localisationCommands) return@run
-                    descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.commandFolder))
+                    descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsStringConstants.commandFolder))
                 }
                 CONCEPT_COMMAND -> {
                     if (!settings.localisationConceptCommands) return@run
                     val conceptTextNode = node.findChildByType(CONCEPT_TEXT)
                     if (conceptTextNode == null) {
-                        descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.conceptCommandFolder))
+                        descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsStringConstants.conceptCommandFolder))
                     } else {
-                        descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsConstants.Strings.conceptCommandWithTextFolder))
+                        descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsStringConstants.conceptCommandWithTextFolder))
                     }
                 }
                 CONCEPT_NAME -> {

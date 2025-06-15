@@ -223,7 +223,7 @@ private fun DocumentationBuilder.buildParameterDefinition(element: ParadoxParame
         val r = ParadoxParameterSupport.getDocumentationDefinition(element, this)
         if (!r) {
             //显示默认的快速文档
-            append(PlsConstants.Strings.parameterPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+            append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         }
     }
 }
@@ -234,7 +234,7 @@ private fun DocumentationBuilder.buildLocalisationParameterDefinition(element: P
         val r = ParadoxLocalisationParameterSupport.getDocumentationDefinition(element, this)
         if (!r) {
             //显示默认的快速文档
-            append(PlsConstants.Strings.parameterPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+            append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         }
     }
 }
@@ -245,7 +245,7 @@ private fun DocumentationBuilder.buildComplexEnumValueDefinition(element: Parado
         val enumName = element.enumName
         val gameType = element.gameType
         val configGroup = PlsFacade.getConfigGroup(element.project, gameType)
-        append(PlsConstants.Strings.complexEnumValuePrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsStringConstants.complexEnumValuePrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         val complexEnumConfig = configGroup.complexEnums[enumName]
         if (complexEnumConfig != null) {
             val typeLink = "${gameType.prefix}complex_enums/${enumName}"
@@ -271,7 +271,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForComplexEnumValue(elem
     run {
         if (nameLocalisation == null) return@run
         appendBr()
-        append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ")
+        append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
         append("name = ").appendLocalisationLink(gameType, nameLocalisation.name, element)
     }
     run rs@{
@@ -291,7 +291,7 @@ private fun DocumentationBuilder.buildDynamicValueDefinition(element: ParadoxDyn
     val gameType = element.gameType
     val configGroup = PlsFacade.getConfigGroup(element.project, gameType)
     definition {
-        append(PlsConstants.Strings.dynamicValuePrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsStringConstants.dynamicValuePrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         append(": ")
         var appendSeparator = false
         for (dynamicValueType in dynamicValueTypes) {
@@ -322,7 +322,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForDynamicValue(element:
     run {
         if (nameLocalisation == null) return@run
         appendBr()
-        append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ")
+        append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
         append("name = ").appendLocalisationLink(gameType, nameLocalisation.name, element)
     }
     run rs@{
@@ -342,7 +342,7 @@ private fun DocumentationBuilder.buildModifierDefinition(element: ParadoxModifie
         val r = ParadoxModifierSupport.getDocumentationDefinition(element, this)
         if (!r) {
             //显示默认的快速文档
-            append(PlsConstants.Strings.modifierPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+            append(PlsStringConstants.modifierPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         }
 
         val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
@@ -381,13 +381,13 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: Parado
     run {
         if (nameLocalisation == null) return@run
         appendBr()
-        append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ")
+        append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
         append("name = ").appendLocalisationLink(gameType, nameLocalisation.name, element)
     }
     run {
         if (descLocalisation == null) return@run
         appendBr()
-        append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ")
+        append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
         append("desc = ").appendLocalisationLink(gameType, descLocalisation.name, element)
     }
     run rs@{
@@ -422,7 +422,7 @@ private fun DocumentationBuilder.addModifierIcon(element: ParadoxModifierElement
         if (iconFile == null) return@run
         val iconPath = iconFile.fileInfo?.path?.path ?: return@run
         appendBr()
-        append(PlsConstants.Strings.relatedImagePrefix).append(" ")
+        append(PlsStringConstants.relatedImagePrefix).append(" ")
         append("icon = ").appendFilePathLink(gameType, iconPath, iconPath, element)
     }
     run rs@{
@@ -476,7 +476,7 @@ private fun DocumentationBuilder.buildScriptedVariableDefinition(element: Parado
         //加上文件信息
         appendFileInfoHeader(element)
         //加上定义信息
-        append(PlsConstants.Strings.scriptedVariablePrefix).append(" <b>@").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsStringConstants.scriptedVariablePrefix).append(" <b>@").append(name.escapeXml().orAnonymous()).append("</b>")
         val valueElement = element.scriptedVariableValue
         when (valueElement) {
             is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
@@ -497,7 +497,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForScriptedVariable(elem
     run {
         if (nameLocalisation == null) return@run
         appendBr()
-        append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ")
+        append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
         append("name = ").appendLocalisationLink(gameType, nameLocalisation.name, element)
     }
     run rs@{
@@ -516,7 +516,7 @@ private fun DocumentationBuilder.buildPropertyDefinition(element: ParadoxScriptP
         //加上文件信息
         appendFileInfoHeader(element)
         //加上定义信息
-        append(PlsConstants.Strings.propertyPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsStringConstants.propertyPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         val valueElement = element.propertyValue
         when (valueElement) {
             is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
@@ -566,7 +566,7 @@ private fun DocumentationBuilder.buildDefinitionDefinition(element: ParadoxScrip
 
 private fun DocumentationBuilder.addDefinitionInfo(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, usePrefix: String? = null) {
     val gameType = definitionInfo.gameType
-    val prefix = usePrefix ?: PlsConstants.Strings.definitionPrefix
+    val prefix = usePrefix ?: PlsStringConstants.definitionPrefix
     append(prefix).append(" ")
     val name = definitionInfo.name
     if (usePrefix == null) {
@@ -634,7 +634,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: P
     }
     for ((key, value) in map) {
         appendBr()
-        append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ")
+        append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
         append(key).append(" = ").append(value)
     }
 }
@@ -684,7 +684,7 @@ private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxS
     }
     for ((key, value) in map) {
         appendBr()
-        append(PlsConstants.Strings.relatedImagePrefix).append(" ")
+        append(PlsStringConstants.relatedImagePrefix).append(" ")
         append(key).append(" = ").append(value)
     }
 }
@@ -764,13 +764,13 @@ private fun DocumentationBuilder.addEventTypeForOnAction(element: ParadoxScriptP
     val eventType = config.eventType
     appendBr()
     val typeLink = "${gameType.prefix}types/event/$eventType"
-    append(PlsConstants.Strings.eventTypePrefix).append(" ").appendCwtConfigLink(typeLink, eventType)
+    append(PlsStringConstants.eventTypePrefix).append(" ").appendCwtConfigLink(typeLink, eventType)
 }
 
 private fun DocumentationBuilder.buildLocalisationLocaleDefinition(name: String) {
     definition {
         //加上元素定义信息
-        append(PlsConstants.Strings.localePrefix).append(" <b>").append(name).append("</b>")
+        append(PlsStringConstants.localePrefix).append(" <b>").append(name).append("</b>")
     }
 }
 
@@ -779,7 +779,7 @@ private fun DocumentationBuilder.buildLocalisationPropertyDefinition(element: Pa
         //加上文件信息
         appendFileInfoHeader(element)
         //加上元素定义信息
-        append(PlsConstants.Strings.localisationPropertyPrefix).append(" <b>").append(element.name).append("</b>")
+        append(PlsStringConstants.localisationPropertyPrefix).append(" <b>").append(element.name).append("</b>")
     }
 }
 
@@ -798,8 +798,8 @@ private fun DocumentationBuilder.buildLocalisationDefinition(element: ParadoxLoc
 
 private fun DocumentationBuilder.addLocalisationInfo(localisationInfo: ParadoxLocalisationInfo) {
     val prefix = when (localisationInfo.category) {
-        ParadoxLocalisationCategory.Localisation -> PlsConstants.Strings.localisationPrefix
-        ParadoxLocalisationCategory.SyncedLocalisation -> PlsConstants.Strings.localisationSyncedPrefix
+        ParadoxLocalisationCategory.Localisation -> PlsStringConstants.localisationPrefix
+        ParadoxLocalisationCategory.SyncedLocalisation -> PlsStringConstants.localisationSyncedPrefix
     }
     append(prefix).append(" ")
     append("<b>").append(localisationInfo.name.orUnresolved()).append("</b>")
@@ -811,7 +811,7 @@ private fun DocumentationBuilder.addRelatedDefinitionsForLocalisation(element: P
     for (relatedDefinition in relatedDefinitions) {
         val relatedDefinitionInfo = relatedDefinition.definitionInfo ?: continue
         appendBr()
-        addDefinitionInfo(relatedDefinition, relatedDefinitionInfo, usePrefix = PlsConstants.Strings.relatedDefinitionPrefix)
+        addDefinitionInfo(relatedDefinition, relatedDefinitionInfo, usePrefix = PlsStringConstants.relatedDefinitionPrefix)
     }
 }
 
@@ -843,14 +843,14 @@ private fun DocumentationBuilder.buildLocalisationSections(element: ParadoxLocal
 private fun DocumentationBuilder.buildLocalisationIconDefinition(name: String) {
     definition {
         //加上元素定义信息
-        append(PlsConstants.Strings.localisationIconPrefix).append(" <b>").append(name).append("</b>")
+        append(PlsStringConstants.localisationIconPrefix).append(" <b>").append(name).append("</b>")
     }
 }
 
 private fun DocumentationBuilder.buildLocalisationColorDefinition(name: String) {
     definition {
         //加上元素定义信息
-        append(PlsConstants.Strings.localisationColorPrefix).append(" <b>").append(name).append("</b>")
+        append(PlsStringConstants.localisationColorPrefix).append(" <b>").append(name).append("</b>")
     }
 }
 

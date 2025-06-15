@@ -11,6 +11,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.*
 
 /**
@@ -25,7 +26,7 @@ class ParadoxScriptedVariableLineMarkerProvider : RelatedItemLineMarkerProvider(
         //何时显示装订线图标：element是scriptedVariable
         if (element !is ParadoxScriptScriptedVariable) return
         val locationElement = element.scriptedVariableName.idElement ?: return
-        val prefix = PlsConstants.Strings.scriptedVariablePrefix
+        val prefix = PlsStringConstants.scriptedVariablePrefix
         val name = element.name ?: return
         val icon = PlsIcons.Gutter.ScriptedVariable
         val tooltip = "$prefix <b>@${name.escapeXml().orAnonymous()}</b>"

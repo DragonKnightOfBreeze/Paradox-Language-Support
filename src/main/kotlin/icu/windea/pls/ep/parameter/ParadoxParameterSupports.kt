@@ -21,6 +21,7 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.psi.*
 
@@ -209,7 +210,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
 
         //加上名字
         val name = parameterElement.name
-        append(PlsConstants.Strings.parameterPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上推断得到的类型信息
         val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
         if (inferredType != null) {
@@ -538,7 +539,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
 
         //加上名字
         val name = parameterElement.name
-        append(PlsConstants.Strings.parameterPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
         //加上推断得到的类型信息
         val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
         if (inferredType != null) {

@@ -14,17 +14,17 @@ import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationIconHintsProvider.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsSettingConstants
 import icu.windea.pls.script.psi.*
 import javax.imageio.*
 import javax.swing.*
-import kotlin.io.path.*
 
 /**
  * 本地化图标的内嵌提示（显示选用的图标，如果大小合适且存在，只是显示图标而已）。
  */
 class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Settings>() {
     data class Settings(
-        var iconHeightLimit: Int = PlsConstants.Settings.iconHeightLimit
+        var iconHeightLimit: Int = PlsSettingConstants.iconHeightLimit
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationIconHintsSettingsKey")

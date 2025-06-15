@@ -4,6 +4,7 @@ package icu.windea.pls.core
 
 import com.google.common.cache.*
 import com.intellij.openapi.util.text.*
+import icu.windea.pls.*
 import icu.windea.pls.core.console.*
 import icu.windea.pls.core.util.*
 import java.io.*
@@ -569,7 +570,7 @@ fun String.toPathOrNull() = runCatchingCancelable { Path.of(this) }.getOrNull()
 
 fun String.toFileUrl() = File(this).toURI().toURL()
 
-fun String.toClasspathUrl(locationClass: Class<*>) = locationClass.getResource(this)!!
+fun String.toClasspathUrl(locationClass: Class<*> = PlsFacade::class.java) = locationClass.getResource(this)!!
 
 fun String.toClass() = Class.forName(this)
 

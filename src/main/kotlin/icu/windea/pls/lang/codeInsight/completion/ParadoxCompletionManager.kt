@@ -81,7 +81,7 @@ object ParadoxCompletionManager {
     }
 
     fun addRootKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
-        val elementPath = ParadoxExpressionPathManager.get(memberElement, PlsConstants.Settings.maxDefinitionDepth) ?: return
+        val elementPath = ParadoxExpressionPathManager.get(memberElement, PlsSettingConstants.maxDefinitionDepth) ?: return
         if (elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
         val rootKeyPrefix = lazy { context.contextElement?.let { ParadoxExpressionPathManager.getKeyPrefixes(it).firstOrNull() } }
         context.isKey = true
@@ -413,7 +413,7 @@ object ParadoxCompletionManager {
         val keyword = context.keyword
 
         //优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
-        if (keyword.isNotEmpty() && !PlsConstants.Patterns.localisationPropertyName.matches(keyword)) return
+        if (keyword.isNotEmpty() && !PlsPatternConstants.localisationPropertyName.matches(keyword)) return
 
         //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
@@ -448,7 +448,7 @@ object ParadoxCompletionManager {
         val keyword = context.keyword
 
         //优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
-        if (keyword.isNotEmpty() && !PlsConstants.Patterns.localisationPropertyName.matches(keyword)) return
+        if (keyword.isNotEmpty() && !PlsPatternConstants.localisationPropertyName.matches(keyword)) return
 
         //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))

@@ -10,19 +10,20 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.editor.folding.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
-            BLOCK -> PlsConstants.Strings.blockFolder
+            BLOCK -> PlsStringConstants.blockFolder
             PARAMETER_CONDITION -> {
                 val expression = node.psi.castOrNull<ParadoxScriptParameterCondition>()?.conditionExpression
                 if (expression == null) return "..."
-                PlsConstants.Strings.parameterConditionFolder(expression)
+                PlsStringConstants.parameterConditionFolder(expression)
             }
-            INLINE_MATH -> PlsConstants.Strings.inlineMathFolder
+            INLINE_MATH -> PlsStringConstants.inlineMathFolder
             else -> null
         }
     }

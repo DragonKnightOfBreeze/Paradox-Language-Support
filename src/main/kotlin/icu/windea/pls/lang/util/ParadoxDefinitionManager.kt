@@ -21,6 +21,8 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.PlsSettingConstants
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -65,7 +67,7 @@ object ParadoxDefinitionManager {
         val path = fileInfo.path
         val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
         val configGroup = PlsFacade.getConfigGroup(project, gameType) //这里需要指定project
-        val elementPath = ParadoxExpressionPathManager.get(element, PlsConstants.Settings.maxDefinitionDepth) ?: return null
+        val elementPath = ParadoxExpressionPathManager.get(element, PlsSettingConstants.maxDefinitionDepth) ?: return null
         if (elementPath.path.isParameterized()) return null //忽略表达式路径带参数的情况
         val rootKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxExpressionPathManager.getKeyPrefixes(element).firstOrNull() } else null
         val typeConfig = getMatchedTypeConfig(element, configGroup, path, elementPath, rootKey, rootKeyPrefix)
@@ -525,7 +527,7 @@ object ParadoxDefinitionManager {
         val gameType = selectGameType(vFile) ?: return null
         val path = fileInfo.path
         val configGroup = PlsFacade.getConfigGroup(project, gameType) //这里需要指定project
-        val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile, PlsConstants.Settings.maxDefinitionDepth)
+        val elementPath = ParadoxExpressionPathManager.get(node, tree, vFile, PlsSettingConstants.maxDefinitionDepth)
         if (elementPath == null) return null
         val rootKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(node, tree).firstOrNull() }
         val typeConfig = getMatchedTypeConfig(node, tree, configGroup, path, elementPath, rootKey, rootKeyPrefix)

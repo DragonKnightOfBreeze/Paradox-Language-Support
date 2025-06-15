@@ -9,6 +9,7 @@ import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.settings.PlsStrategies.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsConstants
 
 /**
  * PLS设置。可以在插件的对应设置页面中进行配置。

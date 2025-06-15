@@ -6,12 +6,13 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettings as Settings
 
 class CwtLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     override fun getLanguage() = CwtLanguage
 
-    override fun getCodeSample(settingsType: SettingsType) = PlsConstants.Samples.cwtCodeStyleSettings
+    override fun getCodeSample(settingsType: SettingsType) = PlsStringConstants.cwtCodeStyleSettingsSample
 
     override fun createCustomSettings(settings: CodeStyleSettings) = Settings(settings)
 

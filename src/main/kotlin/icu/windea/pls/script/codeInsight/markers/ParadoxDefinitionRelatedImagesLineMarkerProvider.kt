@@ -11,6 +11,7 @@ import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.*
 
 /**
@@ -30,7 +31,7 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : RelatedItemLineMarkerPr
         if (imageInfos.isEmpty()) return
         //显示在提示中 & 可导航：去重后的一组DDS文件的filePath，或者sprite的definitionKey，不包括没有对应的图片的项，按解析顺序排序
         val icon = PlsIcons.Gutter.RelatedImages
-        val prefix = PlsConstants.Strings.relatedImagePrefix
+        val prefix = PlsStringConstants.relatedImagePrefix
         val tooltipLines = mutableSetOf<String>()
         val keys = mutableSetOf<String>()
         val targets = mutableSetOf<PsiElement>() //这里需要考虑基于引用相等去重

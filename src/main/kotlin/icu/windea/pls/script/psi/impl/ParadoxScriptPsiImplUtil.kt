@@ -18,6 +18,7 @@ import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.navigation.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
@@ -30,7 +31,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptRootBlock): String {
-        return PlsConstants.Strings.blockFolder
+        return PlsStringConstants.blockFolder
     }
 
     @JvmStatic
@@ -417,7 +418,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptBlock): String {
-        return PlsConstants.Strings.blockFolder
+        return PlsStringConstants.blockFolder
     }
 
     @JvmStatic
@@ -564,7 +565,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentationText(element: ParadoxScriptParameterCondition): String? {
-        return element.conditionExpression?.let { PlsConstants.Strings.parameterConditionFolder(it) }
+        return element.conditionExpression?.let { PlsStringConstants.parameterConditionFolder(it) }
     }
 
     //endregion
@@ -600,7 +601,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentationText(element: ParadoxScriptInlineParameterCondition): String? {
-        return element.conditionExpression?.let { PlsConstants.Strings.parameterConditionFolder(it) }
+        return element.conditionExpression?.let { PlsStringConstants.parameterConditionFolder(it) }
     }
 
     //endregion
@@ -650,7 +651,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getValue(element: ParadoxScriptInlineMath): String {
-        return PlsConstants.Strings.inlineMathFolder
+        return PlsStringConstants.inlineMathFolder
     }
 
     //endregion
@@ -846,11 +847,11 @@ object ParadoxScriptPsiImplUtil {
         return when (element) {
             is ParadoxScriptProperty -> {
                 val keyExpression = element.propertyKey.expression
-                val valueExpression = element.propertyValue?.expression ?: PlsConstants.Strings.unresolved
+                val valueExpression = element.propertyValue?.expression ?: PlsStringConstants.unresolved
                 "$keyExpression = $valueExpression"
             }
-            is ParadoxScriptBlock -> PlsConstants.Strings.blockFolder
-            is ParadoxScriptInlineMath -> PlsConstants.Strings.inlineMathFolder
+            is ParadoxScriptBlock -> PlsStringConstants.blockFolder
+            is ParadoxScriptInlineMath -> PlsStringConstants.inlineMathFolder
             else -> element.text
         }
     }

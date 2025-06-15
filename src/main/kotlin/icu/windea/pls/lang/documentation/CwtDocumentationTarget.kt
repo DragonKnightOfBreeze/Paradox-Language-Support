@@ -27,6 +27,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 
@@ -135,10 +136,10 @@ private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiEle
         val prefix = when {
             referenceElement != null && tagName != null -> "(${tagName.id})" //处理特殊标签
             configType?.isReference == true -> configType.prefix
-            referenceElement is ParadoxScriptPropertyKey -> PlsConstants.Strings.definitionPropertyPrefix
-            referenceElement is ParadoxScriptValue -> PlsConstants.Strings.definitionValuePrefix
-            element is CwtMemberConfigElement && element.config is CwtPropertyConfig -> PlsConstants.Strings.definitionPropertyPrefix
-            element is CwtMemberConfigElement && element.config is CwtValueConfig -> PlsConstants.Strings.definitionValuePrefix
+            referenceElement is ParadoxScriptPropertyKey -> PlsStringConstants.definitionPropertyPrefix
+            referenceElement is ParadoxScriptValue -> PlsStringConstants.definitionValuePrefix
+            element is CwtMemberConfigElement && element.config is CwtPropertyConfig -> PlsStringConstants.definitionPropertyPrefix
+            element is CwtMemberConfigElement && element.config is CwtValueConfig -> PlsStringConstants.definitionValuePrefix
             else -> configType?.prefix
         }
         val typeCategory = configType?.category
@@ -210,13 +211,13 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
     run {
         if (nameLocalisation == null) return@run
         appendBr()
-        append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ")
+        append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
         append("name = ").appendLocalisationLink(gameType, nameLocalisation.name, contextElement)
     }
     run {
         if (descLocalisation == null) return@run
         appendBr()
-        append(PlsConstants.Strings.relatedLocalisationPrefix).append(" ")
+        append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
         append("desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement)
     }
     run rs@{
@@ -252,7 +253,7 @@ private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceE
         if (iconFile == null) return@run
         val iconPath = iconFile.fileInfo?.path?.path ?: return@run
         appendBr()
-        append(PlsConstants.Strings.relatedImagePrefix).append(" ")
+        append(PlsStringConstants.relatedImagePrefix).append(" ")
         append("icon = ").appendFilePathLink(gameType, iconPath, iconPath, contextElement)
     }
     run rs@{

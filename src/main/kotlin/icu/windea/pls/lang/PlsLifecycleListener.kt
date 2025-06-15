@@ -14,6 +14,9 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.dds.support.*
+import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.PlsPathConstants
+import icu.windea.pls.model.constants.PlsSettingConstants
 import kotlinx.coroutines.*
 import javax.imageio.spi.*
 
@@ -42,10 +45,10 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     private fun handlePaths() {
         val coroutineScope = PlsFacade.getCoroutineScope()
         coroutineScope.launch {
-            PlsConstants.Paths.data
-            PlsConstants.Paths.images
-            PlsConstants.Paths.imagesTemp
-            writeAction { runCatchingCancelable { PlsConstants.Paths.texconvExeFile } }
+            PlsPathConstants.data
+            PlsPathConstants.images
+            PlsPathConstants.imagesTemp
+            writeAction { runCatchingCancelable { PlsPathConstants.texconvExeFile } }
         }
     }
 
@@ -82,7 +85,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     }
 
     @Suppress("KotlinConstantConditions")
-    private val refreshOnProjectStartup = PlsConstants.Settings.refreshOnProjectStartup
+    private val refreshOnProjectStartup = PlsSettingConstants.refreshOnProjectStartup
     private val refreshedProjectIdsKey = createKey<MutableSet<String>>("pls.refreshedProjectIds")
     private val refreshedProjectIds by lazy { ApplicationManager.getApplication().getOrPutUserData(refreshedProjectIdsKey) { mutableSetOf() } }
 

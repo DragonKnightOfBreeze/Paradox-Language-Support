@@ -11,6 +11,7 @@ import com.intellij.openapi.vfs.encoding.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.constants.PlsConstants
 import java.nio.charset.*
 
 class ChangeFileEncodingFix(

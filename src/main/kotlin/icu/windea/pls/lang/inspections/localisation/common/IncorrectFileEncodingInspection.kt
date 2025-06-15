@@ -7,6 +7,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.constants.PlsConstants
 
 //com.intellij.openapi.editor.actions.AddBomAction
 //com.intellij.openapi.editor.actions.RemoveBomAction

@@ -11,6 +11,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsConstants
 
 @WithGameType(ParadoxGameType.Vic3)
 @Service(Service.Level.PROJECT)

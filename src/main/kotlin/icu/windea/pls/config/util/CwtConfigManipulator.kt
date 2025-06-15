@@ -1,6 +1,5 @@
 package icu.windea.pls.config.util
 
-import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configContext.*
@@ -12,6 +11,7 @@ import icu.windea.pls.ep.config.*
 import icu.windea.pls.ep.dataExpression.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsStringConstants
 
 object CwtConfigManipulator {
     //region Core Methods
@@ -136,7 +136,7 @@ object CwtConfigManipulator {
         return CwtValueConfig.resolve(
             pointer = emptyPointer(),
             configGroup = configGroup,
-            value = PlsConstants.Strings.blockFolder,
+            value = PlsStringConstants.blockFolder,
             valueType = CwtType.Block,
             configs = configs,
             optionConfigs = config?.optionConfigs

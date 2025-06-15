@@ -14,6 +14,7 @@ import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.*
 
 /**
@@ -33,7 +34,7 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
         if (localisationInfos.isEmpty()) return
         //显示在提示中 & 可导航：去重后的一组本地化的键名，不包括没有对应的本地化的项，按解析顺序排序
         val icon = PlsIcons.Gutter.RelatedLocalisations
-        val prefix = PlsConstants.Strings.relatedLocalisationPrefix
+        val prefix = PlsStringConstants.relatedLocalisationPrefix
         val tooltipLines = mutableSetOf<String>()
         val keys = mutableSetOf<String>()
         val targets = mutableSetOf<ParadoxLocalisationProperty>() //这里需要考虑基于引用相等去重

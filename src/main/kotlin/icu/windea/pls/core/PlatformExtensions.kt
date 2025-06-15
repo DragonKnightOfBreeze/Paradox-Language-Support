@@ -38,6 +38,7 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.model.constants.PlsConstants
 import it.unimi.dsi.fastutil.Hash
 import it.unimi.dsi.fastutil.objects.*
 import java.io.*

@@ -6,6 +6,7 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.constants.PlsConstants
 
 /**
  * PLS AI设置。可以在插件的对应设置页面中进行配置。

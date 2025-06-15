@@ -11,6 +11,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.*
 
 /**
@@ -27,7 +28,7 @@ class ParadoxDefinitionLineMarkerProvider : RelatedItemLineMarkerProvider() {
         val locationElement = element.propertyKey.idElement ?: return
         val definitionInfo = element.definitionInfo ?: return
         val icon = PlsIcons.Gutter.Definition
-        val prefix = PlsConstants.Strings.definitionPrefix
+        val prefix = PlsStringConstants.definitionPrefix
         val name = definitionInfo.name
         val typeText = definitionInfo.typesText
         val tooltip = "<b>$prefix ${name.escapeXml().orAnonymous()}</b>: $typeText"

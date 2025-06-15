@@ -4,6 +4,7 @@ import com.intellij.openapi.diagnostic.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.model.constants.PlsPathConstants
 import org.apache.commons.io.file.*
 import java.nio.file.*
 import java.util.*
@@ -65,7 +66,7 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
         val magickPath = PlsFacade.getIntegrationsSettings().image.magickPath?.trim()!!
 
-        val tempParentPath = PlsConstants.Paths.imagesTemp
+        val tempParentPath = PlsPathConstants.imagesTemp
         val outputDirectoryPath = tempParentPath.resolve(UUID.randomUUID().toString())
         outputDirectoryPath.createDirectories()
         val outputFileName = targetFileName ?: (path.nameWithoutExtension + "." + targetFormat)

@@ -4,6 +4,7 @@ import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.options.colors.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.editor.*
 
 class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
@@ -71,5 +72,5 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
 
     override fun getDisplayName() = PlsBundle.message("language.name.localisation")
 
-    override fun getDemoText() = PlsConstants.Samples.paradoxLocalisationColorSettings
+    override fun getDemoText() = PlsStringConstants.paradoxLocalisationColorSettingsSample
 }

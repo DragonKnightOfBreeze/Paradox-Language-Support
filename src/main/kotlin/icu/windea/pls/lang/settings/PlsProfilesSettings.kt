@@ -5,6 +5,7 @@ import com.intellij.util.xmlb.annotations.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsConstants
 
 /**
  * PLS资料配置。

@@ -8,6 +8,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.constants.PlsStringConstants
 
 //com.intellij.lang.properties.codeInspection.PropertiesInspectionSuppressor
 //org.intellij.grammar.inspection.BnfInspectionSuppressor
@@ -54,7 +55,7 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
             if (container is PsiFile) {
-                val text = PlsConstants.Strings.suppressInspectionsTagName + " " + myID
+                val text = PlsStringConstants.suppressInspectionsTagName + " " + myID
                 val comment = SuppressionUtil.createComment(project, text, ParadoxLocalisationLanguage)
                 container.addAfter(comment, null)
             }

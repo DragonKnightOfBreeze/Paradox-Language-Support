@@ -121,6 +121,10 @@
     <iconMapper mappingFile="PlsIconMappings.json"/>
   </extensions>
 
+  <extensions defaultExtensionNs="com.intellij">
+
+  </extensions>
+
   <extensions defaultExtensionNs="icu.windea.pls.search">
     <localScriptedVariableSearch implementation="icu.windea.pls.lang.search.ParadoxLocalScriptedVariableSearcher"/>
     <globalScriptedVariableSearch implementation="icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearcher"/>

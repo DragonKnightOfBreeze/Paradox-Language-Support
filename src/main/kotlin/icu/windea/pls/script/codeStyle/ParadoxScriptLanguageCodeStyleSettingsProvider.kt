@@ -5,13 +5,14 @@ import com.intellij.psi.codeStyle.*
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.*
 import icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettings as Settings
 
 class ParadoxScriptLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
     override fun getLanguage() = ParadoxScriptLanguage
 
-    override fun getCodeSample(settingsType: SettingsType) = PlsConstants.Samples.paradoxScriptCodeStyleSettings
+    override fun getCodeSample(settingsType: SettingsType) = PlsStringConstants.paradoxScriptCodeStyleSettingsSample
 
     override fun createCustomSettings(settings: CodeStyleSettings) = Settings(settings)
 

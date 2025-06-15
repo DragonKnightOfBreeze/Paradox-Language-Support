@@ -16,7 +16,7 @@ import com.intellij.ui.dsl.builder.MutableProperty
 import com.intellij.ui.dsl.gridLayout.*
 import com.intellij.util.*
 import com.intellij.util.ui.*
-import icu.windea.pls.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.util.*
 import java.awt.*
 import java.awt.image.*
@@ -26,9 +26,9 @@ import javax.swing.text.*
 import kotlin.properties.*
 import kotlin.reflect.*
 
-fun String.toIconOrNull(): Icon? {
+fun String.toIconOrNull(locationClass: Class<*> = PlsFacade::class.java): Icon? {
     //注意这里需要使用反射路径（如，Icons.Test）或者文件URL（而非文件路径）
-    return IconLoader.findIcon(this, PlsConstants.locationClass)
+    return IconLoader.findIcon(this, locationClass)
 }
 
 fun URL.toIconOrNull(): Icon? {

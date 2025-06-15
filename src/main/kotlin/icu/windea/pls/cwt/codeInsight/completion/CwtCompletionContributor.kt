@@ -5,6 +5,7 @@ import com.intellij.patterns.PlatformPatterns.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.model.constants.PlsConstants
 
 class CwtCompletionContributor : CompletionContributor() {
     init {

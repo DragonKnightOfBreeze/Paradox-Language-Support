@@ -10,6 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.refactoring.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.constants.PlsSettingConstants
 import icu.windea.pls.script.psi.*
 
 /**
@@ -34,7 +35,7 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
 
         //打开对话框
         val scriptedVariablesDirectory = ParadoxFilePathManager.getScriptedVariablesDirectory(virtualFile) ?: return true //不期望的结果
-        val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, PlsConstants.Settings.defaultScriptedVariableName)
+        val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, PlsSettingConstants.defaultScriptedVariableName)
         if (!dialog.showAndGet()) return true //取消
 
         val variableName = dialog.variableName

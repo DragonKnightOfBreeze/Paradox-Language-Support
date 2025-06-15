@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.expression
 
 import com.intellij.util.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.psi.*
 import java.util.*
 
@@ -27,8 +27,8 @@ interface ParadoxScriptExpression {
     fun matchesConstant(v: String): Boolean
 
     companion object Resolver {
-        val BlockExpression: ParadoxScriptExpression = Impl(PlsConstants.Strings.blockFolder, ParadoxType.Block, false, false)
-        val UnknownExpression: ParadoxScriptExpression = Impl(PlsConstants.Strings.unknown, ParadoxType.Unknown, false, false)
+        val BlockExpression: ParadoxScriptExpression = Impl(PlsStringConstants.blockFolder, ParadoxType.Block, false, false)
+        val UnknownExpression: ParadoxScriptExpression = Impl(PlsStringConstants.unknown, ParadoxType.Unknown, false, false)
 
         fun resolve(value: String, quoted: Boolean, isKey: Boolean? = null): ParadoxScriptExpression {
             return Impl(value, ParadoxTypeManager.resolve(value), quoted, isKey)
@@ -40,7 +40,7 @@ interface ParadoxScriptExpression {
 
         fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): ParadoxScriptExpression {
             return when {
-                element is ParadoxScriptBlock -> Impl(PlsConstants.Strings.blockFolder, ParadoxType.Block, false, false)
+                element is ParadoxScriptBlock -> Impl(PlsStringConstants.blockFolder, ParadoxType.Block, false, false)
                 element is ParadoxScriptScriptedVariableReference -> LazyImpl(element, matchOptions, false)
                 else -> Impl(element.value, element.type, element.text.isLeftQuoted(), element is ParadoxScriptPropertyKey)
             }
@@ -101,7 +101,7 @@ interface ParadoxScriptExpression {
             }
         }
 
-        override val value get() = valueElement?.value ?: PlsConstants.Strings.unknown
+        override val value get() = valueElement?.value ?: PlsStringConstants.unknown
         override val type get() = valueElement?.type ?: ParadoxType.Unknown
         override val quoted get() = valueElement?.text?.isLeftQuoted() ?: false
     }

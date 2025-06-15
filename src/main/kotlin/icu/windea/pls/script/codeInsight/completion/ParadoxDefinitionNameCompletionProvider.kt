@@ -14,6 +14,7 @@ import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.constants.PlsSettingConstants
 import icu.windea.pls.script.psi.*
 
 /**
@@ -52,7 +53,7 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
             element is ParadoxScriptPropertyKey || (element is ParadoxScriptString && element.isBlockMember()) -> {
                 val fileInfo = file.fileInfo ?: return
                 val path = fileInfo.path
-                val elementPath = ParadoxExpressionPathManager.get(element, PlsConstants.Settings.maxDefinitionDepth) ?: return
+                val elementPath = ParadoxExpressionPathManager.get(element, PlsSettingConstants.maxDefinitionDepth) ?: return
                 if (elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
                 val rootKeyPrefix = lazy { ParadoxExpressionPathManager.getKeyPrefixes(element).firstOrNull() }
                 for (typeConfig in configGroup.types.values) {

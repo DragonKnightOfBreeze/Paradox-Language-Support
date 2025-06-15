@@ -6,14 +6,14 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import icu.windea.pls.model.constants.PlsStringConstants
 
 class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
-            BLOCK -> PlsConstants.Strings.blockFolder
+            BLOCK -> PlsStringConstants.blockFolder
             else -> null
         }
     }

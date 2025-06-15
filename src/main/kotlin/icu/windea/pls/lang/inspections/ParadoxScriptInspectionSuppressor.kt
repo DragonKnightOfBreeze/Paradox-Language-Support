@@ -9,6 +9,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsStringConstants
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
@@ -68,7 +69,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
             if (container is PsiFile) {
-                val text = PlsConstants.Strings.suppressInspectionsTagName + " " + myID
+                val text = PlsStringConstants.suppressInspectionsTagName + " " + myID
                 val comment = SuppressionUtil.createComment(project, text, ParadoxScriptLanguage)
                 container.addAfter(comment, null)
             }

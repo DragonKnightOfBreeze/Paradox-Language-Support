@@ -1,9 +1,9 @@
 package icu.windea.pls.integrations.image.tools
 
 import com.intellij.openapi.diagnostic.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.model.constants.PlsPathConstants
 import org.apache.commons.io.file.*
 import java.nio.file.*
 import java.util.*
@@ -14,8 +14,8 @@ import kotlin.io.path.*
  */
 @WithOS(OS.Windows)
 class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
-    private val texconvExe by lazy { PlsConstants.Paths.texconvExeFile }
-    private val texconvExeWd by lazy { PlsConstants.Paths.texconvExe.parent?.toFile() }
+    private val texconvExe by lazy { PlsPathConstants.texconvExeFile }
+    private val texconvExeWd by lazy { PlsPathConstants.texconvExe.parent?.toFile() }
 
     override fun isEnabled(): Boolean {
         return true // always true
@@ -38,7 +38,7 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
     }
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
-        val tempParentPath = PlsConstants.Paths.imagesTemp
+        val tempParentPath = PlsPathConstants.imagesTemp
         val outputDirectoryPath = tempParentPath.resolve(UUID.randomUUID().toString())
         outputDirectoryPath.createDirectories()
         val outputFileName = targetFileName ?: (path.nameWithoutExtension + "." + targetFormat)
