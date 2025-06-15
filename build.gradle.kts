@@ -32,7 +32,9 @@ dependencies {
 
         bundledPlugins("com.intellij.platform.images")
         bundledPlugins("com.intellij.diagram")
-        bundledPlugins("com.intellij.java")
+
+        // 用作参考
+        // bundledPlugins("com.intellij.java")
         // bundledPlugins("org.jetbrains.kotlin")
         // bundledPlugins("org.intellij.plugins.markdown")
         // bundledPlugins("JavaScript")
@@ -74,7 +76,7 @@ dependencies {
         exclude(group = "com.fasterxml.jackson.core")
     }
 
-    // 目前仅作参考
+    // 目前仅用作参考
 
     // sqlite - https://github.com/xerial/sqlite-jdbc
     testImplementation("org.xerial:sqlite-jdbc:3.46.0.0")
