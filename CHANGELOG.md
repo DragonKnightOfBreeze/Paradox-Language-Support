@@ -21,6 +21,7 @@ TODO
 * [X] #151 Local variable, defined inside inline_script but passed from the outside as a parameter is not recognized.
 * [X] #148 更改`date_field`的默认日期模式为`y.M.d`，且允许声明日期模式（`date_field[y.M.d]`） / OP: Change the default date format of `date_field` to `y.M.d`, and allow declaring date formats (`date_field[y.M.d]`)
 * [X] 修复：修复插件可能无法正确解析json，从而无法识别游戏目录的问题 / OP: Fix a bug that plugin may not be able to correctly parse json, causing the game directory to be incorrectly recognized
+* [X] 修复：修复插件的缓存目录中存在过多临时目录时，打开IDE后会卡住一段时间的问题 / OP: Fix a bug that when there are too many temporary directories in plugin's cache directory, the IDE may freeze for a while after opened
 * [X] 优化：解析DDS图片对应的缓存PNG图片路径时，如有必要异步转换DDS图片为PNG图片 / OP: When resolve path of the cached PNG image corresponding to the DDS image, convert the DDS image to PNG image asynchronously if necessary
 * [ ] 优化：尝试避免打开尺寸过大的DDS图片时造成的UI冻结 / OP: Try to avoid UI freezing when opening large DDS images
 * [X] 优化：将插件的内部设置重构为`registryKey`，允许用户调整 / OP: Refactor the internal settings of the plugin to `registryKey`, allowing users to configure them

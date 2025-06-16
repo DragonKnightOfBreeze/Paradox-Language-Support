@@ -8,7 +8,6 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.startup.*
-import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
@@ -16,7 +15,6 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.dds.support.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.constants.*
-import kotlinx.coroutines.*
 import javax.imageio.spi.*
 
 /**
@@ -31,8 +29,8 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
         //init caches for specific services
         initCaches()
 
-        //create necessary files and directories & clean temp directories
-        handlePaths()
+        //create necessary files and directories
+        initPaths()
     }
 
     private fun initCaches() {
@@ -40,15 +38,8 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
         getDefaultProject().service<CwtConfigGroupService>().init()
     }
 
-    @Suppress("UnstableApiUsage")
-    private fun handlePaths() {
-        val coroutineScope = PlsFacade.getCoroutineScope()
-        coroutineScope.launch {
-            PlsPathConstants.data
-            PlsPathConstants.images
-            PlsPathConstants.imagesTemp
-            writeAction { runCatchingCancelable { PlsPathConstants.texconvExeFile } }
-        }
+    private fun initPaths() {
+        PlsPathConstants.init()
     }
 
     private val ddsImageReaderSpi by lazy { DdsImageReaderSpi() }

@@ -33,6 +33,7 @@ import com.intellij.psi.util.*
 import com.intellij.refactoring.actions.BaseRefactoringAction.*
 import com.intellij.util.*
 import com.intellij.util.containers.*
+import com.intellij.util.io.createParentDirectories
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
@@ -41,6 +42,8 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.model.constants.*
 import it.unimi.dsi.fastutil.Hash
 import it.unimi.dsi.fastutil.objects.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.*
 import java.nio.file.*
 import java.util.concurrent.*

@@ -4,9 +4,7 @@ import com.intellij.openapi.diagnostic.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.model.constants.*
-import org.apache.commons.io.file.*
 import java.nio.file.*
-import java.util.*
 import kotlin.io.path.*
 
 /**
@@ -39,10 +37,11 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
         val tempParentPath = PlsPathConstants.imagesTemp
-        val outputDirectoryPath = tempParentPath.resolve(UUID.randomUUID().toString())
-        outputDirectoryPath.createDirectories()
-        val outputFileName = targetFileName ?: (path.nameWithoutExtension + "." + targetFormat)
+        val outputDirectoryPath = targetDirectoryPath ?: tempParentPath
+        val outputFileName = path.nameWithoutExtension + "." + targetFormat
         val outputPath = outputDirectoryPath.resolve(outputFileName)
+
+        outputDirectoryPath.createDirectories()
 
         val wd = texconvExeWd
         val exe = texconvExe.name.quoteIfNecessary()
@@ -64,21 +63,10 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
             throw IllegalStateException("Failed to convert image: output file not found.\nCommand: $command\nResult: $result")
         }
 
-        if (targetDirectoryPath == null) {
-            if (targetFileName == null) return outputPath
-            val targetPath = outputDirectoryPath.resolve(targetFileName)
-            if (targetPath != outputPath) {
-                Files.move(outputPath, targetPath, StandardCopyOption.REPLACE_EXISTING)
-            }
-            return targetPath
+        val finalOutputPath = outputDirectoryPath.resolve(targetFileName ?: outputFileName)
+        if (finalOutputPath != outputPath) {
+            Files.move(outputPath, finalOutputPath, StandardCopyOption.REPLACE_EXISTING)
         }
-        val targetPath = targetDirectoryPath.resolve(targetFileName ?: outputPath.name)
-        if (targetPath != outputPath) {
-            Files.move(outputPath, targetPath, StandardCopyOption.REPLACE_EXISTING)
-        }
-        if (targetDirectoryPath != outputDirectoryPath) {
-            PathUtils.deleteDirectory(outputDirectoryPath)
-        }
-        return targetPath
+        return finalOutputPath
     }
 }

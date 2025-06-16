@@ -10,20 +10,24 @@ import kotlin.io.path.*
 
 abstract class PlsCommandBasedImageToolProvider : PlsImageToolProvider {
     final override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
+        val pathsToDelete = mutableSetOf<Path>()
         try {
             val tempParentPath = PlsPathConstants.imagesTemp
-            tempParentPath.createDirectories()
             val path = tempParentPath.resolve(UUID.randomUUID().toString() + "." + sourceFormat)
+            pathsToDelete.add(path)
+            tempParentPath.createDirectories()
             path.outputStream(StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
                 .use { IOUtils.copy(inputStream.buffered(), it) }
             val targetPath = convertImageFormat(path, null, null, sourceFormat, targetFormat)
+            pathsToDelete.add(targetPath)
             targetPath.inputStream(StandardOpenOption.READ)
                 .use { IOUtils.copy(it.buffered(), outputStream) }
-            path.deleteIfExists()
             return true
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             throw UnsupportedOperationException(e)
+        } finally {
+            pathsToDelete.forEach { it.deleteIfExists() } // 确保删除临时文件
         }
     }
 

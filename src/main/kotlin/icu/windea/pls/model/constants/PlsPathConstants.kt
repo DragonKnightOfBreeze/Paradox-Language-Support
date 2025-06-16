@@ -1,19 +1,33 @@
 package icu.windea.pls.model.constants
 
-import com.intellij.openapi.vfs.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.io.*
-import org.apache.commons.io.file.*
-import kotlin.io.path.*
+import icu.windea.pls.core.toClasspathUrl
+import kotlinx.coroutines.*
 
 object PlsPathConstants {
-    val userHome = System.getProperty("user.home").toPath()
+    // NOTE 仅在打开IDE后保证相关的目录、文件存在（如果不存在则自动创建），不考虑在IDE使用过程中被删除的情况
+    // NOTE 不要在这里清理临时文件，而是在需要时就尽早清理，否则如果临时目录和文件过多，可能导致打开IDE后会卡住一段时间
 
-    val data by lazy { userHome.resolve(".pls").also { runCatchingCancelable { it.createDirectories() } } }
-    val images by lazy { data.resolve("images").also { runCatchingCancelable { it.createDirectory() } } }
-    val imagesTemp by lazy { images.resolve("_temp").also { runCatchingCancelable { PathUtils.cleanDirectory(it) } } }
+    private val initializer = SmartInitializer()
 
-    val texconvExe by lazy { data.resolve("texconv.exe") }
-    val texconvExeClasspathUrl by lazy { "/tools/texconv.exe".toClasspathUrl() }
-    val texconvExeFile by VirtualFileProvider(texconvExe) { VfsUtil.findFileByURL(texconvExeClasspathUrl)!! }
+    private val _userHome = System.getProperty("user.home").toPath()
+    private val _data = _userHome.resolve(".pls")
+    private val _images = _data.resolve("images")
+    private val _imagesTemp = _images.resolve("_tmp")
+    private val _texconvExe = _data.resolve("texconv.exe")
+
+    val data by initializer.awaitDirectory(_data)
+    val images by initializer.awaitDirectory(_images)
+    val imagesTemp by initializer.await(_imagesTemp)
+    val texconvExe by initializer.await(_texconvExe)
+
+    val texconvExeFile by initializer.awaitFileFromVirtualFile(_texconvExe, "/tools/texconv.exe".toClasspathUrl())
+
+    fun init() {
+        val coroutineScope = PlsFacade.getCoroutineScope()
+        coroutineScope.launch {
+            initializer.initialize()
+        }
+    }
 }

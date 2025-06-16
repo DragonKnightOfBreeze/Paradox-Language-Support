@@ -6,6 +6,7 @@ import com.intellij.util.io.*
 import java.nio.file.*
 import kotlin.reflect.*
 
+@Deprecated("")
 class VirtualFileProvider(
     val filePath: Path,
     val sourceFileProvider: () -> VirtualFile,
@@ -60,7 +61,7 @@ class VirtualFileProvider(
     private fun calculateFileSize(file: VirtualFile): Long {
         return file.length
     }
-}
 
-@Suppress("NOTHING_TO_INLINE")
-inline operator fun VirtualFileProvider.getValue(thisRef: Any?, property: KProperty<*>): VirtualFile = get()
+    @Suppress("NOTHING_TO_INLINE")
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): VirtualFile = get()
+}
