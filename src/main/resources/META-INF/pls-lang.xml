@@ -160,12 +160,14 @@
   </projectListeners>
 
   <applicationListeners>
-    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener"
-              topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateEditorNotificationsOnDefaultGameDirectoriesChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameDirectoriesListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxRefreshOnDefaultGameTypeChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxDefaultGameTypeListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateEditorNotificationsOnConfigDirectoriesChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxConfigDirectoriesListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnConfigDirectoriesChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxConfigDirectoriesListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateConfigGroupOnConfigDirectoriesChangedListener"

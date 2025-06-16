@@ -3,11 +3,23 @@ package icu.windea.pls.lang.listeners
 import com.intellij.openapi.components.*
 import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.openapi.project.*
+import com.intellij.ui.EditorNotifications
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 
 /**
- * 当更改本地规则目录后，刷新库信息。
+ * 当各类规则分组的启用状态发生变化时，需要更新编辑器通知。
+ *
+ * @see CwtConfigGroupEditorNotificationProvider
+ */
+class ParadoxUpdateEditorNotificationsOnConfigDirectoriesChangedListener : ParadoxConfigDirectoriesListener {
+    override fun onChange() {
+        EditorNotifications.updateAll()
+    }
+}
+
+/**
+ * 当更改规则目录后，刷新库信息。
  *
  * @see CwtConfigGroupLibrary
  * @see CwtConfigGroupLibraryProvider
@@ -27,7 +39,7 @@ class ParadoxUpdateLibraryOnConfigDirectoriesChangedListener : ParadoxConfigDire
 }
 
 /**
- * 当更改本地规则目录后，刷新规则分组的修改状态。
+ * 当更改规则目录后，刷新规则分组的修改状态。
  *
  * @see CwtConfigGroup
  * @see ConfigGroupRefreshFloatingProvider
