@@ -55,6 +55,7 @@ dependencies {
 
     // dds - https://github.com/iTitus/dds
     implementation("io.github.ititus:dds:3.1.0")
+    // implementation("io.github.ititus:ddsiio:3.1.0")
 
     // javassist - https://github.com/jboss-javassist/javassist
     implementation("org.javassist:javassist:3.30.2-GA")

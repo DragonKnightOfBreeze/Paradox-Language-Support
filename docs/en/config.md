@@ -9,6 +9,9 @@ PLS implements various advanced language features based on config groups, which 
 Config groups can have different sources. For config groups from the same source,
 there are config groups for different game types, and the core config group, which is shared by all game types.
 
+You can enable or disable each type of config group as needed in the plugin settings page (`Paradox Language Support > Config Related`).
+The parent directories for these config groups, as well as the repository URLs for remote config groups, can also be configured directly from the plugin settings page.
+
 Reference Links:
 
 * [Repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/cwt)
@@ -17,30 +20,31 @@ Reference Links:
 
 #### Built-in Config Groups {#builtin-config-groups}
 
-* Path: `config/{gameType}`[^1] (in the plugin's jar, which is inside the plugin's zip package)
-* Enabled: Always
-* Customizable ：No
+- Location: `config/{gameType}`
+- Located inside the plugin jar, which is packaged within the plugin zip.
+- `{gameType}` is the [Game Type ID](#game-type-id); for the shared config group, it is `core`.
+- The shared built-in config group is always enabled.
 
-These config files are from plugin repository and config repositories of each game.
-Compare to the config files used by CWTools, there are several modifications and extensions.
+#### Remote Config Groups {#remote-config-groups}
+
+- Location: `{configDir}/{dirName}`
+- `{configDir}` is the parent directory containing all remote config group directories, and can be customized in the plugin settings.
+- `{dirName}` is the repository directory name; for the shared config group, it is `core`.
+- After modifying the configuration, PLS will automatically clone and pull these config groups from the configured remote repositories.
 
 #### Local Config Groups {#local-config-groups}
 
-* Path: `{rootPath}/{gameType}`[^1] (`rootPath` need be to be configured in plugin's settings page)
-* Enabled: Yes if path is existing
-* Customizable ：Yes
+- Location: `{configDir}/{gameType}`
+- `{configDir}` is the parent directory containing all global local config group directories, and can be customized in the plugin settings.
+- `{gameType}` is the [Game Type ID](#game-type-id); for the shared config group, it is `core`.
+- The config files inside are user-defined and apply to all projects. Changes require manual import.
 
-Containing config files are customized by users themselves. Available for all projects.
-Changes should be confirmed to import manually.
+#### Project Local Config Groups {#project-local-config-groups}
 
-#### Project Config Groups {#project-config-groups}
-
-* Path: `.config/{gameType}`[^1] (in the project root directory)
-* Enabled: Yes if path is existing
-* Customizable ：Yes
-
-Containing config files are customized by users themselves. Only available for this project.
-Changes should be confirmed to import manually.
+- Location: `{configDirName}/{gameType}`
+- `{configDirName}` is the name of the directory for project local config groups, located directly under the project root (default is `.config`), and can be customized in the plugin settings.
+- `{gameType}` is the [Game Type ID](#game-type-id); for the shared config group, it is `core`.
+- The config files inside are user-defined and only apply to the current project. Changes require manual import.
 
 ### Overridden Strategy
 
@@ -48,13 +52,17 @@ Configs use the LIOS overridden strategy based on the file path and the config I
 
 When reading configs, the plugin will iterate config groups by following order:
 built-in config groups, local config groups, and project config groups.
-The core config group is shared by all game types, and will be iterated before the config group for related game type.
+The shared config group is shared by all game types, and will be iterated before the config group for related game type.
 
 For example, if you have written some custom configs in the config file `.config/stellaris/modifiers.cwt`
 (which is in the project root directory), it will completely override the built-in modifier configs.
 Since the built-in modifier configs are located in the config file `config/stellaris/modifiers.cwt`
 (which is in the plugin jar), and both of their file path is `modifiers.cwt`.
 If these are no content in the custom config file, after applied, the plugin will be unable to resolve any modifier in script files.
+
+### 游戏类型ID {#game-type-id}
+
+Here is the list of available game type ids: `stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3` (for shared config group, it is `core`)
 
 ## CWT Config File {#cwt-config-file}
 
@@ -426,16 +434,11 @@ some_config
 
 ### Summary
 
-You can write customized config files in directories of [local config groups](#local-config-groups) or [project config groups](#project-config-groups).
-They are helpful for optimizing plugin's built-in configs, or enhancing plugin's features.
+You can create custom config files in the directories of [local config groups](#local-config-groups), [project local config groups](#project-local-config-groups), or [remote config groups](#remote-config-groups).  
+These files allow you to enhance or override the plugin's built-in configs, or to extend plugin functionality.
 
-If some changes are happened, the refresh button will be appeared in the context float toolbar in the upper right corner of the editor.
-Click it to confirm to import, so changes of these custom config files will be applied.
+When changes are detected, a refresh button will appear in the context toolbar in the top-right corner of the editor.  
+Click it to confirm the import and apply the changes from your custom config files.
 
-IDE will take some time to reparse opened files in background,
-And please note that if the changes in the config files will result in the change of the indexing logic
-(for example, a new definition type is added, or a match condition for some definition type is changed),
-you may need to reindex the whole project (this may take several minutes), to make sure the plugin works properly,
-if in the situation that involves these changes.
-
-[^1]: Allowed values for `gameType`: `stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3` (or `core` for core config group)
+The IDE will then reparse open files in the background.  
+Note: If your changes affect the indexing logic (e.g., adding a new definition type or changing a match condition), you may need to reindex the entire project (which may take several minutes) to ensure the plugin works properly, if in the situation that involves these changes.

@@ -13,7 +13,8 @@ Features:
 * Supports script & localisation languages and CWT language (used by config files).
 * Provides various almost excellent language features for script & localisation languages, including code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff and more.
 * Provides basic language features for CWT language, including code highlight, code navigation, quick documentation and more.
-* Supports rendering scope context, localisation text, DDS images and other useful information via quick documentation and inlay hints.
+* Supports previewing and rendering DDS and TGA pictures, and provides actions to convert image formats (PNG, DDS, TGA).
+* Supports rendering scope context, localisation text, images and other useful information via quick documentation and inlay hints.
 * Supports most advanced features of script & localisation languages (such as parameters, scopes, inline scripts and various complex expressions).
 * Supports customizing extended config files, allowing plugin to provide more perfect language features (such as code navigation, code completion, quick documentation and inlay hints).
 * Automatically recognizes game directories and mod directories.
