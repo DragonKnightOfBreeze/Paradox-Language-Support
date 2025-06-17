@@ -13,7 +13,6 @@
   <actions>
     <action id="Pls.SyncConfigGroupFromRemote" class="icu.windea.pls.config.configGroup.ConfigGroupSyncFromRemoteAction">
       <keyboard-shortcut keymap="$default" first-keystroke="alt t"/>
-      <add-to-group group-id="Pls.Tools" relative-to-action="Pls.OpenModSettings" anchor="after"/>
       <add-to-group group-id="EditorContextBarMenu" relative-to-action="Pls.OpenModSettings" anchor="after"/>
     </action>
 

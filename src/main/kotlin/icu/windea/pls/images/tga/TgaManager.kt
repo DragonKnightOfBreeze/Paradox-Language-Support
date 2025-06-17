@@ -21,7 +21,9 @@ object TgaManager {
                     val width = reader.getWidth(0)
                     val height = reader.getHeight(0)
                     val it2 = reader.getImageTypes(0)
-                    val bpp = reader.getImageTypes(0).asSequence().firstNotNullOfOrNull { it.colorModel.pixelSize } ?: -1
+                    val bpp = runCatchingCancelable {
+                        reader.getImageTypes(0).asSequence().firstNotNullOfOrNull { it.colorModel.pixelSize }
+                    }.getOrNull() ?: -1
                     return TgaMetadata(width, height, bpp)
                 }
             }

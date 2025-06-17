@@ -33,7 +33,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                     comment(PlsBundle.message("settings.integrations.image.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 }
                 row {
-                    checkBox(PlsBundle.message("settings.integrations.image.from.texconv")).selected(true).enabled(false)
+                    checkBox(PlsBundle.message("settings.integrations.image.from.texconv")).bindSelected(settings.image::enableTexconv)
                         .comment(PlsBundle.message("settings.integrations.image.from.texconv.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Texconv.url)
                 }

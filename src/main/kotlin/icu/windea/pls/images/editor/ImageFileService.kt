@@ -15,7 +15,6 @@ import org.intellij.images.vfs.*
 class ImageFileService(
     private val coroutineScope: CoroutineScope
 ) {
-
     fun createImageFileLoader(target: ImageEditorImpl): ImageFileLoader =
         ImageFileLoaderImpl(
             target,

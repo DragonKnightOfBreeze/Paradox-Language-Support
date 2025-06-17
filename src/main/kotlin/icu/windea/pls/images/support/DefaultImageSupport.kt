@@ -1,59 +1,27 @@
-package icu.windea.pls.images.dds.support
+package icu.windea.pls.images.support
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.core.*
-import icu.windea.pls.images.dds.*
-import io.github.ititus.dds.*
-import io.github.ititus.ddsiio.*
-import java.awt.image.*
 import java.io.*
 import java.nio.file.*
 import java.nio.file.StandardOpenOption.*
 import javax.imageio.*
+import javax.imageio.spi.*
 import kotlin.io.path.*
 
-class DefaultDdsSupport : DdsSupport {
-    override fun getMetadata(file: VirtualFile): DdsMetadata? {
-        val ddsFile = runCatchingCancelable { DdsFile.load(file.toNioPath()) }.getOrNull()
-        if (ddsFile == null) return null
-        val ddsMetadata = DdsMetadata(
-            width = ddsFile.width(),
-            height = ddsFile.height(),
-            hasMipMaps = ddsFile.hasMipmaps(),
-            isFlatTexture = ddsFile.isFlatTexture,
-            isCubeMap = ddsFile.isCubemap,
-            isVolumeTexture = ddsFile.isVolumeTexture,
-            isDxt10 = ddsFile.isDxt10,
-            d3dFormat = ddsFile.d3dFormat()?.toString(),
-            dxgiFormat = ddsFile.dxgiFormat()?.toString(),
-        )
-        return ddsMetadata
-    }
-
-    override fun createImageReader(extension: Any?, spi: DdsImageReaderSpi): ImageReader {
-        return ImageReader(spi, this)
-    }
-
-    class ImageReader(
-        spi: DdsImageReaderSpi,
-        private val support: DefaultDdsSupport,
-    ) : DdsImageReader(spi) {
-        override fun read(imageIndex: Int, param: ImageReadParam?): BufferedImage? {
-            return doRead(imageIndex, param)
-        }
-
-        private fun doRead(imageIndex: Int, param: ImageReadParam?): BufferedImage? {
-            return super.read(imageIndex, param)
-        }
-    }
-
+/**
+ * @see ImageIO
+ * @see ImageReader
+ * @see ImageReaderSpi
+ */
+class DefaultImageSupport : ImageSupport {
     override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
         try {
             doConvertImageFormat(inputStream, outputStream, targetFormat)
             return true
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
+            thisLogger().warn(e)
             throw UnsupportedOperationException(e)
         }
     }
@@ -66,6 +34,7 @@ class DefaultDdsSupport : DdsSupport {
             return targetPath.exists()
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
+            thisLogger().warn(e)
             throw UnsupportedOperationException(e)
         }
     }

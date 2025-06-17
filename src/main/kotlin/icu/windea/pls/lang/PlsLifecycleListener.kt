@@ -8,15 +8,13 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.startup.*
-import com.twelvemonkeys.imageio.plugins.dds.*
-import com.twelvemonkeys.imageio.plugins.tga.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.images.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.constants.*
-import javax.imageio.spi.*
 
 /**
  * 用于在特定生命周期执行特定的代码，例如，在IDE启动时初始化一些缓存数据。
@@ -25,7 +23,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     //for whole application
 
     override fun appFrameCreated(commandLineArgs: MutableList<String>) {
-        registerImageReaderSpi()
+        ImageManager.registerImageIOSpi()
 
         //init caches for specific services
         initCaches()
@@ -45,30 +43,14 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
 
     override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
         if (pluginDescriptor.pluginId.idString == PlsConstants.pluginId) {
-            registerImageReaderSpi()
+            ImageManager.registerImageIOSpi()
         }
     }
 
     override fun beforePluginUnload(pluginDescriptor: IdeaPluginDescriptor, isUpdate: Boolean) {
         if (pluginDescriptor.pluginId.idString == PlsConstants.pluginId) {
-            deregisterImageSpi()
+            ImageManager.deregisterImageIOSpi()
         }
-    }
-
-    //NOTE 2.0.0-dev 对于DDS和TGA图片，可以统一使用 TwelveMonkeys
-
-    //private val ddsImageReaderSpi by lazy { DdsImageReaderSpi() }
-    private val ddsImageReaderSpi by lazy { DDSImageReaderSpi() }
-    private val tgaImageReaderSpi by lazy { TGAImageReaderSpi() }
-
-    private fun deregisterImageSpi() {
-        IIORegistry.getDefaultInstance().deregisterServiceProvider(ddsImageReaderSpi)
-        IIORegistry.getDefaultInstance().deregisterServiceProvider(tgaImageReaderSpi)
-    }
-
-    private fun registerImageReaderSpi() {
-        IIORegistry.getDefaultInstance().registerServiceProvider(ddsImageReaderSpi)
-        IIORegistry.getDefaultInstance().registerServiceProvider(tgaImageReaderSpi)
     }
 
     //for each project

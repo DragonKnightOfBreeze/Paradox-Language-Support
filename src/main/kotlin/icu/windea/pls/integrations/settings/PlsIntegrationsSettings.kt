@@ -20,11 +20,13 @@ class PlsIntegrationsSettingsState : BaseState() {
     var lint by property(LintState())
 
     /**
+     * @property enableTexconv 是否使用 <a href="https://github.com/microsoft/DirectXTex/wiki/Texconv">Texconv</a> 作为图片处理工具。
      * @property enableMagick 是否使用 <a href="https://www.imagemagick.org">Image Magick</a> 作为图片处理工具。
      * @property magickPath Image Magick 的可执行文件的路径。
      */
     @Tag("image")
     class ImageState: BaseState() {
+        var enableTexconv by property(false)
         var enableMagick by property(false)
         var magickPath by string() // e.g., /path/to/magick.exe
     }

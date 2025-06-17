@@ -1,11 +1,11 @@
 <idea-plugin>
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.images.dds.support" interface="icu.windea.pls.images.dds.support.DdsSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.images.support" interface="icu.windea.pls.images.support.ImageSupport" dynamic="true"/>
   </extensionPoints>
 
-  <extensions defaultExtensionNs="icu.windea.pls.images.dds">
-    <support implementation="icu.windea.pls.images.dds.support.DefaultDdsSupport" order="last"/>
-    <support implementation="icu.windea.pls.images.dds.support.ToolBasedDdsSupport"/>
+  <extensions defaultExtensionNs="icu.windea.pls.images">
+    <support implementation="icu.windea.pls.images.support.DefaultImageSupport" order="last"/>
+    <support implementation="icu.windea.pls.images.support.ToolBasedImageSupport"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">
@@ -14,7 +14,6 @@
     <!--suppress PluginXmlValidity -->
     <documentationProvider implementation="icu.windea.pls.images.dds.DdsDocumentationProvider"/>
     <fileEditorProvider implementation="icu.windea.pls.images.dds.DdsFileEditorProvider"/>
-    <vfs.asyncListener implementation="icu.windea.pls.images.dds.DdsFileListener"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">

@@ -1,6 +1,7 @@
 package icu.windea.pls.integrations.images.tools
 
 import com.intellij.openapi.diagnostic.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.model.constants.*
@@ -16,7 +17,7 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
     private val texconvExeWd by lazy { PlsPathConstants.texconvExe.parent?.toFile() }
 
     override fun isEnabled(): Boolean {
-        return true // always true
+        return PlsFacade.getIntegrationsSettings().image.enableTexconv
     }
 
     override fun isSupported(): Boolean {

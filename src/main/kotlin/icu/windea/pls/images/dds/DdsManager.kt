@@ -1,12 +1,8 @@
 package icu.windea.pls.images.dds
 
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.images.dds.support.*
-import io.github.ititus.dds.DdsFile
-import java.io.*
-import java.nio.file.*
-import javax.imageio.*
+import icu.windea.pls.core.*
+import io.github.ititus.dds.*
 
 object DdsManager {
     fun getMetadata(file: VirtualFile): DdsMetadata? {
@@ -26,25 +22,32 @@ object DdsManager {
         return ddsMetadata
     }
 
-    fun createImageReader(extension: Any?, spi: DdsImageReaderSpi): ImageReader? {
-        return DdsSupport.EP_NAME.extensionList.firstNotNullOfOrNull {
-            it.createImageReader(extension, spi)
-        }
-    }
+    //通过 TwelveMonkeys + ImageIO 获取元数据的话，获取到的信息是不全面的
 
-    @Throws(UnsupportedOperationException::class)
-    fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
-        val r = DdsSupport.EP_NAME.extensionList.any {
-            it.convertImageFormat(inputStream, outputStream, sourceFormat, targetFormat)
-        }
-        if (!r) throw UnsupportedOperationException()
-    }
-
-    @Throws(UnsupportedOperationException::class)
-    fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
-        val r = DdsSupport.EP_NAME.extensionList.any {
-            it.convertImageFormat(path, targetPath, sourceFormat, targetFormat)
-        }
-        if (!r) throw UnsupportedOperationException()
-    }
+    //fun getMetadata(file: VirtualFile): DdsMetadata? {
+    //    return readMetadata(ByteArrayInputStream(file.contentsToByteArray()))
+    //}
+    //
+    //private fun readMetadata(input: Any): DdsMetadata? {
+    //    ImageIO.setUseCache(false) //same as org.intellij.images.util.ImageInfoReader.read
+    //    runCatchingCancelable {
+    //        ImageIO.createImageInputStream(input).use { iis ->
+    //            ImageIO.getImageReaders(iis).forEach { reader ->
+    //                reader.setInput(iis, true)
+    //                val width = reader.getWidth(0)
+    //                val height = reader.getHeight(0)
+    //                val it2 = reader.getImageTypes(0)
+    //                val format = runCatchingCancelable {
+    //                    //https://docs.oracle.com/en/java/javase/11/docs/api/java.desktop/javax/imageio/metadata/doc-files/standard_metadata.html
+    //                    reader.getImageMetadata(0).getAsTree(IIOMetadataFormatImpl.standardMetadataFormatName)?.castOrNull<IIOMetadataNode>()
+    //                        ?.getElementsByTagName("Compression")?.item(0)?.castOrNull<IIOMetadataNode>()
+    //                        ?.getElementsByTagName("CompressionTypeName")?.item(0)?.castOrNull<IIOMetadataNode>()
+    //                        ?.getAttribute("value")
+    //                }.getOrNull()
+    //                return DdsMetadata(width, height, d3dFormat = format)
+    //            }
+    //        }
+    //    }
+    //    return null
+    //}
 }

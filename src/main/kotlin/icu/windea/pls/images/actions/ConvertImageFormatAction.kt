@@ -19,7 +19,6 @@ import com.intellij.util.containers.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.images.*
-import icu.windea.pls.images.dds.*
 import icu.windea.pls.lang.*
 import java.io.*
 import java.util.concurrent.atomic.*
@@ -282,7 +281,7 @@ abstract class ConvertImageFormatAction(
         val targetPath = td.toNioPath().resolve(targetFileName)
         val sourceFormat = sf.lowercase()
         val targetFormat = targetFormatName.lowercase()
-        DdsManager.convertImageFormat(path, targetPath, sourceFormat, targetFormat)
+        ImageManager.convertImageFormat(path, targetPath, sourceFormat, targetFormat)
         val t = VfsUtil.findFile(targetPath, true)
         return t?.toPsiFile(file.project)
     }

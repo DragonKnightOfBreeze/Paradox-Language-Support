@@ -9,15 +9,14 @@ import com.intellij.psi.*
 import com.intellij.util.io.fileSizeSafe
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.images.dds.*
 import icu.windea.pls.ep.data.*
+import icu.windea.pls.images.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
-import org.intellij.images.fileTypes.impl.*
 import java.lang.invoke.*
 import kotlin.contracts.*
 import kotlin.io.path.*
@@ -42,7 +41,6 @@ object ParadoxImageResolver {
             else -> frameInfo
         }
         try {
-            //如果无法解析为png文件地址，则返回默认的地址
             val url = doResolveUrlByDefinition(definition, definitionInfo, newFrameInfo)
             if (url.isNullOrEmpty()) return null
             return url
@@ -61,7 +59,6 @@ object ParadoxImageResolver {
      */
     fun resolveUrlByFile(file: VirtualFile, project: Project, frameInfo: ImageFrameInfo? = null): String? {
         try {
-            //如果无法解析为png文件地址，则返回默认的地址
             val url = doResolveUrlByFile(file, project, frameInfo)
             if (url.isNullOrEmpty()) return null
             return url
@@ -81,7 +78,6 @@ object ParadoxImageResolver {
      */
     fun resolveUrlByFilePath(filePath: String, project: Project, frameInfo: ImageFrameInfo? = null): String? {
         try {
-            //如果无法解析为png文件地址，则返回默认的地址
             val url = doResolveUrlByFilePath(filePath, project, frameInfo)
             if (url.isNullOrEmpty()) return null
             return url
@@ -104,20 +100,9 @@ object ParadoxImageResolver {
     }
 
     private fun doResolveUrlByFile(file: VirtualFile, project: Project, frameInfo: ImageFrameInfo?): String? {
-        return when (file.fileType) {
-            is ImageFileType -> {
-                //accept normal image files (e.g., png file)
-                file.toNioPath().absolutePathString()
-            }
-            is DdsFileType -> {
-                //convert dds file to png file and then return png file's actual url
-                val fileInfo = file.fileInfo
-                val ddsRelPath = fileInfo?.let { it.rootInfo.gameType.id + "/" + it.path.path }
-                val ddsAbsPath = file.toNioPath().absolutePathString()
-                ParadoxDdsImageResolver.resolveUrl(project, ddsAbsPath, ddsRelPath, frameInfo)
-            }
-            else -> null
-        }
+        //accept various image file types (normal file types such as png, or extended file aka dds and tga)
+        if (!ImageManager.isImageFileType(file.fileType)) return null
+        return file.toNioPath().absolutePathString()
     }
 
     private fun doResolveUrlByFilePath(filePath: String, project: Project, frameInfo: ImageFrameInfo?): String? {

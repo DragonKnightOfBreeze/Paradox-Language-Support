@@ -35,6 +35,10 @@
       <add-to-group group-id="EditorContextBarMenu" relative-to-action="Pls.OpenGameSettings" anchor="after"/>
     </action>
 
+    <reference ref="Pls.SyncConfigGroupFromRemote">
+      <add-to-group group-id="Pls.Tools"/>
+    </reference>
+
     <group id="Pls.OpenPath" popup="true">
       <action id="Pls.OpenPath.OpenSteamPath" class="icu.windea.pls.tools.actions.OpenPathActions$Steam"/>
       <action id="Pls.OpenPath.OpenSteamGamePath" class="icu.windea.pls.tools.actions.OpenPathActions$SteamGame"/>
