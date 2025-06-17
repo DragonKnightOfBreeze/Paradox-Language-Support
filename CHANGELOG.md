@@ -34,7 +34,7 @@ TODO
 * [X] 优化：可以配置是否在内嵌提示中显示定义的子类型 / Can configure whether to show subtypes of definitions in inlay hints
 * [X] 优化：可以配置处理图片时使用的工具（默认且内置：Texconv，可选：Image Magick） / OP: Can configure the tool used to process images (Default and built-in: Texconv, Available: Image Magick)
 * [X] 优化：可以配置翻译本地化文本时使用的工具（目前仅限Translation Plugin） / OP: Can configure the tool used to translate localisation text (Currently limited to Translation Plugin)
-* [X] 优化：可以配置要启用的代码检查工具（目前仅限Tiger） / OP: Can configure which code inspection tools to enable (Currently limited to Tiger)
+* [X] 优化：可以配置要启用的检查工具（目前仅限Tiger） / OP: Can configure which lint tools to enable (Currently limited to Tiger)
 * [X] 优化：更好的对图片的支持，支持预览与渲染DDS、TGA图片，提供不同图片格式（PNG、DDS、TGA）之间的相互转换的操作 / OP: Better support for images, support previewing and rendering DDS, TGA images, and provide actions to convert image formats (PNG, DDS, TGA)
 * [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
 * [X] 新功能：集成AI，提供对应的设置页面 / NEW: Integrate AI, provide corresponding settings page
