@@ -23,8 +23,6 @@ import javax.imageio.stream.*
 import kotlin.io.path.*
 
 /**
- * 用于基于图片工具扩展点，进行相关的图片处理操作，例如将DDS图片转化为PNG图片。
- *
  * @see PlsImageManager
  * @see PlsImageToolProvider
  */

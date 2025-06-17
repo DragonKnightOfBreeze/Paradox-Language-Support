@@ -23,7 +23,6 @@ import icu.windea.pls.images.tga.*
 import org.intellij.images.*
 import org.intellij.images.editor.*
 import org.intellij.images.editor.ImageDocument.*
-import org.intellij.images.editor.actionSystem.ImageEditorActions
 import org.intellij.images.options.*
 import org.intellij.images.thumbnail.actionSystem.*
 import org.intellij.images.thumbnail.actions.*

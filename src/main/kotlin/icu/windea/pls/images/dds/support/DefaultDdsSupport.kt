@@ -13,11 +13,6 @@ import java.nio.file.StandardOpenOption.*
 import javax.imageio.*
 import kotlin.io.path.*
 
-/**
- * 用于获取DDS图片的元数据，以及在没有更好的方案的情况下渲染与转化DDS图片。
- *
- * 参见：[GitHub: iTitus/dds](https://github.com/iTitus/dds)
- */
 class DefaultDdsSupport : DdsSupport {
     override fun getMetadata(file: VirtualFile): DdsMetadata? {
         val ddsFile = runCatchingCancelable { DdsFile.load(file.toNioPath()) }.getOrNull()

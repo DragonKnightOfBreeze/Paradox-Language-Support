@@ -1,16 +1,29 @@
 package icu.windea.pls.images.dds
 
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.images.dds.support.*
+import io.github.ititus.dds.DdsFile
 import java.io.*
 import java.nio.file.*
 import javax.imageio.*
 
 object DdsManager {
     fun getMetadata(file: VirtualFile): DdsMetadata? {
-        return DdsSupport.EP_NAME.extensionList.firstNotNullOfOrNull {
-            it.getMetadata(file)
-        }
+        val ddsFile = runCatchingCancelable { DdsFile.load(file.toNioPath()) }.getOrNull()
+        if (ddsFile == null) return null
+        val ddsMetadata = DdsMetadata(
+            width = ddsFile.width(),
+            height = ddsFile.height(),
+            hasMipMaps = ddsFile.hasMipmaps(),
+            isFlatTexture = ddsFile.isFlatTexture,
+            isCubeMap = ddsFile.isCubemap,
+            isVolumeTexture = ddsFile.isVolumeTexture,
+            isDxt10 = ddsFile.isDxt10,
+            d3dFormat = ddsFile.d3dFormat()?.toString(),
+            dxgiFormat = ddsFile.dxgiFormat()?.toString(),
+        )
+        return ddsMetadata
     }
 
     fun createImageReader(extension: Any?, spi: DdsImageReaderSpi): ImageReader? {

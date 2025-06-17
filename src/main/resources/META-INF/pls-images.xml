@@ -27,11 +27,17 @@
 
   <actions>
     <group id="Pls.ImagesRootGroup">
-      <action class="icu.windea.pls.images.actions.EditExternallyAction" id="Pls.Images.EditExternally">
-        <keyboard-shortcut first-keystroke="control alt F4" keymap="$default" />
+      <action id="Pls.Images.EditExternally" class="icu.windea.pls.images.actions.EditExternallyAction">
+        <keyboard-shortcut first-keystroke="control alt F4" keymap="$default"/>
         <add-to-group anchor="after" group-id="ProjectViewPopupMenu" relative-to-action="EditSource"/>
       </action>
-      <reference ref="Images.EditExternalEditorPath"/>
+      <action id="Pls.Images.EditExternalEditorPath" class="icu.windea.pls.images.actions.EditExternalImageEditorAction"/>
+      <group id="Pls.Images.ImageViewActions">
+        <action id="Pls.Images.SetBackgroundImage" class="icu.windea.pls.images.actions.SetBackgroundImageAction">
+          <add-to-group group-id="ProjectViewPopupMenu"/>
+          <add-to-group group-id="EditorPopupMenu3"/>
+        </action>
+      </group>
       <add-to-group group-id="Other.KeymapGroup"/>
     </group>
     <group id="Pls.Images.EditorToolbar">
@@ -54,7 +60,7 @@
       <reference ref="Images.EditorToolbar"/>
       <reference ref="Images.ShowBorder"/>
       <separator/>
-      <reference ref="Images.SetBackgroundImage" />
+      <reference ref="Pls.Images.SetBackgroundImage"/>
       <separator/>
       <reference ref="VersionControlsGroup"/>
       <separator/>
@@ -68,6 +74,7 @@
       <action id="Pls.ConvertImageFormatToPng" class="icu.windea.pls.images.actions.ConvertImageFormatActions$Png"/>
       <action id="Pls.ConvertImageFormatToDds" class="icu.windea.pls.images.actions.ConvertImageFormatActions$Dds"/>
       <action id="Pls.ConvertImageFormatToTga" class="icu.windea.pls.images.actions.ConvertImageFormatActions$Tga"/>
+      <separator/>
 
       <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
       <add-to-group group-id="ImagesRootGroup" anchor="last"/>
