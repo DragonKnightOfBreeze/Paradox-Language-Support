@@ -4,20 +4,20 @@
   </extensions>
 
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.integrations.imageToolProvider" interface="icu.windea.pls.integrations.image.tools.PlsImageToolProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.integrations.imageToolProvider" interface="icu.windea.pls.integrations.images.tools.PlsImageToolProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.integrations.translationToolProvider" interface="icu.windea.pls.integrations.translation.tools.PlsTranslationToolProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.integrations.lintToolProvider" interface="icu.windea.pls.integrations.lint.tools.PlsLintToolProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.integrations.lintToolProvider" interface="icu.windea.pls.integrations.lints.tools.PlsLintToolProvider" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls.integrations">
-    <imageToolProvider implementation="icu.windea.pls.integrations.image.tools.PlsTexconvToolProvider"/>
-    <imageToolProvider implementation="icu.windea.pls.integrations.image.tools.PlsMagickToolProvider"/>
+    <imageToolProvider implementation="icu.windea.pls.integrations.images.tools.PlsTexconvToolProvider"/>
+    <imageToolProvider implementation="icu.windea.pls.integrations.images.tools.PlsMagickToolProvider"/>
 
     <!-- see pls-extension-translation.xml -->
     <!--<translationToolProvider implementation="icu.windea.pls.integrations.translation.providers.PlsTranslationPluginToolProvider"/>-->
 
-    <lintToolProvider implementation="icu.windea.pls.integrations.lint.tools.PlsTigerToolProvider$Ck3"/>
-    <lintToolProvider implementation="icu.windea.pls.integrations.lint.tools.PlsTigerToolProvider$Ir"/>
-    <lintToolProvider implementation="icu.windea.pls.integrations.lint.tools.PlsTigerToolProvider$Vic3"/>
+    <lintToolProvider implementation="icu.windea.pls.integrations.lints.tools.PlsTigerToolProvider$Ck3"/>
+    <lintToolProvider implementation="icu.windea.pls.integrations.lints.tools.PlsTigerToolProvider$Ir"/>
+    <lintToolProvider implementation="icu.windea.pls.integrations.lints.tools.PlsTigerToolProvider$Vic3"/>
   </extensions>
 </idea-plugin>

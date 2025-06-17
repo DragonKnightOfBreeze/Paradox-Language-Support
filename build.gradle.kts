@@ -49,6 +49,10 @@ dependencies {
     // opentest4j - https://github.com/ota4j-team/opentest4j
     testImplementation("org.opentest4j:opentest4j:1.3.0")
 
+    // TwelveMonkeys - https://github.com/haraldk/TwelveMonkeys
+    implementation("com.twelvemonkeys.imageio:imageio-dds:3.12.0")
+    implementation("com.twelvemonkeys.imageio:imageio-tga:3.12.0")
+
     // dds - https://github.com/iTitus/dds
     implementation("io.github.ititus:dds:3.1.0")
     implementation("io.github.ititus:ddsiio:3.1.0")

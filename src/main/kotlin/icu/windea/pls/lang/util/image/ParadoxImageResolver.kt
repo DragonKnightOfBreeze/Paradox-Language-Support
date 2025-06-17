@@ -9,7 +9,7 @@ import com.intellij.psi.*
 import com.intellij.util.io.fileSizeSafe
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.dds.*
+import icu.windea.pls.images.dds.*
 import icu.windea.pls.ep.data.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*

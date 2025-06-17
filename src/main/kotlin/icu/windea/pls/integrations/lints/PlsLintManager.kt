@@ -1,0 +1,11 @@
+package icu.windea.pls.integrations.lints
+
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.integrations.lints.tools.*
+import icu.windea.pls.model.*
+
+object PlsLintManager {
+    fun findTools(gameType: ParadoxGameType?): List<PlsLintToolProvider> {
+        return PlsLintToolProvider.EP_NAME.extensions.filter { it.isEnabled() && it.isSupported(gameType) && it.isValid() }.optimized()
+    }
+}

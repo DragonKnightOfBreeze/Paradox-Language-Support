@@ -1,0 +1,79 @@
+<idea-plugin>
+  <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.images.dds.support" interface="icu.windea.pls.images.dds.support.DdsSupport" dynamic="true"/>
+  </extensionPoints>
+
+  <extensions defaultExtensionNs="icu.windea.pls.images.dds">
+    <support implementation="icu.windea.pls.images.dds.support.DefaultDdsSupport" order="last"/>
+    <support implementation="icu.windea.pls.images.dds.support.ToolBasedDdsSupport"/>
+  </extensions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <fileType name="DDS" implementationClass="icu.windea.pls.images.dds.DdsFileType" fieldName="INSTANCE" extensions="dds"/>
+    <fileLookupInfoProvider implementation="icu.windea.pls.images.dds.DdsLookupInfoProvider"/>
+    <!--suppress PluginXmlValidity -->
+    <documentationProvider implementation="icu.windea.pls.images.dds.DdsDocumentationProvider"/>
+    <fileEditorProvider implementation="icu.windea.pls.images.dds.DdsFileEditorProvider"/>
+    <vfs.asyncListener implementation="icu.windea.pls.images.dds.DdsFileListener"/>
+  </extensions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <fileType name="TGA" implementationClass="icu.windea.pls.images.tga.TgaFileType" fieldName="INSTANCE" extensions="tga"/>
+    <fileLookupInfoProvider implementation="icu.windea.pls.images.tga.TgaLookupInfoProvider"/>
+    <!--suppress PluginXmlValidity -->
+    <documentationProvider implementation="icu.windea.pls.images.tga.TgaDocumentationProvider"/>
+    <fileEditorProvider implementation="icu.windea.pls.images.tga.TgaFileEditorProvider"/>
+  </extensions>
+
+  <actions>
+    <group id="Pls.ImagesRootGroup">
+      <action class="icu.windea.pls.images.actions.EditExternallyAction" id="Pls.Images.EditExternally">
+        <keyboard-shortcut first-keystroke="control alt F4" keymap="$default" />
+        <add-to-group anchor="after" group-id="ProjectViewPopupMenu" relative-to-action="EditSource"/>
+      </action>
+      <reference ref="Images.EditExternalEditorPath"/>
+      <add-to-group group-id="Other.KeymapGroup"/>
+    </group>
+    <group id="Pls.Images.EditorToolbar">
+      <reference ref="Images.ToggleTransparencyChessboard"/>
+      <reference ref="Images.Editor.ToggleGrid"/>
+      <separator/>
+      <reference ref="Images.Editor.ZoomIn"/>
+      <reference ref="Images.Editor.ZoomOut"/>
+      <reference ref="Images.Editor.ActualSize"/>
+      <reference ref="Images.Editor.FitZoomToWindow"/>
+      <reference ref="ShowColorPicker"/>
+      <reference ref="Images.ChangeBackground"/>
+    </group>
+    <group id="Pls.Images.EditorPopupMenu">
+      <reference ref="CutCopyPasteGroup"/>
+      <separator/>
+      <reference ref="FindUsages"/>
+      <reference ref="RefactoringMenu"/>
+      <separator/>
+      <reference ref="Images.EditorToolbar"/>
+      <reference ref="Images.ShowBorder"/>
+      <separator/>
+      <reference ref="Images.SetBackgroundImage" />
+      <separator/>
+      <reference ref="VersionControlsGroup"/>
+      <separator/>
+      <reference ref="Pls.Images.EditExternally"/>
+      <reference ref="Images.EditExternalEditorPath"/>
+      <reference ref="ExternalToolsGroup"/>
+    </group>
+
+    <group id="Pls.Images.ConvertGroup">
+      <separator/>
+      <action id="Pls.ConvertImageFormatToPng" class="icu.windea.pls.images.actions.ConvertImageFormatActions$Png"/>
+      <action id="Pls.ConvertImageFormatToDds" class="icu.windea.pls.images.actions.ConvertImageFormatActions$Dds"/>
+      <action id="Pls.ConvertImageFormatToTga" class="icu.windea.pls.images.actions.ConvertImageFormatActions$Tga"/>
+
+      <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+      <add-to-group group-id="ImagesRootGroup" anchor="last"/>
+      <add-to-group group-id="Pls.ImagesRootGroup" anchor="last"/>
+      <add-to-group group-id="Images.EditorPopupMenu" anchor="last"/>
+      <add-to-group group-id="Pls.Images.EditorPopupMenu" anchor="last"/>
+    </group>
+  </actions>
+</idea-plugin>

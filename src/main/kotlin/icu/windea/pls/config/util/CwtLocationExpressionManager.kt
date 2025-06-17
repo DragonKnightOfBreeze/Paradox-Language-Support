@@ -7,11 +7,12 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.integrations.image.*
+import icu.windea.pls.integrations.images.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.image.ParadoxImageManager
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
@@ -148,7 +149,7 @@ object CwtLocationExpressionManager {
         val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, config.configExpression, false)
         when {
             //由filePath解析为图片文件
-            resolved is PsiFile && PlsImageManager.isImageFile(resolved) -> {
+            resolved is PsiFile && ParadoxImageManager.isImageFile(resolved) -> {
                 val filePath = resolved.fileInfo?.path?.path ?: return null
                 return createImageResolveResultByFilePath(filePath, newFrameInfo, definition, project)
             }
