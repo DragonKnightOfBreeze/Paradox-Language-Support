@@ -183,7 +183,11 @@ object ParadoxLocalisationTextHtmlRenderer {
                 else -> null
             }
 
-            if (iconUrl == null) return
+            //如果无法解析（包括对应文件不存在的情况）就直接加上图片标签，不计算缩放
+            if(!ParadoxImageResolver.canResolve(iconUrl)) {
+                context.builder.appendImgTag(iconUrl)
+                return
+            }
 
             val iconFileUrl = iconUrl.toFileUrl()
             val icon = iconFileUrl.toIconOrNull() ?: return@run
