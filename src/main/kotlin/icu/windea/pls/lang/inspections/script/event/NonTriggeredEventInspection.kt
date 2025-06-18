@@ -24,6 +24,7 @@ class NonTriggeredEventInspection : LocalInspectionTool() {
             val definitionInfo = element.definitionInfo ?: return@p true
             if (definitionInfo.type != ParadoxDefinitionTypes.Event) return@p true
             if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) return@p true //no "triggered" subtype declared, skip
+            if ("inherited" in definitionInfo.subtypes) return@p true //ignore inherited events
             if ("triggered" in definitionInfo.subtypes) return@p true
             val fixes = buildList {
                 if (element.block != null) this += Fix1(element)
