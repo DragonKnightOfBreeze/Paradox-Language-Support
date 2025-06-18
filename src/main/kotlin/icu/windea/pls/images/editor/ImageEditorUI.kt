@@ -51,6 +51,8 @@ class ImageEditorUI(
         private const val ERROR_PANEL = "error"
         @NonNls
         private const val ZOOM_FACTOR_PROP = "ImageEditor.zoomFactor"
+        @NonNls
+        private const val IMAGE_MAX_ZOOM_FACTOR = Double.MAX_VALUE
     }
 
     private val deleteProvider: DeleteProvider
@@ -357,25 +359,24 @@ class ImageEditorUI(
     }
 
     private inner class ImageZoomModelImpl : ImageZoomModel {
-        private var myCustomZoomOptions: ZoomOptions? = null
-        private var myZoomLevelChanged = false
-        private val IMAGE_MAX_ZOOM_FACTOR = Double.MAX_VALUE
-        private var zoomFactor = 0.0
+        private var _customZoomOptions: ZoomOptions? = null
+        private var _zoomLevelChanged = false
+        private var _zoomFactor = 0.0
 
         override fun getZoomFactor(): Double {
-            return zoomFactor
+            return _zoomFactor
         }
 
         override fun setZoomFactor(zoomFactor: Double) {
             val oldZoomFactor = getZoomFactor()
             if (oldZoomFactor.compareTo(zoomFactor) == 0) return
-            this.zoomFactor = zoomFactor
+            this._zoomFactor = zoomFactor
 
             // Change current size
             updateImageComponentSize()
             revalidate()
             repaint()
-            myZoomLevelChanged = false
+            _zoomLevelChanged = false
             imageComponent.firePropertyChange(ZOOM_FACTOR_PROP, oldZoomFactor, zoomFactor)
         }
 
@@ -399,23 +400,23 @@ class ImageEditorUI(
             } else {
                 zoomModel.zoomFactor = 1.0
             }
-            myZoomLevelChanged = false
+            _zoomLevelChanged = false
         }
 
         override fun zoomOut() {
             zoomFactor = nextZoomOut
-            myZoomLevelChanged = true
+            _zoomLevelChanged = true
         }
 
         override fun zoomIn() {
             zoomFactor = nextZoomIn
-            myZoomLevelChanged = true
+            _zoomLevelChanged = true
         }
 
         // Macro
         private val nextZoomOut: Double
             get() {
-                var factor = getZoomFactor()
+                var factor = zoomFactor
                 if (factor > 1.0) {
                     // Macro
                     factor /= ImageZoomModel.MACRO_ZOOM_RATIO
@@ -430,7 +431,7 @@ class ImageEditorUI(
         // Macro
         private val nextZoomIn: Double
             get() {
-                var factor = getZoomFactor()
+                var factor = zoomFactor
                 if (factor >= 1.0) {
                     // Macro
                     factor *= ImageZoomModel.MACRO_ZOOM_RATIO
@@ -444,27 +445,27 @@ class ImageEditorUI(
 
         override fun canZoomOut(): Boolean {
             // Ignore small differences caused by floating-point arithmetic.
-            return getZoomFactor() - 1.0e-14 > minimumZoomFactor
+            return zoomFactor - 1.0e-14 > minimumZoomFactor
         }
 
         override fun canZoomIn(): Boolean {
-            return getZoomFactor() < maximumZoomFactor
+            return zoomFactor < maximumZoomFactor
         }
 
         override fun setZoomLevelChanged(value: Boolean) {
-            myZoomLevelChanged = value
+            _zoomLevelChanged = value
         }
 
         override fun isZoomLevelChanged(): Boolean {
-            return myZoomLevelChanged
+            return _zoomLevelChanged
         }
 
         override fun getCustomZoomOptions(): ZoomOptions? {
-            return myCustomZoomOptions
+            return _customZoomOptions
         }
 
         override fun setCustomZoomOptions(zoomOptions: ZoomOptions?) {
-            myCustomZoomOptions = zoomOptions
+            _customZoomOptions = zoomOptions
         }
     }
 
