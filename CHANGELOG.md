@@ -18,13 +18,14 @@ TODO
 * [X] DDS/TGA图片 - 缩放操作无法生效，需要排查
 * [ ] DDS/TGA图片的预览与渲染 - 实现已更改，因此需要进一步检查、测试
 * [ ] 本地化生成 - 仍然存在问题，需要复现&排查
+* [ ] 由于渲染器相关代码的重构，检查相关功能是否正常，包括渲染内嵌提示时是否仅渲染一行
 
 ## 2.0.0-dev
 
 * [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
 * [X] #151 Local variable, defined inside inline_script but passed from the outside as a parameter is not recognized.
-* [X] #148 更改`date_field`的默认日期模式为`y.M.d`，且允许声明日期模式（`date_field[y.M.d]`） / OP: Change the default date format of `date_field` to `y.M.d`, and allow declaring date formats (`date_field[y.M.d]`)
-* [X] 修复：修复插件可能无法正确解析json，从而无法识别游戏目录的问题 / OP: Fix a bug that plugin may not be able to correctly parse json, causing the game directory to be incorrectly recognized
+* [X] #148 更改`date_field`的默认日期模式为`y.M.d`，且允许声明日期模式（`date_field[y.M.d]`） / Change the default date format of `date_field` to `y.M.d`, and allow declaring date formats (`date_field[y.M.d]`)
+* [X] 修复：修复插件可能无法正确解析json，从而无法识别游戏目录的问题 / FIX: Fix a bug that plugin may not be able to correctly parse json, causing the game directory to be incorrectly recognized
 * [X] 优化：将插件的内部设置重构为`registryKey`，允许用户调整 / OP: Refactor the internal settings of the plugin to `registryKey`, allowing users to configure them
 * [X] 优化：通过快速文档为本地化参数和命令的传入参数提供其中使用的格式标签的说明 / OP: Provide information about format tags used in arguments of localisation parameters and commands by quick documentation
 * [X] 优化：为封装变量、复杂枚举值和动态值提供快速文档与内嵌提示，来自同名的本地化 / OP: Also provide quick documentation and inlay hints for scripted variables, complex enum values and dynamic values, from the same name localisation

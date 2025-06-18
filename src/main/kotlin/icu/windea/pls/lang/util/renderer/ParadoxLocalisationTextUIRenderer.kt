@@ -6,11 +6,13 @@ import icu.windea.pls.localisation.psi.*
 import java.awt.*
 import javax.swing.*
 
-object ParadoxLocalisationTextUIRenderer {
+class ParadoxLocalisationTextUIRenderer(
+    val color: Color? = null
+) {
     //com.intellij.openapi.actionSystem.impl.ActionToolbarImpl.paintToImage
 
-    fun render(element: ParadoxLocalisationProperty, color: Color? = null): JLabel? {
-        val text = ParadoxLocalisationTextHtmlRenderer.render(element, color)
+    fun render(element: ParadoxLocalisationProperty): JLabel? {
+        val text = ParadoxLocalisationTextHtmlRenderer(color = color).render(element)
         if (text.isEmpty()) return null
         val label = JLabel()
         label.text = buildString {
@@ -24,7 +26,7 @@ object ParadoxLocalisationTextUIRenderer {
         return label
     }
 
-    fun render(text: String, color: Color? = null): JLabel? {
+    fun render(text: String): JLabel? {
         if (text.isEmpty()) return null
         val label = JLabel()
         label.text = buildString {

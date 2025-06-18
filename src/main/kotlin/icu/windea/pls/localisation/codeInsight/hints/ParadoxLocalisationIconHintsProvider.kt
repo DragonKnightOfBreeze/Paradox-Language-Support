@@ -11,7 +11,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.util.image.*
+import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationIconHintsProvider.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
@@ -54,13 +54,13 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
             val frameInfo = ImageFrameInfo.of(iconFrame)
             val project = file.project
             val iconUrl = when {
-                resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, frameInfo)
-                resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, project, frameInfo)
+                resolved is ParadoxScriptDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
+                resolved is PsiFile -> ParadoxImageManager.resolveUrlByFile(resolved.virtualFile, project, frameInfo)
                 else -> null
             }
 
             //如果无法解析（包括对应文件不存在的情况）就直接跳过
-            if(!ParadoxImageResolver.canResolve(iconUrl)) return true
+            if(!ParadoxImageManager.canResolve(iconUrl)) return true
 
             val iconFileUrl = iconUrl.toFileUrl()
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度

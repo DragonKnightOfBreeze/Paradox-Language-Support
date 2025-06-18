@@ -91,7 +91,7 @@ object ParadoxScriptedVariableManager {
     fun getLocalizedName(element: ParadoxScriptScriptedVariable): String? {
         val name = element.name?.orNull() ?: return null
         val nameLocalisation = getNameLocalisation(name, element, ParadoxLocaleManager.getPreferredLocaleConfig()) ?: return null
-        return ParadoxLocalisationTextRenderer.render(nameLocalisation).orNull()
+        return ParadoxLocalisationTextRenderer().render(nameLocalisation).orNull()
     }
 
     fun getHintFromExtendedConfig(name: String, contextElement: PsiElement): String? {

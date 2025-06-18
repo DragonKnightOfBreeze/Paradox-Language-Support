@@ -1,28 +1,53 @@
-package icu.windea.pls.lang.util.image
+package icu.windea.pls.lang.util
 
-import com.intellij.openapi.application.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.psi.*
+import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
 import com.intellij.util.io.fileSizeSafe
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.ep.data.*
-import icu.windea.pls.images.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.psi.*
-import java.lang.invoke.*
-import kotlin.contracts.*
-import kotlin.io.path.*
+import icu.windea.pls.config.util.CwtLocationExpressionManager
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.ep.data.ParadoxSpriteData
+import icu.windea.pls.images.ImageManager
+import icu.windea.pls.images.dds.DdsFileType
+import icu.windea.pls.images.tga.TgaFileType
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.getData
+import icu.windea.pls.lang.orAnonymous
+import icu.windea.pls.lang.search.ParadoxFilePathSearch
+import icu.windea.pls.lang.search.selector.file
+import icu.windea.pls.lang.search.selector.selector
+import icu.windea.pls.model.ImageFrameInfo
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import org.intellij.images.fileTypes.impl.ImageFileType
+import java.lang.invoke.MethodHandles
+import kotlin.collections.contains
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
+import kotlin.io.path.absolutePathString
+import kotlin.io.path.exists
 
-object ParadoxImageResolver {
+object ParadoxImageManager {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
+
+    fun isImageFile(file: PsiFile): Boolean {
+        val vFile = file.virtualFile ?: return false
+        return isImageFile(vFile)
+    }
+
+    fun isImageFile(file: VirtualFile): Boolean {
+        val fileType = file.fileType
+        if (fileType !is ImageFileType && fileType !is DdsFileType && fileType !is TgaFileType) return false
+        val extension = file.extension?.lowercase() ?: return false
+        if (extension in PlsConstants.imageFileExtensions) return false
+        return true
+    }
 
     /**
      * 基于定义解析图片的路径，返回用于渲染的图片的绝对路径。
@@ -106,7 +131,7 @@ object ParadoxImageResolver {
     }
 
     private fun doResolveUrlByFilePath(filePath: String, project: Project, frameInfo: ImageFrameInfo?): String? {
-        val file = ParadoxFilePathSearch.search(filePath, null, selector(project).file()).find() ?: return null
+        val file = ParadoxFilePathSearch.Companion.search(filePath, null, selector(project).file()).find() ?: return null
         return doResolveUrlByFile(file, project, frameInfo)
     }
 

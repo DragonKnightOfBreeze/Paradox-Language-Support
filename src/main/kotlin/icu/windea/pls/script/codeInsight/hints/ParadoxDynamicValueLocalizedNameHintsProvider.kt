@@ -72,7 +72,7 @@ class ParadoxDynamicValueLocalizedNameHintsProvider : ParadoxScriptHintsProvider
 
     private fun PresentationFactory.doCollect(name: String, types: Set<String>, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
         val hintElement = getNameLocalisationToUse(name, types, file) ?: return null
-        return ParadoxLocalisationTextInlayRenderer.render(hintElement, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
+        return ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit).render(hintElement)
     }
 
     private fun getNameLocalisationToUse(name: String, types: Set<String>, file: PsiFile): ParadoxLocalisationProperty? {

@@ -63,7 +63,7 @@ object PlsDocBundle {
                 .withGameType(gameType)
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
             val localisation = ParadoxLocalisationSearch.Companion.search(name.uppercase(), selector).find() ?: return@run
-            val text = ParadoxLocalisationTextRenderer.render(localisation).orNull()
+            val text = ParadoxLocalisationTextRenderer().render(localisation).orNull()
             if (text != null) return text
         }
 
@@ -80,7 +80,7 @@ object PlsDocBundle {
             val definition = ParadoxDefinitionSearch.Companion.search(name, ParadoxDefinitionTypes.TechnologyCategory, selector).find() ?: return@run
             val localizedName = ParadoxDefinitionManager.getPrimaryLocalisation(definition)
             if (localizedName != null) {
-                val text = ParadoxLocalisationTextRenderer.render(localizedName).orNull()
+                val text = ParadoxLocalisationTextRenderer().render(localizedName).orNull()
                 if (text != null) return text
             }
         }

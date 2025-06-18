@@ -81,7 +81,7 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
 
     private fun PresentationFactory.doCollect(name: String, enumName: String, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
         val hintElement = getNameLocalisationToUse(name, enumName, file) ?: return null
-        return ParadoxLocalisationTextInlayRenderer.render(hintElement, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
+        return ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit).render(hintElement)
     }
 
     private fun getNameLocalisationToUse(name: String, enumName: String, file: PsiFile): ParadoxLocalisationProperty? {

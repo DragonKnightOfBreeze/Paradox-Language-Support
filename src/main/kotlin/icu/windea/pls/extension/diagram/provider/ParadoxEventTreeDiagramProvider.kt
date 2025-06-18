@@ -15,7 +15,6 @@ import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
@@ -136,15 +135,15 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                     when {
                         nodeItem is ParadoxLocalisationProperty -> {
                             //事件标题
-                            ParadoxLocalisationTextUIRenderer.render(nodeItem)
+                            ParadoxLocalisationTextUIRenderer().render(nodeItem)
                         }
                         nodeItem is PsiFile -> {
                             //事件图片
                             val frameInfo = nodeElement.getUserData(PlsKeys.imageFrameInfo)
-                            val iconUrl = ParadoxImageResolver.resolveUrlByFile(nodeItem.virtualFile, nodeItem.project, frameInfo)
+                            val iconUrl = ParadoxImageManager.resolveUrlByFile(nodeItem.virtualFile, nodeItem.project, frameInfo)
 
                             //如果无法解析（包括对应文件不存在的情况）就直接跳过
-                            if(!ParadoxImageResolver.canResolve(iconUrl)) return null
+                            if (!ParadoxImageManager.canResolve(iconUrl)) return null
 
                             val iconFileUrl = iconUrl.toFileUrl()
                             val icon = iconFileUrl.toIconOrNull()
@@ -193,7 +192,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                             if (definitionInfo != null) {
                                 null
                             } else {
-                                val rendered = ParadoxScriptTextRenderer.render(nodeItem, renderInBlock = true)
+                                val rendered = ParadoxScriptTextRenderer(renderInBlock = true).render(nodeItem)
                                 val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
                                 val propertyValue = nodeItem.propertyValue
                                 if (propertyValue is ParadoxScriptScriptedVariableReference) {

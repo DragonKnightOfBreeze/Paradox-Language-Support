@@ -10,7 +10,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.localisation.editor.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
@@ -18,76 +17,52 @@ import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 import java.awt.event.*
-import java.util.concurrent.atomic.*
 import javax.imageio.*
 
-@Suppress("UnstableApiUsage", "RedundantWith")
-object ParadoxLocalisationTextInlayRenderer {
-    /**
-     * 如果[truncateLimit]小于等于0，则仅渲染首行文本。
-     */
-    class Context(
-        val editor: Editor,
-        val factory: PresentationFactory,
-        var builder: MutableList<InlayPresentation>
-    ) {
-        var truncateLimit: Int = -1
-        var iconHeightLimit: Int = -1
-        val truncateRemain by lazy { AtomicInteger(truncateLimit) } //记录到需要截断为止所剩余的长度
-        val guardStack = ArrayDeque<String>() //防止StackOverflow
+/**
+ * 仅渲染单行文本，从第二行开始的文本会被截断。
+ */
+@Suppress("UnstableApiUsage")
+class ParadoxLocalisationTextInlayRenderer(
+    val editor: Editor,
+    val factory: PresentationFactory,
+    var builder: MutableList<InlayPresentation> = mutableListOf(),
+) {
+    var textLengthLimit: Int = -1
+    var iconHeightLimit: Int = -1
+
+    private var truncateRemain = textLengthLimit //记录到需要截断为止所剩余的长度
+    private var lineEnd = false
+    private val guardStack = ArrayDeque<String>() //防止StackOverflow
+
+    fun withLimit(textLengthLimit: Int, iconHeightLimit: Int): ParadoxLocalisationTextInlayRenderer {
+        this.textLengthLimit = textLengthLimit
+        this.iconHeightLimit = iconHeightLimit
+        return this
     }
 
-    fun render(element: ParadoxLocalisationProperty, factory: PresentationFactory, editor: Editor, truncateLimit: Int, iconHeightLimit: Int): InlayPresentation? {
+    fun render(element: ParadoxLocalisationProperty): InlayPresentation? {
         //虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白
-        return doRender(factory, editor, truncateLimit, iconHeightLimit) { context ->
-            context.guardStack.addLast(element.name)
-            renderTo(element, context)
+        return doRender {
+            renderTo(element)
         }
     }
 
-    fun render(element: ParadoxLocalisationParameter, factory: PresentationFactory, editor: Editor, truncateLimit: Int, iconHeightLimit: Int): InlayPresentation? {
+    fun render(element: ParadoxLocalisationParameter): InlayPresentation? {
         //虽然看起来截断后的长度不正确，但是实际上是正确的，因为图标前后往往存在或不存在神秘的空白
-        return doRender(factory, editor, truncateLimit, iconHeightLimit) { context ->
-            //context.guardStack.addLast(element.name) //不要加上这段代码
-            renderTo(element, context)
+        return doRender {
+            renderRichTextTo(element)
         }
     }
 
-    fun renderWithColor(color: Color?, factory: PresentationFactory, editor: Editor, truncateLimit: Int, iconHeightLimit: Int, action: (Context) -> Boolean): InlayPresentation? {
-        return doRender(factory, editor, truncateLimit, iconHeightLimit) { context ->
-            renderWithColorTo(color, context, action)
-        }
-    }
-
-    private fun renderWithColorTo(color: Color?, context: Context, action: (Context) -> Boolean): Boolean {
-        val textAttributesKey = if (color != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(color) else null
-        val oldBuilder = context.builder
-        context.builder = mutableListOf()
-        val continueProcess = action(context)
-        val newBuilder = context.builder
-        context.builder = oldBuilder
-        val presentation = mergePresentation(newBuilder) ?: return true
-        val finalPresentation = if (textAttributesKey != null) WithAttributesPresentation(presentation, textAttributesKey, context.editor) else presentation
-        context.builder.add(finalPresentation)
-        return continueProcess
-    }
-
-    private fun doRender(factory: PresentationFactory, editor: Editor, truncateLimit: Int, iconHeightLimit: Int, action: (Context) -> Boolean): InlayPresentation? {
-        val context = Context(editor, factory, mutableListOf())
-        context.truncateLimit = truncateLimit
-        context.iconHeightLimit = iconHeightLimit
-        val r = action(context)
-        if (!r) context.builder.add(factory.smallText("...")) //添加省略号
-        return mergePresentation(context.builder)
-    }
-
-    private fun renderTo(element: ParadoxLocalisationProperty, context: Context): Boolean {
+    private fun renderTo(element: ParadoxLocalisationProperty): Boolean {
+        guardStack.addLast(element.name)
         val richTextList = element.propertyValue?.richTextList
         if (richTextList.isNullOrEmpty()) return true
         var continueProcess = true
         for (richText in richTextList) {
             ProgressManager.checkCanceled()
-            val r = renderTo(richText, context)
+            val r = renderRichTextTo(richText)
             if (!r) {
                 continueProcess = false
                 break
@@ -96,36 +71,61 @@ object ParadoxLocalisationTextInlayRenderer {
         return continueProcess
     }
 
-    private fun renderTo(element: ParadoxLocalisationRichText, context: Context): Boolean {
+    fun renderWithColor(color: Color?, action: () -> Boolean): InlayPresentation? {
+        return doRender {
+            renderWithColorTo(color, action)
+        }
+    }
+
+    private fun renderWithColorTo(color: Color?, action: () -> Boolean): Boolean {
+        val textAttributesKey = if (color != null) ParadoxLocalisationAttributesKeys.getColorOnlyKey(color) else null
+        val oldBuilder = builder
+        builder = mutableListOf()
+        val continueProcess = action()
+        val newBuilder = builder
+        builder = oldBuilder
+        val presentation = mergePresentation(newBuilder) ?: return true
+        val finalPresentation = if (textAttributesKey != null) WithAttributesPresentation(presentation, textAttributesKey, editor) else presentation
+        builder.add(finalPresentation)
+        return continueProcess
+    }
+
+    private fun doRender(action: () -> Boolean): InlayPresentation? {
+        val r = action()
+        if (!r) builder.add(factory.smallText("...")) //添加省略号
+        return mergePresentation(builder)
+    }
+
+    private fun renderRichTextTo(element: ParadoxLocalisationRichText): Boolean {
         return when (element) {
-            is ParadoxLocalisationString -> renderStringTo(element, context)
-            is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, context)
-            is ParadoxLocalisationParameter -> renderParameterTo(element, context)
-            is ParadoxLocalisationCommand -> renderCommandTo(element, context)
-            is ParadoxLocalisationIcon -> renderIconTo(element, context)
-            is ParadoxLocalisationConceptCommand -> renderConceptTo(element, context)
-            is ParadoxLocalisationTextFormat -> renderTextFormatTo(element, context)
-            is ParadoxLocalisationTextIcon -> renderTextIconTo(element, context)
+            is ParadoxLocalisationString -> renderStringTo(element)
+            is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element)
+            is ParadoxLocalisationParameter -> renderParameterTo(element)
+            is ParadoxLocalisationCommand -> renderCommandTo(element)
+            is ParadoxLocalisationIcon -> renderIconTo(element)
+            is ParadoxLocalisationConceptCommand -> renderConceptCommandTo(element)
+            is ParadoxLocalisationTextFormat -> renderTextFormatTo(element)
+            is ParadoxLocalisationTextIcon -> renderTextIconTo(element)
             else -> true
         }
     }
 
-    private fun renderStringTo(element: ParadoxLocalisationString, context: Context): Boolean = with(context.factory) {
+    private fun renderStringTo(element: ParadoxLocalisationString): Boolean {
         val text = ParadoxEscapeManager.unescapeStringForLocalisation(element.text, ParadoxEscapeManager.Type.Inlay)
-        context.builder.add(truncatedSmallText(text, context))
-        return continueProcess(context)
+        builder.add(factory.truncatedSmallText(text))
+        return continueProcess()
     }
 
-    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context): Boolean {
+    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText): Boolean {
         //如果处理文本失败，则清除非法的颜色标记，直接渲染其中的文本
         val richTextList = element.richTextList
         if (richTextList.isEmpty()) return true
         val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.colorInfo?.color else null
-        return renderWithColorTo(color, context) {
+        return renderWithColorTo(color) {
             var continueProcess = true
             for (richText in richTextList) {
                 ProgressManager.checkCanceled()
-                val r = renderTo(richText, context)
+                val r = renderRichTextTo(richText)
                 if (!r) {
                     continueProcess = false
                     break
@@ -135,85 +135,84 @@ object ParadoxLocalisationTextInlayRenderer {
         }
     }
 
-    private fun renderParameterTo(element: ParadoxLocalisationParameter, context: Context): Boolean = with(context.factory) {
+    private fun renderParameterTo(element: ParadoxLocalisationParameter): Boolean {
         //如果有颜色码，则使用该颜色渲染，否则保留颜色码
         val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
-        return renderWithColorTo(color, context) r@{
+        return renderWithColorTo(color) r@{
             //如果处理文本失败，则使用原始文本
             val resolved = element.reference?.resolveLocalisation() //直接解析为本地化以优化性能
                 ?: element.scriptedVariableReference?.reference?.resolve()
             val presentation = when {
                 resolved is ParadoxLocalisationProperty -> {
                     if (ParadoxLocalisationManager.isSpecialLocalisation(resolved)) {
-                        getElementPresentation(element, context)
+                        getElementPresentation(element)
                     } else {
                         val resolvedName = resolved.name
-                        if (context.guardStack.contains(resolvedName)) {
-                            getElementPresentation(element, context)
+                        if (guardStack.contains(resolvedName)) {
+                            getElementPresentation(element)
                         } else {
-                            context.guardStack.addLast(resolvedName)
                             try {
-                                val oldBuilder = context.builder
-                                context.builder = mutableListOf()
-                                renderTo(resolved, context)
-                                val newBuilder = context.builder
-                                context.builder = oldBuilder
+                                val oldBuilder = builder
+                                builder = mutableListOf()
+                                renderTo(resolved)
+                                val newBuilder = builder
+                                builder = oldBuilder
                                 mergePresentation(newBuilder)
                             } finally {
-                                context.guardStack.removeLast()
+                                guardStack.removeLast()
                             }
                         }
                     }
                 }
                 resolved is CwtProperty -> {
-                    smallText(resolved.value ?: PlsStringConstants.unresolved)
+                    factory.smallText(resolved.value ?: PlsStringConstants.unresolved)
                 }
                 resolved is ParadoxScriptScriptedVariable && resolved.value != null -> {
-                    smallText(resolved.value ?: PlsStringConstants.unresolved)
+                    factory.smallText(resolved.value ?: PlsStringConstants.unresolved)
                 }
                 else -> {
-                    truncatedSmallText(element.text, context)
+                    factory.truncatedSmallText(element.text)
                 }
             }
-            if (presentation != null) context.builder.add(presentation)
-            continueProcess(context)
+            if (presentation != null) builder.add(presentation)
+            continueProcess()
         }
     }
 
-    private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context): Boolean = with(context.factory) {
+    private fun renderCommandTo(element: ParadoxLocalisationCommand): Boolean {
         //如果有颜色码，则使用该颜色渲染，否则保留颜色码
         val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
-        return renderWithColorTo(color, context) r@{
+        return renderWithColorTo(color) r@{
             //直接显示命令文本，适用对应的颜色高亮
             //点击其中的相关文本也能跳转到相关声明（如scope和scripted_loc）
             val presentations = mutableListOf<InlayPresentation>()
             element.forEachChild { c ->
                 if (c is ParadoxLocalisationCommandText) {
-                    getElementPresentation(c, context)?.let { presentations.add(it) }
+                    getElementPresentation(c)?.let { presentations.add(it) }
                 } else {
-                    presentations.add(smallText(c.text))
+                    presentations.add(factory.smallText(c.text))
                 }
             }
             val mergedPresentation = mergePresentation(presentations)
-            if (mergedPresentation != null) context.builder.add(mergedPresentation)
-            continueProcess(context)
+            if (mergedPresentation != null) builder.add(mergedPresentation)
+            continueProcess()
         }
     }
 
-    private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context): Boolean = with(context.factory) {
+    private fun renderIconTo(element: ParadoxLocalisationIcon): Boolean {
         //尝试渲染图标
         run {
             val resolved = element.reference?.resolve() ?: return@run
             val iconFrame = element.frame
             val frameInfo = ImageFrameInfo.of(iconFrame)
             val iconUrl = when {
-                resolved is ParadoxScriptDefinitionElement -> ParadoxImageResolver.resolveUrlByDefinition(resolved, frameInfo)
-                resolved is PsiFile -> ParadoxImageResolver.resolveUrlByFile(resolved.virtualFile, resolved.project, frameInfo)
+                resolved is ParadoxScriptDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
+                resolved is PsiFile -> ParadoxImageManager.resolveUrlByFile(resolved.virtualFile, resolved.project, frameInfo)
                 else -> null
             }
 
             //如果无法解析（包括对应文件不存在的情况）就直接跳过
-            if(!ParadoxImageResolver.canResolve(iconUrl)) return true
+            if (!ParadoxImageManager.canResolve(iconUrl)) return true
 
             val iconFileUrl = iconUrl.toFileUrl()
             //找不到图标的话就直接跳过
@@ -222,21 +221,21 @@ object ParadoxLocalisationTextInlayRenderer {
             val iconHeight = icon.iconHeight
             val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { iconHeight }
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            if (originalIconHeight > context.iconHeightLimit) return true //图标过大，不再尝试渲染
+            if (originalIconHeight > iconHeightLimit) return true //图标过大，不再尝试渲染
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            val presentation = psiSingleReference(smallScaledIcon(icon)) { resolved }
-            context.builder.add(presentation)
+            val presentation = factory.psiSingleReference(factory.smallScaledIcon(icon)) { resolved }
+            builder.add(presentation)
             return true
         }
 
         //直接显示原始文本
         //点击其中的相关文本也能跳转到相关声明
-        val presentation = getElementPresentation(element, context)
-        if (presentation != null) context.builder.add(presentation)
-        continueProcess(context)
+        val presentation = getElementPresentation(element)
+        if (presentation != null) builder.add(presentation)
+        return continueProcess()
     }
 
-    private fun renderConceptTo(element: ParadoxLocalisationConceptCommand, context: Context): Boolean = with(context.factory) {
+    private fun renderConceptCommandTo(element: ParadoxLocalisationConceptCommand): Boolean {
         //尝试渲染概念文本
         val (referenceElement, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(element)
         val richTextList = when {
@@ -247,24 +246,25 @@ object ParadoxLocalisationTextInlayRenderer {
         run r2@{
             if (richTextList.isNullOrEmpty()) return@r2
             val newBuilder = mutableListOf<InlayPresentation>()
-            val oldBuilder = context.builder
-            context.builder = newBuilder
+            val oldBuilder = builder
+            builder = newBuilder
             var continueProcess = true
             for (richText in richTextList) {
                 ProgressManager.checkCanceled()
-                val r = renderTo(richText, context)
+                val r = renderRichTextTo(richText)
                 if (!r) {
                     continueProcess = false
                     break
                 }
             }
-            context.builder = oldBuilder
+            builder = oldBuilder
             val conceptAttributesKey = ParadoxLocalisationAttributesKeys.CONCEPT_KEY
             var presentation: InlayPresentation = SequencePresentation(newBuilder)
 
             val attributesFlags = WithAttributesPresentation.AttributesFlags().withSkipBackground(true).withSkipEffects(true)
-            presentation = WithAttributesPresentation(presentation, conceptAttributesKey, context.editor, attributesFlags)
-            presentation = onHover(psiSingleReference(presentation) { referenceElement }, object : InlayPresentationFactory.HoverListener {
+            presentation = WithAttributesPresentation(presentation, conceptAttributesKey, editor, attributesFlags)
+            val referencePresentation = factory.psiSingleReference(presentation) { referenceElement }
+            presentation = factory.onHover(referencePresentation, object : InlayPresentationFactory.HoverListener {
                 override fun onHover(event: MouseEvent, translated: Point) {
                     attributesFlags.isDefault = true //change foreground
                 }
@@ -273,16 +273,16 @@ object ParadoxLocalisationTextInlayRenderer {
                     attributesFlags.isDefault = false //reset foreground
                 }
             })
-            context.builder.add(presentation)
+            builder.add(presentation)
             if (!continueProcess) return false
-            return continueProcess(context)
+            return continueProcess()
         }
 
-        context.builder.add(smallText(element.name))
-        return continueProcess(context)
+        builder.add(factory.smallText(element.name))
+        return continueProcess()
     }
 
-    private fun renderTextFormatTo(element: ParadoxLocalisationTextFormat, context: Context): Boolean = with(context.factory) {
+    private fun renderTextFormatTo(element: ParadoxLocalisationTextFormat): Boolean {
         //TODO 1.4.1+ 更完善的支持（适用文本格式）
 
         //直接渲染其中的文本
@@ -291,23 +291,23 @@ object ParadoxLocalisationTextInlayRenderer {
         var continueProcess = true
         for (richText in richTextList) {
             ProgressManager.checkCanceled()
-            val r = renderTo(richText, context)
+            val r = renderRichTextTo(richText)
             if (!r) {
                 continueProcess = false
                 break
             }
         }
-        continueProcess
+        return continueProcess
     }
 
-    private fun renderTextIconTo(element: ParadoxLocalisationTextIcon, context: Context): Boolean = with(context.factory) {
+    private fun renderTextIconTo(element: ParadoxLocalisationTextIcon): Boolean {
         //TODO 1.4.1+ 更完善的支持（渲染文本图标）
 
         //直接显示原始文本
         //点击其中的相关文本也能跳转到相关声明
-        val presentation = getElementPresentation(element, context)
-        if (presentation != null) context.builder.add(presentation)
-        continueProcess(context)
+        val presentation = getElementPresentation(element)
+        if (presentation != null) builder.add(presentation)
+        return continueProcess()
     }
 
     private fun mergePresentation(presentations: MutableList<InlayPresentation>): InlayPresentation? {
@@ -318,30 +318,31 @@ object ParadoxLocalisationTextInlayRenderer {
         }
     }
 
-    private fun PresentationFactory.truncatedSmallText(text: String, context: Context): InlayPresentation {
-        if (context.truncateLimit <= 0) {
-            val finalText = text
-            val result = smallText(finalText)
-            return result
-        } else {
-            val finalText = text.take(context.truncateRemain.get())
-            val result = smallText(finalText)
-            context.truncateRemain.addAndGet(-text.length)
-            return result
+    private fun PresentationFactory.truncatedSmallText(text: String): InlayPresentation {
+        val truncatedText = if (textLengthLimit > 0) text.take(truncateRemain) else text
+        val truncatedTextSingleLine = truncatedText.substringBefore('\n')
+        val finalText = truncatedTextSingleLine
+        val result = smallText(finalText)
+        if (truncatedTextSingleLine.length != truncatedText.length) {
+            lineEnd = true
         }
+        if (textLengthLimit > 0) {
+            truncateRemain -= truncatedText.length
+        }
+        return result
     }
 
-    private fun continueProcess(context: Context): Boolean {
-        return context.truncateLimit <= 0 || context.truncateRemain.get() >= 0
+    private fun continueProcess(): Boolean {
+        return !lineEnd && (truncateRemain > 0 || textLengthLimit <= 0)
     }
 
-    private fun getElementPresentation(element: PsiElement, context: Context): InlayPresentation? = with(context.factory) {
+    private fun getElementPresentation(element: PsiElement): InlayPresentation? {
         val presentations = mutableListOf<InlayPresentation>()
 
         val text = element.text
         val references = element.references
         if (references.isEmpty()) {
-            presentations.add(smallText(element.text))
+            presentations.add(factory.smallText(element.text))
             return mergePresentation(presentations)
         }
         var i = 0
@@ -350,22 +351,22 @@ object ParadoxLocalisationTextInlayRenderer {
             val startOffset = reference.rangeInElement.startOffset
             if (startOffset != i) {
                 val s = text.substring(i, startOffset)
-                presentations.add(smallText(s))
+                presentations.add(factory.smallText(s))
             }
             i = reference.rangeInElement.endOffset
             val s = reference.rangeInElement.substring(text)
             val resolved = reference.resolve()
             //不要尝试跳转到dynamicValue的声明处
             if (resolved == null || resolved is ParadoxFakePsiElement) {
-                presentations.add(smallText(s))
+                presentations.add(factory.smallText(s))
             } else {
-                presentations.add(psiSingleReference(smallText(s)) { reference.resolve() })
+                presentations.add(factory.psiSingleReference(factory.smallText(s)) { reference.resolve() })
             }
         }
         val endOffset = references.last().rangeInElement.endOffset
         if (endOffset != text.length) {
             val s = text.substring(endOffset)
-            presentations.add(smallText(s))
+            presentations.add(factory.smallText(s))
         }
         return mergePresentation(presentations)
     }

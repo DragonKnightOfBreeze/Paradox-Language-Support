@@ -24,7 +24,6 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
@@ -279,7 +278,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForComplexEnumValue(elem
         if (sections == null || !render) return@rs
         run {
             if (nameLocalisation == null) return@run
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(nameLocalisation)
             sections.put("name", richText)
         }
     }
@@ -330,7 +329,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForDynamicValue(element:
         if (sections == null || !render) return@rs
         run {
             if (nameLocalisation == null) return@run
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(nameLocalisation)
             sections.put("name", richText)
         }
     }
@@ -395,12 +394,12 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: Parado
         if (sections == null || !render) return@rs
         run {
             if (nameLocalisation == null) return@run
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(nameLocalisation)
             sections.put("name", richText)
         }
         run {
             if (descLocalisation == null) return@run
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(descLocalisation)
             sections.put("desc", richText)
         }
     }
@@ -430,7 +429,7 @@ private fun DocumentationBuilder.addModifierIcon(element: ParadoxModifierElement
         if (sections == null || !render) return@rs
         run {
             if (iconFile == null) return@run
-            val url = ParadoxImageResolver.resolveUrlByFile(iconFile, project) ?: return@run
+            val url = ParadoxImageManager.resolveUrlByFile(iconFile, project) ?: return@run
             sections.put("icon", buildDocumentation { appendImgTag(url) })
         }
     }
@@ -505,7 +504,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForScriptedVariable(elem
         if (sections == null || !render) return@rs
         run {
             if (nameLocalisation == null) return@run
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(nameLocalisation)
             sections.put("name", richText)
         }
     }
@@ -627,7 +626,7 @@ private fun DocumentationBuilder.addRelatedLocalisationsForDefinition(element: P
             sectionKeys.add(key)
             if (sections != null && PlsFacade.getSettings().documentation.renderRelatedLocalisationsForDefinitions) {
                 //加上渲染后的相关本地化文本
-                val richText = ParadoxLocalisationTextHtmlRenderer.render(resolvedElement, forDoc = true)
+                val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(resolvedElement)
                 sections.put(key, richText)
             }
         }
@@ -669,10 +668,10 @@ private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxS
                 //渲染图片
                 val url = when {
                     resolveElement is ParadoxScriptDefinitionElement && resolveElement.definitionInfo != null -> {
-                        ParadoxImageResolver.resolveUrlByDefinition(resolveElement, resolveResult.frameInfo)
+                        ParadoxImageManager.resolveUrlByDefinition(resolveElement, resolveResult.frameInfo)
                     }
                     resolveElement is PsiFile -> {
-                        ParadoxImageResolver.resolveUrlByFile(resolveElement.virtualFile, resolveElement.project, resolveResult.frameInfo)
+                        ParadoxImageManager.resolveUrlByFile(resolveElement.virtualFile, resolveElement.project, resolveResult.frameInfo)
                     }
                     else -> null
                 }
@@ -832,7 +831,7 @@ private fun DocumentationBuilder.buildLocalisationSections(element: ParadoxLocal
             }?.castOrNull<ParadoxLocalisationProperty>() ?: element
         }
     }
-    val richText = ParadoxLocalisationTextHtmlRenderer.render(usedElement, forDoc = true)
+    val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(usedElement)
     if (richText.isNotEmpty()) {
         sections {
             section(PlsBundle.message("sectionTitle.text"), richText)

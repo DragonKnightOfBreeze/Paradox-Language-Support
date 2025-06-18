@@ -24,7 +24,7 @@ abstract class CopyLocalisationTextAsPlainIntentionBase : ModCommandAction {
 
     private fun getText(context: ActionContext): String? {
         val element = findElement(context) ?: return null
-        return ParadoxLocalisationTextRenderer.render(element)
+        return ParadoxLocalisationTextRenderer().render(element)
     }
 
     private fun findElement(context: ActionContext): ParadoxLocalisationProperty? {

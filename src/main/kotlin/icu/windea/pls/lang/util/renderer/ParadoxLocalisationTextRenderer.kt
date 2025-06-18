@@ -6,96 +6,95 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 @Suppress("UNUSED_PARAMETER")
-object ParadoxLocalisationTextRenderer {
-    class Context(
-        var builder: StringBuilder
-    ) {
-        val guardStack = ArrayDeque<String>() //防止StackOverflow
-    }
+class ParadoxLocalisationTextRenderer(
+    var builder: StringBuilder = StringBuilder()
+) {
+    private val guardStack = ArrayDeque<String>() //防止StackOverflow
 
     fun render(element: ParadoxLocalisationProperty): String {
-        return buildString { renderTo(this, element) }
+        renderTo(element)
+        return builder.toString()
     }
 
-    fun renderTo(builder: StringBuilder, element: ParadoxLocalisationProperty) {
-        val context = Context(builder)
-        context.guardStack.addLast(element.name)
-        renderTo(element, context)
-    }
-
-    private fun renderTo(element: ParadoxLocalisationProperty, context: Context) {
+    fun renderTo(element: ParadoxLocalisationProperty) {
+        guardStack.addLast(element.name)
         val richTextList = element.propertyValue?.richTextList
         if (richTextList.isNullOrEmpty()) return
         for (richText in richTextList) {
-            renderTo(richText, context)
+            renderRichTextTo(richText)
         }
     }
 
-    private fun renderTo(element: ParadoxLocalisationRichText, context: Context) {
+    private fun renderRichTextTo(element: ParadoxLocalisationRichText) {
         when (element) {
-            is ParadoxLocalisationString -> renderStringTo(element, context)
-            is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element, context)
-            is ParadoxLocalisationParameter -> renderParameterTo(element, context)
-            is ParadoxLocalisationCommand -> renderCommandTo(element, context)
-            is ParadoxLocalisationIcon -> renderIconTo(element, context)
-            is ParadoxLocalisationConceptCommand -> renderConceptTo(element, context)
-            is ParadoxLocalisationTextFormat -> renderTextFormatTo(element, context)
-            is ParadoxLocalisationTextIcon -> renderTextIconTo(element, context)
+            is ParadoxLocalisationString -> renderStringTo(element)
+            is ParadoxLocalisationColorfulText -> renderColorfulTextTo(element)
+            is ParadoxLocalisationParameter -> renderParameterTo(element)
+            is ParadoxLocalisationCommand -> renderCommandTo(element)
+            is ParadoxLocalisationIcon -> renderIconTo(element)
+            is ParadoxLocalisationConceptCommand -> renderConceptCommandTo(element)
+            is ParadoxLocalisationTextFormat -> renderTextFormatTo(element)
+            is ParadoxLocalisationTextIcon -> renderTextIconTo(element)
+            else -> throw UnsupportedOperationException()
         }
     }
 
-    private fun renderStringTo(element: ParadoxLocalisationString, context: Context) {
+    private fun renderStringTo(element: ParadoxLocalisationString) {
         val text = ParadoxEscapeManager.unescapeStringForLocalisation(element.text, ParadoxEscapeManager.Type.Default)
-        context.builder.append(text)
+        builder.append(text)
     }
 
-    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText, context: Context) {
+    private fun renderColorfulTextTo(element: ParadoxLocalisationColorfulText) {
         //直接渲染其中的文本
         for (v in element.richTextList) {
-            renderTo(v, context)
+            renderRichTextTo(v)
         }
     }
 
-    private fun renderParameterTo(element: ParadoxLocalisationParameter, context: Context) {
+    private fun renderParameterTo(element: ParadoxLocalisationParameter) {
         val resolved = element.reference?.resolveLocalisation() //直接解析为本地化以优化性能
             ?: element.scriptedVariableReference?.reference?.resolve()
         when {
             resolved is ParadoxLocalisationProperty -> {
                 if (ParadoxLocalisationManager.isSpecialLocalisation(resolved)) {
-                    context.builder.append(element.text)
+                    builder.append(element.text)
                 } else {
                     val resolvedName = resolved.name
-                    if (context.guardStack.contains(resolvedName)) {
+                    if (guardStack.contains(resolvedName)) {
                         //infinite recursion, do not render context
-                        context.builder.append(element.text)
+                        builder.append(element.text)
                     } else {
-                        context.guardStack.addLast(resolvedName)
                         try {
-                            renderTo(resolved, context)
+                            renderTo(resolved)
                         } finally {
-                            context.guardStack.removeLast()
+                            guardStack.removeLast()
                         }
                     }
                 }
             }
             resolved is CwtProperty -> {
-                context.builder.append(resolved.value)
+                builder.append(resolved.value)
             }
             resolved is ParadoxScriptScriptedVariable && resolved.value != null -> {
-                context.builder.append(resolved.value)
+                builder.append(resolved.value)
             }
             else -> {
-                context.builder.append(element.text)
+                builder.append(element.text)
             }
         }
     }
 
-    private fun renderCommandTo(element: ParadoxLocalisationCommand, context: Context) {
+    private fun renderCommandTo(element: ParadoxLocalisationCommand) {
         //直接显示命令文本
-        context.builder.append(element.text)
+        builder.append(element.text)
     }
 
-    private fun renderConceptTo(element: ParadoxLocalisationConceptCommand, context: Context) {
+    private fun renderIconTo(element: ParadoxLocalisationIcon) {
+        //忽略
+        //builder.append(":${element.name}:")
+    }
+
+    private fun renderConceptCommandTo(element: ParadoxLocalisationConceptCommand) {
         //尝试渲染概念文本
         val (_, textElement) = ParadoxGameConceptManager.getReferenceElementAndTextElement(element)
         val richTextList = when {
@@ -106,30 +105,25 @@ object ParadoxLocalisationTextRenderer {
         run r2@{
             if (richTextList.isNullOrEmpty()) return@r2
             for (richText in richTextList) {
-                renderTo(richText, context)
+                renderRichTextTo(richText)
             }
             return
         }
 
-        context.builder.append(element.text)
+        builder.append(element.text)
         return
     }
 
-    private fun renderIconTo(element: ParadoxLocalisationIcon, context: Context) {
-        //忽略
-        //builder.append(":${element.name}:")
-    }
-
-    private fun renderTextFormatTo(element: ParadoxLocalisationTextFormat, context: Context) {
+    private fun renderTextFormatTo(element: ParadoxLocalisationTextFormat) {
         //直接渲染其中的文本
         val richTextList = element.textFormatText?.richTextList
         if (richTextList.isNullOrEmpty()) return
         for (richText in richTextList) {
-            renderTo(richText, context)
+            renderRichTextTo(richText)
         }
     }
 
-    private fun renderTextIconTo(element: ParadoxLocalisationTextIcon, context: Context) {
+    private fun renderTextIconTo(element: ParadoxLocalisationTextIcon) {
         //忽略
         //builder.append(":${element.name}:")
     }

@@ -711,7 +711,7 @@ object ParadoxDefinitionManager {
         val primaryLocalisations = getPrimaryLocalisations(element)
         primaryLocalisations.forEach { localisation ->
             ProgressManager.checkCanceled()
-            val r = ParadoxLocalisationTextRenderer.render(localisation).orNull()
+            val r = ParadoxLocalisationTextRenderer().render(localisation).orNull()
             if (r != null) localizedNames.add(r)
         }
         return localizedNames

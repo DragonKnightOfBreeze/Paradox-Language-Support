@@ -78,7 +78,7 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Set
     }
 
     private fun PresentationFactory.doCollect(localisation: ParadoxLocalisationProperty, editor: Editor, settings: Settings): InlayPresentation? {
-        return ParadoxLocalisationTextInlayRenderer.render(localisation, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
+        return ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit).render(localisation)
     }
 }
 

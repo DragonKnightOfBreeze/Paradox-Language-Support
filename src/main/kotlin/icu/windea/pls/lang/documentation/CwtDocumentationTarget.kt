@@ -24,7 +24,6 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.lang.util.renderer.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
@@ -225,12 +224,12 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
         if (sections == null || render) return@rs
         run {
             if (nameLocalisation == null) return@run
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(nameLocalisation, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(nameLocalisation)
             sections.put("name", richText)
         }
         run {
             if (descLocalisation == null) return@run
-            val richText = ParadoxLocalisationTextHtmlRenderer.render(descLocalisation, forDoc = true)
+            val richText = ParadoxLocalisationTextHtmlRenderer(forDoc = true).render(descLocalisation)
             sections.put("desc", richText)
         }
     }
@@ -261,7 +260,7 @@ private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceE
         if (sections == null || render) return@rs
         run {
             if (iconFile == null) return@run
-            val url = ParadoxImageResolver.resolveUrlByFile(iconFile, project) ?: return@run
+            val url = ParadoxImageManager.resolveUrlByFile(iconFile, project) ?: return@run
             sections.put("icon", buildDocumentation { appendImgTag(url) })
         }
     }

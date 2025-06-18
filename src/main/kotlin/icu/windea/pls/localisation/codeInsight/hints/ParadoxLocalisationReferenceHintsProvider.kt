@@ -59,7 +59,7 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvid
     }
 
     private fun PresentationFactory.doCollect(element: ParadoxLocalisationParameter, editor: Editor, settings: Settings): InlayPresentation? {
-        return ParadoxLocalisationTextInlayRenderer.render(element, this, editor, settings.textLengthLimit, settings.iconHeightLimit)
+        return ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit).render(element)
     }
 }
 

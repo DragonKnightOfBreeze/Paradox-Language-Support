@@ -16,7 +16,6 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.image.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxModifierIconHintsProvider.*
 import icu.windea.pls.script.psi.*
 import javax.imageio.*
@@ -66,10 +65,10 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
                 val iconSelector = selector(project, element).file().contextSensitive()
                 ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
             } ?: return true
-            val iconUrl = ParadoxImageResolver.resolveUrlByFile(iconFile, project)
+            val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile, project)
 
             //如果无法解析（包括对应文件不存在的情况）就直接跳过
-            if(!ParadoxImageResolver.canResolve(iconUrl)) return true
+            if(!ParadoxImageManager.canResolve(iconUrl)) return true
 
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             val iconFileUrl = iconUrl.toFileUrl()
