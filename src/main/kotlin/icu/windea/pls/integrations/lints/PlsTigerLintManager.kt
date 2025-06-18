@@ -13,8 +13,6 @@ import icu.windea.pls.model.*
 
 object PlsTigerLintManager {
     object Keys : KeyRegistry() {
-        val tigerLintTracker by createKey<SimpleModificationTracker>(Keys)
-        val tigerLintResult by createKey<PlsTigerLintResult>(Keys)
         val cachedTigerLintResult by createKey<CachedValue<PlsTigerLintResult>>(Keys)
     }
 
@@ -31,13 +29,12 @@ object PlsTigerLintManager {
     private fun doGetTigerLintResultFromFileFromCache(file: VirtualFile, project: Project): PlsTigerLintResult? {
         return CachedValuesManager.getManager(project).getCachedValue(file, Keys.cachedTigerLintResult, {
             val value = doGetTigerLintResultFromFile(file)
-            val tracker = file.getOrPutUserData(Keys.tigerLintTracker) { SimpleModificationTracker() }
-            value.withDependencyItems(tracker)
+            value.withDependencyItems(file)
         }, false)
     }
 
     private fun doGetTigerLintResultFromFile(file: VirtualFile): PlsTigerLintResult? {
-        //TODO 2.0.0-dev Tiger执行于根目录级别，而这里执行于单个文件级别，对于缓存需要做特别的处理
+        //TODO 2.0.0-dev Tiger执行于根目录级别，而这里执行于单个文件级别，对于缓存需要做特别的处理，从而优化性能
 
         val fileInfo = selectFile(file)?.fileInfo ?: return null
         val rootFile = fileInfo.rootInfo.rootFile
@@ -52,11 +49,7 @@ object PlsTigerLintManager {
         if (rootInfo !is ParadoxRootInfo.Mod) return null
         val gameType = rootInfo.gameType
         if (findTigerTool(gameType) == null) return null
-        return synchronized(file) { // 这里需要同步执行，防止不必要的重复执行检查工具
-            file.getOrPutUserData(Keys.tigerLintResult, PlsTigerLintResult.EMPTY) {
-                doGetTigerLintResultFromRootDirectory(file)
-            }
-        }
+        return doGetTigerLintResultFromRootDirectory(file) //这里目前不缓存结果……
     }
 
     private fun doGetTigerLintResultFromRootDirectory(file: VirtualFile): PlsTigerLintResult? {
