@@ -25,9 +25,6 @@ TODO
 * [X] #151 Local variable, defined inside inline_script but passed from the outside as a parameter is not recognized.
 * [X] #148 更改`date_field`的默认日期模式为`y.M.d`，且允许声明日期模式（`date_field[y.M.d]`） / OP: Change the default date format of `date_field` to `y.M.d`, and allow declaring date formats (`date_field[y.M.d]`)
 * [X] 修复：修复插件可能无法正确解析json，从而无法识别游戏目录的问题 / OP: Fix a bug that plugin may not be able to correctly parse json, causing the game directory to be incorrectly recognized
-* [X] 修复：修复插件的缓存目录中存在过多临时目录时，打开IDE后会卡住一段时间的问题 / OP: Fix a bug that when there are too many temporary directories in plugin's cache directory, the IDE may freeze for a while after opened
-* [X] 优化：解析DDS图片对应的缓存PNG图片路径时，如有必要异步转换DDS图片为PNG图片 / OP: When resolve path of the cached PNG image corresponding to the DDS image, convert the DDS image to PNG image asynchronously if necessary
-* [X] 优化：尝试避免打开尺寸过大的DDS图片时造成的UI冻结 / OP: Try to avoid UI freezing when opening large DDS images
 * [X] 优化：将插件的内部设置重构为`registryKey`，允许用户调整 / OP: Refactor the internal settings of the plugin to `registryKey`, allowing users to configure them
 * [X] 优化：通过快速文档为本地化参数和命令的传入参数提供其中使用的格式标签的说明 / OP: Provide information about format tags used in arguments of localisation parameters and commands by quick documentation
 * [X] 优化：为封装变量、复杂枚举值和动态值提供快速文档与内嵌提示，来自同名的本地化 / OP: Also provide quick documentation and inlay hints for scripted variables, complex enum values and dynamic values, from the same name localisation
@@ -35,7 +32,7 @@ TODO
 * [X] 优化：可以配置处理图片时使用的工具（默认且内置：Texconv，可选：Image Magick） / OP: Can configure the tool used to process images (Default and built-in: Texconv, Available: Image Magick)
 * [X] 优化：可以配置翻译本地化文本时使用的工具（目前仅限Translation Plugin） / OP: Can configure the tool used to translate localisation text (Currently limited to Translation Plugin)
 * [X] 优化：可以配置要启用的检查工具（目前仅限Tiger） / OP: Can configure which lint tools to enable (Currently limited to Tiger)
-* [X] 优化：更好的对图片的支持，支持预览与渲染DDS、TGA图片，提供不同图片格式（PNG、DDS、TGA）之间的相互转换的操作 / OP: Better support for images, support previewing and rendering DDS, TGA images, and provide actions to convert image formats (PNG, DDS, TGA)
+* [X] 优化：更好的对图片的支持，优化实现，支持预览与渲染DDS、TGA图片，提供不同图片格式（PNG、DDS、TGA）之间的相互转换的操作 / OP: Better support for images, optimize the implementation, support to preview and render DDS, TGA images, and provide actions to convert image formats (PNG, DDS, TGA)
 * [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
 * [X] 新功能：集成AI，提供对应的设置页面 / NEW: Integrate AI, provide corresponding settings page
 * [X] 新功能：提供AI驱动的本地化翻译功能（意向） / NEW: Provide AI-driven localisation translation features (intentions)
