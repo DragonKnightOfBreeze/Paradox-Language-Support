@@ -12,9 +12,9 @@ import kotlin.io.path.*
 /**
  * 参见：[Tiger](https://github.com/amtep/tiger)
  *
- * 仅适用于模组目录。
+ * 目前仅适用于模组目录。
  */
-abstract class PlsTigerToolProvider : PlsCommandBasedLintToolProvider() {
+abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
     abstract val name: String
     abstract val forGameType: ParadoxGameType
     abstract val exePath: String?
@@ -84,19 +84,19 @@ abstract class PlsTigerToolProvider : PlsCommandBasedLintToolProvider() {
         return PlsTigerLintResult.parse(result) //如果无法解析json，这里会直接报错
     }
 
-    class Ck3 : PlsTigerToolProvider() {
+    class Ck3 : PlsTigerLintToolProvider() {
         override val name: String = "ck3-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Ck3
         override val exePath: String? get() = PlsFacade.getIntegrationsSettings().lint.ck3TigerPath
     }
 
-    class Ir : PlsTigerToolProvider() {
+    class Ir : PlsTigerLintToolProvider() {
         override val name: String = "imperator-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Ir
         override val exePath: String? get() = PlsFacade.getIntegrationsSettings().lint.irTigerPath
     }
 
-    class Vic3 : PlsTigerToolProvider() {
+    class Vic3 : PlsTigerLintToolProvider() {
         override val name: String = "vic3-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Vic3
         override val exePath: String? get() = PlsFacade.getIntegrationsSettings().lint.vic3TigerPath

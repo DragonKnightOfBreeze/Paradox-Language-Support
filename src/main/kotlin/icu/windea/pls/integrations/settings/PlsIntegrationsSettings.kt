@@ -49,5 +49,7 @@ class PlsIntegrationsSettingsState : BaseState() {
         var ck3TigerPath by string() //e.g., /path/to/ck3-tiger
         var irTigerPath by string() //e.g., /path/to/imperator-tiger
         var vic3TigerPath by string() //e.g., /path/to/vic3-tiger
+
+        //TODO 2.0.0-dev 提供对conf文件的支持并在这里允许配置
     }
 }

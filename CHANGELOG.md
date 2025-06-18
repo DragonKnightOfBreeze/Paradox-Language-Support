@@ -22,7 +22,7 @@ TODO
 
 ## 2.0.0-dev
 
-* [ ] #128 [VIC3/CK3] Add ck3-tiger validator support to Plugin
+* [X] #128 集成Tiger检查工具 / Integrate Tiger lint tools
 * [X] #151 Local variable, defined inside inline_script but passed from the outside as a parameter is not recognized.
 * [X] #148 更改`date_field`的默认日期模式为`y.M.d`，且允许声明日期模式（`date_field[y.M.d]`） / Change the default date format of `date_field` to `y.M.d`, and allow declaring date formats (`date_field[y.M.d]`)
 * [X] 修复：修复插件可能无法正确解析json，从而无法识别游戏目录的问题 / FIX: Fix a bug that plugin may not be able to correctly parse json, causing the game directory to be incorrectly recognized

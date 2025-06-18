@@ -1,6 +1,8 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
     <applicationConfigurable id="pls.integrations" parentId="pls" bundle="messages.PlsBundle" key="settings.integrations" instance="icu.windea.pls.integrations.settings.PlsIntegrationsSettingsConfigurable"/>
+
+    <vfs.asyncListener implementation="icu.windea.pls.integrations.lints.PlsTigerLintFileListener"/>
   </extensions>
 
   <extensionPoints>
@@ -16,8 +18,8 @@
     <!-- see pls-extension-translation.xml -->
     <!--<translationToolProvider implementation="icu.windea.pls.integrations.translation.providers.PlsTranslationPluginToolProvider"/>-->
 
-    <lintToolProvider implementation="icu.windea.pls.integrations.lints.tools.PlsTigerToolProvider$Ck3"/>
-    <lintToolProvider implementation="icu.windea.pls.integrations.lints.tools.PlsTigerToolProvider$Ir"/>
-    <lintToolProvider implementation="icu.windea.pls.integrations.lints.tools.PlsTigerToolProvider$Vic3"/>
+    <lintToolProvider implementation="icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider$Ck3"/>
+    <lintToolProvider implementation="icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider$Ir"/>
+    <lintToolProvider implementation="icu.windea.pls.integrations.lints.tools.PlsTigerLintToolProvider$Vic3"/>
   </extensions>
 </idea-plugin>

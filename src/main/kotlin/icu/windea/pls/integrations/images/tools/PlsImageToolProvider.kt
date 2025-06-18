@@ -10,6 +10,8 @@ import java.nio.file.*
  * 注意：具体的操作方法可能不会再次验证工具是否可用。
  */
 interface PlsImageToolProvider {
+    fun isAvailable() = isEnabled() && isSupported() && isValid()
+
     fun isEnabled(): Boolean
 
     fun isSupported(): Boolean

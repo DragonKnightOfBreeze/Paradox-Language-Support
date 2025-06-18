@@ -11,6 +11,8 @@ import icu.windea.pls.model.*
  * 注意：具体的操作方法可能不会再次验证工具是否可用。
  */
 interface PlsLintToolProvider {
+    fun isAvailable(gameType: ParadoxGameType?) = isEnabled() && isSupported(gameType) && isValid()
+
     fun isEnabled(): Boolean
 
     fun isSupported(gameType: ParadoxGameType?): Boolean

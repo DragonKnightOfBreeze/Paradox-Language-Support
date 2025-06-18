@@ -1,13 +1,17 @@
 package icu.windea.pls.integrations.lints
 
 import com.fasterxml.jackson.module.kotlin.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.data.*
 
 /**
+ * @property itemGroup 键是相对于游戏或模组目录的路经，值是对应的一组检查结果项。
+ *
  * 参见：[JSON output format · amtep/tiger Wiki](https://github.com/amtep/tiger/wiki/JSON-output-format)
  */
 class PlsTigerLintResult(
-    val items: List<Item> = emptyList()
+    val items: List<Item> = emptyList(),
+    val itemGroup: Map<String, List<Item>> = emptyMap()
 ) : PlsLintResult {
     data class Item(
         /**
@@ -70,17 +74,17 @@ class PlsTigerLintResult(
          * The line number within the file, starting at 1.
          * Will be `null` if the report is for the whole file.
          */
-        val linenr: Int,
+        val linenr: Int?,
         /**
          * The column position within the line, starting at 1, and counting UTF-8 code points.
          * Will be `null` if the report is for the whole file.
          */
-        val column: Int,
+        val column: Int?,
         /**
          * The length of the item being pointed at, in UTF-8 code points.
          * Can be used for highlighting the whole item. Can be `null` if the length is not known.
          */
-        val length: Int,
+        val length: Int?,
         /**
          * A short description of the role of this location in the error report.
          * Can be `null`, and is often `null` for the first location in a report.
@@ -90,22 +94,51 @@ class PlsTigerLintResult(
          * The contents of the line from the file. Can be `null` if the report is for the whole file,
          * or if there was some error in fetching the line from the file.
          */
-        val line: String,
+        val line: String?,
     )
 
     enum class Severity {
-        Tips, Untidy, Warning, Error, Fatal
+        Tips, Untidy, Warning, Error, Fatal,
+        ;
+
+        override fun toString(): String {
+            return name.lowercase()
+        }
     }
 
     enum class Confidence {
-        Weak, Reasonable, Strong
+        Weak, Reasonable, Strong,
+        ;
+
+        override fun toString(): String {
+            return name.lowercase()
+        }
     }
 
     companion object {
+        @JvmField
+        val EMPTY = PlsTigerLintResult()
+
         @JvmStatic
         fun parse(json: String): PlsTigerLintResult {
             val items = jsonMapper.readValue<List<Item>>(json)
-            return PlsTigerLintResult(items)
+            if (items.isEmpty()) return EMPTY
+            val itemGroup = mutableMapOf<String, MutableList<Item>>()
+            for (item in items) {
+                val singlePath = item.locations.mapTo(mutableSetOf()) { it.path }.singleOrNull()
+                if (singlePath != null) {
+                    val p = singlePath.normalizePath()
+                    itemGroup.getOrPut(p) { mutableListOf() }.add(item)
+                } else {
+                    val locationGroup = item.locations.groupBy { it.path }
+                    locationGroup.forEach { (path, locations) ->
+                        val p = path.normalizePath()
+                        val newItem = Item(item.severity, item.confidence, item.key, item.message, item.info, locations)
+                        itemGroup.getOrPut(p) { mutableListOf() }.add(newItem)
+                    }
+                }
+            }
+            return PlsTigerLintResult(items, itemGroup)
         }
     }
 }

@@ -130,6 +130,8 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                         .align(Align.FILL)
                         .validationOnApply { validateVic3TigerPath(this, it) }
                 }.enabledIf(cbTiger.selected)
+
+                //TODO 2.0.0-dev 提供对conf文件的支持并在这里允许配置
             }
         }
     }
@@ -145,7 +147,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
     private fun validateCk3TigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
         val path = button.text.trim()
         if (path.isEmpty()) return null
-        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsTigerToolProvider.Ck3::class.java) ?: return null
+        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsTigerLintToolProvider.Ck3::class.java) ?: return null
         if (tool.validatePath(path)) return null
         return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
     }
@@ -153,7 +155,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
     private fun validateIrTigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
         val path = button.text.trim()
         if (path.isEmpty()) return null
-        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsTigerToolProvider.Ir::class.java) ?: return null
+        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsTigerLintToolProvider.Ir::class.java) ?: return null
         if (tool.validatePath(path)) return null
         return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
     }
@@ -161,7 +163,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
     private fun validateVic3TigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
         val path = button.text.trim()
         if (path.isEmpty()) return null
-        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsTigerToolProvider.Vic3::class.java) ?: return null
+        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsTigerLintToolProvider.Vic3::class.java) ?: return null
         if (tool.validatePath(path)) return null
         return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
     }

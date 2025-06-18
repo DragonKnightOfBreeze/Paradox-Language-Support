@@ -6,7 +6,7 @@ import java.nio.file.*
 
 object PlsImageManager {
     fun findTool(): PlsImageToolProvider? {
-        return PlsImageToolProvider.EP_NAME.extensionList.findLast { it.isEnabled() && it.isSupported() && it.isValid() }
+        return PlsImageToolProvider.EP_NAME.extensionList.findLast { it.isAvailable() }
     }
 
     fun findRequiredTool(): PlsImageToolProvider {

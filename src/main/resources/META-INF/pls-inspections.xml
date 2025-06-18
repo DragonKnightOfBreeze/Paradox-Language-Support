@@ -424,5 +424,15 @@
                      implementationClass="icu.windea.pls.lang.inspections.localisation.expression.IncorrectDatabaseObjectExpressionInspection"/>
     <!--endregion-->
     <!--endregion-->
+
+    <!--region Lint Tools-->
+    <externalAnnotator language="PARADOX" implementationClass="icu.windea.pls.lang.inspections.lints.PlsTigerLintAnnotator"/>
+    <localInspection language="PARADOX" shortName="PlsTigerLint"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.lints.tiger"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.lints.group"
+                     groupPathKey="inspection.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.lints.PlsTigerLintInspection"/>
+    <!--endregion-->
   </extensions>
 </idea-plugin>

@@ -9,7 +9,7 @@ import icu.windea.pls.lang.util.*
  * 用于监听文件更改以更新相关缓存。
  */
 class PlsFileListener : AsyncFileListener {
-    override fun prepareChange(events: MutableList<out VFileEvent>): AsyncFileListener.ChangeApplier {
+    override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier {
         val filesToClearRootInfo = mutableSetOf<VirtualFile>()
         val filesToClearFileInfo = mutableSetOf<VirtualFile>()
         val filesToClearLocale = mutableSetOf<VirtualFile>()
