@@ -1,5 +1,6 @@
 package icu.windea.pls.core.console
 
+import com.intellij.openapi.diagnostic.*
 import icu.windea.pls.core.*
 import io.ktor.utils.io.charsets.Charset
 import java.io.*
@@ -11,13 +12,19 @@ class CommandExecutor(
     val directory: File? = null,
     val timeout: Long? = null
 ) {
+    companion object {
+        private val logger = logger<CommandExecutor>()
+    }
+
     @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
     fun execute(commands: List<String>): String {
+        logger.info("Executing commands: $commands")
         return doExecute(commands, Charsets.UTF_8)
     }
 
     @Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
     fun execute(command: String, commandType: CommandType?): String {
+        logger.info("Executing command: $command")
         val commandTypeToUse = getCommandTypeToUse(commandType)
         val commands = getCommands(command, commandTypeToUse)
         val outputCharset = CommandOutputCharsetDetector.detect(commandTypeToUse)
@@ -40,8 +47,14 @@ class CommandExecutor(
             process.waitFor(timeout, TimeUnit.MILLISECONDS)
         }
         val result = process.inputStream.bufferedReader(outputCharset).readText().trim()
+        if (result.isNotEmpty()) {
+            logger.info("Command result: $result")
+        } else {
+            logger.info("Done.")
+        }
         if (result.isNotEmpty() || process.exitValue() == 0) return result
         val errorResult = process.errorStream.bufferedReader(outputCharset).readText().trim()
+        logger.info("Command error result: $errorResult")
         throw CommandExecutionException(errorResult)
     }
 

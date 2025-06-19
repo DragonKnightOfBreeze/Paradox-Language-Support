@@ -54,14 +54,6 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
 
         val command = "./$exe $input -o $output -ft $targetFormat -y" // -y: overwrite existing files
         val result = executeCommand(command, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
-        val lines = result.lines()
-        val hasWarnings = lines.any { it.startsWith("WARNING: ") }
-
-        if (hasWarnings) {
-            thisLogger().warn("Execute texconv command with warnings.\nCommand: $command\nCommand result: $result")
-        } else {
-            thisLogger().info("Execute texconv command.\nCommand: $command\nCommand result: $result")
-        }
 
         if (outputPath.notExists()) {
             throw IllegalStateException("Failed to convert image: output file not found.\nCommand: $command\nResult: $result")

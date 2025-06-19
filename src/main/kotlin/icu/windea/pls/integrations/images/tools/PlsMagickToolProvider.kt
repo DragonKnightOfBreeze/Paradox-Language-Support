@@ -80,8 +80,6 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
         val command = "./$exe $input $output"
         val result = executeCommand(command, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
 
-        thisLogger().info("Execute magick command.\nCommand: $command\nCommand result: $result")
-
         if (outputPath.notExists()) {
             throw IllegalStateException("Failed to convert image: output file not found.\nCommand: $command\nResult: $result")
         }
