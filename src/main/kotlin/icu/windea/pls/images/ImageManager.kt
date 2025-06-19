@@ -1,16 +1,15 @@
 package icu.windea.pls.images
 
 import com.intellij.openapi.fileTypes.*
-import com.twelvemonkeys.imageio.plugins.dds.DDSImageReaderSpi
-import com.twelvemonkeys.imageio.plugins.tga.TGAImageReaderSpi
+import com.twelvemonkeys.imageio.plugins.dds.*
+import com.twelvemonkeys.imageio.plugins.tga.*
 import icu.windea.pls.images.dds.*
-import icu.windea.pls.images.support.ImageSupport
-import icu.windea.pls.images.tga.TgaFileType
+import icu.windea.pls.images.support.*
+import icu.windea.pls.images.tga.*
 import org.intellij.images.fileTypes.impl.*
-import java.io.InputStream
-import java.io.OutputStream
-import java.nio.file.Path
-import javax.imageio.spi.IIORegistry
+import java.io.*
+import java.nio.file.*
+import javax.imageio.spi.*
 
 object ImageManager {
     fun isImageFileType(fileType: FileType): Boolean {

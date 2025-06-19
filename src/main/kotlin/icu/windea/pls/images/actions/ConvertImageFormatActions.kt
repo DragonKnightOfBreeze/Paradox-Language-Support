@@ -1,8 +1,8 @@
 package icu.windea.pls.images.actions
 
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.images.dds.DdsFileType
-import icu.windea.pls.images.tga.TgaFileType
+import icu.windea.pls.images.dds.*
+import icu.windea.pls.images.tga.*
 import org.intellij.images.fileTypes.impl.*
 
 interface ConvertImageFormatActions {

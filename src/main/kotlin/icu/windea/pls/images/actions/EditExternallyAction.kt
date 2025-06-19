@@ -12,7 +12,7 @@ import com.intellij.openapi.util.io.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.util.*
-import icu.windea.pls.images.ImageManager
+import icu.windea.pls.images.*
 import org.intellij.images.*
 import org.intellij.images.fileTypes.*
 import org.intellij.images.options.impl.*

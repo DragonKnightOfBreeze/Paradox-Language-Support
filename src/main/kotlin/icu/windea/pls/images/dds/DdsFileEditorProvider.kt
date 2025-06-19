@@ -3,7 +3,7 @@ package icu.windea.pls.images.dds
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
-import icu.windea.pls.images.editor.ImageFileEditorImpl
+import icu.windea.pls.images.editor.*
 
 //org.intellij.images.editor.impl.ImageFileEditorProvider
 

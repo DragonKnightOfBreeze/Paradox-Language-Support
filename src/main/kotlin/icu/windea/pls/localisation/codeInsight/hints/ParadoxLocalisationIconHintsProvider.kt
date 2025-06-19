@@ -11,7 +11,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.util.ParadoxImageManager
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.codeInsight.hints.ParadoxLocalisationIconHintsProvider.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*

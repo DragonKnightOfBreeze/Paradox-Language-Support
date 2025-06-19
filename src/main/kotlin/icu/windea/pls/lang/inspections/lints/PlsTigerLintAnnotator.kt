@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.inspections.lints
 
 import com.intellij.lang.annotation.*
-import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*

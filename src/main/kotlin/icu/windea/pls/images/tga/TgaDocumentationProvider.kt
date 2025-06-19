@@ -7,7 +7,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.text.*
 import com.intellij.psi.*
 import icu.windea.pls.core.documentation.*
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.*
 
 //org.intellij.images.fileTypes.ImageDocumentationProvider
 

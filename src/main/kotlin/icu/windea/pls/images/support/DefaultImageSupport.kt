@@ -1,6 +1,6 @@
 package icu.windea.pls.images.support
 
-import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import java.io.*
 import java.nio.file.*
