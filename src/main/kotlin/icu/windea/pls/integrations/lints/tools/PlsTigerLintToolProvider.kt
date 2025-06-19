@@ -7,7 +7,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.integrations.lints.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.PlsPathConstants
+import icu.windea.pls.model.constants.*
 import kotlin.io.path.*
 
 /**

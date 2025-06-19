@@ -11,6 +11,8 @@ import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.ui.layout.selected
 import icu.windea.pls.*
 import icu.windea.pls.ai.settings.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.tupleOf
 import icu.windea.pls.integrations.*
 import icu.windea.pls.integrations.images.tools.*
 import icu.windea.pls.integrations.lints.*
@@ -105,53 +107,39 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                         .applyToComponent { cbTiger = this }
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Tiger.url)
                 }
-                run {
-                    val gameType = ParadoxGameType.Ck3
-                    //ck3TigerPath
-                    row {
-                        label(PlsBundle.message("settings.integrations.lint.ck3TigerPath")).widthGroup(groupNameLint)
-                        val descriptor = FileChooserDescriptorFactory.singleFile()
-                            .withTitle(PlsBundle.message("settings.integrations.lint.ck3TigerPath.title"))
-                        textFieldWithBrowseButton(descriptor, null)
-                            .bindText(settings.lint::ck3TigerPath.toNonNullableProperty(""))
-                            .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
-                            .align(Align.FILL)
-                            .validationOnInput { validateCk3TigerPath(this, it) }
-                            .onApply { onTigerSettingsChanged(gameType) }
-                    }.enabledIf(cbTiger.selected)
-                }
-                run {
-                    val gameType = ParadoxGameType.Ir
-                    //irTigerPath
-                    row {
-                        label(PlsBundle.message("settings.integrations.lint.irTigerPath")).widthGroup(groupNameLint)
-                        val descriptor = FileChooserDescriptorFactory.singleFile()
-                            .withTitle(PlsBundle.message("settings.integrations.lint.irTigerPath.title"))
-                        textFieldWithBrowseButton(descriptor, null)
-                            .bindText(settings.lint::irTigerPath.toNonNullableProperty(""))
-                            .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
-                            .align(Align.FILL)
-                            .validationOnInput { validateIrTigerPath(this, it) }
-                            .onApply { onTigerSettingsChanged(gameType) }
-                    }.enabledIf(cbTiger.selected)
-                }
-                run {
-                    val gameType = ParadoxGameType.Vic3
-                    //vic3TigerPath
-                    row {
-                        label(PlsBundle.message("settings.integrations.lint.vic3TigerPath")).widthGroup(groupNameLint)
-                        val descriptor = FileChooserDescriptorFactory.singleFile()
-                            .withTitle(PlsBundle.message("settings.integrations.lint.vic3TigerPath.title"))
-                        textFieldWithBrowseButton(descriptor, null)
-                            .bindText(settings.lint::vic3TigerPath.toNonNullableProperty(""))
-                            .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
-                            .align(Align.FILL)
-                            .validationOnInput { validateVic3TigerPath(this, it) }
-                            .onApply { onTigerSettingsChanged(gameType) }
-                    }.enabledIf(cbTiger.selected)
+                val map = buildMap {
+                    put(ParadoxGameType.Ck3, tupleOf("ck3-tiger", settings.lint::ck3TigerPath, settings.lint::ck3TigerConfPath))
+                    put(ParadoxGameType.Ir, tupleOf("imperator-tiger", settings.lint::irTigerPath, settings.lint::irTigerConfPath))
+                    put(ParadoxGameType.Vic3, tupleOf("vic3-tiger", settings.lint::vic3TigerPath, settings.lint::vic3TigerConfPath))
                 }
 
-                //TODO 2.0.0-dev 提供对conf文件的支持并在这里允许配置
+                map.forEach { gameType, tuple ->
+                    val (name, pathProp, confPathProp) = tuple
+
+                    row {
+                        label(PlsBundle.message("settings.integrations.lint.tigerPath", name)).widthGroup(groupNameLint)
+                        val descriptor = FileChooserDescriptorFactory.singleFile()
+                            .withTitle(PlsBundle.message("settings.integrations.lint.tigerPath.title", name))
+                        textFieldWithBrowseButton(descriptor, null)
+                            .bindText(pathProp.toNonNullableProperty(""))
+                            .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
+                            .align(Align.FILL)
+                            .validationOnInput { validateTigerPath(this, it, gameType) }
+                            .onApply { onTigerSettingsChanged(gameType) }
+                    }.enabledIf(cbTiger.selected)
+                    row {
+                        label(PlsBundle.message("settings.integrations.lint.tigerConfPath", name)).widthGroup(groupNameLint)
+                        val descriptor = FileChooserDescriptorFactory.singleFile()
+                            //.withExtensionFilter("conf") //这里不预先按扩展名过滤
+                            .withTitle(PlsBundle.message("settings.integrations.lint.tigerConfPath.title", name))
+                        textFieldWithBrowseButton(descriptor, null)
+                            .bindText(confPathProp.toNonNullableProperty(""))
+                            .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
+                            .validationOnInput { validateTigerConfPath(this, it, gameType) }
+                            .align(Align.FILL)
+                            .onApply { onTigerSettingsChanged(gameType) }
+                    }.enabledIf(cbTiger.selected)
+                }
             }
         }
     }
@@ -164,28 +152,18 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
         return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
     }
 
-    private fun validateCk3TigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
+    private fun validateTigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton, gameType: ParadoxGameType): ValidationInfo? {
         val path = button.text.trim()
         if (path.isEmpty()) return null
-        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsTigerLintToolProvider.Ck3::class.java) ?: return null
+        val tool = PlsLintToolProvider.EP_NAME.extensionList.findIsInstance<PlsTigerLintToolProvider> { it.isAvailable(gameType) } ?: return null
         if (tool.validatePath(path)) return null
-        return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
+        return builder.warning(PlsBundle.message("settings.integrations.lint.tigerPath.invalid"))
     }
 
-    private fun validateIrTigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
+    private fun validateTigerConfPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton, gameType: ParadoxGameType): ValidationInfo? {
         val path = button.text.trim()
-        if (path.isEmpty()) return null
-        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsTigerLintToolProvider.Ir::class.java) ?: return null
-        if (tool.validatePath(path)) return null
-        return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
-    }
-
-    private fun validateVic3TigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
-        val path = button.text.trim()
-        if (path.isEmpty()) return null
-        val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsTigerLintToolProvider.Vic3::class.java) ?: return null
-        if (tool.validatePath(path)) return null
-        return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
+        if(path.endsWith(".conf", true)) return null
+        return builder.warning(PlsBundle.message("settings.integrations.lint.tigerConfPath.invalid"))
     }
 
     private fun onTigerSettingsChanged() {

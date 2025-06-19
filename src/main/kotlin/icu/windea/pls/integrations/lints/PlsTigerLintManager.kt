@@ -59,7 +59,8 @@ object PlsTigerLintManager {
     private fun doGetTigerLintResultForFile(file: PsiFile): PlsTigerLintResult? {
         val fileInfo = selectFile(file)?.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
-        val rootDirectory = runReadAction { rootInfo.rootFile.toPsiDirectory(file.project) } ?: return null
+        val rootFile = rootInfo.rootFile
+        val rootDirectory = runReadAction { rootFile.toPsiDirectory(file.project) } ?: return null
         val allResult = getTigerLintResultForRootDirectory(rootDirectory) ?: return null
         val result = allResult.fromPath(fileInfo.path.path)
         return result

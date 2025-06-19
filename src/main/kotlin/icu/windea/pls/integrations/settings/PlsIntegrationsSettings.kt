@@ -55,7 +55,5 @@ class PlsIntegrationsSettingsState : BaseState() {
         var irTigerConfPath by string() // absolute or relative to mod path
         var vic3TigerPath by string() // e.g., /path/to/vic3-tiger
         var vic3TigerConfPath by string() // absolute or relative to mod path
-
-        //TODO 2.0.0-dev 提供对conf文件的支持并在这里允许配置
     }
 }
