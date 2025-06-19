@@ -22,12 +22,12 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
     }
 
     override fun isValid(): Boolean {
-        val path = PlsFacade.getIntegrationsSettings().image.magickPath?.trim()
-        if (path.isNullOrEmpty()) return false
-        return validatePath(path)
+        val toolPath = PlsFacade.getIntegrationsSettings().image.magickPath?.trim()
+        if (toolPath.isNullOrEmpty()) return false
+        return validatePath(toolPath)
     }
 
-    fun validatePath(path: String): Boolean {
+    override fun validatePath(path: String): Boolean {
         return runCatchingCancelable { doValidatePath(path) }.getOrDefault(false)
     }
 
@@ -62,15 +62,16 @@ class PlsMagickToolProvider : PlsCommandBasedImageToolProvider() {
     }
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
+        val toolPath = PlsFacade.getIntegrationsSettings().image.magickPath?.trim()
+        if (toolPath.isNullOrEmpty()) throw IllegalStateException()
+
         val tempParentPath = PlsPathConstants.imagesTemp
         val outputDirectoryPath = targetDirectoryPath ?: tempParentPath
+        outputDirectoryPath.createDirectories()
         val outputFileName = targetFileName ?: (path.nameWithoutExtension + "." + targetFormat)
         val outputPath = outputDirectoryPath.resolve(outputFileName)
 
-        outputDirectoryPath.createDirectories()
-
-        val magickPath = PlsFacade.getIntegrationsSettings().image.magickPath?.trim()!!
-        val fullExePath = magickPath.toPath()
+        val fullExePath = toolPath.toPath()
         val wd = fullExePath.parent?.toFile()
         val exe = fullExePath.name.quoteIfNecessary('\'')
         val input = path.toString().quote('\'')

@@ -16,13 +16,13 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
             val settings = PlsFacade.getSettings()
             localeComboBox(withAuto = true).bindItem(settings::preferredLocale.toNullableProperty())
                 .onApply {
-                    refreshOnlyForOpenedFiles()
+                    refreshForOpenedFiles()
                 }
         }
     }
 
-    private fun refreshOnlyForOpenedFiles() {
+    private fun refreshForOpenedFiles() {
         val files = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsManager.reparseAndRefreshFiles(files, reparse = false)
+        PlsManager.refreshFiles(files)
     }
 }

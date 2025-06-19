@@ -1,7 +1,7 @@
 package icu.windea.pls.integrations.images.tools
 
 import com.intellij.openapi.diagnostic.*
-import icu.windea.pls.PlsFacade
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.model.constants.*
@@ -28,6 +28,10 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
         return true
     }
 
+    override fun validatePath(path: String): Boolean {
+        return true
+    }
+
     /**
      * @param targetFormat 参见：[File and pixel format options](https://github.com/microsoft/DirectXTex/wiki/Texconv#file-and-pixel-format-options)
      */
@@ -39,10 +43,9 @@ class PlsTexconvToolProvider : PlsCommandBasedImageToolProvider() {
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
         val tempParentPath = PlsPathConstants.imagesTemp
         val outputDirectoryPath = targetDirectoryPath ?: tempParentPath
+        outputDirectoryPath.createDirectories()
         val outputFileName = path.nameWithoutExtension + "." + targetFormat
         val outputPath = outputDirectoryPath.resolve(outputFileName)
-
-        outputDirectoryPath.createDirectories()
 
         val wd = texconvExeWd
         val exe = texconvExe.name.quoteIfNecessary('\'')

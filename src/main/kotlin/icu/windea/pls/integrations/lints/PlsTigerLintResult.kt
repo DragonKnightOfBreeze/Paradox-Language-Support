@@ -1,18 +1,28 @@
 package icu.windea.pls.integrations.lints
 
+import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.module.kotlin.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.data.*
+import java.io.*
 
 /**
  * @property itemGroup 键是相对于游戏或模组目录的路经，值是对应的一组检查结果项。
  *
  * 参见：[JSON output format · amtep/tiger Wiki](https://github.com/amtep/tiger/wiki/JSON-output-format)
  */
-class PlsTigerLintResult(
-    val items: List<Item> = emptyList(),
-    val itemGroup: Map<String, List<Item>> = emptyMap()
+data class PlsTigerLintResult(
+    val name: String,
+    val items: Collection<Item> = emptySet(),
+    val itemGroup: Map<String, Collection<Item>> = emptyMap(),
+    val error: Throwable? = null
 ) : PlsLintResult {
+    fun fromPath(path: String): PlsTigerLintResult? {
+        val items = itemGroup[path]
+        if (items.isNullOrEmpty()) return null
+        return PlsTigerLintResult(name, items)
+    }
+
     data class Item(
         /**
          * Severity is the potential impact of a problem.
@@ -24,6 +34,7 @@ class PlsTigerLintResult(
          * * "error" for bugs that are likely to affect gameplay.
          * * "fatal" for things that can cause crashes.
          */
+        @JsonProperty("severity")
         val severity: Severity,
         /**
          * Confidence is how sure the validator is of this problem.
@@ -69,12 +80,14 @@ class PlsTigerLintResult(
         /**
          * The full path to the file, suitable for opening it.
          */
+        @JsonProperty("fullpath")
         val fullPath: String,
         /**
          * The line number within the file, starting at 1.
          * Will be `null` if the report is for the whole file.
          */
-        val linenr: Int?,
+        @JsonProperty("linenr")
+        val lineNumber: Int?,
         /**
          * The column position within the line, starting at 1, and counting UTF-8 code points.
          * Will be `null` if the report is for the whole file.
@@ -101,8 +114,13 @@ class PlsTigerLintResult(
         Tips, Untidy, Warning, Error, Fatal,
         ;
 
-        override fun toString(): String {
-            return name.lowercase()
+        @JsonValue
+        fun toJson() = name.lowercase()
+
+        companion object {
+            @JsonCreator
+            @JvmStatic
+            fun fromJson(value: String) = entries.find { it.name.equals(value, ignoreCase = true) }
         }
     }
 
@@ -110,35 +128,40 @@ class PlsTigerLintResult(
         Weak, Reasonable, Strong,
         ;
 
-        override fun toString(): String {
-            return name.lowercase()
+        @JsonValue
+        fun toJson() = name.lowercase()
+
+        companion object {
+            @JsonCreator
+            @JvmStatic
+            fun fromJson(value: String) = entries.find { it.name.equals(value, ignoreCase = true) }
         }
     }
 
     companion object {
         @JvmField
-        val EMPTY = PlsTigerLintResult()
+        val EMPTY = PlsTigerLintResult("")
 
         @JvmStatic
-        fun parse(json: String): PlsTigerLintResult {
-            val items = jsonMapper.readValue<List<Item>>(json)
+        fun parse(name: String, outputFile: File): PlsTigerLintResult {
+            val items = jsonMapper.readValue<List<Item>>(outputFile)
             if (items.isEmpty()) return EMPTY
-            val itemGroup = mutableMapOf<String, MutableList<Item>>()
+            val itemGroup = mutableMapOf<String, MutableSet<Item>>()
             for (item in items) {
                 val singlePath = item.locations.mapTo(mutableSetOf()) { it.path }.singleOrNull()
                 if (singlePath != null) {
                     val p = singlePath.normalizePath()
-                    itemGroup.getOrPut(p) { mutableListOf() }.add(item)
+                    itemGroup.getOrPut(p) { mutableSetOf() }.add(item)
                 } else {
                     val locationGroup = item.locations.groupBy { it.path }
                     locationGroup.forEach { (path, locations) ->
                         val p = path.normalizePath()
                         val newItem = Item(item.severity, item.confidence, item.key, item.message, item.info, locations)
-                        itemGroup.getOrPut(p) { mutableListOf() }.add(newItem)
+                        itemGroup.getOrPut(p) { mutableSetOf() }.add(newItem)
                     }
                 }
             }
-            return PlsTigerLintResult(items, itemGroup)
+            return PlsTigerLintResult(name, items, itemGroup)
         }
     }
 }

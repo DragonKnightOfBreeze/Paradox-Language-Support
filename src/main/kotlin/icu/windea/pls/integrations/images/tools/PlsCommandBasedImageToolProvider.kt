@@ -8,28 +8,36 @@ import java.util.*
 import kotlin.io.path.*
 
 abstract class PlsCommandBasedImageToolProvider : PlsImageToolProvider {
-    final override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
+    final override fun isAvailable() = isEnabled() && isSupported() && isValid()
+
+    abstract fun isEnabled(): Boolean
+
+    abstract fun isSupported(): Boolean
+
+    abstract fun isValid(): Boolean
+
+    abstract fun validatePath(path: String): Boolean
+
+    final override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
         val pathsToDelete = mutableSetOf<Path>()
         try {
             val tempParentPath = PlsPathConstants.imagesTemp
+            tempParentPath.createDirectories()
             val path = tempParentPath.resolve(UUID.randomUUID().toString() + "." + sourceFormat)
             pathsToDelete.add(path)
-            tempParentPath.createDirectories()
             path.outputStream(StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
                 .use { IOUtils.copy(inputStream.buffered(), it) }
             val targetPath = convertImageFormat(path, null, null, sourceFormat, targetFormat)
             pathsToDelete.add(targetPath)
             targetPath.inputStream(StandardOpenOption.READ)
                 .use { IOUtils.copy(it.buffered(), outputStream) }
-            return true
         } finally {
             pathsToDelete.forEach { it.deleteIfExists() } // 确保删除临时文件
         }
     }
 
-    final override fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
+    final override fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
         convertImageFormat(path, targetPath.parent, targetPath.name, sourceFormat, targetFormat)
-        return true
     }
 
     abstract fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path

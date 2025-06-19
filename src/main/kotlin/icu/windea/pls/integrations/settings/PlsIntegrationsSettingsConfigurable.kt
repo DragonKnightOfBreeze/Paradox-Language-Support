@@ -13,7 +13,10 @@ import icu.windea.pls.*
 import icu.windea.pls.ai.settings.*
 import icu.windea.pls.integrations.*
 import icu.windea.pls.integrations.images.tools.*
+import icu.windea.pls.integrations.lints.*
 import icu.windea.pls.integrations.lints.tools.*
+import icu.windea.pls.lang.*
+import icu.windea.pls.model.*
 
 @Suppress("UnstableApiUsage")
 class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.integrations")), SearchableConfigurable {
@@ -21,8 +24,10 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
 
     private val groupNameImage = "pls.integrations.image"
     private val groupNameLint = "pls.integrations.lint"
+    private val callbackLock = mutableSetOf<String>()
 
     override fun createPanel(): DialogPanel {
+        callbackLock.clear()
         val settings = PlsFacade.getIntegrationsSettings()
         return panel {
             //image tools
@@ -31,6 +36,8 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
 
                 row {
                     comment(PlsBundle.message("settings.integrations.image.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+                }
+                row {
                     comment(PlsBundle.message("settings.integrations.image.comment1"), MAX_LINE_LENGTH_WORD_WRAP)
                 }
                 row {
@@ -54,7 +61,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                         .bindText(settings.image::magickPath.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                         .align(Align.FILL)
-                        .validationOnApply { validateMagickPath(this, it) }
+                        .validationOnInput { validateMagickPath(this, it) }
                 }.enabledIf(cbMagick.selected)
             }
             //translation tools
@@ -94,42 +101,55 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 //enableTiger
                 row {
                     checkBox(PlsBundle.message("settings.integrations.lint.tiger")).bindSelected(settings.lint::enableTiger)
+                        .onApply { onTigerSettingsChanged() }
                         .applyToComponent { cbTiger = this }
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Tiger.url)
                 }
-                //ck3TigerPath
-                row {
-                    label(PlsBundle.message("settings.integrations.lint.ck3TigerPath")).widthGroup(groupNameLint)
-                    val descriptor = FileChooserDescriptorFactory.singleFile()
-                        .withTitle(PlsBundle.message("settings.integrations.lint.ck3TigerPath.title"))
-                    textFieldWithBrowseButton(descriptor, null)
-                        .bindText(settings.lint::ck3TigerPath.toNonNullableProperty(""))
-                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
-                        .align(Align.FILL)
-                        .validationOnApply { validateCk3TigerPath(this, it) }
-                }.enabledIf(cbTiger.selected)
-                //irTigerPath
-                row {
-                    label(PlsBundle.message("settings.integrations.lint.irTigerPath")).widthGroup(groupNameLint)
-                    val descriptor = FileChooserDescriptorFactory.singleFile()
-                        .withTitle(PlsBundle.message("settings.integrations.lint.irTigerPath.title"))
-                    textFieldWithBrowseButton(descriptor, null)
-                        .bindText(settings.lint::irTigerPath.toNonNullableProperty(""))
-                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
-                        .align(Align.FILL)
-                        .validationOnApply { validateIrTigerPath(this, it) }
-                }.enabledIf(cbTiger.selected)
-                //vic3TigerPath
-                row {
-                    label(PlsBundle.message("settings.integrations.lint.vic3TigerPath")).widthGroup(groupNameLint)
-                    val descriptor = FileChooserDescriptorFactory.singleFile()
-                        .withTitle(PlsBundle.message("settings.integrations.lint.vic3TigerPath.title"))
-                    textFieldWithBrowseButton(descriptor, null)
-                        .bindText(settings.lint::vic3TigerPath.toNonNullableProperty(""))
-                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
-                        .align(Align.FILL)
-                        .validationOnApply { validateVic3TigerPath(this, it) }
-                }.enabledIf(cbTiger.selected)
+                run {
+                    val gameType = ParadoxGameType.Ck3
+                    //ck3TigerPath
+                    row {
+                        label(PlsBundle.message("settings.integrations.lint.ck3TigerPath")).widthGroup(groupNameLint)
+                        val descriptor = FileChooserDescriptorFactory.singleFile()
+                            .withTitle(PlsBundle.message("settings.integrations.lint.ck3TigerPath.title"))
+                        textFieldWithBrowseButton(descriptor, null)
+                            .bindText(settings.lint::ck3TigerPath.toNonNullableProperty(""))
+                            .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
+                            .align(Align.FILL)
+                            .validationOnInput { validateCk3TigerPath(this, it) }
+                            .onApply { onTigerSettingsChanged(gameType) }
+                    }.enabledIf(cbTiger.selected)
+                }
+                run {
+                    val gameType = ParadoxGameType.Ir
+                    //irTigerPath
+                    row {
+                        label(PlsBundle.message("settings.integrations.lint.irTigerPath")).widthGroup(groupNameLint)
+                        val descriptor = FileChooserDescriptorFactory.singleFile()
+                            .withTitle(PlsBundle.message("settings.integrations.lint.irTigerPath.title"))
+                        textFieldWithBrowseButton(descriptor, null)
+                            .bindText(settings.lint::irTigerPath.toNonNullableProperty(""))
+                            .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
+                            .align(Align.FILL)
+                            .validationOnInput { validateIrTigerPath(this, it) }
+                            .onApply { onTigerSettingsChanged(gameType) }
+                    }.enabledIf(cbTiger.selected)
+                }
+                run {
+                    val gameType = ParadoxGameType.Vic3
+                    //vic3TigerPath
+                    row {
+                        label(PlsBundle.message("settings.integrations.lint.vic3TigerPath")).widthGroup(groupNameLint)
+                        val descriptor = FileChooserDescriptorFactory.singleFile()
+                            .withTitle(PlsBundle.message("settings.integrations.lint.vic3TigerPath.title"))
+                        textFieldWithBrowseButton(descriptor, null)
+                            .bindText(settings.lint::vic3TigerPath.toNonNullableProperty(""))
+                            .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
+                            .align(Align.FILL)
+                            .validationOnInput { validateVic3TigerPath(this, it) }
+                            .onApply { onTigerSettingsChanged(gameType) }
+                    }.enabledIf(cbTiger.selected)
+                }
 
                 //TODO 2.0.0-dev 提供对conf文件的支持并在这里允许配置
             }
@@ -166,5 +186,17 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
         val tool = PlsLintToolProvider.EP_NAME.findExtension(PlsTigerLintToolProvider.Vic3::class.java) ?: return null
         if (tool.validatePath(path)) return null
         return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
+    }
+
+    private fun onTigerSettingsChanged() {
+        if (!callbackLock.add("onTigerSettingsChanged")) return
+        val files = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsManager.refreshFiles(files, refreshInlayHints = false)
+    }
+
+    private fun onTigerSettingsChanged(gameType: ParadoxGameType) {
+        onTigerSettingsChanged()
+        if (!callbackLock.add("onTigerSettingsChanged.${gameType.id}")) return
+        PlsTigerLintManager.modificationTrackers.getValue(gameType).incModificationCount()
     }
 }

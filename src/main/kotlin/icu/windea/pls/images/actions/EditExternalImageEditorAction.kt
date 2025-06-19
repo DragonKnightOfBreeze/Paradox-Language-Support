@@ -47,10 +47,7 @@ class EditExternalImageEditorAction : DumbAwareAction() {
 
             return panel {
                 row(ImagesBundle.message("external.editor.executable.path")) {
-                    textFieldWithBrowseButton(
-                        project = project,
-                        fileChooserDescriptor = fileDescriptor,
-                        fileChosen = { it.path })
+                    textFieldWithBrowseButton(fileDescriptor, project) { it.path }
                         .bindText(
                             { PropertiesComponent.getInstance().getValue(EXT_PATH_KEY, "") },
                             { PropertiesComponent.getInstance().setValue(EXT_PATH_KEY, it) })

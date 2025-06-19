@@ -77,7 +77,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                             val newPreferredLocale = settings.preferredLocale
                             if (oldPreferredLocale == newPreferredLocale) return@onApply
                             preferredLocale = newPreferredLocale
-                            refreshOnlyForOpenedFiles()
+                            refreshForOpenedFiles()
                         }
                 }
                 //ignoredFileNames
@@ -533,13 +533,13 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 row {
                     checkBox(PlsBundle.message("settings.others.highlightLocalisationColorId"))
                         .bindSelected(settings.others::highlightLocalisationColorId)
-                        .onApply { refreshOnlyForOpenedFiles() }
+                        .onApply { refreshForOpenedFiles() }
                 }
                 //renderLocalisationColorfulText
                 row {
                     checkBox(PlsBundle.message("settings.others.renderLocalisationColorfulText"))
                         .bindSelected(settings.others::renderLocalisationColorfulText)
-                        .onApply { refreshOnlyForOpenedFiles() }
+                        .onApply { refreshForOpenedFiles() }
                 }
                 //defaultDiffGroup
                 row {
@@ -570,14 +570,14 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         if (!callbackLock.add("refreshForFilesByFileNames")) return
 
         val files = PlsManager.findFilesByFileNames(fileNames)
-        PlsManager.reparseAndRefreshFiles(files)
+        PlsManager.reparseFiles(files)
     }
 
-    private fun refreshOnlyForOpenedFiles() {
+    private fun refreshForOpenedFiles() {
         if (!callbackLock.add("refreshOnlyForOpenedFiles")) return
 
         val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsManager.reparseAndRefreshFiles(openedFiles, reparse = false)
+        PlsManager.refreshFiles(openedFiles)
     }
 
     private fun refreshForParameterInference() {
@@ -585,7 +585,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
 
         ParadoxModificationTrackers.ParameterConfigInferenceTracker.incModificationCount()
         val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsManager.reparseAndRefreshFiles(openedFiles)
+        PlsManager.reparseFiles(openedFiles)
     }
 
     private fun refreshForInlineScriptInference() {
@@ -595,7 +595,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
         ParadoxModificationTrackers.InlineScriptConfigInferenceTracker.incModificationCount()
         val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
-        PlsManager.reparseAndRefreshFiles(openedFiles)
+        PlsManager.reparseFiles(openedFiles)
     }
 
     private fun refreshForScopeContextInference() {
@@ -603,6 +603,6 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
 
         ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
         val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsManager.reparseAndRefreshFiles(openedFiles)
+        PlsManager.reparseFiles(openedFiles)
     }
 }

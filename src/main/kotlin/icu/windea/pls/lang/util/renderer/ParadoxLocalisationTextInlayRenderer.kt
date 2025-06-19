@@ -17,6 +17,7 @@ import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 import java.awt.event.*
+import java.util.concurrent.atomic.*
 import javax.imageio.*
 
 /**
@@ -31,7 +32,7 @@ class ParadoxLocalisationTextInlayRenderer(
     var textLengthLimit: Int = -1
     var iconHeightLimit: Int = -1
 
-    private var truncateRemain = textLengthLimit //记录到需要截断为止所剩余的长度
+    private val truncateRemain by lazy { AtomicInteger(textLengthLimit) } //记录到需要截断为止所剩余的长度
     private var lineEnd = false
     private val guardStack = ArrayDeque<String>() //防止StackOverflow
 
@@ -319,7 +320,7 @@ class ParadoxLocalisationTextInlayRenderer(
     }
 
     private fun PresentationFactory.truncatedSmallText(text: String): InlayPresentation {
-        val truncatedText = if (textLengthLimit > 0) text.take(truncateRemain) else text
+        val truncatedText = if (textLengthLimit > 0) text.take(truncateRemain.get()) else text
         val truncatedTextSingleLine = truncatedText.substringBefore('\n')
         val finalText = truncatedTextSingleLine
         val result = smallText(finalText)
@@ -327,13 +328,13 @@ class ParadoxLocalisationTextInlayRenderer(
             lineEnd = true
         }
         if (textLengthLimit > 0) {
-            truncateRemain -= truncatedText.length
+            truncateRemain.getAndAdd(-truncatedText.length)
         }
         return result
     }
 
     private fun continueProcess(): Boolean {
-        return !lineEnd && (truncateRemain > 0 || textLengthLimit <= 0)
+        return !lineEnd && (truncateRemain.get() > 0 || textLengthLimit <= 0)
     }
 
     private fun getElementPresentation(element: PsiElement): InlayPresentation? {

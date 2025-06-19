@@ -2,7 +2,6 @@ package icu.windea.pls.lang
 
 import com.intellij.codeInsight.daemon.*
 import com.intellij.codeInsight.daemon.impl.*
-import com.intellij.codeInsight.hints.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.vfs.*
@@ -11,11 +10,6 @@ import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.codeInsight.hints.*
-import icu.windea.pls.script.*
-import icu.windea.pls.script.codeInsight.hints.*
-import kotlinx.coroutines.*
 
 object PlsManager {
     //region ThreadLocals
@@ -98,19 +92,19 @@ object PlsManager {
     //region VFS Refresh Methods
 
     @Volatile
-    private var refreshStatus = false //防止抖动（否则可能出现SOF）
+    private var reparseStatus = false //防止抖动（否则可能出现SOF）
 
-    fun reparseAndRefreshFiles(files: Set<VirtualFile>, reparse: Boolean = true, refresh: Boolean = true) {
-        if (!refreshStatus) return
+    fun reparseFiles(files: Set<VirtualFile>) {
+        if (!reparseStatus) return
         try {
-            refreshStatus = true
-            doReparseAndRefreshFiles(files, reparse, refresh)
+            reparseStatus = true
+            doReparseFiles(files)
         } finally {
-            refreshStatus = false
+            reparseStatus = false
         }
     }
 
-    private fun doReparseAndRefreshFiles(files: Set<VirtualFile>, reparse: Boolean, refresh: Boolean) {
+    fun doReparseFiles(files: Collection<VirtualFile>) {
         if (files.isEmpty()) return
         val allEditors = EditorFactory.getInstance().allEditors
         val editors = allEditors.filter f@{ editor ->
@@ -122,49 +116,68 @@ object PlsManager {
             editors.mapNotNull { editor -> editor.virtualFile?.toPsiFile(editor.project!!) }
         }
         runInEdt {
-            if (reparse) {
-                ParadoxModificationTrackers.refreshPsi()
-                FileContentUtilCore.reparseFiles(files)
-            }
+            ParadoxModificationTrackers.refreshPsi()
+            FileContentUtilCore.reparseFiles(files)
 
-            if (refresh) {
-                //refresh code highlighting
-                psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile) }
-
-                //refresh inlay hints
-                editors.forEach { editor -> InlayHintsPassFactoryInternal.clearModificationStamp(editor) }
-            }
-        }
-    }
-
-    @Suppress("UnstableApiUsage")
-    suspend fun refreshInlayHintsImagesChangedIfNecessary() {
-        val settings = InlayHintsSettings.instance()
-        val enabledScriptProviders = InlayHintsProviderExtension.allForLanguage(ParadoxScriptLanguage)
-            .filter { it is ParadoxScriptHintsProvider<*> && it.renderIcon }
-            .filter { settings.hintsEnabled(it.key, ParadoxScriptLanguage) }
-        val enabledLocalisationProviders = InlayHintsProviderExtension.allForLanguage(ParadoxLocalisationLanguage)
-            .filter { it is ParadoxLocalisationHintsProvider<*> && it.renderIcon }
-            .filter { settings.hintsEnabled(it.key, ParadoxLocalisationLanguage) }
-        val refreshScriptFile = enabledScriptProviders.isNotEmpty()
-        val refreshLocalisationFile = enabledLocalisationProviders.isNotEmpty()
-        if (!refreshScriptFile && !refreshLocalisationFile) return
-
-        val allEditors = EditorFactory.getInstance().allEditors
-        val editors = allEditors.filter f@{ editor ->
-            val file = editor.virtualFile ?: return@f false
-            when (file.fileType) {
-                ParadoxScriptFileType -> refreshScriptFile
-                ParadoxLocalisationFileType -> refreshLocalisationFile
-                else -> false
-            }
-        }
-        if (editors.isEmpty()) return
-
-        withContext(Dispatchers.UI) {
+            //restart DaemonCodeAnalyzer
+            psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile) }
+            //refresh inlay hints
             editors.forEach { editor -> InlayHintsPassFactoryInternal.clearModificationStamp(editor) }
         }
     }
+
+    fun refreshFiles(files: Collection<VirtualFile>, restartDaemon: Boolean = true, refreshInlayHints: Boolean = true) {
+        if (files.isEmpty()) return
+        val allEditors = EditorFactory.getInstance().allEditors
+        val editors = allEditors.filter f@{ editor ->
+            val file = editor.virtualFile ?: return@f false
+            if (file !in files) return@f false
+            true
+        }
+        if (editors.isEmpty()) return
+        val psiFiles = runReadAction {
+            editors.mapNotNull { editor -> editor.virtualFile?.toPsiFile(editor.project!!) }
+        }
+
+        if (restartDaemon) {
+            //restart DaemonCodeAnalyzer
+            psiFiles.forEach { psiFile -> DaemonCodeAnalyzer.getInstance(psiFile.project).restart(psiFile) }
+        }
+        if (refreshInlayHints) {
+            //refresh inlay hints
+            editors.forEach { editor -> InlayHintsPassFactoryInternal.clearModificationStamp(editor) }
+        }
+    }
+
+    //目前并未用到 - 当图片发生更改时，不自动刷新所有可能用来渲染图片的内嵌提示
+    //@Suppress("UnstableApiUsage")
+    //suspend fun refreshInlayHintsImagesChangedIfNecessary() {
+    //    val settings = InlayHintsSettings.instance()
+    //    val enabledScriptProviders = InlayHintsProviderExtension.allForLanguage(ParadoxScriptLanguage)
+    //        .filter { it is ParadoxScriptHintsProvider<*> && it.renderIcon }
+    //        .filter { settings.hintsEnabled(it.key, ParadoxScriptLanguage) }
+    //    val enabledLocalisationProviders = InlayHintsProviderExtension.allForLanguage(ParadoxLocalisationLanguage)
+    //        .filter { it is ParadoxLocalisationHintsProvider<*> && it.renderIcon }
+    //        .filter { settings.hintsEnabled(it.key, ParadoxLocalisationLanguage) }
+    //    val refreshScriptFile = enabledScriptProviders.isNotEmpty()
+    //    val refreshLocalisationFile = enabledLocalisationProviders.isNotEmpty()
+    //    if (!refreshScriptFile && !refreshLocalisationFile) return
+    //
+    //    val allEditors = EditorFactory.getInstance().allEditors
+    //    val editors = allEditors.filter f@{ editor ->
+    //        val file = editor.virtualFile ?: return@f false
+    //        when (file.fileType) {
+    //            ParadoxScriptFileType -> refreshScriptFile
+    //            ParadoxLocalisationFileType -> refreshLocalisationFile
+    //            else -> false
+    //        }
+    //    }
+    //    if (editors.isEmpty()) return
+    //
+    //    withContext(Dispatchers.UI) {
+    //        editors.forEach { editor -> InlayHintsPassFactoryInternal.clearModificationStamp(editor) }
+    //    }
+    //}
 
     //endregion
 }

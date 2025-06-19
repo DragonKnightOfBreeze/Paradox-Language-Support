@@ -40,15 +40,21 @@ class PlsIntegrationsSettingsState : BaseState() {
     /**
      * @property enableTiger 是否启用 <a href="https://github.com/amtep/tiger">Tiger</a> 作为检查工具。
      * @property ck3TigerPath ck3-tiger 的可执行文件的路径。
+     * @property ck3TigerConfPath ck3-tiger 的.conf配置文件的路径。如果不指定，默认使用模组目录下的`ck3-tiger.conf`。
      * @property irTigerPath imperator-tiger 的可执行文件的路径。
+     * @property irTigerConfPath imperator-tiger 的.conf配置文件的路径。如果不指定，则使用模组目录下的`imperator-tiger.conf`。
      * @property vic3TigerPath vic3-tiger 的可执行文件的路径。
+     * @property vic3TigerConfPath vic3-tiger 的.conf配置文件的路径。如果不指定，则使用模组目录下的`vic3-tiger.conf`。
      */
     @Tag("lint")
     class LintState: BaseState() {
         var enableTiger by property(false)
-        var ck3TigerPath by string() //e.g., /path/to/ck3-tiger
-        var irTigerPath by string() //e.g., /path/to/imperator-tiger
-        var vic3TigerPath by string() //e.g., /path/to/vic3-tiger
+        var ck3TigerPath by string() // e.g., /path/to/ck3-tiger
+        var ck3TigerConfPath by string() // absolute or relative to mod path
+        var irTigerPath by string() // e.g., /path/to/imperator-tiger
+        var irTigerConfPath by string() // absolute or relative to mod path
+        var vic3TigerPath by string() // e.g., /path/to/vic3-tiger
+        var vic3TigerConfPath by string() // absolute or relative to mod path
 
         //TODO 2.0.0-dev 提供对conf文件的支持并在这里允许配置
     }

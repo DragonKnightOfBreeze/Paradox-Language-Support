@@ -7,6 +7,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.integrations.lints.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.PlsPathConstants
 import kotlin.io.path.*
 
 /**
@@ -18,6 +19,7 @@ abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
     abstract val name: String
     abstract val forGameType: ParadoxGameType
     abstract val exePath: String?
+    abstract val confPath: String?
 
     final override fun isEnabled(): Boolean {
         return PlsFacade.getIntegrationsSettings().lint.enableTiger
@@ -54,7 +56,7 @@ abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
 
     final override fun validateRootDirectory(rootDirectory: VirtualFile): PlsTigerLintResult? {
         return runCatchingCancelable { doValidateRootDirectory(rootDirectory) }
-            .onFailure { thisLogger().warn(it) }.getOrThrow()
+            .onFailure { thisLogger().warn(it) }.getOrElse { PlsTigerLintResult(name, error = it) }
     }
 
     private fun doValidateRootDirectory(rootDirectory: VirtualFile): PlsTigerLintResult? {
@@ -69,36 +71,46 @@ abstract class PlsTigerLintToolProvider : PlsCommandBasedLintToolProvider() {
         val rootFile = rootInfo.rootFile
         val rootPath = rootFile.path
         val modSettings = PlsFacade.getProfilesSettings().modSettings.get(rootPath)
-        val argGame = modSettings?.gameDirectory?.orNull()?.quote('\'')
+        val argGamePath = modSettings?.gameDirectory?.orNull()?.quote('\'')
+        val argConfPath = confPath?.orNull()?.quote('\'')
         val argPath = rootPath.quote('\'') //这里应该都可以直接输入模组目录
 
-        //TODO 2.0.0-dev 支持额外的参数
+        //必须指定输出的json文件，然后从中读取检查结果（之后不删除这个临时文件）
+        val lintResultsPath = PlsPathConstants.lintResults
+        lintResultsPath.createDirectories()
+        val outputPath = lintResultsPath.resolve("$name-result@${rootDirectory.url.toUuidString()}.json")
+        val argOutputPath = outputPath.toString().quote('\'')
+
         val command = buildString {
             append("./$exe --json")
-            if (argGame != null) append(" --game").append(argGame)
-            //append(" --config").append(" some-conf-file.conf")
+            if (argGamePath != null) append(" --game ").append(argGamePath)
+            if (argConfPath != null) append(" --config ").append(argConfPath)
             append(" ").append(argPath)
+            append(" > ").append(argOutputPath)
         }
-        val result = executeCommand(command, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
+        executeCommand(command, workDirectory = wd) //尽可能地先转到工作目录，再执行可执行文件
 
-        return PlsTigerLintResult.parse(result) //如果无法解析json，这里会直接报错
+        return PlsTigerLintResult.parse(name, outputPath.toFile()) //如果无法解析json，这里会直接报错
     }
 
     class Ck3 : PlsTigerLintToolProvider() {
         override val name: String = "ck3-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Ck3
         override val exePath: String? get() = PlsFacade.getIntegrationsSettings().lint.ck3TigerPath
+        override val confPath: String? get() = PlsFacade.getIntegrationsSettings().lint.ck3TigerConfPath
     }
 
     class Ir : PlsTigerLintToolProvider() {
         override val name: String = "imperator-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Ir
         override val exePath: String? get() = PlsFacade.getIntegrationsSettings().lint.irTigerPath
+        override val confPath: String? get() = PlsFacade.getIntegrationsSettings().lint.irTigerConfPath
     }
 
     class Vic3 : PlsTigerLintToolProvider() {
         override val name: String = "vic3-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Vic3
         override val exePath: String? get() = PlsFacade.getIntegrationsSettings().lint.vic3TigerPath
+        override val confPath: String? get() = PlsFacade.getIntegrationsSettings().lint.vic3TigerConfPath
     }
 }

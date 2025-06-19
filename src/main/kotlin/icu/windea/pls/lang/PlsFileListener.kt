@@ -1,5 +1,8 @@
 package icu.windea.pls.lang
 
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.impl.ProgressManagerScope
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
 import icu.windea.pls.core.*
@@ -17,6 +20,7 @@ class PlsFileListener : AsyncFileListener {
         var refreshInlineScripts = false
 
         for (event in events) {
+            ProgressManager.checkCanceled()
             when (event) {
                 is VFileCreateEvent -> {
                     val fileName = event.childName
@@ -139,13 +143,13 @@ class PlsFileListener : AsyncFileListener {
     private fun reparseOpenedFiles() {
         //重新解析所有项目的所有已打开的文件
         val files = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsManager.reparseAndRefreshFiles(files)
+        PlsManager.reparseFiles(files)
     }
 
     private fun reparseOpenedFilesForInlineScripts() {
         //重新解析所有项目的所有已打开的内联脚本文件
         val files = PlsManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
-        PlsManager.reparseAndRefreshFiles(files)
+        PlsManager.reparseFiles(files)
     }
 
     private fun refreshForInlineScripts() {

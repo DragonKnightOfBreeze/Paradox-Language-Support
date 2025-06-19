@@ -1,11 +1,15 @@
 package icu.windea.pls.lang.inspections.lints
 
 import com.intellij.lang.annotation.*
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.integrations.lints.*
 import icu.windea.pls.integrations.lints.tools.*
+
+//com.intellij.codeInspection.javaDoc.JavadocHtmlLintAnnotator
 
 /**
  * @see PlsTigerLintManager
@@ -18,12 +22,17 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, PlsT
     override fun getPairedBatchInspectionShortName() = PlsTigerLintInspection.SHORT_NAME
 
     override fun collectInformation(file: PsiFile): Info? {
+        if (!PlsTigerLintManager.checkAvailableFor(file)) return null
         return Info(file)
+    }
+
+    override fun collectInformation(file: PsiFile, editor: Editor, hasErrors: Boolean): Info? {
+        return collectInformation(file) //兼容先前已经检测到错误的情况
     }
 
     override fun doAnnotate(collectedInfo: Info?): PlsTigerLintResult? {
         val file = collectedInfo?.file ?: return null
-        return PlsTigerLintManager.getTigerLintResultForFile(file.virtualFile, file.project)
+        return PlsTigerLintManager.getTigerLintResultForFile(file)
     }
 
     override fun apply(file: PsiFile, annotationResult: PlsTigerLintResult?, holder: AnnotationHolder) {
@@ -33,19 +42,27 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, PlsT
 
         for (item in items) {
             val severity = getHighlightSeverity(item)
-            val message = getMessage(item)
+            val message = getMessage(annotationResult, item)
             for (location in item.locations) {
-                //TODO 2.0.0-dev 提供对conf文件的支持并在这里应用过滤
+                val extraMessage = getExtraMessage(annotationResult, item, location)
+                val fullMessage = message + extraMessage
 
                 // for whole file
-                if (location.linenr == null || location.column == null || location.length == null) {
-                    holder.newAnnotation(severity, message).fileLevel().create()
+                if (location.lineNumber == null || location.column == null) {
+                    holder.newAnnotation(severity, fullMessage)
+                        .fileLevel()
+                        .problemGroup { getProblemGroup(annotationResult, item) }
+                        .create()
                     continue
                 }
 
-                val lineStartOffset = file.fileDocument.getLineStartOffset(location.linenr)
-                val range = TextRange.from(lineStartOffset + location.column - 1, location.length)
-                holder.newAnnotation(severity, message).range(range).create()
+                val lineStartOffset = file.fileDocument.getLineStartOffset(location.lineNumber - 1)
+                val range = TextRange.from(lineStartOffset + location.column - 1, (location.length ?: 0).coerceAtLeast(0))
+                holder.newAnnotation(severity, fullMessage)
+                    .range(range)
+                    .letIf(location.length == null) { it.afterEndOfLine() }
+                    .problemGroup { getProblemGroup(annotationResult, item) }
+                    .create()
             }
         }
     }
@@ -60,15 +77,27 @@ class PlsTigerLintAnnotator : ExternalAnnotator<PlsTigerLintAnnotator.Info, PlsT
         }
     }
 
-    private fun getMessage(item: PlsTigerLintResult.Item): String {
+    private fun getMessage(result: PlsTigerLintResult, item: PlsTigerLintResult.Item): String {
         // output example:
         // error(missing-item): media alias asia_confucianism_shin not defined in gfx/media_aliases/
 
         return buildString {
-            append("[").append(item.confidence).append("] ")
-            append(item.severity).append("(").append(item.key).append("): ")
-            append(item.message)
-            if (item.info.isNotNullOrEmpty()) appendLine().append(item.info)
+            append("[").append(result.name).append("] ") //tool name
+            append(item.severity).append("(").append(item.key).append("): ") //prefix (severity+key)
+            append(item.message) //message
         }
+    }
+
+    private fun getExtraMessage(result: PlsTigerLintResult, item: PlsTigerLintResult.Item, location: PlsTigerLintResult.Location): String {
+        val list = buildList {
+            item.confidence.name.lowercase().let { add("Confidence: $it") }
+            location.tag?.orNull()?.let { add("Tag: $it") }
+            item.info?.orNull()?.let { add("Info: $it") }
+        }
+        return list.joinToString(", ", " (", ")")
+    }
+
+    private fun getProblemGroup(result: PlsTigerLintResult, item: PlsTigerLintResult.Item): String {
+        return "PLS_TIGER_LINT.${result.name}"
     }
 }
