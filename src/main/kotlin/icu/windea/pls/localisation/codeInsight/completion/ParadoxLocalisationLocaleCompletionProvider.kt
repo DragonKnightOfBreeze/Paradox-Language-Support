@@ -12,8 +12,9 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
 import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 
 /**
  * 提供语言区域名字的代码补全。
@@ -47,7 +48,7 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
 
         val file = parameters.originalFile
         val project = file.project
-        val localeIdFromFileName = file.castOrNull<ParadoxLocalisationFile>()?.getLocaleIdFromFileName()
+        val localeIdFromFileName = file.castOrNull<ParadoxLocalisationFile>()?.let { ParadoxLocalisationFileManager.getLocaleIdFromFileName(it) }
         //批量提示
         val lookupElements = mutableSetOf<LookupElement>()
         val locales = PlsFacade.getConfigGroup(project, null).localisationLocalesById.values

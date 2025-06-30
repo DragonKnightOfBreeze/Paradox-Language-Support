@@ -13,13 +13,14 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 
 /**
  * 不正确的文件名的检查。
  *
  * 提供快速修复：
- * * 重命名文件名（如果以下快速修复不可用）
  * * 改为正确的文件名
  * * 改为正确的语言区域名
  */
@@ -43,9 +44,9 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
         val localeConfig = selectLocale(locale) ?: return null //locale不支持时也跳过检查
         val localeId = localeConfig.id
         val fileName = file.name
-        val localeIdFromFile = file.getLocaleIdFromFileName()
+        val localeIdFromFile = ParadoxLocalisationFileManager.getLocaleIdFromFileName(file)
         if (localeIdFromFile == localeId) return null //匹配语言区域，跳过
-        val expectedFileName = file.getExpectedFileName(localeId)
+        val expectedFileName = ParadoxLocalisationFileManager.getExpectedFileName(file, localeId)
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         val quickFixes = buildList {
             this += RenameFileFix(locale, expectedFileName)
@@ -106,20 +107,4 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
             locale.name = expectedLocaleId
         }
     }
-
-    //com.intellij.codeInsight.daemon.impl.quickfix.RenameFileFix
-
-    //private class RenameFileFix(
-    //	element: ParadoxLocalisationLocale
-    //) : LocalQuickFixAndIntentionActionOnPsiElement(element), HighPriorityAction {
-    //	override fun getText() = PlsBundle.message("inspection.localisation.incorrectFileName.fix.3")
-    //
-    //  override fun getFamilyName() = text
-    //
-    //	override fun getPriority() = PriorityAction.Priority.NORMAL
-    //
-    //	override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
-    //		PsiElementRenameHandler.invoke(file, project, file, editor) //不限制更改文件扩展名
-    //	}
-    //}
 }
