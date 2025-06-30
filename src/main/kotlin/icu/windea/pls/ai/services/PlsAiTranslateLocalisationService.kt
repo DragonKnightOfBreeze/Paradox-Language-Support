@@ -10,11 +10,12 @@ import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import dev.langchain4j.data.message.*
 import dev.langchain4j.kotlin.model.chat.*
+import icu.windea.pls.PlsBundle
 import icu.windea.pls.ai.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.model.*
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationResult
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.awt.*
@@ -24,7 +25,7 @@ import java.lang.invoke.*
 class PlsAiTranslateLocalisationService : PlsAiManipulateLocalisationService() {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
 
-    fun translate(request: PlsAiTranslateLocalisationsRequest): Flow<ParadoxLocalisationData>? {
+    fun translate(request: PlsAiTranslateLocalisationsRequest): Flow<ParadoxLocalisationResult>? {
         val chatModel = PlsChatModelManager.getStreamingChatModel() ?: return null
 
         logger.info("[AI REQUEST] Translate localisation...")
@@ -38,7 +39,7 @@ class PlsAiTranslateLocalisationService : PlsAiManipulateLocalisationService() {
                 is StreamingChatModelReply.Error -> throw it.cause
             }
         }, {
-            ParadoxLocalisationData.fromLine(it)
+            ParadoxLocalisationResult.fromLine(it)
         }).onCompletion { e ->
             when {
                 e is CancellationException -> logger.warn("[AI RESPONSE] Cancelled.")
@@ -52,24 +53,24 @@ class PlsAiTranslateLocalisationService : PlsAiManipulateLocalisationService() {
         val text = buildString {
             val contextLines = if (PlsAiManager.getSettings().withContext) {
                 buildList {
-                    request.filePath?.let { this += PlsAiDocBundle.message("systemMessage.context.0", it) }
-                    request.fileName?.let { this += PlsAiDocBundle.message("systemMessage.context.1", it) }
-                    request.modName?.let { this += PlsAiDocBundle.message("systemMessage.context.2", it) }
+                    request.filePath?.let { this += PlsAiBundle.message("systemMessage.context.0", it) }
+                    request.fileName?.let { this += PlsAiBundle.message("systemMessage.context.1", it) }
+                    request.modName?.let { this += PlsAiBundle.message("systemMessage.context.2", it) }
                 }
             } else {
                 emptyList()
             }
             if (contextLines.isEmpty()) {
-                appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.0", request.gameType, request.targetLocale))
+                appendLine(PlsAiBundle.message("systemMessage.translateLocalisation.0", request.gameType, request.targetLocale))
             } else {
-                appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.1", request.gameType, request.targetLocale))
+                appendLine(PlsAiBundle.message("systemMessage.translateLocalisation.1", request.gameType, request.targetLocale))
             }
-            appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.tip.1"))
-            appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.tip.2"))
-            appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.tip.3", request.targetLocale))
-            request.description?.orNull()?.let { appendLine(PlsAiDocBundle.message("systemMessage.translateLocalisation.tip.4", optimizeDescription(it))) }
+            appendLine(PlsAiBundle.message("systemMessage.translateLocalisation.tip.1"))
+            appendLine(PlsAiBundle.message("systemMessage.translateLocalisation.tip.2"))
+            appendLine(PlsAiBundle.message("systemMessage.translateLocalisation.tip.3", request.targetLocale))
+            request.description?.orNull()?.let { appendLine(PlsAiBundle.message("systemMessage.translateLocalisation.tip.4", optimizeDescription(it))) }
             if (contextLines.isNotEmpty()) {
-                appendLine(PlsAiDocBundle.message("systemMessage.context"))
+                appendLine(PlsAiBundle.message("systemMessage.context"))
                 contextLines.forEach { appendLine(it) }
             }
         }.trim()
@@ -92,7 +93,7 @@ class PlsAiTranslateLocalisationService : PlsAiManipulateLocalisationService() {
         val panel = panel {
             row {
                 cell(textField).align(AlignX.FILL).columns(COLUMNS_LARGE).focused()
-                    .comment(PlsAiBundle.message("intention.localisation.translate.popup.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+                    .comment(PlsBundle.message("intention.localisation.translate.popup.comment"), MAX_LINE_LENGTH_WORD_WRAP)
             }
         }
         val popup = JBPopupFactory.getInstance()
@@ -103,7 +104,7 @@ class PlsAiTranslateLocalisationService : PlsAiManipulateLocalisationService() {
             .setCancelOnClickOutside(false)
             .setCancelOnOtherWindowOpen(false)
             .setMinSize(Dimension(640, 120))
-            .setTitle(PlsAiBundle.message("intention.localisation.translate.popup.title"))
+            .setTitle(PlsBundle.message("intention.localisation.translate.popup.title"))
             .createPopup()
         textField.addActionListener {
             popup.closeOk(null)

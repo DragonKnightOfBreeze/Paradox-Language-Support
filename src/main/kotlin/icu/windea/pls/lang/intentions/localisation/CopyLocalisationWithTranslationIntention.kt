@@ -15,8 +15,8 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.integrations.translation.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 import kotlinx.coroutines.*
 import java.awt.datatransfer.*
 import java.util.concurrent.atomic.*
@@ -37,8 +37,8 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig) {
         withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationWithTranslation.progress.title", selectedLocale)) action@{
-            val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationSnippets.from(it) } }
-            val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
+            val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationContext.from(it) } }
+            val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
 
             if (elementsAndSnippetsToHandle.isNotEmpty()) {
@@ -61,7 +61,7 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
         }
     }
 
-    private suspend fun doHandleText(element: ParadoxLocalisationProperty, snippets: ParadoxLocalisationSnippets, selectedLocale: CwtLocaleConfig) {
+    private suspend fun doHandleText(element: ParadoxLocalisationProperty, snippets: ParadoxLocalisationContext, selectedLocale: CwtLocaleConfig) {
         val sourceLocale = selectLocale(element)
         val newText = suspendCancellableCoroutine { continuation ->
             CoroutineScope(continuation.context).launch {

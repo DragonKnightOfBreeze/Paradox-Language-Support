@@ -50,7 +50,7 @@ abstract class OpenSettingsAction : DumbAwareAction() {
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
         if (!isInProject) return
         //打开配置前确保已有配置数据
-        ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.Companion.TOPIC).onAdd(rootInfo)
+        ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
 
         showSettingsDialog(rootInfo, project)
     }

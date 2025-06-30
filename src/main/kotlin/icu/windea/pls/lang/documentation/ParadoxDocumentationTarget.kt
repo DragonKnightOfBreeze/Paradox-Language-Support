@@ -24,7 +24,7 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.renderer.*
+import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*

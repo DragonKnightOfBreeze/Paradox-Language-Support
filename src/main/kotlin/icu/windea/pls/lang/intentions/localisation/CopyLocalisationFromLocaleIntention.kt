@@ -15,8 +15,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 import java.awt.datatransfer.*
 import java.util.concurrent.atomic.*
 
@@ -31,8 +31,8 @@ class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig) {
         withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationFromLocale.progress.title", selectedLocale)) action@{
-            val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationSnippets.from(it) } }
-            val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
+            val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationContext.from(it) } }
+            val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
 
             if (elementsAndSnippetsToHandle.isNotEmpty()) {
@@ -55,7 +55,7 @@ class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.
         }
     }
 
-    private suspend fun doHandleText(project: Project, file: PsiFile?, snippets: ParadoxLocalisationSnippets, selectedLocale: CwtLocaleConfig) {
+    private suspend fun doHandleText(project: Project, file: PsiFile?, snippets: ParadoxLocalisationContext, selectedLocale: CwtLocaleConfig) {
         val newText = readAction {
             val selector = selector(project, file).localisation().contextSensitive().locale(selectedLocale)
             val e = ParadoxLocalisationSearch.search(snippets.key, selector).find() ?: return@readAction null
