@@ -30,6 +30,7 @@ abstract class ManipulateLocalisationIntentionBase : IntentionAction, DumbAware 
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
         if (editor == null || file == null) return false
+        if (file !is ParadoxLocalisationFile) return false
         val hasElements = hasElements(editor, file)
         return hasElements
     }
@@ -53,6 +54,7 @@ abstract class ManipulateLocalisationIntentionBase : IntentionAction, DumbAware 
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         if (editor == null || file == null) return
+        if (file !is ParadoxLocalisationFile) return
         val elements = findElements(editor, file)
         if (elements.isEmpty()) return
         doInvoke(project, editor, file, elements)

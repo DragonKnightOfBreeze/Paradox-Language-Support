@@ -41,7 +41,8 @@ TODO
 * [X] 新功能：集成AI，提供对应的设置页面 / NEW: Integrate AI, provide corresponding settings page
 * [X] 新功能：提供AI驱动的本地化翻译功能（意向） / NEW: Provide AI-driven localisation translation features (intentions)
 * [X] 新功能：提供AI驱动的本地化润色功能（意向） / NEW: Provide AI-driven localisation polishing features (intentions)
-* [ ] 新功能：提供操作，从而在多个级别批量生成、翻译、润色本地化 / NEW: Provide actions to batch generate, translate and polish localisations at multiple levels
+* [ ] 新功能：提供动作，用于批量操作本地化（翻译、润色等） / NEW: Provide actions for batch manipulation of localisations (translating, polishing, etc.)
+* [ ] 新功能：提供动作，用于批量生成本地化文件（来自指定语言区域，或者翻译为指定语言区域，等等） / NEW: Provide actions for batch generation of localisation files (from specified locale, or translate to specified locale, etc.)
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.4.2

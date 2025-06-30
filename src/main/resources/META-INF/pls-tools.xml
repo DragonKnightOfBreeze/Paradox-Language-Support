@@ -24,12 +24,12 @@
       <add-to-group group-id="Pls.Images.EditorPopupMenu"/>
     </group>
 
-    <action id="Pls.OpenGameSettings" class="icu.windea.pls.tools.actions.OpenGameSettingsAction" icon="icu.windea.pls.PlsIcons.Actions.GameSettings">
+    <action id="Pls.OpenGameSettings" class="icu.windea.pls.tools.actions.OpenSettingsActions$Game" icon="icu.windea.pls.PlsIcons.Actions.GameSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="Pls.Tools" anchor="first"/>
       <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
     </action>
-    <action id="Pls.OpenModSettings" class="icu.windea.pls.tools.actions.OpenModSettingsAction" icon="icu.windea.pls.PlsIcons.Actions.ModSettings">
+    <action id="Pls.OpenModSettings" class="icu.windea.pls.tools.actions.OpenSettingsActions$Mod" icon="icu.windea.pls.PlsIcons.Actions.ModSettings">
       <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
       <add-to-group group-id="Pls.Tools" relative-to-action="Pls.OpenGameSettings" anchor="after"/>
       <add-to-group group-id="EditorContextBarMenu" relative-to-action="Pls.OpenGameSettings" anchor="after"/>
@@ -86,8 +86,18 @@
       <add-to-group group-id="FileChooserToolbar" anchor="last"/>
     </group>
 
-    <group id="Pls.Generate" popup="true">
-      <action id="Pls.Generate.GenerateLocalisationFile" class="icu.windea.pls.tools.actions.GenerateLocalisationFileAction"/>
+    <!-- TODO 2.0.0-dev -->
+    <group id="Pls.Manipulation" popup="true">
+      <action id="Pls.Manipulation.ReplaceLocalisationFromLocale" class="icu.windea.pls.tools.actions.localisation.ReplaceLocalisationWithTranslationAction"/>
+      <action id="Pls.Manipulation.ReplaceLocalisationWithTranslation" class="icu.windea.pls.tools.actions.localisation.ReplaceLocalisationWithTranslationAction"/>
+      <action id="Pls.Manipulation.ReplaceLocalisationWithAiTranslation" class="icu.windea.pls.tools.actions.localisation.ReplaceLocalisationWithAiTranslationAction"/>
+      <action id="Pls.Manipulation.ReplaceLocalisationWithAiPolishing" class="icu.windea.pls.tools.actions.localisation.ReplaceLocalisationWithAiPolishingAction"/>
+      <add-to-group group-id="Pls.Tools"/>
+    </group>
+
+    <!-- TODO 2.0.0-dev -->
+    <group id="Pls.Generation" popup="true">
+      <action id="Pls.Generation.GenerateLocalisationFile" class="icu.windea.pls.tools.actions.GenerateLocalisationFileAction"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
   </actions>
