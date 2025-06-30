@@ -15,7 +15,7 @@ object PlsProcessingContextKeys : KeyRegistry()
 var ProcessingContext.parameters: CompletionParameters? by createKey(PlsProcessingContextKeys)
 var ProcessingContext.completionIds: MutableSet<String>? by createKey(PlsProcessingContextKeys)
 var ProcessingContext.contextElement: PsiElement? by createKey(PlsProcessingContextKeys)
-var ProcessingContext.offsetInParent: Int? by createKey(PlsProcessingContextKeys)
+var ProcessingContext.offsetInParent: Int by createKey(PlsProcessingContextKeys) { 0 }
 var ProcessingContext.keyword: String by createKey(PlsProcessingContextKeys) { "" }
 var ProcessingContext.keywordOffset: Int by createKey(PlsProcessingContextKeys) { 0 }
 var ProcessingContext.quoted: Boolean by createKey(PlsProcessingContextKeys) { false }

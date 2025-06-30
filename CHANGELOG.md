@@ -8,6 +8,8 @@
 * [ ] 支持为同一个模组配置多个模组依赖列表
 * [ ] 支持通过内置方案、手动乃至AI解决模组冲突，合并模组文件，提供相关的全局代码检查和操作
 * [ ] 支持直接在IDE中启动游戏，且启用的模组来自可配置的模组列表
+* [ ] 新功能：提供AI驱动的脚本/本地化生成功能（操作） / NEW: Provide AI-driven script/translation generation features (actions)
+* [ ] 新功能：提供对魔法注释的初步支持，用于批量处理脚本与本地化文件的内容 / NEW: Provide support for magic comments, which are used to batch process of scripts and localisation files
 
 TODO
 
@@ -26,6 +28,7 @@ TODO
 * [X] #151 Local variable, defined inside inline_script but passed from the outside as a parameter is not recognized.
 * [X] #148 更改`date_field`的默认日期模式为`y.M.d`，且允许声明日期模式（`date_field[y.M.d]`） / Change the default date format of `date_field` to `y.M.d`, and allow declaring date formats (`date_field[y.M.d]`)
 * [X] 修复：修复插件可能无法正确解析json，从而无法识别游戏目录的问题 / FIX: Fix a bug that plugin may not be able to correctly parse json, causing the game directory to be incorrectly recognized
+* [X] 修复：修复对复杂表达式进行代码补全时可能出现的NPE / FIX: Fix a NPE that may occur when performing code completion on a complex expression 
 * [X] 优化：将插件的内部设置重构为`registryKey`，允许用户调整 / OP: Refactor the internal settings of the plugin to `registryKey`, allowing users to configure them
 * [X] 优化：通过快速文档为本地化参数和命令的传入参数提供其中使用的格式标签的说明 / OP: Provide information about format tags used in arguments of localisation parameters and commands by quick documentation
 * [X] 优化：为封装变量、复杂枚举值和动态值提供快速文档与内嵌提示，来自同名的本地化 / OP: Also provide quick documentation and inlay hints for scripted variables, complex enum values and dynamic values, from the same name localisation
@@ -38,8 +41,7 @@ TODO
 * [X] 新功能：集成AI，提供对应的设置页面 / NEW: Integrate AI, provide corresponding settings page
 * [X] 新功能：提供AI驱动的本地化翻译功能（意向） / NEW: Provide AI-driven localisation translation features (intentions)
 * [X] 新功能：提供AI驱动的本地化润色功能（意向） / NEW: Provide AI-driven localisation polishing features (intentions)
-* [ ] 新功能：提供AI驱动的脚本/本地化生成功能（操作） / NEW: Provide AI-driven script/translation generation features (actions)
-* [ ] 新功能：提供对魔法注释的初步支持，用于批量处理脚本与本地化文件的内容 / NEW: Provide support for magic comments, which are used to batch process of scripts and localisation files 
+* [ ] 新功能：提供操作，从而在多个级别批量生成、翻译、润色本地化 / NEW: Provide actions to batch generate, translate and polish localisations at multiple levels
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 1.4.2
