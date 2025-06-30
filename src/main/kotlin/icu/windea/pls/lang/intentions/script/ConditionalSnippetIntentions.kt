@@ -11,8 +11,8 @@ import icu.windea.pls.script.psi.*
 private val propertyFormatRegex = "(\\w+)\\s*=\\s*\\$\\1\\|no\\$".toRegex()
 private val blockFormatRegex = "\\[\\[(\\w+)]\\s*\\1\\s*=\\s*\\$\\1\\$\\s*]".toRegex()
 
-private val propertyTemplate = { p: String -> "$p = \$$p|no\$" }
-private val blockTemplate = { p: String -> "[[$p] $p = \$$p\$ ]" }
+private val propertyTemplate = { p: String -> "$p = $$p|no$" }
+private val blockTemplate = { p: String -> "[[$p] $p = $$p$ ]" }
 
 class ConditionalSnippetToPropertyFormatIntention : PsiUpdateModCommandAction<ParadoxScriptParameterCondition>(ParadoxScriptParameterCondition::class.java), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.conditionalSnippetToPropertyFormat")
