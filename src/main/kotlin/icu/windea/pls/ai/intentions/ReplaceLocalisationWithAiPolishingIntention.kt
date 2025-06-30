@@ -93,9 +93,9 @@ class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntent
 
     @Suppress("UnstableApiUsage")
     private suspend fun doReplaceText(project: Project, file: PsiFile?, element: ParadoxLocalisationProperty, snippets: ParadoxLocalisationSnippets) {
-        val newText = snippets.newText
+        if(snippets.newText == snippets.text) return
         writeCommandAction(project, PlsAiBundle.message("intention.localisation.polish.replace.command")) {
-            element.setValue(newText)
+            element.setValue(snippets.newText)
         }
     }
 
