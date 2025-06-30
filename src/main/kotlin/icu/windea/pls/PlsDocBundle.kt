@@ -6,7 +6,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.renderer.*
+import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import org.jetbrains.annotations.*
@@ -62,7 +62,7 @@ object PlsDocBundle {
             val selector = selector(project, context).localisation().contextSensitive()
                 .withGameType(gameType)
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            val localisation = ParadoxLocalisationSearch.Companion.search(name.uppercase(), selector).find() ?: return@run
+            val localisation = ParadoxLocalisationSearch.search(name.uppercase(), selector).find() ?: return@run
             val text = ParadoxLocalisationTextRenderer().render(localisation).orNull()
             if (text != null) return text
         }
@@ -77,7 +77,7 @@ object PlsDocBundle {
         run {
             val selector = selector(project, context).definition().contextSensitive()
                 .withGameType(gameType)
-            val definition = ParadoxDefinitionSearch.Companion.search(name, ParadoxDefinitionTypes.TechnologyCategory, selector).find() ?: return@run
+            val definition = ParadoxDefinitionSearch.search(name, ParadoxDefinitionTypes.TechnologyCategory, selector).find() ?: return@run
             val localizedName = ParadoxDefinitionManager.getPrimaryLocalisation(definition)
             if (localizedName != null) {
                 val text = ParadoxLocalisationTextRenderer().render(localizedName).orNull()

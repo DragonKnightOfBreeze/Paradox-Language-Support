@@ -13,7 +13,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.renderer.*
+import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider.*
 import icu.windea.pls.script.psi.*

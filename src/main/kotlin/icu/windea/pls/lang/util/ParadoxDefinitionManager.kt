@@ -19,7 +19,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.util.renderer.*
+import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*

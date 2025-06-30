@@ -18,9 +18,9 @@ object PlsAiSettingsManager {
         return true
     }
 
-    fun getDefaultBatchSizeOfLocalisations(): Int = 40
+    fun getDefaultBatchSizeOfLocalisations(): Int = 50
 
-    fun getMaxBatchSizeOfLocalisations(): Int = 400
+    fun getMaxBatchSizeOfLocalisations(): Int = 1000
 
     fun getDefaultOpenAiModelName(): String {
         //基于IDE界面语言

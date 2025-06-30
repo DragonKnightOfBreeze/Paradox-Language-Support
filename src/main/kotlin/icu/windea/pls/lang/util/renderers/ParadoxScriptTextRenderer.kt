@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.renderer
+package icu.windea.pls.lang.util.renderers
 
 import icu.windea.pls.core.*
 import icu.windea.pls.model.constants.*

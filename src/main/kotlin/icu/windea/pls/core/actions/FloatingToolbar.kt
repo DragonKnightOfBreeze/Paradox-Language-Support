@@ -155,6 +155,7 @@ abstract class FloatingToolbar(
     }
   }
 
+  @Suppress("UnstableApiUsage")
   private fun createActionToolbar(targetComponent: JComponent, onUpdated: (ActionToolbar) -> Unit) {
     val group = createActionGroup() ?: return
     val place = ActionPlaces.EDITOR_FLOATING_TOOLBAR

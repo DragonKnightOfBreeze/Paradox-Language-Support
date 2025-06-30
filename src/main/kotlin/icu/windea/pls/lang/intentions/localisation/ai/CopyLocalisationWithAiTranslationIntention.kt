@@ -1,4 +1,4 @@
-package icu.windea.pls.ai.intentions
+package icu.windea.pls.lang.intentions.localisation.ai
 
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
@@ -11,15 +11,15 @@ import com.intellij.platform.ide.progress.*
 import com.intellij.platform.util.coroutines.*
 import com.intellij.platform.util.progress.*
 import com.intellij.psi.*
-import icu.windea.pls.ai.*
+import icu.windea.pls.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.intentions.localisation.*
+import icu.windea.pls.lang.util.manipulators.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 import java.awt.datatransfer.*
 import java.util.concurrent.atomic.*
 
@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.*
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
 class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopupAndPopup<String>() {
-    override fun getFamilyName() = PlsAiBundle.message("intention.copyLocalisationWithAiTranslation")
+    override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationWithAiTranslation")
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
         return super.isAvailable(project, editor, file) && PlsAiManager.isAvailable()
@@ -41,9 +41,9 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
 
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig, data: String?) {
-        withBackgroundProgress(project, PlsAiBundle.message("intention.copyLocalisationWithAiTranslation.progress.title", selectedLocale)) action@{
-            val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationSnippets.from(it) } }
-            val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
+        withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationWithAiTranslation.progress.title", selectedLocale)) action@{
+            val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationContext.from(it) } }
+            val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
             var withWarnings = false
 
@@ -54,7 +54,7 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
                 val elementsAndSnippetsChunked = elementsAndSnippetsToHandle.chunked(chunkSize)
                 val aiService = PlsAiManager.getTranslateLocalisationService()
                 reportRawProgress p@{ reporter ->
-                    reporter.text(PlsAiBundle.message("intention.localisation.translate.progress.initStep"))
+                    reporter.text(PlsBundle.message("intention.localisation.translate.progress.initStep"))
 
                     elementsAndSnippetsChunked.forEachConcurrent f@{ list ->
                         val inputElements = list.map { (element) -> element }
@@ -69,7 +69,7 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
                                 aiService.checkOutputData(snippets, data)
                                 i++
                                 current++
-                                reporter.text(PlsAiBundle.message("intention.localisation.translate.progress.step", data.key))
+                                reporter.text(PlsBundle.message("intention.localisation.translate.progress.step", data.key))
                                 reporter.fraction(current / total)
 
                                 snippets.newText = data.text
@@ -97,12 +97,12 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
     }
 
     private fun createSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig) {
-        val content = PlsAiBundle.message("intention.copyLocalisationWithAiTranslation.notification.0", selectedLocale)
+        val content = PlsBundle.message("intention.copyLocalisationWithAiTranslation.notification.0", selectedLocale)
         createNotification(content, NotificationType.INFORMATION).notify(project)
     }
 
     private fun createSuccessWithWarningsNotification(project: Project, selectedLocale: CwtLocaleConfig) {
-        val content = PlsAiBundle.message("intention.copyLocalisationWithAiTranslation.notification.2", selectedLocale)
+        val content = PlsBundle.message("intention.copyLocalisationWithAiTranslation.notification.2", selectedLocale)
         createNotification(content, NotificationType.WARNING).notify(project)
     }
 
@@ -110,8 +110,8 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
         thisLogger().warn(error)
 
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
-        val errorDetails = errorMessage?.let { PlsAiBundle.message("intention.localisation.error", it) }.orEmpty()
-        val content = PlsAiBundle.message("intention.copyLocalisationWithAiTranslation.notification.1", selectedLocale) + errorDetails
+        val errorDetails = errorMessage?.let { PlsBundle.message("intention.localisation.error", it) }.orEmpty()
+        val content = PlsBundle.message("intention.copyLocalisationWithAiTranslation.notification.1", selectedLocale) + errorDetails
         createNotification(content, NotificationType.WARNING).notify(project)
     }
 }

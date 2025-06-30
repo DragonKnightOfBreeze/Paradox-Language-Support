@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.renderer
+package icu.windea.pls.lang.util.renderers
 
 import com.intellij.ui.*
 import com.intellij.util.ui.*

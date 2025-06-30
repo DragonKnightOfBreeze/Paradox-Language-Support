@@ -3,7 +3,7 @@ package icu.windea.pls.lang.intentions.common
 import com.intellij.modcommand.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.renderer.*
+import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.localisation.psi.*
 
 /**

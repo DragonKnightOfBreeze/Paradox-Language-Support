@@ -11,7 +11,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.renderer.*
+import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionLocalizedNameHintsProvider.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*

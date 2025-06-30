@@ -1,4 +1,4 @@
-package icu.windea.pls.tools.actions
+package icu.windea.pls.tools.actions.localisation
 
 import com.intellij.notification.*
 import com.intellij.openapi.actionSystem.*
@@ -7,17 +7,19 @@ import com.intellij.openapi.command.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.progress.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.lang.settings.PlsStrategies.LocalisationGeneration as LocalisationGenerationStrategy
 
 /**
  * 用于从指定的本地化文件生成其他语言区域的本地化文件。
@@ -31,60 +33,23 @@ class GenerateLocalisationFileAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        var visible = false
-        var enabled = false
-        run {
-            val project = e.getData(CommonDataKeys.PROJECT) ?: return@run
-            val allFiles = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY) ?: VirtualFile.EMPTY_ARRAY
-            if (allFiles.isEmpty()) return@run
-            val files = allFiles.filter { file ->
-                if (file.fileType !is ParadoxLocalisationFileType) return@filter false
-                if (file.fileInfo == null) return@filter false
-                if (ParadoxFileManager.isLightFile(file)) return@filter false
-                true
-            }
-            if (files.isEmpty()) return@run
-            visible = true
-            //任意文件的文件名中必须带有某个语言区域，并且文件文本中必须仅带有这个语言区域
-            val allLocales = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.shortId }
-            val fileMap = mutableMapOf<String, VirtualFile>()
-            files.forEach { file ->
-                val localeString = allLocales.keys.find { file.name.contains(it) }
-                if (localeString == null) return@forEach
-                val localeConfig = file.toPsiFile(project)?.castOrNull<ParadoxLocalisationFile>()?.let { selectLocale(it) }
-                if (localeConfig != allLocales[localeString]) return@forEach
-                val pathPattern = file.path.replace(localeString, "$")
-                fileMap.putIfAbsent(pathPattern, file)
-            }
-            if (fileMap.isEmpty()) return@run
-            enabled = true
-        }
-        e.presentation.isVisible = visible
-        e.presentation.isEnabled = enabled
+        e.presentation.isEnabledAndVisible = false
+        val project = e.getData(CommonDataKeys.PROJECT) ?: return
+        val files = findFiles(e, project)
+        if (files.isEmpty()) return
+        e.presentation.isVisible = true
+        val allLocales = findAllLocales()
+        val fileMap = buildFileMap(files, allLocales, project)
+        if (fileMap.isEmpty()) return
+        e.presentation.isEnabled = true
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.getData(CommonDataKeys.PROJECT) ?: return
-        val allFiles = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY) ?: VirtualFile.EMPTY_ARRAY
-        if (allFiles.isEmpty()) return
-        val files = allFiles.filter { file ->
-            if (file.fileType !is ParadoxLocalisationFileType) return@filter false
-            if (file.fileInfo == null) return@filter false
-            if (ParadoxFileManager.isLightFile(file)) return@filter false
-            true
-        }
+        val files = findFiles(e, project)
         if (files.isEmpty()) return
-        //任意文件的文件名中必须带有某个语言区域，并且文件文本中必须仅带有这个语言区域
-        val allLocales = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.shortId }
-        val fileMap = mutableMapOf<String, VirtualFile>()
-        files.forEach { file ->
-            val localeString = allLocales.keys.find { file.name.contains(it) }
-            if (localeString == null) return@forEach
-            val localeConfig = file.toPsiFile(project)?.castOrNull<ParadoxLocalisationFile>()?.let { selectLocale(it) }
-            if (localeConfig != allLocales[localeString]) return@forEach
-            val pathPattern = file.path.replace(localeString, "$")
-            fileMap.putIfAbsent(pathPattern, file)
-        }
+        val allLocales = findAllLocales()
+        val fileMap = buildFileMap(files, allLocales, project)
         if (fileMap.isEmpty()) return
 
         val taskTitle = PlsBundle.message("progress.generateLocalisationFiles")
@@ -95,6 +60,9 @@ class GenerateLocalisationFileAction : AnAction() {
 
                 val generationSettings = PlsFacade.getSettings().generation
                 val strategy = generationSettings.localisationStrategy
+
+                val specificText = generationSettings.localisationStrategyText.orEmpty()
+                val fromLocale = ParadoxLocaleManager.getResolvedLocaleConfig(generationSettings.localisationStrategyLocale.orEmpty())
 
                 //文件名以及文件所在的某个父目录中可以带有语言区域
                 //生成的本地化文件会使用合适的文件名，放到合适的目录下
@@ -144,12 +112,15 @@ class GenerateLocalisationFileAction : AnAction() {
                                     e.setName(missingLocaleConfig.id)
                                 } else if (e is ParadoxLocalisationProperty) {
                                     when (strategy) {
-                                        LocalisationGenerationStrategy.EmptyText -> e.setValue("")
-                                        LocalisationGenerationStrategy.SpecificText -> e.setValue(generationSettings.localisationStrategyText.orEmpty())
-                                        LocalisationGenerationStrategy.FromLocale -> {
-                                            //使用对应语言区域的文本，如果不存在，以及其他任何意外，直接使用空字符串
-                                            val locale = ParadoxLocaleManager.getResolvedLocaleConfig(generationSettings.localisationStrategyLocale.orEmpty())
-                                            val selector = selector(project, baseFile).localisation().contextSensitive().locale(locale)
+                                        PlsStrategies.LocalisationGeneration.EmptyText -> {
+                                            e.setValue("")
+                                        }
+                                        PlsStrategies.LocalisationGeneration.SpecificText -> {
+                                            e.setValue(specificText)
+                                        }
+                                        PlsStrategies.LocalisationGeneration.FromLocale -> {
+                                            //使用对应语言区域的文本，如果不存在，或者其他任何意外，直接使用空字符串
+                                            val selector = selector(project, baseFile).localisation().contextSensitive().locale(fromLocale)
                                             val localisation = ParadoxLocalisationSearch.search(e.name, selector).find()
                                             e.setValue(localisation?.propertyValue?.text?.unquote().orEmpty())
                                         }
@@ -178,5 +149,36 @@ class GenerateLocalisationFileAction : AnAction() {
                 ProgressManager.getInstance().run(task)
             }
         }
+    }
+
+    private fun findFiles(e: AnActionEvent, project: Project): List<VirtualFile> {
+        val allFiles = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY) ?: VirtualFile.EMPTY_ARRAY
+        if (allFiles.isEmpty()) return emptyList()
+        val files = mutableListOf<VirtualFile>()
+        allFiles.forEach f@{ file ->
+            if (file.fileType !is ParadoxLocalisationFileType) return@f
+            if (file.fileInfo == null) return@f
+            if (ParadoxFileManager.isLightFile(file)) return@f
+            files.add(file)
+        }
+        return files
+    }
+
+    private fun findAllLocales(): Map<String, CwtLocaleConfig> {
+        return ParadoxLocaleManager.getLocaleConfigs().associateBy { it.shortId }
+    }
+
+    private fun buildFileMap(files: List<VirtualFile>, allLocales: Map<String, CwtLocaleConfig>, project: Project): Map<String, VirtualFile> {
+        //任意文件的文件名中必须带有某个语言区域，并且文件文本中必须仅带有这个语言区域
+        val fileMap = mutableMapOf<String, VirtualFile>()
+        files.forEach f@{ file ->
+            val localeString = allLocales.keys.find { file.name.contains(it) }
+            if (localeString == null) return@f
+            val localeConfig = file.toPsiFile(project)?.castOrNull<ParadoxLocalisationFile>()?.let { selectLocale(it) }
+            if (localeConfig != allLocales[localeString]) return@f
+            val pathPattern = file.path.replace(localeString, "$")
+            fileMap.putIfAbsent(pathPattern, file)
+        }
+        return fileMap
     }
 }

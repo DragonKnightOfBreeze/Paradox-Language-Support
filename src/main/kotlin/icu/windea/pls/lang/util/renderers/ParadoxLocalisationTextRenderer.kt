@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util.renderer
+package icu.windea.pls.lang.util.renderers
 
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.util.*

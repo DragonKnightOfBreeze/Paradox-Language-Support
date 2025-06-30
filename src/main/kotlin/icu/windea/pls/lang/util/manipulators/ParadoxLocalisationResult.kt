@@ -1,21 +1,18 @@
-package icu.windea.pls.model
+package icu.windea.pls.lang.util.manipulators
 
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 
-/**
- * 用作输出的本地化数据。
- */
-data class ParadoxLocalisationData(
+data class ParadoxLocalisationResult(
     val key: String,
     val text: String,
 ) {
     companion object {
         @JvmField
-        val EMPTY = ParadoxLocalisationData("", "")
+        val EMPTY = ParadoxLocalisationResult("", "")
 
         @JvmStatic
-        fun fromLine(line: String): ParadoxLocalisationData {
+        fun fromLine(line: String): ParadoxLocalisationResult {
             val line0 = line.trim()
             val colonIndex = line0.indexOf(':')
             if (colonIndex == -1) return EMPTY
@@ -25,7 +22,7 @@ data class ParadoxLocalisationData(
             val separator = line0.substring(colonIndex + 1, lqIndex).trimEnd()
             if (separator.isNotEmpty() && separator.any { !it.isExactDigit() }) return EMPTY
             val text = line0.substring(lqIndex + 1).removeSuffix("\"")
-            return ParadoxLocalisationData(key, text)
+            return ParadoxLocalisationResult(key, text)
         }
     }
 }

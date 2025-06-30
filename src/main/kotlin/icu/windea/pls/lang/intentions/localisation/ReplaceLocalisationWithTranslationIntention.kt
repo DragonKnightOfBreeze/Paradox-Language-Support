@@ -15,8 +15,8 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.integrations.translation.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 import kotlinx.coroutines.*
 import java.util.concurrent.atomic.*
 import kotlin.coroutines.*
@@ -34,8 +34,8 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig) {
         withBackgroundProgress(project, PlsBundle.message("intention.replaceLocalisationWithTranslation.progress.title", selectedLocale)) action@{
-            val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationSnippets.from(it) } }
-            val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.text.isNotBlank() }
+            val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationContext.from(it) } }
+            val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
 
             if (elementsAndSnippetsToHandle.isNotEmpty()) {
@@ -57,7 +57,7 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
         }
     }
 
-    private suspend fun doHandleText(element: ParadoxLocalisationProperty, snippets: ParadoxLocalisationSnippets, selectedLocale: CwtLocaleConfig) {
+    private suspend fun doHandleText(element: ParadoxLocalisationProperty, snippets: ParadoxLocalisationContext, selectedLocale: CwtLocaleConfig) {
         val sourceLocale = selectLocale(element)
         val newText = suspendCancellableCoroutine { continuation ->
             CoroutineScope(continuation.context).launch {
@@ -74,7 +74,7 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
     }
 
     @Suppress("UnstableApiUsage")
-    private suspend fun doReplaceText(element: ParadoxLocalisationProperty, snippets: ParadoxLocalisationSnippets, file: PsiFile?, project: Project) {
+    private suspend fun doReplaceText(element: ParadoxLocalisationProperty, snippets: ParadoxLocalisationContext, file: PsiFile?, project: Project) {
         if(snippets.newText == snippets.text) return
         writeCommandAction(project, PlsBundle.message("intention.localisation.command.translate.replace")) {
             element.setValue(snippets.newText)
