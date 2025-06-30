@@ -2,7 +2,7 @@ package icu.windea.pls.lang.intentions.localisation
 
 import com.intellij.codeInsight.intention.*
 import com.intellij.codeInsight.intention.preview.*
-import com.intellij.openapi.application.*
+import com.intellij.openapi.command.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
@@ -13,9 +13,10 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
+import kotlinx.coroutines.*
 
 /**
- * 更改语言区域。
+ * 更改本地化语言区域。
  */
 class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH
@@ -35,8 +36,9 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
         if (editor == null || file == null) return
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
-        val locales = PlsFacade.getConfigGroup(project, null).localisationLocalesById.values.toTypedArray()
-        JBPopupFactory.getInstance().createListPopup(Popup(element, locales)).showInBestPositionFor(editor)
+        val localeConfigs = PlsFacade.getConfigGroup(project, null).localisationLocalesById.values
+        val popup = Popup(project, element, localeConfigs.toTypedArray())
+        JBPopupFactory.getInstance().createListPopup(popup).showInBestPositionFor(editor)
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationLocale? {
@@ -48,6 +50,7 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
     override fun startInWriteAction() = false
 
     private class Popup(
+        private val project: Project,
         private val value: ParadoxLocalisationLocale,
         values: Array<CwtLocaleConfig>
     ) : BaseListPopupStep<CwtLocaleConfig>(PlsBundle.message("intention.changeLocalisationLocale.title"), *values) {
@@ -59,9 +62,13 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
 
         override fun isSpeedSearchEnabled(): Boolean = true
 
+        @Suppress("UnstableApiUsage")
         override fun onChosen(selectedValue: CwtLocaleConfig, finalChoice: Boolean) = doFinalStep {
-            runUndoTransparentWriteAction {
-                value.setName(selectedValue.id)
+            val coroutineScope = PlsFacade.getCoroutineScope(project)
+            coroutineScope.launch {
+                writeCommandAction(project, PlsBundle.message("intention.changeLocalisationLocale.command")) {
+                    value.setName(selectedValue.id)
+                }
             }
         }
     }

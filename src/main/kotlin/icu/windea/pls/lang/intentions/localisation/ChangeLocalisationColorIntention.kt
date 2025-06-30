@@ -2,7 +2,7 @@ package icu.windea.pls.lang.intentions.localisation
 
 import com.intellij.codeInsight.intention.*
 import com.intellij.codeInsight.intention.preview.*
-import com.intellij.openapi.application.*
+import com.intellij.openapi.command.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
@@ -12,9 +12,10 @@ import icu.windea.pls.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import kotlinx.coroutines.*
 
 /**
- * 更改颜色。
+ * 更改本地化颜色。
  */
 class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
     override fun getPriority() = PriorityAction.Priority.HIGH
@@ -35,7 +36,8 @@ class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         val colorConfigs = ParadoxTextColorManager.getInfos(project, file)
-        JBPopupFactory.getInstance().createListPopup(Popup(element, colorConfigs.toTypedArray())).showInBestPositionFor(editor)
+        val popup = Popup(project, element, colorConfigs.toTypedArray())
+        JBPopupFactory.getInstance().createListPopup(popup).showInBestPositionFor(editor)
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationColorfulText? {
@@ -47,6 +49,7 @@ class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
     override fun startInWriteAction() = false
 
     private class Popup(
+        private val project: Project,
         private val value: ParadoxLocalisationColorfulText,
         values: Array<ParadoxTextColorInfo>
     ) : BaseListPopupStep<ParadoxTextColorInfo>(PlsBundle.message("intention.changeLocalisationColor.title"), *values) {
@@ -58,9 +61,13 @@ class ChangeLocalisationColorIntention : IntentionAction, PriorityAction {
 
         override fun isSpeedSearchEnabled(): Boolean = true
 
+        @Suppress("UnstableApiUsage")
         override fun onChosen(selectedValue: ParadoxTextColorInfo, finalChoice: Boolean) = doFinalStep {
-            runUndoTransparentWriteAction {
-                value.setName(selectedValue.name)
+            val coroutineScope = PlsFacade.getCoroutineScope(project)
+            coroutineScope.launch {
+                writeCommandAction(project, PlsBundle.message("intention.changeLocalisationColor.command")) {
+                    value.setName(selectedValue.name)
+                }
             }
         }
     }
