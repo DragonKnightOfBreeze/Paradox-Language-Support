@@ -178,9 +178,9 @@ abstract class ConvertImageFormatAction(
 
     private fun rethrow(throwable: Throwable?) {
         if (throwable is IOException) {
-            throw (throwable as IOException?)!!
+            throw throwable
         } else if (throwable is IncorrectOperationException) {
-            throw (throwable as IncorrectOperationException?)!!
+            throw throwable
         } else if (throwable != null) {
             throw IncorrectOperationException(throwable)
         }
