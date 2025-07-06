@@ -19,9 +19,9 @@ import icu.windea.pls.model.constants.*
 class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
     override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {
         val propertyElement = element.parentOfType<ParadoxLocalisationProperty>()
-        if (propertyElement != null && isSuppressedInComment(propertyElement, toolId)) return true
+        if (propertyElement != null && ParadoxInspectionManager.isSuppressedInComment(propertyElement, toolId)) return true
         val file = (propertyElement ?: element).containingFile
-        if (file != null && isSuppressedInComment(file, toolId)) return true
+        if (file != null && ParadoxInspectionManager.isSuppressedInComment(file, toolId)) return true
         return false
     }
 
@@ -50,7 +50,7 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
         }
 
         override fun getCommentsFor(container: PsiElement): List<PsiElement> {
-            return getCommentsForSuppression(container).toList()
+            return ParadoxInspectionManager.getCommentsForSuppression(container).toList()
         }
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
@@ -70,7 +70,7 @@ class ParadoxLocalisationInspectionSuppressor : InspectionSuppressor {
         }
 
         override fun getCommentsFor(container: PsiElement): List<PsiElement> {
-            return getCommentsForSuppression(container).toList()
+            return ParadoxInspectionManager.getCommentsForSuppression(container).toList()
         }
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {

@@ -19,16 +19,16 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {
         var current = element
-        if (isSuppressedForDefinition(element, toolId)) return true
+        if (ParadoxInspectionManager.isSuppressedForDefinition(element, toolId)) return true
         while (current !is PsiFile) {
             current = current.parent ?: return false
             ProgressManager.checkCanceled()
             if (current is ParadoxScriptProperty || (current is ParadoxScriptValue && current.isBlockMember())) {
-                if (isSuppressedInComment(current, toolId)) return true
-                if (isSuppressedForDefinition(current, toolId)) return true
+                if (ParadoxInspectionManager.isSuppressedInComment(current, toolId)) return true
+                if (ParadoxInspectionManager.isSuppressedForDefinition(current, toolId)) return true
             }
         }
-        if (isSuppressedInComment(current, toolId)) return true
+        if (ParadoxInspectionManager.isSuppressedInComment(current, toolId)) return true
         return false
     }
 
@@ -64,7 +64,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         }
 
         override fun getCommentsFor(container: PsiElement): MutableList<out PsiElement> {
-            return getCommentsForSuppression(container).toMutableList()
+            return ParadoxInspectionManager.getCommentsForSuppression(container).toMutableList()
         }
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
@@ -91,7 +91,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         }
 
         override fun getCommentsFor(container: PsiElement): List<PsiElement> {
-            return getCommentsForSuppression(container).toList()
+            return ParadoxInspectionManager.getCommentsForSuppression(container).toList()
         }
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
@@ -115,7 +115,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         }
 
         override fun getCommentsFor(container: PsiElement): List<PsiElement> {
-            return getCommentsForSuppression(container).toList()
+            return ParadoxInspectionManager.getCommentsForSuppression(container).toList()
         }
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {

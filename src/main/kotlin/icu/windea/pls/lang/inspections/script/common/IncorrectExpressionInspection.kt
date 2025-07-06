@@ -3,7 +3,7 @@ package icu.windea.pls.lang.inspections.script.common
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
-import icu.windea.pls.ep.checker.*
+import icu.windea.pls.ep.inspection.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
