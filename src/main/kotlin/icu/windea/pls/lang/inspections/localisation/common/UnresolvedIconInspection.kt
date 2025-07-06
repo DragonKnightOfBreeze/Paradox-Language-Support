@@ -15,12 +15,17 @@ import javax.swing.*
  * 无法解析的图标的检查。
  *
  * @property ignoredNames （配置项）需要忽略的名字。使用GLOB模式。忽略大小写。
+ * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class UnresolvedIconInspection : LocalInspectionTool() {
     @JvmField
     var ignoredNames = ""
+    @JvmField
+    var ignoredInInjectedFiles = false
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if (ignoredInInjectedFiles && ParadoxFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
+
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
         return object : PsiElementVisitor() {
@@ -59,6 +64,12 @@ class UnresolvedIconInspection : LocalInspectionTool() {
                     .comment(PlsBundle.message("inspection.localisation.unresolvedIcon.option.ignoredNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()
+            }
+            //ignoredInInjectedFile
+            row {
+                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                    .bindSelected(::ignoredInInjectedFiles)
+                    .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
             }
         }
     }

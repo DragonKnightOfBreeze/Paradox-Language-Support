@@ -18,12 +18,17 @@ import javax.swing.*
  * 无法解析的概念的检查。
  *
  * @property ignoredByConfigs （配置项）如果对应的扩展的CWT规则存在，是否需要忽略此代码检查。
+ * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 class UnresolvedConceptInspection : LocalInspectionTool() {
     @JvmField
     var ignoredByConfigs = false
+    @JvmField
+    var ignoredInInjectedFiles = false
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if (ignoredInInjectedFiles && ParadoxFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
+
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
         val configGroup = PlsFacade.getConfigGroup(holder.project, selectGameType(holder.file))
@@ -65,6 +70,12 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
                 checkBox(PlsBundle.message("inspection.localisation.unresolvedConcept.option.ignoredByConfigs"))
                     .bindSelected(::ignoredByConfigs)
                     .actionListener { _, component -> ignoredByConfigs = component.isSelected }
+            }
+            //ignoredInInjectedFile
+            row {
+                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                    .bindSelected(::ignoredInInjectedFiles)
+                    .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
             }
         }
     }

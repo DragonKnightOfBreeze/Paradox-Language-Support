@@ -27,16 +27,25 @@ import javax.swing.*
  * 无法解析的表达式的检查。
  *
  * @property ignoredByConfigs （配置项）如果对应的扩展的CWT规则存在，是否需要忽略此代码检查。
+ * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
  */
 class UnresolvedExpressionInspection : LocalInspectionTool() {
     @JvmField
     var showExpectInfo = true
     @JvmField
     var ignoredByConfigs = false
+    @JvmField
+    var ignoredInInjectedFiles = false
+    @JvmField
+    var ignoredInInlineScriptFiles = false
 
     //如果一个表达式（属性/值）无法解析，需要跳过直接检测下一个表达式，而不是继续向下检查它的子节点
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if (ignoredInInjectedFiles && ParadoxFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
+        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(holder.file) != null) return PsiElementVisitor.EMPTY_VISITOR
+
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
         var suppressed: PsiElement? = null
@@ -248,6 +257,17 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
                     .bindSelected(::ignoredByConfigs)
                     .actionListener { _, component -> ignoredByConfigs = component.isSelected }
+            }            //ignoredInInjectedFile
+            row {
+                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                    .bindSelected(::ignoredInInjectedFiles)
+                    .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
+            }
+            //ignoredInInlineScriptFiles
+            row {
+                checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
+                    .bindSelected(::ignoredInInlineScriptFiles)
+                    .actionListener { _, component -> ignoredInInlineScriptFiles = component.isSelected }
             }
         }
     }

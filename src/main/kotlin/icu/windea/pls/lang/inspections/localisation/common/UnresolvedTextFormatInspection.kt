@@ -18,14 +18,19 @@ import javax.swing.*
  * 无法解析的文本格式的检查。
  *
  * @property ignoredNames （配置项）需要忽略的名字。使用GLOB模式。忽略大小写。
+ * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
 @WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3)
 class UnresolvedTextFormatInspection : LocalInspectionTool() {
+    //aka predefined format styles, or color expressions, or combined
     @JvmField
     var ignoredNames = "bold;semibold;extrabold;italic;underline;strikethrough;indent_newline;tooltip"
-    //aka predefined format styles, or color expressions, or combined
+    @JvmField
+    var ignoredInInjectedFiles = false
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if (ignoredInInjectedFiles && ParadoxFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
+
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
         return object : PsiElementVisitor() {
@@ -65,6 +70,12 @@ class UnresolvedTextFormatInspection : LocalInspectionTool() {
                     .comment(PlsBundle.message("inspection.localisation.unresolvedTextFormat.option.ignoredNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()
+            }
+            //ignoredInInjectedFile
+            row {
+                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                    .bindSelected(::ignoredInInjectedFiles)
+                    .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
             }
         }
     }

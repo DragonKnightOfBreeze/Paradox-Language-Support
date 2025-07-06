@@ -19,15 +19,25 @@ import javax.swing.*
 
 /**
  * 无法解析的路径引用的检查。
- * * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。
+ *
+ * @property ignoredFileNames （配置项）需要忽略的文件名的模式。使用GLOB模式。忽略大小写。
+ * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
+ * @property ignoredInInlineScriptFiles 是否在内联脚本文件中忽略此代码检查。
  */
 class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     @JvmField
     var ignoredByConfigs = false
     @JvmField
     var ignoredFileNames = "*.lua;*.tga"
+    @JvmField
+    var ignoredInInjectedFiles = false
+    @JvmField
+    var ignoredInInlineScriptFiles = false
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        if (ignoredInInjectedFiles && ParadoxFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
+        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(holder.file) != null) return PsiElementVisitor.EMPTY_VISITOR
+
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
         val file = holder.file
@@ -107,6 +117,18 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                     .comment(PlsBundle.message("inspection.script.unresolvedPathReference.option.ignoredFileNames.comment"))
                     .align(Align.FILL)
                     .resizableColumn()
+            }
+            //ignoredInInjectedFile
+            row {
+                checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
+                    .bindSelected(::ignoredInInjectedFiles)
+                    .actionListener { _, component -> ignoredInInjectedFiles = component.isSelected }
+            }
+            //ignoredInInlineScriptFiles
+            row {
+                checkBox(PlsBundle.message("inspection.option.ignoredInInlineScriptFiles"))
+                    .bindSelected(::ignoredInInlineScriptFiles)
+                    .actionListener { _, component -> ignoredInInlineScriptFiles = component.isSelected }
             }
         }
     }
