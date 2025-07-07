@@ -1,6 +1,5 @@
 package icu.windea.pls.config.settings
 
-import com.intellij.openapi.application.*
 import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.ui.*
@@ -11,9 +10,8 @@ import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import icu.windea.pls.*
-import icu.windea.pls.config.util.*
+import icu.windea.pls.config.util.PlsConfigRepositoryManager
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.model.*
 import java.awt.event.*
 
@@ -36,14 +34,14 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             row {
                 checkBox(PlsBundle.message("settings.config.enableBuiltInConfigGroups"))
                     .bindSelected(settings::enableBuiltInConfigGroups)
-                    .onApply { onConfigDirectoriesChanged() }
+                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged() }
                 contextHelp(PlsBundle.message("settings.config.enableBuiltInConfigGroups.tip"))
             }
             //enableRemoteConfigGroups
             row {
                 checkBox(PlsBundle.message("settings.config.enableRemoteConfigGroups"))
                     .bindSelected(settings::enableRemoteConfigGroups)
-                    .onApply { onConfigDirectoriesChanged() }
+                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged() }
                     .applyToComponent { cbRemote = this }
                 contextHelp(PlsBundle.message("settings.config.enableRemoteConfigGroups.tip"))
                 comment(PlsBundle.message("settings.config.remoteConfigDirectory.comment", MAX_LINE_LENGTH_WORD_WRAP))
@@ -59,8 +57,8 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                     .align(Align.FILL)
                     .onApply {
-                        onConfigDirectoriesChanged()
-                        onRemoteConfigDirectoriesChanged()
+                        PlsConfigSettingsManager.onConfigDirectoriesChanged()
+                        PlsConfigSettingsManager.onRemoteConfigDirectoriesChanged()
                     }
             }.enabledIf(cbRemote.selected)
             //configRepositoryUrls
@@ -68,7 +66,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                 label(PlsBundle.message("settings.config.configRepositoryUrls")).widthGroup(groupName)
                     .applyToComponent { toolTipText = PlsBundle.message("settings.config.configRepositoryUrls.tip") }
                 val configRepositoryUrls = settings.configRepositoryUrls
-                ParadoxGameType.entries.forEach { configRepositoryUrls.putIfAbsent(it.id, getDefaultRepoUrl(it)) }
+                ParadoxGameType.entries.forEach { configRepositoryUrls.putIfAbsent(it.id, PlsConfigRepositoryManager.getDefaultUrl(it)) }
                 val defaultList = configRepositoryUrls.toMutableEntryList()
                 var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                 val action = { _: ActionEvent ->
@@ -81,7 +79,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                         val newConfigRepositoryUrls = list.toMutableMap()
                         if (oldConfigRepositoryUrls == newConfigRepositoryUrls) return@onApply
                         settings.configRepositoryUrls = newConfigRepositoryUrls
-                        onRemoteConfigDirectoriesChanged()
+                        PlsConfigSettingsManager.onRemoteConfigDirectoriesChanged()
                     }
                     .onReset { list = defaultList }
                     .onIsModified { list != defaultList }
@@ -90,7 +88,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             row {
                 checkBox(PlsBundle.message("settings.config.enableLocalConfigGroups"))
                     .bindSelected(settings::enableLocalConfigGroups)
-                    .onApply { onConfigDirectoriesChanged() }
+                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged() }
                     .applyToComponent { cbLocal = this }
                 contextHelp(PlsBundle.message("settings.config.enableLocalConfigGroups.tip"))
             }
@@ -104,13 +102,13 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .bindText(settings::localConfigDirectory.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                     .align(Align.FILL)
-                    .onApply { onConfigDirectoriesChanged() }
+                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged() }
             }.enabledIf(cbLocal.selected)
             //enableProjectLocalConfigGroups
             row {
                 checkBox(PlsBundle.message("settings.config.enableProjectLocalConfigGroups"))
                     .bindSelected(settings::enableProjectLocalConfigGroups)
-                    .onApply { onConfigDirectoriesChanged() }
+                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged() }
                     .applyToComponent { cbProjectLocal = this }
                 contextHelp(PlsBundle.message("settings.config.enableProjectLocalConfigGroups.tip"))
             }
@@ -121,31 +119,8 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                 textField()
                     .bindText(settings::projectLocalConfigDirectoryName.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(".config") }
-                    .onApply { onConfigDirectoriesChanged() }
+                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged() }
             }.enabledIf(cbProjectLocal.selected)
         }
-    }
-
-    private fun getDefaultRepoUrl(gameType: ParadoxGameType): String {
-        return PlsConfigRepositoryManager.getDefaultUrl(gameType)
-    }
-
-    private fun onConfigDirectoriesChanged() {
-        if (!callbackLock.add("onConfigDirectoriesChanged")) return
-
-        val messageBus = ApplicationManager.getApplication().messageBus
-        messageBus.syncPublisher(ParadoxConfigDirectoriesListener.TOPIC).onChange()
-    }
-
-    private fun onRemoteConfigDirectoriesChanged() {
-        if (!callbackLock.add("onRemoteConfigDirectoriesChanged")) return
-
-        //NOTE 这里需要先验证是否真的需要刷新
-        if (!PlsConfigRepositoryManager.isValidToSync()) return
-
-        val messageBus = ApplicationManager.getApplication().messageBus
-        messageBus.syncPublisher(ParadoxConfigRepositoryUrlsListener.TOPIC).onChange()
-
-        //等到从远程仓库异步同步完毕后，再通知规则目录发生更改，从而允许刷新规则分组数据
     }
 }

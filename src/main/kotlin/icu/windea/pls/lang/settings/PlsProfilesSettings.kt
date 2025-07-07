@@ -8,7 +8,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 
 /**
- * PLS资料配置。
+ * PLS资料设置。
  *
  * 由插件自动根据游戏信息与模组信息进行配置。
  */
@@ -86,6 +86,7 @@ interface ParadoxGameOrModSettingsState {
     val gameType: ParadoxGameType?
     val gameDirectory: String?
 
+    var options: ParadoxGameOrModOptionsSettingsState
     var modDependencies: MutableList<ParadoxModDependencySettingsState>
 
     fun copyModDependencies(): MutableList<ParadoxModDependencySettingsState> {
@@ -121,31 +122,35 @@ interface ParadoxModDescriptorAwareSettingsState {
 }
 
 @Tag("settings")
-class ParadoxGameSettingsState : BaseState(), ParadoxGameDescriptorAwareSettingsState, ParadoxGameOrModSettingsState {
+class ParadoxGameSettingsState : BaseState(), ParadoxGameOrModSettingsState, ParadoxGameDescriptorAwareSettingsState {
     override var gameType: ParadoxGameType? by enum()
     override var gameDirectory: String? by string()
 
+    @get:Property(surroundWithTag = false)
+    override var options: ParadoxGameOrModOptionsSettingsState by property(ParadoxGameOrModOptionsSettingsState())
     @get:XCollection(style = XCollection.Style.v2)
     override var modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
 }
 
 /**
- * 单个模组的配置。
+ * 单个模组的设置。
  *
  * @property modDependencies 模组依赖。不包括游戏目录和本模组。
  */
 @Tag("settings")
-class ParadoxModSettingsState : BaseState(), ParadoxGameDescriptorAwareSettingsState, ParadoxModDescriptorAwareSettingsState, ParadoxGameOrModSettingsState {
+class ParadoxModSettingsState : BaseState(), ParadoxGameOrModSettingsState, ParadoxGameDescriptorAwareSettingsState, ParadoxModDescriptorAwareSettingsState {
     override var gameType: ParadoxGameType? by enum()
     override var gameDirectory: String? by string()
     override var modDirectory: String? by string()
 
+    @get:Property(surroundWithTag = false)
+    override var options: ParadoxGameOrModOptionsSettingsState by property(ParadoxGameOrModOptionsSettingsState())
     @get:XCollection(style = XCollection.Style.v2)
     override var modDependencies: MutableList<ParadoxModDependencySettingsState> by list()
 }
 
 /**
- * 单个模组依赖的配置。
+ * 单个模组依赖的设置。
  *
  * 始终将模组放到自身的模组依赖列表中，其排序可以调整。
  *
@@ -185,3 +190,13 @@ val ParadoxGameOrModSettingsState.qualifiedName: String?
         }
         else -> null
     }
+
+/**
+ * 游戏或模组的额外选项配置。
+ *
+ * @property disableTiger 在游戏或模组级别，是否禁用 <a href="https://github.com/amtep/tiger">Tiger</a> 检查工具。
+ */
+@Tag("options")
+class ParadoxGameOrModOptionsSettingsState : BaseState() {
+    var disableTiger: Boolean by property(false)
+}

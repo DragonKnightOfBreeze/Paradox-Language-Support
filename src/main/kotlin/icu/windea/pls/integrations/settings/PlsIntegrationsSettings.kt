@@ -38,7 +38,7 @@ class PlsIntegrationsSettingsState : BaseState() {
     //}
 
     /**
-     * @property enableTiger 是否启用 <a href="https://github.com/amtep/tiger">Tiger</a> 作为检查工具。
+     * @property enableTiger 是否启用 <a href="https://github.com/amtep/tiger">Tiger</a> 检查工具。
      * @property ck3TigerPath ck3-tiger 的可执行文件的路径。
      * @property ck3TigerConfPath ck3-tiger 的.conf配置文件的路径。如果不指定，默认使用模组目录下的`ck3-tiger.conf`。
      * @property irTigerPath imperator-tiger 的可执行文件的路径。

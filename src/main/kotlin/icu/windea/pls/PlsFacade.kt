@@ -40,5 +40,19 @@ object PlsFacade {
     fun getIntegrationsSettings() = service<PlsIntegrationsSettings>().state
 
     fun getProfilesSettings() = service<PlsProfilesSettings>().state
-}
 
+    fun getGameSettings(rootInfo: ParadoxRootInfo.Game): ParadoxGameSettingsState? {
+        return getProfilesSettings().gameSettings.get(rootInfo.rootFile.path)
+    }
+
+    fun getModSettings(rootInfo: ParadoxRootInfo.Mod): ParadoxModSettingsState? {
+        return getProfilesSettings().modSettings.get(rootInfo.rootFile.path)
+    }
+
+    fun getGameOrModSettings(rootInfo: ParadoxRootInfo): ParadoxGameOrModSettingsState? {
+        return when (rootInfo) {
+            is ParadoxRootInfo.Game -> getGameSettings(rootInfo)
+            is ParadoxRootInfo.Mod -> getModSettings(rootInfo)
+        }
+    }
+}

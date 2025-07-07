@@ -7,6 +7,8 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.integrations.PlsIntegrationConstants
+import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.*
@@ -17,6 +19,8 @@ class ParadoxGameSettingsDialog(
     val project: Project,
     val settings: ParadoxGameSettingsState
 ) : DialogWrapper(project, true) {
+    private val callbackLock = mutableSetOf<String>()
+
     val graph = PropertyGraph()
     val gameTypeProperty = graph.property(settings.gameType ?: PlsFacade.getSettings().defaultGameType)
 
@@ -28,6 +32,7 @@ class ParadoxGameSettingsDialog(
     }
 
     override fun createCenterPanel(): DialogPanel {
+        callbackLock.clear()
         return panel {
             row {
                 //gameType
@@ -56,6 +61,16 @@ class ParadoxGameSettingsDialog(
                     .columns(COLUMNS_LARGE)
                     .align(Align.FILL)
                     .enabled(false)
+            }
+
+            //options
+            collapsibleGroup(PlsBundle.message("mod.options"), false) {
+                //disableTiger
+                row { //尽管目前仅适用于模组目录……
+                    checkBox(PlsBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
+                        .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
+                    browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Tiger.url)
+                }
             }
 
             //modDependencies

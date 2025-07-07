@@ -7,17 +7,11 @@ import com.intellij.openapi.options.ex.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.ui.layout.selected
 import icu.windea.pls.*
 import icu.windea.pls.ai.settings.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.tupleOf
 import icu.windea.pls.integrations.*
-import icu.windea.pls.integrations.images.tools.*
-import icu.windea.pls.integrations.lints.*
-import icu.windea.pls.integrations.lints.tools.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 @Suppress("UnstableApiUsage")
@@ -63,7 +57,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                         .bindText(settings.image::magickPath.toNonNullableProperty(""))
                         .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                         .align(Align.FILL)
-                        .validationOnInput { validateMagickPath(this, it) }
+                        .validationOnInput { PlsIntegrationsSettingsManager.validateMagickPath(this, it) }
                 }.enabledIf(cbMagick.selected)
             }
             //translation tools
@@ -103,7 +97,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                 //enableTiger
                 row {
                     checkBox(PlsBundle.message("settings.integrations.lint.tiger")).bindSelected(settings.lint::enableTiger)
-                        .onApply { onTigerSettingsChanged() }
+                        .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
                         .applyToComponent { cbTiger = this }
                     browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Tiger.url)
                 }
@@ -124,8 +118,8 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                             .bindText(pathProp.toNonNullableProperty(""))
                             .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                             .align(Align.FILL)
-                            .validationOnInput { validateTigerPath(this, it, gameType) }
-                            .onApply { onTigerSettingsChanged(gameType) }
+                            .validationOnInput { PlsIntegrationsSettingsManager.validateTigerPath(this, it, gameType) }
+                            .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }
                     }.enabledIf(cbTiger.selected)
                     row {
                         label(PlsBundle.message("settings.integrations.lint.tigerConfPath", name)).widthGroup(groupNameLint)
@@ -135,46 +129,12 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                         textFieldWithBrowseButton(descriptor, null)
                             .bindText(confPathProp.toNonNullableProperty(""))
                             .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
-                            .validationOnInput { validateTigerConfPath(this, it, gameType) }
+                            .validationOnInput { PlsIntegrationsSettingsManager.validateTigerConfPath(this, it, gameType) }
                             .align(Align.FILL)
-                            .onApply { onTigerSettingsChanged(gameType) }
+                            .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }
                     }.enabledIf(cbTiger.selected)
                 }
             }
         }
-    }
-
-    private fun validateMagickPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
-        val path = button.text.trim()
-        if (path.isEmpty()) return null
-        val tool = PlsImageToolProvider.EP_NAME.findExtension(PlsMagickToolProvider::class.java) ?: return null
-        if (tool.validatePath(path)) return null
-        return builder.warning(PlsBundle.message("settings.integrations.invalidPath"))
-    }
-
-    private fun validateTigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton, gameType: ParadoxGameType): ValidationInfo? {
-        val path = button.text.trim()
-        if (path.isEmpty()) return null
-        val tool = PlsLintToolProvider.EP_NAME.extensionList.findIsInstance<PlsTigerLintToolProvider> { it.isAvailable(gameType) } ?: return null
-        if (tool.validatePath(path)) return null
-        return builder.warning(PlsBundle.message("settings.integrations.lint.tigerPath.invalid"))
-    }
-
-    private fun validateTigerConfPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton, gameType: ParadoxGameType): ValidationInfo? {
-        val path = button.text.trim()
-        if(path.endsWith(".conf", true)) return null
-        return builder.warning(PlsBundle.message("settings.integrations.lint.tigerConfPath.invalid"))
-    }
-
-    private fun onTigerSettingsChanged() {
-        if (!callbackLock.add("onTigerSettingsChanged")) return
-        val files = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsManager.refreshFiles(files, refreshInlayHints = false)
-    }
-
-    private fun onTigerSettingsChanged(gameType: ParadoxGameType) {
-        onTigerSettingsChanged()
-        if (!callbackLock.add("onTigerSettingsChanged.${gameType.id}")) return
-        PlsTigerLintManager.modificationTrackers.getValue(gameType).incModificationCount()
     }
 }

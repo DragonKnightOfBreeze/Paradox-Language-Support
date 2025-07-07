@@ -34,6 +34,7 @@ object PlsTigerLintManager {
         val fileInfo = selectFile(file)?.fileInfo ?: return false
         val rootInfo = fileInfo.rootInfo
         if (rootInfo !is ParadoxRootInfo.Mod) return false //目前的实现：仅适用于模组目录（中的文件）
+        if (PlsFacade.getGameOrModSettings(rootInfo)?.options?.disableTiger == true) return false //检查是否在游戏或模组设置中禁用
         val gameType = rootInfo.gameType
         return findTigerTool(gameType) != null
     }

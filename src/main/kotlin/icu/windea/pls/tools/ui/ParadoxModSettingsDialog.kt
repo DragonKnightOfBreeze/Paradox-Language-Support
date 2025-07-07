@@ -8,6 +8,8 @@ import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.integrations.PlsIntegrationConstants
+import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.*
@@ -19,6 +21,8 @@ class ParadoxModSettingsDialog(
     val project: Project,
     val settings: ParadoxModSettingsState
 ) : DialogWrapper(project, true) {
+    private val callbackLock = mutableSetOf<String>()
+
     val oldGameType = settings.finalGameType
 
     val defaultGameVersion get() = ParadoxCoreManager.getGameVersionFromGameDirectory(defaultGameDirectory)
@@ -45,6 +49,7 @@ class ParadoxModSettingsDialog(
     }
 
     override fun createCenterPanel(): DialogPanel {
+        callbackLock.clear()
         return panel {
             row {
                 //name
@@ -116,6 +121,16 @@ class ParadoxModSettingsDialog(
                     .columns(COLUMNS_LARGE)
                     .align(Align.FILL)
                     .enabled(false)
+            }
+
+            //options
+            collapsibleGroup(PlsBundle.message("mod.options"), false) {
+                //disableTiger
+                row {
+                    checkBox(PlsBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
+                        .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(callbackLock) }
+                    browserLink(PlsBundle.message("settings.integrations.website"), PlsIntegrationConstants.Tiger.url)
+                }
             }
 
             //modDependencies
