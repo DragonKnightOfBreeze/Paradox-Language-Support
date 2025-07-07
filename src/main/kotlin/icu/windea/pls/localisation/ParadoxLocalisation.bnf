@@ -91,7 +91,7 @@ colorful_text ::= COLORFUL_TEXT_START color_name colorful_text_part ? COLORFUL_T
 }
 private color_name ::= COLOR_TOKEN
 private colorful_text_part ::= colorful_text_item +
-private colorful_text_item ::= rich_text
+private colorful_text_item ::= rich_text | TEXT_FORMAT_END
 
 // localisation reference rules
 
@@ -244,7 +244,7 @@ text_format ::= TEXT_FORMAT_START text_format_name text_format_text_part ? TEXT_
 private text_format_name ::= (TEXT_FORMAT_TOKEN | parameter) + | command
 private text_format_text_part ::= text_format_text
 text_format_text ::= text_format_text_item +
-private text_format_text_item ::= rich_text | COLORFUL_TEXT_END | TEXT_FORMAT_END
+private text_format_text_item ::= rich_text | COLORFUL_TEXT_END
 
 // [ck3, vic3] localisation text icon rules
 
