@@ -4,6 +4,7 @@ import com.google.common.cache.*
 import dev.langchain4j.model.chat.*
 import dev.langchain4j.model.openai.*
 import icu.windea.pls.ai.*
+import icu.windea.pls.ai.settings.PlsAiSettingsManager
 import icu.windea.pls.core.*
 
 object PlsChatModelManager {

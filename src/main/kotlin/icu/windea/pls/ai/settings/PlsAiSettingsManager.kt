@@ -1,12 +1,12 @@
-package icu.windea.pls.ai.util
+package icu.windea.pls.ai.settings
 
-import com.intellij.*
-import icu.windea.pls.ai.*
-import icu.windea.pls.ai.util.PlsAiManager.getChatModelTypeToUse
-import java.util.*
+import com.intellij.DynamicBundle
+import icu.windea.pls.ai.PlsChatModelType
+import icu.windea.pls.ai.util.PlsAiManager
+import java.util.Locale
 
 object PlsAiSettingsManager {
-    fun isValid(type: PlsChatModelType = getChatModelTypeToUse()): Boolean {
+    fun isValid(type: PlsChatModelType = PlsAiManager.getChatModelTypeToUse()): Boolean {
         return when (type) {
             PlsChatModelType.OPEN_AI -> isValidForOpenAI()
         }
