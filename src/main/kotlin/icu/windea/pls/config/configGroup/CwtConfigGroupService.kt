@@ -42,14 +42,15 @@ class CwtConfigGroupService(private val project: Project) {
 
     fun createConfigGroup(gameType: ParadoxGameType?): CwtConfigGroup {
         val gameTypeId = gameType.id
+        val projectName = if(project.isDefault) "default project" else "project ${project.name}"
 
-        logger.info("Initialize config group '$gameTypeId'...")
+        logger.info("Initializing config group '$gameTypeId' for $projectName...")
         val start = System.currentTimeMillis()
 
         val configGroup = doCreateConfigGroup(gameType)
 
         val end = System.currentTimeMillis()
-        logger.info("Initialize config group '$gameTypeId' finished in ${end - start} ms.")
+        logger.info("Initialize config group '$gameTypeId' for $projectName finished in ${end - start} ms.")
 
         return configGroup
     }
@@ -63,8 +64,9 @@ class CwtConfigGroupService(private val project: Project) {
             override fun run(indicator: ProgressIndicator) {
                 configGroups.forEach { configGroup ->
                     val gameTypeId = configGroup.gameType.id
+                    val projectName = if(project.isDefault) "default project" else "project ${project.name}"
 
-                    logger.info("Refresh config group '$gameTypeId'...")
+                    logger.info("Refreshing config group '$gameTypeId'...")
                     val start = System.currentTimeMillis()
 
                     ReadAction.nonBlocking<Unit> {
@@ -74,7 +76,7 @@ class CwtConfigGroupService(private val project: Project) {
                     }.expireWhen { project.isDisposed }.wrapProgress(indicator).executeSynchronously()
 
                     val end = System.currentTimeMillis()
-                    logger.info("Refresh config group '$gameTypeId' finished in ${end - start} ms.")
+                    logger.info("Refresh config group '$gameTypeId' for $projectName finished in ${end - start} ms.")
                 }
 
                 //重新解析已打开的文件

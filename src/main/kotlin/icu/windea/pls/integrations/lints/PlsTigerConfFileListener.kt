@@ -27,7 +27,6 @@ class PlsTigerConfFileListener : AsyncFileListener {
                     event.file.name.takeIf { isConfFile(it) }?.let { changedConfFileNames += it }
                 }
                 is VFileCopyEvent -> {
-                    event.file.name.takeIf { isConfFile(it) }?.let { changedConfFileNames += it }
                     event.newChildName.takeIf { isConfFile(it) }?.let { changedConfFileNames += it }
                 }
                 is VFileMoveEvent -> {
