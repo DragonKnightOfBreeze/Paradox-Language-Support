@@ -74,7 +74,7 @@ class CwtConfigGroupLibrary(val project: Project) : SyntheticLibrary(), ItemPres
             if(projectFileIndex.isInContent(rootDirectory)) return@f
             newRoots += rootDirectory
         }
-        newRoots.removeIf { PlsManager.isExcludedRootFilePath(it.path) }
+        newRoots.removeIf { PlsCoreManager.isExcludedRootFilePath(it.path) }
         return newRoots
     }
 }

@@ -33,7 +33,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
     override fun getVersion() = VERSION
 
     override fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
-        withState(PlsManager.processMergedIndex) {
+        withState(PlsCoreManager.processMergedIndex) {
             when (file) {
                 is ParadoxScriptFile -> indexDataForScriptFile(file, fileData)
                 is ParadoxLocalisationFile -> indexDataForLocalisationFile(file, fileData)

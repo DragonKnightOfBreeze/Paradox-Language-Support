@@ -36,7 +36,7 @@ interface CwtOverriddenConfigProvider {
                         it.originalConfig = config
                         it.overriddenProvider = ep
                     }
-                    ?.also { PlsManager.dynamicContextConfigs.set(true) }
+                    ?.also { PlsCoreManager.dynamicContextConfigs.set(true) }
             }
         }
     }

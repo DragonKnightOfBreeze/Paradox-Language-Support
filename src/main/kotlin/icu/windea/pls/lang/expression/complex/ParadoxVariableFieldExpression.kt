@@ -43,7 +43,7 @@ class ParadoxVariableFieldExpression(
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxVariableFieldExpression? {
-            val incomplete = PlsManager.incompleteComplexExpression.get() ?: false
+            val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
             if (!incomplete && expressionString.isEmpty()) return null
 
             //skip if text is a number

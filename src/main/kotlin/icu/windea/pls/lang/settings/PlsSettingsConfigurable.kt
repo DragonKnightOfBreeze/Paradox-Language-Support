@@ -569,23 +569,23 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     private fun refreshForFilesByFileNames(fileNames: MutableSet<String>) {
         if (!callbackLock.add("refreshForFilesByFileNames")) return
 
-        val files = PlsManager.findFilesByFileNames(fileNames)
-        PlsManager.reparseFiles(files)
+        val files = PlsCoreManager.findFilesByFileNames(fileNames)
+        PlsCoreManager.reparseFiles(files)
     }
 
     private fun refreshForOpenedFiles() {
         if (!callbackLock.add("refreshOnlyForOpenedFiles")) return
 
-        val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsManager.refreshFiles(openedFiles)
+        val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsCoreManager.refreshFiles(openedFiles)
     }
 
     private fun refreshForParameterInference() {
         if (!callbackLock.add("refreshForParameterInference")) return
 
         ParadoxModificationTrackers.ParameterConfigInferenceTracker.incModificationCount()
-        val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsManager.reparseFiles(openedFiles)
+        val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsCoreManager.reparseFiles(openedFiles)
     }
 
     private fun refreshForInlineScriptInference() {
@@ -594,15 +594,15 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
         ParadoxModificationTrackers.ScriptFileTracker.incModificationCount()
         ParadoxModificationTrackers.InlineScriptsTracker.incModificationCount()
         ParadoxModificationTrackers.InlineScriptConfigInferenceTracker.incModificationCount()
-        val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
-        PlsManager.reparseFiles(openedFiles)
+        val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
+        PlsCoreManager.reparseFiles(openedFiles)
     }
 
     private fun refreshForScopeContextInference() {
         if (!callbackLock.add("refreshForScopeContextInference")) return
 
         ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker.incModificationCount()
-        val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsManager.reparseFiles(openedFiles)
+        val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsCoreManager.reparseFiles(openedFiles)
     }
 }

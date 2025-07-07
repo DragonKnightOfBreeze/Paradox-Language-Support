@@ -54,7 +54,7 @@ class ParadoxDatabaseObjectExpression private constructor(
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup): ParadoxDatabaseObjectExpression? {
-            val incomplete = PlsManager.incompleteComplexExpression.get() ?: false
+            val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
             if (!incomplete && expressionString.isEmpty()) return null
 
             val nodes = mutableListOf<ParadoxComplexExpressionNode>()

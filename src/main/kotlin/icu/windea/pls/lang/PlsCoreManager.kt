@@ -11,7 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
 
-object PlsManager {
+object PlsCoreManager {
     //region ThreadLocals
 
     /**
@@ -36,7 +36,7 @@ object PlsManager {
 
     //endregion
 
-    //region Vfs Methods
+    //region VFS Methods
 
     fun isExcludedRootFilePath(rootFilePath: String): Boolean {
         //see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/90
@@ -92,15 +92,15 @@ object PlsManager {
     //region VFS Refresh Methods
 
     @Volatile
-    private var reparseStatus = false //防止抖动（否则可能出现SOF）
+    private var reparseLock = false //防止抖动（否则可能出现SOF）
 
-    fun reparseFiles(files: Set<VirtualFile>) {
-        if (!reparseStatus) return
+    fun reparseFiles(files: Collection<VirtualFile>) {
+        if (!reparseLock) return
         try {
-            reparseStatus = true
+            reparseLock = true
             doReparseFiles(files)
         } finally {
-            reparseStatus = false
+            reparseLock = false
         }
     }
 
@@ -127,6 +127,10 @@ object PlsManager {
     }
 
     fun refreshFiles(files: Collection<VirtualFile>, restartDaemon: Boolean = true, refreshInlayHints: Boolean = true) {
+        doRefreshFiles(files, restartDaemon, refreshInlayHints)
+    }
+
+    private fun doRefreshFiles(files: Collection<VirtualFile>, restartDaemon: Boolean, refreshInlayHints: Boolean) {
         if (files.isEmpty()) return
         val allEditors = EditorFactory.getInstance().allEditors
         val editors = allEditors.filter f@{ editor ->

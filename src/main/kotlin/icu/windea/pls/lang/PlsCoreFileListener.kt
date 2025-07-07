@@ -9,7 +9,7 @@ import icu.windea.pls.lang.util.*
 /**
  * 用于监听文件更改以更新相关缓存。
  */
-class PlsFileListener : AsyncFileListener {
+class PlsCoreFileListener : AsyncFileListener {
     override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier {
         val filesToClearRootInfo = mutableSetOf<VirtualFile>()
         val filesToClearFileInfo = mutableSetOf<VirtualFile>()
@@ -140,14 +140,14 @@ class PlsFileListener : AsyncFileListener {
 
     private fun reparseOpenedFiles() {
         //重新解析所有项目的所有已打开的文件
-        val files = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsManager.reparseFiles(files)
+        val files = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsCoreManager.reparseFiles(files)
     }
 
     private fun reparseOpenedFilesForInlineScripts() {
         //重新解析所有项目的所有已打开的内联脚本文件
-        val files = PlsManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
-        PlsManager.reparseFiles(files)
+        val files = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true, onlyInlineScriptFiles = true)
+        PlsCoreManager.reparseFiles(files)
     }
 
     private fun refreshForInlineScripts() {

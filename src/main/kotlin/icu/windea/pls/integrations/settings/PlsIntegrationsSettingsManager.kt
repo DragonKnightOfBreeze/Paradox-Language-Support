@@ -36,8 +36,8 @@ object PlsIntegrationsSettingsManager {
     fun onTigerSettingsChanged(callbackLock: MutableSet<String>? = null) {
         if (callbackLock != null && !callbackLock.add("onTigerSettingsChanged")) return
 
-        val files = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsManager.refreshFiles(files, refreshInlayHints = false)
+        val files = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsCoreManager.refreshFiles(files, refreshInlayHints = false)
     }
 
     fun onTigerSettingsChanged(gameType: ParadoxGameType, callbackLock: MutableSet<String>? = null) {

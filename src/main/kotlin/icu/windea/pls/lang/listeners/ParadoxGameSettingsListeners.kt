@@ -35,7 +35,7 @@ class ParadoxUpdateLibraryOnGameSettingsChangedListener : ParadoxGameSettingsLis
         }
 
         //重新解析已打开的文件
-        val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsManager.reparseFiles(openedFiles)
+        val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsCoreManager.reparseFiles(openedFiles)
     }
 }

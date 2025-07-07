@@ -18,7 +18,7 @@ class ParadoxRefreshOnDefaultGameTypeChangedListener : ParadoxDefaultGameTypeLis
         }
 
         //重新解析并刷新文件（IDE之后会自动请求重新索引）
-        val files = PlsManager.findFilesByRootFilePaths(modDirectories)
-        PlsManager.reparseFiles(files)
+        val files = PlsCoreManager.findFilesByRootFilePaths(modDirectories)
+        PlsCoreManager.reparseFiles(files)
     }
 }

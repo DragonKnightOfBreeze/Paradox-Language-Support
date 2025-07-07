@@ -25,7 +25,7 @@
     <fileTypeOverrider implementation="icu.windea.pls.lang.ParadoxFileTypeOverrider" order="first"/>
     <utf8BomOptionProvider implementation="icu.windea.pls.lang.ParadoxUtf8BomOptionProvider"/>
 
-    <vfs.asyncListener implementation="icu.windea.pls.lang.PlsFileListener"/>
+    <vfs.asyncListener implementation="icu.windea.pls.lang.PlsCoreFileListener"/>
 
     <projectViewPane implementation="icu.windea.pls.lang.projectView.CwtConfigFilesViewPane"/>
     <projectViewPane implementation="icu.windea.pls.lang.projectView.ParadoxFilesViewPane"/>

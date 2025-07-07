@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxGlobalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScriptedVariable, ParadoxGlobalScriptedVariableSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxGlobalScriptedVariableSearch.SearchParameters, consumer: Processor<in ParadoxScriptScriptedVariable>) {
         //#141 如果正在为 ParadoxMergedIndex 编制索引并且正在解析引用，则直接跳过
-        if(PlsManager.resolveForMergedIndex.get() == true) return
+        if(PlsCoreManager.resolveForMergedIndex.get() == true) return
 
         ProgressManager.checkCanceled()
         if(queryParameters.project.isDefault) return

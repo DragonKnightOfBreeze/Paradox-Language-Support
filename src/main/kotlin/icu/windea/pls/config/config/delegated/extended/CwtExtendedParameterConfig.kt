@@ -75,7 +75,7 @@ private class CwtExtendedParameterConfigImpl(
                 val contextReferenceElement = parameterElement.containingContextReference?.element ?: return@run
                 val parentElement = contextReferenceElement.parentOfType<ParadoxScriptMemberElement>(false) ?: return@run
                 val contextConfigs = ParadoxExpressionManager.getConfigContext(parentElement)?.getConfigs().orEmpty()
-                PlsManager.dynamicContextConfigs.set(true)
+                PlsCoreManager.dynamicContextConfigs.set(true)
                 return contextConfigs
             }
             return emptyList()

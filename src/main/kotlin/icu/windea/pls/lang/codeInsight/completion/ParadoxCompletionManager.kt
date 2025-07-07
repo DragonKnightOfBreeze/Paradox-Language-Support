@@ -704,7 +704,7 @@ object ParadoxCompletionManager {
     //region Complex Expression Completion Methods
 
     inline fun <T> markIncomplete(action: () -> T): T {
-        return withState(PlsManager.incompleteComplexExpression, action)
+        return withState(PlsCoreManager.incompleteComplexExpression, action)
     }
 
     fun completeTemplateExpression(context: ProcessingContext, result: CompletionResultSet) {

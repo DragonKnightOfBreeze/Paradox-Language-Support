@@ -31,7 +31,7 @@ class ParadoxTemplateExpression private constructor(
                 }
             }.takeIf { it.expressionString.isNotEmpty() } ?: return null
 
-            val incomplete = PlsManager.incompleteComplexExpression.get() ?: false
+            val incomplete = PlsCoreManager.incompleteComplexExpression.get() ?: false
             if (!incomplete && expressionString.isEmpty()) return null
 
             //这里需要允许部分匹配

@@ -22,7 +22,7 @@ class ParadoxPreferredLocaleDialog : DialogWrapper(null, false) {
     }
 
     private fun refreshForOpenedFiles() {
-        val files = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
-        PlsManager.refreshFiles(files)
+        val files = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
+        PlsCoreManager.refreshFiles(files)
     }
 }

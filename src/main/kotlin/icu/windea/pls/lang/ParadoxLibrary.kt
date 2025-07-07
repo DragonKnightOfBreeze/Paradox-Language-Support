@@ -102,7 +102,7 @@ class ParadoxLibrary(val project: Project) : SyntheticLibrary(), ItemPresentatio
                 newRoots += modDependencyFile
             }
         }
-        newRoots.removeIf { PlsManager.isExcludedRootFilePath(it.path) }
+        newRoots.removeIf { PlsCoreManager.isExcludedRootFilePath(it.path) }
         return newRoots
     }
 }

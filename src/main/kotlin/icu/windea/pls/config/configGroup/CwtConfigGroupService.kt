@@ -80,8 +80,8 @@ class CwtConfigGroupService(private val project: Project) {
                 }
 
                 //重新解析已打开的文件
-                val openedFiles = PlsManager.findOpenedFiles(onlyParadoxFiles = true)
-                PlsManager.reparseFiles(openedFiles)
+                val openedFiles = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
+                PlsCoreManager.reparseFiles(openedFiles)
             }
 
             override fun onSuccess() {
@@ -89,8 +89,8 @@ class CwtConfigGroupService(private val project: Project) {
                     //重新解析并刷新（IDE之后会自动请求重新索引）
                     //TODO 1.2.0+ 需要考虑优化 - 重新索引可能不是必要的，也可能仅需要重新索引少数几个文件
                     val rootFilePaths = getRootFilePaths(configGroups)
-                    val files = PlsManager.findFilesByRootFilePaths(rootFilePaths)
-                    PlsManager.reparseFiles(files)
+                    val files = PlsCoreManager.findFilesByRootFilePaths(rootFilePaths)
+                    PlsCoreManager.reparseFiles(files)
                 }
 
                 run {
