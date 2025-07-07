@@ -37,7 +37,7 @@ object ParadoxImageManager {
         val fileType = file.fileType
         if (fileType !is ImageFileType && fileType !is DdsFileType && fileType !is TgaFileType) return false
         val extension = file.extension?.lowercase() ?: return false
-        if (extension in PlsConstants.imageFileExtensions) return false
+        if (extension !in PlsConstants.imageFileExtensions) return false
         return true
     }
 

@@ -15,4 +15,8 @@ class ParadoxLocalisationInfo(
     override fun hashCode(): Int {
         return Objects.hash(name, category, gameType)
     }
+
+    override fun toString(): String {
+        return "ParadoxLocalisationInfo(name=$name, category=$category, gameType=$gameType)"
+    }
 }

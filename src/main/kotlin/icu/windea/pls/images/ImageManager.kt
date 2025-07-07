@@ -13,7 +13,7 @@ import javax.imageio.spi.*
 
 object ImageManager {
     fun isImageFileType(fileType: FileType): Boolean {
-        return fileType == ImageFileType.INSTANCE || isExtendedImageFileType(fileType)
+        return fileType !is ImageFileType || isExtendedImageFileType(fileType)
     }
 
     fun isExtendedImageFileType(fileType: FileType): Boolean {

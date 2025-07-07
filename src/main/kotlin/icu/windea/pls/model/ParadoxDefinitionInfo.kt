@@ -150,6 +150,10 @@ class ParadoxDefinitionInfo(
         return Objects.hash(name, typesText, gameType)
     }
 
+    override fun toString(): String {
+        return "ParadoxDefinitionInfo(name=$name, types=$typesText, gameType=$gameType)"
+    }
+
     object Keys : KeyRegistry()
 
     data class RelatedImageInfo(
