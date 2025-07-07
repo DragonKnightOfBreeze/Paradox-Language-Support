@@ -31,3 +31,4 @@ class CommentByLineCommentHandlerCodeInjector : CodeInjectorBase() {
         continueInvocation()
     }
 }
+

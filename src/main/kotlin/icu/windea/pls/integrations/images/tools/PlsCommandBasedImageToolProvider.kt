@@ -1,10 +1,14 @@
 package icu.windea.pls.integrations.images.tools
 
+import icu.windea.pls.core.io.*
 import icu.windea.pls.model.constants.*
 import org.apache.commons.io.*
+import java.awt.image.*
 import java.io.*
 import java.nio.file.*
 import java.util.*
+import javax.imageio.*
+import javax.imageio.stream.*
 import kotlin.io.path.*
 
 abstract class PlsCommandBasedImageToolProvider : PlsImageToolProvider {
@@ -17,6 +21,14 @@ abstract class PlsCommandBasedImageToolProvider : PlsImageToolProvider {
     abstract fun isValid(): Boolean
 
     abstract fun validatePath(path: String): Boolean
+
+    override fun read(imageIndex: Int, param: ImageReadParam?, stream: ImageInputStream, sourceFormat: String, targetFormat: String): BufferedImage {
+        val inputStream = ImageInputStreamAdapter(stream)
+        val outputStream = ByteArrayOutputStream()
+        convertImageFormat(inputStream.buffered(), outputStream, sourceFormat, targetFormat)
+        val input = ByteArrayInputStream(outputStream.toByteArray())
+        return ImageIO.read(input.buffered())
+    }
 
     final override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
         val pathsToDelete = mutableSetOf<Path>()

@@ -1,9 +1,9 @@
 package icu.windea.pls.images
 
 import com.intellij.openapi.fileTypes.*
-import com.twelvemonkeys.imageio.plugins.dds.*
-import com.twelvemonkeys.imageio.plugins.tga.*
 import icu.windea.pls.images.dds.*
+import icu.windea.pls.images.spi.DdsImageReaderSpi
+import icu.windea.pls.images.spi.TgaImageReaderSpi
 import icu.windea.pls.images.support.*
 import icu.windea.pls.images.tga.*
 import org.intellij.images.fileTypes.impl.*
@@ -40,8 +40,8 @@ object ImageManager {
     // 对于 DDS 和 TGA 图片，统一使用 TwelveMonkeys 提供的 SPI
     // 参见：https://github.com/haraldk/TwelveMonkeys
 
-    private val ddsImageReaderSpi by lazy { DDSImageReaderSpi() }
-    private val tgaImageReaderSpi by lazy { TGAImageReaderSpi() }
+    private val ddsImageReaderSpi by lazy { DdsImageReaderSpi() }
+    private val tgaImageReaderSpi by lazy { TgaImageReaderSpi() }
 
     fun registerImageIOSpi() {
         IIORegistry.getDefaultInstance().registerServiceProvider(ddsImageReaderSpi)
