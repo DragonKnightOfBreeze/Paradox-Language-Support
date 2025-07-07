@@ -95,7 +95,7 @@ object PlsCoreManager {
     private var reparseLock = false //防止抖动（否则可能出现SOF）
 
     fun reparseFiles(files: Collection<VirtualFile>) {
-        if (!reparseLock) return
+        if (reparseLock) return
         try {
             reparseLock = true
             doReparseFiles(files)
