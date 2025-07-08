@@ -2,6 +2,7 @@ package icu.windea.pls.inject.support
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.progress.ProcessCanceledException
 import icu.windea.pls.core.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*
@@ -171,7 +172,12 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
                 }
             }
             if (finalArgs.size != actualArgsSize) throw IllegalStateException()
-            return injectMethod.invoke(codeInjector, *finalArgs)
+            try {
+                return injectMethod.invoke(codeInjector, *finalArgs)
+            } catch (e: Exception) {
+                if(e is InvocationTargetException && e.targetException is ProcessCanceledException) throw e.targetException
+                throw e
+            }
         }
     }
 }
