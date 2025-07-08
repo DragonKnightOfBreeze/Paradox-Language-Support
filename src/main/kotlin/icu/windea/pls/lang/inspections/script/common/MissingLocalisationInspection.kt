@@ -30,7 +30,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
     @JvmField
     var checkForDefinitions = true
     @JvmField
-    var checkPrimaryForDefinitions = false
+    var checkPrimaryForDefinitions = true
     @JvmField
     var checkOptionalForDefinitions = false
     @JvmField
