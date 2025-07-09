@@ -206,7 +206,10 @@
       <override-text place="RevealInPopup"/>
       <add-to-group group-id="TouchBarDefault_alt" anchor="last"/>
     </action>
-    <action id="Pls.CopySteamPageUrl" class="icu.windea.pls.lang.actions.CopySteamPageProvider" icon="icu.windea.pls.PlsIcons.General.Steam">
+    <action id="Pls.CopyPathFromRoot" class="icu.windea.pls.lang.actions.CopyPathFromRootProvider">
+      <add-to-group group-id="CopyFileReference"/>
+    </action>
+    <action id="Pls.CopySteamPageUrl" class="icu.windea.pls.lang.actions.CopySteamPageUrlProvider" icon="icu.windea.pls.PlsIcons.General.Steam">
       <add-to-group group-id="CopyFileReference"/>
     </action>
 

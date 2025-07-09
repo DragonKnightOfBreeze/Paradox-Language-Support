@@ -8,7 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
-class CopySteamPageProvider : DumbAwareCopyPathProvider() {
+class CopySteamPageUrlProvider : DumbAwareCopyPathProvider() {
     //仅限游戏或模组的根目录
 
     override fun getPathToElement(project: Project, virtualFile: VirtualFile?, editor: Editor?): String? {
