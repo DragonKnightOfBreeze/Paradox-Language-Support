@@ -7,8 +7,8 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.integrations.PlsIntegrationConstants
-import icu.windea.pls.integrations.settings.PlsIntegrationsSettingsManager
+import icu.windea.pls.integrations.*
+import icu.windea.pls.integrations.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.*

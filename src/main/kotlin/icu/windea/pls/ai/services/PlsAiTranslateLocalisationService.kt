@@ -10,12 +10,12 @@ import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import dev.langchain4j.data.message.*
 import dev.langchain4j.kotlin.model.chat.*
-import icu.windea.pls.PlsBundle
+import icu.windea.pls.*
 import icu.windea.pls.ai.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationResult
+import icu.windea.pls.lang.util.manipulators.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.awt.*

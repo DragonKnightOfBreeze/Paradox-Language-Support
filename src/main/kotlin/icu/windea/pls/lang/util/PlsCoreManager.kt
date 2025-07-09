@@ -1,4 +1,4 @@
-package icu.windea.pls.lang
+package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.daemon.*
 import com.intellij.codeInsight.daemon.impl.*
@@ -8,8 +8,8 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
-import icu.windea.pls.lang.util.*
 
 object PlsCoreManager {
     //region ThreadLocals

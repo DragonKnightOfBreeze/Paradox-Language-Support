@@ -7,9 +7,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import com.intellij.ui.dsl.builder.actionListener
-import com.intellij.ui.dsl.builder.bindSelected
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
@@ -19,7 +17,7 @@ import icu.windea.pls.lang.refactoring.actions.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import javax.swing.JComponent
+import javax.swing.*
 
 /**
  * 无法解析的封装变量引用的检查。
@@ -35,7 +33,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
     var ignoredInInjectedFiles = false
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (ignoredInInjectedFiles && ParadoxFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
+        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
 
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
@@ -62,7 +60,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
 
     private fun shouldCheckFile(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
-        return ParadoxFilePathManager.inLocalisationPath(fileInfo.path)
+        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
     }
 
     override fun createOptionsPanel(): JComponent {
@@ -89,7 +87,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
         override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
             //打开对话框
             val virtualFile = file.virtualFile ?: return
-            val scriptedVariablesDirectory = ParadoxFilePathManager.getScriptedVariablesDirectory(virtualFile) ?: return //不期望的结果
+            val scriptedVariablesDirectory = ParadoxFileManager.getScriptedVariablesDirectory(virtualFile) ?: return //不期望的结果
             val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, variableName, "0")
             if (!dialog.showAndGet()) return //取消
 

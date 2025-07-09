@@ -1,9 +1,9 @@
 package icu.windea.pls.ai.settings
 
-import com.intellij.DynamicBundle
-import icu.windea.pls.ai.PlsChatModelType
-import icu.windea.pls.ai.util.PlsAiManager
-import java.util.Locale
+import com.intellij.*
+import icu.windea.pls.ai.*
+import icu.windea.pls.ai.util.*
+import java.util.*
 
 object PlsAiSettingsManager {
     fun isValid(type: PlsChatModelType = PlsAiManager.getChatModelTypeToUse()): Boolean {

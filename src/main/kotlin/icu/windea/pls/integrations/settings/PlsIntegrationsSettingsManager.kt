@@ -7,7 +7,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.integrations.images.tools.*
 import icu.windea.pls.integrations.lints.*
 import icu.windea.pls.integrations.lints.tools.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 object PlsIntegrationsSettingsManager {

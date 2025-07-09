@@ -8,6 +8,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.editor.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.util.*
 
 /**
  * 当添加或更改模组配置后，刷新库信息。

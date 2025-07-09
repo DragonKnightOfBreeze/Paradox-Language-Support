@@ -23,7 +23,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
             return doGetFileType(fileInfoFromUserData)
         }
 
-        if (!ParadoxFilePathManager.canBeScriptOrLocalisationFile(file)) return null
+        if (!ParadoxFileManager.canBeScriptOrLocalisationFile(file)) return null
         val fileInfo = ParadoxCoreManager.getFileInfo(file) ?: return null
         return doGetFileType(fileInfo)
     }

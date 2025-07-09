@@ -72,6 +72,6 @@ class IncorrectScopeInspection : LocalInspectionTool() {
 
     private fun shouldCheckFile(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
-        return ParadoxFilePathManager.inLocalisationPath(fileInfo.path)
+        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
     }
 }

@@ -43,7 +43,7 @@ object ParadoxCoreManager {
             try {
                 val rootInfo = doGetRootInfo(rootFile)
                 rootFile.tryPutUserData(PlsKeys.rootInfo, rootInfo ?: EMPTY_OBJECT)
-                if (rootInfo != null && !ParadoxFileManager.isLightFile(rootFile)) {
+                if (rootInfo != null && !PlsFileManager.isLightFile(rootFile)) {
                     ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
                 }
                 return rootInfo

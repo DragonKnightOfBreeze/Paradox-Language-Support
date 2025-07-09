@@ -1,9 +1,8 @@
 package icu.windea.pls.config.settings
 
-import com.intellij.openapi.application.ApplicationManager
-import icu.windea.pls.config.util.PlsConfigRepositoryManager
-import icu.windea.pls.lang.listeners.ParadoxConfigDirectoriesListener
-import icu.windea.pls.lang.listeners.ParadoxConfigRepositoryUrlsListener
+import com.intellij.openapi.application.*
+import icu.windea.pls.config.util.*
+import icu.windea.pls.lang.listeners.*
 
 object PlsConfigSettingsManager {
     fun onConfigDirectoriesChanged(callbackLock: MutableSet<String>? = null) {

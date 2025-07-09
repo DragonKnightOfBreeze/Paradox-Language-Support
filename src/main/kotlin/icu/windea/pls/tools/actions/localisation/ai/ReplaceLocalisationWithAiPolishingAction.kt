@@ -1,8 +1,8 @@
 package icu.windea.pls.tools.actions.localisation.ai
 
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.psi.PsiFile
-import icu.windea.pls.tools.actions.localisation.ManipulateLocalisationActionBase
+import com.intellij.openapi.actionSystem.*
+import com.intellij.psi.*
+import icu.windea.pls.tools.actions.localisation.*
 
 class ReplaceLocalisationWithAiPolishingAction : ManipulateLocalisationActionBase.Default() {
     override fun doInvoke(e: AnActionEvent, files: List<PsiFile>) {

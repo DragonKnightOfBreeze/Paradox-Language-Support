@@ -6,6 +6,7 @@ import com.intellij.openapi.roots.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.util.*
 
 /**
  * 当添加或更改游戏配置后，刷新库信息。

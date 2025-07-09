@@ -7,6 +7,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 
 /**
  * 用于基于上下文为某些特定的脚本表达式提供重载后的CWT规则。

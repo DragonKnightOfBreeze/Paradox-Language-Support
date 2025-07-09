@@ -2,8 +2,7 @@ package icu.windea.pls.images
 
 import com.intellij.openapi.fileTypes.*
 import icu.windea.pls.images.dds.*
-import icu.windea.pls.images.spi.DdsImageReaderSpi
-import icu.windea.pls.images.spi.TgaImageReaderSpi
+import icu.windea.pls.images.spi.*
 import icu.windea.pls.images.support.*
 import icu.windea.pls.images.tga.*
 import org.intellij.images.fileTypes.impl.*

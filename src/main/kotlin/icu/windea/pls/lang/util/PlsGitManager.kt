@@ -1,4 +1,4 @@
-package icu.windea.pls.lang
+package icu.windea.pls.lang.util
 
 import icu.windea.pls.core.*
 import icu.windea.pls.core.console.*

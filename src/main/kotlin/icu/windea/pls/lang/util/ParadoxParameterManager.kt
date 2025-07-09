@@ -397,7 +397,7 @@ object ParadoxParameterManager {
 
     fun getParameterValueInjectionInfoFromInjectedFile(injectedFile: PsiFile): ParadoxParameterValueInjectionInfo? {
         val vFile = selectFile(injectedFile) ?: return null
-        if (!ParadoxFileManager.isInjectedFile(vFile)) return null
+        if (!PlsFileManager.isInjectedFile(vFile)) return null
         val host = InjectedLanguageManager.getInstance(injectedFile.project).getInjectionHost(injectedFile)
         if (host == null) return null
 

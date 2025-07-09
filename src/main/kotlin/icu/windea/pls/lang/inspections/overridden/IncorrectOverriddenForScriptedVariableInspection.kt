@@ -64,7 +64,7 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
     }
 
     private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (ParadoxFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
         if (selectRootFile(file) == null) return false
         return true
     }

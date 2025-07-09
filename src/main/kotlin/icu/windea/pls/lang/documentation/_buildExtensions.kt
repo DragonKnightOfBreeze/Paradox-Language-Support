@@ -68,7 +68,7 @@ fun DocumentationBuilder.appendImgTag(url: String, width: Int, height: Int, loca
 
 fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): DocumentationBuilder {
     val file = runReadAction { selectFile(element) } ?: return this
-    if (ParadoxFileManager.isInjectedFile(file)) return this //ignored for injected PSI
+    if (PlsFileManager.isInjectedFile(file)) return this //ignored for injected PSI
     val fileInfo = file.fileInfo ?: return this
     val rootInfo = fileInfo.rootInfo
     append("<span>")

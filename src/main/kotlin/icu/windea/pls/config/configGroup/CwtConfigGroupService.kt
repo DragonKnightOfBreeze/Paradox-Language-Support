@@ -11,6 +11,7 @@ import icu.windea.pls.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import kotlinx.coroutines.*
 import java.util.concurrent.*

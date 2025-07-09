@@ -34,7 +34,7 @@ class GenerateLocalisationFileAction : AnAction() {
 
     override fun update(e: AnActionEvent) {
         e.presentation.isEnabledAndVisible = false
-        val project = e.getData(CommonDataKeys.PROJECT) ?: return
+        val project = e.project ?: return
         val files = findFiles(e, project)
         if (files.isEmpty()) return
         e.presentation.isVisible = true
@@ -45,7 +45,7 @@ class GenerateLocalisationFileAction : AnAction() {
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        val project = e.getData(CommonDataKeys.PROJECT) ?: return
+        val project = e.project ?: return
         val files = findFiles(e, project)
         if (files.isEmpty()) return
         val allLocales = findAllLocales()
@@ -151,15 +151,12 @@ class GenerateLocalisationFileAction : AnAction() {
         }
     }
 
-    private fun findFiles(e: AnActionEvent, project: Project): List<VirtualFile> {
-        val allFiles = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY) ?: VirtualFile.EMPTY_ARRAY
-        if (allFiles.isEmpty()) return emptyList()
-        val files = mutableListOf<VirtualFile>()
-        allFiles.forEach f@{ file ->
-            if (file.fileType !is ParadoxLocalisationFileType) return@f
-            if (file.fileInfo == null) return@f
-            if (ParadoxFileManager.isLightFile(file)) return@f
-            files.add(file)
+    private fun findFiles(e: AnActionEvent, project: Project): Set<VirtualFile> {
+        val files = PlsFileManager.collectFiles(e, deep = true) p@{ file ->
+            if (file.fileType !is ParadoxLocalisationFileType) return@p false
+            if (file.fileInfo == null) return@p false
+            if (PlsFileManager.isLightFile(file)) return@p false
+            true
         }
         return files
     }
@@ -168,7 +165,7 @@ class GenerateLocalisationFileAction : AnAction() {
         return ParadoxLocaleManager.getLocaleConfigs().associateBy { it.shortId }
     }
 
-    private fun buildFileMap(files: List<VirtualFile>, allLocales: Map<String, CwtLocaleConfig>, project: Project): Map<String, VirtualFile> {
+    private fun buildFileMap(files: Collection<VirtualFile>, allLocales: Map<String, CwtLocaleConfig>, project: Project): Map<String, VirtualFile> {
         //任意文件的文件名中必须带有某个语言区域，并且文件文本中必须仅带有这个语言区域
         val fileMap = mutableMapOf<String, VirtualFile>()
         files.forEach f@{ file ->

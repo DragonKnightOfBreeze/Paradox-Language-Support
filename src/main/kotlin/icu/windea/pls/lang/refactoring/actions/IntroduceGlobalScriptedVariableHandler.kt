@@ -34,7 +34,7 @@ class IntroduceGlobalScriptedVariableHandler : ContextAwareRefactoringActionHand
         editor.selectionModel.setSelection(element.startOffset, element.endOffset)
 
         //打开对话框
-        val scriptedVariablesDirectory = ParadoxFilePathManager.getScriptedVariablesDirectory(virtualFile) ?: return true //不期望的结果
+        val scriptedVariablesDirectory = ParadoxFileManager.getScriptedVariablesDirectory(virtualFile) ?: return true //不期望的结果
         val dialog = IntroduceGlobalScriptedVariableDialog(project, scriptedVariablesDirectory, PlsInternalSettings.defaultScriptedVariableName)
         if (!dialog.showAndGet()) return true //取消
 

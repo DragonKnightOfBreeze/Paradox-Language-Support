@@ -5,7 +5,6 @@ import com.intellij.navigation.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.model.*

@@ -527,7 +527,7 @@ object ParadoxCompletionManager {
         if (pathReferenceExpressionSupport != null) {
             val tailText = getExpressionTailText(context, config)
             val fileExtensions = when (config) {
-                is CwtMemberConfig<*> -> ParadoxFilePathManager.getFileExtensionOptionValues(config)
+                is CwtMemberConfig<*> -> ParadoxFileManager.getFileExtensionOptionValues(config)
                 else -> emptySet()
             }
             //仅提示匹配file_extensions选项指定的扩展名的，如果存在

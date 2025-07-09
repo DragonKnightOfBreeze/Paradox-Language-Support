@@ -10,7 +10,7 @@ import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import icu.windea.pls.*
-import icu.windea.pls.config.util.PlsConfigRepositoryManager
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 import java.awt.event.*

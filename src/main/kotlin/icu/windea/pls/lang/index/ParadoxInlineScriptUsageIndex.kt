@@ -66,7 +66,7 @@ class ParadoxInlineScriptUsageIndex : ParadoxFileBasedIndex<ParadoxInlineScriptU
     }
 
     override fun useLazyIndex(file: VirtualFile): Boolean {
-        if (ParadoxFileManager.isInjectedFile(file)) return true
+        if (PlsFileManager.isInjectedFile(file)) return true
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true //inline script files should be lazy indexed
         return false
     }

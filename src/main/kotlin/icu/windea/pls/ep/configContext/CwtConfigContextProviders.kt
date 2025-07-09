@@ -35,7 +35,7 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
         val vFile = selectFile(file) ?: return null
-        if (ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
+        if (PlsFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
 
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType
@@ -141,7 +141,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
         ProgressManager.checkCanceled()
 
         val vFile = selectFile(file) ?: return null
-        if (ParadoxFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
+        if (PlsFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
 
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(vFile)
         if (inlineScriptExpression == null) return null

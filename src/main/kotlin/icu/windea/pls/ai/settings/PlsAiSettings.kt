@@ -3,7 +3,6 @@ package icu.windea.pls.ai.settings
 import com.intellij.credentialStore.*
 import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.annotations.*
-import icu.windea.pls.ai.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.model.constants.*
 

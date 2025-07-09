@@ -31,8 +31,8 @@ enum class ParadoxFileType {
                 fileName.endsWith(".mod") -> ModDescriptor
                 path.length == 1 && rootInfo is ParadoxRootInfo.Game -> Other
                 isIgnored(fileName) -> Other
-                ParadoxFilePathManager.canBeScriptFilePath(path) -> Script
-                ParadoxFilePathManager.canBeLocalisationFilePath(path) -> Localisation
+                ParadoxFileManager.canBeScriptFilePath(path) -> Script
+                ParadoxFileManager.canBeLocalisationFilePath(path) -> Localisation
                 else -> Other
             }
         }

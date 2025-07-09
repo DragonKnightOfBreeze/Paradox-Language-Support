@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.util.*
 import javax.swing.*
 
 //each library each project

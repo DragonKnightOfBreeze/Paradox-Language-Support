@@ -1,7 +1,7 @@
 package icu.windea.pls.tools.actions.localisation
 
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.psi.PsiFile
+import com.intellij.openapi.actionSystem.*
+import com.intellij.psi.*
 
 class ReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionBase.Default() {
     override fun doInvoke(e: AnActionEvent, files: List<PsiFile>) {

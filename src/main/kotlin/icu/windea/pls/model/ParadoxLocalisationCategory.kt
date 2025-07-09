@@ -31,8 +31,8 @@ enum class ParadoxLocalisationCategory(
         @JvmStatic
         fun resolve(path: ParadoxPath): ParadoxLocalisationCategory? {
             return when {
-                ParadoxFilePathManager.inLocalisationPath(path, synced = false) -> Localisation
-                ParadoxFilePathManager.inLocalisationPath(path, synced = true) -> SyncedLocalisation
+                ParadoxFileManager.inLocalisationPath(path, synced = false) -> Localisation
+                ParadoxFileManager.inLocalisationPath(path, synced = true) -> SyncedLocalisation
                 else -> null
             }
         }

@@ -44,7 +44,7 @@ class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
             }
             file is ParadoxLocalisationFile -> {
                 val fileInfo = file.fileInfo ?: return
-                if (!ParadoxFilePathManager.inLocalisationPath(fileInfo.path)) return
+                if (!ParadoxFileManager.inLocalisationPath(fileInfo.path)) return
                 ParadoxModificationTrackers.LocalisationFileTracker.incModificationCount()
             }
         }

@@ -13,9 +13,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.ParadoxLocalisationFileManager
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
 
 /**
  * 不正确的文件名的检查。
@@ -58,9 +56,9 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
     }
 
     private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (ParadoxFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
         val fileInfo = file.fileInfo ?: return false
-        return ParadoxFilePathManager.inLocalisationPath(fileInfo.path)
+        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
     }
 
     //org.jetbrains.kotlin.idea.intentions.RenameFileToMatchClassIntention

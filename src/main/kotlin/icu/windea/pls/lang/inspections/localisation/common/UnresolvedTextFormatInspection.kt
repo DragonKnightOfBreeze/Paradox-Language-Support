@@ -29,7 +29,7 @@ class UnresolvedTextFormatInspection : LocalInspectionTool() {
     var ignoredInInjectedFiles = false
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (ignoredInInjectedFiles && ParadoxFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
+        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
 
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
@@ -55,7 +55,7 @@ class UnresolvedTextFormatInspection : LocalInspectionTool() {
     private fun shouldCheckFile(file: PsiFile): Boolean {
         if (!ParadoxSyntaxConstraint.LocalisationTextFormat.supports(file)) return false
         val fileInfo = file.fileInfo ?: return false
-        return ParadoxFilePathManager.inLocalisationPath(fileInfo.path)
+        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
     }
 
     override fun createOptionsPanel(): JComponent {

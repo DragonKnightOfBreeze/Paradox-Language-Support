@@ -14,6 +14,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.settings.PlsStrategies.*
 import icu.windea.pls.lang.ui.locale.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import java.awt.event.*
 

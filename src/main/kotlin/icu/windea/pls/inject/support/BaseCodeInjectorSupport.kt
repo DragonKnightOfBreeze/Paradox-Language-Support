@@ -2,7 +2,7 @@ package icu.windea.pls.inject.support
 
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.progress.*
 import icu.windea.pls.core.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*

@@ -3,14 +3,12 @@ package icu.windea.pls.lang.inspections.localisation.common
 import com.intellij.codeInspection.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
-import com.intellij.ui.dsl.builder.actionListener
-import com.intellij.ui.dsl.builder.bindSelected
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import javax.swing.JComponent
+import javax.swing.*
 
 /**
  * 无法解析的颜色的检查。
@@ -22,7 +20,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
     var ignoredInInjectedFiles = false
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (ignoredInInjectedFiles && ParadoxFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
+        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
 
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
@@ -44,7 +42,7 @@ class UnresolvedColorInspection : LocalInspectionTool() {
 
     private fun shouldCheckFile(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
-        return ParadoxFilePathManager.inLocalisationPath(fileInfo.path)
+        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
     }
 
     override fun createOptionsPanel(): JComponent {

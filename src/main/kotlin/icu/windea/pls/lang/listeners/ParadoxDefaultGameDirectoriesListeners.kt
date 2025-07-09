@@ -4,6 +4,7 @@ import com.intellij.openapi.project.*
 import com.intellij.ui.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.editor.*
+import icu.windea.pls.lang.util.*
 
 /**
  * 当更改默认游戏目录映射后，需要更新编辑器通知。

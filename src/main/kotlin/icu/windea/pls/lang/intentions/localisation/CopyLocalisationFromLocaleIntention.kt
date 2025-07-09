@@ -15,7 +15,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import icu.windea.pls.lang.util.manipulators.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
 import java.util.concurrent.atomic.*

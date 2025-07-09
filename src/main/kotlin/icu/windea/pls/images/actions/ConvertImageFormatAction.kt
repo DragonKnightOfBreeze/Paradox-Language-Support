@@ -20,6 +20,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.images.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import java.io.*
 import java.util.concurrent.atomic.*
 import java.util.function.Consumer
@@ -45,24 +46,13 @@ abstract class ConvertImageFormatAction(
 
     override fun update(e: AnActionEvent) {
         val project = e.project
-        val editor = e.getData(CommonDataKeys.EDITOR)
-        val enabled = when {
-            project == null -> false
-            editor != null -> e.getData(LangDataKeys.VIRTUAL_FILE)?.let { isAvailableForFile(it) } == true
-            else -> e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)?.any { isAvailableForFile(it) } == true
-        }
+        val enabled = project != null && PlsFileManager.collectFiles(e).any { isAvailableForFile(it) }
         e.presentation.isEnabledAndVisible = enabled
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val editor = e.getData(CommonDataKeys.EDITOR)
-        val files = if (editor != null) {
-            val file = e.getData(LangDataKeys.VIRTUAL_FILE)?.takeIf { isAvailableForFile(it) }?.toPsiFile(project) ?: return
-            listOf(file)
-        } else {
-            e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)?.filter { isAvailableForFile(it) }?.mapNotNull { it.toPsiFile(project) } ?: return
-        }
+        val files = PlsFileManager.collectFiles(e).filter { isAvailableForFile(it) }.mapNotNull { it.toPsiFile(project) }
         if (files.isEmpty()) return
         convert(files, project)
     }
