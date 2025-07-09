@@ -46,6 +46,7 @@ TODO
 * [ ] 新功能：提供动作，用于批量操作本地化（翻译、润色等） / NEW: Provide actions for batch manipulation of localisations (translating, polishing, etc.)
 * [ ] 新功能：提供动作，用于批量生成本地化文件（来自指定语言区域，或者翻译为指定语言区域，等等） / NEW: Provide actions for batch generation of localisation files (from specified locale, or translate to specified locale, etc.)
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
+* 注意：目前无法单步回退各种本地化操作引发的更改，请考虑在操作前先提交更改到 VCS / NOTE: It is currently impossible to single-step rollback changes caused by localisation manipulations, consider to commit changes to VCS before performing
 
 ## 1.4.2
 

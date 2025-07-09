@@ -31,7 +31,7 @@ class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntent
     }
 
     override fun createPopup(project: Project, editor: Editor?, file: PsiFile?, callback: (String) -> Unit): JBPopup {
-        return PlsAiManager.getPolishLocalisationService().createDescriptionPopup(project, editor, file, callback)
+        return PlsAiManager.getPolishLocalisationService().createDescriptionPopup(project, callback)
     }
 
     @Suppress("UnstableApiUsage")
@@ -48,7 +48,7 @@ class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntent
                 val chunkSize = PlsAiManager.getSettings().features.batchSizeOfLocalisations
                 val contextsChunked = contextsToHandle.chunked(chunkSize)
                 reportRawProgress p@{ reporter ->
-                    reporter.text(PlsBundle.message("intention.localisation.polish.replace.progress.initStep"))
+                    reporter.text(PlsBundle.message("manipulation.localisation.polish.replace.progress.initStep"))
 
                     contextsChunked.forEachConcurrent f@{ inputContexts ->
                         val inputText = inputContexts.joinToString("\n") { context -> context.join() }
@@ -58,7 +58,7 @@ class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntent
                             runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
 
                             current++
-                            reporter.text(PlsBundle.message("intention.localisation.polish.progress.step", data.key))
+                            reporter.text(PlsBundle.message("manipulation.localisation.polish.replace.progress.step", data.key))
                             reporter.fraction(current / total)
                         }
                         runCatchingCancelable { handleText(request, callback) }.onFailure { errorRef.set(it) }.getOrNull()
@@ -86,7 +86,7 @@ class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntent
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {
-        val commandName = PlsBundle.message("intention.localisation.command.ai.polish.replace")
+        val commandName = PlsBundle.message("manipulation.localisation.command.ai.polish.replace")
         return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
@@ -104,7 +104,7 @@ class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntent
         thisLogger().warn(error)
 
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
-        val errorDetails = errorMessage?.let { PlsBundle.message("intention.localisation.error", it) }.orEmpty()
+        val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("intention.replaceLocalisationWithAiPolishing.notification.1") + errorDetails
         createNotification(content, NotificationType.WARNING).notify(project)
     }

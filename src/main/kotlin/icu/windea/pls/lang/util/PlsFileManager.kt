@@ -4,7 +4,9 @@ import com.intellij.injected.editor.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.vfs.*
 import com.intellij.testFramework.*
+import com.intellij.util.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.Processors
 import icu.windea.pls.lang.actions.*
 
 object PlsFileManager {
@@ -16,7 +18,7 @@ object PlsFileManager {
         return file is VirtualFileWindow
     }
 
-    fun collectFiles(e: AnActionEvent): Set<VirtualFile> {
+    fun findFiles(e: AnActionEvent): Set<VirtualFile> {
         val editor = e.editor
         if (editor != null) {
             val file = e.getData(LangDataKeys.VIRTUAL_FILE)
@@ -27,21 +29,27 @@ object PlsFileManager {
         return files.toSet()
     }
 
-    fun collectFiles(e: AnActionEvent, deep: Boolean = false, filter: (VirtualFile) -> Boolean): Set<VirtualFile> {
-        val files = collectFiles(e)
-        val result = mutableSetOf<VirtualFile>()
-        for (file in files) {
+    fun findFiles(e: AnActionEvent, deep: Boolean = false, filter: (VirtualFile) -> Boolean): Set<VirtualFile> {
+        val processor = Processors.collect(mutableSetOf(), filter)
+        processFiles(e, deep, processor)
+        return processor.collection
+    }
+
+    fun processFiles(e: AnActionEvent, deep: Boolean = false, processor: Processor<VirtualFile>): Boolean {
+        val editor = e.editor
+        if (editor != null) {
+            val file = e.getData(LangDataKeys.VIRTUAL_FILE)
+            if (file == null) return true
+            return processor.process(file)
+        }
+        val files = e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)
+        if (files.isNullOrEmpty()) return true
+        return files.all { file ->
             if (deep && file.isDirectory) {
-                VfsUtil.visitChildrenRecursively(file, object : VirtualFileVisitor<Void>() {
-                    override fun visitFile(file: VirtualFile): Boolean {
-                        if (filter(file)) result.add(file)
-                        return true
-                    }
-                })
+                VfsUtil.processFilesRecursively(file, processor)
             } else {
-                if (filter(file)) result.add(file)
+                processor.process(file)
             }
         }
-        return result
     }
 }

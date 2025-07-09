@@ -14,7 +14,7 @@ object ParadoxLocalisationDataResolver {
      */
     fun resolve(file: PsiFile): ParadoxLocalisationData.PropertyList? {
         if (file !is ParadoxLocalisationFile) return null
-        return file.propertyList?.let { resolvePropertyList(it) }
+        return file.propertyLists.firstOrNull()?.let { resolvePropertyList(it) }
     }
 
     /**

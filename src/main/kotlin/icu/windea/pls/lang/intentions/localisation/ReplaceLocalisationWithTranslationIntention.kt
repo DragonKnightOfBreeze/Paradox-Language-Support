@@ -38,7 +38,7 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
             if (contextsToHandle.isNotEmpty()) {
                 reportProgress(contextsToHandle.size) { reporter ->
                     contextsToHandle.forEachConcurrent f@{ context ->
-                        reporter.itemStep(PlsBundle.message("intention.localisation.translate.replace.progress.step", context.key)) {
+                        reporter.itemStep(PlsBundle.message("manipulation.localisation.translate.replace.progress.step", context.key)) {
                             runCatchingCancelable { handleText(context, selectedLocale) }.onFailure { errorRef.compareAndSet(null, it) }.getOrThrow()
                             runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
                         }
@@ -59,7 +59,7 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {
-        val commandName = PlsBundle.message("intention.localisation.command.translate.replace")
+        val commandName = PlsBundle.message("manipulation.localisation.command.translate.replace")
         return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
@@ -71,7 +71,7 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
     private fun createFailedNotification(project: Project, selectedLocale: CwtLocaleConfig, error: Throwable) {
         thisLogger().warn(error)
 
-        val errorDetails = error.message?.let { PlsBundle.message("intention.localisation.error", it) }.orEmpty()
+        val errorDetails = error.message?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("intention.replaceLocalisationWithTranslation.notification.1", selectedLocale) + errorDetails
         createNotification(content, NotificationType.WARNING).notify(project)
     }

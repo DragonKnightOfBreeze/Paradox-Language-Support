@@ -2,10 +2,8 @@ package icu.windea.pls.ai.services
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
-import com.intellij.psi.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import dev.langchain4j.data.message.*
@@ -88,12 +86,12 @@ class PlsAiPolishLocalisationService : PlsAiManipulateLocalisationService() {
         return UserMessage.from(text)
     }
 
-    fun createDescriptionPopup(project: Project, editor: Editor?, file: PsiFile?, callback: (String) -> Unit): JBPopup {
+    fun createDescriptionPopup(project: Project, callback: (String) -> Unit): JBPopup {
         val textField = JBTextField()
         val panel = panel {
             row {
                 cell(textField).align(AlignX.FILL).columns(COLUMNS_LARGE).focused()
-                    .comment(PlsBundle.message("intention.localisation.polish.popup.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+                    .comment(PlsBundle.message("manipulation.localisation.polish.popup.comment"), MAX_LINE_LENGTH_WORD_WRAP)
             }
         }
         val popup = JBPopupFactory.getInstance()
@@ -104,7 +102,7 @@ class PlsAiPolishLocalisationService : PlsAiManipulateLocalisationService() {
             .setCancelOnClickOutside(false)
             .setCancelOnOtherWindowOpen(false)
             .setMinSize(Dimension(640, 120))
-            .setTitle(PlsBundle.message("intention.localisation.polish.popup.title"))
+            .setTitle(PlsBundle.message("manipulation.localisation.polish.popup.title"))
             .createPopup()
         textField.addActionListener {
             popup.closeOk(null)

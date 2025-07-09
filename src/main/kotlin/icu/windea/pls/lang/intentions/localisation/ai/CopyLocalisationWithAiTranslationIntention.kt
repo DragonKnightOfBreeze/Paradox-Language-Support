@@ -36,7 +36,7 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
     }
 
     override fun createPopup(project: Project, editor: Editor?, file: PsiFile?, callback: (String) -> Unit): JBPopup {
-        return PlsAiManager.getTranslateLocalisationService().createDescriptionPopup(project, editor, file, callback)
+        return PlsAiManager.getTranslateLocalisationService().createDescriptionPopup(project, callback)
     }
 
     @Suppress("UnstableApiUsage")
@@ -53,14 +53,14 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
                 val chunkSize = PlsAiManager.getSettings().features.batchSizeOfLocalisations
                 val contextsChunked = contextsToHandle.chunked(chunkSize)
                 reportRawProgress p@{ reporter ->
-                    reporter.text(PlsBundle.message("intention.localisation.translate.progress.initStep"))
+                    reporter.text(PlsBundle.message("manipulation.localisation.translate.progress.initStep"))
 
                     contextsChunked.forEachConcurrent f@{ inputContexts ->
                         val inputText = inputContexts.joinToString("\n") { context -> context.join() }
                         val request = PlsAiTranslateLocalisationsRequest(inputContexts, inputText, data, selectedLocale, file, project)
                         val callback: suspend (ParadoxLocalisationResult) -> Unit = { data ->
                             current++
-                            reporter.text(PlsBundle.message("intention.localisation.translate.progress.step", data.key))
+                            reporter.text(PlsBundle.message("manipulation.localisation.translate.progress.step", data.key))
                             reporter.fraction(current / total)
                         }
                         runCatchingCancelable { handleText(request, callback) }.onFailure { errorRef.set(it) }.getOrNull()
@@ -103,7 +103,7 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
         thisLogger().warn(error)
 
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
-        val errorDetails = errorMessage?.let { PlsBundle.message("intention.localisation.error", it) }.orEmpty()
+        val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("intention.copyLocalisationWithAiTranslation.notification.1", selectedLocale) + errorDetails
         createNotification(content, NotificationType.WARNING).notify(project)
     }
