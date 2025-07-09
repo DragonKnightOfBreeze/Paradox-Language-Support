@@ -14,8 +14,8 @@ data class ParadoxLocalisationManipulationContext(
 ) {
     var selectedLocale: CwtLocaleConfig? = null
 
-    val elementsAndSnippets = elements.map { it to ParadoxLocalisationContext.from(it) }
-    val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.shouldHandle }
+    val elementsAndContexts = elements.map { it to ParadoxLocalisationContext.from(it) }
+    val elementsAndContextsToHandle = elementsAndContexts.filter { (_, context) -> context.shouldHandle }
     val errorRef = AtomicReference<Throwable>()
 
     companion object {

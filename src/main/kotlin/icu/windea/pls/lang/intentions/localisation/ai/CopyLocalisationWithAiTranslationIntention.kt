@@ -42,42 +42,31 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig, data: String?) {
         withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationWithAiTranslation.progress.title", selectedLocale)) action@{
-            val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationContext.from(it) } }
-            val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.shouldHandle }
+            val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) } }
+            val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
             var withWarnings = false
 
-            if (elementsAndSnippetsToHandle.isNotEmpty()) {
-                val total = elementsAndSnippetsToHandle.size.toDouble()
+            if (contextsToHandle.isNotEmpty()) {
+                val total = contextsToHandle.size.toDouble()
                 var current = 0
                 val chunkSize = PlsAiManager.getSettings().features.batchSizeOfLocalisations
-                val elementsAndSnippetsChunked = elementsAndSnippetsToHandle.chunked(chunkSize)
-                val aiService = PlsAiManager.getTranslateLocalisationService()
+                val contextsChunked = contextsToHandle.chunked(chunkSize)
                 reportRawProgress p@{ reporter ->
                     reporter.text(PlsBundle.message("intention.localisation.translate.progress.initStep"))
 
-                    elementsAndSnippetsChunked.forEachConcurrent f@{ list ->
-                        val inputElements = list.map { (element) -> element }
-                        val inputText = list.joinToString("\n") { (_, snippets) -> snippets.join() }
-                        var i = 0
-                        runCatchingCancelable {
-                            val request = PlsAiTranslateLocalisationsRequest(inputElements, inputText, data, selectedLocale, file, project)
-                            val resultFlow = aiService.translate(request)
-                            aiService.checkResultFlow(resultFlow)
-                            resultFlow.collect { data ->
-                                val (_, snippets) = list[i]
-                                aiService.checkOutputData(snippets, data)
-                                i++
-                                current++
-                                reporter.text(PlsBundle.message("intention.localisation.translate.progress.step", data.key))
-                                reporter.fraction(current / total)
-
-                                snippets.newText = data.text
-                            }
-                        }.onFailure { errorRef.set(it) }.getOrNull()
-                        if (i != list.size) { //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
+                    contextsChunked.forEachConcurrent f@{ inputContexts ->
+                        val inputText = inputContexts.joinToString("\n") { context -> context.join() }
+                        val request = PlsAiTranslateLocalisationsRequest(inputContexts, inputText, data, selectedLocale, file, project)
+                        val callback: suspend (ParadoxLocalisationResult) -> Unit = { data ->
+                            current++
+                            reporter.text(PlsBundle.message("intention.localisation.translate.progress.step", data.key))
+                            reporter.fraction(current / total)
+                        }
+                        runCatchingCancelable { handleText(request, callback) }.onFailure { errorRef.set(it) }.getOrNull()
+                        if (request.index != inputContexts.size) { //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
                             withWarnings = true
-                            current += list.size - i
+                            current += inputContexts.size - request.index
                         }
                     }
                 }
@@ -87,13 +76,17 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
                 return@action createFailedNotification(project, selectedLocale, errorRef.get())
             }
 
-            val textToCopy = elementsAndSnippets.joinToString("\n") { (_, snippets) -> snippets.joinWithNewText() }
+            val textToCopy = ParadoxLocalisationManipulator.joinText(contexts)
             CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
             if (withWarnings) {
                 return@action createSuccessWithWarningsNotification(project, selectedLocale)
             }
             createSuccessNotification(project, selectedLocale)
         }
+    }
+
+    private suspend fun handleText(request: PlsAiTranslateLocalisationsRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
+        ParadoxLocalisationManipulator.handleTextWithAiTranslation(request, callback)
     }
 
     private fun createSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig) {

@@ -2,7 +2,6 @@ package icu.windea.pls.lang.intentions.localisation
 
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
-import com.intellij.openapi.command.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.project.*
 import com.intellij.platform.ide.progress.*
@@ -13,8 +12,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.manipulators.*
 import icu.windea.pls.localisation.psi.*
 import java.util.concurrent.atomic.*
@@ -28,16 +25,16 @@ class ReplaceLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBa
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig) {
         withBackgroundProgress(project, PlsBundle.message("intention.replaceLocalisationFromLocale.progress.title", selectedLocale)) action@{
-            val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationContext.from(it) } }
-            val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.shouldHandle }
+            val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) } }
+            val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
 
-            if (elementsAndSnippetsToHandle.isNotEmpty()) {
-                reportProgress(elementsAndSnippetsToHandle.size) { reporter ->
-                    elementsAndSnippetsToHandle.forEachConcurrent f@{ (element, snippets) ->
-                        reporter.itemStep(PlsBundle.message("intention.localisation.search.replace.progress.step", snippets.key)) {
-                            runCatchingCancelable { doHandleText(project, file, snippets, selectedLocale) }.onFailure { errorRef.compareAndSet(null, it) }.getOrThrow()
-                            runCatchingCancelable { doReplaceText(project, file, element, snippets) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
+            if (contextsToHandle.isNotEmpty()) {
+                reportProgress(contextsToHandle.size) { reporter ->
+                    contextsToHandle.forEachConcurrent f@{ context ->
+                        reporter.itemStep(PlsBundle.message("intention.localisation.search.replace.progress.step", context.key)) {
+                            runCatchingCancelable { handleText(context, project, selectedLocale) }.onFailure { errorRef.compareAndSet(null, it) }.getOrThrow()
+                            runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
                         }
                     }
                 }
@@ -50,22 +47,13 @@ class ReplaceLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBa
         }
     }
 
-    private suspend fun doHandleText(project: Project, file: PsiFile?, snippets: ParadoxLocalisationContext, selectedLocale: CwtLocaleConfig) {
-        val newText = readAction {
-            val selector = selector(project, file).localisation().contextSensitive().locale(selectedLocale)
-            val e = ParadoxLocalisationSearch.search(snippets.key, selector).find() ?: return@readAction null
-            e.value
-        }
-        if (newText == null) return
-        snippets.newText = newText
+    private suspend fun handleText(context: ParadoxLocalisationContext, project: Project, selectedLocale: CwtLocaleConfig) {
+        return ParadoxLocalisationManipulator.handleTextFromLocale(context, project, selectedLocale)
     }
 
-    @Suppress("UnstableApiUsage")
-    private suspend fun doReplaceText(project: Project, file: PsiFile?, element: ParadoxLocalisationProperty, snippets: ParadoxLocalisationContext) {
-        if (snippets.newText == snippets.text) return
-        writeCommandAction(project, PlsBundle.message("intention.localisation.command.replace")) {
-            element.setValue(snippets.newText)
-        }
+    private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {
+        val commandName = PlsBundle.message("intention.localisation.command.replace")
+        return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
     private fun createSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig) {

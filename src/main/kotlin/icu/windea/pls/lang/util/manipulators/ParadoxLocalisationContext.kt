@@ -6,6 +6,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.localisation.psi.*
 
 data class ParadoxLocalisationContext(
+    val element: ParadoxLocalisationProperty,
     val key: String, // KEY
     val prefix: String, // KEY:0
     val text: String, // TEXT
@@ -32,14 +33,14 @@ data class ParadoxLocalisationContext(
             if (i1 == -1) {
                 val prefix = elementText.trimEnd()
                 val textRange = TextRange.from(elementText.length, 0)
-                return ParadoxLocalisationContext(name, prefix, "", textRange, false)
+                return ParadoxLocalisationContext(element, name, prefix, "", textRange, false)
             }
             val prefix = elementText.substring(0, i1).trimEnd()
             val text = elementText.substring(i1 + 1)
                 .let { if (it.lastOrNull() == '"') it.dropLast(1) else it }
             val textRange = TextRange.create(i1, elementText.length)
             val shouldHandle = shouldHandle(element)
-            return ParadoxLocalisationContext(name, prefix, text, textRange, shouldHandle)
+            return ParadoxLocalisationContext(element, name, prefix, text, textRange, shouldHandle)
         }
 
         private fun shouldHandle(element: ParadoxLocalisationProperty): Boolean {

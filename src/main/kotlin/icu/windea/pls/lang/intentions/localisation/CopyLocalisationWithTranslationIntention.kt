@@ -17,10 +17,8 @@ import icu.windea.pls.integrations.translation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.manipulators.*
 import icu.windea.pls.localisation.psi.*
-import kotlinx.coroutines.*
 import java.awt.datatransfer.*
 import java.util.concurrent.atomic.*
-import kotlin.coroutines.*
 
 /**
  * 复制翻译后的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）到剪贴板。
@@ -37,15 +35,15 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig) {
         withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationWithTranslation.progress.title", selectedLocale)) action@{
-            val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationContext.from(it) } }
-            val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.shouldHandle }
+            val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) } }
+            val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
 
-            if (elementsAndSnippetsToHandle.isNotEmpty()) {
-                reportProgress(elementsAndSnippetsToHandle.size) { reporter ->
-                    elementsAndSnippetsToHandle.forEachConcurrent f@{ (element, snippets) ->
-                        reporter.itemStep(PlsBundle.message("intention.localisation.translate.progress.step", snippets.key)) {
-                            runCatchingCancelable { doHandleText(element, snippets, selectedLocale) }.onFailure { errorRef.set(it) }.getOrThrow()
+            if (contextsToHandle.isNotEmpty()) {
+                reportProgress(contextsToHandle.size) { reporter ->
+                    contextsToHandle.forEachConcurrent f@{ context ->
+                        reporter.itemStep(PlsBundle.message("intention.localisation.translate.progress.step", context.key)) {
+                            runCatchingCancelable { handleText(context, selectedLocale) }.onFailure { errorRef.set(it) }.getOrThrow()
                         }
                     }
                 }
@@ -55,26 +53,14 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
                 return@action createFailedNotification(project, selectedLocale, errorRef.get())
             }
 
-            val textToCopy = elementsAndSnippets.joinToString("\n") { (_, snippets) -> snippets.joinWithNewText() }
+            val textToCopy = ParadoxLocalisationManipulator.joinText(contexts)
             CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
             createSuccessNotification(project, selectedLocale)
         }
     }
 
-    private suspend fun doHandleText(element: ParadoxLocalisationProperty, snippets: ParadoxLocalisationContext, selectedLocale: CwtLocaleConfig) {
-        val sourceLocale = selectLocale(element)
-        val newText = suspendCancellableCoroutine { continuation ->
-            CoroutineScope(continuation.context).launch {
-                PlsTranslationManager.translate(snippets.text, sourceLocale, selectedLocale) { translated, e ->
-                    if (e != null) {
-                        continuation.resumeWithException(e)
-                    } else {
-                        continuation.resume(translated)
-                    }
-                }
-            }
-        }
-        if (newText != null) snippets.newText = newText
+    private suspend fun handleText(context: ParadoxLocalisationContext, selectedLocale: CwtLocaleConfig) {
+        return ParadoxLocalisationManipulator.handleTextWithTranslation(context, selectedLocale)
     }
 
     private fun createSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig) {

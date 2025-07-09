@@ -13,8 +13,6 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.manipulators.*
 import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
@@ -31,15 +29,15 @@ class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig) {
         withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationFromLocale.progress.title", selectedLocale)) action@{
-            val elementsAndSnippets = elements.map { it to readAction { ParadoxLocalisationContext.from(it) } }
-            val elementsAndSnippetsToHandle = elementsAndSnippets.filter { (_, snippets) -> snippets.shouldHandle }
+            val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) } }
+            val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
 
-            if (elementsAndSnippetsToHandle.isNotEmpty()) {
-                reportProgress(elementsAndSnippetsToHandle.size) { reporter ->
-                    elementsAndSnippetsToHandle.forEachConcurrent f@{ (_, snippets) ->
-                        reporter.itemStep(PlsBundle.message("intention.localisation.search.progress.step", snippets.key)) {
-                            runCatchingCancelable { doHandleText(project, file, snippets, selectedLocale) }.onFailure { errorRef.set(it) }.getOrThrow()
+            if (contextsToHandle.isNotEmpty()) {
+                reportProgress(contextsToHandle.size) { reporter ->
+                    contextsToHandle.forEachConcurrent f@{ context ->
+                        reporter.itemStep(PlsBundle.message("intention.localisation.search.progress.step", context.key)) {
+                            runCatchingCancelable { handleText(context, project, selectedLocale) }.onFailure { errorRef.set(it) }.getOrThrow()
                         }
                     }
                 }
@@ -49,20 +47,14 @@ class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.
                 return@action createFailedNotification(project, selectedLocale, errorRef.get())
             }
 
-            val textToCopy = elementsAndSnippets.joinToString("\n") { (_, snippets) -> snippets.joinWithNewText() }
+            val textToCopy = ParadoxLocalisationManipulator.joinText(contexts)
             CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
             createSuccessNotification(project, selectedLocale)
         }
     }
 
-    private suspend fun doHandleText(project: Project, file: PsiFile?, snippets: ParadoxLocalisationContext, selectedLocale: CwtLocaleConfig) {
-        val newText = readAction {
-            val selector = selector(project, file).localisation().contextSensitive().locale(selectedLocale)
-            val e = ParadoxLocalisationSearch.search(snippets.key, selector).find() ?: return@readAction null
-            e.value
-        }
-        if (newText == null) return
-        snippets.newText = newText
+    private suspend fun handleText(context: ParadoxLocalisationContext, project: Project, selectedLocale: CwtLocaleConfig) {
+        return ParadoxLocalisationManipulator.handleTextFromLocale(context, project, selectedLocale)
     }
 
     private fun createSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig) {
