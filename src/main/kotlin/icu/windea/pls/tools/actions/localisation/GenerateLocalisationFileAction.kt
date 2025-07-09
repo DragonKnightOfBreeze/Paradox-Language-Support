@@ -151,13 +151,15 @@ class GenerateLocalisationFileAction : AnAction() {
         }
     }
 
-    private fun findFiles(e: AnActionEvent, project: Project): Set<VirtualFile> {
-        val files = PlsFileManager.findFiles(e, deep = true) p@{ file ->
-            if (file.fileType !is ParadoxLocalisationFileType) return@p false
-            if (file.fileInfo == null) return@p false
-            if (PlsFileManager.isLightFile(file)) return@p false
-            true
-        }
+    private fun isValidFile(file: VirtualFile): Boolean {
+        if (file.fileType !is ParadoxLocalisationFileType) return false
+        if (file.fileInfo == null) return false
+        if (PlsFileManager.isLightFile(file)) return false
+        return true
+    }
+
+    private fun findFiles(e: AnActionEvent, project: Project): Collection<VirtualFile> {
+        val files = PlsFileManager.findFiles(e, deep = true) { file -> isValidFile(file) }
         return files
     }
 

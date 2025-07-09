@@ -5,6 +5,8 @@
 * [ ] 更新参考文档，更加详细，尽可能全面地介绍插件的功能
 * [ ] 兼容更加复杂的本地化命令（例如，带有多个参数、用引号括起的参数）
 * [ ] 兼容通过内联脚本声明的定义，兼容相关语言功能（定义的名字在参数值中，而定义的声明在内联脚本文件中）
+* [ ] 支持回退各种本地化操作带来的更改
+* [ ] 支持 Paradox CSV 语言，包括提供各种必要的语言功能
 * [ ] 支持为同一个模组配置多个模组依赖列表
 * [ ] 支持通过内置方案、手动乃至AI解决模组冲突，合并模组文件，提供相关的全局代码检查和操作
 * [ ] 支持直接在IDE中启动游戏，且启用的模组来自可配置的模组列表
@@ -19,9 +21,9 @@ TODO
 * [X] 基于AI的本地化翻译/润色的意向，验证功能是否正常，并且在设置有误或者未联网时是否有比较好的交互体验
 * [X] ~~DDS图片 - 仍然存在问题，导致无法正常渲染图片，需要复现&排查~~ 实现已更改
 * [X] DDS/TGA图片 - 缩放操作无法生效，需要排查
-* [ ] DDS/TGA图片的预览与渲染 - 实现已更改，因此需要进一步检查、测试
-* [ ] 本地化生成 - 仍然存在问题，需要复现&排查
+* [X] DDS/TGA图片的预览与渲染 - 实现已更改，因此需要进一步检查、测试
 * [ ] 由于渲染器相关代码的重构，检查相关功能是否正常，包括渲染内嵌提示时是否仅渲染一行
+* [ ] 本地化生成 - 仍然存在问题，需要复现&排查
 
 ## 2.0.0-dev
 
@@ -44,9 +46,8 @@ TODO
 * [X] 新功能：提供AI驱动的本地化翻译功能（意向） / NEW: Provide AI-driven localisation translation features (intentions)
 * [X] 新功能：提供AI驱动的本地化润色功能（意向） / NEW: Provide AI-driven localisation polishing features (intentions)
 * [ ] 新功能：提供动作，用于批量操作本地化（翻译、润色等） / NEW: Provide actions for batch manipulation of localisations (translating, polishing, etc.)
-* [ ] 新功能：提供动作，用于批量生成本地化文件（来自指定语言区域，或者翻译为指定语言区域，等等） / NEW: Provide actions for batch generation of localisation files (from specified locale, or translate to specified locale, etc.)
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
-* 注意：目前无法单步回退各种本地化操作引发的更改，请考虑在操作前先提交更改到 VCS / NOTE: It is currently impossible to single-step rollback changes caused by localisation manipulations, consider to commit changes to VCS before performing
+* 注意：目前无法单步回退各种本地化操作带来的更改，请考虑在操作前先提交更改到 VCS / NOTE: It is currently impossible to single-step rollback changes caused by localisation manipulations, consider to commit changes to VCS before performing
 
 ## 1.4.2
 
