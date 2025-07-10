@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex">
+  <title>Redirecting...</title>
+  <script>
+    const { hash, origin, pathname } = window.location;
+    const routePath = pathname.substring(26);
+    const { languages } = window.navigator;
+    const anchor = hash.substring(1);
+
+    const localeConfig = {"/zh/":["zh-CN","zh-TW","zh"],"/en/":["en-US","en-UK","en"]};
+    const availableLocales = ["/en/","/zh/"];
+    const defaultLocale = "/en/";
+    const defaultBehavior = "defaultLocale"
+
+    let matchedLocalePath = null;
+
+    // get matched locale
+    findLanguage:
+      for (const lang of languages)
+        for (const [localePath, langs] of Object.entries(localeConfig))
+          if (langs.includes(lang)) {
+            if (!availableLocales.includes(localePath))
+              continue;
+            matchedLocalePath = localePath;
+            break findLanguage;
+          }
+
+    // default link
+    const defaultLink = defaultLocale? `${origin}/Paradox-Language-Support${defaultLocale}${routePath}${anchor? `#${anchor}`: ""}`: null;
+
+    // a locale matches
+    if (matchedLocalePath) {
+      const localeLink = `${origin}/Paradox-Language-Support${matchedLocalePath}${routePath}${anchor? `#${anchor}`: ""}`;
+
+      if (availableLocales.includes(matchedLocalePath)) {
+        location.href = localeLink;
+      }
+      // the page does not exist
+      else {
+        // locale homepage
+        if (defaultBehavior === "homepage") {
+          location.href = `${origin}/Paradox-Language-Support${matchedLocalePath}`;
+        }
+        // default locale page
+        else if (defaultBehavior === "defaultLocale" && defaultLink) {
+          location.href = defaultLink;
+        }
+        // as is to get a 404 page of that locale
+        else {
+          location.href = localeLink;
+        }
+      }
+    }
+    // we have a default page
+    else if (defaultLink) {
+      location.href = defaultLink;
+    }
+    else {
+      location.href = `${origin}/Paradox-Language-Support/404.html`;
+    }
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>
