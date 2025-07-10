@@ -16,6 +16,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import kotlinx.coroutines.*
+import org.jetbrains.annotations.*
 
 /**
  * 用于处理本地化的一类意图。
@@ -175,5 +176,11 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction, DumbAwa
             val selectedLocale: CwtLocaleConfig,
             val data: T?
         )
+    }
+
+    object Messages {
+        fun success() = PlsBundle.message("intention.manipulateLocalisation.status.0")
+        fun failed() = PlsBundle.message("intention.manipulateLocalisation.status.1")
+        fun partialSuccess() = PlsBundle.message("intention.manipulateLocalisation.status.2")
     }
 }

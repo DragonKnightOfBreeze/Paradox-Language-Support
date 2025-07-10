@@ -44,12 +44,12 @@ class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationInte
             var withWarnings = false
 
             if (contextsToHandle.isNotEmpty()) {
-                val total = contextsToHandle.size.toDouble()
+                val total = contextsToHandle.size
                 var current = 0
                 val chunkSize = PlsAiManager.getSettings().features.batchSizeOfLocalisations
                 val contextsChunked = contextsToHandle.chunked(chunkSize)
                 reportRawProgress p@{ reporter ->
-                    reporter.text(PlsBundle.message("manipulation.localisation.translate.replace.progress.initStep"))
+                    reporter.text(PlsBundle.message("manipulation.localisation.translate.replace.progress.step"))
 
                     contextsChunked.forEachConcurrent f@{ inputContexts ->
                         val inputText = inputContexts.joinToString("\n") { context -> context.join() }
@@ -59,10 +59,10 @@ class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationInte
                             runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
 
                             current++
-                            reporter.text(PlsBundle.message("manipulation.localisation.translate.replace.progress.step", data.key))
-                            reporter.fraction(current / total)
+                            reporter.text(PlsBundle.message("manipulation.localisation.translate.replace.progress.itemStep", data.key))
+                            reporter.fraction(current / total.toDouble())
                         }
-                        runCatchingCancelable { handleText(request, callback) }.onFailure { errorRef.set(it) }.getOrNull()
+                        runCatchingCancelable { handleText(request, callback) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
                         if (request.index != inputContexts.size) { //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
                             withWarnings = true
                             current += inputContexts.size - request.index
@@ -72,11 +72,11 @@ class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationInte
             }
 
             if (errorRef.get() != null) {
-                return@action createFailedNotification(project, selectedLocale, errorRef.get())
+                return@action createPartialSuccessNotification(project, selectedLocale, errorRef.get())
             }
 
             if (withWarnings) {
-                return@action createSuccessWithWarningsNotification(project, selectedLocale)
+                return@action createPartialSuccessNotification(project, selectedLocale)
             }
             createSuccessNotification(project, selectedLocale)
         }
@@ -92,21 +92,21 @@ class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationInte
     }
 
     private fun createSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig) {
-        val content = PlsBundle.message("intention.replaceLocalisationWithAiTranslation.notification.0", selectedLocale)
+        val content = PlsBundle.message("intention.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.success())
         createNotification(content, NotificationType.INFORMATION).notify(project)
     }
 
-    private fun createSuccessWithWarningsNotification(project: Project, selectedLocale: CwtLocaleConfig) {
-        val content = PlsBundle.message("intention.replaceLocalisationWithAiTranslation.notification.2", selectedLocale)
+    private fun createPartialSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig) {
+        val content = PlsBundle.message("intention.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.partialSuccess())
         createNotification(content, NotificationType.WARNING).notify(project)
     }
 
-    private fun createFailedNotification(project: Project, selectedLocale: CwtLocaleConfig, error: Throwable) {
+    private fun createPartialSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig, error: Throwable) {
         thisLogger().warn(error)
 
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsBundle.message("intention.replaceLocalisationWithAiTranslation.notification.1", selectedLocale) + errorDetails
+        val content = PlsBundle.message("intention.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.partialSuccess()) + errorDetails
         createNotification(content, NotificationType.WARNING).notify(project)
     }
 }

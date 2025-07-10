@@ -25,7 +25,7 @@ class CopyLocalisationIntention : ManipulateLocalisationIntentionBase.Default() 
     }
 
     private fun createSuccessNotification(project: Project) {
-        val content = PlsBundle.message("intention.copyLocalisation.notification.0")
+        val content = PlsBundle.message("intention.copyLocalisation.notification", Messages.success())
         createNotification(content, NotificationType.INFORMATION).notify(project)
     }
 }

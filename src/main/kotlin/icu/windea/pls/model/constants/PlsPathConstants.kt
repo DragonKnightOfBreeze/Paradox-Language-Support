@@ -2,6 +2,7 @@ package icu.windea.pls.model.constants
 
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import kotlinx.coroutines.*
 
 object PlsPathConstants {

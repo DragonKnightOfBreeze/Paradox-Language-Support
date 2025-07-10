@@ -6,17 +6,34 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.command.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.NlsContexts.*
+import com.intellij.psi.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.integrations.translation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.localisation.psi.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import kotlin.coroutines.*
 
 object ParadoxLocalisationManipulator {
+    fun buildFlow(file: PsiFile): Flow<ParadoxLocalisationProperty> {
+        if (file !is ParadoxLocalisationFile) return emptyFlow()
+        return flow {
+            val c1 = readAction { file.children() }
+            c1.filterIsInstance<ParadoxLocalisationPropertyList>().forEach { propertyList ->
+                val c2 = readAction { propertyList.children() }
+                c2.filterIsInstance<ParadoxLocalisationProperty>().forEach { property ->
+                    emit(property)
+                }
+            }
+        }
+    }
+
     suspend fun handleTextFromLocale(context: ParadoxLocalisationContext, project: Project, selectedLocale: CwtLocaleConfig) {
         val newText = readAction {
             val selector = selector(project, context.element).localisation().contextSensitive().locale(selectedLocale)
@@ -52,9 +69,8 @@ object ParadoxLocalisationManipulator {
             val context = request.inputContexts[request.index]
             aiService.checkOutputData(context, data)
             context.newText = data.text
-            request.index++
-
             callback(data)
+            request.index++
         }
     }
 
@@ -66,9 +82,8 @@ object ParadoxLocalisationManipulator {
             val context = request.inputContexts[request.index]
             aiService.checkOutputData(context, data)
             context.newText = data.text
-            request.index++
-
             callback(data)
+            request.index++
         }
     }
 

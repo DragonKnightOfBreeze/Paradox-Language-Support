@@ -36,8 +36,8 @@ class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.
             if (contextsToHandle.isNotEmpty()) {
                 reportProgress(contextsToHandle.size) { reporter ->
                     contextsToHandle.forEachConcurrent f@{ context ->
-                        reporter.itemStep(PlsBundle.message("manipulation.localisation.search.progress.step", context.key)) {
-                            runCatchingCancelable { handleText(context, project, selectedLocale) }.onFailure { errorRef.set(it) }.getOrThrow()
+                        reporter.itemStep(PlsBundle.message("manipulation.localisation.search.progress.itemStep", context.key)) {
+                            runCatchingCancelable { handleText(context, project, selectedLocale) }.onFailure { errorRef.compareAndSet(null, it) }.getOrThrow()
                         }
                     }
                 }
@@ -58,7 +58,7 @@ class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.
     }
 
     private fun createSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig) {
-        val content = PlsBundle.message("intention.copyLocalisationFromLocale.notification.0", selectedLocale)
+        val content = PlsBundle.message("intention.copyLocalisationFromLocale.notification", selectedLocale, Messages.success())
         createNotification(content, NotificationType.INFORMATION).notify(project)
     }
 
@@ -66,7 +66,7 @@ class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.
         thisLogger().warn(error)
 
         val errorDetails = error.message?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsBundle.message("intention.copyLocalisationFromLocale.notification.1", selectedLocale) + errorDetails
+        val content = PlsBundle.message("intention.copyLocalisationFromLocale.notification", selectedLocale, Messages.failed()) + errorDetails
         createNotification(content, NotificationType.WARNING).notify(project)
     }
 }

@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.manipulators.*
-import icu.windea.pls.localisation.psi.*
 
 class PlsAiTranslateLocalisationsRequest(
     val inputContexts: List<ParadoxLocalisationContext>,

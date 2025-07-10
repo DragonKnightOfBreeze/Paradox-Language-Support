@@ -2,6 +2,7 @@ package icu.windea.pls.tools.actions.localisation
 
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.ui.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -45,6 +46,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val files = findFiles(e, project)
+        if (files.isEmpty()) return
         doInvokeAll(e, project, files)
     }
 
@@ -87,6 +89,15 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
         val project = e.project ?: return emptyList()
         val files = PlsFileManager.findFiles(e, deep = true) { file -> isValidFile(file) }
         return files.mapNotNull { it.toPsiFile(project) }
+    }
+
+    protected open fun beforeInvokeALl(e: AnActionEvent, project: Project, files: List<PsiFile>): Boolean {
+        //弹出对话框，以确认是否真的要处理本地化
+        val actionName = e.presentation.text
+        val toProcess = files.size
+        val title = PlsBundle.message("manipulation.confirm.title")
+        val message = PlsBundle.message("manipulation.confirm.message", actionName, toProcess)
+        return MessageDialogBuilder.okCancel(title, message).ask(project)
     }
 
     protected abstract fun doInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>)
@@ -180,5 +191,11 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
             val selectedLocale: CwtLocaleConfig,
             val data: T?
         )
+    }
+
+    object Messages {
+        fun success(processed: Int) = PlsBundle.message("action.manipulateLocalisation.status.0", processed)
+        fun failed(processed: Int) = PlsBundle.message("action.manipulateLocalisation.status.1", processed)
+        fun partialSuccess(processed: Int) = PlsBundle.message("action.manipulateLocalisation.status.2", processed)
     }
 }
