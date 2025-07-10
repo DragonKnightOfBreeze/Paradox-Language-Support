@@ -5,7 +5,6 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
-import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
@@ -23,7 +22,7 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
         return PlsAiManager.getTranslateLocalisationService().createDescriptionPopup(project, callback)
     }
 
-    override suspend fun doHandleAll(e: AnActionEvent, project: Project, files: List<PsiFile>, selectedLocale: CwtLocaleConfig, data: String?) {
+    override suspend fun doHandleAll(e: AnActionEvent, project: Project, context: Context<String>) {
         TODO("Not yet implemented")
     }
 

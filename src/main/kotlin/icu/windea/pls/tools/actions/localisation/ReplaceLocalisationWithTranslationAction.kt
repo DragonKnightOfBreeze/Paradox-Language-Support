@@ -17,7 +17,7 @@ class ReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionBas
         return super.isAvailable(e, project) && PlsTranslationManager.findTool() != null
     }
 
-    override suspend fun doHandleAll(e: AnActionEvent, project: Project, files: List<PsiFile>, selectedLocale: CwtLocaleConfig) {
+    override suspend fun doHandleAll(e: AnActionEvent, project: Project, context: Context) {
         TODO("Not yet implemented")
     }
 

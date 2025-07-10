@@ -4,14 +4,13 @@ import com.intellij.notification.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.project.*
-import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.manipulators.*
 
 class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.WithLocalePopup() {
-    override suspend fun doHandleAll(e: AnActionEvent, project: Project, files: List<PsiFile>, selectedLocale: CwtLocaleConfig) {
+    override suspend fun doHandleAll(e: AnActionEvent, project: Project, context: Context) {
         TODO("Not yet implemented")
     }
 

@@ -7,7 +7,6 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
 
 /**
@@ -18,7 +17,8 @@ import java.awt.datatransfer.*
 class CopyLocalisationIntention : ManipulateLocalisationIntentionBase.Default() {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisation")
 
-    override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>) {
+    override suspend fun doHandle(project: Project, file: PsiFile?, context: Context) {
+        val (elements) = context
         val textToCopy = readAction { elements.joinToString("\n") { it.text } }
         CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
         createSuccessNotification(project)

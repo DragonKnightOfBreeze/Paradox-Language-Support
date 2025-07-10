@@ -16,7 +16,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.integrations.translation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.manipulators.*
-import icu.windea.pls.localisation.psi.*
 import java.awt.datatransfer.*
 import java.util.concurrent.atomic.*
 
@@ -33,7 +32,8 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
     }
 
     @Suppress("UnstableApiUsage")
-    override suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig) {
+    override suspend fun doHandle(project: Project, file: PsiFile?, context: Context) {
+        val (elements, selectedLocale) = context
         withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationWithTranslation.progress.title", selectedLocale)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) } }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }

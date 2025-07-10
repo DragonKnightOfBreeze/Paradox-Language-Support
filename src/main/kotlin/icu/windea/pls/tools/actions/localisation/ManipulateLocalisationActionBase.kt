@@ -22,7 +22,7 @@ import kotlinx.coroutines.*
  * * 应当支持在多个级别批量处理。
  * * 应当在开始处理之前弹出对话框，以确认是否真的要处理。
  */
-abstract class ManipulateLocalisationActionBase : AnAction() {
+abstract class ManipulateLocalisationActionBase<C> : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
@@ -91,18 +91,26 @@ abstract class ManipulateLocalisationActionBase : AnAction() {
 
     protected abstract fun doInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>)
 
-    abstract class Default : ManipulateLocalisationActionBase() {
-        final override fun doInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>) {
-            val coroutineScope = PlsFacade.getCoroutineScope(project)
-            coroutineScope.launch {
-                doHandleAll(e, project, files)
-            }
+    protected fun doHandleAllAsync(e: AnActionEvent, project: Project, context: C) {
+        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        coroutineScope.launch {
+            doHandleAll(e, project, context)
         }
-
-        protected abstract suspend fun doHandleAll(e: AnActionEvent, project: Project, files: List<PsiFile>)
     }
 
-    abstract class WithLocalePopup : ManipulateLocalisationActionBase() {
+    protected abstract suspend fun doHandleAll(e: AnActionEvent, project: Project, context: C)
+
+    abstract class Default : ManipulateLocalisationActionBase<Default.Context>() {
+        final override fun doInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>) {
+            doHandleAllAsync(e, project, Context(files))
+        }
+
+        data class Context(
+            val files: List<PsiFile>
+        )
+    }
+
+    abstract class WithLocalePopup : ManipulateLocalisationActionBase<WithLocalePopup.Context>() {
         protected open fun createLocalePopup(e: AnActionEvent, project: Project): ParadoxLocaleListPopup {
             val allLocales = ParadoxLocaleManager.getLocaleConfigs()
             return ParadoxLocaleListPopup(allLocales)
@@ -112,46 +120,38 @@ abstract class ManipulateLocalisationActionBase : AnAction() {
             val localePopup = createLocalePopup(e, project)
             localePopup.doFinalStep action@{
                 val selected = localePopup.selectedLocale ?: return@action
-                doInvokeAll(e, project, files, selected)
+                doHandleAllAsync(e, project, Context(files, selected))
             }
             JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(e.dataContext)
         }
 
-        private fun doInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>, selectedLocale: CwtLocaleConfig) {
-            val coroutineScope = PlsFacade.getCoroutineScope(project)
-            coroutineScope.launch {
-                doHandleAll(e, project, files, selectedLocale)
-            }
-        }
-
-        protected abstract suspend fun doHandleAll(e: AnActionEvent, project: Project, files: List<PsiFile>, selectedLocale: CwtLocaleConfig)
+        data class Context(
+            val files: List<PsiFile>,
+            val selectedLocale: CwtLocaleConfig
+        )
     }
 
-    abstract class WithPopup<T> : ManipulateLocalisationActionBase() {
+    abstract class WithPopup<T> : ManipulateLocalisationActionBase<WithPopup.Context<T>>() {
         protected abstract fun createPopup(e: AnActionEvent, project: Project, callback: (T) -> Unit): JBPopup?
 
         final override fun doInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>) {
             val popup = createPopup(e, project) {
-                doInvokeAll(e, project, files, it)
+                doHandleAllAsync(e, project, Context(files, it))
             }
             if (popup != null) {
                 popup.showInBestPositionFor(e.dataContext)
             } else {
-                doInvokeAll(e, project, files, null)
+                doHandleAllAsync(e, project, Context(files, null))
             }
         }
 
-        private fun doInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>, data: T?) {
-            val coroutineScope = PlsFacade.getCoroutineScope(project)
-            coroutineScope.launch {
-                doHandleAll(e, project, files, data)
-            }
-        }
-
-        protected abstract suspend fun doHandleAll(e: AnActionEvent, project: Project, files: List<PsiFile>, data: T?)
+        data class Context<T>(
+            val files: List<PsiFile>,
+            val data: T?
+        )
     }
 
-    abstract class WithLocalePopupAndPopup<T> : ManipulateLocalisationActionBase() {
+    abstract class WithLocalePopupAndPopup<T> : ManipulateLocalisationActionBase<WithLocalePopupAndPopup.Context<T>>() {
         protected open fun createLocalePopup(e: AnActionEvent, project: Project): ParadoxLocaleListPopup {
             val allLocales = ParadoxLocaleManager.getLocaleConfigs()
             return ParadoxLocaleListPopup(allLocales)
@@ -164,24 +164,21 @@ abstract class ManipulateLocalisationActionBase : AnAction() {
             localePopup.doFinalStep action@{
                 val selected = localePopup.selectedLocale ?: return@action
                 val popup = createPopup(e, project) {
-                    doInvokeAll(e, project, files, selected, it)
+                    doHandleAllAsync(e, project, Context(files, selected, it))
                 }
                 if (popup != null) {
                     popup.showInBestPositionFor(e.dataContext)
                 } else {
-                    doInvokeAll(e, project, files, selected, null)
+                    doHandleAllAsync(e, project, Context(files, selected, null))
                 }
             }
             JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(e.dataContext)
         }
 
-        private fun doInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>, selected: CwtLocaleConfig, data: T?) {
-            val coroutineScope = PlsFacade.getCoroutineScope(project)
-            coroutineScope.launch {
-                doHandleAll(e, project, files, selected, data)
-            }
-        }
-
-        protected abstract suspend fun doHandleAll(e: AnActionEvent, project: Project, files: List<PsiFile>, selectedLocale: CwtLocaleConfig, data: T?)
+        data class Context<T>(
+            val files: List<PsiFile>,
+            val selectedLocale: CwtLocaleConfig,
+            val data: T?
+        )
     }
 }

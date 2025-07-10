@@ -22,7 +22,7 @@ class ReplaceLocalisationWithAiPolishingAction : ManipulateLocalisationActionBas
         return PlsAiManager.getPolishLocalisationService().createDescriptionPopup(project, callback)
     }
 
-    override suspend fun doHandleAll(e: AnActionEvent, project: Project, files: List<PsiFile>, data: String?) {
+    override suspend fun doHandleAll(e: AnActionEvent, project: Project, context: Context<String>) {
         TODO("Not yet implemented")
     }
 

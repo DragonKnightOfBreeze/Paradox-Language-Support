@@ -25,7 +25,7 @@ import kotlinx.coroutines.*
  * * 光标在语言区域PSI（[ParadoxLocalisationLocale]）中 - 此时处理此语言区域下的所有本地化
  * * 光标选择范围涉及到本地化属性PSI（[ParadoxLocalisationProperty]） - 此时处理涉及到的所有本地化
  */
-abstract class ManipulateLocalisationIntentionBase : IntentionAction, DumbAware {
+abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction, DumbAware {
     override fun getText() = familyName
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
@@ -34,6 +34,19 @@ abstract class ManipulateLocalisationIntentionBase : IntentionAction, DumbAware 
         val hasElements = hasElements(editor, file)
         return hasElements
     }
+
+    override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
+        if (editor == null || file == null) return
+        if (file !is ParadoxLocalisationFile) return
+        val elements = findElements(editor, file)
+        if (elements.isEmpty()) return
+        doInvoke(project, editor, file, elements)
+    }
+
+    //默认不显示预览，因为可能涉及异步调用
+    override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
+
+    override fun startInWriteAction() = false
 
     private fun hasElements(editor: Editor, file: PsiFile): Boolean {
         val localeElement = file.findElementAt(editor.caretModel.offset) { it.parentOfType<ParadoxLocalisationLocale>(withSelf = true) }
@@ -50,14 +63,6 @@ abstract class ManipulateLocalisationIntentionBase : IntentionAction, DumbAware 
             val originalEndElement = file.findElementAt(selectionEnd)
             return hasLocalisationPropertiesBetween(originalStartElement, originalEndElement)
         }
-    }
-
-    override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        if (editor == null || file == null) return
-        if (file !is ParadoxLocalisationFile) return
-        val elements = findElements(editor, file)
-        if (elements.isEmpty()) return
-        doInvoke(project, editor, file, elements)
     }
 
     private fun findElements(editor: Editor, file: PsiFile): List<ParadoxLocalisationProperty> {
@@ -78,23 +83,26 @@ abstract class ManipulateLocalisationIntentionBase : IntentionAction, DumbAware 
 
     protected abstract fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: List<ParadoxLocalisationProperty>)
 
-    //默认不显示预览，因为可能涉及异步调用
-    override fun generatePreview(project: Project, editor: Editor, file: PsiFile) = IntentionPreviewInfo.EMPTY
-
-    override fun startInWriteAction() = false
-
-    abstract class Default : ManipulateLocalisationIntentionBase() {
-        final override fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: List<ParadoxLocalisationProperty>) {
-            val coroutineScope = PlsFacade.getCoroutineScope(project)
-            coroutineScope.launch {
-                doHandle(project, file, elements)
-            }
+    protected fun doHandleAsync(project: Project, file: PsiFile?, context: C) {
+        val coroutineScope = PlsFacade.getCoroutineScope(project)
+        coroutineScope.launch {
+            doHandle(project, file, context)
         }
-
-        protected abstract suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>)
     }
 
-    abstract class WithLocalePopup : ManipulateLocalisationIntentionBase() {
+    protected abstract suspend fun doHandle(project: Project, file: PsiFile?, context: C)
+
+    abstract class Default : ManipulateLocalisationIntentionBase<Default.Context>() {
+        final override fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: List<ParadoxLocalisationProperty>) {
+            doHandleAsync(project, file, Context(elements))
+        }
+
+        data class Context(
+            val elements: List<ParadoxLocalisationProperty>
+        )
+    }
+
+    abstract class WithLocalePopup : ManipulateLocalisationIntentionBase<WithLocalePopup.Context>() {
         protected open fun createLocalePopup(project: Project, editor: Editor?, file: PsiFile?): ParadoxLocaleListPopup {
             val allLocales = ParadoxLocaleManager.getLocaleConfigs()
             return ParadoxLocaleListPopup(allLocales)
@@ -105,47 +113,39 @@ abstract class ManipulateLocalisationIntentionBase : IntentionAction, DumbAware 
             val localePopup = createLocalePopup(project, editor, file)
             localePopup.doFinalStep action@{
                 val selected = localePopup.selectedLocale ?: return@action
-                doInvoke(project, file, elements, selected)
+                doHandleAsync(project, file, Context(elements, selected))
             }
             JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
         }
 
-        private fun doInvoke(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig) {
-            val coroutineScope = PlsFacade.getCoroutineScope(project)
-            coroutineScope.launch {
-                doHandle(project, file, elements, selectedLocale)
-            }
-        }
-
-        protected abstract suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig)
+        data class Context(
+            val elements: List<ParadoxLocalisationProperty>,
+            val selectedLocale: CwtLocaleConfig
+        )
     }
 
-    abstract class WithPopup<T> : ManipulateLocalisationIntentionBase() {
+    abstract class WithPopup<T> : ManipulateLocalisationIntentionBase<WithPopup.Context<T>>() {
         protected abstract fun createPopup(project: Project, editor: Editor?, file: PsiFile?, callback: (T) -> Unit): JBPopup?
 
         final override fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: List<ParadoxLocalisationProperty>) {
             if (editor == null) return
             val popup = createPopup(project, editor, file) {
-                doInvoke(project, file, elements, it)
+                doHandleAsync(project, file, Context(elements, it))
             }
             if (popup != null) {
                 popup.showInBestPositionFor(editor)
             } else {
-                doInvoke(project, file, elements, null)
+                doHandleAsync(project, file, Context(elements, null))
             }
         }
 
-        private fun doInvoke(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, data: T?) {
-            val coroutineScope = PlsFacade.getCoroutineScope(project)
-            coroutineScope.launch {
-                doHandle(project, file, elements, data)
-            }
-        }
-
-        protected abstract suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, data: T?)
+        data class Context<T>(
+            val elements: List<ParadoxLocalisationProperty>,
+            val data: T?
+        )
     }
 
-    abstract class WithLocalePopupAndPopup<T> : ManipulateLocalisationIntentionBase() {
+    abstract class WithLocalePopupAndPopup<T> : ManipulateLocalisationIntentionBase<WithLocalePopupAndPopup.Context<T>>() {
         protected open fun createLocalePopup(project: Project, editor: Editor?, file: PsiFile?): ParadoxLocaleListPopup {
             val allLocales = ParadoxLocaleManager.getLocaleConfigs()
             return ParadoxLocaleListPopup(allLocales)
@@ -159,24 +159,21 @@ abstract class ManipulateLocalisationIntentionBase : IntentionAction, DumbAware 
             localePopup.doFinalStep action@{
                 val selected = localePopup.selectedLocale ?: return@action
                 val popup = createPopup(project, editor, file) {
-                    doInvoke(project, file, elements, selected, it)
+                    doHandleAsync(project, file, Context(elements, selected, it))
                 }
                 if (popup != null) {
                     popup.showInBestPositionFor(editor)
                 } else {
-                    doInvoke(project, file, elements, selected, null)
+                    doHandleAsync(project, file, Context(elements, selected, null))
                 }
             }
             JBPopupFactory.getInstance().createListPopup(localePopup).showInBestPositionFor(editor)
         }
 
-        private fun doInvoke(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selected: CwtLocaleConfig, data: T?) {
-            val coroutineScope = PlsFacade.getCoroutineScope(project)
-            coroutineScope.launch {
-                doHandle(project, file, elements, selected, data)
-            }
-        }
-
-        protected abstract suspend fun doHandle(project: Project, file: PsiFile?, elements: List<ParadoxLocalisationProperty>, selectedLocale: CwtLocaleConfig, data: T?)
+        data class Context<T>(
+            val elements: List<ParadoxLocalisationProperty>,
+            val selectedLocale: CwtLocaleConfig,
+            val data: T?
+        )
     }
 }
