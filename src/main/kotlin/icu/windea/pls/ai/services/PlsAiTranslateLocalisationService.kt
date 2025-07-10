@@ -4,7 +4,7 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
-import com.intellij.ui.components.*
+import com.intellij.ui.*
 import com.intellij.ui.dsl.builder.*
 import dev.langchain4j.data.message.*
 import dev.langchain4j.kotlin.model.chat.*
@@ -87,7 +87,7 @@ class PlsAiTranslateLocalisationService : PlsAiManipulateLocalisationService() {
     }
 
     fun createDescriptionPopup(project: Project, callback: (String) -> Unit): JBPopup {
-        val textField = JBTextField()
+        val textField = TextFieldWithStoredHistory("PLS_AI_TRANSLATE_LOCALISATION_DESCRIPTION_KEYS")
         val panel = panel {
             row {
                 cell(textField).align(AlignX.FILL).columns(COLUMNS_LARGE).focused()
