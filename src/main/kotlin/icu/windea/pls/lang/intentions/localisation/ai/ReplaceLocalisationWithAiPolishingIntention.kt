@@ -72,6 +72,7 @@ class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntent
 
             createNotification(contextsToHandle, errorRef.get(), withWarnings)
                 .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
+                .addAction(ParadoxLocalisationManipulator.createReapplyAction(contexts))
                 .notify(project)
         }
     }

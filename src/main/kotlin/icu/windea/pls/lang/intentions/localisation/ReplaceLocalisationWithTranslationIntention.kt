@@ -48,6 +48,7 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
 
             createNotification(contextsToHandle, selectedLocale, errorRef.get())
                 .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
+                .addAction(ParadoxLocalisationManipulator.createReapplyAction(contexts))
                 .notify(project)
         }
     }

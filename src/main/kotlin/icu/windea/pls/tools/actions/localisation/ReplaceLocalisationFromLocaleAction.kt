@@ -58,6 +58,7 @@ class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.Wit
 
             createNotification(contexts, selectedLocale, processedRef.get(), errorRef.get())
                 .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
+                .addAction(ParadoxLocalisationManipulator.createReapplyAction(contexts))
                 .notify(project)
         }
     }

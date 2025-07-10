@@ -81,6 +81,7 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
 
             createNotification(contexts, selectedLocale, processedRef.get(), errorRef.get(), withWarnings)
                 .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
+                .addAction(ParadoxLocalisationManipulator.createReapplyAction(contexts))
                 .notify(project)
         }
     }

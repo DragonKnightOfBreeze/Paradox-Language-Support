@@ -118,4 +118,22 @@ object ParadoxLocalisationManipulator {
             }
         }
     }
+
+    fun createReapplyAction(contexts: List<ParadoxLocalisationContext>): AnAction {
+        return object : AnAction(PlsBundle.message("manipulation.localisation.reapply")) {
+            override fun actionPerformed(e: AnActionEvent) {
+                val project = e.project ?: return
+                val coroutineScope = PlsFacade.getCoroutineScope(project)
+                coroutineScope.launch {
+                    withBackgroundProgress(project, PlsBundle.message("manipulation.localisation.reapply.progress.title")) {
+                        writeCommandAction(project, PlsBundle.message("manipulation.localisation.reapply.command")) {
+                            for (context in contexts) {
+                                context.element.setValue(context.newText)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
