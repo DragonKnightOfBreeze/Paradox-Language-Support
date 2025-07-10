@@ -253,7 +253,8 @@ jobs:
   releaseDraft:
     name: Release Draft
     # if: ${{ github.ref_name == 'master' && github.event_name != 'pull_request' }}
-    needs: [ build, test, verify ]
+    # needs: [ build, test, verify ]
+    needs: [ build, test ]
     runs-on: ubuntu-latest
     permissions:
       contents: write
