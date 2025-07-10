@@ -7,7 +7,7 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.command.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.NlsContexts.*
-import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.platform.ide.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.ai.requests.*

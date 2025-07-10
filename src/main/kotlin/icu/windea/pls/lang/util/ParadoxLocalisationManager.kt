@@ -3,7 +3,6 @@ package icu.windea.pls.lang.util
 import com.intellij.lang.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
-import com.intellij.psi.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
