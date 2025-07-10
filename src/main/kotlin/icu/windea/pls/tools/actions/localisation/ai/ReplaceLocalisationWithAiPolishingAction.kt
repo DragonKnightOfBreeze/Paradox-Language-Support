@@ -13,6 +13,7 @@ import icu.windea.pls.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.coroutines.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.manipulators.*
@@ -39,6 +40,7 @@ class ReplaceLocalisationWithAiPolishingAction : ManipulateLocalisationActionBas
         val (files) = context
         withBackgroundProgress(project, PlsBundle.message("action.replaceLocalisationWithAiPolishing.progress.title")) action@{
             val total = files.size
+            val contexts = mutableListOf<ParadoxLocalisationContext>().synced()
             val processedRef = AtomicInteger()
             val errorRef = AtomicReference<Throwable>()
             var withWarnings = false
@@ -66,9 +68,9 @@ class ReplaceLocalisationWithAiPolishingAction : ManipulateLocalisationActionBas
                             if (request.index != inputContexts.size) {
                                 withWarnings = true
                             }
-                            emit(Unit)
+                            inputContexts.forEach { emit(it) }
                         }
-                    }.collect()
+                    }.collect { context -> contexts += context }
 
                     val processed = processedRef.incrementAndGet()
                     rawReporter.fraction(processed / total.toDouble())
@@ -76,14 +78,9 @@ class ReplaceLocalisationWithAiPolishingAction : ManipulateLocalisationActionBas
                 }
             }
 
-            if (errorRef.get() != null) {
-                return@action createPartialSuccessNotification(project, processedRef.get(), errorRef.get())
-            }
-
-            if (withWarnings) {
-                return@action createPartialSuccessNotification(project, processedRef.get())
-            }
-            createSuccessNotification(project, processedRef.get())
+            createNotification(contexts, processedRef.get(), errorRef.get(), withWarnings)
+                .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
+                .notify(project)
         }
     }
 
@@ -96,22 +93,20 @@ class ReplaceLocalisationWithAiPolishingAction : ManipulateLocalisationActionBas
         return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
-    private fun createSuccessNotification(project: Project, processed: Int) {
-        val content = PlsBundle.message("action.replaceLocalisationWithAiPolishing.notification", Messages.success(processed))
-        createNotification(content, NotificationType.INFORMATION).notify(project)
-    }
+    private fun createNotification(contexts: List<ParadoxLocalisationContext>, processed: Int, error: Throwable?, withWarnings: Boolean): Notification {
+        if (error == null) {
+            if (!withWarnings) {
+                val content = PlsBundle.message("action.replaceLocalisationWithAiPolishing.notification", Messages.success(processed))
+                return createNotification(content, NotificationType.INFORMATION)
+            }
+            val content = PlsBundle.message("action.replaceLocalisationWithAiPolishing.notification", Messages.partialSuccess(processed))
+            return createNotification(content, NotificationType.WARNING)
+        }
 
-    private fun createPartialSuccessNotification(project: Project, processed: Int) {
-        val content = PlsBundle.message("action.replaceLocalisationWithAiPolishing.notification", Messages.partialSuccess(processed))
-        createNotification(content, NotificationType.WARNING).notify(project)
-    }
-
-    private fun createPartialSuccessNotification(project: Project, processed: Int, error: Throwable) {
         thisLogger().warn(error)
-
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("action.replaceLocalisationWithAiPolishing.notification", Messages.partialSuccess(processed)) + errorDetails
-        createNotification(content, NotificationType.WARNING).notify(project)
+        return createNotification(content, NotificationType.WARNING)
     }
 }

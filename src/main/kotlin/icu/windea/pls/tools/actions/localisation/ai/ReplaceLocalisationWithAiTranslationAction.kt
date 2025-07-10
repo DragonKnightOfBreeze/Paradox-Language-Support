@@ -14,6 +14,7 @@ import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.coroutines.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.manipulators.*
@@ -40,6 +41,7 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
         val (files, selectedLocale) = context
         withBackgroundProgress(project, PlsBundle.message("action.replaceLocalisationWithAiTranslation.progress.title", selectedLocale)) action@{
             val total = files.size
+            val contexts = mutableListOf<ParadoxLocalisationContext>().synced()
             val processedRef = AtomicInteger()
             val errorRef = AtomicReference<Throwable>()
             var withWarnings = false
@@ -67,9 +69,9 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
                             if (request.index != inputContexts.size) {
                                 withWarnings = true
                             }
-                            emit(Unit)
+                            inputContexts.forEach { emit(it) }
                         }
-                    }.collect()
+                    }.collect { context -> contexts += context }
 
                     val processed = processedRef.incrementAndGet()
                     rawReporter.fraction(processed / total.toDouble())
@@ -77,14 +79,9 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
                 }
             }
 
-            if (errorRef.get() != null) {
-                return@action createPartialSuccessNotification(project, selectedLocale, processedRef.get(), errorRef.get())
-            }
-
-            if (withWarnings) {
-                return@action createPartialSuccessNotification(project, selectedLocale, processedRef.get())
-            }
-            createSuccessNotification(project, selectedLocale, processedRef.get())
+            createNotification(contexts, selectedLocale, processedRef.get(), errorRef.get(), withWarnings)
+                .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
+                .notify(project)
         }
     }
 
@@ -97,22 +94,20 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
         return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
-    private fun createSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig, processed: Int) {
-        val content = PlsBundle.message("action.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.success(processed))
-        createNotification(content, NotificationType.INFORMATION).notify(project)
-    }
+    private fun createNotification(contexts: List<ParadoxLocalisationContext>, selectedLocale: CwtLocaleConfig, processed: Int, error: Throwable?, withWarnings: Boolean): Notification {
+        if (error == null) {
+            if (!withWarnings) {
+                val content = PlsBundle.message("action.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.success(processed))
+                return createNotification(content, NotificationType.INFORMATION)
+            }
+            val content = PlsBundle.message("action.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.partialSuccess(processed))
+            return createNotification(content, NotificationType.WARNING)
+        }
 
-    private fun createPartialSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig, processed: Int) {
-        val content = PlsBundle.message("action.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.partialSuccess(processed))
-        createNotification(content, NotificationType.WARNING).notify(project)
-    }
-
-    private fun createPartialSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig, processed: Int, error: Throwable) {
         thisLogger().warn(error)
-
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("action.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.partialSuccess(processed)) + errorDetails
-        createNotification(content, NotificationType.WARNING).notify(project)
+        return createNotification(content, NotificationType.WARNING)
     }
 }

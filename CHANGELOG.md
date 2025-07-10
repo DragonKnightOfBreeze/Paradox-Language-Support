@@ -45,9 +45,9 @@ TODO
 * [X] 新功能：集成AI，提供对应的设置页面 / NEW: Integrate AI, provide corresponding settings page
 * [X] 新功能：提供AI驱动的本地化翻译功能（意向） / NEW: Provide AI-driven localisation translation features (intentions)
 * [X] 新功能：提供AI驱动的本地化润色功能（意向） / NEW: Provide AI-driven localisation polishing features (intentions)
-* [ ] 新功能：提供动作，用于批量操作本地化（翻译、润色等） / NEW: Provide actions for batch manipulation of localisations (translating, polishing, etc.)
+* [X] 新功能：提供动作，用于批量操作本地化（翻译、润色等） / NEW: Provide actions for batch manipulation of localisations (translating, polishing, etc.)
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
-* 注意：目前无法单步回退各种本地化操作带来的更改，请考虑在操作前先提交更改到 VCS / NOTE: It is currently impossible to single-step rollback changes caused by localisation manipulations, consider to commit changes to VCS before performing
+* 注意：建议在执行各类本地化操作之前，先将更改提交到VCS / NOTE: It is recommended to commit changes to VCS before performing various localisation manipulations
 
 ## 1.4.2
 

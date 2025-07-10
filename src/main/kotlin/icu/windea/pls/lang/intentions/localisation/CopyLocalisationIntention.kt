@@ -21,11 +21,11 @@ class CopyLocalisationIntention : ManipulateLocalisationIntentionBase.Default() 
         val (elements) = context
         val textToCopy = readAction { elements.joinToString("\n") { it.text } }
         CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
-        createSuccessNotification(project)
+        createNotification().notify(project)
     }
 
-    private fun createSuccessNotification(project: Project) {
+    private fun createNotification(): Notification {
         val content = PlsBundle.message("intention.copyLocalisation.notification", Messages.success())
-        createNotification(content, NotificationType.INFORMATION).notify(project)
+        return createNotification(content, NotificationType.INFORMATION)
     }
 }

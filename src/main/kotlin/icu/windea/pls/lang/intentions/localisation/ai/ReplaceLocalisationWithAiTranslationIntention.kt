@@ -71,14 +71,9 @@ class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationInte
                 }
             }
 
-            if (errorRef.get() != null) {
-                return@action createPartialSuccessNotification(project, selectedLocale, errorRef.get())
-            }
-
-            if (withWarnings) {
-                return@action createPartialSuccessNotification(project, selectedLocale)
-            }
-            createSuccessNotification(project, selectedLocale)
+            createNotification(contextsToHandle, selectedLocale, errorRef.get(), withWarnings)
+                .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
+                .notify(project)
         }
     }
 
@@ -91,22 +86,20 @@ class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationInte
         return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
-    private fun createSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig) {
-        val content = PlsBundle.message("intention.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.success())
-        createNotification(content, NotificationType.INFORMATION).notify(project)
-    }
+    private fun createNotification(contexts: List<ParadoxLocalisationContext>, selectedLocale: CwtLocaleConfig, error: Throwable?, withWarnings: Boolean): Notification {
+        if (error == null) {
+            if (!withWarnings) {
+                val content = PlsBundle.message("intention.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.success())
+                return createNotification(content, NotificationType.INFORMATION)
+            }
+            val content = PlsBundle.message("intention.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.partialSuccess())
+            return createNotification(content, NotificationType.WARNING)
+        }
 
-    private fun createPartialSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig) {
-        val content = PlsBundle.message("intention.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.partialSuccess())
-        createNotification(content, NotificationType.WARNING).notify(project)
-    }
-
-    private fun createPartialSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig, error: Throwable) {
         thisLogger().warn(error)
-
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("intention.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.partialSuccess()) + errorDetails
-        createNotification(content, NotificationType.WARNING).notify(project)
+        return createNotification(content, NotificationType.WARNING)
     }
 }

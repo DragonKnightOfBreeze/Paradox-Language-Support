@@ -46,11 +46,9 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
                 }
             }
 
-            if (errorRef.get() != null) {
-                return@action createFailedNotification(project, selectedLocale, errorRef.get())
-            }
-
-            createSuccessNotification(project, selectedLocale)
+            createNotification(contextsToHandle, selectedLocale, errorRef.get())
+                .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
+                .notify(project)
         }
     }
 
@@ -63,16 +61,15 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
         return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
-    private fun createSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig) {
-        val content = PlsBundle.message("intention.replaceLocalisationWithTranslation.notification", selectedLocale, Messages.success())
-        createNotification(content, NotificationType.INFORMATION).notify(project)
-    }
+    private fun createNotification(contexts: List<ParadoxLocalisationContext>, selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {
+        if (error == null) {
+            val content = PlsBundle.message("intention.replaceLocalisationWithTranslation.notification", selectedLocale, Messages.success())
+            return createNotification(content, NotificationType.INFORMATION)
+        }
 
-    private fun createFailedNotification(project: Project, selectedLocale: CwtLocaleConfig, error: Throwable) {
         thisLogger().warn(error)
-
         val errorDetails = error.message?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("intention.replaceLocalisationWithTranslation.notification", selectedLocale, Messages.failed()) + errorDetails
-        createNotification(content, NotificationType.WARNING).notify(project)
+        return createNotification(content, NotificationType.WARNING)
     }
 }

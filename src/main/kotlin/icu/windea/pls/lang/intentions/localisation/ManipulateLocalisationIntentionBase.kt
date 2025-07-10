@@ -16,7 +16,6 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import kotlinx.coroutines.*
-import org.jetbrains.annotations.*
 
 /**
  * 用于处理本地化的一类意图。

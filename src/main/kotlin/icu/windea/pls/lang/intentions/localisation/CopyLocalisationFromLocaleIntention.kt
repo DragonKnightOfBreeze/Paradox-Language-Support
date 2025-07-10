@@ -43,13 +43,11 @@ class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.
                 }
             }
 
-            if (errorRef.get() != null) {
-                return@action createFailedNotification(project, selectedLocale, errorRef.get())
+            if (errorRef.get() == null) {
+                val textToCopy = ParadoxLocalisationManipulator.joinText(contexts)
+                CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
             }
-
-            val textToCopy = ParadoxLocalisationManipulator.joinText(contexts)
-            CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
-            createSuccessNotification(project, selectedLocale)
+            createNotification(selectedLocale, errorRef.get()).notify(project)
         }
     }
 
@@ -57,16 +55,15 @@ class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.
         return ParadoxLocalisationManipulator.handleTextFromLocale(context, project, selectedLocale)
     }
 
-    private fun createSuccessNotification(project: Project, selectedLocale: CwtLocaleConfig) {
-        val content = PlsBundle.message("intention.copyLocalisationFromLocale.notification", selectedLocale, Messages.success())
-        createNotification(content, NotificationType.INFORMATION).notify(project)
-    }
+    private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {
+        if (error == null) {
+            val content = PlsBundle.message("intention.copyLocalisationFromLocale.notification", selectedLocale, Messages.success())
+            return createNotification(content, NotificationType.INFORMATION)
+        }
 
-    private fun createFailedNotification(project: Project, selectedLocale: CwtLocaleConfig, error: Throwable) {
         thisLogger().warn(error)
-
         val errorDetails = error.message?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("intention.copyLocalisationFromLocale.notification", selectedLocale, Messages.failed()) + errorDetails
-        createNotification(content, NotificationType.WARNING).notify(project)
+        return createNotification(content, NotificationType.WARNING)
     }
 }

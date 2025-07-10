@@ -2,11 +2,14 @@
 
 package icu.windea.pls.lang.util.manipulators
 
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.command.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.NlsContexts.*
+import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.psi.*
+import icu.windea.pls.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.config.config.*
@@ -96,5 +99,23 @@ object ParadoxLocalisationManipulator {
 
     fun joinText(contexts: List<ParadoxLocalisationContext>): String {
         return contexts.joinToString("\n") { context -> context.joinWithNewText() }
+    }
+
+    fun createRevertAction(contexts: List<ParadoxLocalisationContext>): AnAction {
+        return object : AnAction(PlsBundle.message("manipulation.localisation.revert")) {
+            override fun actionPerformed(e: AnActionEvent) {
+                val project = e.project ?: return
+                val coroutineScope = PlsFacade.getCoroutineScope(project)
+                coroutineScope.launch {
+                    withBackgroundProgress(project, PlsBundle.message("manipulation.localisation.revert.progress.title")) {
+                        writeCommandAction(project, PlsBundle.message("manipulation.localisation.revert.command")) {
+                            for (context in contexts) {
+                                context.element.setValue(context.text)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

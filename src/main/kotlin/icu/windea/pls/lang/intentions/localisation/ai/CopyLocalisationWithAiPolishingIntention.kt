@@ -71,16 +71,11 @@ class CopyLocalisationWithAiPolishingIntention : ManipulateLocalisationIntention
                 }
             }
 
-            if (errorRef.get() != null) {
-                return@action createPartialSuccessNotification(project, errorRef.get())
+            if(errorRef.get() == null) {
+                val textToCopy = ParadoxLocalisationManipulator.joinText(contexts)
+                CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
             }
-
-            val textToCopy = ParadoxLocalisationManipulator.joinText(contexts)
-            CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
-            if (withWarnings) {
-                return@action createPartialSuccessNotification(project)
-            }
-            createSuccessNotification(project)
+            createNotification(errorRef.get(), withWarnings).notify(project)
         }
     }
 
@@ -88,22 +83,20 @@ class CopyLocalisationWithAiPolishingIntention : ManipulateLocalisationIntention
         ParadoxLocalisationManipulator.handleTextWithAiPolishing(request, callback)
     }
 
-    private fun createSuccessNotification(project: Project) {
-        val content = PlsBundle.message("intention.copyLocalisationWithAiPolishing.notification", Messages.success())
-        createNotification(content, NotificationType.INFORMATION).notify(project)
-    }
+    private fun createNotification(error: Throwable?, withWarnings: Boolean): Notification {
+        if (error == null) {
+            if (!withWarnings) {
+                val content = PlsBundle.message("intention.copyLocalisationWithAiPolishing.notification", Messages.success())
+                return createNotification(content, NotificationType.INFORMATION)
+            }
+            val content = PlsBundle.message("intention.copyLocalisationWithAiPolishing.notification", Messages.partialSuccess())
+            return createNotification(content, NotificationType.WARNING)
+        }
 
-    private fun createPartialSuccessNotification(project: Project) {
-        val content = PlsBundle.message("intention.copyLocalisationWithAiPolishing.notification", Messages.partialSuccess())
-        createNotification(content, NotificationType.WARNING).notify(project)
-    }
-
-    private fun createPartialSuccessNotification(project: Project, error: Throwable) {
         thisLogger().warn(error)
-
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("intention.copyLocalisationWithAiPolishing.notification", Messages.partialSuccess()) + errorDetails
-        createNotification(content, NotificationType.WARNING).notify(project)
+        return createNotification(content, NotificationType.WARNING)
     }
 }
