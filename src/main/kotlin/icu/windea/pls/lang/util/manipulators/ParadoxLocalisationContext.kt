@@ -17,11 +17,11 @@ data class ParadoxLocalisationContext(
     var newText: String = text
 
     fun join(): String {
-        return "$prefix \"$text\"" // KEY:0 "TEXT"
+        return "$prefix\"$text\"" // KEY:0 "TEXT"
     }
 
     fun joinWithNewText(): String {
-        return "$prefix \"$newText\"" // KEY:0 "NEW TEXT"
+        return "$prefix\"$newText\"" // KEY:0 "NEW TEXT"
     }
 
     companion object {
@@ -35,7 +35,7 @@ data class ParadoxLocalisationContext(
                 val textRange = TextRange.from(elementText.length, 0)
                 return ParadoxLocalisationContext(element, name, prefix, "", textRange, false)
             }
-            val prefix = elementText.substring(0, i1).trimEnd()
+            val prefix = elementText.substring(0, i1)
             val text = elementText.substring(i1 + 1)
                 .let { if (it.lastOrNull() == '"') it.dropLast(1) else it }
             val textRange = TextRange.create(i1, elementText.length)
