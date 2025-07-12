@@ -10,9 +10,10 @@ PLS 扩展了与 Markdown 的集成，涉及链接、内联代码、代码块等
 
 ### 链接
 
-通过带有特定前缀的特定格式的链接文本，可以将 Markdown 链接解析为匹配的目标引用（定义、本地化等），
+通过使用带有特定前缀的特定格式的链接文本，可以将 Markdown 链接解析为匹配的目标引用（定义、本地化等），
 从而在编辑器视图中额外提供代码导航、快速文档等语言功能。
-这也适用于其他地方的链接，例如 HTML 链接。
+
+这也适用于其他地方的链接，例如 HTML 链接，以及快速文档的原始文本中的用于导航到 PSI 元素的链接。
 
 ![](../images/extensions/md_link_1.png)
 
@@ -84,7 +85,30 @@ PLS 扩展了与 Markdown 的集成，涉及链接、内联代码、代码块等
 
 ### 代码块
 
-待编写。
+通过在 Markdown 代码块的语言ID后面注入额外的信息，可以为其中的脚本或本地化文件的片段指定游戏类型和文件路径，
+插件会根据这些信息来匹配CWT规则，从而提供各种高级语言功能，如同编写实际的脚本或本地化文件一样。
+
+![](../images/extensions/md_code_fence_1.png)
+
+注入信息的格式与示例如下：
+
+* 格式
+  * `path={gameType}:{path}`
+* 示例
+  * `path=stellaris:common/armies/injected_defence_armies.txt`
+
+更加完整的示例：
+
+```paradox_script path=stellaris:common/armies/injected_defence_armies.txt
+defense_army = {
+    # ...
+}
+```
+
+备注：
+
+* `{gameType}` - 游戏类型ID，目前有以下可选值：`stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`（对于共享的规则分组则为`core`）。
+* `{path}` - 模拟的相对于游戏或模组目录的文件路径。必须是合法的脚本或本地化文件的路经。
 
 ## 图表
 

@@ -1,6 +1,6 @@
 # Code Block Test
 
-```paradox_script path=stellaris:common/injected_defence_armies.txt
+```paradox_script path=stellaris:common/armies/injected_defence_armies.txt
 defense_army = {
     defensive = yes
     is_pop_spawned = yes
