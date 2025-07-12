@@ -1,5 +1,8 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-
+    <localInspection language="Markdown" shortName="PlsMarkdownUnresolvedReferenceLink"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsMarkdownBundle" key="inspection.unresolvedReferenceLinks" groupKey="inspection.group"
+                     implementationClass="icu.windea.pls.extension.markdown.inspections.MarkdownUnresolvedReferenceLinkInspection"/>
   </extensions>
 </idea-plugin>

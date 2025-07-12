@@ -1,13 +1,13 @@
-package icu.windea.pls.extension.diagram
+package icu.windea.pls.extension.markdown
 
 import com.intellij.*
 import org.jetbrains.annotations.*
 import java.util.function.*
 
-object PlsDiagramBundle {
+object PlsMarkdownBundle {
     @NonNls
-    private const val BUNDLE = "messages.PlsDiagramBundle"
-    private val INSTANCE = DynamicBundle(PlsDiagramBundle::class.java, BUNDLE)
+    private const val BUNDLE = "messages.PlsMarkdownBundle"
+    private val INSTANCE = DynamicBundle(PlsMarkdownBundle::class.java, BUNDLE)
 
     @JvmStatic
     fun message(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): @Nls String {
