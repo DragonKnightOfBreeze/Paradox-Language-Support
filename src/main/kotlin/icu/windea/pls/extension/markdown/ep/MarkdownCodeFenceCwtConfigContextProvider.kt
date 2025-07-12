@@ -41,6 +41,7 @@ class MarkdownCodeFenceCwtConfigContextProvider : CwtConfigContextProvider {
         if (definition == null) {
             val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
             val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
+            configContext.elementPathFromRoot = ParadoxExpressionPath.Empty
             configContext.mdCodeFencePath = pathInfo.path
             return configContext
         } else {
@@ -60,7 +61,9 @@ class MarkdownCodeFenceCwtConfigContextProvider : CwtConfigContextProvider {
         val gameTypeId = context.gameType.id
         val path = context.mdCodeFencePath ?: return null // null -> unexpected
         val elementPathFromRoot = context.elementPathFromRoot ?: return null // null -> unexpected
-        return "md@$gameTypeId:${matchOptions}#${path}:${elementPathFromRoot.path}"
+        val contextElement = context.element
+        val isPropertyValue = contextElement is ParadoxScriptValue && contextElement.isPropertyValue()
+        return "md@$gameTypeId:${matchOptions}#${isPropertyValue.toInt()}#${path}:${elementPathFromRoot}"
     }
 
     override fun getConfigs(context: CwtConfigContext, matchOptions: Int): List<CwtMemberConfig<*>>? {

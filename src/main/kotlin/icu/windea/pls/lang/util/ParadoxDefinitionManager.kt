@@ -36,8 +36,6 @@ object ParadoxDefinitionManager {
     //get info & match methods
 
     fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
-        //快速判断
-        runReadAction { element.castOrNull<ParadoxScriptProperty>()?.greenStub }?.let { if (!(it.isValidDefinition)) return null }
         //从缓存中获取
         return doGetInfoFromCache(element)
     }
