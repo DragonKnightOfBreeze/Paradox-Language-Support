@@ -61,14 +61,14 @@
     <relatedConfigProvider implementation="icu.windea.pls.ep.config.CwtInComplexExpressionRelatedConfigProvider"/>
     <relatedConfigProvider implementation="icu.windea.pls.ep.config.CwtExtendedRelatedConfigProvider"/>
 
-    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtBaseConfigContextProvider" order="last"/>
-    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtInlineScriptUsageConfigContextProvider"/>
-    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtInlineScriptConfigContextProvider"/>
-    <configContextProvider implementation="icu.windea.pls.ep.configContext.CwtParameterValueConfigContextProvider"/>
+    <configContextProvider implementation="icu.windea.pls.ep.configContext.BaseCwtConfigContextProvider" order="last"/>
+    <configContextProvider implementation="icu.windea.pls.ep.configContext.InlineScriptUsageCwtConfigContextProvider"/>
+    <configContextProvider implementation="icu.windea.pls.ep.configContext.InlineScriptCwtConfigContextProvider"/>
+    <configContextProvider implementation="icu.windea.pls.ep.configContext.ParameterValueCwtConfigContextProvider"/>
 
-    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.CwtBaseDeclarationConfigContextProvider" order="last"/>
-    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.CwtGameRuleDeclarationConfigContextProvider"/>
-    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.CwtOnActionDeclarationConfigContextProvider"/>
+    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.BaseCwtDeclarationConfigContextProvider" order="last"/>
+    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.GameRuleCwtDeclarationConfigContextProvider"/>
+    <declarationConfigContextProvider implementation="icu.windea.pls.ep.configContext.OnActionCwtDeclarationConfigContextProvider"/>
 
     <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.PredefinedCwtConfigGroupDataProvider" order="first"/>
     <configGroupDataProvider implementation="icu.windea.pls.ep.configGroup.FileBasedCwtConfigGroupDataProvider"/>

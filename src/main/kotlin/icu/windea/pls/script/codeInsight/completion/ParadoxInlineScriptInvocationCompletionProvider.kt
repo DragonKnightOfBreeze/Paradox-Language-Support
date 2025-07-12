@@ -35,7 +35,7 @@ class ParadoxInlineScriptInvocationCompletionProvider : CompletionProvider<Compl
 
         //inline script invocation cannot be nested directly
         val configContext = ParadoxExpressionManager.getConfigContext(element)
-        if (configContext != null && configContext.provider is CwtInlineScriptUsageConfigContextProvider) return
+        if (configContext != null && configContext.provider is InlineScriptUsageCwtConfigContextProvider) return
 
         val quoted = element.text.isLeftQuoted()
         val rightQuoted = element.text.isRightQuoted()

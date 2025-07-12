@@ -5,4 +5,8 @@
                      bundle="messages.PlsMarkdownBundle" key="inspection.unresolvedReferenceLinks" groupKey="inspection.group"
                      implementationClass="icu.windea.pls.extension.markdown.inspections.MarkdownUnresolvedReferenceLinkInspection"/>
   </extensions>
+
+  <extensions defaultExtensionNs="icu.windea.pls">
+    <configContextProvider implementation="icu.windea.pls.extension.markdown.ep.MarkdownCodeFenceCwtConfigContextProvider"/>
+  </extensions>
 </idea-plugin>

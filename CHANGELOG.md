@@ -18,6 +18,10 @@
 * [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
 * [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
+```paradox_script 123 {path=123}
+a = b
+```
+
 ## 2.0.0
 
 * [X] #128 集成Tiger检查工具 / Integrate Tiger lint tools

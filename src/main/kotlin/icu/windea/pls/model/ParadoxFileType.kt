@@ -14,6 +14,11 @@ enum class ParadoxFileType {
 
     companion object {
         @JvmStatic
+        fun resolve(path: ParadoxPath, rootInfo: ParadoxRootInfo): ParadoxFileType {
+            return doResolve(path, rootInfo)
+        }
+
+        @JvmStatic
         fun resolve(file: VirtualFile, path: ParadoxPath, rootInfo: ParadoxRootInfo): ParadoxFileType {
             if (file.isDirectory) return Other
             return doResolve(path, rootInfo)

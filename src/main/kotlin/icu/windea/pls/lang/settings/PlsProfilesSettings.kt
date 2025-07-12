@@ -71,7 +71,7 @@ class ParadoxModDescriptorSettingsState : BaseState() {
         inferredGameType = rootInfo.inferredGameType
         if (inferredGameType != null) gameType = inferredGameType
 
-        name = rootInfo.name.orNull() ?: PlsBundle.message("mod.name.unnamed")
+        name = rootInfo.name.orNull() ?: PlsBundle.message("root.name.unnamed")
         version = rootInfo.version
 
         supportedVersion = rootInfo.supportedVersion
@@ -183,7 +183,7 @@ val ParadoxGameOrModSettingsState.qualifiedName: String?
         }
         is ParadoxModSettingsState -> buildString {
             append(gameType.orDefault().title).append(" Mod: ")
-            append(name?.orNull() ?: PlsBundle.message("mod.name.unnamed"))
+            append(name?.orNull() ?: PlsBundle.message("root.name.unnamed"))
             if (version.isNotNullOrEmpty()) {
                 append("@").append(version)
             }

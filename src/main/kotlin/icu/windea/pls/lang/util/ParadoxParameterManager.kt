@@ -403,11 +403,11 @@ object ParadoxParameterManager {
         val host = InjectedLanguageManager.getInstance(injectedFile.project).getInjectionHost(injectedFile)
         if (host == null) return null
 
-        val file0 = vFile.toPsiFile(injectedFile.project) ?: injectedFile //actual PsiFile of VirtualFileWindow
         val injectionInfos = host.getUserData(PlsKeys.parameterValueInjectionInfos)
         if (injectionInfos.isNullOrEmpty()) return null
         val injectionInfo = when {
             host is ParadoxScriptStringExpressionElement -> {
+                val file0 = vFile.toPsiFile(injectedFile.project) ?: injectedFile //actual PsiFile of VirtualFileWindow
                 val shreds = file0.getShreds()
                 val shred = shreds?.singleOrNull()
                 val rangeInsideHost = shred?.rangeInsideHost ?: return null

@@ -10,8 +10,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -33,7 +31,7 @@ var CwtConfigContext.parameterValueQuoted: Boolean? by createKey(CwtConfigContex
 /**
  * 用于获取直接的CWT规则上下文。
  */
-class CwtBaseConfigContextProvider : CwtConfigContextProvider {
+class BaseCwtConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
         val vFile = selectFile(file) ?: return null
@@ -86,7 +84,7 @@ class CwtBaseConfigContextProvider : CwtConfigContextProvider {
  *
  * * 正常提供代码高亮、引用解析、代码补全等高级语言功能。
  */
-class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
+class InlineScriptUsageCwtConfigContextProvider : CwtConfigContextProvider {
     //注意：内联脚本调用可以在定义声明之外
 
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
@@ -125,13 +123,13 @@ class CwtInlineScriptUsageConfigContextProvider : CwtConfigContextProvider {
 }
 
 /**
- * 用于获取内联脚本中的CWT规则上下文。
+ * 用于获取内联脚本文件中的CWT规则上下文。
  *
  * * 正常提供代码高亮、引用解析、代码补全等高级语言功能。
  * * 对于顶级成员，禁用以下代码检查：`MissingExpressionInspection`和`TooManyExpressionInspection`。
  * * 会将内联脚本内容内联到对应的调用处，然后再进行相关代码检查。
  */
-class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
+class InlineScriptCwtConfigContextProvider : CwtConfigContextProvider {
     //注意：内联脚本调用可以在定义声明之外
 
     //TODO 1.1.0+ 支持解析内联脚本文件中的定义声明
@@ -213,7 +211,7 @@ class CwtInlineScriptConfigContextProvider : CwtConfigContextProvider {
  *
  * @see ParadoxScriptLanguageInjector
  */
-class CwtParameterValueConfigContextProvider : CwtConfigContextProvider {
+class ParameterValueCwtConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
 

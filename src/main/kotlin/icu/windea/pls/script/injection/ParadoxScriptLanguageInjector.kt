@@ -24,7 +24,7 @@ import icu.windea.pls.script.psi.*
  * * 对脚本参数的默认值进行语言注入（注入为脚本片段），以便推断对应的CWT规则上下文，从而提供高级语言功能。
  *
  * @see ParadoxParameterValueInjectionInfo
- * @see CwtParameterValueConfigContextProvider
+ * @see ParameterValueCwtConfigContextProvider
  */
 class ParadoxScriptLanguageInjector : MultiHostInjector {
     //see: com.intellij.util.InjectionUtils
