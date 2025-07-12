@@ -10,6 +10,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 

@@ -1,9 +1,11 @@
-package icu.windea.pls.lang.psi
+package icu.windea.pls.lang.psi.mock
 
+import com.intellij.lang.Language
 import com.intellij.navigation.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -14,7 +16,7 @@ import javax.swing.*
 class ParadoxDefinitionNavigationElement(
     element: ParadoxScriptDefinitionElement,
     private val definitionInfo: ParadoxDefinitionInfo
-) : ParadoxFakePsiElement(element) {
+) : ParadoxMockPsiElement(element) {
     override fun getIcon(): Icon {
         return PlsIcons.Nodes.Definition(definitionInfo.type)
     }

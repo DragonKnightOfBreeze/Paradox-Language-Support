@@ -1,33 +1,29 @@
-package icu.windea.pls.lang.psi
+package icu.windea.pls.lang.psi.mock
 
 import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
-import icu.windea.pls.ep.modifier.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.lang.navigation.*
-import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.references.*
 import icu.windea.pls.model.*
 import java.util.*
 import javax.swing.*
 
-/**
- * （生成的）修正可能并不存在一个真正意义上的声明处，用这个模拟。
- *
- * @see ParadoxModifierSupport
- * @see ParadoxModifierManager
- */
-class ParadoxModifierElement(
+class ParadoxTemplateExpressionElement(
     parent: PsiElement,
     private val name: String,
+    val configExpression: CwtTemplateExpression,
     val gameType: ParadoxGameType,
     private val project: Project,
-) : ParadoxFakePsiElement(parent) {
+    val references: List<ParadoxTemplateSnippetPsiExpressionReference>,
+) : ParadoxMockPsiElement(parent) {
     var canRename = false
 
     override fun getIcon(): Icon {
-        return PlsIcons.Nodes.Modifier
+        return PlsIcons.Nodes.TemplateExpression
     }
 
     override fun getName(): String {
@@ -40,7 +36,7 @@ class ParadoxModifierElement(
     }
 
     override fun getTypeName(): String {
-        return PlsBundle.message("cwt.description.modifier")
+        return PlsBundle.message("script.description.templateExpression")
     }
 
     override fun getText(): String {
@@ -48,7 +44,7 @@ class ParadoxModifierElement(
     }
 
     override fun getPresentation(): ItemPresentation {
-        return ParadoxModifierElementPresentation(this)
+        return ParadoxTemplateExpressionElementPresentation(this)
     }
 
     override fun getProject(): Project {
@@ -56,13 +52,15 @@ class ParadoxModifierElement(
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is ParadoxModifierElement &&
+        return other is ParadoxTemplateExpressionElement &&
             name == other.name &&
+            configExpression == other.configExpression &&
             project == other.project &&
             gameType == other.gameType
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(name, project, gameType)
+        return Objects.hash(name, configExpression, project, gameType)
     }
 }
+

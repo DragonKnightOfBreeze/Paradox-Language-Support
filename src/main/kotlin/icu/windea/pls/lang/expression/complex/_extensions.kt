@@ -4,6 +4,7 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 
 fun ParadoxComplexExpression.accept(visitor: ParadoxComplexExpressionVisitor) {
     visitor.visit(this, null)

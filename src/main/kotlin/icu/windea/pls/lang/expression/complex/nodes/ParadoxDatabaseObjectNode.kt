@@ -12,6 +12,7 @@ import icu.windea.pls.ep.inherit.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*

@@ -19,13 +19,15 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.ep.reference.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
+import icu.windea.pls.lang.psi.mock.CwtMemberConfigElement
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
-import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
@@ -154,8 +156,8 @@ private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiEle
                 //在脚本文件中显示为链接
                 if (configGroup != null) {
                     val gameType = configGroup.gameType
-                    val typeLink = "${gameType.prefix}${typeCategory}/${typeName}"
-                    append(": ").appendCwtConfigLink(typeLink, typeName, typeElement)
+                    val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, typeCategory, typeName)
+                    append(": ").appendPsiLinkOrUnresolved(typeLink.escapeXml(), typeName.escapeXml(), context = typeElement)
                 } else {
                     append(": ").append(typeName)
                 }
@@ -211,13 +213,15 @@ private fun DocumentationBuilder.addModifierRelatedLocalisations(element: PsiEle
         if (nameLocalisation == null) return@run
         appendBr()
         append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
-        append("name = ").appendLocalisationLink(gameType, nameLocalisation.name, contextElement)
+        val link = ParadoxReferenceLinkType.Localisation.createLink(gameType, nameLocalisation.name)
+        append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = contextElement)
     }
     run {
         if (descLocalisation == null) return@run
         appendBr()
         append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
-        append("desc = ").appendLocalisationLink(gameType, descLocalisation.name, contextElement)
+        val link = ParadoxReferenceLinkType.Localisation.createLink(gameType, descLocalisation.name)
+        append("desc = ").appendPsiLinkOrUnresolved(link.escapeXml(), descLocalisation.name.escapeXml(), context = contextElement)
     }
     run rs@{
         val sections = getSections(SECTIONS_LOC)
@@ -253,7 +257,8 @@ private fun DocumentationBuilder.addModifierIcon(element: PsiElement, referenceE
         val iconPath = iconFile.fileInfo?.path?.path ?: return@run
         appendBr()
         append(PlsStringConstants.relatedImagePrefix).append(" ")
-        append("icon = ").appendFilePathLink(gameType, iconPath, iconPath, contextElement)
+        val link = ParadoxReferenceLinkType.FilePath.createLink(gameType, iconPath)
+        append("icon = ").appendPsiLinkOrUnresolved(link.escapeXml(), iconPath.escapeXml(), context = contextElement)
     }
     run rs@{
         val sections = getSections(SECTIONS_IMAGES)

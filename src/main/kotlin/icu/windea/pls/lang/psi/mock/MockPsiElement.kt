@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.psi
+package icu.windea.pls.lang.psi.mock
 
 import com.intellij.openapi.util.*
 import com.intellij.platform.backend.navigation.*
@@ -8,7 +8,7 @@ import com.intellij.psi.search.*
 import icu.windea.pls.lang.search.scope.*
 
 @Suppress("UnstableApiUsage")
-abstract class ParadoxFakePsiElement(parent: PsiElement) : RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
+abstract class MockPsiElement(parent: PsiElement) : RenameableFakePsiElement(parent), PsiNameIdentifierOwner, NavigatablePsiElement {
     override fun getNameIdentifier(): PsiElement? {
         return this
     }

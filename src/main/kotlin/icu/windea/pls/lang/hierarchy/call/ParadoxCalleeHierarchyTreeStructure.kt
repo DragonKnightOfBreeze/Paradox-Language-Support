@@ -10,6 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.ep.inline.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*

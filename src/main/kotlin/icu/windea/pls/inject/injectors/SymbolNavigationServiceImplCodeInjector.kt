@@ -9,6 +9,7 @@ import com.intellij.psi.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import kotlin.reflect.*
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.*
@@ -16,7 +17,7 @@ import kotlin.reflect.jvm.*
 /**
  * @see com.intellij.codeInsight.navigation.impl.SymbolNavigationServiceImpl
  * @see com.intellij.codeInsight.navigation.impl.SymbolNavigationServiceImpl.getNavigationTargets
- * @see icu.windea.pls.lang.psi.ParadoxFakePsiElement
+ * @see icu.windea.pls.lang.psi.mock.MockPsiElement
  */
 @InjectTarget("com.intellij.codeInsight.navigation.impl.SymbolNavigationServiceImpl")
 class SymbolNavigationServiceImplCodeInjector : CodeInjectorBase() {
@@ -25,7 +26,7 @@ class SymbolNavigationServiceImplCodeInjector : CodeInjectorBase() {
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER)
     fun getNavigationTargets(project: Project, symbol: Symbol, returnValue: Collection<NavigationTarget>): Collection<NavigationTarget> {
         if (returnValue.isEmpty()) return returnValue
-        return returnValue.filter { getElement(it) !is ParadoxFakePsiElement }
+        return returnValue.filter { getElement(it) !is MockPsiElement }
     }
 
     private fun getElement(navigationTarget: NavigationTarget): PsiElement? {

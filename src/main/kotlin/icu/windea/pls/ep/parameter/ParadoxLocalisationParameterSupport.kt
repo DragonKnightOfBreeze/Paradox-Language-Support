@@ -5,13 +5,15 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
+import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
 /**
  * 提供对本地化参数的支持。
  *
- * @see ParadoxLocalisationParameterElement
+ * @see icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
  */
 interface ParadoxLocalisationParameterSupport {
     fun resolveParameter(localisationElement: ParadoxLocalisationProperty, name: String): ParadoxLocalisationParameterElement?

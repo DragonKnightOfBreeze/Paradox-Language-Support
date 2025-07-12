@@ -7,11 +7,15 @@ import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
+import icu.windea.pls.core.escapeXml
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.ep.documentation.*
+import icu.windea.pls.ep.reference.ParadoxReferenceLinkProvider
+import icu.windea.pls.ep.reference.ParadoxReferenceLinkType
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
+import icu.windea.pls.lang.documentation.appendPsiLinkOrUnresolved
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.editor.*
@@ -232,8 +236,8 @@ class ParadoxLocalisationTextHtmlRenderer(
             val definitionName = definitionInfo.name.orAnonymous()
             val definitionType = definitionInfo.type
             renderWithColorTo(conceptColor) {
-                val gameType = definitionInfo.gameType
-                builder.appendDefinitionLink(gameType, definitionName, definitionType, referenceElement, conceptText)
+                val link = ParadoxReferenceLinkType.Definition.createLink(definitionInfo.gameType, definitionName, definitionType)
+                builder.appendPsiLinkOrUnresolved(link.escapeXml(), conceptText, context = referenceElement)
             }
             return
         }
@@ -290,11 +294,11 @@ class ParadoxLocalisationTextHtmlRenderer(
             i = reference.rangeInElement.endOffset
             val resolved = reference.resolve()
             //不要尝试跳转到dynamicValue的声明处
-            if (resolved == null || resolved is ParadoxFakePsiElement) {
+            if (resolved == null || resolved is MockPsiElement) {
                 val s = reference.rangeInElement.substring(text)
                 builder.append(s.escapeXml())
             } else {
-                val link = ParadoxDocumentationLinkProvider.create(resolved)
+                val link = ParadoxReferenceLinkProvider.createPsiLink(resolved)
                 if (link != null) {
                     //如果没有颜色，这里需要使用文档的默认前景色，以显示为普通文本
                     val usedColor = if (colorStack.isEmpty()) defaultColor else null

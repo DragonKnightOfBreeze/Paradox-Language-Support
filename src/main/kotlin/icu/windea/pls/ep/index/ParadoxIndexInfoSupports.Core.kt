@@ -6,6 +6,10 @@ import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
+import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*

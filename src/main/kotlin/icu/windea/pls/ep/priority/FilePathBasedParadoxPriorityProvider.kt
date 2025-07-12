@@ -8,6 +8,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
+import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*

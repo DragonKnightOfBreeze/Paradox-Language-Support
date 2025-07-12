@@ -15,6 +15,8 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*

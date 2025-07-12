@@ -1,13 +1,9 @@
-package icu.windea.pls.lang.psi
+package icu.windea.pls.lang.psi.mock
 
-import com.intellij.lang.*
-import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.cwt.navigation.*
 import icu.windea.pls.model.*
 import java.util.*
 import javax.swing.*
@@ -20,7 +16,7 @@ class CwtMemberConfigElement(
     val config: CwtMemberConfig<*>,
     val gameType: ParadoxGameType,
     private val project: Project
-) : ParadoxFakePsiElement(parent) {
+) : CwtMockPsiElement(parent) {
     override fun getIcon(): Icon {
         return when (config) {
             is CwtPropertyConfig -> PlsIcons.Nodes.CwtProperty
@@ -41,14 +37,6 @@ class CwtMemberConfigElement(
 
     override fun getText(): String {
         return config.toString()
-    }
-
-    override fun getPresentation(): ItemPresentation {
-        return CwtItemPresentation(this)
-    }
-
-    override fun getLanguage(): Language {
-        return CwtLanguage
     }
 
     override fun getProject(): Project {

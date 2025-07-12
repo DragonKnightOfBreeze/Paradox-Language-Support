@@ -4,7 +4,7 @@ import com.intellij.codeInsight.daemon.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.ep.documentation.*
+import icu.windea.pls.ep.reference.ParadoxReferenceLinkProvider
 
 class ParadoxPathReference(
     element: PsiElement,
@@ -16,10 +16,10 @@ class ParadoxPathReference(
     }
 
     override fun resolve(): PsiElement? {
-        return ParadoxDocumentationLinkProvider.resolve(link, element)
+        return ParadoxReferenceLinkProvider.resolve(link, element)
     }
 
     override fun getUnresolvedMessagePattern(): String {
-        return ParadoxDocumentationLinkProvider.getUnresolvedMessage(link)
+        return ParadoxReferenceLinkProvider.getUnresolvedMessage(link)
     }
 }

@@ -13,7 +13,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.localisation.psi.*
@@ -107,7 +107,7 @@ class CwtInComplexExpressionRelatedConfigProvider : CwtRelatedConfigProvider {
         val result = mutableListOf<CwtConfig<*>>()
         complexExpression.accept(object : ParadoxComplexExpressionVisitor() {
             override fun visit(node: ParadoxComplexExpressionNode, parentNode: ParadoxComplexExpressionNode?): Boolean {
-                if(finalOffset in node.rangeInExpression) {
+                if (finalOffset in node.rangeInExpression) {
                     result.addAll(0, node.getRelatedConfigs())
                 }
                 return super.visit(node, parentNode)

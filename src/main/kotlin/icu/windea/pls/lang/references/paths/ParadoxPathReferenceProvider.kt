@@ -3,17 +3,20 @@ package icu.windea.pls.lang.references.paths
 import com.intellij.openapi.paths.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.ep.documentation.*
+import icu.windea.pls.ep.reference.ParadoxReferenceLinkProvider
+
+//org.intellij.plugins.markdown.lang.references.headers.HeaderAnchorPathReferenceProvider
 
 /**
- * 用于支持在html/markdown等文件中通过特定的超链接引用和跳转到指定的定义/本地化/文件路径等。
+ * 用于支持在html/markdown等文件中，将特定的链接解析为匹配的目标引用（定义、本地化等）。
  *
- * @see icu.windea.pls.ep.documentation.ParadoxDocumentationLinkProvider
+ * @see ParadoxPathReference
+ * @see icu.windea.pls.ep.reference.ParadoxReferenceLinkProvider
  */
 class ParadoxPathReferenceProvider : PathReferenceProviderBase() {
     override fun createReferences(element: PsiElement, offset: Int, text: String?, references: MutableList<in PsiReference>, soft: Boolean): Boolean {
         val link = text ?: return true
-        if (!ParadoxDocumentationLinkProvider.supports(link)) return true
+        if (!ParadoxReferenceLinkProvider.supports(link)) return true
         val rangeInElement = TextRange.create(offset, offset + text.length)
         val reference = ParadoxPathReference(element, rangeInElement, link)
         references.add(reference)

@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.psi
+package icu.windea.pls.lang.psi.mock
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.navigation.*
@@ -21,7 +21,7 @@ class ParadoxDynamicValueElement(
     val readWriteAccess: ReadWriteAccessDetector.Access,
     val gameType: ParadoxGameType,
     private val project: Project,
-) : ParadoxFakePsiElement(parent) {
+) : ParadoxMockPsiElement(parent) {
     constructor(parent: PsiElement, name: String, dynamicValueType: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)
         : this(parent, name, setOf(dynamicValueType), readWriteAccess, gameType, project)
 

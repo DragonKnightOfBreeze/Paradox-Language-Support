@@ -2,6 +2,8 @@ package icu.windea.pls.script.injection
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 
 /**
  * 参数值的语言注入信息。

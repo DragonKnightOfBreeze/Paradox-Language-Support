@@ -7,6 +7,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import javax.swing.*

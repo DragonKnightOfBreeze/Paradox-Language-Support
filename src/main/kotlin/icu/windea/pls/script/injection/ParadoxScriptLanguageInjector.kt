@@ -12,7 +12,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.configContext.*
 import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*

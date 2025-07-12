@@ -1,23 +1,25 @@
-package icu.windea.pls.ep.documentation
+package icu.windea.pls.ep.reference
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 
 /**
- * 提供对快速文档链接的支持，用于点击跳转到对应的定义/本地化等。
+ * 用于将特定的链接（快速文档中的PSI链接，或是html/markdown等文件中的链接）解析为匹配的目标引用（定义、本地化等）。
+ *
+ * @see icu.windea.pls.lang.references.paths.ParadoxPathReferenceProvider
  */
-interface ParadoxDocumentationLinkProvider {
+interface ParadoxReferenceLinkProvider {
     val linkPrefix: String
 
     fun resolve(link: String, contextElement: PsiElement): PsiElement?
 
     fun getUnresolvedMessage(link: String): String? = null
 
-    fun create(element: PsiElement, plainLink: Boolean = true): String? = null
+    fun createPsiLink(element: PsiElement, plainLink: Boolean = true): String? = null
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxDocumentationLinkProvider>("icu.windea.pls.documentationLinkProvider")
+        val EP_NAME = ExtensionPointName.create<ParadoxReferenceLinkProvider>("icu.windea.pls.referenceLinkProvider")
 
         fun supports(link: String): Boolean {
             return EP_NAME.extensionList.any { ep ->
@@ -39,9 +41,9 @@ interface ParadoxDocumentationLinkProvider {
             } ?: PlsBundle.message("path.reference.unresolved", link)
         }
 
-        fun create(element: PsiElement, plainLink: Boolean = true): String? {
+        fun createPsiLink(element: PsiElement, plainLink: Boolean = true): String? {
             return EP_NAME.extensionList.firstNotNullOfOrNull {
-                it.create(element, plainLink)
+                it.createPsiLink(element, plainLink)
             }
         }
     }

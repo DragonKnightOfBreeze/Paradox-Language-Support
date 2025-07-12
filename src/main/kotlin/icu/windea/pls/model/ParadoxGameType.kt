@@ -49,6 +49,4 @@ val ParadoxGameType?.id get() = this?.id ?: "core"
 
 val ParadoxGameType?.title get() = this?.title ?: "Core"
 
-val ParadoxGameType?.prefix get() = if (this == null) "" else "${id}:"
-
 fun ParadoxGameType?.orDefault() = this ?: PlsFacade.getSettings().defaultGameType

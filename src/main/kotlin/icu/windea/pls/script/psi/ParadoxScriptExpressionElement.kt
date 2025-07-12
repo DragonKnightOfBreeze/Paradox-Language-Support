@@ -1,6 +1,7 @@
 package icu.windea.pls.script.psi
 
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.model.*
 
 /**

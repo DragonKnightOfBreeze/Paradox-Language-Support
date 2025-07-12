@@ -12,11 +12,14 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.documentation.*
+import icu.windea.pls.ep.reference.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
@@ -220,16 +223,17 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val gameType = parameterElement.gameType
         appendBr().appendIndent()
         append(PlsBundle.message("ofDefinition")).append(" ")
-        appendDefinitionLink(gameType, definitionName, definitionType.first(), parameterElement)
+        val link = ParadoxReferenceLinkType.Definition.createLink(gameType, definitionName, definitionType.first())
+        appendPsiLinkOrUnresolved(link.escapeXml(), definitionName.escapeXml(), context = parameterElement)
         append(": ")
         val type = definitionType.first()
-        val typeLink = "${gameType.prefix}types/${type}"
-        appendCwtConfigLink(typeLink, type)
+        val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "types", type)
+        appendPsiLinkOrUnresolved(typeLink.escapeXml(), type.escapeXml())
         for ((index, t) in definitionType.withIndex()) {
             if (index == 0) continue
             append(", ")
-            val subtypeLink = "$typeLink/${t}"
-            appendCwtConfigLink(subtypeLink, t)
+            val subtypeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "types", type, t)
+            appendPsiLinkOrUnresolved(subtypeLink.escapeXml(), t.escapeXml())
         }
         return true
     }
@@ -254,9 +258,9 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
     override fun getContextInfo(element: ParadoxScriptDefinitionElement) = null
 
     override fun getContextReferenceInfo(element: PsiElement, from: ParadoxParameterContextReferenceInfo.From, vararg extraArgs: Any?): ParadoxParameterContextReferenceInfo? {
-        var expressionElement: ParadoxScriptStringExpressionElement? = null
-        var expressionString: String? = null
-        var expressionElementConfig: CwtMemberConfig<*>? = null
+        var expressionElement: ParadoxScriptStringExpressionElement?
+        var expressionString: String?
+        var expressionElementConfig: CwtMemberConfig<*>?
         var completionOffset = -1
         when (from) {
             //extraArgs: config, completionOffset?
@@ -549,7 +553,8 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val gameType = parameterElement.gameType
         appendBr().appendIndent()
         append(PlsBundle.message("ofInlineScript")).append(" ")
-        appendFilePathLink(gameType, filePath, inlineScriptExpression, parameterElement)
+        val link = ParadoxReferenceLinkType.FilePath.createLink(gameType, filePath)
+        appendPsiLinkOrUnresolved(link.escapeXml(), inlineScriptExpression.escapeXml(), context = parameterElement)
         return true
     }
 }

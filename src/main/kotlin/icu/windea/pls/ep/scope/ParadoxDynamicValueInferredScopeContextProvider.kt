@@ -4,6 +4,8 @@ import com.intellij.openapi.extensions.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
+import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 

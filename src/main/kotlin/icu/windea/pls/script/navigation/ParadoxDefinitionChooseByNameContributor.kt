@@ -8,6 +8,7 @@ import com.intellij.util.indexing.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.script.psi.*
 
 /**

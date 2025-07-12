@@ -20,6 +20,7 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.SymbolNavigationServiceImplCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.LineCommentCopyPastePreProcessorCodeInjector"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.CommentByLineCommentHandlerCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.PathReferenceManagerImplCodeInjector"/>
 
     <!--code injectors to optimize image readers (delegate to image tools)-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.DDSImageReaderCodeInjector"/>

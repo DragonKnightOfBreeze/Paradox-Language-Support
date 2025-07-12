@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.modifier.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.model.*
 
 data class ParadoxModifierInfo(

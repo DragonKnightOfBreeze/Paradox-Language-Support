@@ -1,6 +1,7 @@
 package icu.windea.pls.localisation.psi
 
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 
 /**
  * @see ParadoxLocalisationCommandText

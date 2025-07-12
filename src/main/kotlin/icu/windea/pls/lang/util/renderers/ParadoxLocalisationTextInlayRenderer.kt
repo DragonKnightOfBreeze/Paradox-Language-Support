@@ -9,6 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.editor.*
 import icu.windea.pls.localisation.psi.*
@@ -358,7 +359,7 @@ class ParadoxLocalisationTextInlayRenderer(
             val s = reference.rangeInElement.substring(text)
             val resolved = reference.resolve()
             //不要尝试跳转到dynamicValue的声明处
-            if (resolved == null || resolved is ParadoxFakePsiElement) {
+            if (resolved == null || resolved is MockPsiElement) {
                 presentations.add(factory.smallText(s))
             } else {
                 presentations.add(factory.psiSingleReference(factory.smallText(s)) { reference.resolve() })

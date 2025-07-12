@@ -13,6 +13,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*

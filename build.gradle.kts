@@ -31,12 +31,12 @@ dependencies {
         testFramework(TestFrameworkType.Platform)
 
         bundledPlugins("com.intellij.platform.images")
+        bundledPlugins("org.intellij.plugins.markdown")
         bundledPlugins("com.intellij.diagram")
 
         // 用作参考
         // bundledPlugins("com.intellij.java")
         // bundledPlugins("org.jetbrains.kotlin")
-        // bundledPlugins("org.intellij.plugins.markdown")
         // bundledPlugins("JavaScript")
         // bundledPlugins("tslint")
 

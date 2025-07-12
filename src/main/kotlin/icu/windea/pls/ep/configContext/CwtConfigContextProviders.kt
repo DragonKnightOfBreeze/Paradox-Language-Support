@@ -11,6 +11,8 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.injection.*

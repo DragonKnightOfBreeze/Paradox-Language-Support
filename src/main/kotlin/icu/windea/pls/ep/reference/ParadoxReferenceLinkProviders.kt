@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.documentation
+package icu.windea.pls.ep.reference
 
 import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.progress.*
@@ -16,21 +16,12 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
-    // e.g.,
-    // cwt:stellaris:types/civic_or_origin/civic
-
-    // limited support only
-
-    companion object {
-        const val LINK_PREFIX = "cwt:"
-    }
-
-    override val linkPrefix = LINK_PREFIX
+class CwtConfigLinkProvider : ParadoxReferenceLinkProvider {
+    override val linkPrefix = ParadoxReferenceLinkType.CwtConfig.prefix
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
-        val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
+        val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
         val tokens = remain.split('/')
         val category = tokens.getOrNull(0) ?: return null
         val project = contextElement.project
@@ -119,29 +110,30 @@ class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
         return PlsBundle.message("path.reference.unresolved.cwt", link)
     }
 
-    override fun create(element: PsiElement, plainLink: Boolean): String? {
+    override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
         if (element !is CwtProperty && element !is CwtValue) return null
         val config = element.getUserData(PlsKeys.bindingConfig) ?: return null //retrieve config from user data
         //这里目前仅支持可能用到的那些
+        val linkType = ParadoxReferenceLinkType.CwtConfig
         val builder = StringBuilder()
         when {
             config is CwtSystemScopeConfig -> {
                 val gameType = config.configGroup.gameType
                 val name = config.name
-                val link = "${linkPrefix}${gameType.prefix}system_scopes/${name}"
+                val link = linkType.createLink(gameType, "system_scopes", name)
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
             config is CwtLinkConfig -> {
                 val gameType = config.configGroup.gameType
                 val name = config.name
-                val category = if(config.forLocalisation) "localisation_links" else "links"
-                val link = "${linkPrefix}${gameType.prefix}${category}/${name}"
+                val category = if (config.forLocalisation) "localisation_links" else "links"
+                val link = linkType.createLink(gameType, category, name)
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
             config is CwtLocalisationCommandConfig -> {
                 val gameType = config.configGroup.gameType
                 val name = config.name
-                val link = "${linkPrefix}${gameType.prefix}localisation_commands/${name}"
+                val link = linkType.createLink(gameType, "localisation_commands", name)
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
         }
@@ -149,20 +141,12 @@ class CwtConfigLinkProvider : ParadoxDocumentationLinkProvider {
     }
 }
 
-class ParadoxScriptedVariableLinkProvider : ParadoxDocumentationLinkProvider {
-    // e.g.,
-    // pdx.sv:some_sv
-    // pdx.sv:stellaris:some_sv
-
-    companion object {
-        const val LINK_PREFIX = "pdx.sv:"
-    }
-
-    override val linkPrefix = LINK_PREFIX
+class ParadoxScriptedVariableLinkProvider : ParadoxReferenceLinkProvider {
+    override val linkPrefix = ParadoxReferenceLinkType.ScriptedVariable.prefix
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
-        val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
+        val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
         val name = remain
         val project = contextElement.project
         val selector = selector(project, contextElement).scriptedVariable().contextSensitive()
@@ -174,32 +158,24 @@ class ParadoxScriptedVariableLinkProvider : ParadoxDocumentationLinkProvider {
         return PlsBundle.message("path.reference.unresolved.sv", link)
     }
 
-    override fun create(element: PsiElement, plainLink: Boolean): String? {
+    override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
         if (element !is ParadoxScriptScriptedVariable) return null
         val gameType = selectGameType(element)
-        val name = element.name
-        val link = "${linkPrefix}${gameType.prefix}${name}"
+        val name = element.name?.orNull() ?: return null
+        val linkType = ParadoxReferenceLinkType.ScriptedVariable
+        val link = linkType.createLink(gameType, name)
         val builder = StringBuilder()
         DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
         return builder.toString()
     }
 }
 
-class ParadoxDefinitionLinkProvider : ParadoxDocumentationLinkProvider {
-    // e.g.,
-    // pdx.d:origin_default
-    // pdx.d:civic_or_origin.origin/origin_default
-    // pdx.d:stellaris:civic_or_origin.origin/origin_default
-
-    companion object {
-        const val LINK_PREFIX = "pdx.d:"
-    }
-
-    override val linkPrefix = LINK_PREFIX
+class ParadoxDefinitionLinkProvider : ParadoxReferenceLinkProvider {
+    override val linkPrefix = ParadoxReferenceLinkType.Definition.prefix
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
-        val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
+        val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
         val tokens = remain.split('/')
         if (tokens.isEmpty() || tokens.size > 2) return null
         val typeExpression = if (tokens.size == 2) tokens.getOrNull(0) else null
@@ -215,34 +191,27 @@ class ParadoxDefinitionLinkProvider : ParadoxDocumentationLinkProvider {
         return PlsBundle.message("path.reference.unresolved.def", link)
     }
 
-    override fun create(element: PsiElement, plainLink: Boolean): String? {
+    override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
         if (element !is ParadoxScriptDefinitionElement) return null
         val definitionInfo = element.definitionInfo ?: return null
         if (definitionInfo.name.isEmpty()) return null //ignore anonymous definitions
         val gameType = definitionInfo.gameType
         val name = definitionInfo.name
         val typesText = definitionInfo.types.joinToString(".")
-        val link = "${linkPrefix}${gameType.prefix}${typesText}/${name}"
+        val linkType = ParadoxReferenceLinkType.Definition
+        val link = linkType.createLink(gameType, name, typesText)
         val builder = StringBuilder()
         DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
         return builder.toString()
     }
 }
 
-class ParadoxLocalisationLinkProvider : ParadoxDocumentationLinkProvider {
-    // e.g.,
-    // pdx.l:KEY
-    // pdx.l:stellaris:KEY
-
-    companion object {
-        const val LINK_PREFIX = "pdx.l:"
-    }
-
-    override val linkPrefix = LINK_PREFIX
+class ParadoxLocalisationLinkProvider : ParadoxReferenceLinkProvider {
+    override val linkPrefix = ParadoxReferenceLinkType.Localisation.prefix
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
-        val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
+        val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
         val name = remain
         val project = contextElement.project
         val selector = selector(project, contextElement).localisation().contextSensitive().preferLocale(selectLocale(contextElement))
@@ -254,34 +223,27 @@ class ParadoxLocalisationLinkProvider : ParadoxDocumentationLinkProvider {
         return PlsBundle.message("path.reference.unresolved.loc", link)
     }
 
-    override fun create(element: PsiElement, plainLink: Boolean): String? {
+    override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
         if (element !is ParadoxLocalisationProperty) return null
         val localisationInfo = element.localisationInfo ?: return null
         if (localisationInfo.category != ParadoxLocalisationCategory.Localisation) return null
         val name = localisationInfo.name
         val gameType = localisationInfo.gameType
-        val link = "${linkPrefix}${gameType.prefix}${name}"
+        val linkType = ParadoxReferenceLinkType.Localisation
+        val link = linkType.createLink(gameType, name)
         val builder = StringBuilder()
         DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
         return builder.toString()
     }
 }
 
-class ParadoxFilePathLinkProvider : ParadoxDocumentationLinkProvider {
-    // e.g.,
-    // pdx.p:path
-    // pdx.p:stellaris:path
-
-    companion object {
-        const val LINK_PREFIX = "pdx.p:"
-    }
-
-    override val linkPrefix = LINK_PREFIX
+class ParadoxFilePathLinkProvider : ParadoxReferenceLinkProvider {
+    override val linkPrefix = ParadoxReferenceLinkType.FilePath.prefix
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         //can be resolved to file or directory
         ProgressManager.checkCanceled()
-        val (gameType, remain) = getGameTypeAndRemain(link.drop(LINK_PREFIX.length))
+        val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
         val filePath = remain
         val project = contextElement.project
         val selector = selector(project, contextElement).file().contextSensitive()
@@ -293,24 +255,17 @@ class ParadoxFilePathLinkProvider : ParadoxDocumentationLinkProvider {
         return PlsBundle.message("path.reference.unresolved.path", link)
     }
 
-    override fun create(element: PsiElement, plainLink: Boolean): String? {
+    override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
         return null //unsupported since unnecessary
     }
 }
 
-class ParadoxModifierLinkProvider : ParadoxDocumentationLinkProvider {
-    // e.g.,
-    // pdx.m:job_researcher_add
-
-    companion object {
-        const val LINK_PREFIX = "pdx.m:"
-    }
-
-    override val linkPrefix = LINK_PREFIX
+class ParadoxModifierLinkProvider : ParadoxReferenceLinkProvider {
+    override val linkPrefix = ParadoxReferenceLinkType.Modifier.prefix
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
-        val name = link.drop(LINK_PREFIX.length)
+        val name = link.drop(linkPrefix.length)
         return ParadoxModifierManager.resolveModifier(name, contextElement)
     }
 
@@ -318,7 +273,7 @@ class ParadoxModifierLinkProvider : ParadoxDocumentationLinkProvider {
         return PlsBundle.message("path.reference.unresolved.modifier", link)
     }
 
-    override fun create(element: PsiElement, plainLink: Boolean): String? {
+    override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
         return null //unsupported since unnecessary
     }
 }

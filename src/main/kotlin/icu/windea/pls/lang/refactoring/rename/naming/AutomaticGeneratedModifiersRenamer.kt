@@ -8,6 +8,7 @@ import icu.windea.pls.config.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.script.psi.*
 
 /**

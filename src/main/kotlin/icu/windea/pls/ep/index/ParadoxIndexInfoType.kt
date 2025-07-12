@@ -2,7 +2,7 @@ package icu.windea.pls.ep.index
 
 import icu.windea.pls.model.indexInfo.*
 
-sealed class ParadoxIndexInfoType<T : ParadoxIndexInfo>(val id: Byte) {
+abstract class ParadoxIndexInfoType<T : ParadoxIndexInfo>(val id: Byte) {
     data object ComplexEnumValue : ParadoxIndexInfoType<ParadoxComplexEnumValueIndexInfo>(1)
     data object DynamicValue : ParadoxIndexInfoType<ParadoxDynamicValueIndexInfo>(2)
     data object Parameter : ParadoxIndexInfoType<ParadoxParameterIndexInfo>(3)

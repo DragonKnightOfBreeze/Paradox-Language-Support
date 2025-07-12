@@ -11,7 +11,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.ep.configGroup.*
-import icu.windea.pls.ep.documentation.*
+import icu.windea.pls.ep.reference.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxScopeManager.isUnsureScopeId
@@ -44,6 +44,12 @@ fun DocumentationBuilder.appendLink(refText: String, label: String): Documentati
 }
 
 fun DocumentationBuilder.appendPsiLink(refText: String, label: String, plainLink: Boolean = true): DocumentationBuilder {
+    DocumentationManagerUtil.createHyperlink(this.content, refText, label, plainLink)
+    return this
+}
+
+fun DocumentationBuilder.appendPsiLinkOrUnresolved(refText: String, label: String, plainLink: Boolean = true, context: PsiElement? = null): DocumentationBuilder {
+    if (context != null && ParadoxReferenceLinkProvider.resolve(refText, context) == null) return appendUnresolvedLink(label)
     DocumentationManagerUtil.createHyperlink(this.content, refText, label, plainLink)
     return this
 }
@@ -138,74 +144,13 @@ fun DocumentationBuilder.appendCwtConfigFileInfoHeader(element: PsiElement): Doc
     return this
 }
 
-fun DocumentationBuilder.appendCwtConfigLink(shortLink: String, linkText: String, context: PsiElement? = null): DocumentationBuilder {
-    //如果context不为null且链接无法被解析，则显示未解析的链接
-    val linkPrefix = CwtConfigLinkProvider.LINK_PREFIX
-    val finalLink = "$linkPrefix$shortLink".escapeXml()
-    val finalLinkText = linkText.escapeXml()
-    if (context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
-    appendPsiLink(finalLink, finalLinkText)
-    return this
-}
-
-fun DocumentationBuilder.appendDefinitionLink(
-    gameType: ParadoxGameType,
-    name: String,
-    typeExpression: String,
-    context: PsiElement? = null,
-    label: String = name.escapeXml()
-): DocumentationBuilder {
-    //如果context不为null且链接无法被解析，则显示未解析的链接
-    val linkPrefix = ParadoxDefinitionLinkProvider.LINK_PREFIX
-    val finalLink = "$linkPrefix${gameType.prefix}$typeExpression/$name".escapeXml()
-    val finalLinkText = label
-    if (context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
-    return appendPsiLink(finalLink, finalLinkText)
-}
-
-fun DocumentationBuilder.appendLocalisationLink(
-    gameType: ParadoxGameType,
-    name: String,
-    context: PsiElement? = null,
-    label: String = name.escapeXml()
-): DocumentationBuilder {
-    //如果context不为null且链接无法被解析，则显示未解析的链接
-    val linkPrefix = ParadoxLocalisationLinkProvider.LINK_PREFIX
-    val finalLink = "$linkPrefix${gameType.prefix}$name".escapeXml()
-    val finalLinkText = label
-    if (context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
-    return appendPsiLink(finalLink, finalLinkText)
-}
-
-fun DocumentationBuilder.appendFilePathLink(
-    gameType: ParadoxGameType,
-    filePath: String,
-    linkText: String,
-    context: PsiElement? = null,
-    label: String = linkText.escapeXml()
-): DocumentationBuilder {
-    //如果context不为null且链接无法被解析，则显示未解析的链接
-    val linkPrefix = ParadoxFilePathLinkProvider.LINK_PREFIX
-    val finalLink = "$linkPrefix${gameType.prefix}$filePath".escapeXml()
-    val finalLinkText = label
-    if (context != null && ParadoxDocumentationLinkProvider.resolve(finalLink, context) == null) return appendUnresolvedLink(finalLinkText)
-    return appendPsiLink(finalLink, finalLinkText)
-}
-
-fun DocumentationBuilder.appendModifierLink(
-    name: String,
-    label: String = name.escapeXml()
-): DocumentationBuilder {
-    val linkPrefix = ParadoxModifierLinkProvider.LINK_PREFIX
-    val finalLink = "$linkPrefix$name".escapeXml()
-    val finalLinkText = label
-    return appendPsiLink(finalLink, finalLinkText)
-}
-
 fun DocumentationBuilder.buildScopeDoc(scopeId: String, gameType: ParadoxGameType?, contextElement: PsiElement): DocumentationBuilder {
     when {
         isUnsureScopeId(scopeId) -> append(scopeId)
-        else -> appendCwtConfigLink("${gameType.prefix}scopes/$scopeId", scopeId, contextElement)
+        else -> {
+            val link = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "scopes", scopeId)
+            appendPsiLinkOrUnresolved(link.escapeXml(), scopeId.escapeXml(), context = contextElement)
+        }
     }
     return this
 }
@@ -214,11 +159,14 @@ fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext,
     var appendSeparator = false
     scopeContext.toScopeMap().forEach { (systemScope, scope) ->
         if (appendSeparator) appendBr() else appendSeparator = true
-        appendCwtConfigLink("${gameType.prefix}system_scopes/$systemScope", systemScope, contextElement)
+        val systemScopeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "system_scopes", systemScope)
+        appendPsiLinkOrUnresolved(systemScopeLink.escapeXml(), systemScope.escapeXml(), context = contextElement)
         append(" = ")
-        when {
-            isUnsureScopeId(scope.id) -> append(scope)
-            else -> appendCwtConfigLink("${gameType.prefix}scopes/${scope.id}", scope.id, contextElement)
+        if (isUnsureScopeId(scope.id)) {
+            append(scope)
+        } else {
+            val scopeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "scopes", scope.id)
+            appendPsiLinkOrUnresolved(scopeLink.escapeXml(), scope.id.escapeXml(), context = contextElement)
         }
     }
     return this
@@ -231,7 +179,8 @@ fun DocumentationBuilder.getModifierCategoriesText(categories: Set<String>, game
         var appendSeparator = false
         for (category in categories) {
             if (appendSeparator) append(", ") else appendSeparator = true
-            appendCwtConfigLink("${gameType.prefix}modifier_categories/$category", category, contextElement)
+            val link = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "modifier_categories", category)
+            appendPsiLinkOrUnresolved(link.escapeXml(), category.escapeXml(), context = contextElement)
         }
         append("</pre>")
     }

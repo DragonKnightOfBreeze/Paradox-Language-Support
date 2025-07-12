@@ -10,6 +10,7 @@ import icu.windea.pls.core.references.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.editor.*
 

@@ -12,6 +12,7 @@ import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.editor.*
 import icu.windea.pls.script.psi.*

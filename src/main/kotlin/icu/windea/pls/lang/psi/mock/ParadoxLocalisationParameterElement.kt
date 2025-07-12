@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.psi
+package icu.windea.pls.lang.psi.mock
 
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.navigation.*
@@ -27,7 +27,7 @@ class ParadoxLocalisationParameterElement(
     val readWriteAccess: ReadWriteAccessDetector.Access,
     val gameType: ParadoxGameType,
     private val project: Project,
-) : ParadoxFakePsiElement(parent) {
+) : ParadoxMockPsiElement(parent) {
     override fun getIcon(): Icon {
         return PlsIcons.Nodes.Parameter
     }
