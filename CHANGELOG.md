@@ -5,26 +5,18 @@
 * [ ] 更新参考文档，更加详细，尽可能全面地介绍插件的功能
 * [ ] 兼容更加复杂的本地化命令（例如，带有多个参数、用引号括起的参数）
 * [ ] 兼容通过内联脚本声明的定义，兼容相关语言功能（定义的名字在参数值中，而定义的声明在内联脚本文件中）
-* [ ] 支持回退各种本地化操作带来的更改
-* [ ] 支持 Paradox CSV 语言，包括提供各种必要的语言功能
 * [ ] 支持为同一个模组配置多个模组依赖列表
 * [ ] 支持通过内置方案、手动乃至AI解决模组冲突，合并模组文件，提供相关的全局代码检查和操作
 * [ ] 支持直接在IDE中启动游戏，且启用的模组来自可配置的模组列表
-* [ ] 与markdown的集成 - 内联代码、代码块、链接等
-* [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
 * [ ] 新功能：提供AI驱动的脚本/本地化生成功能（操作） / NEW: Provide AI-driven script/translation generation features (actions)
 * [ ] 新功能：提供对魔法注释的初步支持，用于批量处理脚本与本地化文件的内容 / NEW: Provide support for magic comments, which are used to batch process of scripts and localisation files
 
-TODO
+## 2.0.1-dev
 
-* [X] 因为 PlsDataProvider 中路经相关方法更改，需要验证相关功能是否正常（是否仍然能正确推断创意工坊目录下的模组的游戏类型）
-* [X] 图形工具，使用非texconv时，相关功能是否正常
-* [X] 基于AI的本地化翻译/润色的意向，验证功能是否正常，并且在设置有误或者未联网时是否有比较好的交互体验
-* [X] ~~DDS图片 - 仍然存在问题，导致无法正常渲染图片，需要复现&排查~~ 实现已更改
-* [X] DDS/TGA图片 - 缩放操作无法生效，需要排查
-* [X] DDS/TGA图片的预览与渲染 - 实现已更改，因此需要进一步检查、测试
-* [X] 由于渲染器相关代码的重构，检查相关功能是否正常
-* [ ] 本地化生成 - 仍然存在问题，需要复现&排查
+* [ ] 完善与Markdown的集成，涉及链接、内联代码、代码块等 / Complete integration with Markdown, including links, inline codes, code blocks, etc.
+* [ ] 新功能：支持Paradox CSV语言，提供各种必要的语言功能 / NEW: Support Paradox CSV language, and provide various necessary language features
+* [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
+* [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.0.0
 
