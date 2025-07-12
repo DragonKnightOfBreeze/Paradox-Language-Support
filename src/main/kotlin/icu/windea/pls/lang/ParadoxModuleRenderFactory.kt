@@ -30,6 +30,7 @@ class ParadoxModuleRenderFactory : ModuleRendererFactory() {
         return when (rootInfo) {
             is ParadoxRootInfo.Game -> TextWithIcon(rootInfo.qualifiedName, PlsIcons.General.GameDirectory)
             is ParadoxRootInfo.Mod -> TextWithIcon(rootInfo.qualifiedName, PlsIcons.General.ModDirectory)
+            else -> null
         }
     }
 }

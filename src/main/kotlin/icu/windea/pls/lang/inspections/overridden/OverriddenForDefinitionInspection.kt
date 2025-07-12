@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.roots.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.search.*
@@ -66,7 +67,7 @@ class OverriddenForDefinitionInspection : LocalInspectionTool() {
         override fun getPopupText(editor: Editor, value: PsiElement): @Nls String {
             val file = value.containingFile
             val lineNumber = PsiDocumentManager.getInstance(file.project).getDocument(file)?.getLineNumber(value.textOffset) ?: "?"
-            val filePath = file.fileInfo?.rootInfo?.rootFile?.path
+            val filePath = file.fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile?.path
             if (filePath == null) return PlsBundle.message("inspection.fix.navigate.popup.text.2", key, lineNumber)
             return PlsBundle.message("inspection.fix.navigate.popup.text.3", key, lineNumber, filePath)
         }

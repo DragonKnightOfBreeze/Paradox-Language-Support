@@ -27,8 +27,8 @@ sealed class ParadoxRootInfo {
         val rootFile: VirtualFile get() = metadata.rootFile
         val entryFile: VirtualFile get() = metadata.entryFile
 
-        val rootPath: Path by lazy { rootFile.toNioPath() }
-        val entryPath: Path by lazy { entryFile.toNioPath() }
+       val rootPath: Path by lazy { rootFile.toNioPath() }
+       val entryPath: Path by lazy { entryFile.toNioPath() }
     }
 
     class Game(override val metadata: ParadoxMetadata.Game) : MetadataBased(metadata)

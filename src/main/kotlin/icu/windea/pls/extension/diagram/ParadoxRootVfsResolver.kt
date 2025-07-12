@@ -6,6 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.model.ParadoxRootInfo
 
 class ParadoxRootVfsResolver : DiagramVfsResolver<PsiElement> {
     //based on rootFile
@@ -13,6 +14,7 @@ class ParadoxRootVfsResolver : DiagramVfsResolver<PsiElement> {
     override fun getQualifiedName(element: PsiElement?): String? {
         if (element == null) return null
         val rootInfo = element.fileInfo?.rootInfo ?: return null
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val rootPath = rootInfo.rootFile.path
         return rootPath
     }

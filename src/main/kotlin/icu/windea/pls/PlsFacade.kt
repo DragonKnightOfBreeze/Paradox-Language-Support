@@ -53,6 +53,7 @@ object PlsFacade {
         return when (rootInfo) {
             is ParadoxRootInfo.Game -> getGameSettings(rootInfo)
             is ParadoxRootInfo.Mod -> getModSettings(rootInfo)
+            else -> null
         }
     }
 }

@@ -13,6 +13,7 @@ import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import org.jetbrains.annotations.*
 
@@ -50,8 +51,10 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
                 val results = ParadoxGlobalScriptedVariableSearch.search(name, selector).findAll()
                 if (results.size < 2) return //no override -> skip
                 val firstResult = results.first()
-                val firstRootInfo = firstResult.fileInfo?.rootInfo ?: return
+                val firstRootInfo = firstResult.fileInfo?.rootInfo
+                if (firstRootInfo !is ParadoxRootInfo.MetadataBased) return
                 val rootInfo = fileInfo.rootInfo
+                if (rootInfo !is ParadoxRootInfo.MetadataBased) return
                 if (firstRootInfo.rootFile == rootInfo.rootFile) return
 
                 //different root file -> incorrect override
@@ -77,7 +80,7 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
         override fun getPopupText(editor: Editor, value: PsiElement): @Nls String {
             val file = value.containingFile
             val lineNumber = PsiDocumentManager.getInstance(file.project).getDocument(file)?.getLineNumber(value.textOffset) ?: "?"
-            val filePath = file.fileInfo?.rootInfo?.rootFile?.path.orAnonymous()
+            val filePath = file.fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile?.path.orAnonymous()
             return PlsBundle.message("inspection.fix.navigate.popup.text.3", key, lineNumber, filePath)
         }
     }

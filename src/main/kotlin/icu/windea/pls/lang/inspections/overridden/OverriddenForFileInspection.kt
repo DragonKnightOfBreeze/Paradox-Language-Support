@@ -73,7 +73,7 @@ class OverriddenForFileInspection : LocalInspectionTool() {
 
         override fun getPopupText(editor: Editor, value: PsiElement): @Nls String {
             val file = value.containingFile
-            val filePath = file.fileInfo?.rootInfo?.rootFile?.path
+            val filePath = file.fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile?.path
             if (filePath == null) return PlsBundle.message("inspection.fix.navigate.popup.text.0", key)
             return PlsBundle.message("inspection.fix.navigate.popup.text.1", key, filePath)
         }

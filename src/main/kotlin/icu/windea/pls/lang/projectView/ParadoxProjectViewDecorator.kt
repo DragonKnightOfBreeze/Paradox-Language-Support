@@ -18,6 +18,7 @@ class ParadoxProjectViewDecorator : ProjectViewNodeDecorator {
             val icon = when (rootInfo) {
                 is ParadoxRootInfo.Game -> PlsIcons.General.GameDirectory
                 is ParadoxRootInfo.Mod -> PlsIcons.General.ModDirectory
+                else -> return
             }
             data.setIcon(icon)
             data.locationString = rootInfo.qualifiedName

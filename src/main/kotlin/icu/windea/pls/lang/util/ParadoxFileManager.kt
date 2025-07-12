@@ -28,7 +28,8 @@ object ParadoxFileManager {
     const val scriptedVariablesPath = "common/scripted_variables"
 
     fun getScriptedVariablesDirectory(contextFile: VirtualFile): VirtualFile? {
-        val rootInfo = contextFile.fileInfo?.rootInfo ?: return null
+        val rootInfo = contextFile.fileInfo?.rootInfo
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val entryFile = rootInfo.entryFile
         val path = scriptedVariablesPath
         VfsUtil.createDirectoryIfMissing(entryFile, path)

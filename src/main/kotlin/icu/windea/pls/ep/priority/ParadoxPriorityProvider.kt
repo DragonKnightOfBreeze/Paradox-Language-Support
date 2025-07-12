@@ -84,7 +84,9 @@ interface ParadoxPriorityProvider {
         }
 
         private fun getOrder(fileInfo: ParadoxFileInfo, settings: ParadoxGameOrModSettingsState): Int {
-            val rootPath = fileInfo.rootInfo.rootFile.path
+            val rootInfo = fileInfo.rootInfo
+            if(rootInfo !is ParadoxRootInfo.MetadataBased) return -1
+            val rootPath = rootInfo.rootFile.path
             if (rootPath == settings.gameDirectory) return 0
             val i = settings.modDependencies.indexOfFirst { it.modDirectory == rootPath }
             if (i != -1) return i + 1

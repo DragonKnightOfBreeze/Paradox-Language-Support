@@ -48,6 +48,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         if (file.isDirectory) return null
         if (file.fileType !is ParadoxLocalisationFileType) return null
         val fileInfo = file.fileInfo ?: return null
+        if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
         if (fileInfo.path.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
         //val gameType = fileInfo.rootInfo.gameType
         //val path = fileInfo.path.path
@@ -75,10 +76,10 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
+        val project = e.project ?: return
+        val file = findFile(e) ?: return
         var localisation = findElement(e)
         if (localisation == null) {
-            val project = e.project ?: return
-            val file = findFile(e) ?: return
             presentation.isVisible = true
             val editor = e.editor ?: return
             val offset = editor.caretModel.offset
@@ -198,16 +199,20 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
         val name = localisation.name
         val file = localisation.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
-        return PlsBundle.message("diff.compare.localisations.dialog.title", name, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
+        val rootInfo = fileInfo.rootInfo
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+        return PlsBundle.message("diff.compare.localisations.dialog.title", name, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
     }
 
     private fun getContentTitle(localisation: ParadoxLocalisationProperty, original: Boolean = false): String? {
         val name = localisation.name
         val file = localisation.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
+        val rootInfo = fileInfo.rootInfo
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         return when {
-            original -> PlsBundle.message("diff.compare.localisations.originalContent.title", name, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
-            else -> PlsBundle.message("diff.compare.localisations.content.title", name, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
+            original -> PlsBundle.message("diff.compare.localisations.originalContent.title", name, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
+            else -> PlsBundle.message("diff.compare.localisations.content.title", name, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
         }
     }
 
@@ -234,7 +239,9 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
-            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
+            val rootInfo = fileInfo.rootInfo
+            if (rootInfo !is ParadoxRootInfo.MetadataBased) return super.getName()
+            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
         }
     }
 
@@ -264,8 +271,8 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             override fun getTextFor(value: DiffRequestProducer) = value.name
 
             //com.intellij.find.actions.ShowUsagesTableCellRenderer.getTableCellRendererComponent L205
-            override fun getBackgroundFor(value: DiffRequestProducer) =
-                if ((value as MyRequestProducer).isCurrent) Color(0x808080) else null
+            @Suppress("UseJBColor")
+            override fun getBackgroundFor(value: DiffRequestProducer) = if ((value as MyRequestProducer).isCurrent) Color(0x808080) else null
 
             override fun isSpeedSearchEnabled() = true
 

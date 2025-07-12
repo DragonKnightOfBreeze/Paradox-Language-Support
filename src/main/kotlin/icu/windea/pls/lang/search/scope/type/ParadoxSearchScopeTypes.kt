@@ -48,6 +48,7 @@ object ParadoxSearchScopeTypes {
                     result.add(ModWithDependencies)
                 }
             }
+            else -> {}
         }
         return result
     }

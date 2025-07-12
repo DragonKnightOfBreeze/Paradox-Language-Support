@@ -13,7 +13,9 @@ class CopySteamPageUrlProvider : DumbAwareCopyPathProvider() {
 
     override fun getPathToElement(project: Project, virtualFile: VirtualFile?, editor: Editor?): String? {
         val fileInfo = virtualFile?.fileInfo ?: return null
-        if (fileInfo.rootInfo.rootFile != virtualFile) return null
+        val rootInfo = fileInfo.rootInfo
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+        if (rootInfo.rootFile != virtualFile) return null
         return getTargetUrl(fileInfo)
     }
 
@@ -23,6 +25,7 @@ class CopySteamPageUrlProvider : DumbAwareCopyPathProvider() {
         return when (rootInfo) {
             is ParadoxRootInfo.Game -> PlsFacade.getDataProvider().getSteamGameStoreUrl(steamId)
             is ParadoxRootInfo.Mod -> PlsFacade.getDataProvider().getSteamWorkshopUrl(steamId)
+            else -> null
         }
     }
 }

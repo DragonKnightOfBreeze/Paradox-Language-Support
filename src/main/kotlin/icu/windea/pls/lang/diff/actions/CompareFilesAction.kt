@@ -43,6 +43,7 @@ class CompareFilesAction : ParadoxShowDiffAction() {
             ?: return null
         if (file.isDirectory) return null
         val fileInfo = file.fileInfo ?: return null
+        if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
         if (fileInfo.path.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
         //val gameType = fileInfo.rootInfo.gameType
         //val path = fileInfo.path.path
@@ -158,14 +159,18 @@ class CompareFilesAction : ParadoxShowDiffAction() {
 
     private fun getWindowsTitle(file: VirtualFile): String? {
         val fileInfo = file.fileInfo ?: return null
-        return PlsBundle.message("diff.compare.files.dialog.title", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
+        val rootInfo = fileInfo.rootInfo
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+        return PlsBundle.message("diff.compare.files.dialog.title", fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
     }
 
     private fun getContentTitle(file: VirtualFile, original: Boolean = false): String? {
         val fileInfo = file.fileInfo ?: return null
+        val rootInfo = fileInfo.rootInfo
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         return when {
-            original -> PlsBundle.message("diff.compare.files.originalContent.title", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
-            else -> PlsBundle.message("diff.compare.files.content.title", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
+            original -> PlsBundle.message("diff.compare.files.originalContent.title", fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
+            else -> PlsBundle.message("diff.compare.files.content.title", fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
         }
     }
 
@@ -190,7 +195,9 @@ class CompareFilesAction : ParadoxShowDiffAction() {
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
-            return PlsBundle.message("diff.compare.files.popup.name", fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
+            val rootInfo = fileInfo.rootInfo
+            if (rootInfo !is ParadoxRootInfo.MetadataBased) return super.getName()
+            return PlsBundle.message("diff.compare.files.popup.name", fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
         }
     }
 
@@ -220,8 +227,8 @@ class CompareFilesAction : ParadoxShowDiffAction() {
             override fun getTextFor(value: DiffRequestProducer) = value.name
 
             //com.intellij.find.actions.ShowUsagesTableCellRenderer.getTableCellRendererComponent L205
-            override fun getBackgroundFor(value: DiffRequestProducer) =
-                if ((value as MyRequestProducer).isCurrent) Color(0x808080) else null
+            @Suppress("UseJBColor")
+            override fun getBackgroundFor(value: DiffRequestProducer) = if ((value as MyRequestProducer).isCurrent) Color(0x808080) else null
 
             override fun isSpeedSearchEnabled() = true
 

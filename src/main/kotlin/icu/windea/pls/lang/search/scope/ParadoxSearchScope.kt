@@ -65,6 +65,7 @@ open class ParadoxSearchScope(
                     val dependencyDirectories = getDependencyDirectories(settings, modDirectory)
                     return ParadoxModWithDependenciesSearchScope(project, contextFile, modDirectory, gameDirectory, dependencyDirectories)
                 }
+                else -> return null
             }
         }
 
@@ -109,6 +110,7 @@ open class ParadoxSearchScope(
                     val modDirectory = rootInfo.rootFile
                     return ParadoxModAndGameSearchScope(project, contextFile, modDirectory, null)
                 }
+                else -> return EMPTY_SCOPE
             }
         }
 

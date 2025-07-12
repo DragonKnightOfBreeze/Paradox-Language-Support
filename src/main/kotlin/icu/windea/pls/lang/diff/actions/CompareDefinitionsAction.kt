@@ -47,6 +47,7 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         if (file.isDirectory) return null
         if (file.fileType !is ParadoxScriptFileType) return null
         val fileInfo = file.fileInfo ?: return null
+        if (fileInfo.rootInfo !is ParadoxRootInfo.MetadataBased) return null
         if (fileInfo.path.length <= 1) return null //忽略直接位于游戏或模组入口目录下的文件
         //val gameType = fileInfo.rootInfo.gameType
         //val path = fileInfo.path.path
@@ -74,10 +75,10 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         val presentation = e.presentation
         presentation.isVisible = false
         presentation.isEnabled = false
+        val project = e.project ?: return
+        val file = findFile(e) ?: return
         var definition = findElement(e)
         if (definition == null) {
-            val project = e.project ?: return
-            val file = findFile(e) ?: return
             presentation.isVisible = true
             val editor = e.editor ?: return
             val offset = editor.caretModel.offset
@@ -199,15 +200,19 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     private fun getWindowsTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): String? {
         val file = definition.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
-        return PlsBundle.message("diff.compare.definitions.dialog.title", definitionInfo.name.orAnonymous(), definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
+        val rootInfo = fileInfo.rootInfo
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
+        return PlsBundle.message("diff.compare.definitions.dialog.title", definitionInfo.name.orAnonymous(), definitionInfo.typesText, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
     }
 
     private fun getContentTitle(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, original: Boolean = false): String? {
         val file = definition.containingFile ?: return null
         val fileInfo = file.fileInfo ?: return null
+        val rootInfo = fileInfo.rootInfo
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         return when {
-            original -> PlsBundle.message("diff.compare.definitions.originalContent.title", definitionInfo.name.orAnonymous(), definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
-            else -> PlsBundle.message("diff.compare.definitions.content.title", definitionInfo.name.orAnonymous(), definitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
+            original -> PlsBundle.message("diff.compare.definitions.originalContent.title", definitionInfo.name.orAnonymous(), definitionInfo.typesText, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
+            else -> PlsBundle.message("diff.compare.definitions.content.title", definitionInfo.name.orAnonymous(), definitionInfo.typesText, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
         }
     }
 
@@ -233,7 +238,9 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
     ) : SimpleDiffRequestChain.DiffRequestProducerWrapper(request) {
         override fun getName(): String {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
-            return PlsBundle.message("diff.compare.definitions.popup.name", otherDefinitionInfo.name.orAnonymous(), otherDefinitionInfo.typesText, fileInfo.path, fileInfo.rootInfo.qualifiedName, fileInfo.rootInfo.entryPath)
+            val rootInfo = fileInfo.rootInfo
+            if (rootInfo !is ParadoxRootInfo.MetadataBased) return super.getName()
+            return PlsBundle.message("diff.compare.definitions.popup.name", otherDefinitionInfo.name.orAnonymous(), otherDefinitionInfo.typesText, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
         }
     }
 
@@ -263,8 +270,8 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
             override fun getTextFor(value: DiffRequestProducer) = value.name
 
             //com.intellij.find.actions.ShowUsagesTableCellRenderer.getTableCellRendererComponent L205
-            override fun getBackgroundFor(value: DiffRequestProducer) =
-                if ((value as MyRequestProducer).isCurrent) Color(0x808080) else null
+            @Suppress("UseJBColor")
+            override fun getBackgroundFor(value: DiffRequestProducer) = if ((value as MyRequestProducer).isCurrent) Color(0x808080) else null
 
             override fun isSpeedSearchEnabled() = true
 

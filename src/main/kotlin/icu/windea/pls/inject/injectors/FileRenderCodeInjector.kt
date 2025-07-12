@@ -33,10 +33,11 @@ class FileRenderCodeInjector : CodeInjectorBase() {
             else -> return true
         }
         val rootInfo = file.rootInfo
-        if (rootInfo != null && rootInfo.rootFile == file) {
-            val comment = rootInfo.qualifiedName
-            renderer.append(" $comment", SimpleTextAttributes.GRAYED_ATTRIBUTES)
-        }
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return false
+        if (rootInfo.rootFile != file) return false
+
+        val comment = rootInfo.qualifiedName
+        renderer.append(" $comment", SimpleTextAttributes.GRAYED_ATTRIBUTES)
         return false
     }
 }

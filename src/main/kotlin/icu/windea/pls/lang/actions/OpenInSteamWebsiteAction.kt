@@ -50,6 +50,7 @@ class OpenInSteamWebsiteAction : DumbAwareAction() {
         return when (rootInfo) {
             is ParadoxRootInfo.Game -> PlsFacade.getDataProvider().getSteamGameStoreUrl(steamId)
             is ParadoxRootInfo.Mod -> PlsFacade.getDataProvider().getSteamWorkshopUrl(steamId)
+            else -> null
         }
     }
 }

@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.extension.diagram.provider.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.model.ParadoxRootInfo
 
 abstract class ParadoxDiagramElementManager(
     val provider: ParadoxDiagramProvider
@@ -14,6 +15,7 @@ abstract class ParadoxDiagramElementManager(
         val file = context.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
         val project = context.getData(CommonDataKeys.PROJECT) ?: return null
         val rootInfo = file.fileInfo?.rootInfo ?: return null
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         if (rootInfo.gameType != provider.gameType) return null //获取当前上下文的游戏类型，以确定可以提供哪些图表
         val rootFile = rootInfo.rootFile
         return rootFile.toPsiDirectory(project)

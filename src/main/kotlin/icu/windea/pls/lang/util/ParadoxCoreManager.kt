@@ -93,7 +93,7 @@ object ParadoxCoreManager {
                     val rootInfo = if (currentFile == null) null else getRootInfo(currentFile)
                     if (rootInfo != null) {
                         val fileInfo = doGetFileInfo(file, filePath, rootInfo)
-                        file.tryPutUserData(PlsKeys.fileInfo, fileInfo)
+                        file.tryPutUserData(PlsKeys.fileInfo, fileInfo ?: EMPTY_OBJECT)
                         return fileInfo
                     }
                     currentFilePath = currentFilePath.parent ?: break
@@ -120,7 +120,8 @@ object ParadoxCoreManager {
         return file
     }
 
-    private fun doGetFileInfo(file: VirtualFile, filePath: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo {
+    private fun doGetFileInfo(file: VirtualFile, filePath: String, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val relPath = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimFast('/'))
         val (path, entryName) = resolvePathAndEntryName(relPath, rootInfo)
         val fileType = ParadoxFileType.resolve(file, path, rootInfo)
@@ -150,7 +151,8 @@ object ParadoxCoreManager {
         }
     }
 
-    private fun doGetFileInfo(filePath: FilePath, rootInfo: ParadoxRootInfo): ParadoxFileInfo {
+    private fun doGetFileInfo(filePath: FilePath, rootInfo: ParadoxRootInfo): ParadoxFileInfo? {
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val relPath = ParadoxPath.resolve(filePath.path.removePrefix(rootInfo.rootFile.path).trimFast('/'))
         val (path, entryName) = resolvePathAndEntryName(relPath, rootInfo)
         val fileType = ParadoxFileType.resolve(filePath, path, rootInfo)

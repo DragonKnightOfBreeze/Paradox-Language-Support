@@ -17,12 +17,14 @@ class ParadoxFileIconProvider : FileIconProvider, DumbAware {
         val fileInfo = file.fileInfo ?: return null
         if (file.isDirectory) {
             val rootInfo = fileInfo.rootInfo
+            if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
             if (file != rootInfo.rootFile) return null
             if (ProjectRootsUtil.isModuleContentRoot(file, project)) return null
             if (ProjectRootsUtil.isModuleSourceRoot(file, project)) return null
             val icon = when (rootInfo) {
                 is ParadoxRootInfo.Game -> PlsIcons.General.GameDirectory
                 is ParadoxRootInfo.Mod -> PlsIcons.General.ModDirectory
+                else -> null
             }
             return icon
         } else {

@@ -11,6 +11,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.script.psi.*
 import org.jetbrains.annotations.*
 
@@ -67,7 +68,7 @@ class OverriddenForScriptedVariableInspection : LocalInspectionTool() {
         override fun getPopupText(editor: Editor, value: PsiElement): @Nls String {
             val file = value.containingFile
             val lineNumber = PsiDocumentManager.getInstance(file.project).getDocument(file)?.getLineNumber(value.textOffset) ?: "?"
-            val filePath = file.fileInfo?.rootInfo?.rootFile?.path
+            val filePath = file.fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile?.path
             if (filePath == null) return PlsBundle.message("inspection.fix.navigate.popup.text.2", key, lineNumber)
             return PlsBundle.message("inspection.fix.navigate.popup.text.3", key, lineNumber, filePath)
         }

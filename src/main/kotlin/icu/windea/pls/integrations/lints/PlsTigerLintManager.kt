@@ -60,6 +60,7 @@ object PlsTigerLintManager {
     private fun doGetTigerLintResultForFile(file: PsiFile): PlsTigerLintResult? {
         val fileInfo = selectFile(file)?.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
+        if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val rootFile = rootInfo.rootFile
         val rootDirectory = runReadAction { rootFile.toPsiDirectory(file.project) } ?: return null
         val allResult = getTigerLintResultForRootDirectory(rootDirectory) ?: return null

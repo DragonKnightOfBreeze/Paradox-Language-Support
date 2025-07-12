@@ -13,6 +13,7 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
         when (rootInfo) {
             is ParadoxRootInfo.Game -> addGameSettings(rootInfo)
             is ParadoxRootInfo.Mod -> addModSettings(rootInfo)
+            else -> {}
         }
     }
 

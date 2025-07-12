@@ -77,6 +77,7 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
     if (PlsFileManager.isInjectedFile(file)) return this //ignored for injected PSI
     val fileInfo = file.fileInfo ?: return this
     val rootInfo = fileInfo.rootInfo
+    if (rootInfo !is ParadoxRootInfo.MetadataBased) return this
     append("<span>")
     //描述符信息（模组名、版本等）
     append("[")
@@ -85,11 +86,11 @@ fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): Documentatio
     grayed {
         //相关链接
         //通过这种方式获取需要的url，使用rootPath而非gameRootPath
-        val rootUri = fileInfo.rootInfo.rootPath.toUri().toString()
+        val rootUri = rootInfo.rootPath.toUri().toString()
         append(" ")
         appendLink(rootUri, PlsBundle.message("text.localLinkLabel"))
 
-        val steamId = fileInfo.rootInfo.steamId
+        val steamId = rootInfo.steamId
         if (steamId != null) {
             append(" | ")
             val dataProvider = PlsFacade.getDataProvider()
