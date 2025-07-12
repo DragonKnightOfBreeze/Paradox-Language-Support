@@ -23,8 +23,6 @@ This plugin has implemented various advanced language features based on [config 
 The latest-version config files are already built into this plugin, make it works right out of the box.
 Besides, [customizing](config.md#writing-cwt-config-files) and [importing](config.md#importing-cwt-config-files) local config files are also supported.
 
-If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](plugin-integration.md).
-
 ![](../images/preview_1_en.png)
 
 ## References

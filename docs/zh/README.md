@@ -24,8 +24,6 @@ QQ群：653824651
 插件已经内置了最新版本的规则文件，以便开箱即用。
 除此之外，插件也支持[自定义](config.md#writing-cwt-config-files)与[导入](config.md#importing-cwt-config-files)的规则文件。
 
-如果同时安装了 [Translation](https://github.com/YiiGuxing/TranslationPlugin) ，此插件可以提供一些[额外的功能](plugin-integration.md)。
-
 ![](../images/preview_1_zh.png)
 
 ## 参考

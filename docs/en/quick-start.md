@@ -2,8 +2,9 @@
 
 ## Usages
 
-* Open your mod root directory through the IDE. (It needs to directly contain the mod descriptor file `descriptor.mod`)
-* Open the mod descriptor file, click the mod settings button in the floating toolbar at the top right of the editor.
+* Open your mod root directory through the IDE.
+* Open the mod descriptor file, which is `description.mod` under the root directory (for VIC3, it's `.metadata/metadata.json`). 
+* Click the mod settings button in the floating toolbar at the top right of the editor.
 * Configure the game type, game directory, and additional mod dependencies of the mod.
 * Click the OK button to complete the configuration, and then wait for the IDE to complete indexing.
 * Start your mod programming journey.

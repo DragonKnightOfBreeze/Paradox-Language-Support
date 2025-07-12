@@ -1,4 +1,4 @@
-# 规则分组与规则文件
+# 规则相关
 
 ## 规则分组 {#config-group}
 
@@ -15,7 +15,7 @@ PLS基于由CWT规则文件组成的规则分组，实现了诸多语言功能�
 
 * [仓库一览](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/cwt)
 
-### 来源
+### 来源 {#sources}
 
 #### 内置的规则分组 {#builtin-config-groups}
 
@@ -48,7 +48,7 @@ PLS基于由CWT规则文件组成的规则分组，实现了诸多语言功能�
 
 其中的规则文件由用户自定义，仅适用于当前项目。对它们的更改需要手动确认导入。
 
-### 覆盖策略
+### 覆盖策略 {#overridden-strategy}
 
 规则会按照文件路径和规则ID进行后序覆盖。
 
@@ -67,7 +67,7 @@ PLS基于由CWT规则文件组成的规则分组，实现了诸多语言功能�
 
 ### 概述
 
-CWT规则文件使用一种特别的文件格式，可以视为Paradox脚本语言的变种。它的文件扩展名为`.cwt`。
+CWT规则文件使用一种特殊的文件格式，可以视为Paradox脚本语言的变种。它的文件扩展名为`.cwt`。
 
 ### 语法
 
@@ -75,7 +75,8 @@ CWT规则文件的基本语法如下所示：
 
 ```cwt
 # both equal sign ('=', '==') and not equal sign ('<>', '!=') can be used as the k-v separator (also available in options)
-# properties (options) and values can be mixed in clauses (also available in options)
+# options and values can be mixed in option clauses ('{...}')
+# properties and values can be mixed in clauses ('{...}')
 
 ### documentation comment
 ## option = option_value
@@ -90,11 +91,7 @@ prop = {
 
 ## 编写CWT规则文件 {#writing-cwt-config-files}
 
-### 概述
-
-正在更新中。
-
-关于更详细的编写规范，请参考下方的参考链接以及插件内置的那些规则文件。
+关于每种CWT规则的更加详细的编写规范，目前可以参考插件内置的规则文件中的写法。
 
 参考链接：
 
@@ -430,11 +427,11 @@ some_config
 
 ### 概述
 
-你可以在[本地的规则分组](#local-config-groups)、[项目本地的规则分组](#project-local-config-groups)或[远程的规则分组](#remote-config-groups)对应的目录下编写自定义规则文件。  
+你可以在[远程的规则分组](#remote-config-groups)、[本地的规则分组](#local-config-groups)或是[项目本地的规则分组](#project-local-config-groups)的对应的目录下编写自定义规则文件。  
 这些文件可以用于完善插件内置规则，或增强插件功能。
 
 当检测到有变更时，编辑器右上角的悬浮工具栏会出现刷新按钮。  
 点击确认导入后，这些自定义规则文件的更改将会被应用。
+之后，IDE会在后台重新解析已打开的文件。  
 
-IDE会在后台重新解析已打开的文件。  
 注意：如果规则文件的更改会影响索引逻辑（如新增定义类型、修改某定义类型的匹配条件等），你可能需要重新索引整个项目（这可能需要数分钟），以确保在涉及到这些更改的场合，插件正常工作。

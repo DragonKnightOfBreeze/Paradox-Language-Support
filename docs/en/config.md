@@ -1,4 +1,4 @@
-# Config Groups & Config Files
+# Config Related
 
 ## Config Group {#config-group}
 
@@ -16,37 +16,37 @@ Reference Links:
 
 * [Repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/cwt)
 
-### Sources
+### Sources {#sources}
 
 #### Built-in Config Groups {#builtin-config-groups}
 
-- Location: `config/{gameType}`
-- Located inside the plugin jar, which is packaged within the plugin zip.
-- `{gameType}` is the [Game Type ID](#game-type-id); for the shared config group, it is `core`.
-- The shared built-in config group is always enabled.
+* Location: `config/{gameType}`
+* Located inside the plugin jar, which is packaged within the plugin zip.
+* `{gameType}` is the [Game Type ID](#game-type-id); for the shared config group, it is `core`.
+* The shared built-in config group is always enabled.
 
 #### Remote Config Groups {#remote-config-groups}
 
-- Location: `{configDir}/{dirName}`
-- `{configDir}` is the parent directory containing all remote config group directories, and can be customized in the plugin settings.
-- `{dirName}` is the repository directory name; for the shared config group, it is `core`.
-- After modifying the configuration, PLS will automatically clone and pull these config groups from the configured remote repositories.
+* Location: `{configDir}/{dirName}`
+* `{configDir}` is the parent directory containing all remote config group directories, and can be customized in the plugin settings.
+* `{dirName}` is the repository directory name; for the shared config group, it is `core`.
+* After modifying the configuration, PLS will automatically clone and pull these config groups from the configured remote repositories.
 
 #### Local Config Groups {#local-config-groups}
 
-- Location: `{configDir}/{gameType}`
-- `{configDir}` is the parent directory containing all global local config group directories, and can be customized in the plugin settings.
-- `{gameType}` is the [Game Type ID](#game-type-id); for the shared config group, it is `core`.
-- The config files inside are user-defined and apply to all projects. Changes require manual import.
+* Location: `{configDir}/{gameType}`
+* `{configDir}` is the parent directory containing all global local config group directories, and can be customized in the plugin settings.
+* `{gameType}` is the [Game Type ID](#game-type-id); for the shared config group, it is `core`.
+* The config files inside are user-defined and apply to all projects. Changes require manual import.
 
 #### Project Local Config Groups {#project-local-config-groups}
 
-- Location: `{configDirName}/{gameType}`
-- `{configDirName}` is the name of the directory for project local config groups, located directly under the project root (default is `.config`), and can be customized in the plugin settings.
-- `{gameType}` is the [Game Type ID](#game-type-id); for the shared config group, it is `core`.
-- The config files inside are user-defined and only apply to the current project. Changes require manual import.
+* Location: `{configDirName}/{gameType}`
+* `{configDirName}` is the name of the directory for project local config groups, located directly under the project root (default is `.config`), and can be customized in the plugin settings.
+* `{gameType}` is the [Game Type ID](#game-type-id); for the shared config group, it is `core`.
+* The config files inside are user-defined and only apply to the current project. Changes require manual import.
 
-### Overridden Strategy
+### Overridden Strategy {#overridden-strategy}
 
 Configs use the LIOS overridden strategy based on the file path and the config ID.
 
@@ -77,7 +77,8 @@ The basic syntax of a CWT config file is as follows:
 
 ```cwt
 # both equal sign ('=', '==') and not equal sign ('<>', '!=') can be used as the k-v separator (also available in options)
-# properties (options) and values can be mixed in clauses (also available in options)
+# options and values can be mixed in option clauses ('{...}')
+# properties and values can be mixed in clauses ('{...}')
 
 ### documentation comment
 ## option = option_value
@@ -92,11 +93,8 @@ prop = {
 
 ## Writing CWT Config Files {#writing-cwt-config-files}
 
-### Summary
-
-In progress.
-
-For more detailed specifications, please refer to the reference links below and the built-in config files.
+For more detailed writing specifications for each CWT config,
+currently you can refer to the writing style of the built-in config files.
 
 Reference Links:
 
@@ -370,9 +368,9 @@ dynamic_values = {
 
 ### FAQ
 
-#### About the Template Expression
+#### About Template Expressions
 
-Template expressions are composed of multiple data expressions (such as data expressions for string literals, definitions or localisations), and can be used for more flexible matching.
+The template expressions are composed of multiple data expressions (such as data expressions for string literals, definitions or localisations), and can be used for more flexible matching.
 
 ```cwt
 # a string literal, exactly matches 'x'
@@ -386,9 +384,9 @@ a_enum[weight_or_base]_b
 a_value[anything]_b
 ```
 
-#### How to Use the ANT Expression in Config Files *(New in 1.3.6)*
+#### How to Use Ant Expressions in Config Files *(New in 1.3.6)*
 
-Since 1.3.6, the ANT expression can be used for more flexible matching.
+Since 1.3.6, ant expressions can be used for more flexible matching.
 
 ```cwt
 # a ant expression use prefix 'ant:'
@@ -396,20 +394,20 @@ ant:/foo/bar?/*
 # a ant expression use prefix 'ant.i:' (ignore case)
 ant.i:/foo/bar?/*
 
-# wildcards in ant expression:
+# wildcards in ant expressions:
 # '?' - used to match any single character
 # '*' - used to match any characters (exclude '/')
 # '**' - used to match any characters
 ```
 
-#### How to Us Regex in Config Files *(New in 1.3.6)*
+#### How to Use Regular Expressions in Config Files *(New in 1.3.6)*
 
-Since 1.3.6, Regex can be used for more flexible matching.
+Since 1.3.6, regular expressions can be used for more flexible matching.
 
 ```cwt
-# a regex use prefix 're:'
+# a regular expression use prefix 're:'
 re:foo.*
-# a regex use prefix 're.i:' (ignore case)
+# a regular expression use prefix 're.i:' (ignore case)
 re.i:foo.*
 ```
 
@@ -434,11 +432,13 @@ some_config
 
 ### Summary
 
-You can create custom config files in the directories of [local config groups](#local-config-groups), [project local config groups](#project-local-config-groups), or [remote config groups](#remote-config-groups).  
+You can create custom config files in the directories of [remote config groups](#remote-config-groups), [local config groups](#local-config-groups), or [project local config groups](#project-local-config-groups).  
 These files allow you to enhance or override the plugin's built-in configs, or to extend plugin functionality.
 
 When changes are detected, a refresh button will appear in the context toolbar in the top-right corner of the editor.  
 Click it to confirm the import and apply the changes from your custom config files.
+Then, the IDE will then reparse open files in the background.
 
-The IDE will then reparse open files in the background.  
-Note: If your changes affect the indexing logic (e.g., adding a new definition type or changing a match condition), you may need to reindex the entire project (which may take several minutes) to ensure the plugin works properly, if in the situation that involves these changes.
+Note: If your changes affect the indexing logic (e.g., adding a new definition type or changing a match condition),
+you may need to reindex the entire project (which may take several minutes) to ensure the plugin works properly,
+if in the situation that involves these changes.

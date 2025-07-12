@@ -26,16 +26,15 @@ This plugin has implemented various advanced language features based on [config 
 The latest-version config files are already built into this plugin, make it works right out of the box.
 Besides, [customizing](https://windea.icu/Paradox-Language-Support/en/config.html#writing-cwt-config-files) and [importing](https://windea.icu/Paradox-Language-Support/en/config.html#importing-cwt-config-files) config files are also supported.
 
-If [Translation](https://github.com/YiiGuxing/TranslationPlugin) is also installed, this plugin can provide some [additional features](https://windea.icu/Paradox-Language-Support/zh/plugin-integration.html).
-
 ![](docs/images/preview_1_en.png)
 
 ## Quick Start
 
 Usages:
 
-* Open your mod root directory through the IDE. (It needs to directly contain the mod descriptor file `descriptor.mod`)
-* Open the mod descriptor file, click the mod settings button in the floating toolbar at the top right of the editor.
+* Open your mod root directory through the IDE.
+* Open the mod descriptor file, which is `description.mod` under the root directory (for VIC3, it's `.metadata/metadata.json`).
+* Click the mod settings button in the floating toolbar at the top right of the editor.
 * Configure the game type, game directory, and additional mod dependencies of the mod.
 * Click the OK button to complete the configuration, and then wait for the IDE to complete indexing.
 * Start your mod programming journey.

@@ -27,16 +27,15 @@ QQ群：653824651
 插件已经内置了最新版本的规则文件，以便开箱即用。
 除此之外，插件也支持[自定义](https://windea.icu/Paradox-Language-Support/zh/config.html#writing-cwt-config-files)与[导入](https://windea.icu/Paradox-Language-Support/zh/config.html#importing-cwt-config-files)规则文件。
 
-如果同时安装了 [Translation](https://github.com/YiiGuxing/TranslationPlugin) ，此插件可以提供一些[额外的功能](https://windea.icu/Paradox-Language-Support/zh/plugin-integration.html)。
-
 ![](docs/images/preview_1_zh.png)
 
 ## 快速开始
 
 使用：
 
-* 通过IDE打开你的模组根目录。（需要直接包含模组描述符文件`descriptor.mod`）
-* 打开模组描述符文件，点击位于编辑器右上角的悬浮工具栏中的模组配置按钮。
+* 通过IDE打开你的模组根目录。
+* 打开模组描述符文件，即根目录下的`descriptor.mod`（对于VIC3则是`.metadata/metadata.json`）。
+* 点击位于编辑器右上角的悬浮工具栏中的模组配置按钮。
 * 配置模组的游戏类型、游戏目录以及额外的模组依赖。
 * 点击确定按钮完成配置，然后等待IDE索引完成。
 * 开始你的模组编程之旅吧！
