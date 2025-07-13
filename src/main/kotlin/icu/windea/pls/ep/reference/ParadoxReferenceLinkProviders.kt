@@ -265,8 +265,12 @@ class ParadoxModifierLinkProvider : ParadoxReferenceLinkProvider {
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
-        val name = link.drop(linkPrefix.length)
-        return ParadoxModifierManager.resolveModifier(name, contextElement)
+        val (gameType0, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
+        val gameType = gameType0 ?: selectGameType(contextElement)
+        val name = remain
+        val project = contextElement.project
+        val configGroup = PlsFacade.getConfigGroup(project, gameType)
+        return ParadoxModifierManager.resolveModifier(name, contextElement, configGroup)
     }
 
     override fun getUnresolvedMessage(link: String): String {

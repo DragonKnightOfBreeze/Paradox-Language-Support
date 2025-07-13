@@ -8,7 +8,6 @@ import com.intellij.platform.backend.navigation.*
 import com.intellij.psi.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*
-import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
 import kotlin.reflect.*
 import kotlin.reflect.full.*
@@ -37,3 +36,4 @@ class SymbolNavigationServiceImplCodeInjector : CodeInjectorBase() {
         return prop.get(navigationTarget)
     }
 }
+

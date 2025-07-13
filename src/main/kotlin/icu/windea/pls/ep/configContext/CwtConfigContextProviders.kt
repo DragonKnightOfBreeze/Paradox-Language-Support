@@ -30,12 +30,13 @@ var CwtConfigContext.parameterValueQuoted: Boolean? by createKey(CwtConfigContex
 
 /**
  * 用于获取直接的CWT规则上下文。
+ *
+ * * 基于文件信息（包括注入的文件信息）。
  */
 class BaseCwtConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {
         ProgressManager.checkCanceled()
         val vFile = selectFile(file) ?: return null
-        if (PlsFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
 
         val fileInfo = vFile.fileInfo ?: return null
         val gameType = fileInfo.rootInfo.gameType

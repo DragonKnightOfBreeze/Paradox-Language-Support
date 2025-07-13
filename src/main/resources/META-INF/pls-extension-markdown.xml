@@ -10,7 +10,7 @@
     <advancedSetting id="pls.md.resolveInlineCodes" default="false" groupKey="group.advanced.settings" bundle="messages.PlsMarkdownBundle"/>
   </extensions>
 
-  <extensions defaultExtensionNs="icu.windea.pls">
-    <configContextProvider implementation="icu.windea.pls.extension.markdown.ep.MarkdownCodeFenceCwtConfigContextProvider"/>
+  <extensions defaultExtensionNs="icu.windea.pls.inject">
+    <injectedFileProcessor implementation="icu.windea.pls.extension.markdown.MarkdownCodeFenceInjectedFileProcessor"/>
   </extensions>
 </idea-plugin>

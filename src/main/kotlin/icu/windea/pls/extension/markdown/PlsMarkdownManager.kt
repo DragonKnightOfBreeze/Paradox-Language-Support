@@ -72,12 +72,8 @@ object PlsMarkdownManager {
         return host
     }
 
-    fun injectFileInfoToInjectedFile(injectedFile: PsiFile, element: MarkdownCodeFence, pathInfo: ParadoxPathInjectionInfo?): ParadoxFileInfo? {
-        if (pathInfo == null) {
-            injectedFile.virtualFile.tryPutUserData(PlsKeys.injectedFileInfo, null)
-            return null
-        }
-
+    fun getInjectFileInfoFromInjectedFile(injectedFile: PsiFile, element: MarkdownCodeFence): ParadoxFileInfo? {
+        val pathInfo = getPathInfo(element) ?: return null
         val path = ParadoxPath.resolve(pathInfo.path)
         val fileExtension = path.fileExtension ?: return null
         if (fileExtension !in PlsConstants.scriptFileExtensions && fileExtension !in PlsConstants.localisationFileExtensions) return null
@@ -87,7 +83,6 @@ object PlsMarkdownManager {
             if (rootInfo == null) return@run
             val fileType = ParadoxFileType.resolve(path, rootInfo)
             val injectedFileInfo = ParadoxFileInfo(path, "", fileType, rootInfo)
-            injectedFile.virtualFile.tryPutUserData(PlsKeys.injectedFileInfo, injectedFileInfo)
             return injectedFileInfo
         }
 
@@ -96,7 +91,6 @@ object PlsMarkdownManager {
         val rootInfo = ParadoxRootInfo.Injected(pathInfo.gameType)
         val fileType = ParadoxFileType.resolve(path, rootInfo)
         val injectedFileInfo = ParadoxFileInfo(path, "", fileType, rootInfo)
-        injectedFile.virtualFile.tryPutUserData(PlsKeys.injectedFileInfo, injectedFileInfo)
         return injectedFileInfo
     }
 }

@@ -31,6 +31,7 @@
 
     <!--code injectors to provide additional features-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.FileRenderCodeInjector"/>
+    <codeInjector implementation="icu.windea.pls.inject.injectors.InjectionRegistrarImplCodeInjector"/>
 
     <!--code injectors to optimize performance-->
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.ParadoxScriptPsiCodeInjectors$Property"/>
@@ -60,4 +61,8 @@
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.CwtPsiCodeInjectors$Float"/>
     <codeInjector implementation="icu.windea.pls.inject.injectors.psi.CwtPsiCodeInjectors$String"/>
   </extensions>
+
+  <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.inject.injectedFileProcessor" interface="icu.windea.pls.inject.processors.InjectedFileProcessor" dynamic="true"/>
+  </extensionPoints>
 </idea-plugin>

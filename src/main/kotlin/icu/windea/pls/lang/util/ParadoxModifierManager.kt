@@ -54,13 +54,6 @@ object ParadoxModifierManager {
         return resolveModifier(name, element, configGroup)
     }
 
-    fun resolveModifier(name: String, element: PsiElement): ParadoxModifierElement? {
-        val gameType = selectGameType(element) ?: return null
-        val project = element.project
-        val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        return resolveModifier(name, element, configGroup)
-    }
-
     fun resolveModifier(name: String, element: PsiElement, configGroup: CwtConfigGroup, useSupport: ParadoxModifierSupport? = null): ParadoxModifierElement? {
         val modifierInfo = getModifierInfo(name, element, configGroup, useSupport)
         return modifierInfo?.toPsiElement(element)

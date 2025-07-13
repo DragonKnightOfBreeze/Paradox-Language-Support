@@ -192,25 +192,7 @@ object ParadoxCoreManager {
     }
 
     fun getInferredGameType(rootFile: VirtualFile): ParadoxGameType? {
-        val parentDir = rootFile.parent
-        runCatchingCancelable r@{
-            //如果模组目录直接位于游戏创意工坊目录下，直接推断为对应的游戏类型
-            val steamWorkshopDir = parentDir ?: return@r
-            val steamId = steamWorkshopDir.name
-            val gameType = ParadoxGameType.entries.find { it.steamId == steamId } ?: return@r
-            if (PlsFacade.getDataProvider().getSteamWorkshopPath(steamId) != steamWorkshopDir.toNioPath()) return@r
-            return gameType
-        }
-        runCatchingCancelable r@{
-            //如果模组目录直接位于游戏数据目录下的mod子目录下，直接推断为对应的游戏类型
-            val modDir = parentDir.takeIf { it.name == "mod" } ?: return@r
-            val gameDataDir = modDir.parent ?: return@r
-            val gameName = gameDataDir.name
-            val gameType = ParadoxGameType.entries.find { it.title == gameName } ?: return@r
-            if (PlsFacade.getDataProvider().getGameDataPath(gameName) != gameDataDir.toNioPath()) return@r
-            return gameType
-        }
-        return null
+        return ParadoxInferredGameTypeProvider.getGameType(rootFile)
     }
 
     fun getQuickGameDirectory(gameType: ParadoxGameType): String? {

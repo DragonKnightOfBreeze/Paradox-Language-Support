@@ -1,6 +1,6 @@
 # 扩展
 
-## Markdown
+## Markdown {#md}
 
 > [!NOTE]
 > 
@@ -90,6 +90,8 @@ PLS 可以尝试将 Markdown 内联代码解析为匹配的目标引用（定义
 
 ![](../images/extensions/md_inline_code_1.png)
 
+![](../images/extensions/md_inline_code_2.png)
+
 对于不同类型的目标，其格式与示例如下：
 
 **封装变量**
@@ -144,7 +146,7 @@ defense_army = {
 * `{gameType}` - 游戏类型ID，目前有以下可选值：`stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`（对于共享的规则分组则为`core`）。
 * `{path}` - 模拟的相对于游戏或模组目录的文件路径。必须是合法的脚本或本地化文件的路经。
 
-## 图表
+## 图表 {#diagrams}
 
 > [!NOTE]
 >

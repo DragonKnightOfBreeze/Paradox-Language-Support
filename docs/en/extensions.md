@@ -1,10 +1,6 @@
 # Extensions
 
-## The Settings Page
-
-To be completed.
-
-## Markdown
+## Markdown {#md}
 
 > [!NOTE]
 > 
@@ -94,6 +90,8 @@ providing additional language features in the editor such as code navigation and
 
 ![](../images/extensions/md_inline_code_1.png)
 
+![](../images/extensions/md_inline_code_2.png)
+
 For different types of targets, the formats and examples are as follows:
 
 **Scripted Variable**
@@ -149,7 +147,7 @@ Notes:
 * `{gameType}` - Game type ID. Currently supported values: `stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3` (for shared config groups use `core`).
 * `{path}` - Simulated file path relative to the game or mod directory. Must be a valid script or localization file path.
 
-## Diagrams
+## Diagrams {#diagrams}
 
 > [!NOTE]
 >
