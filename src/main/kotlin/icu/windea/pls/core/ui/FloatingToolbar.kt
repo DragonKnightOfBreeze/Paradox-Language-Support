@@ -1,4 +1,4 @@
-package icu.windea.pls.core.actions
+package icu.windea.pls.core.ui
 
 import com.intellij.codeInsight.hint.*
 import com.intellij.ide.*
@@ -279,7 +279,7 @@ abstract class FloatingToolbar(
   private inner class EditorSelectionListener : SelectionListener {
     override fun selectionChanged(event: SelectionEvent) {
       preventHintFromShowing = false
-      if (isIgnoredEvent(IdeEventQueue.getInstance().trueCurrentEvent)) {
+      if (isIgnoredEvent(IdeEventQueue.Companion.getInstance().trueCurrentEvent)) {
         preventHintFromShowing = true
       }
     }

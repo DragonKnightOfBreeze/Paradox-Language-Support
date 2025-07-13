@@ -9,7 +9,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.data.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.*
@@ -59,7 +59,7 @@ class ParadoxToLauncherJsonV3Exporter : ParadoxModExporter {
                 name = savedFile.nameWithoutExtension,
             )
             runWriteAction {
-                jsonMapper.writeValue(savedFile.getOutputStream(this), json)
+                ObjectMappers.jsonMapper.writeValue(savedFile.getOutputStream(this), json)
             }
             val count = validModDependencies.size
 

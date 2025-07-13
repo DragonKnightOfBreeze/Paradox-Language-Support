@@ -6,7 +6,7 @@ import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.data.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.util.data.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -42,7 +42,7 @@ object ParadoxMetadataManager {
     }
 
     private fun doGetLauncherSettingsInfo(file: VirtualFile): ParadoxLauncherSettingsInfo {
-        return jsonMapper.readValue(file.inputStream)
+        return ObjectMappers.jsonMapper.readValue(file.inputStream)
     }
 
     fun getModDescriptorFile(rootFile: VirtualFile): VirtualFile? {
@@ -98,6 +98,6 @@ object ParadoxMetadataManager {
     }
 
     private fun doGetModMetadataInfo(file: VirtualFile): ParadoxModMetadataInfo {
-        return jsonMapper.readValue(file.inputStream)
+        return ObjectMappers.jsonMapper.readValue(file.inputStream)
     }
 }

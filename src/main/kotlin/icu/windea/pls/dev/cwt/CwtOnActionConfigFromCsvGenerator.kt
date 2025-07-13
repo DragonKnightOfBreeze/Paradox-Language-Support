@@ -2,7 +2,7 @@ package icu.windea.pls.dev.cwt
 
 import com.fasterxml.jackson.dataformat.csv.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.data.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import java.io.*
@@ -45,7 +45,7 @@ class CwtOnActionConfigFromCsvGenerator(
     fun generate() {
         val csvFile = File(csvPath)
         val cwtFile = File(cwtPath)
-        val infos = csvMapper.readerFor(OnActonInfo::class.java).with(OnActonInfo.schema).readValues<OnActonInfo>(csvFile).readAll()
+        val infos = ObjectMappers.csvMapper.readerFor(OnActonInfo::class.java).with(OnActonInfo.schema).readValues<OnActonInfo>(csvFile).readAll()
         val text = buildString {
             append("on_actions = {\n")
             var isFirst = true

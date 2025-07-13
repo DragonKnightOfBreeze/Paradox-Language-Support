@@ -7,7 +7,7 @@ import icu.windea.pls.ai.*
 import icu.windea.pls.ai.services.*
 import icu.windea.pls.ai.settings.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.data.*
+import icu.windea.pls.core.util.*
 
 object PlsAiManager {
     fun getSettings(): PlsAiSettingsState = service<PlsAiSettings>().state
@@ -30,7 +30,7 @@ object PlsAiManager {
             is LangChain4jException -> {
                 if (message.isNotNullOrEmpty()) {
                     runCatchingCancelable {
-                        val errorInfo = jsonMapper.readValue<OpenAiErrorInfo>(message)
+                        val errorInfo = ObjectMappers.jsonMapper.readValue<OpenAiErrorInfo>(message)
                         return "[${errorInfo.error.code}] ${errorInfo.error.message}"
                     }
                 }

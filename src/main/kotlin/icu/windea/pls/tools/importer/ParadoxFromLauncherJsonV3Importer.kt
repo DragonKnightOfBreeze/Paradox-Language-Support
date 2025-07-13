@@ -9,7 +9,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.data.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.*
@@ -48,7 +48,7 @@ class ParadoxFromLauncherJsonV3Importer : ParadoxModImporter {
             .apply { putUserData(PlsDataKeys.gameType, gameType) }
         FileChooser.chooseFile(descriptor, project, table, defaultSelected) { file ->
             try {
-                val data = jsonMapper.readValue<ParadoxLauncherJsonV3>(file.inputStream)
+                val data = ObjectMappers.jsonMapper.readValue<ParadoxLauncherJsonV3>(file.inputStream)
                 if (data.game != gameType.id) {
                     run {
                         val title = settings.qualifiedName ?: return@run

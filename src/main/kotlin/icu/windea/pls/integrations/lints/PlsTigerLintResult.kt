@@ -3,7 +3,7 @@ package icu.windea.pls.integrations.lints
 import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.module.kotlin.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.data.*
+import icu.windea.pls.core.util.*
 import java.io.*
 
 /**
@@ -144,7 +144,7 @@ data class PlsTigerLintResult(
 
         @JvmStatic
         fun parse(name: String, outputFile: File): PlsTigerLintResult {
-            val items = jsonMapper.readValue<List<Item>>(outputFile)
+            val items = ObjectMappers.jsonMapper.readValue<List<Item>>(outputFile)
             if (items.isEmpty()) return EMPTY
             val itemGroup = mutableMapOf<String, MutableSet<Item>>()
             for (item in items) {

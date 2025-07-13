@@ -1,4 +1,4 @@
-package icu.windea.pls.core.references
+package icu.windea.pls.core.psi
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.*

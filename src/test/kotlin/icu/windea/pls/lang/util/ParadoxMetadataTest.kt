@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.util
 
 import com.fasterxml.jackson.module.kotlin.*
-import icu.windea.pls.core.data.*
+import icu.windea.pls.core.util.ObjectMappers
 import icu.windea.pls.model.*
 import org.junit.*
 
@@ -52,7 +52,7 @@ class ParadoxMetadataTest {
 
     @Test
     fun parseLauncherSettingsJsonTest() {
-        val result = jsonMapper.readValue<ParadoxLauncherSettingsInfo>(launcherSettingsJson)
+        val result = ObjectMappers.jsonMapper.readValue<ParadoxLauncherSettingsInfo>(launcherSettingsJson)
         println(result)
     }
 }

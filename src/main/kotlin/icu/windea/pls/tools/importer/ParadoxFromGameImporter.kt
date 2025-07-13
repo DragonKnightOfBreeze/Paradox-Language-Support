@@ -8,7 +8,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.data.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
@@ -50,7 +50,7 @@ class ParadoxFromGameImporter : ParadoxModImporter {
         }
         val file = jsonPath.toVirtualFile(true) ?: return
         try {
-            val data = jsonMapper.readValue<DlcLoad>(file.inputStream)
+            val data = ObjectMappers.jsonMapper.readValue<DlcLoad>(file.inputStream)
 
             var count = 0
             val newSettingsList = mutableListOf<ParadoxModDependencySettingsState>()
