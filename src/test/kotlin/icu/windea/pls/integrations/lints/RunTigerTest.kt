@@ -5,6 +5,7 @@ import org.junit.*
 import kotlin.time.*
 
 class RunTigerTest {
+    @Ignore
     @Test
     fun runTiger() {
         val wd = "D:\\Documents\\Projects\\_Tests\\vic3-tiger-windows-v1.8.0".toFile()
