@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.injected.editor.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
@@ -71,18 +70,15 @@ object ParadoxCoreManager {
         val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfo)
         if (injectedFileInfo != null) return injectedFileInfo
 
+        //no fileInfo for VirtualFileWindow (injected PSI)
+        if (PlsFileManager.isInjectedFile(file)) return null
+
         val cachedFileInfo = file.getUserData(PlsKeys.fileInfo)
         if (cachedFileInfo != null) return cachedFileInfo.castOrNull()
 
         synchronized(file) {
             val _cachedFileInfo = file.getUserData(PlsKeys.fileInfo)
             if (_cachedFileInfo != null) return _cachedFileInfo.castOrNull()
-
-            //no fileInfo for VirtualFileWindow (injected PSI)
-            if (file is VirtualFileWindow) {
-                file.tryPutUserData(PlsKeys.fileInfo, EMPTY_OBJECT)
-                return null
-            }
 
             //resolve fileInfo by file path
             try {

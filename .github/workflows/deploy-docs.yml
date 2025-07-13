@@ -2,9 +2,13 @@ name: Deploy docs
 
 on:
   push:
-    branches: [ master ]
+    branches:
+    - master
+    - 2.0.1-dev
   pull_request:
-    branches: [ master ]
+    branches:
+    - master
+    - 2.0.1-dev
 
 jobs:
 

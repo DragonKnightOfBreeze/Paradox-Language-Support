@@ -17,6 +17,7 @@ on:
   push:
     branches:
     - master
+    - 2.0.1-dev
     paths-ignore:
     - '.idea/**'
     - '.gitignore'
