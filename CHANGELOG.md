@@ -13,7 +13,7 @@
 
 ## 2.0.1-dev
 
-* [X] 完善与Markdown的集成，涉及链接、内联代码、代码块等，详见[参考文档](https://windea.icu/Paradox-Language-Support/zh/extensions.html#md) / Complete integration with Markdown, including links, inline codes, code blocks, etc. See [reference document](https://windea.icu/Paradox-Language-Support/zh/extensions.html#md) for details
+* [X] 完善与Markdown的集成，涉及链接、内联代码、代码块等，详见[参考文档](https://windea.icu/Paradox-Language-Support/zh/extensions.html#md) / Complete integration with Markdown, including links, inline codes, code blocks, etc. See [reference document](https://windea.icu/Paradox-Language-Support/en/extensions.html#md) for details
 * [ ] 新功能：支持Paradox CSV语言，提供各种必要的语言功能 / NEW: Support Paradox CSV language, and provide various necessary language features
 * [ ] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
 * [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
