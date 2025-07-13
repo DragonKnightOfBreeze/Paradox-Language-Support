@@ -32,7 +32,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxPsiManager.findMemberElementsToInline
 import icu.windea.pls.model.*

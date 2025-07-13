@@ -5,9 +5,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
 
 class ParadoxBaseComplexEnumValueExtendedDocumentationProvider : ParadoxComplexEnumValueExtendedDocumentationProvider {
     override fun getDocumentationContent(element: ParadoxComplexEnumValueElement): String? {

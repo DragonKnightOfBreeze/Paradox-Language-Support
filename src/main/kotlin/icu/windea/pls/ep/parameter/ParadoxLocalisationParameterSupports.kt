@@ -6,15 +6,12 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
-import icu.windea.pls.core.escapeXml
-import icu.windea.pls.ep.reference.ParadoxReferenceLinkType
+import icu.windea.pls.ep.reference.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
-import icu.windea.pls.lang.documentation.appendPsiLinkOrUnresolved
-import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.constants.*

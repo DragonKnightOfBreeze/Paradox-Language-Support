@@ -4,7 +4,7 @@ import com.intellij.codeInsight.documentation.*
 import com.intellij.platform.backend.documentation.*
 import com.intellij.platform.backend.documentation.DocumentationLinkHandler
 import icu.windea.pls.core.*
-import icu.windea.pls.ep.reference.ParadoxReferenceLinkProvider
+import icu.windea.pls.ep.reference.*
 
 class CwtDocumentationLinkHandler : DocumentationLinkHandler {
     override fun resolveLink(target: DocumentationTarget, url: String): LinkResolveResult? {

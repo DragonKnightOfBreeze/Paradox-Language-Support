@@ -11,7 +11,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import org.jetbrains.annotations.*
 

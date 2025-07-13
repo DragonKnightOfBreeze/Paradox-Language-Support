@@ -11,7 +11,6 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.ep.modifier.*
 import icu.windea.pls.ep.scope.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*

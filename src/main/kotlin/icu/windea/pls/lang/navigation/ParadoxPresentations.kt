@@ -1,12 +1,7 @@
 package icu.windea.pls.lang.navigation
 
 import com.intellij.navigation.*
-import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxLocalisationParameterElement
-import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
 import javax.swing.*
 
 class ParadoxParameterElementPresentation(

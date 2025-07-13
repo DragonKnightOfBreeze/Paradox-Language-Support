@@ -4,7 +4,6 @@ import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.references.*

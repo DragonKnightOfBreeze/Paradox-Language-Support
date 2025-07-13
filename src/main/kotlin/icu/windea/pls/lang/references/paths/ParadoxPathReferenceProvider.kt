@@ -3,7 +3,7 @@ package icu.windea.pls.lang.references.paths
 import com.intellij.openapi.paths.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
-import icu.windea.pls.ep.reference.ParadoxReferenceLinkProvider
+import icu.windea.pls.ep.reference.*
 
 //org.intellij.plugins.markdown.lang.references.headers.HeaderAnchorPathReferenceProvider
 

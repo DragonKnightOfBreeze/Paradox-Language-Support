@@ -23,7 +23,6 @@ import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*

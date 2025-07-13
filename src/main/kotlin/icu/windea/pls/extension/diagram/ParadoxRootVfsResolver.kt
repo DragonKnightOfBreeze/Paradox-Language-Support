@@ -6,7 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.*
 
 class ParadoxRootVfsResolver : DiagramVfsResolver<PsiElement> {
     //based on rootFile

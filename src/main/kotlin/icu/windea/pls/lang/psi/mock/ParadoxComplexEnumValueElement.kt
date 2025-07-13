@@ -1,14 +1,11 @@
 package icu.windea.pls.lang.psi.mock
 
 import com.intellij.codeInsight.highlighting.*
-import com.intellij.lang.Language
 import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.cwt.CwtLanguage
-import icu.windea.pls.lang.ParadoxBaseLanguage
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.model.*
