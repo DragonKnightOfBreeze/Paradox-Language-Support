@@ -1,4 +1,4 @@
-@file:Suppress("unused", "NOTHING_TO_INLINE")
+@file:Suppress("unused", "NOTHING_TO_INLINE", "UnstableApiUsage")
 
 package icu.windea.pls.core
 
@@ -14,6 +14,8 @@ import com.intellij.injected.editor.*
 import com.intellij.lang.*
 import com.intellij.lang.injection.*
 import com.intellij.lang.tree.util.*
+import com.intellij.model.*
+import com.intellij.model.psi.*
 import com.intellij.navigation.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
@@ -862,6 +864,16 @@ fun getDocumentation(documentationLines: List<String>?, html: Boolean): String? 
         }
     }
 }
+
+//endregion
+
+//region Symbol Extensions
+
+fun PsiElement.asSymbol(): Symbol = PsiSymbolService.getInstance().asSymbol(this)
+
+fun PsiReference.asSymbolReference(): PsiSymbolReference = PsiSymbolService.getInstance().asSymbolReference(this)
+
+fun Symbol.extractElement(): PsiElement? = PsiSymbolService.getInstance().extractElementFromSymbol(this)
 
 //endregion
 

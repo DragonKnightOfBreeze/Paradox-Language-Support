@@ -31,8 +31,6 @@ import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.psi.mock.ParadoxComplexEnumValueElement
-import icu.windea.pls.lang.psi.mock.ParadoxDynamicValueElement
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.settings.*
@@ -417,7 +415,7 @@ object ParadoxCompletionManager {
         val keyword = context.keyword
 
         //优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
-        if (keyword.isNotEmpty() && !PlsPatternConstants.localisationPropertyName.matches(keyword)) return
+        if (keyword.isNotEmpty() && !PlsPatternConstants.localisationName.matches(keyword)) return
 
         //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))
@@ -452,7 +450,7 @@ object ParadoxCompletionManager {
         val keyword = context.keyword
 
         //优化：如果已经输入的关键词不是合法的本地化的名字，不要尝试进行本地化的代码补全
-        if (keyword.isNotEmpty() && !PlsPatternConstants.localisationPropertyName.matches(keyword)) return
+        if (keyword.isNotEmpty() && !PlsPatternConstants.localisationName.matches(keyword)) return
 
         //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
         result.restartCompletionOnPrefixChange(StandardPatterns.string().shorterThan(keyword.length))

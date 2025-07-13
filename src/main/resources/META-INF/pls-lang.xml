@@ -66,8 +66,9 @@
     <elementDescriptionProvider implementation="icu.windea.pls.lang.refactoring.ParadoxRefactoringElementDescriptorProvider"/>
     <nameSuggestionProvider implementation="icu.windea.pls.lang.refactoring.rename.ParadoxNameSuggestionProvider"/>
     <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxScriptedVariableRenameInputValidator"/>
-    <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxParameterRenameInputValidator"/>
     <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxLocalisationPropertyRenameInputValidator"/>
+    <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxParameterRenameInputValidator"/>
+    <renameInputValidator implementation="icu.windea.pls.lang.refactoring.rename.ParadoxLocalisationParameterRenameInputValidator"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticRelatedLocalisationsRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticRelatedImagesRenamerFactory"/>
     <automaticRenamerFactory implementation="icu.windea.pls.lang.refactoring.rename.naming.AutomaticGeneratedModifiersRenamerFactory"/>

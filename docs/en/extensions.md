@@ -8,13 +8,13 @@ To be completed.
 
 > [!NOTE]
 > 
-> This section requires the [Markdown](https://plugins.jetbrains.com/plugin/7793-markdown) plugin to be installed and enabled.
+> Features in this section require the [Markdown](https://plugins.jetbrains.com/plugin/7793-markdown) plugin to be installed and enabled.
 
 PLS extends integration with Markdown, covering links, inline code, code fences, and more.
 
 ### Links
 
-By using specially formatted link texts with specific prefixes, Markdown links can be resolved to matching target references (definitions, localizations, etc.),
+By using specially formatted link texts with specific prefixes, PLS can resolve Markdown links to matched target references (definitions, localizations, etc.),
 providing additional language features in the editor such as code navigation and quick documentation.
 
 This also applies to links in other places, such as HTML links, and links in the raw text of quick documentation for navigation to PSI elements.
@@ -57,8 +57,8 @@ For different types of reference links, the formats and examples are as follows:
   * `pdx.l:{name}`
   * `pdx.l:{gameType}/{name}`
 * Examples
-  * `pdx.l:origin_default`
-  * `pdx.l:stellaris:origin_default`
+  * `pdx.l:origin_default_desc`
+  * `pdx.l:stellaris:origin_default_desc`
 
 **File Path** (relative to game or mod directory)
 
@@ -85,13 +85,47 @@ Notes:
 
 ### Inline Code
 
-To be written.
+> [!NOTE]
+>
+> Features in this section require specific advanced settings to be enabled (`Advanced Settings > Paradox Language Support > Resolve Markdown inline codes`)
+
+PLS can try to resolve Markdown inline codes to matched target references (definitions, localizations, etc.),
+providing additional language features in the editor such as code navigation and quick documentation.
+
+![](../images/extensions/md_inline_code_1.png)
+
+For different types of targets, the formats and examples are as follows:
+
+**Scripted Variable**
+
+* Format
+  * `@{name}`
+* Example
+  * `@civic_default_random_weight`
+
+**Definition**
+
+* Format
+  * `{name}`
+* Example
+  * `origin_default`
+
+**Localisation**
+
+* Format
+  * `{name}`
+* Example
+  * `origin_default_desc`
+
+Note:
+
+* If the inline code can be parsed as a definition and a localization at the same time, the definition will be preferred.
 
 ### Code Fences
 
 By injecting extra information after the language ID of a Markdown code fence,
 you can specify the game type and file path for script or localization file snippets.
-The plugin will use this information to match CWT configs and provide advanced language features as if you were editing an actual script or localization file.
+PLS will use this information to match CWT configs and provide advanced language features as if you were editing an actual script or localization file.
 
 ![](../images/extensions/md_code_fence_1.png)
 
@@ -119,8 +153,8 @@ Notes:
 
 > [!NOTE]
 >
-> This section requires the Diagrams plugin to be installed and enabled.
+> Features in this section require the Diagrams plugin to be installed and enabled.
 
 > [!WARNING]
 > 
-> This section and the Diagrams plugin are only available in IDE professional editions (e.g., IntelliJ IDEA Ultimate).
+> Features in this section and the Diagrams plugin are only available in IDE professional editions (e.g., IntelliJ IDEA Ultimate).

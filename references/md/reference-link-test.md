@@ -19,8 +19,8 @@
 
 ## Localisations
 
-* [origin_default](pdx.l:origin_default)
-* [origin_default](pdx.l:stellaris:origin_default)
+* [origin_default_desc](pdx.l:origin_default_desc)
+* [origin_default_desc](pdx.l:stellaris:origin_default_desc)
 
 ## File Paths
 

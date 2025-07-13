@@ -10,7 +10,7 @@ PLS 扩展了与 Markdown 的集成，涉及链接、内联代码、代码块等
 
 ### 链接
 
-通过使用带有特定前缀的特定格式的链接文本，可以将 Markdown 链接解析为匹配的目标引用（定义、本地化等），
+通过使用带有特定前缀的特定格式的链接文本，PLS 可以将 Markdown 链接解析为匹配的目标引用（定义、本地化等），
 从而在编辑器视图中额外提供代码导航、快速文档等语言功能。
 
 这也适用于其他地方的链接，例如 HTML 链接，以及快速文档的原始文本中的用于导航到 PSI 元素的链接。
@@ -53,8 +53,8 @@ PLS 扩展了与 Markdown 的集成，涉及链接、内联代码、代码块等
   * `pdx.l:{name}`
   * `pdx.l:{gameType}/{name}`
 * 示例
-  * `pdx.l:origin_default`
-  * `pdx.l:stellaris:origin_default`
+  * `pdx.l:origin_default_desc`
+  * `pdx.l:stellaris:origin_default_desc`
 
 **文件路径**（相对于游戏或模组目录）
 
@@ -81,12 +81,46 @@ PLS 扩展了与 Markdown 的集成，涉及链接、内联代码、代码块等
 
 ### 内联代码
 
-待编写。
+> [!NOTE]
+>
+> 此章节的功能需要启用特定的高级设置项（`高级设置 > Paradox Language Support > 解析 Markdown 内联代码`）
+
+PLS 可以尝试将 Markdown 内联代码解析为匹配的目标引用（定义、本地化等），
+从而在编辑器视图中额外提供代码导航、快速文档等语言功能。
+
+![](../images/extensions/md_inline_code_1.png)
+
+对于不同类型的目标，其格式与示例如下：
+
+**封装变量**
+
+* 格式
+  * `@{name}`
+* 示例
+  * `@civic_default_random_weight`
+
+**定义**
+
+* 格式
+  * `{name}`
+* 示例
+  * `origin_default`
+
+**本地化**
+
+* 格式
+  * `{name}`
+* 示例
+  * `origin_default_desc`
+
+备注：
+
+* 如果可以同时解析为定义和本地化，则会优先解析为定义。
 
 ### 代码块
 
 通过在 Markdown 代码块的语言ID后面注入额外的信息，可以为其中的脚本或本地化文件的片段指定游戏类型和文件路径，
-插件会根据这些信息来匹配CWT规则，从而提供各种高级语言功能，如同编写实际的脚本或本地化文件一样。
+PLS 会根据这些信息来匹配CWT规则，从而提供各种高级语言功能，如同编写实际的脚本或本地化文件一样。
 
 ![](../images/extensions/md_code_fence_1.png)
 

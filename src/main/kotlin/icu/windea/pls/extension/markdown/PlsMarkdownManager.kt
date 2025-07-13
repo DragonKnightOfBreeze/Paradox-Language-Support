@@ -11,11 +11,22 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.injection.*
+import org.intellij.plugins.markdown.lang.*
 import org.intellij.plugins.markdown.lang.psi.impl.*
 
 object PlsMarkdownManager {
     object Keys : KeyRegistry() {
         val cachedPathInfo by createKey<CachedValue<ParadoxPathInjectionInfo>>(this)
+    }
+
+    fun getIdentifierFromInlineCode(element: PsiElement): String? {
+        if (element.elementType != MarkdownElementTypes.CODE_SPAN) return null
+        val idElement = element.firstChild?.nextSibling ?: return null
+        if (idElement.elementType != MarkdownTokenTypes.TEXT) return null
+        if (idElement.prevSibling?.elementType != MarkdownTokenTypes.BACKTICK) return null
+        if (idElement.nextSibling?.elementType != MarkdownTokenTypes.BACKTICK) return null
+        val text = idElement.text
+        return text
     }
 
     fun getPathInfo(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
