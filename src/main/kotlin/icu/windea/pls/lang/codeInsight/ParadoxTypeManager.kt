@@ -7,6 +7,8 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
@@ -49,11 +51,6 @@ object ParadoxTypeManager {
             is ParadoxScriptColor -> ParadoxType.Color
             is ParadoxScriptBlock -> ParadoxType.Block
             is ParadoxScriptInlineMath -> ParadoxType.InlineMath
-            is ParadoxScriptedVariableReference -> {
-                element.reference?.resolve()?.let { getType(it) } ?: ParadoxType.Unknown
-            }
-            is ParadoxParameter -> ParadoxType.Parameter
-            is ParadoxConditionParameter -> ParadoxType.Parameter
             is ParadoxLocalisationCommandText -> {
                 if (element.isCommandExpression()) return ParadoxType.CommandExpression
                 ParadoxType.Unknown
@@ -62,6 +59,15 @@ object ParadoxTypeManager {
                 if (element.isDatabaseObjectExpression()) return ParadoxType.DatabaseObjectExpression
                 ParadoxType.Unknown
             }
+            is ParadoxCsvColumn -> {
+                if(element.isHeaderColumn()) return ParadoxType.String
+                return ParadoxTypeResolver.resolve(element.value)
+            }
+            is ParadoxScriptedVariableReference -> {
+                element.reference?.resolve()?.let { getType(it) } ?: ParadoxType.Unknown
+            }
+            is ParadoxParameter -> ParadoxType.Parameter
+            is ParadoxConditionParameter -> ParadoxType.Parameter
             is ParadoxScriptScriptedVariable -> {
                 element.scriptedVariableValue?.let { getType(it) } ?: ParadoxType.Unknown
             }
