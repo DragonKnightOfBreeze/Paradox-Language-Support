@@ -49,71 +49,135 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COMMENT | row
-  static boolean line_item(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "line_item")) return false;
-    if (!nextTokenIs(b, "", COLUMN_TOKEN, COMMENT)) return false;
+  // <<checkLineBreak>> column
+  static boolean column_item(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "column_item")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, COMMENT);
-    if (!r) r = row(b, l + 1);
+    r = checkLineBreak(b, l + 1);
+    r = r && column(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // line_item *
-  static boolean root(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!line_item(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "root", c)) break;
-    }
+  // <<checkLineBreak>> SEPARATOR column_item ?
+  static boolean column_item_with_separator(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "column_item_with_separator")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = checkLineBreak(b, l + 1);
+    r = r && consumeToken(b, SEPARATOR);
+    r = r && column_item_with_separator_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // column_item ?
+  private static boolean column_item_with_separator_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "column_item_with_separator_2")) return false;
+    column_item(b, l + 1);
     return true;
   }
 
   /* ********************************************************** */
-  // column (SEPARATOR column ?) *
+  // row_item
+  public static boolean header(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "header")) return false;
+    if (!nextTokenIs(b, COLUMN_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = row_item(b, l + 1);
+    exit_section_(b, m, HEADER, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // COMMENT * header ? (row | COMMENT) *
+  static boolean root(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = root_0(b, l + 1);
+    r = r && root_1(b, l + 1);
+    r = r && root_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // COMMENT *
+  private static boolean root_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_0")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!consumeToken(b, COMMENT)) break;
+      if (!empty_element_parsed_guard_(b, "root_0", c)) break;
+    }
+    return true;
+  }
+
+  // header ?
+  private static boolean root_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_1")) return false;
+    header(b, l + 1);
+    return true;
+  }
+
+  // (row | COMMENT) *
+  private static boolean root_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_2")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!root_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "root_2", c)) break;
+    }
+    return true;
+  }
+
+  // row | COMMENT
+  private static boolean root_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "root_2_0")) return false;
+    boolean r;
+    r = row(b, l + 1);
+    if (!r) r = consumeToken(b, COMMENT);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // row_item
   public static boolean row(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "row")) return false;
+    if (!nextTokenIs(b, COLUMN_TOKEN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = row_item(b, l + 1);
+    exit_section_(b, m, ROW, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // column column_item_with_separator *
+  static boolean row_item(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "row_item")) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, ROW, "<row>");
+    Marker m = enter_section_(b, l, _NONE_);
     r = column(b, l + 1);
     p = r; // pin = 1
-    r = r && row_1(b, l + 1);
-    exit_section_(b, l, m, r, p, row_auto_recover_);
+    r = r && row_item_1(b, l + 1);
+    exit_section_(b, l, m, r, p, row_item_auto_recover_);
     return r || p;
   }
 
-  // (SEPARATOR column ?) *
-  private static boolean row_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "row_1")) return false;
+  // column_item_with_separator *
+  private static boolean row_item_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "row_item_1")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!row_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "row_1", c)) break;
+      if (!column_item_with_separator(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "row_item_1", c)) break;
     }
     return true;
   }
 
-  // SEPARATOR column ?
-  private static boolean row_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "row_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, SEPARATOR);
-    r = r && row_1_0_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // column ?
-  private static boolean row_1_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "row_1_0_1")) return false;
-    column(b, l + 1);
-    return true;
-  }
-
-  static final Parser row_auto_recover_ = (b, l) -> !nextTokenIsFast(b, COLUMN_TOKEN, COMMENT);
+  static final Parser row_item_auto_recover_ = (b, l) -> !nextTokenIsFast(b, COLUMN_TOKEN, COMMENT);
 }

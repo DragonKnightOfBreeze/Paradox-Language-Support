@@ -3,10 +3,10 @@ package icu.windea.pls.csv.editor
 import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.ui.breadcrumbs.*
-import icu.windea.pls.core.truncateAndKeepQuotes
+import icu.windea.pls.core.*
 import icu.windea.pls.csv.*
 import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.constants.*
 
 class ParadoxCsvBreadCrumbsProvider : BreadcrumbsProvider {
@@ -22,9 +22,22 @@ class ParadoxCsvBreadCrumbsProvider : BreadcrumbsProvider {
 
     override fun getElementInfo(element: PsiElement): String {
         return when (element) {
+            is ParadoxCsvHeader -> PlsStringConstants.header
             is ParadoxCsvRow -> PlsStringConstants.row
-            is ParadoxCsvColumn -> element.name.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit)
+            is ParadoxCsvColumn -> getPresentableText(element)
             else -> throw InternalError()
+        }
+    }
+
+    private fun getPresentableText(column: ParadoxCsvColumn): String {
+        return buildString {
+            append(column.name.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit))
+            val headerColumn = column.getHeaderColumn()
+            if (headerColumn != null) {
+                append(" (")
+                append(headerColumn.name.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit))
+                append(")")
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package icu.windea.pls.csv.structureView
 
 import com.intellij.ide.structureView.*
+import icu.windea.pls.core.forEachChild
 import icu.windea.pls.csv.psi.*
 
 class ParadoxCsvFileTreeElement(
@@ -8,9 +9,14 @@ class ParadoxCsvFileTreeElement(
 ) : ParadoxCsvTreeElement<ParadoxCsvFile>(element) {
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
         val element = element ?: return emptyList()
-        val rows = element.rows
-        if (rows.isEmpty()) return emptyList()
-        return rows.map { ParadoxCsvRowTreeElement(it) }
+        val result = mutableListOf<StructureViewTreeElement>()
+        element.forEachChild { it ->
+            when (it) {
+                is ParadoxCsvHeader -> result.add(ParadoxCsvHeaderTreeElement(it))
+                is ParadoxCsvRow -> result.add(ParadoxCsvRowTreeElement(it))
+            }
+        }
+        return result
     }
 
     override fun getPresentableText(): String? {

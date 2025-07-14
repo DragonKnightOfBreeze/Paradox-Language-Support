@@ -8,7 +8,6 @@ import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.csv.psi.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
@@ -16,11 +15,30 @@ import javax.swing.*
 
 @Suppress("UNUSED_PARAMETER")
 object ParadoxCsvPsiImplUtil {
+    //region ParadoxCsvRowHeader
+
+    @JvmStatic
+    fun getIcon(element: ParadoxCsvHeader, @Iconable.IconFlags flags: Int): Icon {
+        return PlsIcons.Nodes.CsvRow
+    }
+
+    @JvmStatic
+    fun toString(element: ParadoxCsvHeader): String {
+        return "ParadoxCsvRowHeaderImpl(ROW_HEADER)"
+    }
+
+    //endregion
+
     //region ParadoxCsvRow
 
     @JvmStatic
     fun getIcon(element: ParadoxCsvRow, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.CsvRow
+    }
+
+    @JvmStatic
+    fun toString(element: ParadoxCsvRow): String {
+        return "ParadoxCsvRowImpl(ROW)"
     }
 
     //endregion
@@ -47,6 +65,11 @@ object ParadoxCsvPsiImplUtil {
         val finalValue = if (value.contains(ParadoxCsvManager.getSeparator())) value.quote() else value
         val newElement = ParadoxCsvElementFactory.createColumn(element.project, finalValue)
         return element.replace(newElement).cast()
+    }
+
+    @JvmStatic
+    fun toString(element: ParadoxCsvColumn): String {
+        return "ParadoxCsvColumnImpl(COLUMN)"
     }
 
     //endregion

@@ -15,6 +15,7 @@ class ParadoxCsvFile(
 ) : PsiFileBase(viewProvider, ParadoxCsvLanguage) {
     override fun getFileType() = ParadoxCsvFileType
 
+    val row: List<ParadoxCsvHeader> get() = findChildren<_>()
     val rows: List<ParadoxCsvRow> get() = findChildren<_>()
 
     override fun getPresentation(): ItemPresentation {

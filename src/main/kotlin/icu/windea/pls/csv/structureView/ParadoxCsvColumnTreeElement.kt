@@ -1,9 +1,9 @@
 package icu.windea.pls.csv.structureView
 
 import com.intellij.ide.structureView.*
-import icu.windea.pls.core.truncateAndKeepQuotes
+import icu.windea.pls.core.*
 import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.*
 
 class ParadoxCsvColumnTreeElement(
     element: ParadoxCsvColumn
@@ -15,5 +15,11 @@ class ParadoxCsvColumnTreeElement(
     override fun getPresentableText(): String? {
         val element = element ?: return null
         return element.name.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit)
+    }
+
+    override fun getLocationString(): String? {
+        val element = element ?: return null
+        val headerColumn = element.getHeaderColumn() ?: return null
+        return headerColumn.name.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit)
     }
 }

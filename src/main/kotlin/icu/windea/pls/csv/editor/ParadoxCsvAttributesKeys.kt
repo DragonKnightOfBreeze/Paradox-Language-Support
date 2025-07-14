@@ -10,6 +10,8 @@ object ParadoxCsvAttributesKeys {
     @JvmField
     val COMMENT_KEY = createTextAttributesKey("PARADOX_CSV.COMMENT", LINE_COMMENT)
     @JvmField
+    val HEADER_KEY = createTextAttributesKey("PARADOX_CSV.HEADER", INSTANCE_FIELD)
+    @JvmField
     val KEYWORD_KEY = createTextAttributesKey("PARADOX_CSV.KEYWORD", KEYWORD)
     @JvmField
     val NUMBER_KEY = createTextAttributesKey("PARADOX_CSV.NUMBER", NUMBER)

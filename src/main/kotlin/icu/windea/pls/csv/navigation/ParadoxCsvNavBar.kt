@@ -6,7 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.csv.*
 import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.constants.*
 import javax.swing.*
 
@@ -22,9 +22,22 @@ class ParadoxCsvNavBar : StructureAwareNavBarModelExtension() {
 
     override fun getPresentableText(o: Any?): String? {
         return when {
+            o is ParadoxCsvHeader -> PlsStringConstants.header
             o is ParadoxCsvRow -> PlsStringConstants.row
-            o is ParadoxCsvColumn -> o.name.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit)
+            o is ParadoxCsvColumn -> getPresentableText(o)
             else -> null
+        }
+    }
+
+    private fun getPresentableText(column: ParadoxCsvColumn): String {
+        return buildString {
+            append(column.name.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit))
+            val headerColumn = column.getHeaderColumn()
+            if (headerColumn != null) {
+                append(" (")
+                append(headerColumn.name.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit))
+                append(")")
+            }
         }
     }
 }

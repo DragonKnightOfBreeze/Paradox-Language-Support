@@ -6,7 +6,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 
 object ParadoxCsvTokenSets {
     @JvmField
-    val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
+    val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE, EOL)
     @JvmField
     val COMMENTS = TokenSet.create(COMMENT)
     @JvmField

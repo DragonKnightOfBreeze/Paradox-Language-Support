@@ -4,9 +4,9 @@ import com.intellij.ide.structureView.*
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.model.constants.*
 
-class ParadoxCsvRowTreeElement(
-    element: ParadoxCsvRow
-) : ParadoxCsvTreeElement<ParadoxCsvRow>(element) {
+class ParadoxCsvHeaderTreeElement(
+    element: ParadoxCsvHeader
+) : ParadoxCsvTreeElement<ParadoxCsvHeader>(element) {
     override fun getChildrenBase(): Collection<StructureViewTreeElement?> {
         val element = element ?: return emptyList()
         val columns = element.columnList
@@ -16,11 +16,6 @@ class ParadoxCsvRowTreeElement(
 
     override fun getPresentableText(): String? {
         //val element = element ?: return null
-        return PlsStringConstants.row
-    }
-
-    @Suppress("RedundantOverride")
-    override fun getLocationString(): String? {
-        return super.getLocationString() //TODO 2.0.1-dev
+        return PlsStringConstants.header
     }
 }

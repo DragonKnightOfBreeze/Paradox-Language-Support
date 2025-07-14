@@ -11,10 +11,10 @@
   tokenTypeFactory="icu.windea.pls.script.psi.ParadoxScriptElementTypeFactory.getTokenType"
   psiImplUtilClass="icu.windea.pls.script.psi.impl.ParadoxScriptPsiImplUtil"
   parserUtilClass="icu.windea.pls.script.parser.ParadoxScriptParserUtil"
-    tokens=[
-      AT="@"
-      PIPE="|"
-    ]
+  tokens=[
+    AT="@"
+    PIPE="|"
+  ]
   methods(".*")=[getPresentation getResolveScope getUseScope]
 }
 
@@ -53,7 +53,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
 }
 // can be parameterized
 scripted_variable_name ::= AT scripted_variable_name_part (<<processSnippet>> scripted_variable_name_part) * {
-  pin=1;
+  pin=1
   implements=[
     "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
   ]

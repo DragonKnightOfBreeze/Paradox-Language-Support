@@ -5,6 +5,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
+import com.intellij.psi.NavigatablePsiElement;
 
 public class ParadoxCsvVisitor extends PsiElementVisitor {
 
@@ -13,8 +14,16 @@ public class ParadoxCsvVisitor extends PsiElementVisitor {
     // visitExpressionElement(o);
   }
 
+  public void visitHeader(@NotNull ParadoxCsvHeader o) {
+    visitNavigatablePsiElement(o);
+  }
+
   public void visitRow(@NotNull ParadoxCsvRow o) {
-    visitPsiElement(o);
+    visitNavigatablePsiElement(o);
+  }
+
+  public void visitNavigatablePsiElement(@NotNull NavigatablePsiElement o) {
+    visitElement(o);
   }
 
   public void visitPsiLiteralValue(@NotNull PsiLiteralValue o) {

@@ -9,6 +9,8 @@ object ParadoxCsvAttributesKeyArrays {
     @JvmField
     val COMMENT_KEYS = arrayOf(K.COMMENT_KEY)
     @JvmField
+    val HEADER_KEYS = arrayOf(K.HEADER_KEY)
+    @JvmField
     val KEYWORD_KEYS = arrayOf(K.KEYWORD_KEY)
     @JvmField
     val NUMBER_KEYS = arrayOf(K.NUMBER_KEY)

@@ -11,24 +11,35 @@
   tokenTypeFactory="icu.windea.pls.csv.psi.ParadoxCsvElementTypeFactory.getTokenType"
   psiImplUtilClass="icu.windea.pls.csv.psi.impl.ParadoxCsvPsiImplUtil"
   parserUtilClass="icu.windea.pls.csv.parser.ParadoxCsvParserUtil"
+  tokens=[
+    SEPARATOR=";"
+    EOL="<eol>"
+  ]
   methods(".*")=[getPresentation getResolveScope getUseScope]
 }
 
-root ::= line_item *
-private line_item ::= COMMENT | row
+root ::= COMMENT * header ? (row | COMMENT) *
 
-row ::= column (SEPARATOR column ?) * {
-  pin=1
-  recoverWhile="#auto"
+header ::= row_item {
+  implements="com.intellij.psi.NavigatablePsiElement"
+  methods=[getIcon toString]
+}
+row ::= row_item {
   extends="icu.windea.pls.csv.psi.impl.ParadoxCsvStubElementImpl<?>"
   stubClass="icu.windea.pls.csv.psi.ParadoxCsvRowStub"
-  methods=[getIcon]
+  implements="com.intellij.psi.NavigatablePsiElement"
+  methods=[getIcon toString]
 }
-
+private row_item ::= column column_item_with_separator * {
+  pin=1
+  recoverWhile="#auto"
+}
+private column_item_with_separator ::= <<checkLineBreak>> SEPARATOR column_item ?
+private column_item ::= <<checkLineBreak>> column
 column ::= COLUMN_TOKEN {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.csv.psi.ParadoxCsvExpressionElement"
   ]
-  methods=[getIcon getName getValue setValue]
+  methods=[getIcon getName getValue setValue toString]
 }
