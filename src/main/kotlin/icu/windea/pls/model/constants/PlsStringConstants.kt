@@ -51,6 +51,8 @@ object PlsStringConstants {
     const val localisationIconPrefix = "(localisation icon)"
     const val inlineScriptPrefix = "(inline script)"
 
+    const val row = "(row)"
+
     const val blockFolder = "{...}"
     val parameterConditionFolder = { expression: String -> "[[$expression]...]" }
     const val inlineMathFolder = "@[...]"
@@ -68,4 +70,7 @@ object PlsStringConstants {
 
     val paradoxScriptColorSettingsSample by lazy { "/samples/ParadoxScript.colorSettings.txt".toClasspathUrl().readText() }
     val paradoxScriptCodeStyleSettingsSample by lazy { "/samples/ParadoxScript.codeStyleSettings.txt".toClasspathUrl().readText() }
+
+    val paradoxCsvColorSettingsSample by lazy { "/samples/ParadoxCsv.colorSettings.txt".toClasspathUrl().readText() }
+    val paradoxCsvCodeStyleSettingsSample by lazy { "/samples/ParadoxCsv.codeStyleSettings.txt".toClasspathUrl().readText() }
 }

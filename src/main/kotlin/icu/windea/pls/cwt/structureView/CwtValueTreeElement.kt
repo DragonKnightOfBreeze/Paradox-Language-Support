@@ -3,6 +3,7 @@ package icu.windea.pls.cwt.structureView
 import com.intellij.ide.structureView.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.settings.PlsInternalSettings
 
 class CwtValueTreeElement(
     element: CwtValue
@@ -23,6 +24,6 @@ class CwtValueTreeElement(
 
     override fun getPresentableText(): String? {
         val element = element ?: return null
-        return element.value
+        return element.name.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit)
     }
 }

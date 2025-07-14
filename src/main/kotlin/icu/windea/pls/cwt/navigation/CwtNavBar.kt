@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.settings.*
 import javax.swing.*
 
 class CwtNavBar : StructureAwareNavBarModelExtension() {
@@ -21,7 +22,7 @@ class CwtNavBar : StructureAwareNavBarModelExtension() {
     override fun getPresentableText(o: Any?): String? {
         return when {
             o is CwtProperty -> o.name
-            o is CwtValue && o.isBlockValue() -> o.value
+            o is CwtValue && o.isBlockValue() -> o.name.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit)
             else -> null
         }
     }

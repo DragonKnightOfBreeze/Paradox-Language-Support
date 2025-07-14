@@ -48,6 +48,11 @@ object PlsInternalSettings {
     val maxDefinitionDepth get() = Registry.intValue("pls.settings.maxDefinitionDepth", 4)
 
     /**
+     * 面包屑导航、导航栏、结构视图中的字符串字面量的文本长度限制。
+     */
+    val presentableTextLengthLimit get() = Registry.intValue("pls.settings.presentableTextLengthLimit", 36)
+
+    /**
      * 在提示信息中显示的条目的数量限制（某些提示文本会用到）。
      */
     val itemLimit get() = Registry.intValue("pls.settings.itemLimit", 5)

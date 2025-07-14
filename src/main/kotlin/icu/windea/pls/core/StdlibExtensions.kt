@@ -341,10 +341,12 @@ fun String.splitOptimized(vararg delimiters: Char, ignoreCase: Boolean = false, 
 }
 
 fun String.truncate(limit: Int, ellipsis: String = "..."): String {
+    if (limit <= 0) return this
     return if (this.length <= limit) this else this.take(limit) + ellipsis
 }
 
 fun String.truncateAndKeepQuotes(limit: Int, ellipsis: String = "..."): String {
+    if (limit <= 0) return this
     if (this.isLeftQuoted()) {
         return if (this.length - 2 <= limit) this else this.take(limit + 1) + ellipsis + "\""
     } else {

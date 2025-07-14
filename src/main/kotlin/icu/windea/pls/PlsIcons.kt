@@ -35,6 +35,8 @@ object PlsIcons {
         @JvmField
         val ParadoxLocalisation = IconManager.getInstance().getIcon("/icons/fileTypes/paradoxLocalisation.svg")
         @JvmField
+        val ParadoxCsv = AllIcons.FileTypes.Csv
+        @JvmField
         val CwtConfig = IconManager.getInstance().getIcon("/icons/fileTypes/cwtConfig.svg") // from general/gear.svg, fill #9AA7B0
         @JvmField
         val ModeDescriptor = IconManager.getInstance().getIcon("/icons/fileTypes/modDescriptor.svg") // from general/gear.svg, fill #5D8DC3
@@ -94,6 +96,11 @@ object PlsIcons {
         val LocalisationTextFormat = IconManager.getInstance().getIcon("/icons/nodes/localisationTextFormat.svg")
         @JvmStatic
         val LocalisationTextIcon = IconManager.getInstance().getIcon("/icons/nodes/localisationTextIcon.svg") //same as LocalisationIcon
+
+        @JvmStatic
+        val CsvRow = AllIcons.Nodes.DataTables
+        @JvmStatic
+        val CsvColumn = AllIcons.Nodes.DataColumn
 
         @JvmField
         val Definition = IconManager.getInstance().getIcon("/icons/nodes/definition.svg")

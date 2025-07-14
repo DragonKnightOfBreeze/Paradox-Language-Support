@@ -1,0 +1,34 @@
+{
+  parserImports="static com.intellij.lang.WhitespacesBinders.*"
+  parserClass="icu.windea.pls.csv.parser.ParadoxCsvParser"
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+  psiClassPrefix="ParadoxCsv"
+  psiImplClassSuffix="Impl"
+  psiPackage="icu.windea.pls.csv.psi"
+  psiImplPackage="icu.windea.pls.csv.psi.impl"
+  elementTypeHolderClass="icu.windea.pls.csv.psi.ParadoxCsvElementTypes"
+  elementTypeFactory="icu.windea.pls.csv.psi.ParadoxCsvElementTypeFactory.getElementType"
+  tokenTypeFactory="icu.windea.pls.csv.psi.ParadoxCsvElementTypeFactory.getTokenType"
+  psiImplUtilClass="icu.windea.pls.csv.psi.impl.ParadoxCsvPsiImplUtil"
+  parserUtilClass="icu.windea.pls.csv.parser.ParadoxCsvParserUtil"
+  methods(".*")=[getPresentation getResolveScope getUseScope]
+}
+
+root ::= line_item *
+private line_item ::= COMMENT | row
+
+row ::= column (SEPARATOR column ?) * {
+  pin=1
+  recoverWhile="#auto"
+  extends="icu.windea.pls.csv.psi.impl.ParadoxCsvStubElementImpl<?>"
+  stubClass="icu.windea.pls.csv.psi.ParadoxCsvRowStub"
+  methods=[getIcon]
+}
+
+column ::= COLUMN_TOKEN {
+  implements=[
+    "com.intellij.psi.PsiLiteralValue"
+    "icu.windea.pls.csv.psi.ParadoxCsvExpressionElement"
+  ]
+  methods=[getIcon getName getValue setValue]
+}

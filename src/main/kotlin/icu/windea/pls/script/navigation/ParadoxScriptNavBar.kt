@@ -5,6 +5,7 @@ import com.intellij.lang.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -23,7 +24,7 @@ class ParadoxScriptNavBar : StructureAwareNavBarModelExtension() {
         return when {
             o is ParadoxScriptScriptedVariable -> "@" + o.name
             o is ParadoxScriptProperty -> o.definitionInfo?.name?.orAnonymous() ?: o.name
-            o is ParadoxScriptValue && o.isBlockMember() -> o.value
+            o is ParadoxScriptValue && o.isBlockMember() -> o.value.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit)
             o is ParadoxScriptParameterCondition -> o.conditionExpression?.let { "[$it]" }
             else -> null
         }

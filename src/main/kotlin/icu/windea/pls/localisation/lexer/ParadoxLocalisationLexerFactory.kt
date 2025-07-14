@@ -30,8 +30,8 @@ object ParadoxLocalisationLexerFactory {
     fun createHighlightingLexer(project: Project? = null, gameType: ParadoxGameType? = null): LayeredLexer {
         val lexer = LayeredLexer(createLexer(project))
         val textLexer = LayeredLexer(createTextLexer(project, gameType))
-        textLexer.registerSelfStoppingLayer(createStringLiteralLexer(STRING_TOKEN), arrayOf(STRING_TOKEN), IElementType.EMPTY_ARRAY)
         lexer.registerSelfStoppingLayer(textLexer, arrayOf(PROPERTY_VALUE_TOKEN), IElementType.EMPTY_ARRAY)
+        textLexer.registerSelfStoppingLayer(createStringLiteralLexer(STRING_TOKEN), arrayOf(STRING_TOKEN), IElementType.EMPTY_ARRAY)
         return lexer
     }
 

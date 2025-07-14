@@ -2,6 +2,7 @@ package icu.windea.pls.script.structureView
 
 import com.intellij.ide.structureView.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.settings.PlsInternalSettings
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptValueTreeElement(
@@ -25,6 +26,6 @@ class ParadoxScriptValueTreeElement(
 
     override fun getPresentableText(): String? {
         val element = element ?: return null
-        return element.value
+        return element.value.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit)
     }
 }

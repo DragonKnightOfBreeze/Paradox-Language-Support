@@ -27,7 +27,6 @@ interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationPrope
     ) : Base(parent)
 
     //12 + 20 = 32 -> 32
-
     class Dummy(
         parent: StubElement<*>
     ) : Base(parent) {
