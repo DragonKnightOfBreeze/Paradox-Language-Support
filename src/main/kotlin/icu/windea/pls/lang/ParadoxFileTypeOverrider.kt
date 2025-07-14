@@ -4,6 +4,7 @@ import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.fileTypes.impl.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
+import icu.windea.pls.csv.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.model.*
@@ -23,7 +24,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
             return doGetFileType(fileInfoFromUserData)
         }
 
-        if (!ParadoxFileManager.canBeScriptOrLocalisationFile(file)) return null
+        if (!ParadoxFileManager.canBeParadoxFile(file)) return null
         val fileInfo = ParadoxCoreManager.getFileInfo(file) ?: return null
         return doGetFileType(fileInfo)
     }
@@ -32,6 +33,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
         return when (fileInfo.fileType) {
             ParadoxFileType.Script -> ParadoxScriptFileType
             ParadoxFileType.Localisation -> ParadoxLocalisationFileType
+            ParadoxFileType.Csv -> ParadoxCsvFileType
             ParadoxFileType.ModDescriptor -> ParadoxScriptFileType
             else -> null
         }

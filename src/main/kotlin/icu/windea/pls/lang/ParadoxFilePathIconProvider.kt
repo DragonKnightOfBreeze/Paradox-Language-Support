@@ -13,7 +13,7 @@ import javax.swing.*
  */
 class ParadoxFilePathIconProvider : FilePathIconProvider {
     override fun getIcon(filePath: FilePath, project: Project?): Icon? {
-        if (!ParadoxFileManager.canBeScriptOrLocalisationFile(filePath)) return null
+        if (!ParadoxFileManager.canBeParadoxFile(filePath)) return null
         val fileInfo = ParadoxCoreManager.getFileInfo(filePath) ?: return null
         return doGetIcon(fileInfo)
     }
@@ -22,6 +22,7 @@ class ParadoxFilePathIconProvider : FilePathIconProvider {
         return when (fileInfo.fileType) {
             ParadoxFileType.Script -> PlsIcons.FileTypes.ParadoxScript
             ParadoxFileType.Localisation -> PlsIcons.FileTypes.ParadoxLocalisation
+            ParadoxFileType.Csv -> PlsIcons.FileTypes.ParadoxCsv
             ParadoxFileType.ModDescriptor -> PlsIcons.FileTypes.ModeDescriptor
             else -> null
         }

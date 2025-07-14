@@ -36,18 +36,19 @@ object ParadoxFileManager {
         return entryFile.findFileByRelativePath(path)
     }
 
-    fun canBeScriptOrLocalisationFile(filePath: FilePath): Boolean {
+    fun canBeParadoxFile(filePath: FilePath): Boolean {
         //val fileName = filePath.name.lowercase()
         val fileExtension = filePath.name.substringAfterLast('.').orNull()?.lowercase() ?: return false
         return when {
             fileExtension == "mod" -> true
             fileExtension in PlsConstants.scriptFileExtensions -> true
             fileExtension in PlsConstants.localisationFileExtensions -> true
+            fileExtension in "csv" -> true
             else -> false
         }
     }
 
-    fun canBeScriptOrLocalisationFile(file: VirtualFile): Boolean {
+    fun canBeParadoxFile(file: VirtualFile): Boolean {
         //require pre-check from user data
         //require further check for VirtualFileWindow (injected PSI)
 
@@ -59,6 +60,7 @@ object ParadoxFileManager {
             fileExtension == "mod" -> true
             fileExtension in PlsConstants.scriptFileExtensions -> true
             fileExtension in PlsConstants.localisationFileExtensions -> true
+            fileExtension in "csv" -> true
             else -> false
         }
     }
@@ -74,6 +76,12 @@ object ParadoxFileManager {
         if (!inLocalisationPath(path)) return false
         val fileExtension = path.fileExtension?.lowercase() ?: return false
         if (fileExtension !in PlsConstants.localisationFileExtensions) return false
+        return true
+    }
+
+    fun canBeCsvFilePath(path: ParadoxPath): Boolean {
+        val fileExtension = path.fileExtension?.lowercase() ?: return false
+        if (fileExtension != "csv") return false
         return true
     }
 

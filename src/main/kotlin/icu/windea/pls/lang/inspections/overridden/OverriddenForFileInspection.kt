@@ -57,12 +57,9 @@ class OverriddenForFileInspection : LocalInspectionTool() {
         return when (fileType) {
             ParadoxFileType.Script -> true
             ParadoxFileType.Localisation -> true
+            ParadoxFileType.Csv -> true
             ParadoxFileType.ModDescriptor -> false
-            ParadoxFileType.Other -> {
-                // currently only accept generic images
-                val t = file.fileType
-                t == ImageFileType.INSTANCE || t == DdsFileType
-            }
+            ParadoxFileType.Other -> ParadoxImageManager.isImageFile(file) // currently only accept generic images
         }
     }
 

@@ -8,6 +8,7 @@ import icu.windea.pls.lang.util.*
 enum class ParadoxFileType {
     Script,
     Localisation,
+    Csv,
     ModDescriptor,
     Other,
     ;
@@ -38,6 +39,7 @@ enum class ParadoxFileType {
                 isIgnored(fileName) -> Other
                 ParadoxFileManager.canBeScriptFilePath(path) -> Script
                 ParadoxFileManager.canBeLocalisationFilePath(path) -> Localisation
+                ParadoxFileManager.canBeCsvFilePath(path) -> Csv
                 else -> Other
             }
         }
