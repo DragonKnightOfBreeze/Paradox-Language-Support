@@ -128,7 +128,7 @@ scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_TOKEN {
     "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
   ]
-  methods=[getIdElement getIcon getName setName getReference getType getExpression]
+  methods=[getIdElement getIcon getName setName getReference]
 }
 
 // localisation command rules
@@ -156,7 +156,7 @@ command_text ::= (COMMAND_TEXT_TOKEN | parameter) + {
   ]
   methods=[
     getIdElement parameter=""
-    getName getValue setValue getType getExpression getReference getReferences
+    getName getValue setValue getReference getReferences
   ]
 }
 private command_argument_part ::= PIPE command_argument ?
@@ -218,7 +218,7 @@ concept_name ::= (CONCEPT_NAME_TOKEN | parameter) + {
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getName getValue setValue getType getExpression getReference getReferences
+    getIcon getName getValue setValue getReference getReferences
   ]
 }
 private concept_text_part ::= COMMA concept_text ?

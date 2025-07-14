@@ -43,12 +43,11 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
-    "icu.windea.pls.lang.psi.ParadoxTypedElement"
   ]
   stubClass="icu.windea.pls.script.psi.ParadoxScriptScriptedVariableStub"
   methods=[
     scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
-    getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue getType
+    getIcon getName setName getNameIdentifier getTextOffset getValue getUnquotedValue
     isEquivalentTo toString
   ]
 }
@@ -72,12 +71,11 @@ property ::= property_key property_separator property_value {
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
-    "icu.windea.pls.lang.psi.ParadoxTypedElement"
     "icu.windea.pls.script.psi.ParadoxScriptDefinitionElement"
   ]
   methods=[
     property_key="property_key" property_value="value"
-    getIcon getName setName getNameIdentifier getValue getDepth getBlock getType getConfigExpression getExpression
+    getIcon getName setName getNameIdentifier getValue getDepth getBlock
     isEquivalentTo toString
   ]
 }
@@ -90,7 +88,7 @@ property_key ::= property_key_part (<<processSnippet>> property_key_part) * {
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getName getValue setValue getType getExpression getConfigExpression
+    getIcon getName getValue setValue
     getReference getReferences toString
   ]
 }
@@ -106,7 +104,7 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
     "icu.windea.pls.script.psi.ParadoxScriptMemberElement"
   ]
   methods=[
-    getIcon getName getValue setValue getType getExpression getConfigExpression toString
+    getIcon getName getValue setValue toString
   ]
 }
 // can be parameterized
@@ -118,7 +116,7 @@ scripted_variable_reference ::= AT scripted_variable_reference_part <<postProces
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getName setName getValue getReference getType getExpression toString
+    getIcon getName setName getValue getReference toString
   ]
 }
 private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | parameter | inline_parameter_condition
@@ -127,7 +125,7 @@ boolean ::= BOOLEAN_TOKEN {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getBooleanValue getType toString]
+  methods=[getBooleanValue toString]
 }
 int ::= INT_TOKEN {
   extends=value
@@ -135,7 +133,7 @@ int ::= INT_TOKEN {
     "com.intellij.psi.ContributedReferenceHost"
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getValue getIntValue getType getReference getReferences toString]
+  methods=[getValue getIntValue getReference getReferences toString]
 }
 float ::= FLOAT_TOKEN {
   extends=value
@@ -143,7 +141,7 @@ float ::= FLOAT_TOKEN {
     "com.intellij.psi.ContributedReferenceHost"
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getValue getFloatValue getType getReference getReferences toString]
+  methods=[getValue getFloatValue getReference getReferences toString]
 }
 // can be parameterized
 string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_part) * {
@@ -155,14 +153,14 @@ string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_pa
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getValue setValue getStringValue getType getExpression getConfigExpression
+    getIcon getValue setValue getStringValue
     getReference getReferences toString
   ]
 }
 private string_part ::= STRING_TOKEN | parameter | inline_parameter_condition
 color ::= COLOR_TOKEN {
   extends=value
-  methods=[getValue getColorType getColorArgs getColor setColor getType toString]
+  methods=[getValue getColorType getColorArgs getColor setColor toString]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
@@ -174,7 +172,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   ]
   methods=[
     property="" value="" getPropertyList getValueList
-    getIcon getValue isEmpty isNotEmpty getComponents getType getExpression
+    getIcon getValue isEmpty isNotEmpty getComponents
     getReference getReferences toString
   ]
 }
@@ -280,7 +278,7 @@ inline_math ::= INLINE_MATH_START inline_math_expr INLINE_MATH_END {
   pin=1
   recoverWhile="#auto"
   extends=value
-  methods=[getValue getType getExpression]
+  methods=[getValue]
 }
 private inline_math_expr ::= (inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor) inline_math_bi_expression *
 // noinspection BnfUnusedRule
@@ -312,9 +310,8 @@ inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
   extends=inline_math_factor
   implements=[
     "com.intellij.psi.PsiLiteralValue"
-    "icu.windea.pls.lang.psi.ParadoxTypedElement"
   ]
-  methods=[getValue getType getExpression]
+  methods=[getValue]
 }
 // without prefix "@", can be parameterized
 inline_math_scripted_variable_reference ::= inline_math_scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> inline_math_scripted_variable_reference_part) * {
@@ -325,7 +322,7 @@ inline_math_scripted_variable_reference ::= inline_math_scripted_variable_refere
   ]
   methods=[
     getIdElement inline_math_parameter=""
-    getIcon getName setName getValue getReference getType getExpression
+    getIcon getName setName getValue getReference
   ]
 }
 private inline_math_scripted_variable_reference_part ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter | inline_parameter_condition

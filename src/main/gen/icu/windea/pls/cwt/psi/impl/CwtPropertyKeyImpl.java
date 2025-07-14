@@ -13,8 +13,6 @@ import icu.windea.pls.cwt.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.config.CwtConfigType;
-import icu.windea.pls.model.CwtType;
 import javax.swing.Icon;
 
 public class CwtPropertyKeyImpl extends ASTWrapperPsiElement implements CwtPropertyKey {
@@ -51,16 +49,6 @@ public class CwtPropertyKeyImpl extends ASTWrapperPsiElement implements CwtPrope
   @Override
   public @NotNull CwtPropertyKey setValue(@NotNull String value) {
     return CwtPsiImplUtil.setValue(this, value);
-  }
-
-  @Override
-  public @NotNull CwtType getType() {
-    return CwtPsiImplUtil.getType(this);
-  }
-
-  @Override
-  public @Nullable CwtConfigType getConfigType() {
-    return CwtPsiImplUtil.getConfigType(this);
   }
 
   @Override

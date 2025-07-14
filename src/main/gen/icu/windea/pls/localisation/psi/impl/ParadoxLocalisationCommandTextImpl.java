@@ -14,7 +14,6 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.model.ParadoxType;
 
 public class ParadoxLocalisationCommandTextImpl extends ASTWrapperPsiElement implements ParadoxLocalisationCommandText {
 
@@ -50,16 +49,6 @@ public class ParadoxLocalisationCommandTextImpl extends ASTWrapperPsiElement imp
   @Override
   public @NotNull ParadoxLocalisationCommandText setValue(@NotNull String value) {
     return ParadoxLocalisationPsiImplUtil.setValue(this, value);
-  }
-
-  @Override
-  public @Nullable ParadoxType getType() {
-    return ParadoxLocalisationPsiImplUtil.getType(this);
-  }
-
-  @Override
-  public @NotNull String getExpression() {
-    return ParadoxLocalisationPsiImplUtil.getExpression(this);
   }
 
   @Override

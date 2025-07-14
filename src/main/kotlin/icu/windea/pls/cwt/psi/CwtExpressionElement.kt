@@ -7,12 +7,10 @@ import icu.windea.pls.model.*
  * @see CwtPropertyKey
  * @see CwtValue
  */
-interface CwtExpressionElement : NavigatablePsiElement, CwtTypedElement {
+interface CwtExpressionElement : NavigatablePsiElement {
     override fun getName(): String
 
     val value: String
 
     fun setValue(value: String): CwtExpressionElement
-
-    override val type: CwtType
 }

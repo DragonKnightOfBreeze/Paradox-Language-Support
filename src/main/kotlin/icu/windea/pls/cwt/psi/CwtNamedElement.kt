@@ -7,4 +7,3 @@ interface CwtNamedElement : PsiNameIdentifierOwner, NavigatablePsiElement {
         return null
     }
 }
-

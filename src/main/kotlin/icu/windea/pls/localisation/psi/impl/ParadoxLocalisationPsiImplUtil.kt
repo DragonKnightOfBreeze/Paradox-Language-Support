@@ -313,16 +313,6 @@ object ParadoxLocalisationPsiImplUtil {
         }
     }
 
-    @JvmStatic
-    fun getType(element: ParadoxLocalisationScriptedVariableReference): ParadoxType {
-        return element.reference?.resolve()?.type ?: ParadoxType.Unknown
-    }
-
-    @JvmStatic
-    fun getExpression(element: ParadoxLocalisationScriptedVariableReference): String {
-        return element.text
-    }
-
     //endregion
 
     //region ParadoxLocalisationCommand
@@ -362,17 +352,6 @@ object ParadoxLocalisationPsiImplUtil {
     fun setValue(element: ParadoxLocalisationCommandText, value: String): ParadoxLocalisationCommandText {
         val newElement = ParadoxLocalisationElementFactory.createCommandText(element.project, value)
         return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun getType(element: ParadoxLocalisationCommandText): ParadoxType? {
-        if (element.isCommandExpression()) return ParadoxType.CommandExpression
-        return null
-    }
-
-    @JvmStatic
-    fun getExpression(element: ParadoxLocalisationCommandText): String {
-        return element.name
     }
 
     //endregion
@@ -519,17 +498,6 @@ object ParadoxLocalisationPsiImplUtil {
     fun setValue(element: ParadoxLocalisationConceptName, value: String): ParadoxLocalisationConceptName {
         val newElement = ParadoxLocalisationElementFactory.createConceptName(element.project, value)
         return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun getType(element: ParadoxLocalisationConceptName): ParadoxType? {
-        if (element.isDatabaseObjectExpression()) return ParadoxType.DatabaseObjectExpression
-        return null
-    }
-
-    @JvmStatic
-    fun getExpression(element: ParadoxLocalisationConceptName): String {
-        return element.name
     }
 
     //endregion

@@ -50,7 +50,7 @@ property ::= property_key property_separator property_value {
   ]
 }
 property_key ::= PROPERTY_KEY_TOKEN {
-  methods=[getIcon getName getValue setValue getType getConfigType]
+  methods=[getIcon getName getValue setValue]
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
@@ -65,28 +65,28 @@ value ::= boolean | int | float | string | block {
     "icu.windea.pls.cwt.psi.CwtMemberElement"
     "icu.windea.pls.cwt.psi.CwtOptionMemberElement"
   ]
-  methods=[getIcon getName getValue setValue getType getConfigType]
+  methods=[getIcon getName getValue setValue]
 }
 boolean ::= BOOLEAN_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getBooleanValue getType getConfigType]
+  methods=[getBooleanValue]
 }
 int ::= INT_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getIntValue getType getConfigType]
+  methods=[getIntValue]
 }
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
   ]
-  methods=[getFloatValue getType getConfigType]
+  methods=[getFloatValue]
 }
 string ::= STRING_TOKEN {
   extends=value
@@ -96,7 +96,7 @@ string ::= STRING_TOKEN {
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
-  methods=[getIcon getName setName getNameIdentifier getValue setValue getStringValue getType getConfigType]
+  methods=[getIcon getName setName getNameIdentifier getValue setValue getStringValue]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
@@ -106,7 +106,7 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtBlockElement"
   ]
-  methods=[getIcon getName setName getValue setValue isEmpty isNotEmpty getComponents getType getConfigType]
+  methods=[getIcon getName setName getValue setValue isEmpty isNotEmpty getComponents]
 }
 private block_item ::= general_comment | property | option | value {
   recoverWhile="#auto"

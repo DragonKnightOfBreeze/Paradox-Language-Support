@@ -13,7 +13,6 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.model.ParadoxType;
 
 public class ParadoxScriptFloatImpl extends ParadoxScriptValueImpl implements ParadoxScriptFloat {
 
@@ -33,8 +32,7 @@ public class ParadoxScriptFloatImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  @NotNull
-  public String getValue() {
+  public @NotNull String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
   }
 
@@ -44,44 +42,32 @@ public class ParadoxScriptFloatImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  @NotNull
-  public ParadoxType getType() {
-    return ParadoxScriptPsiImplUtil.getType(this);
-  }
-
-  @Override
-  @Nullable
-  public PsiReference getReference() {
+  public @Nullable PsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
 
   @Override
-  @NotNull
-  public PsiReference[] getReferences() {
+  public @NotNull PsiReference @NotNull [] getReferences() {
     return ParadoxScriptPsiImplUtil.getReferences(this);
   }
 
   @Override
-  @NotNull
-  public String toString() {
+  public @NotNull String toString() {
     return ParadoxScriptPsiImplUtil.toString(this);
   }
 
   @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
+  public @NotNull ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  @NotNull
-  public GlobalSearchScope getResolveScope() {
+  public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  @NotNull
-  public SearchScope getUseScope() {
+  public @NotNull SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 

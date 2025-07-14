@@ -7,6 +7,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.codeInsight.*
 import icu.windea.pls.model.*
 
 private val logger = logger<CwtConfigResolver>()

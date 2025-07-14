@@ -21,6 +21,7 @@ import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.reference.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.codeInsight.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*

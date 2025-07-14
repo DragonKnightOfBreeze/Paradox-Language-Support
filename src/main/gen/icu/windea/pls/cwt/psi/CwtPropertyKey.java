@@ -8,8 +8,6 @@ import com.intellij.psi.PsiLiteralValue;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.config.CwtConfigType;
-import icu.windea.pls.model.CwtType;
 import javax.swing.Icon;
 
 public interface CwtPropertyKey extends PsiLiteralValue, CwtStringExpressionElement {
@@ -21,10 +19,6 @@ public interface CwtPropertyKey extends PsiLiteralValue, CwtStringExpressionElem
   @NotNull String getValue();
 
   @NotNull CwtPropertyKey setValue(@NotNull String value);
-
-  @NotNull CwtType getType();
-
-  @Nullable CwtConfigType getConfigType();
 
   @NotNull ItemPresentation getPresentation();
 

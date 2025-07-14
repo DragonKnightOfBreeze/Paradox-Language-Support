@@ -5,30 +5,18 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
-import icu.windea.pls.lang.psi.ParadoxTypedElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.model.ParadoxType;
 
-public interface ParadoxScriptInlineMathNumber extends ParadoxScriptInlineMathFactor, PsiLiteralValue, ParadoxTypedElement {
+public interface ParadoxScriptInlineMathNumber extends ParadoxScriptInlineMathFactor, PsiLiteralValue {
 
-  @NotNull
-  String getValue();
+  @NotNull String getValue();
 
-  @NotNull
-  ParadoxType getType();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  String getExpression();
+  @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull
-  ItemPresentation getPresentation();
-
-  @NotNull
-  GlobalSearchScope getResolveScope();
-
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

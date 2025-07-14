@@ -7,16 +7,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.config.CwtConfigType;
-import icu.windea.pls.model.CwtType;
 
 public interface CwtBoolean extends CwtValue, PsiLiteralValue {
 
   boolean getBooleanValue();
-
-  @NotNull CwtType getType();
-
-  @Nullable CwtConfigType getConfigType();
 
   @NotNull ItemPresentation getPresentation();
 

@@ -3,6 +3,7 @@ package icu.windea.pls.lang.expression
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.codeInsight.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
@@ -31,11 +32,11 @@ interface ParadoxScriptExpression {
         val UnknownExpression: ParadoxScriptExpression = Impl(PlsStringConstants.unknown, ParadoxType.Unknown, false, false)
 
         fun resolve(value: String, quoted: Boolean, isKey: Boolean? = null): ParadoxScriptExpression {
-            return Impl(value, ParadoxTypeManager.resolve(value), quoted, isKey)
+            return Impl(value, ParadoxTypeResolver.resolve(value), quoted, isKey)
         }
 
         fun resolve(text: String, isKey: Boolean? = null): ParadoxScriptExpression {
-            return Impl(text.unquote(), ParadoxTypeManager.resolve(text), text.isLeftQuoted(), isKey)
+            return Impl(text.unquote(), ParadoxTypeResolver.resolve(text), text.isLeftQuoted(), isKey)
         }
 
         fun resolve(element: ParadoxScriptExpressionElement, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): ParadoxScriptExpression {

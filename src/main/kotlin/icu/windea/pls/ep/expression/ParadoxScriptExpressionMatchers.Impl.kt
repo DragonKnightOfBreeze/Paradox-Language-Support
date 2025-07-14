@@ -8,6 +8,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.util.*
@@ -54,7 +55,7 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             }
             configExpression.type == CwtDataTypes.Int -> {
                 //quoted number (e.g., "1") -> ok according to vanilla game files
-                if (expression.type.isIntType() || ParadoxTypeManager.resolve(expression.value).isIntType()) {
+                if (expression.type.isIntType() || ParadoxTypeResolver.resolve(expression.value).isIntType()) {
                     val (min, max) = configExpression.intRange ?: return Result.ExactMatch
                     return Result.LazySimpleMatch p@{
                         val value = expression.value.toIntOrNull() ?: return@p true
@@ -65,7 +66,7 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             }
             configExpression.type == CwtDataTypes.Float -> {
                 //quoted number (e.g., "1") -> ok according to vanilla game files
-                if (expression.type.isFloatType() || ParadoxTypeManager.resolve(expression.value).isFloatType()) {
+                if (expression.type.isFloatType() || ParadoxTypeResolver.resolve(expression.value).isFloatType()) {
                     val (min, max) = configExpression.floatRange ?: return Result.ExactMatch
                     return Result.LazySimpleMatch p@{
                         val value = expression.value.toFloatOrNull() ?: return@p true
@@ -102,13 +103,13 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         return when {
             dataType == CwtDataTypes.PercentageField -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
-                val r = ParadoxTypeManager.isPercentageField(expression.value)
+                val r = ParadoxTypeResolver.isPercentageField(expression.value)
                 Result.of(r)
             }
             dataType == CwtDataTypes.DateField -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 val datePattern = configExpression.value
-                val r = ParadoxTypeManager.isDateField(expression.value, datePattern)
+                val r = ParadoxTypeResolver.isDateField(expression.value, datePattern)
                 Result.of(r)
             }
             dataType == CwtDataTypes.Localisation -> {
@@ -188,9 +189,9 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             dataType in CwtDataTypeGroups.ValueField -> {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
                 if (dataType == CwtDataTypes.ValueField) {
-                    if (expression.type.isFloatType() || ParadoxTypeManager.resolve(expression.value).isFloatType()) return Result.ExactMatch
+                    if (expression.type.isFloatType() || ParadoxTypeResolver.resolve(expression.value).isFloatType()) return Result.ExactMatch
                 } else if (dataType == CwtDataTypes.IntValueField) {
-                    if (expression.type.isIntType() || ParadoxTypeManager.resolve(expression.value).isIntType()) return Result.ExactMatch
+                    if (expression.type.isIntType() || ParadoxTypeResolver.resolve(expression.value).isIntType()) return Result.ExactMatch
                 }
 
                 if (!expression.type.isStringType()) return Result.NotMatch
@@ -204,9 +205,9 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             dataType in CwtDataTypeGroups.VariableField -> {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
                 if (dataType == CwtDataTypes.VariableField) {
-                    if (expression.type.isFloatType() || ParadoxTypeManager.resolve(expression.value).isFloatType()) return Result.ExactMatch
+                    if (expression.type.isFloatType() || ParadoxTypeResolver.resolve(expression.value).isFloatType()) return Result.ExactMatch
                 } else if (dataType == CwtDataTypes.IntVariableField) {
-                    if (expression.type.isIntType() || ParadoxTypeManager.resolve(expression.value).isIntType()) return Result.ExactMatch
+                    if (expression.type.isIntType() || ParadoxTypeResolver.resolve(expression.value).isIntType()) return Result.ExactMatch
                 }
 
                 if (!expression.type.isStringType()) return Result.NotMatch

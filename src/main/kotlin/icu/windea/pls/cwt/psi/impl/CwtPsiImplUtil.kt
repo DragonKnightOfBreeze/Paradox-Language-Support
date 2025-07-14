@@ -343,24 +343,6 @@ object CwtPsiImplUtil {
     //endregion
 
     @JvmStatic
-    fun getType(element: CwtExpressionElement): CwtType {
-        return when (element) {
-            is CwtPropertyKey -> CwtType.String
-            is CwtBoolean -> CwtType.Boolean
-            is CwtInt -> CwtType.Int
-            is CwtFloat -> CwtType.Float
-            is CwtString -> CwtType.String
-            is CwtBlock -> CwtType.Block
-            else -> CwtType.Unknown
-        }
-    }
-
-    @JvmStatic
-    fun getConfigType(element: PsiElement): CwtConfigType? {
-        return CwtConfigManager.getConfigType(element)
-    }
-
-    @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
         return CwtItemPresentation(element)
     }

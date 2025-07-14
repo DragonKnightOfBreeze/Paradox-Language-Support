@@ -11,6 +11,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.lang.codeInsight.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -22,7 +23,7 @@ class ParadoxRangedIntChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         val configExpression = config.configExpression
         if (configExpression.type != CwtDataTypes.Int) return //for int only
-        val expression = element.expression ?: return
+        val expression = element.expression
         val (min0, max0) = configExpression.intRange ?: return
         val min = min0 ?: Int.MIN_VALUE
         val max = max0 ?: Int.MAX_VALUE
@@ -41,7 +42,7 @@ class ParadoxRangedFloatChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         val configExpression = config.configExpression
         if (configExpression.type != CwtDataTypes.Int && configExpression.type != CwtDataTypes.Float) return //for int and float
-        val expression = element.expression ?: return
+        val expression = element.expression
         val (min0, max0) = configExpression.floatRange ?: return
         val min = min0 ?: Float.MIN_VALUE
         val max = max0 ?: Float.MAX_VALUE
@@ -60,7 +61,7 @@ class ParadoxColorFieldChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxScriptExpressionElement, config: CwtMemberConfig<*>, holder: ProblemsHolder) {
         val configExpression = config.configExpression
         if (configExpression.type != CwtDataTypes.ColorField) return
-        val expression = element.expression ?: return
+        val expression = element.expression
         if (element !is ParadoxScriptColor) return
         val expectedColorType = configExpression.value ?: return
         val colorType = element.colorType
@@ -84,7 +85,7 @@ class ParadoxScopeBasedScopeFieldExpressionChecker : ParadoxIncorrectExpressionC
         val parentScopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement) ?: ParadoxScopeManager.getAnyScopeContext()
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)
         if (ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)) return
-        val expression = element.expression ?: return
+        val expression = element.expression
         val message = PlsBundle.message("incorrectExpressionChecker.expect.scope", expression, expectedScope, scopeContext.scope.id)
         holder.registerProblem(element, message)
     }
@@ -104,7 +105,7 @@ class ParadoxScopeGroupBasedScopeFieldExpressionChecker : ParadoxIncorrectExpres
         val parentScopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement) ?: ParadoxScopeManager.getAnyScopeContext()
         val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, parentScopeContext)
         if (ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)) return
-        val expression = element.expression ?: return
+        val expression = element.expression
         val message = PlsBundle.message("incorrectExpressionChecker.expect.scopeGroup", expression, expectedScopeGroup, scopeContext.scope.id)
         holder.registerProblem(element, message)
     }
@@ -153,7 +154,7 @@ class ParadoxTriggerInSwitchChecker : ParadoxIncorrectExpressionChecker {
         val configGroup = config.configGroup
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
         if (resultTriggerConfigs.none { !it.config.isBlock }) {
-            holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.simpleTrigger", element.expression.orEmpty()))
+            holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.simpleTrigger", element.expression))
         }
     }
 }
@@ -179,7 +180,7 @@ class ParadoxTriggerInTriggerWithParametersAwareChecker : ParadoxIncorrectExpres
         val resultTriggerConfigs = configGroup.aliasGroups.get("trigger")?.get(triggerName)?.orNull() ?: return
         if (hasParameters(element)) {
             if (resultTriggerConfigs.none { it.config.isBlock }) {
-                holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.complexTrigger", element.expression.orEmpty()))
+                holder.registerProblem(element, PlsBundle.message("incorrectExpressionChecker.expect.complexTrigger", element.expression))
             }
         } else {
             //can also be complex trigger here, for some parameters can be ignored (like "count = xxx")

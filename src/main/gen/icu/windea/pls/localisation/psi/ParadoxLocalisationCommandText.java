@@ -10,7 +10,6 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.model.ParadoxType;
 
 public interface ParadoxLocalisationCommandText extends NavigatablePsiElement, ContributedReferenceHost, ParadoxLocalisationExpressionElement, ParadoxLocalisationParameterAwareElement {
 
@@ -21,10 +20,6 @@ public interface ParadoxLocalisationCommandText extends NavigatablePsiElement, C
   @NotNull String getValue();
 
   @NotNull ParadoxLocalisationCommandText setValue(@NotNull String value);
-
-  @Nullable ParadoxType getType();
-
-  @NotNull String getExpression();
 
   @Nullable PsiReference getReference();
 

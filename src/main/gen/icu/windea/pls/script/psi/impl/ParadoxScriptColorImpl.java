@@ -12,7 +12,6 @@ import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.model.ParadoxType;
 import java.awt.Color;
 
 public class ParadoxScriptColorImpl extends ParadoxScriptValueImpl implements ParadoxScriptColor {
@@ -33,26 +32,22 @@ public class ParadoxScriptColorImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  @NotNull
-  public String getValue() {
+  public @NotNull String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
   }
 
   @Override
-  @NotNull
-  public String getColorType() {
+  public @NotNull String getColorType() {
     return ParadoxScriptPsiImplUtil.getColorType(this);
   }
 
   @Override
-  @NotNull
-  public List<String> getColorArgs() {
+  public @NotNull List<@NotNull String> getColorArgs() {
     return ParadoxScriptPsiImplUtil.getColorArgs(this);
   }
 
   @Override
-  @Nullable
-  public Color getColor() {
+  public @Nullable Color getColor() {
     return ParadoxScriptPsiImplUtil.getColor(this);
   }
 
@@ -62,32 +57,22 @@ public class ParadoxScriptColorImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  @NotNull
-  public ParadoxType getType() {
-    return ParadoxScriptPsiImplUtil.getType(this);
-  }
-
-  @Override
-  @NotNull
-  public String toString() {
+  public @NotNull String toString() {
     return ParadoxScriptPsiImplUtil.toString(this);
   }
 
   @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
+  public @NotNull ItemPresentation getPresentation() {
     return ParadoxScriptPsiImplUtil.getPresentation(this);
   }
 
   @Override
-  @NotNull
-  public GlobalSearchScope getResolveScope() {
+  public @NotNull GlobalSearchScope getResolveScope() {
     return ParadoxScriptPsiImplUtil.getResolveScope(this);
   }
 
   @Override
-  @NotNull
-  public SearchScope getUseScope() {
+  public @NotNull SearchScope getUseScope() {
     return ParadoxScriptPsiImplUtil.getUseScope(this);
   }
 

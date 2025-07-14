@@ -10,7 +10,6 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.model.ParadoxType;
 import javax.swing.Icon;
 
 public interface ParadoxScriptBlock extends ParadoxScriptValue, ContributedReferenceHost, ParadoxScriptBlockElement {
@@ -21,44 +20,28 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ContributedRefer
   @NotNull
   List<ParadoxScriptScriptedVariable> getScriptedVariableList();
 
-  @NotNull
-  List<ParadoxScriptProperty> getPropertyList();
+  @NotNull List<@NotNull ParadoxScriptProperty> getPropertyList();
 
-  @NotNull
-  List<ParadoxScriptValue> getValueList();
+  @NotNull List<@NotNull ParadoxScriptValue> getValueList();
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull
-  String getValue();
+  @NotNull String getValue();
 
   boolean isEmpty();
 
   boolean isNotEmpty();
 
-  @NotNull
-  List<PsiElement> getComponents();
+  @NotNull List<@NotNull PsiElement> getComponents();
 
-  @NotNull
-  ParadoxType getType();
+  @Nullable PsiReference getReference();
 
-  @NotNull
-  String getExpression();
+  @NotNull PsiReference @NotNull [] getReferences();
 
-  @Nullable
-  PsiReference getReference();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  PsiReference[] getReferences();
+  @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull
-  ItemPresentation getPresentation();
-
-  @NotNull
-  GlobalSearchScope getResolveScope();
-
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

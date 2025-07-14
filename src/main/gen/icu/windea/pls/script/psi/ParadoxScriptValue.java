@@ -8,39 +8,22 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.model.ParadoxType;
 import javax.swing.Icon;
 
 public interface ParadoxScriptValue extends ParadoxScriptExpressionElement, ParadoxScriptMemberElement {
 
-  @NotNull
-  Icon getIcon(@IconFlags int flags);
+  @NotNull Icon getIcon(@IconFlags int flags);
 
-  @NotNull
-  String getName();
+  @NotNull String getName();
 
-  @NotNull
-  String getValue();
+  @NotNull String getValue();
 
-  @NotNull
-  ParadoxScriptValue setValue(@NotNull String value);
+  @NotNull ParadoxScriptValue setValue(@NotNull String value);
 
-  @NotNull
-  ParadoxType getType();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  String getExpression();
+  @NotNull GlobalSearchScope getResolveScope();
 
-  @Nullable
-  String getConfigExpression();
-
-  @NotNull
-  ItemPresentation getPresentation();
-
-  @NotNull
-  GlobalSearchScope getResolveScope();
-
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }

@@ -15,7 +15,6 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.model.ParadoxType;
 import javax.swing.Icon;
 
 public class ParadoxLocalisationConceptNameImpl extends ASTWrapperPsiElement implements ParadoxLocalisationConceptName {
@@ -57,16 +56,6 @@ public class ParadoxLocalisationConceptNameImpl extends ASTWrapperPsiElement imp
   @Override
   public @NotNull ParadoxLocalisationConceptName setValue(@NotNull String value) {
     return ParadoxLocalisationPsiImplUtil.setValue(this, value);
-  }
-
-  @Override
-  public @Nullable ParadoxType getType() {
-    return ParadoxLocalisationPsiImplUtil.getType(this);
-  }
-
-  @Override
-  public @NotNull String getExpression() {
-    return ParadoxLocalisationPsiImplUtil.getExpression(this);
   }
 
   @Override

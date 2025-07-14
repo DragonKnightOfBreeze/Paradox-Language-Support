@@ -12,7 +12,6 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference;
-import icu.windea.pls.model.ParadoxType;
 import javax.swing.Icon;
 
 public interface ParadoxLocalisationScriptedVariableReference extends NavigatablePsiElement, ParadoxScriptedVariableReference {
@@ -26,10 +25,6 @@ public interface ParadoxLocalisationScriptedVariableReference extends Navigatabl
   @NotNull ParadoxLocalisationScriptedVariableReference setName(@NotNull String name);
 
   @Nullable ParadoxScriptedVariablePsiReference getReference();
-
-  @NotNull ParadoxType getType();
-
-  @NotNull String getExpression();
 
   @NotNull ItemPresentation getPresentation();
 

@@ -9,6 +9,4 @@ import icu.windea.pls.model.*
  */
 interface ParadoxScriptExpressionElement : ParadoxExpressionElement {
     override fun setValue(value: String): ParadoxScriptExpressionElement
-
-    override val type: ParadoxType
 }

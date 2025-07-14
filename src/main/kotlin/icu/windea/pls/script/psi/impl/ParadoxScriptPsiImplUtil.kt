@@ -823,60 +823,6 @@ object ParadoxScriptPsiImplUtil {
     //endregion
 
     @JvmStatic
-    fun getType(element: PsiElement): ParadoxType {
-        return when (element) {
-            is ParadoxScriptScriptedVariable -> element.scriptedVariableValue?.type ?: ParadoxType.Unknown
-            is ParadoxScriptProperty -> element.propertyValue?.type ?: ParadoxType.Unknown
-            is ParadoxScriptPropertyKey -> ParadoxTypeManager.resolve(element.value)
-            is ParadoxScriptScriptedVariableReference -> element.reference?.resolve()?.type ?: ParadoxType.Unknown
-            is ParadoxScriptBoolean -> ParadoxType.Boolean
-            is ParadoxScriptInt -> ParadoxType.Int
-            is ParadoxScriptFloat -> ParadoxType.Float
-            is ParadoxScriptString -> ParadoxType.String
-            is ParadoxScriptColor -> ParadoxType.Color
-            is ParadoxScriptBlock -> ParadoxType.Block
-            is ParadoxScriptInlineMath -> ParadoxType.InlineMath
-            is ParadoxScriptInlineMathNumber -> ParadoxTypeManager.resolve(element.text)
-            is ParadoxScriptInlineMathScriptedVariableReference -> element.reference?.resolve()?.type ?: ParadoxType.Unknown
-            else -> ParadoxType.Unknown
-        }
-    }
-
-    @JvmStatic
-    fun getExpression(element: PsiElement): String {
-        return when (element) {
-            is ParadoxScriptProperty -> {
-                val keyExpression = element.propertyKey.expression
-                val valueExpression = element.propertyValue?.expression ?: PlsStringConstants.unresolved
-                "$keyExpression = $valueExpression"
-            }
-            is ParadoxScriptBlock -> PlsStringConstants.blockFolder
-            is ParadoxScriptInlineMath -> PlsStringConstants.inlineMathFolder
-            else -> element.text
-        }
-    }
-
-    @JvmStatic
-    fun getConfigExpression(element: PsiElement): String? {
-        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
-        return when (element) {
-            is ParadoxScriptProperty -> {
-                if (config !is CwtPropertyConfig) return null
-                "${config.key} = ${config.value}"
-            }
-            is ParadoxScriptPropertyKey -> {
-                if (config !is CwtPropertyConfig) return null
-                config.key
-            }
-            is ParadoxScriptValue -> {
-                if (config !is CwtValueConfig) return null
-                config.value
-            }
-            else -> null
-        }
-    }
-
-    @JvmStatic
     fun getReference(element: PsiElement): PsiReference? {
         return element.references.singleOrNull()
     }

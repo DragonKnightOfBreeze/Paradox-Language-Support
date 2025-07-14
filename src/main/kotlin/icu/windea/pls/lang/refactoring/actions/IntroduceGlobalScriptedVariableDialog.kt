@@ -13,6 +13,7 @@ import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.*
@@ -113,7 +114,7 @@ class IntroduceGlobalScriptedVariableDialog(
     private fun ValidationInfoBuilder.validateScriptedVariableValue(): ValidationInfo? {
         if (variableValue.isEmpty()) {
             return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue.invalid.0"))
-        } else if (!ParadoxTypeManager.resolve(variableValue).canBeScriptedVariableValue()) {
+        } else if (!ParadoxTypeResolver.resolve(variableValue).canBeScriptedVariableValue()) {
             return error(PlsBundle.message("script.dialog.introduceGlobalScriptedVariable.variableValue.invalid.1"))
         }
         return null

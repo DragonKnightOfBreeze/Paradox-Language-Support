@@ -11,8 +11,6 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import icu.windea.pls.cwt.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.config.CwtConfigType;
-import icu.windea.pls.model.CwtType;
 
 public class CwtIntImpl extends CwtValueImpl implements CwtInt {
 
@@ -34,16 +32,6 @@ public class CwtIntImpl extends CwtValueImpl implements CwtInt {
   @Override
   public int getIntValue() {
     return CwtPsiImplUtil.getIntValue(this);
-  }
-
-  @Override
-  public @NotNull CwtType getType() {
-    return CwtPsiImplUtil.getType(this);
-  }
-
-  @Override
-  public @Nullable CwtConfigType getConfigType() {
-    return CwtPsiImplUtil.getConfigType(this);
   }
 
   @Override

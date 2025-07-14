@@ -13,22 +13,16 @@ public interface ParadoxScriptScriptedVariableName extends ParadoxParameterAware
   @NotNull
   List<ParadoxScriptInlineParameterCondition> getInlineParameterConditionList();
 
-  @Nullable
-  PsiElement getIdElement();
+  @Nullable PsiElement getIdElement();
 
-  @Nullable
-  String getName();
+  @Nullable String getName();
 
-  @Nullable
-  String getValue();
+  @Nullable String getValue();
 
-  @NotNull
-  ItemPresentation getPresentation();
+  @NotNull ItemPresentation getPresentation();
 
-  @NotNull
-  GlobalSearchScope getResolveScope();
+  @NotNull GlobalSearchScope getResolveScope();
 
-  @NotNull
-  SearchScope getUseScope();
+  @NotNull SearchScope getUseScope();
 
 }
