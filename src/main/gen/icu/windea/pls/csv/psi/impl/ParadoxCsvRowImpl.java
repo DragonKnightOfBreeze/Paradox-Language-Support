@@ -49,6 +49,11 @@ public class ParadoxCsvRowImpl extends ParadoxCsvStubElementImpl<ParadoxCsvRowSt
   }
 
   @Override
+  public @NotNull List<@NotNull ParadoxCsvColumn> getComponents() {
+    return ParadoxCsvPsiImplUtil.getComponents(this);
+  }
+
+  @Override
   public @NotNull String toString() {
     return ParadoxCsvPsiImplUtil.toString(this);
   }

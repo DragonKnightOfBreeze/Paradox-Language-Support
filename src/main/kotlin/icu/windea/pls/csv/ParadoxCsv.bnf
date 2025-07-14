@@ -21,14 +21,20 @@
 root ::= COMMENT * header ? (row | COMMENT) *
 
 header ::= row_item {
-  implements="com.intellij.psi.NavigatablePsiElement"
-  methods=[getIcon toString]
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"
+    "com.intellij.psi.PsiListLikeElement"
+  ]
+  methods=[getIcon getComponents toString]
 }
 row ::= row_item {
   extends="icu.windea.pls.csv.psi.impl.ParadoxCsvStubElementImpl<?>"
   stubClass="icu.windea.pls.csv.psi.ParadoxCsvRowStub"
-  implements="com.intellij.psi.NavigatablePsiElement"
-  methods=[getIcon toString]
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"
+    "com.intellij.psi.PsiListLikeElement"
+  ]
+  methods=[getIcon getComponents toString]
 }
 private row_item ::= column column_item_with_separator * {
   pin=1
