@@ -14,7 +14,7 @@ import com.intellij.platform.backend.documentation.*
 import com.intellij.platform.backend.presentation.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
 
@@ -69,7 +69,7 @@ fun getDocumentationTargets(element: PsiElement, originalElement: PsiElement?): 
     val targets = psiDocumentationTargets(element, originalElement)
     if (targets.isNotEmpty()) return targets
 
-    return getDocumentationTarget(element, originalElement).toSingletonListOrEmpty()
+    return getDocumentationTarget(element, originalElement).singleton().listOrEmpty()
 }
 
 @Suppress("UNUSED_PARAMETER")

@@ -1,9 +1,9 @@
 package icu.windea.pls.localisation.navigation
 
-import icu.windea.pls.PlsIcons
-import icu.windea.pls.lang.navigation.ParadoxItemPresentation
-import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
-import javax.swing.Icon
+import icu.windea.pls.*
+import icu.windea.pls.lang.navigation.*
+import icu.windea.pls.localisation.psi.*
+import javax.swing.*
 
 class ParadoxLocalisationPresentation(
     element: ParadoxLocalisationProperty

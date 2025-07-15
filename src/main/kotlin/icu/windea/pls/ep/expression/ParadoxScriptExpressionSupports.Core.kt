@@ -12,7 +12,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.expression.ParadoxScriptExpressionSupport.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
@@ -192,7 +192,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         val configGroup = config.configGroup
         val project = configGroup.project
         if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
-            return expressionText.toVirtualFile(false)?.toPsiFile(project).toSingletonSetOrEmpty()
+            return expressionText.toVirtualFile(false)?.toPsiFile(project).singleton().setOrEmpty()
         } else {
             //if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
             val pathReference = expressionText.normalizePath()

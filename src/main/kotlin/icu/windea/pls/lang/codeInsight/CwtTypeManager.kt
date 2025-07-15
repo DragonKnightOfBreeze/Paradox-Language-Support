@@ -4,7 +4,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.util.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
@@ -56,8 +56,8 @@ object CwtTypeManager {
             is CwtValue -> {
                 val configType = getConfigType(element) ?: return emptyList()
                 when (configType) {
-                    CwtConfigTypes.EnumValue -> element.parent.toSingletonListOrEmpty()
-                    CwtConfigTypes.DynamicValue -> element.parent.toSingletonListOrEmpty()
+                    CwtConfigTypes.EnumValue -> element.parent.singleton().listOrEmpty()
+                    CwtConfigTypes.DynamicValue -> element.parent.singleton().listOrEmpty()
                     else -> emptyList()
                 }
             }

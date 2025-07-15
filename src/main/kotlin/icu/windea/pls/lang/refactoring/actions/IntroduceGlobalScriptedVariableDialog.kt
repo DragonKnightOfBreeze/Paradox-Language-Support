@@ -13,8 +13,7 @@ import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.ParadoxTypeResolver
-import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.codeInsight.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.*
 

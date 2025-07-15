@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.codeInsight
 
-import com.intellij.codeInsight.navigation.actions.TypeDeclarationProvider
-import com.intellij.psi.PsiElement
+import com.intellij.codeInsight.navigation.actions.*
+import com.intellij.psi.*
 
 /**
  * 用于导航到类型声明（`Navigate > Type Declaration`）。

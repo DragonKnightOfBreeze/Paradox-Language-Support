@@ -1,10 +1,9 @@
 package icu.windea.pls.lang.codeInsight
 
-import fleet.multiplatform.shims.ConcurrentHashMap
-import icu.windea.pls.core.isExactDigit
-import icu.windea.pls.core.orNull
-import icu.windea.pls.model.ParadoxType
-import java.time.format.DateTimeFormatter
+import fleet.multiplatform.shims.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.*
+import java.time.format.*
 
 object ParadoxTypeResolver {
     private val percentageFieldRegex = """[1-9]?[0-9]+%""".toRegex()

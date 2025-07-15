@@ -11,8 +11,8 @@ import dev.langchain4j.kotlin.model.chat.*
 import icu.windea.pls.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.coroutines.*
-import icu.windea.pls.core.smaller
 import icu.windea.pls.lang.util.manipulators.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*

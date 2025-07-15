@@ -1,23 +1,12 @@
 package icu.windea.pls.csv.psi
 
-import com.intellij.lang.ASTNode
-import com.intellij.lang.LighterAST
-import com.intellij.lang.LighterASTNode
-import com.intellij.psi.stubs.ILightStubElementType
-import com.intellij.psi.stubs.IndexSink
-import com.intellij.psi.stubs.StubBase
-import com.intellij.psi.stubs.StubElement
-import com.intellij.psi.stubs.StubInputStream
-import com.intellij.psi.stubs.StubOutputStream
-import icu.windea.pls.core.writeByte
-import icu.windea.pls.csv.ParadoxCsvLanguage
-import icu.windea.pls.csv.psi.impl.ParadoxCsvRowImpl
-import icu.windea.pls.lang.index.ParadoxIndexManager
-import icu.windea.pls.lang.util.ParadoxCsvManager
-import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constraints.ParadoxIndexConstraint
-import icu.windea.pls.model.deoptimizeValue
-import icu.windea.pls.model.optimizeValue
+import com.intellij.lang.*
+import com.intellij.psi.stubs.*
+import icu.windea.pls.core.*
+import icu.windea.pls.csv.*
+import icu.windea.pls.csv.psi.impl.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.*
 
 class ParadoxCsvRowStubElementType : ILightStubElementType<ParadoxCsvRowStub, ParadoxCsvRow>("ROW", ParadoxCsvLanguage) {
     override fun getExternalId() = "paradoxCsv.ROW"

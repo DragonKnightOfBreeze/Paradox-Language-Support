@@ -7,7 +7,6 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configContext.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.mock.*
@@ -74,7 +73,7 @@ class BaseCwtConfigContextProvider : CwtConfigContextProvider {
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
         val definitionInfo = context.definitionInfo ?: return null
         val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null
-        val rootConfigs = declarationConfig.toSingletonList()
+        val rootConfigs = declarationConfig.singleton().list()
         val configGroup = context.configGroup
         val contextElement = context.element
         return ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)

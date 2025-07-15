@@ -6,8 +6,8 @@ import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
@@ -21,7 +21,7 @@ class ParadoxSystemCommandScopeNode(
     val config: CwtSystemScopeConfig
 ) : ParadoxComplexExpressionNode.Base(), ParadoxCommandScopeLinkNode {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
-        return config.toSingletonSet()
+        return config.singleton().set()
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {

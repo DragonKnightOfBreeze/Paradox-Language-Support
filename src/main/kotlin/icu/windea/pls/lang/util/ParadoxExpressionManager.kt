@@ -848,7 +848,7 @@ object ParadoxExpressionManager {
         val result = ParadoxScriptExpressionSupport.multiResolve(element, rangeInElement, expressionText, config, isKey)
         if (result.isNotEmpty()) return result
 
-        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).toSingletonSetOrEmpty()
+        if (configExpression.isKey) return getResolvedConfigElement(element, config, config.configGroup).singleton().setOrEmpty()
 
         return emptySet()
     }
@@ -982,21 +982,21 @@ object ParadoxExpressionManager {
                 config.aliasConfig?.let { return getEntryConfigs(it) }
                 config.singleAliasConfig?.let { return getEntryConfigs(it) }
                 config.parentConfig?.configs?.filter { it is CwtPropertyConfig && it.key == config.key }?.let { return it }
-                config.toSingletonList()
+                config.singleton().list()
             }
             config is CwtValueConfig -> {
                 config.propertyConfig?.let { return getEntryConfigs(it) }
                 config.parentConfig?.configs?.filterIsInstance<CwtValueConfig>()?.let { return it }
-                config.toSingletonList()
+                config.singleton().list()
             }
             config is CwtSingleAliasConfig -> {
-                config.config.toSingletonListOrEmpty()
+                config.config.singleton().listOrEmpty()
             }
             config is CwtAliasConfig -> {
                 configGroup.aliasGroups.get(config.name)?.get(config.subName)?.map { it.config }.orEmpty()
             }
             config is CwtInlineConfig -> {
-                config.config.toSingletonListOrEmpty()
+                config.config.singleton().listOrEmpty()
             }
             else -> {
                 emptyList()

@@ -17,7 +17,6 @@ import com.intellij.ui.components.*
 import com.intellij.ui.components.panels.*
 import com.intellij.util.ui.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.images.dds.*
 import icu.windea.pls.images.tga.*
 import org.intellij.images.*
@@ -62,7 +61,7 @@ class ImageEditorUI(
     private val wheelAdapter: ImageWheelAdapter = ImageWheelAdapter()
     private val changeListener: ChangeListener = DocumentChangeListener()
     val imageComponent: ImageComponent = ImageComponent()
-    val contentComponent: JComponent get() = contentPanel
+    //val contentComponent: JComponent get() = contentPanel
     private val contentPanel: JPanel
     private var infoLabel: JLabel? = null
 
@@ -514,7 +513,7 @@ class ImageEditorUI(
         sink[PlatformDataKeys.DELETE_ELEMENT_PROVIDER] = deleteProvider
         sink.lazy(CommonDataKeys.PSI_FILE) { findPsiFile() }
         sink.lazy(CommonDataKeys.PSI_ELEMENT) { findPsiFile() }
-        sink.lazy(PlatformCoreDataKeys.PSI_ELEMENT_ARRAY) { findPsiFile()?.toSingletonArray() ?: PsiElement.EMPTY_ARRAY }
+        sink.lazy(PlatformCoreDataKeys.PSI_ELEMENT_ARRAY) { findPsiFile()?.let { arrayOf(it) } ?: PsiElement.EMPTY_ARRAY }
     }
 
     private fun findPsiFile(): PsiFile? {

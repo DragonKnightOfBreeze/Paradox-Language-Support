@@ -7,7 +7,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
@@ -42,6 +42,6 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
             ParadoxExpressionMatcher.matches(context, expression, config.keyExpression, config, configGroup).get()
         }
         if (matched == null) return emptyList()
-        return stringElement.toSingletonList()
+        return stringElement.singleton().list()
     }
 }

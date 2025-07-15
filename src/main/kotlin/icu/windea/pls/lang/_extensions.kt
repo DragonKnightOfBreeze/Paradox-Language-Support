@@ -12,15 +12,11 @@ import com.intellij.psi.*
 import com.intellij.testFramework.*
 import com.intellij.util.text.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.data.*
-import icu.windea.pls.lang.codeInsight.*
-import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*

@@ -6,7 +6,7 @@ import com.intellij.openapi.options.advanced.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.markdown.*
 import icu.windea.pls.lang.references.symbols.*
 import icu.windea.pls.lang.search.*
@@ -54,20 +54,20 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
                     if (!PlsPatternConstants.scriptedVariableName.matches(name)) return emptySet()
                     val selector = selector(element.project, element).scriptedVariable().contextSensitive()
                     val result = ParadoxGlobalScriptedVariableSearch.search(name, selector).find() ?: return emptySet()
-                    return result.asSymbol().toSingletonSet()
+                    return result.asSymbol().singleton().set()
                 }
                 prefix.isEmpty() -> {
                     run {
                         val selector = selector(element.project, element).definition().contextSensitive()
                         val result = ParadoxDefinitionSearch.search(name, null, selector).find() ?: return@run
-                        return result.asSymbol().toSingletonSet()
+                        return result.asSymbol().singleton().set()
                     }
                     run {
                         if (!PlsPatternConstants.localisationName.matches(name)) return@run
                         val selector = selector(element.project, element).localisation().contextSensitive()
                             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                         val result = ParadoxLocalisationSearch.search(name, selector).find() ?: return@run
-                        return result.asSymbol().toSingletonSet()
+                        return result.asSymbol().singleton().set()
                     }
                     return emptySet()
                 }

@@ -5,7 +5,7 @@ import com.intellij.lang.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.settings.PlsInternalSettings
+import icu.windea.pls.lang.settings.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*

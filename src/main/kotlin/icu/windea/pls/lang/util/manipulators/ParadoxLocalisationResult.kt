@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.util.manipulators
 
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 
 data class ParadoxLocalisationResult(
     val key: String,

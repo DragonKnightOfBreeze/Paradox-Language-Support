@@ -2,7 +2,7 @@ package icu.windea.pls.config.config
 
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 
 sealed interface CwtOptionMemberConfig<out T : PsiElement> : CwtDetachedConfig {
@@ -28,7 +28,7 @@ fun CwtOptionMemberConfig<*>.getOptionValues(): Set<String>? {
 }
 
 fun CwtOptionMemberConfig<*>.getOptionValueOrValues(): Set<String>? {
-    return getOptionValue()?.toSingletonSet() ?: getOptionValues()
+    return getOptionValue()?.let { it.singleton().set() } ?: getOptionValues()
 }
 
 fun CwtOptionMemberConfig<*>.findOption(key: String): CwtOptionConfig? {

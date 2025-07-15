@@ -4,7 +4,7 @@ package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.util.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 
 /**
@@ -68,7 +68,7 @@ private class CwtExtendedInlineScriptConfigImpl(
         if (containerConfig !is CwtPropertyConfig) return emptyList()
         val r = when (contextConfigsType) {
             "multiple" -> containerConfig.configs.orEmpty()
-            else -> containerConfig.valueConfig.toSingletonListOrEmpty()
+            else -> containerConfig.valueConfig.singleton().listOrEmpty()
         }
         if (r.isEmpty()) return emptyList()
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(config, r, config.configGroup)

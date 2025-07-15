@@ -6,7 +6,6 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.configContext.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.config.*
@@ -49,7 +48,7 @@ fun CwtMemberConfig<*>.getOptionValues(): Set<String>? {
 }
 
 fun CwtMemberConfig<*>.getOptionValueOrValues(): Set<String>? {
-    return getOptionValue()?.toSingletonSet() ?: getOptionValues()
+    return getOptionValue()?.let { it.singleton().set() } ?: getOptionValues()
 }
 
 fun CwtMemberConfig<*>.findOption(key: String): CwtOptionConfig? {

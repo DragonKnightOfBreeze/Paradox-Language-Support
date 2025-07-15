@@ -7,6 +7,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.ep.dataExpression.*
 import icu.windea.pls.lang.expression.*
@@ -170,10 +171,10 @@ object CwtConfigManipulator {
                     return listOf(inlineWithConfigs(null, mergedConfigs, c1.configGroup))
                 }
                 val mergedConfig = mergeValueConfig(c1, c2)
-                if (mergedConfig != null) return mergedConfig.toSingletonList()
+                if (mergedConfig != null) return mergedConfig.singleton().list()
             } else if (c1 is CwtPropertyConfig && c2 is CwtPropertyConfig) {
                 val same = getDistinctKey(c1) == getDistinctKey(c2)
-                if (same) return c1.toSingletonList()
+                if (same) return c1.singleton().list()
             } else {
                 return emptyList()
             }

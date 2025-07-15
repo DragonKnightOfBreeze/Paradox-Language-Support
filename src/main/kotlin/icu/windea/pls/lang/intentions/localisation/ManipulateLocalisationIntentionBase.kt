@@ -10,7 +10,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
@@ -73,7 +73,7 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction, DumbAwa
         val selectionEnd = editor.selectionModel.selectionEnd
         if (selectionStart == selectionEnd) {
             val originalElement = file.findElementAt(selectionStart)
-            return originalElement?.parentOfType<ParadoxLocalisationProperty>().toSingletonListOrEmpty()
+            return originalElement?.parentOfType<ParadoxLocalisationProperty>().singleton().listOrEmpty()
         } else {
             val originalStartElement = file.findElementAt(selectionStart) ?: return emptyList()
             val originalEndElement = file.findElementAt(selectionEnd)

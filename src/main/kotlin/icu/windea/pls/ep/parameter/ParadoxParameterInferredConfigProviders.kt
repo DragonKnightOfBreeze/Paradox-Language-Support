@@ -7,7 +7,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.expression.complex.nodes.*
@@ -25,7 +25,7 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
 
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val configGroup = PlsFacade.getConfigGroup(parameterContextInfo.project, parameterContextInfo.gameType)
-        val finalConfigs = getConfig(parameterInfo, configGroup)?.toSingletonList() ?: return null
+        val finalConfigs = getConfig(parameterInfo, configGroup)?.let { it.singleton().list() } ?: return null
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(null, finalConfigs, configGroup)
         return listOf(contextConfig)
     }
@@ -158,13 +158,13 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
                 node.configs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
             }
             node is ParadoxScriptValueNode -> {
-                node.config.toSingletonList().mapNotNull { it.configExpression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
+                node.config.singleton().list().mapNotNull { it.configExpression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
             }
             node is ParadoxScopeLinkNode -> {
-                CwtValueConfig.resolve(emptyPointer(), configGroup, "scope_field").toSingletonList()
+                CwtValueConfig.resolve(emptyPointer(), configGroup, "scope_field").singleton().list()
             }
             node is ParadoxValueFieldNode -> {
-                CwtValueConfig.resolve(emptyPointer(), configGroup, "value_field").toSingletonList()
+                CwtValueConfig.resolve(emptyPointer(), configGroup, "value_field").singleton().list()
             }
             node is ParadoxScriptValueArgumentValueNode -> {
                 val argumentNode = node.argumentNode ?: return emptyList()

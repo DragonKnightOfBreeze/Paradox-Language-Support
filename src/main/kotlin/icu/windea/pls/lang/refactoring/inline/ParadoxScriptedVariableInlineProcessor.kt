@@ -16,7 +16,7 @@ import com.intellij.usageView.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
@@ -70,10 +70,10 @@ class ParadoxScriptedVariableInlineProcessor(
 
     override fun getElementsToWrite(descriptor: UsageViewDescriptor): Collection<PsiElement> {
         return if (inlineThisOnly) {
-            reference?.element.toSingletonListOrEmpty()
+            reference?.element.singleton().listOrEmpty()
         } else {
             if (!element.isWritable) return emptyList()
-            if (reference == null) element.toSingletonList() else listOf(reference.element, element)
+            if (reference == null) element.singleton().list() else listOf(reference.element, element)
         }
     }
 

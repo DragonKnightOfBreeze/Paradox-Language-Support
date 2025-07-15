@@ -1,8 +1,7 @@
 package icu.windea.pls.csv
 
-import com.intellij.openapi.fileTypes.LanguageFileType
-import icu.windea.pls.PlsBundle
-import icu.windea.pls.PlsIcons
+import com.intellij.openapi.fileTypes.*
+import icu.windea.pls.*
 
 object ParadoxCsvFileType: LanguageFileType(ParadoxCsvLanguage) {
     override fun getName() = "Paradox Csv"

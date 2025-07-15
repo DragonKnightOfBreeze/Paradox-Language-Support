@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.vfs.*
 import com.intellij.testFramework.*
 import com.intellij.util.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.util.Processors
 import icu.windea.pls.lang.actions.*
 
@@ -22,7 +22,7 @@ object PlsFileManager {
         val editor = e.editor
         if (editor != null) {
             val file = e.getData(LangDataKeys.VIRTUAL_FILE)
-            return file.toSingletonSetOrEmpty()
+            return file.singleton().setOrEmpty()
         }
         val files = e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)
         if (files.isNullOrEmpty()) return emptySet()

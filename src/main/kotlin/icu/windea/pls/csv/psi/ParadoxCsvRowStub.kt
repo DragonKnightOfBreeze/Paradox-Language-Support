@@ -1,8 +1,7 @@
 package icu.windea.pls.csv.psi
 
-import com.intellij.psi.stubs.StubBase
-import com.intellij.psi.stubs.StubElement
-import icu.windea.pls.model.ParadoxGameType
+import com.intellij.psi.stubs.*
+import icu.windea.pls.model.*
 
 interface ParadoxCsvRowStub : StubElement<ParadoxCsvRow> {
     val name: String

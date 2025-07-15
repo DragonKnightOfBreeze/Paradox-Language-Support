@@ -5,7 +5,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.search.*
@@ -71,7 +71,7 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
             target is ParadoxScriptScriptedVariable -> {
                 val targetPath = target.fileInfo?.path?.path ?: return emptySet()
                 val p = "common/scripted_variables"
-                p.takeIf { targetPath.matchesAntPattern(it) }.toSingletonSetOrEmpty()
+                p.takeIf { targetPath.matchesAntPattern(it) }.singleton().setOrEmpty()
             }
             target is ParadoxScriptDefinitionElement -> {
                 val definitionInfo = target.definitionInfo ?: return emptySet()
@@ -93,7 +93,7 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
                     ParadoxLocalisationCategory.Localisation -> "localisation"
                     ParadoxLocalisationCategory.SyncedLocalisation -> "localisation_synced"
                 }
-                p.takeIf { targetPath.matchesAntPattern(it) }.toSingletonSetOrEmpty()
+                p.takeIf { targetPath.matchesAntPattern(it) }.singleton().setOrEmpty()
             }
             else -> emptySet()
         }
@@ -103,7 +103,7 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
         return when {
             searchParameters is ParadoxGlobalScriptedVariableSearch.SearchParameters -> {
                 val p = "common/scripted_variables"
-                p.toSingletonSet()
+                p.singleton().set()
             }
             searchParameters is ParadoxDefinitionSearch.SearchParameters -> {
                 val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return emptySet()
@@ -121,11 +121,11 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
             }
             searchParameters is ParadoxLocalisationSearch.SearchParameters -> {
                 val p = "localisation"
-                p.toSingletonSet()
+                p.singleton().set()
             }
             searchParameters is ParadoxSyncedLocalisationSearch.SearchParameters -> {
                 val p = "localisation_synced"
-                p.toSingletonSet()
+                p.singleton().set()
             }
             else -> emptySet()
         }

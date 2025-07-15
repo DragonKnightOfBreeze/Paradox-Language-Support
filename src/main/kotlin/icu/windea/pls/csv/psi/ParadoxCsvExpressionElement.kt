@@ -1,6 +1,6 @@
 package icu.windea.pls.csv.psi
 
-import icu.windea.pls.lang.psi.ParadoxExpressionElement
+import icu.windea.pls.lang.psi.*
 
 /**
  * @see ParadoxCsvColumn

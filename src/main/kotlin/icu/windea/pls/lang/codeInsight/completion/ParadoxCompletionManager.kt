@@ -787,7 +787,7 @@ object ParadoxCompletionManager {
         val config = context.config
         val configs = context.configs
 
-        val finalConfigs = if (configs.isNotEmpty()) configs.toListOrThis() else config.toSingletonListOrEmpty()
+        val finalConfigs = if (configs.isNotEmpty()) configs.toListOrThis() else config.singleton().listOrEmpty()
         if (finalConfigs.isEmpty()) return
 
         val textRange = TextRange.create(keywordOffset, keywordOffset + keyword.length)
