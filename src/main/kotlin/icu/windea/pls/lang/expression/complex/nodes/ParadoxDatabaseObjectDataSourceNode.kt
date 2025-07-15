@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.ep.inherit.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
@@ -84,7 +85,7 @@ class ParadoxDatabaseObjectDataSourceNode(
         if (isForcedBase()) return true
         val definitionInfo = element.definitionInfo ?: return false
         if (definitionInfo.name.isEmpty()) return false
-        if (definitionInfo.type != typeToSearch) return false
+        if (!ParadoxDefinitionTypeExpression.resolve(typeToSearch).matches(definitionInfo)) return false
         if (isBase) return true
 
         //filter out mismatched swap definition vs base definition
@@ -93,13 +94,13 @@ class ParadoxDatabaseObjectDataSourceNode(
         val superDefinition = ParadoxDefinitionInheritSupport.getSuperDefinition(element, definitionInfo) ?: return false
         val superDefinitionInfo = superDefinition.definitionInfo ?: return false
         if (superDefinitionInfo.name.isEmpty()) return false
-        return superDefinitionInfo.name == expectedSuperDefinitionName && superDefinitionInfo.type == expectedSuperDefinitionType
+        return superDefinitionInfo.name == expectedSuperDefinitionName && ParadoxDefinitionTypeExpression.resolve(expectedSuperDefinitionType).matches(superDefinitionInfo)
     }
 
     fun getTypeToSearch(isForcedBase: Boolean = false): String? {
         if (config == null) return null
         if (config.localisation != null) {
-            if(!isBase) return null
+            if (!isBase) return null
             return config.localisation
         }
         if (config.type == null) return null
@@ -142,7 +143,7 @@ class ParadoxDatabaseObjectDataSourceNode(
 
         private fun doResolve(): PsiElement? {
             val typeToSearch = node.getTypeToSearch(node.isForcedBase())
-            if(typeToSearch == null) return null
+            if (typeToSearch == null) return null
 
             if (node.config == null) return null
             val element = element
@@ -162,7 +163,7 @@ class ParadoxDatabaseObjectDataSourceNode(
 
         private fun doMultiResolve(): Array<out ResolveResult> {
             val typeToSearch = node.getTypeToSearch(node.isForcedBase())
-            if(typeToSearch == null) return ResolveResult.EMPTY_ARRAY
+            if (typeToSearch == null) return ResolveResult.EMPTY_ARRAY
 
             if (node.config == null) return ResolveResult.EMPTY_ARRAY
             val element = element
