@@ -332,4 +332,4 @@ effect（效果）：
 
 ## 模版引擎
 
-选用 Apache Velocity - IDEA 内置，且足够强大、易用。
+目前选用 [Pebble](https://github.com/PebbleTemplates/pebble) - 强大，易于扩展

@@ -65,6 +65,9 @@ dependencies {
         exclude(group = "com.fasterxml.jackson.core")
     }
 
+    // pebble - https://github.com/PebbleTemplates/pebble
+    implementation("io.pebbletemplates:pebble:3.2.4")
+
     // AI 集成
 
     // LangChain4J - https://github.com/langchain4j/langchain4j

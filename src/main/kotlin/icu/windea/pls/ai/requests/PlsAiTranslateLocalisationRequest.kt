@@ -16,14 +16,14 @@ class PlsAiTranslateLocalisationRequest(
     val context by lazy { createContext() }
 
     fun createContext(): Context {
-        val context = Context()
-        context["filePath"] = filePath
-        context["fileName"] = fileName
-        context["modName"] = modName
-        return Context()
+        val map = mutableMapOf<String, Any?>()
+        map["filePath"] = filePath
+        map["fileName"] = fileName
+        map["modName"] = modName
+        return Context(map)
     }
 
-    class Context : MutableMap<String, Any?> by mutableMapOf() {
+    class Context(map: Map<String, Any?> = emptyMap()) : Map<String, Any?> by map {
         val filePath: String? by this
         val fileName: String? by this
         val modName: String? by this

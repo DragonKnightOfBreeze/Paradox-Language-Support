@@ -2,11 +2,7 @@ package icu.windea.pls.ai.requests
 
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
-import icu.windea.pls.config.config.CwtLocaleConfig
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.manipulators.*
-import icu.windea.pls.model.*
 
 class PlsAiPolishLocalisationRequest(
     project: Project,
@@ -18,14 +14,14 @@ class PlsAiPolishLocalisationRequest(
     val context by lazy { createContext() }
 
     fun createContext(): Context {
-        val context = Context()
-        context["filePath"] = filePath
-        context["fileName"] = fileName
-        context["modName"] = modName
-        return Context()
+        val map = mutableMapOf<String, Any?>()
+        map["filePath"] = filePath
+        map["fileName"] = fileName
+        map["modName"] = modName
+        return Context(map)
     }
 
-    class Context : MutableMap<String, Any?> by mutableMapOf() {
+    class Context(map: Map<String, Any?> = emptyMap()) : Map<String, Any?> by map {
         val filePath: String? by this
         val fileName: String? by this
         val modName: String? by this
