@@ -31,15 +31,11 @@ class ParadoxLocalisationTextIconPsiReference(
     //缓存解析结果以优化性能
 
     private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationTextIconPsiReference, PsiElement> {
-        override fun resolve(ref: ParadoxLocalisationTextIconPsiReference, incompleteCode: Boolean): PsiElement? {
-            return ref.doResolve()
-        }
+        override fun resolve(ref: ParadoxLocalisationTextIconPsiReference, incompleteCode: Boolean) = ref.doResolve()
     }
 
     private object MultiResolver : ResolveCache.PolyVariantResolver<ParadoxLocalisationTextIconPsiReference> {
-        override fun resolve(ref: ParadoxLocalisationTextIconPsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
-            return ref.doMultiResolve()
-        }
+        override fun resolve(ref: ParadoxLocalisationTextIconPsiReference, incompleteCode: Boolean) = ref.doMultiResolve()
     }
 
     override fun resolve(): PsiElement? {

@@ -30,15 +30,11 @@ class ParadoxTemplateSnippetPsiExpressionReference(
     //缓存解析结果以优化性能
 
     private object Resolver : ResolveCache.AbstractResolver<ParadoxTemplateSnippetPsiExpressionReference, PsiElement> {
-        override fun resolve(ref: ParadoxTemplateSnippetPsiExpressionReference, incompleteCode: Boolean): PsiElement? {
-            return ref.doResolve()
-        }
+        override fun resolve(ref: ParadoxTemplateSnippetPsiExpressionReference, incompleteCode: Boolean) = ref.doResolve()
     }
 
     private object MultiResolver : ResolveCache.PolyVariantResolver<ParadoxTemplateSnippetPsiExpressionReference> {
-        override fun resolve(ref: ParadoxTemplateSnippetPsiExpressionReference, incompleteCode: Boolean): Array<out ResolveResult> {
-            return ref.doMultiResolve()
-        }
+        override fun resolve(ref: ParadoxTemplateSnippetPsiExpressionReference, incompleteCode: Boolean) = ref.doMultiResolve()
     }
 
     override fun resolve(): PsiElement? {

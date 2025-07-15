@@ -26,9 +26,7 @@ class ParadoxLocalisationConceptPsiReference(
     //缓存解析结果以优化性能
 
     private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationConceptPsiReference, ParadoxScriptDefinitionElement> {
-        override fun resolve(ref: ParadoxLocalisationConceptPsiReference, incompleteCode: Boolean): ParadoxScriptDefinitionElement? {
-            return ref.doResolve()
-        }
+        override fun resolve(ref: ParadoxLocalisationConceptPsiReference, incompleteCode: Boolean) = ref.doResolve()
     }
 
     override fun resolve(): ParadoxScriptDefinitionElement? {

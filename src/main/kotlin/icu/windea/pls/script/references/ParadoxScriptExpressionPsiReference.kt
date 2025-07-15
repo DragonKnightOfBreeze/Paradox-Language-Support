@@ -77,15 +77,11 @@ class ParadoxScriptExpressionPsiReference(
     //缓存解析结果以优化性能
 
     private object Resolver : ResolveCache.AbstractResolver<ParadoxScriptExpressionPsiReference, PsiElement> {
-        override fun resolve(ref: ParadoxScriptExpressionPsiReference, incompleteCode: Boolean): PsiElement? {
-            return ref.doResolve()
-        }
+        override fun resolve(ref: ParadoxScriptExpressionPsiReference, incompleteCode: Boolean) = ref.doResolve()
     }
 
     private object MultiResolver : ResolveCache.PolyVariantResolver<ParadoxScriptExpressionPsiReference> {
-        override fun resolve(ref: ParadoxScriptExpressionPsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
-            return ref.doMultiResolve()
-        }
+        override fun resolve(ref: ParadoxScriptExpressionPsiReference, incompleteCode: Boolean) = ref.doMultiResolve()
     }
 
     override fun resolve(): PsiElement? {

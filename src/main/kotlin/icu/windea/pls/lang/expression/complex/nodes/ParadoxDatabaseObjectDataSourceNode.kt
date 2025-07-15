@@ -122,15 +122,11 @@ class ParadoxDatabaseObjectDataSourceNode(
         //缓存解析结果以优化性能
 
         private object Resolver : ResolveCache.AbstractResolver<Reference, PsiElement> {
-            override fun resolve(ref: Reference, incompleteCode: Boolean): PsiElement? {
-                return ref.doResolve()
-            }
+            override fun resolve(ref: Reference, incompleteCode: Boolean) = ref.doResolve()
         }
 
         private object MultiResolver : ResolveCache.PolyVariantResolver<Reference> {
-            override fun resolve(ref: Reference, incompleteCode: Boolean): Array<out ResolveResult> {
-                return ref.doMultiResolve()
-            }
+            override fun resolve(ref: Reference, incompleteCode: Boolean) = ref.doMultiResolve()
         }
 
         override fun resolve(): PsiElement? {

@@ -30,21 +30,15 @@ class ParadoxLocalisationPropertyPsiReference(
     //缓存解析结果以优化性能
 
     private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationPropertyPsiReference, PsiElement> {
-        override fun resolve(ref: ParadoxLocalisationPropertyPsiReference, incompleteCode: Boolean): PsiElement? {
-            return ref.doResolve()
-        }
+        override fun resolve(ref: ParadoxLocalisationPropertyPsiReference, incompleteCode: Boolean) = ref.doResolve()
     }
 
     private object MultiResolver : ResolveCache.PolyVariantResolver<ParadoxLocalisationPropertyPsiReference> {
-        override fun resolve(ref: ParadoxLocalisationPropertyPsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
-            return ref.doMultiResolve()
-        }
+        override fun resolve(ref: ParadoxLocalisationPropertyPsiReference, incompleteCode: Boolean) = ref.doMultiResolve()
     }
 
     private object LocResolver : ResolveCache.AbstractResolver<ParadoxLocalisationPropertyPsiReference, PsiElement> {
-        override fun resolve(ref: ParadoxLocalisationPropertyPsiReference, incompleteCode: Boolean): PsiElement? {
-            return ref.doResolve(onlyLocalisation = true)
-        }
+        override fun resolve(ref: ParadoxLocalisationPropertyPsiReference, incompleteCode: Boolean) = ref.doResolve(onlyLocalisation = true)
     }
 
     override fun resolve(): PsiElement? {

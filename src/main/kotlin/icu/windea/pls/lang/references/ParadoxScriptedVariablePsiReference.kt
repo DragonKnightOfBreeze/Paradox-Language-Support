@@ -22,15 +22,11 @@ class ParadoxScriptedVariablePsiReference(
     //缓存解析结果以优化性能
 
     private object Resolver : ResolveCache.AbstractResolver<ParadoxScriptedVariablePsiReference, ParadoxScriptScriptedVariable> {
-        override fun resolve(ref: ParadoxScriptedVariablePsiReference, incompleteCode: Boolean): ParadoxScriptScriptedVariable? {
-            return ref.doResolve()
-        }
+        override fun resolve(ref: ParadoxScriptedVariablePsiReference, incompleteCode: Boolean) = ref.doResolve()
     }
 
     private object MultiResolver : ResolveCache.PolyVariantResolver<ParadoxScriptedVariablePsiReference> {
-        override fun resolve(ref: ParadoxScriptedVariablePsiReference, incompleteCode: Boolean): Array<out ResolveResult> {
-            return ref.doMultiResolve()
-        }
+        override fun resolve(ref: ParadoxScriptedVariablePsiReference, incompleteCode: Boolean) = ref.doMultiResolve()
     }
 
     override fun resolve(): ParadoxScriptScriptedVariable? {
