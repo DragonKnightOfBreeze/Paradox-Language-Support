@@ -34,17 +34,23 @@ class ParadoxDatabaseObjectExpression private constructor(
     override val configGroup: CwtConfigGroup
 ) : ParadoxComplexExpression.Base() {
     val typeNode: ParadoxDatabaseObjectTypeNode?
-        get() = nodes.getOrNull(0)?.cast()
+        get() = nodes.getOrNull(0)?.castOrNull()
     val valueNode: ParadoxDatabaseObjectNode?
-        get() = nodes.getOrNull(2)?.cast()
-    val swapValueNode: ParadoxDatabaseObjectNode?
-        get() = nodes.getOrNull(4)?.cast()
+        get() = nodes.getOrNull(2)?.castOrNull()
+    val swappedValueNode: ParadoxDatabaseObjectNode?
+        get() = nodes.getOrNull(4)?.castOrNull()
 
     override fun validate(): List<ParadoxComplexExpressionError> {
         val errors = mutableListOf<ParadoxComplexExpressionError>()
+        val config = typeNode?.config
         val result = validateAllNodes(errors) {
             when {
-                it is ParadoxDatabaseObjectNode -> it.text.isParameterAwareIdentifier()
+                it is ParadoxDatabaseObjectDataSourceNode -> {
+                    when {
+                        config?.localisation != null -> it.text.isParameterAwareIdentifier('.', '-', '\'')
+                        else -> it.text.isParameterAwareIdentifier()
+                    }
+                }
                 else -> true
             }
         }

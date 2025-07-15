@@ -7,6 +7,7 @@ import com.intellij.lang.parser.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import icu.windea.pls.script.psi.ParadoxScriptTokenSets as TokenSets
 
+@Suppress("UNUSED_PARAMETER")
 object ParadoxScriptParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun postProcessFirstSnippet(b: PsiBuilder, l: Int): Boolean {

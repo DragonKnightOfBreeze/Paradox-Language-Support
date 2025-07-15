@@ -75,7 +75,7 @@ object ParadoxLocalisationAttributesKeys {
     @JvmField
     val DATABASE_OBJECT_TYPE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.DATABASE_OBJECT_TYPE", KEYWORD)
     @JvmField
-    val DATABASE_OBJECT_KEY = createTextAttributesKey("PARADOX_LOCALISATION.DATABASE_OBJECT", ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY)
+    val DATABASE_OBJECT_KEY = createTextAttributesKey("PARADOX_LOCALISATION.DATABASE_OBJECT")
 
     private val colorKeyCache = CacheBuilder.newBuilder().buildCache { color: Color ->
         createTextAttributesKey("PARADOX_LOCALISATION.COLOR_${color.rgb}", IDENTIFIER.defaultAttributes.clone().apply {

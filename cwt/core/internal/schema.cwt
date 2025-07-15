@@ -152,6 +152,7 @@ database_object_types = {
     $database_object_type$ = {
         type = $type$
         swap_type = $type$ # $swapped_type$
+        localisation = $prefix$
     }
 }
 

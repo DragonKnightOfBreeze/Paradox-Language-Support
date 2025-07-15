@@ -5,6 +5,7 @@ import com.intellij.lang.parser.*
 import com.intellij.psi.*
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 
+@Suppress("UNUSED_PARAMETER")
 object ParadoxCsvParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun checkLineBreak(b: PsiBuilder, l: Int): Boolean {

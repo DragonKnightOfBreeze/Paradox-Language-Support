@@ -7,6 +7,7 @@ import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.localisation.*
@@ -386,6 +387,21 @@ object ParadoxPsiManager {
         val anchor = this.findChild<ParadoxScriptScriptedVariable>(forward = false)
         if (anchor == null) return this to this.lastChild
         return this to anchor
+    }
+
+    //endregion
+
+    //region Rename Methods
+
+    fun handleElementRename(element: ParadoxExpressionElement, rangeInElement: TextRange, newElementName: String): PsiElement {
+        val element = element
+        val resolvedElement = if (element is ParadoxScriptExpressionElement) element.resolved() else element
+        return when {
+            resolvedElement == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+            resolvedElement.language is CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
+            resolvedElement.language is ParadoxBaseLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
+            else -> throw IncorrectOperationException()
+        }
     }
 
     //endregion

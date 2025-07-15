@@ -278,7 +278,7 @@ class ParadoxScriptModifierExpressionSupport : ParadoxScriptExpressionSupport {
     override fun complete(context: ProcessingContext, result: CompletionResultSet) {
         if (context.keyword.isParameterized()) return //排除可能带参数的情况
 
-        ParadoxModifierManager.completeModifier(context, result)
+        ParadoxCompletionManager.completeModifier(context, result)
     }
 }
 

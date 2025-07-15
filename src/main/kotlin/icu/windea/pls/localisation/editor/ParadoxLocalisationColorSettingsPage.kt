@@ -55,7 +55,7 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         "COMMAND_FIELD_VALUE" to ParadoxLocalisationAttributesKeys.COMMAND_FIELD_VALUE_KEY,
         "DYNAMIC_VALUE" to ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE_KEY,
         "VARIABLE" to ParadoxLocalisationAttributesKeys.VARIABLE_KEY,
-        "SCRIPTED_LOC" to ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY,
+        "DEFINITION_REFERENCE" to ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY,
         "DATABASE_OBJECT_TYPE" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY,
         "DATABASE_OBJECT" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY,
     )

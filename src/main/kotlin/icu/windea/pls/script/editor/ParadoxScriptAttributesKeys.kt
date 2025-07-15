@@ -96,7 +96,7 @@ object ParadoxScriptAttributesKeys {
     @JvmField
     val DATABASE_OBJECT_TYPE_KEY = createTextAttributesKey("PARADOX_SCRIPT.DATABASE_OBJECT_TYPE", KEYWORD)
     @JvmField
-    val DATABASE_OBJECT_KEY = createTextAttributesKey("PARADOX_SCRIPT.DATABASE_OBJECT", DEFINITION_REFERENCE_KEY)
+    val DATABASE_OBJECT_KEY = createTextAttributesKey("PARADOX_SCRIPT.DATABASE_OBJECT")
     @JvmField
     val DEFINE_PREFIX_KEY = createTextAttributesKey("PARADOX_SCRIPT.DEFINE_PREFIX", KEYWORD)
     @JvmField

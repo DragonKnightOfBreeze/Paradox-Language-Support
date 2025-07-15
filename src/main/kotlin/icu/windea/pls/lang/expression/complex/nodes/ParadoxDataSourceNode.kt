@@ -3,18 +3,15 @@ package icu.windea.pls.lang.expression.complex.nodes
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
-import com.intellij.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
 
 class ParadoxDataSourceNode(
     override val text: String,
@@ -62,32 +59,24 @@ class ParadoxDataSourceNode(
 
     override fun getReference(element: ParadoxExpressionElement): Reference? {
         if (linkConfigs.isEmpty()) return null
+        if (text.isEmpty()) return null
         if (text.isParameterized()) return null
         val rangeInElement = rangeInExpression.shiftRight(ParadoxExpressionManager.getExpressionOffset(element))
-        return Reference(element, rangeInElement, text, linkConfigs, configGroup)
+        return Reference(element, rangeInElement, this)
     }
 
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        val name: String,
-        val linkConfigs: List<CwtLinkConfig>,
-        val configGroup: CwtConfigGroup
+        val node: ParadoxDataSourceNode
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement) {
-        private val linkConfigsDynamicValue = linkConfigs.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
-        private val linkConfigsNotDynamicValue = linkConfigs.filter { it.configExpression?.type !in CwtDataTypeGroups.DynamicValue }
-
-        val project = configGroup.project
+        private val name = node.text
+        private val project = node.configGroup.project
+        private val linkConfigsDynamicValue = node.linkConfigs.filter { it.configExpression?.type in CwtDataTypeGroups.DynamicValue }
+        private val linkConfigsNotDynamicValue = node.linkConfigs.filter { it.configExpression?.type !in CwtDataTypeGroups.DynamicValue }
 
         override fun handleElementRename(newElementName: String): PsiElement {
-            val element = element
-            val resolvedElement = if (element is ParadoxScriptExpressionElement) element.resolved() else element
-            return when {
-                resolvedElement == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-                resolvedElement.language is CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
-                resolvedElement.language is ParadoxBaseLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-                else -> throw IncorrectOperationException()
-            }
+            return ParadoxPsiManager.handleElementRename(element, rangeInElement, newElementName)
         }
 
         //缓存解析结果以优化性能
@@ -125,7 +114,7 @@ class ParadoxDataSourceNode(
                 if (linkConfigsDynamicValue.isEmpty()) return@run
                 val configExpressions = linkConfigsDynamicValue.mapNotNull { it.configExpression }
                 if (configExpressions.isEmpty()) return@run
-                val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
+                val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, node.configGroup)
                 return resolved
             }
             return null
@@ -144,7 +133,7 @@ class ParadoxDataSourceNode(
                 if (linkConfigsDynamicValue.isEmpty()) return@run
                 val configExpressions = linkConfigsDynamicValue.mapNotNull { it.configExpression }
                 if (configExpressions.isEmpty()) return@run
-                val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, configGroup)
+                val resolved = ParadoxDynamicValueManager.resolveDynamicValue(element, name, configExpressions, node.configGroup)
                 if (resolved != null) return arrayOf(PsiElementResolveResult(resolved))
             }
             return ResolveResult.EMPTY_ARRAY

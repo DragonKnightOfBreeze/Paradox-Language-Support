@@ -79,12 +79,9 @@ data class ParadoxComplexExpressionError(
             return ParadoxComplexExpressionError(code, rangeInExpression, PlsBundle.message("script.expression.unresolvedDatabaseObjectType", value))
         }
 
-        fun unresolvedDatabaseObject(rangeInExpression: TextRange, value: String, type: String?): ParadoxComplexExpressionError {
+        fun unresolvedDatabaseObject(rangeInExpression: TextRange, value: String, type: String): ParadoxComplexExpressionError {
             val code = Codes.UnresolvedDatabaseObject
-            val description = when {
-                type != null -> PlsBundle.message("script.expression.unresolvedDatabaseObject", value, type)
-                else -> PlsBundle.message("script.expression.unresolvedDatabaseObject.1", value)
-            }
+            val description = PlsBundle.message("script.expression.unresolvedDatabaseObject", value, type)
             return ParadoxComplexExpressionError(code, rangeInExpression, description)
         }
 
