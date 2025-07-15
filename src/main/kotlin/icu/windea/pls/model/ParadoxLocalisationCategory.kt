@@ -7,14 +7,14 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 
 enum class ParadoxLocalisationCategory(
-    val text: String
+    val id: String
 ) {
     Localisation("localisation"),
     SyncedLocalisation("localisation_synced"),
     ;
 
     override fun toString(): String {
-        return text
+        return id
     }
 
     companion object {

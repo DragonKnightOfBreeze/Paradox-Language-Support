@@ -6,6 +6,7 @@ import com.intellij.openapi.ui.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -456,12 +457,14 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 //eventTreeGrouping
                 row {
                     label(PlsBundle.message("settings.hierarchy.eventTreeGrouping"))
-                    comboBox(EventTreeGrouping.entries).bindItem(settings.hierarchy::eventTreeGrouping.toNullableProperty())
+                    comboBox(EventTreeGrouping.entries, textListCellRenderer { it?.text })
+                        .bindItem(settings.hierarchy::eventTreeGrouping.toNullableProperty())
                 }
                 //techTreeGrouping
                 row {
                     label(PlsBundle.message("settings.hierarchy.techTreeGrouping"))
-                    comboBox(TechTreeGrouping.entries).bindItem(settings.hierarchy::techTreeGrouping.toNullableProperty())
+                    comboBox(TechTreeGrouping.entries, textListCellRenderer { it?.text })
+                        .bindItem(settings.hierarchy::techTreeGrouping.toNullableProperty())
                 }
             }
             //inference
@@ -545,7 +548,8 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 //defaultDiffGroup
                 row {
                     label(PlsBundle.message("settings.others.defaultDiffGroup"))
-                    comboBox(DiffGroup.entries).bindItem(settings.others::defaultDiffGroup.toNullableProperty())
+                    comboBox(DiffGroup.entries, textListCellRenderer { it?.text })
+                        .bindItem(settings.others::defaultDiffGroup.toNullableProperty())
                 }
             }
         }

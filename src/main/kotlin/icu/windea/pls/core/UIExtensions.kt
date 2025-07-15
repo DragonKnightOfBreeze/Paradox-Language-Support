@@ -14,6 +14,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.MutableProperty
 import com.intellij.ui.dsl.gridLayout.*
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.util.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*

@@ -11,8 +11,6 @@ interface PlsStrategies {
         SpecificText(PlsBundle.message("settings.strategy.localisationGeneration1")),
         FromLocale(PlsBundle.message("settings.strategy.localisationGeneration2")),
         ;
-
-        override fun toString() = text
     }
 
     /**
@@ -23,8 +21,6 @@ interface PlsStrategies {
         First(PlsBundle.message("settings.strategy.diffGroup.1")),
         Last(PlsBundle.message("settings.strategy.diffGroup.2")),
         ;
-
-        override fun toString() = text
     }
 
     interface Grouping {
@@ -38,8 +34,6 @@ interface PlsStrategies {
         None(PlsBundle.message("settings.strategy.eventTreeGrouping.0")),
         Type(PlsBundle.message("settings.strategy.eventTreeGrouping.1")),
         ;
-
-        override fun toString() = text
     }
 
     /**
@@ -55,7 +49,5 @@ interface PlsStrategies {
         Area2Tier(PlsBundle.message("settings.strategy.techTreeGrouping.6")),
         Category2Tier(PlsBundle.message("settings.strategy.techTreeGrouping.7")),
         ;
-
-        override fun toString() = text
     }
 }

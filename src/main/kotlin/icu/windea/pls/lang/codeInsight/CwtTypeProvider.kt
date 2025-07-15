@@ -21,7 +21,7 @@ class CwtTypeProvider : ExpressionTypeProvider<PsiElement>() {
     }
 
     override fun getInformationHint(element: PsiElement): @NlsContexts.HintText String {
-        return CwtTypeManager.getType(element).text
+        return CwtTypeManager.getType(element).id
     }
 
     override fun getErrorHint(): @NlsContexts.HintText String {
@@ -35,7 +35,7 @@ class CwtTypeProvider : ExpressionTypeProvider<PsiElement>() {
     override fun getAdvancedInformationHint(element: PsiElement): @NlsContexts.HintText String {
         val map = buildMap {
             val type = CwtTypeManager.getType(element)
-            type.let { this[PlsBundle.message("title.cwtType")] = it.text }
+            type.let { this[PlsBundle.message("title.cwtType")] = it.id }
 
             val configType = CwtConfigManager.getConfigType(element)
             configType?.let { this[PlsBundle.message("title.cwtConfigType")] = it.id }

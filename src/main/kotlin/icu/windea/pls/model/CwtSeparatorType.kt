@@ -1,14 +1,14 @@
 package icu.windea.pls.model
 
 enum class CwtSeparatorType(
-    val text: String
+    val id: String
 ) {
     EQUAL("="),
     NOT_EQUAL("!="),
     ;
 
     override fun toString(): String {
-        return text
+        return id
     }
 
     companion object {

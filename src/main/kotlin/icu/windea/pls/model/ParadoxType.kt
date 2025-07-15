@@ -1,7 +1,7 @@
 package icu.windea.pls.model
 
 enum class ParadoxType(
-    val text: String
+    val id: String
 ) {
     Unknown("(unknown)"),
     Boolean("boolean"),
@@ -17,7 +17,7 @@ enum class ParadoxType(
     ;
 
     override fun toString(): String {
-        return text
+        return id
     }
 
     fun isBooleanType(): Boolean {

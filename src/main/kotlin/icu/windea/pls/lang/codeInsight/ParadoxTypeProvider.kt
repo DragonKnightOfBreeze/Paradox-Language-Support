@@ -35,7 +35,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
     override fun getInformationHint(element: PsiElement): String {
         ParadoxTypeManager.getDefinitionType(element)?.let { return it.escapeXml() }
         ParadoxTypeManager.getConfigExpression(element)?.let { return it.escapeXml() }
-        ParadoxTypeManager.getType(element).let { return it.text.escapeXml() }
+        ParadoxTypeManager.getType(element).let { return it.id }
     }
 
     override fun getErrorHint(): String {
@@ -52,7 +52,7 @@ class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
             definitionType?.let { this[PlsBundle.message("title.definitionType")] = it }
 
             val type = ParadoxTypeManager.getType(element)
-            type.let { this[PlsBundle.message("title.type")] = it.text }
+            type.let { this[PlsBundle.message("title.type")] = it.id }
 
             val expression = ParadoxTypeManager.getExpression(element)
             expression?.let { this[PlsBundle.message("title.expression")] = it }

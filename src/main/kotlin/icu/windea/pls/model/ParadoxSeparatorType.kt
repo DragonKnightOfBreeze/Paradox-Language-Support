@@ -1,7 +1,7 @@
 package icu.windea.pls.model
 
 enum class ParadoxSeparatorType(
-    val text: String
+    val id: String
 ) {
     EQUAL("="),
     NOT_EQUAL("!="),
@@ -13,7 +13,7 @@ enum class ParadoxSeparatorType(
     ;
 
     override fun toString(): String {
-        return text
+        return id
     }
 
     companion object {

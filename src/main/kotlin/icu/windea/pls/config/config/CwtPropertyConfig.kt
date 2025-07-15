@@ -105,7 +105,7 @@ private abstract class CwtPropertyConfigImpl(
     override val keyExpression get() = CwtDataExpression.resolve(key, true)
     override val valueExpression get() = if (isBlock) CwtDataExpression.BlockExpression else CwtDataExpression.resolve(value, false)
 
-    override fun toString() = "$key ${separatorType.text} $value"
+    override fun toString() = "$key ${separatorType} $value"
 }
 
 //12 + 9 * 4 + 2 * 1 = 50 -> 56
@@ -181,7 +181,7 @@ private abstract class CwtPropertyConfigDelegate(
     override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
     override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)
 
-    override fun toString() = "$key ${separatorType.text} $value"
+    override fun toString() = "$key ${separatorType.id} $value"
 }
 
 //12 + 5 * 4 = 32 -> 32

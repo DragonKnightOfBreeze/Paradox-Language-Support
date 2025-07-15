@@ -12,6 +12,7 @@ import icu.windea.pls.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.core.coroutines.*
+import icu.windea.pls.core.smaller
 import icu.windea.pls.lang.util.manipulators.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -59,27 +60,30 @@ class PlsAiPolishLocalisationService : PlsAiManipulateLocalisationService() {
     }
 
     fun createDescriptionPopup(project: Project, callback: (String) -> Unit): JBPopup {
+        lateinit var popup: JBPopup
         val textField = TextFieldWithStoredHistory("PLS_AI_POLISH_LOCALISATION_DESCRIPTION_KEYS")
         val panel = panel {
             row {
-                cell(textField).align(AlignX.FILL).columns(COLUMNS_LARGE).focused()
-                    .comment(PlsBundle.message("manipulation.localisation.polish.popup.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+                cell(textField).align(AlignX.FILL).focused().columns(COLUMNS_LARGE).smaller()
+            }
+            row {
+                comment(PlsBundle.message("manipulation.localisation.popup.comment"), MAX_LINE_LENGTH_WORD_WRAP).smaller()
+                button(PlsBundle.message("manipulation.localisation.popup.button.submit")) { popup.closeOk(null) }.smaller().align(AlignX.RIGHT)
             }
         }
-        val popup = JBPopupFactory.getInstance()
+        popup = JBPopupFactory.getInstance()
             .createComponentPopupBuilder(panel, textField)
+            .setProject(project)
             .setRequestFocus(true)
             .setResizable(true)
             .setMovable(true)
             .setCancelOnClickOutside(false)
             .setCancelOnOtherWindowOpen(false)
             .setMinSize(Dimension(640, 120))
-            .setTitle(PlsBundle.message("manipulation.localisation.polish.popup.title"))
+            .setTitle(PlsBundle.message("manipulation.localisation.popup.title.polish"))
+            .setOkHandler { callback(textField.text.trim()) }
             .createPopup()
-        textField.addActionListener {
-            popup.closeOk(null)
-            callback(textField.text.trim())
-        }
+        textField.addActionListener { popup.closeOk(null) }
         return popup
     }
 }
