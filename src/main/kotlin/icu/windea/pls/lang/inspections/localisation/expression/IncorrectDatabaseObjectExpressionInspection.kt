@@ -25,7 +25,7 @@ class IncorrectDatabaseObjectExpressionInspection : LocalInspectionTool() {
             }
 
             private fun visitExpressionElement(element: ParadoxLocalisationExpressionElement) {
-                if (!element.isDatabaseObjectExpression()) return
+                if (!element.isDatabaseObjectExpression(strict = true)) return
                 val value = element.value
                 val textRange = TextRange.create(0, value.length)
                 val expression = ParadoxDatabaseObjectExpression.resolve(value, textRange, configGroup) ?: return

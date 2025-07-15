@@ -76,6 +76,6 @@ fun ParadoxLocalisationExpressionElement.isCommandExpression(): Boolean {
     return this is ParadoxLocalisationCommandText //简单判断
 }
 
-fun ParadoxLocalisationExpressionElement.isDatabaseObjectExpression(): Boolean {
-    return this is ParadoxLocalisationConceptName && this.textContains(':') //简单判断
+fun ParadoxLocalisationExpressionElement.isDatabaseObjectExpression(strict: Boolean = false): Boolean {
+    return this is ParadoxLocalisationConceptName && (!strict || this.textContains(':')) //简单判断
 }

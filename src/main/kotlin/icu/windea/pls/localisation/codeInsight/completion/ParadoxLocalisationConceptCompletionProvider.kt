@@ -20,7 +20,7 @@ class ParadoxLocalisationConceptCompletionProvider : CompletionProvider<Completi
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val element = parameters.position.parent?.castOrNull<ParadoxLocalisationConceptName>() ?: return
         if (element.text.isParameterized(conditionBlock = false)) return
-        if (element.isDatabaseObjectExpression()) return
+        if (element.isDatabaseObjectExpression(strict = true)) return
 
         val file = parameters.originalFile
         val project = file.project

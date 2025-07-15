@@ -56,7 +56,7 @@ object ParadoxTypeManager {
                 ParadoxType.Unknown
             }
             is ParadoxLocalisationConceptName -> {
-                if (element.isDatabaseObjectExpression()) return ParadoxType.DatabaseObjectExpression
+                if (element.isDatabaseObjectExpression(strict = true)) return ParadoxType.DatabaseObjectExpression
                 ParadoxType.Unknown
             }
             is ParadoxCsvColumn -> {

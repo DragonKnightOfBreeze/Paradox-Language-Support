@@ -10,6 +10,12 @@
 #																# If not specified, it will use NUncheckedDefines::NInterface::GAME_CONCEPT_ICON_DEFAULT from unchecked_defines/00_interface.txt.
 #	texture = "gfx/interface/icons/concepts/concept_icon.dds"	# Alternative for "icon".
 #	tooltip_override = "civic:civic_imperial_cult"				# Tooltip to use instead of the default. Can be either a loc key or a database object (see DATABASE CONCEPTS below).
+#	wiki = "search this"										# Stellaris Wiki search string override. By default it is generated from the key. Probably not useful for modders currently as only the official wiki is supported.
+#	databank = {												# Databank section:
+#		category = "default"									# The category from the database common/game_concept_categories.
+#		icon = "gfx/interface/icons/concepts/concept_icon.dds"	# Icon override (of category default).
+#		picture = "gfx/event_pictures/ancient_databank.dds"		# Big picture override to be displayed in upper right of Databank.
+#	}
 #}
 #
 #############################
@@ -65,7 +71,7 @@
 #	technology (note: the tooltip currently only shows the name and description)
 #	tradition
 #	tradition_category
-#	trait (both species and leader traits)
+#	trait and leader trait (note: use object type 'leader_trait' for the latter)
 #
 # In GUI, instantTextBoxType has a "concepts_show_missing_dlc" parameter. If set to "yes", database concept tooltips inside the text box will show unmet DLC requirements for the database object.
 # Currently, this only works for authorities, civics, ethics and species traits.

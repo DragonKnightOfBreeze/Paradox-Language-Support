@@ -54,6 +54,8 @@ class ParadoxLocalisationDatabaseObjectExpressionSupport : ParadoxLocalisationEx
     }
 
     override fun annotate(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder) {
+        if(element is ParadoxLocalisationExpressionElement && !element.isDatabaseObjectExpression(strict = true)) return
+
         val configGroup = PlsFacade.getConfigGroup(element.project, selectGameType(element))
         val value = element.value
         val textRange = TextRange.create(0, value.length)
@@ -62,6 +64,8 @@ class ParadoxLocalisationDatabaseObjectExpressionSupport : ParadoxLocalisationEx
     }
 
     override fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {
+        if(element is ParadoxLocalisationExpressionElement && !element.isDatabaseObjectExpression(strict = true)) return null
+
         val configGroup = PlsFacade.getConfigGroup(element.project, selectGameType(element))
         val range = TextRange.create(0, expressionText.length)
         val databaseObjectExpression = ParadoxDatabaseObjectExpression.resolve(expressionText, range, configGroup)
