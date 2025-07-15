@@ -53,7 +53,7 @@ class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationInte
 
                     contextsChunked.forEachConcurrent f@{ inputContexts ->
                         val inputText = inputContexts.joinToString("\n") { context -> context.join() }
-                        val request = PlsAiTranslateLocalisationsRequest(inputContexts, inputText, data, selectedLocale, file, project)
+                        val request = PlsAiTranslateLocalisationRequest(project, file, inputContexts, inputText, data, selectedLocale)
                         val callback: suspend (ParadoxLocalisationResult) -> Unit = { data ->
                             val context = request.inputContexts[request.index]
                             runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
@@ -78,7 +78,7 @@ class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationInte
         }
     }
 
-    private suspend fun handleText(request: PlsAiTranslateLocalisationsRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
+    private suspend fun handleText(request: PlsAiTranslateLocalisationRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
         ParadoxLocalisationManipulator.handleTextWithAiTranslation(request, callback)
     }
 

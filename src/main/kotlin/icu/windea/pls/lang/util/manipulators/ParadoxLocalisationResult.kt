@@ -17,7 +17,6 @@ data class ParadoxLocalisationResult(
             val colonIndex = line0.indexOf(':')
             if (colonIndex == -1) return EMPTY
             val key = line0.substring(0, colonIndex)
-            if (!key.isIdentifier('.')) return EMPTY
             val lqIndex = line0.indexOf('"', colonIndex + 1)
             val separator = line0.substring(colonIndex + 1, lqIndex).trimEnd()
             if (separator.isNotEmpty() && separator.any { !it.isExactDigit() }) return EMPTY

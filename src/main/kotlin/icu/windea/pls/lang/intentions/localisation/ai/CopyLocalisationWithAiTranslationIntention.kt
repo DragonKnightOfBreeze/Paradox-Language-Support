@@ -57,7 +57,7 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
 
                     contextsChunked.forEachConcurrent f@{ inputContexts ->
                         val inputText = inputContexts.joinToString("\n") { context -> context.join() }
-                        val request = PlsAiTranslateLocalisationsRequest(inputContexts, inputText, data, selectedLocale, file, project)
+                        val request = PlsAiTranslateLocalisationRequest(project, file, inputContexts, inputText, data, selectedLocale)
                         val callback: suspend (ParadoxLocalisationResult) -> Unit = { data ->
                             current++
                             reporter.text(PlsBundle.message("manipulation.localisation.translate.progress.itemStep", data.key))
@@ -80,7 +80,7 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
         }
     }
 
-    private suspend fun handleText(request: PlsAiTranslateLocalisationsRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
+    private suspend fun handleText(request: PlsAiTranslateLocalisationRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
         ParadoxLocalisationManipulator.handleTextWithAiTranslation(request, callback)
     }
 

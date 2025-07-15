@@ -64,7 +64,7 @@ object ParadoxLocalisationManipulator {
         context.newText = newText
     }
 
-    suspend fun handleTextWithAiTranslation(request: PlsAiTranslateLocalisationsRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
+    suspend fun handleTextWithAiTranslation(request: PlsAiTranslateLocalisationRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
         val aiService = PlsAiManager.getTranslateLocalisationService()
         val resultFlow = aiService.translate(request)
         aiService.checkResultFlow(resultFlow)
@@ -77,7 +77,7 @@ object ParadoxLocalisationManipulator {
         }
     }
 
-    suspend fun handleTextWithAiPolishing(request: PlsAiPolishLocalisationsRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
+    suspend fun handleTextWithAiPolishing(request: PlsAiPolishLocalisationRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
         val aiService = PlsAiManager.getPolishLocalisationService()
         val resultFlow = aiService.polish(request)
         aiService.checkResultFlow(resultFlow)

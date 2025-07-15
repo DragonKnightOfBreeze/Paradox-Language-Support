@@ -9,10 +9,8 @@ import com.intellij.ui.dsl.builder.*
 import dev.langchain4j.data.message.*
 import dev.langchain4j.kotlin.model.chat.*
 import icu.windea.pls.*
-import icu.windea.pls.ai.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.coroutines.*
 import icu.windea.pls.lang.util.manipulators.*
 import kotlinx.coroutines.*
@@ -24,7 +22,7 @@ import java.lang.invoke.*
 class PlsAiPolishLocalisationService : PlsAiManipulateLocalisationService() {
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
 
-    fun polish(request: PlsAiPolishLocalisationsRequest): Flow<ParadoxLocalisationResult>? {
+    fun polish(request: PlsAiPolishLocalisationRequest): Flow<ParadoxLocalisationResult>? {
         val chatModel = PlsChatModelManager.getStreamingChatModel() ?: return null
 
         logger.info("[AI REQUEST] Polish localisation...")
@@ -48,40 +46,13 @@ class PlsAiPolishLocalisationService : PlsAiManipulateLocalisationService() {
         }
     }
 
-    private fun getSystemMessage(request: PlsAiPolishLocalisationsRequest): SystemMessage {
-        val text = buildString {
-            val contextLines = if (PlsAiManager.getSettings().withContext) {
-                buildList {
-                    request.filePath?.let { this += PlsAiBundle.message("systemMessage.context.0", it) }
-                    request.fileName?.let { this += PlsAiBundle.message("systemMessage.context.1", it) }
-                    request.modName?.let { this += PlsAiBundle.message("systemMessage.context.2", it) }
-                }
-            } else {
-                emptyList()
-            }
-            if (contextLines.isEmpty()) {
-                appendLine(PlsAiBundle.message("systemMessage.polishLocalisation.0", request.gameType))
-            } else {
-                appendLine(PlsAiBundle.message("systemMessage.polishLocalisation.1", request.gameType))
-            }
-            appendLine(PlsAiBundle.message("systemMessage.polishLocalisation.tip.1"))
-            appendLine(PlsAiBundle.message("systemMessage.polishLocalisation.tip.2"))
-            appendLine(PlsAiBundle.message("systemMessage.polishLocalisation.tip.3"))
-            request.description?.orNull()?.let { appendLine(PlsAiBundle.message("systemMessage.polishLocalisation.tip.4", optimizeDescription(it))) }
-            if (contextLines.isNotEmpty()) {
-                appendLine(PlsAiBundle.message("systemMessage.context"))
-                contextLines.forEach { appendLine(it) }
-            }
-        }.trim()
+    private fun getSystemMessage(request: PlsAiPolishLocalisationRequest): SystemMessage {
+        val text = PlsPromptManager.fromTemplate("polishLocalisation", request)
         logger.info("System message: \n$text")
         return SystemMessage.from(text)
     }
 
-    private fun optimizeDescription(string: String): String {
-        return string.trim().replace("\n", " ") //再次去除首尾空白，并且将换行符替换为空格
-    }
-
-    private fun getUserMessage(request: PlsAiPolishLocalisationsRequest): UserMessage {
+    private fun getUserMessage(request: PlsAiPolishLocalisationRequest): UserMessage {
         val text = request.text
         logger.info("User message: \n$text")
         return UserMessage.from(text)

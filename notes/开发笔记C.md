@@ -329,3 +329,7 @@ effect（效果）：
 * 如果需要将DDS图片转化为PNG图片，或者转换成其他格式的图片，或者进行其他图片处理操作，在Windows操作系统下，可以使用Texconv工具，以提供更好的支持。
 * 尽管dds支持库提供了对`ImageIO`，如果可行，仍然先使用Texconv工具将DDS图片转化为PNG图片，接着再基于PNG图片进行渲染。
 * 在Windows操作系统下，应当能够提供接近完美的支持。
+
+## 模版引擎
+
+选用 Apache Velocity - IDEA 内置，且足够强大、易用。

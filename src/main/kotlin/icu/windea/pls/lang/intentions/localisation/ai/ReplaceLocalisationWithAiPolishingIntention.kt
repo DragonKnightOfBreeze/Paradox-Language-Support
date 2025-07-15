@@ -52,7 +52,7 @@ class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntent
 
                     contextsChunked.forEachConcurrent f@{ inputContexts ->
                         val inputText = inputContexts.joinToString("\n") { context -> context.join() }
-                        val request = PlsAiPolishLocalisationsRequest(inputContexts, inputText, data, file, project)
+                        val request = PlsAiPolishLocalisationRequest(project, file, inputContexts, inputText, data)
                         val callback: suspend (ParadoxLocalisationResult) -> Unit = { data ->
                             val context = request.inputContexts[request.index]
                             runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
@@ -77,7 +77,7 @@ class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntent
         }
     }
 
-    private suspend fun handleText(request: PlsAiPolishLocalisationsRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
+    private suspend fun handleText(request: PlsAiPolishLocalisationRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
         ParadoxLocalisationManipulator.handleTextWithAiPolishing(request, callback)
     }
 

@@ -60,7 +60,7 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
                     }.toChunkedFlow(chunkSize).flatMapMerge { inputContexts ->
                         flow {
                             val inputText = inputContexts.joinToString("\n") { context -> context.join() }
-                            val request = PlsAiTranslateLocalisationsRequest(inputContexts, inputText, null, selectedLocale, file, project)
+                            val request = PlsAiTranslateLocalisationRequest(project, file, inputContexts, inputText, null, selectedLocale)
                             val callback: suspend (ParadoxLocalisationResult) -> Unit = { data ->
                                 val context = request.inputContexts[request.index]
                                 runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
@@ -86,7 +86,7 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
         }
     }
 
-    private suspend fun handleText(request: PlsAiTranslateLocalisationsRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
+    private suspend fun handleText(request: PlsAiTranslateLocalisationRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
         ParadoxLocalisationManipulator.handleTextWithAiTranslation(request, callback)
     }
 

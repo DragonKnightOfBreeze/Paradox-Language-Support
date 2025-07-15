@@ -490,7 +490,6 @@
     <inspection_tool class="GroovyUnusedDeclaration" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="GroovyUnusedIncOrDec" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="GroovyVariableNotAssigned" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="Guava" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="HardwiredNamespacePrefix" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="HasPlatformType" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="HbEmptyBlock" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -1037,22 +1036,9 @@
     <inspection_tool class="PackageInfoWithoutPackage" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PackageJsonMismatchedDependency" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PackageName" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="ParadoxLocalisationDuplicateProperties" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="ParadoxLocalisationIncorrectFileEncoding" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="ParadoxLocalisationIncorrectFileName" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="ParadoxLocalisationIncorrectScope" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="ParadoxLocalisationIncorrectScopeSwitch" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="ParadoxLocalisationMissingLocale" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="ParadoxLocalisationMultipleLocales" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ParadoxLocalisationTooLongScopeLink" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
-    <inspection_tool class="ParadoxLocalisationUnresolvedColor" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="ParadoxLocalisationUnresolvedCommandField" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="ParadoxLocalisationUnresolvedCommandScope" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="ParadoxLocalisationUnresolvedIcon" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="ParadoxLocalisationUnresolvedScriptedVariable" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="ParadoxLocalisationUnsupportedLocale" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="ParadoxScriptConflictingScopeContextInference" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="ParadoxScriptUnusedParameter" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="ParameterCanBeLocal" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PathAnnotation" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PatternNotApplicable" enabled="false" level="ERROR" enabled_by_default="false" />
@@ -1146,13 +1132,7 @@
     <inspection_tool class="PyNoneFunctionAssignmentInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyOldStyleClassesInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyOverloadsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="PyPackageRequirementsInspection" enabled="false" level="WARNING" enabled_by_default="false">
-      <option name="ignoredPackages">
-        <value>
-          <list size="0" />
-        </value>
-      </option>
-    </inspection_tool>
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyPep8Inspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyPep8NamingInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyPropertyAccessInspection" enabled="false" level="WARNING" enabled_by_default="false" />
