@@ -313,6 +313,7 @@ TEXT_ICON_TOKEN=\w+
 
     "]" { beginNextState(); return RIGHT_BRACKET; }
     "|" { yybegin(IN_COMMAND_ARGUMENT); return PIPE; }
+    {BLANK} { return WHITE_SPACE; }
     {COMMAND_TEXT_TOKEN} { return COMMAND_TEXT_TOKEN; }
 }
 <IN_COMMAND_ARGUMENT>{
