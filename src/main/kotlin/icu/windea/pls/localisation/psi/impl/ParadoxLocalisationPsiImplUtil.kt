@@ -15,6 +15,13 @@ import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.references.*
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationConceptPsiReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationIconPsiReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationLocalePsiReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationPropertyPsiReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextFormatPsiReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextIconPsiReference
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.navigation.*

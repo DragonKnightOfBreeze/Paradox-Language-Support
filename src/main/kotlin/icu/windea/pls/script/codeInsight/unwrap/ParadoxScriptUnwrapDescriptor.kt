@@ -9,6 +9,7 @@ class ParadoxScriptUnwrapDescriptor : UnwrapDescriptorBase() {
         ParadoxScriptValueRemover(),
         ParadoxScriptBlockRemover(),
         ParadoxScriptParameterConditionRemover(),
+        ParadoxScriptInlineParameterConditionRemover(),
         ParadoxScriptPropertyUnwrapper(),
         ParadoxScriptBlockUnwrapper(),
         ParadoxScriptParameterConditionUnwrapper(),

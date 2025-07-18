@@ -11,11 +11,11 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.editor.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.references.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 class ParadoxScriptTechnologyWithLevelExpressionSupport : ParadoxScriptExpressionSupport {

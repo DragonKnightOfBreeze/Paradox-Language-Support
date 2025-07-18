@@ -4,8 +4,9 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
+import icu.windea.pls.lang.references.script.ParadoxTagAwarePsiReference
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.references.*
 import java.awt.*
 
 inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.propertyValue(): T? {

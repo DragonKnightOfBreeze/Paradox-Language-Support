@@ -6,7 +6,6 @@
     <stubElementTypeHolder class="icu.windea.pls.script.psi.ParadoxScriptStubElementTypes" externalIdPrefix="paradoxScript."/>
     <spellchecker.support language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSpellchecker"/>
     <lang.syntaxHighlighterFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSyntaxHighlighterFactory"/>
-    <psi.referenceContributor language="PARADOX_SCRIPT" implementation="icu.windea.pls.script.references.ParadoxScriptPsiReferenceContributor"/>
     <colorSettingsPage implementation="icu.windea.pls.script.editor.ParadoxScriptColorSettingsPage"/>
     <lang.braceMatcher language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptBraceMatcher"/>
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.folding.ParadoxScriptFoldingBuilder"/>

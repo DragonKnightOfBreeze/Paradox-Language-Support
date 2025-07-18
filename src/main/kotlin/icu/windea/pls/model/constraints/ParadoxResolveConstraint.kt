@@ -5,10 +5,16 @@ import icu.windea.pls.config.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.references.*
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationConceptPsiReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationIconPsiReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationPropertyPsiReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextFormatPsiReference
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextIconPsiReference
+import icu.windea.pls.lang.references.script.ParadoxComplexEnumValuePsiReference
+import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.references.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.references.*
 
 enum class ParadoxResolveConstraint {
     ScriptedVariable {

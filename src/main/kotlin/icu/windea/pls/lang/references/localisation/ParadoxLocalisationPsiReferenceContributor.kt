@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.references
+package icu.windea.pls.lang.references.localisation
 
 import com.intellij.patterns.*
 import com.intellij.psi.*
@@ -11,5 +11,4 @@ class ParadoxLocalisationPsiReferenceContributor : PsiReferenceContributor() {
         registrar.registerReferenceProvider(PlatformPatterns.psiElement(ParadoxLocalisationExpressionElement::class.java), expressionProvider)
     }
 }
-
 

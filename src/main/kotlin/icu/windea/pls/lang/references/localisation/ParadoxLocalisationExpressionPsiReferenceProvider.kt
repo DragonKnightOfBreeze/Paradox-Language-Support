@@ -1,4 +1,4 @@
-package icu.windea.pls.localisation.references
+package icu.windea.pls.lang.references.localisation
 
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*

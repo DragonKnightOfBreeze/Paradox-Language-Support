@@ -5,8 +5,8 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.references.*
 
 object ParadoxLocalisationArgumentManager {
     fun getReferences(element: ParadoxLocalisationArgument): Array<out PsiReference> {

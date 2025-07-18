@@ -9,10 +9,10 @@ import com.intellij.psi.*
 import com.intellij.refactoring.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.references.localisation.ParadoxLocalisationPropertyPsiReference
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.references.*
 
 class ParadoxLocalisationInlineActionHandler : InlineActionHandler() {
     override fun getActionName(element: PsiElement?) = PlsBundle.message("title.inline.localisation")
