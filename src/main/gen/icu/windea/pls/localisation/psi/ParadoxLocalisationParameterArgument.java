@@ -13,6 +13,8 @@ public interface ParadoxLocalisationParameterArgument extends ParadoxLocalisatio
 
   @Nullable PsiElement getIdElement();
 
+  @Nullable PsiReference getReference();
+
   @NotNull PsiReference @NotNull [] getReferences();
 
   @NotNull ItemPresentation getPresentation();

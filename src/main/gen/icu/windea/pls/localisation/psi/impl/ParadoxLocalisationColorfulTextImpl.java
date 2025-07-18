@@ -7,11 +7,12 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
+import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference;
 
 public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationColorfulText {
 
@@ -52,8 +53,13 @@ public class ParadoxLocalisationColorfulTextImpl extends ParadoxLocalisationRich
   }
 
   @Override
-  public @Nullable ParadoxLocalisationTextColorPsiReference getReference() {
+  public @Nullable PsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
+  }
+
+  @Override
+  public @NotNull PsiReference @NotNull [] getReferences() {
+    return ParadoxLocalisationPsiImplUtil.getReferences(this);
   }
 
   @Override

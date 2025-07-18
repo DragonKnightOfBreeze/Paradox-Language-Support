@@ -6,9 +6,9 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference;
 
 public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRichText, NavigatablePsiElement, ParadoxLocalisationTextColorAwareElement {
 
@@ -21,7 +21,9 @@ public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRich
 
   @NotNull ParadoxLocalisationColorfulText setName(@NotNull String name);
 
-  @Nullable ParadoxLocalisationTextColorPsiReference getReference();
+  @Nullable PsiReference getReference();
+
+  @NotNull PsiReference @NotNull [] getReferences();
 
   @NotNull ItemPresentation getPresentation();
 

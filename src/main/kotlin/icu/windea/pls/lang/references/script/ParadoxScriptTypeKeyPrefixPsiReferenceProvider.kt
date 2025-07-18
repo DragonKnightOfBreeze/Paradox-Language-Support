@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.*
  *
  * 直接在定义声明之前的，作为前缀的字符串，将其视为引用，并解析为对应的规则（类型规则中，属性`type_key_prefix`的值）。
  */
-class ParadoxTypeKeyPrefixPsiReferenceProvider : PsiReferenceProvider() {
+class ParadoxScriptTypeKeyPrefixPsiReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
         ProgressManager.checkCanceled()
 
@@ -26,7 +26,7 @@ class ParadoxTypeKeyPrefixPsiReferenceProvider : PsiReferenceProvider() {
         val typeConfig = nextProperty.definitionInfo?.typeConfig ?: return PsiReference.EMPTY_ARRAY //并且必须是定义
         if (typeConfig.typeKeyPrefix.let { it == null || !it.equals(element.value, ignoreCase = true) }) return PsiReference.EMPTY_ARRAY //前缀规则必须存在且一致
         val config = typeConfig.typeKeyPrefixConfig ?: return PsiReference.EMPTY_ARRAY
-        val reference = ParadoxTypeKeyPrefixPsiReference(element, rangeInElement, config)
+        val reference = ParadoxScriptTypeKeyPrefixPsiReference(element, rangeInElement, config)
         return arrayOf(reference)
     }
 

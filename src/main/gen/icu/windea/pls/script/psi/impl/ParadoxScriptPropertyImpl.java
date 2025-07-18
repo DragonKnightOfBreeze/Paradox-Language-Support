@@ -19,7 +19,7 @@ import com.intellij.psi.stubs.IStubElementType;
 
 public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<ParadoxScriptPropertyStub> implements ParadoxScriptProperty {
 
-  public ParadoxScriptPropertyImpl(@NotNull ParadoxScriptPropertyStub stub, @Nullable IStubElementType<?, ?> type) {
+  public ParadoxScriptPropertyImpl(@NotNull ParadoxScriptPropertyStub stub, @NotNull IStubElementType<?, ?> type) {
     super(stub, type);
   }
 

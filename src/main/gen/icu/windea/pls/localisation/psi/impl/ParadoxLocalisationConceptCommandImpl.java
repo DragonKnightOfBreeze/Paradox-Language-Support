@@ -1,15 +1,19 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi.impl;
 
+import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
+import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.lang.references.localisation.ParadoxLocalisationConceptPsiReference;
 import javax.swing.Icon;
 
 public class ParadoxLocalisationConceptCommandImpl extends ParadoxLocalisationRichTextImpl implements ParadoxLocalisationConceptCommand {
@@ -57,8 +61,13 @@ public class ParadoxLocalisationConceptCommandImpl extends ParadoxLocalisationRi
   }
 
   @Override
-  public @Nullable ParadoxLocalisationConceptPsiReference getReference() {
+  public @Nullable PsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
+  }
+
+  @Override
+  public @NotNull PsiReference @NotNull [] getReferences() {
+    return ParadoxLocalisationPsiImplUtil.getReferences(this);
   }
 
   @Override

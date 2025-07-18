@@ -15,7 +15,6 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference;
 import javax.swing.Icon;
 
 public class ParadoxLocalisationScriptedVariableReferenceImpl extends ASTWrapperPsiElement implements ParadoxLocalisationScriptedVariableReference {
@@ -55,8 +54,13 @@ public class ParadoxLocalisationScriptedVariableReferenceImpl extends ASTWrapper
   }
 
   @Override
-  public @Nullable ParadoxScriptedVariablePsiReference getReference() {
+  public @Nullable PsiReference getReference() {
     return ParadoxLocalisationPsiImplUtil.getReference(this);
+  }
+
+  @Override
+  public @NotNull PsiReference @NotNull [] getReferences() {
+    return ParadoxLocalisationPsiImplUtil.getReferences(this);
   }
 
   @Override

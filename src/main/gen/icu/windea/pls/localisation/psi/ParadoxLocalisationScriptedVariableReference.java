@@ -11,7 +11,6 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference;
 import javax.swing.Icon;
 
 public interface ParadoxLocalisationScriptedVariableReference extends NavigatablePsiElement, ParadoxScriptedVariableReference {
@@ -24,7 +23,9 @@ public interface ParadoxLocalisationScriptedVariableReference extends Navigatabl
 
   @NotNull ParadoxLocalisationScriptedVariableReference setName(@NotNull String name);
 
-  @Nullable ParadoxScriptedVariablePsiReference getReference();
+  @Nullable PsiReference getReference();
+
+  @NotNull PsiReference @NotNull [] getReferences();
 
   @NotNull ItemPresentation getPresentation();
 

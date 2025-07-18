@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
-import icu.windea.pls.lang.references.script.ParadoxTagAwarePsiReference
+import icu.windea.pls.lang.references.script.ParadoxScriptTagAwarePsiReference
 import icu.windea.pls.lang.util.*
 import java.awt.*
 
@@ -178,7 +178,7 @@ fun ParadoxScriptValue.tagType(): CwtTagType? {
     if (!this.isBlockMember()) return null
     val references = references
     run {
-        val tagReference = references.firstNotNullOfOrNull { it.castOrNull<ParadoxTagAwarePsiReference>() }
+        val tagReference = references.firstNotNullOfOrNull { it.castOrNull<ParadoxScriptTagAwarePsiReference>() }
         if (tagReference == null) return@run
         return tagReference.config.tagType
     }

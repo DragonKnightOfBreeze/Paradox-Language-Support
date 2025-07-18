@@ -20,7 +20,7 @@ import com.intellij.psi.stubs.IStubElementType;
 
 public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElementImpl<ParadoxLocalisationPropertyStub> implements ParadoxLocalisationProperty {
 
-  public ParadoxLocalisationPropertyImpl(@NotNull ParadoxLocalisationPropertyStub stub, @Nullable IStubElementType<?, ?> type) {
+  public ParadoxLocalisationPropertyImpl(@NotNull ParadoxLocalisationPropertyStub stub, @NotNull IStubElementType<?, ?> type) {
     super(stub, type);
   }
 

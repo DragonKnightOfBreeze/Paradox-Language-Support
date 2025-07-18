@@ -9,8 +9,10 @@ import icu.windea.pls.localisation.psi.*
 class ParadoxLocalisationExpressionPsiReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
         ProgressManager.checkCanceled()
+
         if (element !is ParadoxLocalisationExpressionElement) return PsiReference.EMPTY_ARRAY
 
         return ParadoxExpressionManager.getExpressionReferences(element)
     }
 }
+

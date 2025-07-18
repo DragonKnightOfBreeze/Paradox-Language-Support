@@ -6,8 +6,8 @@ import icu.windea.pls.core.psi.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.script.psi.*
 
-class ParadoxTypeKeyPrefixPsiReference(
+class ParadoxScriptTypeKeyPrefixPsiReference(
     element: ParadoxScriptString,
     rangeInElement: TextRange,
     override val config: CwtValueConfig
-) : PsiResolvedReference<CwtValue>(element, rangeInElement, config.pointer.element), ParadoxTagAwarePsiReference
+) : PsiResolvedReference<CwtValue>(element, rangeInElement, config.pointer.element), ParadoxScriptTagAwarePsiReference

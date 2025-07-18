@@ -116,7 +116,7 @@ scripted_variable_reference ::= AT scripted_variable_reference_part <<postProces
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getName setName getValue getReference toString
+    getIcon getName setName getValue getReference getReferences toString
   ]
 }
 private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN | parameter | inline_parameter_condition
@@ -322,7 +322,7 @@ inline_math_scripted_variable_reference ::= inline_math_scripted_variable_refere
   ]
   methods=[
     getIdElement inline_math_parameter=""
-    getIcon getName setName getValue getReference
+    getIcon getName setName getValue getReference getReferences
   ]
 }
 private inline_math_scripted_variable_reference_part ::= INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN | inline_math_parameter | inline_parameter_condition

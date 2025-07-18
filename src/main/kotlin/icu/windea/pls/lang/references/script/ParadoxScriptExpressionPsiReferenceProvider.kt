@@ -9,9 +9,9 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptExpressionPsiReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<out PsiReference> {
         ProgressManager.checkCanceled()
+
         if (element !is ParadoxScriptExpressionElement) return PsiReference.EMPTY_ARRAY
-        //#131
-        if (!element.isResolvableExpression()) return PsiReference.EMPTY_ARRAY
+        if (!element.isResolvableExpression()) return PsiReference.EMPTY_ARRAY //#131
 
         //尝试解析为复杂枚举值声明
         run {

@@ -31,7 +31,7 @@ private property_item ::= COMMENT | property
 locale ::= LOCALE_TOKEN COLON {
   pin=1
   implements="com.intellij.psi.NavigatablePsiElement"
-  methods=[getIdElement getIcon getName setName getReference]
+  methods=[getIdElement getIcon getName setName getReference getReferences]
 }
 
 property ::= property_key COLON property_number? property_value {
@@ -87,7 +87,7 @@ colorful_text ::= COLORFUL_TEXT_START color_name colorful_text_part ? COLORFUL_T
     "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
   ]
-  methods=[getIdElement getName setName getReference]
+  methods=[getIdElement getName setName getReference getReferences]
 }
 private color_name ::= COLOR_TOKEN
 private colorful_text_part ::= colorful_text_item +
@@ -107,7 +107,7 @@ parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER
   ]
   methods=[
     getIdElement getArgumentElement parameter_argument="" command=""
-    getName setName getReference
+    getName setName getReference getReferences
   ]
 }
 // can be command or scripted variable reference
@@ -118,7 +118,7 @@ parameter_argument ::= ARGUMENT_TOKEN {
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgument"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
   ]
-  methods=[getIdElement getReferences]
+  methods=[getIdElement getReference getReferences]
 }
 
 // scripted variable reference rules (in references)
@@ -128,7 +128,7 @@ scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_TOKEN {
     "com.intellij.psi.NavigatablePsiElement"
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
   ]
-  methods=[getIdElement getIcon getName setName getReference]
+  methods=[getIdElement getIcon getName setName getReference getReferences]
 }
 
 // localisation command rules
@@ -167,7 +167,7 @@ command_argument ::= (ARGUMENT_TOKEN | parameter) + {
     "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationParameterAwareElement"
   ]
-  methods=[getIdElement parameter="" getReferences]
+  methods=[getIdElement parameter="" getReference getReferences]
 }
 
 // localisation icon rules
@@ -183,7 +183,7 @@ icon ::= ICON_START icon_name icon_argument_part ? ICON_END {
   ]
   methods=[
     getIdElement getArgumentElement icon_argument="" rich_text=""
-    getIcon getName setName getReference getFrame
+    getIcon getName setName getFrame getReference getReferences
   ]
 }
 // can be parameterized or command
@@ -206,7 +206,7 @@ concept_command ::= <<isConceptCommand>> LEFT_BRACKET LEFT_SINGLE_QUOTE concept_
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
   ]
-  methods=[getIcon getName setName getReference]
+  methods=[getIcon getName setName getReference getReferences]
 }
 // can be parameterized
 concept_name ::= (CONCEPT_NAME_TOKEN | parameter) + {
@@ -237,7 +237,7 @@ text_format ::= TEXT_FORMAT_START text_format_name text_format_text_part ? TEXT_
   ]
   methods=[
     getIdElement rich_text=""
-    getIcon getName setName getReference
+    getIcon getName setName getReference getReferences
   ]
 }
 // can be parameterized or command
@@ -258,7 +258,7 @@ text_icon ::= TEXT_ICON_START text_icon_name TEXT_ICON_END {
   ]
   methods=[
     getIdElement rich_text=""
-    getIcon getName setName getReference
+    getIcon getName setName getReference getReferencesParadoxScriptedVariablePsiReference
   ]
 }
 // can be parameterized or command

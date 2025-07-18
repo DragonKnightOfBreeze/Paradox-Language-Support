@@ -15,19 +15,11 @@ import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.references.*
-import icu.windea.pls.lang.references.localisation.ParadoxLocalisationConceptPsiReference
-import icu.windea.pls.lang.references.localisation.ParadoxLocalisationIconPsiReference
-import icu.windea.pls.lang.references.localisation.ParadoxLocalisationLocalePsiReference
-import icu.windea.pls.lang.references.localisation.ParadoxLocalisationPropertyPsiReference
-import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
-import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextFormatPsiReference
-import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextIconPsiReference
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.localisation.references.*
 import icu.windea.pls.model.*
 import javax.swing.*
 
@@ -69,12 +61,6 @@ object ParadoxLocalisationPsiImplUtil {
     fun setName(element: ParadoxLocalisationLocale, name: String): ParadoxLocalisationLocale {
         val newElement = ParadoxLocalisationElementFactory.createLocale(element.project, name)
         return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun getReference(element: ParadoxLocalisationLocale): ParadoxLocalisationLocalePsiReference {
-        val rangeInElement = element.idElement.textRangeInParent
-        return ParadoxLocalisationLocalePsiReference(element, rangeInElement)
     }
 
     //endregion
@@ -216,19 +202,6 @@ object ParadoxLocalisationPsiImplUtil {
         return element
     }
 
-    @JvmStatic
-    fun getReference(element: ParadoxLocalisationColorfulText): ParadoxLocalisationTextColorPsiReference? {
-        return CachedValuesManager.getCachedValue(element) {
-            val value = doGetReference(element)
-            CachedValueProvider.Result.create(value, element)
-        }
-    }
-
-    private fun doGetReference(element: ParadoxLocalisationColorfulText): ParadoxLocalisationTextColorPsiReference? {
-        val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxLocalisationTextColorPsiReference(element, rangeInElement)
-    }
-
     //endregion
 
     //region ParadoxLocalisationParameter
@@ -257,19 +230,6 @@ object ParadoxLocalisationPsiImplUtil {
         return element
     }
 
-    @JvmStatic
-    fun getReference(element: ParadoxLocalisationParameter): ParadoxLocalisationPropertyPsiReference? {
-        return CachedValuesManager.getCachedValue(element) {
-            val value = doGetReference(element)
-            CachedValueProvider.Result.create(value, element)
-        }
-    }
-
-    private fun doGetReference(element: ParadoxLocalisationParameter): ParadoxLocalisationPropertyPsiReference? {
-        val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxLocalisationPropertyPsiReference(element, rangeInElement)
-    }
-
     //endregion
 
     //region ParadoxLocalisationParameterArgument
@@ -278,11 +238,6 @@ object ParadoxLocalisationPsiImplUtil {
     fun getIdElement(element: ParadoxLocalisationParameterArgument): PsiElement? {
         val idElement = element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
         return idElement
-    }
-
-    @JvmStatic
-    fun getReferences(element: ParadoxLocalisationParameterArgument): Array<out PsiReference> {
-        return ParadoxLocalisationArgumentManager.getReferences(element)
     }
 
     //endregion
@@ -311,19 +266,6 @@ object ParadoxLocalisationPsiImplUtil {
         val newIdElement = ParadoxLocalisationElementFactory.createScriptedVariableReference(element.project, name).idElement ?: throw IllegalStateException()
         idElement.replace(newIdElement)
         return element
-    }
-
-    @JvmStatic
-    fun getReference(element: ParadoxLocalisationScriptedVariableReference): ParadoxScriptedVariablePsiReference? {
-        return CachedValuesManager.getCachedValue(element) {
-            val value = doGetReference(element)
-            CachedValueProvider.Result.create(value, element)
-        }
-    }
-
-    private fun doGetReference(element: ParadoxLocalisationScriptedVariableReference): ParadoxScriptedVariablePsiReference? {
-        val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxScriptedVariablePsiReference(element, rangeInElement)
     }
 
     //endregion
@@ -378,10 +320,6 @@ object ParadoxLocalisationPsiImplUtil {
         return idElement
     }
 
-    @JvmStatic
-    fun getReferences(element: ParadoxLocalisationCommandArgument): Array<out PsiReference> {
-        return ParadoxLocalisationArgumentManager.getReferences(element)
-    }
     //endregion
 
     //region ParadoxLocalisationIcon
@@ -415,19 +353,6 @@ object ParadoxLocalisationPsiImplUtil {
         val newIdElement = ParadoxLocalisationElementFactory.createIcon(element.project, name).idElement ?: throw IllegalStateException()
         idElement.replace(newIdElement)
         return element
-    }
-
-    @JvmStatic
-    fun getReference(element: ParadoxLocalisationIcon): ParadoxLocalisationIconPsiReference? {
-        return CachedValuesManager.getCachedValue(element) {
-            val value = doGetReference(element)
-            CachedValueProvider.Result.create(value, element)
-        }
-    }
-
-    private fun doGetReference(element: ParadoxLocalisationIcon): ParadoxLocalisationIconPsiReference? {
-        val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxLocalisationIconPsiReference(element, rangeInElement)
     }
 
     @JvmStatic
@@ -467,22 +392,6 @@ object ParadoxLocalisationPsiImplUtil {
         val newIdElement = ParadoxLocalisationElementFactory.createConceptName(element.project, name).idElement ?: throw IllegalStateException()
         idElement.replace(newIdElement)
         return element
-    }
-
-    @JvmStatic
-    fun getReference(element: ParadoxLocalisationConceptCommand): ParadoxLocalisationConceptPsiReference? {
-        return CachedValuesManager.getCachedValue(element) {
-            val value = doGetReference(element)
-            CachedValueProvider.Result.create(value, element)
-        }
-    }
-
-    private fun doGetReference(element: ParadoxLocalisationConceptCommand): ParadoxLocalisationConceptPsiReference? {
-        val nameElement = element.conceptName ?: return null
-        //作为复杂表达式的场合，另行处理（参见：ParadoxLocalisationReferenceContributor）
-        if (nameElement.isDatabaseObjectExpression(strict = true)) return null
-        val rangeInElement = nameElement.textRangeInParent
-        return ParadoxLocalisationConceptPsiReference(element, rangeInElement)
     }
 
     //endregion
@@ -547,19 +456,6 @@ object ParadoxLocalisationPsiImplUtil {
         return element
     }
 
-    @JvmStatic
-    fun getReference(element: ParadoxLocalisationTextFormat): ParadoxLocalisationTextFormatPsiReference? {
-        return CachedValuesManager.getCachedValue(element) {
-            val value = doGetReference(element)
-            CachedValueProvider.Result.create(value, element)
-        }
-    }
-
-    private fun doGetReference(element: ParadoxLocalisationTextFormat): ParadoxLocalisationTextFormatPsiReference? {
-        val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxLocalisationTextFormatPsiReference(element, rangeInElement)
-    }
-
     //endregion
 
     //region ParadoxLocalisationTextIcon
@@ -588,19 +484,6 @@ object ParadoxLocalisationPsiImplUtil {
         val newIdElement = ParadoxLocalisationElementFactory.createTextIcon(element.project, name).idElement ?: throw IllegalStateException()
         idElement.replace(newIdElement)
         return element
-    }
-
-    @JvmStatic
-    fun getReference(element: ParadoxLocalisationTextIcon): ParadoxLocalisationTextIconPsiReference? {
-        return CachedValuesManager.getCachedValue(element) {
-            val value = doGetReference(element)
-            CachedValueProvider.Result.create(value, element)
-        }
-    }
-
-    private fun doGetReference(element: ParadoxLocalisationTextIcon): ParadoxLocalisationTextIconPsiReference? {
-        val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxLocalisationTextIconPsiReference(element, rangeInElement)
     }
 
     //endregion

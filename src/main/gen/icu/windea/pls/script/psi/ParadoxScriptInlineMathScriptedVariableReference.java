@@ -10,7 +10,6 @@ import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference;
 import javax.swing.Icon;
 
 public interface ParadoxScriptInlineMathScriptedVariableReference extends ParadoxScriptInlineMathFactor, ParadoxScriptedVariableReference, ParadoxParameterAwareElement {
@@ -28,7 +27,9 @@ public interface ParadoxScriptInlineMathScriptedVariableReference extends Parado
 
   @Nullable String getValue();
 
-  @Nullable ParadoxScriptedVariablePsiReference getReference();
+  @Nullable PsiReference getReference();
+
+  @NotNull PsiReference @NotNull [] getReferences();
 
   @NotNull ItemPresentation getPresentation();
 

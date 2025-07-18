@@ -306,19 +306,6 @@ object ParadoxScriptPsiImplUtil {
         return element.replace(newElement).cast()
     }
 
-    @JvmStatic
-    fun getReference(element: ParadoxScriptScriptedVariableReference): ParadoxScriptedVariablePsiReference? {
-        return CachedValuesManager.getCachedValue(element) {
-            val value = doGetReference(element)
-            CachedValueProvider.Result.create(value, element)
-        }
-    }
-
-    private fun doGetReference(element: ParadoxScriptScriptedVariableReference): ParadoxScriptedVariablePsiReference? {
-        val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxScriptedVariablePsiReference(element, rangeInElement)
-    }
-
     //endregion
 
     //region ParadoxScriptBoolean
@@ -694,19 +681,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getValue(element: ParadoxScriptInlineMathScriptedVariableReference): String? {
         return element.name
-    }
-
-    @JvmStatic
-    fun getReference(element: ParadoxScriptInlineMathScriptedVariableReference): ParadoxScriptedVariablePsiReference? {
-        return CachedValuesManager.getCachedValue(element) {
-            val value = doGetReference(element)
-            CachedValueProvider.Result.create(value, element)
-        }
-    }
-
-    private fun doGetReference(element: ParadoxScriptInlineMathScriptedVariableReference): ParadoxScriptedVariablePsiReference? {
-        val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxScriptedVariablePsiReference(element, rangeInElement)
     }
 
     //endregion

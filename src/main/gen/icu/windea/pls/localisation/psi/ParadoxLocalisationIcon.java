@@ -1,13 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi;
 
+import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.lang.references.localisation.ParadoxLocalisationIconPsiReference;
 import javax.swing.Icon;
 
 public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText, NavigatablePsiElement, ParadoxLocalisationArgumentAwareElement, ParadoxLocalisationParameterAwareElement, ParadoxLocalisationCommandAwareElement {
@@ -22,9 +24,11 @@ public interface ParadoxLocalisationIcon extends ParadoxLocalisationRichText, Na
 
   @NotNull ParadoxLocalisationIcon setName(@NotNull String name);
 
-  @Nullable ParadoxLocalisationIconPsiReference getReference();
-
   int getFrame();
+
+  @Nullable PsiReference getReference();
+
+  @NotNull PsiReference @NotNull [] getReferences();
 
   @NotNull ItemPresentation getPresentation();
 
