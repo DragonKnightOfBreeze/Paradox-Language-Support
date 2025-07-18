@@ -10,7 +10,7 @@ import icu.windea.pls.localisation.psi.*
 /**
  * 本地化图标的PSI引用。
  *
- * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationIconCompletionProvider
+ * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationIconCompletionProvider
  */
 class ParadoxLocalisationIconPsiReference(
     element: ParadoxLocalisationIcon,

@@ -18,7 +18,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager.getExpressionText
 import icu.windea.pls.script.psi.*
 
 /**
- * @see icu.windea.pls.script.codeInsight.completion.ParadoxScriptExpressionCompletionProvider
+ * @see icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptExpressionCompletionProvider
  */
 class ParadoxScriptExpressionPsiReference(
     element: ParadoxScriptExpressionElement,

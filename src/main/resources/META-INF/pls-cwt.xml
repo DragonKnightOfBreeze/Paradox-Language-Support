@@ -16,7 +16,6 @@
     <lang.smartEnterProcessor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.editorActions.smartEnter.CwtSmartEnterProcessor"/>
     <breadcrumbsInfoProvider implementation="icu.windea.pls.cwt.editor.CwtBreadCrumbsProvider"/>
     <lang.implementationTextSelectioner language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.CwtImplementationTextSelectioner"/>
-    <completion.contributor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.completion.CwtCompletionContributor"/>
     <lang.formatter language="CWT" implementationClass="icu.windea.pls.cwt.formatter.CwtFormattingModelBuilder"/>
     <codeStyleSettingsProvider implementation="icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.cwt.codeStyle.CwtLanguageCodeStyleSettingsProvider"/>

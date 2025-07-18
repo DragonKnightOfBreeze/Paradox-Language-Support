@@ -14,7 +14,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.script.psi.*
 
 /**
- * @see icu.windea.pls.script.codeInsight.completion.ParadoxVariableNameCompletionProvider
+ * @see icu.windea.pls.lang.codeInsight.completion.script.ParadoxVariableNameCompletionProvider
  */
 class ParadoxVariableOperationExpressionPostfixTemplate(
     setting: CwtPostfixTemplateSettingsConfig,

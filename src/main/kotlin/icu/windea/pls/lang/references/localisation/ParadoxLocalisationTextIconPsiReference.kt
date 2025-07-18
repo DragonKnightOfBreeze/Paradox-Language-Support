@@ -15,7 +15,7 @@ import icu.windea.pls.model.constants.*
 /**
  * 本地化文本图标的PSI引用。
  *
- * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationTextIconCompletionProvider
+ * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextIconCompletionProvider
  */
 @WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3)
 class ParadoxLocalisationTextIconPsiReference(

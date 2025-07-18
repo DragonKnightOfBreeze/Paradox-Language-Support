@@ -14,7 +14,7 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.ParadoxLocalisationCategory.*
 
 /**
- * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationParameterCompletionProvider
+ * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationParameterCompletionProvider
  */
 class ParadoxLocalisationPropertyPsiReference(
     element: ParadoxLocalisationParameter,

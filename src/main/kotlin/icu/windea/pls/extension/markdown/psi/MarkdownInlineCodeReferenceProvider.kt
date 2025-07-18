@@ -8,7 +8,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.markdown.*
-import icu.windea.pls.lang.references.symbols.*
+import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*

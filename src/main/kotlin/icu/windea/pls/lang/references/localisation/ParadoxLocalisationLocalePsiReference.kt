@@ -7,7 +7,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 
 /**
- * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationLocaleCompletionProvider
+ * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationLocaleCompletionProvider
  */
 class ParadoxLocalisationLocalePsiReference(
     element: ParadoxLocalisationLocale,

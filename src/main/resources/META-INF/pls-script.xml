@@ -17,28 +17,8 @@
     <elementDescriptionProvider implementation="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.ParadoxScriptWordSelectionHandler"/>
     <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>
-    <codeInsight.parameterInfo language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.parameterInfo.ParadoxParameterInfoHandler"/>
-    <declarationRangeHandler key="icu.windea.pls.script.psi.ParadoxScriptProperty" implementationClass="icu.windea.pls.script.codeInsight.ParadoxDefinitionDeclarationRangeHandler"/>
     <lang.implementationTextSelectioner language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptImplementationTextSelectioner"/>
     <errorQuickFixProvider implementation="icu.windea.pls.script.codeInsight.ParadoxScriptErrorQuickFixProvider"/>
-    <completion.contributor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.completion.ParadoxScriptCompletionContributor"/>
-    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxScriptedVariableLineMarkerProvider"/>
-    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxDefinitionLineMarkerProvider"/>
-    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxDefinitionRelatedLocalisationsLineMarkerProvider"/>
-    <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.markers.ParadoxDefinitionRelatedImagesLineMarkerProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxScriptedVariableLocalizedNameHintsProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionInfoHintsProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionLocalizedNameHintsProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceInfoHintsProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDefinitionReferenceLocalizedNameHintsProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxLocalisationReferenceInfoHintsProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxModifierIconHintsProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxModifierLocalizedNameHintsProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxComplexEnumValueInfoHintsProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxComplexEnumValueLocalizedNameHintsProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDynamicValueInfoHintsProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxDynamicValueLocalizedNameHintsProvider"/>
-    <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.hints.ParadoxScopeContextInfoHintsProvider"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT"
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$Base"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT_MEMBER" baseContextId="PARADOX_SCRIPT"
@@ -60,7 +40,6 @@
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.script.usages.ParadoxDefinitionFileStructureGroupRuleProvider"/>
     <lang.surroundDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.surroundWith.ParadoxScriptSurroundDescriptor"/>
     <lang.unwrapDescriptor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.unwrap.ParadoxScriptUnwrapDescriptor"/>
-    <codeInsight.gotoSuper language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptGotoSuperActionHandler"/>
 
     <lang.elementManipulator forClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKey"
                              implementationClass="icu.windea.pls.script.psi.ParadoxScriptPropertyKeyManipulator"/>

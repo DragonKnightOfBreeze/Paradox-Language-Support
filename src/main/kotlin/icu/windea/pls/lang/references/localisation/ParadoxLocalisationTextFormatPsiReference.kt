@@ -16,7 +16,7 @@ import icu.windea.pls.model.constraints.*
 /**
  * 文本格式的PSI引用。
  *
- * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationTextFormatCompletionProvider
+ * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextFormatCompletionProvider
  */
 @WithGameType(ParadoxGameType.Ck3, ParadoxGameType.Vic3)
 class ParadoxLocalisationTextFormatPsiReference(

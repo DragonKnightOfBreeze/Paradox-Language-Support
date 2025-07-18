@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.localisation.psi.*
 
 /**
- * @see icu.windea.pls.localisation.codeInsight.completion.ParadoxLocalisationColorCompletionProvider
+ * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationColorCompletionProvider
  */
 class ParadoxLocalisationTextColorPsiReference(
     element: ParadoxLocalisationTextColorAwareElement,
