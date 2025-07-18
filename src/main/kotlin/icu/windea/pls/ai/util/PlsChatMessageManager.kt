@@ -2,12 +2,13 @@ package icu.windea.pls.ai.util
 
 import com.intellij.*
 import icu.windea.pls.ai.requests.*
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
 import io.pebbletemplates.pebble.*
 import io.pebbletemplates.pebble.template.*
 import java.io.*
 import java.util.*
 
-object PlsPromptManager {
+object PlsChatMessageManager {
     private val engine by lazy {
         PebbleEngine.Builder().autoEscaping(false).build()
     }
@@ -35,5 +36,9 @@ object PlsPromptManager {
 
     private fun getLocaleSuffix(): String {
         return if (DynamicBundle.getLocale() == Locale.SIMPLIFIED_CHINESE) "_zh.md" else ".md"
+    }
+
+    fun fromLocalisationContexts(localisationContexts: List<ParadoxLocalisationContext>): String {
+        return localisationContexts.joinToString("\n") { context -> context.join() }.trim() //去除首尾空白
     }
 }

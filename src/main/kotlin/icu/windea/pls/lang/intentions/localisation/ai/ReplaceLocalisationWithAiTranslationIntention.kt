@@ -52,10 +52,9 @@ class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationInte
                     reporter.text(PlsBundle.message("manipulation.localisation.translate.replace.progress.step"))
 
                     contextsChunked.forEachConcurrent f@{ inputContexts ->
-                        val inputText = inputContexts.joinToString("\n") { context -> context.join() }
-                        val request = PlsAiTranslateLocalisationRequest(project, file, inputContexts, inputText, data, selectedLocale)
+                        val request = PlsAiTranslateLocalisationRequest(project, file, inputContexts, data, selectedLocale)
                         val callback: suspend (ParadoxLocalisationResult) -> Unit = { data ->
-                            val context = request.inputContexts[request.index]
+                            val context = request.localisationContexts[request.index]
                             runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
 
                             current++

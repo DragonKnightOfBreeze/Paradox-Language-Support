@@ -55,8 +55,7 @@ class CopyLocalisationWithAiPolishingIntention : ManipulateLocalisationIntention
                     reporter.text(PlsBundle.message("manipulation.localisation.polish.progress.step"))
 
                     contextsChunked.forEachConcurrent f@{ inputContexts ->
-                        val inputText = inputContexts.joinToString("\n") { context -> context.join() }
-                        val request = PlsAiPolishLocalisationRequest(project, file, inputContexts, inputText, data)
+                        val request = PlsAiPolishLocalisationRequest(project, file, inputContexts, data)
                         val callback: suspend (ParadoxLocalisationResult) -> Unit = { data ->
                             current++
                             reporter.text(PlsBundle.message("manipulation.localisation.polish.progress.itemStep", data.key))

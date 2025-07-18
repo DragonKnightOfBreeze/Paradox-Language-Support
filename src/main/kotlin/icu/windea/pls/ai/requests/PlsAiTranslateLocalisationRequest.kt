@@ -8,11 +8,10 @@ import icu.windea.pls.lang.util.manipulators.*
 class PlsAiTranslateLocalisationRequest(
     project: Project,
     file: PsiFile?,
-    inputContexts: List<ParadoxLocalisationContext>,
-    inputText: String,
-    inputDescription: String?,
+    localisationContexts: List<ParadoxLocalisationContext>,
+    description: String?,
     val targetLocale: CwtLocaleConfig
-) : PlsAiManipulateLocalisationsRequest(project, file, inputContexts, inputText, inputDescription) {
+) : PlsAiManipulateLocalisationsRequest(project, file, localisationContexts, description) {
     val context by lazy { createContext() }
 
     fun createContext(): Context {

@@ -58,10 +58,9 @@ class ReplaceLocalisationWithAiPolishingAction : ManipulateLocalisationActionBas
                         emit(context)
                     }.toChunkedFlow(chunkSize).flatMapMerge { inputContexts ->
                         flow {
-                            val inputText = inputContexts.joinToString("\n") { context -> context.join() }
-                            val request = PlsAiPolishLocalisationRequest(project, file, inputContexts, inputText, null)
+                            val request = PlsAiPolishLocalisationRequest(project, file, inputContexts, null)
                             val callback: suspend (ParadoxLocalisationResult) -> Unit = { data ->
-                                val context = request.inputContexts[request.index]
+                                val context = request.localisationContexts[request.index]
                                 runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
                             }
                             runCatchingCancelable { handleText(request, callback) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()

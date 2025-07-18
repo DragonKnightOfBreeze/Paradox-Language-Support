@@ -1,7 +1,6 @@
 package icu.windea.pls.ai.services
 
 import com.intellij.openapi.components.*
-import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.ui.*
@@ -12,49 +11,36 @@ import icu.windea.pls.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.coroutines.*
 import icu.windea.pls.lang.util.manipulators.*
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.awt.*
-import java.lang.invoke.*
 
 @Service
 class PlsAiTranslateLocalisationService : PlsAiManipulateLocalisationService() {
-    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
-
     fun translate(request: PlsAiTranslateLocalisationRequest): Flow<ParadoxLocalisationResult>? {
         val chatModel = PlsChatModelManager.getStreamingChatModel() ?: return null
 
         logger.info("[AI REQUEST] Translate localisation...")
-        return chatModel.chatFlow f2@{
-            messages += getSystemMessage(request)
-            messages += getUserMessage(request)
-        }.toLineFlow({
-            when (it) {
-                is StreamingChatModelReply.PartialResponse -> it.partialResponse
-                is StreamingChatModelReply.CompleteResponse -> ""
-                is StreamingChatModelReply.Error -> throw it.cause
-            }
-        }, {
-            ParadoxLocalisationResult.fromLine(it)
-        }).onCompletion { e ->
-            when {
-                e is CancellationException -> logger.warn("[AI RESPONSE] Cancelled.")
-                e != null -> logger.warn("[AI RESPONSE] Failed.", e)
-                else -> logger.info("[AI RESPONSE] Done.")
-            }
-        }
+        return chatModel.chatFlow {
+            messages += getMessages(request)
+        }.toResultFlow()
+    }
+
+    private fun getMessages(request: PlsAiTranslateLocalisationRequest): List<ChatMessage> {
+        val messages = mutableListOf<ChatMessage>()
+        messages += getSystemMessage(request)
+        messages += getUserMessage(request)
+        return messages
     }
 
     private fun getSystemMessage(request: PlsAiTranslateLocalisationRequest): SystemMessage {
-        val text = PlsPromptManager.fromTemplate("translateLocalisation", request)
+        val text = PlsChatMessageManager.fromTemplate("translateLocalisation", request)
         logger.info("System message: \n$text")
         return SystemMessage.from(text)
     }
 
     private fun getUserMessage(request: PlsAiTranslateLocalisationRequest): UserMessage {
-        val text = request.text
+        val text = PlsChatMessageManager.fromLocalisationContexts(request.localisationContexts)
         logger.info("User message: \n$text")
         return UserMessage.from(text)
     }

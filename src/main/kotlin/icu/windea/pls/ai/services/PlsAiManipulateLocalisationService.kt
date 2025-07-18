@@ -1,11 +1,36 @@
 package icu.windea.pls.ai.services
 
+import com.intellij.openapi.diagnostic.*
+import dev.langchain4j.kotlin.model.chat.*
 import icu.windea.pls.*
+import icu.windea.pls.core.coroutines.*
 import icu.windea.pls.lang.util.manipulators.*
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.lang.invoke.MethodHandles
 import kotlin.contracts.*
 
 abstract class PlsAiManipulateLocalisationService : PlsAiService {
+    protected val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
+
+    fun Flow<StreamingChatModelReply>.toResultFlow(): Flow<ParadoxLocalisationResult> {
+        return toLineFlow({
+            when (it) {
+                is StreamingChatModelReply.PartialResponse -> it.partialResponse
+                is StreamingChatModelReply.CompleteResponse -> ""
+                is StreamingChatModelReply.Error -> throw it.cause
+            }
+        }, {
+            ParadoxLocalisationResult.fromLine(it)
+        }).onCompletion { e ->
+            when {
+                e is CancellationException -> logger.warn("[AI RESPONSE] Cancelled.")
+                e != null -> logger.warn("[AI RESPONSE] Failed.", e)
+                else -> logger.info("[AI RESPONSE] Done.")
+            }
+        }
+    }
+
     @OptIn(ExperimentalContracts::class)
     fun checkResultFlow(resultFlow: Flow<ParadoxLocalisationResult>?) {
         contract {

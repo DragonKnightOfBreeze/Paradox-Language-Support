@@ -10,16 +10,14 @@ import icu.windea.pls.model.*
 abstract class PlsAiManipulateLocalisationsRequest(
     val project: Project,
     val file: PsiFile?,
-    val inputContexts: List<ParadoxLocalisationContext>,
-    inputText: String,
-    inputDescription: String?,
+    val localisationContexts: List<ParadoxLocalisationContext>,
+    description: String?,
 ): PlsAiRequest {
-    val text: String = inputText.trim() //去除首尾空白
-    val description: String? = inputDescription?.orNull()?.substringBefore('\n')?.trim() //去除首尾空白，且截断换行符之后的文本
+    val description: String? = description?.orNull()?.substringBefore('\n')?.trim() //去除首尾空白，且截断换行符之后的文本
 
     var index: Int = 0
 
-    val fileInfo: ParadoxFileInfo? = selectFile(file ?: inputContexts.firstOrNull()?.element)?.fileInfo
+    val fileInfo: ParadoxFileInfo? = selectFile(file ?: localisationContexts.firstOrNull()?.element)?.fileInfo
 
     val gameType: ParadoxGameType = fileInfo?.rootInfo?.gameType.orDefault()
     val filePath: String? = fileInfo?.path?.path

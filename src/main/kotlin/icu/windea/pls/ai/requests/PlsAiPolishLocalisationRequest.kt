@@ -7,10 +7,9 @@ import icu.windea.pls.lang.util.manipulators.*
 class PlsAiPolishLocalisationRequest(
     project: Project,
     file: PsiFile?,
-    inputContexts: List<ParadoxLocalisationContext>,
-    inputText: String,
-    inputDescription: String?,
-) : PlsAiManipulateLocalisationsRequest(project, file, inputContexts, inputText, inputDescription) {
+    localisationContexts: List<ParadoxLocalisationContext>,
+    description: String?,
+) : PlsAiManipulateLocalisationsRequest(project, file, localisationContexts, description) {
     val context by lazy { createContext() }
 
     fun createContext(): Context {

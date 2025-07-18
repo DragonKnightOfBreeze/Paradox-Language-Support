@@ -69,7 +69,7 @@ object ParadoxLocalisationManipulator {
         val resultFlow = aiService.translate(request)
         aiService.checkResultFlow(resultFlow)
         resultFlow.collect { data ->
-            val context = request.inputContexts[request.index]
+            val context = request.localisationContexts[request.index]
             aiService.checkOutputData(context, data)
             context.newText = data.text
             callback(data)
@@ -82,7 +82,7 @@ object ParadoxLocalisationManipulator {
         val resultFlow = aiService.polish(request)
         aiService.checkResultFlow(resultFlow)
         resultFlow.collect { data ->
-            val context = request.inputContexts[request.index]
+            val context = request.localisationContexts[request.index]
             aiService.checkOutputData(context, data)
             context.newText = data.text
             callback(data)
