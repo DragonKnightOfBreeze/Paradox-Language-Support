@@ -8,7 +8,7 @@ import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.codeInsight.*
 import icu.windea.pls.model.*
 
-class ParadoxCsvAnnotator : Annotator {
+class ParadoxCsvBasicAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
             is ParadoxCsvColumn -> annotateColumn(element, holder)

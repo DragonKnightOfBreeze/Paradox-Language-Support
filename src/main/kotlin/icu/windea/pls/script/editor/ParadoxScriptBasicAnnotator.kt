@@ -1,4 +1,4 @@
-package icu.windea.pls.cwt.editor
+package icu.windea.pls.script.editor
 
 import com.intellij.lang.annotation.*
 import com.intellij.lang.annotation.HighlightSeverity.*
@@ -6,12 +6,14 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.quickfix.*
+import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys as Keys
 
-class CwtAnnotator : Annotator {
+class ParadoxScriptBasicAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         checkSyntax(element, holder)
+        annotateParameterValue(element, holder)
     }
 
     private fun checkSyntax(element: PsiElement, holder: AnnotationHolder) {
@@ -34,7 +36,24 @@ class CwtAnnotator : Annotator {
         }
     }
 
-    private fun PsiElement?.isLiteral() = this is CwtPropertyKey || this is CwtValue
+    private fun PsiElement?.isLiteral() = this is ParadoxScriptExpressionElement
 
-    private fun PsiElement?.isQuoteAware() = this is CwtOptionKey || this is CwtPropertyKey || this is CwtString
+    private fun PsiElement?.isQuoteAware() = this is ParadoxScriptStringExpressionElement
+
+    private fun annotateParameterValue(element: PsiElement, holder: AnnotationHolder) {
+        val elementType = element.elementType
+        if (elementType != ParadoxScriptElementTypes.ARGUMENT_TOKEN) return
+        val templateElement = element.parent?.parent ?: return
+        val attributesKey = when {
+            element.text.startsWith("@") -> Keys.SCRIPTED_VARIABLE_KEY
+            templateElement is ParadoxScriptPropertyKey -> Keys.PROPERTY_KEY_KEY
+            templateElement is ParadoxScriptString -> Keys.STRING_KEY
+            templateElement is ParadoxScriptScriptedVariableName -> Keys.SCRIPTED_VARIABLE_KEY
+            templateElement is ParadoxScriptScriptedVariableReference -> Keys.SCRIPTED_VARIABLE_KEY
+            else -> return
+        }
+        holder.newSilentAnnotation(INFORMATION).range(element)
+            .textAttributes(attributesKey)
+            .create()
+    }
 }

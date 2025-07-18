@@ -701,6 +701,12 @@ object ParadoxExpressionManager {
         ParadoxLocalisationExpressionSupport.annotate(element, rangeInElement, expressionText, holder)
     }
 
+    fun annotateCsvExpression(element: ParadoxExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder) {
+        //TODO 2.0.1-dev
+        //val expressionText = getExpressionText(element, rangeInElement)
+        //ParadoxCsvExpressionSupport.annotate(element, rangeInElement, expressionText, holder)
+    }
+
     fun annotateComplexExpression(element: ParadoxExpressionElement, expression: ParadoxComplexExpression, holder: AnnotationHolder, config: CwtConfig<*>? = null) {
         doAnnotateComplexExpression(element, expression, holder, config)
     }

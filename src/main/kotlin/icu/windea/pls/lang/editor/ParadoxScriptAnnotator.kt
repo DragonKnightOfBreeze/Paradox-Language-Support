@@ -1,7 +1,6 @@
-package icu.windea.pls.script.editor
+package icu.windea.pls.lang.editor
 
 import com.intellij.lang.annotation.*
-import com.intellij.lang.annotation.HighlightSeverity.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
@@ -12,68 +11,16 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.script.editor.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.editor.ParadoxScriptAttributesKeys as Keys
 
-/**
- * 脚本文件的注解器。
- *
- * * 提供定义的特殊颜色高亮。（基于CWT规则）
- * * 提供定义成员的特殊颜色高亮。（基于CWT规则）
- * * 提供特殊标签的特殊颜色高亮。（基于扩展的CWT规则）
- */
 class ParadoxScriptAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        checkSyntax(element, holder)
-
-        annotateParameterValue(element, holder)
-
         when (element) {
             is ParadoxScriptFile -> annotateFile(element, holder)
             is ParadoxScriptProperty -> annotateProperty(element, holder)
             is ParadoxScriptExpressionElement -> annotateExpressionElement(element, holder)
         }
-    }
-
-    private fun checkSyntax(element: PsiElement, holder: AnnotationHolder) {
-        //不允许紧邻的字面量
-        if (element.isLiteral() && element.prevSibling.isLiteral()) {
-            holder.newAnnotation(ERROR, PlsBundle.message("neighboring.literal.not.supported"))
-                .withFix(InsertStringFix(PlsBundle.message("neighboring.literal.not.supported.fix"), " ", element.startOffset))
-                .create()
-        }
-        //检测是否缺失一侧的双引号
-        if (element.isQuoteAware()) {
-            val text = element.text
-            val isLeftQuoted = text.isLeftQuoted()
-            val isRightQuoted = text.isRightQuoted()
-            if (!isLeftQuoted && isRightQuoted) {
-                holder.newAnnotation(ERROR, PlsBundle.message("missing.opening.quote")).create()
-            } else if (isLeftQuoted && !isRightQuoted) {
-                holder.newAnnotation(ERROR, PlsBundle.message("missing.closing.quote")).create()
-            }
-        }
-    }
-
-    private fun PsiElement?.isLiteral() = this is ParadoxScriptExpressionElement
-
-    private fun PsiElement?.isQuoteAware() = this is ParadoxScriptStringExpressionElement
-
-    private fun annotateParameterValue(element: PsiElement, holder: AnnotationHolder) {
-        val elementType = element.elementType
-        if (elementType != ParadoxScriptElementTypes.ARGUMENT_TOKEN) return
-        val templateElement = element.parent?.parent ?: return
-        val attributesKey = when {
-            element.text.startsWith("@") -> Keys.SCRIPTED_VARIABLE_KEY
-            templateElement is ParadoxScriptPropertyKey -> Keys.PROPERTY_KEY_KEY
-            templateElement is ParadoxScriptString -> Keys.STRING_KEY
-            templateElement is ParadoxScriptScriptedVariableName -> Keys.SCRIPTED_VARIABLE_KEY
-            templateElement is ParadoxScriptScriptedVariableReference -> Keys.SCRIPTED_VARIABLE_KEY
-            else -> return
-        }
-        holder.newSilentAnnotation(INFORMATION).range(element)
-            .textAttributes(attributesKey)
-            .create()
     }
 
     private fun annotateFile(file: ParadoxScriptFile, holder: AnnotationHolder) {
@@ -88,7 +35,7 @@ class ParadoxScriptAnnotator : Annotator {
 
     private fun annotateDefinition(element: ParadoxScriptDefinitionElement, holder: AnnotationHolder, definitionInfo: ParadoxDefinitionInfo) {
         if (element is ParadoxScriptProperty) {
-            holder.newSilentAnnotation(INFORMATION).range(element.propertyKey).textAttributes(Keys.DEFINITION_KEY).create()
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element.propertyKey).textAttributes(ParadoxScriptAttributesKeys.DEFINITION_KEY).create()
         }
         val nameField = definitionInfo.typeConfig.nameField
         if (nameField != null) {
@@ -100,7 +47,7 @@ class ParadoxScriptAnnotator : Annotator {
                 val typesString = definitionInfo.typesText
                 //这里不能使用PSI链接
                 val tooltip = "<pre>(definition name) <b>$nameString</b>: $typesString</pre>"
-                holder.newSilentAnnotation(INFORMATION).range(nameElement).tooltip(tooltip).textAttributes(Keys.DEFINITION_NAME_KEY).create()
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(nameElement).tooltip(tooltip).textAttributes(ParadoxScriptAttributesKeys.DEFINITION_NAME_KEY).create()
             }
         }
     }
@@ -140,13 +87,13 @@ class ParadoxScriptAnnotator : Annotator {
 
     private fun annotateTag(element: ParadoxScriptString, holder: AnnotationHolder) {
         //目前不在这里显示标签类型，而是在快速文档中
-        holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(Keys.TAG_KEY).create()
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element).textAttributes(ParadoxScriptAttributesKeys.TAG_KEY).create()
     }
 
     private fun annotateComplexEnumValue(element: ParadoxScriptExpressionElement, holder: AnnotationHolder) {
         //高亮复杂枚举值声明对应的表达式
-        holder.newSilentAnnotation(INFORMATION).range(element)
-            .textAttributes(Keys.COMPLEX_ENUM_VALUE_KEY)
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(element)
+            .textAttributes(ParadoxScriptAttributesKeys.COMPLEX_ENUM_VALUE_KEY)
             .create()
     }
 

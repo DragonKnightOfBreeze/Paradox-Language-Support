@@ -12,6 +12,7 @@
     <lang.findUsagesProvider language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
     <elementDescriptionProvider implementation="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.cwt.editor.CwtWordSelectionHandler"/>
+    <annotator language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtBasicAnnotator"/>
     <lang.commenter language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>
     <lang.smartEnterProcessor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.editorActions.smartEnter.CwtSmartEnterProcessor"/>
     <breadcrumbsInfoProvider implementation="icu.windea.pls.cwt.editor.CwtBreadCrumbsProvider"/>

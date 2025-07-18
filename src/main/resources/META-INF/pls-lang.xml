@@ -94,6 +94,10 @@
     <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.documentation.CwtDocumentationLinkHandler"/>
     <platform.backend.documentation.linkHandler implementation="icu.windea.pls.lang.documentation.ParadoxDocumentationLinkHandler"/>
 
+    <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.editor.ParadoxScriptAnnotator"/>
+    <annotator language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.editor.ParadoxLocalisationAnnotator"/>
+    <annotator language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.editor.ParadoxCsvAnnotator"/>
+
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider"/>
     <editorNotificationProvider implementation="icu.windea.pls.lang.editor.ParadoxInlineScriptEditorNotificationProvider"/>
 

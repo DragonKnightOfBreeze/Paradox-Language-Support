@@ -16,7 +16,7 @@
     <lang.findUsagesProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
     <elementDescriptionProvider implementation="icu.windea.pls.script.editor.ParadoxScriptFindUsagesProvider"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.ParadoxScriptWordSelectionHandler"/>
-    <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptAnnotator"/>
+    <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptBasicAnnotator"/>
     <lang.implementationTextSelectioner language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptImplementationTextSelectioner"/>
     <errorQuickFixProvider implementation="icu.windea.pls.script.codeInsight.ParadoxScriptErrorQuickFixProvider"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT"
