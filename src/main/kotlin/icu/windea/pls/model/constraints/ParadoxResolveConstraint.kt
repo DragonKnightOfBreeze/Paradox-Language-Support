@@ -2,6 +2,8 @@ package icu.windea.pls.model.constraints
 
 import com.intellij.psi.*
 import icu.windea.pls.config.*
+import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import icu.windea.pls.csv.psi.isHeaderColumn
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.references.*
@@ -36,6 +38,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxLocalisationTextColorAwareElement -> true //<text_color>
                 is ParadoxLocalisationTextFormat -> true //<text_format>
                 is ParadoxLocalisationTextIcon -> true //<text_icon>
+                is ParadoxCsvColumn -> !element.isHeaderColumn()
                 else -> false
             }
         }
@@ -78,6 +81,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
                 is ParadoxLocalisationExpressionElement -> element.isDatabaseObjectExpression(strict = true)
                 is ParadoxLocalisationParameter -> true
+                //is ParadoxCsvColumn -> !element.isHeaderColumn()
                 else -> false
             }
         }
@@ -151,6 +155,7 @@ enum class ParadoxResolveConstraint {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
+                //is ParadoxCsvColumn -> !element.isHeaderColumn()
                 else -> false
             }
         }

@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.lang.util
 
 import com.intellij.lang.annotation.*
@@ -20,6 +22,7 @@ import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.csv.psi.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.ep.configContext.*
 import icu.windea.pls.ep.expression.*
@@ -146,6 +149,7 @@ object ParadoxExpressionManager {
             element is ParadoxScriptInlineMath -> "" //should not be used
             rangeInElement != null -> rangeInElement.substring(element.text)
             element is ParadoxScriptStringExpressionElement -> element.text.unquote()
+            element is ParadoxCsvColumn -> element.text.unquote()
             else -> element.text
         }
     }
@@ -769,6 +773,7 @@ object ParadoxExpressionManager {
         return when (element) {
             is ParadoxScriptExpressionElement -> doGetExpressionReferencesFromCache(element)
             is ParadoxLocalisationExpressionElement -> doGetExpressionReferencesFromCache(element)
+            //is ParadoxCsvExpressionElement -> doGetExpressionReferencesFromCache(element) //TODO 2.0.1-dev
             else -> PsiReference.EMPTY_ARRAY
         }
     }
@@ -881,6 +886,28 @@ object ParadoxExpressionManager {
 
         val result = ParadoxLocalisationExpressionSupport.multiResolve(element, rangeInElement, expressionText)
         return result
+    }
+
+    fun resolveCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?): PsiElement? {
+        ProgressManager.checkCanceled()
+        val expressionText = getExpressionText(element, rangeInElement)
+        if (expressionText.isParameterized()) return null //排除引用文本带参数的情况
+
+        //val result = ParadoxCsvExpressionSupport.resolve(element, rangeInElement, expressionText)
+        //return result
+
+        return null //TODO 2.0.1-dev
+    }
+
+    fun multiResolveCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?): Collection<PsiElement> {
+        ProgressManager.checkCanceled()
+        val expressionText = getExpressionText(element, rangeInElement)
+        if (expressionText.isParameterized()) return emptySet() //排除引用文本带参数的情况
+
+        //val result = ParadoxCsvExpressionSupport.multiResolve(element, rangeInElement, expressionText)
+        //return result
+
+        return emptySet() //TODO 2.0.1-dev
     }
 
     fun resolveModifier(element: ParadoxExpressionElement, name: String, configGroup: CwtConfigGroup): PsiElement? {

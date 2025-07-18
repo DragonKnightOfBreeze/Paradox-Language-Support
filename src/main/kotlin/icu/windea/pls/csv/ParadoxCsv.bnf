@@ -47,5 +47,5 @@ column ::= COLUMN_TOKEN {
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.csv.psi.ParadoxCsvExpressionElement"
   ]
-  methods=[getIcon getName getValue setValue toString]
+  methods=[getIcon getName getValue setValue getReference getReferences toString]
 }

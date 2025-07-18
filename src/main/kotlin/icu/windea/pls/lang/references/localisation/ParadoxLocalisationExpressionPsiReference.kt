@@ -22,13 +22,7 @@ class ParadoxLocalisationExpressionPsiReference(
     val project by lazy { element.project }
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        val resolved = resolve()
-        return when {
-            resolved == null -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-            resolved.language is CwtLanguage -> throw IncorrectOperationException() //cannot rename cwt config
-            resolved.language is ParadoxBaseLanguage -> element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
-            else -> throw IncorrectOperationException()
-        }
+        return ParadoxPsiManager.handleElementRename(element, rangeInElement, newElementName)
     }
 
     override fun getReferences(): Array<out PsiReference>? {

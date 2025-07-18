@@ -15,4 +15,3 @@ class ParadoxLocalisationExpressionPsiReferenceProvider : PsiReferenceProvider()
         return ParadoxExpressionManager.getExpressionReferences(element)
     }
 }
-

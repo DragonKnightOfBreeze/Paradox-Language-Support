@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-package icu.windea.pls.lang.codeInsight.hints.script
+package icu.windea.pls.lang.codeInsight.hints.csv
 
 import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
@@ -9,8 +9,8 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionReferenceLocalizedNameHintsProvider.*
+import icu.windea.pls.csv.psi.*
+import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvDefinitionReferenceLocalizedNameHintsProvider.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
@@ -19,18 +19,18 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 定义引用的本地化名字的内嵌提示。
+ * CSV文件中的定义引用的本地化名字的内嵌提示。
  */
-class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
+class ParadoxCsvDefinitionReferenceLocalizedNameHintsProvider : ParadoxCsvHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = PlsInternalSettings.textLengthLimit,
         var iconHeightLimit: Int = PlsInternalSettings.iconHeightLimit,
     )
 
-    private val settingsKey = SettingsKey<Settings>("ParadoxDefinitionReferenceLocalizedNameHintsSettingsKey")
+    private val settingsKey = SettingsKey<Settings>("ParadoxCsvDefinitionReferenceLocalizedNameHintsSettingsKey")
 
-    override val name: String get() = PlsBundle.message("script.hints.definitionReferenceLocalizedName")
-    override val description: String get() = PlsBundle.message("script.hints.definitionReferenceLocalizedName.description")
+    override val name: String get() = PlsBundle.message("csv.hints.definitionReferenceLocalizedName")
+    override val description: String get() = PlsBundle.message("csv.hints.definitionReferenceLocalizedName.description")
     override val key: SettingsKey<Settings> get() = settingsKey
 
     override val renderLocalisation: Boolean get() = true
@@ -48,7 +48,8 @@ class ParadoxDefinitionReferenceLocalizedNameHintsProvider : ParadoxScriptHintsP
     }
 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-        if (element !is ParadoxScriptExpressionElement) return true
+        if (element !is ParadoxCsvColumn) return true
+        if (element.isHeaderColumn()) return true
         if (!ParadoxResolveConstraint.Definition.canResolveReference(element)) return true
         val reference = element.reference ?: return true
         if (!ParadoxResolveConstraint.Definition.canResolve(reference)) return true

@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-package icu.windea.pls.lang.codeInsight.hints.script
+package icu.windea.pls.lang.codeInsight.hints.csv
 
 import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
@@ -9,26 +9,26 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
+import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionReferenceInfoHintsProvider.*
+import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvDefinitionReferenceInfoHintsProvider.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 定义引用信息的内嵌提示（对应定义的名字和类型）。
+ * CSV文件中的定义引用信息的内嵌提示（对应定义的名字和类型）。
  */
-class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
+class ParadoxCsvDefinitionReferenceInfoHintsProvider : ParadoxCsvHintsProvider<Settings>() {
     data class Settings(
         var showSubtypes: Boolean = true
     )
 
-    private val settingsKey = SettingsKey<Settings>("ParadoxDefinitionReferenceInfoHintsSettingsKey")
+    private val settingsKey = SettingsKey<Settings>("ParadoxCsvDefinitionReferenceInfoHintsSettingsKey")
 
-    override val name: String get() = PlsBundle.message("script.hints.definitionReferenceInfo")
-    override val description: String get() = PlsBundle.message("script.hints.definitionReferenceInfo.description")
+    override val name: String get() = PlsBundle.message("csv.hints.definitionReferenceInfo")
+    override val description: String get() = PlsBundle.message("csv.hints.definitionReferenceInfo.description")
     override val key: SettingsKey<Settings> get() = settingsKey
 
     override fun createSettings() = Settings()
@@ -42,7 +42,8 @@ class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<S
     }
 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-        if (element !is ParadoxScriptExpressionElement) return true
+        if (element !is ParadoxCsvColumn) return true
+        if (element.isHeaderColumn()) return true
         if (!ParadoxResolveConstraint.Definition.canResolveReference(element)) return true
         val reference = element.reference ?: return true
         if (!ParadoxResolveConstraint.Definition.canResolve(reference)) return true

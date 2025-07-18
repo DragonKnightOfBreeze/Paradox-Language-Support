@@ -12,6 +12,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.csv.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
@@ -50,6 +51,16 @@ public class ParadoxCsvColumnImpl extends ASTWrapperPsiElement implements Parado
   @Override
   public @NotNull ParadoxCsvColumn setValue(@NotNull String value) {
     return ParadoxCsvPsiImplUtil.setValue(this, value);
+  }
+
+  @Override
+  public @Nullable PsiReference getReference() {
+    return ParadoxCsvPsiImplUtil.getReference(this);
+  }
+
+  @Override
+  public @NotNull PsiReference @NotNull [] getReferences() {
+    return ParadoxCsvPsiImplUtil.getReferences(this);
   }
 
   @Override

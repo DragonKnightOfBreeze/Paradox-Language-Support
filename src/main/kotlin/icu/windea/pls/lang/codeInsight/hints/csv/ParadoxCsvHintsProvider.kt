@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-package icu.windea.pls.lang.codeInsight.hints.script
+package icu.windea.pls.lang.codeInsight.hints.csv
 
 import com.intellij.codeInsight.hints.*
 import com.intellij.codeInsight.hints.presentation.*
@@ -9,15 +9,15 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
+import icu.windea.pls.csv.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.hints.*
-import icu.windea.pls.script.*
 
-abstract class ParadoxScriptHintsProvider<T : Any> : ParadoxHintsProvider<T>() {
+abstract class ParadoxCsvHintsProvider<T : Any> : ParadoxHintsProvider<T>() {
     override val previewText: String? get() = null
 
     override fun isLanguageSupported(language: Language): Boolean {
-        return language is ParadoxScriptLanguage
+        return language is ParadoxCsvLanguage
     }
 
     override fun createConfigurable(settings: T): ImmediateConfigurable {
@@ -40,5 +40,4 @@ abstract class ParadoxScriptHintsProvider<T : Any> : ParadoxHintsProvider<T>() {
     }
 
     protected abstract fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: T, sink: InlayHintsSink): Boolean
-
 }

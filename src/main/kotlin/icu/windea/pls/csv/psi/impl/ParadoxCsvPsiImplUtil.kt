@@ -85,6 +85,17 @@ object ParadoxCsvPsiImplUtil {
     //endregion
 
     @JvmStatic
+    fun getReference(element: PsiElement): PsiReference? {
+        return element.references.singleOrNull()
+    }
+
+    @JvmStatic
+    fun getReferences(element: PsiElement): Array<out PsiReference> {
+        //这里不需要进行缓存
+        return PsiReferenceService.getService().getContributedReferences(element)
+    }
+
+    @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
         return BaseParadoxItemPresentation(element)
     }
