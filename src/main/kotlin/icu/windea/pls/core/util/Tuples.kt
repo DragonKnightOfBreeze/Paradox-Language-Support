@@ -1,6 +1,6 @@
-@file:Suppress("PackageDirectoryMismatch")
+@file:Suppress("unused")
 
-package icu.windea.pls.core
+package icu.windea.pls.core.util
 
 typealias Tuple2<A, B> = Pair<A, B>
 

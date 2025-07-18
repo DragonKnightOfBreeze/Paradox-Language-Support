@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 
 package icu.windea.pls.core
 
@@ -63,7 +63,7 @@ inline fun <K : Any, reified T : PsiElement> StubIndexKey<K, T>.processAllElemen
     crossinline processor: (key: K, element: T) -> Boolean
 ): Boolean {
     if (DumbService.isDumb(project)) return true
-    
+
     return StubIndex.getInstance().processAllKeys(this, p@{ key ->
         ProgressManager.checkCanceled()
         if (keyPredicate(key)) {

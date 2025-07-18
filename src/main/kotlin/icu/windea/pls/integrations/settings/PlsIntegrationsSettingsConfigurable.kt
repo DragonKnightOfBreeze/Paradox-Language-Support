@@ -5,12 +5,12 @@ import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.options.ex.*
 import com.intellij.openapi.ui.*
-import com.intellij.ui.components.JBCheckBox
+import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
 import icu.windea.pls.*
 import icu.windea.pls.ai.settings.*
-import icu.windea.pls.core.tupleOf
+import icu.windea.pls.core.util.*
 import icu.windea.pls.integrations.*
 import icu.windea.pls.model.*
 

@@ -33,7 +33,6 @@ import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.ParadoxPsiManager.findMemberElementsToInline
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.script.codeStyle.*
@@ -43,11 +42,9 @@ import java.util.*
 
 object ParadoxParameterManager {
     object Keys : KeyRegistry() {
-        val inferredContextConfigsFromConfig by createKey<List<CwtMemberConfig<*>>>(this)
+        //val inferredContextConfigsFromConfig by createKey<List<CwtMemberConfig<*>>>(this)
         val inferredContextConfigsFromUsages by createKey<List<CwtMemberConfig<*>>>(this)
     }
-
-    private val regex1 = """(?<!\\)\$(.*?)\|[^$]*\$""".toRegex()
 
     /**
      * 得到[element]的文本，然后使用指定的一组[args]替换其中的占位符。
@@ -85,7 +82,7 @@ object ParadoxParameterManager {
                         val revert = v.equals("no", true)
                         val operator = conditionExpression.findChild { it.elementType == ParadoxScriptElementTypes.NOT_SIGN } == null
                         if ((!revert && operator) || (revert && !operator)) {
-                            val (start, end) = findMemberElementsToInline(element)
+                            val (start, end) = ParadoxPsiManager.findMemberElementsToInline(element)
                             if (start != null && end != null) {
                                 element.parent.addRangeAfter(start, end, element)
                             }

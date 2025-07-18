@@ -1,4 +1,4 @@
-package icu.windea.pls.lang
+package icu.windea.pls.core
 
 import com.intellij.ide.hierarchy.*
 import com.intellij.injected.editor.*
@@ -17,7 +17,7 @@ val HierarchyBrowserBaseEx.project: Project by memberProperty<HierarchyBrowserBa
 val HierarchyBrowserBaseEx.element: PsiElement by memberProperty<HierarchyBrowserBaseEx, _>("hierarchyBase")
 
 val SearchRequestCollector.wordRequests: MutableList<PsiSearchRequest> by memberProperty<SearchRequestCollector, _>("myWordRequests")
-val SearchRequestCollector.queryRequests: MutableList<QuerySearchRequest> by memberProperty<SearchRequestCollector, _>("myQueryRequests")
+//val SearchRequestCollector.queryRequests: MutableList<QuerySearchRequest> by memberProperty<SearchRequestCollector, _>("myQueryRequests")
 
 //com.intellij.psi.impl.source.tree.injected.DocumentWindowImpl.getShreds
 fun DocumentWindow.getShreds(): Place? {

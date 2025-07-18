@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE")
+@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE", "unused")
 
 package icu.windea.pls.core
 

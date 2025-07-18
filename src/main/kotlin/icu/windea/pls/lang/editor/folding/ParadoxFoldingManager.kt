@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.PlsPsiManager
 
 object ParadoxFoldingManager {
     fun addCommentFoldingDescriptor(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>) {
@@ -15,8 +15,8 @@ object ParadoxFoldingManager {
 
         val element = node.psi
         if (element !is PsiComment) return
-        val startElement = element.findFurthestSiblingOfSameType(findAfter = false)
-        val endElement = element.findFurthestSiblingOfSameType(findAfter = true)
+        val startElement = PlsPsiManager.findFurthestSiblingOfSameType(element, findAfter = false)
+        val endElement = PlsPsiManager.findFurthestSiblingOfSameType(element, findAfter = true)
         if (startElement == endElement) return //受支持的注释都是单行注释，因此这里可以快速判断
         val startOffset = startElement.startOffset
         val endOffset = endElement.endOffset

@@ -26,6 +26,7 @@ import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.PlsPsiManager
 import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.model.constraints.*
@@ -129,7 +130,7 @@ private fun DocumentationBuilder.buildPropertyOrStringDefinition(element: PsiEle
 
         val bindingConfig = element.getUserData(PlsKeys.bindingConfig)
         val tagName = bindingConfig?.castOrNull<CwtValueConfig>()?.tagType
-        val referenceElement = getReferenceElement(originalElement)
+        val referenceElement = PlsPsiManager.getReferenceElement(originalElement)
 
         val shortName = configType?.getShortName(name) ?: name
         val byName = if (shortName == name) null else name

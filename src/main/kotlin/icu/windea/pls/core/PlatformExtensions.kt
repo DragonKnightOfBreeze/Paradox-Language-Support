@@ -39,7 +39,6 @@ import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.model.constants.*
 import it.unimi.dsi.fastutil.Hash
 import it.unimi.dsi.fastutil.objects.*
@@ -48,7 +47,6 @@ import java.nio.file.*
 import java.util.concurrent.*
 import javax.swing.*
 import kotlin.Result
-import kotlin.collections.isNullOrEmpty
 import kotlin.reflect.*
 
 //region Common Extensions
@@ -726,27 +724,6 @@ fun PsiElement.children(forward: Boolean = true): Sequence<PsiElement> {
     return child.siblings(forward, withSelf = true)
 }
 
-/**
- * 查找最远的相同类型的兄弟节点。可指定是否向后查找，以及是否在空行处中断。
- */
-fun PsiElement.findFurthestSiblingOfSameType(findAfter: Boolean, stopOnBlankLine: Boolean = true): PsiElement {
-    var node = node
-    val expectedType = node.elementType
-    var lastSeen = node
-    while (node != null) {
-        val elementType = node.elementType
-        when {
-            elementType == expectedType -> lastSeen = node
-            elementType == TokenType.WHITE_SPACE -> {
-                if (stopOnBlankLine && node.text.containsBlankLine()) break
-            }
-            else -> break
-        }
-        node = if (findAfter) node.treeNext else node.treePrev
-    }
-    return lastSeen.psi
-}
-
 val PsiElement.icon get() = getIcon(0)
 
 object EmptyPointer : SmartPsiElementPointer<PsiElement> {
@@ -804,65 +781,6 @@ fun PsiElement.isSpaceOrSingleLineBreak(): Boolean {
 
 fun PsiElement.isSingleLineBreak(): Boolean {
     return this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) == 1
-}
-
-inline fun findAcceptableElementIncludeComment(element: PsiElement?, predicate: (PsiElement) -> Boolean): Any? {
-    var current: PsiElement? = element ?: return null
-    while (current != null && current !is PsiFile) {
-        if (predicate(current)) return current
-        if (current is PsiComment) return current.siblings().find { predicate(it) }
-            ?.takeIf { it.prevSibling.isSpaceOrSingleLineBreak() }
-        current = current.parent
-    }
-    return null
-}
-
-inline fun findTextStartOffsetIncludeComment(element: PsiElement, findUpPredicate: (PsiElement) -> Boolean): Int {
-    //找到直到没有空行为止的最后一个注释，返回它的开始位移，或者输入元素的开始位移
-    val target: PsiElement = if (element.prevSibling == null && findUpPredicate(element)) element.parent else element
-    var current: PsiElement? = target
-    var comment: PsiComment? = null
-    while (current != null) {
-        current = current.prevSibling ?: break
-        when {
-            current is PsiWhiteSpace && current.isSpaceOrSingleLineBreak() -> continue
-            current is PsiComment -> comment = current
-            else -> break
-        }
-    }
-    if (comment != null) return comment.startOffset
-    return target.startOffset
-}
-
-fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
-    val element = when {
-        originalElement == null -> return null
-        originalElement.elementType == TokenType.WHITE_SPACE -> originalElement.prevSibling ?: return null
-        else -> originalElement
-    }
-    return when {
-        element is LeafPsiElement -> element.parent
-        else -> element
-    }
-}
-
-fun getDocumentation(documentationLines: List<String>?, html: Boolean): String? {
-    if (documentationLines.isNullOrEmpty()) return null
-    return buildString {
-        var isLineBreak = false
-        for (line in documentationLines) {
-            if (!isLineBreak) {
-                isLineBreak = true
-            } else {
-                append("<br>")
-            }
-            if (line.endsWith('\\')) {
-                isLineBreak = false
-            }
-            val l = line.trimEnd('\\')
-            if (html) append(l) else append(l.escapeXml())
-        }
-    }
 }
 
 //endregion

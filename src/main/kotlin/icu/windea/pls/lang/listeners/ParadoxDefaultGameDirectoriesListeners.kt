@@ -27,10 +27,10 @@ class ParadoxUpdateLibraryOnDefaultGameDirectoriesChangedListener : ParadoxDefau
     override fun onChange(oldGameDirectories: Map<String, String>, newGameDirectories: Map<String, String>) {
         val directories = newGameDirectories.values.toMutableSet()
         directories.removeAll(oldGameDirectories.values.toSet())
-        doUpdate(directories)
+        doUpdate()
     }
 
-    private fun doUpdate(directories: Set<String>) {
+    private fun doUpdate() {
         for (project in ProjectManager.getInstance().openProjects) {
             if (project.isDisposed) continue
             val library = project.paradoxLibrary

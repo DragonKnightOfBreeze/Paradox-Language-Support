@@ -1,0 +1,69 @@
+package icu.windea.pls.lang.util
+
+import com.intellij.psi.*
+import com.intellij.psi.impl.source.tree.*
+import com.intellij.psi.util.*
+import icu.windea.pls.core.*
+
+object PlsPsiManager {
+    inline fun findAcceptableElementIncludeComment(element: PsiElement?, predicate: (PsiElement) -> Boolean): Any? {
+        var current: PsiElement? = element ?: return null
+        while (current != null && current !is PsiFile) {
+            if (predicate(current)) return current
+            if (current is PsiComment) return current.siblings().find { predicate(it) }
+                ?.takeIf { it.prevSibling.isSpaceOrSingleLineBreak() }
+            current = current.parent
+        }
+        return null
+    }
+
+    inline fun findTextStartOffsetIncludeComment(element: PsiElement, findUpPredicate: (PsiElement) -> Boolean = { true }): Int {
+        //找到直到没有空行为止的最后一个注释，返回它的开始位移，或者输入元素的开始位移
+        val target: PsiElement = if (element.prevSibling == null && findUpPredicate(element)) element.parent else element
+        var current: PsiElement? = target
+        var comment: PsiComment? = null
+        while (current != null) {
+            current = current.prevSibling ?: break
+            when {
+                current is PsiWhiteSpace && current.isSpaceOrSingleLineBreak() -> continue
+                current is PsiComment -> comment = current
+                else -> break
+            }
+        }
+        if (comment != null) return comment.startOffset
+        return target.startOffset
+    }
+
+    /**
+     * 查找最远的相同类型的兄弟节点。可指定是否向后查找，以及是否在空行处中断。
+     */
+    fun findFurthestSiblingOfSameType(element: PsiElement, findAfter: Boolean, stopOnBlankLine: Boolean = true): PsiElement {
+        var node = element.node
+        val expectedType = node.elementType
+        var lastSeen = node
+        while (node != null) {
+            val elementType = node.elementType
+            when {
+                elementType == expectedType -> lastSeen = node
+                elementType == TokenType.WHITE_SPACE -> {
+                    if (stopOnBlankLine && node.text.containsBlankLine()) break
+                }
+                else -> break
+            }
+            node = if (findAfter) node.treeNext else node.treePrev
+        }
+        return lastSeen.psi
+    }
+
+    fun getReferenceElement(originalElement: PsiElement?): PsiElement? {
+        val element = when {
+            originalElement == null -> return null
+            originalElement.elementType == TokenType.WHITE_SPACE -> originalElement.prevSibling ?: return null
+            else -> originalElement
+        }
+        return when {
+            element is LeafPsiElement -> element.parent
+            else -> element
+        }
+    }
+}

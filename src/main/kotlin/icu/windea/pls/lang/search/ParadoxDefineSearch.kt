@@ -4,6 +4,7 @@ import com.intellij.openapi.extensions.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.indexInfo.*
 

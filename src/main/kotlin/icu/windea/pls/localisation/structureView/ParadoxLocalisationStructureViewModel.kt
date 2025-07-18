@@ -4,7 +4,7 @@ import com.intellij.ide.structureView.*
 import com.intellij.ide.util.treeView.smartTree.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
-import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.PlsPsiManager
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationStructureViewModel(
@@ -24,7 +24,7 @@ class ParadoxLocalisationStructureViewModel(
     }
 
     override fun findAcceptableElement(element: PsiElement?): Any? {
-        return findAcceptableElementIncludeComment(element) { isSuitable(it) }
+        return PlsPsiManager.findAcceptableElementIncludeComment(element) { it: PsiElement -> isSuitable(it) }
     }
 
     //指定可用的排序器，可自定义

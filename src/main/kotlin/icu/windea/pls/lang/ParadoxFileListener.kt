@@ -7,9 +7,9 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.util.*
 
 /**
- * 用于监听文件更改以更新相关缓存。
+ * 用于监听游戏或模组文件的更改，以更新相关缓存。
  */
-class PlsCoreFileListener : AsyncFileListener {
+class ParadoxFileListener : AsyncFileListener {
     override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier {
         val filesToClearRootInfo = mutableSetOf<VirtualFile>()
         val filesToClearFileInfo = mutableSetOf<VirtualFile>()

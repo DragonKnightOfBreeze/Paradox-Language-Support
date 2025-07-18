@@ -9,11 +9,12 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
+import icu.windea.pls.lang.util.PlsFileManager
+import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.cwt.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.ep.reference.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxScopeManager.isUnsureScopeId
 import icu.windea.pls.model.*
 

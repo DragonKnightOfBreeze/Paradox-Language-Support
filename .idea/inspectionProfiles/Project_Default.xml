@@ -93,7 +93,8 @@
       <option name="IGNORE_POINT_TO_ITSELF" value="false" />
       <option name="myAdditionalJavadocTags" value="date" />
     </inspection_tool>
-    <inspection_tool class="JavaIoSerializableObjectMustHaveReadResolve" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="JavaFxColorRgb" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JavaIoSerializableObjectMustHaveReadResolve" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="JavadocDeclaration" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ADDITIONAL_TAGS" value="date" />
     </inspection_tool>
@@ -154,7 +155,6 @@
     <inspection_tool class="ProhibitUseSiteTargetAnnotationsOnSuperTypesMigration" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="PropertyName" enabled="true" level="INFORMATION" enabled_by_default="true" />
     <inspection_tool class="PublicApiImplicitType" enabled="false" level="INFORMATION" enabled_by_default="false" />
-    <inspection_tool class="RedundantElseInIf" enabled="false" level="INFORMATION" enabled_by_default="false" />
     <inspection_tool class="RedundantEmptyInitializerBlock" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantEnumConstructorInvocation" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="RedundantIf" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="INFORMATION_ATTRIBUTES" />

@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.core
 
 infix fun <T> Comparator<T>?.thenPossible(comparator: Comparator<T>?): Comparator<T>? {

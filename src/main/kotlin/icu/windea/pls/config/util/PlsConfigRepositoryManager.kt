@@ -14,7 +14,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
-import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.PlsGitManager
 import icu.windea.pls.model.*
 import kotlinx.coroutines.*
 import kotlin.Result

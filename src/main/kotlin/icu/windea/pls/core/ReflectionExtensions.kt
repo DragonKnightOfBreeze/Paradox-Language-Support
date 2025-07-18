@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "unused")
 
 package icu.windea.pls.core
 
@@ -7,7 +7,7 @@ import java.lang.reflect.*
 inline fun tryGetField(action: () -> Field): Field? {
     try {
         return action()
-    } catch (e: NoSuchFieldException) {
+    } catch (_: NoSuchFieldException) {
         return null
     }
 }
@@ -15,7 +15,7 @@ inline fun tryGetField(action: () -> Field): Field? {
 inline fun tryGetMethod(action: () -> Method): Method? {
     try {
         return action()
-    } catch (e: NoSuchMethodException) {
+    } catch (_: NoSuchMethodException) {
         return null
     }
 }

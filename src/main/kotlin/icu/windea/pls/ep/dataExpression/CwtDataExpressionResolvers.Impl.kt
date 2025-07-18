@@ -3,6 +3,7 @@ package icu.windea.pls.ep.dataExpression
 import icu.windea.pls.config.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.tupleOf
 
 class BaseCwtDataExpressionResolver : RuleBasedCwtDataExpressionResolver() {
     override val rules = listOf(

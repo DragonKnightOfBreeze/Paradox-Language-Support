@@ -13,6 +13,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*

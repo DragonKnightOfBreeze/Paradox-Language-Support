@@ -4,6 +4,7 @@ import com.intellij.openapi.components.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.console.*
+import icu.windea.pls.core.util.OS
 import icu.windea.pls.model.*
 import kotlinx.coroutines.*
 import java.nio.file.*

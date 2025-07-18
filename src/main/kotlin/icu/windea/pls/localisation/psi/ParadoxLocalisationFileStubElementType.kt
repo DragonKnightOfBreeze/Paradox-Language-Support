@@ -5,8 +5,8 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.stubs.*
 import com.intellij.psi.tree.*
+import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 

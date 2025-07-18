@@ -8,9 +8,9 @@ import com.intellij.openapi.graph.*
 import com.intellij.openapi.graph.layout.*
 import com.intellij.openapi.graph.settings.*
 import com.intellij.openapi.project.*
+import icu.windea.pls.core.children
 import icu.windea.pls.extension.diagram.actions.*
 import icu.windea.pls.extension.diagram.provider.*
-import icu.windea.pls.lang.*
 
 open class ParadoxDiagramExtras(
     val provider: ParadoxDiagramProvider
