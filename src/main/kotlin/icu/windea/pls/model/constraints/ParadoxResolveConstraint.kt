@@ -53,11 +53,6 @@ enum class ParadoxResolveConstraint {
                     val dataType = configExpression.type
                     dataType in CwtDataTypeGroups.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
                 }
-                is ParadoxTemplateSnippetPsiExpressionReference -> {
-                    val configExpression = reference.configExpression
-                    val dataType = configExpression.type
-                    dataType in CwtDataTypeGroups.DefinitionAware || dataType == CwtDataTypes.AliasKeysField
-                }
                 is ParadoxTemplateSnippetNode.Reference -> {
                     val configExpression = reference.config.configExpression
                     val dataType = configExpression.type
@@ -173,11 +168,6 @@ enum class ParadoxResolveConstraint {
                     val dataType = configExpression.type
                     dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField
                 }
-                is ParadoxTemplateSnippetPsiExpressionReference -> {
-                    val configExpression = reference.configExpression
-                    val dataType = configExpression.type
-                    dataType == CwtDataTypes.EnumValue || dataType == CwtDataTypes.AliasKeysField
-                }
                 is ParadoxTemplateSnippetNode.Reference -> {
                     val configExpression = reference.config.configExpression
                     val dataType = configExpression.type
@@ -211,11 +201,6 @@ enum class ParadoxResolveConstraint {
                     val dataType = configExpression.type
                     dataType in CwtDataTypeGroups.DynamicValue || dataType == CwtDataTypes.AliasKeysField
                 }
-                is ParadoxTemplateSnippetPsiExpressionReference -> {
-                    val configExpression = reference.configExpression
-                    val dataType = configExpression.type
-                    dataType in CwtDataTypeGroups.DynamicValue || dataType == CwtDataTypes.AliasKeysField
-                }
                 is ParadoxTemplateSnippetNode.Reference -> {
                     val configExpression = reference.config.configExpression
                     val dataType = configExpression.type
@@ -239,7 +224,6 @@ enum class ParadoxResolveConstraint {
         }
 
         override fun canResolve(reference: PsiReference): Boolean {
-            if (reference is ParadoxTemplateSnippetPsiExpressionReference) return false
             if (reference is ParadoxTemplateSnippetNode.Reference) return false
             if (reference is ParadoxDataSourceNode.Reference) return false
             return DynamicValue.canResolve(reference)

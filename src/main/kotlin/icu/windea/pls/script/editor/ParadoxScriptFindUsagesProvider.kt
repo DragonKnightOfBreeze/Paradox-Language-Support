@@ -61,12 +61,6 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
                     }
                 }
             }
-            is ParadoxTemplateExpressionElement -> {
-                when (location) {
-                    UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.templateExpression")
-                    else -> element.name
-                }
-            }
             is ParadoxParameterElement -> {
                 when (location) {
                     UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.parameter")
@@ -98,7 +92,6 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
             is ParadoxScriptScriptedVariable -> true
             is ParadoxScriptProperty -> element.definitionInfo != null
             is ParadoxScriptStringExpressionElement -> element.complexEnumValueInfo != null
-            is ParadoxTemplateExpressionElement -> true
             is ParadoxParameterElement -> true
             is ParadoxDynamicValueElement -> true
             is ParadoxModifierElement -> true
