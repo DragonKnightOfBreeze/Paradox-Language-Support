@@ -16,6 +16,10 @@
     <lang.smartEnterProcessor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.editorActions.smartEnter.CwtSmartEnterProcessor"/>
     <breadcrumbsInfoProvider implementation="icu.windea.pls.cwt.editor.CwtBreadCrumbsProvider"/>
     <lang.implementationTextSelectioner language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.CwtImplementationTextSelectioner"/>
+    <liveTemplateContext contextId="CWT"
+                         implementation="icu.windea.pls.cwt.codeInsight.template.CwtTemplateContextType$Base"/>
+    <liveTemplateContext contextId="CWT_MEMBERS" baseContextId="CWT"
+                         implementation="icu.windea.pls.cwt.codeInsight.template.CwtTemplateContextType$Members"/>
     <lang.formatter language="CWT" implementationClass="icu.windea.pls.cwt.formatter.CwtFormattingModelBuilder"/>
     <codeStyleSettingsProvider implementation="icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.cwt.codeStyle.CwtLanguageCodeStyleSettingsProvider"/>
