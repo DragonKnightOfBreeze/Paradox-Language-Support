@@ -23,7 +23,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.atomic.*
 
-class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionBase.WithLocalePopupAndPopup<String>() {
+class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionBase.WithLocalePopupAndPopup<String>(), DumbAware {
     override fun isAvailable(e: AnActionEvent, project: Project): Boolean {
         return super.isAvailable(e, project) && PlsAiManager.isAvailable()
     }
@@ -79,7 +79,7 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
                 }
             }
 
-            createNotification(contexts, selectedLocale, processedRef.get(), errorRef.get(), withWarnings)
+            createNotification(selectedLocale, processedRef.get(), errorRef.get(), withWarnings)
                 .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
                 .addAction(ParadoxLocalisationManipulator.createReapplyAction(contexts))
                 .notify(project)
@@ -95,7 +95,7 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
         return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
-    private fun createNotification(contexts: List<ParadoxLocalisationContext>, selectedLocale: CwtLocaleConfig, processed: Int, error: Throwable?, withWarnings: Boolean): Notification {
+    private fun createNotification(selectedLocale: CwtLocaleConfig, processed: Int, error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
                 val content = PlsBundle.message("action.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.success(processed))

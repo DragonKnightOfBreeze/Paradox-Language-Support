@@ -14,7 +14,7 @@ import java.awt.datatransfer.*
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
-class CopyLocalisationIntention : ManipulateLocalisationIntentionBase.Default() {
+class CopyLocalisationIntention : ManipulateLocalisationIntentionBase.Default(), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisation")
 
     override suspend fun doHandle(project: Project, file: PsiFile?, context: Context) {

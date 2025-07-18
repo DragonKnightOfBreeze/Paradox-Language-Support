@@ -22,7 +22,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.atomic.*
 
-class ReplaceLocalisationWithAiPolishingAction : ManipulateLocalisationActionBase.WithPopup<String>() {
+class ReplaceLocalisationWithAiPolishingAction : ManipulateLocalisationActionBase.WithPopup<String>(), DumbAware {
     override fun isAvailable(e: AnActionEvent, project: Project): Boolean {
         return super.isAvailable(e, project) && PlsAiManager.isAvailable()
     }
@@ -78,7 +78,7 @@ class ReplaceLocalisationWithAiPolishingAction : ManipulateLocalisationActionBas
                 }
             }
 
-            createNotification(contexts, processedRef.get(), errorRef.get(), withWarnings)
+            createNotification(processedRef.get(), errorRef.get(), withWarnings)
                 .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
                 .addAction(ParadoxLocalisationManipulator.createReapplyAction(contexts))
                 .notify(project)
@@ -94,7 +94,7 @@ class ReplaceLocalisationWithAiPolishingAction : ManipulateLocalisationActionBas
         return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
-    private fun createNotification(contexts: List<ParadoxLocalisationContext>, processed: Int, error: Throwable?, withWarnings: Boolean): Notification {
+    private fun createNotification(processed: Int, error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
                 val content = PlsBundle.message("action.replaceLocalisationWithAiPolishing.notification", Messages.success(processed))

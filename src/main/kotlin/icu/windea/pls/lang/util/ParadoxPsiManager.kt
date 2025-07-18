@@ -31,7 +31,7 @@ object ParadoxPsiManager {
     }
 
     fun findScriptVariable(file: PsiFile, offset: Int, options: Int = 1): ParadoxScriptScriptedVariable? {
-        if (BitUtil.isSet(options, FindScriptedVariableOptions.BY_REFERENCE)) {
+        if (BitUtil.isSet(options, FindScriptedVariableOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
             val reference = file.findReferenceAt(offset) {
                 ParadoxResolveConstraint.ScriptedVariable.canResolve(it)
             }
@@ -78,7 +78,7 @@ object ParadoxPsiManager {
             }
         }
 
-        if (BitUtil.isSet(options, FindDefinitionOptions.BY_REFERENCE)) {
+        if (BitUtil.isSet(options, FindDefinitionOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
             val reference = expressionReference
             val resolved = reference?.resolve()?.castOrNull<ParadoxScriptDefinitionElement>()?.takeIf { it.definitionInfo != null }
             if (resolved != null) return resolved
@@ -116,7 +116,7 @@ object ParadoxPsiManager {
      * @param options 从哪些位置查找对应的定义。如果传1，则表示直接向上查找即可。
      */
     fun findLocalisation(file: PsiFile, offset: Int, options: Int = 1): ParadoxLocalisationProperty? {
-        if (BitUtil.isSet(options, FindLocalisationOptions.BY_REFERENCE)) {
+        if (BitUtil.isSet(options, FindLocalisationOptions.BY_REFERENCE) && !DumbService.isDumb(file.project)) {
             val reference = file.findReferenceAt(offset) {
                 ParadoxResolveConstraint.Localisation.canResolve(it)
             }

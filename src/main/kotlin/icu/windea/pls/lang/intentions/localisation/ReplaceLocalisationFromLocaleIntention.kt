@@ -40,7 +40,7 @@ class ReplaceLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBa
                 }
             }
 
-            createNotification(contextsToHandle, selectedLocale, errorRef.get())
+            createNotification(selectedLocale, errorRef.get())
                 .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
                 .addAction(ParadoxLocalisationManipulator.createReapplyAction(contexts))
                 .notify(project)
@@ -56,7 +56,7 @@ class ReplaceLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBa
         return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
-    private fun createNotification(contexts: List<ParadoxLocalisationContext>, selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {
+    private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {
         if (error == null) {
             val content = PlsBundle.message("intention.replaceLocalisationFromLocale.notification", selectedLocale, Messages.success())
             return createNotification(content, NotificationType.INFORMATION)

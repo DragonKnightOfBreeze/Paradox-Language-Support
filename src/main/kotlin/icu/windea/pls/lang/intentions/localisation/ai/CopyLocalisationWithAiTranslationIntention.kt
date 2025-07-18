@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.*
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
-class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopupAndPopup<String>() {
+class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopupAndPopup<String>(), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationWithAiTranslation")
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {

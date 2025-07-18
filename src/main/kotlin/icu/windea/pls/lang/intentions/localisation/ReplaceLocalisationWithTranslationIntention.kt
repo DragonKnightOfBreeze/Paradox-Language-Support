@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.*
 /**
  * 替换为翻译后的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
  */
-class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopup() {
+class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopup(), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.replaceLocalisationWithTranslation")
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
@@ -46,7 +46,7 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
                 }
             }
 
-            createNotification(contextsToHandle, selectedLocale, errorRef.get())
+            createNotification(selectedLocale, errorRef.get())
                 .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
                 .addAction(ParadoxLocalisationManipulator.createReapplyAction(contexts))
                 .notify(project)
@@ -62,7 +62,7 @@ class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntent
         return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
-    private fun createNotification(contexts: List<ParadoxLocalisationContext>, selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {
+    private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {
         if (error == null) {
             val content = PlsBundle.message("intention.replaceLocalisationWithTranslation.notification", selectedLocale, Messages.success())
             return createNotification(content, NotificationType.INFORMATION)

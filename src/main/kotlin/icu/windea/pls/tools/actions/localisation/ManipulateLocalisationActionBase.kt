@@ -47,6 +47,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
         val project = e.project ?: return
         val files = findFiles(e, project)
         if (files.isEmpty()) return
+        beforeInvokeAll(e, project, files)
         doInvokeAll(e, project, files)
     }
 
@@ -91,7 +92,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
         return files.mapNotNull { it.toPsiFile(project) }
     }
 
-    protected open fun beforeInvokeALl(e: AnActionEvent, project: Project, files: List<PsiFile>): Boolean {
+    protected open fun beforeInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>): Boolean {
         //弹出对话框，以确认是否真的要处理本地化
         val actionName = e.presentation.text
         val toProcess = files.size

@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.*
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
-class CopyLocalisationWithAiPolishingIntention : ManipulateLocalisationIntentionBase.WithPopup<String>() {
+class CopyLocalisationWithAiPolishingIntention : ManipulateLocalisationIntentionBase.WithPopup<String>(), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationWithAiPolishing")
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
@@ -71,7 +71,7 @@ class CopyLocalisationWithAiPolishingIntention : ManipulateLocalisationIntention
                 }
             }
 
-            if(errorRef.get() == null) {
+            if (errorRef.get() == null) {
                 val textToCopy = ParadoxLocalisationManipulator.joinText(contexts)
                 CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
             }

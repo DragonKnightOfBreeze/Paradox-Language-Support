@@ -25,7 +25,7 @@ import kotlinx.coroutines.*
  * * 光标在语言区域PSI（[ParadoxLocalisationLocale]）中 - 此时处理此语言区域下的所有本地化
  * * 光标选择范围涉及到本地化属性PSI（[ParadoxLocalisationProperty]） - 此时处理涉及到的所有本地化
  */
-abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction, DumbAware {
+abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
     override fun getText() = familyName
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {

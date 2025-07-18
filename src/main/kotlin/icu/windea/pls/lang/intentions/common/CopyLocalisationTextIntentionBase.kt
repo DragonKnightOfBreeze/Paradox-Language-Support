@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.intentions.common
 
 import com.intellij.modcommand.*
+import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
@@ -8,7 +9,7 @@ import icu.windea.pls.localisation.psi.*
 /**
  * 复制本地化文本到剪贴板。（复制的是原始文本）
  */
-abstract class CopyLocalisationTextIntentionBase : ModCommandAction {
+abstract class CopyLocalisationTextIntentionBase : ModCommandAction, DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationText")
 
     override fun getPresentation(context: ActionContext): Presentation? {

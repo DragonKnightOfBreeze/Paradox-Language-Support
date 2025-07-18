@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.*
 /**
  * （基于AI）替换为翻译后的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
  */
-class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntentionBase.WithPopup<String>() {
+class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntentionBase.WithPopup<String>(), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.replaceLocalisationWithAiPolishing")
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
@@ -70,7 +70,7 @@ class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntent
                 }
             }
 
-            createNotification(contextsToHandle, errorRef.get(), withWarnings)
+            createNotification(errorRef.get(), withWarnings)
                 .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
                 .addAction(ParadoxLocalisationManipulator.createReapplyAction(contexts))
                 .notify(project)
@@ -86,7 +86,7 @@ class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntent
         return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
-    private fun createNotification(contexts: List<ParadoxLocalisationContext>, error: Throwable?, withWarnings: Boolean): Notification {
+    private fun createNotification(error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
                 val content = PlsBundle.message("intention.replaceLocalisationWithAiPolishing.notification", Messages.success())
