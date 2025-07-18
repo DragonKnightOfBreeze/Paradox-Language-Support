@@ -42,6 +42,7 @@ object ParadoxGameConceptManager {
                     override is ParadoxLocalisationProperty -> return resolved to override
                 }
             }
+            if(resolved !is ParadoxScriptDefinitionElement) return@r1
             return resolved to ParadoxDefinitionManager.getPrimaryLocalisation(resolved)
         }
         run r1@{

@@ -34,6 +34,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool() {
                 holder.registerProblem(token, message, ProblemHighlightType.GENERIC_ERROR)
             }
 
+            @Suppress("unused")
             private fun canResolveToNumber(element: ParadoxScriptPropertyKey): Boolean {
                 //number, scalar, parametric
                 return true
@@ -44,7 +45,7 @@ class IncorrectSyntaxInspection : LocalInspectionTool() {
                     element is ParadoxScriptInt -> true
                     element is ParadoxScriptFloat -> true
                     element is ParadoxScriptScriptedVariableReference -> {
-                        val resolved = element.reference?.resolve() ?: return true
+                        val resolved = element.resolved() ?: return true
                         val resolvedValueElement = resolved.scriptedVariableValue ?: return true
                         canResolveToNumber(resolvedValueElement)
                     }

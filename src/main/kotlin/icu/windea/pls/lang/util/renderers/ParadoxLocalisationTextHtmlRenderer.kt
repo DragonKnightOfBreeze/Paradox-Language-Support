@@ -12,6 +12,7 @@ import icu.windea.pls.ep.reference.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.psi.mock.*
+import icu.windea.pls.lang.references.localisation.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.editor.*
@@ -102,7 +103,7 @@ class ParadoxLocalisationTextHtmlRenderer(
 
         val color = if (PlsFacade.getSettings().others.renderLocalisationColorfulText) element.argumentElement?.colorInfo?.color else null
         renderWithColorTo(color) {
-            val resolved = element.reference?.resolveLocalisation() //直接解析为本地化以优化性能
+            val resolved = element.reference?.castOrNull<ParadoxLocalisationPropertyPsiReference>()?.resolveLocalisation() //直接解析为本地化以优化性能
                 ?: element.scriptedVariableReference?.reference?.resolve()
             when {
                 resolved is ParadoxLocalisationProperty -> {

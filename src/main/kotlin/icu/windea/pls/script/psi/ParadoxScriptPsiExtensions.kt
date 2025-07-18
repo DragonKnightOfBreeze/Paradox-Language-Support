@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.script.psi
 
 import icu.windea.pls.config.*
@@ -147,7 +149,7 @@ fun ParadoxScriptValue.resolveValue(valid: Boolean = false): Any? {
         is ParadoxScriptFloat -> this.floatValue
         is ParadoxScriptString -> this.stringValue
         is ParadoxScriptColor -> this.color
-        is ParadoxScriptScriptedVariableReference -> this.referenceValue?.resolveValue()
+        is ParadoxScriptScriptedVariableReference -> this.resolved()?.scriptedVariableValue?.resolveValue()
         is ParadoxScriptBlock -> null //unsupported
         else -> null //unsupported
     }
@@ -155,7 +157,7 @@ fun ParadoxScriptValue.resolveValue(valid: Boolean = false): Any? {
 
 fun ParadoxScriptExpressionElement.resolved(): ParadoxScriptExpressionElement? {
     return when (this) {
-        is ParadoxScriptScriptedVariableReference -> this.referenceValue
+        is ParadoxScriptScriptedVariableReference -> this.resolved()?.scriptedVariableValue
         else -> this
     }
 }

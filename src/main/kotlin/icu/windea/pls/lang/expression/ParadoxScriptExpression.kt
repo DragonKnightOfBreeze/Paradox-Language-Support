@@ -98,7 +98,7 @@ interface ParadoxScriptExpression {
         val valueElement by lazy {
             when {
                 BitUtil.isSet(matchOptions, ParadoxExpressionMatcher.Options.SkipIndex) -> null
-                else -> element.referenceValue
+                else -> element.resolved()?.scriptedVariableValue
             }
         }
 

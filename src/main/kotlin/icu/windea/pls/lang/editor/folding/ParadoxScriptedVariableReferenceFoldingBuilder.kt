@@ -61,7 +61,7 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
             }
 
             private fun visitScriptedVariableReference(element: ParadoxScriptedVariableReference) {
-                val referenceValue = element.referenceValue ?: return
+                val referenceValue = element.resolved()?.scriptedVariableValue ?: return
                 val resolvedValue = when {
                     element is ParadoxScriptScriptedVariableReference -> referenceValue.value
                     else -> referenceValue.value.unquote()
