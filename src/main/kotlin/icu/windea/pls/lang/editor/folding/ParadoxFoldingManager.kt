@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.lang.util.*
 
 object ParadoxFoldingManager {
     fun addCommentFoldingDescriptor(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>) {

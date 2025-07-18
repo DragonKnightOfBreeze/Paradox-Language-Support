@@ -7,12 +7,11 @@ import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
-import icu.windea.pls.lang.references.localisation.ParadoxLocalisationPropertyPsiReference
+import icu.windea.pls.lang.references.localisation.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.constraints.*

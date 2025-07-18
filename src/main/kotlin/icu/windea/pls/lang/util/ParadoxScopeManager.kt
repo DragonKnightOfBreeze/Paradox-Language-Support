@@ -10,7 +10,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.scope.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*

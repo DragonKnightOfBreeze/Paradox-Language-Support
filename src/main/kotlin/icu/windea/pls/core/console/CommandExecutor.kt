@@ -1,7 +1,7 @@
 package icu.windea.pls.core.console
 
 import com.intellij.openapi.diagnostic.*
-import icu.windea.pls.core.util.OS
+import icu.windea.pls.core.util.*
 import io.ktor.utils.io.charsets.Charset
 import java.io.*
 import java.util.concurrent.*

@@ -29,8 +29,8 @@ import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.references.localisation.ParadoxLocalisationExpressionPsiReference
-import icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReference
+import icu.windea.pls.lang.references.localisation.*
+import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.ResultValue
 import icu.windea.pls.localisation.psi.*

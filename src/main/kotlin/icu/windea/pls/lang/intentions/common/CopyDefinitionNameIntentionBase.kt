@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.intentions.common
 
 import com.intellij.modcommand.*
-import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*

@@ -18,9 +18,9 @@ import com.intellij.util.*
 import com.intellij.util.containers.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.util.PlsFileManager
 import icu.windea.pls.images.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import java.io.*
 import java.util.concurrent.atomic.*
 import java.util.function.Consumer

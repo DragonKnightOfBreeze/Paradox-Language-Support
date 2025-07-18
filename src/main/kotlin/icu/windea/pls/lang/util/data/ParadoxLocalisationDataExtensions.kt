@@ -2,7 +2,7 @@
 
 package icu.windea.pls.lang.util.data
 
-import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.core.util.*
 
 inline operator fun ParadoxLocalisationData.Locale.component1() = name
 

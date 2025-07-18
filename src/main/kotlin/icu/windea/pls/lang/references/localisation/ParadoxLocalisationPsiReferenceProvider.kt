@@ -3,8 +3,8 @@ package icu.windea.pls.lang.references.localisation
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
-import icu.windea.pls.lang.util.ParadoxLocalisationArgumentManager
+import icu.windea.pls.lang.references.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationPsiReferenceProvider : PsiReferenceProvider() {

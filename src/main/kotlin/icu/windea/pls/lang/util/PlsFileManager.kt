@@ -5,9 +5,8 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.vfs.*
 import com.intellij.testFramework.*
 import com.intellij.util.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.core.util.Processors
-import icu.windea.pls.core.util.setOrEmpty
-import icu.windea.pls.core.util.singleton
 import icu.windea.pls.lang.actions.*
 
 object PlsFileManager {

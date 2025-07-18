@@ -3,7 +3,7 @@ package icu.windea.pls.localisation.codeInsight
 import com.intellij.codeInsight.hint.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 

@@ -3,8 +3,8 @@ package icu.windea.pls.cwt.codeInsight
 import com.intellij.codeInsight.hint.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.lang.util.PlsPsiManager
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.util.*
 
 /**
  * 用于为CWT语言指定快速定义显示的文本范围。

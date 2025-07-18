@@ -4,7 +4,7 @@ import com.intellij.ide.structureView.*
 import com.intellij.ide.util.treeView.smartTree.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
-import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.structureView.ParadoxScriptStructureFilters.*
 
