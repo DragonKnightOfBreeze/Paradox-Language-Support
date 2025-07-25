@@ -50,11 +50,11 @@ property ::= property_key property_separator property_value {
   ]
 }
 property_key ::= PROPERTY_KEY_TOKEN {
-  methods=[getIcon getName getValue setValue]
   implements=[
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
+  methods=[getIcon getName getValue setValue]
 }
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
 private property_value ::= value

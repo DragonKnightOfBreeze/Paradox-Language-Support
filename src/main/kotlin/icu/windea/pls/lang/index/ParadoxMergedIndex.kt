@@ -164,8 +164,8 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
         return false
     }
 
-    fun <T : ParadoxIndexInfo> getFileData(file: VirtualFile, project: Project, id: ParadoxIndexInfoType<T>): List<T> {
+    fun <T : ParadoxIndexInfo> getFileData(file: VirtualFile, project: Project, type: ParadoxIndexInfoType<T>): List<T> {
         val allFileData = getFileData(file, project)
-        return allFileData.get(id.id.toString())?.castOrNull<List<T>>().orEmpty()
+        return allFileData.get(type.id.toString())?.castOrNull<List<T>>().orEmpty()
     }
 }

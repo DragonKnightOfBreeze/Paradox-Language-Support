@@ -4,144 +4,144 @@ import icu.windea.pls.*
 import icu.windea.pls.model.constants.*
 
 object CwtConfigTypes {
-    val Type = CwtConfigType("type") {
+    val Type = CwtConfigType.create("type") {
+        icon = PlsIcons.Nodes.Type
         prefix = PlsStringConstants.typePrefix
-        icon = PlsIcons.Nodes.Type
     }
-    val Subtype = CwtConfigType("subtype") {
+    val Subtype = CwtConfigType.create("subtype") {
+        icon = PlsIcons.Nodes.Type
         prefix = PlsStringConstants.subtypePrefix
-        icon = PlsIcons.Nodes.Type
     }
-    val Enum = CwtConfigType("enum") {
-        prefix = PlsStringConstants.enumPrefix
+    val Enum = CwtConfigType.create("enum") {
         icon = PlsIcons.Nodes.Enum
+        prefix = PlsStringConstants.enumPrefix
     }
-    val EnumValue = CwtConfigType("enum value", category = "enums", isReference = true) {
+    val ComplexEnum = CwtConfigType.create("complex enum") {
+        icon = PlsIcons.Nodes.Enum
+        prefix = PlsStringConstants.complexEnumPrefix
+    }
+    val EnumValue = CwtConfigType.create("enum value", category = "enums", isReference = true) {
+        icon = PlsIcons.Nodes.EnumValue
         prefix = PlsStringConstants.enumValuePrefix
         description = PlsBundle.message("cwt.description.enumValue")
-        icon = PlsIcons.Nodes.EnumValue
     }
-    val ComplexEnum = CwtConfigType("complex enum") {
-        prefix = PlsStringConstants.complexEnumPrefix
-        icon = PlsIcons.Nodes.Enum
-    }
-    val DynamicValueType = CwtConfigType("dynamic value type") {
-        prefix = PlsStringConstants.dynamicValueTypePrefix
+    val DynamicValueType = CwtConfigType.create("dynamic value type") {
         icon = PlsIcons.Nodes.DynamicValueType
+        prefix = PlsStringConstants.dynamicValueTypePrefix
     }
-    val DynamicValue = CwtConfigType("dynamic value", category = "values", isReference = true) {
+    val DynamicValue = CwtConfigType.create("dynamic value", category = "values", isReference = true) {
+        icon = PlsIcons.Nodes.DynamicValue
         prefix = PlsStringConstants.dynamicValuePrefix
         description = PlsBundle.message("cwt.description.dynamicValue")
-        icon = PlsIcons.Nodes.DynamicValue
     }
-    val Inline = CwtConfigType("inline") {
-        prefix = PlsStringConstants.inlinePrefix
+    val Inline = CwtConfigType.create("inline") {
         icon = PlsIcons.Nodes.InlineScript
+        prefix = PlsStringConstants.inlinePrefix
     }
-    val SingleAlias = CwtConfigType("single alias") {
+    val SingleAlias = CwtConfigType.create("single alias") {
+        icon = PlsIcons.Nodes.Alias
         prefix = PlsStringConstants.singleAliasPrefix
-        icon = PlsIcons.Nodes.Alias
     }
-    val Alias = CwtConfigType("alias") {
+    val Alias = CwtConfigType.create("alias") {
+        icon = PlsIcons.Nodes.Alias
         prefix = PlsStringConstants.aliasPrefix
-        icon = PlsIcons.Nodes.Alias
     }
-    val Link = CwtConfigType("link", isReference = true) {
+    val Link = CwtConfigType.create("link", isReference = true) {
+        icon = PlsIcons.Nodes.Link
         prefix = PlsStringConstants.linkPrefix
         description = PlsBundle.message("cwt.description.link")
-        icon = PlsIcons.Nodes.Link
     }
-    val LocalisationLink = CwtConfigType("localisation link", isReference = true) {
+    val LocalisationLink = CwtConfigType.create("localisation link", isReference = true) {
+        icon = PlsIcons.Nodes.Link
         prefix = PlsStringConstants.localisationLinkPrefix
         description = PlsBundle.message("cwt.description.localisationLink")
-        icon = PlsIcons.Nodes.Link
     }
-    val LocalisationPromotion = CwtConfigType("localisation promotion", isReference = true) {
+    val LocalisationPromotion = CwtConfigType.create("localisation promotion", isReference = true) {
+        icon = PlsIcons.Nodes.Link
         prefix = PlsStringConstants.localisationPromotionPrefix
         description = PlsBundle.message("cwt.description.localisationPromotion")
-        icon = PlsIcons.Nodes.Link
     }
-    val LocalisationCommand = CwtConfigType("localisation command", isReference = true) {
+    val LocalisationCommand = CwtConfigType.create("localisation command", isReference = true) {
+        icon = PlsIcons.Nodes.LocalisationCommandField
         prefix = PlsStringConstants.localisationCommandPrefix
         description = PlsBundle.message("cwt.description.localisationCommand")
-        icon = PlsIcons.Nodes.LocalisationCommandField
     }
-    val ModifierCategory = CwtConfigType("modifier category", isReference = true) {
+    val ModifierCategory = CwtConfigType.create("modifier category", isReference = true) {
+        icon = PlsIcons.Nodes.ModifierCategory
         prefix = PlsStringConstants.modifierCategoryPrefix
         description = PlsBundle.message("cwt.description.modifierCategory")
-        icon = PlsIcons.Nodes.ModifierCategory
     }
-    val Modifier = CwtConfigType("modifier", isReference = true) {
+    val Modifier = CwtConfigType.create("modifier", isReference = true) {
+        icon = PlsIcons.Nodes.Modifier
         prefix = PlsStringConstants.modifierPrefix
         description = PlsBundle.message("cwt.description.modifier")
-        icon = PlsIcons.Nodes.Modifier
     }
-    val Trigger = CwtConfigType("trigger", isReference = true) {
+    val Trigger = CwtConfigType.create("trigger", isReference = true) {
+        icon = PlsIcons.Nodes.Trigger
         prefix = PlsStringConstants.triggerPrefix
         description = PlsBundle.message("cwt.description.trigger")
-        icon = PlsIcons.Nodes.Trigger
     }
-    val Effect = CwtConfigType("effect", isReference = true) {
+    val Effect = CwtConfigType.create("effect", isReference = true) {
+        icon = PlsIcons.Nodes.Effect
         prefix = PlsStringConstants.effectPrefix
         description = PlsBundle.message("cwt.description.effect")
-        icon = PlsIcons.Nodes.Effect
     }
-    val Scope = CwtConfigType("scope", isReference = true) {
+    val Scope = CwtConfigType.create("scope", isReference = true) {
+        icon = PlsIcons.Nodes.Scope
         prefix = PlsStringConstants.scopePrefix
         description = PlsBundle.message("cwt.description.scope")
-        icon = PlsIcons.Nodes.Scope
     }
-    val ScopeGroup = CwtConfigType("scope group", isReference = true) {
+    val ScopeGroup = CwtConfigType.create("scope group", isReference = true) {
+        icon = PlsIcons.Nodes.Scope
         prefix = PlsStringConstants.scopeGroupPrefix
         description = PlsBundle.message("cwt.description.scopeGroup")
-        icon = PlsIcons.Nodes.Scope
     }
-    val DatabaseObjectType = CwtConfigType("database object type", isReference = true) {
+    val DatabaseObjectType = CwtConfigType.create("database object type", isReference = true) {
+        icon = PlsIcons.Nodes.DatabaseObjectType
         prefix = PlsStringConstants.databaseObjectTypePrefix
         description = PlsBundle.message("cwt.description.databaseObjectType")
-        icon = PlsIcons.Nodes.DatabaseObjectType
     }
-    val SystemScope = CwtConfigType("system scope", isReference = true) {
+    val SystemScope = CwtConfigType.create("system scope", isReference = true) {
+        icon = PlsIcons.Nodes.SystemScope
         prefix = PlsStringConstants.systemScopePrefix
         description = PlsBundle.message("cwt.description.systemScope")
-        icon = PlsIcons.Nodes.SystemScope
     }
-    val Locale = CwtConfigType("locale", isReference = true) {
+    val Locale = CwtConfigType.create("locale", isReference = true) {
+        icon = PlsIcons.Nodes.LocalisationLocale
         prefix = PlsStringConstants.localePrefix
         description = PlsBundle.message("cwt.description.locale")
-        icon = PlsIcons.Nodes.LocalisationLocale
     }
 
-    val ExtendedScriptedVariable = CwtConfigType("extended scripted variable") {
-        prefix = PlsStringConstants.scriptedVariablePrefix
+    val ExtendedScriptedVariable = CwtConfigType.create("extended scripted variable") {
         icon = PlsIcons.Nodes.ScriptedVariableConfig
+        prefix = PlsStringConstants.scriptedVariablePrefix
     }
-    val ExtendedDefinition = CwtConfigType("extended definition") {
+    val ExtendedDefinition = CwtConfigType.create("extended definition") {
+        icon = PlsIcons.Nodes.DefinitionConfig
         prefix = PlsStringConstants.definitionPrefix
-        icon = PlsIcons.Nodes.DefinitionConfig
     }
-    val ExtendedGameRule = CwtConfigType("extended game rule") {
+    val ExtendedGameRule = CwtConfigType.create("extended game rule") {
+        icon = PlsIcons.Nodes.DefinitionConfig
         prefix = PlsStringConstants.gameRulePrefix
-        icon = PlsIcons.Nodes.DefinitionConfig
     }
-    val ExtendedOnAction = CwtConfigType("extended on action") {
+    val ExtendedOnAction = CwtConfigType.create("extended on action") {
+        icon = PlsIcons.Nodes.DefinitionConfig
         prefix = PlsStringConstants.onActionPrefix
-        icon = PlsIcons.Nodes.DefinitionConfig
     }
-    val ExtendedInlineScript = CwtConfigType("extended inline script") {
-        prefix = PlsStringConstants.inlineScriptPrefix
+    val ExtendedInlineScript = CwtConfigType.create("extended inline script") {
         icon = PlsIcons.Nodes.InlineScriptConfig
+        prefix = PlsStringConstants.inlineScriptPrefix
     }
-    val ExtendedParameter = CwtConfigType("extended parameter") {
-        prefix = PlsStringConstants.parameterPrefix
+    val ExtendedParameter = CwtConfigType.create("extended parameter") {
         icon = PlsIcons.Nodes.ParameterConfig
+        prefix = PlsStringConstants.parameterPrefix
     }
-    val ExtendedDynamicValue = CwtConfigType("extended dynamic value") {
-        prefix = PlsStringConstants.dynamicValuePrefix
+    val ExtendedDynamicValue = CwtConfigType.create("extended dynamic value") {
         icon = PlsIcons.Nodes.DynamicValueConfig
+        prefix = PlsStringConstants.dynamicValuePrefix
     }
-    val ExtendedComplexEnumValue = CwtConfigType("extended complex enum value") {
-        prefix = PlsStringConstants.complexEnumValuePrefix
+    val ExtendedComplexEnumValue = CwtConfigType.create("extended complex enum value") {
         icon = PlsIcons.Nodes.EnumValueConfig
+        prefix = PlsStringConstants.complexEnumValuePrefix
     }
 }

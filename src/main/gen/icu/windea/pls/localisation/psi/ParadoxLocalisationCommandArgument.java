@@ -4,12 +4,13 @@ package icu.windea.pls.localisation.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.ContributedReferenceHost;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxLocalisationCommandArgument extends ParadoxLocalisationArgument, ParadoxLocalisationTextColorAwareElement, ParadoxLocalisationParameterAwareElement {
+public interface ParadoxLocalisationCommandArgument extends ContributedReferenceHost, ParadoxLocalisationArgument, ParadoxLocalisationTextColorAwareElement, ParadoxLocalisationParameterAwareElement {
 
   @Nullable PsiElement getIdElement();
 

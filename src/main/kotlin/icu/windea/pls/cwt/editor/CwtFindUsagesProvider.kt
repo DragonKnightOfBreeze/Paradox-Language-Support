@@ -7,7 +7,7 @@ import com.intellij.psi.util.*
 import com.intellij.refactoring.util.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
-import icu.windea.pls.config.util.*
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.codeInsight.*
 import icu.windea.pls.model.constants.*
@@ -38,14 +38,14 @@ class CwtFindUsagesProvider : FindUsagesProvider, ElementDescriptionProvider {
                 val configType = CwtConfigManager.getConfigType(element)?.takeIf { it.isReference }
                 when (location) {
                     UsageViewTypeLocation.INSTANCE -> configType?.description ?: PlsBundle.message("cwt.description.property")
-                    else -> CwtConfigManager.getConfigType(element)?.getShortName(element.name) ?: element.name
+                    else -> CwtConfigManager.getConfigType(element)?.let { CwtConfigManager.getNameByConfigType(element.name, it) } ?: element.name
                 }
             }
             is CwtString -> {
                 val configType = element.configType?.takeIf { it.isReference }
                 when (location) {
                     UsageViewTypeLocation.INSTANCE -> configType?.description ?: PlsBundle.message("cwt.description.value")
-                    else -> element.configType?.getShortName(element.name) ?: element.name
+                    else -> element.configType?.let { CwtConfigManager.getNameByConfigType(element.name, it) } ?: element.name
                 }
             }
             else -> null

@@ -30,7 +30,10 @@ private property_item ::= COMMENT | property
 
 locale ::= LOCALE_TOKEN COLON {
   pin=1
-  implements="com.intellij.psi.NavigatablePsiElement"
+  implements=[
+    "com.intellij.psi.NavigatablePsiElement"
+    "com.intellij.psi.ContributedReferenceHost"
+  ]
   methods=[getIdElement getIcon getName setName getReference getReferences]
 }
 
@@ -85,6 +88,7 @@ colorful_text ::= COLORFUL_TEXT_START color_name colorful_text_part ? COLORFUL_T
   extends=rich_text
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
+    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
   ]
   methods=[getIdElement getName setName getReference getReferences]
@@ -102,6 +106,7 @@ parameter ::= PARAMETER_START parameter_name parameter_argument_part ? PARAMETER
   extends=rich_text
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
+    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationCommandAwareElement"
   ]
@@ -115,6 +120,7 @@ private parameter_name ::= PARAMETER_TOKEN | command | scripted_variable_referen
 private parameter_argument_part ::= PIPE parameter_argument ?
 parameter_argument ::= ARGUMENT_TOKEN {
   implements=[
+    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgument"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
   ]
@@ -126,6 +132,7 @@ parameter_argument ::= ARGUMENT_TOKEN {
 scripted_variable_reference ::= AT SCRIPTED_VARIABLE_REFERENCE_TOKEN {
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
+    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
   ]
   methods=[getIdElement getIcon getName setName getReference getReferences]
@@ -163,6 +170,7 @@ private command_argument_part ::= PIPE command_argument ?
 // can be parameterized
 command_argument ::= (ARGUMENT_TOKEN | parameter) + {
   implements=[
+    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgument"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationParameterAwareElement"
@@ -177,6 +185,7 @@ icon ::= ICON_START icon_name icon_argument_part ? ICON_END {
   extends=rich_text
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
+    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationArgumentAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationParameterAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationCommandAwareElement"
@@ -205,6 +214,7 @@ concept_command ::= <<isConceptCommand>> LEFT_BRACKET LEFT_SINGLE_QUOTE concept_
   extends=rich_text
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
+    "com.intellij.psi.ContributedReferenceHost"
   ]
   methods=[getIcon getName setName getReference getReferences]
 }
@@ -232,6 +242,7 @@ text_format ::= TEXT_FORMAT_START text_format_name text_format_text_part ? TEXT_
   extends=rich_text
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
+    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationParameterAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationCommandAwareElement"
   ]
@@ -253,12 +264,13 @@ text_icon ::= TEXT_ICON_START text_icon_name TEXT_ICON_END {
   extends=rich_text
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
+    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationParameterAwareElement"
     "icu.windea.pls.localisation.psi.ParadoxLocalisationCommandAwareElement"
   ]
   methods=[
     getIdElement rich_text=""
-    getIcon getName setName getReference getReferencesParadoxScriptedVariablePsiReference
+    getIcon getName setName getReference getReferences
   ]
 }
 // can be parameterized or command

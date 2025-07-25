@@ -7,7 +7,7 @@ import icu.windea.pls.lang.psi.*
  * @see ParadoxScriptPropertyKey
  * @see ParadoxScriptString
  */
-interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement, ContributedReferenceHost, ParadoxLanguageInjectionHost {
+interface ParadoxScriptStringExpressionElement : ParadoxScriptExpressionElement, ParadoxLanguageInjectionHost, PsiLiteralValue, ContributedReferenceHost {
     override fun getName(): String
 
     override val value: String

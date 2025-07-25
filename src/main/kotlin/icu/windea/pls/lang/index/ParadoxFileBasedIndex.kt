@@ -10,8 +10,6 @@ import icu.windea.pls.core.*
 import java.io.*
 
 abstract class ParadoxFileBasedIndex<T> : FileBasedIndexExtension<String, T>() {
-    abstract override fun getVersion(): Int
-
     override fun getIndexer(): DataIndexer<String, T, FileContent> {
         return DataIndexer { inputData ->
             val psiFile = inputData.psiFile

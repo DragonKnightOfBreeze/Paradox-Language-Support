@@ -59,6 +59,11 @@ public class ParadoxLocalisationTextIconImpl extends ParadoxLocalisationRichText
   }
 
   @Override
+  public @NotNull PsiReference @NotNull [] getReferences() {
+    return ParadoxLocalisationPsiImplUtil.getReferences(this);
+  }
+
+  @Override
   public @NotNull ItemPresentation getPresentation() {
     return ParadoxLocalisationPsiImplUtil.getPresentation(this);
   }

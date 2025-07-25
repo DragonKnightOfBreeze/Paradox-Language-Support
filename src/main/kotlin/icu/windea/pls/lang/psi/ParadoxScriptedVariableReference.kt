@@ -9,6 +9,4 @@ interface ParadoxScriptedVariableReference : PsiElement, NavigatablePsiElement {
     fun setName(name: String): ParadoxScriptedVariableReference
 
     fun resolved() = reference?.castOrNull<ParadoxScriptedVariablePsiReference>()?.resolve()
-
-    val referenceValue: ParadoxScriptValue? get() = resolved()?.scriptedVariableValue
 }

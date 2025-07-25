@@ -5,8 +5,8 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.NavigatablePsiElement;
-import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
 import com.intellij.psi.ContributedReferenceHost;
+import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
 import com.intellij.psi.PsiListLikeElement;
 
 public class ParadoxLocalisationVisitor extends PsiElementVisitor {
@@ -14,6 +14,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   public void visitColorfulText(@NotNull ParadoxLocalisationColorfulText o) {
     visitRichText(o);
     // visitNavigatablePsiElement(o);
+    // visitContributedReferenceHost(o);
     // visitTextColorAwareElement(o);
   }
 
@@ -24,7 +25,8 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   }
 
   public void visitCommandArgument(@NotNull ParadoxLocalisationCommandArgument o) {
-    visitArgument(o);
+    visitContributedReferenceHost(o);
+    // visitArgument(o);
     // visitTextColorAwareElement(o);
     // visitParameterAwareElement(o);
   }
@@ -39,6 +41,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   public void visitConceptCommand(@NotNull ParadoxLocalisationConceptCommand o) {
     visitRichText(o);
     // visitNavigatablePsiElement(o);
+    // visitContributedReferenceHost(o);
   }
 
   public void visitConceptName(@NotNull ParadoxLocalisationConceptName o) {
@@ -55,6 +58,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   public void visitIcon(@NotNull ParadoxLocalisationIcon o) {
     visitRichText(o);
     // visitNavigatablePsiElement(o);
+    // visitContributedReferenceHost(o);
     // visitArgumentAwareElement(o);
     // visitParameterAwareElement(o);
     // visitCommandAwareElement(o);
@@ -67,17 +71,20 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitLocale(@NotNull ParadoxLocalisationLocale o) {
     visitNavigatablePsiElement(o);
+    // visitContributedReferenceHost(o);
   }
 
   public void visitParameter(@NotNull ParadoxLocalisationParameter o) {
     visitRichText(o);
     // visitNavigatablePsiElement(o);
+    // visitContributedReferenceHost(o);
     // visitArgumentAwareElement(o);
     // visitCommandAwareElement(o);
   }
 
   public void visitParameterArgument(@NotNull ParadoxLocalisationParameterArgument o) {
-    visitArgument(o);
+    visitContributedReferenceHost(o);
+    // visitArgument(o);
     // visitTextColorAwareElement(o);
   }
 
@@ -103,6 +110,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
 
   public void visitScriptedVariableReference(@NotNull ParadoxLocalisationScriptedVariableReference o) {
     visitNavigatablePsiElement(o);
+    // visitContributedReferenceHost(o);
     // visitParadoxScriptedVariableReference(o);
   }
 
@@ -113,6 +121,7 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   public void visitTextFormat(@NotNull ParadoxLocalisationTextFormat o) {
     visitRichText(o);
     // visitNavigatablePsiElement(o);
+    // visitContributedReferenceHost(o);
     // visitParameterAwareElement(o);
     // visitCommandAwareElement(o);
   }
@@ -124,12 +133,17 @@ public class ParadoxLocalisationVisitor extends PsiElementVisitor {
   public void visitTextIcon(@NotNull ParadoxLocalisationTextIcon o) {
     visitRichText(o);
     // visitNavigatablePsiElement(o);
+    // visitContributedReferenceHost(o);
     // visitParameterAwareElement(o);
     // visitCommandAwareElement(o);
   }
 
   public void visitTextRoot(@NotNull ParadoxLocalisationTextRoot o) {
     visitPsiElement(o);
+  }
+
+  public void visitContributedReferenceHost(@NotNull ContributedReferenceHost o) {
+    visitElement(o);
   }
 
   public void visitNavigatablePsiElement(@NotNull NavigatablePsiElement o) {

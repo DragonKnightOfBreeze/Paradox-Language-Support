@@ -4,14 +4,14 @@ package icu.windea.pls.script.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.ContributedReferenceHost;
 import com.intellij.psi.PsiLiteralValue;
+import com.intellij.psi.ContributedReferenceHost;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxScriptFloat extends ParadoxScriptValue, ContributedReferenceHost, PsiLiteralValue {
+public interface ParadoxScriptFloat extends ParadoxScriptValue, PsiLiteralValue, ContributedReferenceHost {
 
   @NotNull String getValue();
 

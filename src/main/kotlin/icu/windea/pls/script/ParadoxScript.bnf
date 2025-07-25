@@ -83,6 +83,7 @@ property ::= property_key property_separator property_value {
 property_key ::= property_key_part (<<processSnippet>> property_key_part) * {
   implements=[
     "com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
     "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
   ]
@@ -111,6 +112,7 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
 scripted_variable_reference ::= AT scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> scripted_variable_reference_part) * {
   extends=value
   implements=[
+    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
     "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
   ]
@@ -130,16 +132,16 @@ boolean ::= BOOLEAN_TOKEN {
 int ::= INT_TOKEN {
   extends=value
   implements=[
-    "com.intellij.psi.ContributedReferenceHost"
     "com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.ContributedReferenceHost"
   ]
   methods=[getValue getIntValue getReference getReferences toString]
 }
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
-    "com.intellij.psi.ContributedReferenceHost"
     "com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.ContributedReferenceHost"
   ]
   methods=[getValue getFloatValue getReference getReferences toString]
 }
@@ -148,6 +150,7 @@ string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_pa
   extends=value
   implements=[
     "com.intellij.psi.PsiLiteralValue"
+    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
     "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
   ]
@@ -317,6 +320,7 @@ inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
 inline_math_scripted_variable_reference ::= inline_math_scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> inline_math_scripted_variable_reference_part) * {
   extends=inline_math_factor
   implements=[
+    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
     "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
   ]

@@ -181,6 +181,18 @@ fun String.getTextFragments(offset: Int = 0): List<Tuple2<TextRange, String>> {
     return result
 }
 
+fun String.findKeywordsWithRanges(keywords: Collection<String>): List<Tuple2<TextRange, String>> {
+    val sortedKeywords = keywords.filter { it.isNotEmpty() }.sortedByDescending { it.length }
+    val result = mutableListOf<Tuple2<TextRange, String>>()
+    var startIndex = 0
+    while (startIndex < this.length) {
+        val (keyword, index) = sortedKeywords.map { it to indexOf(it, startIndex) }.filter { it.second != -1 }.minByOrNull { it.second } ?: break
+        result += TextRange.from(index, keyword.length) to keyword
+        startIndex = index + keyword.length
+    }
+    return result.sortedBy { it.first.startOffset }
+}
+
 //com.intellij.refactoring.actions.BaseRefactoringAction.findRefactoringTargetInEditor
 fun DataContext.findElement(): PsiElement? {
     var element = this.getData(CommonDataKeys.PSI_ELEMENT)

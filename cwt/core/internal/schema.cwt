@@ -233,7 +233,7 @@ $$data_expression = {
     float[$start$..$end$]
     scalar
     color_field
-    color[$type$]
+    color[$color_type$]
 
     percentage_field
     date_field

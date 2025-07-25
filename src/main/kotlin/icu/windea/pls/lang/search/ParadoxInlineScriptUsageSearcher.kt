@@ -17,7 +17,7 @@ import icu.windea.pls.script.*
 class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUsageIndexInfo.Compact, ParadoxInlineScriptUsageSearch.SearchParameters>() {
     override fun processQuery(queryParameters: ParadoxInlineScriptUsageSearch.SearchParameters, consumer: Processor<in ParadoxInlineScriptUsageIndexInfo.Compact>) {
         ProgressManager.checkCanceled()
-        if(queryParameters.project.isDefault) return
+        if (queryParameters.project.isDefault) return
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
         val expression = queryParameters.expression
@@ -32,7 +32,7 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
 
             val fileData = ParadoxIndexManager.InlineScriptUsage.getFileData(file, project)
             if (fileData.isEmpty()) return@p true
-            if(expression.isNotEmpty()) {
+            if (expression.isNotEmpty()) {
                 val info = fileData[expression] ?: return@p true
                 info.virtualFile = file
                 val r = consumer.process(info)

@@ -264,6 +264,22 @@ object CwtConfigManager {
         }
     }
 
+    fun getNameByConfigType(text: String, configType: CwtConfigType): String? {
+        return when (configType) {
+            CwtConfigTypes.Type -> text.removeSurroundingOrNull("type[", "]")
+            CwtConfigTypes.Subtype -> text.removeSurroundingOrNull("subtype[", "]")
+            CwtConfigTypes.Enum -> text.removeSurroundingOrNull("enum[", "]")
+            CwtConfigTypes.ComplexEnum -> text.removeSurroundingOrNull("complex_enum[", "]")
+            CwtConfigTypes.Inline -> text.removeSurroundingOrNull("inline[", "]")
+            CwtConfigTypes.SingleAlias -> text.removeSurroundingOrNull("single_alias[", "]")
+            CwtConfigTypes.Alias -> text.removeSurroundingOrNull("alias[", "]")
+            CwtConfigTypes.Trigger -> text.removeSurroundingOrNull("alias[trigger:", "]")
+            CwtConfigTypes.Effect -> text.removeSurroundingOrNull("alias[effect:", "]")
+            CwtConfigTypes.Modifier -> text.removeSurroundingOrNull("alias[modifier:", "]") ?: text
+            else -> text
+        }?.orNull()
+    }
+
     fun getDocumentation(config: CwtMemberConfig<*>): String? {
         return doGetDocumentation(config) //DO NOT be cached here
     }

@@ -5,7 +5,6 @@ package icu.windea.pls.lang.documentation
 import com.intellij.codeInsight.navigation.*
 import com.intellij.ide.util.*
 import com.intellij.navigation.*
-import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.editor.markup.*
 import com.intellij.openapi.util.*
@@ -18,8 +17,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
-
-private val logger = Logger.getInstance("#icu.windea.pls.lang.documentation")
 
 fun getTargetPresentation(element: PsiElement): TargetPresentation {
     //similar to [com.intellij.codeInsight.navigation.targetPresentation], with some modifications

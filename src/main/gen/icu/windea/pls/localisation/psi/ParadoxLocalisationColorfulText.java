@@ -5,12 +5,13 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.NavigatablePsiElement;
+import com.intellij.psi.ContributedReferenceHost;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRichText, NavigatablePsiElement, ParadoxLocalisationTextColorAwareElement {
+public interface ParadoxLocalisationColorfulText extends ParadoxLocalisationRichText, NavigatablePsiElement, ContributedReferenceHost, ParadoxLocalisationTextColorAwareElement {
 
   @NotNull
   List<ParadoxLocalisationRichText> getRichTextList();

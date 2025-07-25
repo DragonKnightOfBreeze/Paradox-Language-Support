@@ -2,7 +2,6 @@
   <extensions defaultExtensionNs="com.intellij">
     <applicationConfigurable id="pls.config" parentId="pls" bundle="messages.PlsBundle" key="settings.config" instance="icu.windea.pls.config.settings.PlsConfigSettingsConfigurable"/>
 
-    <fileIconProvider implementation="icu.windea.pls.config.CwtConfigFileIconProvider" order="first"/>
     <editorNotificationProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupEditorNotificationProvider"/>
     <editorFloatingToolbarProvider implementation="icu.windea.pls.config.configGroup.ConfigGroupRefreshFloatingProvider"/>
     <additionalLibraryRootsProvider implementation="icu.windea.pls.config.configGroup.CwtConfigGroupLibraryProvider"/>

@@ -78,6 +78,14 @@ class ExtensionsTest1 {
     }
 
     @Test
+    fun replaceAndQuoteIfNecessaryTest() {
+        Assert.assertEquals("def", TextRange.create(0, 3).replaceAndQuoteIfNecessary("abc", "def"))
+        Assert.assertEquals("\"e\"", TextRange.create(0, 3).replaceAndQuoteIfNecessary("\"b\"", "\"e\""))
+        Assert.assertEquals("\"dec\"", TextRange.create(1, 3).replaceAndQuoteIfNecessary("\"abc\"", "de"))
+        Assert.assertEquals("\"d\\\"c\"", TextRange.create(1, 3).replaceAndQuoteIfNecessary("\"abc\"", "d\""))
+    }
+
+    @Test
     fun getTextFragmentsTest1() {
         val s = """###\\\\\\\\
 custom_tooltip = {}"""
@@ -85,10 +93,21 @@ custom_tooltip = {}"""
     }
 
     @Test
-    fun replaceAndQuoteIfNecessaryTest() {
-        Assert.assertEquals("def", TextRange.create(0, 3).replaceAndQuoteIfNecessary("abc", "def"))
-        Assert.assertEquals("\"e\"", TextRange.create(0, 3).replaceAndQuoteIfNecessary("\"b\"", "\"e\""))
-        Assert.assertEquals("\"dec\"", TextRange.create(1, 3).replaceAndQuoteIfNecessary("\"abc\"", "de"))
-        Assert.assertEquals("\"d\\\"c\"", TextRange.create(1, 3).replaceAndQuoteIfNecessary("\"abc\"", "d\""))
+    fun findKeywordsWithRangesTest() {
+        run {
+            val expected = listOf(TextRange.create(0, 3) to "foo")
+            val actual = "foo.bar.suffix".findKeywordsWithRanges(listOf("foo"))
+            Assert.assertEquals(expected, actual)
+        }
+        run {
+            val expected = listOf(TextRange.create(0, 3) to "foo", TextRange.create(4, 7) to "bar")
+            val actual = "foo.bar.suffix".findKeywordsWithRanges(listOf("foo", "bar"))
+            Assert.assertEquals(expected, actual)
+        }
+        run {
+            val expected = listOf(TextRange.create(0, 3) to "foo", TextRange.create(4, 7) to "bar", TextRange.create(8, 14) to "barbar")
+            val actual = "foo.bar.barbar".findKeywordsWithRanges(listOf("foo", "barbar", "bar"))
+            Assert.assertEquals(expected, actual)
+        }
     }
 }

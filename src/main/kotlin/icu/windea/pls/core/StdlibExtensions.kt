@@ -403,6 +403,18 @@ fun CharSequence.indicesOf(char: Char, startIndex: Int = 0, ignoreCase: Boolean 
     return indices ?: emptyList()
 }
 
+fun CharSequence.indicesOf(text: String, startIndex: Int = 0, ignoreCase: Boolean = false, limit: Int = 0): List<Int> {
+    var indices: MutableList<Int>? = null
+    var lastIndex = indexOf(text, startIndex, ignoreCase)
+    while (lastIndex != -1) {
+        if (indices == null) indices = mutableListOf()
+        indices.add(lastIndex)
+        if (limit > 0 && indices.size == limit) break
+        lastIndex = indexOf(text, lastIndex + 1, ignoreCase)
+    }
+    return indices ?: emptyList()
+}
+
 fun Collection<String>.truncate(limit: Int, ellipsis: String = "..."): List<String> {
     return take(limit).let { if (size > limit) it + ellipsis else it }
 }

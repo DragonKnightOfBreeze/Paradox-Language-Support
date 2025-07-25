@@ -1,5 +1,6 @@
 <idea-plugin>
   <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.search.configSymbolSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.localScriptedVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.globalScriptedVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.definitionSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
@@ -32,6 +33,7 @@
     <projectViewNodeDecorator implementation="icu.windea.pls.lang.projectView.CwtConfigProjectViewDecorator"/>
     <projectViewNodeDecorator implementation="icu.windea.pls.lang.projectView.ParadoxProjectViewDecorator"/>
 
+    <fileIconProvider implementation="icu.windea.pls.lang.CwtConfigFileIconProvider" order="first"/>
     <fileIconProvider implementation="icu.windea.pls.lang.ParadoxFileIconProvider" order="first"/>
     <openapi.vcs.changes.ui.filePathIconProvider implementation="icu.windea.pls.lang.ParadoxFilePathIconProvider"/>
 
@@ -137,6 +139,7 @@
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$ModifierIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxSyncedLocalisationNameIndex"/>
 
+    <fileBasedIndex implementation="icu.windea.pls.lang.index.CwtConfigSymbolIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFilePathIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFileLocaleIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxMergedIndex"/>
@@ -161,6 +164,12 @@
     <psi.referenceContributor language="PARADOX_CSV" implementation="icu.windea.pls.lang.references.csv.ParadoxCsvPsiReferenceContributor"/>
 
     <pathReferenceProvider implementation="icu.windea.pls.lang.references.paths.ParadoxPathReferenceProvider" order="first"/>
+
+    <psi.declarationProvider implementation="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolDeclarationProvider"/>
+    <psi.symbolReferenceProvider hostLanguage="CWT"
+                                 hostElementClass="icu.windea.pls.cwt.psi.CwtStringExpressionElement"
+                                 targetClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbol"
+                                 implementationClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolReferenceProvider"/>
 
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
 
@@ -187,6 +196,7 @@
   </extensions>
 
   <extensions defaultExtensionNs="icu.windea.pls.search">
+    <configSymbolSearch implementation="icu.windea.pls.lang.search.CwtConfigSymbolSearcher"/>
     <localScriptedVariableSearch implementation="icu.windea.pls.lang.search.ParadoxLocalScriptedVariableSearcher"/>
     <globalScriptedVariableSearch implementation="icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearcher"/>
     <definitionSearch implementation="icu.windea.pls.lang.search.ParadoxDefinitionSearcher"/>
