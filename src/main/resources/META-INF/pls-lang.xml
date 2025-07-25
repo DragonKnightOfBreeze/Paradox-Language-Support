@@ -169,7 +169,10 @@
     <psi.symbolReferenceProvider hostLanguage="CWT"
                                  hostElementClass="icu.windea.pls.cwt.psi.CwtStringExpressionElement"
                                  targetClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbol"
+                                 referenceClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolReference"
                                  implementationClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolReferenceProvider"/>
+    <searcher forClass="com.intellij.find.usages.api.UsageSearchParameters"
+              implementationClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolUsageSearcher"/>
 
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
 

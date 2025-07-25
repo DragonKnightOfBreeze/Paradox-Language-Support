@@ -20,3 +20,4 @@ class CwtConfigSymbolReferenceProvider : PsiSymbolReferenceProvider {
         return emptySet()
     }
 }
+
