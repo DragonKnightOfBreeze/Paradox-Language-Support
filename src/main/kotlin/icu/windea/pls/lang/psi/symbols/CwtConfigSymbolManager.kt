@@ -22,6 +22,8 @@ import icu.windea.pls.model.constants.*
 import icu.windea.pls.model.indexInfo.*
 
 object CwtConfigSymbolManager {
+    //NOTE 实际上，通过实现继承自 CwtMockPsiElement 的 CwtConfigSymbolElement ，应当能更加简单地实现相关功能（区分读写访问）
+
     fun getSymbolInfo(element: CwtStringExpressionElement): CwtConfigSymbolIndexInfo? {
         if (element is CwtValue && !(element.isPropertyValue() || element.isBlockValue())) return null
 
