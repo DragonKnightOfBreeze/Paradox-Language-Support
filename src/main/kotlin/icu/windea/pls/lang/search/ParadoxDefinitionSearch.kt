@@ -27,7 +27,7 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxScriptDefinitionEl
         val INSTANCE = ParadoxDefinitionSearch()
 
         /**
-         *  @see icu.windea.pls.lang.search.ParadoxDefinitionSearch.SearchParameters
+         *  @see ParadoxDefinitionSearch.SearchParameters
          */
         @JvmStatic
         fun search(
@@ -39,7 +39,7 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxScriptDefinitionEl
         }
 
         /**
-         *  @see icu.windea.pls.lang.search.ParadoxDefinitionSearch.SearchParameters
+         *  @see ParadoxDefinitionSearch.SearchParameters
          */
         @JvmStatic
         fun search(

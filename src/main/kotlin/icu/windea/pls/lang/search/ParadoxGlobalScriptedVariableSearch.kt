@@ -25,7 +25,7 @@ class ParadoxGlobalScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScript
         val INSTANCE = ParadoxGlobalScriptedVariableSearch()
 
         /**
-         *  @see icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch.SearchParameters
+         *  @see ParadoxGlobalScriptedVariableSearch.SearchParameters
          */
         @JvmStatic
         fun search(
@@ -36,7 +36,7 @@ class ParadoxGlobalScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScript
         }
 
         /**
-         *  @see icu.windea.pls.lang.search.ParadoxGlobalScriptedVariableSearch.SearchParameters
+         *  @see ParadoxGlobalScriptedVariableSearch.SearchParameters
          */
         @JvmStatic
         fun search(

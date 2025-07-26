@@ -9,6 +9,9 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
+import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.references.cwt.*
@@ -17,23 +20,38 @@ import icu.windea.pls.model.constants.*
 import icu.windea.pls.model.indexInfo.*
 
 object CwtConfigSymbolManager {
+    object Keys : KeyRegistry() {
+        val cachedSymbolInfos by createKey<CachedValue<List<CwtConfigSymbolIndexInfo>>>(Keys)
+    }
+
     //NOTE 相比 Symbol API，通过实现继承自 CwtMockPsiElement 的 CwtConfigSymbolElement ，应当能更加简单地实现相关功能（且区分读写访问）
 
     fun getInfos(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
         if (!element.isExpression()) return emptyList()
         ProgressManager.checkCanceled()
-        val infos = mutableListOf<CwtConfigSymbolIndexInfo>()
-        collectInfos(element, infos)
+        val infos = doGetInfoFromCache(element)
         return infos
     }
 
     fun getReferences(element: CwtStringExpressionElement): Array<out PsiReference> {
         if (!element.isExpression()) return PsiReference.EMPTY_ARRAY
         ProgressManager.checkCanceled()
-        val infos = mutableListOf<CwtConfigSymbolIndexInfo>()
-        collectInfos(element, infos)
+        val infos = doGetInfoFromCache(element)
         if (infos.isEmpty()) return PsiReference.EMPTY_ARRAY
         return infos.map { CwtConfigSymbolPsiReference(element, TextRange.from(it.offset, it.name.length), it) }.toTypedArray()
+    }
+
+    private fun doGetInfoFromCache(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedSymbolInfos) {
+            val value = doGetInfos(element)
+            value.withDependencyItems(element, PsiModificationTracker.getInstance(element.project).forLanguage(CwtLanguage))
+        }
+    }
+
+    private fun doGetInfos(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
+        val infos = mutableListOf<CwtConfigSymbolIndexInfo>()
+        collectInfos(element, infos)
+        return infos.optimized()
     }
 
     private fun collectInfos(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>) {

@@ -22,12 +22,14 @@ object ParadoxUsageTypes {
     val LOCALISATION_COLOR = UsageType { PlsBundle.message("usageType.localisationColor") }
     val LOCALISATION_COMMAND_TEXT = UsageType { PlsBundle.message("usageType.localisationCommandText") }
     val LOCALISATION_CONCEPT_NAME = UsageType { PlsBundle.message("usageType.localisationConceptName") }
+    val LOCALISATION_TEXT_ICON = UsageType { PlsBundle.message("usageType.localisationTextIcon") }
+    val LOCALISATION_TEXT_FORMAT = UsageType { PlsBundle.message("usageType.localisationTextFormat") }
 
     val COMPLEX_ENUM_VALUE = UsageType { PlsBundle.message("usageType.complexEnumValue") }
 
     private val FROM_CONFIG_EXPRESSION_TYPES: MutableMap<String, UsageType> = ConcurrentHashMap()
 
-    fun FROM_CONFIG_EXPRESSION(configExpression: CwtDataExpression) = FROM_CONFIG_EXPRESSION_TYPES.getOrPut(configExpression.expressionString) {
+    fun FROM_CONFIG_EXPRESSION(configExpression: CwtDataExpression) = FROM_CONFIG_EXPRESSION_TYPES.computeIfAbsent(configExpression.expressionString) {
         UsageType { PlsBundle.message("usageType.byConfigExpression", configExpression) }
     }
 }

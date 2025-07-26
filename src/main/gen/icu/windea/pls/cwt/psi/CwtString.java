@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLiteralValue;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
@@ -25,6 +26,10 @@ public interface CwtString extends CwtValue, PsiLiteralValue, CwtNamedElement, C
   @NotNull CwtValue setValue(@NotNull String value);
 
   @NotNull String getStringValue();
+
+  @Nullable PsiReference getReference();
+
+  @NotNull PsiReference @NotNull [] getReferences();
 
   @NotNull ItemPresentation getPresentation();
 

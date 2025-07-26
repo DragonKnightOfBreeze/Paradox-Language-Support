@@ -7,10 +7,9 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
-import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.cwt.*
@@ -34,10 +33,35 @@ object CwtDocumentationManager {
 
     fun computeLocalDocumentation(element: PsiElement, originalElement: PsiElement?, hint: Boolean): String? {
         return when (element) {
+            is CwtConfigSymbolElement -> getConfigSymbolDoc(element, originalElement, hint)
+            is CwtMemberConfigElement -> getMemberConfigDoc(element, originalElement, hint)
             is CwtProperty -> getPropertyDoc(element, originalElement, hint)
             is CwtString -> getStringDoc(element, originalElement, hint)
-            is CwtMemberConfigElement -> getMemberConfigDoc(element, originalElement, hint)
             else -> null
+        }
+    }
+
+    private fun getConfigSymbolDoc(element: CwtConfigSymbolElement, originalElement: PsiElement?, hint: Boolean): String {
+        return buildDocumentation {
+            val name = element.name
+            val configType = element.configType
+            val project = element.project
+            val configGroup = PlsFacade.getConfigGroup(project, element.gameType)
+            buildConfigSymbolDefinition(element, originalElement, name, configType, configGroup)
+        }
+    }
+
+    private fun getMemberConfigDoc(element: CwtMemberConfigElement, originalElement: PsiElement?, hint: Boolean): String {
+        return buildDocumentation {
+            val name = element.name
+            val configType = null
+            val project = element.project
+            val configGroup = PlsFacade.getConfigGroup(project, element.gameType)
+            if (!hint) initSections(3)
+            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup)
+            if (hint) return@buildDocumentation
+            buildDocumentationContent(element)
+            buildSections()
         }
     }
 
@@ -72,17 +96,18 @@ object CwtDocumentationManager {
         }
     }
 
-    private fun getMemberConfigDoc(element: CwtMemberConfigElement, originalElement: PsiElement?, hint: Boolean): String {
-        return buildDocumentation {
-            val name = element.name
-            val configType = null
-            val project = element.project
-            val configGroup = PlsFacade.getConfigGroup(project, element.gameType)
-            if (!hint) initSections(3)
-            buildPropertyOrStringDefinition(element, originalElement, name, configType, configGroup)
-            if (hint) return@buildDocumentation
-            buildDocumentationContent(element)
-            buildSections()
+    private fun DocumentationBuilder.buildConfigSymbolDefinition(element: PsiElement, originalElement: PsiElement?, name: String, configType: CwtConfigType, configGroup: CwtConfigGroup) {
+        definition {
+            appendCwtConfigFileInfoHeader(element)
+
+            val referenceElement = PlsPsiManager.getReferenceElement(originalElement)
+
+            val prefix = configType.prefix
+
+            if (prefix != null) {
+                append(prefix).append(" ")
+            }
+            append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
         }
     }
 

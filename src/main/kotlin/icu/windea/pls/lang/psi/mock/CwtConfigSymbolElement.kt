@@ -5,7 +5,6 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.indexInfo.CwtConfigSymbolIndexInfo
 import java.util.*
 import javax.swing.*
 
@@ -29,7 +28,7 @@ class CwtConfigSymbolElement(
     }
 
     override fun getTypeName(): String? {
-        return configType.prefix
+        return configType.description
     }
 
     override fun getText(): String {

@@ -19,6 +19,12 @@ class CwtConfigSymbolPsiReference(
         return element.setValue(rangeInElement.replace(element.text, newElementName).unquote())
     }
 
+    override fun isReferenceTo(element: PsiElement): Boolean {
+        //兼容性处理（property VS propertyKey）
+        if (element is CwtPropertyKey && isReferenceTo(element.parent)) return true
+        return super.isReferenceTo(element)
+    }
+
     override fun resolve(): PsiElement? {
         val (name, type, readWriteAccess, _, _, gameType) = info
         val configType = CwtConfigType.entries[type] ?: return null

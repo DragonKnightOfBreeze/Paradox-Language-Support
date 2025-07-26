@@ -11,6 +11,7 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 import icu.windea.pls.cwt.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
@@ -63,6 +64,16 @@ public class CwtStringImpl extends CwtNamedElementImpl implements CwtString {
   @Override
   public @NotNull String getStringValue() {
     return CwtPsiImplUtil.getStringValue(this);
+  }
+
+  @Override
+  public @Nullable PsiReference getReference() {
+    return CwtPsiImplUtil.getReference(this);
+  }
+
+  @Override
+  public @NotNull PsiReference @NotNull [] getReferences() {
+    return CwtPsiImplUtil.getReferences(this);
   }
 
   @Override

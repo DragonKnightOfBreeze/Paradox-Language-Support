@@ -53,9 +53,10 @@
     <completion.contributor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptCompletionContributor"/>
     <completion.contributor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationCompletionContributor"/>
 
+    <readWriteAccessDetector implementation="icu.windea.pls.lang.codeInsight.highlight.CwtConfigReadWriteAccessDetector"/>
     <readWriteAccessDetector implementation="icu.windea.pls.lang.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
+    <usageTypeProvider implementation="icu.windea.pls.lang.codeInsight.highlight.CwtConfigUsageTypeProvider"/>
     <usageTypeProvider implementation="icu.windea.pls.lang.codeInsight.highlight.ParadoxUsageTypeProvider"/>
-
 
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxScriptedVariableLocalizedNameHintsProvider"/>
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionInfoHintsProvider"/>
@@ -152,6 +153,7 @@
     <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxLocalisationImplementationsSearch"/>
     <definitionsScopedSearch implementation="icu.windea.pls.lang.search.implementation.ParadoxFileImplementationsSearch"/>
 
+    <referencesSearch implementation="icu.windea.pls.lang.search.usage.CwtConfigSymbolUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.lang.search.usage.CwtConfigUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxDefinitionUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxLocalisationUsagesSearcher"/>

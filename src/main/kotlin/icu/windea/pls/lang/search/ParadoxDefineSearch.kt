@@ -29,7 +29,7 @@ class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxDefineIndexInfo, Parad
         val INSTANCE = ParadoxDefineSearch()
 
         /**
-         *  @see icu.windea.pls.lang.search.ParadoxDefineSearch.SearchParameters
+         *  @see ParadoxDefineSearch.SearchParameters
          */
         @JvmStatic
         fun search(

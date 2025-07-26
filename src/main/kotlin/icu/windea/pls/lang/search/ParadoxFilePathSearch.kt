@@ -31,7 +31,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         val INSTANCE = ParadoxFilePathSearch()
 
         /**
-         *  @see icu.windea.pls.lang.search.ParadoxFilePathSearch.SearchParameters
+         *  @see ParadoxFilePathSearch.SearchParameters
          */
         @JvmStatic
         fun search(
@@ -44,7 +44,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         }
 
         /**
-         *  @see icu.windea.pls.lang.search.ParadoxFilePathSearch.SearchParameters
+         *  @see ParadoxFilePathSearch.SearchParameters
          */
         @JvmStatic
         fun search(
@@ -58,7 +58,7 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
         private val iconExpression = CwtDataExpression.resolve("icon[]", false)
 
         /**
-         *  @see icu.windea.pls.lang.search.ParadoxFilePathSearch.SearchParameters
+         *  @see ParadoxFilePathSearch.SearchParameters
          */
         @JvmStatic
         fun searchIcon(
@@ -67,17 +67,6 @@ class ParadoxFilePathSearch : ExtensibleQueryFactory<VirtualFile, ParadoxFilePat
             ignoreLocale: Boolean = false
         ): ParadoxQuery<VirtualFile, SearchParameters> {
             return search(filePath, iconExpression, selector, ignoreLocale)
-        }
-
-        /**
-         *  @see icu.windea.pls.lang.search.ParadoxFilePathSearch.SearchParameters
-         */
-        @JvmStatic
-        fun searchIcon(
-            selector: ChainedParadoxSelector<VirtualFile>,
-            ignoreLocale: Boolean = false
-        ): ParadoxQuery<VirtualFile, SearchParameters> {
-            return search(iconExpression, selector, ignoreLocale)
         }
     }
 }

@@ -1,13 +1,10 @@
 package icu.windea.pls.lang.psi.mock
 
-import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.ep.modifier.*
-import icu.windea.pls.lang.navigation.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import java.util.*
 import javax.swing.*
@@ -39,7 +36,7 @@ class ParadoxModifierElement(
     }
 
     override fun getTypeName(): String {
-        return PlsBundle.message("cwt.description.modifier")
+        return PlsBundle.message("cwt.config.description.modifier")
     }
 
     override fun getText(): String {

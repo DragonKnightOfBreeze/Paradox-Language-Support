@@ -54,7 +54,7 @@ property_key ::= PROPERTY_KEY_TOKEN {
     "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
-  methods=[getIcon getName getValue setValue]
+  methods=[getIcon getName getValue setValue getReference getReferences]
 }
 private property_separator ::= EQUAL_SIGN | NOT_EQUAL_SIGN
 private property_value ::= value
@@ -96,7 +96,7 @@ string ::= STRING_TOKEN {
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
   ]
-  methods=[getIcon getName setName getNameIdentifier getValue setValue getStringValue]
+  methods=[getIcon getName setName getNameIdentifier getValue setValue getStringValue getReference getReferences]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1

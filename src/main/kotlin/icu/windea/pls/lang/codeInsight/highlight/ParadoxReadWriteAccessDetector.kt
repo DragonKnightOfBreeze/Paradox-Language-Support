@@ -11,7 +11,7 @@ import icu.windea.pls.model.constraints.*
 //如果在查找使用页面中能够获取具体的读/写图标，就不会再显示PsiElement对应的图标（element.presentation.getIcon()）
 
 /**
- * 在查找使用中，区分参数和动态值值的读/写使用
+ * 在查找使用中，区分复杂枚举值、动态值、参数等的的读写使用。
  */
 class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
     override fun isReadWriteAccessible(element: PsiElement): Boolean {
@@ -76,5 +76,4 @@ class ParadoxReadWriteAccessDetector : ReadWriteAccessDetector() {
         }
         return Access.ReadWrite
     }
-
 }

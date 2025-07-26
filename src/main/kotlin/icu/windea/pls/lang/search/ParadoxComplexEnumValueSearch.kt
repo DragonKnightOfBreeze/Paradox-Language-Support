@@ -27,7 +27,7 @@ class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxComplexEnumV
         val INSTANCE = ParadoxComplexEnumValueSearch()
 
         /**
-         * @see icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch.SearchParameters
+         * @see ParadoxComplexEnumValueSearch.SearchParameters
          */
         @JvmStatic
         fun search(
@@ -39,7 +39,7 @@ class ParadoxComplexEnumValueSearch : ExtensibleQueryFactory<ParadoxComplexEnumV
         }
 
         /**
-         * @see icu.windea.pls.lang.search.ParadoxComplexEnumValueSearch.SearchParameters
+         * @see ParadoxComplexEnumValueSearch.SearchParameters
          */
         @JvmStatic
         fun search(
