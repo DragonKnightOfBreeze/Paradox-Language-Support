@@ -13,11 +13,6 @@ object PlsInternalSettings {
     val refreshOnProjectStartup get() = Registry.`is`("pls.settings.refreshOnProjectStartup", true)
 
     /**
-     * 将DDS图片转换为PNG图片时，DDS图片大小达到多少时，异步进行并显示可取消的进度条。
-     */
-    val largeDddSize get() = Registry.intValue("pls.settings.largeDdsSize", 524288) //512KB
-
-    /**
      * 渲染本地化文本时，使用的文本字体大小（这会影响在快速文档中渲染图标时，使用的最终缩放）。
      */
     val locFontSize get() = Registry.intValue("pls.settings.locFontSize", 18)

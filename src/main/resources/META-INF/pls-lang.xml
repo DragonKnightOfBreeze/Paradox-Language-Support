@@ -186,7 +186,6 @@
   <extensions defaultExtensionNs="com.intellij">
     <!--这里不能在 description 中使用 html-->
     <registryKey key="pls.settings.refreshOnProjectStartup" defaultValue="true" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="pls.settings.largeDdsSize" defaultValue="524288" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="pls.settings.locFontSize" defaultValue="18" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="pls.settings.locTextIconSizeLimit" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
     <registryKey key="pls.settings.textLengthLimit" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
