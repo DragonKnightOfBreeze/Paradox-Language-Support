@@ -1,12 +1,10 @@
 package icu.windea.pls.lang.psi.mock
 
 import com.intellij.codeInsight.highlighting.*
-import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
@@ -24,9 +22,6 @@ class ParadoxComplexEnumValueElement(
     val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxMockPsiElement(parent) {
-    constructor(parent: PsiElement, info: ParadoxComplexEnumValueIndexInfo, project: Project)
-        : this(parent, info.name, info.enumName, info.readWriteAccess, info.gameType, project)
-
     val searchScopeType: ParadoxSearchScopeType
         get() = ParadoxSearchScopeTypes.get(PlsFacade.getConfigGroup(project, gameType).complexEnums.get(enumName)?.searchScopeType)
 

@@ -1,9 +1,10 @@
 package icu.windea.pls.lang.index
 
+import com.intellij.codeInsight.highlighting.*
 import com.intellij.psi.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.psi.symbols.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
 import java.io.*
@@ -13,7 +14,7 @@ import java.io.*
  */
 class CwtConfigSymbolIndex : CwtConfigFileBasedIndex<List<CwtConfigSymbolIndexInfo>>() {
     companion object {
-        private const val VERSION = 70 //2.0.0-dev
+        private const val VERSION = 71 //2.0.1-dev
     }
 
     override fun getName() = CwtConfigIndexManager.SymbolName
@@ -31,9 +32,12 @@ class CwtConfigSymbolIndex : CwtConfigFileBasedIndex<List<CwtConfigSymbolIndexIn
             }
 
             private fun visitStringExpressionElement(element: CwtStringExpressionElement) {
-                val info = CwtConfigSymbolManager.getSymbolInfo(element) ?: return
-                val list = fileData.getOrPut(info.type) { mutableListOf() } as MutableList
-                list += info
+                val infos = CwtConfigSymbolManager.getInfos(element)
+                if(infos.isEmpty()) return
+                infos.forEach { info ->
+                    val list = fileData.getOrPut(info.type) { mutableListOf() } as MutableList
+                    list += info
+               }
             }
         })
     }
@@ -48,6 +52,8 @@ class CwtConfigSymbolIndex : CwtConfigFileBasedIndex<List<CwtConfigSymbolIndexIn
         storage.writeByte(firstInfo.gameType.optimizeValue())
         value.forEach { info ->
             storage.writeUTFFast(info.name)
+            storage.writeByte(info.readWriteAccess.optimizeValue())
+            storage.writeIntFast(info.offset)
             storage.writeIntFast(info.elementOffset)
         }
     }
@@ -61,8 +67,10 @@ class CwtConfigSymbolIndex : CwtConfigFileBasedIndex<List<CwtConfigSymbolIndexIn
         val list = mutableListOf<CwtConfigSymbolIndexInfo>()
         repeat(size) {
             val name = storage.readUTFFast()
+            val readWriteAccess = storage.readByte().deoptimizeValue<ReadWriteAccessDetector.Access>()
+            val offset = storage.readIntFast()
             val elementOffset = storage.readIntFast()
-            list.add(CwtConfigSymbolIndexInfo(name, type, elementOffset, gameType))
+            list.add(CwtConfigSymbolIndexInfo(name, type, readWriteAccess, offset, elementOffset, gameType))
         }
         return list
     }

@@ -8,6 +8,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import icu.windea.pls.config.*
+import icu.windea.pls.config.util.CwtConfigSymbolManager
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 

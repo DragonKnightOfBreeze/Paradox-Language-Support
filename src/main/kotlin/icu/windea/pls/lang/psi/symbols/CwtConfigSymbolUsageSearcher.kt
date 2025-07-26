@@ -6,6 +6,7 @@ import com.intellij.find.usages.api.Usage
 import com.intellij.find.usages.api.UsageSearchParameters
 import com.intellij.find.usages.api.UsageSearcher
 import com.intellij.util.Query
+import icu.windea.pls.config.util.CwtConfigSymbolManager
 
 //org.intellij.plugins.markdown.model.psi.MarkdownSymbolUsageSearcher
 

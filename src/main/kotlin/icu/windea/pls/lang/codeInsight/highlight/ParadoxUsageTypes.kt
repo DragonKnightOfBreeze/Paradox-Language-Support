@@ -5,7 +5,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.expression.*
 import java.util.concurrent.*
 
-object ParadoxUsageType {
+object ParadoxUsageTypes {
     val SCRIPTED_VARIABLE_REFERENCE_1 = UsageType { PlsBundle.message("usageType.scriptedVariableReference.1") }
     val SCRIPTED_VARIABLE_REFERENCE_2 = UsageType { PlsBundle.message("usageType.scriptedVariableReference.2") }
     val SCRIPTED_VARIABLE_REFERENCE_3 = UsageType { PlsBundle.message("usageType.scriptedVariableReference.3") }

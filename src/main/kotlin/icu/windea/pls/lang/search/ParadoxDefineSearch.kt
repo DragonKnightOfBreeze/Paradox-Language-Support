@@ -11,7 +11,7 @@ import icu.windea.pls.model.indexInfo.*
 /**
  * 预定义的命名空间与变量的查询。
  */
-class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxDefineIndexInfo.Compact, ParadoxDefineSearch.SearchParameters>(EP_NAME) {
+class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxDefineIndexInfo, ParadoxDefineSearch.SearchParameters>(EP_NAME) {
     /**
      * @property namespace 命名空间。
      * @property variable 变量名。
@@ -19,12 +19,12 @@ class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxDefineIndexInfo.Compac
     class SearchParameters(
         val namespace: String?,
         val variable: String?,
-        override val selector: ChainedParadoxSelector<ParadoxDefineIndexInfo.Compact>
-    ) : ParadoxSearchParameters<ParadoxDefineIndexInfo.Compact>
+        override val selector: ChainedParadoxSelector<ParadoxDefineIndexInfo>
+    ) : ParadoxSearchParameters<ParadoxDefineIndexInfo>
 
     companion object {
         @JvmField
-        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxDefineIndexInfo.Compact, SearchParameters>>("icu.windea.pls.search.defineSearch")
+        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxDefineIndexInfo, SearchParameters>>("icu.windea.pls.search.defineSearch")
         @JvmField
         val INSTANCE = ParadoxDefineSearch()
 
@@ -35,8 +35,8 @@ class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxDefineIndexInfo.Compac
         fun search(
             namespace: String?,
             variable: String?,
-            selector: ChainedParadoxSelector<ParadoxDefineIndexInfo.Compact>
-        ): ParadoxQuery<ParadoxDefineIndexInfo.Compact, SearchParameters> {
+            selector: ChainedParadoxSelector<ParadoxDefineIndexInfo>
+        ): ParadoxQuery<ParadoxDefineIndexInfo, SearchParameters> {
             return INSTANCE.createParadoxQuery(SearchParameters(namespace, variable, selector))
         }
 
@@ -45,8 +45,8 @@ class ParadoxDefineSearch : ExtensibleQueryFactory<ParadoxDefineIndexInfo.Compac
          */
         fun search(
             expression: String,
-            selector: ChainedParadoxSelector<ParadoxDefineIndexInfo.Compact>
-        ): ParadoxQuery<ParadoxDefineIndexInfo.Compact, SearchParameters> {
+            selector: ChainedParadoxSelector<ParadoxDefineIndexInfo>
+        ): ParadoxQuery<ParadoxDefineIndexInfo, SearchParameters> {
             val (namespace, variable) = expression.splitToPair('.') ?: tupleOf(expression, null)
             return INSTANCE.createParadoxQuery(SearchParameters(namespace, variable, selector))
         }

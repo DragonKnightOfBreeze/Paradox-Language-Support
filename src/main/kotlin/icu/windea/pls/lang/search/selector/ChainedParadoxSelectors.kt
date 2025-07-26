@@ -25,7 +25,7 @@ fun ChainedParadoxSelectorHolder.complexEnumValue() = ChainedParadoxSelector<Par
 
 fun ChainedParadoxSelectorHolder.dynamicValue() = ChainedParadoxSelector<ParadoxDynamicValueIndexInfo>(project, context)
 
-fun ChainedParadoxSelectorHolder.define() = ChainedParadoxSelector<ParadoxDefineIndexInfo.Compact>(project, context)
+fun ChainedParadoxSelectorHolder.define() = ChainedParadoxSelector<ParadoxDefineIndexInfo>(project, context)
 
 fun ChainedParadoxSelectorHolder.inlineScriptUsage() = ChainedParadoxSelector<ParadoxInlineScriptUsageIndexInfo.Compact>(project, context)
 

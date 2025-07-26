@@ -21,9 +21,9 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
 
     override fun getUsageType(element: PsiElement, targets: Array<out UsageTarget>): UsageType? {
         when {
-            element is ParadoxScriptScriptedVariableReference -> return ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_1
-            element is ParadoxScriptInlineMathScriptedVariableReference -> return ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_2
-            element is ParadoxLocalisationScriptedVariableReference -> return ParadoxUsageType.SCRIPTED_VARIABLE_REFERENCE_3
+            element is ParadoxScriptScriptedVariableReference -> return ParadoxUsageTypes.SCRIPTED_VARIABLE_REFERENCE_1
+            element is ParadoxScriptInlineMathScriptedVariableReference -> return ParadoxUsageTypes.SCRIPTED_VARIABLE_REFERENCE_2
+            element is ParadoxLocalisationScriptedVariableReference -> return ParadoxUsageTypes.SCRIPTED_VARIABLE_REFERENCE_3
             element is ParadoxScriptExpressionElement -> {
                 //#131
                 if (!element.isResolvableExpression()) return null
@@ -34,7 +34,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
                     val resolvedElements = targets.mapNotNull { it.castOrNull<PsiElementUsageTarget>()?.element }
                     val resolved = resolvedElements.findIsInstance<ParadoxComplexEnumValueElement>()
                     if (resolved == null) return@run
-                    return ParadoxUsageType.COMPLEX_ENUM_VALUE
+                    return ParadoxUsageTypes.COMPLEX_ENUM_VALUE
                 }
 
                 val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
@@ -42,29 +42,29 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
                 val type = configExpression.type
                 //in invocation expression
                 if (config.configExpression.type == CwtDataTypes.Parameter) {
-                    return ParadoxUsageType.PARAMETER_REFERENCE_4
+                    return ParadoxUsageTypes.PARAMETER_REFERENCE_4
                 }
                 //in script value expression
                 if (type in CwtDataTypeGroups.ValueField) {
                     val targetElement = getTargetElement(targets)
                     if (targetElement is ParadoxParameterElement) {
-                        return ParadoxUsageType.PARAMETER_REFERENCE_5
+                        return ParadoxUsageTypes.PARAMETER_REFERENCE_5
                     }
                 }
                 //in invocation expression (for localisation parameters)
                 if (config.configExpression.type == CwtDataTypes.LocalisationParameter) {
-                    return ParadoxUsageType.PARAMETER_REFERENCE_6
+                    return ParadoxUsageTypes.PARAMETER_REFERENCE_6
                 }
-                return ParadoxUsageType.FROM_CONFIG_EXPRESSION(configExpression)
+                return ParadoxUsageTypes.FROM_CONFIG_EXPRESSION(configExpression)
             }
-            element is ParadoxScriptParameter -> return ParadoxUsageType.PARAMETER_REFERENCE_1
-            element is ParadoxScriptInlineMathParameter -> return ParadoxUsageType.PARAMETER_REFERENCE_2
-            element is ParadoxScriptParameterConditionParameter -> return ParadoxUsageType.PARAMETER_REFERENCE_3
-            element is ParadoxLocalisationParameter -> return ParadoxUsageType.LOCALISATION_REFERENCE
-            element is ParadoxLocalisationIcon -> return ParadoxUsageType.LOCALISATION_ICON
-            element is ParadoxLocalisationColorfulText -> return ParadoxUsageType.LOCALISATION_COLOR
-            element is ParadoxLocalisationCommandText -> return ParadoxUsageType.LOCALISATION_COMMAND_TEXT
-            element is ParadoxLocalisationConceptName -> return ParadoxUsageType.LOCALISATION_CONCEPT_NAME
+            element is ParadoxScriptParameter -> return ParadoxUsageTypes.PARAMETER_REFERENCE_1
+            element is ParadoxScriptInlineMathParameter -> return ParadoxUsageTypes.PARAMETER_REFERENCE_2
+            element is ParadoxScriptParameterConditionParameter -> return ParadoxUsageTypes.PARAMETER_REFERENCE_3
+            element is ParadoxLocalisationParameter -> return ParadoxUsageTypes.LOCALISATION_REFERENCE
+            element is ParadoxLocalisationIcon -> return ParadoxUsageTypes.LOCALISATION_ICON
+            element is ParadoxLocalisationColorfulText -> return ParadoxUsageTypes.LOCALISATION_COLOR
+            element is ParadoxLocalisationCommandText -> return ParadoxUsageTypes.LOCALISATION_COMMAND_TEXT
+            element is ParadoxLocalisationConceptName -> return ParadoxUsageTypes.LOCALISATION_CONCEPT_NAME
             else -> return null
         }
     }

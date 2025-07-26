@@ -604,8 +604,8 @@ object ParadoxCompletionManager {
                 .distinctByName()
             ParadoxComplexEnumValueSearch.search(enumName, selector).processQueryAsync { info ->
                 ProgressManager.checkCanceled()
-                val name = info.name
-                val element = ParadoxComplexEnumValueElement(contextElement, info, project)
+                val (name, _, readWriteAccess, _, gameType) = info
+                val element = ParadoxComplexEnumValueElement(contextElement, name, enumName, readWriteAccess, gameType, project)
                 val lookupElement = LookupElementBuilder.create(element, name)
                     .withTypeText(typeFile?.name, typeFile?.icon, true)
                     .withPriority(ParadoxCompletionPriorities.complexEnumValue)
@@ -1789,7 +1789,8 @@ object ParadoxCompletionManager {
                 ParadoxDynamicValueSearch.search(dynamicValueType, selector).processQueryAsync p@{ info ->
                     ProgressManager.checkCanceled()
                     if (info.name == keyword) return@p true //排除和当前输入的同名的
-                    val element = ParadoxDynamicValueElement(contextElement, info, project)
+                    val (name, _, readWriteAccess, _, gameType) = info
+                    val element = ParadoxDynamicValueElement(contextElement, name, dynamicValueType, readWriteAccess, gameType, project)
                     //去除后面的作用域信息
                     val icon = PlsIcons.Nodes.DynamicValue(dynamicValueType)
                     //不显示typeText

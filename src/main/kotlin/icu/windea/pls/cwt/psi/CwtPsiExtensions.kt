@@ -21,3 +21,11 @@ fun CwtValue.isOptionBlockValue(): Boolean {
     val parent = parent
     return parent.elementType == CwtElementTypes.OPTION_COMMENT_TOKEN || (parent is CwtBlock && parent.parent is CwtOption)
 }
+
+fun CwtExpressionElement.isExpression(): Boolean {
+    return when {
+        this is CwtPropertyKey -> true
+        this is CwtValue -> parent.let { it is CwtProperty || it is CwtRootBlock || (it is CwtBlock && it.parent !is CwtOption) }
+        else -> false
+    }
+}

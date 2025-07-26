@@ -159,20 +159,21 @@
     <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxParameterUsagesSearcher"/>
     <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxLocalisationParameterUsagesSearcher"/>
 
+    <psi.referenceContributor language="CWT" implementation="icu.windea.pls.lang.references.cwt.CwtConfigPsiReferenceContributor"/>
     <psi.referenceContributor language="PARADOX_SCRIPT" implementation="icu.windea.pls.lang.references.script.ParadoxScriptPsiReferenceContributor"/>
     <psi.referenceContributor language="PARADOX_LOCALISATION" implementation="icu.windea.pls.lang.references.localisation.ParadoxLocalisationPsiReferenceContributor"/>
     <psi.referenceContributor language="PARADOX_CSV" implementation="icu.windea.pls.lang.references.csv.ParadoxCsvPsiReferenceContributor"/>
 
     <pathReferenceProvider implementation="icu.windea.pls.lang.references.paths.ParadoxPathReferenceProvider" order="first"/>
 
-    <psi.declarationProvider implementation="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolDeclarationProvider"/>
-    <psi.symbolReferenceProvider hostLanguage="CWT"
-                                 hostElementClass="icu.windea.pls.cwt.psi.CwtStringExpressionElement"
-                                 targetClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbol"
-                                 referenceClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolReference"
-                                 implementationClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolReferenceProvider"/>
-    <searcher forClass="com.intellij.find.usages.api.UsageSearchParameters"
-              implementationClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolUsageSearcher"/>
+    <!--<psi.declarationProvider implementation="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolDeclarationProvider"/>-->
+    <!--<psi.symbolReferenceProvider hostLanguage="CWT"-->
+    <!--                             hostElementClass="icu.windea.pls.cwt.psi.CwtStringExpressionElement"-->
+    <!--                             targetClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbol"-->
+    <!--                             referenceClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolReference"-->
+    <!--                             implementationClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolReferenceProvider"/>-->
+    <!--<searcher forClass="com.intellij.find.usages.api.UsageSearchParameters"-->
+    <!--          implementationClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolUsageSearcher"/>-->
 
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
 

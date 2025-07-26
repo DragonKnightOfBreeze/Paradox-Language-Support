@@ -5,10 +5,10 @@ import com.intellij.psi.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptPsiReferenceContributor : PsiReferenceContributor() {
-    val provider = ParadoxScriptPsiReferenceProvider()
-    val expressionReferenceProvider = ParadoxScriptExpressionPsiReferenceProvider()
-    val enumNamespaceReferenceProvider = ParadoxEventNamespacePsiReferenceProvider()
-    val typeKeyPrefixReferenceProvider = ParadoxScriptTypeKeyPrefixPsiReferenceProvider()
+    private val provider = ParadoxScriptPsiReferenceProvider()
+    private val expressionReferenceProvider = ParadoxScriptExpressionPsiReferenceProvider()
+    private val enumNamespaceReferenceProvider = ParadoxEventNamespacePsiReferenceProvider()
+    private val typeKeyPrefixReferenceProvider = ParadoxScriptTypeKeyPrefixPsiReferenceProvider()
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(psiElement(ParadoxScriptScriptedVariableReference::class.java), provider)

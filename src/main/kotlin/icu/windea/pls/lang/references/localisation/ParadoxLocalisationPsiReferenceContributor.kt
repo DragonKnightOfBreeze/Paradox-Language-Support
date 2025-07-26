@@ -5,8 +5,8 @@ import com.intellij.psi.*
 import icu.windea.pls.localisation.psi.*
 
 class ParadoxLocalisationPsiReferenceContributor : PsiReferenceContributor() {
-    val provider = ParadoxLocalisationPsiReferenceProvider()
-    val expressionProvider = ParadoxLocalisationExpressionPsiReferenceProvider()
+    private val provider = ParadoxLocalisationPsiReferenceProvider()
+    private val expressionProvider = ParadoxLocalisationExpressionPsiReferenceProvider()
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(psiElement(ParadoxLocalisationArgument::class.java), provider)

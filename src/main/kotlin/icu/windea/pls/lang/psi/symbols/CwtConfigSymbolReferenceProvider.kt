@@ -6,6 +6,7 @@ import com.intellij.model.*
 import com.intellij.model.psi.*
 import com.intellij.model.search.*
 import com.intellij.openapi.project.*
+import icu.windea.pls.config.util.CwtConfigSymbolManager
 import icu.windea.pls.cwt.psi.*
 
 //org.intellij.plugins.markdown.model.psi.headers.HeaderAnchorSymbolReferenceProvider

@@ -18,6 +18,7 @@ interface ParadoxIndexInfo {
 
     /**
      * 整合的索引信息。记录的信息包括所有的PSI元素偏移与游戏类型。
+     *
      * @property elementOffsets 对应的PSI元素在文件中的所有起始位置。
      * @property gameType 对应的游戏类型。
      * @property virtualFile 对应的虚拟文件。仅使用[QueryExecutor]进行查询时才能获取。

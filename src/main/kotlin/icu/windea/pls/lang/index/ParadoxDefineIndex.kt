@@ -14,7 +14,7 @@ import java.io.*
 /**
  * 用于索引预定义的命名空间与变量。
  */
-class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexInfo.Compact>>() {
+class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexInfo>>() {
     companion object {
         private const val VERSION = 70 //2.0.0-dev
     }
@@ -23,26 +23,26 @@ class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexI
 
     override fun getVersion() = VERSION
 
-    override fun indexData(file: PsiFile, fileData: MutableMap<String, Map<String, ParadoxDefineIndexInfo.Compact>>) {
+    override fun indexData(file: PsiFile, fileData: MutableMap<String, Map<String, ParadoxDefineIndexInfo>>) {
         val gameType = selectGameType(file) ?: return
         file.castOrNull<ParadoxScriptFile>()?.processProperty(conditional = false, inline = false) p1@{ prop1 ->
             val prop1Block = prop1.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return@p1 true
 
             val namespace = prop1.name.takeIf { it.isNotEmpty() && !it.isParameterized() } ?: return@p1 true
             val map = fileData.getOrPut(namespace) { mutableMapOf() } as MutableMap
-            val info1 = map.getOrPut("") { ParadoxDefineIndexInfo.Compact(namespace, null, sortedSetOf(), gameType) }
+            val info1 = map.getOrPut("") { ParadoxDefineIndexInfo(namespace, null, sortedSetOf(), gameType) }
             (info1.elementOffsets as MutableSet) += prop1.startOffset
 
             prop1Block.processProperty(conditional = false, inline = false) p2@{ prop2 ->
                 val variable = prop2.name.takeIf { it.isNotEmpty() && !it.isParameterized() } ?: return@p2 true
-                val info2 = map.getOrPut(variable) { ParadoxDefineIndexInfo.Compact(namespace, variable, sortedSetOf(), gameType) }
+                val info2 = map.getOrPut(variable) { ParadoxDefineIndexInfo(namespace, variable, sortedSetOf(), gameType) }
                 (info2.elementOffsets as MutableSet) += prop2.startOffset
                 true
             }
         }
     }
 
-    override fun writeData(storage: DataOutput, value: Map<String, ParadoxDefineIndexInfo.Compact>) {
+    override fun writeData(storage: DataOutput, value: Map<String, ParadoxDefineIndexInfo>) {
         storage.writeIntFast(value.size)
         value.forEach { (_, info) ->
             storage.writeUTFFast(info.namespace)
@@ -53,8 +53,8 @@ class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexI
         }
     }
 
-    override fun readData(storage: DataInput): Map<String, ParadoxDefineIndexInfo.Compact> {
-        val map = mutableMapOf<String, ParadoxDefineIndexInfo.Compact>()
+    override fun readData(storage: DataInput): Map<String, ParadoxDefineIndexInfo> {
+        val map = mutableMapOf<String, ParadoxDefineIndexInfo>()
         val size = storage.readIntFast()
         repeat(size) {
             val namespace = storage.readUTFFast()
@@ -62,7 +62,7 @@ class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexI
             val elementOffsetsSize = storage.readIntFast()
             val elementOffsets = if (elementOffsetsSize != 0) sortedSetOf<Int>().apply { repeat(elementOffsetsSize) { this += storage.readIntFast() } } else emptySet()
             val gameType = storage.readByte().deoptimizeValue<ParadoxGameType>()
-            map.put(variable.orEmpty(), ParadoxDefineIndexInfo.Compact(namespace, variable, elementOffsets, gameType))
+            map.put(variable.orEmpty(), ParadoxDefineIndexInfo(namespace, variable, elementOffsets, gameType))
         }
         return map
     }

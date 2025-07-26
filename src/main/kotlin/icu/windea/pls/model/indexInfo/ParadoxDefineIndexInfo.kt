@@ -6,19 +6,9 @@ import icu.windea.pls.model.*
 data class ParadoxDefineIndexInfo(
     val namespace: String,
     val variable: String?,
-    override val elementOffset: Int,
+    override val elementOffsets: Set<Int>,
     override val gameType: ParadoxGameType,
-): ParadoxIndexInfo {
+) : ParadoxIndexInfo.Compact {
     @Volatile
     override var virtualFile: VirtualFile? = null
-
-    data class Compact(
-        val namespace: String,
-        val variable: String?,
-        override val elementOffsets: Set<Int>,
-        override val gameType: ParadoxGameType,
-    ) : ParadoxIndexInfo.Compact {
-        @Volatile
-        override var virtualFile: VirtualFile? = null
-    }
 }

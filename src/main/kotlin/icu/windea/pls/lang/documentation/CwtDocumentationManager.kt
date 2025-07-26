@@ -79,7 +79,7 @@ object CwtDocumentationManager {
 
     private fun getStringDoc(element: CwtString, originalElement: PsiElement?, hint: Boolean): String? {
         //only for property value or block value
-        if (!element.isPropertyValue() && !element.isBlockValue()) return null
+        if (!element.isExpression()) return null
 
         return buildDocumentation {
             val name = element.name

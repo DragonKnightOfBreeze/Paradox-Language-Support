@@ -93,7 +93,7 @@ fun <S : ChainedParadoxSelector<VirtualFile>> S.distinctByFilePath(): S {
     return distinctBy { it.fileInfo?.path }
 }
 
-fun <S : ChainedParadoxSelector<ParadoxDefineIndexInfo.Compact>> S.distinctByExpression(): S {
+fun <S : ChainedParadoxSelector<ParadoxDefineIndexInfo>> S.distinctByExpression(): S {
     return distinctBy { if (it.variable == null) it.namespace else it.namespace + "." + it.variable }
 }
 

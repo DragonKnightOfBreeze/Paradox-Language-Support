@@ -25,7 +25,7 @@ data class ParadoxParameterInfo(
     }
 }
 
-fun ParadoxParameterInfo.toPsiElement(parent: PsiElement, rangeInParent: TextRange?, readWriteAccess: ReadWriteAccessDetector.Access): ParadoxParameterElement {
+fun ParadoxParameterInfo.toPsiElement(parent: PsiElement, readWriteAccess: ReadWriteAccessDetector.Access): ParadoxParameterElement {
     return ParadoxParameterElement(parent, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         .also { ParadoxParameterSupport.Keys.syncUserData(this, it) }
 }

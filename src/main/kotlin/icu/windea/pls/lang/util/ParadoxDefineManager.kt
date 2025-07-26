@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.lang.util
 
 import com.intellij.openapi.diagnostic.*
@@ -16,22 +18,20 @@ import icu.windea.pls.script.psi.*
 import java.lang.invoke.*
 
 object ParadoxDefineManager {
-    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
-
     val definePathExpression = CwtDataExpression.resolve("filepath[common/defines/,.txt]", false)
 
-    fun isDefineElement(define: ParadoxDefineIndexInfo.Compact, defineElement: ParadoxScriptProperty): Boolean {
+    fun isDefineElement(define: ParadoxDefineIndexInfo, defineElement: ParadoxScriptProperty): Boolean {
         if(define.variable == null) return defineElement.propertyValue is ParadoxScriptBlock
         return true
     }
 
-    fun getDefineElement(define: ParadoxDefineIndexInfo.Compact, project: Project): ParadoxScriptProperty? {
+    fun getDefineElement(define: ParadoxDefineIndexInfo, project: Project): ParadoxScriptProperty? {
         val file = define.virtualFile?.toPsiFile(project) ?: return null
         val elementOffset = define.elementOffsets.lastOrNull() ?: return null
         return file.findElementAt(elementOffset)?.parentOfType<ParadoxScriptProperty>()?.takeIf { isDefineElement(define, it) }
     }
 
-    fun getDefineElements(define: ParadoxDefineIndexInfo.Compact, project: Project): List<ParadoxScriptProperty> {
+    fun getDefineElements(define: ParadoxDefineIndexInfo, project: Project): List<ParadoxScriptProperty> {
         val file = define.virtualFile?.toPsiFile(project) ?: return emptyList()
         val elementOffsets = define.elementOffsets
         return elementOffsets.mapNotNull { elementOffset ->
@@ -39,7 +39,7 @@ object ParadoxDefineManager {
         }
     }
 
-    fun getDefineElements(defines: Collection<ParadoxDefineIndexInfo.Compact>, project: Project): List<ParadoxScriptProperty> {
+    fun getDefineElements(defines: Collection<ParadoxDefineIndexInfo>, project: Project): List<ParadoxScriptProperty> {
         return defines.flatMap { define -> getDefineElements(define, project) }
     }
 
@@ -49,7 +49,7 @@ object ParadoxDefineManager {
         return getDefineValue(define, project)
     }
 
-    fun getDefineValue(defineInfo: ParadoxDefineIndexInfo.Compact, project: Project): Any? {
+    fun getDefineValue(defineInfo: ParadoxDefineIndexInfo, project: Project): Any? {
         val defineProperty = getDefineElement(defineInfo, project) ?: return null
         val definePropertyValue = defineProperty.propertyValue ?: return null
         return definePropertyValue.resolveValue()

@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.config.util
 
 import com.intellij.openapi.application.*

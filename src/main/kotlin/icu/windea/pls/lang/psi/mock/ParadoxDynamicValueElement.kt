@@ -25,9 +25,6 @@ class ParadoxDynamicValueElement(
     constructor(parent: PsiElement, name: String, dynamicValueType: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)
         : this(parent, name, setOf(dynamicValueType), readWriteAccess, gameType, project)
 
-    constructor(parent: PsiElement, info: ParadoxDynamicValueIndexInfo, project: Project)
-        : this(parent, info.name, info.dynamicValueType, info.readWriteAccess, info.gameType, project)
-
     val dynamicValueType = when {
         dynamicValueTypes.size == 2 && "event_target" in dynamicValueTypes && "global_event_target" in dynamicValueTypes -> "event_target"
         else -> dynamicValueTypes.joinToString(" | ")

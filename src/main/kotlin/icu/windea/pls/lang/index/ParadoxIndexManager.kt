@@ -31,7 +31,7 @@ object ParadoxIndexManager {
 
     val FilePathName = ID.create<String, ParadoxFilePathIndex.Info>("paradox.file.path.index")
     val FileLocaleName = ID.create<String, Void>("paradox.file.locale.index")
-    val DefineName = ID.create<String, Map<String, ParadoxDefineIndexInfo.Compact>>("paradox.define.index")
+    val DefineName = ID.create<String, Map<String, ParadoxDefineIndexInfo>>("paradox.define.index")
     val InlineScriptUsageName = ID.create<String, ParadoxInlineScriptUsageIndexInfo.Compact>("paradox.inlineScriptUsage.index")
     val MergedName = ID.create<String, List<ParadoxIndexInfo>>("paradox.merged.index")
 

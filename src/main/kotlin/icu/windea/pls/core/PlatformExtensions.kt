@@ -26,6 +26,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.patterns.*
+import com.intellij.platform.backend.presentation.TargetPresentationBuilder
 import com.intellij.profile.codeInspection.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
@@ -804,6 +805,16 @@ fun PsiElement.asSymbol(): Symbol = PsiSymbolService.getInstance().asSymbol(this
 fun PsiReference.asSymbolReference(): PsiSymbolReference = PsiSymbolService.getInstance().asSymbolReference(this)
 
 fun Symbol.extractElement(): PsiElement? = PsiSymbolService.getInstance().extractElementFromSymbol(this)
+
+//endregion
+
+//region Presentation Extensions
+
+fun TargetPresentationBuilder.withLocationIn(file: PsiFile): TargetPresentationBuilder {
+    val virtualFile = file.containingFile.virtualFile ?: return this
+    val fileType = virtualFile.fileType
+    return locationText(virtualFile.name, fileType.icon)
+}
 
 //endregion
 

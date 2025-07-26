@@ -15,8 +15,8 @@ import icu.windea.pls.script.*
 /**
  * 预定义的命名空间与变量的查询器。
  */
-class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo.Compact, ParadoxDefineSearch.SearchParameters>() {
-    override fun processQuery(queryParameters: ParadoxDefineSearch.SearchParameters, consumer: Processor<in ParadoxDefineIndexInfo.Compact>) {
+class ParadoxDefineSearcher : QueryExecutorBase<ParadoxDefineIndexInfo, ParadoxDefineSearch.SearchParameters>() {
+    override fun processQuery(queryParameters: ParadoxDefineSearch.SearchParameters, consumer: Processor<in ParadoxDefineIndexInfo>) {
         ProgressManager.checkCanceled()
         if(queryParameters.project.isDefault) return
         val scope = queryParameters.selector.scope
