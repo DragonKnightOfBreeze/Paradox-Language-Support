@@ -8,7 +8,6 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.markdown.*
-import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
@@ -40,11 +39,19 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
     }
 
     class SymbolReference(
-        element: PsiElement,
-        rangeInElement: TextRange,
+        private val element: PsiElement,
+        private val rangeInElement: TextRange? = null,
         val prefix: String,
         val name: String
-    ) : ParadoxSymbolReferenceBase(element, rangeInElement) {
+    ) : PsiSymbolReference {
+        override fun getElement(): PsiElement {
+            return element
+        }
+
+        override fun getRangeInElement(): TextRange {
+            return rangeInElement ?: TextRange(0, element.textLength)
+        }
+
         override fun resolveReference(): Collection<Symbol> {
             //如果带有前缀 @ ，则尝试解析为脚本变量
             //否则，尝试解析为定义或者本地化
