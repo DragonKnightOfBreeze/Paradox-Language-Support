@@ -2,8 +2,7 @@ package icu.windea.pls.model.constraints
 
 import com.intellij.psi.*
 import icu.windea.pls.config.*
-import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.isHeaderColumn
+import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.references.*

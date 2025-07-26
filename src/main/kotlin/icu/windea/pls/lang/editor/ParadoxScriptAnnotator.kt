@@ -2,13 +2,10 @@ package icu.windea.pls.lang.editor
 
 import com.intellij.lang.annotation.*
 import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.editor.*

@@ -1,15 +1,11 @@
 package icu.windea.pls.lang.references.csv
 
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiElementResolveResult
-import com.intellij.psi.PsiPolyVariantReferenceBase
-import com.intellij.psi.ResolveResult
-import com.intellij.psi.impl.source.resolve.ResolveCache
-import icu.windea.pls.core.collections.mapToArray
-import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxPsiManager
+import com.intellij.openapi.util.*
+import com.intellij.psi.*
+import com.intellij.psi.impl.source.resolve.*
+import icu.windea.pls.core.collections.*
+import icu.windea.pls.csv.psi.*
+import icu.windea.pls.lang.util.*
 
 class ParadoxCsvColumnExpressionPsiReference(
     element: ParadoxCsvColumn,

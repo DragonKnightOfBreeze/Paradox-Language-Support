@@ -1,11 +1,9 @@
 package icu.windea.pls.lang.codeInsight.completion.csv
 
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
-import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.util.ProcessingContext
-import icu.windea.pls.core.castOrNull
-import icu.windea.pls.csv.psi.ParadoxCsvColumn
+import com.intellij.codeInsight.completion.*
+import com.intellij.util.*
+import icu.windea.pls.core.*
+import icu.windea.pls.csv.psi.*
 
 class ParadoxCsvColumnCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {

@@ -1,6 +1,6 @@
 package icu.windea.pls.model.indexInfo
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.model.*
 

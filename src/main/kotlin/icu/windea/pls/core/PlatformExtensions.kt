@@ -26,7 +26,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
 import com.intellij.patterns.*
-import com.intellij.platform.backend.presentation.TargetPresentationBuilder
+import com.intellij.platform.backend.presentation.*
 import com.intellij.profile.codeInspection.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*

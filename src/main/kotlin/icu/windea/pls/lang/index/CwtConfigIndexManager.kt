@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.index
 
-import com.intellij.util.indexing.ID
-import icu.windea.pls.core.findFileBasedIndex
-import icu.windea.pls.model.indexInfo.CwtConfigSymbolIndexInfo
+import com.intellij.util.indexing.*
+import icu.windea.pls.core.*
+import icu.windea.pls.model.indexInfo.*
 
 object CwtConfigIndexManager {
     val Symbol by lazy { findFileBasedIndex<CwtConfigSymbolIndex>() }

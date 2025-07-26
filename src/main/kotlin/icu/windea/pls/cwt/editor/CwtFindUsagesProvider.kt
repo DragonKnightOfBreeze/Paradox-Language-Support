@@ -7,7 +7,7 @@ import com.intellij.psi.util.*
 import com.intellij.refactoring.util.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
-import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.config.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.codeInsight.*
 import icu.windea.pls.model.constants.*

@@ -1,10 +1,9 @@
 package icu.windea.pls.lang.editor
 
-import com.intellij.lang.annotation.AnnotationHolder
-import com.intellij.lang.annotation.Annotator
-import com.intellij.psi.PsiElement
-import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
-import icu.windea.pls.lang.util.ParadoxExpressionManager
+import com.intellij.lang.annotation.*
+import com.intellij.psi.*
+import icu.windea.pls.csv.psi.*
+import icu.windea.pls.lang.util.*
 
 class ParadoxCsvAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {

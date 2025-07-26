@@ -2,10 +2,9 @@ package icu.windea.pls.lang.codeInsight.highlight
 
 import com.intellij.psi.*
 import com.intellij.usages.*
-import com.intellij.usages.PsiElementUsageTarget
 import com.intellij.usages.impl.rules.*
 import icu.windea.pls.config.*
-import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.mock.*

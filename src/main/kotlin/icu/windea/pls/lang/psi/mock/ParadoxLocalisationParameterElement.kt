@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.psi.mock
 
 import com.intellij.codeInsight.highlighting.*
-import com.intellij.navigation.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*

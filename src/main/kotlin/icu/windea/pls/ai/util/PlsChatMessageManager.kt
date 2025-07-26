@@ -2,7 +2,7 @@ package icu.windea.pls.ai.util
 
 import com.intellij.*
 import icu.windea.pls.ai.requests.*
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import icu.windea.pls.lang.util.manipulators.*
 import io.pebbletemplates.pebble.*
 import io.pebbletemplates.pebble.template.*
 import java.io.*

@@ -7,7 +7,7 @@ import icu.windea.pls.core.coroutines.*
 import icu.windea.pls.lang.util.manipulators.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import java.lang.invoke.MethodHandles
+import java.lang.invoke.*
 import kotlin.contracts.*
 
 abstract class PlsAiManipulateLocalisationService : PlsAiService {

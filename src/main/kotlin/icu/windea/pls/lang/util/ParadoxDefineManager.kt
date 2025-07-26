@@ -2,7 +2,6 @@
 
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -15,7 +14,6 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
-import java.lang.invoke.*
 
 object ParadoxDefineManager {
     val definePathExpression = CwtDataExpression.resolve("filepath[common/defines/,.txt]", false)
