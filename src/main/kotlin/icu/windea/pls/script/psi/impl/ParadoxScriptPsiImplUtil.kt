@@ -112,11 +112,6 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun getPresentation(element: ParadoxScriptScriptedVariable): ItemPresentation {
-        return ParadoxScriptScriptedVariablePresentation(element)
-    }
-
-    @JvmStatic
     fun isEquivalentTo(element: ParadoxScriptScriptedVariable, another: PsiElement): Boolean {
         //name & gameType
         return another is ParadoxScriptScriptedVariable
@@ -218,13 +213,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getBlock(element: ParadoxScriptProperty): ParadoxScriptBlock? {
         return element.findChild<ParadoxScriptBlock>(forward = false)
-    }
-
-    @JvmStatic
-    fun getPresentation(element: ParadoxScriptProperty): ItemPresentation {
-        val definitionInfo = element.definitionInfo
-        if (definitionInfo != null) return ParadoxDefinitionPresentation(element, definitionInfo)
-        return BaseParadoxItemPresentation(element)
     }
 
     @JvmStatic
@@ -813,7 +801,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
-        return BaseParadoxItemPresentation(element)
+        return ParadoxScriptItemPresentation(element)
     }
 
     @JvmStatic

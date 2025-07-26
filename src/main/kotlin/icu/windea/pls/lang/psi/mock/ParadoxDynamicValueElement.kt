@@ -54,10 +54,6 @@ class ParadoxDynamicValueElement(
         return name
     }
 
-    override fun getPresentation(): ItemPresentation {
-        return ParadoxDynamicValueElementPresentation(this)
-    }
-
     override fun getProject(): Project {
         return project
     }

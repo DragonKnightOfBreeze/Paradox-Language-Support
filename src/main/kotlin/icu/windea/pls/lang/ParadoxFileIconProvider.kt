@@ -24,7 +24,6 @@ class ParadoxFileIconProvider : FileIconProvider, DumbAware {
             val icon = when (rootInfo) {
                 is ParadoxRootInfo.Game -> PlsIcons.General.GameDirectory
                 is ParadoxRootInfo.Mod -> PlsIcons.General.ModDirectory
-                else -> null
             }
             return icon
         } else {

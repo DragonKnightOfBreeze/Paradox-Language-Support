@@ -122,13 +122,6 @@ object ParadoxLocalisationPsiImplUtil {
     }
 
     @JvmStatic
-    fun getPresentation(element: ParadoxLocalisationProperty): ItemPresentation {
-        val localisationInfo = element.localisationInfo
-        if (localisationInfo != null) return ParadoxLocalisationPresentation(element)
-        return BaseParadoxItemPresentation(element)
-    }
-
-    @JvmStatic
     fun isEquivalentTo(element: ParadoxLocalisationProperty, another: PsiElement): Boolean {
         //name & category (localisation / synced_localisation) & gameType
         return another is ParadoxLocalisationProperty
@@ -501,7 +494,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
-        return BaseParadoxItemPresentation(element)
+        return ParadoxLocalisationItemPresentation(element)
     }
 
     @JvmStatic

@@ -10,8 +10,4 @@ abstract class CwtMockPsiElement(parent: PsiElement) : MockPsiElement(parent) {
     override fun getLanguage(): Language {
         return CwtLanguage
     }
-
-    override fun getPresentation(): ItemPresentation {
-        return CwtItemPresentation(this)
-    }
 }

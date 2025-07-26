@@ -35,10 +35,6 @@ class ParadoxDefinitionNavigationElement(
         return (parent as ParadoxScriptDefinitionElement).nameIdentifier
     }
 
-    override fun getPresentation(): ItemPresentation? {
-        return (parent as ParadoxScriptDefinitionElement).presentation
-    }
-
     override fun getNavigationElement(): PsiElement {
         return parent
     }

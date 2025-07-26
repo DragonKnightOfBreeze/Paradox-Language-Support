@@ -24,7 +24,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val gameType = selectGameType(file) ?: return null
         val project = file.project
         val readWriteAccess = ReadWriteAccessDetector.Access.Read
-        val resolved = ParadoxLocalisationParameterElement(localisationElement, name, localisationName, null, readWriteAccess, gameType, project)
+        val resolved = ParadoxLocalisationParameterElement(localisationElement, name, localisationName, readWriteAccess, gameType, project)
         return resolved
     }
 
@@ -39,7 +39,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         if (name !in parameterNames) return null
         val rangeInParent = TextRange.create(0, element.textLength)
         val readWriteAccess = ReadWriteAccessDetector.Access.Read
-        val resolved = ParadoxLocalisationParameterElement(element, name, localisationName, rangeInParent, readWriteAccess, gameType, project)
+        val resolved = ParadoxLocalisationParameterElement(element, name, localisationName, readWriteAccess, gameType, project)
         return resolved
     }
 
@@ -53,7 +53,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         val configGroup = config.configGroup
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
-        val resolved = ParadoxLocalisationParameterElement(element, name, localisationName, rangeInParent, readWriteAccess, gameType, project)
+        val resolved = ParadoxLocalisationParameterElement(element, name, localisationName, readWriteAccess, gameType, project)
         return resolved
     }
 

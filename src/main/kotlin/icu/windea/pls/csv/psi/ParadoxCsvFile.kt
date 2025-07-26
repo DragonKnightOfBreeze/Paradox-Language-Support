@@ -7,22 +7,22 @@ import icu.windea.pls.core.*
 import icu.windea.pls.csv.*
 import icu.windea.pls.csv.navigation.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 class ParadoxCsvFile(
     viewProvider: FileViewProvider,
     val gameType: ParadoxGameType? = null
 ) : PsiFileBase(viewProvider, ParadoxCsvLanguage) {
-    override fun getFileType() = ParadoxCsvFileType
-
     val header: ParadoxCsvHeader? get() = findChild<_>()
+
     val rows: List<ParadoxCsvRow> get() = findChildren<_>()
 
-    override fun getPresentation(): ItemPresentation {
-        return ParadoxCsvFilePresentation(this)
-    }
+    override fun getFileType() = ParadoxCsvFileType
+
+    override fun getPresentation() = ParadoxCsvItemPresentation(this)
 
     override fun isEquivalentTo(another: PsiElement?): Boolean {
-        return super.isEquivalentTo(another) || (another is ParadoxCsvFile && fileInfo == another.fileInfo)
+        return super.isEquivalentTo(another) || another is ParadoxCsvFile && ParadoxFileManager.isEquivalentFile(this, another)
     }
 }

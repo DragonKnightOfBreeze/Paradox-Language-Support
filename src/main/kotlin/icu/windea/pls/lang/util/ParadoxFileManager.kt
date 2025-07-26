@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.lang.util
 
 import com.intellij.injected.editor.*
@@ -7,6 +9,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vcs.*
 import com.intellij.openapi.vfs.*
+import com.intellij.psi.*
 import com.intellij.testFramework.*
 import com.intellij.util.io.*
 import icu.windea.pls.config.config.*
@@ -103,15 +106,37 @@ object ParadoxFileManager {
     }
 
     /**
-     * 判断目标文件能否引用另一个文件中的内容。
+     * 判断指定的文件能否引用另一个文件中的内容。
      *
      * 游戏目录下可以存在多个入口目录，
      * 插件认为模组目录以及游戏目录的主要入口目录（游戏目录或其game子目录）不能引用游戏目录的次要入口目录下的文件中的内容。
      */
-    fun canReference(targetFile: VirtualFile?, otherFile: VirtualFile?): Boolean {
-        val target = targetFile?.fileInfo ?: return true
+    fun canReference(file: VirtualFile?, otherFile: VirtualFile?): Boolean {
+        val target = file?.fileInfo ?: return true
         val other = otherFile?.fileInfo ?: return true
         if (target.inMainEntry() && !other.inMainEntry()) return false
+        return true
+    }
+
+    /**
+     * 基于文件信息，判断指定的文件与另一个文件是否是等同的。
+     */
+    fun isEquivalentFile(file: VirtualFile, otherFile: VirtualFile): Boolean {
+        val fileInfo = file.fileInfo ?: return false
+        val otherFileInfo = otherFile.fileInfo ?: return false
+        if (fileInfo != otherFileInfo) return false
+        if (file.fileType != otherFile.fileType) return false //这里的判断会更慢，因此在最后判断
+        return true
+    }
+
+    /**
+     * 基于文件信息，判断指定的文件与另一个文件是否是等同的。
+     */
+    fun isEquivalentFile(file: PsiFile, otherFile: PsiFile): Boolean {
+        if (file.fileType != otherFile.fileType) return false
+        val fileInfo = file.fileInfo ?: return false
+        val otherFileInfo = otherFile.fileInfo ?: return false
+        if (fileInfo != otherFileInfo) return false
         return true
     }
 

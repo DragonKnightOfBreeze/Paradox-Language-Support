@@ -3,12 +3,11 @@ package icu.windea.pls.lang.psi.mock
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.navigation.*
 import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.ep.parameter.*
-import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.model.*
+import icu.windea.pls.script.psi.*
 import java.util.*
 import javax.swing.*
 
@@ -20,7 +19,7 @@ import javax.swing.*
  * * 对于内联脚本的参数：`inline_script@<inline_script_expression>`
  *
  * @see icu.windea.pls.script.psi.ParadoxParameter
- * @see icu.windea.pls.script.psi.ParadoxConditionParameter
+ * @see ParadoxConditionParameter
  * @see ParadoxParameterSupport
  */
 class ParadoxParameterElement(
@@ -29,7 +28,6 @@ class ParadoxParameterElement(
     val contextName: String,
     val contextIcon: Icon?,
     val contextKey: String,
-    val rangeInParent: TextRange?,
     val readWriteAccess: ReadWriteAccessDetector.Access,
     val gameType: ParadoxGameType,
     private val project: Project,
@@ -48,10 +46,6 @@ class ParadoxParameterElement(
 
     override fun getText(): String {
         return name
-    }
-
-    override fun getPresentation(): ItemPresentation {
-        return ParadoxParameterElementPresentation(this)
     }
 
     override fun getProject(): Project {

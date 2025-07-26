@@ -141,7 +141,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = definitionInfo.gameType
         val project = definitionInfo.project
-        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
+        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         result.containingContext = context.createPointer(project)
         result.definitionName = definitionName
         result.definitionTypes = definitionTypes
@@ -168,7 +168,7 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = config.configGroup.gameType ?: return null
         val project = config.configGroup.project
-        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
+        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         result.containingContextReference = contextReferenceElement.createPointer(project)
         result.definitionName = definitionName
         result.definitionTypes = definitionTypes
@@ -358,7 +358,7 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
-        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
+        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         result.definitionName = definitionName
         result.definitionTypes = definitionTypes
         return result
@@ -481,7 +481,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = selectGameType(context) ?: return null
         val project = context.project
-        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
+        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         result.containingContext = context.createPointer(project)
         result.inlineScriptExpression = expression
         return result
@@ -506,7 +506,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
         val gameType = config.configGroup.gameType ?: return null
         val project = config.configGroup.project
-        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, rangeInParent, readWriteAccess, gameType, project)
+        val result = ParadoxParameterElement(element, name, contextName, contextIcon, contextKey, readWriteAccess, gameType, project)
         result.containingContextReference = contextReferenceElement.createPointer(project)
         result.inlineScriptExpression = expression
         return result

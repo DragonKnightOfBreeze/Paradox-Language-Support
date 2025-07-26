@@ -7,6 +7,7 @@ import com.intellij.psi.impl.*
 import com.intellij.psi.search.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.csv.navigation.*
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.search.scope.*
@@ -97,7 +98,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getPresentation(element: PsiElement): ItemPresentation {
-        return BaseParadoxItemPresentation(element)
+        return ParadoxCsvItemPresentation(element)
     }
 
     @JvmStatic

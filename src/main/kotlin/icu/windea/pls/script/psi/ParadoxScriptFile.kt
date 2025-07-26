@@ -1,34 +1,23 @@
 package icu.windea.pls.script.psi
 
 import com.intellij.extapi.psi.*
-import com.intellij.navigation.*
 import com.intellij.psi.*
-import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.navigation.*
-import javax.swing.*
 
 class ParadoxScriptFile(
     viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxScriptDefinitionElement {
-    override fun getFileType() = ParadoxScriptFileType
-
     override val block get() = findChild<ParadoxScriptRootBlock>()
 
-    override fun getIcon(flags: Int): Icon? {
-        //对于模组描述符文件，使用特殊图标
-        if (name.endsWith(".mod", true)) return PlsIcons.FileTypes.ModeDescriptor
-        return super.getIcon(flags)
-    }
+    override fun getFileType() = ParadoxScriptFileType
 
-    override fun getPresentation(): ItemPresentation {
-        return ParadoxScriptFilePresentation(this)
-    }
+    override fun getPresentation() = ParadoxScriptItemPresentation(this)
 
     override fun isEquivalentTo(another: PsiElement?): Boolean {
-        return super.isEquivalentTo(another) || (another is ParadoxScriptFile && fileInfo == another.fileInfo)
+        return super.isEquivalentTo(another) || another is ParadoxScriptFile && ParadoxFileManager.isEquivalentFile(this, another)
     }
 }
 

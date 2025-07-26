@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.psi.mock
 
+import com.intellij.navigation.*
 import com.intellij.openapi.util.*
 import com.intellij.platform.backend.navigation.*
 import com.intellij.psi.*
@@ -35,5 +36,17 @@ abstract class MockPsiElement(parent: PsiElement) : RenameableFakePsiElement(par
 
     override fun getUseScope(): SearchScope {
         return ParadoxSearchScope.fromElement(this) ?: super.getUseScope()
+    }
+
+    override fun getPresentation(): ItemPresentation? {
+        return Presentation(this)
+    }
+
+    class Presentation<T : MockPsiElement>(
+        private val element: T
+    ) : ItemPresentation {
+        override fun getIcon(unused: Boolean) = element.icon
+
+        override fun getPresentableText() = element.name
     }
 }

@@ -1,19 +1,23 @@
-package icu.windea.pls.lang.navigation
+package icu.windea.pls.script.navigation
 
-import com.intellij.ide.util.treeView.*
-import com.intellij.navigation.*
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
-import javax.swing.*
+import com.intellij.ide.util.treeView.TreeAnchorizer
+import com.intellij.navigation.ItemPresentation
+import com.intellij.navigation.NavigationItem
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNamedElement
+import icu.windea.pls.core.icon
+import icu.windea.pls.lang.definitionInfo
+import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.orAnonymous
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import javax.swing.Icon
 
-@Suppress("UNCHECKED_CAST")
-abstract class ParadoxItemPresentation<T : PsiElement>(
-    element: T
+class ParadoxScriptItemPresentation(
+    element: PsiElement
 ) : ItemPresentation {
     private val anchor = TreeAnchorizer.getService().createAnchor(element)
 
-    val element get() = TreeAnchorizer.getService().retrieveElement(anchor) as T?
+    val element get() = TreeAnchorizer.getService().retrieveElement(anchor) as PsiElement?
 
     override fun getIcon(unused: Boolean): Icon? {
         val element = element
@@ -23,8 +27,9 @@ abstract class ParadoxItemPresentation<T : PsiElement>(
     //com.intellij.psi.presentation.java.SymbolPresentationUtil.getSymbolPresentableText
 
     override fun getPresentableText(): String? {
-        //使用PSI元素的名字
+        //使用PSI元素的名字（如果是定义，优先使用定义的名字）
         val element = element
+        if (element is ParadoxScriptProperty) return element.definitionInfo?.name?.orAnonymous() ?: element.name
         if (element is PsiNamedElement) return element.name
         if (element is NavigationItem) return element.name
         return null

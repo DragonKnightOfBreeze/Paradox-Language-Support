@@ -46,10 +46,6 @@ class ParadoxComplexEnumValueElement(
         return name
     }
 
-    override fun getPresentation(): ItemPresentation {
-        return ParadoxComplexEnumValueElementPresentation(this)
-    }
-
     override fun getProject(): Project {
         return project
     }
