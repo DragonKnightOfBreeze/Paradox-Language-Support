@@ -6,7 +6,7 @@ object PlsConstants {
 
     val utf8Bom = byteArrayOf(0xef.toByte(), 0xbb.toByte(), 0xbf.toByte())
 
-    val scriptFileExtensions = arrayOf("txt", "gfx", "gui", "asset", "dlc", "settings")
+    val scriptFileExtensions = arrayOf("txt", "gfx", "gui", "asset", "lines", "dlc", "settings")
     val localisationFileExtensions = arrayOf("yml")
     val imageFileExtensions = arrayOf("png", "dds", "tga")
 
