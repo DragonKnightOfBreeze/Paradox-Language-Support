@@ -69,6 +69,18 @@ types = {
     }
 }
 
+rows = {
+    row[$row$] = {
+        path = $scalar
+        path_file = $scalar
+        path_extension = $scalar
+        path_strict = $bool
+        columns = {
+            $scalar = $data_expression
+        }
+    }
+}
+
 enums = {
     enum[$enum$] = {
         $scalar

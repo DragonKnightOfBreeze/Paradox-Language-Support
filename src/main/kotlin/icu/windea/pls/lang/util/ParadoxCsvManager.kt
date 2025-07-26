@@ -7,7 +7,7 @@ import com.intellij.psi.stubs.*
 import icu.windea.pls.csv.psi.*
 
 object ParadoxCsvManager {
-    const val SEPARATOR = ';'
+    private const val SEPARATOR = ';'
 
     fun getSeparator(): Char {
         return SEPARATOR

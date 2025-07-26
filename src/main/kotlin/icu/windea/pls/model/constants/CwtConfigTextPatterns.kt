@@ -5,6 +5,7 @@ import icu.windea.pls.core.util.*
 object CwtConfigTextPatterns {
     val type = TextPattern("type[", "]")
     val subtype = TextPattern("subtype[", "]")
+    val row = TextPattern("row[", "]")
     val enum = TextPattern("enum[", "]")
     val complexEnum = TextPattern("complex_enum[", "]")
     val enumValue = TextPattern("enum_value[", "]")

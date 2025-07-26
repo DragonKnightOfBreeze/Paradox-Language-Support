@@ -51,6 +51,9 @@ val CwtConfigGroup.type2ModifiersMap: MutableMap<String, MutableMap<String, CwtM
 val CwtConfigGroup.declarations: MutableMap<String, CwtDeclarationConfig>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
 
+val CwtConfigGroup.rows: MutableMap<String, CwtRowConfig>
+    by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
+
 //enumValue可以是int、float、bool类型，统一用字符串表示
 val CwtConfigGroup.enums: MutableMap<String, CwtEnumConfig>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }

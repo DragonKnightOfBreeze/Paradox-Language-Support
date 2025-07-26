@@ -93,6 +93,13 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                         configGroup.types[typeConfig.name] = typeConfig
                     }
                 }
+                key == "rows" -> {
+                    val configs = property.properties ?: continue
+                    for (config in configs) {
+                        val rowConfig = CwtRowConfig.resolve(config) ?: continue
+                        configGroup.rows[rowConfig.name] = rowConfig
+                    }
+                }
                 key == "enums" -> {
                     val configs = property.properties ?: continue
                     for (config in configs) {
