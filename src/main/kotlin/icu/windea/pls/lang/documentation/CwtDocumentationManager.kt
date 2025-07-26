@@ -19,7 +19,6 @@ import icu.windea.pls.ep.reference.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.*
 import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.psi.symbols.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
@@ -32,27 +31,6 @@ object CwtDocumentationManager {
     private const val SECTIONS_INFO = 0
     private const val SECTIONS_IMAGES = 1
     private const val SECTIONS_LOC = 2
-
-    fun computeLocalDocumentation(symbol: CwtConfigSymbol, hint: Boolean): String? {
-        return buildDocumentation {
-            buildSymbolDefinition(symbol)
-        }
-    }
-
-    private fun DocumentationBuilder.buildSymbolDefinition(symbol: CwtConfigSymbol) {
-        definition {
-            val element = symbol.element
-            appendCwtConfigFileInfoHeader(element)
-
-            val prefix = symbol.configType.prefix
-            val name = symbol.name
-
-            if (prefix != null) {
-                append(prefix).append(" ")
-            }
-            append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
-        }
-    }
 
     fun computeLocalDocumentation(element: PsiElement, originalElement: PsiElement?, hint: Boolean): String? {
         return when (element) {

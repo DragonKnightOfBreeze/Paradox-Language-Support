@@ -20,7 +20,7 @@ class CwtConfigSymbolPsiReference(
     }
 
     override fun resolve(): PsiElement? {
-        val (name, type, readWriteAccess, _, gameType) = info
+        val (name, type, readWriteAccess, _, _, gameType) = info
         val configType = CwtConfigType.entries[type] ?: return null
         return CwtConfigSymbolElement(element, name, configType, readWriteAccess, gameType, project)
     }

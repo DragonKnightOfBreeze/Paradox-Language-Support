@@ -166,15 +166,6 @@
 
     <pathReferenceProvider implementation="icu.windea.pls.lang.references.paths.ParadoxPathReferenceProvider" order="first"/>
 
-    <!--<psi.declarationProvider implementation="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolDeclarationProvider"/>-->
-    <!--<psi.symbolReferenceProvider hostLanguage="CWT"-->
-    <!--                             hostElementClass="icu.windea.pls.cwt.psi.CwtStringExpressionElement"-->
-    <!--                             targetClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbol"-->
-    <!--                             referenceClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolReference"-->
-    <!--                             implementationClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolReferenceProvider"/>-->
-    <!--<searcher forClass="com.intellij.find.usages.api.UsageSearchParameters"-->
-    <!--          implementationClass="icu.windea.pls.lang.psi.symbols.CwtConfigSymbolUsageSearcher"/>-->
-
     <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
 
     <postStartupActivity implementation="icu.windea.pls.lang.PlsLifecycleListener"/>
