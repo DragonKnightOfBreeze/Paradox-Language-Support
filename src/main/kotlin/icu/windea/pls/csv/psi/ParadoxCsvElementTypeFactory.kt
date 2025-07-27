@@ -10,9 +10,6 @@ object ParadoxCsvElementTypeFactory {
 
     @JvmStatic
     fun getElementType(debugName: String): IElementType {
-        return when (debugName) {
-            "ROW" -> ParadoxCsvRowStubElementType.INSTANCE
-            else -> ParadoxCsvElementType(debugName)
-        }
+        return ParadoxCsvElementType(debugName)
     }
 }
