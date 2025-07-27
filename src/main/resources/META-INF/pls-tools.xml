@@ -82,18 +82,14 @@
       <add-to-group group-id="FileChooserToolbar" anchor="last"/>
     </group>
 
-    <!-- TODO 2.0.0-dev -->
     <group id="Pls.Manipulation" popup="true">
-      <action id="Pls.Manipulation.ReplaceLocalisationFromLocale" class="icu.windea.pls.tools.actions.localisation.ReplaceLocalisationFromLocaleAction"/>
-      <action id="Pls.Manipulation.ReplaceLocalisationWithTranslation" class="icu.windea.pls.tools.actions.localisation.ReplaceLocalisationWithTranslationAction"/>
-      <action id="Pls.Manipulation.ReplaceLocalisationWithAiTranslation" class="icu.windea.pls.tools.actions.localisation.ai.ReplaceLocalisationWithAiTranslationAction"/>
-      <action id="Pls.Manipulation.ReplaceLocalisationWithAiPolishing" class="icu.windea.pls.tools.actions.localisation.ai.ReplaceLocalisationWithAiPolishingAction"/>
+      <reference ref="Pls.LocalisationManipulation"/>
+      <reference ref="Pls.TableManipulation"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
 
-    <!-- TODO 2.0.0-dev -->
     <group id="Pls.Generation" popup="true">
-      <action id="Pls.Generation.GenerateLocalisationFile" class="icu.windea.pls.tools.actions.localisation.GenerateLocalisationFileAction"/>
+      <reference ref="Pls.LocalisationGeneration"/>
       <add-to-group group-id="Pls.Tools"/>
     </group>
   </actions>

@@ -366,5 +366,46 @@
       <action id="Pls.CallHierarchy.BaseOnThis" class="icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyBrowser$BaseOnThisAction"/>
       <reference ref="HierarchyPopupMenu.Common"/>
     </group>
+
+    <group id="Pls.EditorContextMenuGroup">
+      <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="EditorToggleColumnMode" />
+      <separator/>
+      <reference ref="Pls.LocalisationManipulationContextMenuGroup"/>
+      <reference ref="Pls.LocalisationGenerationContextMenuGroup"/>
+      <reference ref="Pls.TableManipulationContextMenuGroup"/>
+    </group>
+
+    <group id="Pls.LocalisationManipulationContextMenuGroup" class="com.intellij.ide.actions.NonTrivialActionGroup" popup="true" compact="true"/>
+    <group id="Pls.LocalisationGenerationContextMenuGroup" class="com.intellij.ide.actions.NonTrivialActionGroup" popup="true" compact="true"/>
+    <group id="Pls.TableManipulationContextMenuGroup" class="com.intellij.ide.actions.NonTrivialActionGroup" popup="true" compact="true"/>
+
+    <group id="Pls.LocalisationManipulation">
+      <action id="Pls.Manipulation.ReplaceLocalisationFromLocale" class="icu.windea.pls.lang.actions.localisation.ReplaceLocalisationFromLocaleAction"/>
+      <action id="Pls.Manipulation.ReplaceLocalisationWithTranslation" class="icu.windea.pls.lang.actions.localisation.ReplaceLocalisationWithTranslationAction"/>
+      <action id="Pls.Manipulation.ReplaceLocalisationWithAiTranslation" class="icu.windea.pls.lang.actions.localisation.ai.ReplaceLocalisationWithAiTranslationAction"/>
+      <action id="Pls.Manipulation.ReplaceLocalisationWithAiPolishing" class="icu.windea.pls.lang.actions.localisation.ai.ReplaceLocalisationWithAiPolishingAction"/>
+      <add-to-group group-id="Pls.LocalisationManipulationContextMenuGroup"/>
+    </group>
+
+    <group id="Pls.LocalisationGeneration">
+      <action id="Pls.Generation.GenerateLocalisationFile" class="icu.windea.pls.lang.actions.localisation.GenerateLocalisationFileAction"/>
+      <add-to-group group-id="Pls.LocalisationGenerationContextMenuGroup"/>
+    </group>
+
+    <group id="Pls.TableManipulation">
+      <action id="Pls.Manipulation.MoveColumnLeft" class="icu.windea.pls.lang.actions.csv.MoveColumnLeftAction" icon="AllIcons.Actions.Back"/>
+      <action id="Pls.Manipulation.MoveColumnRight" class="icu.windea.pls.lang.actions.csv.MoveColumnRightAction" icon="AllIcons.Actions.Forward"/>
+      <action id="Pls.Manipulation.InsertColumnLeft" class="icu.windea.pls.lang.actions.csv.InsertColumnLeftAction"/>
+      <action id="Pls.Manipulation.InsertColumnRight" class="icu.windea.pls.lang.actions.csv.InsertColumnRightAction"/>
+      <action id="Pls.Manipulation.SelectColumn" class="icu.windea.pls.lang.actions.csv.SelectColumnAction" icon="AllIcons.Actions.InSelection"/>
+      <action id="Pls.Manipulation.RemoveColumn" class="icu.windea.pls.lang.actions.csv.RemoveColumnAction" icon="AllIcons.Actions.GC"/>
+      <action id="Pls.Manipulation.MoveRowUp" class="icu.windea.pls.lang.actions.csv.MoveRowUpAction" icon="AllIcons.Actions.PreviousOccurence"/>
+      <action id="Pls.Manipulation.MoveRowDown" class="icu.windea.pls.lang.actions.csv.MoveRowDownAction" icon="AllIcons.Actions.NextOccurence"/>
+      <action id="Pls.Manipulation.InsertRowAbove" class="icu.windea.pls.lang.actions.csv.InsertRowAboveAction"/>
+      <action id="Pls.Manipulation.InsertRowBelow" class="icu.windea.pls.lang.actions.csv.InsertRowBelowAction"/>
+      <action id="Pls.Manipulation.SelectRow" class="icu.windea.pls.lang.actions.csv.SelectRowAction" icon="AllIcons.Actions.InSelection"/>
+      <action id="Pls.Manipulation.RemoveRow" class="icu.windea.pls.lang.actions.csv.RemoveRowAction" icon="AllIcons.Actions.GC"/>
+      <add-to-group group-id="Pls.TableManipulationContextMenuGroup"/>
+    </group>
   </actions>
 </idea-plugin>

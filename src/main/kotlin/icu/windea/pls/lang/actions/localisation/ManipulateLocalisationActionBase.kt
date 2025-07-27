@@ -1,4 +1,4 @@
-package icu.windea.pls.tools.actions.localisation
+package icu.windea.pls.lang.actions.localisation
 
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.*
@@ -9,16 +9,15 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.manipulators.*
 import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.*
 import kotlinx.coroutines.*
 
 /**
- * 用于处理本地化的一类操作。
+ * 用于处理本地化的一类动作。
  *
  * * 应当支持在多个级别批量处理。
  * * 应当在开始处理之前弹出对话框，以确认是否真的要处理。
@@ -77,10 +76,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
         PlsFileManager.processFiles(e, deep = true) p@{ file ->
             if (!isValidFile(file)) return@p true
             val psiFile = file.toPsiFile(project) ?: return@p true
-            if (psiFile !is ParadoxLocalisationFile) return@p true
-            r = psiFile.children().filterIsInstance<ParadoxLocalisationPropertyList>().firstNotNullOfOrNull { propertyList ->
-                propertyList.children().findIsInstance<ParadoxLocalisationProperty>()
-            }
+            r = ParadoxLocalisationManipulator.buildSequence(psiFile).firstOrNull()
             false
         }
         return r != null

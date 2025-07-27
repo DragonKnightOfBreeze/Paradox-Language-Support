@@ -1,4 +1,4 @@
-package icu.windea.pls.tools.actions.localisation
+package icu.windea.pls.lang.actions.localisation
 
 import com.intellij.notification.*
 import com.intellij.openapi.actionSystem.*
@@ -20,22 +20,18 @@ import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import kotlin.collections.iterator
 
 /**
  * 用于从指定的本地化文件生成其他语言区域的本地化文件。
  */
 class GenerateLocalisationFileAction : AnAction() {
-    data class GenerationInfo(
-        val baseFile: VirtualFile,
-        val files: MutableMap<String, VirtualFile> = mutableMapOf()
-    )
-
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         e.presentation.isEnabledAndVisible = false
         val project = e.project ?: return
-        val files = findFiles(e, project)
+        val files = findFiles(e)
         if (files.isEmpty()) return
         e.presentation.isVisible = true
         val allLocales = findAllLocales()
@@ -46,7 +42,7 @@ class GenerateLocalisationFileAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val files = findFiles(e, project)
+        val files = findFiles(e)
         if (files.isEmpty()) return
         val allLocales = findAllLocales()
         val fileMap = buildFileMap(files, allLocales, project)
@@ -158,7 +154,7 @@ class GenerateLocalisationFileAction : AnAction() {
         return true
     }
 
-    private fun findFiles(e: AnActionEvent, project: Project): Collection<VirtualFile> {
+    private fun findFiles(e: AnActionEvent): Collection<VirtualFile> {
         val files = PlsFileManager.findFiles(e, deep = true) { file -> isValidFile(file) }
         return files
     }

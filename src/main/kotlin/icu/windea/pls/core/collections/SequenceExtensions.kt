@@ -24,8 +24,6 @@ inline fun <T, reified R> Sequence<T>.mapToArray(transform: (T) -> R): Array<R> 
     return toList().mapToArray(transform)
 }
 
-inline fun <reified T> Sequence<T>.toArray() = this.toList().toTypedArray()
-
 fun <T> Sequence<T>.process(processor: (T) -> Boolean): Boolean {
     for (e in this) {
         val result = processor(e)
