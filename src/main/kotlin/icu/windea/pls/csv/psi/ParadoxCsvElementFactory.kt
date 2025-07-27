@@ -16,7 +16,7 @@ object ParadoxCsvElementFactory {
     @JvmStatic
     fun createColumn(project: Project, text: String): ParadoxCsvColumn {
         return createDummyFile(project, text)
-            .findChild<ParadoxCsvRow>()
+            .findChild<ParadoxCsvRowElement>()
             ?.findChild<ParadoxCsvColumn>() ?: throw IncorrectOperationException()
     }
 }

@@ -32,7 +32,13 @@ class ParadoxCsvHighlightUsagesHandlerFactory : HighlightUsagesHandlerFactory, D
                 addOccurrencesForSeparatorInSameRow(targets, occurrences)
                 addOccurrencesForRelatedColumnInHeader(targets, occurrences)
                 addOccurrencesForReferenceColumn(targets, occurrences)
-                for (it in occurrences) addOccurrence(it)
+                for (occurrence in occurrences) {
+                    val range = when (occurrence) {
+                        is ParadoxCsvColumn -> occurrence.textRange.unquote(occurrence.text)
+                        else -> occurrence.textRange
+                    }
+                    myReadUsages.add(range)
+                }
             }
         }
     }
