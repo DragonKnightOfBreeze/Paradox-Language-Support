@@ -8,6 +8,7 @@ import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.csv.psi.*
+import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
@@ -69,5 +70,13 @@ object ParadoxCsvManager {
         }
 
         return true
+    }
+
+    fun isMatchedColumnConfig(column: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): Boolean {
+        if (column.isHeaderColumn()) {
+            return column.name == columnConfig.key
+        }
+        val configExpression = columnConfig.valueConfig?.configExpression ?: return false
+        return ParadoxCsvExpressionMatcher.matches(column, column.text, configExpression, columnConfig.configGroup).get(matchOptions)
     }
 }

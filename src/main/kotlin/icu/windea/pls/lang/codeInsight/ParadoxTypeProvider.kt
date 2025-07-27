@@ -22,8 +22,6 @@ import icu.windea.pls.script.psi.*
  * * 作用域上下文信息 - 如果存在则可用
  */
 class ParadoxTypeProvider : ExpressionTypeProvider<PsiElement>() {
-    val sectionColor = Gray.get(0x90)
-
     override fun getExpressionsAt(elementAt: PsiElement): List<PsiElement> {
         return ParadoxTypeManager.findTypedElements(elementAt)
     }

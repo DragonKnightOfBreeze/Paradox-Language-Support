@@ -6,6 +6,7 @@ import com.intellij.usages.impl.rules.*
 import icu.windea.pls.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
@@ -26,7 +27,7 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
             is ParadoxScriptScriptedVariableReference -> ParadoxUsageTypes.SCRIPTED_VARIABLE_REFERENCE_1
             is ParadoxScriptInlineMathScriptedVariableReference -> ParadoxUsageTypes.SCRIPTED_VARIABLE_REFERENCE_2
             is ParadoxLocalisationScriptedVariableReference -> ParadoxUsageTypes.SCRIPTED_VARIABLE_REFERENCE_3
-            is ParadoxScriptExpressionElement -> getUsageType(element, targets)
+            is ParadoxScriptExpressionElement -> doGetUsageType(element, targets)
             is ParadoxScriptParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE_1
             is ParadoxScriptInlineMathParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE_2
             is ParadoxScriptParameterConditionParameter -> ParadoxUsageTypes.PARAMETER_REFERENCE_3
@@ -37,11 +38,12 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
             is ParadoxLocalisationConceptName -> ParadoxUsageTypes.LOCALISATION_CONCEPT_NAME
             is ParadoxLocalisationTextIcon -> ParadoxUsageTypes.LOCALISATION_TEXT_ICON
             is ParadoxLocalisationTextFormat -> ParadoxUsageTypes.LOCALISATION_TEXT_FORMAT
+            is ParadoxCsvExpressionElement -> doGetUsageType(element)
             else -> null
         }
     }
 
-    private fun getUsageType(element: ParadoxScriptExpressionElement, targets: Array<out UsageTarget>): UsageType? {
+    private fun doGetUsageType(element: ParadoxScriptExpressionElement, targets: Array<out UsageTarget>): UsageType? {
         //#131
         if (!element.isResolvableExpression()) return null
 
@@ -75,4 +77,16 @@ class ParadoxUsageTypeProvider : UsageTypeProviderEx {
         return ParadoxUsageTypes.FROM_CONFIG_EXPRESSION(configExpression)
     }
 
+    private fun doGetUsageType(element: ParadoxCsvExpressionElement): UsageType? {
+        if (element !is ParadoxCsvColumn) return null
+
+        if (element.isHeaderColumn()) {
+            return ParadoxUsageTypes.HEADER_COLUMN
+        }
+
+        val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return null
+        val config = columnConfig.valueConfig ?: return null
+        val configExpression = config.configExpression
+        return ParadoxUsageTypes.FROM_CONFIG_EXPRESSION(configExpression)
+    }
 }
