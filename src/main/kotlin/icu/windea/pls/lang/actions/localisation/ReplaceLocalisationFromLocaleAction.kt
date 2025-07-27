@@ -1,4 +1,4 @@
-package icu.windea.pls.tools.actions.localisation
+package icu.windea.pls.lang.actions.localisation
 
 import com.intellij.notification.*
 import com.intellij.openapi.actionSystem.*
@@ -12,18 +12,13 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.integrations.translation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.manipulators.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.atomic.*
 
-class ReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionBase.WithLocalePopup(), DumbAware {
-    override fun isAvailable(e: AnActionEvent, project: Project): Boolean {
-        return super.isAvailable(e, project) && PlsTranslationManager.findTool() != null
-    }
-
+class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.WithLocalePopup() {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Suppress("UnstableApiUsage")
     override suspend fun doHandleAll(e: AnActionEvent, project: Project, context: Context) {
@@ -31,14 +26,14 @@ class ReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionBas
         //并发性 - 文件级别+本地化级别
 
         val (files, selectedLocale) = context
-        withBackgroundProgress(project, PlsBundle.message("action.replaceLocalisationWithTranslation.progress.title", selectedLocale)) action@{
+        withBackgroundProgress(project, PlsBundle.message("action.replaceLocalisationFromLocale.progress.title", selectedLocale)) action@{
             val total = files.size
             val contexts = mutableListOf<ParadoxLocalisationContext>().synced()
             val processedRef = AtomicInteger()
             val errorRef = AtomicReference<Throwable>()
 
             reportRawProgress { rawReporter ->
-                val stepText = PlsBundle.message("manipulation.localisation.translate.replace.progress.filesStep", total)
+                val stepText = PlsBundle.message("manipulation.localisation.search.replace.progress.filesStep", total)
                 rawReporter.text(stepText)
 
                 files.forEachConcurrent { file ->
@@ -49,7 +44,7 @@ class ReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionBas
                         emit(context)
                     }.flatMapMerge { context ->
                         flow {
-                            runCatchingCancelable { handleText(context, selectedLocale) }.onFailure { errorRef.compareAndSet(null, it) }.getOrThrow()
+                            runCatchingCancelable { handleText(context, project, selectedLocale) }.onFailure { errorRef.compareAndSet(null, it) }.getOrThrow()
                             runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
                             emit(context)
                         }
@@ -68,24 +63,24 @@ class ReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionBas
         }
     }
 
-    private suspend fun handleText(context: ParadoxLocalisationContext, selectedLocale: CwtLocaleConfig) {
-        return ParadoxLocalisationManipulator.handleTextWithTranslation(context, selectedLocale)
+    private suspend fun handleText(context: ParadoxLocalisationContext, project: Project, selectedLocale: CwtLocaleConfig) {
+        return ParadoxLocalisationManipulator.handleTextFromLocale(context, project, selectedLocale)
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {
-        val commandName = PlsBundle.message("manipulation.localisation.command.ai.translate.replace")
+        val commandName = PlsBundle.message("manipulation.localisation.command.replace")
         return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, processed: Int, error: Throwable?): Notification {
         if (error == null) {
-            val content = PlsBundle.message("action.replaceLocalisationWithTranslation.notification", selectedLocale, Messages.success(processed))
+            val content = PlsBundle.message("action.replaceLocalisationFromLocale.notification", selectedLocale, Messages.success(processed))
             return createNotification(content, NotificationType.INFORMATION)
         }
 
         thisLogger().warn(error)
         val errorDetails = error.message?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsBundle.message("action.replaceLocalisationWithTranslation.notification", selectedLocale, Messages.failed(processed)) + errorDetails
+        val content = PlsBundle.message("action.replaceLocalisationFromLocale.notification", selectedLocale, Messages.failed(processed)) + errorDetails
         return createNotification(content, NotificationType.WARNING)
     }
 }

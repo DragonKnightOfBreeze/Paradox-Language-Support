@@ -1,4 +1,4 @@
-package icu.windea.pls.tools.actions.localisation.ai
+package icu.windea.pls.lang.actions.localisation.ai
 
 import com.intellij.notification.*
 import com.intellij.openapi.actionSystem.*
@@ -12,24 +12,23 @@ import com.intellij.platform.util.progress.*
 import icu.windea.pls.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.coroutines.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.actions.localisation.ManipulateLocalisationActionBase
 import icu.windea.pls.lang.util.manipulators.*
-import icu.windea.pls.tools.actions.localisation.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.atomic.*
 
-class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionBase.WithLocalePopupAndPopup<String>(), DumbAware {
+class ReplaceLocalisationWithAiPolishingAction : ManipulateLocalisationActionBase.WithPopup<String>(), DumbAware {
     override fun isAvailable(e: AnActionEvent, project: Project): Boolean {
         return super.isAvailable(e, project) && PlsAiManager.isAvailable()
     }
 
     override fun createPopup(e: AnActionEvent, project: Project, callback: (String) -> Unit): JBPopup? {
-        return PlsAiManager.getTranslateLocalisationService().createDescriptionPopup(project, callback)
+        return PlsAiManager.getPolishLocalisationService().createDescriptionPopup(project, callback)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -38,8 +37,8 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
         //进度条 - 显示的进度文本不会变化，按已处理的文件来显示当前进度
         //并发性 - 文件级别+本地化组级别（需要处理的本地化每次达到chunkSize）
 
-        val (files, selectedLocale) = context
-        withBackgroundProgress(project, PlsBundle.message("action.replaceLocalisationWithAiTranslation.progress.title", selectedLocale)) action@{
+        val (files) = context
+        withBackgroundProgress(project, PlsBundle.message("action.replaceLocalisationWithAiPolishing.progress.title")) action@{
             val total = files.size
             val contexts = mutableListOf<ParadoxLocalisationContext>().synced()
             val processedRef = AtomicInteger()
@@ -47,7 +46,7 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
             var withWarnings = false
 
             reportRawProgress { rawReporter ->
-                val stepText = PlsBundle.message("manipulation.localisation.translate.replace.progress.filesStep", total)
+                val stepText = PlsBundle.message("manipulation.localisation.polish.replace.progress.filesStep", total)
                 rawReporter.text(stepText)
 
                 files.forEachConcurrent { file ->
@@ -59,7 +58,7 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
                         emit(context)
                     }.toChunkedFlow(chunkSize).flatMapMerge { inputContexts ->
                         flow {
-                            val request = PlsAiTranslateLocalisationRequest(project, file, inputContexts, null, selectedLocale)
+                            val request = PlsAiPolishLocalisationRequest(project, file, inputContexts, null)
                             val callback: suspend (ParadoxLocalisationResult) -> Unit = { data ->
                                 val context = request.localisationContexts[request.index]
                                 runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
@@ -78,36 +77,36 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
                 }
             }
 
-            createNotification(selectedLocale, processedRef.get(), errorRef.get(), withWarnings)
+            createNotification(processedRef.get(), errorRef.get(), withWarnings)
                 .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
                 .addAction(ParadoxLocalisationManipulator.createReapplyAction(contexts))
                 .notify(project)
         }
     }
 
-    private suspend fun handleText(request: PlsAiTranslateLocalisationRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
-        ParadoxLocalisationManipulator.handleTextWithAiTranslation(request, callback)
+    private suspend fun handleText(request: PlsAiPolishLocalisationRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
+        ParadoxLocalisationManipulator.handleTextWithAiPolishing(request, callback)
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {
-        val commandName = PlsBundle.message("manipulation.localisation.command.ai.translate.replace")
+        val commandName = PlsBundle.message("manipulation.localisation.command.ai.polish.replace")
         return ParadoxLocalisationManipulator.replaceText(context, project, commandName)
     }
 
-    private fun createNotification(selectedLocale: CwtLocaleConfig, processed: Int, error: Throwable?, withWarnings: Boolean): Notification {
+    private fun createNotification(processed: Int, error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
-                val content = PlsBundle.message("action.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.success(processed))
+                val content = PlsBundle.message("action.replaceLocalisationWithAiPolishing.notification", Messages.success(processed))
                 return createNotification(content, NotificationType.INFORMATION)
             }
-            val content = PlsBundle.message("action.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.partialSuccess(processed))
+            val content = PlsBundle.message("action.replaceLocalisationWithAiPolishing.notification", Messages.partialSuccess(processed))
             return createNotification(content, NotificationType.WARNING)
         }
 
         thisLogger().warn(error)
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsBundle.message("action.replaceLocalisationWithAiTranslation.notification", selectedLocale, Messages.partialSuccess(processed)) + errorDetails
+        val content = PlsBundle.message("action.replaceLocalisationWithAiPolishing.notification", Messages.partialSuccess(processed)) + errorDetails
         return createNotification(content, NotificationType.WARNING)
     }
 }

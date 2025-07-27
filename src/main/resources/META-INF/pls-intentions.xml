@@ -184,5 +184,23 @@
       <className>icu.windea.pls.lang.intentions.localisation.ReplaceLocalisationWithTranslationIntention</className>
     </intentionAction>
     <!--endregion-->
+
+
+    <!--region Paradox CSV-->
+    <intentionAction>
+      <language>PARADOX_CSV</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>intention.csv.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.csv.QuoteIdentifierIntention</className>
+      <descriptionDirectoryName>CsvQuoteIdentifierIntention</descriptionDirectoryName>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_CSV</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>intention.csv.category</categoryKey>
+      <className>icu.windea.pls.lang.intentions.csv.UnquoteIdentifierIntention</className>
+      <descriptionDirectoryName>CsvUnquoteIdentifierIntention</descriptionDirectoryName>
+    </intentionAction>
+    <!--endregion-->
   </extensions>
 </idea-plugin>

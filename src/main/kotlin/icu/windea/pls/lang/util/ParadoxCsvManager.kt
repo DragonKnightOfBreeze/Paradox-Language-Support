@@ -74,7 +74,7 @@ object ParadoxCsvManager {
 
     fun isMatchedColumnConfig(column: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): Boolean {
         if (column.isHeaderColumn()) {
-            return column.name == columnConfig.key
+            return column.value == columnConfig.key
         }
         val configExpression = columnConfig.valueConfig?.configExpression ?: return false
         return ParadoxCsvExpressionMatcher.matches(column, column.text, configExpression, columnConfig.configGroup).get(matchOptions)
