@@ -175,6 +175,9 @@ object CwtConfigManager {
                 }
                 null
             }
+            element is CwtProperty && configPath.path.matchesAntPattern("rows/row[*]") -> {
+                CwtConfigTypes.Row
+            }
             element is CwtProperty && configPath.path.matchesAntPattern("enums/enum[*]") -> {
                 CwtConfigTypes.Enum
             }
@@ -270,6 +273,7 @@ object CwtConfigManager {
         return when (configType) {
             CwtConfigTypes.Type -> text.removeSurroundingOrNull("type[", "]")
             CwtConfigTypes.Subtype -> text.removeSurroundingOrNull("subtype[", "]")
+            CwtConfigTypes.Row -> text.removeSurroundingOrNull("row[", "]")
             CwtConfigTypes.Enum -> text.removeSurroundingOrNull("enum[", "]")
             CwtConfigTypes.ComplexEnum -> text.removeSurroundingOrNull("complex_enum[", "]")
             CwtConfigTypes.Inline -> text.removeSurroundingOrNull("inline[", "]")

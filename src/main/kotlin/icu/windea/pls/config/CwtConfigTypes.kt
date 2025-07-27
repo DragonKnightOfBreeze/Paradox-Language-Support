@@ -14,6 +14,11 @@ object CwtConfigTypes {
         prefix = PlsStringConstants.subtypePrefix
         description = PlsBundle.message("cwt.config.description.subtype")
     }
+    val Row = CwtConfigType.create("row") {
+        icon = PlsIcons.Nodes.Row
+        prefix = PlsStringConstants.rowPrefix
+        description = PlsBundle.message("cwt.config.description.row")
+    }
     val Enum = CwtConfigType.create("enum") {
         icon = PlsIcons.Nodes.Enum
         prefix = PlsStringConstants.enumPrefix

@@ -25,9 +25,7 @@ fun ParadoxCsvRowElement.getColumn(index: Int): ParadoxCsvColumn? {
 }
 
 fun ParadoxCsvColumn.getHeaderColumn(): ParadoxCsvColumn? {
-    return parent?.castOrNull<ParadoxCsvRow>()?.getColumn(getColumnIndex())
-}
-
-fun ParadoxCsvColumn.getBodyColumn(): ParadoxCsvColumn? {
-    return parent?.castOrNull<ParadoxCsvHeader>()?.getColumn(getColumnIndex())
+    val header = parent?.castOrNull<ParadoxCsvRow>()?.parent?.findChild<ParadoxCsvHeader>() ?: return null
+    val index = getColumnIndex()
+    return header.getColumn(index)
 }

@@ -98,9 +98,9 @@ object PlsIcons {
         val LocalisationTextIcon = IconManager.getInstance().getIcon("/icons/nodes/localisationTextIcon.svg") //same as LocalisationIcon
 
         @JvmStatic
-        val CsvRow = AllIcons.Nodes.DataTables
+        val Row = AllIcons.Nodes.DataTables
         @JvmStatic
-        val CsvColumn = AllIcons.Nodes.DataColumn
+        val Column = AllIcons.Nodes.DataColumn
 
         @JvmField
         val Definition = IconManager.getInstance().getIcon("/icons/nodes/definition.svg")

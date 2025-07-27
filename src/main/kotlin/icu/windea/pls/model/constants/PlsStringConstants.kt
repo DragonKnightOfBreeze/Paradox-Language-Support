@@ -9,6 +9,7 @@ object PlsStringConstants {
 
     const val typePrefix = "(type)"
     const val subtypePrefix = "(subtype)"
+    const val rowPrefix = "(row)"
     const val gameRulePrefix = "(game rule)"
     const val onActionPrefix = "(on action)"
     const val enumPrefix = "(enum)"

@@ -3,8 +3,8 @@ package icu.windea.pls.lang.psi
 import com.intellij.openapi.project.*
 import com.intellij.psi.impl.*
 import icu.windea.pls.core.*
+import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 
@@ -43,9 +43,12 @@ class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
                 }
             }
             file is ParadoxLocalisationFile -> {
-                val fileInfo = file.fileInfo ?: return
-                if (!ParadoxFileManager.inLocalisationPath(fileInfo.path)) return
+                if(file.fileInfo == null) return
                 ParadoxModificationTrackers.LocalisationFileTracker.incModificationCount()
+            }
+            file is ParadoxCsvFile -> {
+                if(file.fileInfo == null) return
+                ParadoxModificationTrackers.CsvFileTracker.incModificationCount()
             }
         }
     }
