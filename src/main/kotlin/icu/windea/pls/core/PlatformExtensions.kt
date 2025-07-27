@@ -143,20 +143,20 @@ inline fun <T, R> T.runCatchingCancelable(block: T.() -> R): Result<R> {
 //    }
 //}
 
-fun TextRange.unquote(text: String): TextRange {
-    val leftQuoted = text.isLeftQuoted()
-    val rightQuoted = text.isRightQuoted()
+fun TextRange.unquote(text: String, quote: Char = '"'): TextRange {
+    val leftQuoted = text.isLeftQuoted(quote)
+    val rightQuoted = text.isRightQuoted(quote)
     val startOffset = if (leftQuoted) this.startOffset + 1 else this.startOffset
     val endOffset = if (rightQuoted) this.endOffset - 1 else this.endOffset
     return TextRange.create(startOffset, endOffset)
 }
 
-fun TextRange.replaceAndQuoteIfNecessary(original: String, replacement: String): String {
+fun TextRange.replaceAndQuoteIfNecessary(original: String, replacement: String, quote: Char = '"', extraChars: String = ""): String {
     if (this.length >= original.length - 1) {
-        return replacement.quoteIfNecessary()
+        return replacement.quoteIfNecessary(quote, extraChars)
     } else {
-        var replacement0 = replacement.quoteIfNecessary()
-        if (replacement0.isLeftQuoted() && replacement0.isRightQuoted()) {
+        var replacement0 = replacement.quoteIfNecessary(quote, extraChars)
+        if (replacement0.isLeftQuoted(quote) && replacement0.isRightQuoted(quote)) {
             replacement0 = replacement0.substring(1, replacement0.length - 1)
         }
         val prefix = original.substring(0, startOffset)

@@ -3,15 +3,12 @@ package icu.windea.pls.script.psi
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createPropertyKey
-import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createString
-import icu.windea.pls.script.psi.ParadoxScriptElementFactory.createValue
 
 class ParadoxScriptPropertyKeyManipulator : AbstractElementManipulator<ParadoxScriptPropertyKey>() {
     override fun handleContentChange(element: ParadoxScriptPropertyKey, range: TextRange, newContent: String): ParadoxScriptPropertyKey {
         val text = element.text
         val newText = range.replaceAndQuoteIfNecessary(text, newContent)
-        val newElement = createPropertyKey(element.project, newText)
+        val newElement = ParadoxScriptElementFactory.createPropertyKey(element.project, newText)
         return element.replace(newElement).cast()
     }
 }
@@ -20,7 +17,7 @@ class ParadoxScriptValueManipulator : AbstractElementManipulator<ParadoxScriptVa
     override fun handleContentChange(element: ParadoxScriptValue, range: TextRange, newContent: String): ParadoxScriptValue {
         val text = element.text
         val newText = range.replace(text, newContent)
-        val newElement = createValue(element.project, newText)
+        val newElement = ParadoxScriptElementFactory.createValue(element.project, newText)
         return element.replace(newElement).cast()
     }
 }
@@ -29,7 +26,7 @@ class ParadoxScriptStringManipulator : AbstractElementManipulator<ParadoxScriptS
     override fun handleContentChange(element: ParadoxScriptString, range: TextRange, newContent: String): ParadoxScriptString {
         val text = element.text
         val newText = range.replaceAndQuoteIfNecessary(text, newContent)
-        val newElement = createString(element.project, newText)
+        val newElement = ParadoxScriptElementFactory.createString(element.project, newText)
         return element.replace(newElement).cast()
     }
 }
