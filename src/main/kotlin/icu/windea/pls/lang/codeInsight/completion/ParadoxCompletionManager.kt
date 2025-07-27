@@ -734,7 +734,7 @@ object ParadoxCompletionManager {
             val element = columnConfig.pointer.element ?: return@f
             val typeFile = columnConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
-                .withIcon(PlsIcons.Nodes.CsvColumn)
+                .withIcon(PlsIcons.Nodes.Column)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withPriority(ParadoxCompletionPriorities.constant)
             result.addElement(lookupElement, context)

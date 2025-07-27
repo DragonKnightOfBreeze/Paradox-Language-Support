@@ -10,7 +10,6 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.csv.navigation.*
 import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
 import javax.swing.*
@@ -21,7 +20,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxCsvHeader, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.CsvRow
+        return PlsIcons.Nodes.Row
     }
 
     @JvmStatic
@@ -35,7 +34,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxCsvRow, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.CsvRow
+        return PlsIcons.Nodes.Row
     }
 
     @JvmStatic
@@ -49,7 +48,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxCsvColumn, @Iconable.IconFlags flags: Int): Icon {
-        return PlsIcons.Nodes.CsvColumn
+        return PlsIcons.Nodes.Column
     }
 
     @JvmStatic

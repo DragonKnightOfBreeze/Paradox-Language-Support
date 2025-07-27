@@ -10,7 +10,8 @@ import java.util.concurrent.*
 object ParadoxModificationTrackers {
     val ScriptFileTracker = SimpleModificationTracker()
     val LocalisationFileTracker = SimpleModificationTracker()
-    val FileTracker = MergedModificationTracker(ScriptFileTracker, LocalisationFileTracker)
+    val CsvFileTracker = SimpleModificationTracker()
+    val FileTracker = MergedModificationTracker(ScriptFileTracker, LocalisationFileTracker, CsvFileTracker)
 
     val ScriptFileTrackers = ConcurrentHashMap<String, FilePathBasedModificationTracker>()
 
@@ -29,6 +30,7 @@ object ParadoxModificationTrackers {
     fun refreshPsi() {
         ScriptFileTracker.incModificationCount()
         LocalisationFileTracker.incModificationCount()
+        CsvFileTracker.incModificationCount()
         ScriptFileTrackers.values.forEach { it.incModificationCount() }
     }
 }

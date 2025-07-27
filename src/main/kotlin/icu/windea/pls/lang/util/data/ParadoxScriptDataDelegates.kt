@@ -46,7 +46,7 @@ class ParadoxScriptAllDataDelegateProvider<T>(
 private val ParadoxScriptData.Keys.propertyValues by createKey<MutableMap<KType, Any?>>(ParadoxScriptData.Keys)
 
 private fun getValueOfTypeFromCache(data: ParadoxScriptData, type: KType): Any? {
-    val propertyValues = data.getUserData(ParadoxScriptData.Keys.propertyValues)!!
+    val propertyValues = data.getOrPutUserData(ParadoxScriptData.Keys.propertyValues) { mutableMapOf() }
     return propertyValues.getOrPut(type) { getValueOfType(data, type) ?: EMPTY_OBJECT }.takeUnless { it == EMPTY_OBJECT }
 }
 

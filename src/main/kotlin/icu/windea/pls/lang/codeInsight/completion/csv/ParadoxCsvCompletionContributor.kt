@@ -3,12 +3,12 @@ package icu.windea.pls.lang.codeInsight.completion.csv
 import com.intellij.codeInsight.completion.*
 import com.intellij.patterns.PlatformPatterns.*
 import icu.windea.pls.core.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationTokenSets
+import icu.windea.pls.csv.psi.*
 import icu.windea.pls.model.constants.*
 
 class ParadoxCsvCompletionContributor : CompletionContributor() {
     init {
-        val expressionPattern = psiElement().withElementType(ParadoxLocalisationTokenSets.EXPRESSION_TOKENS)
+        val expressionPattern = psiElement().withElementType(ParadoxCsvTokenSets.EXPRESSION_TOKENS)
         extend(expressionPattern, ParadoxCsvExpressionCompletionProvider())
     }
 
