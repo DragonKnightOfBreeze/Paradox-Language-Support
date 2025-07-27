@@ -42,7 +42,7 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
     override suspend fun doHandle(project: Project, file: PsiFile?, context: Context<String>) {
         val (elements, selectedLocale, data) = context
         withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationWithAiTranslation.progress.title", selectedLocale)) action@{
-            val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) } }.toList()
+            val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
             var withWarnings = false

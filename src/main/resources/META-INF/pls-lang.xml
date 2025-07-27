@@ -367,6 +367,10 @@
       <reference ref="HierarchyPopupMenu.Common"/>
     </group>
 
+    <group id="Pls.LocalisationManipulationContextMenuGroup" class="com.intellij.ide.actions.NonTrivialActionGroup" popup="true" compact="true"/>
+    <group id="Pls.LocalisationGenerationContextMenuGroup" class="com.intellij.ide.actions.NonTrivialActionGroup" popup="true" compact="true"/>
+    <group id="Pls.TableManipulationContextMenuGroup" class="com.intellij.ide.actions.NonTrivialActionGroup" popup="true" compact="true"/>
+
     <group id="Pls.EditorContextMenuGroup">
       <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="EditorToggleColumnMode" />
       <separator/>
@@ -374,10 +378,6 @@
       <reference ref="Pls.LocalisationGenerationContextMenuGroup"/>
       <reference ref="Pls.TableManipulationContextMenuGroup"/>
     </group>
-
-    <group id="Pls.LocalisationManipulationContextMenuGroup" class="com.intellij.ide.actions.NonTrivialActionGroup" popup="true" compact="true"/>
-    <group id="Pls.LocalisationGenerationContextMenuGroup" class="com.intellij.ide.actions.NonTrivialActionGroup" popup="true" compact="true"/>
-    <group id="Pls.TableManipulationContextMenuGroup" class="com.intellij.ide.actions.NonTrivialActionGroup" popup="true" compact="true"/>
 
     <group id="Pls.LocalisationManipulation">
       <action id="Pls.Manipulation.ReplaceLocalisationFromLocale" class="icu.windea.pls.lang.actions.localisation.ReplaceLocalisationFromLocaleAction"/>

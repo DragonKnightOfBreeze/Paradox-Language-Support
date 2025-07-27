@@ -5,7 +5,6 @@ import com.intellij.psi.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.csv.*
-import icu.windea.pls.cwt.*
 
 object ParadoxCsvElementFactory {
     @JvmStatic
@@ -16,8 +15,8 @@ object ParadoxCsvElementFactory {
 
     @JvmStatic
     fun createColumn(project: Project, text: String): ParadoxCsvColumn {
-        return PsiFileFactory.getInstance(project).createFileFromText(CwtLanguage, text)
-            ?.findChild<ParadoxCsvRow>()
+        return createDummyFile(project, text)
+            .findChild<ParadoxCsvRowElement>()
             ?.findChild<ParadoxCsvColumn>() ?: throw IncorrectOperationException()
     }
 }

@@ -21,5 +21,7 @@
     <navbar implementation="icu.windea.pls.csv.navigation.ParadoxCsvNavBar"/>
     <lang.psiStructureViewFactory language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.structureView.ParadoxCsvStructureViewFactory"/>
 
+    <lang.elementManipulator forClass="icu.windea.pls.csv.psi.ParadoxCsvColumn"
+                             implementationClass="icu.windea.pls.csv.psi.ParadoxCsvColumnManipulator"/>
   </extensions>
 </idea-plugin>
