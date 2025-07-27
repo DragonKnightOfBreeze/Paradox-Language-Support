@@ -137,7 +137,7 @@ object ParadoxDefinitionManager {
         //判断definition的propertyValue是否需要是block
         run {
             val configGroup = typeConfig.configGroup
-            val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config ?: return@run
+            val declarationConfig = configGroup.declarations.get(typeConfig.name)?.configForDeclaration ?: return@run
             val propertyValue = element.castOrNull<ParadoxScriptProperty>()?.propertyValue ?: return@run
             //兼容进行代码补全时用户输入未完成的情况
             val isIncomplete = propertyValue.elementType == STRING
@@ -177,7 +177,7 @@ object ParadoxDefinitionManager {
         //判断definition的propertyValue是否需要是block
         run {
             val configGroup = typeConfig.configGroup
-            val declarationConfig = configGroup.declarations.get(typeConfig.name)?.config ?: return@run
+            val declarationConfig = configGroup.declarations.get(typeConfig.name)?.configForDeclaration ?: return@run
             val propertyValue = node.firstChild(tree, ParadoxScriptTokenSets.VALUES) ?: return@run
             val isBlock = propertyValue.tokenType == BLOCK
             val isBlockConfig = declarationConfig.valueExpression.type == CwtDataTypes.Block

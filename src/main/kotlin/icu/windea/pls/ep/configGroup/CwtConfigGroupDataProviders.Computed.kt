@@ -32,7 +32,7 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 val baseTypeName = typeConfig.baseType!!.substringBefore('.')
                 val baseDeclarationConfig = configGroup.declarations[baseTypeName] ?: continue
                 val typeKey = typeConfig.typeKeyFilter?.takeIfTrue()?.singleOrNull() ?: continue
-                val declarationConfig = baseDeclarationConfig.config.configs
+                val declarationConfig = baseDeclarationConfig.configForDeclaration.configs
                     ?.find { it is CwtPropertyConfig && it.key.equals(typeKey, true) }?.castOrNull<CwtPropertyConfig>()
                     ?.let { CwtDeclarationConfig.resolve(it, name = typeName) }
                     ?: continue
