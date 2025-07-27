@@ -14,12 +14,14 @@ import icu.windea.pls.csv.psi.*
  *
  * * 当光标位置是列时，高亮对应的头列。
  * * 当光标位置是分隔符时，高亮同一行的所有分隔符。
+ * * 当光标位置是列时，如果其中的表达式可以解析引用，高亮当前列。
  */
 class ParadoxCsvHighlightUsagesHandlerFactory : HighlightUsagesHandlerFactory, DumbAware {
     override fun createHighlightUsagesHandler(editor: Editor, file: PsiFile): HighlightUsagesHandlerBase<*>? {
         val targets = mutableListOf<PsiElement>()
         findTargetForRelatedColumnInHeader(file, editor)?.let { targets += it }
         findTargetForSeparatorsInSameRow(file, editor)?.let { targets += it }
+        findTargetForReferences(file, editor)?.let { targets += it }
         if (targets.isEmpty()) return null
         return object : HighlightUsagesHandlerBase<PsiElement>(editor, file) {
             override fun getTargets() = targets
@@ -42,6 +44,14 @@ class ParadoxCsvHighlightUsagesHandlerFactory : HighlightUsagesHandlerFactory, D
     private fun findTargetForSeparatorsInSameRow(file: PsiFile, editor: Editor): PsiElement? {
         val target = file.findElementAt(editor.caretModel.offset) { e -> e.takeIf { it.elementType == ParadoxCsvElementTypes.SEPARATOR } }
         if (target == null) return null
+        return target
+    }
+
+    private fun findTargetForReferences(file: PsiFile, editor: Editor): ParadoxCsvColumn? {
+        if (DumbService.isDumb(file.project)) return null
+        val target = file.findElementAt(editor.caretModel.offset) { e -> e.findParentOfType<ParadoxCsvColumn>() }
+        if (target !is ParadoxCsvColumn) return null
+        if (target.references.all { it.resolveFirst() == null }) return null
         return target
     }
 
