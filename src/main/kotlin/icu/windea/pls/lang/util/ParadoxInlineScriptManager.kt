@@ -19,6 +19,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.configContext.*
 import icu.windea.pls.ep.expression.*
+import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.search.*
@@ -29,7 +30,7 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxInlineScriptManager {
     object Keys : KeyRegistry() {
-        val cachedInlineScriptUsageInfo by createKey<CachedValue<ParadoxInlineScriptUsageIndexInfo>>(this)
+        val cachedInlineScriptUsageInfo by createKey<CachedValue<ParadoxInlineScriptUsageIndexInfo>>(Keys)
     }
 
     const val inlineScriptKey = "inline_script"
@@ -66,7 +67,7 @@ object ParadoxInlineScriptManager {
         val matchOptions = Options.SkipIndex or Options.SkipScope
         val inlineConfig = inlineConfigs.find {
             val expression = ParadoxScriptExpression.resolve(propertyValue, matchOptions)
-            ParadoxExpressionMatcher.matches(propertyValue, expression, it.config.valueExpression, it.config, configGroup).get(matchOptions)
+            ParadoxScriptExpressionMatcher.matches(propertyValue, expression, it.config.valueExpression, it.config, configGroup).get(matchOptions)
         }
         if (inlineConfig == null) return null
         val expression = getInlineScriptExpressionFromInlineConfig(element, inlineConfig) ?: return null

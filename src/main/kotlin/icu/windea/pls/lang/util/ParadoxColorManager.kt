@@ -1,15 +1,20 @@
 package icu.windea.pls.lang.util
 
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.intellij.ui.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.script.psi.*
 import java.awt.*
 
-@Suppress("UseJBColor")
 object ParadoxColorManager {
+    object Keys : KeyRegistry() {
+        val cachedColor by createKey<CachedValue<Color>>(Keys)
+    }
+
     // ## color_type = hex
     // format:
     // 0xffffffff (ignore case, 8 or 10 length)
@@ -44,6 +49,7 @@ object ParadoxColorManager {
         }
     }
 
+    @Suppress("UseJBColor")
     fun getRgbColor(colorArgs: List<String>): Color? {
         if (colorArgs.size != 3 && colorArgs.size != 4) return null
         val useFloat = colorArgs.all { it.toFloat() in 0f..1f } && colorArgs.any { it.contains('.') }
@@ -62,6 +68,7 @@ object ParadoxColorManager {
         }
     }
 
+    @Suppress("UseJBColor")
     fun getHsvColor(colorArgs: List<String>): Color? {
         if (colorArgs.size != 3) return null
         val h = colorArgs.get(0).toFloat().coerceIn(0f..1f)
@@ -71,6 +78,7 @@ object ParadoxColorManager {
         return Color(r, g, b)
     }
 
+    @Suppress("UseJBColor")
     fun getHsv360Color(colorArgs: List<String>): Color? {
         if (colorArgs.size != 3) return null
         val h = colorArgs.get(0).toInt().let { it / 360.0f }.coerceIn(0f..1f)
@@ -95,13 +103,13 @@ object ParadoxColorManager {
                 if (colorArgs.size != 3) return null
                 val (r, g, b) = newColor
                 val (h, s, v) = Color.RGBtoHSB(r, g, b, null)
-                listOf(h,s,v).map { it.format(precision) }
+                listOf(h, s, v).map { it.format(precision) }
             }
             "hsv360" -> {
                 if (colorArgs.size != 3) return null
                 val (r, g, b) = newColor
                 val (h, s, v) = Color.RGBtoHSB(r, g, b, null)
-                listOf(h,s,v).map { (it * 360).toInt().toString() }
+                listOf(h, s, v).map { (it * 360).toInt().toString() }
             }
             else -> null
         }

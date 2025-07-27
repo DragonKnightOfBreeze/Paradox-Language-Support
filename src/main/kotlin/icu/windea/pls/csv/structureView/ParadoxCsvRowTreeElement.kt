@@ -18,9 +18,4 @@ class ParadoxCsvRowTreeElement(
         //val element = element ?: return null
         return PlsStringConstants.row
     }
-
-    @Suppress("RedundantOverride")
-    override fun getLocationString(): String? {
-        return super.getLocationString() //TODO 2.0.1-dev
-    }
 }

@@ -33,9 +33,9 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxModifierManager {
     object Keys : KeyRegistry() {
-        val modifierNameKeys by createKey<Set<String>>(this)
-        val modifierDescKeys by createKey<Set<String>>(this)
-        val modifierIconPaths by createKey<Set<String>>(this)
+        val modifierNameKeys by createKey<Set<String>>(Keys)
+        val modifierDescKeys by createKey<Set<String>>(Keys)
+        val modifierIconPaths by createKey<Set<String>>(Keys)
     }
 
     //可通过运行游戏后输出的modifiers.log判断到底会生成哪些修正
@@ -179,6 +179,7 @@ object ParadoxModifierManager {
         return modifierInfo
     }
 
+    @Suppress("unused")
     fun getModifierInfo(modifierElement: ParadoxModifierElement): ParadoxModifierInfo? {
         val gameType = modifierElement.gameType
         val rootFile = selectRootFile(modifierElement) ?: return null

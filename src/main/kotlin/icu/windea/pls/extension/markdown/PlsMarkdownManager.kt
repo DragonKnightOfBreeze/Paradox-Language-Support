@@ -10,13 +10,13 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
-import icu.windea.pls.script.injection.*
+import icu.windea.pls.model.injection.*
 import org.intellij.plugins.markdown.lang.*
 import org.intellij.plugins.markdown.lang.psi.impl.*
 
 object PlsMarkdownManager {
     object Keys : KeyRegistry() {
-        val cachedPathInfo by createKey<CachedValue<ParadoxPathInjectionInfo>>(this)
+        val cachedPathInfo by createKey<CachedValue<ParadoxPathInjectionInfo>>(Keys)
     }
 
     fun getIdentifierFromInlineCode(element: PsiElement): String? {
@@ -30,7 +30,7 @@ object PlsMarkdownManager {
     }
 
     fun getPathInfo(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
-        return doGetPathInfo(element)
+        return doGetPathInfoFromCache(element)
     }
 
     private fun doGetPathInfoFromCache(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
@@ -72,7 +72,7 @@ object PlsMarkdownManager {
         return host
     }
 
-    fun getInjectFileInfoFromInjectedFile(injectedFile: PsiFile, element: MarkdownCodeFence): ParadoxFileInfo? {
+    fun getInjectFileInfoFromInjectedFile(element: MarkdownCodeFence): ParadoxFileInfo? {
         val pathInfo = getPathInfo(element) ?: return null
         val path = ParadoxPath.resolve(pathInfo.path)
         val fileExtension = path.fileExtension ?: return null

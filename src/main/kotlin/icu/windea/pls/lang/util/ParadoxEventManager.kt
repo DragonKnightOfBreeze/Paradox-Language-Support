@@ -23,12 +23,12 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxEventManager {
     object Keys : KeyRegistry() {
-        val cachedEventInvocations by createKey<CachedValue<Set<String>>>(this)
-        val eventAllTypes by createKey<Set<String>>(this)
-        val eventAllAttributes by createKey<Set<String>>(this)
-        val eventType by createKey<String>(this)
-        val eventAttributes by createKey<Set<String>>(this)
-        val eventScope by createKey<String>(this)
+        val cachedEventInvocations by createKey<CachedValue<Set<String>>>(Keys)
+        val eventAllTypes by createKey<Set<String>>(Keys)
+        val eventAllAttributes by createKey<Set<String>>(Keys)
+        val eventType by createKey<String>(Keys)
+        val eventAttributes by createKey<Set<String>>(Keys)
+        val eventScope by createKey<String>(Keys)
     }
 
     fun isValidEventNamespace(eventNamespace: String): Boolean {

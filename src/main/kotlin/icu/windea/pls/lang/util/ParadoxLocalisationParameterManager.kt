@@ -21,7 +21,7 @@ import icu.windea.pls.script.psi.*
 @Suppress("UNUSED_PARAMETER")
 object ParadoxLocalisationParameterManager {
     object Keys : KeyRegistry() {
-        val cachedParameterNames by createKey<CachedValue<Set<String>>>(this)
+        val cachedParameterNames by createKey<CachedValue<Set<String>>>(Keys)
     }
 
     fun getParameterNames(element: ParadoxLocalisationProperty): Set<String> {

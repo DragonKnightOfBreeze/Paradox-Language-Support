@@ -21,6 +21,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.csv.psi.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.ep.configContext.*
 import icu.windea.pls.ep.expression.*
@@ -97,7 +98,6 @@ object ParadoxCompletionManager {
         //仅提示不在定义声明中的rootKey
         if (!configContext.isRootOrMember()) return addRootKeyCompletions(memberElement, context, result)
 
-        val configGroup = configContext.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
         val parentConfigs = ParadoxExpressionManager.getConfigs(memberElement, matchOptions = matchOptions)
@@ -113,7 +113,6 @@ object ParadoxCompletionManager {
         val occurrenceMap = ParadoxExpressionManager.getChildOccurrenceMap(memberElement, parentConfigs)
 
         context.isKey = true
-        context.configGroup = configGroup
         context.scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
 
         configs.groupBy { it.key }.forEach { (_, configsWithSameKey) ->
@@ -133,9 +132,6 @@ object ParadoxCompletionManager {
                 }
             }
         }
-
-        context.config = null
-        context.configs = emptyList()
     }
 
     fun addValueCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
@@ -144,7 +140,6 @@ object ParadoxCompletionManager {
 
         if (!configContext.isRootOrMember()) return
 
-        val configGroup = configContext.configGroup
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
         val parentConfigs = ParadoxExpressionManager.getConfigs(memberElement, matchOptions = matchOptions)
@@ -160,7 +155,6 @@ object ParadoxCompletionManager {
         val occurrenceMap = ParadoxExpressionManager.getChildOccurrenceMap(memberElement, parentConfigs)
 
         context.isKey = false
-        context.configGroup = configGroup
         context.scopeContext = ParadoxScopeManager.getSwitchedScopeContext(memberElement)
 
         for (config in configs) {
@@ -177,8 +171,6 @@ object ParadoxCompletionManager {
                 completeScriptExpression(context, result)
             }
         }
-
-        context.config = null
     }
 
     fun addPropertyValueCompletions(element: ParadoxScriptStringExpressionElement, propertyElement: ParadoxScriptProperty, context: ProcessingContext, result: CompletionResultSet) {
@@ -187,12 +179,10 @@ object ParadoxCompletionManager {
 
         if (!configContext.isRootOrMember()) return
 
-        val configGroup = configContext.configGroup
         val configs = configContext.getConfigs()
         if (configs.isEmpty()) return
 
         context.isKey = false
-        context.configGroup = configGroup
         context.scopeContext = ParadoxScopeManager.getSwitchedScopeContext(propertyElement)
 
         for (config in configs) {
@@ -201,8 +191,17 @@ object ParadoxCompletionManager {
                 completeScriptExpression(context, result)
             }
         }
+    }
 
-        context.config = null
+    fun addColumnCompletions(context: ProcessingContext, result: CompletionResultSet) {
+        val file = context.parameters?.originalFile ?: return
+        if (file !is ParadoxCsvFile) return
+        val config = ParadoxCsvManager.getRowConfig(file)
+        if (config == null) return
+
+        context.config = config
+
+        completeCsvExpression(context, result)
     }
 
     private fun shouldComplete(config: CwtPropertyConfig, occurrenceMap: Map<CwtDataExpression, Occurrence>): Boolean {
@@ -406,8 +405,12 @@ object ParadoxCompletionManager {
 
     fun completeLocalisationExpression(context: ProcessingContext, result: CompletionResultSet) {
         ProgressManager.checkCanceled()
-
         ParadoxLocalisationExpressionSupport.complete(context, result)
+    }
+
+    fun completeCsvExpression(context: ProcessingContext, result: CompletionResultSet) {
+        ProgressManager.checkCanceled()
+        ParadoxCsvExpressionSupport.complete(context, result)
     }
 
     fun completeLocalisation(context: ProcessingContext, result: CompletionResultSet) {

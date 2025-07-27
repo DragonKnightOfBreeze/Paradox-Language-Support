@@ -107,7 +107,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
     }
 
     object Keys : KeyRegistry() {
-        val nodeData by createKey<StellarisTechnologyData>(this)
+        val nodeData by createKey<StellarisTechnologyData>(Keys)
     }
 
     private val _colorManager = ColorManager()

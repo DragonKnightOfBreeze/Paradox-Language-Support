@@ -35,7 +35,6 @@ var ProcessingContext.scopeGroupName: String? by createKey(PlsProcessingContextK
 var ProcessingContext.isInt: Boolean? by createKey(PlsProcessingContextKeys)
 var ProcessingContext.prefix: String? by createKey(PlsProcessingContextKeys)
 var ProcessingContext.expressionTailText: String? by createKey(PlsProcessingContextKeys)
-var ProcessingContext.dataSourceNodeToCheck: ParadoxComplexExpressionNode? by createKey(PlsProcessingContextKeys)
 var ProcessingContext.contextKey: String? by createKey(PlsProcessingContextKeys)
 var ProcessingContext.argumentNames: MutableSet<String>? by createKey(PlsProcessingContextKeys)
 var ProcessingContext.node: ParadoxComplexExpressionNode? by createKey(PlsProcessingContextKeys)

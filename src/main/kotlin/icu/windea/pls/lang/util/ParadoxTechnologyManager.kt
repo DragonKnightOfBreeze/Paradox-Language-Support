@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.lang.util
 
 import com.intellij.openapi.progress.*
@@ -24,9 +26,9 @@ import icu.windea.pls.script.psi.*
 
 object ParadoxTechnologyManager {
     object Keys : KeyRegistry() {
-        val cachedPrerequisites by createKey<CachedValue<Set<String>>>(this)
-        val technologyAllAttributes by createKey<Set<String>>(this)
-        val technologyAttributes by createKey<Set<String>>(this)
+        val cachedPrerequisites by createKey<CachedValue<Set<String>>>(Keys)
+        val technologyAllAttributes by createKey<Set<String>>(Keys)
+        val technologyAttributes by createKey<Set<String>>(Keys)
     }
 
     fun getTechnologies(selector: ChainedParadoxSelector<ParadoxScriptDefinitionElement>): Set<ParadoxScriptDefinitionElement> {

@@ -35,6 +35,7 @@ import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
+import icu.windea.pls.model.injection.ParadoxParameterValueInjectionInfo
 import icu.windea.pls.script.codeStyle.*
 import icu.windea.pls.script.injection.*
 import icu.windea.pls.script.psi.*
@@ -42,8 +43,9 @@ import java.util.*
 
 object ParadoxParameterManager {
     object Keys : KeyRegistry() {
-        //val inferredContextConfigsFromConfig by createKey<List<CwtMemberConfig<*>>>(this)
-        val inferredContextConfigsFromUsages by createKey<List<CwtMemberConfig<*>>>(this)
+        val cachedParameterContextInfo by createKey<CachedValue<ParadoxParameterContextInfo>>(Keys)
+        val inferredContextConfigsFromUsages by createKey<List<CwtMemberConfig<*>>>(Keys)
+        val parameterValueInjectionInfos by createKey<List<ParadoxParameterValueInjectionInfo>>(Keys)
     }
 
     /**
@@ -120,7 +122,7 @@ object ParadoxParameterManager {
      * 这个方法不会判断[element]是否是合法的参数上下文，如果需要，考虑使用[ParadoxParameterSupport.getContextInfo]。
      */
     fun getContextInfo(element: ParadoxScriptDefinitionElement): ParadoxParameterContextInfo? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedParameterContextInfo) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedParameterContextInfo) {
             val value = doGetContextInfo(element)
             CachedValueProvider.Result(value, element)
         }
@@ -399,7 +401,7 @@ object ParadoxParameterManager {
         val host = InjectedLanguageManager.getInstance(injectedFile.project).getInjectionHost(injectedFile)
         if (host == null) return null
 
-        val injectionInfos = host.getUserData(PlsKeys.parameterValueInjectionInfos)
+        val injectionInfos = host.getUserData(Keys.parameterValueInjectionInfos)
         if (injectionInfos.isNullOrEmpty()) return null
         val injectionInfo = when {
             host is ParadoxScriptStringExpressionElement -> {

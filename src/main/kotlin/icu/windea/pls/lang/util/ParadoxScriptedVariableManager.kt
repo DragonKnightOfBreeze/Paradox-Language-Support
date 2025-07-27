@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.lang.util
 
 import com.intellij.lang.*
@@ -23,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
  */
 object ParadoxScriptedVariableManager {
     object Keys : KeyRegistry() {
-        val localScriptedVariable by createKey<CachedValue<List<SmartPsiElementPointer<ParadoxScriptScriptedVariable>>>>(this)
+        val localScriptedVariable by createKey<CachedValue<List<SmartPsiElementPointer<ParadoxScriptScriptedVariable>>>>(Keys)
     }
 
     fun getLocalScriptedVariables(file: ParadoxScriptFile): List<SmartPsiElementPointer<ParadoxScriptScriptedVariable>> {

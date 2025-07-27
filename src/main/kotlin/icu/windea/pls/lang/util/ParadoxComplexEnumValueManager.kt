@@ -6,13 +6,14 @@ import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import com.intellij.psi.util.parents
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.search.*
@@ -21,11 +22,12 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptProperty
-import icu.windea.pls.script.psi.ParadoxScriptValue
-import icu.windea.pls.script.psi.isBlockMember
 
 object ParadoxComplexEnumValueManager {
+    object Keys : KeyRegistry() {
+        val cachedComplexEnumValueInfo by createKey<CachedValue<ParadoxComplexEnumValueIndexInfo>>(Keys)
+    }
+
     fun getInfo(element: ParadoxComplexEnumValueElement): ParadoxComplexEnumValueIndexInfo {
         return ParadoxComplexEnumValueIndexInfo(element.name, element.enumName, element.readWriteAccess, element.startOffset, element.gameType)
     }
@@ -36,7 +38,7 @@ object ParadoxComplexEnumValueManager {
 
     private fun doGetInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueIndexInfo? {
         //invalidated on file modification
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedComplexEnumValueInfo) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
             ProgressManager.checkCanceled()
             val file = element.containingFile
             val value = doGetInfo(element, file)
@@ -63,11 +65,7 @@ object ParadoxComplexEnumValueManager {
 
     //NOTE 这里匹配时并不兼容向下内联的情况
 
-    fun getMatchedComplexEnumConfig(
-        element: ParadoxScriptStringExpressionElement,
-        configGroup: CwtConfigGroup,
-        path: ParadoxPath
-    ): CwtComplexEnumConfig? {
+    fun getMatchedComplexEnumConfig(element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, path: ParadoxPath): CwtComplexEnumConfig? {
         for (complexEnumConfig in configGroup.complexEnums.values) {
             if (!matchesComplexEnum(element, complexEnumConfig, path)) continue
             return complexEnumConfig
@@ -75,11 +73,7 @@ object ParadoxComplexEnumValueManager {
         return null
     }
 
-    fun matchesComplexEnum(
-        element: ParadoxScriptStringExpressionElement,
-        complexEnumConfig: CwtComplexEnumConfig,
-        path: ParadoxPath?
-    ): Boolean {
+    fun matchesComplexEnum(element: ParadoxScriptStringExpressionElement, complexEnumConfig: CwtComplexEnumConfig, path: ParadoxPath?): Boolean {
         if (path != null) {
             if (!CwtConfigManager.matchesFilePathPattern(complexEnumConfig, path)) return false
         }

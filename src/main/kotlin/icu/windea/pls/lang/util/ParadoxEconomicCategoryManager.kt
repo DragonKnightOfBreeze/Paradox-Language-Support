@@ -21,8 +21,8 @@ import java.lang.invoke.*
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxEconomicCategoryManager {
     object Keys : KeyRegistry() {
-        val cachedEconomicCategoryInfo by createKey<CachedValue<ParadoxEconomicCategoryInfo>>(this)
-        val modifierCategories by createKey<Set<String>>(this)
+        val cachedEconomicCategoryInfo by createKey<CachedValue<ParadoxEconomicCategoryInfo>>(Keys)
+        val modifierCategories by createKey<Set<String>>(Keys)
     }
 
     private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())

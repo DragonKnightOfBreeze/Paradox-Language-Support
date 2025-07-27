@@ -23,7 +23,7 @@ import java.util.*
 
 object ParadoxFileManager {
     object Keys : KeyRegistry() {
-        val fileExtensions by createKey<Set<String>>(this)
+        val fileExtensions by createKey<Set<String>>(Keys)
     }
 
     private val LOGGER = logger<ParadoxFileManager>()

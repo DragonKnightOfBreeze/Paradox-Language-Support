@@ -95,6 +95,6 @@ class ParadoxScriptAnnotator : Annotator {
     }
 
     private fun annotateExpression(element: ParadoxScriptExpressionElement, holder: AnnotationHolder, config: CwtMemberConfig<*>) {
-        ParadoxExpressionManager.annotateScriptExpression(element, null, config, holder)
+        ParadoxExpressionManager.annotateScriptExpression(element, null, holder, config)
     }
 }

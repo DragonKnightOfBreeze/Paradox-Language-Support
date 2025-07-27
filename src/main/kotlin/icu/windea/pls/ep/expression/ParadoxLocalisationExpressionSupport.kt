@@ -62,24 +62,22 @@ interface ParadoxLocalisationExpressionSupport {
 
         fun resolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): PsiElement? {
             val gameType = selectGameType(element)
-            EP_NAME.extensionList.forEach f@{ ep ->
-                if (!ep.supports(element)) return@f
-                if (!gameType.supportsByAnnotation(ep)) return@f
+            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+                if (!ep.supports(element)) return@f null
+                if (!gameType.supportsByAnnotation(ep)) return@f null
                 val r = ep.resolve(element, rangeInElement, expressionText)
-                if (r != null) return r
+                r
             }
-            return null
         }
 
         fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Collection<PsiElement> {
             val gameType = selectGameType(element)
-            EP_NAME.extensionList.forEach f@{ ep ->
-                if (!ep.supports(element)) return@f
-                if (!gameType.supportsByAnnotation(ep)) return@f
+            return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
+                if (!ep.supports(element)) return@f null
+                if (!gameType.supportsByAnnotation(ep)) return@f null
                 val r = ep.multiResolve(element, rangeInElement, expressionText).orNull()
-                if (r != null) return r
-            }
-            return emptySet()
+                r
+            }.orEmpty()
         }
 
         fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {

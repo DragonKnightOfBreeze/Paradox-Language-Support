@@ -50,7 +50,7 @@ interface ParadoxScriptExpressionMatcher {
             configExpression: CwtDataExpression,
             config: CwtConfig<*>?,
             configGroup: CwtConfigGroup,
-            options: Int
+            options: Int = ParadoxExpressionMatcher.Options.Default
         ): ParadoxExpressionMatcher.Result {
             EP_NAME.extensionList.forEach f@{ ep ->
                 val r = ep.matches(element, expression, configExpression, config, configGroup, options)

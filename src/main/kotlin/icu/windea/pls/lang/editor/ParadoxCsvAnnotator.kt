@@ -13,6 +13,14 @@ class ParadoxCsvAnnotator : Annotator {
     }
 
     private fun annotateExpression(element: ParadoxCsvExpressionElement, holder: AnnotationHolder) {
-        ParadoxExpressionManager.annotateCsvExpression(element, null, holder)
+        //不高亮表格头中的列
+        if(element is ParadoxCsvColumn && element.isHeaderColumn()) return
+
+        val columnConfig = when (element) {
+            is ParadoxCsvColumn -> ParadoxCsvManager.getColumnConfig(element)
+            else -> null
+        }
+        val config = columnConfig?.valueConfig ?: return
+        ParadoxExpressionManager.annotateCsvExpression(element, null, holder, config)
     }
 }

@@ -72,7 +72,7 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
     }
 
     private fun doGetColorFromCache(element: ParadoxScriptBlock): Color? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColor) {
+        return CachedValuesManager.getCachedValue(element, ParadoxColorManager.Keys.cachedColor) {
             val value = doGetColor(element)
             value.withDependencyItems(element)
         }
@@ -141,7 +141,7 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
     }
 
     private fun doGetColorFromCache(element: ParadoxScriptColor): Color? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedColor) {
+        return CachedValuesManager.getCachedValue(element, ParadoxColorManager.Keys.cachedColor) {
             val value = doGetColor(element)
             value.withDependencyItems(element)
         }
@@ -170,6 +170,4 @@ class ParadoxScriptColorColorSupport : ParadoxColorSupport {
         CommandProcessor.getInstance().executeCommand(project, command, PlsBundle.message("script.command.changeColor.name"), null, document)
         documentManager.doPostponedOperationsAndUnblockDocument(document)
     }
-
-    private fun Number.asFloat() = this.format(-4)
 }

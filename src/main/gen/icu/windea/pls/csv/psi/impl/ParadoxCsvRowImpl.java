@@ -8,20 +8,15 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*;
-import icu.windea.pls.csv.psi.ParadoxCsvRowStub;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.csv.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
-import com.intellij.psi.stubs.IStubElementType;
 
-public class ParadoxCsvRowImpl extends ParadoxCsvStubElementImpl<ParadoxCsvRowStub> implements ParadoxCsvRow {
-
-  public ParadoxCsvRowImpl(@NotNull ParadoxCsvRowStub stub, @NotNull IStubElementType<?, ?> type) {
-    super(stub, type);
-  }
+public class ParadoxCsvRowImpl extends ASTWrapperPsiElement implements ParadoxCsvRow {
 
   public ParadoxCsvRowImpl(@NotNull ASTNode node) {
     super(node);
@@ -46,11 +41,6 @@ public class ParadoxCsvRowImpl extends ParadoxCsvStubElementImpl<ParadoxCsvRowSt
   @Override
   public @NotNull Icon getIcon(@IconFlags int flags) {
     return ParadoxCsvPsiImplUtil.getIcon(this, flags);
-  }
-
-  @Override
-  public @NotNull List<@NotNull ParadoxCsvColumn> getComponents() {
-    return ParadoxCsvPsiImplUtil.getComponents(this);
   }
 
   @Override

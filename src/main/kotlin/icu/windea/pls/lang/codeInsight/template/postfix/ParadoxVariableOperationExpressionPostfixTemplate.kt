@@ -8,6 +8,7 @@ import com.intellij.psi.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
@@ -39,7 +40,7 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
         val configsToMatch = configs.flatMapTo(mutableListOf()) { it.configs.orEmpty() }
         val matched = configsToMatch.find p@{ config ->
             if (config !is CwtPropertyConfig) return@p false
-            ParadoxExpressionMatcher.matches(context, expression, config.keyExpression, config, configGroup).get()
+            ParadoxScriptExpressionMatcher.matches(context, expression, config.keyExpression, config, configGroup).get()
         }
         if (matched == null) return emptyList()
         return stringElement.singleton().list()

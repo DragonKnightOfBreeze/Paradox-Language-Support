@@ -38,8 +38,8 @@ object ParadoxExpressionMatcher {
         /** 对于[Result.LazyScopeAwareMatch]，匹配结果直接返回true。 */
         const val SkipScope = 0x04
 
-        /** 对于最终匹配得到的那个结果，不需要再次判断是否精确匹配。 */
-        const val Fast = 0x08
+        ///** 对于最终匹配得到的那个结果，不需要再次判断是否精确匹配。 */
+        //const val Fast = 0x08
         /** 允许匹配定义自身。（当要匹配表达式的是一个键时） */
         const val AcceptDefinition = 0x10
     }
@@ -123,117 +123,104 @@ object ParadoxExpressionMatcher {
 
     //兼容scriptedVariableReference inlineMath parameter
 
-    fun matches(
-        element: PsiElement,
-        expression: ParadoxScriptExpression,
-        configExpression: CwtDataExpression,
-        config: CwtConfig<*>?,
-        configGroup: CwtConfigGroup,
-        options: Int = Options.Default
-    ): Result {
-        return ParadoxScriptExpressionMatcher.matches(element, expression, configExpression, config, configGroup, options)
+    fun getCachedMatchResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
+        ProgressManager.checkCanceled()
+        if (PlsCoreManager.processMergedIndex.get() == true) return Result.ExactMatch // indexing -> should not visit indices -> treat as exact match
+        val psiFile = element.containingFile ?: return Result.NotMatch
+        val project = psiFile.project
+        val rootFile = selectRootFile(psiFile) ?: return Result.NotMatch
+        val configGroup = PlsFacade.getConfigGroup(project, selectGameType(rootFile))
+        val cache = configGroup.configMatchResultCache.value.get(rootFile)
+        return cache.get(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
     }
 
-    object Impls {
-        fun getCachedMatchResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
-            ProgressManager.checkCanceled()
-            if (PlsCoreManager.processMergedIndex.get() == true) return Result.ExactMatch // indexing -> should not visit indices -> treat as exact match
-            val psiFile = element.containingFile ?: return Result.NotMatch
-            val project = psiFile.project
-            val rootFile = selectRootFile(psiFile) ?: return Result.NotMatch
-            val configGroup = PlsFacade.getConfigGroup(project, selectGameType(rootFile))
-            val cache = configGroup.configMatchResultCache.value.get(rootFile)
-            return cache.get(cacheKey) { Result.LazyIndexAwareMatch(predicate) }
+    fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxScriptExpression, project: Project): Result {
+        val name = expression.value
+        val cacheKey = "l#$name"
+        return getCachedMatchResult(element, cacheKey) {
+            val selector = selector(project, element).localisation()
+            ParadoxLocalisationSearch.search(name, selector).findFirst() != null
         }
+    }
 
-        fun getLocalisationMatchResult(element: PsiElement, expression: ParadoxScriptExpression, project: Project): Result {
-            val name = expression.value
-            val cacheKey = "l#$name"
+    fun getSyncedLocalisationMatchResult(element: PsiElement, expression: ParadoxScriptExpression, project: Project): Result {
+        val name = expression.value
+        val cacheKey = "ls#$name"
+        return getCachedMatchResult(element, cacheKey) {
+            val selector = selector(project, element).localisation()
+            ParadoxSyncedLocalisationSearch.search(name, selector).findFirst() != null
+        }
+    }
+
+    fun getDefinitionMatchResult(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, project: Project): Result {
+        val name = expression.value
+        val typeExpression = configExpression.value ?: return Result.NotMatch //invalid cwt config
+        val cacheKey = "d#${typeExpression}#${name}"
+        return getCachedMatchResult(element, cacheKey) {
+            val selector = selector(project, element).definition()
+            ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null
+        }
+    }
+
+    fun getPathReferenceMatchResult(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, project: Project): Result {
+        val pathReference = expression.value.normalizePath()
+        val cacheKey = "p#${pathReference}#${configExpression}"
+        return getCachedMatchResult(element, cacheKey) {
+            val selector = selector(project, element).file()
+            ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null
+        }
+    }
+
+    fun getComplexEnumValueMatchResult(element: PsiElement, name: String, enumName: String, complexEnumConfig: CwtComplexEnumConfig, project: Project): Result {
+        val searchScope = complexEnumConfig.searchScopeType
+        if (searchScope == null) {
+            val cacheKey = "ce#${enumName}#${name}"
             return getCachedMatchResult(element, cacheKey) {
-                val selector = selector(project, element).localisation()
-                ParadoxLocalisationSearch.search(name, selector).findFirst() != null
-            }
-        }
-
-        fun getSyncedLocalisationMatchResult(element: PsiElement, expression: ParadoxScriptExpression, project: Project): Result {
-            val name = expression.value
-            val cacheKey = "ls#$name"
-            return getCachedMatchResult(element, cacheKey) {
-                val selector = selector(project, element).localisation()
-                ParadoxSyncedLocalisationSearch.search(name, selector).findFirst() != null
-            }
-        }
-
-        fun getDefinitionMatchResult(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, project: Project): Result {
-            val name = expression.value
-            val typeExpression = configExpression.value ?: return Result.NotMatch //invalid cwt config
-            val cacheKey = "d#${typeExpression}#${name}"
-            return getCachedMatchResult(element, cacheKey) {
-                val selector = selector(project, element).definition()
-                ParadoxDefinitionSearch.search(name, typeExpression, selector).findFirst() != null
-            }
-        }
-
-        fun getPathReferenceMatchResult(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, project: Project): Result {
-            val pathReference = expression.value.normalizePath()
-            val cacheKey = "p#${pathReference}#${configExpression}"
-            return getCachedMatchResult(element, cacheKey) {
-                val selector = selector(project, element).file()
-                ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null
-            }
-        }
-
-        fun getComplexEnumValueMatchResult(element: PsiElement, name: String, enumName: String, complexEnumConfig: CwtComplexEnumConfig, project: Project): Result {
-            val searchScope = complexEnumConfig.searchScopeType
-            if (searchScope == null) {
-                val cacheKey = "ce#${enumName}#${name}"
-                return getCachedMatchResult(element, cacheKey) {
-                    val selector = selector(project, element).complexEnumValue()
-                    ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
-                }
-            }
-            return Result.LazyIndexAwareMatch {
-                val selector = selector(project, element).complexEnumValue().withSearchScopeType(searchScope)
+                val selector = selector(project, element).complexEnumValue()
                 ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
             }
         }
-
-        fun getScopeFieldMatchResult(element: PsiElement, scopeFieldExpression: ParadoxScopeFieldExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
-            when (configExpression.type) {
-                CwtDataTypes.ScopeField -> return Result.ExactMatch
-                CwtDataTypes.Scope -> {
-                    val expectedScope = configExpression.value ?: return Result.ExactMatch
-                    return Result.LazyScopeAwareMatch p@{
-                        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, configExpression)
-                        ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)
-                    }
-                }
-                CwtDataTypes.ScopeGroup -> {
-                    val expectedScopeGroup = configExpression.value ?: return Result.ExactMatch
-                    return Result.LazyScopeAwareMatch p@{
-                        val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, configExpression)
-                        ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)
-                    }
-                }
-                else -> return Result.NotMatch
-            }
+        return Result.LazyIndexAwareMatch {
+            val selector = selector(project, element).complexEnumValue().withSearchScopeType(searchScope)
+            ParadoxComplexEnumValueSearch.search(name, enumName, selector).findFirst() != null
         }
+    }
 
-        fun getModifierMatchResult(element: PsiElement, expression: ParadoxScriptExpression, configGroup: CwtConfigGroup): Result {
-            val name = expression.value
-            val cacheKey = "m#${name}"
-            return getCachedMatchResult(element, cacheKey) {
-                ParadoxModifierManager.matchesModifier(name, element, configGroup)
+    fun getScopeFieldMatchResult(element: PsiElement, scopeFieldExpression: ParadoxScopeFieldExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
+        when (configExpression.type) {
+            CwtDataTypes.ScopeField -> return Result.ExactMatch
+            CwtDataTypes.Scope -> {
+                val expectedScope = configExpression.value ?: return Result.ExactMatch
+                return Result.LazyScopeAwareMatch p@{
+                    val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, configExpression)
+                    ParadoxScopeManager.matchesScope(scopeContext, expectedScope, configGroup)
+                }
             }
+            CwtDataTypes.ScopeGroup -> {
+                val expectedScopeGroup = configExpression.value ?: return Result.ExactMatch
+                return Result.LazyScopeAwareMatch p@{
+                    val scopeContext = ParadoxScopeManager.getSwitchedScopeContext(element, scopeFieldExpression, configExpression)
+                    ParadoxScopeManager.matchesScopeGroup(scopeContext, expectedScopeGroup, configGroup)
+                }
+            }
+            else -> return Result.NotMatch
         }
+    }
 
-        fun getTemplateMatchResult(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
-            val exp = expression.value
-            val template = configExpression.expressionString
-            val cacheKey = "t#${template}#${exp}"
-            return getCachedMatchResult(element, cacheKey) {
-                CwtTemplateExpressionManager.matches(element, exp, CwtTemplateExpression.resolve(template), configGroup)
-            }
+    fun getModifierMatchResult(element: PsiElement, expression: ParadoxScriptExpression, configGroup: CwtConfigGroup): Result {
+        val name = expression.value
+        val cacheKey = "m#${name}"
+        return getCachedMatchResult(element, cacheKey) {
+            ParadoxModifierManager.matchesModifier(name, element, configGroup)
+        }
+    }
+
+    fun getTemplateMatchResult(element: PsiElement, expression: ParadoxScriptExpression, configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Result {
+        val exp = expression.value
+        val template = configExpression.expressionString
+        val cacheKey = "t#${template}#${exp}"
+        return getCachedMatchResult(element, cacheKey) {
+            CwtTemplateExpressionManager.matches(element, exp, CwtTemplateExpression.resolve(template), configGroup)
         }
     }
 }

@@ -23,7 +23,7 @@ interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, Cwt
     override val pathExtension: String?
     override val pathStrict: Boolean
     override val pathPatterns: Set<String>
-    val columnConfigs: Map<String, CwtMemberConfig<*>>
+    val columnConfigs: Map<String, CwtPropertyConfig>
 
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig): CwtRowConfig? = doResolve(config)
@@ -69,7 +69,7 @@ private class CwtRowConfigImpl(
     override val pathExtension: String?,
     override val pathStrict: Boolean,
     override val pathPatterns: Set<String>,
-    override val columnConfigs: Map<String, CwtMemberConfig<*>>
+    override val columnConfigs: Map<String, CwtPropertyConfig>
 ) : UserDataHolderBase(), CwtRowConfig {
     override fun toString(): String {
         return "CwtRowConfigImpl(name='$name')"

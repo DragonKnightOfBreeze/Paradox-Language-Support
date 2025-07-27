@@ -12,6 +12,7 @@ import icu.windea.pls.lang.codeInsight.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Result
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -116,27 +117,27 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (!expression.value.isParameterAwareIdentifier('.', '-', '\'')) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
-                ParadoxExpressionMatcher.Impls.getLocalisationMatchResult(element, expression, project)
+                ParadoxExpressionMatcher.getLocalisationMatchResult(element, expression, project)
             }
             dataType == CwtDataTypes.SyncedLocalisation -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (!expression.value.isParameterAwareIdentifier('.', '-', '\'')) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
-                ParadoxExpressionMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
+                ParadoxExpressionMatcher.getSyncedLocalisationMatchResult(element, expression, project)
             }
             dataType == CwtDataTypes.InlineLocalisation -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.quoted) return Result.FallbackMatch //"quoted_string" -> any string
                 if (!expression.value.isParameterAwareIdentifier('.', '-', '\'')) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
-                ParadoxExpressionMatcher.Impls.getSyncedLocalisationMatchResult(element, expression, project)
+                ParadoxExpressionMatcher.getSyncedLocalisationMatchResult(element, expression, project)
             }
             dataType == CwtDataTypes.Definition -> {
                 //can be an integer here (e.g., for <technology_tier>)
                 if (!expression.type.isStringType() && expression.type != ParadoxType.Int) return Result.NotMatch
                 if (!expression.value.isParameterAwareIdentifier('.', '-')) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
-                ParadoxExpressionMatcher.Impls.getDefinitionMatchResult(element, expression, configExpression, project)
+                ParadoxExpressionMatcher.getDefinitionMatchResult(element, expression, configExpression, project)
             }
             dataType == CwtDataTypes.AbsoluteFilePath -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
@@ -145,7 +146,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             dataType in CwtDataTypeGroups.PathReference -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
-                ParadoxExpressionMatcher.Impls.getPathReferenceMatchResult(element, expression, configExpression, project)
+                ParadoxExpressionMatcher.getPathReferenceMatchResult(element, expression, configExpression, project)
             }
             dataType == CwtDataTypes.EnumValue -> {
                 if (expression.type.isBlockLikeType()) return Result.NotMatch
@@ -163,7 +164,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (complexEnumConfig != null) {
                     //complexEnumValue的值必须合法
                     if (ParadoxComplexEnumValueManager.getName(expression.value) == null) return Result.NotMatch
-                    return ParadoxExpressionMatcher.Impls.getComplexEnumValueMatchResult(element, name, enumName, complexEnumConfig, project)
+                    return ParadoxExpressionMatcher.getComplexEnumValueMatchResult(element, name, enumName, complexEnumConfig, project)
                 }
                 Result.NotMatch
             }
@@ -184,7 +185,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expression.value, textRange, configGroup)
                 if (scopeFieldExpression == null) return Result.NotMatch
                 if (scopeFieldExpression.getAllErrors(null).isNotEmpty()) return Result.PartialMatch
-                ParadoxExpressionMatcher.Impls.getScopeFieldMatchResult(element, scopeFieldExpression, configExpression, configGroup)
+                ParadoxExpressionMatcher.getScopeFieldMatchResult(element, scopeFieldExpression, configExpression, configGroup)
             }
             dataType in CwtDataTypeGroups.ValueField -> {
                 //也可以是数字，注意：用括号括起的数字（作为scalar）也匹配这个规则
@@ -240,7 +241,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (!expression.value.isParameterAwareIdentifier()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
-                ParadoxExpressionMatcher.Impls.getModifierMatchResult(element, expression, configGroup)
+                ParadoxExpressionMatcher.getModifierMatchResult(element, expression, configGroup)
             }
             dataType == CwtDataTypes.SingleAliasRight -> {
                 Result.NotMatch //不在这里处理
@@ -250,14 +251,14 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 val aliasName = configExpression.value ?: return Result.NotMatch
                 val aliasSubName = ParadoxExpressionManager.getAliasSubName(element, expression.value, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
-                ParadoxExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup)
+                ParadoxScriptExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup, Options.Default)
             }
             dataType == CwtDataTypes.AliasName -> {
                 if (!expression.type.isStringLikeType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
                 val aliasName = configExpression.value ?: return Result.NotMatch
                 val aliasSubName = ParadoxExpressionManager.getAliasSubName(element, expression.value, expression.quoted, aliasName, configGroup, options) ?: return Result.NotMatch
-                ParadoxExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup)
+                ParadoxScriptExpressionMatcher.matches(element, expression, CwtDataExpression.resolve(aliasSubName, true), null, configGroup, Options.Default)
             }
             dataType == CwtDataTypes.AliasMatchLeft -> {
                 return Result.NotMatch //不在这里处理
@@ -311,7 +312,7 @@ class TemplateExpressionParadoxScriptExpressionMatcher : PatternAwareParadoxScri
         if (!expression.type.isStringLikeType()) return Result.NotMatch
         if (expression.isParameterized()) return Result.ParameterizedMatch
         //允许用引号括起
-        return ParadoxExpressionMatcher.Impls.getTemplateMatchResult(element, expression, configExpression, configGroup)
+        return ParadoxExpressionMatcher.getTemplateMatchResult(element, expression, configExpression, configGroup)
     }
 }
 

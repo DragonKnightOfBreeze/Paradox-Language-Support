@@ -13,6 +13,10 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxTextColorManager {
+    object Keys : KeyRegistry() {
+        val cachedTextColorInfo by createKey<CachedValue<ParadoxTextColorInfo>>(Keys)
+    }
+
     fun getId(element: PsiElement): String? {
         return when (element) {
             is ParadoxLocalisationColorfulText -> element.idElement?.text
@@ -61,7 +65,7 @@ object ParadoxTextColorManager {
 
     private fun doGetInfoFromCache(definition: ParadoxScriptDefinitionElement): ParadoxTextColorInfo? {
         if (definition !is ParadoxScriptProperty) return null
-        return CachedValuesManager.getCachedValue(definition, PlsKeys.cachedTextColorInfo) {
+        return CachedValuesManager.getCachedValue(definition, Keys.cachedTextColorInfo) {
             val value = doGetInfo(definition)
             value.withDependencyItems(definition)
         }

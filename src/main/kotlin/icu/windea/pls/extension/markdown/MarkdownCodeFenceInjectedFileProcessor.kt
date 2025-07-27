@@ -13,7 +13,7 @@ import icu.windea.pls.lang.*
 class MarkdownCodeFenceInjectedFileProcessor : InjectedFileProcessor {
     override fun process(file: PsiFile): Boolean {
         val element = PlsMarkdownManager.getCodeFenceFromInjectedFile(file) ?: return false
-        val injectedFileInfo = PlsMarkdownManager.getInjectFileInfoFromInjectedFile(file, element)
+        val injectedFileInfo = PlsMarkdownManager.getInjectFileInfoFromInjectedFile(element)
         file.virtualFile.tryPutUserData(PlsKeys.injectedFileInfo, injectedFileInfo)
         return true
     }

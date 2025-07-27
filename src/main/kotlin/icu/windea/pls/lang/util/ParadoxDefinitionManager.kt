@@ -15,6 +15,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.search.selector.*
@@ -33,6 +34,15 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
  * @see ParadoxDefinitionInfo
  */
 object ParadoxDefinitionManager {
+    object Keys: KeyRegistry() {
+        val cachedDefinitionInfo by createKey<CachedValue<ParadoxDefinitionInfo>>(Keys)
+        val cachedDefinitionPrimaryLocalisationKey by createKey<CachedValue<String>>(Keys)
+        val cachedDefinitionPrimaryLocalisation by createKey<CachedValue<ParadoxLocalisationProperty>>(Keys)
+        val cachedDefinitionPrimaryLocalisations by createKey<CachedValue<Set<ParadoxLocalisationProperty>>>(Keys)
+        val cachedDefinitionLocalizedNames by createKey<CachedValue<Set<String>>>(Keys)
+        val cachedDefinitionPrimaryImage by createKey<CachedValue<PsiFile>>(Keys)
+    }
+
     //get info & match methods
 
     fun getInfo(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
@@ -42,7 +52,7 @@ object ParadoxDefinitionManager {
 
     private fun doGetInfoFromCache(element: ParadoxScriptDefinitionElement): ParadoxDefinitionInfo? {
         //invalidated on file modification
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionInfo) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInfo) {
             ProgressManager.checkCanceled()
             val file = element.containingFile
             val value = doGetInfo(element, file)
@@ -348,7 +358,7 @@ object ParadoxDefinitionManager {
             //匹配值
             propertyConfig.stringValue != null -> {
                 val expression = ParadoxScriptExpression.resolve(propValue, matchOptions)
-                return ParadoxExpressionMatcher.matches(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchOptions).get(matchOptions)
+                return ParadoxScriptExpressionMatcher.matches(propValue, expression, propertyConfig.valueExpression, propertyConfig, configGroup, matchOptions).get(matchOptions)
             }
             //匹配single_alias
             ParadoxExpressionManager.isSingleAliasEntryConfig(propertyConfig) -> {
@@ -386,7 +396,7 @@ object ParadoxDefinitionManager {
             val keyElement = propertyElement.propertyKey
             val expression = ParadoxScriptExpression.resolve(keyElement, matchOptions)
             val propConfigs = propertyConfigs.filter {
-                ParadoxExpressionMatcher.matches(keyElement, expression, it.keyExpression, it, configGroup, matchOptions).get(matchOptions)
+                ParadoxScriptExpressionMatcher.matches(keyElement, expression, it.keyExpression, it, configGroup, matchOptions).get(matchOptions)
             }
 
             //如果没有匹配的规则则忽略
@@ -420,7 +430,7 @@ object ParadoxDefinitionManager {
             val expression = ParadoxScriptExpression.resolve(valueElement, matchOptions)
 
             val matched = valueConfigs.any { valueConfig ->
-                val matched = ParadoxExpressionMatcher.matches(valueElement, expression, valueConfig.valueExpression, valueConfig, configGroup, matchOptions).get(matchOptions)
+                val matched = ParadoxScriptExpressionMatcher.matches(valueElement, expression, valueConfig.valueExpression, valueConfig, configGroup, matchOptions).get(matchOptions)
                 if (matched) occurrenceMap.get(valueConfig.value)?.let { it.actual++ }
                 matched
             }
@@ -595,7 +605,7 @@ object ParadoxDefinitionManager {
     }
 
     private fun doGetPrimaryLocalisationKeyFromCache(element: ParadoxScriptDefinitionElement): String? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisationKey) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryLocalisationKey) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisationKey(element)
             value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker)
@@ -620,7 +630,7 @@ object ParadoxDefinitionManager {
     }
 
     private fun doGetPrimaryLocalisationFromCache(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? =
-        CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisation) {
+        CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryLocalisation) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisation(element)
             value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker, ParadoxModificationTrackers.LocaleTracker)
@@ -644,7 +654,7 @@ object ParadoxDefinitionManager {
     }
 
     private fun doGetPrimaryLocalisationsFromCache(element: ParadoxScriptDefinitionElement): Set<ParadoxLocalisationProperty> {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryLocalisations) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryLocalisations) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisations(element)
             value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker, ParadoxModificationTrackers.LocaleTracker)
@@ -670,7 +680,7 @@ object ParadoxDefinitionManager {
     }
 
     private fun doGetPrimaryImageFromCache(element: ParadoxScriptDefinitionElement): PsiFile? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionPrimaryImage) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryImage) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryImage(element)
             value.withDependencyItems(element, ParadoxModificationTrackers.FileTracker)
@@ -696,7 +706,7 @@ object ParadoxDefinitionManager {
     }
 
     private fun doGetLocalizedNamesFromCache(element: ParadoxScriptDefinitionElement): Set<String> {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedDefinitionLocalizedNames) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionLocalizedNames) {
             ProgressManager.checkCanceled()
             val value = doGetLocalizedNames(element)
             value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker, ParadoxModificationTrackers.LocaleTracker)

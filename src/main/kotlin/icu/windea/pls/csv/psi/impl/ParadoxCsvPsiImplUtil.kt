@@ -25,11 +25,6 @@ object ParadoxCsvPsiImplUtil {
     }
 
     @JvmStatic
-    fun getComponents(element: ParadoxCsvHeader): List<ParadoxCsvColumn> {
-        return element.findChildren<_>()
-    }
-
-    @JvmStatic
     fun toString(element: ParadoxCsvHeader): String {
         return "ParadoxCsvRowHeaderImpl(ROW_HEADER)"
     }
@@ -41,11 +36,6 @@ object ParadoxCsvPsiImplUtil {
     @JvmStatic
     fun getIcon(element: ParadoxCsvRow, @Iconable.IconFlags flags: Int): Icon {
         return PlsIcons.Nodes.CsvRow
-    }
-
-    @JvmStatic
-    fun getComponents(element: ParadoxCsvRow): List<ParadoxCsvColumn> {
-        return element.findChildren<_>()
     }
 
     @JvmStatic

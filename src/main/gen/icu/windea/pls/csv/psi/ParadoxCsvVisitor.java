@@ -1,10 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.csv.psi;
 
-import com.intellij.psi.NavigatablePsiElement;
-import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.PsiElement;
 
 public class ParadoxCsvVisitor extends PsiElementVisitor {
 
@@ -14,20 +13,18 @@ public class ParadoxCsvVisitor extends PsiElementVisitor {
   }
 
   public void visitHeader(@NotNull ParadoxCsvHeader o) {
-    visitNavigatablePsiElement(o);
-    // visitPsiListLikeElement(o);
+    visitRowElement(o);
   }
 
   public void visitRow(@NotNull ParadoxCsvRow o) {
-    visitNavigatablePsiElement(o);
-    // visitPsiListLikeElement(o);
-  }
-
-  public void visitNavigatablePsiElement(@NotNull NavigatablePsiElement o) {
-    visitElement(o);
+    visitRowElement(o);
   }
 
   public void visitExpressionElement(@NotNull ParadoxCsvExpressionElement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitRowElement(@NotNull ParadoxCsvRowElement o) {
     visitPsiElement(o);
   }
 

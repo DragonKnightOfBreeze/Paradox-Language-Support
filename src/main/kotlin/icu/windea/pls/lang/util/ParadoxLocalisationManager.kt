@@ -9,6 +9,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -21,13 +22,17 @@ import icu.windea.pls.script.psi.*
  * 用于处理本地化信息。
  */
 object ParadoxLocalisationManager {
+    object Keys : KeyRegistry() {
+        val cachedLocalisationInfo by createKey<CachedValue<ParadoxLocalisationInfo>>(Keys)
+    }
+
     fun getInfo(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
         //从缓存中获取
         return doGetInfoFromCache(element)
     }
 
     private fun doGetInfoFromCache(element: ParadoxLocalisationProperty): ParadoxLocalisationInfo? {
-        return CachedValuesManager.getCachedValue(element, PlsKeys.cachedLocalisationInfo) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedLocalisationInfo) {
             ProgressManager.checkCanceled()
             val value = doGetInfo(element)
             value.withDependencyItems(element)

@@ -18,4 +18,7 @@ object ParadoxCsvTokenSets {
     val COMMENT_TOKENS = TokenSet.create(COMMENT)
     @JvmField
     val LITERAL_TOKENS = TokenSet.create(COLUMN_TOKEN)
+
+    @JvmField
+    val EXPRESSION_TOKENS = TokenSet.create(COLUMN_TOKEN)
 }
