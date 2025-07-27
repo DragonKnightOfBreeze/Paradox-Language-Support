@@ -10,27 +10,28 @@ import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvDefinitionReferenceLocalizedNameHintsProvider.*
+import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvComplexEnumValueLocalizedNameHintsProvider.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
+import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.constraints.*
-import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * CSV文件中的定义引用的本地化名字的内嵌提示。
+ * 复杂枚举值的本地化名字的内嵌提示（来自扩展的CWT规则）。
  */
-class ParadoxCsvDefinitionReferenceLocalizedNameHintsProvider : ParadoxCsvHintsProvider<Settings>() {
+class ParadoxCsvComplexEnumValueLocalizedNameHintsProvider : ParadoxCsvHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = PlsInternalSettings.textLengthLimit,
         var iconHeightLimit: Int = PlsInternalSettings.iconHeightLimit,
     )
 
-    private val settingsKey = SettingsKey<Settings>("ParadoxCsvDefinitionReferenceLocalizedNameHintsSettingsKey")
+    private val settingsKey = SettingsKey<Settings>("ParadoxCsvComplexEnumValueLocalizedNameHintsSettingsKey")
 
-    override val name: String get() = PlsBundle.message("csv.hints.definitionReferenceLocalizedName")
-    override val description: String get() = PlsBundle.message("csv.hints.definitionReferenceLocalizedName.description")
+    override val name: String get() = PlsBundle.message("csv.hints.complexEnumValueLocalizedName")
+    override val description: String get() = PlsBundle.message("csv.hints.complexEnumValueLocalizedName.description")
     override val key: SettingsKey<Settings> get() = settingsKey
 
     override val renderLocalisation: Boolean get() = true
@@ -50,20 +51,28 @@ class ParadoxCsvDefinitionReferenceLocalizedNameHintsProvider : ParadoxCsvHintsP
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxCsvColumn) return true
         if (element.isHeaderColumn()) return true
-        if (!ParadoxResolveConstraint.Definition.canResolveReference(element)) return true
+        if (!ParadoxResolveConstraint.ComplexEnumValue.canResolveReference(element)) return true
         val reference = element.reference ?: return true
-        if (!ParadoxResolveConstraint.Definition.canResolve(reference)) return true
+        if (!ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference)) return true
         val resolved = reference.resolve() ?: return true
-        if (resolved !is ParadoxScriptDefinitionElement) return true
-        val presentation = doCollect(resolved, editor, settings) ?: return true
+        if (resolved !is ParadoxComplexEnumValueElement) return true
+        val presentation = doCollect(resolved, file, editor, settings) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
         return true
     }
 
-    private fun PresentationFactory.doCollect(element: ParadoxScriptDefinitionElement, editor: Editor, settings: Settings): InlayPresentation? {
-        val primaryLocalisation = ParadoxDefinitionManager.getPrimaryLocalisation(element) ?: return null
-        return ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit).render(primaryLocalisation)
+    private fun PresentationFactory.doCollect(element: ParadoxComplexEnumValueElement, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
+        val name = element.name
+        val enumName = element.enumName
+        val hintElement = getNameLocalisationToUse(name, enumName, file) ?: return null
+        return ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit).render(hintElement)
+    }
+
+    private fun getNameLocalisationToUse(name: String, enumName: String, file: PsiFile): ParadoxLocalisationProperty? {
+        ParadoxComplexEnumValueManager.getNameLocalisationFromExtendedConfig(name, enumName, file)?.let { return it }
+        ParadoxComplexEnumValueManager.getNameLocalisation(name, file, ParadoxLocaleManager.getPreferredLocaleConfig())?.let { return it }
+        return null
     }
 }
