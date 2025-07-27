@@ -8,6 +8,7 @@ import icu.windea.pls.localisation.lexer.*
 import icu.windea.pls.localisation.parser.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptFile
 
 open class ParadoxLocalisationParserDefinition : ParserDefinition {
     override fun getWhitespaceTokens() = ParadoxLocalisationTokenSets.WHITE_SPACES
@@ -16,7 +17,7 @@ open class ParadoxLocalisationParserDefinition : ParserDefinition {
 
     override fun getStringLiteralElements() = ParadoxLocalisationTokenSets.STRING_LITERALS
 
-    override fun getFileNodeType() = ParadoxLocalisationFileStubElementType.INSTANCE
+    override fun getFileNodeType() = ParadoxLocalisationFile.ELEMENT_TYPE
 
     override fun createFile(viewProvider: FileViewProvider) = ParadoxLocalisationFile(viewProvider)
 

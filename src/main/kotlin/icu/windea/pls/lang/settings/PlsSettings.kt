@@ -115,8 +115,8 @@ class PlsSettingsState : BaseState() {
     /**
      * 注意：某些折叠规则总是启用，不可配置。
      *
-     * @property comment 是否允许折叠多行注释。适用于脚本文件和本地化文件。
-     * @property commentByDefault 是否默认折叠多行注释。适用于脚本文件和本地化文件。
+     * @property comment 是否允许折叠多行注释。
+     * @property commentByDefault 是否默认折叠多行注释。
      * @property parameterConditionBlocksByDefault 是否允许折叠参数条件表达式块。
      * @property inlineMathBlocksByDefault 是否默认折叠内联数学表达式块。
      * @property localisationReferencesFully 是否允许折叠本地化引用。完全折叠。

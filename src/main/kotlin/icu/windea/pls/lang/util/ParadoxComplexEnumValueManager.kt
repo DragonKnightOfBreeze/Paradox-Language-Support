@@ -6,6 +6,7 @@ import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import com.intellij.psi.util.parents
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -19,8 +20,10 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
-import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptProperty
+import icu.windea.pls.script.psi.ParadoxScriptValue
+import icu.windea.pls.script.psi.isBlockMember
 
 object ParadoxComplexEnumValueManager {
     fun getInfo(element: ParadoxComplexEnumValueElement): ParadoxComplexEnumValueIndexInfo {
@@ -136,7 +139,7 @@ object ParadoxComplexEnumValueManager {
             if (complexEnumConfig.startFromRoot) {
                 return parentElement == null
             } else {
-                return parentElement != null && parentElement.findParentPropertyOrBockValue() == null
+                return parentElement != null && parentElement.parents(false).find { isPropertyOrBlockValue(it) } == null
             }
         }
         if (parentElement == null) return false
@@ -162,6 +165,10 @@ object ParadoxComplexEnumValueManager {
             }
         }
         return doMatchParent(parentElement, parentConfig, complexEnumConfig)
+    }
+
+    private fun isPropertyOrBlockValue(element1: PsiElement): Boolean {
+        return element1 is ParadoxScriptProperty || (element1 is ParadoxScriptValue && element1.isBlockMember())
     }
 
     private fun doMatchProperty(propertyElement: ParadoxScriptProperty, config: CwtPropertyConfig, complexEnumConfig: CwtComplexEnumConfig): Boolean {
@@ -223,16 +230,6 @@ object ParadoxComplexEnumValueManager {
             if (notMatched) return false
         }
         return true
-    }
-
-    /**
-     * @return [ParadoxScriptProperty] | [ParadoxScriptValue]
-     */
-    private fun PsiElement.findParentPropertyOrBockValue(): PsiElement? {
-        if (language !is ParadoxScriptLanguage) return null
-        return parents(false).find {
-            it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockMember())
-        }
     }
 
     fun getName(expression: String): String? {

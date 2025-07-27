@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.editor.folding
+package icu.windea.pls.lang.folding
 
 import com.intellij.lang.*
 import com.intellij.lang.folding.*

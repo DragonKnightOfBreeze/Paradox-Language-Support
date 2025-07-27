@@ -3,7 +3,6 @@
     <fileType language="PARADOX_CSV" name="Paradox Csv" fieldName="INSTANCE" implementationClass="icu.windea.pls.csv.ParadoxCsvFileType"/>
     <lang.parserDefinition language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.ParadoxCsvParserDefinition"/>
 
-    <stubElementTypeHolder class="icu.windea.pls.csv.psi.ParadoxCsvStubElementTypes" externalIdPrefix="paradoxCsv."/>
     <spellchecker.support language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvSpellchecker"/>
     <lang.syntaxHighlighterFactory language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.csv.editor.ParadoxCsvColorSettingsPage"/>
@@ -14,12 +13,13 @@
     <elementDescriptionProvider implementation="icu.windea.pls.csv.editor.ParadoxCsvFindUsagesProvider"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.csv.editor.ParadoxCsvWordSelectionHandler"/>
     <annotator language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvBasicAnnotator"/>
+    <highlightUsagesHandlerFactory implementation="icu.windea.pls.csv.editor.ParadoxCsvHighlightUsagesHandlerFactory"/>
+    <lang.foldingBuilder language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.folding.ParadoxCsvFoldingBuilder"/>
     <declarationRangeHandler key="icu.windea.pls.csv.psi.ParadoxCsvRow" implementationClass="icu.windea.pls.csv.codeInsight.ParadoxCsvDeclarationRangeHandler"/>
     <codeStyleSettingsProvider implementation="icu.windea.pls.csv.codeStyle.ParadoxCsvCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.csv.codeStyle.ParadoxCsvLanguageCodeStyleSettingsProvider"/>
     <navbar implementation="icu.windea.pls.csv.navigation.ParadoxCsvNavBar"/>
     <lang.psiStructureViewFactory language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.structureView.ParadoxCsvStructureViewFactory"/>
 
-    <highlightUsagesHandlerFactory implementation="icu.windea.pls.csv.editor.ParadoxCsvHighlightUsagesHandlerFactory"/>
   </extensions>
 </idea-plugin>

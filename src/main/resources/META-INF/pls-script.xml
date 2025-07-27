@@ -9,7 +9,7 @@
     <lang.syntaxHighlighterFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.script.editor.ParadoxScriptColorSettingsPage"/>
     <lang.braceMatcher language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptBraceMatcher"/>
-    <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.folding.ParadoxScriptFoldingBuilder"/>
+    <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.folding.ParadoxScriptFoldingBuilder"/>
     <lang.commenter language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptCommenter"/>
     <breadcrumbsInfoProvider implementation="icu.windea.pls.script.editor.ParadoxScriptBreadCrumbsProvider"/>
     <colorProvider implementation="icu.windea.pls.script.editor.ParadoxScriptColorProvider"/>

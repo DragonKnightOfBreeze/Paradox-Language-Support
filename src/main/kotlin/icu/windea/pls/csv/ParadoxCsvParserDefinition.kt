@@ -17,7 +17,7 @@ class ParadoxCsvParserDefinition : ParserDefinition {
 
     override fun getStringLiteralElements() = ParadoxCsvTokenSets.STRING_LITERALS
 
-    override fun getFileNodeType() = ParadoxCsvFileStubElementType.INSTANCE
+    override fun getFileNodeType() = ParadoxCsvFile.ELEMENT_TYPE
 
     override fun createFile(viewProvider: FileViewProvider) = ParadoxCsvFile(viewProvider)
 

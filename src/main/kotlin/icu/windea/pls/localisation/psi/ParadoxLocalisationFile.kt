@@ -2,6 +2,7 @@ package icu.windea.pls.localisation.psi
 
 import com.intellij.extapi.psi.*
 import com.intellij.psi.*
+import com.intellij.psi.tree.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
@@ -12,6 +13,10 @@ class ParadoxLocalisationFile(
     viewProvider: FileViewProvider,
     val gameType: ParadoxGameType? = null
 ) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage) {
+    companion object {
+        val ELEMENT_TYPE: IFileElementType = ParadoxLocalisationFileStubElementType.INSTANCE
+    }
+
     val propertyLists: List<ParadoxLocalisationPropertyList>
         get() = findChildrenByClass(ParadoxLocalisationPropertyList::class.java).toList()
 

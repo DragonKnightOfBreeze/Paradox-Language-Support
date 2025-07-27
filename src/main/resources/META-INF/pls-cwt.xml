@@ -8,7 +8,6 @@
     <lang.syntaxHighlighterFactory language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.cwt.editor.CwtColorSettingsPage"/>
     <lang.braceMatcher language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtBraceMatcher"/>
-    <lang.foldingBuilder language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtFoldingBuilder"/>
     <lang.quoteHandler language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtQuoteHandler"/>
     <lang.findUsagesProvider language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
     <elementDescriptionProvider implementation="icu.windea.pls.cwt.editor.CwtFindUsagesProvider"/>
@@ -17,6 +16,7 @@
     <lang.commenter language="CWT" implementationClass="icu.windea.pls.cwt.editor.CwtCommenter"/>
     <lang.smartEnterProcessor language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.editorActions.smartEnter.CwtSmartEnterProcessor"/>
     <breadcrumbsInfoProvider implementation="icu.windea.pls.cwt.editor.CwtBreadCrumbsProvider"/>
+    <lang.foldingBuilder language="CWT" implementationClass="icu.windea.pls.cwt.folding.CwtFoldingBuilder"/>
     <lang.implementationTextSelectioner language="CWT" implementationClass="icu.windea.pls.cwt.codeInsight.CwtImplementationTextSelectioner"/>
     <liveTemplateContext contextId="CWT"
                          implementation="icu.windea.pls.cwt.codeInsight.template.CwtTemplateContextType$Base"/>

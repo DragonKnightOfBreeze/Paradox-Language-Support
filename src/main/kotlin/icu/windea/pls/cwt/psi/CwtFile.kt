@@ -11,7 +11,7 @@ class CwtFile(
     viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, CwtLanguage) {
     companion object {
-        val ELEMENT_TYPE = IFileElementType("CWT_FILE", CwtLanguage)
+        val ELEMENT_TYPE: IFileElementType = IFileElementType("CWT_FILE", CwtLanguage)
     }
 
     val block get() = findChild<CwtRootBlock>()

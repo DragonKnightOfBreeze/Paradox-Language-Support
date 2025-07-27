@@ -54,6 +54,7 @@ object PlsStringConstants {
     const val header = "(header)"
     const val row = "(row)"
 
+    const val commentFolder = "# ..."
     const val blockFolder = "{...}"
     val parameterConditionFolder = { expression: String -> "[[$expression]...]" }
     const val inlineMathFolder = "@[...]"

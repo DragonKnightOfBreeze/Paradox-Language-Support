@@ -3,6 +3,7 @@ package icu.windea.pls.csv.psi
 import com.intellij.extapi.psi.*
 import com.intellij.navigation.*
 import com.intellij.psi.*
+import com.intellij.psi.tree.*
 import icu.windea.pls.core.*
 import icu.windea.pls.csv.*
 import icu.windea.pls.csv.navigation.*
@@ -14,6 +15,10 @@ class ParadoxCsvFile(
     viewProvider: FileViewProvider,
     val gameType: ParadoxGameType? = null
 ) : PsiFileBase(viewProvider, ParadoxCsvLanguage) {
+    companion object {
+        val ELEMENT_TYPE = IFileElementType("PARADOX_CSV_FILE", ParadoxCsvLanguage)
+    }
+
     val header: ParadoxCsvHeader? get() = findChild<_>()
 
     val rows: List<ParadoxCsvRow> get() = findChildren<_>()

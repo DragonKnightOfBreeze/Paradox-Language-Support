@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.editor.folding
+package icu.windea.pls.lang.folding
 
 import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
@@ -79,7 +79,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
                 var valueRange: TextRange? = null
                 val descriptors = mutableListOf<FoldingDescriptor>()
                 val list = settings.placeholder.split('$')
-                val keys = settings.key?.let { it.singleton().list() } ?: settings.keys ?: emptyList()
+                val keys = settings.key?.singleton()?.list() ?: settings.keys ?: emptyList()
                 for ((index, s) in list.withIndex()) {
                     if (index % 2 == 0) {
                         //'{ k = v }' will be folded by ParadoxScriptFoldingBuilder

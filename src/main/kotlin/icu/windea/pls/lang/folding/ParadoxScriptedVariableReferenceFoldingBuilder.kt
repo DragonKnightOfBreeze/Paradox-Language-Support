@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.editor.folding
+package icu.windea.pls.lang.folding
 
 import com.intellij.lang.*
 import com.intellij.lang.folding.*
@@ -17,14 +17,6 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
         val FOLDING_GROUP = FoldingGroup.newGroup(GROUP_NAME)
     }
 
-    fun getGroupName(): String {
-        return Constants.GROUP_NAME
-    }
-
-    fun getFoldingGroup(): FoldingGroup? {
-        return Constants.FOLDING_GROUP
-    }
-
     override fun getPlaceholderText(node: ASTNode): String {
         return ""
     }
@@ -38,7 +30,7 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
 
         if (quick) return FoldingDescriptor.EMPTY_ARRAY
         if (root.language !is ParadoxBaseLanguage) return FoldingDescriptor.EMPTY_ARRAY
-        val foldingGroup = getFoldingGroup()
+        val foldingGroup = Constants.FOLDING_GROUP
         val allDescriptors = mutableListOf<FoldingDescriptor>()
         root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
