@@ -73,7 +73,7 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {
-        return node.elementType == ParadoxScriptFile.Companion.ELEMENT_TYPE
+        return node.elementType == ParadoxScriptFile.ELEMENT_TYPE
     }
 
     override fun isCustomFoldingCandidate(node: ASTNode): Boolean {

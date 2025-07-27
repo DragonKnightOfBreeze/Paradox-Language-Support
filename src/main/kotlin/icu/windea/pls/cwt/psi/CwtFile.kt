@@ -11,6 +11,7 @@ class CwtFile(
     viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, CwtLanguage) {
     companion object {
+        @JvmField
         val ELEMENT_TYPE: IFileElementType = IFileElementType("CWT_FILE", CwtLanguage)
     }
 

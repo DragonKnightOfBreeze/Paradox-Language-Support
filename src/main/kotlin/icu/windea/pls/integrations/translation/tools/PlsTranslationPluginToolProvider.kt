@@ -61,7 +61,7 @@ class PlsTranslationPluginToolProvider : PlsTranslationToolProvider {
             return Lang.default
         }
         for (code in localeConfig.codes) {
-            val lang = Lang.Companion[code]
+            val lang = Lang[code]
             if (lang.isExplicit() && lang in supportedLangList) return lang
         }
         return Lang.AUTO

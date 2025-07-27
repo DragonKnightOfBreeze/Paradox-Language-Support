@@ -57,7 +57,7 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {
-        return node.elementType == CwtFile.Companion.ELEMENT_TYPE
+        return node.elementType == CwtFile.ELEMENT_TYPE
     }
 
     override fun isCustomFoldingCandidate(node: ASTNode): Boolean {

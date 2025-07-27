@@ -12,6 +12,7 @@ class ParadoxScriptFile(
     viewProvider: FileViewProvider
 ) : PsiFileBase(viewProvider, ParadoxScriptLanguage), ParadoxScriptDefinitionElement {
     companion object {
+        @JvmField
         val ELEMENT_TYPE: IFileElementType = ParadoxScriptFileStubElementType.INSTANCE
     }
 

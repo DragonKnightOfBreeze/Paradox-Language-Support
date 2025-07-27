@@ -9,7 +9,7 @@ object PlsConfigSettingsManager {
         if (callbackLock != null && !callbackLock.add("onConfigDirectoriesChanged")) return
 
         val messageBus = ApplicationManager.getApplication().messageBus
-        messageBus.syncPublisher(ParadoxConfigDirectoriesListener.Companion.TOPIC).onChange()
+        messageBus.syncPublisher(ParadoxConfigDirectoriesListener.TOPIC).onChange()
     }
 
     fun onRemoteConfigDirectoriesChanged(callbackLock: MutableSet<String>? = null) {
@@ -19,7 +19,7 @@ object PlsConfigSettingsManager {
         if (!PlsConfigRepositoryManager.isValidToSync()) return
 
         val messageBus = ApplicationManager.getApplication().messageBus
-        messageBus.syncPublisher(ParadoxConfigRepositoryUrlsListener.Companion.TOPIC).onChange()
+        messageBus.syncPublisher(ParadoxConfigRepositoryUrlsListener.TOPIC).onChange()
 
         //等到从远程仓库异步同步完毕后，再通知规则目录发生更改，从而允许刷新规则分组数据
     }

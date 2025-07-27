@@ -14,6 +14,7 @@ class ParadoxLocalisationFile(
     val gameType: ParadoxGameType? = null
 ) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage) {
     companion object {
+        @JvmField
         val ELEMENT_TYPE: IFileElementType = ParadoxLocalisationFileStubElementType.INSTANCE
     }
 
