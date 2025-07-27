@@ -9,6 +9,8 @@
     <lang.commenter language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvCommenter"/>
     <breadcrumbsInfoProvider implementation="icu.windea.pls.csv.editor.ParadoxCsvBreadCrumbsProvider"/>
     <lang.quoteHandler language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvQuoteHandler"/>
+    <lang.findUsagesProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvFindUsagesProvider"/>
+    <elementDescriptionProvider implementation="icu.windea.pls.csv.editor.ParadoxCsvFindUsagesProvider"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.csv.editor.ParadoxCsvWordSelectionHandler"/>
     <annotator language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvBasicAnnotator"/>
     <highlightUsagesHandlerFactory implementation="icu.windea.pls.csv.editor.ParadoxCsvHighlightUsagesHandlerFactory"/>
