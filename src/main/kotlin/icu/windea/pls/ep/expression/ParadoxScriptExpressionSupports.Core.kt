@@ -107,7 +107,7 @@ class ParadoxScriptInlineLocalisationExpressionSupport : ParadoxScriptExpression
         val configGroup = config.configGroup
         val project = configGroup.project
         val selector = selector(project, element).localisation().contextSensitive(exact).preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig(), exact)
-        return ParadoxSyncedLocalisationSearch.search(expressionText, selector).find()
+        return ParadoxLocalisationSearch.search(expressionText, selector).find()
     }
 
     override fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean?): Collection<PsiElement> {

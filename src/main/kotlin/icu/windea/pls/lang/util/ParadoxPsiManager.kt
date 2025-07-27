@@ -8,6 +8,8 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.csv.ParadoxCsvLanguage
+import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
@@ -151,6 +153,20 @@ object ParadoxPsiManager {
         return file.findElementAt(offset) {
             it.parentOfType<ParadoxScriptExpressionElement>(false)
         }?.takeIf { it.isExpression() }
+    }
+
+    fun findLocalisationExpression(file: PsiFile, offset: Int): ParadoxLocalisationExpressionElement? {
+        if (file.language !is ParadoxLocalisationLanguage) return null
+        return file.findElementAt(offset) {
+            it.parentOfType<ParadoxLocalisationExpressionElement>(false)
+        }?.takeIf { it.isComplexExpression() }
+    }
+
+    fun findCsvExpression(file: PsiFile, offset: Int): ParadoxCsvExpressionElement? {
+        if (file.language !is ParadoxCsvLanguage) return null
+        return file.findElementAt(offset) {
+            it.parentOfType<ParadoxCsvExpressionElement>(false)
+        }
     }
 
     fun findLocalisationColorfulText(file: PsiFile, offset: Int, fromNameToken: Boolean = false): ParadoxLocalisationColorfulText? {

@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.csv.psi.*
 import icu.windea.pls.ep.modifier.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
@@ -28,52 +29,48 @@ class CwtBaseRelatedConfigProvider : CwtRelatedConfigProvider {
         //包括内联规则以及内联后的规则
         //包括其他一些相关的规则
 
+        val element = ParadoxPsiManager.findScriptExpression(file, offset) ?: return emptySet()
+        val orDefault = element is ParadoxScriptPropertyKey
+        val matchOptions = Options.Default or Options.AcceptDefinition
+        val configs = ParadoxExpressionManager.getConfigs(element, orDefault, matchOptions)
+        if (configs.isEmpty()) return emptySet()
         val result = mutableSetOf<CwtConfig<*>>()
         val configGroup = PlsFacade.getConfigGroup(file.project, selectGameType(file))
-
-        run r0@{
-            val element = ParadoxPsiManager.findScriptExpression(file, offset) ?: return@r0
-
-            val orDefault = element is ParadoxScriptPropertyKey
-            val matchOptions = Options.Default or Options.AcceptDefinition
-            val configs = ParadoxExpressionManager.getConfigs(element, orDefault, matchOptions)
-            for (config in configs) {
-                result += config
-                when {
-                    config is CwtPropertyConfig -> {
-                        config.inlineConfig?.also { result += it }
-                        config.aliasConfig?.also { result += it }
-                        config.singleAliasConfig?.also { result += it }
-                    }
-                    config is CwtValueConfig -> {
-                        config.propertyConfig?.singleAliasConfig?.also { result += it }
+        for (config in configs) {
+            result += config
+            when {
+                config is CwtPropertyConfig -> {
+                    config.inlineConfig?.also { result += it }
+                    config.aliasConfig?.also { result += it }
+                    config.singleAliasConfig?.also { result += it }
+                }
+                config is CwtValueConfig -> {
+                    config.propertyConfig?.singleAliasConfig?.also { result += it }
+                }
+            }
+            if (element !is ParadoxScriptStringExpressionElement) continue
+            val name = element.value
+            val configExpression = config.configExpression
+            when {
+                configExpression.type in CwtDataTypeGroups.DynamicValue -> {
+                    val type = configExpression.value
+                    if (type != null) {
+                        configGroup.dynamicValueTypes[type]?.valueConfigMap?.get(name)?.also { result += it }
                     }
                 }
-                if (element !is ParadoxScriptStringExpressionElement) continue
-                val name = element.value
-                val configExpression = config.configExpression
-                when {
-                    configExpression.type in CwtDataTypeGroups.DynamicValue -> {
-                        val type = configExpression.value
-                        if (type != null) {
-                            configGroup.dynamicValueTypes[type]?.valueConfigMap?.get(name)?.also { result += it }
-                        }
+                configExpression.type == CwtDataTypes.EnumValue -> {
+                    val enumName = configExpression.value
+                    if (enumName != null) {
+                        configGroup.enums[enumName]?.valueConfigMap?.get(name)?.also { result += it }
+                        configGroup.complexEnums[enumName]?.also { result += it }
                     }
-                    configExpression.type == CwtDataTypes.EnumValue -> {
-                        val enumName = configExpression.value
-                        if (enumName != null) {
-                            configGroup.enums[enumName]?.valueConfigMap?.get(name)?.also { result += it }
-                            configGroup.complexEnums[enumName]?.also { result += it }
-                        }
-                    }
-                    configExpression.type == CwtDataTypes.Modifier -> {
-                        val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup)
-                        modifierElement?.modifierConfig?.also { result += it }
-                    }
+                }
+                configExpression.type == CwtDataTypes.Modifier -> {
+                    val modifierElement = ParadoxModifierManager.resolveModifier(name, element, configGroup)
+                    modifierElement?.modifierConfig?.also { result += it }
                 }
             }
         }
-
         return result
     }
 }
@@ -213,6 +210,25 @@ class CwtExtendedRelatedConfigProvider : CwtRelatedConfigProvider {
             }
         }
 
+        return result
+    }
+}
+
+class CwtColumnRelatedConfigProvider : CwtRelatedConfigProvider {
+    override fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
+        //适用于CSV文件中的某一列对应的表达式
+
+        val element = ParadoxPsiManager.findCsvExpression(file, offset) ?: return emptySet()
+        if (element !is ParadoxCsvColumn) return emptySet()
+        val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return emptySet()
+
+        val result = mutableSetOf<CwtConfig<*>>()
+        if (element.isHeaderColumn()) {
+            result += columnConfig
+        } else {
+            val config = columnConfig.valueConfig
+            if (config != null) result += config
+        }
         return result
     }
 }

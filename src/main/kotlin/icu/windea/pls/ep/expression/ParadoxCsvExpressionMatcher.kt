@@ -2,28 +2,24 @@ package icu.windea.pls.ep.expression
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
-import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
-import icu.windea.pls.lang.expression.*
+import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
 
 /**
- * 用于匹配脚本表达式与CWT规则表达式。
+ * 用于匹配CSV表达式与CWT规则表达式。
  *
- * @see ParadoxScriptExpressionElement
- * @see ParadoxScriptExpression
+ * @see ParadoxCsvExpressionElement
  * @see CwtDataExpression
  */
-interface ParadoxScriptExpressionMatcher {
+interface ParadoxCsvExpressionMatcher {
     /**
-     * 匹配脚本表达式和CWT规则表达式。
+     * 匹配CSV表达式和CWT规则表达式。
      *
      * @param element 上下文PSI元素。
-     * @param expression 脚本表达式
+     * @param expressionText 表达式文本。
      * @param configExpression CWT规则表达式。
-     * @param config 上下文CWT规则。
      * @param configGroup 规则分组。
      * @return 匹配结果。
      * @see ParadoxExpressionMatcher
@@ -31,29 +27,25 @@ interface ParadoxScriptExpressionMatcher {
      */
     fun matches(
         element: PsiElement,
-        expression: ParadoxScriptExpression,
+        expressionText: String,
         configExpression: CwtDataExpression,
-        config: CwtConfig<*>?,
-        configGroup: CwtConfigGroup,
-        options: Int = ParadoxExpressionMatcher.Options.Default
+        configGroup: CwtConfigGroup
     ): ParadoxExpressionMatcher.Result?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxScriptExpressionMatcher>("icu.windea.pls.scriptExpressionMatcher")
+        val EP_NAME = ExtensionPointName.Companion.create<ParadoxCsvExpressionMatcher>("icu.windea.pls.csvExpressionMatcher")
 
         /**
-         * @see ParadoxScriptExpressionMatcher.matches
+         * @see ParadoxCsvExpressionMatcher.matches
          */
         fun matches(
             element: PsiElement,
-            expression: ParadoxScriptExpression,
+            expressionText: String,
             configExpression: CwtDataExpression,
-            config: CwtConfig<*>?,
             configGroup: CwtConfigGroup,
-            options: Int = ParadoxExpressionMatcher.Options.Default
         ): ParadoxExpressionMatcher.Result {
             EP_NAME.extensionList.forEach f@{ ep ->
-                val r = ep.matches(element, expression, configExpression, config, configGroup, options)
+                val r = ep.matches(element, expressionText, configExpression, configGroup)
                 if (r != null) return r
             }
             return ParadoxExpressionMatcher.Result.NotMatch

@@ -32,10 +32,6 @@ enum class ParadoxType(
         return this == Unknown || this == Int || this == Float || this == Parameter || this == InlineMath
     }
 
-    fun isNumberType(): Boolean {
-        return this == Unknown || this == Int || this == Float || this == Parameter || this == InlineMath
-    }
-
     fun isStringType(): Boolean {
         return this == Unknown || this == String || this == Parameter
     }

@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.lang.codeInsight
 
 import fleet.multiplatform.shims.*

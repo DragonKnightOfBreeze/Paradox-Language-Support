@@ -29,7 +29,6 @@ interface ParadoxScriptExpression {
 
     companion object Resolver {
         val BlockExpression: ParadoxScriptExpression = Impl(PlsStringConstants.blockFolder, ParadoxType.Block, false, false)
-        val UnknownExpression: ParadoxScriptExpression = Impl(PlsStringConstants.unknown, ParadoxType.Unknown, false, false)
 
         fun resolve(value: String, quoted: Boolean, isKey: Boolean? = null): ParadoxScriptExpression {
             return Impl(value, ParadoxTypeResolver.resolve(value), quoted, isKey)

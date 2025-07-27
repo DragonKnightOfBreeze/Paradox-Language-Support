@@ -6,8 +6,6 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.actions.*
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.script.psi.*
 
 /**
  * 导航到对应的规则的动作。
@@ -25,8 +23,8 @@ class GotoRelatedConfigsAction : BaseCodeInsightAction() {
         val project = event.project ?: return
         val editor = event.editor ?: return
         val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        if (file !is ParadoxScriptFile && file !is ParadoxLocalisationFile) return
         if (file.fileInfo == null) return
+        if (file.language !is ParadoxBaseLanguage) return
         presentation.isEnabledAndVisible = true
     }
 }

@@ -117,27 +117,27 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (!expression.value.isParameterAwareIdentifier('.', '-', '\'')) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
-                ParadoxExpressionMatcher.getLocalisationMatchResult(element, expression, project)
+                ParadoxExpressionMatcher.getLocalisationMatchResult(element, expression.value, project)
             }
             dataType == CwtDataTypes.SyncedLocalisation -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (!expression.value.isParameterAwareIdentifier('.', '-', '\'')) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
-                ParadoxExpressionMatcher.getSyncedLocalisationMatchResult(element, expression, project)
+                ParadoxExpressionMatcher.getSyncedLocalisationMatchResult(element, expression.value, project)
             }
             dataType == CwtDataTypes.InlineLocalisation -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.quoted) return Result.FallbackMatch //"quoted_string" -> any string
                 if (!expression.value.isParameterAwareIdentifier('.', '-', '\'')) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
-                ParadoxExpressionMatcher.getSyncedLocalisationMatchResult(element, expression, project)
+                ParadoxExpressionMatcher.getLocalisationMatchResult(element, expression.value, project)
             }
             dataType == CwtDataTypes.Definition -> {
-                //can be an integer here (e.g., for <technology_tier>)
-                if (!expression.type.isStringType() && expression.type != ParadoxType.Int) return Result.NotMatch
+                //can be an int or float here (e.g., for <technology_tier>)
+                if (!expression.type.isStringType() && expression.type != ParadoxType.Int && expression.type != ParadoxType.Float) return Result.NotMatch
                 if (!expression.value.isParameterAwareIdentifier('.', '-')) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
-                ParadoxExpressionMatcher.getDefinitionMatchResult(element, expression, configExpression, project)
+                ParadoxExpressionMatcher.getDefinitionMatchResult(element, expression.value, configExpression, project)
             }
             dataType == CwtDataTypes.AbsoluteFilePath -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
@@ -146,7 +146,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
             dataType in CwtDataTypeGroups.PathReference -> {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
-                ParadoxExpressionMatcher.getPathReferenceMatchResult(element, expression, configExpression, project)
+                ParadoxExpressionMatcher.getPathReferenceMatchResult(element, expression.value, configExpression, project)
             }
             dataType == CwtDataTypes.EnumValue -> {
                 if (expression.type.isBlockLikeType()) return Result.NotMatch
@@ -241,7 +241,7 @@ class CoreParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                 if (!expression.type.isStringType()) return Result.NotMatch
                 if (!expression.value.isParameterAwareIdentifier()) return Result.NotMatch
                 if (expression.isParameterized()) return Result.ParameterizedMatch
-                ParadoxExpressionMatcher.getModifierMatchResult(element, expression, configGroup)
+                ParadoxExpressionMatcher.getModifierMatchResult(element, expression.value, configGroup)
             }
             dataType == CwtDataTypes.SingleAliasRight -> {
                 Result.NotMatch //不在这里处理
@@ -312,7 +312,7 @@ class TemplateExpressionParadoxScriptExpressionMatcher : PatternAwareParadoxScri
         if (!expression.type.isStringLikeType()) return Result.NotMatch
         if (expression.isParameterized()) return Result.ParameterizedMatch
         //允许用引号括起
-        return ParadoxExpressionMatcher.getTemplateMatchResult(element, expression, configExpression, configGroup)
+        return ParadoxExpressionMatcher.getTemplateMatchResult(element, expression.value, configExpression, configGroup)
     }
 }
 

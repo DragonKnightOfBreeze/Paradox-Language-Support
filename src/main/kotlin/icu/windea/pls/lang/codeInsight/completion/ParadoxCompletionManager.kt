@@ -193,14 +193,18 @@ object ParadoxCompletionManager {
         }
     }
 
-    fun addColumnCompletions(context: ProcessingContext, result: CompletionResultSet) {
+    fun addColumnCompletions(columnElement: ParadoxCsvColumn, context: ProcessingContext, result: CompletionResultSet) {
         val file = context.parameters?.originalFile ?: return
         if (file !is ParadoxCsvFile) return
-        val config = ParadoxCsvManager.getRowConfig(file)
-        if (config == null) return
 
+        if (columnElement.isHeaderColumn()) {
+            completeHeaderColumn(context, result)
+            return
+        }
+
+        val columnConfig = ParadoxCsvManager.getColumnConfig(columnElement) ?: return
+        val config = columnConfig.valueConfig ?: return
         context.config = config
-
         completeCsvExpression(context, result)
     }
 
@@ -692,19 +696,47 @@ object ParadoxCompletionManager {
 
     fun completeInlineScriptInvocation(context: ProcessingContext, result: CompletionResultSet) {
         val configGroup = context.configGroup ?: return
-        configGroup.inlineConfigGroup["inline_script"]?.forEach f@{ config0 ->
+        configGroup.inlineConfigGroup["inline_script"]?.forEach f@{ inlineConfig ->
             ProgressManager.checkCanceled()
-            context.config = config0
+            context.config = inlineConfig
             context.isKey = true
-            val name = config0.name
-            val element = config0.pointer.element ?: return@f
-            val typeFile = config0.pointer.containingFile
+            val name = inlineConfig.name
+            val element = inlineConfig.pointer.element ?: return@f
+            val typeFile = inlineConfig.pointer.containingFile
             val lookupElement = LookupElementBuilder.create(element, name)
                 .withTypeText(typeFile?.name, typeFile?.icon, true)
                 .withCaseSensitivity(false)
                 .withPriority(ParadoxCompletionPriorities.constant)
                 .withPatchableIcon(PlsIcons.Nodes.InlineScript)
                 .forScriptExpression(context)
+            result.addElement(lookupElement, context)
+        }
+    }
+
+    fun completeHeaderColumn(context: ProcessingContext, result: CompletionResultSet) {
+        val column = context.contextElement?.castOrNull<ParadoxCsvColumn>() ?: return
+        if (!column.isHeaderColumn()) return
+        val file = context.parameters?.originalFile ?: return
+        if (file !is ParadoxCsvFile) return
+        val rowConfig = ParadoxCsvManager.getRowConfig(file) ?: return
+        val header = column.parent?.castOrNull<ParadoxCsvHeader>() ?: return
+        val existingHeaderNames = header.children()
+            .mapNotNull { it as? ParadoxCsvColumn }
+            .filterIsInstance<ParadoxCsvColumn> { it != column }
+            .map { it.value }
+            .toSet()
+        val columnConfigs = rowConfig.columnConfigs.filterNot { it.key in existingHeaderNames }.values
+        if(columnConfigs.isEmpty()) return
+        columnConfigs.forEach f@{ columnConfig ->
+            ProgressManager.checkCanceled()
+            context.config = columnConfig
+            val name = columnConfig.key
+            val element = columnConfig.pointer.element ?: return@f
+            val typeFile = columnConfig.pointer.containingFile
+            val lookupElement = LookupElementBuilder.create(element, name)
+                .withIcon(PlsIcons.Nodes.CsvColumn)
+                .withTypeText(typeFile?.name, typeFile?.icon, true)
+                .withPriority(ParadoxCompletionPriorities.constant)
             result.addElement(lookupElement, context)
         }
     }
