@@ -1,35 +1,31 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.script.psi;
 
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLiteralValue;
-import com.intellij.psi.ContributedReferenceHost;
-import icu.windea.pls.lang.psi.ParadoxScriptedVariableReference;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiListLikeElement;
+import org.jetbrains.annotations.NotNull;
 
 public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitBlock(@NotNull ParadoxScriptBlock o) {
     visitValue(o);
-    // visitContributedReferenceHost(o);
     // visitBlockElement(o);
   }
 
   public void visitBoolean(@NotNull ParadoxScriptBoolean o) {
     visitValue(o);
-    // visitPsiLiteralValue(o);
+    // visitLiteralValue(o);
   }
 
   public void visitColor(@NotNull ParadoxScriptColor o) {
     visitValue(o);
+    // visitLiteralValue(o);
   }
 
   public void visitFloat(@NotNull ParadoxScriptFloat o) {
     visitValue(o);
-    // visitPsiLiteralValue(o);
-    // visitContributedReferenceHost(o);
+    // visitLiteralValue(o);
   }
 
   public void visitInlineMath(@NotNull ParadoxScriptInlineMath o) {
@@ -54,7 +50,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitInlineMathNumber(@NotNull ParadoxScriptInlineMathNumber o) {
     visitInlineMathFactor(o);
-    // visitPsiLiteralValue(o);
+    // visitLiteralValue(o);
   }
 
   public void visitInlineMathParExpression(@NotNull ParadoxScriptInlineMathParExpression o) {
@@ -69,7 +65,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitInlineMathScriptedVariableReference(@NotNull ParadoxScriptInlineMathScriptedVariableReference o) {
     visitInlineMathFactor(o);
-    // visitContributedReferenceHost(o);
     // visitedVariableReference(o);
     // visitParadoxParameterAwareElement(o);
   }
@@ -84,8 +79,7 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitInt(@NotNull ParadoxScriptInt o) {
     visitValue(o);
-    // visitPsiLiteralValue(o);
-    // visitContributedReferenceHost(o);
+    // visitLiteralValue(o);
   }
 
   public void visitParameter(@NotNull ParadoxScriptParameter o) {
@@ -115,10 +109,9 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitPropertyKey(@NotNull ParadoxScriptPropertyKey o) {
-    visitPsiLiteralValue(o);
-    // visitContributedReferenceHost(o);
-    // visitStringExpressionElement(o);
+    visitStringExpressionElement(o);
     // visitParadoxParameterAwareElement(o);
+    // visitLiteralValue(o);
   }
 
   public void visitRootBlock(@NotNull ParadoxScriptRootBlock o) {
@@ -135,17 +128,15 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
 
   public void visitScriptedVariableReference(@NotNull ParadoxScriptScriptedVariableReference o) {
     visitValue(o);
-    // visitContributedReferenceHost(o);
     // visitedVariableReference(o);
     // visitParadoxParameterAwareElement(o);
   }
 
   public void visitString(@NotNull ParadoxScriptString o) {
     visitValue(o);
-    // visitPsiLiteralValue(o);
-    // visitContributedReferenceHost(o);
     // visitStringExpressionElement(o);
     // visitParadoxParameterAwareElement(o);
+    // visitLiteralValue(o);
   }
 
   public void visitValue(@NotNull ParadoxScriptValue o) {
@@ -154,10 +145,6 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitPsiListLikeElement(@NotNull PsiListLikeElement o) {
-    visitElement(o);
-  }
-
-  public void visitPsiLiteralValue(@NotNull PsiLiteralValue o) {
     visitElement(o);
   }
 
@@ -186,6 +173,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
   }
 
   public void visitNamedElement(@NotNull ParadoxScriptNamedElement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStringExpressionElement(@NotNull ParadoxScriptStringExpressionElement o) {
     visitPsiElement(o);
   }
 

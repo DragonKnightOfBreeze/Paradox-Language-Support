@@ -5,6 +5,7 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.*
+import com.intellij.psi.impl.source.resolve.reference.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
@@ -488,8 +489,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getReferences(element: PsiElement): Array<out PsiReference> {
-        //这里不需要进行缓存
-        return PsiReferenceService.getService().getContributedReferences(element)
+        return ReferenceProvidersRegistry.getReferencesFromProviders(element)
     }
 
     @JvmStatic

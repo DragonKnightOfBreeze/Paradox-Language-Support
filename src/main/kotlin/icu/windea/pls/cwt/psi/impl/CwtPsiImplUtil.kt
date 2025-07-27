@@ -3,6 +3,7 @@ package icu.windea.pls.cwt.psi.impl
 import com.intellij.navigation.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.impl.source.resolve.reference.*
 import com.intellij.psi.search.*
 import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
@@ -202,33 +203,6 @@ object CwtPsiImplUtil {
 
     //endregion
 
-    //region CwtBoolean
-
-    @JvmStatic
-    fun getBooleanValue(element: CwtBoolean): Boolean {
-        return element.value.toBooleanYesNo()
-    }
-
-    //endregion
-
-    //region CwtInt
-
-    @JvmStatic
-    fun getIntValue(element: CwtInt): Int {
-        return element.value.toIntOrNull() ?: 0
-    }
-
-    //endregion
-
-    //region CwtFloat
-
-    @JvmStatic
-    fun getFloatValue(element: CwtFloat): Float {
-        return element.value.toFloatOrNull() ?: 0f
-    }
-
-    //endregion
-
     //region CwtString
 
     @JvmStatic
@@ -255,11 +229,6 @@ object CwtPsiImplUtil {
     fun setValue(element: CwtString, value: String): CwtString {
         val newElement = CwtElementFactory.createString(element.project, value.quoteIfNecessary())
         return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun getStringValue(element: CwtString): String {
-        return element.value
     }
 
     //endregion
@@ -349,8 +318,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getReferences(element: PsiElement): Array<out PsiReference> {
-        //这里不需要进行缓存
-        return PsiReferenceService.getService().getContributedReferences(element)
+        return ReferenceProvidersRegistry.getReferencesFromProviders(element)
     }
 
     @JvmStatic

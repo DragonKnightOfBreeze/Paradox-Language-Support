@@ -5,6 +5,7 @@ import com.intellij.openapi.application.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.*
+import com.intellij.psi.impl.source.resolve.reference.*
 import com.intellij.psi.search.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
@@ -15,6 +16,7 @@ import icu.windea.pls.ep.color.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.references.*
+import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -296,34 +298,6 @@ object ParadoxScriptPsiImplUtil {
 
     //endregion
 
-    //region ParadoxScriptBoolean
-
-    @JvmStatic
-    fun getBooleanValue(element: ParadoxScriptBoolean): Boolean {
-        return element.value.toBooleanYesNo()
-    }
-
-    //endregion
-
-    //region ParadoxScriptInt
-
-    @JvmStatic
-    fun getIntValue(element: ParadoxScriptInt): Int {
-        return element.value.toIntOrNull() ?: 0
-    }
-
-
-    //endregion
-
-    //region ParadoxScriptFloat
-
-    @JvmStatic
-    fun getFloatValue(element: ParadoxScriptFloat): Float {
-        return element.value.toFloatOrNull() ?: 0f
-    }
-
-    //endregion
-
     //region ParadoxScriptString
 
     @JvmStatic
@@ -346,11 +320,6 @@ object ParadoxScriptPsiImplUtil {
     fun setValue(element: ParadoxScriptString, value: String): ParadoxScriptString {
         val newElement = ParadoxScriptElementFactory.createString(element.project, value.quoteIfNecessary())
         return element.replace(newElement).cast()
-    }
-
-    @JvmStatic
-    fun getStringValue(element: ParadoxScriptString): String {
-        return element.value
     }
 
     //endregion
@@ -795,8 +764,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getReferences(element: PsiElement): Array<out PsiReference> {
-        //这里不需要进行缓存
-        return PsiReferenceService.getService().getContributedReferences(element)
+        return ReferenceProvidersRegistry.getReferencesFromProviders(element)
     }
 
     @JvmStatic

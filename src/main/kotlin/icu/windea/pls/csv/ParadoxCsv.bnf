@@ -44,8 +44,8 @@ private column_item_with_separator ::= <<checkLineBreak>> SEPARATOR column_item 
 private column_item ::= <<checkLineBreak>> column
 column ::= COLUMN_TOKEN {
   implements=[
-    "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.csv.psi.ParadoxCsvExpressionElement"
+    "icu.windea.pls.csv.psi.ParadoxCsvLiteralValue"
   ]
   methods=[getIcon getName getValue setValue getReference getReferences toString]
 }

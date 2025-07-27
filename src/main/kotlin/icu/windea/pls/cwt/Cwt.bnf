@@ -51,8 +51,8 @@ property ::= property_key property_separator property_value {
 }
 property_key ::= PROPERTY_KEY_TOKEN {
   implements=[
-    "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
+    "icu.windea.pls.cwt.psi.CwtLiteralValue"
   ]
   methods=[getIcon getName getValue setValue getReference getReferences]
 }
@@ -70,33 +70,30 @@ value ::= boolean | int | float | string | block {
 boolean ::= BOOLEAN_TOKEN {
   extends=value
   implements=[
-    "com.intellij.psi.PsiLiteralValue"
+    "icu.windea.pls.cwt.psi.CwtLiteralValue"
   ]
-  methods=[getBooleanValue]
 }
 int ::= INT_TOKEN {
   extends=value
   implements=[
-    "com.intellij.psi.PsiLiteralValue"
+    "icu.windea.pls.cwt.psi.CwtLiteralValue"
   ]
-  methods=[getIntValue]
 }
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
-    "com.intellij.psi.PsiLiteralValue"
+    "icu.windea.pls.cwt.psi.CwtLiteralValue"
   ]
-  methods=[getFloatValue]
 }
 string ::= STRING_TOKEN {
   extends=value
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements=[
-    "com.intellij.psi.PsiLiteralValue"
     "icu.windea.pls.cwt.psi.CwtNamedElement"
     "icu.windea.pls.cwt.psi.CwtStringExpressionElement"
+    "icu.windea.pls.cwt.psi.CwtLiteralValue"
   ]
-  methods=[getIcon getName setName getNameIdentifier getValue setValue getStringValue getReference getReferences]
+  methods=[getIcon getName setName getNameIdentifier getValue setValue getReference getReferences]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1

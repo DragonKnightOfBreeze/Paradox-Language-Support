@@ -1,6 +1,11 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.cwt.psi
 
 import com.intellij.psi.util.*
+import icu.windea.pls.core.*
+
+//region Predicates
 
 fun CwtValue.isPropertyValue(): Boolean {
     val parent = parent
@@ -29,3 +34,21 @@ fun CwtExpressionElement.isExpression(): Boolean {
         else -> false
     }
 }
+
+//endregion
+
+//region Value Manipulations
+
+val CwtBoolean.booleanValue: Boolean
+    get() = this.value.toBooleanYesNo()
+
+val CwtInt.intValue: Int
+    get() = this.value.toIntOrNull() ?: 0
+
+val CwtFloat.floatValue: Float
+    get() = this.value.toFloatOrNull() ?: 0f
+
+val CwtString.stringValue: String
+    get() = this.value
+
+//endregion

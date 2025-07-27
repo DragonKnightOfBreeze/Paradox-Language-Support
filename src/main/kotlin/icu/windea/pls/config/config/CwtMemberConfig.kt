@@ -39,17 +39,17 @@ val CwtMemberConfig<*>.properties: List<CwtPropertyConfig>? get() = configs?.fil
 val CwtMemberConfig<*>.options: List<CwtOptionConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionConfig>()
 val CwtMemberConfig<*>.optionValues: List<CwtOptionValueConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionValueConfig>()
 
-fun CwtMemberConfig<*>.getOptionValue(): String? {
-    return stringValue
-}
+//fun CwtMemberConfig<*>.getOptionValue(): String? {
+//    return stringValue
+//}
 
-fun CwtMemberConfig<*>.getOptionValues(): Set<String>? {
-    return optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue?.intern() }
-}
+//fun CwtMemberConfig<*>.getOptionValues(): Set<String>? {
+//    return optionValues?.mapNotNullTo(mutableSetOf()) { it.stringValue?.intern() }
+//}
 
-fun CwtMemberConfig<*>.getOptionValueOrValues(): Set<String>? {
-    return getOptionValue()?.let { it.singleton().set() } ?: getOptionValues()
-}
+//fun CwtMemberConfig<*>.getOptionValueOrValues(): Set<String>? {
+//    return getOptionValue()?.let { it.singleton().set() } ?: getOptionValues()
+//}
 
 fun CwtMemberConfig<*>.findOption(key: String): CwtOptionConfig? {
     return optionConfigs?.find { it is CwtOptionConfig && it.key == key }?.cast()
@@ -74,11 +74,11 @@ fun CwtMemberConfig<*>.findOptionValue(value: String): CwtOptionValueConfig? {
 val <T : CwtMemberElement> CwtMemberConfig<T>.isBlock: Boolean
     get() = configs != null
 
-val CwtMemberConfig<*>.isRoot: Boolean
-    get() = when (this) {
-        is CwtPropertyConfig -> this.parentConfig == null
-        is CwtValueConfig -> this.parentConfig == null && this.propertyConfig == null
-    }
+//val CwtMemberConfig<*>.isRoot: Boolean
+//    get() = when (this) {
+//        is CwtPropertyConfig -> this.parentConfig == null
+//        is CwtValueConfig -> this.parentConfig == null && this.propertyConfig == null
+//    }
 
 val CwtMemberConfig<*>.memberConfig: CwtMemberConfig<*>
     get() = when (this) {

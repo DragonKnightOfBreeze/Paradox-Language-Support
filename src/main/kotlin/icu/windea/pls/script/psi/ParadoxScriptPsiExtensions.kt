@@ -2,13 +2,30 @@
 
 package icu.windea.pls.script.psi
 
+import com.intellij.psi.util.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.script.psi.impl.*
 import java.awt.*
+
+//region PSI Accessors
+
+val ParadoxScriptPropertyKey.propertyValue: ParadoxScriptValue?
+    get() = siblings(forward = true, withSelf = false).findIsInstance()
+
+val ParadoxScriptValue.propertyKey: ParadoxScriptPropertyKey?
+    get() = siblings(forward = false, withSelf = false).findIsInstance()
+
+val ParadoxScriptScriptedVariable.greenStub: ParadoxScriptScriptedVariableStub?
+    get() = this.castOrNull<ParadoxScriptScriptedVariableImpl>()?.greenStub
+
+val ParadoxScriptProperty.greenStub: ParadoxScriptPropertyStub?
+    get() = this.castOrNull<ParadoxScriptPropertyImpl>()?.greenStub
 
 inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.propertyValue(): T? {
     return findChild<T>(forward = false)
@@ -21,6 +38,10 @@ inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.valueList(): L
 inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlockElement.valueList(): List<T> {
     return findChildren<T>()
 }
+
+//endregion
+
+//region Predicates
 
 fun ParadoxScriptMemberElement.isBlockMember(): Boolean {
     return parent.let { it is ParadoxScriptBlockElement || it is ParadoxScriptParameterCondition }
@@ -80,6 +101,25 @@ fun ParadoxScriptValue.isDefinitionName(): Boolean {
     if (definition.definitionInfo.let { it != null && it.typeConfig.nameField == nameProperty.name }) return true
     return false
 }
+
+//endregion
+
+//region Value Manipulations
+
+val ParadoxScriptBoolean.booleanValue: Boolean
+    get() = this.value.toBooleanYesNo()
+
+val ParadoxScriptInt.intValue: Int
+    get() = this.value.toIntOrNull() ?: 0
+
+val ParadoxScriptFloat.floatValue: Float
+    get() = this.value.toFloatOrNull() ?: 0f
+
+val ParadoxScriptString.stringValue: String
+    get() = this.value
+
+val ParadoxScriptColor.colorValue: Color?
+    get() = this.color
 
 fun ParadoxScriptExpressionElement.value(valid: Boolean = false): String? {
     if (valid && !this.isValidExpression()) return null
@@ -162,17 +202,17 @@ fun ParadoxScriptExpressionElement.resolved(): ParadoxScriptExpressionElement? {
     }
 }
 
-fun ParadoxScriptExpressionElement.stringText(valid: Boolean = false): String? {
-    if (valid && !this.isValidExpression()) return null
-    val resolved = this.resolved() ?: return null
-    return when (resolved) {
-        is ParadoxScriptPropertyKey -> resolved.text
-        is ParadoxScriptString -> resolved.text
-        is ParadoxScriptInt -> resolved.value
-        is ParadoxScriptFloat -> resolved.value
-        else -> null
-    }
-}
+//fun ParadoxScriptExpressionElement.stringText(valid: Boolean = false): String? {
+//    if (valid && !this.isValidExpression()) return null
+//    val resolved = this.resolved() ?: return null
+//    return when (resolved) {
+//        is ParadoxScriptPropertyKey -> resolved.text
+//        is ParadoxScriptString -> resolved.text
+//        is ParadoxScriptInt -> resolved.value
+//        is ParadoxScriptFloat -> resolved.value
+//        else -> null
+//    }
+//}
 
 fun ParadoxScriptValue.tagType(): CwtTagType? {
     if (this !is ParadoxScriptString) return null
@@ -190,3 +230,5 @@ fun ParadoxScriptValue.tagType(): CwtTagType? {
     }
     return null
 }
+
+//endregion

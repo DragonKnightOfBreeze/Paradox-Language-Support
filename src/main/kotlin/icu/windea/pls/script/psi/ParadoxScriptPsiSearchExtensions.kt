@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("unused", "UNCHECKED_CAST")
 
 package icu.windea.pls.script.psi
 

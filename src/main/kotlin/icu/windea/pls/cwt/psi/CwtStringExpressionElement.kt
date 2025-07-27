@@ -1,12 +1,10 @@
 package icu.windea.pls.cwt.psi
 
-import com.intellij.psi.*
-
 /**
  * @see CwtPropertyKey
  * @see CwtString
  */
-interface CwtStringExpressionElement : CwtExpressionElement, PsiLiteralValue, ContributedReferenceHost {
+interface CwtStringExpressionElement : CwtExpressionElement, CwtLiteralValue {
     override fun getName(): String
 
     override val value: String

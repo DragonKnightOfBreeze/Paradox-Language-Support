@@ -3,6 +3,32 @@ package icu.windea.pls.localisation.psi
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.localisation.psi.impl.*
+
+//region PSI Accessors
+
+val ParadoxLocalisationProperty.greenStub: ParadoxLocalisationPropertyStub?
+    get() = this.castOrNull<ParadoxLocalisationPropertyImpl>()?.greenStub
+
+//endregion
+
+//region Predicates
+
+fun ParadoxLocalisationExpressionElement.isComplexExpression(): Boolean {
+    return isCommandExpression() || isDatabaseObjectExpression()
+}
+
+fun ParadoxLocalisationExpressionElement.isCommandExpression(): Boolean {
+    return this is ParadoxLocalisationCommandText //简单判断
+}
+
+fun ParadoxLocalisationExpressionElement.isDatabaseObjectExpression(strict: Boolean = false): Boolean {
+    return this is ParadoxLocalisationConceptName && (!strict || this.textContains(':')) //简单判断
+}
+
+//endregion
+
+//region Localisation Manipulations
 
 fun hasLocalisationPropertiesBetween(start: PsiElement, end: PsiElement?): Boolean {
     val startElement = start.findParentInFile(true) { it.parent is ParadoxLocalisationPropertyList }
@@ -68,14 +94,4 @@ fun findLocalisationPropertiesBetween(start: PsiElement, end: PsiElement?): List
     return emptyList()
 }
 
-fun ParadoxLocalisationExpressionElement.isComplexExpression(): Boolean {
-    return isCommandExpression() || isDatabaseObjectExpression()
-}
-
-fun ParadoxLocalisationExpressionElement.isCommandExpression(): Boolean {
-    return this is ParadoxLocalisationCommandText //简单判断
-}
-
-fun ParadoxLocalisationExpressionElement.isDatabaseObjectExpression(strict: Boolean = false): Boolean {
-    return this is ParadoxLocalisationConceptName && (!strict || this.textContains(':')) //简单判断
-}
+//endregion

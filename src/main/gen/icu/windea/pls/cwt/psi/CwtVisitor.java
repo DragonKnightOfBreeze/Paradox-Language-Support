@@ -1,11 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.cwt.psi;
 
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiLiteralValue;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import org.jetbrains.annotations.NotNull;
 
 public class CwtVisitor extends PsiElementVisitor {
 
@@ -17,7 +16,7 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitBoolean(@NotNull CwtBoolean o) {
     visitValue(o);
-    // visitPsiLiteralValue(o);
+    // visitLiteralValue(o);
   }
 
   public void visitDocComment(@NotNull CwtDocComment o) {
@@ -26,12 +25,12 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitFloat(@NotNull CwtFloat o) {
     visitValue(o);
-    // visitPsiLiteralValue(o);
+    // visitLiteralValue(o);
   }
 
   public void visitInt(@NotNull CwtInt o) {
     visitValue(o);
-    // visitPsiLiteralValue(o);
+    // visitLiteralValue(o);
   }
 
   public void visitOption(@NotNull CwtOption o) {
@@ -57,8 +56,8 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitPropertyKey(@NotNull CwtPropertyKey o) {
-    visitPsiLiteralValue(o);
-    // visitStringExpressionElement(o);
+    visitStringExpressionElement(o);
+    // visitLiteralValue(o);
   }
 
   public void visitRootBlock(@NotNull CwtRootBlock o) {
@@ -67,9 +66,9 @@ public class CwtVisitor extends PsiElementVisitor {
 
   public void visitString(@NotNull CwtString o) {
     visitValue(o);
-    // visitPsiLiteralValue(o);
     // visitNamedElement(o);
     // visitStringExpressionElement(o);
+    // visitLiteralValue(o);
   }
 
   public void visitValue(@NotNull CwtValue o) {
@@ -82,10 +81,6 @@ public class CwtVisitor extends PsiElementVisitor {
     visitElement(o);
   }
 
-  public void visitPsiLiteralValue(@NotNull PsiLiteralValue o) {
-    visitElement(o);
-  }
-
   public void visitBlockElement(@NotNull CwtBlockElement o) {
     visitPsiElement(o);
   }
@@ -95,6 +90,10 @@ public class CwtVisitor extends PsiElementVisitor {
   }
 
   public void visitNamedElement(@NotNull CwtNamedElement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStringExpressionElement(@NotNull CwtStringExpressionElement o) {
     visitPsiElement(o);
   }
 

@@ -82,10 +82,9 @@ property ::= property_key property_separator property_value {
 // can be parameterized
 property_key ::= property_key_part (<<processSnippet>> property_key_part) * {
   implements=[
-    "com.intellij.psi.PsiLiteralValue"
-    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
     "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
+    "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
   ]
   methods=[
     getIdElement parameter=""
@@ -112,7 +111,6 @@ value ::= scripted_variable_reference | boolean | int | float | string | color |
 scripted_variable_reference ::= AT scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> scripted_variable_reference_part) * {
   extends=value
   implements=[
-    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
     "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
   ]
@@ -125,44 +123,44 @@ private scripted_variable_reference_part ::= SCRIPTED_VARIABLE_REFERENCE_TOKEN |
 boolean ::= BOOLEAN_TOKEN {
   extends=value
   implements=[
-    "com.intellij.psi.PsiLiteralValue"
+    "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
   ]
-  methods=[getBooleanValue toString]
+  methods=[toString]
 }
 int ::= INT_TOKEN {
   extends=value
   implements=[
-    "com.intellij.psi.PsiLiteralValue"
-    "com.intellij.psi.ContributedReferenceHost"
+    "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
   ]
-  methods=[getValue getIntValue getReference getReferences toString]
+  methods=[getReference getReferences toString]
 }
 float ::= FLOAT_TOKEN {
   extends=value
   implements=[
-    "com.intellij.psi.PsiLiteralValue"
-    "com.intellij.psi.ContributedReferenceHost"
+    "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
   ]
-  methods=[getValue getFloatValue getReference getReferences toString]
+  methods=[getReference getReferences toString]
 }
 // can be parameterized
 string ::= string_part <<postProcessFirstSnippet>> (<<processSnippet>> string_part) * {
   extends=value
   implements=[
-    "com.intellij.psi.PsiLiteralValue"
-    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement"
     "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
+    "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
   ]
   methods=[
     getIdElement parameter=""
-    getIcon getValue setValue getStringValue
+    getIcon getValue setValue
     getReference getReferences toString
   ]
 }
 private string_part ::= STRING_TOKEN | parameter | inline_parameter_condition
 color ::= COLOR_TOKEN {
   extends=value
+  implements=[
+    "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
+  ]
   methods=[getValue getColorType getColorArgs getColor setColor toString]
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
@@ -170,7 +168,6 @@ block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   recoverWhile="#auto"
   extends=value
   implements=[
-    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.script.psi.ParadoxScriptBlockElement"
   ]
   methods=[
@@ -312,7 +309,7 @@ inline_math_factor ::= inline_math_number | inline_math_parameter | inline_math_
 inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
   extends=inline_math_factor
   implements=[
-    "com.intellij.psi.PsiLiteralValue"
+    "icu.windea.pls.script.psi.ParadoxScriptLiteralValue"
   ]
   methods=[getValue]
 }
@@ -320,7 +317,6 @@ inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
 inline_math_scripted_variable_reference ::= inline_math_scripted_variable_reference_part <<postProcessFirstSnippet>> (<<processSnippet>> inline_math_scripted_variable_reference_part) * {
   extends=inline_math_factor
   implements=[
-    "com.intellij.psi.ContributedReferenceHost"
     "icu.windea.pls.lang.psi.ParadoxScriptedVariableReference"
     "icu.windea.pls.script.psi.ParadoxParameterAwareElement"
   ]
