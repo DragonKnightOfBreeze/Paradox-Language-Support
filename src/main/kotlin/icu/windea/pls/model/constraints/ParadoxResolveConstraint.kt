@@ -6,6 +6,7 @@ import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.references.*
+import icu.windea.pls.lang.references.csv.*
 import icu.windea.pls.lang.references.localisation.*
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.localisation.psi.*
@@ -70,6 +71,11 @@ enum class ParadoxResolveConstraint {
                 is ParadoxLocalisationTextColorPsiReference -> true //<text_color>
                 is ParadoxLocalisationTextFormatPsiReference -> true //<text_format>
                 is ParadoxLocalisationTextIconPsiReference -> true //<text_icon>
+                is ParadoxCsvExpressionPsiReference -> {
+                    val configExpression = reference.columnConfig.valueConfig?.configExpression ?: return false
+                    val dataType = configExpression.type
+                    dataType == CwtDataTypes.Definition
+                }
                 else -> false
             }
         }
@@ -154,7 +160,7 @@ enum class ParadoxResolveConstraint {
         override fun canResolveReference(element: PsiElement): Boolean {
             return when (element) {
                 is ParadoxScriptStringExpressionElement -> element.isExpression()
-                //is ParadoxCsvColumn -> !element.isHeaderColumn()
+                is ParadoxCsvColumn -> !element.isHeaderColumn()
                 else -> false
             }
         }
@@ -179,6 +185,11 @@ enum class ParadoxResolveConstraint {
                     }
                 }
                 is ParadoxComplexEnumValuePsiReference -> true
+                is ParadoxCsvExpressionPsiReference -> {
+                    val configExpression = reference.columnConfig.valueConfig?.configExpression ?: return false
+                    val dataType = configExpression.type
+                    dataType == CwtDataTypes.EnumValue
+                }
                 else -> false
             }
         }

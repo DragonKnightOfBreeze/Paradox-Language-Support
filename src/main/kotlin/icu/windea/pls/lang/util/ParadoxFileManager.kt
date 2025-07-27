@@ -46,7 +46,7 @@ object ParadoxFileManager {
             fileExtension == "mod" -> true
             fileExtension in PlsConstants.scriptFileExtensions -> true
             fileExtension in PlsConstants.localisationFileExtensions -> true
-            fileExtension in "csv" -> true
+            fileExtension in PlsConstants.csvFileExtensions -> true
             else -> false
         }
     }
@@ -63,7 +63,7 @@ object ParadoxFileManager {
             fileExtension == "mod" -> true
             fileExtension in PlsConstants.scriptFileExtensions -> true
             fileExtension in PlsConstants.localisationFileExtensions -> true
-            fileExtension in "csv" -> true
+            fileExtension in PlsConstants.csvFileExtensions -> true
             else -> false
         }
     }
@@ -83,8 +83,9 @@ object ParadoxFileManager {
     }
 
     fun canBeCsvFilePath(path: ParadoxPath): Boolean {
+        if (inLocalisationPath(path)) return false
         val fileExtension = path.fileExtension?.lowercase() ?: return false
-        if (fileExtension != "csv") return false
+        if (fileExtension !in PlsConstants.csvFileExtensions) return false
         return true
     }
 

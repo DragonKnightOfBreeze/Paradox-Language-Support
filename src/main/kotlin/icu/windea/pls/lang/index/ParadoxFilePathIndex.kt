@@ -88,6 +88,7 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInde
         if (fileExtension.isEmpty()) return false
         return fileExtension in PlsConstants.scriptFileExtensions
             || fileExtension in PlsConstants.localisationFileExtensions
+            || fileExtension in PlsConstants.csvFileExtensions
             || fileExtension in PlsConstants.imageFileExtensions
     }
 }

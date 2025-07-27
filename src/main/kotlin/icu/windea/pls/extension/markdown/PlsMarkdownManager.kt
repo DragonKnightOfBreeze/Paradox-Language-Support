@@ -76,7 +76,10 @@ object PlsMarkdownManager {
         val pathInfo = getPathInfo(element) ?: return null
         val path = ParadoxPath.resolve(pathInfo.path)
         val fileExtension = path.fileExtension ?: return null
-        if (fileExtension !in PlsConstants.scriptFileExtensions && fileExtension !in PlsConstants.localisationFileExtensions) return null
+        val isValid = fileExtension in PlsConstants.scriptFileExtensions
+            || fileExtension in PlsConstants.localisationFileExtensions
+            || fileExtension in PlsConstants.csvFileExtensions
+        if (!isValid) return null
 
         run {
             val rootInfo = selectRootFile(element)?.rootInfo

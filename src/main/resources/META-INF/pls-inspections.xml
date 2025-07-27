@@ -38,7 +38,7 @@
     <!--endregion-->
 
     <!--region Paradox script-->
-    <!--region Paradox script/General-->
+    <!--region Paradox script/Common-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateScriptedVariables"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.script.duplicateScriptedVariables"
@@ -295,7 +295,7 @@
     <!--endregion-->
 
     <!--region Paradox localisation-->
-    <!--region Paradox localisation/General-->
+    <!--region Paradox localisation/Common-->
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationDuplicateProperties"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.localisation.duplicateProperties"
@@ -422,6 +422,41 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.localisation.expression.group"
                      groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.expression.IncorrectDatabaseObjectExpressionInspection"/>
+    <!--endregion-->
+    <!--endregion-->
+
+    <!--region Paradox csv-->
+    <!--region Paradox csv/Common-->
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvMissingColumnsInspection"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.csv.missingColumns"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
+                     groupPathKey="inspection.csv.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.csv.common.MissingColumnsInspection"/>
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnresolvedColumnsInspection"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.csv.unresolvedColumns"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
+                     groupPathKey="inspection.csv.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.csv.common.UnresolvedColumnsInspection"/>
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvDuplicateColumnsInspection"
+                     enabledByDefault="true" level="WARNING"
+                     bundle="messages.PlsBundle" key="inspection.csv.duplicateColumns"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
+                     groupPathKey="inspection.csv.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.csv.common.DuplicateColumnsInspection"/>
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnresolvedExpressionInspection"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.csv.unresolvedExpression"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
+                     groupPathKey="inspection.csv.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.csv.common.UnresolvedExpressionInspection"/>
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectExpressionInspection"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.csv.incorrectExpression"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
+                     groupPathKey="inspection.csv.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.csv.common.IncorrectExpressionInspection"/>
     <!--endregion-->
     <!--endregion-->
 

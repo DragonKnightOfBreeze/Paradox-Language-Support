@@ -258,7 +258,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 checkBox(PlsBundle.message("inspection.script.unresolvedExpression.option.ignoredByConfigs"))
                     .bindSelected(::ignoredByConfigs)
                     .actionListener { _, component -> ignoredByConfigs = component.isSelected }
-            }            //ignoredInInjectedFile
+            }
+            //ignoredInInjectedFile
             row {
                 checkBox(PlsBundle.message("inspection.option.ignoredInInjectedFiles"))
                     .bindSelected(::ignoredInInjectedFiles)

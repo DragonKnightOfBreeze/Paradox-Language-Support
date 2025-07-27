@@ -8,6 +8,7 @@ object PlsConstants {
 
     val scriptFileExtensions = arrayOf("txt", "gfx", "gui", "asset", "lines", "dlc", "settings")
     val localisationFileExtensions = arrayOf("yml")
+    val csvFileExtensions = arrayOf("yml")
     val imageFileExtensions = arrayOf("png", "dds", "tga")
 
     const val dummyIdentifier = "windea"
