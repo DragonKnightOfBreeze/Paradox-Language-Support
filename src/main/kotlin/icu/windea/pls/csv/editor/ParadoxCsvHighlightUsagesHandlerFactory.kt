@@ -19,9 +19,8 @@ import icu.windea.pls.csv.psi.*
 class ParadoxCsvHighlightUsagesHandlerFactory : HighlightUsagesHandlerFactory, DumbAware {
     override fun createHighlightUsagesHandler(editor: Editor, file: PsiFile): HighlightUsagesHandlerBase<*>? {
         val targets = mutableListOf<PsiElement>()
-        findTargetForRelatedColumnInHeader(file, editor)?.let { targets += it }
-        findTargetForSeparatorsInSameRow(file, editor)?.let { targets += it }
-        findTargetForReferences(file, editor)?.let { targets += it }
+        addTargetsForSeparator(file, editor, targets)
+        addTargetsForColumn(file, editor, targets)
         if (targets.isEmpty()) return null
         return object : HighlightUsagesHandlerBase<PsiElement>(editor, file) {
             override fun getTargets() = targets
@@ -29,47 +28,54 @@ class ParadoxCsvHighlightUsagesHandlerFactory : HighlightUsagesHandlerFactory, D
             override fun selectTargets(targets: List<PsiElement>, selectionConsumer: Consumer<in List<PsiElement>>) = selectionConsumer.consume(targets)
 
             override fun computeUsages(targets: List<PsiElement>) {
-                addOccurrences(targets) { addOccurrence(it) }
+                val occurrences = mutableListOf<PsiElement>()
+                addOccurrencesForSeparatorInSameRow(targets, occurrences)
+                addOccurrencesForRelatedColumnInHeader(targets, occurrences)
+                addOccurrencesForReferenceColumn(targets, occurrences)
+                for (it in occurrences) addOccurrence(it)
             }
         }
     }
 
-    private fun findTargetForRelatedColumnInHeader(file: PsiFile, editor: Editor): ParadoxCsvColumn? {
-        val target = file.findElementAt(editor.caretModel.offset) { e -> e.findParentOfType<ParadoxCsvColumn>() }
-        if (target !is ParadoxCsvColumn) return null
-        if (target.isHeaderColumn()) return null
-        return target
-    }
-
-    private fun findTargetForSeparatorsInSameRow(file: PsiFile, editor: Editor): PsiElement? {
+    private fun addTargetsForSeparator(file: PsiFile, editor: Editor, targets: MutableList<PsiElement>) {
         val target = file.findElementAt(editor.caretModel.offset) { e -> e.takeIf { it.elementType == ParadoxCsvElementTypes.SEPARATOR } }
-        if (target == null) return null
-        return target
+        if (target == null) return
+        targets += target
     }
 
-    private fun findTargetForReferences(file: PsiFile, editor: Editor): ParadoxCsvColumn? {
-        if (DumbService.isDumb(file.project)) return null
+    private fun addTargetsForColumn(file: PsiFile, editor: Editor, targets: MutableList<PsiElement>) {
         val target = file.findElementAt(editor.caretModel.offset) { e -> e.findParentOfType<ParadoxCsvColumn>() }
-        if (target !is ParadoxCsvColumn) return null
-        if (target.references.all { it.resolveFirst() == null }) return null
-        return target
+        if (target !is ParadoxCsvColumn) return
+        targets += target
     }
 
-    private fun addOccurrences(targets: List<PsiElement>, addOccurrence: (PsiElement) -> Unit) {
-        targets.forEach { target ->
-            if (target.elementType == ParadoxCsvElementTypes.SEPARATOR) {
-                val container = target.parent?.takeIf { it is ParadoxCsvHeader || it is ParadoxCsvRow } ?: return
-                container.forEachChild {
-                    if (it.elementType == ParadoxCsvElementTypes.SEPARATOR) {
-                        addOccurrence(it)
-                    }
-                }
-            } else if (target is ParadoxCsvColumn) {
-                val headerColumn = target.getHeaderColumn()
-                if (headerColumn != null) {
-                    addOccurrence(headerColumn)
+    fun addOccurrencesForSeparatorInSameRow(targets: List<PsiElement>, occurrences: MutableList<PsiElement>) {
+        for (target in targets) {
+            if (target.elementType != ParadoxCsvElementTypes.SEPARATOR) continue
+            val container = target.parent?.takeIf { it is ParadoxCsvRow } ?: continue
+            container.forEachChild {
+                if (it.elementType == ParadoxCsvElementTypes.SEPARATOR) {
+                    occurrences += it
                 }
             }
+        }
+    }
+
+    fun addOccurrencesForRelatedColumnInHeader(targets: List<PsiElement>, occurrences: MutableList<PsiElement>) {
+        for (target in targets) {
+            if (target !is ParadoxCsvColumn) continue
+            val headerColumn = target.getHeaderColumn()
+            if (headerColumn == null) continue
+            occurrences += headerColumn
+        }
+    }
+
+    fun addOccurrencesForReferenceColumn(targets: List<PsiElement>, occurrences: MutableList<PsiElement>) {
+        for (target in targets) {
+            if (target !is ParadoxCsvColumn) continue
+            if (DumbService.isDumb(target.project)) continue
+            if (target.references.all { it.resolveFirst() == null }) continue
+            occurrences += target
         }
     }
 }
