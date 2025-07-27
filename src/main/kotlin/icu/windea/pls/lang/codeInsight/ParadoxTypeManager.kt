@@ -59,7 +59,7 @@ object ParadoxTypeManager {
                 ParadoxType.Unknown
             }
             is ParadoxCsvColumn -> {
-                if(element.isHeaderColumn()) return ParadoxType.String
+                if (element.isHeaderColumn()) return ParadoxType.String
                 return ParadoxTypeResolver.resolve(element.value)
             }
             is ParadoxScriptedVariableReference -> {
@@ -91,16 +91,31 @@ object ParadoxTypeManager {
      * 规则表达式 - 如果存在对应的CWT规则表达式则可用
      */
     fun getConfigExpression(element: PsiElement): String? {
-        if (!isTypedElement(element)) return null
-        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
         return when (element) {
-            is ParadoxScriptPropertyKey -> {
-                if (config !is CwtPropertyConfig) return null
-                config.key
+            is ParadoxScriptExpressionElement -> {
+                val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return null
+                when (element) {
+                    is ParadoxScriptPropertyKey -> {
+                        if (config !is CwtPropertyConfig) return null
+                        config.key
+                    }
+                    is ParadoxScriptValue -> {
+                        if (config !is CwtValueConfig) return null
+                        config.value
+                    }
+                    else -> null
+                }
             }
-            is ParadoxScriptValue -> {
-                if (config !is CwtValueConfig) return null
-                config.value
+            is ParadoxCsvExpressionElement -> {
+                if (element !is ParadoxCsvColumn) return null
+                val columnConfig = ParadoxCsvManager.getColumnConfig(element) ?: return null
+                when {
+                    element.isHeaderColumn() -> columnConfig.key
+                    else -> {
+                        if (!ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return null //需要匹配
+                        columnConfig.value
+                    }
+                }
             }
             else -> null
         }

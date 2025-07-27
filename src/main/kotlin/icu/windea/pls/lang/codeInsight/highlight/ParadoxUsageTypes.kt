@@ -25,6 +25,8 @@ object ParadoxUsageTypes {
     val LOCALISATION_TEXT_ICON = UsageType { PlsBundle.message("usageType.localisationTextIcon") }
     val LOCALISATION_TEXT_FORMAT = UsageType { PlsBundle.message("usageType.localisationTextFormat") }
 
+    val HEADER_COLUMN = UsageType { PlsBundle.message("usageType.headerColumn") }
+
     val COMPLEX_ENUM_VALUE = UsageType { PlsBundle.message("usageType.complexEnumValue") }
 
     private val FROM_CONFIG_EXPRESSION_TYPES: MutableMap<String, UsageType> = ConcurrentHashMap()
