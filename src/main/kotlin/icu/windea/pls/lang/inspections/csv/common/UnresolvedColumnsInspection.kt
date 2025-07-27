@@ -20,7 +20,7 @@ class UnresolvedColumnsInspection : LocalInspectionTool() {
 
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
-        return super.buildVisitor(holder, isOnTheFly)
+        return super.buildVisitor(holder, isOnTheFly) //TODO 2.0.1-dev
     }
 
     private fun shouldCheckFile(file: PsiFile): Boolean {
