@@ -393,18 +393,18 @@
     </group>
 
     <group id="Pls.TableManipulation">
-      <action id="Pls.Manipulation.MoveColumnLeft" class="icu.windea.pls.lang.actions.csv.MoveColumnLeftAction"/>
-      <action id="Pls.Manipulation.MoveColumnRight" class="icu.windea.pls.lang.actions.csv.MoveColumnRightAction"/>
+      <action id="Pls.Manipulation.MoveColumnLeft" class="icu.windea.pls.lang.actions.csv.MoveColumnLeftAction" icon="AllIcons.Actions.Back"/>
+      <action id="Pls.Manipulation.MoveColumnRight" class="icu.windea.pls.lang.actions.csv.MoveColumnRightAction" icon="AllIcons.Actions.Forward"/>
       <action id="Pls.Manipulation.InsertColumnLeft" class="icu.windea.pls.lang.actions.csv.InsertColumnLeftAction"/>
       <action id="Pls.Manipulation.InsertColumnRight" class="icu.windea.pls.lang.actions.csv.InsertColumnRightAction"/>
-      <action id="Pls.Manipulation.SelectColumn" class="icu.windea.pls.lang.actions.csv.SelectColumnAction"/>
-      <action id="Pls.Manipulation.RemoveColumn" class="icu.windea.pls.lang.actions.csv.RemoveColumnAction"/>
-      <action id="Pls.Manipulation.MoveRowUp" class="icu.windea.pls.lang.actions.csv.MoveRowUpAction"/>
-      <action id="Pls.Manipulation.MoveRowDown" class="icu.windea.pls.lang.actions.csv.MoveRowDownAction"/>
+      <action id="Pls.Manipulation.SelectColumn" class="icu.windea.pls.lang.actions.csv.SelectColumnAction" icon="AllIcons.Actions.InSelection"/>
+      <action id="Pls.Manipulation.RemoveColumn" class="icu.windea.pls.lang.actions.csv.RemoveColumnAction" icon="AllIcons.Actions.GC"/>
+      <action id="Pls.Manipulation.MoveRowUp" class="icu.windea.pls.lang.actions.csv.MoveRowUpAction" icon="AllIcons.Actions.PreviousOccurence"/>
+      <action id="Pls.Manipulation.MoveRowDown" class="icu.windea.pls.lang.actions.csv.MoveRowDownAction" icon="AllIcons.Actions.NextOccurence"/>
       <action id="Pls.Manipulation.InsertRowAbove" class="icu.windea.pls.lang.actions.csv.InsertRowAboveAction"/>
       <action id="Pls.Manipulation.InsertRowBelow" class="icu.windea.pls.lang.actions.csv.InsertRowBelowAction"/>
-      <action id="Pls.Manipulation.SelectRow" class="icu.windea.pls.lang.actions.csv.SelectRowAction"/>
-      <action id="Pls.Manipulation.RemoveRow" class="icu.windea.pls.lang.actions.csv.RemoveRowAction"/>
+      <action id="Pls.Manipulation.SelectRow" class="icu.windea.pls.lang.actions.csv.SelectRowAction" icon="AllIcons.Actions.InSelection"/>
+      <action id="Pls.Manipulation.RemoveRow" class="icu.windea.pls.lang.actions.csv.RemoveRowAction" icon="AllIcons.Actions.GC"/>
       <add-to-group group-id="Pls.TableManipulationContextMenuGroup"/>
     </group>
   </actions>
