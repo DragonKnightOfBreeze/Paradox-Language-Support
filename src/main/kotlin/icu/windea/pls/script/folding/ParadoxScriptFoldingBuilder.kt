@@ -1,32 +1,30 @@
 package icu.windea.pls.script.folding
 
-import com.intellij.lang.ASTNode
-import com.intellij.lang.folding.CustomFoldingBuilder
-import com.intellij.lang.folding.FoldingDescriptor
-import com.intellij.openapi.editor.Document
-import com.intellij.openapi.project.DumbAware
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.core.castOrNull
-import icu.windea.pls.lang.settings.PlsSettingsState
-import icu.windea.pls.lang.util.PlsPsiManager
-import icu.windea.pls.model.constants.PlsStringConstants
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes
-import icu.windea.pls.script.psi.ParadoxScriptFile
-import icu.windea.pls.script.psi.ParadoxScriptParameterCondition
+import com.intellij.lang.*
+import com.intellij.lang.folding.*
+import com.intellij.openapi.editor.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
+import com.intellij.psi.*
+import icu.windea.pls.*
+import icu.windea.pls.core.*
+import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.constants.*
+import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
 class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
-            ParadoxScriptElementTypes.COMMENT -> PlsStringConstants.commentFolder
-            ParadoxScriptElementTypes.BLOCK -> PlsStringConstants.blockFolder
-            ParadoxScriptElementTypes.PARAMETER_CONDITION -> {
+            COMMENT -> PlsStringConstants.commentFolder
+            BLOCK -> PlsStringConstants.blockFolder
+            PARAMETER_CONDITION -> {
                 val expression = node.psi.castOrNull<ParadoxScriptParameterCondition>()?.conditionExpression
                 if (expression == null) return "..."
                 PlsStringConstants.parameterConditionFolder(expression)
             }
-            ParadoxScriptElementTypes.INLINE_MATH -> PlsStringConstants.inlineMathFolder
+            INLINE_MATH -> PlsStringConstants.inlineMathFolder
             else -> null
         }
     }
@@ -34,10 +32,10 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
         val settings = PlsFacade.getSettings().folding
         return when (node.elementType) {
-            ParadoxScriptElementTypes.COMMENT -> settings.commentByDefault
-            ParadoxScriptElementTypes.BLOCK -> false
-            ParadoxScriptElementTypes.PARAMETER_CONDITION -> settings.parameterConditionBlocksByDefault
-            ParadoxScriptElementTypes.INLINE_MATH -> settings.inlineMathBlocksByDefault
+            COMMENT -> settings.commentByDefault
+            BLOCK -> false
+            PARAMETER_CONDITION -> settings.parameterConditionBlocksByDefault
+            INLINE_MATH -> settings.inlineMathBlocksByDefault
             else -> false
         }
     }
@@ -56,18 +54,18 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 
     private fun doCollectDescriptors(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState): Boolean {
         when (node.elementType) {
-            ParadoxScriptElementTypes.COMMENT -> {
+            COMMENT -> {
                 if (!settings.comment) return true
                 PlsPsiManager.addCommentFoldingDescriptor(node, document, descriptors)
             }
-            ParadoxScriptElementTypes.SCRIPTED_VARIABLE -> return false //optimization
-            ParadoxScriptElementTypes.BLOCK -> {
+            SCRIPTED_VARIABLE -> return false //optimization
+            BLOCK -> {
                 descriptors.add(FoldingDescriptor(node, node.textRange))
             }
-            ParadoxScriptElementTypes.PARAMETER_CONDITION -> {
+            PARAMETER_CONDITION -> {
                 descriptors.add(FoldingDescriptor(node, node.textRange))
             }
-            ParadoxScriptElementTypes.INLINE_MATH -> {
+            INLINE_MATH -> {
                 descriptors.add(FoldingDescriptor(node, node.textRange))
             }
         }
@@ -79,6 +77,6 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun isCustomFoldingCandidate(node: ASTNode): Boolean {
-        return node.elementType == ParadoxScriptElementTypes.COMMENT
+        return node.elementType == COMMENT
     }
 }

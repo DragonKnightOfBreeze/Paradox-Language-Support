@@ -1,24 +1,23 @@
 package icu.windea.pls.cwt.folding
 
-import com.intellij.lang.ASTNode
-import com.intellij.lang.folding.CustomFoldingBuilder
-import com.intellij.lang.folding.FoldingDescriptor
-import com.intellij.openapi.editor.Document
-import com.intellij.openapi.project.DumbAware
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
-import icu.windea.pls.PlsFacade
-import icu.windea.pls.cwt.psi.CwtElementTypes
-import icu.windea.pls.cwt.psi.CwtFile
-import icu.windea.pls.lang.settings.PlsSettingsState
-import icu.windea.pls.lang.util.PlsPsiManager
-import icu.windea.pls.model.constants.PlsStringConstants
+import com.intellij.lang.*
+import com.intellij.lang.folding.*
+import com.intellij.openapi.editor.*
+import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
+import com.intellij.psi.*
+import icu.windea.pls.*
+import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.cwt.psi.CwtElementTypes.*
+import icu.windea.pls.lang.settings.*
+import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.constants.*
 
 class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String? {
         return when (node.elementType) {
-            CwtElementTypes.COMMENT -> PlsStringConstants.commentFolder
-            CwtElementTypes.BLOCK -> PlsStringConstants.blockFolder
+            COMMENT -> PlsStringConstants.commentFolder
+            BLOCK -> PlsStringConstants.blockFolder
             else -> null
         }
     }
@@ -26,7 +25,7 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
         val settings = PlsFacade.getSettings().folding
         return when (node.elementType) {
-            CwtElementTypes.COMMENT -> settings.commentByDefault
+            COMMENT -> settings.commentByDefault
             else -> false
         }
     }
@@ -45,13 +44,13 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 
     private fun doCollectDescriptors(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState): Boolean {
         when (node.elementType) {
-            CwtElementTypes.COMMENT -> {
+            COMMENT -> {
                 if (!settings.comment) return true
                 PlsPsiManager.addCommentFoldingDescriptor(node, document, descriptors)
             }
-            CwtElementTypes.OPTION_COMMENT -> return true //optimization
-            CwtElementTypes.DOC_COMMENT -> return true //optimization
-            CwtElementTypes.BLOCK -> descriptors.add(FoldingDescriptor(node, node.textRange))
+            OPTION_COMMENT -> return true //optimization
+            DOC_COMMENT -> return true //optimization
+            BLOCK -> descriptors.add(FoldingDescriptor(node, node.textRange))
             //BLOCK -> if(isSpanMultipleLines(node, document)) descriptors.add(FoldingDescriptor(node, node.textRange))
         }
         return true
@@ -62,6 +61,6 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
     }
 
     override fun isCustomFoldingCandidate(node: ASTNode): Boolean {
-        return node.elementType == CwtElementTypes.COMMENT
+        return node.elementType == COMMENT
     }
 }
