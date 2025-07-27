@@ -12,7 +12,6 @@ import icu.windea.pls.*
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvDefinitionReferenceInfoHintsProvider.*
-import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -48,19 +47,16 @@ class ParadoxCsvDefinitionReferenceInfoHintsProvider : ParadoxCsvHintsProvider<S
         val reference = element.reference ?: return true
         if (!ParadoxResolveConstraint.Definition.canResolve(reference)) return true
         val resolved = reference.resolve() ?: return true
-        if (resolved is ParadoxScriptDefinitionElement) {
-            val definitionInfo = resolved.definitionInfo
-            if (definitionInfo != null) {
-                val presentation = doCollect(definitionInfo, settings)
-                val finalPresentation = presentation.toFinalPresentation(this, file.project)
-                val endOffset = element.endOffset
-                sink.addInlineElement(endOffset, true, finalPresentation, false)
-            }
-        }
+        if (resolved !is ParadoxScriptDefinitionElement) return true
+        val presentation = doCollect(resolved, settings) ?: return true
+        val finalPresentation = presentation.toFinalPresentation(this, file.project)
+        val endOffset = element.endOffset
+        sink.addInlineElement(endOffset, true, finalPresentation, false)
         return true
     }
 
-    private fun PresentationFactory.doCollect(definitionInfo: ParadoxDefinitionInfo, settings: Settings): InlayPresentation {
+    private fun PresentationFactory.doCollect(element: ParadoxScriptDefinitionElement, settings: Settings): InlayPresentation? {
+        val definitionInfo = element.definitionInfo ?: return null
         val presentations: MutableList<InlayPresentation> = mutableListOf()
         //省略definitionName
         presentations.add(smallText(": "))
