@@ -3,7 +3,7 @@ package icu.windea.pls.csv.psi
 import icu.windea.pls.core.*
 
 fun ParadoxCsvRowElement.getColumnSize(): Int {
-    return this.children().count { it is ParadoxCsvColumn } + 1
+    return this.children().count { it is ParadoxCsvColumn }
 }
 
 fun ParadoxCsvRowElement.getColumn(index: Int): ParadoxCsvColumn? {

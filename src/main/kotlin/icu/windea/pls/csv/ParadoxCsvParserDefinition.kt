@@ -32,6 +32,7 @@ class ParadoxCsvParserDefinition : ParserDefinition {
         val rightType = right?.elementType
         return when {
             leftType == COMMENT || rightType == COMMENT -> MUST_LINE_BREAK
+            leftType == HEADER || rightType == HEADER -> MUST_LINE_BREAK
             leftType == ROW || rightType == ROW -> MUST_LINE_BREAK
             else -> MAY
         }

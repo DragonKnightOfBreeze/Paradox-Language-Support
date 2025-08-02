@@ -202,4 +202,15 @@ object PlsIcons {
         @JvmField
         val SyncConfigGroupsFromRemote = IconManager.getInstance().getIcon("/icons/actions/syncConfigGroupsFromRemote.svg") // from icons/clone.svg, fill #5D8DC3
     }
+
+    object EditorActions {
+        @JvmField
+        val AddColumnLeft = IconManager.getInstance().getIcon("/icons/editorActions/addColumnLeft.svg") // from Markdown plugin
+        @JvmField
+        val AddColumnRight = IconManager.getInstance().getIcon("/icons/editorActions/addColumnRight.svg") // from Markdown plugin
+        @JvmField
+        val AddRowAbove = IconManager.getInstance().getIcon("/icons/editorActions/addRowAbove.svg") // from Markdown plugin
+        @JvmField
+        val AddRowBelow = IconManager.getInstance().getIcon("/icons/editorActions/addRowBelow.svg") // from Markdown plugin
+    }
 }

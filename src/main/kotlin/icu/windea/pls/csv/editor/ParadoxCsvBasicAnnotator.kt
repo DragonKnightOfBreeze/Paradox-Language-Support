@@ -22,6 +22,7 @@ class ParadoxCsvBasicAnnotator : Annotator {
     }
 
     private fun getAttributesKey(element: ParadoxCsvColumn): TextAttributesKey? {
+        if (element.firstChild == null) return null
         if (element.isHeaderColumn()) return ParadoxCsvAttributesKeys.HEADER_KEY
 
         val resolvedType = ParadoxTypeResolver.resolve(element.value)

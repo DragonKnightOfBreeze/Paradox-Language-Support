@@ -14,6 +14,7 @@ object ParadoxTypeResolver {
 
     fun resolve(value: String): ParadoxType {
         return when {
+            value.isEmpty() -> ParadoxType.String
             isBoolean(value) -> ParadoxType.Boolean
             isInt(value) -> ParadoxType.Int
             isFloat(value) -> ParadoxType.Float
@@ -31,15 +32,21 @@ object ParadoxTypeResolver {
         //use handwrite implementation to optimize memory and restrict validation
         //can be: 0, 1, 01, -1
         var isFirst = true
+        var containsDigit = false
         value.forEach f@{ c ->
             if (isFirst) {
                 isFirst = false
                 if (c == '+' || c == '-') return@f
             }
-            if (c.isExactDigit()) return@f
+            if (c.isExactDigit()) {
+                if(!containsDigit) {
+                    containsDigit = true
+                }
+                return@f
+            }
             return false
         }
-        return true
+        return containsDigit
     }
 
     fun isFloat(value: String): Boolean {
@@ -49,19 +56,25 @@ object ParadoxTypeResolver {
         //can be: 0, 1, 01, -1, 0.0, 1.0, 01.0, .0
         var isFirst = true
         var containsDot = false
+        var containsDigit = false
         value.forEach f@{ c ->
             if (isFirst) {
                 isFirst = false
                 if (c == '+' || c == '-') return@f
             }
-            if (c.isExactDigit()) return@f
             if (c == '.') {
                 if (containsDot) return false else containsDot = true
                 return@f
             }
+            if (c.isExactDigit()) {
+                if(!containsDigit) {
+                    containsDigit = true
+                }
+                return@f
+            }
             return false
         }
-        return true
+        return containsDigit
     }
 
     fun isPercentageField(value: String): Boolean {

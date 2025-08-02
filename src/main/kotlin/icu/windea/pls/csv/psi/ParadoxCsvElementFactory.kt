@@ -2,9 +2,11 @@ package icu.windea.pls.csv.psi
 
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.csv.*
+import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 import icu.windea.pls.lang.util.*
 
 object ParadoxCsvElementFactory {
@@ -15,15 +17,31 @@ object ParadoxCsvElementFactory {
     }
 
     @JvmStatic
-    fun createEmptyRow(project: Project, length: Int): ParadoxCsvRowElement {
-        return createDummyFile(project, ParadoxCsvManager.getSeparator().toString().repeat(length))
-            .findChild<ParadoxCsvRowElement>() ?: throw IncorrectOperationException()
+    fun createEmptyHeader(project: Project, length: Int): ParadoxCsvHeader {
+        val fileText = "\n" + ParadoxCsvManager.getSeparator().toString().repeat(length) + "\n"
+        return createDummyFile(project, fileText)
+            .findChild<ParadoxCsvHeader>() ?: throw IncorrectOperationException()
+    }
+
+    @JvmStatic
+    fun createEmptyRow(project: Project, length: Int): ParadoxCsvRow {
+        val fileText = "a\n" + ParadoxCsvManager.getSeparator().toString().repeat(length) + "\n"
+        return createDummyFile(project, fileText)
+            .findChild<ParadoxCsvRow>() ?: throw IncorrectOperationException()
     }
 
     @JvmStatic
     fun createColumn(project: Project, text: String): ParadoxCsvColumn {
-        return createDummyFile(project, text + ParadoxCsvManager.getSeparator())
+        val fileText = text
+        return createDummyFile(project, fileText)
             .findChild<ParadoxCsvRowElement>()
             ?.findChild<ParadoxCsvColumn>() ?: throw IncorrectOperationException()
+    }
+
+    fun createSeparator(project: Project): PsiElement {
+        val fileText = ";"
+        return createDummyFile(project, fileText)
+            .findChild<ParadoxCsvRowElement>()
+            ?.findChild { it.elementType == SEPARATOR } ?: throw IncorrectOperationException()
     }
 }

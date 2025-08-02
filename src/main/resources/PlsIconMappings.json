@@ -76,6 +76,12 @@
         "modSettings.svg": "icons/actions/modSettings.svg",
         "refreshConfigGroups.svg": "icons/actions/refreshConfigGroups.svg",
         "syncConfigGroupsFromRemote.svg": "icons/actions/syncConfigGroupsFromRemote.svg"
+      },
+      "editorActions": {
+        "addColumnLeft.svg": "icons/editorActions/addColumnLeft.svg",
+        "addColumnRight.svg": "icons/editorActions/addColumnRight.svg",
+        "addRowAbove.svg": "icons/editorActions/addRowAbove.svg",
+        "addRowBelow.svg": "icons/editorActions/addRowBelow.svg"
       }
     }
   }

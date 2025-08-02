@@ -47,7 +47,7 @@ object ParadoxCsvManipulator {
     }
 
     /**
-     * 包含选取范围涉及到的，索引在选取开始与选取结束各自对应的列的索引范围中的所有列。
+     * 包含选取范围涉及到的，索引在选取开始与选取结束各自对应的列的索引区间中的所有列。
      */
     fun buildSelectedColumnSequence(editor: Editor, file: PsiFile): Sequence<ParadoxCsvColumn> {
         return reversibleSequence { operator ->
@@ -82,11 +82,12 @@ object ParadoxCsvManipulator {
                         val endIndex = column.getColumnIndex()
                         val columnsBetween = rows.flatMap { row0 ->
                             when {
-                                row0 == firstRow -> previous.siblings(forward = operator, withSelf = false).filterIsInstance<ParadoxCsvColumn>().takeWhile { it.getColumnIndex() <= endIndex }
-                                row0 == lastRow -> column.siblings(forward = !operator, withSelf = false).filterIsInstance<ParadoxCsvColumn>().takeWhile { it.getColumnIndex() >= startIndex }
-                                    .toList().reversed().asSequence()
-                                else -> row0.children(forward = operator).filterIsInstance<ParadoxCsvColumn>()
-                                    .toList().subList(startIndex, endIndex).asSequence()
+                                row0 == firstRow -> previous.siblings(forward = operator, withSelf = false)
+                                    .filterIsInstance<ParadoxCsvColumn>().takeWhile { it.getColumnIndex() <= endIndex }
+                                row0 == lastRow -> column.siblings(forward = !operator, withSelf = false)
+                                    .filterIsInstance<ParadoxCsvColumn>().takeWhile { it.getColumnIndex() >= startIndex }.toList().reversed().asSequence()
+                                else -> row0.children(forward = operator)
+                                    .filterIsInstance<ParadoxCsvColumn>().toList().subList(startIndex, endIndex).asSequence()
                             }
                         }
                         columnsBetween.forEach {
@@ -102,6 +103,32 @@ object ParadoxCsvManipulator {
             for (caret in allCarets) {
                 val startColumn = findAndYieldStartColumn(caret)
                 findAndYieldEndColumn(caret, previous = startColumn)
+            }
+        }
+    }
+
+    fun findAllColumnsOfIndex(file: PsiFile, index: Int): Sequence<ParadoxCsvColumn> {
+        return file.children().filterIsInstance<ParadoxCsvRowElement>().mapNotNull f@{ rowElement ->
+            val column = rowElement.children().filterIsInstance<ParadoxCsvColumn>().drop(index).firstOrNull()
+            if (column == null || column.getColumnIndex() != index) return@f null
+            column
+        }
+    }
+
+    fun selectElements(editor: Editor, caretModel: CaretModel, elementList: List<PsiElement>) {
+        var usePrimary = true
+        for (element in elementList) {
+            val range = element.textRange
+            if (usePrimary) {
+                val caret = caretModel.primaryCaret
+                caret.moveToOffset(range.startOffset)
+                caret.setSelection(range.startOffset, range.endOffset)
+                caretModel.removeSecondaryCarets()
+                usePrimary = false
+            } else {
+                val caret = caretModel.addCaret(editor.offsetToVisualPosition(range.startOffset), false)
+                caret?.moveToOffset(range.startOffset)
+                caret?.setSelection(range.startOffset, range.endOffset)
             }
         }
     }
