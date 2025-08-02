@@ -231,7 +231,7 @@ object ParadoxDefinitionManager {
             //如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
             val typeKeyFilterConfig = typeConfig.typeKeyFilter
             if (typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
-                val result = typeKeyFilterConfig.where { it.contains(rootKey) }
+                val result = typeKeyFilterConfig.withOperator { it.contains(rootKey) }
                 if (!result) return false
             }
             //如果name_field存在，则要求root_key必须是由type_key_filter指定的所有可能的root_key之一，或者没有指定任何root_key
@@ -308,7 +308,7 @@ object ParadoxDefinitionManager {
         //如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
         val typeKeyFilterConfig = subtypeConfig.typeKeyFilter
         if (typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
-            val filterResult = typeKeyFilterConfig.where { it.contains(rootKey) }
+            val filterResult = typeKeyFilterConfig.withOperator { it.contains(rootKey) }
             if (!filterResult) return false
         }
         //根据config对property进行内容匹配

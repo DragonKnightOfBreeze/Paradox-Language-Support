@@ -63,8 +63,8 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun setValue(element: ParadoxCsvColumn, value: String): ParadoxCsvColumn {
-        val finalValue = if (value.contains(ParadoxCsvManager.getSeparator())) value.quote() else value
-        val newElement = ParadoxCsvElementFactory.createColumn(element.project, finalValue)
+        val extraChars = ParadoxCsvManager.getSeparator().toString()
+        val newElement = ParadoxCsvElementFactory.createColumn(element.project, value.quoteIfNecessary(extraChars = extraChars))
         return element.replace(newElement).cast()
     }
 

@@ -32,16 +32,15 @@ row ::= row_item {
   ]
   methods=[getIcon toString]
 }
-private row_item ::= column column_item_with_separator * {
-  pin=1
-  recoverWhile="#auto"
-}
-private column_item_with_separator ::= <<checkLineBreak>> SEPARATOR column_item ?
-private column_item ::= <<checkLineBreak>> column
-column ::= COLUMN_TOKEN {
+private row_item ::= column_items | column
+private column_items ::= column <<checkEol>> SEPARATOR column_item *
+private column_item ::= <<checkEol>> column [<<checkEol>> SEPARATOR]
+column ::= <<checkColumnToken>> COLUMN_TOKEN ? {
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvExpressionElement"
     "icu.windea.pls.csv.psi.ParadoxCsvLiteralValue"
   ]
   methods=[getIcon getName getValue setValue getReference getReferences toString]
 }
+
+// ;;

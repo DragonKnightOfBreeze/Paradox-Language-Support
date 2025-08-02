@@ -14,6 +14,10 @@ fun ParadoxCsvColumn.getColumnIndex(): Int {
     return index
 }
 
+fun ParadoxCsvRowElement.getColumnSize() : Int {
+    return this.children().count { it.elementType == ParadoxCsvElementTypes.SEPARATOR && it.nextSibling != null } + 1
+}
+
 fun ParadoxCsvRowElement.getColumn(index: Int): ParadoxCsvColumn? {
     var indexRef = 0
     return this.children().takeWhile {

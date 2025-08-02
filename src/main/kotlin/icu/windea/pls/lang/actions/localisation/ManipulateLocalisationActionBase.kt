@@ -14,6 +14,7 @@ import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.manipulators.*
 import icu.windea.pls.localisation.*
+import icu.windea.pls.localisation.psi.*
 import kotlinx.coroutines.*
 
 /**
@@ -76,7 +77,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
         PlsFileManager.processFiles(e, deep = true) p@{ file ->
             if (!isValidFile(file)) return@p true
             val psiFile = file.toPsiFile(project) ?: return@p true
-            r = ParadoxLocalisationManipulator.buildSequence(psiFile).firstOrNull()
+            r = findElements(psiFile).firstOrNull()
             false
         }
         return r != null
@@ -86,6 +87,10 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
         val project = e.project ?: return emptyList()
         val files = PlsFileManager.findFiles(e, deep = true) { file -> isValidFile(file) }
         return files.mapNotNull { it.toPsiFile(project) }
+    }
+
+    protected open fun findElements(psiFile: PsiFile): Sequence<ParadoxLocalisationProperty> {
+        return ParadoxLocalisationManipulator.buildSequence(psiFile)
     }
 
     protected open fun beforeInvokeAll(e: AnActionEvent, project: Project, files: List<PsiFile>): Boolean {

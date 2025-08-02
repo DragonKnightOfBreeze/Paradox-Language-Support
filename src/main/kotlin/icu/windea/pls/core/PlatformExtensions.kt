@@ -796,6 +796,18 @@ fun PsiElement.isSingleLineBreak(): Boolean {
     return this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) == 1
 }
 
+fun PsiBuilder.lookupWithOffset(steps: Int, skipWhitespaces: Boolean = true, forward: Boolean = true): Tuple2<IElementType?, Int> {
+    var offset = steps
+    var token = rawLookup(offset)
+    if (skipWhitespaces) {
+        while (token == TokenType.WHITE_SPACE) {
+            if (forward) offset++ else offset--
+            token = rawLookup(offset)
+        }
+    }
+    return token to offset
+}
+
 //endregion
 
 //region Symbol Extensions

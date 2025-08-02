@@ -288,11 +288,11 @@ object ParadoxCompletionManager {
             val skipRootKeyConfig = typeConfig.skipRootKey
             if (skipRootKeyConfig.isNullOrEmpty()) {
                 if (elementPath.isEmpty()) {
-                    typeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
+                    typeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
                         infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
                     }
                     typeConfig.subtypes.values.forEach { subtypeConfig ->
-                        subtypeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
+                        subtypeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
                             infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
                         }
                     }
@@ -301,11 +301,11 @@ object ParadoxCompletionManager {
                 for (skipConfig in skipRootKeyConfig) {
                     val relative = elementPath.relativeTo(skipConfig) ?: continue
                     if (relative.isEmpty()) {
-                        typeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
+                        typeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
                             infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to null)
                         }
                         typeConfig.subtypes.values.forEach { subtypeConfig ->
-                            subtypeConfig.typeKeyFilter?.takeIfTrue()?.forEach {
+                            subtypeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
                                 infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to subtypeConfig)
                             }
                         }

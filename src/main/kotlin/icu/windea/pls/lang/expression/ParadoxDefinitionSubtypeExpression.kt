@@ -39,7 +39,7 @@ interface ParadoxDefinitionSubtypeExpression {
 
         override fun matches(subtypes: Collection<String>): Boolean {
             //目前仅支持"!"和"&"的组合
-            return this.subtypes.all { t -> t.where { subtypes.contains(it) } }
+            return this.subtypes.all { t -> t.withOperator { subtypes.contains(it) } }
         }
 
         override fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean {

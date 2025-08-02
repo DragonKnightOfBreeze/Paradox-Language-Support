@@ -1,20 +1,18 @@
+@file:Suppress("unused", "NOTHING_TO_INLINE")
+
 package icu.windea.pls.core.util
 
 data class ReversibleValue<T>(
-    val operator: Boolean,
+    override val operator: Boolean,
     val value: T
-)
+): Reversible {
+    override fun reversed(): ReversibleValue<T> = ReversibleValue(!operator, value)
+}
 
-infix fun <T> T.reverseIf(operator: Boolean) = ReversibleValue(operator, this)
+inline fun <T> ReversibleValue<T>.takeWithOperator(): T? = if (operator) value else null
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T> ReversibleValue<T>.takeIfTrue() = if (operator) value else null
+inline fun <T> ReversibleValue<T>.withOperator(predicate: (T) -> Boolean): Boolean = predicate(value).let { if (operator) it else !it }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T> ReversibleValue<T>.takeIfFalse() = if (operator) null else value
-
-inline fun <T> ReversibleValue<T>.where(predicate: (T) -> Boolean) = predicate(value).let { if (operator) it else !it }
-
-fun ReversibleValue(value: String): ReversibleValue<String> {
-    return if (value.startsWith('!')) ReversibleValue(false, value.drop(1)) else ReversibleValue(true, value)
+fun ReversibleValue(expression: String): ReversibleValue<String> {
+    return if (expression.startsWith('!')) ReversibleValue(false, expression.drop(1)) else ReversibleValue(true, expression)
 }

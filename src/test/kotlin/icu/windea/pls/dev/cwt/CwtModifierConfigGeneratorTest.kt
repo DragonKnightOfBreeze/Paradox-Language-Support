@@ -3,6 +3,7 @@ package icu.windea.pls.dev.cwt
 import icu.windea.pls.model.*
 import org.junit.*
 
+@Ignore
 class CwtModifierConfigGeneratorTest {
     @Test
     fun testForCk3() {

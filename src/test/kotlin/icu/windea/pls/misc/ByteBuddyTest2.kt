@@ -7,6 +7,7 @@ import net.bytebuddy.implementation.*
 import net.bytebuddy.matcher.*
 import org.junit.*
 
+@Ignore
 class ByteBuddyTest2 {
     //目标类型已加载 + subtype + 方法调用 - 测试失败
 
@@ -32,11 +33,13 @@ class ByteBuddyTest2 {
             .load(classLoader, ClassLoadingStrategy.Default.INJECTION)
     }
 
+    @Suppress("unused")
     fun Any.customize(n: Int) {
         callSelf(n)
         println("hello $n !!!")
     }
 
+    @Suppress("unused", "UnusedReceiverParameter")
     fun Any.callSelf(vararg args: Any?): Any? {
         //val declaredMethods = this.javaClass.declaredMethods
         //val method = declaredMethods.find { it.name.startsWith("customize\$original") }!!

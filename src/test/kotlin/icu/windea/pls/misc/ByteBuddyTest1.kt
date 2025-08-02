@@ -9,6 +9,7 @@ import net.bytebuddy.matcher.*
 import net.bytebuddy.pool.*
 import org.junit.*
 
+@Ignore
 class ByteBuddyTest1 {
     //目标类型未加载 + rebase + 方法调用 - 测试通过
 
@@ -36,6 +37,7 @@ class ByteBuddyTest1 {
             .load(classLoader, ClassLoadingStrategy.Default.INJECTION)
     }
 
+    @Suppress("unused")
     fun Any.customize(n: Int) {
         callSelf(n)
         println("hello $n !!!")

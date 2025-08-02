@@ -195,7 +195,7 @@ object ParadoxParameterManager {
             if (parameterInfo.conditionStack == null) return@f true
             //如果基于条件表达式上下文是可选的，则为可选
             if (parameterInfo.conditionStack.isNotEmpty() && parameterInfo.conditionStack
-                    .all { it.where { n -> parameterName == n || (argumentNames != null && argumentNames.contains(n)) } }
+                    .all { it.withOperator { n -> parameterName == n || (argumentNames != null && argumentNames.contains(n)) } }
             ) return@f true
             //如果作为传入参数的值，则认为是可选的
             if (parameterInfo.expressionConfigs

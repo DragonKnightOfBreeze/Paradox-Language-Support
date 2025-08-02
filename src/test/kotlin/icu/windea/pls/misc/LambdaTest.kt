@@ -1,6 +1,7 @@
 package icu.windea.pls.misc
 
 import org.junit.Assert
+import org.junit.Assert.*
 import org.junit.Test
 
 class LambdaTest {
@@ -9,8 +10,8 @@ class LambdaTest {
         val h1 = processWithHashCode()
         val h2 = processWithHashCode()
         val h3 = processWithHashCode1()
-        Assert.assertEquals(h1, h2)
-        Assert.assertNotEquals(h1, h3)
+        assertEquals(h1, h2)
+        assertNotEquals(h1, h3)
     }
 
     private fun processWithHashCode(): Int {

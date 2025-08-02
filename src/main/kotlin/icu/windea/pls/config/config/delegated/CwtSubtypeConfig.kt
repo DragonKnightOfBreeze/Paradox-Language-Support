@@ -6,7 +6,7 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
+import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
@@ -54,7 +54,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtSubtypeConfig? {
                 val set = caseInsensitiveStringSet() //忽略大小写
                 set.addAll(values)
                 val o = option.separatorType == CwtSeparatorType.EQUAL
-                typeKeyFilter = set.optimized() reverseIf o
+                typeKeyFilter = ReversibleValue(o, set.optimized())
             }
             "type_key_regex" -> {
                 typeKeyRegex = option.stringValue?.toRegex(RegexOption.IGNORE_CASE)
