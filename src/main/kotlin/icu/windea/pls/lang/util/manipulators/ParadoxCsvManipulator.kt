@@ -115,7 +115,17 @@ object ParadoxCsvManipulator {
         }
     }
 
-    fun selectElements(editor: Editor, caretModel: CaretModel, elementList: List<PsiElement>) {
+    fun selectElement(editor: Editor, element: PsiElement) {
+        val caretModel = editor.caretModel
+        val range = element.textRange
+        val caret = caretModel.primaryCaret
+        caret.moveToOffset(range.startOffset)
+        caret.setSelection(range.startOffset, range.endOffset)
+        caretModel.removeSecondaryCarets()
+    }
+
+    fun selectElements(editor: Editor, elementList: List<PsiElement>) {
+        val caretModel = editor.caretModel
         var usePrimary = true
         for (element in elementList) {
             val range = element.textRange

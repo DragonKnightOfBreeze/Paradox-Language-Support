@@ -393,6 +393,7 @@
     </group>
 
     <group id="Pls.TableManipulation">
+      <action id="Pls.Manipulation.SelectColumnCell" class="icu.windea.pls.lang.actions.csv.SelectColumnCellAction" icon="AllIcons.Actions.InSelection"/>
       <action id="Pls.Manipulation.InsertColumnLeft" class="icu.windea.pls.lang.actions.csv.InsertColumnLeftAction" icon="icu.windea.pls.PlsIcons.EditorActions.AddColumnLeft"/>
       <action id="Pls.Manipulation.InsertColumnRight" class="icu.windea.pls.lang.actions.csv.InsertColumnRightAction" icon="icu.windea.pls.PlsIcons.EditorActions.AddColumnRight"/>
       <action id="Pls.Manipulation.MoveColumnLeft" class="icu.windea.pls.lang.actions.csv.MoveColumnLeftAction" icon="AllIcons.Actions.Back"/>

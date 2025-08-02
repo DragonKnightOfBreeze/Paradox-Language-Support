@@ -114,14 +114,13 @@ class SelectRowAction : ManipulateRowActionBase() {
     override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>) {
         val project = file.project
         val editor = e.editor ?: return
-        val caretModel = editor.caretModel
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
             val elementList = readAction { elements.toList() }
             if (elementList.isEmpty()) return@launch
             val commandName = e.presentation.text
             writeCommandAction(project, commandName) {
-                ParadoxCsvManipulator.selectElements(editor, caretModel, elementList)
+                ParadoxCsvManipulator.selectElements(editor, elementList)
             }
         }
     }
