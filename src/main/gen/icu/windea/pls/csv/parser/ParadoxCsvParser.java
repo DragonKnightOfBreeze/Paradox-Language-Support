@@ -87,37 +87,55 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // column <<checkEol>> SEPARATOR column_item *
+  // column [<<checkEol>> SEPARATOR column_item *]
   static boolean column_items(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "column_items")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = column(b, l + 1);
+    p = r; // pin = 1
+    r = r && column_items_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // [<<checkEol>> SEPARATOR column_item *]
+  private static boolean column_items_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "column_items_1")) return false;
+    column_items_1_0(b, l + 1);
+    return true;
+  }
+
+  // <<checkEol>> SEPARATOR column_item *
+  private static boolean column_items_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "column_items_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = column(b, l + 1);
-    r = r && checkEol(b, l + 1);
+    r = checkEol(b, l + 1);
     r = r && consumeToken(b, SEPARATOR);
-    r = r && column_items_3(b, l + 1);
+    r = r && column_items_1_0_2(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // column_item *
-  private static boolean column_items_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "column_items_3")) return false;
+  private static boolean column_items_1_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "column_items_1_0_2")) return false;
     while (true) {
       int c = current_position_(b);
       if (!column_item(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "column_items_3", c)) break;
+      if (!empty_element_parsed_guard_(b, "column_items_1_0_2", c)) break;
     }
     return true;
   }
 
   /* ********************************************************** */
-  // row_item
+  // column_items
   public static boolean header(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, HEADER, "<header>");
-    r = row_item(b, l + 1);
+    r = column_items(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -174,23 +192,13 @@ public class ParadoxCsvParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // row_item
+  // column_items
   public static boolean row(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "row")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ROW, "<row>");
-    r = row_item(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // column_items | column
-  static boolean row_item(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "row_item")) return false;
-    boolean r;
     r = column_items(b, l + 1);
-    if (!r) r = column(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 

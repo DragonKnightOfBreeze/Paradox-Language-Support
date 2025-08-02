@@ -1,7 +1,14 @@
 package icu.windea.pls.csv.psi
 
-import com.intellij.psi.util.*
 import icu.windea.pls.core.*
+
+fun ParadoxCsvRowElement.getColumnSize(): Int {
+    return this.children().count { it is ParadoxCsvColumn } + 1
+}
+
+fun ParadoxCsvRowElement.getColumn(index: Int): ParadoxCsvColumn? {
+    return this.children().filterIsInstance<ParadoxCsvColumn>().drop(index).firstOrNull()
+}
 
 fun ParadoxCsvColumn.isHeaderColumn(): Boolean {
     val parent = parent
@@ -10,22 +17,8 @@ fun ParadoxCsvColumn.isHeaderColumn(): Boolean {
 
 fun ParadoxCsvColumn.getColumnIndex(): Int {
     val rowElement = parent?.castOrNull<ParadoxCsvRowElement>() ?: return 0
-    val index = rowElement.children().takeWhile { it != this }.count { it.elementType == ParadoxCsvElementTypes.SEPARATOR }
+    val index = rowElement.children().takeWhile { it != this }.count { it is ParadoxCsvColumn }
     return index
-}
-
-fun ParadoxCsvRowElement.getColumnSize() : Int {
-    return this.children().count { it.elementType == ParadoxCsvElementTypes.SEPARATOR && it.nextSibling != null } + 1
-}
-
-fun ParadoxCsvRowElement.getColumn(index: Int): ParadoxCsvColumn? {
-    var indexRef = 0
-    return this.children().takeWhile {
-        if (it.elementType == ParadoxCsvElementTypes.SEPARATOR) {
-            indexRef++
-        }
-        indexRef <= index
-    }.lastOrNull { it is ParadoxCsvColumn }?.castOrNull()
 }
 
 fun ParadoxCsvColumn.getHeaderColumn(): ParadoxCsvColumn? {

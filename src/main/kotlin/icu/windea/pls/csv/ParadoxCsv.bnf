@@ -20,20 +20,21 @@
 
 root ::= COMMENT * header ? (row | COMMENT) *
 
-header ::= row_item {
+header ::= column_items {
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvRowElement"
   ]
   methods=[getIcon toString]
 }
-row ::= row_item {
+row ::= column_items {
   implements=[
     "icu.windea.pls.csv.psi.ParadoxCsvRowElement"
   ]
   methods=[getIcon toString]
 }
-private row_item ::= column_items | column
-private column_items ::= column <<checkEol>> SEPARATOR column_item *
+private column_items ::= column [<<checkEol>> SEPARATOR column_item *] {
+  pin=1
+}
 private column_item ::= <<checkEol>> column [<<checkEol>> SEPARATOR]
 column ::= <<checkColumnToken>> COLUMN_TOKEN ? {
   implements=[
