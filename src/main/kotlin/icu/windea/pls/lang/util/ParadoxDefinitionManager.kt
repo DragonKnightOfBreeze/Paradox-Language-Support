@@ -81,7 +81,7 @@ object ParadoxDefinitionManager {
         val rootKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxExpressionPathManager.getKeyPrefixes(element).firstOrNull() } else null
         val typeConfig = getMatchedTypeConfig(element, configGroup, path, elementPath, rootKey, rootKeyPrefix)
         if (typeConfig == null) return null
-        return ParadoxDefinitionInfo(element, null, typeConfig, null, rootKey, elementPath, gameType, configGroup)
+        return ParadoxDefinitionInfo(element, typeConfig, null, null, rootKey, elementPath, gameType, configGroup)
     }
 
     fun getMatchedTypeConfig(
@@ -251,7 +251,7 @@ object ParadoxDefinitionManager {
         }
 
         if (elementPath != null) {
-            //如果属性skip_root_key存在，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
+            //如果属性skip_root_key存在，则要判断是否需要跳过rootKey
             //skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
             //skip_root_key可以重复（其中之一匹配即可）
             val skipRootKeyConfig = typeConfig.skipRootKey
@@ -260,7 +260,7 @@ object ParadoxDefinitionManager {
             } else {
                 if(elementPath.isEmpty()) return false
                 val input = elementPath.subPaths.dropLast(1)
-                val result = skipRootKeyConfig.any { Matchers.PathMatcher.matches(input, it, true, true) }
+                val result = skipRootKeyConfig.any { Matchers.PathMatcher.matches(input, it, true, true, true) }
                 if (!result) return false
             }
         }
@@ -598,7 +598,7 @@ object ParadoxDefinitionManager {
         val subtypeConfigs = subtypes?.mapNotNull { typeConfig.subtypes[it] }
         val rootKey = stub.rootKey
         val elementPath = stub.elementPath
-        return ParadoxDefinitionInfo(element, name, typeConfig, subtypeConfigs, rootKey, elementPath, gameType, configGroup)
+        return ParadoxDefinitionInfo(element, typeConfig, name, subtypeConfigs, rootKey, elementPath, gameType, configGroup)
     }
 
     //related localisations & images methods
