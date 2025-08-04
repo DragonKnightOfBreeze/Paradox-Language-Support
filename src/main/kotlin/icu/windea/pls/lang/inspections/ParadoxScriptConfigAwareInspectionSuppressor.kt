@@ -12,7 +12,7 @@ import icu.windea.pls.script.psi.*
 //TODO 暂未使用，需要验证
 
 /**
- * 基于CWT规则过滤代码检查。
+ * 基于CWT规则，禁用适用于脚本文件的代码检查。
  */
 class ParadoxScriptConfigAwareInspectionSuppressor : InspectionSuppressor {
     //ParadoxScriptUnresolvedExpression - 从定义级别向下检查

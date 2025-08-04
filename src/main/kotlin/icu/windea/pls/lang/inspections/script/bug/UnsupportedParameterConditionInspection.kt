@@ -20,7 +20,6 @@ class UnsupportedParameterConditionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 checkInlineScript(element, holder)
             }
         }

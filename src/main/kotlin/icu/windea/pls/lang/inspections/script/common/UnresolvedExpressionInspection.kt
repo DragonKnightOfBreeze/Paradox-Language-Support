@@ -57,7 +57,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         val configGroup = PlsFacade.getConfigGroup(project, selectGameType(file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 val result = when (element) {
                     is ParadoxScriptProperty -> visitProperty(element)
                     is ParadoxScriptValue -> visitValue(element)

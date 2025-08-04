@@ -14,7 +14,7 @@ import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 基于特定条件禁用代码检查。
+ * 基于特定条件，禁用适用于脚本文件的代码检查。
  */
 class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
     override fun isSuppressedFor(element: PsiElement, toolId: String): Boolean {
@@ -56,10 +56,9 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         private val fileName: String
     ) : SuppressByCommentFix(toolId, ParadoxScriptFile::class.java) {
         override fun getText(): String {
-            if (toolId == SuppressionUtil.ALL) {
-                return PlsBundle.message("suppress.for.file.all", fileName)
-            } else {
-                return PlsBundle.message("suppress.for.file", fileName)
+            return when (toolId) {
+                SuppressionUtil.ALL -> PlsBundle.message("suppress.for.file.all", fileName)
+                else -> PlsBundle.message("suppress.for.file", fileName)
             }
         }
 
@@ -68,11 +67,10 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
         }
 
         override fun createSuppression(project: Project, element: PsiElement, container: PsiElement) {
-            if (container is PsiFile) {
-                val text = PlsStringConstants.suppressInspectionsTagName + " " + myID
-                val comment = SuppressionUtil.createComment(project, text, ParadoxScriptLanguage)
-                container.addAfter(comment, null)
-            }
+            if (container !is PsiFile) return
+            val text = PlsStringConstants.suppressInspectionsTagName + " " + myID
+            val comment = SuppressionUtil.createComment(project, text, ParadoxScriptLanguage)
+            container.addAfter(comment, null)
         }
     }
 
@@ -110,8 +108,7 @@ class ParadoxScriptInspectionSuppressor : InspectionSuppressor {
 
         override fun getContainer(context: PsiElement?): PsiElement? {
             if (context == null) return null
-            return context.parents(true)
-                .find { it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockMember()) }
+            return context.parents(true).find { it is ParadoxScriptProperty || (it is ParadoxScriptValue && it.isBlockMember()) }
         }
 
         override fun getCommentsFor(container: PsiElement): List<PsiElement> {

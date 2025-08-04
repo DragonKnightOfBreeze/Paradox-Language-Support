@@ -22,7 +22,6 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
         val configGroup = PlsFacade.getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 if (element is ParadoxLocalisationExpressionElement) visitExpressionElement(element)
             }
 

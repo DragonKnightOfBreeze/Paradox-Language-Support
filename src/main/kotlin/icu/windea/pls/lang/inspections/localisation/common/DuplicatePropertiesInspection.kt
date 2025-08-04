@@ -2,7 +2,6 @@ package icu.windea.pls.lang.inspections.localisation.common
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.quickfix.*
@@ -19,12 +18,10 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 if (element is ParadoxLocalisationPropertyList) visitPropertyList(element)
             }
 
             private fun visitPropertyList(element: ParadoxLocalisationPropertyList) {
-                ProgressManager.checkCanceled()
                 val propertyGroup = element.propertyList.groupBy { it.name }
                 if (propertyGroup.isEmpty()) return
                 for ((key, values) in propertyGroup) {

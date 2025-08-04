@@ -38,7 +38,6 @@ class OverriddenForDefinitionInspection : LocalInspectionTool() {
 
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 if (element is ParadoxScriptProperty) {
                     val definitionInfo = element.definitionInfo
                     if (definitionInfo != null) visitDefinition(element, definitionInfo)

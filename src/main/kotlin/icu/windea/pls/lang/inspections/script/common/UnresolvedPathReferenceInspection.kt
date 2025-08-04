@@ -47,12 +47,10 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
         val configGroup = PlsFacade.getConfigGroup(project, selectGameType(file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
             }
 
             private fun visitStringExpressionElement(element: ParadoxScriptStringExpressionElement) {
-                ProgressManager.checkCanceled()
                 val text = element.text
                 if (text.isParameterized()) return //skip if expression is parameterized
                 val valueConfig = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return //match or single

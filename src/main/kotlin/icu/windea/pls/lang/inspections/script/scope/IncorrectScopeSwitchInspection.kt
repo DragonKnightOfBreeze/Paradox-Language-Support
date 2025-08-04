@@ -26,12 +26,10 @@ class IncorrectScopeSwitchInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 if (element is ParadoxScriptProperty) visitScriptProperty(element)
             }
 
             private fun visitScriptProperty(element: ParadoxScriptProperty) {
-                ProgressManager.checkCanceled()
                 val configs = ParadoxExpressionManager.getConfigs(element)
                 val config = configs.firstOrNull()
                 if (config == null) return

@@ -47,7 +47,6 @@ class UnusedDynamicValueInspection : LocalInspectionTool() {
 
             override fun visitElement(element: PsiElement) {
                 if (!shouldVisit(element)) return
-                ProgressManager.checkCanceled()
 
                 val references = element.references
                 for (reference in references) {

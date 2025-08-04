@@ -18,12 +18,10 @@ class IncorrectPathReferenceInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 if (element is ParadoxScriptString) visitExpressionElement(element)
             }
 
             private fun visitExpressionElement(element: ParadoxScriptString) {
-                ProgressManager.checkCanceled()
                 //忽略可能包含参数的表达式
                 if (element.text.isParameterized()) return
                 //得到完全匹配的CWT规则

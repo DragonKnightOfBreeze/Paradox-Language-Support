@@ -18,7 +18,6 @@ class IncorrectSyntaxInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 checkDanglingColorfulTextEndMarker(element)
                 checkDanglingTextFormatEndMarker(element)
             }

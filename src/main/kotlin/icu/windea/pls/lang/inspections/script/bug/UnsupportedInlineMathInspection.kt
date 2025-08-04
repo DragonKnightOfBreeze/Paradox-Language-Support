@@ -21,7 +21,6 @@ class UnsupportedInlineMathInspection : LocalInspectionTool() {
         if (extension == "asset") {
             return object : PsiElementVisitor() {
                 override fun visitElement(element: PsiElement) {
-                    ProgressManager.checkCanceled()
                     if (element is ParadoxScriptInlineMath) {
                         holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedInlineMath.desc.1"))
                     }

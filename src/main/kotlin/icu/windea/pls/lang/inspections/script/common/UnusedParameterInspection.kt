@@ -45,7 +45,6 @@ class UnusedParameterInspection : LocalInspectionTool() {
             }
 
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 if (!shouldVisit(element)) return
 
                 val references = element.references

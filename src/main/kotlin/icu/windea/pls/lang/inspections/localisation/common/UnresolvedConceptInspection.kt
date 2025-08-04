@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.inspections.localisation.common
 
 import com.intellij.codeInspection.*
-import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
@@ -36,7 +35,6 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
         val configGroup = PlsFacade.getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 if (element is ParadoxLocalisationConceptCommand) visitConceptCommand(element)
             }
 

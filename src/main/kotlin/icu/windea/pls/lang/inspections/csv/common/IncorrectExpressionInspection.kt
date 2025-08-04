@@ -36,7 +36,6 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
 
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 if (element is ParadoxCsvColumn) visitColumn(element)
             }
 

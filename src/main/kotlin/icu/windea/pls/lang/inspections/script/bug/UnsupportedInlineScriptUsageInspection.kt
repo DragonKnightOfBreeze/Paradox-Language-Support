@@ -22,7 +22,6 @@ class UnsupportedInlineScriptUsageInspection : LocalInspectionTool() {
         if (extension == "asset") {
             return object : PsiElementVisitor() {
                 override fun visitElement(element: PsiElement) {
-                    ProgressManager.checkCanceled()
                     if (element is ParadoxScriptProperty) {
                         if (ParadoxInlineScriptManager.getUsageInfo(element) != null) {
                             holder.registerProblem(element, PlsBundle.message("inspection.script.unsupportedInlineScriptUsage.desc.1"))

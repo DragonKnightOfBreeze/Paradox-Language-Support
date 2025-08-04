@@ -47,11 +47,7 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
 
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
-                if (element is ParadoxScriptScriptedVariable) {
-                    if (element.parent !is ParadoxScriptRootBlock) return
-                    visitScriptedVariable(element)
-                }
+                if (element is ParadoxScriptScriptedVariable) visitScriptedVariable(element)
             }
 
             private fun visitScriptedVariable(element: ParadoxScriptScriptedVariable) {

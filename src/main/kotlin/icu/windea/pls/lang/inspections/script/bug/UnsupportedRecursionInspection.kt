@@ -29,7 +29,6 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 when (element) {
                     is ParadoxScriptScriptedVariable -> visitScriptedVariable(element)
                     is ParadoxScriptProperty -> visitProperty(element)

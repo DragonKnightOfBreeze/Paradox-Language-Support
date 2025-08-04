@@ -61,7 +61,6 @@ class MissingLocalisationInspection : LocalInspectionTool() {
         if (locales.isEmpty()) return PsiElementVisitor.EMPTY_VISITOR
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 when (element) {
                     is ParadoxScriptDefinitionElement -> visitDefinition(element)
                     is ParadoxScriptStringExpressionElement -> visitStringExpressionElement(element)

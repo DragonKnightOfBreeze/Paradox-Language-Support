@@ -39,7 +39,6 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
 
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 if(element is ParadoxCsvRow) visitRow(element)
             }
 

@@ -28,7 +28,6 @@ class MissingParameterInspection : LocalInspectionTool() {
             }
 
             override fun visitElement(element: PsiElement) {
-                ProgressManager.checkCanceled()
                 if (!shouldVisit(element)) return
 
                 val from = ParadoxParameterContextReferenceInfo.From.ContextReference
