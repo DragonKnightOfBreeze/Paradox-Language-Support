@@ -19,11 +19,23 @@ import org.jetbrains.annotations.*
  * （对于脚本文件）检查是否存在对（全局）封装变量的重载。
  */
 class OverriddenForScriptedVariableInspection : LocalInspectionTool() {
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        if (selectRootFile(file) == null) return false
+        if (!inProject(file)) return false //only for project files
+        return true
+    }
+
+    private fun inProject(file: PsiFile): Boolean {
+        val vFile = file.virtualFile ?: return false
+        return ProjectFileIndex.getInstance(file.project).isInContent(vFile)
+    }
+
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         val project = holder.project
-        if (!shouldCheckFile(file)) return PsiElementVisitor.EMPTY_VISITOR
-        val fileInfo = file.fileInfo ?: return PsiElementVisitor.EMPTY_VISITOR
+        val fileInfo = file.fileInfo
+        if (fileInfo == null) return PsiElementVisitor.EMPTY_VISITOR
+
         val isGlobal = "common/scripted_variables".matchesPath(fileInfo.path.path)
         if (!isGlobal) return PsiElementVisitor.EMPTY_VISITOR //only for global scripted variables
         val virtualFile = file.virtualFile
@@ -53,11 +65,6 @@ class OverriddenForScriptedVariableInspection : LocalInspectionTool() {
                 holder.registerProblem(locationElement, message, fix)
             }
         }
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
     }
 
     private class NavigateToOverriddenScriptedVariablesFix(key: String, element: PsiElement, elements: Collection<PsiElement>) : NavigateToFix(key, element, elements) {

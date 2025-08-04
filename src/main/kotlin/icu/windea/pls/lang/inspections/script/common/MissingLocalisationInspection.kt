@@ -48,9 +48,12 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 
     var localeSet: Set<String> by ::locales.fromCommandDelimitedString()
 
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        if (selectRootFile(file) == null) return false
+        return true
+    }
 
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val allLocaleMap = ParadoxLocaleManager.getLocaleConfigs().associateBy { it.id }
         val locales = mutableSetOf<CwtLocaleConfig>()
         if (checkForPreferredLocale) locales.add(ParadoxLocaleManager.getPreferredLocaleConfig())
@@ -127,11 +130,6 @@ class MissingLocalisationInspection : LocalInspectionTool() {
                 }
             }
         }
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
     }
 
     override fun createOptionsPanel(): JComponent {

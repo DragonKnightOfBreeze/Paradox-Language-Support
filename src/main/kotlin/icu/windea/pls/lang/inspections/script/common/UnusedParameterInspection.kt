@@ -22,9 +22,12 @@ import icu.windea.pls.script.psi.*
  * 例如：有`some_effect = {PARAM = some_value}`但没有`some_effect = { some_prop = $PARAM$ }`，后者是定义的声明。
  */
 class UnusedParameterInspection : LocalInspectionTool() {
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
-        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        if (selectRootFile(file) == null) return false
+        return true
+    }
 
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val project = holder.project
         val file = holder.file
         //compute once per file
@@ -87,11 +90,6 @@ class UnusedParameterInspection : LocalInspectionTool() {
                 holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNUSED_SYMBOL, range)
             }
         }
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
     }
 }
 

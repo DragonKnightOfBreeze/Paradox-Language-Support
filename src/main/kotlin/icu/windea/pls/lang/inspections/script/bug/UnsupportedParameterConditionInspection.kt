@@ -12,20 +12,18 @@ import icu.windea.pls.script.psi.*
  * （对于脚本文件）检查是否在不支持的地方使用了参数条件块。
  */
 class UnsupportedParameterConditionInspection : LocalInspectionTool() {
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        if (selectRootFile(file) == null) return false
+        return true
+    }
 
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
                 checkInlineScript(element, holder)
             }
         }
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
     }
 
     private fun checkInlineScript(element: PsiElement, holder: ProblemsHolder) {

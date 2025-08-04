@@ -19,14 +19,22 @@ import org.jetbrains.annotations.*
  * （对于脚本文件）检查是否存在对定义的重载。
  */
 class OverriddenForDefinitionInspection : LocalInspectionTool() {
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        if (selectRootFile(file) == null) return false
+        if (!inProject(file)) return false //only for project files
+        return true
+    }
+
+    private fun inProject(file: PsiFile): Boolean {
+        val vFile = file.virtualFile ?: return false
+        return ProjectFileIndex.getInstance(file.project).isInContent(vFile)
+    }
+
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         val project = holder.project
-        if (!shouldCheckFile(file)) return PsiElementVisitor.EMPTY_VISITOR
-        file.fileInfo ?: return PsiElementVisitor.EMPTY_VISITOR
-        val virtualFile = file.virtualFile
-        val inProject = virtualFile != null && ProjectFileIndex.getInstance(project).isInContent(virtualFile)
-        if (!inProject) return PsiElementVisitor.EMPTY_VISITOR //only for project files
+        val fileInfo = file.fileInfo
+        if (fileInfo == null) return PsiElementVisitor.EMPTY_VISITOR
 
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -52,11 +60,6 @@ class OverriddenForDefinitionInspection : LocalInspectionTool() {
                 holder.registerProblem(locationElement, message, fix)
             }
         }
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
     }
 
     private class NavigateToOverriddenDefinitionsFix(key: String, element: PsiElement, elements: Collection<PsiElement>) : NavigateToFix(key, element, elements) {

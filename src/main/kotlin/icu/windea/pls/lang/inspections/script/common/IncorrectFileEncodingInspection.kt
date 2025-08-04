@@ -22,9 +22,13 @@ import icu.windea.pls.model.constants.*
  * @see icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
-        if (!shouldCheckFile(file)) return null
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (selectRootFile(file) == null) return false
+        return true
+    }
 
+    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
         val virtualFile = file.virtualFile ?: return null
         val fileInfo = virtualFile.fileInfo ?: return null //无法获取文件信息时跳过检查
         val charset = virtualFile.charset
@@ -39,21 +43,15 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
                 else -> null
             }
         }
-        val isValidBom = if(validBom != null) hasBom == validBom else true
+        val isValidBom = if (validBom != null) hasBom == validBom else true
         if (isValidCharset && isValidBom) return null
 
         val holder = ProblemsHolder(manager, file, isOnTheFly)
-        val expect = "UTF-8" + if(validBom == null) "" else if(validBom) " BOM" else " NO BOM"
+        val expect = "UTF-8" + if (validBom == null) "" else if (validBom) " BOM" else " NO BOM"
         val actual = "UTF-8" + if (hasBom) " BOM" else " NO BOM"
         val message = PlsBundle.message("inspection.script.incorrectFileEncoding.desc.1", actual, expect)
         val fix = ChangeFileEncodingFix(file, Charsets.UTF_8, validBom)
         holder.registerProblem(file, message, fix)
         return holder.resultsArray
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (PlsFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
-        if (selectRootFile(file) == null) return false
-        return true
     }
 }

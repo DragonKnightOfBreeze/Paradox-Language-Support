@@ -18,9 +18,12 @@ import org.jetbrains.annotations.*
 class UnsupportedRecursionInspection : LocalInspectionTool() {
     //目前仅做检查即可，不需要显示递归的装订线图标
 
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        val fileInfo = file.fileInfo ?: return false
+        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
+    }
 
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -41,11 +44,6 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
                 holder.registerProblem(location, message, NavigateToRecursionFix(name, element, recursions))
             }
         }
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        val fileInfo = file.fileInfo ?: return false
-        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
     }
 
     private class NavigateToRecursionFix(key: String, target: PsiElement, recursions: Collection<PsiElement>) : NavigateToFix(key, target, recursions) {

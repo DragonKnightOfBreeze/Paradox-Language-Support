@@ -12,9 +12,12 @@ import icu.windea.pls.script.psi.*
  * 不正确的表达式的检查。
  */
 class IncorrectExpressionInspection : LocalInspectionTool() {
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        if (selectRootFile(file) == null) return false
+        return true
+    }
 
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -37,11 +40,6 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                 //TODO 1.3.26+ 应当也适用于各种复杂表达式中的数据源
             }
         }
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
     }
 }
 

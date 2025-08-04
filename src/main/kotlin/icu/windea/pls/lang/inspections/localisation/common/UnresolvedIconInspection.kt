@@ -23,9 +23,13 @@ class UnresolvedIconInspection : LocalInspectionTool() {
     @JvmField
     var ignoredInInjectedFiles = false
 
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(file.virtualFile)) return false
+        val fileInfo = file.fileInfo ?: return false
+        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
+    }
 
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
@@ -43,12 +47,6 @@ class UnresolvedIconInspection : LocalInspectionTool() {
                 holder.registerProblem(location, PlsBundle.message("inspection.localisation.unresolvedIcon.desc", name), ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
             }
         }
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(file.virtualFile)) return false
-        val fileInfo = file.fileInfo ?: return false
-        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
     }
 
     override fun createOptionsPanel(): JComponent {

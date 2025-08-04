@@ -14,9 +14,15 @@ import icu.windea.pls.script.psi.*
 class NonTriggeredEventInspection : LocalInspectionTool() {
     //see: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/88
 
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        if (!shouldCheckFile(file)) return null
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        //仅检查事件脚本文件
+        if (file !is ParadoxScriptFile) return false
+        val fileInfo = file.fileInfo ?: return false
+        val filePath = fileInfo.path
+        return "txt" == filePath.fileExtension && "events".matchesPath(filePath.path)
+    }
 
+    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         val holder = ProblemsHolder(manager, file, isOnTheFly)
 
         file as ParadoxScriptFile
@@ -34,14 +40,6 @@ class NonTriggeredEventInspection : LocalInspectionTool() {
         }
 
         return holder.resultsArray
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        //仅检查事件脚本文件
-        if (file !is ParadoxScriptFile) return false
-        val fileInfo = file.fileInfo ?: return false
-        val filePath = fileInfo.path
-        return "txt" == filePath.fileExtension && "events".matchesPath(filePath.path)
     }
 
     private class Fix1(

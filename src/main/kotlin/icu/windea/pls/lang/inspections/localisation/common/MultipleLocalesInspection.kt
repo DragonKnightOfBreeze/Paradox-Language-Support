@@ -18,9 +18,13 @@ class MultipleLocalesInspection : LocalInspectionTool() {
     @JvmField
     var ignoredFileNames = "languages.yml"
 
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        return true
+    }
+
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
         if (file !is ParadoxLocalisationFile) return null
-        if (!shouldCheckFile(file)) return null
 
         val fileName = file.name
         ignoredFileNames.splitOptimized(';').forEach {
@@ -30,11 +34,6 @@ class MultipleLocalesInspection : LocalInspectionTool() {
         val holder = ProblemsHolder(manager, file, isOnTheFly)
         holder.registerProblem(file, PlsBundle.message("inspection.localisation.multipleLocales.desc"), ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         return holder.resultsArray
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (PlsFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
-        return true
     }
 
     override fun createOptionsPanel(): JComponent {

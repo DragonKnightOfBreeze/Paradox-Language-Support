@@ -14,9 +14,12 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        if (selectRootFile(file) == null) return false
+        return true
+    }
 
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val configGroup = PlsFacade.getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -62,10 +65,5 @@ class IncorrectScopeLinkChainInspection : LocalInspectionTool() {
                 holder.registerProblem(element, range, description)
             }
         }
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (selectRootFile(file) == null) return false
-        return true
     }
 }

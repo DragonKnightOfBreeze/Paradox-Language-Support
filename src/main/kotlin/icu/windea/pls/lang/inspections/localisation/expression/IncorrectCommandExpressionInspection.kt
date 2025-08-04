@@ -19,9 +19,12 @@ import icu.windea.pls.localisation.psi.*
  * 不正确的[ParadoxCommandExpression]的检查。
  */
 class IncorrectCommandExpressionInspection : LocalInspectionTool() {
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        val fileInfo = file.fileInfo ?: return false
+        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
+    }
 
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val configGroup = PlsFacade.getConfigGroup(holder.project, selectGameType(holder.file))
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -40,11 +43,6 @@ class IncorrectCommandExpressionInspection : LocalInspectionTool() {
                 errors.forEach { error -> error.register(element, holder, fix) }
             }
         }
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        val fileInfo = file.fileInfo ?: return false
-        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
     }
 
     private class EscapeCommandFix(

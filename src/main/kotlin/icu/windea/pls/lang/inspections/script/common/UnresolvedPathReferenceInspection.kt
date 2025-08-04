@@ -34,9 +34,14 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     @JvmField
     var ignoredInInlineScriptFiles = false
 
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(file.virtualFile)) return false
+        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
+        if (selectRootFile(file) == null) return false
+        return true
+    }
 
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         val project = holder.project
         val configGroup = PlsFacade.getConfigGroup(project, selectGameType(file))
@@ -90,13 +95,6 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
                 return false
             }
         }
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(file.virtualFile)) return false
-        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
-        if (selectRootFile(file) == null) return false
-        return true
     }
 
     override fun createOptionsPanel(): JComponent {

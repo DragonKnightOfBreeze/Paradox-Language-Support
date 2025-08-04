@@ -23,9 +23,14 @@ import icu.windea.pls.localisation.psi.*
  * * 改为正确的语言区域名
  */
 class IncorrectFileNameInspection : LocalInspectionTool() {
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        val fileInfo = file.fileInfo ?: return false
+        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
+    }
+
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if (file !is ParadoxLocalisationFile) return null
-        if (!shouldCheckFile(file)) return null
 
         //仅对于存在且仅存在一个locale的本地化文件
         var theOnlyPropertyList: ParadoxLocalisationPropertyList? = null
@@ -53,12 +58,6 @@ class IncorrectFileNameInspection : LocalInspectionTool() {
         //将检查注册在locale上，而非file上
         holder.registerProblem(locale, PlsBundle.message("inspection.localisation.incorrectFileName.desc", fileName, localeId), *quickFixes)
         return holder.resultsArray
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (PlsFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
-        val fileInfo = file.fileInfo ?: return false
-        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
     }
 
     //org.jetbrains.kotlin.idea.intentions.RenameFileToMatchClassIntention

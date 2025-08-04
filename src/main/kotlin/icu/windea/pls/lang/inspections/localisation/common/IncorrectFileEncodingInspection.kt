@@ -21,9 +21,13 @@ import icu.windea.pls.model.constants.*
  * @see icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool() {
-    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
-        if (!shouldCheckFile(file)) return null
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        val fileInfo = file.fileInfo ?: return false
+        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
+    }
 
+    override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<out ProblemDescriptor>? {
         val virtualFile = file.virtualFile ?: return null
         val charset = virtualFile.charset
         val hasBom = virtualFile.hasBom(PlsConstants.utf8Bom)
@@ -38,11 +42,5 @@ class IncorrectFileEncodingInspection : LocalInspectionTool() {
         val fix = ChangeFileEncodingFix(file, Charsets.UTF_8, true)
         holder.registerProblem(file, message, fix)
         return holder.resultsArray
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (PlsFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
-        val fileInfo = file.fileInfo ?: return false
-        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
     }
 }

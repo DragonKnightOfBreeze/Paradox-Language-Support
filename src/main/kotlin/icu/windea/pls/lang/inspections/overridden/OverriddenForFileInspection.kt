@@ -19,20 +19,28 @@ import org.jetbrains.annotations.*
  * 检查是否存在对文件的重载
  */
 class OverriddenForFileInspection : LocalInspectionTool() {
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        if (PlsFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (selectRootFile(file) == null) return false
+        if (!inProject(file)) return false //only for project files
+        return true
+    }
+
+    private fun inProject(file: PsiFile): Boolean {
+        val vFile = file.virtualFile ?: return false
+        return ProjectFileIndex.getInstance(file.project).isInContent(vFile)
+    }
+
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val file = holder.file
         val project = holder.project
-        if (!shouldCheckFile(file)) return PsiElementVisitor.EMPTY_VISITOR
         val fileInfo = file.fileInfo ?: return PsiElementVisitor.EMPTY_VISITOR
         if (!shouldCheckFile(file, fileInfo.fileType)) return PsiElementVisitor.EMPTY_VISITOR
-        val virtualFile = file.virtualFile
-        val inProject = virtualFile != null && ProjectFileIndex.getInstance(project).isInContent(virtualFile)
-        if (!inProject) return PsiElementVisitor.EMPTY_VISITOR //only for project files
 
         return object : PsiElementVisitor() {
             override fun visitFile(file: PsiFile) {
                 ProgressManager.checkCanceled()
-                val selector = selector(project, virtualFile).file()
+                val selector = selector(project, file).file()
                 val path = fileInfo.path.path
                 val results = ParadoxFilePathSearch.search(path, null, selector).findAll().mapNotNull { it.toPsiFile(project) }
                 if (results.size < 2) return //no override -> skip
@@ -43,12 +51,6 @@ class OverriddenForFileInspection : LocalInspectionTool() {
                 holder.registerProblem(locationElement, message, fix)
             }
         }
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
-        if (PlsFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
-        if (selectRootFile(file) == null) return false
-        return true
     }
 
     private fun shouldCheckFile(file: PsiFile, fileType: ParadoxFileType): Boolean {
