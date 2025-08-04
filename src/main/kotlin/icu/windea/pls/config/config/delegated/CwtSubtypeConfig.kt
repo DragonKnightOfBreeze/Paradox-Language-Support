@@ -18,7 +18,7 @@ interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> 
     @Option("type_key_regex: string?")
     val typeKeyRegex: Regex?
     @Option("starts_with: string?")
-    val startsWith: @CaseInsensitive String?
+    val startsWith: String?
     @Option("only_if_not: string[]?")
     val onlyIfNot: Set<String>?
 
@@ -57,7 +57,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtSubtypeConfig? {
             "type_key_regex" -> {
                 typeKeyRegex = option.stringValue?.toRegex(RegexOption.IGNORE_CASE)
             }
-            "starts_with" -> startsWith = option.stringValue ?: continue //忽略大小写
+            "starts_with" -> startsWith = option.stringValue ?: continue //不忽略大小写
             "only_if_not" -> onlyIfNot = option.getOptionValueOrValues() ?: continue
         }
     }
