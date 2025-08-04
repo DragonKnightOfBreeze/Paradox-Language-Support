@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.inspections.csv.common
 
 import com.intellij.codeInspection.*
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
@@ -31,23 +30,24 @@ class IncorrectColumnSizeInspection : LocalInspectionTool() {
         val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
 
-        //如果表头中的列数与期望的不一致，则直接跳过检查
+        val expectColumnSize = rowConfig.columns.size
 
-        val expectColumnSize = rowConfig.columnConfigs.size
-        val headerColumnSize = header.columnList.size
+        //如果表头中的列数与期望的不一致，则直接跳过检查
+        val headerColumnSize = ParadoxCsvManager.computeHeaderColumnSize(header)
         if (headerColumnSize != expectColumnSize) return PsiElementVisitor.EMPTY_VISITOR
 
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
-                if(element is ParadoxCsvRow) visitRow(element)
+                if (element is ParadoxCsvRow) visitRow(element)
             }
 
             private fun visitRow(element: ParadoxCsvRow) {
-                val columnSize = element.columnList.size
+                val columnSize = ParadoxCsvManager.computeColumnSize(element)
                 if (columnSize == expectColumnSize) return
 
-                val description = PlsBundle.message("inspection.csv.incorrectColumnSize.desc.1", expectColumnSize, columnSize, rowConfig.name)
-                holder.registerProblem(element, description)
+                val locationElement = element.lastChild ?: return //latest non-empty column or separator
+                val description = PlsBundle.message("inspection.csv.incorrectColumnSize.desc.1", rowConfig.name, expectColumnSize, columnSize)
+                holder.registerProblem(locationElement, description)
             }
         }
     }

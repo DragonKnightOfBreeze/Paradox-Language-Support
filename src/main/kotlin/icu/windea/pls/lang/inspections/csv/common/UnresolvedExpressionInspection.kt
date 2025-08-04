@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.inspections.csv.common
 
 import com.intellij.codeInspection.*
-import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.csv.psi.*
@@ -43,6 +43,12 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 val config = columnConfig.valueConfig ?: return
 
                 val description = PlsBundle.message("inspection.csv.unresolvedExpression.desc.1", element.name, columnConfig.key, config.value)
+                if (element.isEmptyColumn()) { //special handle for empty columns
+                    val isFirst = element.getColumnIndex() == 0
+                    val locationElement = element.siblings(forward = isFirst).find { it.elementType == ParadoxCsvElementTypes.SEPARATOR } ?: return
+                    holder.registerProblem(locationElement, description)
+                    return
+                }
                 holder.registerProblem(element, description)
             }
         }

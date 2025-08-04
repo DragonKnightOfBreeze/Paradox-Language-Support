@@ -3,16 +3,14 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
+import icu.windea.pls.config.config.CwtConfig.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.util.*
 
-/**
- * @property name string
- * @property supportedScopes (property) supported_scopes: string | string[]
- */
 interface CwtModifierCategoryConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
+    @Property("supported_scopes: string | string[]")
     val supportedScopes: Set<String>
 
     companion object Resolver {

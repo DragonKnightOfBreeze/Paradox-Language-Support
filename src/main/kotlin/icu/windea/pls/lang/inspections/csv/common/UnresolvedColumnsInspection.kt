@@ -4,7 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.csv.psi.ParadoxCsvFile
+import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import javax.swing.*
@@ -37,15 +37,16 @@ class UnresolvedColumnsInspection : LocalInspectionTool() {
                 val header = file.header ?: return
                 val headerColumns = header.columnList
                 val unresolvedKeys = headerColumns.map { it.name }.toMutableSet()
-                unresolvedKeys -= rowConfig.columnConfigs.keys
+                unresolvedKeys -= rowConfig.columns.keys
+                rowConfig.endColumn?.let { endColumn -> unresolvedKeys -= endColumn }
                 if (unresolvedKeys.isEmpty()) return
 
                 val hasEmpty = unresolvedKeys.remove("")
-                if(unresolvedKeys.isNotEmpty()) {
+                if (unresolvedKeys.isNotEmpty()) {
                     val description = PlsBundle.message("inspection.csv.unresolvedColumns.desc.1", unresolvedKeys.joinToString(", "), rowConfig.name)
                     holder.registerProblem(file, description)
                 }
-                if(hasEmpty) {
+                if (hasEmpty) {
                     val description = PlsBundle.message("inspection.csv.unresolvedColumns.desc.2", rowConfig.name)
                     holder.registerProblem(file, description)
                 }

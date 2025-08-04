@@ -1,14 +1,11 @@
 package icu.windea.pls.lang.inspections.csv.common
 
 import com.intellij.codeInspection.*
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.ep.inspection.ParadoxIncorrectExpressionChecker
+import icu.windea.pls.csv.psi.*
+import icu.windea.pls.ep.inspection.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import javax.swing.*
@@ -40,6 +37,8 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
             }
 
             private fun visitColumn(element: ParadoxCsvColumn) {
+                if (element.isEmptyColumn()) return //skip empty columns
+
                 if (element.isHeaderColumn()) return
                 val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return
                 if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return

@@ -36,7 +36,7 @@ class MissingColumnsInspection : LocalInspectionTool() {
                 val rowConfig = ParadoxCsvManager.getRowConfig(file) ?: return
                 val header = file.header ?: return
                 val headerColumns = header.columnList
-                val missingKeys = rowConfig.columnConfigs.keys.toMutableSet()
+                val missingKeys = rowConfig.columns.keys.toMutableSet()
                 missingKeys -= headerColumns.map { it.name }.toSet()
                 if (missingKeys.isEmpty()) return
 

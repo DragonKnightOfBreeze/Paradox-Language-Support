@@ -3,21 +3,18 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
+import icu.windea.pls.config.config.CwtConfig.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
-/**
- * @property name string
- * @property subName expression
- * @property supportedScopes (option) scope/scopes: string | string[]
- * @property outputScope (option) push_scope: string?
- */
 interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
     val subName: String
+    @Option("scope/scopes: string | string[]")
     val supportedScopes: Set<String>
+    @Option("push_scope: string?")
     val outputScope: String?
 
     val subNameExpression: CwtDataExpression

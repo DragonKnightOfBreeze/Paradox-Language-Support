@@ -5,12 +5,9 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.util.*
 import icu.windea.pls.cwt.psi.*
 
-/**
- * @property name template_expression
- * @property type (option) type: string
- */
 interface CwtExtendedDefinitionConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
+    @CwtConfig.Option("type: string")
     val type: String
 
     companion object Resolver {

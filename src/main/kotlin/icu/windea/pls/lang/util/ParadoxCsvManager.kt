@@ -27,6 +27,12 @@ object ParadoxCsvManager {
         return doGetRowConfigFromCache(file)
     }
 
+    fun getRowConfig(element: ParadoxCsvRowElement): CwtRowConfig? {
+        val file = element.containingFile
+        if (file !is ParadoxCsvFile) return null
+        return doGetRowConfigFromCache(file)
+    }
+
     private fun doGetRowConfigFromCache(file: ParadoxCsvFile): CwtRowConfig? {
         return CachedValuesManager.getCachedValue(file, Keys.cachedRowConfig) {
             val value = doGetRowConfig(file)
@@ -73,7 +79,7 @@ object ParadoxCsvManager {
             else -> column.getHeaderColumn()?.name
         }
         if (headerName.isNullOrEmpty()) return null
-        return rowConfig.columnConfigs[headerName]
+        return rowConfig.columns[headerName]
     }
 
     fun isMatchedColumnConfig(column: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): Boolean {
@@ -82,5 +88,23 @@ object ParadoxCsvManager {
         }
         val configExpression = columnConfig.valueConfig?.configExpression ?: return false
         return ParadoxCsvExpressionMatcher.matches(column, column.text, configExpression, columnConfig.configGroup).get(matchOptions)
+    }
+
+    fun computeHeaderColumnSize(element: ParadoxCsvHeader): Int {
+        val columnList = element.columnList
+        if (lastIsEndColumn(element, columnList)) return columnList.size - 1
+        return columnList.size
+    }
+
+    private fun lastIsEndColumn(element: ParadoxCsvHeader, columnList: List<ParadoxCsvColumn>): Boolean {
+        val lastColumn = columnList.lastOrNull() ?: return false
+        val rowConfig = getRowConfig(element) ?: return false
+        val name = lastColumn.name
+        return name.isNotEmpty() && name == rowConfig.endColumn
+    }
+
+    fun computeColumnSize(element: ParadoxCsvRow): Int {
+        val columnList = element.columnList
+        return columnList.size
     }
 }

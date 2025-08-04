@@ -3,31 +3,29 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
+import icu.windea.pls.config.config.CwtConfig.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.util.*
 
-/**
- * @property name string
- * @property type (property) type: string?
- * @property fromData (property) from_data: boolean
- * @property fromArgument (property) from_argument: boolean
- * @property prefix (property) prefix: string?
- * @property dataSource (property) data_source: expression?
- * @property inputScopes (property) input_scopes: string[]
- * @property outputScope (property) output_scope: string?
- * @property forDefinitionType (property) for_definition_type: string?
- */
 interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
+    @Property("type: string?")
     val type: String?
+    @Property("from_data: boolean", defaultValue = "false")
     val fromData: Boolean
+    @Property("from_argument: boolean", defaultValue = "false")
     val fromArgument: Boolean
+    @Property("prefix: string?")
     val prefix: String?
+    @Property("data_source: string?")
     val dataSource: String?
+    @Property("input_scopes: string[]")
     val inputScopes: Set<String>
+    @Property("output_scope: string?")
     val outputScope: String?
+    @Property("for_definition_type: string?")
     val forDefinitionType: String?
     val forLocalisation: Boolean
 

@@ -3,16 +3,14 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
+import icu.windea.pls.config.config.CwtConfig.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 
-/**
- * @property name template_expression
- * @property contextConfigsType (option) context_configs_type: string = "single" ("single" | "multiple")
- */
 interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
+    @Option("context_configs_type: string", defaultValue = "single", allowedValues = ["single", "multiple"])
     val contextConfigsType: String
 
     /**

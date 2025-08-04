@@ -10,8 +10,11 @@ fun ParadoxCsvRowElement.getColumn(index: Int): ParadoxCsvColumn? {
     return this.children().filterIsInstance<ParadoxCsvColumn>().drop(index).firstOrNull()
 }
 
+fun ParadoxCsvColumn.isEmptyColumn(): Boolean {
+    return firstChild == null
+}
+
 fun ParadoxCsvColumn.isHeaderColumn(): Boolean {
-    val parent = parent
     return parent is ParadoxCsvHeader
 }
 

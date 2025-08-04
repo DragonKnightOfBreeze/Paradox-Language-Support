@@ -5,14 +5,10 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.util.*
 import icu.windea.pls.cwt.psi.*
 
-/**
- * @property name template_expression
- * @property type string
- * @property hint (option) hint: string?
- */
 interface CwtExtendedComplexEnumValueConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
     val type: String
+    @CwtConfig.Option("hint: string?")
     val hint: String?
 
     companion object Resolver {

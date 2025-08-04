@@ -725,7 +725,7 @@ object ParadoxCompletionManager {
             .filterIsInstance<ParadoxCsvColumn> { it != column }
             .map { it.value }
             .toSet()
-        val columnConfigs = rowConfig.columnConfigs.filterNot { it.key in existingHeaderNames }.values
+        val columnConfigs = rowConfig.columns.filterNot { it.key in existingHeaderNames }.values
         if(columnConfigs.isEmpty()) return
         columnConfigs.forEach f@{ columnConfig ->
             ProgressManager.checkCanceled()

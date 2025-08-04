@@ -4,6 +4,7 @@ package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
+import icu.windea.pls.config.config.CwtConfig.Option
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
@@ -12,16 +13,13 @@ import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
-/**
- * @property name (key) template_expression
- * @property contextKey (option) context_key: string
- * @property contextConfigsType (option) context_configs_type: string = "single" ("single" | "multiple")
- * @property inherit (option value) inherit
- */
 interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
+    @Option("context_key: string")
     val contextKey: String
+    @Option("context_configs_type: string", defaultValue = "single", allowedValues = ["single", "multiple"])
     val contextConfigsType: String
+    @Option("inherit")
     val inherit: Boolean
 
     /**

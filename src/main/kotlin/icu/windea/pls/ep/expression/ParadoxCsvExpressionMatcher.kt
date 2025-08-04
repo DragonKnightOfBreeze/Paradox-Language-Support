@@ -46,9 +46,6 @@ interface ParadoxCsvExpressionMatcher {
             configExpression: CwtDataExpression,
             configGroup: CwtConfigGroup,
         ): Result {
-            //optimized for empty column
-            if (expressionText.isEmpty()) return Result.ofFallback(configExpression.type == CwtDataTypes.Scalar)
-
             EP_NAME.extensionList.forEach f@{ ep ->
                 val r = ep.matches(element, expressionText, configExpression, configGroup)
                 if (r != null) return r

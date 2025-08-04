@@ -78,6 +78,7 @@ rows = {
         columns = {
             $scalar = $data_expression
         }
+        end_column = $scalar
     }
 }
 

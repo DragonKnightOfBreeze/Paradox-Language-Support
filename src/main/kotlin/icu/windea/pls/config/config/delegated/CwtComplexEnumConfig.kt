@@ -4,30 +4,21 @@ package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.config.CwtConfig.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 
 /**
- * @property name string
- * @property paths (property) path: string
- * @property pathFile (property) path_file: string
- * @property pathExtension (property) path_extension: string
- * @property pathStrict (property) path_strict: boolean
- * @property pathPatterns (property*) path_pattern: string
- * @property startFromRoot (property) start_from_root: boolean
- * @property searchScopeType (property) search_scope_type: string 查询作用域，认为仅该作用域下的复杂枚举值是等同的。（目前支持：definition）
+ * @property searchScopeType 查询作用域，认为仅该作用域下的复杂枚举值是等同的。（目前支持：definition）
  * @property nameConfig `name`对应的CWT规则。
  * @property enumNameConfigs [nameConfig]中作为锚点的`enum_name`对应的CWT规则。
  */
 interface CwtComplexEnumConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtFilePathMatchableConfig {
     val name: String
-    override val paths: Set<String>
-    override val pathFile: String?
-    override val pathExtension: String?
-    override val pathStrict: Boolean
-    override val pathPatterns: Set<String>
+    @Property("start_from_root: boolean", defaultValue = "false")
     val startFromRoot: Boolean
+    @Property("search_scope_type: string?")
     val searchScopeType: String?
     val nameConfig: CwtPropertyConfig
     val enumNameConfigs: List<CwtMemberConfig<*>>

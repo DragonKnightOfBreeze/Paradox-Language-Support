@@ -4,6 +4,7 @@ package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.config.CwtConfig.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
@@ -13,50 +14,37 @@ import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 
-/**
- * @property name string
- * @property baseType (property) path: string
- * @property paths (property) path: string
- * @property pathFile (property) path_file: string
- * @property pathExtension (property) path_extension: string
- * @property pathStrict (property) path_strict: boolean
- * @property pathPatterns (property*) path_pattern: string
- * @property nameField (property) name_field: string
- * @property typeKeyPrefix (property) type_key_prefix: string
- * @property nameFromFile (property) name_from_file: boolean
- * @property typePerFile (property) type_per_file: boolean
- * @property typeKeyFilter (option*) type_key_filter: string | string[]
- * @property typeKeyRegex (option) type_key_regex: string
- * @property startsWith (option) starts_with: string
- * @property unique (property) unique: boolean
- * @property severity (property) severity: string:severity
- * @property skipRootKey (property*) skip_root_key: string | string[]
- * @property graphRelatedTypes (option) graph_related_types: graphRelatedType[]
- * @property subtypes (property*) subtype[?]: subtypeInfo
- * @property localisation (property*) localisation: localisationInfo
- * @property images (property*) images: imagesInfo
- */
 interface CwtTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtFilePathMatchableConfig {
     val name: String
+    @Property("base_type: string?")
     val baseType: String?
-    override val paths: Set<String>
-    override val pathFile: String?
-    override val pathExtension: String?
-    override val pathStrict: Boolean
-    override val pathPatterns: Set<String>
+    @Property("name_field: string?")
     val nameField: String?
+    @Property("type_key_prefix: string?")
     val typeKeyPrefix: String?
+    @Property("name_from_file: boolean", defaultValue = "false")
     val nameFromFile: Boolean
+    @Property("type_per_file: boolean", defaultValue = "false")
     val typePerFile: Boolean
+    @Property("unique: boolean", defaultValue = "false")
     val unique: Boolean
+    @Property("severity: string?")
     val severity: String?
+    @Property("skip_root_key: string | string[]", multiple = true)
     val skipRootKey: List<List<@CaseInsensitive String>>?
+    @Option("type_key_filter: string | string[]")
     val typeKeyFilter: ReversibleValue<Set<@CaseInsensitive String>>?
+    @Option("type_key_regex: string?")
     val typeKeyRegex: Regex?
+    @Option("starts_with: string?")
     val startsWith: @CaseInsensitive String?
+    @Option("graph_related_types: string[]")
     val graphRelatedTypes: Set<String>?
+    @Property("subtype[*]: SubtypeInfo", multiple = true)
     val subtypes: Map<String, CwtSubtypeConfig>
+    @Property("localisation: LocalisationInfo")
     val localisation: CwtTypeLocalisationConfig?
+    @Property("images: ImagesInfo")
     val images: CwtTypeImagesConfig?
 
     object Keys : KeyRegistry()

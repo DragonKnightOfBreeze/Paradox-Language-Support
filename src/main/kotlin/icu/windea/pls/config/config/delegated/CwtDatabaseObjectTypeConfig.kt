@@ -3,19 +3,17 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
+import icu.windea.pls.config.config.CwtConfig.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 
-/**
- * @property name string
- * @property type (property) type: string?
- * @property swapType (property) swap_type: string?
- * @property localisation (property) localisation: string?
- */
 interface CwtDatabaseObjectTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String
+    @Property("type: string?")
     val type: String?
+    @Property("swap_type: string?")
     val swapType: String?
+    @Property("localisation: string?")
     val localisation: String?
 
     companion object Resolver {

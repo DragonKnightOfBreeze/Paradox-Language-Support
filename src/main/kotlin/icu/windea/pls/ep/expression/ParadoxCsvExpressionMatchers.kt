@@ -21,12 +21,12 @@ class BaseParadoxCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
             }
             configExpression.type == CwtDataTypes.Int -> {
                 val value = expressionText
-                val r = ParadoxTypeResolver.isInt(value)
+                val r = value.isEmpty() || ParadoxTypeResolver.isInt(value) //empty value is allowed
                 if (!r) return Result.NotMatch
                 run {
                     val (min, max) = configExpression.intRange ?: return@run
-                    return Result.LazySimpleMatch p@{
-                        val intValue = value.toIntOrNull() ?: return@p true
+                    return Result.LazySimpleMatch {
+                        val intValue = value.toIntOrNull() ?: 0
                         (min == null || min <= intValue) && (max == null || max >= intValue)
                     }
                 }
@@ -34,12 +34,12 @@ class BaseParadoxCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
             }
             configExpression.type == CwtDataTypes.Float -> {
                 val value = expressionText
-                val r = ParadoxTypeResolver.isFloat(value)
+                val r = value.isEmpty() || ParadoxTypeResolver.isFloat(value) //empty value is allowed
                 if (!r) return Result.NotMatch
                 run {
                     val (min, max) = configExpression.floatRange ?: return@run
-                    return Result.LazySimpleMatch p@{
-                        val floatValue = value.toFloatOrNull() ?: return@p true
+                    return Result.LazySimpleMatch {
+                        val floatValue = value.toFloatOrNull() ?: 0f
                         (min == null || min <= floatValue) && (max == null || max >= floatValue)
                     }
                 }

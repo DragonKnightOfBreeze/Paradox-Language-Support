@@ -216,10 +216,10 @@ object ParadoxDefinitionManager {
         }
 
         if (rootKey != null) {
-            //如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
+            //如果选项starts_with存在，则要求type_key匹配这个前缀
             val startsWithConfig = typeConfig.startsWith
             if (!startsWithConfig.isNullOrEmpty()) {
-                val result = rootKey.startsWith(startsWithConfig, true)
+                val result = rootKey.startsWith(startsWithConfig)
                 if (!result) return false
             }
             //如果type_key_regex存在，则要求type_key匹配
@@ -228,7 +228,7 @@ object ParadoxDefinitionManager {
                 val result = typeKeyRegexConfig.matches(rootKey)
                 if (!result) return false
             }
-            //如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
+            //如果选项type_key_filter存在，则需要通过type_key进行过滤（忽略大小写）
             val typeKeyFilterConfig = typeConfig.typeKeyFilter
             if (typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
                 val result = typeKeyFilterConfig.withOperator { it.contains(rootKey) }
@@ -242,7 +242,7 @@ object ParadoxDefinitionManager {
             }
         }
 
-        //如果type_key_prefix存在，且有必要校验，则要求其与rootKeyPrefix必须一致（忽略大小写）
+        //如果属性type_key_prefix存在，且有必要校验，则要求其与rootKeyPrefix必须一致（忽略大小写）
         if (rootKeyPrefix != null && typeConfig.name in typeConfig.configGroup.definitionTypesMayWithTypeKeyPrefix) {
             val typeKeyPrefix = typeConfig.typeKeyPrefix
             val result = typeKeyPrefix.equals(rootKeyPrefix.value, ignoreCase = true)
@@ -250,7 +250,7 @@ object ParadoxDefinitionManager {
         }
 
         if (elementPath != null) {
-            //如果skip_root_key = any，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
+            //如果属性skip_root_key存在，则要判断是否需要跳过rootKey，如果为any，则任何情况都要跳过（忽略大小写）
             //skip_root_key可以为列表（如果是列表，其中的每一个root_key都要依次匹配）
             //skip_root_key可以重复（其中之一匹配即可）
             val skipRootKeyConfig = typeConfig.skipRootKey

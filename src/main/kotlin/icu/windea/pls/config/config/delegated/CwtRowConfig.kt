@@ -3,27 +3,21 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
+import icu.windea.pls.config.config.CwtConfig.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 
 /**
- * @property name string
- * @property paths (property) path: string
- * @property pathFile (property) path_file: string
- * @property pathExtension (property) path_extension: string
- * @property pathStrict (property) path_strict: boolean
- * @property pathPatterns (property*) path_pattern: string
- * @property columnConfigs 各个列对应的规则。
+ * @property columns 各个列对应的CWT规则。
+ * @property endColumn 如果匹配最后一列的列名，则该列可以省略。
  */
 interface CwtRowConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtFilePathMatchableConfig {
     val name: String
-    override val paths: Set<String>
-    override val pathFile: String?
-    override val pathExtension: String?
-    override val pathStrict: Boolean
-    override val pathPatterns: Set<String>
-    val columnConfigs: Map<String, CwtPropertyConfig>
+    @Property("columns: ColumnConfigs")
+    val columns: Map<String, CwtPropertyConfig>
+    @Property("end_column: string?")
+    val endColumn: String?
 
     companion object Resolver {
         fun resolve(config: CwtPropertyConfig): CwtRowConfig? = doResolve(config)
@@ -40,6 +34,7 @@ private fun doResolve(config: CwtPropertyConfig): CwtRowConfig? {
     var pathStrict = false
     val pathPatterns = sortedSetOf<String>()
     val columnConfigs = mutableMapOf<String, CwtPropertyConfig>()
+    var endColumn: String? = null
 
     val props = config.properties.orEmpty()
     if (props.isEmpty()) return null
@@ -51,13 +46,14 @@ private fun doResolve(config: CwtPropertyConfig): CwtRowConfig? {
             "path_strict" -> pathStrict = prop.booleanValue ?: continue
             "path_pattern" -> prop.stringValue?.removePrefix("game/")?.normalizePath()?.let { pathPatterns += it.intern() }
             "columns" -> prop.properties.orEmpty().forEach { c -> columnConfigs[c.key] = c }
+            "end_column" -> endColumn = prop.stringValue ?: continue
         }
     }
 
     return CwtRowConfigImpl(
         config, name,
         paths.optimized(), pathFile, pathExtension, pathStrict, pathPatterns.optimized(),
-        columnConfigs
+        columnConfigs, endColumn
     )
 }
 
@@ -69,7 +65,8 @@ private class CwtRowConfigImpl(
     override val pathExtension: String?,
     override val pathStrict: Boolean,
     override val pathPatterns: Set<String>,
-    override val columnConfigs: Map<String, CwtPropertyConfig>
+    override val columns: Map<String, CwtPropertyConfig>,
+    override val endColumn: String?
 ) : UserDataHolderBase(), CwtRowConfig {
     override fun toString(): String {
         return "CwtRowConfigImpl(name='$name')"

@@ -27,6 +27,7 @@ object ParadoxCsvParserUtil : GeneratedParserUtilBase() {
         val (next) = b.lookupWithOffset(0, forward = true)
         val (prev) = b.lookupWithOffset(-1, forward = false)
         val isValid = next == COLUMN_TOKEN || next == SEPARATOR || prev == SEPARATOR
+        if (!isValid) return false
         b.isFirstColumn = prev == EOL
         b.isEmptyColumn = next != COLUMN_TOKEN
         return true

@@ -3,18 +3,15 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
+import icu.windea.pls.config.config.CwtConfig.*
 import icu.windea.pls.cwt.psi.*
 
-/**
- * @property key (key)
- * @property value (value)
- * @property required (option) required
- * @property primary (option) primary
- */
 interface CwtLocationConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val key: String
     val value: String
+    @Option("required")
     val required: Boolean
+    @Option("primary")
     val primary: Boolean
 
     companion object {

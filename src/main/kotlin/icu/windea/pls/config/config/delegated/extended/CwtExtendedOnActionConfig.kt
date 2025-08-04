@@ -3,14 +3,12 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
+import icu.windea.pls.config.config.CwtConfig.*
 import icu.windea.pls.cwt.psi.*
 
-/**
- * @property name template_expression
- * @property eventType (option) event_type: string
- */
 interface CwtExtendedOnActionConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String
+    @Option("event_type: string")
     val eventType: String
 
     companion object Resolver {

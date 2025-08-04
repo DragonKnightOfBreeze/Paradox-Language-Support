@@ -21,4 +21,7 @@ object ParadoxCsvTokenSets {
 
     @JvmField
     val EXPRESSION_TOKENS = TokenSet.create(COLUMN_TOKEN)
+
+    @JvmField
+    val TOKENS_TO_MERGE = TokenSet.create(COLUMN_TOKEN)
 }
