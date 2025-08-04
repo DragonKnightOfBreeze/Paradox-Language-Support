@@ -1,7 +1,6 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*

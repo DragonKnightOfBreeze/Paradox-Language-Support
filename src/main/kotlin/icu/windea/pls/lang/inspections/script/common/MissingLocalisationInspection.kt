@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.inspections.script.common
 
 import com.intellij.codeInspection.*
-import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*

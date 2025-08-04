@@ -4,7 +4,7 @@ package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
-import icu.windea.pls.config.config.CwtConfig.Option
+import icu.windea.pls.config.config.CwtConfig.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*

@@ -10,7 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
+import icu.windea.pls.lang.util.manipulators.*
 import icu.windea.pls.localisation.psi.*
 import kotlinx.coroutines.*
 

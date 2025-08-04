@@ -17,7 +17,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.coroutines.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.actions.localisation.ManipulateLocalisationActionBase
+import icu.windea.pls.lang.actions.localisation.*
 import icu.windea.pls.lang.util.manipulators.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*

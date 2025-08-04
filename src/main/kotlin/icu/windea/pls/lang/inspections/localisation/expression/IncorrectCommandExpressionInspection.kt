@@ -3,7 +3,6 @@ package icu.windea.pls.lang.inspections.localisation.expression
 import com.intellij.codeInsight.daemon.impl.actions.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*

@@ -8,7 +8,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.util.PlsPsiManager
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
 import icu.windea.pls.model.constants.*

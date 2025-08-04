@@ -2,7 +2,6 @@ package icu.windea.pls.lang.inspections.overridden
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.roots.*
 import com.intellij.psi.*
 import icu.windea.pls.*

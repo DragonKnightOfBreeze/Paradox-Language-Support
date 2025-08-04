@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.actions.*
 import icu.windea.pls.lang.util.manipulators.*
-import java.util.function.Supplier
+import java.util.function.*
 
 /**
  * 用于处理列的一类动作。

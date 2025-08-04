@@ -21,7 +21,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.core.util.Matchers
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.ep.configContext.*

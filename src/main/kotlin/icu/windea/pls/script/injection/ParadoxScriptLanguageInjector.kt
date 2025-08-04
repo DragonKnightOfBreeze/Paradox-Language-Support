@@ -14,7 +14,7 @@ import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.injection.ParadoxParameterValueInjectionInfo
+import icu.windea.pls.model.injection.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 

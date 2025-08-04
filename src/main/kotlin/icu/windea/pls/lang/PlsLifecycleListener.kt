@@ -101,8 +101,4 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     private fun initCaches(project: Project) {
         project.service<CwtConfigGroupService>().init()
     }
-
-    object Keys : KeyRegistry() {
-        val refreshedProjectIds by createKey<MutableSet<String>>(Keys)
-    }
 }

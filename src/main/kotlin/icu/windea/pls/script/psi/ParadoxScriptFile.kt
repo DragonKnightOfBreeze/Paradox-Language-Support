@@ -2,7 +2,7 @@ package icu.windea.pls.script.psi
 
 import com.intellij.extapi.psi.*
 import com.intellij.psi.*
-import com.intellij.psi.tree.IFileElementType
+import com.intellij.psi.tree.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.*

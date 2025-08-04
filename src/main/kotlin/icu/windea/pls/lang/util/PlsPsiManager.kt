@@ -1,9 +1,9 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.lang.ASTNode
-import com.intellij.lang.folding.FoldingDescriptor
-import com.intellij.openapi.editor.Document
-import com.intellij.openapi.util.TextRange
+import com.intellij.lang.*
+import com.intellij.lang.folding.*
+import com.intellij.openapi.editor.*
+import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*

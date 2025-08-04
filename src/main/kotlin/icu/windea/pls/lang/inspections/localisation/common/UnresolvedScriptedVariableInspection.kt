@@ -4,7 +4,6 @@ import com.intellij.codeInsight.intention.*
 import com.intellij.codeInspection.*
 import com.intellij.openapi.command.*
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*

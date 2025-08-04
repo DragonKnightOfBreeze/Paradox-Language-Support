@@ -10,7 +10,6 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.core.util.ReversibleValue
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 

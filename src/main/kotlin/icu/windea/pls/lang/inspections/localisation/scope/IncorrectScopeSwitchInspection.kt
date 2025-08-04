@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.inspections.localisation.scope
 
 import com.intellij.codeInspection.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
