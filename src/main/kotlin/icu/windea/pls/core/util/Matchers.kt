@@ -3,7 +3,7 @@ package icu.windea.pls.core.util
 import com.google.common.cache.*
 import icu.windea.pls.core.*
 
-interface PatternMatchers {
+object Matchers {
     object AntMatcher {
         /**
          * 判断当前输入是否匹配指定的ANT表达式。使用 "?" 匹配单个子路径中的单个字符，"*" 匹配单个子路径中的任意个字符，"**" 匹配任意个子路径。
@@ -133,6 +133,60 @@ interface PatternMatchers {
         }
         private val regexCache2 by lazy {
             CacheBuilder.newBuilder().maximumSize(10000).buildCache<String, Regex> { it.toRegex(RegexOption.IGNORE_CASE) }
+        }
+    }
+
+    object PathMatcher {
+        /**
+         * 判断输入的子路径是否匹配指定的子路径。
+         *
+         * @param input 输入的子路径。
+         * @param other 指定的子路径。
+         * @param ignoreCase 是否忽略大小写。
+         * @param useAny 如果启用，且用来匹配的子路径是`"any"`，则表示匹配任意子路径。
+         */
+        fun matches(input: String, other: String, ignoreCase: Boolean = false, useAny: Boolean = false): Boolean {
+            if (useAny && other == "any") return true
+            return input.equals(other, ignoreCase)
+        }
+
+        /**
+         * 判断输入的子路径列表是否匹配指定的子路径列表。
+         *
+         * @param input 输入的子路径列表。
+         * @param other 指定的子路径列表。
+         * @param ignoreCase 是否忽略大小写。
+         * @param useAny 如果启用，且用来匹配的子路径是`"any"`，则表示匹配任意子路径。
+         */
+        fun matches(input: List<String>, other: List<String>, ignoreCase: Boolean = false, useAny: Boolean = false): Boolean {
+            if (input.size != other.size) return false //路径过短或路径长度不一致
+            for ((index, otherPath) in other.withIndex()) {
+                val inputPath = input[index]
+                val r = matches(inputPath, otherPath, ignoreCase, useAny)
+                if (!r) return false
+            }
+            return true
+        }
+
+        /**
+         * 得到输入的子路径列表相对于指定的子路径列表的第一个子路径。如果两者完全匹配，则返回空字符串。
+         *
+         * 例如，`"/foo/bar/x" relativeTo "/foo" -> "bar"`。
+         *
+         * @param input 输入的子路径列表。
+         * @param other 指定的子路径列表。
+         * @param ignoreCase 是否忽略大小写。
+         * @param useAny 如果启用，且用来匹配的子路径是`"any"`，则表示匹配任意子路径。
+         */
+        fun relative(input: List<String>, other: List<String>, ignoreCase: Boolean = false, useAny: Boolean = false): String? {
+            if (input.size > other.size) return null
+            for ((index, inputPath) in input.withIndex()) {
+                val otherPath = other[index]
+                val r = matches(inputPath, otherPath, ignoreCase, useAny)
+                if (!r) return null
+            }
+            if (input.size == other.size) return ""
+            return other[input.size]
         }
     }
 }

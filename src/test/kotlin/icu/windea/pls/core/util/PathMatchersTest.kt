@@ -42,7 +42,7 @@ class PathMatchersTest {
                 for (pattern in patterns) {
                     for (path in paths) {
                         // 注意必须在这个循环中直接调用匹配方法，否则测试结果可能会显示基于正则的实现更快
-                        if (PatternMatchers.AntFromRegexMatcher.matches(path, pattern)) dummy++
+                        if (Matchers.AntFromRegexMatcher.matches(path, pattern)) dummy++
                     }
                 }
             }
@@ -53,7 +53,7 @@ class PathMatchersTest {
             repeat(iterations) {
                 for (pattern in patterns) {
                     for (path in paths) {
-                        if (PatternMatchers.AntMatcher.matches(path, pattern)) dummy++
+                        if (Matchers.AntMatcher.matches(path, pattern)) dummy++
                     }
                 }
             }
@@ -70,81 +70,81 @@ class PathMatchersTest {
     @Test
     fun antTest() {
         // 基本匹配
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/name**", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "foo/bar/name**", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "/foo/bar/name**", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "foo/bar/name**", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/name", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/foo/**", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/foo/**/name", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/foo/**/bar/name", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/**", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/nam?", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/na?e", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/na*?e", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/*", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/*a*e", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/foo/b*r/*a*e", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/foo/b*r/*a*e", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/*foo/*/name", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/*foo/*/n?me", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/*foo/**/n?me", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/*foo/**r/n?me", false))
-        Assert.assertFalse(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/foo/*", false))
-        Assert.assertFalse(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/*/name", false))
-        Assert.assertFalse(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/na?", false))
-        Assert.assertFalse(PatternMatchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/name**", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "foo/bar/name**", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "/foo/bar/name**", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "foo/bar/name**", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/name", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/foo/**", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/foo/**/name", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/foo/**/bar/name", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/**", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/nam?", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/na?e", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/na*?e", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/*", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/*a*e", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/foo/b*r/*a*e", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/foo/b*r/*a*e", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/*foo/*/name", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/*foo/*/n?me", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/*foo/**/n?me", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar/name", "/*foo/**r/n?me", false))
+        Assert.assertFalse(Matchers.AntMatcher.matches("/foo/bar/name", "/foo/*", false))
+        Assert.assertFalse(Matchers.AntMatcher.matches("/foo/bar/name", "/*/name", false))
+        Assert.assertFalse(Matchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/na?", false))
+        Assert.assertFalse(Matchers.AntMatcher.matches("/foo/bar/name", "/foo/bar/", false))
 
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("enums/enum[e]", "enums/enum[?]", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("enums/enum[a", "enums/enum[?", false))
-        Assert.assertFalse(PatternMatchers.AntMatcher.matches("enums/enum[f", "enums/enum[?]", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("enums/enum[e]", "enums/enum[*]", false))
-        Assert.assertFalse(PatternMatchers.AntMatcher.matches("enums/enum[e", "enums/enum[*]", false))
-        Assert.assertFalse(PatternMatchers.AntMatcher.matches("enums/enum123", "enums/enum[*]", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("enums/enum[e]", "enums/enum[?]", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("enums/enum[a", "enums/enum[?", false))
+        Assert.assertFalse(Matchers.AntMatcher.matches("enums/enum[f", "enums/enum[?]", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("enums/enum[e]", "enums/enum[*]", false))
+        Assert.assertFalse(Matchers.AntMatcher.matches("enums/enum[e", "enums/enum[*]", false))
+        Assert.assertFalse(Matchers.AntMatcher.matches("enums/enum123", "enums/enum[*]", false))
 
         // 基本匹配
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "foo/bar/name", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "foo/bar/*", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "foo/*/name", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "*/bar/name", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "foo/bar/n?me", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "foo/bar/na*", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "foo/bar/*me", false))
-        Assert.assertFalse(PatternMatchers.AntMatcher.matches("foo/bar/name", "foo/bar/nam", false))
-        Assert.assertFalse(PatternMatchers.AntMatcher.matches("foo/bar/name", "foo/bar/names", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "foo/bar/name", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "foo/bar/*", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "foo/*/name", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "*/bar/name", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "foo/bar/n?me", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "foo/bar/na*", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "foo/bar/*me", false))
+        Assert.assertFalse(Matchers.AntMatcher.matches("foo/bar/name", "foo/bar/nam", false))
+        Assert.assertFalse(Matchers.AntMatcher.matches("foo/bar/name", "foo/bar/names", false))
 
         // ** 匹配
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "foo/**", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "**/name", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "**/bar/**", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "**", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "foo/**/name", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "foo/**/bar/**/name", false))
-        Assert.assertFalse(PatternMatchers.AntMatcher.matches("foo/bar/name", "foo/**/baz", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "foo/**", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "**/name", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "**/bar/**", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "**", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "foo/**/name", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "foo/**/bar/**/name", false))
+        Assert.assertFalse(Matchers.AntMatcher.matches("foo/bar/name", "foo/**/baz", false))
 
         // 边界与特殊情况
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo", "foo", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo", "*", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo", "**", false))
-        Assert.assertFalse(PatternMatchers.AntMatcher.matches("foo", "bar", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("/foo/bar", "/**/bar", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar", "**/bar", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/baz", "foo/**/baz", false))
-        Assert.assertFalse(PatternMatchers.AntMatcher.matches("foo/bar/baz", "foo/**/qux", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo", "foo", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo", "*", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo", "**", false))
+        Assert.assertFalse(Matchers.AntMatcher.matches("foo", "bar", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("/foo/bar", "/**/bar", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar", "**/bar", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/baz", "foo/**/baz", false))
+        Assert.assertFalse(Matchers.AntMatcher.matches("foo/bar/baz", "foo/**/qux", false))
 
         // 路径分隔符兼容
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo\\bar\\name".replace('\\', '/'), "foo/**/name", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo\\bar\\baz".replace('\\', '/'), "foo/**/baz", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo\\bar\\name".replace('\\', '/'), "foo/**/name", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo\\bar\\baz".replace('\\', '/'), "foo/**/baz", false))
 
         // 大小写
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("FOO/BAR/NAME", "foo/bar/name", true))
-        Assert.assertFalse(PatternMatchers.AntMatcher.matches("FOO/BAR/NAME", "foo/bar/name", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("foo/bar/name", "FOO/BAR/NAME", true))
+        Assert.assertTrue(Matchers.AntMatcher.matches("FOO/BAR/NAME", "foo/bar/name", true))
+        Assert.assertFalse(Matchers.AntMatcher.matches("FOO/BAR/NAME", "foo/bar/name", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("foo/bar/name", "FOO/BAR/NAME", true))
 
         // 空串
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("", "", false))
-        Assert.assertTrue(PatternMatchers.AntMatcher.matches("", "**", false))
-        Assert.assertFalse(PatternMatchers.AntMatcher.matches("foo", "", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("", "", false))
+        Assert.assertTrue(Matchers.AntMatcher.matches("", "**", false))
+        Assert.assertFalse(Matchers.AntMatcher.matches("foo", "", false))
     }
 
 }

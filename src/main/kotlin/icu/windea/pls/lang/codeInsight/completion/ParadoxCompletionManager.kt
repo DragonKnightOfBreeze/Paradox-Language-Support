@@ -21,6 +21,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.core.util.Matchers
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.ep.config.*
 import icu.windea.pls.ep.configContext.*
@@ -299,7 +300,7 @@ object ParadoxCompletionManager {
                 }
             } else {
                 for (skipConfig in skipRootKeyConfig) {
-                    val relative = elementPath.relativeTo(skipConfig) ?: continue
+                    val relative = Matchers.PathMatcher.relative(elementPath.subPaths, skipConfig, true, true) ?: continue
                     if (relative.isEmpty()) {
                         typeConfig.typeKeyFilter?.takeWithOperator()?.forEach {
                             infoMapForKey.getOrPut(it) { mutableListOf() }.add(typeConfig to null)

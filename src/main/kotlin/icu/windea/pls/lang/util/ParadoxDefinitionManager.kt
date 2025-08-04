@@ -15,6 +15,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.core.util.Matchers
 import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
@@ -257,7 +258,9 @@ object ParadoxDefinitionManager {
             if (skipRootKeyConfig.isNullOrEmpty()) {
                 if (elementPath.length > 1) return false
             } else {
-                val result = skipRootKeyConfig.any { elementPath.matchEntire(it, useParentPath = true) }
+                if(elementPath.isEmpty()) return false
+                val input = elementPath.subPaths.dropLast(1)
+                val result = skipRootKeyConfig.any { Matchers.PathMatcher.matches(input, it, true, true) }
                 if (!result) return false
             }
         }

@@ -479,14 +479,14 @@ private fun String.patternToRegexString(): String {
  * 这个实现的耗时约为基于正则时的一半。
  */
 fun String.matchesAntPattern(pattern: String, ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
-    return PatternMatchers.AntMatcher.matches(this, pattern, ignoreCase, trimSeparator)
+    return Matchers.AntMatcher.matches(this, pattern, ignoreCase, trimSeparator)
 }
 
 /**
  * 判断当前输入是否匹配指定的正则表达式。
  */
 fun String.matchesRegex(pattern: String, ignoreCase: Boolean = false): Boolean {
-    return PatternMatchers.RegexMatcher.matches(this, pattern, ignoreCase)
+    return Matchers.RegexMatcher.matches(this, pattern, ignoreCase)
 }
 
 /**
