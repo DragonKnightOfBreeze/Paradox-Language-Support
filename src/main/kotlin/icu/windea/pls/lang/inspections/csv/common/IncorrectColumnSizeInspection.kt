@@ -5,10 +5,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.csv.psi.ParadoxCsvColumn
-import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.csv.psi.isHeaderColumn
-import icu.windea.pls.ep.inspection.ParadoxIncorrectExpressionChecker
+import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import javax.swing.*
@@ -16,7 +13,7 @@ import javax.swing.*
 /**
  * @property ignoredInInjectedFiles 是否在注入的文件（如，参数值、Markdown 代码块）中忽略此代码检查。
  */
-class IncorrectExpressionInspection : LocalInspectionTool() {
+class IncorrectColumnSizeInspection : LocalInspectionTool() {
     @JvmField
     var ignoredInInjectedFiles = false
 
@@ -34,20 +31,24 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
         val rowConfig = ParadoxCsvManager.getRowConfig(file)
         if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
 
+        //如果表头中的列数与期望的不一致，则直接跳过检查
+
+        val expectColumnSize = rowConfig.columnConfigs.size
+        val headerColumnSize = header.columnList.size
+        if (headerColumnSize != expectColumnSize) return PsiElementVisitor.EMPTY_VISITOR
+
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 ProgressManager.checkCanceled()
-                if (element is ParadoxCsvColumn) visitColumn(element)
+                if(element is ParadoxCsvRow) visitRow(element)
             }
 
-            private fun visitColumn(element: ParadoxCsvColumn) {
-                if (element.isHeaderColumn()) return
-                val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return
-                if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
-                val config = columnConfig.valueConfig ?: return
+            private fun visitRow(element: ParadoxCsvRow) {
+                val columnSize = element.columnList.size
+                if (columnSize == expectColumnSize) return
 
-                //开始检查
-                ParadoxIncorrectExpressionChecker.check(element, config, holder)
+                val description = PlsBundle.message("inspection.csv.incorrectColumnSize.desc.1", expectColumnSize, columnSize, rowConfig.name)
+                holder.registerProblem(element, description)
             }
         }
     }

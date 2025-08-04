@@ -1,9 +1,11 @@
 package icu.windea.pls.lang.inspections.csv.common
 
 import com.intellij.codeInspection.*
+import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import javax.swing.*
@@ -15,17 +17,36 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     @JvmField
     var ignoredInInjectedFiles = false
 
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
-
-        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
-
-        return super.buildVisitor(holder, isOnTheFly) //TODO 2.0.1-dev
-    }
-
-    private fun shouldCheckFile(file: PsiFile): Boolean {
+    override fun isAvailableForFile(file: PsiFile): Boolean {
+        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(file.virtualFile)) return false
         if (selectRootFile(file) == null) return false
         return true
+    }
+
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
+        val file = holder.file
+        if (file !is ParadoxCsvFile) return PsiElementVisitor.EMPTY_VISITOR
+        val header = file.header
+        if (header == null) return PsiElementVisitor.EMPTY_VISITOR
+        val rowConfig = ParadoxCsvManager.getRowConfig(file)
+        if (rowConfig == null) return PsiElementVisitor.EMPTY_VISITOR
+
+        return object : PsiElementVisitor() {
+            override fun visitElement(element: PsiElement) {
+                ProgressManager.checkCanceled()
+                if (element is ParadoxCsvColumn) visitColumn(element)
+            }
+
+            private fun visitColumn(element: ParadoxCsvColumn) {
+                if (element.isHeaderColumn()) return
+                val columnConfig = ParadoxCsvManager.getColumnConfig(element, rowConfig) ?: return
+                if (ParadoxCsvManager.isMatchedColumnConfig(element, columnConfig)) return
+                val config = columnConfig.valueConfig ?: return
+
+                val description = PlsBundle.message("inspection.csv.unresolvedExpression.desc.1", element.name, columnConfig.key, config.value)
+                holder.registerProblem(element, description)
+            }
+        }
     }
 
     override fun createOptionsPanel(): JComponent {

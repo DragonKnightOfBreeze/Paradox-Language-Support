@@ -21,7 +21,7 @@ sealed interface CwtMemberConfig<out T : CwtMemberElement> : CwtConfig<T> {
     var parentConfig: CwtMemberConfig<*>?
 
     val valueExpression: CwtDataExpression
-    override val configExpression: CwtDataExpression get() = valueExpression
+    override val configExpression: CwtDataExpression
 
     override fun toString(): String
 

@@ -433,18 +433,24 @@
                      groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
                      groupPathKey="inspection.csv.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.MissingColumnsInspection"/>
-    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnresolvedColumnsInspection"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.csv.unresolvedColumns"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
-                     groupPathKey="inspection.csv.groupPath"
-                     implementationClass="icu.windea.pls.lang.inspections.csv.common.UnresolvedColumnsInspection"/>
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvDuplicateColumnsInspection"
                      enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle" key="inspection.csv.duplicateColumns"
                      groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
                      groupPathKey="inspection.csv.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.DuplicateColumnsInspection"/>
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnresolvedColumnsInspection"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.csv.unresolvedColumns"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
+                     groupPathKey="inspection.csv.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.csv.common.UnresolvedColumnsInspection"/>
+    <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectColumnSizeInspection"
+                     enabledByDefault="true" level="ERROR"
+                     bundle="messages.PlsBundle" key="inspection.csv.incorrectColumnSize"
+                     groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
+                     groupPathKey="inspection.csv.groupPath"
+                     implementationClass="icu.windea.pls.lang.inspections.csv.common.IncorrectColumnSizeInspection"/>
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnresolvedExpressionInspection"
                      enabledByDefault="true" level="ERROR"
                      bundle="messages.PlsBundle" key="inspection.csv.unresolvedExpression"

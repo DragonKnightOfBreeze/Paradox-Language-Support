@@ -35,9 +35,6 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     var ignoredInInlineScriptFiles = false
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
-        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(holder.file) != null) return PsiElementVisitor.EMPTY_VISITOR
-
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
         val file = holder.file
@@ -96,6 +93,8 @@ class UnresolvedPathReferenceInspection : LocalInspectionTool() {
     }
 
     private fun shouldCheckFile(file: PsiFile): Boolean {
+        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(file.virtualFile)) return false
+        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
         if (selectRootFile(file) == null) return false
         return true
     }

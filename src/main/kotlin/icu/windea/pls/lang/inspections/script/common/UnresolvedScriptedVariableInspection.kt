@@ -29,8 +29,7 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
     var ignoredInInlineScriptFiles = false
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
-        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(holder.file) != null) return PsiElementVisitor.EMPTY_VISITOR
+        if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
         return object : PsiElementVisitor() {
             override fun visitElement(element: PsiElement) {
@@ -51,6 +50,13 @@ class UnresolvedScriptedVariableInspection : LocalInspectionTool() {
                 holder.registerProblem(element, message, ProblemHighlightType.LIKE_UNKNOWN_SYMBOL, *quickFixes.toTypedArray())
             }
         }
+    }
+
+    private fun shouldCheckFile(file: PsiFile): Boolean {
+        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(file.virtualFile)) return false
+        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
+        if (selectRootFile(file) == null) return false
+        return true
     }
 
     override fun createOptionsPanel(): JComponent {

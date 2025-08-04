@@ -24,8 +24,6 @@ class UnresolvedIconInspection : LocalInspectionTool() {
     var ignoredInInjectedFiles = false
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
-
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
         return object : PsiElementVisitor() {
@@ -48,6 +46,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
     }
 
     private fun shouldCheckFile(file: PsiFile): Boolean {
+        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(file.virtualFile)) return false
         val fileInfo = file.fileInfo ?: return false
         return ParadoxFileManager.inLocalisationPath(fileInfo.path)
     }

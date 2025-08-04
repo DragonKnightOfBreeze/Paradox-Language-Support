@@ -34,7 +34,7 @@ class IncorrectExpressionInspection : LocalInspectionTool() {
                 //开始检查
                 ParadoxIncorrectExpressionChecker.check(element, config, holder)
 
-                //TODO 1.3.26 应当也适用于各种复杂表达式中的数据源
+                //TODO 1.3.26+ 应当也适用于各种复杂表达式中的数据源
             }
         }
     }

@@ -44,9 +44,6 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     //如果一个表达式（属性/值）无法解析，需要跳过直接检测下一个表达式，而不是继续向下检查它的子节点
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(holder.file.virtualFile)) return PsiElementVisitor.EMPTY_VISITOR
-        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(holder.file) != null) return PsiElementVisitor.EMPTY_VISITOR
-
         if (!shouldCheckFile(holder.file)) return PsiElementVisitor.EMPTY_VISITOR
 
         var suppressed: PsiElement? = null
@@ -241,6 +238,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
     }
 
     private fun shouldCheckFile(file: PsiFile): Boolean {
+        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(file.virtualFile)) return false
+        if (ignoredInInlineScriptFiles && ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return false
         if (selectRootFile(file) == null) return false
         return true
     }

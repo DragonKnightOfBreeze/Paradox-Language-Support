@@ -27,17 +27,6 @@ object ParadoxCsvManager {
         return doGetRowConfigFromCache(file)
     }
 
-    fun getColumnConfig(column: ParadoxCsvColumn): CwtPropertyConfig? {
-        val file = column.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
-        val rowConfig = getRowConfig(file) ?: return null
-        val headerName = when {
-            column.isHeaderColumn() -> column.name
-            else -> column.getHeaderColumn()?.name
-        }
-        if (headerName.isNullOrEmpty()) return null
-        return rowConfig.columnConfigs[headerName]
-    }
-
     private fun doGetRowConfigFromCache(file: ParadoxCsvFile): CwtRowConfig? {
         return CachedValuesManager.getCachedValue(file, Keys.cachedRowConfig) {
             val value = doGetRowConfig(file)
@@ -70,6 +59,21 @@ object ParadoxCsvManager {
         }
 
         return true
+    }
+
+    fun getColumnConfig(column: ParadoxCsvColumn): CwtPropertyConfig? {
+        val file = column.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
+        val rowConfig = getRowConfig(file) ?: return null
+        return getColumnConfig(column, rowConfig)
+    }
+
+    fun getColumnConfig(column: ParadoxCsvColumn, rowConfig: CwtRowConfig): CwtPropertyConfig? {
+        val headerName = when {
+            column.isHeaderColumn() -> column.name
+            else -> column.getHeaderColumn()?.name
+        }
+        if (headerName.isNullOrEmpty()) return null
+        return rowConfig.columnConfigs[headerName]
     }
 
     fun isMatchedColumnConfig(column: ParadoxCsvColumn, columnConfig: CwtPropertyConfig, matchOptions: Int = ParadoxExpressionMatcher.Options.Default): Boolean {
