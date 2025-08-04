@@ -1,9 +1,9 @@
 package icu.windea.pls.core.util
 
 import org.junit.*
-import kotlin.system.measureTimeMillis
+import kotlin.system.*
 
-class PathMatchersTest {
+class MatchersTest {
     @Suppress("DEPRECATION")
     @Test
     fun antBenchmarkTest() {
@@ -36,8 +36,19 @@ class PathMatchersTest {
         val iterations = 500_000
         var dummy = 0
 
-        // 正则实现
+        // 纯Kotlin实现
         val t1 = measureTimeMillis {
+            repeat(iterations) {
+                for (pattern in patterns) {
+                    for (path in paths) {
+                        if (Matchers.AntMatcher.matches(path, pattern)) dummy++
+                    }
+                }
+            }
+        }
+
+        // 正则实现
+        val t2 = measureTimeMillis {
             repeat(iterations) {
                 for (pattern in patterns) {
                     for (path in paths) {
@@ -48,23 +59,39 @@ class PathMatchersTest {
             }
         }
 
-        // 纯Kotlin实现
-        val t2 = measureTimeMillis {
-            repeat(iterations) {
-                for (pattern in patterns) {
-                    for (path in paths) {
-                        if (Matchers.AntMatcher.matches(path, pattern)) dummy++
-                    }
-                }
-            }
-        }
-        println("Regex impl: $t1 ms")
-        println("Pure Kotlin impl: $t2 ms")
-        println("(ignore $dummy)")
+        println("Pure Kotlin impl: $t1 ms")
+        println("Regex impl: $t2 ms")
+        println("Ratio: ${t1.toDouble() / t2}")
+        println("Dummy size: $dummy")
 
-        // Regex impl: 14058 ms
-        // Pure Kotlin impl: 6657 ms
-        // (ignore 51500000)
+        // Pure Kotlin impl: 7184 ms
+        // Regex impl: 14275 ms
+        // Ratio: 0.5032574430823117
+        // Dummy size: 51500000
+    }
+
+    @Test
+    fun globTest() {
+        Assert.assertTrue(Matchers.GlobMatcher.matches("", "", false))
+
+        Assert.assertFalse(Matchers.GlobMatcher.matches("", "?", false))
+        Assert.assertTrue(Matchers.GlobMatcher.matches("f", "?", false))
+        Assert.assertFalse(Matchers.GlobMatcher.matches("foo", "?", false))
+
+        Assert.assertTrue(Matchers.GlobMatcher.matches("", "*", false))
+        Assert.assertTrue(Matchers.GlobMatcher.matches("f", "*", false))
+        Assert.assertTrue(Matchers.GlobMatcher.matches("foo", "*", false))
+
+        Assert.assertTrue(Matchers.GlobMatcher.matches("foo_bar", "foo_*", false))
+        Assert.assertTrue(Matchers.GlobMatcher.matches("foo_bar", "*_bar", false))
+        Assert.assertTrue(Matchers.GlobMatcher.matches("foo_bar", "foo*bar", false))
+        Assert.assertTrue(Matchers.GlobMatcher.matches("foo_bar", "foo?bar", false))
+
+
+        Assert.assertFalse(Matchers.GlobMatcher.matches("prefix_foo_bar", "foo_*", false))
+        Assert.assertTrue(Matchers.GlobMatcher.matches("prefix_foo_bar", "*_bar", false))
+        Assert.assertFalse(Matchers.GlobMatcher.matches("prefix_foo_bar", "foo*bar", false))
+        Assert.assertFalse(Matchers.GlobMatcher.matches("prefix_foo_bar", "foo?bar", false))
     }
 
     @Test

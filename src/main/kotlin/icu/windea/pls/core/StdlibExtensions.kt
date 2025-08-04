@@ -2,7 +2,6 @@
 
 package icu.windea.pls.core
 
-import com.google.common.cache.*
 import com.intellij.openapi.util.text.*
 import icu.windea.pls.*
 import icu.windea.pls.core.console.*
@@ -439,38 +438,10 @@ inline fun <reified T> Any?.castOrNull(): T? = this as? T
 fun <C : CharSequence> C.ifNotEmpty(block: (C) -> C): C = if (this.isNotEmpty()) block(this) else this
 
 /**
- * 判断当前输入是否匹配指定的通配符表达式。使用"?"匹配单个字符，使用"*"匹配任意个字符。
+ * 判断当前输入是否匹配指定的GLOB表达式。使用 "?" 匹配单个字符，"*" 匹配任意个字符。
  */
 fun String.matchesPattern(pattern: String, ignoreCase: Boolean = false): Boolean {
-    if (pattern.isEmpty() && this.isNotEmpty()) return false
-    if (pattern == "*") return true
-    val cache = if (ignoreCase) patternToRegexCache2 else patternToRegexCache1
-    val path0 = this
-    val pattern0 = pattern
-    return cache.get(pattern0).matches(path0)
-}
-
-private val patternToRegexCache1 = CacheBuilder.newBuilder().maximumSize(10000)
-    .buildCache<String, Regex> { it.patternToRegexString().toRegex() }
-private val patternToRegexCache2 = CacheBuilder.newBuilder().maximumSize(10000)
-    .buildCache<String, Regex> { it.patternToRegexString().toRegex(RegexOption.IGNORE_CASE) }
-
-private fun String.patternToRegexString(): String {
-    val s = this
-    return buildString {
-        append("\\Q")
-        var i = 0
-        while (i < s.length) {
-            val c = s[i]
-            when {
-                c == '*' -> append("\\E.*\\Q")
-                c == '?' -> append("\\E.\\Q")
-                else -> append(c)
-            }
-            i++
-        }
-        append("\\E")
-    }
+    return Matchers.GlobMatcher.matches(this, pattern, ignoreCase)
 }
 
 /**
@@ -491,7 +462,7 @@ fun String.matchesRegex(pattern: String, ignoreCase: Boolean = false): Boolean {
 
 /**
  * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。使用"/"作为路径分隔符。
- * @receiver 当前路径。
+ *
  * @param other 另一个路径。
  * @param acceptSelf 是否接受路径完全一致的情况。
  * @param strict 是否严格匹配（相同或是其直接父路径）。
