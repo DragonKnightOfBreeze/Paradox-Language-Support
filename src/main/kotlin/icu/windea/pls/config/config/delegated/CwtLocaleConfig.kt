@@ -49,7 +49,7 @@ private class CwtLocaleConfigImpl(
     }
 
     override fun toString(): String {
-        return description
+        return "CwtLocaleConfig(id='$id')"
     }
 }
 
@@ -70,7 +70,7 @@ private class AutoCwtLocaleConfig(
     }
 
     override fun toString(): String {
-        return description
+        return "AutoCwtLocaleConfig(id='$id')"
     }
 }
 
@@ -91,6 +91,6 @@ private class FallbackCwtLocaleConfig(
     }
 
     override fun toString(): String {
-        return description
+        return "FallbackCwtLocaleConfig(id='$id')"
     }
 }

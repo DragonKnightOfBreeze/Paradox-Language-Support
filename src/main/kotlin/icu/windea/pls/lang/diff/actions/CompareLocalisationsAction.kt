@@ -241,7 +241,7 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
             val fileInfo = otherFile.fileInfo ?: return super.getName()
             val rootInfo = fileInfo.rootInfo
             if (rootInfo !is ParadoxRootInfo.MetadataBased) return super.getName()
-            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
+            return PlsBundle.message("diff.compare.localisations.popup.name", otherLocalisationName, locale.id, fileInfo.path, rootInfo.qualifiedName, rootInfo.entryPath)
         }
     }
 

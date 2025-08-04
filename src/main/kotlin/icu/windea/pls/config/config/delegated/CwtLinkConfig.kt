@@ -4,7 +4,6 @@ package icu.windea.pls.config.config
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.expression.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.util.*
@@ -52,8 +51,6 @@ interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
 fun CwtLinkConfig.forScope() = type != "value" /* type.isNullOrEmpty() || type == "both" || type == "scope" */
 
 fun CwtLinkConfig.forValue() = type == "both" || type == "value"
-
-fun CwtLinkConfig.withPrefix() = prefix.isNotNullOrEmpty()
 
 //Implementations (interned if necessary)
 
