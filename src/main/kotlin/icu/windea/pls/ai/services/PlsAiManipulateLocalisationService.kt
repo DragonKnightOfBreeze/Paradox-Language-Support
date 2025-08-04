@@ -41,12 +41,12 @@ abstract class PlsAiManipulateLocalisationService : PlsAiService {
         }
     }
 
-    fun checkOutputData(context: ParadoxLocalisationContext, data: ParadoxLocalisationResult) {
-        if (context.key.isEmpty()) { //输出内容的格式不正确
+    fun checkResult(context: ParadoxLocalisationContext, result: ParadoxLocalisationResult) {
+        if (context.key.isEmpty()) { //输出内容的格式不合法
             throw IllegalStateException(PlsBundle.message("manipulation.localisation.error.2"))
         }
-        if (context.key != data.key) { //不期望的结果，直接报错，中断收集
-            throw IllegalStateException(PlsBundle.message("manipulation.localisation.error.3", context.key, data.key))
+        if (context.key != result.key) { //不期望的结果，直接报错，中断收集
+            throw IllegalStateException(PlsBundle.message("manipulation.localisation.error.3", context.key, result.key))
         }
     }
 }

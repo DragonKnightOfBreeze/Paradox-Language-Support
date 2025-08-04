@@ -122,7 +122,7 @@ object ParadoxLocalisationManipulator {
         aiService.checkResultFlow(resultFlow)
         resultFlow.collect { data ->
             val context = request.localisationContexts[request.index]
-            aiService.checkOutputData(context, data)
+            aiService.checkResult(context, data)
             context.newText = data.text
             callback(data)
             request.index++
@@ -135,7 +135,7 @@ object ParadoxLocalisationManipulator {
         aiService.checkResultFlow(resultFlow)
         resultFlow.collect { data ->
             val context = request.localisationContexts[request.index]
-            aiService.checkOutputData(context, data)
+            aiService.checkResult(context, data)
             context.newText = data.text
             callback(data)
             request.index++
