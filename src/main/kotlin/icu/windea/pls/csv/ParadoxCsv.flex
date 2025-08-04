@@ -46,7 +46,7 @@ SEPARATOR=;
 //no non-column tokens (boolean tokens, number tokens, etc)
 
 COLUMN_TOKEN=({UNQUOTED_COLUMN_TOKEN})|({QUOTED_COLUMN_TOKEN})
-UNQUOTED_COLUMN_TOKEN=[^#;\s\"]+\"?
+UNQUOTED_COLUMN_TOKEN=[^#;\"\s]([^#;\"\r\n]*[^#;\s])? // middle whitespaces are permitted
 QUOTED_COLUMN_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 
 %%

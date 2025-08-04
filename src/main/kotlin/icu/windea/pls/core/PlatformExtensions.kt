@@ -151,11 +151,11 @@ fun TextRange.unquote(text: String, quote: Char = '"'): TextRange {
     return TextRange.create(startOffset, endOffset)
 }
 
-fun TextRange.replaceAndQuoteIfNecessary(original: String, replacement: String, quote: Char = '"', extraChars: String = ""): String {
+fun TextRange.replaceAndQuoteIfNecessary(original: String, replacement: String, quote: Char = '"', extraChars: String = "", blank: Boolean = true): String {
     if (this.length >= original.length - 1) {
-        return replacement.quoteIfNecessary(quote, extraChars)
+        return replacement.quoteIfNecessary(quote, extraChars, blank)
     } else {
-        var replacement0 = replacement.quoteIfNecessary(quote, extraChars)
+        var replacement0 = replacement.quoteIfNecessary(quote, extraChars, blank)
         if (replacement0.isLeftQuoted(quote) && replacement0.isRightQuoted(quote)) {
             replacement0 = replacement0.substring(1, replacement0.length - 1)
         }

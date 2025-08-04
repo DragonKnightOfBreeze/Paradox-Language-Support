@@ -99,11 +99,11 @@ public class _ParadoxCsvLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\1\0\1\1\1\2\2\3\1\1\1\4\1\5\1\1"+
-    "\1\0";
+    "\1\0\1\1\1\2\2\3\1\1\1\4\1\5\1\0"+
+    "\1\1\1\0";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[10];
+    int [] result = new int[11];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -128,11 +128,11 @@ public class _ParadoxCsvLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\11\0\22\0\22\0\33\0\44\0\55\0\66"+
-    "\0\66\0\77";
+    "\0\0\0\11\0\22\0\22\0\33\0\44\0\55\0\11"+
+    "\0\11\0\66\0\77";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[10];
+    int [] result = new int[11];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -156,10 +156,10 @@ public class _ParadoxCsvLexer implements FlexLexer {
 
   private static final String ZZ_TRANS_PACKED_0 =
     "\1\2\1\3\2\4\1\5\1\6\1\7\1\10\2\2"+
-    "\4\0\1\11\2\0\1\2\1\0\4\3\5\0\1\3"+
-    "\1\4\2\3\4\0\2\6\1\0\1\6\1\0\1\11"+
-    "\2\6\1\12\2\7\1\0\1\7\1\0\4\7\11\0"+
-    "\11\6";
+    "\1\11\1\0\1\11\1\0\1\12\1\0\2\2\1\0"+
+    "\4\3\5\0\1\3\1\4\2\3\4\0\2\6\1\0"+
+    "\1\6\1\0\1\12\2\6\1\13\2\7\1\0\1\7"+
+    "\1\0\4\7\11\0\11\6";
 
   private static int [] zzUnpacktrans() {
     int [] result = new int[72];
@@ -200,10 +200,10 @@ public class _ParadoxCsvLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\6\1\2\11\1\0";
+    "\1\0\7\1\1\0\1\11\1\0";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[10];
+    int [] result = new int[11];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;

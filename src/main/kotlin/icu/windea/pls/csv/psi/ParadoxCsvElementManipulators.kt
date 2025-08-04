@@ -9,7 +9,7 @@ class ParadoxCsvColumnManipulator : AbstractElementManipulator<ParadoxCsvColumn>
     override fun handleContentChange(element: ParadoxCsvColumn, range: TextRange, newContent: String): ParadoxCsvColumn {
         val text = element.text
         val extraChars = ParadoxCsvManager.getSeparator().toString()
-        val newText = range.replaceAndQuoteIfNecessary(text, newContent, extraChars = extraChars)
+        val newText = range.replaceAndQuoteIfNecessary(text, newContent, extraChars = extraChars, blank = false)
         val newElement = ParadoxCsvElementFactory.createColumn(element.project, newText)
         return element.replace(newElement).cast()
     }

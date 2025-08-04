@@ -2,10 +2,12 @@ package icu.windea.pls.ep.expression
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
+import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Result
 
 /**
  * 用于匹配CSV表达式与CWT规则表达式。
@@ -30,10 +32,10 @@ interface ParadoxCsvExpressionMatcher {
         expressionText: String,
         configExpression: CwtDataExpression,
         configGroup: CwtConfigGroup
-    ): ParadoxExpressionMatcher.Result?
+    ): Result?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.Companion.create<ParadoxCsvExpressionMatcher>("icu.windea.pls.csvExpressionMatcher")
+        val EP_NAME = ExtensionPointName.create<ParadoxCsvExpressionMatcher>("icu.windea.pls.csvExpressionMatcher")
 
         /**
          * @see ParadoxCsvExpressionMatcher.matches
@@ -43,12 +45,15 @@ interface ParadoxCsvExpressionMatcher {
             expressionText: String,
             configExpression: CwtDataExpression,
             configGroup: CwtConfigGroup,
-        ): ParadoxExpressionMatcher.Result {
+        ): Result {
+            //optimized for empty column
+            if (expressionText.isEmpty()) return Result.ofFallback(configExpression.type == CwtDataTypes.Scalar)
+
             EP_NAME.extensionList.forEach f@{ ep ->
                 val r = ep.matches(element, expressionText, configExpression, configGroup)
                 if (r != null) return r
             }
-            return ParadoxExpressionMatcher.Result.NotMatch
+            return Result.NotMatch
         }
     }
 }

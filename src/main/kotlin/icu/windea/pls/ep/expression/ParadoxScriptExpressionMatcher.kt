@@ -7,6 +7,8 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Result
 import icu.windea.pls.script.psi.*
 
 /**
@@ -35,8 +37,8 @@ interface ParadoxScriptExpressionMatcher {
         configExpression: CwtDataExpression,
         config: CwtConfig<*>?,
         configGroup: CwtConfigGroup,
-        options: Int = ParadoxExpressionMatcher.Options.Default
-    ): ParadoxExpressionMatcher.Result?
+        options: Int = Options.Default
+    ): Result?
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName.create<ParadoxScriptExpressionMatcher>("icu.windea.pls.scriptExpressionMatcher")
@@ -50,13 +52,13 @@ interface ParadoxScriptExpressionMatcher {
             configExpression: CwtDataExpression,
             config: CwtConfig<*>?,
             configGroup: CwtConfigGroup,
-            options: Int = ParadoxExpressionMatcher.Options.Default
-        ): ParadoxExpressionMatcher.Result {
+            options: Int = Options.Default
+        ): Result {
             EP_NAME.extensionList.forEach f@{ ep ->
                 val r = ep.matches(element, expression, configExpression, config, configGroup, options)
                 if (r != null) return r
             }
-            return ParadoxExpressionMatcher.Result.NotMatch
+            return Result.NotMatch
         }
     }
 }

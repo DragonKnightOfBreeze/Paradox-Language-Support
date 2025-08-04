@@ -4,7 +4,7 @@ import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
-import icu.windea.pls.core.unquote
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.*
 import icu.windea.pls.lang.util.*

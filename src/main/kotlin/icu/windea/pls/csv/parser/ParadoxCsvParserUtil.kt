@@ -25,12 +25,10 @@ object ParadoxCsvParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun checkColumnToken(b: PsiBuilder, l: Int): Boolean {
         val (next) = b.lookupWithOffset(0, forward = true)
-        if (next == null) return false
         val (prev) = b.lookupWithOffset(-1, forward = false)
-        val isValidToken = next == COLUMN_TOKEN || next == SEPARATOR
-        if (!isValidToken) return false
+        val isValid = next == COLUMN_TOKEN || next == SEPARATOR || prev == SEPARATOR
         b.isFirstColumn = prev == EOL
-        b.isEmptyColumn = next == SEPARATOR
+        b.isEmptyColumn = next != COLUMN_TOKEN
         return true
     }
 }

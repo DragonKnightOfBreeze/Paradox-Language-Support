@@ -290,10 +290,9 @@ fun String.unquote(quote: Char = '"'): String {
     }
 }
 
-fun String.quoteIfNecessary(quote: Char = '"', extraChars: String = ""): String {
-    //如果包含空白或者双引号的话要使用双引号括起
-    if (any { it.isWhitespace() || it == quote || it in extraChars }) return this.quote(quote)
-    return this
+fun String.quoteIfNecessary(quote: Char = '"', extraChars: String = "", blank: Boolean = true): String {
+    val shouldQuote = this.any { it == quote || (blank && it.isWhitespace()) || it in extraChars }
+    return if (shouldQuote) this.quote(quote) else this
 }
 
 /**

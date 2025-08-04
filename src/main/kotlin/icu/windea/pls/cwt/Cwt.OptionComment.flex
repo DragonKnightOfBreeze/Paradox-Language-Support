@@ -53,11 +53,12 @@ QUOTED_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 BOOLEAN_TOKEN=(yes)|(no)
 INT_TOKEN=[+-]?[0-9]+ // leading zero is permitted
 FLOAT_TOKEN=[+-]?[0-9]*(\.[0-9]+) // leading zero is permitted
-STRING_TOKEN=([^#={}\s\"]+\"?)|({QUOTED_STRING_TOKEN})
+STRING_TOKEN=({UNQUOTED_STRING_TOKEN})|({QUOTED_STRING_TOKEN})
+UNQUOTED_STRING_TOKEN=[^#={}\s\"]+\"?
 QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
 
-// top option value can contain whitespaces
-TOP_STRING_TOKEN=([^#=<>{}\s\"]([^#=<>{}\r\n\"]*[^#=<>{}\s\"])?\"?)|({QUOTED_STRING_TOKEN})
+TOP_STRING_TOKEN=({TOP_UNQUOTED_STRING_TOKEN})|({QUOTED_STRING_TOKEN})
+TOP_UNQUOTED_STRING_TOKEN=[^#=<>{}\"\s]([^#=<>{}\"\r\n]*[^#=<>{}\s])? // middle whitespaces are permitted
 
 %%
 
