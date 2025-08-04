@@ -1,16 +1,13 @@
 package icu.windea.pls.config.configGroup
 
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.openapi.vfs.newvfs.events.*
-import icu.windea.pls.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.model.*
-
-private val LOGGER = logger<CwtConfigFileListener>()
 
 /**
  * 用于监听规则文件的更改，以便在必要时通知规则分组发生更改。
@@ -55,6 +52,7 @@ class CwtConfigFileListener : AsyncFileListener {
 
                 val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
                 ProjectManager.getInstance().openProjects.forEach f1@{ project ->
+                    val configGroupService = project.service<CwtConfigGroupService>()
                     val configGroups = mutableSetOf<CwtConfigGroup>()
                     fileProviders.forEach f2@{ fileProvider ->
                         if (fileProvider is BuiltInCwtConfigGroupFileProvider) return@f2
@@ -63,7 +61,7 @@ class CwtConfigFileListener : AsyncFileListener {
                             val configGroup = fileProvider.getContainingConfigGroup(rootDirectory, project) ?: return@f3
                             if (configGroup.gameType == null) {
                                 ParadoxGameType.entries.forEach { gameType ->
-                                    configGroups += PlsFacade.getConfigGroup(project, gameType)
+                                    configGroups += configGroupService.getConfigGroup(gameType)
                                 }
                             } else {
                                 configGroups += configGroup
@@ -73,7 +71,7 @@ class CwtConfigFileListener : AsyncFileListener {
                     val configGroupsToChange = configGroups.filter { !it.changed.get() }
                     if (configGroupsToChange.isEmpty()) return@f1
                     configGroupsToChange.forEach { configGroup -> configGroup.changed.set(true) }
-                    FloatingToolbarProvider.EP_NAME.findExtensionOrFail(ConfigGroupRefreshFloatingProvider::class.java).updateToolbarComponents(project)
+                    configGroupService.updateRefreshFloatingToolbar()
                 }
             }
         }

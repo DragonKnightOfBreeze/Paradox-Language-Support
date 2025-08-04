@@ -4,6 +4,7 @@ import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.progress.impl.*
 import com.intellij.openapi.project.*
@@ -135,5 +136,10 @@ class CwtConfigGroupService(private val project: Project) {
             settings.modDirectory?.let { modDirectory -> rootFilePaths.add(modDirectory) }
         }
         return rootFilePaths
+    }
+
+    fun updateRefreshFloatingToolbar() {
+        val provider = FloatingToolbarProvider.EP_NAME.findExtensionOrFail(ConfigGroupRefreshFloatingProvider::class.java)
+        provider.updateToolbarComponents(project)
     }
 }

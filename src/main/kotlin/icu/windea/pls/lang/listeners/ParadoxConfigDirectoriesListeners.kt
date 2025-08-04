@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.listeners
 
 import com.intellij.openapi.components.*
-import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.openapi.project.*
 import com.intellij.ui.*
 import icu.windea.pls.config.*
@@ -56,7 +55,7 @@ class ParadoxUpdateConfigGroupOnConfigDirectoriesChangedListener : ParadoxConfig
             configGroupService.getConfigGroups().values.forEach { configGroup ->
                 configGroup.changed.set(true)
             }
-            FloatingToolbarProvider.EP_NAME.findExtensionOrFail(ConfigGroupRefreshFloatingProvider::class.java).updateToolbarComponents(project)
+            configGroupService.updateRefreshFloatingToolbar()
         }
     }
 }

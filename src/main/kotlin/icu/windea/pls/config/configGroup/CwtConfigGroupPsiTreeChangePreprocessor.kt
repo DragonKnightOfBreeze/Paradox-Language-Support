@@ -1,8 +1,7 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.openapi.editor.toolbar.floating.*
+import com.intellij.openapi.components.service
 import com.intellij.psi.impl.*
-import icu.windea.pls.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.model.*
@@ -19,14 +18,15 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         if (file !is CwtFile) return
         val vFile = file.virtualFile ?: return
         val project = file.project
-        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
+        val configGroupService = project.service<CwtConfigGroupService>()
         val configGroups = mutableSetOf<CwtConfigGroup>()
+        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
         fileProviders.forEach f@{ fileProvider ->
             if (fileProvider is BuiltInCwtConfigGroupFileProvider) return@f
             val configGroup = fileProvider.getContainingConfigGroup(vFile, project) ?: return@f
             if (configGroup.gameType == null) {
                 ParadoxGameType.entries.forEach { gameType ->
-                    configGroups += PlsFacade.getConfigGroup(project, gameType)
+                    configGroups += configGroupService.getConfigGroup(gameType)
                 }
             } else {
                 configGroups += configGroup
@@ -35,6 +35,6 @@ class CwtConfigGroupPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
         val configGroupsToChange = configGroups.filter { !it.changed.get() }
         if (configGroupsToChange.isEmpty()) return
         configGroupsToChange.forEach { configGroup -> configGroup.changed.set(true) }
-        FloatingToolbarProvider.EP_NAME.findExtensionOrFail(ConfigGroupRefreshFloatingProvider::class.java).updateToolbarComponents(project)
+        configGroupService.updateRefreshFloatingToolbar()
     }
 }

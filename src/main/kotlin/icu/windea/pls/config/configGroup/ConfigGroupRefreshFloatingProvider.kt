@@ -18,6 +18,12 @@ class ConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider(ACTIO
         return isInsideMainEditor(dataContext)
     }
 
+    override fun register(dataContext: DataContext, component: FloatingToolbarComponent, parentDisposable: Disposable) {
+        val project = dataContext.getData(CommonDataKeys.PROJECT) ?: return
+        toolbarComponents.add(project to component, parentDisposable)
+        updateToolbarComponent(project, component)
+    }
+
     fun updateToolbarComponents(project: Project) {
         forEachToolbarComponent(project) {
             updateToolbarComponent(project, it)
@@ -31,12 +37,6 @@ class ConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider(ACTIO
             true -> component.scheduleShow()
             else -> component.scheduleHide()
         }
-    }
-
-    override fun register(dataContext: DataContext, component: FloatingToolbarComponent, parentDisposable: Disposable) {
-        val project = dataContext.getData(CommonDataKeys.PROJECT) ?: return
-        toolbarComponents.add(project to component, parentDisposable)
-        updateToolbarComponent(project, component)
     }
 
     private fun forEachToolbarComponent(project: Project, consumer: (FloatingToolbarComponent) -> Unit) {

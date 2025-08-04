@@ -3,7 +3,6 @@ package icu.windea.pls.config.configGroup
 import com.intellij.icons.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.components.*
-import com.intellij.openapi.editor.toolbar.floating.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
@@ -36,6 +35,6 @@ class HideConfigGroupRefreshAction : DumbAwareAction() {
         val configGroupService = project.service<CwtConfigGroupService>()
         val configGroups = configGroupService.getConfigGroups().values.filter { it.changed.get() }
         configGroups.forEach { configGroup -> configGroup.changed.set(false) }
-        FloatingToolbarProvider.EP_NAME.findExtensionOrFail(ConfigGroupRefreshFloatingProvider::class.java).updateToolbarComponents(project)
+        configGroupService.updateRefreshFloatingToolbar()
     }
 }
