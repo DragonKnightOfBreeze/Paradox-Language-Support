@@ -16,7 +16,7 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 %{
     private ParadoxGameType gameType;
 
-    //TODO 1.4.2+ 这里的状态栈处理可能有些问题，不过除非对于存在语法错误的场景，否则问题应当不大
+    // TODO 1.4.2+ 这里的状态栈处理可能有些问题，不过除非对于存在语法错误的场景，否则问题应当不大
     private IntStack nextStateStack = null;
 
     public _ParadoxLocalisationTextLexer() {

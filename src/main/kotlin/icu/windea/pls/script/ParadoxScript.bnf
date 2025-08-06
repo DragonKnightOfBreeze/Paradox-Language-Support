@@ -18,10 +18,6 @@
   methods(".*")=[getPresentation getResolveScope getUseScope]
 }
 
-// 忽略空白，在ParserDefinition里面定义PsiElement之间的空白类型
-// regex必须定向到token，而非rule
-// 即使idea提示不需要转义，一些字符在regexp中仍然需要转义
-
 // 分隔符可以是比较运算符
 
 root ::= root_block ?
@@ -66,7 +62,7 @@ private scripted_variable_value ::= boolean | int | float | string | inline_math
 // property related
 property ::= property_key property_separator property_value {
   pin=1
-  recoverWhile="#auto" //当前属性解析失败时，需要跳过继续解析下一个
+  recoverWhile="#auto" // 当前属性解析失败时，需要跳过继续解析下一个
   extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
   stubClass="icu.windea.pls.script.psi.ParadoxScriptPropertyStub"
   implements=[

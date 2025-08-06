@@ -38,7 +38,7 @@ private comment ::= COMMENT
 
 property ::= property_key property_separator property_value {
   pin=1
-  recoverWhile="#auto"
+  recoverWhile="#auto" // 当前属性解析失败时，需要跳过继续解析下一个
   mixin="icu.windea.pls.cwt.psi.impl.CwtNamedElementImpl"
   implements=[
     "icu.windea.pls.cwt.psi.CwtNamedElement"

@@ -128,12 +128,12 @@ intellijPlatform {
         id = properties("pluginId")
         name = properties("pluginName")
         version = properties("pluginVersion")
-        description = projectDir.resolve("DESCRIPTION.md").readText()
-        // local variable for configuration cache compatibility
-        val changelog = project.changelog
-        // Get the latest available change notes from the changelog file
+
+        description = projectDir.resolve("DESCRIPTION.md").readText().let(::markdownToHTML)
+
         changeNotes = properties("pluginVersion").map { pluginVersion ->
-            with(changelog) {
+            // Get the latest available change notes from the changelog file
+            with(project.changelog) {
                 @Suppress("UNCHECKED_CAST")
                 fun handleChangelogItem(changelogItem: Changelog.Item) {
                     val items = changelogItem.javaClass.getDeclaredField("items").also { it.trySetAccessible() }.get(changelogItem)
@@ -153,9 +153,10 @@ intellijPlatform {
                     }
                 }
 
-                val changelogItem = getOrNull(pluginVersion) ?: getUnreleased()
+                val changelogItem0 = getOrNull(pluginVersion) ?: getUnreleased()
+                val changelogItem = changelogItem0.withHeader(false).withEmptySections(false)
                 handleChangelogItem(changelogItem)
-                renderItem(changelogItem.withHeader(false).withEmptySections(false), Changelog.OutputType.HTML)
+                renderItem(changelogItem, Changelog.OutputType.HTML)
             }
         }
 
