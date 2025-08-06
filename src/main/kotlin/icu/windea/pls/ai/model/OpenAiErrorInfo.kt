@@ -1,4 +1,4 @@
-package icu.windea.pls.ai
+package icu.windea.pls.ai.model
 
 data class OpenAiErrorInfo(
     val error: Error

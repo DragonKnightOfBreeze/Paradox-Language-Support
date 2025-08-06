@@ -12,6 +12,7 @@ import com.intellij.platform.util.coroutines.*
 import com.intellij.platform.util.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
+import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.core.*
@@ -30,11 +31,11 @@ class CopyLocalisationWithAiPolishingIntention : ManipulateLocalisationIntention
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationWithAiPolishing")
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        return super.isAvailable(project, editor, file) && PlsAiManager.isAvailable()
+        return super.isAvailable(project, editor, file) && PlsAiFacade.isAvailable()
     }
 
     override fun createPopup(project: Project, editor: Editor?, file: PsiFile?, callback: (String) -> Unit): JBPopup {
-        return PlsAiManager.getPolishLocalisationService().createDescriptionPopup(project, callback)
+        return PlsAiFacade.getPolishLocalisationService().createDescriptionPopup(project, callback)
     }
 
     @Suppress("UnstableApiUsage")
@@ -49,7 +50,7 @@ class CopyLocalisationWithAiPolishingIntention : ManipulateLocalisationIntention
 
             if (contextsToHandle.isNotEmpty()) {
                 val total = contextsToHandle.size
-                val chunkSize = PlsAiManager.getSettings().features.batchSizeOfLocalisations
+                val chunkSize = PlsAiFacade.getSettings().features.batchSizeOfLocalisations
                 val contextsChunked = contextsToHandle.chunked(chunkSize)
                 reportRawProgress p@{ reporter ->
                     reporter.text(PlsBundle.message("manipulation.localisation.polish.progress.step"))

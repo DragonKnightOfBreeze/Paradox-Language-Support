@@ -12,8 +12,8 @@ import com.intellij.platform.ide.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.requests.*
-import icu.windea.pls.ai.util.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.integrations.translation.*
@@ -117,7 +117,7 @@ object ParadoxLocalisationManipulator {
     }
 
     suspend fun handleTextWithAiTranslation(request: PlsAiTranslateLocalisationRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
-        val aiService = PlsAiManager.getTranslateLocalisationService()
+        val aiService = PlsAiFacade.getTranslateLocalisationService()
         val resultFlow = aiService.translate(request)
         aiService.checkResultFlow(resultFlow)
         resultFlow.collect { data ->
@@ -130,7 +130,7 @@ object ParadoxLocalisationManipulator {
     }
 
     suspend fun handleTextWithAiPolishing(request: PlsAiPolishLocalisationRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
-        val aiService = PlsAiManager.getPolishLocalisationService()
+        val aiService = PlsAiFacade.getPolishLocalisationService()
         val resultFlow = aiService.polish(request)
         aiService.checkResultFlow(resultFlow)
         resultFlow.collect { data ->

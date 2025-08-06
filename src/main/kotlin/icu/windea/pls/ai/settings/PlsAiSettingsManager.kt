@@ -2,22 +2,10 @@ package icu.windea.pls.ai.settings
 
 import com.intellij.*
 import icu.windea.pls.ai.*
-import icu.windea.pls.ai.util.*
+import icu.windea.pls.ai.util.PlsChatModelManager
 import java.util.*
 
 object PlsAiSettingsManager {
-    fun isValid(type: PlsChatModelType = PlsAiManager.getChatModelTypeToUse()): Boolean {
-        return when (type) {
-            PlsChatModelType.OPEN_AI -> isValidForOpenAI()
-        }
-    }
-
-    private fun isValidForOpenAI(): Boolean {
-        // modelName 和 apiEndpoint 为空时使用默认值
-        // apiKey 为空时直接报错
-        return true
-    }
-
     fun getDefaultBatchSizeOfLocalisations(): Int = 50
 
     fun getMaxBatchSizeOfLocalisations(): Int = 1000

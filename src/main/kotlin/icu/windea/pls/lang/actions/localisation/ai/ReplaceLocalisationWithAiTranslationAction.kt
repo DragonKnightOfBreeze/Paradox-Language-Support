@@ -10,6 +10,7 @@ import com.intellij.platform.ide.progress.*
 import com.intellij.platform.util.coroutines.*
 import com.intellij.platform.util.progress.*
 import icu.windea.pls.*
+import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.config.config.*
@@ -25,11 +26,11 @@ import java.util.concurrent.atomic.*
 
 class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionBase.WithLocalePopupAndPopup<String>(), DumbAware {
     override fun isAvailable(e: AnActionEvent, project: Project): Boolean {
-        return super.isAvailable(e, project) && PlsAiManager.isAvailable()
+        return super.isAvailable(e, project) && PlsAiFacade.isAvailable()
     }
 
     override fun createPopup(e: AnActionEvent, project: Project, callback: (String) -> Unit): JBPopup? {
-        return PlsAiManager.getTranslateLocalisationService().createDescriptionPopup(project, callback)
+        return PlsAiFacade.getTranslateLocalisationService().createDescriptionPopup(project, callback)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -51,7 +52,7 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
                 rawReporter.text(stepText)
 
                 files.forEachConcurrent { file ->
-                    val chunkSize = PlsAiManager.getSettings().features.batchSizeOfLocalisations
+                    val chunkSize = PlsAiFacade.getSettings().features.batchSizeOfLocalisations
                     val elements = ParadoxLocalisationManipulator.buildFlow(file)
                     elements.transform { element ->
                         val context = readAction { ParadoxLocalisationContext.from(element) }

@@ -7,6 +7,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.*
 import icu.windea.pls.ai.*
+import icu.windea.pls.ai.PlsAiFacade
 import icu.windea.pls.ai.util.*
 
 class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.ai")), SearchableConfigurable {
@@ -17,7 +18,7 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
 
     override fun createPanel(): DialogPanel {
         callbackLock.clear()
-        val settings = PlsAiManager.getSettings()
+        val settings = PlsAiFacade.getSettings()
         return panel {
             //enable
             row {

@@ -18,7 +18,7 @@ object PlsFacade {
     //from official documentation: Never acquire service instances prematurely or store them in fields for later use.
 
     @Service(Service.Level.PROJECT)
-    private class ProjectService(val project: Project, val coroutineScope: CoroutineScope)
+    private class ProjectService(val coroutineScope: CoroutineScope)
 
     @Service(Service.Level.APP)
     private class ApplicationService(val coroutineScope: CoroutineScope)
