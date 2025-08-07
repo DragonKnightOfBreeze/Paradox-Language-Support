@@ -32,6 +32,6 @@ interface ParadoxIndexInfoSupport<T : ParadoxIndexInfo> {
     }
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxIndexInfoSupport<*>>("icu.windea.pls.infoIndexSupport")
+        val EP_NAME = ExtensionPointName<ParadoxIndexInfoSupport<*>>("icu.windea.pls.infoIndexSupport")
     }
 }

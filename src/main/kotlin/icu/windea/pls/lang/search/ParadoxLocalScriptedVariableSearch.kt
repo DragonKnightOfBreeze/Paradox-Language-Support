@@ -20,7 +20,7 @@ class ParadoxLocalScriptedVariableSearch : ExtensibleQueryFactory<ParadoxScriptS
 
     companion object {
         @JvmField
-        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxScriptScriptedVariable, SearchParameters>>("icu.windea.pls.search.localScriptedVariableSearch")
+        val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxScriptScriptedVariable, SearchParameters>>("icu.windea.pls.search.localScriptedVariableSearch")
         @JvmField
         val INSTANCE = ParadoxLocalScriptedVariableSearch()
 

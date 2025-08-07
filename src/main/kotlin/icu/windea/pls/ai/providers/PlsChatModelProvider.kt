@@ -14,7 +14,7 @@ interface PlsChatModelProvider {
     fun createStreamingChatModel(): StreamingChatModel?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<PlsChatModelProvider>("icu.windea.pls.ai.chatModelProvider")
+        val EP_NAME = ExtensionPointName<PlsChatModelProvider>("icu.windea.pls.ai.chatModelProvider")
 
         fun get(type: PlsChatModelType): PlsChatModelProvider? {
             return EP_NAME.extensionList.find { it.type == type }

@@ -26,7 +26,7 @@ interface CwtOverriddenConfigProvider {
     fun skipTooManyExpressionCheck(configs: List<CwtMemberConfig<*>>, configExpression: CwtDataExpression) = false
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<CwtOverriddenConfigProvider>("icu.windea.pls.overriddenConfigProvider")
+        val EP_NAME = ExtensionPointName<CwtOverriddenConfigProvider>("icu.windea.pls.overriddenConfigProvider")
 
         fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T>? {
             val gameType = config.configGroup.gameType ?: return null

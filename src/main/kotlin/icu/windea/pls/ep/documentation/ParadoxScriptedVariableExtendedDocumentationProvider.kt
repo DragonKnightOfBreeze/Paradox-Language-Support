@@ -15,7 +15,7 @@ interface ParadoxScriptedVariableExtendedDocumentationProvider {
     fun getDocumentationContent(element: ParadoxScriptScriptedVariable): String?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxScriptedVariableExtendedDocumentationProvider>("icu.windea.pls.scriptedVariableExtendedDocumentationProvider")
+        val EP_NAME = ExtensionPointName<ParadoxScriptedVariableExtendedDocumentationProvider>("icu.windea.pls.scriptedVariableExtendedDocumentationProvider")
 
         fun getDocumentationContent(element: ParadoxScriptScriptedVariable): String? {
             val gameType = selectGameType(element)

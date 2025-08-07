@@ -23,7 +23,7 @@ class ParadoxSyncedLocalisationSearch : ExtensibleQueryFactory<ParadoxLocalisati
 
     companion object {
         @JvmField
-        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxLocalisationProperty, SearchParameters>>("icu.windea.pls.search.syncedLocalisationSearch")
+        val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxLocalisationProperty, SearchParameters>>("icu.windea.pls.search.syncedLocalisationSearch")
         @JvmField
         val INSTANCE = ParadoxSyncedLocalisationSearch()
 

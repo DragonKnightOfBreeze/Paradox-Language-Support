@@ -15,7 +15,7 @@ interface ParadoxDynamicValueExtendedDocumentationProvider {
     fun getDocumentationContent(element: ParadoxDynamicValueElement): String?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxDynamicValueExtendedDocumentationProvider>("icu.windea.pls.dynamicValueExtendedDocumentationProvider")
+        val EP_NAME = ExtensionPointName<ParadoxDynamicValueExtendedDocumentationProvider>("icu.windea.pls.dynamicValueExtendedDocumentationProvider")
 
         fun getDocumentationContent(element: ParadoxDynamicValueElement): String? {
             val gameType = element.gameType

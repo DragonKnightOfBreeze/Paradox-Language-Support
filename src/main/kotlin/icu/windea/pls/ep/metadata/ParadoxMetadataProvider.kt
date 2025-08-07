@@ -13,7 +13,7 @@ interface ParadoxMetadataProvider {
     fun getMetadata(rootFile: VirtualFile): ParadoxMetadata?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxMetadataProvider>("icu.windea.pls.metadataProvider")
+        val EP_NAME = ExtensionPointName<ParadoxMetadataProvider>("icu.windea.pls.metadataProvider")
 
         fun getMetadata(rootFile: VirtualFile): ParadoxMetadata? {
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->

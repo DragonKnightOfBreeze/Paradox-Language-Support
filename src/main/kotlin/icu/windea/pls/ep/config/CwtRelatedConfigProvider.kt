@@ -18,7 +18,7 @@ interface CwtRelatedConfigProvider {
     fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>>
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<CwtRelatedConfigProvider>("icu.windea.pls.relatedConfigProvider")
+        val EP_NAME = ExtensionPointName<CwtRelatedConfigProvider>("icu.windea.pls.relatedConfigProvider")
 
         fun getRelatedConfigs(file: PsiFile, offset: Int): Collection<CwtConfig<*>> {
             val gameType = selectGameType(file) ?: return emptySet()

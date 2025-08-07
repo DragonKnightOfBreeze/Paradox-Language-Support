@@ -22,7 +22,7 @@ interface ParadoxPriorityProvider {
     fun getPriority(searchParameters: ParadoxSearchParameters<*>): ParadoxPriority?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxPriorityProvider>("icu.windea.pls.priorityProvider")
+        val EP_NAME = ExtensionPointName<ParadoxPriorityProvider>("icu.windea.pls.priorityProvider")
 
         fun getPriority(target: Any): ParadoxPriority {
             val gameType by lazy { selectGameType(target) }

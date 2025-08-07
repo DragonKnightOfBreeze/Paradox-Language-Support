@@ -15,7 +15,7 @@ interface ParadoxParameterExtendedDocumentationProvider {
     fun getDocumentationContent(element: ParadoxParameterElement): String?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxParameterExtendedDocumentationProvider>("icu.windea.pls.parameterExtendedDocumentationProvider")
+        val EP_NAME = ExtensionPointName<ParadoxParameterExtendedDocumentationProvider>("icu.windea.pls.parameterExtendedDocumentationProvider")
 
         fun getDocumentationContent(element: ParadoxParameterElement): String? {
             val gameType = element.gameType

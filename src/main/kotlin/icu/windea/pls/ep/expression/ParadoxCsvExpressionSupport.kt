@@ -42,7 +42,7 @@ interface ParadoxCsvExpressionSupport {
     }
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxCsvExpressionSupport>("icu.windea.pls.csvExpressionSupport")
+        val EP_NAME = ExtensionPointName<ParadoxCsvExpressionSupport>("icu.windea.pls.csvExpressionSupport")
 
         fun annotate(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, holder: AnnotationHolder, config: CwtValueConfig) {
             val gameType = config.configGroup.gameType

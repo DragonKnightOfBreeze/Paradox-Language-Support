@@ -12,6 +12,6 @@ interface ImageSupport {
     fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ImageSupport>("icu.windea.pls.images.support")
+        val EP_NAME = ExtensionPointName<ImageSupport>("icu.windea.pls.images.support")
     }
 }

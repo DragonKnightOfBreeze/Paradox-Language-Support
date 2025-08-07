@@ -13,7 +13,7 @@ interface CwtDataExpressionResolver {
     fun resolve(expressionString: String, isKey: Boolean): CwtDataExpression?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<CwtDataExpressionResolver>("icu.windea.pls.dataExpressionResolver")
+        val EP_NAME = ExtensionPointName<CwtDataExpressionResolver>("icu.windea.pls.dataExpressionResolver")
 
         /**
          * @see CwtDataExpressionResolver.resolve

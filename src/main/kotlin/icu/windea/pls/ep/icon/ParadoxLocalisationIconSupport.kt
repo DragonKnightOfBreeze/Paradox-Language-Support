@@ -24,7 +24,7 @@ interface ParadoxLocalisationIconSupport {
     fun complete(context: ProcessingContext, result: CompletionResultSet)
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxLocalisationIconSupport>("icu.windea.pls.localisationIconSupport")
+        val EP_NAME = ExtensionPointName<ParadoxLocalisationIconSupport>("icu.windea.pls.localisationIconSupport")
 
         fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement? {
             val gameType = selectGameType(element)

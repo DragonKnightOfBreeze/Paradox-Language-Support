@@ -22,7 +22,7 @@ class ParadoxDefinitionSearch : ExtensibleQueryFactory<ParadoxScriptDefinitionEl
 
     companion object {
         @JvmField
-        val EP_NAME = ExtensionPointName.create<QueryExecutor<ParadoxScriptDefinitionElement, SearchParameters>>("icu.windea.pls.search.definitionSearch")
+        val EP_NAME = ExtensionPointName<QueryExecutor<ParadoxScriptDefinitionElement, SearchParameters>>("icu.windea.pls.search.definitionSearch")
         @JvmField
         val INSTANCE = ParadoxDefinitionSearch()
 

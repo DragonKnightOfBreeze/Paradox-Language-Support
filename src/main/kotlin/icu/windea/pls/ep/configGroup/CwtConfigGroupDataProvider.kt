@@ -10,7 +10,7 @@ interface CwtConfigGroupDataProvider {
     fun process(configGroup: CwtConfigGroup): Boolean
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<CwtConfigGroupDataProvider>("icu.windea.pls.configGroupDataProvider")
+        val EP_NAME = ExtensionPointName<CwtConfigGroupDataProvider>("icu.windea.pls.configGroupDataProvider")
     }
 }
 

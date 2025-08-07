@@ -14,7 +14,7 @@ interface ParadoxDefinitionInheritSupport {
     fun getSuperDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxDefinitionInheritSupport>("icu.windea.pls.definitionInheritSupport")
+        val EP_NAME = ExtensionPointName<ParadoxDefinitionInheritSupport>("icu.windea.pls.definitionInheritSupport")
 
         fun getSuperDefinition(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScriptDefinitionElement? {
             val gameType = definitionInfo.gameType

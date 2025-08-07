@@ -16,7 +16,7 @@ interface CwtDataExpressionMerger {
     fun merge(configExpression1: CwtDataExpression, configExpression2: CwtDataExpression, configGroup: CwtConfigGroup): String?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<CwtDataExpressionMerger>("icu.windea.pls.dataExpressionMerger")
+        val EP_NAME = ExtensionPointName<CwtDataExpressionMerger>("icu.windea.pls.dataExpressionMerger")
 
         /**
          * @see CwtDataExpressionMerger.merge

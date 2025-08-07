@@ -20,7 +20,7 @@ interface ParadoxModifierNameDescProvider {
     fun addModifierDescKey(modifierInfo: ParadoxModifierInfo, element: PsiElement, registry: MutableSet<String>)
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxModifierNameDescProvider>("icu.windea.pls.modifierNameDescProvider")
+        val EP_NAME = ExtensionPointName<ParadoxModifierNameDescProvider>("icu.windea.pls.modifierNameDescProvider")
 
         fun getModifierNameKeys(element: PsiElement, modifierInfo: ParadoxModifierInfo): Set<String> {
             val gameType = modifierInfo.gameType

@@ -44,7 +44,7 @@ abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
     }
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxDefinitionDataProvider<*>>("icu.windea.pls.definitionDataProvider")
+        val EP_NAME = ExtensionPointName<ParadoxDefinitionDataProvider<*>>("icu.windea.pls.definitionDataProvider")
 
         @Suppress("UNCHECKED_CAST")
         fun <T : ParadoxDefinitionData> getData(dataType: Class<T>, definition: ParadoxScriptDefinitionElement): T? {

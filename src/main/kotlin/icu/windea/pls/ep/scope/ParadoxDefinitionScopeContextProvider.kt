@@ -16,7 +16,7 @@ interface ParadoxDefinitionScopeContextProvider {
     fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxDefinitionScopeContextProvider>("icu.windea.pls.definitionScopeContextProvider")
+        val EP_NAME = ExtensionPointName<ParadoxDefinitionScopeContextProvider>("icu.windea.pls.definitionScopeContextProvider")
 
         fun getScopeContext(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContext? {
             val gameType = definitionInfo.gameType

@@ -17,7 +17,7 @@ interface ParadoxInlineSupport {
     fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxInlineSupport>("icu.windea.pls.inlineSupport")
+        val EP_NAME = ExtensionPointName<ParadoxInlineSupport>("icu.windea.pls.inlineSupport")
 
         fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
             val gameType = selectGameType(element)

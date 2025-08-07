@@ -11,6 +11,6 @@ interface CodeInjectorSupport {
     fun apply(codeInjector: CodeInjector)
 
     companion object {
-        val EP_NAME = ExtensionPointName.create<CodeInjectorSupport>("icu.windea.pls.inject.codeInjectorSupport")
+        val EP_NAME = ExtensionPointName<CodeInjectorSupport>("icu.windea.pls.inject.codeInjectorSupport")
     }
 }

@@ -25,7 +25,7 @@ interface ParadoxParameterInferredConfigProvider {
     fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxParameterInferredConfigProvider>("icu.windea.pls.parameterInferredConfigProvider")
+        val EP_NAME = ExtensionPointName<ParadoxParameterInferredConfigProvider>("icu.windea.pls.parameterInferredConfigProvider")
 
         fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
             val gameType = parameterContextInfo.gameType

@@ -46,6 +46,6 @@ interface CwtConfigGroupFileProvider {
     }
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<CwtConfigGroupFileProvider>("icu.windea.pls.configGroupFileProvider")
+        val EP_NAME = ExtensionPointName<CwtConfigGroupFileProvider>("icu.windea.pls.configGroupFileProvider")
     }
 }

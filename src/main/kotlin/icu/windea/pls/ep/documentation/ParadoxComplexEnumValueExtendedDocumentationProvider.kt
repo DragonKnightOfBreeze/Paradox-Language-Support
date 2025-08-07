@@ -15,7 +15,7 @@ interface ParadoxComplexEnumValueExtendedDocumentationProvider {
     fun getDocumentationContent(element: ParadoxComplexEnumValueElement): String?
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxComplexEnumValueExtendedDocumentationProvider>("icu.windea.pls.complexEnumValueExtendedDocumentationProvider")
+        val EP_NAME = ExtensionPointName<ParadoxComplexEnumValueExtendedDocumentationProvider>("icu.windea.pls.complexEnumValueExtendedDocumentationProvider")
 
         fun getDocumentationContent(element: ParadoxComplexEnumValueElement): String? {
             val gameType = element.gameType

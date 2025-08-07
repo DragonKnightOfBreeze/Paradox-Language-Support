@@ -19,7 +19,7 @@ interface ParadoxReferenceLinkProvider {
     fun createPsiLink(element: PsiElement, plainLink: Boolean = true): String? = null
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxReferenceLinkProvider>("icu.windea.pls.referenceLinkProvider")
+        val EP_NAME = ExtensionPointName<ParadoxReferenceLinkProvider>("icu.windea.pls.referenceLinkProvider")
 
         fun supports(link: String): Boolean {
             return EP_NAME.extensionList.any { ep ->

@@ -21,7 +21,7 @@ interface CwtInjectedConfigProvider {
     fun injectConfigs(parentConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<CwtInjectedConfigProvider>("icu.windea.pls.injectedConfigProvider")
+        val EP_NAME = ExtensionPointName<CwtInjectedConfigProvider>("icu.windea.pls.injectedConfigProvider")
 
         fun injectConfigs(parentConfig: CwtMemberConfig<*>, configs: MutableList<CwtMemberConfig<*>>): Boolean {
             val gameType = parentConfig.configGroup.gameType

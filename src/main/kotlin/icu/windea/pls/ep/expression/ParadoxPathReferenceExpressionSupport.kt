@@ -47,7 +47,7 @@ interface ParadoxPathReferenceExpressionSupport {
     fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxPathReferenceExpressionSupport>("icu.windea.pls.pathReferenceExpressionSupport")
+        val EP_NAME = ExtensionPointName<ParadoxPathReferenceExpressionSupport>("icu.windea.pls.pathReferenceExpressionSupport")
 
         fun get(configExpression: CwtDataExpression): ParadoxPathReferenceExpressionSupport? {
             return EP_NAME.extensionList.find { ep -> ep.supports(configExpression) }

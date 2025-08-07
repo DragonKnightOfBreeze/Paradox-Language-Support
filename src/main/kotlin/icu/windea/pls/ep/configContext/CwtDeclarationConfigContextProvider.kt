@@ -23,7 +23,7 @@ interface CwtDeclarationConfigContextProvider {
     fun getConfig(context: CwtDeclarationConfigContext, declarationConfig: CwtDeclarationConfig): CwtPropertyConfig
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<CwtDeclarationConfigContextProvider>("icu.windea.pls.declarationConfigContextProvider")
+        val EP_NAME = ExtensionPointName<CwtDeclarationConfigContextProvider>("icu.windea.pls.declarationConfigContextProvider")
 
         fun getContext(element: PsiElement, definitionName: String?, definitionType: String, definitionSubtypes: List<String>?, gameType: ParadoxGameType, configGroup: CwtConfigGroup): CwtDeclarationConfigContext? {
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->

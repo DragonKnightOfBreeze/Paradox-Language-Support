@@ -64,7 +64,7 @@ interface ParadoxParameterSupport {
     fun buildDocumentationDefinition(parameterElement: ParadoxParameterElement, builder: DocumentationBuilder): Boolean = false
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxParameterSupport>("icu.windea.pls.parameterSupport")
+        val EP_NAME = ExtensionPointName<ParadoxParameterSupport>("icu.windea.pls.parameterSupport")
 
         fun isContext(element: ParadoxScriptDefinitionElement): Boolean {
             return EP_NAME.extensionList.any { it.isContext(element) }

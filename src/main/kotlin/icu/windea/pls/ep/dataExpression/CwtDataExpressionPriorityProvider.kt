@@ -16,7 +16,7 @@ interface CwtDataExpressionPriorityProvider {
     fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Double
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<CwtDataExpressionPriorityProvider>("icu.windea.pls.dataExpressionPriorityProvider")
+        val EP_NAME = ExtensionPointName<CwtDataExpressionPriorityProvider>("icu.windea.pls.dataExpressionPriorityProvider")
 
         /**
          * @see CwtDataExpressionPriorityProvider.getPriority

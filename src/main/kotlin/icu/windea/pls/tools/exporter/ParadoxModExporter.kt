@@ -12,6 +12,6 @@ interface ParadoxModExporter {
     fun execute(project: Project, table: ParadoxModDependenciesTable)
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxModExporter>("icu.windea.pls.tools.modExporter")
+        val EP_NAME = ExtensionPointName<ParadoxModExporter>("icu.windea.pls.tools.modExporter")
     }
 }

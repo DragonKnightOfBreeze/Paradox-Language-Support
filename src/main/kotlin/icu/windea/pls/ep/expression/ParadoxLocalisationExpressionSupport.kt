@@ -47,7 +47,7 @@ interface ParadoxLocalisationExpressionSupport {
     }
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName.create<ParadoxLocalisationExpressionSupport>("icu.windea.pls.localisationExpressionSupport")
+        val EP_NAME = ExtensionPointName<ParadoxLocalisationExpressionSupport>("icu.windea.pls.localisationExpressionSupport")
 
         //目前来看，这里暂不需要尝试避免SOE
 
