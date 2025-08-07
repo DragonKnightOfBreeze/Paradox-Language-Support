@@ -46,30 +46,6 @@ class PlsAiTranslateLocalisationService : PlsAiManipulateLocalisationService() {
     }
 
     fun createDescriptionPopup(project: Project, callback: (String) -> Unit): JBPopup {
-        lateinit var popup: JBPopup
-        val textField = TextFieldWithStoredHistory("PLS_AI_TRANSLATE_LOCALISATION_DESCRIPTION_KEYS")
-        val panel = panel {
-            row {
-                cell(textField).align(AlignX.FILL).focused().columns(COLUMNS_LARGE).smaller()
-            }
-            row {
-                comment(PlsBundle.message("manipulation.localisation.popup.comment"), MAX_LINE_LENGTH_WORD_WRAP).smaller()
-                button(PlsBundle.message("manipulation.localisation.popup.button.submit")) { popup.closeOk(null) }.smaller().align(AlignX.RIGHT)
-            }
-        }
-        popup = JBPopupFactory.getInstance()
-            .createComponentPopupBuilder(panel, textField)
-            .setProject(project)
-            .setRequestFocus(true)
-            .setResizable(true)
-            .setMovable(true)
-            .setCancelOnClickOutside(false)
-            .setCancelOnOtherWindowOpen(false)
-            .setMinSize(Dimension(640, 120))
-            .setTitle(PlsBundle.message("manipulation.localisation.popup.title.translate"))
-            .setOkHandler { callback(textField.text.trim()) }
-            .createPopup()
-        textField.addActionListener { popup.closeOk(null) }
-        return popup
+        return createDescriptionPopup(project, "PLS_AI_TRANSLATE_LOCALISATION_DESCRIPTION_KEYS", callback)
     }
 }

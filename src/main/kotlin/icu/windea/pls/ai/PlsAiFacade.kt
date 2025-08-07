@@ -8,7 +8,7 @@ import icu.windea.pls.ai.util.*
 object PlsAiFacade {
     fun getSettings(): PlsAiSettingsState = service<PlsAiSettings>().state
 
-    fun isAvailable(): Boolean = getSettings().enable && PlsChatModelManager.isValid()
+    fun isAvailable(): Boolean = getSettings().enable && PlsChatModelManager.isAvailable()
 
     fun getTranslateLocalisationService() = service<PlsAiTranslateLocalisationService>()
 

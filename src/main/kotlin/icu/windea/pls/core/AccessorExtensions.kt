@@ -9,7 +9,7 @@ import kotlin.reflect.*
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.*
 
-private val logger = Logger.getInstance("#icu.windea.pls.core.ReflectionAccessorExtensions")
+private val logger = Logger.getInstance("#icu.windea.pls.core.AccessorExtensions")
 
 class SmartProperty<T : Any, V>(
     val target: T,
@@ -33,17 +33,21 @@ class SmartMemberProperty<T : Any, V>(
     private val delegateProperty by lazy { doGetDelegateProperty() }
 
     fun get(target: T): V {
+        doGetTargetClass(target)
+        return delegateProperty?.get(target) ?: unsupported()
+    }
+
+    fun set(target: T, value: V) {
+        delegateProperty?.set(target, value) ?: unsupported()
+    }
+
+    private fun doGetTargetClass(target: T) {
         synchronized(this) {
             if (targetClassProvider == null) {
                 val targetClass0 = target::class as KClass<T>
                 targetClassProvider = { targetClass0 }
             }
         }
-        return delegateProperty?.get(target) ?: unsupported()
-    }
-
-    fun set(target: T, value: V) {
-        delegateProperty?.set(target, value) ?: unsupported()
     }
 
     private fun doGetDelegateProperty(): DelegateProperty<T, V>? {
@@ -154,13 +158,20 @@ class SmartMemberFunction<T : Any>(
     private val targetClass by lazy { targetClassProvider?.invoke() ?: unsupported() }
 
     operator fun invoke(target: T, vararg args: Any?): Any? {
+        doInferTargetClass(target)
+        return doInvoke(target, args)
+    }
+
+    private fun doInferTargetClass(target: T) {
         synchronized(this) {
             if (targetClassProvider == null) {
                 val targetClass0 = target::class as KClass<T>
                 targetClassProvider = { targetClass0 }
             }
         }
+    }
 
+    private fun doInvoke(target: T, args: Array<out Any?>): Any? {
         if (!targetClass.isInstance(target)) cannotCast(target, targetClass)
         val expectedArgsSize = args.size + 1
 
@@ -180,6 +191,7 @@ class SmartMemberFunction<T : Any>(
         } catch (e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
             logger.error(e)
+            return null
         }
 
         //fallback to java reflection
@@ -207,6 +219,10 @@ class SmartStaticFunction<T : Any>(
     private val targetClass by lazy { targetClassProvider() }
 
     operator fun invoke(vararg args: Any?): Any? {
+        return doInvoke(args)
+    }
+
+    private fun doInvoke(args: Array<out Any?>): Any? {
         val expectedArgsSize = args.size
 
         try {
@@ -225,6 +241,7 @@ class SmartStaticFunction<T : Any>(
         } catch (e: UnsupportedOperationException) {
             //java.lang.UnsupportedOperationException: Packages and file facades are not yet supported in Kotlin reflection.
             logger.error(e)
+            return null
         }
 
         //fallback to java reflection
@@ -244,6 +261,7 @@ class SmartStaticFunction<T : Any>(
         unsupported()
     }
 }
+
 
 private fun KFunction<*>.isGetter(propertyName: String): Boolean {
     if (parameters.size != 1) return false

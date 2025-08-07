@@ -180,3 +180,5 @@ fun Cell<JBTextField>.bindIntTextWhenChanged(property: KMutableProperty0<Int>): 
 }
 
 fun <T : JComponent> Cell<T>.smaller() = customize(UnscaledGaps(3, 0, 3, 0))
+
+fun <T : JComponent> Cell<T>.smallerFont() = applyToComponent { font = JBUI.Fonts.smallFont() }

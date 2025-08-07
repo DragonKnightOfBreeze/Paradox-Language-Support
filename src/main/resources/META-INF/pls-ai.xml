@@ -1,4 +1,12 @@
 <idea-plugin>
+  <extensionPoints>
+    <extensionPoint qualifiedName="icu.windea.pls.ai.chatModelProvider" interface="icu.windea.pls.ai.providers.PlsChatModelProvider" dynamic="true"/>
+  </extensionPoints>
+
+  <extensions defaultExtensionNs="icu.windea.pls.ai">
+    <chatModelProvider implementation="icu.windea.pls.ai.providers.PlsOpenAiChatModelProvider"/>
+  </extensions>
+
   <extensions defaultExtensionNs="com.intellij">
     <applicationConfigurable id="pls.ai" parentId="pls" bundle="messages.PlsBundle" key="settings.ai" instance="icu.windea.pls.ai.settings.PlsAiSettingsConfigurable"/>
 

@@ -3,6 +3,7 @@
 package icu.windea.pls.core
 
 import java.lang.reflect.*
+import kotlin.reflect.KFunction
 
 inline fun tryGetField(action: () -> Field): Field? {
     try {
