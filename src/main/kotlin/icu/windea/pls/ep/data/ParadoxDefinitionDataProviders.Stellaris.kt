@@ -1,9 +1,12 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.ep.data
 
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.util.data.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
+import icu.windea.pls.ep.data.ParadoxDefinitionDataProviderDelegates as Delegates
 
 class StellarisEconomicCategoryData(data: ParadoxScriptData) : ParadoxDefinitionData {
     val parent: String? by data.get("parent")
@@ -22,7 +25,7 @@ class StellarisEconomicCategoryData(data: ParadoxScriptData) : ParadoxDefinition
     }
 
     @WithGameType(ParadoxGameType.Stellaris)
-    class Provider : ParadoxDefinitionDataProviderBase<StellarisEconomicCategoryData>(ParadoxDefinitionTypes.EconomicCategory)
+    class Provider : ParadoxDefinitionDataProvider<StellarisEconomicCategoryData> by Delegates.create(ParadoxDefinitionTypes.EconomicCategory)
 }
 
 class StellarisGameConceptData(data: ParadoxScriptData) : ParadoxDefinitionData {
@@ -31,7 +34,7 @@ class StellarisGameConceptData(data: ParadoxScriptData) : ParadoxDefinitionData 
     val alias: Set<String>? by data.get("alias")
 
     @WithGameType(ParadoxGameType.Stellaris)
-    class Provider : ParadoxDefinitionDataProviderBase<StellarisGameConceptData>(ParadoxDefinitionTypes.GameConcept)
+    class Provider : ParadoxDefinitionDataProvider<StellarisGameConceptData> by Delegates.create(ParadoxDefinitionTypes.GameConcept)
 }
 
 class StellarisTechnologyData(data: ParadoxScriptData) : ParadoxDefinitionData {
@@ -53,7 +56,7 @@ class StellarisTechnologyData(data: ParadoxScriptData) : ParadoxDefinitionData {
     val prerequisites: Set<String> by data.get("prerequisites", emptySet())
 
     @WithGameType(ParadoxGameType.Stellaris)
-    class Provider : ParadoxDefinitionDataProviderBase<StellarisTechnologyData>(ParadoxDefinitionTypes.Technology)
+    class Provider : ParadoxDefinitionDataProvider<StellarisTechnologyData> by Delegates.create(ParadoxDefinitionTypes.Technology)
 }
 
 class StellarisEventData(data: ParadoxScriptData) : ParadoxDefinitionData {
@@ -64,5 +67,5 @@ class StellarisEventData(data: ParadoxScriptData) : ParadoxDefinitionData {
     val showSoundClear: Boolean by data.get("show_sound_clear", false)
 
     @WithGameType(ParadoxGameType.Stellaris)
-    class Provider : ParadoxDefinitionDataProviderBase<StellarisEventData>(ParadoxDefinitionTypes.Event)
+    class Provider : ParadoxDefinitionDataProvider<StellarisEventData> by Delegates.create(ParadoxDefinitionTypes.Event)
 }

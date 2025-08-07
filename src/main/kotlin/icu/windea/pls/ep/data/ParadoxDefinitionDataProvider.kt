@@ -1,47 +1,18 @@
 package icu.windea.pls.ep.data
 
 import com.intellij.openapi.extensions.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.util.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.data.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 @WithGameTypeEP
-abstract class ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
-    val dataType: Class<T> by lazy { javaClass.genericSuperclass.genericType(0)!! }
-    val cachedDataKey: Key<CachedValue<T>> by lazy { createKey("cached.data.by.${javaClass.name}") }
+interface ParadoxDefinitionDataProvider<T : ParadoxDefinitionData> {
+    val dataType: Class<T>
 
-    abstract fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
+    fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean
 
-    fun getData(definition: ParadoxScriptDefinitionElement): T? {
-        return CachedValuesManager.getCachedValue(definition, cachedDataKey) {
-            val value = doGetData(definition)
-            value.withDependencyItems(
-                definition,
-                ParadoxModificationTrackers.ScriptedVariablesTracker,
-                ParadoxModificationTrackers.InlineScriptsTracker,
-            )
-        }
-    }
-
-    private fun doGetData(definition: ParadoxScriptDefinitionElement): T? {
-        val data = when {
-            definition is ParadoxScriptFile -> ParadoxScriptDataResolver.resolve(definition, inline = true)
-            definition is ParadoxScriptProperty -> ParadoxScriptDataResolver.resolveProperty(definition, inline = true)
-            else -> null
-        }
-        if (data == null) return null
-        return doGetData(data)
-    }
-
-    private fun doGetData(data: ParadoxScriptData): T {
-        return dataType.getConstructor(ParadoxScriptData::class.java).newInstance(data)
-    }
+    fun getData(definition: ParadoxScriptDefinitionElement): T?
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxDefinitionDataProvider<*>>("icu.windea.pls.definitionDataProvider")

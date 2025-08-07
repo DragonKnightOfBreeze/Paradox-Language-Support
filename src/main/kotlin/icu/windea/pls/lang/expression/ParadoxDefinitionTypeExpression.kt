@@ -57,12 +57,12 @@ interface ParadoxDefinitionTypeExpression {
             return type == this.type && subtypes.containsAll(this.subtypes)
         }
 
-        override fun matches(typeExpression: ParadoxDefinitionTypeExpression): Boolean {
-            return matches(typeExpression.type, typeExpression.subtypes)
-        }
-
         override fun matches(typeExpression: String): Boolean {
             return matches(resolve(typeExpression))
+        }
+
+        override fun matches(typeExpression: ParadoxDefinitionTypeExpression): Boolean {
+            return matches(typeExpression.type, typeExpression.subtypes)
         }
 
         override fun matches(definitionInfo: ParadoxDefinitionInfo): Boolean {
