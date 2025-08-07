@@ -2,7 +2,7 @@
 
 package icu.windea.pls.core.util.accessor
 
-class TestObject(
+class AccessorObject(
     val name: String,
     val gender: String,
     val race: String,
@@ -30,12 +30,12 @@ class TestObject(
         return "hello world"
     }
 
-    fun hello(text: String): String {
-        return "hello $text"
+    fun hello(arg: String): String {
+        return "hello $arg"
     }
 
-    fun helloAll(vararg texts: String): String {
-        return "hello ${texts.joinToString(", ")}"
+    fun helloAll(vararg args: String): String {
+        return "hello ${args.joinToString(", ")}"
     }
 
     companion object {

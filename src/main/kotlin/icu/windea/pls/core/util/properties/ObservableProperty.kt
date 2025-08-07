@@ -1,6 +1,5 @@
-@file:Suppress("unused")
 
-package icu.windea.pls.core.util
+package icu.windea.pls.core.util.properties
 
 import icu.windea.pls.core.*
 import kotlin.properties.*
@@ -39,6 +38,3 @@ open class ObservableProperty<T, V>(
     }
 }
 
-fun <T, V> KMutableProperty0<T>.observe(transform: (T) -> V): ObservableProperty<T, V> {
-    return ObservableProperty(this, transform)
-}
