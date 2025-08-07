@@ -24,7 +24,6 @@ import java.awt.*
 import java.awt.image.*
 import java.net.*
 import javax.swing.*
-import javax.swing.text.*
 import kotlin.properties.*
 import kotlin.reflect.*
 
@@ -118,10 +117,6 @@ fun <V> PropertyGraph.propertyFrom(property: KMutableProperty0<V>): GraphPropert
 
 fun <K, V> PropertyGraph.propertyFrom(map: MutableMap<K, V>, key: K, defaultValue: V): GraphProperty<V> {
     return lazyProperty { map.getOrPut(key) { defaultValue } }.apply { afterChange { map.put(key, it) } }
-}
-
-fun <T : JTextComponent> Cell<T>.bindText(prop: KMutableProperty0<String?>): Cell<T> {
-    return bindText({ prop.get().orEmpty() }, { prop.set(it) })
 }
 
 fun <T : ThreeStateCheckBox> Cell<T>.bindState(property: MutableProperty<ThreeStateCheckBox.State>): Cell<T> {
