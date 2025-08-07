@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.util
 
 import icu.windea.pls.core.*
-import icu.windea.pls.core.console.*
+import icu.windea.pls.core.util.console.CommandExecutionException
 import java.io.*
 import java.nio.file.*
 import kotlin.io.path.*

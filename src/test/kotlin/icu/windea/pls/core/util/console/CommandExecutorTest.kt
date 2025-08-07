@@ -1,6 +1,5 @@
-package icu.windea.pls.core.command
+package icu.windea.pls.core.util.console
 
-import icu.windea.pls.core.console.*
 import org.junit.*
 
 class CommandExecutorTest {

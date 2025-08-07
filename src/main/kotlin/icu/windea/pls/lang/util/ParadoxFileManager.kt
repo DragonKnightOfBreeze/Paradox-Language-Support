@@ -26,7 +26,7 @@ object ParadoxFileManager {
         val fileExtensions by createKey<Set<String>>(Keys)
     }
 
-    private val LOGGER = logger<ParadoxFileManager>()
+    private val logger = logger<ParadoxFileManager>()
 
     const val scriptedVariablesPath = "common/scripted_variables"
 
@@ -155,7 +155,7 @@ object ParadoxFileManager {
             return tempFile
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
-            LOGGER.error(e.message, e)
+            logger.error(e.message, e)
             return null
         }
     }
@@ -175,7 +175,7 @@ object ParadoxFileManager {
             return tempFile
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
-            LOGGER.error(e.message, e)
+            logger.error(e.message, e)
             return null
         }
     }

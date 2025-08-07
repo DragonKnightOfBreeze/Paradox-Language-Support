@@ -20,13 +20,12 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 import org.intellij.images.fileTypes.impl.*
-import java.lang.invoke.*
 import kotlin.contracts.*
 import kotlin.io.path.*
 import kotlin.io.path.exists
 
 object ParadoxImageManager {
-    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
+    private val logger = logger<ParadoxImageManager>()
 
     fun isImageFile(file: PsiFile): Boolean {
         val vFile = file.virtualFile ?: return false

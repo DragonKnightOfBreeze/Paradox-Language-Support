@@ -1,4 +1,4 @@
-package icu.windea.pls.core.console
+package icu.windea.pls.core.util.console
 
 import com.intellij.openapi.diagnostic.*
 import icu.windea.pls.core.util.*

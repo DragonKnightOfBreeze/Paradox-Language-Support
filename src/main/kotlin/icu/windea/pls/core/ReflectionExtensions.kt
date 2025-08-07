@@ -3,22 +3,30 @@
 package icu.windea.pls.core
 
 import java.lang.reflect.*
-import kotlin.reflect.KFunction
+import kotlin.reflect.*
 
-inline fun tryGetField(action: () -> Field): Field? {
-    try {
-        return action()
-    } catch (_: NoSuchFieldException) {
-        return null
+fun KFunction<*>.isGetter(propertyName: String? = null): Boolean {
+    if (parameters.size != 1) return false
+    if (propertyName == null) {
+        if (name.startsWith("get") && name.length > 3) return true
+        if (returnType.classifier == Boolean::class && name.startsWith("is") && name.length > 2) return true
+    } else {
+        val suffix = propertyName.capitalized()
+        if (name == "get$suffix") return true
+        if (returnType.classifier == Boolean::class && name == "is$suffix") return true
     }
+    return false
 }
 
-inline fun tryGetMethod(action: () -> Method): Method? {
-    try {
-        return action()
-    } catch (_: NoSuchMethodException) {
-        return null
+fun KFunction<*>.isSetter(propertyName: String? = null): Boolean {
+    if (parameters.size != 2) return false
+    if (propertyName == null) {
+        if (name.startsWith("set") && name.length > 3) return true
+    } else {
+        val suffix = propertyName.decapitalized()
+        if (name == "set$suffix") return true
     }
+    return false
 }
 
 fun <T : Class<*>> Type.genericType(index: Int): T? {

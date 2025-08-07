@@ -11,6 +11,8 @@ import org.intellij.images.vfs.*
 
 //org.intellij.images.editor.impl.ImageFileService
 
+private val logger = logger<ImageFileService>()
+
 @Service(Service.Level.PROJECT)
 class ImageFileService(
     private val coroutineScope: CoroutineScope
@@ -40,7 +42,7 @@ class ImageFileService(
                 } catch (e: CancellationException) {
                     throw e // We don't care why it's cancelled: the editor is disposed or the next request has arrived.
                 } catch (e: Exception) { // Likely an I/O error.
-                    LOG.warn("Exception when loading the image from $file", e)
+                    logger.warn("Exception when loading the image from $file", e)
                     target.setImageProvider(null, null)
                 }
             }
@@ -59,5 +61,3 @@ class ImageFileService(
         }
     }
 }
-
-private val LOG = logger<ImageFileService>()

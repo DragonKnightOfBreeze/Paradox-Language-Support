@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 
 package icu.windea.pls.core.util
 
@@ -8,23 +8,41 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.core.*
 import java.util.concurrent.*
 
-//region Extensions
-
 inline fun <K : Any, V : Any> CacheBuilder<in K, in V>.buildCache(): Cache<K, V> {
     return build<K, V>().toCancelable()
 }
 
 inline fun <K : Any, V : Any> CacheBuilder<in K, in V>.buildCache(crossinline loader: (K) -> V): LoadingCache<K, V> {
     return build(object : CacheLoader<K, V>() {
-        override fun load(key: K): V {
-            return loader(key)
-        }
+        override fun load(key: K) = loader(key)
     }).toCancelable()
 }
 
-//endregion
+inline fun <K : Any, V : Any> CacheBuilder<in K, Any>.buildValueNullableCache(crossinline loader: (K) -> V?): ValueNullableLoadingCache<K, V> {
+    return build(object : CacheLoader<K, Any>() {
+        override fun load(key: K) = loader(key) ?: EMPTY_OBJECT
+    }).toCancelable().toValueNullable<K, V>()
+}
 
-//region CancelableCache
+inline fun <K : Any, V : Any> Cache<K, V>.toCancelable(): CancelableCache<K, V> {
+    return CancelableCache(this)
+}
+
+inline fun <K : Any, V : Any> LoadingCache<K, V>.toCancelable(): CancelableLoadingCache<K, V> {
+    return CancelableLoadingCache(this)
+}
+
+inline fun <K : Any, V : Any> LoadingCache<K, Any>.toValueNullable(): ValueNullableLoadingCache<K, V> {
+    return ValueNullableLoadingCache(this)
+}
+
+inline fun <K : Any, V : Any, C : Cache<K, V>> C.trackedBy(noinline modificationTrackerProvider: (V) -> ModificationTracker?): TrackingCache<K, V, C> {
+    return TrackingCache(this, modificationTrackerProvider)
+}
+
+inline fun <RK : Any, K : Any, V : Any, C : Cache<K, V>> createNestedCache(noinline cacheProvider: () -> C): NestedCache<RK, K, V, C> {
+    return NestedCache(cacheProvider)
+}
 
 class CancelableCache<K : Any, V : Any>(
     private val delegate: Cache<K, V>
@@ -70,17 +88,18 @@ class CancelableLoadingCache<K : Any, V : Any>(
     }
 }
 
-inline fun <K : Any, V : Any> Cache<K, V>.toCancelable(): CancelableCache<K, V> {
-    return CancelableCache(this)
+@Suppress("UNCHECKED_CAST")
+class ValueNullableLoadingCache<K : Any, V : Any>(
+    private val delegate: LoadingCache<K, Any>
+) : LoadingCache<K, Any> by delegate {
+    fun getOrNull(key: K): V? {
+        return get(key) as? V
+    }
+
+    fun getUncheckedOrNull(key: K): V? {
+        return getUnchecked(key) as? V
+    }
 }
-
-inline fun <K : Any, V : Any> LoadingCache<K, V>.toCancelable(): CancelableLoadingCache<K, V> {
-    return CancelableLoadingCache(this)
-}
-
-//endregion
-
-//region TrackingCache
 
 class TrackingCache<K : Any, V : Any, C : Cache<K, V>>(
     private val delegate: C,
@@ -128,15 +147,7 @@ class TrackingCache<K : Any, V : Any, C : Cache<K, V>>(
     }
 }
 
-inline fun <K : Any, V : Any, C : Cache<K, V>> C.trackedBy(noinline modificationTrackerProvider: (V) -> ModificationTracker?): TrackingCache<K, V, C> {
-    return TrackingCache(this, modificationTrackerProvider)
-}
-
-//endregion
-
-//region NestedCache
-
-class NestedCache<RK, K : Any, V : Any, C : Cache<K, V>>(
+class NestedCache<RK : Any, K : Any, V : Any, C : Cache<K, V>>(
     private val cacheProvider: () -> C
 ) {
     private val cacheMap = ConcurrentHashMap<RK, C>()
@@ -145,9 +156,3 @@ class NestedCache<RK, K : Any, V : Any, C : Cache<K, V>>(
         return cacheMap.computeIfAbsent(key) { cacheProvider() }
     }
 }
-
-inline fun <RK, K : Any, V : Any, C : Cache<K, V>> createNestedCache(noinline cacheProvider: () -> C): NestedCache<RK, K, V, C> {
-    return NestedCache(cacheProvider)
-}
-
-//endregion

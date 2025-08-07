@@ -131,9 +131,11 @@ intellijPlatform {
 
         description = projectDir.resolve("DESCRIPTION.md").readText().let(::markdownToHTML)
 
+        // local variable for configuration cache compatibility
+        val changelog = project.changelog
+        // Get the latest available change notes from the changelog file
         changeNotes = properties("pluginVersion").map { pluginVersion ->
-            // Get the latest available change notes from the changelog file
-            with(project.changelog) {
+            with(changelog) {
                 @Suppress("UNCHECKED_CAST")
                 fun handleChangelogItem(changelogItem: Changelog.Item) {
                     val items = changelogItem.javaClass.getDeclaredField("items").also { it.trySetAccessible() }.get(changelogItem)

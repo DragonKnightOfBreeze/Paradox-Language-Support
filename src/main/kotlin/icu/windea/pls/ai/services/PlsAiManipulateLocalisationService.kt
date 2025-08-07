@@ -8,7 +8,6 @@ import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
 import com.intellij.ui.*
 import com.intellij.ui.dsl.builder.*
-import com.intellij.util.ui.*
 import dev.langchain4j.kotlin.model.chat.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -17,11 +16,10 @@ import icu.windea.pls.lang.util.manipulators.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.awt.*
-import java.lang.invoke.*
 import kotlin.contracts.*
 
 abstract class PlsAiManipulateLocalisationService : PlsAiService {
-    protected val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
+    protected val logger = logger<PlsAiManipulateLocalisationService>()
 
     fun Flow<StreamingChatModelReply>.toResultFlow(): Flow<ParadoxLocalisationResult> {
         return toLineFlow({

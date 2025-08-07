@@ -6,7 +6,6 @@ import com.intellij.ui.table.*
 import com.intellij.util.ui.table.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.ui.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 import javax.swing.*
@@ -17,8 +16,7 @@ class ElementsListTable(
     val elementsTable: TableView<ElementDescriptor>,
     val elementsTableModel: ElementsTableModel,
     val disposable: Disposable,
-    val context: ElementsContext,
-    val dialog: DialogWithValidation
+    val context: ElementsContext
 ) : JBListTable(elementsTable, disposable) {
     val _rowRenderer = object : EditorTextFieldJBTableRowRenderer(context.project, ParadoxScriptLanguage, disposable) {
         override fun getText(table: JTable, row: Int): String {

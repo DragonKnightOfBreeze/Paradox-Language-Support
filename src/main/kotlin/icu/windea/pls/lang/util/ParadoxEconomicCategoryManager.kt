@@ -16,7 +16,6 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
-import java.lang.invoke.*
 
 @WithGameType(ParadoxGameType.Stellaris)
 object ParadoxEconomicCategoryManager {
@@ -25,7 +24,7 @@ object ParadoxEconomicCategoryManager {
         val modifierCategories by createKey<Set<String>>(Keys)
     }
 
-    private val logger = Logger.getInstance(MethodHandles.lookup().lookupClass())
+    private val logger = logger<ParadoxEconomicCategoryManager>()
 
     /**
      * 输入[definition]的定义类型应当保证是`economic_category`。

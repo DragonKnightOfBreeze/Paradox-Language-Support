@@ -2,13 +2,13 @@ package icu.windea.pls.lang.ui.clause
 
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.ui.*
 import com.intellij.ui.*
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.table.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.ui.*
 import java.awt.*
 import javax.swing.*
 import javax.swing.event.*
@@ -23,7 +23,7 @@ class ExpandClauseTemplateDialog(
     val project: Project,
     val editor: Editor,
     val context: ElementsContext
-) : DialogWithValidation(project) {
+) : DialogWrapper(project) {
     var elementsTableModel: ElementsTableModel
 
     val multipleGroup = context.descriptorsInfoList.size > 1
@@ -90,7 +90,7 @@ class ExpandClauseTemplateDialog(
             }
         }
         speedSearch.setupListeners()
-        val listTable = ElementsListTable(tableView, elementsTableModel, disposable, context, this)
+        val listTable = ElementsListTable(tableView, elementsTableModel, disposable, context)
         val table = listTable.table
         //add, remove, move up, move down, duplicate
         val panel = ToolbarDecorator.createDecorator(table)

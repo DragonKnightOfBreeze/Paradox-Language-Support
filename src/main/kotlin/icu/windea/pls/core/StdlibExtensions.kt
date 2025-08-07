@@ -4,8 +4,10 @@ package icu.windea.pls.core
 
 import com.intellij.openapi.util.text.*
 import icu.windea.pls.*
-import icu.windea.pls.core.console.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.core.util.console.CommandExecutionException
+import icu.windea.pls.core.util.console.CommandExecutor
+import icu.windea.pls.core.util.console.CommandType
 import java.io.*
 import java.net.*
 import java.nio.charset.*
@@ -358,9 +360,12 @@ fun String.splitToPair(delimiter: Char): Pair<String, String>? {
     return this.substring(0, index) to this.substring(index + 1)
 }
 
-fun String.toCapitalizedWord(): String {
-    if (isEmpty()) return this
-    return this[0].uppercase() + this.substring(1)
+fun String.capitalized(): String {
+    return replaceFirstChar { it.uppercaseChar() }
+}
+
+fun String.decapitalized(): String {
+    return replaceFirstChar { it.lowercaseChar() }
 }
 
 fun String.toCapitalizedWords(): String {
@@ -567,24 +572,3 @@ fun URL.toPath() = Paths.get(this.toURI())
 typealias FloatRange = ClosedRange<Float>
 
 operator fun FloatRange.contains(element: Float?) = element != null && contains(element)
-
-@Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
-fun executeCommand(
-    command: String,
-    commandType: CommandType? = null,
-    environment: Map<String, String> = emptyMap(),
-    workDirectory: File? = null,
-    timeout: Long? = null
-): String {
-    return CommandExecutor(environment, workDirectory, timeout).execute(command, commandType)
-}
-
-@Throws(IOException::class, InterruptedException::class, CommandExecutionException::class)
-fun executeCommand(
-    commands: List<String>,
-    environment: Map<String, String> = emptyMap(),
-    workDirectory: File? = null,
-    timeout: Long? = null
-): String {
-    return CommandExecutor(environment, workDirectory, timeout).execute(commands)
-}
