@@ -61,7 +61,7 @@ dependencies {
     implementation("org.javassist:javassist:3.30.2-GA")
 
     // jackson-csv - https://github.com/FasterXML/jackson-dataformats-text/tree/master/csv
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.17.2") {
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.19.2") {
         exclude(group = "com.fasterxml.jackson.core")
     }
 
@@ -71,13 +71,13 @@ dependencies {
     // AI 集成
 
     // LangChain4J - https://github.com/langchain4j/langchain4j
-    implementation("dev.langchain4j:langchain4j:1.0.1") {
+    implementation("dev.langchain4j:langchain4j:1.3.0") {
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-open-ai:1.0.1") {
+    implementation("dev.langchain4j:langchain4j-open-ai:1.3.0") {
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-kotlin:1.0.1-beta6") {
+    implementation("dev.langchain4j:langchain4j-kotlin:1.3.0-beta9") {
         exclude(group = "org.jetbrains.kotlin")
         exclude(group = "org.jetbrains.kotlinx")
         exclude(group = "com.fasterxml.jackson.core")
