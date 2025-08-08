@@ -131,18 +131,6 @@ inline fun <T, R> T.runCatchingCancelable(block: T.() -> R): Result<R> {
     return runCatching(block).onFailure { if (it is ProcessCanceledException) throw it }
 }
 
-//removed since: https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/100
-//inline fun <R> disableLogger(block: () -> R): R {
-//    val globalLogger = Logger.getLogger("") //DO NOT use Logger.getGlobalLogger(), it's incorrect
-//    val loggerLevel = globalLogger.level
-//    try {
-//        globalLogger.level = Level.OFF
-//        return block()
-//    } finally {
-//        globalLogger.level = loggerLevel
-//    }
-//}
-
 fun TextRange.unquote(text: String, quote: Char = '"'): TextRange {
     val leftQuoted = text.isLeftQuoted(quote)
     val rightQuoted = text.isRightQuoted(quote)
