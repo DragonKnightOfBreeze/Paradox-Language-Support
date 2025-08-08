@@ -178,7 +178,7 @@ object CwtConfigSymbolManager {
     }
 
     private fun getGameType(element: CwtStringExpressionElement): ParadoxGameType? {
-        return CwtConfigManager.getContainingConfigGroup(element, forRepo = true)?.gameType
+        return CwtConfigManager.getContainingConfigGroup(element)?.gameType
     }
 
     private fun getSymbolConfigType(element: CwtStringExpressionElement): CwtConfigType? {

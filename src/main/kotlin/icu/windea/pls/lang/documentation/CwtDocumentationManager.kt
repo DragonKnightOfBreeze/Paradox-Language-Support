@@ -377,7 +377,7 @@ object CwtDocumentationManager {
             if (gameType != null) return PlsFacade.getConfigGroup(project, gameType)
         }
         if (element.language is CwtLanguage) {
-            return CwtConfigManager.getContainingConfigGroup(element, forRepo = true)
+            return CwtConfigManager.getContainingConfigGroup(element)
         }
         return null
     }

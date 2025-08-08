@@ -35,7 +35,7 @@ abstract class CwtConfigFileBasedIndex<T>: FileBasedIndexExtension<String, T>() 
     }
 
     override fun getInputFilter(): FileBasedIndex.InputFilter {
-        return FileBasedIndex.InputFilter { file -> file.fileType is CwtFileType && CwtConfigManager.getContainingConfigGroup(file, getDefaultProject(), forRepo = true) != null }
+        return FileBasedIndex.InputFilter { file -> file.fileType is CwtFileType && CwtConfigManager.getContainingConfigGroup(file, getDefaultProject()) != null }
     }
 
     override fun dependsOnFileContent(): Boolean {

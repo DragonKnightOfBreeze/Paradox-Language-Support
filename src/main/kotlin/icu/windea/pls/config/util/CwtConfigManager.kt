@@ -23,54 +23,61 @@ import icu.windea.pls.model.*
 
 object CwtConfigManager {
     object Keys : KeyRegistry() {
+        val gameTypeIdFromRepoFile by createKey<String>(Keys)
         val cachedConfigPath by createKey<CachedValue<CwtConfigPath>>(Keys)
         val cachedConfigType by createKey<CachedValue<CwtConfigType>>(Keys)
         val filePathPatterns by createKey<Set<String>>(Keys)
         val filePathPatternsForPriority by createKey<Set<String>>(Keys)
     }
 
-    /**
-     * @param forRepo 是否兼容插件或者规则仓库中的CWT文件（此时将其视为规则文件）。
-     */
-    fun getContainingConfigGroup(element: PsiElement, forRepo: Boolean = false): CwtConfigGroup? {
+    fun getContainingConfigGroup(element: PsiElement): CwtConfigGroup? {
         val file = runReadAction { element.containingFile } ?: return null
         val vFile = file.virtualFile ?: return null
-        return getContainingConfigGroup(vFile, file.project, forRepo)
+        return getContainingConfigGroup(vFile, file.project)
     }
 
-    /**
-     * @param forRepo 是否兼容插件或者规则仓库中的CWT文件（此时将其视为规则文件）。
-     */
-    fun getContainingConfigGroup(file: VirtualFile, project: Project, forRepo: Boolean = false): CwtConfigGroup? {
-        if (file.fileType !is CwtFileType) return null
-        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        val configGroup = fileProviders.firstNotNullOfOrNull { fileProvider ->
-            fileProvider.getContainingConfigGroup(file, project)
-        }
-        if (configGroup != null) return configGroup
+    fun getContainingConfigGroup(file: VirtualFile, project: Project): CwtConfigGroup? {
+        doGetContainingConfigGroupFromFileProviders(file, project)?.let { return it }
 
-        runCatchingCancelable r@{
-            if (!forRepo) return@r
-            doGetContainingConfigGroupForRepo(file, project)?.let { return it }
-        }
+        // 兼容插件或者规则仓库中的CWT文件（此时将其视为规则文件）
+        doGetContainingConfigGroupForRepo(file, project)?.let { return it }
 
         return null
     }
 
+    private fun doGetContainingConfigGroupFromFileProviders(file: VirtualFile, project: Project): CwtConfigGroup? {
+        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
+        val configGroup = fileProviders.firstNotNullOfOrNull { fileProvider ->
+            fileProvider.getContainingConfigGroup(file, project)
+        }
+        return configGroup
+    }
+
     private fun doGetContainingConfigGroupForRepo(file: VirtualFile, project: Project): CwtConfigGroup? {
-        val workDirectory = file.toNioPath().toFile().parentFile ?: return null
-        val command = "git remote -v"
-        val commandResult = executeCommand(command, workDirectory = workDirectory)
-        val gameTypeId = commandResult.lines()
-            .mapNotNull { it.splitByBlank(3).getOrNull(1) }
-            .firstNotNullOfOrNull t@{
-                if (it.contains("Paradox-Language-Support")) return@t "core"
-                val s = it.substringInLast("cwtools-", "-config", "")
-                if (s.isNotEmpty()) return@t s
-                null
-            } ?: return null
+        val gameTypeId = doGetGameTypeIdFromRepoFile(file, project)
+        if (gameTypeId.isNullOrEmpty()) return null
         val gameType = ParadoxGameType.resolve(gameTypeId)
         return PlsFacade.getConfigGroup(project, gameType)
+    }
+
+    private fun doGetGameTypeIdFromRepoFile(file: VirtualFile, project: Project): String? {
+        // 使用缓存以优化性能
+        val parent = file.parent ?: return null
+        val parentPsi = parent.toPsiDirectory(project) ?: return null
+        return parentPsi.getOrPutUserData(Keys.gameTypeIdFromRepoFile, "") {
+            val command = "git remote -v"
+            val workDirectory = parent.toNioPath().toFile()
+            val commandResult = executeCommand(command, workDirectory = workDirectory)
+            val gameTypeId = commandResult.lines()
+                .mapNotNull { it.splitByBlank(3).getOrNull(1) }
+                .firstNotNullOfOrNull t@{
+                    if (it.contains("Paradox-Language-Support")) return@t "core"
+                    val s = it.substringInLast("cwtools-", "-config", "")
+                    if (s.isNotEmpty()) return@t s
+                    null
+                }
+            gameTypeId
+        }
     }
 
     fun getFilePath(element: PsiElement): String? {

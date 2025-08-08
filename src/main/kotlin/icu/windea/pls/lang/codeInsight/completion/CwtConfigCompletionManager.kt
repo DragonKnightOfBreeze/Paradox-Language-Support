@@ -78,7 +78,7 @@ object CwtConfigCompletionManager {
     //region Core Methods
 
     fun initializeContext(contextElement: PsiElement, parameters: CompletionParameters, context: ProcessingContext): Boolean {
-        val configGroup = CwtConfigManager.getContainingConfigGroup(parameters.originalFile, forRepo = true) ?: return false
+        val configGroup = CwtConfigManager.getContainingConfigGroup(parameters.originalFile) ?: return false
         context.configGroup = configGroup
 
         context.parameters = parameters
