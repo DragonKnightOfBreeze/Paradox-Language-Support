@@ -711,24 +711,21 @@ object ParadoxDocumentationManager {
         val sections = getSections(SECTIONS_INFO) ?: return
         val parameterContextInfo = ParadoxParameterSupport.getContextInfo(element) ?: return
         if (parameterContextInfo.parameters.isEmpty()) return //ignore
-        val parametersText = buildDocumentation {
+        val parametersText = buildString {
+            append("<pre>")
             var isFirst = true
-            parameterContextInfo.parameters.forEach { (parameterName, elements) ->
+            parameterContextInfo.parameters.forEach f@{ (parameterName, elements) ->
                 if (isFirst) isFirst = false else append("<br>")
-                append("<pre>")
                 append(parameterName)
                 //加上推断得到的规则信息
-                if (ParadoxParameterManager.isOptional(parameterContextInfo, parameterName)) append("?") //optional marker
+                val isOptional = ParadoxParameterManager.isOptional(parameterContextInfo, parameterName)
+                if (isOptional) append("?") //optional marker
                 //加上推断得到的类型信息
                 val parameterElement = elements.firstOrNull()?.parameterElement
-                if (parameterElement != null) {
-                    val inferredType = ParadoxParameterManager.getInferredType(parameterElement)
-                    if (inferredType != null) {
-                        append(": ").append(inferredType.escapeXml())
-                    }
-                }
-                append("</pre>")
+                val inferredType = parameterElement?.let { ParadoxParameterManager.getInferredType(it) }
+                if (inferredType.isNotNullOrEmpty()) append(": ").append(inferredType.escapeXml())
             }
+            append("</pre>")
         }
         sections.put(PlsBundle.message("sectionTitle.parameters"), parametersText)
     }
