@@ -15,10 +15,9 @@ class InsertStringFix(
 
     override fun getFamilyName() = text
 
-    override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?) = true
+    override fun isAvailable(project: Project, editor: Editor, file: PsiFile) = true
 
-    override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        if (editor == null) return
+    override fun invoke(project: Project, editor: Editor, file: PsiFile) {
         if (moveCaretToOffset) {
             editor.caretModel.moveToOffset(caretOffset)
         }

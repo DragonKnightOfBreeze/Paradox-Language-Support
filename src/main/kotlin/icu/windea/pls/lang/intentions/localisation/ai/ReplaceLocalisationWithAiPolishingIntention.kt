@@ -26,16 +26,16 @@ import java.util.concurrent.atomic.*
 class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntentionBase.WithPopup<String>(), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.replaceLocalisationWithAiPolishing")
 
-    override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
+    override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
         return super.isAvailable(project, editor, file) && PlsAiFacade.isAvailable()
     }
 
-    override fun createPopup(project: Project, editor: Editor?, file: PsiFile?, callback: (String) -> Unit): JBPopup {
+    override fun createPopup(project: Project, editor: Editor, file: PsiFile, callback: (String) -> Unit): JBPopup {
         return PlsAiFacade.getPolishLocalisationService().createDescriptionPopup(project, callback)
     }
 
     @Suppress("UnstableApiUsage")
-    override suspend fun doHandle(project: Project, file: PsiFile?, context: Context<String>) {
+    override suspend fun doHandle(project: Project, file: PsiFile, context: Context<String>) {
         val (elements, data) = context
         withBackgroundProgress(project, PlsBundle.message("intention.replaceLocalisationWithAiPolishing.progress.title")) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }

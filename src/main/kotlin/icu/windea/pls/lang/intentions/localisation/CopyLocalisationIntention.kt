@@ -17,7 +17,7 @@ import java.awt.datatransfer.*
 class CopyLocalisationIntention : ManipulateLocalisationIntentionBase.Default(), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisation")
 
-    override suspend fun doHandle(project: Project, file: PsiFile?, context: Context) {
+    override suspend fun doHandle(project: Project, file: PsiFile, context: Context) {
         val (elements) = context
         val textToCopy = readAction { elements.joinToString("\n") { it.text } }
         CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))

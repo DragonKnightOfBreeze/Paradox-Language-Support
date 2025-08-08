@@ -25,15 +25,13 @@ import kotlinx.coroutines.*
 abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
     override fun getText() = familyName
 
-    override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        if (editor == null || file == null) return false
+    override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
         if (file !is ParadoxLocalisationFile) return false
         val elements = ParadoxLocalisationManipulator.buildSelectedSequence(editor, file)
         return elements.any()
     }
 
-    override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        if (editor == null || file == null) return
+    override fun invoke(project: Project, editor: Editor, file: PsiFile) {
         if (file !is ParadoxLocalisationFile) return
         val elements = ParadoxLocalisationManipulator.buildSelectedSequence(editor, file)
         if (elements.none()) return
@@ -45,19 +43,19 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
 
     override fun startInWriteAction() = false
 
-    protected abstract fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: Sequence<ParadoxLocalisationProperty>)
+    protected abstract fun doInvoke(project: Project, editor: Editor, file: PsiFile, elements: Sequence<ParadoxLocalisationProperty>)
 
-    protected fun doHandleAsync(project: Project, file: PsiFile?, context: C) {
+    protected fun doHandleAsync(project: Project, file: PsiFile, context: C) {
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {
             doHandle(project, file, context)
         }
     }
 
-    protected abstract suspend fun doHandle(project: Project, file: PsiFile?, context: C)
+    protected abstract suspend fun doHandle(project: Project, file: PsiFile, context: C)
 
     abstract class Default : ManipulateLocalisationIntentionBase<Default.Context>() {
-        final override fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: Sequence<ParadoxLocalisationProperty>) {
+        final override fun doInvoke(project: Project, editor: Editor, file: PsiFile, elements: Sequence<ParadoxLocalisationProperty>) {
             doHandleAsync(project, file, Context(elements))
         }
 
@@ -67,13 +65,12 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
     }
 
     abstract class WithLocalePopup : ManipulateLocalisationIntentionBase<WithLocalePopup.Context>() {
-        protected open fun createLocalePopup(project: Project, editor: Editor?, file: PsiFile?): ParadoxLocaleListPopup {
+        protected open fun createLocalePopup(project: Project, editor: Editor, file: PsiFile): ParadoxLocaleListPopup {
             val allLocales = ParadoxLocaleManager.getLocaleConfigs()
             return ParadoxLocaleListPopup(allLocales)
         }
 
-        final override fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: Sequence<ParadoxLocalisationProperty>) {
-            if (editor == null) return
+        final override fun doInvoke(project: Project, editor: Editor, file: PsiFile, elements: Sequence<ParadoxLocalisationProperty>) {
             val localePopup = createLocalePopup(project, editor, file)
             localePopup.doFinalStep action@{
                 val selected = localePopup.selectedLocale ?: return@action
@@ -89,10 +86,9 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
     }
 
     abstract class WithPopup<T> : ManipulateLocalisationIntentionBase<WithPopup.Context<T>>() {
-        protected abstract fun createPopup(project: Project, editor: Editor?, file: PsiFile?, callback: (T) -> Unit): JBPopup?
+        protected abstract fun createPopup(project: Project, editor: Editor, file: PsiFile, callback: (T) -> Unit): JBPopup?
 
-        final override fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: Sequence<ParadoxLocalisationProperty>) {
-            if (editor == null) return
+        final override fun doInvoke(project: Project, editor: Editor, file: PsiFile, elements: Sequence<ParadoxLocalisationProperty>) {
             val popup = createPopup(project, editor, file) {
                 doHandleAsync(project, file, Context(elements, it))
             }
@@ -110,15 +106,14 @@ abstract class ManipulateLocalisationIntentionBase<C> : IntentionAction {
     }
 
     abstract class WithLocalePopupAndPopup<T> : ManipulateLocalisationIntentionBase<WithLocalePopupAndPopup.Context<T>>() {
-        protected open fun createLocalePopup(project: Project, editor: Editor?, file: PsiFile?): ParadoxLocaleListPopup {
+        protected open fun createLocalePopup(project: Project, editor: Editor, file: PsiFile): ParadoxLocaleListPopup {
             val allLocales = ParadoxLocaleManager.getLocaleConfigs()
             return ParadoxLocaleListPopup(allLocales)
         }
 
-        protected abstract fun createPopup(project: Project, editor: Editor?, file: PsiFile?, callback: (T) -> Unit): JBPopup?
+        protected abstract fun createPopup(project: Project, editor: Editor, file: PsiFile, callback: (T) -> Unit): JBPopup?
 
-        final override fun doInvoke(project: Project, editor: Editor?, file: PsiFile?, elements: Sequence<ParadoxLocalisationProperty>) {
-            if (editor == null) return
+        final override fun doInvoke(project: Project, editor: Editor, file: PsiFile, elements: Sequence<ParadoxLocalisationProperty>) {
             val localePopup = createLocalePopup(project, editor, file)
             localePopup.doFinalStep action@{
                 val selected = localePopup.selectedLocale ?: return@action

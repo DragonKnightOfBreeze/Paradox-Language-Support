@@ -25,15 +25,13 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
 
     override fun getText() = familyName
 
-    override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        if (editor == null || file == null) return false
+    override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset)
         return element != null
     }
 
-    override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        if (editor == null || file == null) return
+    override fun invoke(project: Project, editor: Editor, file: PsiFile) {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return
         val localeConfigs = PlsFacade.getConfigGroup(project, null).localisationLocalesById.values

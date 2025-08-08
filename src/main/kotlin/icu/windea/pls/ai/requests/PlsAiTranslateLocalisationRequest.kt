@@ -7,7 +7,7 @@ import icu.windea.pls.lang.util.manipulators.*
 
 class PlsAiTranslateLocalisationRequest(
     project: Project,
-    file: PsiFile?,
+    file: PsiFile,
     localisationContexts: List<ParadoxLocalisationContext>,
     description: String?,
     val targetLocale: CwtLocaleConfig

@@ -22,7 +22,7 @@ class ReplaceLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBa
     override fun getFamilyName() = PlsBundle.message("intention.replaceLocalisationFromLocale")
 
     @Suppress("UnstableApiUsage")
-    override suspend fun doHandle(project: Project, file: PsiFile?, context: Context) {
+    override suspend fun doHandle(project: Project, file: PsiFile, context: Context) {
         val (elements, selectedLocale) = context
         withBackgroundProgress(project, PlsBundle.message("intention.replaceLocalisationFromLocale.progress.title", selectedLocale)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }

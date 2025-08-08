@@ -32,12 +32,12 @@ abstract class ManipulateRowActionBase : AnAction() {
         doInvoke(e, file, elements)
     }
 
-    protected open fun findElements(e: AnActionEvent, file: ParadoxCsvFile): Sequence<ParadoxCsvRow> {
+    protected open fun findElements(e: AnActionEvent, file: PsiFile): Sequence<ParadoxCsvRow> {
         val editor = e.editor ?: return emptySequence()
         return ParadoxCsvManipulator.buildSelectedRowSequence(editor, file)
     }
 
-    protected open fun getTextProvider(e: AnActionEvent, file: ParadoxCsvFile, elements: Sequence<ParadoxCsvRow>): Supplier<String>? {
+    protected open fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>): Supplier<String>? {
         return null
     }
 

@@ -17,7 +17,7 @@ import kotlinx.coroutines.*
 import java.util.function.*
 
 sealed class InsertRowActionBase(private val above: Boolean) : ManipulateRowActionBase() {
-    override fun findElements(e: AnActionEvent, file: ParadoxCsvFile): Sequence<ParadoxCsvRow> {
+    override fun findElements(e: AnActionEvent, file: PsiFile): Sequence<ParadoxCsvRow> {
         return super.findElements(e, file).letUnless(above) { it.reversed() }
     }
 
@@ -46,7 +46,7 @@ class InsertRowAboveAction : InsertRowActionBase(above = true)
 class InsertRowBelowAction : InsertRowActionBase(above = false)
 
 sealed class MoveRowActionBase(private val above: Boolean) : ManipulateRowActionBase() {
-    override fun findElements(e: AnActionEvent, file: ParadoxCsvFile): Sequence<ParadoxCsvRow> {
+    override fun findElements(e: AnActionEvent, file: PsiFile): Sequence<ParadoxCsvRow> {
         return super.findElements(e, file).letUnless(above) { it.reversed() }
     }
 
@@ -80,7 +80,7 @@ sealed class MoveRowActionBase(private val above: Boolean) : ManipulateRowAction
 }
 
 class MoveRowUpAction : MoveRowActionBase(above = true) {
-    override fun getTextProvider(e: AnActionEvent, file: ParadoxCsvFile, elements: Sequence<ParadoxCsvRow>): Supplier<String>? {
+    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>): Supplier<String> {
         return Supplier {
             when {
                 runReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.MoveRowUp.text")
@@ -91,7 +91,7 @@ class MoveRowUpAction : MoveRowActionBase(above = true) {
 }
 
 class MoveRowDownAction : MoveRowActionBase(above = false) {
-    override fun getTextProvider(e: AnActionEvent, file: ParadoxCsvFile, elements: Sequence<ParadoxCsvRow>): Supplier<String>? {
+    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>): Supplier<String> {
         return Supplier {
             when {
                 runReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.MoveRowDown.text")
@@ -102,7 +102,7 @@ class MoveRowDownAction : MoveRowActionBase(above = false) {
 }
 
 class SelectRowAction : ManipulateRowActionBase() {
-    override fun getTextProvider(e: AnActionEvent, file: ParadoxCsvFile, elements: Sequence<ParadoxCsvRow>): Supplier<String>? {
+    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>): Supplier<String> {
         return Supplier {
             when {
                 runReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.SelectRow.text")
@@ -127,7 +127,7 @@ class SelectRowAction : ManipulateRowActionBase() {
 }
 
 class RemoveRowAction : ManipulateRowActionBase() {
-    override fun getTextProvider(e: AnActionEvent, file: ParadoxCsvFile, elements: Sequence<ParadoxCsvRow>): Supplier<String>? {
+    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>): Supplier<String> {
         return Supplier {
             when {
                 runReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.RemoveRow.text")

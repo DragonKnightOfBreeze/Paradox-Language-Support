@@ -6,7 +6,7 @@ import icu.windea.pls.lang.util.manipulators.*
 
 class PlsAiPolishLocalisationRequest(
     project: Project,
-    file: PsiFile?,
+    file: PsiFile,
     localisationContexts: List<ParadoxLocalisationContext>,
     description: String?,
 ) : PlsAiManipulateLocalisationsRequest(project, file, localisationContexts, description) {

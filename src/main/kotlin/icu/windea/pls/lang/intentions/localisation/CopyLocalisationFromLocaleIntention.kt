@@ -26,7 +26,7 @@ class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationFromLocale")
 
     @Suppress("UnstableApiUsage")
-    override suspend fun doHandle(project: Project, file: PsiFile?, context: Context) {
+    override suspend fun doHandle(project: Project, file: PsiFile, context: Context) {
         val (elements, selectedLocale) = context
         withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationFromLocale.progress.title", selectedLocale)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }

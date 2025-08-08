@@ -23,12 +23,12 @@ import java.util.concurrent.atomic.*
 class ReplaceLocalisationWithTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopup(), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.replaceLocalisationWithTranslation")
 
-    override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
+    override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
         return super.isAvailable(project, editor, file) && PlsTranslationManager.findTool() != null
     }
 
     @Suppress("UnstableApiUsage")
-    override suspend fun doHandle(project: Project, file: PsiFile?, context: Context) {
+    override suspend fun doHandle(project: Project, file: PsiFile, context: Context) {
         val (elements, selectedLocale) = context
         withBackgroundProgress(project, PlsBundle.message("intention.replaceLocalisationWithTranslation.progress.title", selectedLocale)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }

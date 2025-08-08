@@ -31,16 +31,16 @@ import java.util.concurrent.atomic.*
 class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopupAndPopup<String>(), DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationWithAiTranslation")
 
-    override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
+    override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
         return super.isAvailable(project, editor, file) && PlsAiFacade.isAvailable()
     }
 
-    override fun createPopup(project: Project, editor: Editor?, file: PsiFile?, callback: (String) -> Unit): JBPopup {
+    override fun createPopup(project: Project, editor: Editor, file: PsiFile, callback: (String) -> Unit): JBPopup {
         return PlsAiFacade.getTranslateLocalisationService().createDescriptionPopup(project, callback)
     }
 
     @Suppress("UnstableApiUsage")
-    override suspend fun doHandle(project: Project, file: PsiFile?, context: Context<String>) {
+    override suspend fun doHandle(project: Project, file: PsiFile, context: Context<String>) {
         val (elements, selectedLocale, data) = context
         withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationWithAiTranslation.progress.title", selectedLocale)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }

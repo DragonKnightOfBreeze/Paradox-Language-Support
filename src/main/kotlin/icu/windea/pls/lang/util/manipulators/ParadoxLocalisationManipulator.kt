@@ -145,7 +145,8 @@ object ParadoxLocalisationManipulator {
     suspend fun replaceText(context: ParadoxLocalisationContext, project: Project, @Command commandName: String) {
         if (context.newText == context.text) return
         writeCommandAction(project, commandName) {
-            context.element.setValue(context.newText)
+            // 注意这里 context.element 可能已经不合法
+            context.element?.setValue(context.newText)
         }
     }
 
@@ -162,7 +163,8 @@ object ParadoxLocalisationManipulator {
                     withBackgroundProgress(project, PlsBundle.message("manipulation.localisation.revert.progress.title")) {
                         writeCommandAction(project, PlsBundle.message("manipulation.localisation.revert.command")) {
                             for (context in contexts) {
-                                context.element.setValue(context.text)
+                                // 注意这里 context.element 可能已经不合法
+                                context.element?.setValue(context.text)
                             }
                         }
                     }
@@ -180,7 +182,8 @@ object ParadoxLocalisationManipulator {
                     withBackgroundProgress(project, PlsBundle.message("manipulation.localisation.reapply.progress.title")) {
                         writeCommandAction(project, PlsBundle.message("manipulation.localisation.reapply.command")) {
                             for (context in contexts) {
-                                context.element.setValue(context.newText)
+                                // 注意这里 context.element 可能已经不合法
+                                context.element?.setValue(context.newText)
                             }
                         }
                     }

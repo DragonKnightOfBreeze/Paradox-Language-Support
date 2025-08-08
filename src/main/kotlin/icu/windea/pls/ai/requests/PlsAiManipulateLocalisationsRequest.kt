@@ -9,7 +9,7 @@ import icu.windea.pls.model.*
 
 abstract class PlsAiManipulateLocalisationsRequest(
     val project: Project,
-    val file: PsiFile?,
+    val file: PsiFile,
     val localisationContexts: List<ParadoxLocalisationContext>,
     description: String?,
 ): PlsAiRequest {
@@ -17,7 +17,7 @@ abstract class PlsAiManipulateLocalisationsRequest(
 
     var index: Int = 0
 
-    val fileInfo: ParadoxFileInfo? = selectFile(file ?: localisationContexts.firstOrNull()?.element)?.fileInfo
+    val fileInfo: ParadoxFileInfo? = selectFile(file)?.fileInfo
 
     val gameType: ParadoxGameType = fileInfo?.rootInfo?.gameType.orDefault()
     val filePath: String? = fileInfo?.path?.path

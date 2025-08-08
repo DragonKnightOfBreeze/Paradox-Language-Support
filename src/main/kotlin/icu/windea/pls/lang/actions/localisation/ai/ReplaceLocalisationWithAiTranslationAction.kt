@@ -29,7 +29,7 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
         return super.isAvailable(e, project) && PlsAiFacade.isAvailable()
     }
 
-    override fun createPopup(e: AnActionEvent, project: Project, callback: (String) -> Unit): JBPopup? {
+    override fun createPopup(e: AnActionEvent, project: Project, callback: (String) -> Unit): JBPopup {
         return PlsAiFacade.getTranslateLocalisationService().createDescriptionPopup(project, callback)
     }
 
@@ -61,7 +61,7 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
                     }.toChunkedFlow(chunkSize).flatMapMerge { inputContexts ->
                         flow {
                             val request = PlsAiTranslateLocalisationRequest(project, file, inputContexts, null, selectedLocale)
-                            val callback: suspend (ParadoxLocalisationResult) -> Unit = { data ->
+                            val callback: suspend (ParadoxLocalisationResult) -> Unit = {
                                 val context = request.localisationContexts[request.index]
                                 runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
                             }
