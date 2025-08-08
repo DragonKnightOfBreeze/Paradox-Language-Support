@@ -22,7 +22,7 @@ object CwtLexerFactory {
     fun createLayeredLexer(project: Project? = null): LayeredLexer {
         val lexer = LayeredLexer(createLexer(project))
         val optionCommentLexer = LayeredLexer(createOptionCommentLexer(project))
-        lexer.registerSelfStoppingLayer(optionCommentLexer, arrayOf(OPTION_COMMENT_TOKEN), emptyArray())
+        lexer.registerSelfStoppingLayer(optionCommentLexer, arrayOf(OPTION_COMMENT_TOKEN), IElementType.EMPTY_ARRAY)
         return lexer
     }
 

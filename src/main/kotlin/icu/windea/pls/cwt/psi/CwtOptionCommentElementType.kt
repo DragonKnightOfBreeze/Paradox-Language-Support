@@ -11,6 +11,10 @@ import icu.windea.pls.cwt.parser.*
 
 @Suppress("UnstableApiUsage")
 class CwtOptionCommentElementType(debugName: String) : IReparseableElementType(debugName, CwtLanguage) {
+    companion object {
+        private const val invalidChars = "\r\n"
+    }
+
     override fun parseContents(chameleon: ASTNode): ASTNode {
         val psi = chameleon.treeParent.psi
         val project: Project = psi.project
@@ -25,7 +29,7 @@ class CwtOptionCommentElementType(debugName: String) : IReparseableElementType(d
     }
 
     override fun isReparseable(currentNode: ASTNode, newText: CharSequence, fileLanguage: Language, project: Project): Boolean {
-        return newText.startsWith("##") && newText.none { it == '\r' || it == '\n' }
+        return newText.startsWith("##") && newText.none { it in invalidChars }
     }
 
     override fun createNode(text: CharSequence?): ASTNode {

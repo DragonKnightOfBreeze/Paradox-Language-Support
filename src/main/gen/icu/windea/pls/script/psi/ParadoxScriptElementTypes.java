@@ -20,6 +20,7 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_NUMBER = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_NUMBER");
   IElementType INLINE_MATH_PARAMETER = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_PARAMETER");
   IElementType INLINE_MATH_PAR_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_PAR_EXPRESSION");
+  IElementType INLINE_MATH_ROOT = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_ROOT");
   IElementType INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE");
   IElementType INLINE_MATH_UNARY_EXPRESSION = ParadoxScriptElementTypeFactory.getElementType("INLINE_MATH_UNARY_EXPRESSION");
   IElementType INLINE_PARAMETER_CONDITION = ParadoxScriptElementTypeFactory.getElementType("INLINE_PARAMETER_CONDITION");
@@ -53,6 +54,7 @@ public interface ParadoxScriptElementTypes {
   IElementType INLINE_MATH_END = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_END");
   IElementType INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN");
   IElementType INLINE_MATH_START = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_START");
+  IElementType INLINE_MATH_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INLINE_MATH_TOKEN");
   IElementType INT_NUMBER_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INT_NUMBER_TOKEN");
   IElementType INT_TOKEN = ParadoxScriptElementTypeFactory.getTokenType("INT_TOKEN");
   IElementType LABS_SIGN = ParadoxScriptElementTypeFactory.getTokenType("LABS_SIGN");
@@ -115,6 +117,9 @@ public interface ParadoxScriptElementTypes {
       }
       else if (type == INLINE_MATH_PAR_EXPRESSION) {
         return new ParadoxScriptInlineMathParExpressionImpl(node);
+      }
+      else if (type == INLINE_MATH_ROOT) {
+        return new ParadoxScriptInlineMathRootImpl(node);
       }
       else if (type == INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE) {
         return new ParadoxScriptInlineMathScriptedVariableReferenceImpl(node);

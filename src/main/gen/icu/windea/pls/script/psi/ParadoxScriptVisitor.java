@@ -64,6 +64,10 @@ public class ParadoxScriptVisitor extends PsiElementVisitor {
     // visitArgumentAwareElement(o);
   }
 
+  public void visitInlineMathRoot(@NotNull ParadoxScriptInlineMathRoot o) {
+    visitPsiElement(o);
+  }
+
   public void visitInlineMathScriptedVariableReference(@NotNull ParadoxScriptInlineMathScriptedVariableReference o) {
     visitInlineMathFactor(o);
     // visitedVariableReference(o);

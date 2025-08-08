@@ -5,7 +5,7 @@ import icu.windea.pls.script.lexer.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptWordScanner : DefaultWordsScanner(
-    ParadoxScriptLexer(),
+    ParadoxScriptLexerFactory.createLayeredLexer(),
     ParadoxScriptTokenSets.IDENTIFIER_TOKENS,
     ParadoxScriptTokenSets.COMMENT_TOKENS,
     ParadoxScriptTokenSets.LITERAL_TOKENS

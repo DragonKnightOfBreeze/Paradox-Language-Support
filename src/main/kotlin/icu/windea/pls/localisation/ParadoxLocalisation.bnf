@@ -18,7 +18,6 @@
 root ::= property_list *
 
 property_list ::= COMMENT * (property_item_list_with_locale | property_item_list) {
-  recoverWhile="#auto"
   implements="com.intellij.psi.PsiListLikeElement"
   methods=[getIcon getComponents]
 }

@@ -99,7 +99,7 @@ class ParadoxScriptFileStubElementType : ILightStubFileElementType<PsiFileStub<*
     }
 
     companion object {
-        private const val VERSION = 70 //2.0.0-dev
+        private const val VERSION = 71 //2.0.1-dev
 
         @JvmField
         val INSTANCE = ParadoxScriptFileStubElementType()

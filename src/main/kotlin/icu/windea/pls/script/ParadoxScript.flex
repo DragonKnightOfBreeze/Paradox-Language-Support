@@ -4,7 +4,6 @@ import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import java.util.*;
 import java.util.concurrent.atomic.*;
-import icu.windea.pls.model.ParadoxGameType;
 import icu.windea.pls.model.constraints.ParadoxSyntaxConstraint;
 
 import static com.intellij.psi.TokenType.*;
@@ -13,25 +12,12 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %%
 
 %{
-    private ParadoxGameType gameType;
-
-    private boolean leftAbsSign = true;
     private final Deque<Integer> stack = new ArrayDeque<>();
     private final AtomicInteger templateStateRef = new AtomicInteger(-1);
     private final AtomicInteger parameterStateRef = new AtomicInteger(-1);
 
     public _ParadoxScriptLexer() {
         this((java.io.Reader)null);
-        this.gameType = null;
-    }
-
-    public _ParadoxScriptLexer(ParadoxGameType gameType) {
-        this((java.io.Reader)null);
-        this.gameType = gameType;
-    }
-
-    public ParadoxGameType getGameType() {
-        return this.gameType;
     }
 
     private void enterState(Deque<Integer> stack, int state) {
@@ -57,7 +43,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     private void exitState(AtomicInteger stateRef) {
         int state = stateRef.getAndSet(-1);
         if(state != -1) {
-            if(stateRef == templateStateRef && state != IN_INLINE_MATH) {
+            if(stateRef == templateStateRef) {
                 state = stack.isEmpty() ? YYINITIAL : stack.peekLast();
             }
             yybegin(state);
@@ -67,7 +53,7 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
     private boolean exitStateForErrorToken(AtomicInteger stateRef) {
         int state = stateRef.getAndSet(-1);
         if(state != -1) {
-            if(stateRef == templateStateRef && state != IN_INLINE_MATH) {
+            if(stateRef == templateStateRef) {
                 state = stack.isEmpty() ? YYINITIAL : stack.peekLast();
             }
             yybegin(state);
@@ -110,8 +96,8 @@ import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
 %s IN_SCRIPTED_VARIABLE_REFERENCE_NAME
 
 %s IN_PARAMETER
-%s IN_PARAMETER_DEFAULT_VALUE
-%s IN_PARAMETER_DEFAULT_VALUE_END
+%s IN_PARAMETER_ARGUMENT
+%s IN_PARAMETER_ARGUMENT_END
 
 %s IN_PARAMETER_CONDITION
 %s IN_PARAMETER_CONDITION_EXPRESSION
@@ -154,7 +140,10 @@ WILDCARD_QUOTED_STRING_TOKEN=\"([^\"\\]|\\[\s\S])*\"?
 STRING_TOKEN=[^@#$=<>?{}\[\]\s\"][^#$=<>?{}\[\]\s\"]*\"?
 QUOTED_STRING_TOKEN=([^\"$\\]|\\[\s\S])+ // without arounding quotes
 
-ARGUMENT_TOKEN=[^#$=<>?{}\[\]\s]+ // compatible with leading '@'
+// compatible with leading '@'
+ARGUMENT_TOKEN=[^#$=<>?{}\[\]\s]+
+
+INLINE_MATH_TOKEN=[^\r\n#{}\[\]]+
 
 %%
 
@@ -249,20 +238,20 @@ ARGUMENT_TOKEN=[^#$=<>?{}\[\]\s]+ // compatible with leading '@'
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
-    "|" { yybegin(IN_PARAMETER_DEFAULT_VALUE); return PIPE; }
+    "|" { yybegin(IN_PARAMETER_ARGUMENT); return PIPE; }
     "$" { exitState(parameterStateRef); return PARAMETER_END; }
     {PARAMETER_TOKEN} { return PARAMETER_TOKEN; }
 }
-<IN_PARAMETER_DEFAULT_VALUE> {
+<IN_PARAMETER_ARGUMENT> {
     \s|"#" { yypushback(yylength()); exitState(parameterStateRef); }
     "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "[" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); yybegin(IN_PARAMETER_CONDITION); return LEFT_BRACKET; }
     "]" { exitState(stack, YYINITIAL); recoverState(templateStateRef); return RIGHT_BRACKET; }
     "$" { exitState(parameterStateRef); return PARAMETER_END; }
-    {ARGUMENT_TOKEN} { yybegin(IN_PARAMETER_DEFAULT_VALUE_END); return ARGUMENT_TOKEN; }
+    {ARGUMENT_TOKEN} { yybegin(IN_PARAMETER_ARGUMENT_END); return ARGUMENT_TOKEN; }
 }
-<IN_PARAMETER_DEFAULT_VALUE_END> {
+<IN_PARAMETER_ARGUMENT_END> {
     \s|"#" { yypushback(yylength()); exitState(parameterStateRef); }
     "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
@@ -299,26 +288,7 @@ ARGUMENT_TOKEN=[^#$=<>?{}\[\]\s]+ // compatible with leading '@'
     "{" { enterState(stack, stack.isEmpty() ? YYINITIAL : IN_PROPERTY_OR_VALUE); return LEFT_BRACE; }
     "}" { exitState(stack, YYINITIAL); return RIGHT_BRACE; }
     "]" { exitState(stack, YYINITIAL); return INLINE_MATH_END; }
-    "|" {
-        if(leftAbsSign) {
-            leftAbsSign = false;
-            return LABS_SIGN;
-        } else {
-            leftAbsSign = true;
-            return RABS_SIGN;
-        }
-    }
-    "(" { return LP_SIGN; }
-    ")" { return RP_SIGN; }
-    "+" { return PLUS_SIGN; }
-    "-" { return MINUS_SIGN; }
-    "*" { return TIMES_SIGN; }
-    "/" { return DIV_SIGN; }
-    "%" { return MOD_SIGN; }
-    "$" { enterState(parameterStateRef, yystate()); yybegin(IN_PARAMETER); return PARAMETER_START; }
-    {INT_NUMBER_TOKEN} { return INT_NUMBER_TOKEN; }
-    {FLOAT_NUMBER_TOKEN} { return FLOAT_NUMBER_TOKEN; }
-    {SCRIPTED_VARIABLE_NAME_TOKEN} { return INLINE_MATH_SCRIPTED_VARIABLE_REFERENCE_TOKEN; }
+    {INLINE_MATH_TOKEN} { return INLINE_MATH_TOKEN; }
     {COMMENT} { return COMMENT; }
     {BLANK} { return WHITE_SPACE; }
 }
@@ -332,7 +302,6 @@ ARGUMENT_TOKEN=[^#$=<>?{}\[\]\s]+ // compatible with leading '@'
     "@["|"@\\[" {
         enterState(stack, yystate());
         enterState(templateStateRef, yystate());
-        leftAbsSign = true;
         yybegin(IN_INLINE_MATH);
         return INLINE_MATH_START;
     }
@@ -358,7 +327,6 @@ ARGUMENT_TOKEN=[^#$=<>?{}\[\]\s]+ // compatible with leading '@'
     "@["|"@\\[" {
         enterState(stack, yystate());
         enterState(templateStateRef, yystate());
-        leftAbsSign = true;
         yybegin(IN_INLINE_MATH);
         return INLINE_MATH_START;
     }

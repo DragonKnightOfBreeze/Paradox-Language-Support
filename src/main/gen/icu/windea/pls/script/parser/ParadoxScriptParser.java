@@ -33,7 +33,14 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   static boolean parse_root_(IElementType t, PsiBuilder b, int l) {
-    return root(b, l + 1);
+    boolean r;
+    if (t == INLINE_MATH_ROOT) {
+      r = inline_math_root(b, l + 1);
+    }
+    else {
+      r = root(b, l + 1);
+    }
+    return r;
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
@@ -49,13 +56,14 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   // LEFT_BRACE block_item * RIGHT_BRACE
   public static boolean block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block")) return false;
+    if (!nextTokenIs(b, LEFT_BRACE)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, BLOCK, "<block>");
+    Marker m = enter_section_(b, l, _NONE_, BLOCK, null);
     r = consumeToken(b, LEFT_BRACE);
     p = r; // pin = 1
     r = r && report_error_(b, block_1(b, l + 1));
     r = p && consumeToken(b, RIGHT_BRACE) && r;
-    exit_section_(b, l, m, r, p, block_auto_recover_);
+    exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
@@ -90,7 +98,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   static boolean block_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "block_value")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = scripted_variable_reference(b, l + 1);
     if (!r) r = boolean_$(b, l + 1);
     if (!r) r = int_$(b, l + 1);
@@ -99,7 +106,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = color(b, l + 1);
     if (!r) r = block(b, l + 1);
     if (!r) r = inline_math(b, l + 1);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -140,23 +146,22 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // INLINE_MATH_START inline_math_expr INLINE_MATH_END
+  // INLINE_MATH_START INLINE_MATH_TOKEN INLINE_MATH_END
   public static boolean inline_math(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math")) return false;
+    if (!nextTokenIs(b, INLINE_MATH_START)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, INLINE_MATH, "<inline math>");
-    r = consumeToken(b, INLINE_MATH_START);
+    Marker m = enter_section_(b, l, _NONE_, INLINE_MATH, null);
+    r = consumeTokens(b, 1, INLINE_MATH_START, INLINE_MATH_TOKEN, INLINE_MATH_END);
     p = r; // pin = 1
-    r = r && report_error_(b, inline_math_expr(b, l + 1));
-    r = p && consumeToken(b, INLINE_MATH_END) && r;
-    exit_section_(b, l, m, r, p, inline_math_auto_recover_);
+    exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
   /* ********************************************************** */
-  // inline_math_expr
+  // inline_math_items
   static boolean inline_math_abs_expr(PsiBuilder b, int l) {
-    return inline_math_expr(b, l + 1);
+    return inline_math_items(b, l + 1);
   }
 
   /* ********************************************************** */
@@ -213,40 +218,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor) inline_math_bi_expression *
-  static boolean inline_math_expr(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_expr")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = inline_math_expr_0(b, l + 1);
-    r = r && inline_math_expr_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor
-  private static boolean inline_math_expr_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_expr_0")) return false;
-    boolean r;
-    r = inline_math_unary_expression(b, l + 1);
-    if (!r) r = inline_math_abs_expression(b, l + 1);
-    if (!r) r = inline_math_par_expression(b, l + 1);
-    if (!r) r = inline_math_factor(b, l + 1);
-    return r;
-  }
-
-  // inline_math_bi_expression *
-  private static boolean inline_math_expr_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inline_math_expr_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!inline_math_bi_expression(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "inline_math_expr_1", c)) break;
-    }
-    return true;
-  }
-
-  /* ********************************************************** */
   // inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_bi_expression
   public static boolean inline_math_expression(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_expression")) return false;
@@ -274,6 +245,40 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // (inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor) inline_math_bi_expression *
+  static boolean inline_math_items(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_items")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = inline_math_items_0(b, l + 1);
+    r = r && inline_math_items_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor
+  private static boolean inline_math_items_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_items_0")) return false;
+    boolean r;
+    r = inline_math_unary_expression(b, l + 1);
+    if (!r) r = inline_math_abs_expression(b, l + 1);
+    if (!r) r = inline_math_par_expression(b, l + 1);
+    if (!r) r = inline_math_factor(b, l + 1);
+    return r;
+  }
+
+  // inline_math_bi_expression *
+  private static boolean inline_math_items_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_items_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!inline_math_bi_expression(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "inline_math_items_1", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
   // INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN
   public static boolean inline_math_number(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inline_math_number")) return false;
@@ -287,9 +292,9 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // inline_math_expr
+  // inline_math_items
   static boolean inline_math_par_expr(PsiBuilder b, int l) {
-    return inline_math_expr(b, l + 1);
+    return inline_math_items(b, l + 1);
   }
 
   /* ********************************************************** */
@@ -328,6 +333,17 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "inline_math_parameter_2")) return false;
     parameter_argument_part(b, l + 1);
     return true;
+  }
+
+  /* ********************************************************** */
+  // inline_math_items
+  public static boolean inline_math_root(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inline_math_root")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, INLINE_MATH_ROOT, "<inline math root>");
+    r = inline_math_items(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */
@@ -646,7 +662,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   static boolean parameter_condition_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_condition_value")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = scripted_variable_reference(b, l + 1);
     if (!r) r = boolean_$(b, l + 1);
     if (!r) r = int_$(b, l + 1);
@@ -655,7 +670,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = color(b, l + 1);
     if (!r) r = block(b, l + 1);
     if (!r) r = inline_math(b, l + 1);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -744,7 +758,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   static boolean property_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_value")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = scripted_variable_reference(b, l + 1);
     if (!r) r = boolean_$(b, l + 1);
     if (!r) r = int_$(b, l + 1);
@@ -753,7 +766,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = color(b, l + 1);
     if (!r) r = block(b, l + 1);
     if (!r) r = inline_math(b, l + 1);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -786,13 +798,13 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   static boolean root_block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_block_item")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_);
+    Marker m = enter_section_(b);
     r = consumeToken(b, COMMENT);
     if (!r) r = root_block_value(b, l + 1);
     if (!r) r = property(b, l + 1);
     if (!r) r = scripted_variable(b, l + 1);
     if (!r) r = parameter_condition(b, l + 1);
-    exit_section_(b, l, m, r, false, root_block_item_auto_recover_);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -801,7 +813,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   static boolean root_block_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_block_value")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = scripted_variable_reference(b, l + 1);
     if (!r) r = boolean_$(b, l + 1);
     if (!r) r = int_$(b, l + 1);
@@ -810,7 +821,6 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     if (!r) r = color(b, l + 1);
     if (!r) r = block(b, l + 1);
     if (!r) r = inline_math(b, l + 1);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -935,13 +945,11 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
   static boolean scripted_variable_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scripted_variable_value")) return false;
     boolean r;
-    Marker m = enter_section_(b);
     r = boolean_$(b, l + 1);
     if (!r) r = int_$(b, l + 1);
     if (!r) r = float_$(b, l + 1);
     if (!r) r = string(b, l + 1);
     if (!r) r = inline_math(b, l + 1);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -1009,16 +1017,11 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  static final Parser block_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
+  static final Parser block_item_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
     COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, LEFT_BRACE,
     LEFT_BRACKET, PARAMETER_START, PROPERTY_KEY_TOKEN, RIGHT_BRACE, RIGHT_BRACKET, STRING_TOKEN);
-  static final Parser block_item_auto_recover_ = block_auto_recover_;
-  static final Parser inline_math_auto_recover_ = block_auto_recover_;
-  static final Parser parameter_condition_auto_recover_ = block_auto_recover_;
-  static final Parser parameter_condition_item_auto_recover_ = block_auto_recover_;
-  static final Parser property_auto_recover_ = block_auto_recover_;
-  static final Parser root_block_item_auto_recover_ = (b, l) -> !nextTokenIsFast(b, AT, BOOLEAN_TOKEN,
-    COLOR_TOKEN, COMMENT, FLOAT_TOKEN, INLINE_MATH_START, INT_TOKEN, LEFT_BRACE,
-    LEFT_BRACKET, PARAMETER_START, PROPERTY_KEY_TOKEN, STRING_TOKEN);
-  static final Parser scripted_variable_auto_recover_ = block_auto_recover_;
+  static final Parser parameter_condition_auto_recover_ = block_item_auto_recover_;
+  static final Parser parameter_condition_item_auto_recover_ = block_item_auto_recover_;
+  static final Parser property_auto_recover_ = block_item_auto_recover_;
+  static final Parser scripted_variable_auto_recover_ = block_item_auto_recover_;
 }

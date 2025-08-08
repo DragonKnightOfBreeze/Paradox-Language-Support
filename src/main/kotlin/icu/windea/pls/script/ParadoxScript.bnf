@@ -27,9 +27,7 @@ root_block ::= root_block_item + {
   ]
   methods=[getValue isEmpty isNotEmpty getComponents]
 }
-private root_block_item ::= COMMENT | root_block_value | property | scripted_variable | parameter_condition {
-  recoverWhile="#auto"
-}
+private root_block_item ::= COMMENT | root_block_value | property | scripted_variable | parameter_condition
 private root_block_value ::= scripted_variable_reference | boolean | int | float | string | color | block | inline_math
 
 // scripted_variable
@@ -161,7 +159,6 @@ color ::= COLOR_TOKEN {
 }
 block ::= LEFT_BRACE block_item * RIGHT_BRACE {
   pin=1
-  recoverWhile="#auto"
   extends=value
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptBlockElement"
@@ -270,13 +267,22 @@ private inline_parameter_condition_item_part ::= ARGUMENT_TOKEN | parameter | in
 // supported operators: + - * / %
 // also support unary operators "+1" "-1", abs operator "| 1 |" and parentheses "( 1 )"
 // inline math factor can also be scripted_variable and (if parameter it self is allowed) parameter
-inline_math ::= INLINE_MATH_START inline_math_expr INLINE_MATH_END {
+
+inline_math ::= INLINE_MATH_START INLINE_MATH_TOKEN INLINE_MATH_END { // lazy-parsing INLINE_MATH_TOKEN
   pin=1
-  recoverWhile="#auto"
   extends=value
-  methods=[getValue]
+  methods=[getValue getTokenElement]
 }
-private inline_math_expr ::= (inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor) inline_math_bi_expression *
+
+// ------
+
+// inline math expression rules (lazy-parsing, from INLINE_MATH_TOKEN)
+
+inline_math_root ::= inline_math_items {
+  extraRoot=true
+}
+private inline_math_items ::= (inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor) inline_math_bi_expression *
+
 // noinspection BnfUnusedRule
 inline_math_expression ::= inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_bi_expression
 inline_math_unary_expression ::= inline_math_unary_op inline_math_unary_expr {
@@ -289,18 +295,19 @@ inline_math_abs_expression ::= LABS_SIGN inline_math_abs_expr RABS_SIGN {
   pin=1
   extends=inline_math_expression
 }
-private inline_math_abs_expr ::= inline_math_expr
+private inline_math_abs_expr ::= inline_math_items
 inline_math_par_expression ::= LP_SIGN inline_math_par_expr RP_SIGN {
   pin=1
   extends=inline_math_expression
 }
-private inline_math_par_expr ::= inline_math_expr
+private inline_math_par_expr ::= inline_math_items
 left inline_math_bi_expression ::= inline_math_bi_op inline_math_bi_right_factor {
   pin=1
   extends=inline_math_expression
 }
 private inline_math_bi_op ::= PLUS_SIGN | MINUS_SIGN | TIMES_SIGN | DIV_SIGN | MOD_SIGN
 private inline_math_bi_right_factor ::= inline_math_unary_expression | inline_math_abs_expression | inline_math_par_expression | inline_math_factor
+
 inline_math_factor ::= inline_math_number | inline_math_parameter | inline_math_scripted_variable_reference
 inline_math_number ::= INT_NUMBER_TOKEN | FLOAT_NUMBER_TOKEN {
   extends=inline_math_factor

@@ -8,20 +8,20 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 
-public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implements ParadoxScriptInlineMath {
+public class ParadoxScriptInlineMathRootImpl extends ASTWrapperPsiElement implements ParadoxScriptInlineMathRoot {
 
-  public ParadoxScriptInlineMathImpl(@NotNull ASTNode node) {
+  public ParadoxScriptInlineMathRootImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull ParadoxScriptVisitor visitor) {
-    visitor.visitInlineMath(this);
+    visitor.visitInlineMathRoot(this);
   }
 
   @Override
@@ -31,13 +31,33 @@ public class ParadoxScriptInlineMathImpl extends ParadoxScriptValueImpl implemen
   }
 
   @Override
-  public @NotNull String getValue() {
-    return ParadoxScriptPsiImplUtil.getValue(this);
+  @Nullable
+  public ParadoxScriptInlineMathAbsExpression getInlineMathAbsExpression() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathAbsExpression.class);
   }
 
   @Override
-  public @Nullable PsiElement getTokenElement() {
-    return ParadoxScriptPsiImplUtil.getTokenElement(this);
+  @Nullable
+  public ParadoxScriptInlineMathBiExpression getInlineMathBiExpression() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathBiExpression.class);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxScriptInlineMathFactor getInlineMathFactor() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathFactor.class);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxScriptInlineMathParExpression getInlineMathParExpression() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathParExpression.class);
+  }
+
+  @Override
+  @Nullable
+  public ParadoxScriptInlineMathUnaryExpression getInlineMathUnaryExpression() {
+    return PsiTreeUtil.getChildOfType(this, ParadoxScriptInlineMathUnaryExpression.class);
   }
 
   @Override

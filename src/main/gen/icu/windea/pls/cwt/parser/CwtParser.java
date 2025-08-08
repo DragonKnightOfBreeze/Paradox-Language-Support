@@ -318,11 +318,11 @@ public class CwtParser implements PsiParser, LightPsiParser {
   static boolean root_block_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_block_item")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_);
+    Marker m = enter_section_(b);
     r = general_comment(b, l + 1);
     if (!r) r = property(b, l + 1);
     if (!r) r = value(b, l + 1);
-    exit_section_(b, l, m, r, false, root_block_item_auto_recover_);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -357,6 +357,4 @@ public class CwtParser implements PsiParser, LightPsiParser {
     DOC_COMMENT_TOKEN, FLOAT_TOKEN, INT_TOKEN, LEFT_BRACE, OPTION_COMMENT_TOKEN, OPTION_KEY_TOKEN,
     PROPERTY_KEY_TOKEN, RIGHT_BRACE, STRING_TOKEN);
   static final Parser property_auto_recover_ = block_item_auto_recover_;
-  static final Parser root_block_item_auto_recover_ = (b, l) -> !nextTokenIsFast(b, BOOLEAN_TOKEN, COMMENT,
-    DOC_COMMENT_TOKEN, FLOAT_TOKEN, INT_TOKEN, LEFT_BRACE, OPTION_COMMENT_TOKEN, PROPERTY_KEY_TOKEN, STRING_TOKEN);
 }

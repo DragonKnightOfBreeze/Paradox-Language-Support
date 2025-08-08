@@ -597,7 +597,7 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, PROPERTY_LIST, "<property list>");
     r = property_list_0(b, l + 1);
     r = r && property_list_1(b, l + 1);
-    exit_section_(b, l, m, r, false, property_list_auto_recover_);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -891,5 +891,4 @@ public class ParadoxLocalisationParser implements PsiParser, LightPsiParser {
   }
 
   static final Parser property_auto_recover_ = (b, l) -> !nextTokenIsFast(b, COMMENT, LOCALE_TOKEN, PROPERTY_KEY_TOKEN);
-  static final Parser property_list_auto_recover_ = property_auto_recover_;
 }

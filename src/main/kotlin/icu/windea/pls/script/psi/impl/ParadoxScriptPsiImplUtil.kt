@@ -19,6 +19,8 @@ import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_VALUE_TOKEN
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.navigation.*
@@ -598,6 +600,11 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getValue(element: ParadoxScriptInlineMath): String {
         return PlsStringConstants.inlineMathFolder
+    }
+
+    @JvmStatic
+    fun getTokenElement(element: ParadoxScriptInlineMath): PsiElement? {
+        return element.findChild { it.elementType == INLINE_MATH_TOKEN }
     }
 
     //endregion

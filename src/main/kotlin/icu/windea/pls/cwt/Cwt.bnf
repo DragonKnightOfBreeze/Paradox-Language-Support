@@ -21,9 +21,7 @@ root_block ::= root_block_item + {
   implements=["icu.windea.pls.cwt.psi.CwtBlockElement"]
   methods=[getValue isEmpty isNotEmpty getComponents]
 }
-private root_block_item ::= general_comment | property | value {
-  recoverWhile="#auto"
-}
+private root_block_item ::= general_comment | property | value
 
 private general_comment ::= doc_comment | option_comment | comment
 doc_comment ::= DOC_COMMENT_TOKEN {

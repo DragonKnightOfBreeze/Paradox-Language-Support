@@ -5,7 +5,10 @@ import com.intellij.psi.tree.*
 object ParadoxScriptElementTypeFactory {
     @JvmStatic
     fun getTokenType(debugName: String): IElementType {
-        return ParadoxScriptTokenType(debugName)
+        return when (debugName) {
+            "INLINE_MATH_TOKEN" -> ParadoxScriptInlineMathElementType(debugName)
+            else -> ParadoxScriptTokenType(debugName)
+        }
     }
 
     @JvmStatic
