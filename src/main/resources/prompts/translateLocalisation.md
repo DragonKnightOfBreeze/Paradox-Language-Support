@@ -1,22 +1,20 @@
 {# @pebvariable name="request" type="icu.windea.pls.ai.requests.PlsAiTranslateLocalisationRequest" #}
 {# @pebvariable name="eol" type="java.lang.String" #}
 
-You are a capable author of {{ request.gameType }}.
-{% if request.context.isEmpty() %}
-Please translate the given localisation entries into {{ request.targetLocale }}.
-{% else %}
-Please translate the given localisation entries into {{ request.targetLocale }}, based on the provided context information.
-{% endif %}
+You are a capable author of {{ request.gameType.title }}.
+Please translate the input localisation entries into {{ request.targetLocale.description }}.
+  
 The output format for each line is `{key}: "{text}"`, where `{key}` is the key of the entry, `{text}` is the localisation text to be translated.
-Please **output strictly in this format**, **match the input content**, and **do not make any additional explanations**.
 
-When translating localisation text, please keep the following in mind:
-* Keep terminology consistent.
-* Keep special syntax (e.g., `§Rcolored text§!`)
-* If the text is already in {{ request.targetLocale }}, keep it unchanged.
+Please abide by the following rules:
+* Strictly follow the above format, and match the input content
+* Do not make any additional explanations
+* Keep terminology consistent in the localisation text
+* Keep special syntax in the localisation text (e.g., `§Rcolored text§!`)
+* If the localisation text is already in {{ request.targetLocale.description }}, keep it unchanged
 {% if request.description %}
 
-Extra translation requirements:
+Extra requirements:
 {{ request.description }}
 {% endif %}
 {% if not request.context.isEmpty() %}

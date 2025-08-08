@@ -1,21 +1,19 @@
 {# @pebvariable name="request" type="icu.windea.pls.ai.requests.PlsAiPolishLocalisationRequest" #}
 {# @pebvariable name="eol" type="java.lang.String" #}
 
-You are a capable author of {{ request.gameType }}.
-{% if request.context.isEmpty() %}
-Please polish the given localisation entries.
-{% else %}
-Please polish the given localisation entries, based on the provided context information.
-{% endif %}
+You are a capable author of {{ request.gameType.title }}.
+Please polish the input localisation entries.
+  
 The output format for each line is `{key}: "{text}"`, where `{key}` is the key of the entry, `{text}` is the localisation text to be translated.
-Please **output strictly in this format**, **match the input content**, and **do not make any additional explanations**.
 
-When polishing localisation text, please keep the following in mind:
-* Keep terminology consistent.
-* Keep special syntax (e.g., `§Rcolored text§!`)
+Please abide by the following rules:
+* Strictly follow the above format, and match the input content
+* Do not make any additional explanations
+* Keep terminology consistent in the localisation text
+* Keep special syntax in the localisation text (e.g., `§Rcolored text§!`)
 {% if request.description %}
 
-Extra polishing requirements:
+Extra requirements:
 {{ request.description }}
 {% endif %}
 {% if not request.context.isEmpty() %}
