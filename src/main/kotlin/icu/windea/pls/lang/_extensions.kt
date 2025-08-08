@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.lang
 
 import com.intellij.extapi.psi.*
@@ -16,6 +18,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.data.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*

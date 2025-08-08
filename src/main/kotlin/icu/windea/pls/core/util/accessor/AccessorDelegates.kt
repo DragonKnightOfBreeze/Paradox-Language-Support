@@ -1,5 +1,3 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package icu.windea.pls.core.util.accessor
 
 import java.lang.reflect.*
@@ -38,6 +36,7 @@ class KotlinMemberPropertyReadAccessorDelegate<T : Any, V>(
         return true
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun get(target: T?): V {
         if (target == null) throw UnsupportedAccessorException()
         return AccessorRunner.runInAccessorDelegate {
@@ -54,6 +53,7 @@ class KotlinPropertyReadAccessorDelegate<T : Any, V>(
         return true
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun get(target: T?): V {
         if (target != null) throw UnsupportedAccessorException()
         return AccessorRunner.runInAccessorDelegate {
@@ -70,6 +70,7 @@ class KotlinGetterReadAccessorDelegate<T : Any, V>(
         return true
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun get(target: T?): V {
         return AccessorRunner.runInAccessorDelegate {
             getter.call(target) as V
@@ -84,6 +85,7 @@ class JavaFieldReadAccessorDelegate<T : Any, V>(
         return field.trySetAccessible()
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun get(target: T?): V {
         return AccessorRunner.runInAccessorDelegate {
             field.get(target) as V
@@ -109,6 +111,7 @@ class KotlinMemberPropertyWriteAccessorDelegate<T : Any, V>(
         return true
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun set(target: T?, value: V) {
         if (target == null) throw UnsupportedAccessorException()
         AccessorRunner.runInAccessorDelegate {
@@ -126,6 +129,7 @@ class KotlinPropertyWriteAccessorDelegate<T : Any, V>(
         return true
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun set(target: T?, value: V) {
         if (target != null) throw UnsupportedAccessorException()
         AccessorRunner.runInAccessorDelegate {

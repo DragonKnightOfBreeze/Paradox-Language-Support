@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 
 package icu.windea.pls.core.util
 
@@ -9,9 +9,9 @@ import kotlin.reflect.*
 
 class KeyWithFactory<T, in THIS>(name: String, val factory: THIS.() -> T) : Key<T>(name)
 
-inline fun <T> createKey(name: String) = Key.create<T>(name)
+inline fun <T> createKey(name: String): Key<T> = Key.create<T>(name)
 
-inline fun <T, THIS> createKey(name: String, noinline factory: THIS.() -> T) = KeyWithFactory(name, factory)
+inline fun <T, THIS> createKey(name: String, noinline factory: THIS.() -> T): KeyWithFactory<T, THIS> = KeyWithFactory(name, factory)
 
 abstract class KeyRegistry {
     val id = javaClass.name.substringAfterLast(".").replace("\$Keys", "")

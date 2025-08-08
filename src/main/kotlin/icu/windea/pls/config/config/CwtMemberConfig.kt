@@ -36,8 +36,8 @@ val CwtMemberConfig<*>.stringValue: String? get() = if (valueType == CwtType.Str
 val CwtMemberConfig<*>.values: List<CwtValueConfig>? get() = configs?.filterIsInstance<CwtValueConfig>()
 val CwtMemberConfig<*>.properties: List<CwtPropertyConfig>? get() = configs?.filterIsInstance<CwtPropertyConfig>()
 
-val CwtMemberConfig<*>.options: List<CwtOptionConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionConfig>()
-val CwtMemberConfig<*>.optionValues: List<CwtOptionValueConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionValueConfig>()
+//val CwtMemberConfig<*>.options: List<CwtOptionConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionConfig>()
+//val CwtMemberConfig<*>.optionValues: List<CwtOptionValueConfig>? get() = optionConfigs?.filterIsInstance<CwtOptionValueConfig>()
 
 //fun CwtMemberConfig<*>.getOptionValue(): String? {
 //    return stringValue
@@ -121,7 +121,7 @@ val CwtMemberConfig.Keys.supportedScopes by createKey<Set<String>>(CwtMemberConf
 // * a config expression in subtype structure config
 
 val CwtMemberConfig<*>.cardinality: CwtCardinalityExpression?
-    get() = getOrPutUserData(CwtMemberConfig.Keys.cardinality, CwtCardinalityExpression.EmptyExpression) action@{
+    get() = getOrPutUserData(CwtMemberConfig.Keys.cardinality) action@{
         val option = findOption("cardinality")
         if (option == null) {
             //如果没有注明且类型是常量，则推断为 1..~1
@@ -132,12 +132,12 @@ val CwtMemberConfig<*>.cardinality: CwtCardinalityExpression?
         option?.stringValue?.let { s -> CwtCardinalityExpression.resolve(s) }
     }
 val CwtMemberConfig<*>.cardinalityMinDefine: String?
-    get() = getOrPutUserData(CwtMemberConfig.Keys.cardinalityMinDefine, "") action@{
+    get() = getOrPutUserData(CwtMemberConfig.Keys.cardinalityMinDefine) {
         val option = findOption("cardinality_min_define")
         option?.stringValue
     }
 val CwtMemberConfig<*>.cardinalityMaxDefine: String?
-    get() = getOrPutUserData(CwtMemberConfig.Keys.cardinalityMaxDefine, "") action@{
+    get() = getOrPutUserData(CwtMemberConfig.Keys.cardinalityMaxDefine) {
         val option = findOption("cardinality_max_define")
         option?.stringValue
     }
@@ -145,7 +145,7 @@ val CwtMemberConfig<*>.cardinalityMaxDefine: String?
 //from replace_scopes and push_scope
 
 val CwtMemberConfig<*>.scopeContext: ParadoxScopeContext?
-    get() = getOrPutUserData(CwtMemberConfig.Keys.scopeContext, ParadoxScopeContext.Empty) action@{
+    get() = getOrPutUserData(CwtMemberConfig.Keys.scopeContext) action@{
         val replaceScopes = replaceScopes
         val pushScope = pushScope
         val scopeContext = replaceScopes?.let { ParadoxScopeContext.resolve(it) }
@@ -161,7 +161,7 @@ val CwtMemberConfig<*>.scopeContext: ParadoxScopeContext?
 //* an extended (definition / game_rule / on_action / inline_script / parameter) config
 
 val CwtMemberConfig<*>.replaceScopes: Map<String, String>?
-    get() = getOrPutUserData(CwtMemberConfig.Keys.replaceScopes, emptyMap()) action@{
+    get() = getOrPutUserData(CwtMemberConfig.Keys.replaceScopes) action@{
         val option = findOption { it.key == "replace_scope" || it.key == "replace_scopes" }
         if (option == null) return@action null
         val options1 = option.options ?: return@action null
@@ -174,7 +174,7 @@ val CwtMemberConfig<*>.replaceScopes: Map<String, String>?
         }
     }
 val CwtMemberConfig<*>.pushScope: String?
-    get() = getOrPutUserData(CwtMemberConfig.Keys.pushScope, "") action@{
+    get() = getOrPutUserData(CwtMemberConfig.Keys.pushScope) {
         val option = findOption { it.key == "push_scope" }
         option?.getOptionValue()?.let { v -> ParadoxScopeManager.getScopeId(v) }
     }

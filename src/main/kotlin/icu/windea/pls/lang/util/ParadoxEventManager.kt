@@ -111,7 +111,7 @@ object ParadoxEventManager {
     }
 
     fun getType(definitionInfo: ParadoxDefinitionInfo): String? {
-        return definitionInfo.getOrPutUserData(Keys.eventType, "") {
+        return definitionInfo.getOrPutUserData(Keys.eventType) {
             definitionInfo.subtypeConfigs.find { it.inGroup("event_type") }?.name
         }
     }

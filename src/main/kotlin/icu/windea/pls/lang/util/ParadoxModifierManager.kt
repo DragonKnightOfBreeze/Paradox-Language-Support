@@ -250,7 +250,7 @@ object ParadoxModifierManager {
 
     private fun getModifierCategoryOptionValues(enumConfig: CwtEnumConfig, finalValue: String): Set<String>? {
         val valueConfig = enumConfig.valueConfigMap[finalValue] ?: return null
-        return valueConfig.getOrPutUserData(ParadoxEconomicCategoryManager.Keys.modifierCategories, emptySet()) {
+        return valueConfig.getOrPutUserData(ParadoxEconomicCategoryManager.Keys.modifierCategories) {
             valueConfig.findOption("modifier_categories")?.getOptionValues()
         }
     }

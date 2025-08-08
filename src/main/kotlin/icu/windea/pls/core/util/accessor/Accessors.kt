@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package icu.windea.pls.core.util.accessor
 
@@ -28,6 +28,7 @@ class MemberPropertyAccessor<T : Any, V>(
 ) : Accessor<T> {
     private var runtimeTarget: T? = null
 
+    @Suppress("UNCHECKED_CAST")
     override val targetClass by lazy { targetClassProvider() ?: runtimeTarget!!::class as KClass<T> }
     override val accessorProvider by lazy { AccessorProviderCache.get(targetClass) }
 
@@ -92,6 +93,7 @@ class MemberFunctionAccessor<T : Any>(
     val targetClassProvider: () -> KClass<T>?
 ) {
     private var runtimeTarget: T? = null
+    @Suppress("UNCHECKED_CAST")
     private val targetClass by lazy { targetClassProvider() ?: runtimeTarget!!::class as KClass<T> }
     private val accessorProvider by lazy { AccessorProviderCache.get(targetClass) }
 

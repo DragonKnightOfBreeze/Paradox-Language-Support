@@ -1,7 +1,7 @@
 package icu.windea.pls.extension.markdown
 
 import com.intellij.psi.*
-import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.inject.processors.*
 import icu.windea.pls.lang.*
 

@@ -75,7 +75,7 @@ fun ParadoxScopeContext.toScopeIdMap(showFrom: Boolean = true, showPrev: Boolean
     }
 }
 
-val ParadoxScopeContext.Resolver.Empty: ParadoxScopeContext get() = EmptyParadoxScopeContext
+//val ParadoxScopeContext.Resolver.Empty: ParadoxScopeContext get() = EmptyParadoxScopeContext
 
 fun ParadoxScopeContext.Resolver.resolve(thisScope: String): ParadoxScopeContext {
     return SimpleParadoxScopeContext(ParadoxScope.of(thisScope))
@@ -186,4 +186,4 @@ private class LinkedParadoxScopeContext(
     }
 }
 
-private val EmptyParadoxScopeContext = SimpleParadoxScopeContext(ParadoxScope.Any)
+//private val EmptyParadoxScopeContext = SimpleParadoxScopeContext(ParadoxScope.Any)

@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST", "unused")
+@file:Suppress("unused")
 
 package icu.windea.pls.core.util.accessor
 
@@ -7,6 +7,7 @@ import kotlin.reflect.*
 
 object AccessorDelegateBuilder {
     object Read {
+        @Suppress("UNCHECKED_CAST")
         fun <T : Any, V> empty(): ReadAccessorDelegate<T, V> = EmptyReadAccessorDelegate as ReadAccessorDelegate<T, V>
 
         fun <T : Any, V> fromProperty(property: KProperty1<T, *>) = KotlinMemberPropertyReadAccessorDelegate<T, V>(property)
@@ -19,6 +20,7 @@ object AccessorDelegateBuilder {
     }
 
     object Write {
+        @Suppress("UNCHECKED_CAST")
         fun <T : Any, V> empty(): WriteAccessorDelegate<T, V> = EmptyWriteAccessorDelegate as WriteAccessorDelegate<T, V>
 
         fun <T : Any, V> fromProperty(property: KProperty1<T,*>) = if (property is KMutableProperty1) KotlinMemberPropertyWriteAccessorDelegate<T, V>(property) else null
@@ -35,6 +37,7 @@ object AccessorDelegateBuilder {
     }
 
     object Invoke {
+        @Suppress("UNCHECKED_CAST")
         fun <T : Any> empty(): InvokeAccessorDelegate<T> = EmptyInvokeAccessorDelegate as InvokeAccessorDelegate<T>
 
         fun <T : Any> fromFunction(function: KFunction<*>) = KotlinFunctionInvokeAccessorDelegate<T>(function)

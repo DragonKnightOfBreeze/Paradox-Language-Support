@@ -3,12 +3,12 @@ package icu.windea.pls.core.util.properties
 import org.junit.*
 
 class ObservableTest {
-    val obj = ObservableObject("Windea", "the Dragon Knight", "")
-    val arg = "the seeker"
-    val args = arrayOf("the seeker", "the ranger", "and all my pals")
-
     @Test
     fun test() {
+        val obj = ObservableObject("Windea", "the Dragon Knight", "")
+        val arg = "the seeker"
+        val args = arrayOf("the seeker", "the ranger", "and all my pals")
+
         obj.name = "Windea - Future Seeker"
         Assert.assertEquals("Windea - Future Seeker, ${obj.suffix}", obj.displayName)
 

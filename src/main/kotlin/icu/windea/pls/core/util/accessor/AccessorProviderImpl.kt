@@ -1,5 +1,3 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package icu.windea.pls.core.util.accessor
 
 import com.jetbrains.rd.util.*
@@ -80,6 +78,7 @@ class AccessorProviderImpl<T : Any>(
         throw ClassCastException(message)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun <V> findReadAccessor(target: T?, propertyName: String): ReadAccessorDelegate<T, V> {
         val cacheKey = doGetReadCacheKey(target, propertyName)
         return readAccessorCache.getOrPut(cacheKey) { doFindReadAccessor<V>(target, propertyName) } as ReadAccessorDelegate<T, V>
@@ -120,6 +119,7 @@ class AccessorProviderImpl<T : Any>(
         return AccessorDelegateBuilder.Read.empty()
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun <V> findWriteAccessor(target: T?, propertyName: String): WriteAccessorDelegate<T, V> {
         val cacheKey = doGetWriteCacheKey(target, propertyName)
         return writeAccessorCache.getOrPut(cacheKey) { doFindWriteAccessor<V>(target, propertyName) } as WriteAccessorDelegate<T, V>

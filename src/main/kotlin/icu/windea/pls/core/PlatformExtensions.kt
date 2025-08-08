@@ -241,68 +241,6 @@ fun <T> Query<T>.processQueryAsync(consumer: Processor<in T>): Boolean {
     return allowParallelProcessing().forEach(consumer)
 }
 
-//endregion
-
-//region Key & DataKey Related Extensions
-
-inline fun <T> UserDataHolder.tryPutUserData(key: Key<T>, value: T?) {
-    runCatchingCancelable { putUserData(key, value) }
-}
-
-inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, action: () -> T): T {
-    val data = this.getUserData(key)
-    if (data != null) return data
-    val newValue = action()
-    if (newValue != null) putUserData(key, newValue)
-    return newValue
-}
-
-inline fun <T> UserDataHolder.getOrPutUserData(key: Key<T>, nullValue: T, action: () -> T?): T? {
-    val data = this.getUserData(key)
-    if (data != null) return data.takeUnless { it == nullValue }
-    val newValue = action()
-    if (newValue != null) putUserData(key, newValue) else putUserData(key, nullValue)
-    return newValue
-}
-
-fun <T, THIS : UserDataHolder> THIS.getUserDataOrDefault(key: Key<T>): T? {
-    val value = this.getUserData(key)
-    return when {
-        value != null -> value
-        key is KeyWithDefaultValue -> key.defaultValue.also { putUserData(key, it) }
-        key is KeyWithFactory<*, *> -> {
-            val key0 = key.cast<KeyWithFactory<T, THIS>>()
-            key0.factory(this).also { putUserData(key0, it) }
-        }
-        else -> null
-    }
-}
-
-fun <T> ProcessingContext.getOrDefault(key: Key<T>): T? {
-    val value = this.get(key)
-    return when {
-        value != null -> value
-        key is KeyWithDefaultValue -> key.defaultValue.also { put(key, it) }
-        else -> null
-    }
-}
-
-inline operator fun <T> Key<T>.getValue(thisRef: UserDataHolder, property: KProperty<*>): T? = thisRef.getUserDataOrDefault(this)
-
-inline operator fun <T> Key<T>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T? = thisRef.getOrDefault(this)
-
-inline operator fun <T, THIS : UserDataHolder> KeyWithFactory<T, THIS>.getValue(thisRef: THIS, property: KProperty<*>): T {
-    return thisRef.getUserData(this) ?: factory(thisRef).also { thisRef.putUserData(this, it) }
-}
-
-inline operator fun <T> KeyWithFactory<T, ProcessingContext>.getValue(thisRef: ProcessingContext, property: KProperty<*>): T {
-    return thisRef.get(this) ?: factory(thisRef).also { thisRef.put(this, it) }
-}
-
-inline operator fun <T> Key<T>.setValue(thisRef: UserDataHolder, property: KProperty<*>, value: T?) = thisRef.putUserData(this, value)
-
-inline operator fun <T> Key<T>.setValue(thisRef: ProcessingContext, property: KProperty<*>, value: T?) = thisRef.put(this, value)
-
 inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)
 
 inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.dataContext.getData(this)

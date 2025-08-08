@@ -64,7 +64,7 @@ object CwtConfigManager {
         // 使用缓存以优化性能
         val parent = file.parent ?: return null
         val parentPsi = parent.toPsiDirectory(project) ?: return null
-        return parentPsi.getOrPutUserData(Keys.gameTypeIdFromRepoFile, "") {
+        return parentPsi.getOrPutUserData(Keys.gameTypeIdFromRepoFile) {
             val command = "git remote -v"
             val workDirectory = parent.toNioPath().toFile()
             val commandResult = executeCommand(command, workDirectory = workDirectory)
