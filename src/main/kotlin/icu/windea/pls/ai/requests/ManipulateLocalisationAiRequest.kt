@@ -11,7 +11,7 @@ abstract class ManipulateLocalisationAiRequest(
     val project: Project,
     val file: PsiFile,
     val localisationContexts: List<ParadoxLocalisationContext>
-) {
+): AiRequest {
     @Volatile
     var index: Int = 0
 
@@ -26,3 +26,4 @@ abstract class ManipulateLocalisationAiRequest(
         val modName: String? by lazy { fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.Mod>()?.name }
     }
 }
+

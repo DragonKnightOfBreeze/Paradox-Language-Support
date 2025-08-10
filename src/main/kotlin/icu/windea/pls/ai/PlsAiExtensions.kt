@@ -3,8 +3,11 @@ package icu.windea.pls.ai
 import dev.langchain4j.kotlin.model.chat.*
 import dev.langchain4j.model.chat.response.*
 import icu.windea.pls.ai.model.*
+import icu.windea.pls.ai.requests.AiRequest
 import icu.windea.pls.core.coroutines.*
 import kotlinx.coroutines.flow.*
+
+val AiRequest.logPrefix get() = "[AI REQUEST #${requestId}]"
 
 fun Flow<StreamingChatModelReply>.toLineFlow(): Flow<String> {
     var response: ChatResponse? = null

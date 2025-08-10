@@ -26,26 +26,25 @@ class TranslateLocalisationAiService : ManipulateLocalisationAiService<Translate
         val chatModel = PlsChatModelManager.getStreamingChatModel() ?: return null
         val memory = getMemory()
 
-        logger.info("[AI REQUEST] Translating localisation...")
+        logger.info("${request.logPrefix} Translating localisation...")
         val chunkSize = PlsAiFacade.getSettings().features.localisationChunkSize
         var chunkIndex = 0
         val startTime = System.currentTimeMillis()
         memory.add(getSystemMessage(request))
         return request.localisationContexts.asFlow().chunked(chunkSize).flatMapConcat { chunk ->
-            val requestId = "#$chunkIndex"
-            logger.info("[AI REQUEST] Request $requestId: Sending...")
+            logger.info("${request.logPrefix} Chunk #$chunkIndex: Sending request...")
             chunkIndex++
-            memory.add(getUserMessage(chunk))
+            memory.add(getUserMessage(request, chunk))
             chatModel.chatFlow {
                 messages = memory.messages()
             }.toLineFlow().map { ParadoxLocalisationAiResult.fromLine(it) }.onCompletion { e ->
                 val status = PlsAiManager.getChatFlowCompletionStatus(e)
-                logger.info("[AI RESPONSE] Request $requestId: ${status.text}")
+                logger.info("${request.logPrefix} Chunk #$chunkIndex: ${status.text}")
             }.catchCompletion()
         }.onCompletion {
             val endTime = System.currentTimeMillis()
             val cost = endTime - startTime
-            logger.info("[AI REQUEST] Translating localisation finished in $cost ms")
+            logger.info("${request.logPrefix} Translating localisation finished in $cost ms")
         }
     }
 
@@ -55,13 +54,13 @@ class TranslateLocalisationAiService : ManipulateLocalisationAiService<Translate
 
     private fun getSystemMessage(request: TranslateLocalisationAiRequest): SystemMessage {
         val text = PlsChatMessageManager.fromTemplate("translateLocalisation", request)
-        logger.info("System message: \n$text")
+        logger.debug { "${request.logPrefix} System message: \n$text" }
         return SystemMessage.from(text)
     }
 
-    private fun getUserMessage(chunk: List<ParadoxLocalisationContext>): UserMessage {
+    private fun getUserMessage(request: TranslateLocalisationAiRequest, chunk: List<ParadoxLocalisationContext>): UserMessage {
         val text = PlsChatMessageManager.fromLocalisationContexts(chunk)
-        logger.info("User message: \n$text")
+        logger.debug { "${request.logPrefix} User message: \n$text" }
         return UserMessage.from(text)
     }
 }
