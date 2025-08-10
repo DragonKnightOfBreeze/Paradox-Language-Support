@@ -15,6 +15,7 @@
 
 * [X] #159 [CK3] Add file `lines.lines` to Paradox script file name patterns
 * [X] #161 Using single alias for a type
+* [X] #164 Plugin breaks Menus and Toolbars editor
 * [X] 完善与Markdown的集成，涉及链接、内联代码、代码块等，详见[参考文档](https://windea.icu/Paradox-Language-Support/zh/extensions.html#md) / Complete integration with Markdown, including links, inline codes, code blocks, etc. See [reference document](https://windea.icu/Paradox-Language-Support/en/extensions.html#md) for details
 * [X] 修复：修复与概念相关的一些问题 / FIX: Fix some issues related to concepts
 * [X] 新功能：提供对规则文件中的类型、枚举、别名等的引用解析和查找用法的支持 / NEW: Provide support for reference parsing and finding usages of types, enums, aliases, etc. in config files
