@@ -65,18 +65,20 @@ object CwtConfigManager {
         val parent = file.parent ?: return null
         val parentPsi = parent.toPsiDirectory(project) ?: return null
         return parentPsi.getOrPutUserData(Keys.gameTypeIdFromRepoFile) {
-            val command = "git remote -v"
-            val workDirectory = parent.toNioPath().toFile()
-            val commandResult = executeCommand(command, workDirectory = workDirectory)
-            val gameTypeId = commandResult.lines()
-                .mapNotNull { it.splitByBlank(3).getOrNull(1) }
-                .firstNotNullOfOrNull t@{
-                    if (it.contains("Paradox-Language-Support")) return@t "core"
-                    val s = it.substringInLast("cwtools-", "-config", "")
-                    if (s.isNotEmpty()) return@t s
-                    null
-                }
-            gameTypeId
+            runCatching {
+                val command = "git remote -v"
+                val workDirectory = parent.toNioPath().toFile()
+                val commandResult = executeCommand(command, workDirectory = workDirectory)
+                val gameTypeId = commandResult.lines()
+                    .mapNotNull { it.splitByBlank(3).getOrNull(1) }
+                    .firstNotNullOfOrNull t@{
+                        if (it.contains("Paradox-Language-Support")) return@t "core"
+                        val s = it.substringInLast("cwtools-", "-config", "")
+                        if (s.isNotEmpty()) return@t s
+                        null
+                    }
+                gameTypeId
+            }.getOrNull()
         }
     }
 

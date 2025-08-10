@@ -3,6 +3,7 @@ package icu.windea.pls.cwt.navigation
 import com.intellij.ide.navigationToolbar.*
 import com.intellij.lang.*
 import com.intellij.psi.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
@@ -22,7 +23,7 @@ class CwtNavBar : StructureAwareNavBarModelExtension() {
     override fun getPresentableText(o: Any?): String? {
         return when {
             o is CwtProperty -> o.name
-            o is CwtValue && o.isBlockValue() -> o.name.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit)
+            o is CwtValue && o.isBlockValue() -> o.name.truncateAndKeepQuotes(PlsFacade.getInternalSettings().presentableTextLengthLimit)
             else -> null
         }
     }

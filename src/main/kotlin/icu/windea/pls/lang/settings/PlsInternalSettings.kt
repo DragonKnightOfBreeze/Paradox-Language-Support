@@ -1,12 +1,14 @@
 package icu.windea.pls.lang.settings
 
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.registry.*
 import icu.windea.pls.core.*
 
 /**
- * PLS的内部设置。虽说如此，仍然可以通过 Registry 页面进行调整。
+ * PLS的内部设置。可以通过 Registry 页面进行调整。
  */
-object PlsInternalSettings {
+@Service(Service.Level.APP)
+class PlsInternalSettings {
     /**
      * 是否需要在IDE启动后首次打开某个项目时，刷新此项目已打开的脚本文件和本地化文件。
      */

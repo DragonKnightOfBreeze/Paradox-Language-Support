@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.lang.util.renderers
 
 import com.intellij.openapi.editor.colors.*
@@ -13,7 +15,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.references.localisation.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.editor.*
 import icu.windea.pls.localisation.psi.*
@@ -185,8 +186,8 @@ class ParadoxLocalisationTextHtmlRenderer(
             //如果图标高度在 locFontSize 到 locMaxTextIconSize 之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
             //实际上，本地化文本可以嵌入任意大小的图片
             val docFontSize = getDocumentationFontSize().size
-            val locFontSize = PlsInternalSettings.locFontSize
-            val locMaxTextIconSize = PlsInternalSettings.locTextIconSizeLimit
+            val locFontSize = PlsFacade.getInternalSettings().locFontSize
+            val locMaxTextIconSize = PlsFacade.getInternalSettings().locTextIconSizeLimit
             val scaleByDocFontSize = when {
                 originalIconHeight in locFontSize..locMaxTextIconSize -> docFontSize.toFloat() / originalIconHeight
                 else -> docFontSize.toFloat() / locFontSize

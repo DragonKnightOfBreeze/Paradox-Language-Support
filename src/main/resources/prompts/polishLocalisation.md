@@ -1,7 +1,7 @@
-{# @pebvariable name="request" type="icu.windea.pls.ai.requests.PlsAiPolishLocalisationRequest" #}
+{# @pebvariable name="request" type="icu.windea.pls.ai.requests.PolishLocalisationAiRequest" #}
 {# @pebvariable name="eol" type="java.lang.String" #}
 
-You are a capable author of {{ request.gameType.title }}.
+You are a capable author of {{ request.context.gameType.title }}.
 Please polish the input localisation entries.
   
 The output format for each line is `{key}: "{text}"`, where `{key}` is the key of the entry, `{text}` is the localisation text to be translated.

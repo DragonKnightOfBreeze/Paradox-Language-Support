@@ -3,6 +3,7 @@ package icu.windea.pls.script.editor
 import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.ui.breadcrumbs.*
+import icu.windea.pls.PlsFacade
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.constants.*
@@ -26,7 +27,7 @@ class ParadoxScriptBreadCrumbsProvider : BreadcrumbsProvider {
         return when (element) {
             is ParadoxScriptProperty -> element.name
             is ParadoxScriptString -> element.name
-            is ParadoxScriptValue -> element.name.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit)
+            is ParadoxScriptValue -> element.name.truncateAndKeepQuotes(PlsFacade.getInternalSettings().presentableTextLengthLimit)
             is ParadoxScriptScriptedVariable -> element.name ?: PlsStringConstants.unresolved
             else -> throw InternalError()
         }

@@ -10,7 +10,6 @@ import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationReferenceHintsProvider.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.localisation.psi.*
 import javax.swing.*
@@ -20,8 +19,8 @@ import javax.swing.*
  */
 class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvider<Settings>() {
     data class Settings(
-        var textLengthLimit: Int = PlsInternalSettings.textLengthLimit,
-        var iconHeightLimit: Int = PlsInternalSettings.iconHeightLimit,
+        var textLengthLimit: Int = PlsFacade.getInternalSettings().textLengthLimit,
+        var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimit,
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationReferenceHintsSettingsKey")

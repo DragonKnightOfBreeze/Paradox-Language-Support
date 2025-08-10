@@ -56,4 +56,6 @@ object PlsFacade {
             else -> null
         }
     }
+
+    fun getInternalSettings() = service<PlsInternalSettings>()
 }

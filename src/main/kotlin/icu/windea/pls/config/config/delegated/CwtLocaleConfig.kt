@@ -10,10 +10,10 @@ import icu.windea.pls.lang.util.*
 interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val id: String
     val codes: List<String>
-    val description: String
     val text: String
 
     val shortId: String get() = id.removePrefix("l_")
+    val idWithText: String get() = if(text.isEmpty()) id else "$id ($text)"
 
     companion object {
         val AUTO: CwtLocaleConfig = AutoCwtLocaleConfig(ParadoxLocaleManager.ID_AUTO)
@@ -37,8 +37,7 @@ private class CwtLocaleConfigImpl(
     override val id: String,
     override val codes: List<String>
 ) : UserDataHolderBase(), CwtLocaleConfig {
-    override val description: String get() = PlsDocBundle.locale(id)
-    override val text get() = if(description.isEmpty()) id else "$id ($description)"
+    override val text: String get() = PlsDocBundle.locale(id)
 
     override fun equals(other: Any?): Boolean {
         return this === other || other is CwtLocaleConfig && id == other.id
@@ -58,8 +57,7 @@ private class AutoCwtLocaleConfig(
 ) : UserDataHolderBase(), CwtLocaleConfig {
     override val config: CwtPropertyConfig get() = throw UnsupportedOperationException()
     override val codes: List<String> get() = emptyList()
-    override val description: String get() = PlsDocBundle.locale(id)
-    override val text: String get() = description
+    override val text: String get() = PlsDocBundle.locale(id)
 
     override fun equals(other: Any?): Boolean {
         return this === other || other is CwtLocaleConfig && id == other.id
@@ -79,8 +77,7 @@ private class FallbackCwtLocaleConfig(
 ) : UserDataHolderBase(), CwtLocaleConfig {
     override val config: CwtPropertyConfig get() = throw UnsupportedOperationException()
     override val codes: List<String> get() = emptyList()
-    override val description: String get() = PlsDocBundle.locale(id)
-    override val text get() = if(description.isEmpty()) id else "$id ($description)"
+    override val text: String get() = PlsDocBundle.locale(id)
 
     override fun equals(other: Any?): Boolean {
         return this === other || other is CwtLocaleConfig && id == other.id

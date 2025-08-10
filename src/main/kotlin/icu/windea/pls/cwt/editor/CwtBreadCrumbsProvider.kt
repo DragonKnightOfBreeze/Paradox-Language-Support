@@ -3,10 +3,10 @@ package icu.windea.pls.cwt.editor
 import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.ui.breadcrumbs.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.settings.*
 
 class CwtBreadCrumbsProvider : BreadcrumbsProvider {
     private val _defaultLanguages = arrayOf(CwtLanguage)
@@ -22,7 +22,7 @@ class CwtBreadCrumbsProvider : BreadcrumbsProvider {
     override fun getElementInfo(element: PsiElement): String {
         return when {
             element is CwtProperty -> element.name
-            element is CwtValue -> element.name.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit)
+            element is CwtValue -> element.name.truncateAndKeepQuotes(PlsFacade.getInternalSettings().presentableTextLengthLimit)
             else -> throw InternalError()
         }
     }

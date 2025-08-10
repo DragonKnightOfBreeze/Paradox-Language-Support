@@ -1,17 +1,17 @@
-package icu.windea.pls.lang.util.manipulators
+package icu.windea.pls.ai.util.manipulators
 
-import icu.windea.pls.core.*
+import icu.windea.pls.core.isExactDigit
 
-data class ParadoxLocalisationResult(
+data class ParadoxLocalisationAiResult(
     val key: String,
     val text: String,
 ) {
     companion object {
         @JvmField
-        val EMPTY = ParadoxLocalisationResult("", "")
+        val EMPTY = ParadoxLocalisationAiResult("", "")
 
         @JvmStatic
-        fun fromLine(line: String): ParadoxLocalisationResult {
+        fun fromLine(line: String): ParadoxLocalisationAiResult {
             val line0 = line.trim()
             val colonIndex = line0.indexOf(':')
             if (colonIndex == -1) return EMPTY
@@ -20,7 +20,7 @@ data class ParadoxLocalisationResult(
             val separator = line0.substring(colonIndex + 1, lqIndex).trimEnd()
             if (separator.isNotEmpty() && separator.any { !it.isExactDigit() }) return EMPTY
             val text = line0.substring(lqIndex + 1).removeSuffix("\"")
-            return ParadoxLocalisationResult(key, text)
+            return ParadoxLocalisationAiResult(key, text)
         }
     }
 }

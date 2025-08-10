@@ -6,9 +6,9 @@ import icu.windea.pls.ai.util.PlsChatModelManager
 import java.util.*
 
 object PlsAiSettingsManager {
-    fun getDefaultBatchSizeOfLocalisations(): Int = 50
-
-    fun getMaxBatchSizeOfLocalisations(): Int = 1000
+    fun getDefaultLocalisationBatchSize(): Int {
+        return 40
+    }
 
     fun getDefaultOpenAiModelName(): String {
         //基于IDE界面语言

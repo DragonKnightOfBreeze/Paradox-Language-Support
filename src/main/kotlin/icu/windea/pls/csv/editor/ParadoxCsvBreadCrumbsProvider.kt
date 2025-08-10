@@ -3,16 +3,16 @@ package icu.windea.pls.csv.editor
 import com.intellij.lang.*
 import com.intellij.psi.*
 import com.intellij.ui.breadcrumbs.*
+import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.csv.*
 import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.constants.*
 
 class ParadoxCsvBreadCrumbsProvider : BreadcrumbsProvider {
     private val _defaultLanguages = arrayOf(ParadoxCsvLanguage)
 
-    override fun getLanguages(): Array<out Language?>? {
+    override fun getLanguages(): Array<out Language> {
         return _defaultLanguages
     }
 
@@ -30,12 +30,13 @@ class ParadoxCsvBreadCrumbsProvider : BreadcrumbsProvider {
     }
 
     private fun getPresentableText(column: ParadoxCsvColumn): String {
+        val limit = PlsFacade.getInternalSettings().presentableTextLengthLimit
         return buildString {
-            append(column.name.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit))
+            append(column.name.truncateAndKeepQuotes(limit))
             val headerColumn = column.getHeaderColumn()
             if (headerColumn != null) {
                 append(" (")
-                append(headerColumn.name.truncateAndKeepQuotes(PlsInternalSettings.presentableTextLengthLimit))
+                append(headerColumn.name.truncateAndKeepQuotes(limit))
                 append(")")
             }
         }

@@ -8,13 +8,13 @@ import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.platform.ide.progress.*
-import com.intellij.platform.util.coroutines.*
 import com.intellij.platform.util.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.ai.PlsAiFacade
+import icu.windea.pls.ai.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.ai.util.*
+import icu.windea.pls.ai.util.manipulators.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.intentions.localisation.*
@@ -35,12 +35,13 @@ class CopyLocalisationWithAiPolishingIntention : ManipulateLocalisationIntention
     }
 
     override fun createPopup(project: Project, editor: Editor, file: PsiFile, callback: (String) -> Unit): JBPopup {
-        return PlsAiFacade.getPolishLocalisationService().createDescriptionPopup(project, callback)
+        return ParadoxLocalisationAiManipulator.createDescriptionPopup(project, "POLISH", callback)
     }
 
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context<String>) {
         val (elements, data) = context
+        val description = ParadoxLocalisationAiManipulator.getOptimizedDescription(data)
         withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationWithAiPolishing.progress.title")) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
@@ -50,24 +51,19 @@ class CopyLocalisationWithAiPolishingIntention : ManipulateLocalisationIntention
 
             if (contextsToHandle.isNotEmpty()) {
                 val total = contextsToHandle.size
-                val chunkSize = PlsAiFacade.getSettings().features.batchSizeOfLocalisations
-                val contextsChunked = contextsToHandle.chunked(chunkSize)
                 reportRawProgress p@{ reporter ->
                     reporter.text(PlsBundle.message("manipulation.localisation.polish.progress.step"))
 
-                    contextsChunked.forEachConcurrent f@{ inputContexts ->
-                        val request = PlsAiPolishLocalisationRequest(project, file, inputContexts, data)
-                        val callback: suspend (ParadoxLocalisationResult) -> Unit = { data ->
-                            current++
-                            reporter.text(PlsBundle.message("manipulation.localisation.polish.progress.itemStep", data.key))
-                            reporter.fraction(current / total.toDouble())
-                        }
-                        runCatchingCancelable { handleText(request, callback) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
-                        if (request.index != inputContexts.size) { //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
-                            withWarnings = true
-                            current += inputContexts.size - request.index
-                        }
+                    val request = PolishLocalisationAiRequest(project, file, contextsToHandle, description)
+                    val callback: suspend (ParadoxLocalisationAiResult) -> Unit = { data ->
+                        current++
+                        reporter.text(PlsBundle.message("manipulation.localisation.polish.progress.itemStep", data.key))
+                        reporter.fraction(current / total.toDouble())
                     }
+                    runCatchingCancelable { handleText(request, callback) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
+
+                    //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
+                    if (request.index != contextsToHandle.size) withWarnings = true
                 }
             }
 
@@ -79,8 +75,8 @@ class CopyLocalisationWithAiPolishingIntention : ManipulateLocalisationIntention
         }
     }
 
-    private suspend fun handleText(request: PlsAiPolishLocalisationRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
-        ParadoxLocalisationManipulator.handleTextWithAiPolishing(request, callback)
+    private suspend fun handleText(request: PolishLocalisationAiRequest, callback: suspend (ParadoxLocalisationAiResult) -> Unit) {
+        ParadoxLocalisationAiManipulator.handleTextWithAiPolishing(request, callback)
     }
 
     private fun createNotification(error: Throwable?, withWarnings: Boolean): Notification {

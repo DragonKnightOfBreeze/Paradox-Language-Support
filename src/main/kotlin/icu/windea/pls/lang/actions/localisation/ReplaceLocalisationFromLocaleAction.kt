@@ -26,7 +26,7 @@ class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.Wit
         //并发性 - 文件级别+本地化级别
 
         val (files, selectedLocale) = context
-        withBackgroundProgress(project, PlsBundle.message("action.replaceLocalisationFromLocale.progress.title", selectedLocale)) action@{
+        withBackgroundProgress(project, PlsBundle.message("action.replaceLocalisationFromLocale.progress.title", selectedLocale.text)) action@{
             val total = files.size
             val contexts = mutableListOf<ParadoxLocalisationContext>().synced()
             val processedRef = AtomicInteger()
@@ -74,13 +74,13 @@ class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.Wit
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, processed: Int, error: Throwable?): Notification {
         if (error == null) {
-            val content = PlsBundle.message("action.replaceLocalisationFromLocale.notification", selectedLocale, Messages.success(processed))
+            val content = PlsBundle.message("action.replaceLocalisationFromLocale.notification", selectedLocale.text, Messages.success(processed))
             return createNotification(content, NotificationType.INFORMATION)
         }
 
         thisLogger().warn(error)
         val errorDetails = error.message?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsBundle.message("action.replaceLocalisationFromLocale.notification", selectedLocale, Messages.failed(processed)) + errorDetails
+        val content = PlsBundle.message("action.replaceLocalisationFromLocale.notification", selectedLocale.text, Messages.failed(processed)) + errorDetails
         return createNotification(content, NotificationType.WARNING)
     }
 }

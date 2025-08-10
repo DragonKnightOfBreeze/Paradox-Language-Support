@@ -54,7 +54,7 @@ class ChangeLocalisationLocaleIntention : IntentionAction, PriorityAction {
     ) : BaseListPopupStep<CwtLocaleConfig>(PlsBundle.message("intention.changeLocalisationLocale.title"), *values) {
         override fun getIconFor(value: CwtLocaleConfig) = PlsIcons.Nodes.LocalisationLocale
 
-        override fun getTextFor(value: CwtLocaleConfig) = value.text
+        override fun getTextFor(value: CwtLocaleConfig) = value.idWithText
 
         override fun getDefaultOptionIndex() = 0
 

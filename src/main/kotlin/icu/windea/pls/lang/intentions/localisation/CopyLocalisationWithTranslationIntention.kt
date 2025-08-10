@@ -34,7 +34,7 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
     @Suppress("UnstableApiUsage")
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context) {
         val (elements, selectedLocale) = context
-        withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationWithTranslation.progress.title", selectedLocale)) action@{
+        withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationWithTranslation.progress.title", selectedLocale.text)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
@@ -63,13 +63,13 @@ class CopyLocalisationWithTranslationIntention : ManipulateLocalisationIntention
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?): Notification {
         if (error == null) {
-            val content = PlsBundle.message("intention.copyLocalisationWithTranslation.notification", selectedLocale, Messages.success())
+            val content = PlsBundle.message("intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.success())
             return createNotification(content, NotificationType.INFORMATION)
         }
 
         thisLogger().warn(error)
         val errorDetails = error.message?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsBundle.message("intention.copyLocalisationWithTranslation.notification", selectedLocale, Messages.failed()) + errorDetails
+        val content = PlsBundle.message("intention.copyLocalisationWithTranslation.notification", selectedLocale.text, Messages.failed()) + errorDetails
         return createNotification(content, NotificationType.WARNING)
     }
 }

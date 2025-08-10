@@ -8,12 +8,12 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.startup.*
+import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.images.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.constants.*
 
 /**
@@ -82,7 +82,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
 
         //TODO 1.3.37+ 也许有更好的方式来解决这个问题
 
-        if (!PlsInternalSettings.refreshOnProjectStartup) return
+        if (!PlsFacade.getInternalSettings().refreshOnProjectStartup) return
         if (!refreshedProjectIds.add(project.locationHash)) return
 
         val fileEditorManager = FileEditorManager.getInstance(project) ?: return

@@ -12,7 +12,6 @@ import icu.windea.pls.*
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvComplexEnumValueLocalizedNameHintsProvider.*
 import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.localisation.psi.*
@@ -24,8 +23,8 @@ import javax.swing.*
  */
 class ParadoxCsvComplexEnumValueLocalizedNameHintsProvider : ParadoxCsvHintsProvider<Settings>() {
     data class Settings(
-        var textLengthLimit: Int = PlsInternalSettings.textLengthLimit,
-        var iconHeightLimit: Int = PlsInternalSettings.iconHeightLimit,
+        var textLengthLimit: Int = PlsFacade.getInternalSettings().textLengthLimit,
+        var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimit,
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxCsvComplexEnumValueLocalizedNameHintsSettingsKey")

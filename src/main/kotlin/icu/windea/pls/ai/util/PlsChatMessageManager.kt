@@ -1,7 +1,6 @@
 package icu.windea.pls.ai.util
 
 import com.intellij.*
-import icu.windea.pls.ai.requests.*
 import icu.windea.pls.lang.util.manipulators.*
 import io.pebbletemplates.pebble.*
 import io.pebbletemplates.pebble.template.*
@@ -19,7 +18,7 @@ object PlsChatMessageManager {
      * @param name 名称。位于插件jar包中的`prompts`目录下，去除可能的语言区域后缀以及扩展名后的文件名。
      * @param request 请求对象。模版文件中的`request`变量的值。
      */
-    fun fromTemplate(name: String, request: PlsAiRequest): String {
+    fun fromTemplate(name: String, request: Any): String {
         val template = getTemplate(name)
         val writer = StringWriter()
         val context = mutableMapOf<String, Any?>()

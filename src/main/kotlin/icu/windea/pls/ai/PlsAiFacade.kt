@@ -10,7 +10,7 @@ object PlsAiFacade {
 
     fun isAvailable(): Boolean = getSettings().enable && PlsChatModelManager.isAvailable()
 
-    fun getTranslateLocalisationService() = service<PlsAiTranslateLocalisationService>()
+    fun getTranslateLocalisationService() = service<TranslateLocalisationAiService>()
 
-    fun getPolishLocalisationService() = service<PlsAiPolishLocalisationService>()
+    fun getPolishLocalisationService() = service<PolishLocalisationAiService>()
 }

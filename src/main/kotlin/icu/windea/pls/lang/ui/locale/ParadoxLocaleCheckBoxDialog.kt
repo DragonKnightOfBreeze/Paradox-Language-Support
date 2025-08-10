@@ -21,7 +21,7 @@ class ParadoxLocaleCheckBoxDialog(
     override fun createCenterPanel() = panel {
         localeStatusMap.keys.forEach { locale ->
             row {
-                checkBox(locale.description).bindSelected({ localeStatusMap[locale] ?: false }, { localeStatusMap[locale] = it })
+                checkBox(locale.text).bindSelected({ localeStatusMap[locale] ?: false }, { localeStatusMap[locale] = it })
             }
         }
     }

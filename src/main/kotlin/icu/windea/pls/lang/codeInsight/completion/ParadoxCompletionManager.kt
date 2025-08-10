@@ -84,7 +84,7 @@ object ParadoxCompletionManager {
     }
 
     fun addRootKeyCompletions(memberElement: ParadoxScriptMemberElement, context: ProcessingContext, result: CompletionResultSet) {
-        val elementPath = ParadoxExpressionPathManager.get(memberElement, PlsInternalSettings.maxDefinitionDepth) ?: return
+        val elementPath = ParadoxExpressionPathManager.get(memberElement, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return
         if (elementPath.path.isParameterized()) return //忽略表达式路径带参数的情况
         val rootKeyPrefix = lazy { context.contextElement?.let { ParadoxExpressionPathManager.getKeyPrefixes(it).firstOrNull() } }
         context.isKey = true

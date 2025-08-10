@@ -1,7 +1,7 @@
-{# @pebvariable name="request" type="icu.windea.pls.ai.requests.PlsAiPolishLocalisationRequest" #}
+{# @pebvariable name="request" type="icu.windea.pls.ai.requests.PolishLocalisationAiRequest" #}
 {# @pebvariable name="eol" type="java.lang.String" #}
 
-你是一名熟练的 {{ request.gameType.title }} 的模组作者。
+你是一名熟练的 {{ request.context.gameType.title }} 的模组作者。
 请润色输入的一组本地化条目。
 
 输出的每一行的格式都是`{key}: "{text}"`，其中`{key}`是条目的键，`{text}`则是需要翻译的本地化文本。

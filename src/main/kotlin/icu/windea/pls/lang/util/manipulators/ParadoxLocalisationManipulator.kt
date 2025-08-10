@@ -12,8 +12,6 @@ import com.intellij.platform.ide.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.ai.PlsAiFacade
-import icu.windea.pls.ai.requests.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.integrations.translation.*
@@ -60,8 +58,8 @@ object ParadoxLocalisationManipulator {
         val startElement = originalStartElement.findParentInFile(true) { it.parent is ParadoxLocalisationPropertyList }
         val endElement = originalEndElement?.findParentInFile(true) { it.parent is ParadoxLocalisationPropertyList }
         if (startElement == null && endElement == null) return emptySequence()
-        if(startElement == endElement) {
-            if(startElement is ParadoxLocalisationProperty) return sequenceOf(startElement)
+        if (startElement == endElement) {
+            if (startElement is ParadoxLocalisationProperty) return sequenceOf(startElement)
             return emptySequence()
         }
         val listElement = startElement?.parent ?: endElement?.parent ?: return emptySequence()
@@ -116,32 +114,6 @@ object ParadoxLocalisationManipulator {
         context.newText = newText
     }
 
-    suspend fun handleTextWithAiTranslation(request: PlsAiTranslateLocalisationRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
-        val aiService = PlsAiFacade.getTranslateLocalisationService()
-        val resultFlow = aiService.translate(request)
-        aiService.checkResultFlow(resultFlow)
-        resultFlow.collect { data ->
-            val context = request.localisationContexts[request.index]
-            aiService.checkResult(context, data)
-            context.newText = data.text
-            callback(data)
-            request.index++
-        }
-    }
-
-    suspend fun handleTextWithAiPolishing(request: PlsAiPolishLocalisationRequest, callback: suspend (ParadoxLocalisationResult) -> Unit) {
-        val aiService = PlsAiFacade.getPolishLocalisationService()
-        val resultFlow = aiService.polish(request)
-        aiService.checkResultFlow(resultFlow)
-        resultFlow.collect { data ->
-            val context = request.localisationContexts[request.index]
-            aiService.checkResult(context, data)
-            context.newText = data.text
-            callback(data)
-            request.index++
-        }
-    }
-
     suspend fun replaceText(context: ParadoxLocalisationContext, project: Project, @Command commandName: String) {
         if (context.newText == context.text) return
         writeCommandAction(project, commandName) {
@@ -163,6 +135,7 @@ object ParadoxLocalisationManipulator {
                     withBackgroundProgress(project, PlsBundle.message("manipulation.localisation.revert.progress.title")) {
                         writeCommandAction(project, PlsBundle.message("manipulation.localisation.revert.command")) {
                             for (context in contexts) {
+                                if (context.text == context.newText) continue
                                 // 注意这里 context.element 可能已经不合法
                                 context.element?.setValue(context.text)
                             }
@@ -182,6 +155,7 @@ object ParadoxLocalisationManipulator {
                     withBackgroundProgress(project, PlsBundle.message("manipulation.localisation.reapply.progress.title")) {
                         writeCommandAction(project, PlsBundle.message("manipulation.localisation.reapply.command")) {
                             for (context in contexts) {
+                                if (context.text == context.newText) continue
                                 // 注意这里 context.element 可能已经不合法
                                 context.element?.setValue(context.newText)
                             }

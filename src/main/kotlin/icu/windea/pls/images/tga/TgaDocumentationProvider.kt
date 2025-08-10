@@ -6,8 +6,8 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.text.*
 import com.intellij.psi.*
+import icu.windea.pls.*
 import icu.windea.pls.core.documentation.*
-import icu.windea.pls.lang.settings.*
 
 //org.intellij.images.fileTypes.ImageDocumentationProvider
 
@@ -24,7 +24,7 @@ class TgaDocumentationProvider : AbstractDocumentationProvider() {
             //加入用于渲染的图片的标签
             run {
                 val maxSize = maxOf(metadata.width, metadata.height)
-                val maxImageSize = PlsInternalSettings.maxImageSizeInDocumentation
+                val maxImageSize = PlsFacade.getInternalSettings().maxImageSizeInDocumentation
                 val scaleFactor = if (maxSize > maxImageSize) maxImageSize.toDouble() / maxSize.toDouble() else 1.0
                 val imageWidth = (metadata.width * scaleFactor).toInt()
                 val imageHeight = (metadata.height * scaleFactor).toInt()

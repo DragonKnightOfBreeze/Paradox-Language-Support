@@ -11,7 +11,6 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
@@ -24,7 +23,7 @@ import javax.swing.*
  */
 class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Settings>() {
     data class Settings(
-        var iconHeightLimit: Int = PlsInternalSettings.iconHeightLimit
+        var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimit
     )
 
     private val settingsKey = SettingsKey<Settings>("ParadoxLocalisationIconHintsSettingsKey")

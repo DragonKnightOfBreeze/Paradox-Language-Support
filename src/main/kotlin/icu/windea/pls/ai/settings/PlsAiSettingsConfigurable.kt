@@ -60,9 +60,9 @@ class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.
             collapsibleGroup(PlsBundle.message("settings.ai.features")) {
                 //batchSizeOfLocalisations
                 row {
-                    label(PlsBundle.message("settings.ai.features.batchSizeOfLocalisations"))
-                    intTextField(1..PlsAiSettingsManager.getMaxBatchSizeOfLocalisations(), 1).bindIntText(settings.features::batchSizeOfLocalisations)
-                    contextHelp(PlsBundle.message("settings.ai.features.batchSizeOfLocalisations.tip"))
+                    label(PlsBundle.message("settings.ai.features.localisationBatchSize"))
+                    intTextField(1..Int.MAX_VALUE, 1).bindIntText(settings.features::localisationChunkSize)
+                    contextHelp(PlsBundle.message("settings.ai.features.localisationBatchSize.tip"))
                 }
                 //translateLocalisationsWithDescription
                 row {

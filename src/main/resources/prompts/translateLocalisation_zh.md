@@ -1,8 +1,8 @@
-{# @pebvariable name="request" type="icu.windea.pls.ai.requests.PlsAiTranslateLocalisationRequest" #}
+{# @pebvariable name="request" type="icu.windea.pls.ai.requests.TranslateLocalisationAiRequest" #}
 {# @pebvariable name="eol" type="java.lang.String" #}
 
-你是一名熟练的 {{ request.gameType.title }} 的模组作者。
-请将输入的一组本地化条目翻译为{{ request.targetLocale.description }}。
+你是一名熟练的 {{ request.context.gameType.title }} 的模组作者。
+请将输入的一组本地化条目翻译为 {{ request.targetLocale.text }}。
 
 输出的每一行的格式都是`{key}: "{text}"`，其中`{key}`是条目的键，`{text}`则是需要翻译的本地化文本。
 
@@ -11,7 +11,7 @@
 * 不要做任何额外的解释
 * 保持本地化文本中的术语的一致性
 * 保留本地化文本中的特殊语法（例如，`§R彩色文本§!`）
-* 如果本地化文本已是{{ request.targetLocale.description }}，保持原样即可
+* 如果本地化文本已是 {{ request.targetLocale.text }}，保持原样即可
 {% if request.description %}
 
 额外要求：

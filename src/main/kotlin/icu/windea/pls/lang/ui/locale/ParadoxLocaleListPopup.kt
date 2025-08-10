@@ -14,7 +14,7 @@ class ParadoxLocaleListPopup(
 
     override fun getIconFor(value: CwtLocaleConfig) = PlsIcons.Nodes.LocalisationLocale
 
-    override fun getTextFor(value: CwtLocaleConfig) = value.text
+    override fun getTextFor(value: CwtLocaleConfig) = value.idWithText
 
     override fun isSpeedSearchEnabled() = true
 

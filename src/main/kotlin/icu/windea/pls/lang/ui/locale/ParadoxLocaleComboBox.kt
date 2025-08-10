@@ -9,5 +9,5 @@ fun Row.localeComboBox(withAuto: Boolean = false, withDefault: Boolean = false, 
     val locales = ParadoxLocaleManager.getLocaleConfigs(withAuto, withDefault, pingPreferred)
     val localeMap = locales.associateBy { it.id }
 
-    return comboBox(localeMap.keys, textListCellRenderer { it?.let { s -> localeMap[s]?.description ?: s } })
+    return comboBox(localeMap.keys, textListCellRenderer { it?.let { s -> localeMap[s]?.text ?: s } })
 }
