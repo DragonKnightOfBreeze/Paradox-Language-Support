@@ -8,6 +8,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
@@ -52,7 +53,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
                     settings.keys != null && propertyValue is ParadoxScriptBlock -> {
                         var i = -1
                         val r = mutableListOf<ParadoxScriptProperty>()
-                        propertyValue.processProperty(conditional = false) {
+                        propertyValue.properties().process {
                             i++
                             if (it.name.equals(settings.keys.getOrNull(i), true)) {
                                 r.add(it)

@@ -39,14 +39,13 @@ class ParadoxScriptTextRenderer(
         when {
             renderInBlock && element is ParadoxScriptBlock -> {
                 builder.append("{ ")
-                element.processMember(conditional, inline) {
+                element.members(conditional, inline).forEach f@{
                     when {
                         it is ParadoxScriptProperty -> renderPropertyTo(it)
                         it is ParadoxScriptValue -> renderValueTo(it)
-                        else -> return@processMember true
+                        else -> return@f
                     }
                     builder.append(" ")
-                    true
                 }
                 builder.append("}")
             }

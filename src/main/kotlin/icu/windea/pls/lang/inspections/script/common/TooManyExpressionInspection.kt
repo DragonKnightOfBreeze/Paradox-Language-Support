@@ -78,11 +78,13 @@ class TooManyExpressionInspection : LocalInspectionTool() {
 
             private fun skipCheck(element: ParadoxScriptMemberElement, configs: List<CwtMemberConfig<*>>): Boolean {
                 //子句不为空且可以精确匹配多个子句规则时，不适用此检查
-                if (configs.isEmpty()) return true
-                if (configs.size == 1) return false
-                if (element is ParadoxScriptFile && element.block?.isEmpty == true) return false
-                if (element is ParadoxScriptBlock && element.isEmpty) return false
-                return true
+                return when {
+                    configs.isEmpty() -> true
+                    configs.size == 1 -> false
+                    element is ParadoxScriptFile && element.members().none() -> false
+                    element is ParadoxScriptBlock && element.members().none() -> false
+                    else -> true
+                }
             }
 
             private fun getOverriddenProvider(configs: List<CwtMemberConfig<*>>): CwtOverriddenConfigProvider? {

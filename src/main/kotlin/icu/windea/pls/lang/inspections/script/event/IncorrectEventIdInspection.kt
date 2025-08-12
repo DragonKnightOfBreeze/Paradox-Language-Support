@@ -24,19 +24,18 @@ class IncorrectEventIdInspection : LocalInspectionTool() {
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
+        if (file !is ParadoxScriptFile) return null
         val holder = ProblemsHolder(manager, file, isOnTheFly)
 
-        file as ParadoxScriptFile
-        file.processProperty(inline = true) p@{ element ->
-            val definitionInfo = element.definitionInfo ?: return@p true
-            if (definitionInfo.type != ParadoxDefinitionTypes.Event) return@p true
+        file.properties(inline = true).forEach f@{ element ->
+            val definitionInfo = element.definitionInfo ?: return@f
+            if (definitionInfo.type != ParadoxDefinitionTypes.Event) return@f
             val nameField = definitionInfo.typeConfig.nameField
             val eventId = definitionInfo.name
-            if (ParadoxEventManager.isValidEventId(eventId)) return@p true
+            if (ParadoxEventManager.isValidEventId(eventId)) return@f
             val nameElement = if (nameField == null) element.propertyKey else element.findProperty(nameField)?.propertyValue
-            if (nameElement == null) return@p true //忽略
+            if (nameElement == null) return@f //忽略
             holder.registerProblem(nameElement, PlsBundle.message("inspection.script.incorrectEventId.desc", eventId))
-            true
         }
 
         return holder.resultsArray

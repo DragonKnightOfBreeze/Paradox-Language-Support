@@ -319,24 +319,22 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             val scopesBlockElement = scopesElement.block ?: return@p false
                             val scopeContextOfScopesElement = ParadoxScopeManager.getSwitchedScopeContext(scopesElement)
                             val map = mutableMapOf<String, String>()
-                            scopesBlockElement.processProperty(inline = true) pp@{
+                            scopesBlockElement.properties(inline = true).forEach f@{
                                 ProgressManager.checkCanceled()
                                 val n = it.name.lowercase()
-                                if (configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@pp true
+                                if (configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@f
 
                                 if (scopeContextOfScopesElement == null) {
                                     map.put(n, ParadoxScopeManager.anyScopeId)
-                                    return@pp true
+                                    return@f
                                 }
 
-                                val pv = it.propertyValue ?: return@pp true
+                                val pv = it.propertyValue ?: return@f
                                 val expressionString = pv.value
                                 val textRange = TextRange.create(0, expressionString.length)
-                                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return@pp true
+                                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return@f
                                 val scopeContextOfEachScope = ParadoxScopeManager.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
                                 map.put(n, scopeContextOfEachScope.scope.id)
-
-                                true
                             }
 
                             if (scopeContextMap.isNotEmpty()) {
@@ -471,24 +469,22 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             val scopesBlockElement = scopesElement.block ?: return@p false
                             val scopeContextOfScopesElement = ParadoxScopeManager.getSwitchedScopeContext(scopesElement)
                             val map = mutableMapOf<String, String>()
-                            scopesBlockElement.processProperty(inline = true) pp@{
+                            scopesBlockElement.properties(inline = true).forEach f@{
                                 ProgressManager.checkCanceled()
                                 val n = it.name.lowercase()
-                                if (configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@pp true
+                                if (configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@f
 
                                 if (scopeContextOfScopesElement == null) {
                                     map.put(n, ParadoxScopeManager.anyScopeId)
-                                    return@pp true
+                                    return@f
                                 }
 
-                                val pv = it.propertyValue ?: return@pp true
+                                val pv = it.propertyValue ?: return@f
                                 val expressionString = pv.value
                                 val textRange = TextRange.create(0, expressionString.length)
-                                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return@pp true
+                                val scopeFieldExpression = ParadoxScopeFieldExpression.resolve(expressionString, textRange, configGroup) ?: return@f
                                 val scopeContextOfEachScope = ParadoxScopeManager.getSwitchedScopeContext(pv, scopeFieldExpression, scopeContextOfScopesElement)
                                 map.put(n, scopeContextOfEachScope.scope.id)
-
-                                true
                             }
 
                             if (scopeContextMap.isNotEmpty()) {

@@ -41,18 +41,20 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
 
   @Override
   @NotNull
+  public List<ParadoxScriptProperty> getPropertyList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptProperty.class);
+  }
+
+  @Override
+  @NotNull
   public List<ParadoxScriptScriptedVariable> getScriptedVariableList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptScriptedVariable.class);
   }
 
   @Override
-  public @NotNull List<@NotNull ParadoxScriptProperty> getPropertyList() {
-    return ParadoxScriptPsiImplUtil.getPropertyList(this);
-  }
-
-  @Override
-  public @NotNull List<@NotNull ParadoxScriptValue> getValueList() {
-    return ParadoxScriptPsiImplUtil.getValueList(this);
+  @NotNull
+  public List<ParadoxScriptValue> getValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxScriptValue.class);
   }
 
   @Override
@@ -66,21 +68,6 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   }
 
   @Override
-  public boolean isEmpty() {
-    return ParadoxScriptPsiImplUtil.isEmpty(this);
-  }
-
-  @Override
-  public boolean isNotEmpty() {
-    return ParadoxScriptPsiImplUtil.isNotEmpty(this);
-  }
-
-  @Override
-  public @NotNull List<@NotNull PsiElement> getComponents() {
-    return ParadoxScriptPsiImplUtil.getComponents(this);
-  }
-
-  @Override
   public @Nullable PsiReference getReference() {
     return ParadoxScriptPsiImplUtil.getReference(this);
   }
@@ -88,6 +75,16 @@ public class ParadoxScriptBlockImpl extends ParadoxScriptValueImpl implements Pa
   @Override
   public @NotNull PsiReference @NotNull [] getReferences() {
     return ParadoxScriptPsiImplUtil.getReferences(this);
+  }
+
+  @Override
+  public @NotNull List<@NotNull ParadoxScriptMemberElement> getMemberList() {
+    return ParadoxScriptPsiImplUtil.getMemberList(this);
+  }
+
+  @Override
+  public @NotNull List<@NotNull PsiElement> getComponents() {
+    return ParadoxScriptPsiImplUtil.getComponents(this);
   }
 
   @Override

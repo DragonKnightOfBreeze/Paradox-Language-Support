@@ -23,20 +23,19 @@ class NonTriggeredEventInspection : LocalInspectionTool() {
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
+        if (file !is ParadoxScriptFile) return null
         val holder = ProblemsHolder(manager, file, isOnTheFly)
 
-        file as ParadoxScriptFile
-        file.processProperty(inline = true) p@{ element ->
-            val definitionInfo = element.definitionInfo ?: return@p true
-            if (definitionInfo.type != ParadoxDefinitionTypes.Event) return@p true
-            if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) return@p true //no "triggered" subtype declared, skip
-            if ("inherited" in definitionInfo.subtypes) return@p true //ignore inherited events
-            if ("triggered" in definitionInfo.subtypes) return@p true
+        file.properties(inline = true).forEach f@{ element ->
+            val definitionInfo = element.definitionInfo ?: return@f
+            if (definitionInfo.type != ParadoxDefinitionTypes.Event) return@f
+            if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) return@f  //no "triggered" subtype declared, skip
+            if ("inherited" in definitionInfo.subtypes) return@f  //ignore inherited events
+            if ("triggered" in definitionInfo.subtypes) return@f
             val fixes = buildList {
                 if (element.block != null) this += Fix1(element)
             }.toTypedArray()
             holder.registerProblem(element.propertyKey, PlsBundle.message("inspection.script.nonTriggeredEvent.desc"), *fixes)
-            true
         }
 
         return holder.resultsArray

@@ -60,14 +60,12 @@ object ParadoxLocalisationParameterManager {
             ?.castOrNull<ParadoxScriptProperty>()
             ?: return emptyList()
         val result = mutableListOf<ParadoxScriptProperty>()
-        context.block?.processProperty p@{ p ->
-            p.block?.processProperty pp@{ pp ->
-                if (isMatchedProperty(pp, configToUse)) {
-                    result.add(pp)
+        context.block?.properties()?.forEach f1@{ p1 ->
+            p1.block?.properties()?.forEach f2@{ p2 ->
+                if (isMatchedProperty(p2, configToUse)) {
+                    result.add(p2)
                 }
-                true
             }
-            true
         }
         return result
     }
@@ -80,7 +78,7 @@ object ParadoxLocalisationParameterManager {
             ?.castOrNull<ParadoxScriptProperty>()
             ?: return null
         var result: ParadoxScriptProperty? = null
-        context.block?.processProperty p@{ p ->
+        context.block?.properties()?.process p@{ p ->
             if (isMatchedProperty(p, configToUse)) {
                 result = p
                 return@p false

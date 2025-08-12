@@ -19,8 +19,6 @@ import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.PROPERTY_VALUE_TOKEN
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyValue
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.navigation.*
@@ -36,38 +34,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getValue(element: ParadoxScriptRootBlock): String {
         return PlsStringConstants.blockFolder
-    }
-
-    @JvmStatic
-    fun isEmpty(element: ParadoxScriptRootBlock): Boolean {
-        element.forEachChild {
-            when {
-                it is ParadoxScriptProperty -> return false
-                it is ParadoxScriptValue -> return false
-            }
-        }
-        return true
-    }
-
-    @JvmStatic
-    fun isNotEmpty(element: ParadoxScriptRootBlock): Boolean {
-        element.forEachChild {
-            when {
-                it is ParadoxScriptProperty -> return true
-                it is ParadoxScriptValue -> return true
-            }
-        }
-        return false
-    }
-
-    @JvmStatic
-    fun getComponents(element: ParadoxScriptRootBlock): List<PsiElement> {
-        //允许混合value和property
-        return element.findChildren { isRootBlockComponent(it) }
-    }
-
-    private fun isRootBlockComponent(element: PsiElement): Boolean {
-        return element is ParadoxScriptScriptedVariable || element is ParadoxScriptProperty || element is ParadoxScriptValue
     }
 
     //endregion
@@ -369,53 +335,6 @@ object ParadoxScriptPsiImplUtil {
         return PlsStringConstants.blockFolder
     }
 
-    @JvmStatic
-    fun isEmpty(element: ParadoxScriptBlock): Boolean {
-        element.forEachChild {
-            when {
-                it is ParadoxScriptProperty -> return false
-                it is ParadoxScriptValue -> return false
-                it is ParadoxScriptParameterCondition && it.isNotEmpty -> return false
-            }
-        }
-        return true
-    }
-
-    @JvmStatic
-    fun isNotEmpty(element: ParadoxScriptBlock): Boolean {
-        element.forEachChild {
-            when {
-                it is ParadoxScriptProperty -> return true
-                it is ParadoxScriptValue -> return true
-                it is ParadoxScriptParameterCondition && it.isNotEmpty -> return true
-            }
-        }
-        return false
-    }
-
-    @JvmStatic
-    fun getPropertyList(element: ParadoxScriptBlock): List<ParadoxScriptProperty> {
-        return buildList { element.processProperty(conditional = true, inline = true) { add(it) } }
-    }
-
-    @JvmStatic
-    fun getValueList(element: ParadoxScriptBlock): List<ParadoxScriptValue> {
-        return buildList { element.processValue(conditional = true, inline = true) { add(it) } }
-    }
-
-    @JvmStatic
-    fun getComponents(element: ParadoxScriptBlock): List<PsiElement> {
-        //允许混合value和property
-        return element.findChildren { isBlockComponent(it) }
-    }
-
-    private fun isBlockComponent(element: PsiElement): Boolean {
-        return element is ParadoxScriptScriptedVariable
-            || element is ParadoxScriptProperty
-            || element is ParadoxScriptValue
-            || element is ParadoxScriptParameterCondition
-    }
-
     //endregion
 
     //region ParadoxScriptValue
@@ -475,40 +394,6 @@ object ParadoxScriptPsiImplUtil {
             }
         }
         return builder?.toString()
-    }
-
-    @JvmStatic
-    fun isEmpty(element: ParadoxScriptParameterCondition): Boolean {
-        element.forEachChild {
-            when {
-                it is ParadoxScriptProperty -> return false
-                it is ParadoxScriptValue -> return false
-            }
-        }
-        return true
-    }
-
-    @JvmStatic
-    fun isNotEmpty(element: ParadoxScriptParameterCondition): Boolean {
-        element.forEachChild {
-            when {
-                it is ParadoxScriptProperty -> return true
-                it is ParadoxScriptValue -> return true
-            }
-        }
-        return false
-    }
-
-    @JvmStatic
-    fun getComponents(element: ParadoxScriptParameterCondition): List<PsiElement> {
-        //允许混合value和property
-        return element.findChildren { isParameterConditionComponent(it) }
-    }
-
-    private fun isParameterConditionComponent(element: PsiElement): Boolean {
-        return element is ParadoxScriptProperty
-            || element is ParadoxScriptValue
-            || element is ParadoxScriptParameterCondition
     }
 
     @JvmStatic
@@ -763,6 +648,21 @@ object ParadoxScriptPsiImplUtil {
     }
 
     //endregion
+
+    @JvmStatic
+    fun getMemberList(element: PsiElement): List<ParadoxScriptMemberElement> {
+        return element.findChildren<_>()
+    }
+
+    @JvmStatic
+    fun getComponents(element: PsiElement): List<PsiElement> {
+        return element.findChildren { isComponent(it) }
+    }
+
+    private fun isComponent(element: PsiElement): Boolean {
+        //允许混合value和property
+        return element is ParadoxScriptScriptedVariable || element is ParadoxScriptMemberElement || element is ParadoxScriptParameterCondition
+    }
 
     @JvmStatic
     fun getReference(element: PsiElement): PsiReference? {

@@ -25,19 +25,19 @@ class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexI
 
     override fun indexData(file: PsiFile, fileData: MutableMap<String, Map<String, ParadoxDefineIndexInfo>>) {
         val gameType = selectGameType(file) ?: return
-        file.castOrNull<ParadoxScriptFile>()?.processProperty(conditional = false, inline = false) p1@{ prop1 ->
-            val prop1Block = prop1.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return@p1 true
+        if (file !is ParadoxScriptFile) return
+        file.properties().forEach f1@{ prop1 ->
+            val prop1Block = prop1.propertyValue?.castOrNull<ParadoxScriptBlock>() ?: return@f1
 
-            val namespace = prop1.name.takeIf { it.isNotEmpty() && !it.isParameterized() } ?: return@p1 true
+            val namespace = prop1.name.takeIf { it.isNotEmpty() && !it.isParameterized() } ?: return@f1
             val map = fileData.getOrPut(namespace) { mutableMapOf() } as MutableMap
             val info1 = map.getOrPut("") { ParadoxDefineIndexInfo(namespace, null, sortedSetOf(), gameType) }
             (info1.elementOffsets as MutableSet) += prop1.startOffset
 
-            prop1Block.processProperty(conditional = false, inline = false) p2@{ prop2 ->
-                val variable = prop2.name.takeIf { it.isNotEmpty() && !it.isParameterized() } ?: return@p2 true
+            prop1Block.properties().forEach f2@{ prop2 ->
+                val variable = prop2.name.takeIf { it.isNotEmpty() && !it.isParameterized() } ?: return@f2
                 val info2 = map.getOrPut(variable) { ParadoxDefineIndexInfo(namespace, variable, sortedSetOf(), gameType) }
                 (info2.elementOffsets as MutableSet) += prop2.startOffset
-                true
             }
         }
     }

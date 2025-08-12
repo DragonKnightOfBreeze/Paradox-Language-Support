@@ -35,7 +35,7 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                     else -> null
                 } ?: return Result.NotMatch
                 if (config.configs.isNullOrEmpty()) {
-                    if (blockElement.isEmpty) return Result.ExactMatch
+                    if (blockElement.members().none()) return Result.ExactMatch
                     return Result.FallbackMatch
                 }
                 Result.LazyBlockAwareMatch p@{
@@ -43,9 +43,8 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                     if (keys.isEmpty()) return@p true
                     val actualKeys = mutableSetOf<String>()
                     //注意这里需要考虑内联和可选的情况
-                    blockElement.processMember(conditional = true, inline = true) {
+                    blockElement.members(conditional = true, inline = true).forEach {
                         if (it is ParadoxScriptProperty) actualKeys.add(it.name)
-                        true
                     }
                     actualKeys.any { it in keys }
                 }

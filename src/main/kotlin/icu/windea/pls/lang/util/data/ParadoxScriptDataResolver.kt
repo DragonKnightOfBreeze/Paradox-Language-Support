@@ -26,12 +26,11 @@ object ParadoxScriptDataResolver {
     fun resolveBlock(element: ParadoxScriptBlockElement, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData {
         val value = element as? ParadoxScriptBlock
         val children: MutableList<ParadoxScriptData> = mutableListOf()
-        element.processMember(conditional, inline) p@{ e ->
+        element.members(conditional, inline).forEach { e ->
             when {
                 e is ParadoxScriptValue -> resolveValue(e).let { children.add(it) }
                 e is ParadoxScriptProperty -> resolveProperty(e)?.let { children.add(it) }
             }
-            true
         }
         return ParadoxScriptDataImpl(null, value, children)
     }

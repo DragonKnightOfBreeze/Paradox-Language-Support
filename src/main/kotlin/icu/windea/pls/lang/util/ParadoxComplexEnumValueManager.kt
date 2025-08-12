@@ -142,16 +142,16 @@ object ParadoxComplexEnumValueManager {
                 c is CwtPropertyConfig -> {
                     //ignore same config or enum name config
                     if (c == config || c.key == "enum_name" || c.stringValue == "enum_name") return@forEach
-                    val notMatched = parentBlockElement.processProperty(inline = true) { propElement ->
-                        !doMatchProperty(propElement, c, complexEnumConfig)
+                    val notMatched = parentBlockElement.properties(inline = true).none { propElement ->
+                        doMatchProperty(propElement, c, complexEnumConfig)
                     }
                     if (notMatched) return false
                 }
                 c is CwtValueConfig -> {
                     //ignore same config or enum name config
                     if (c == config || c.stringValue == "enum_name") return@forEach
-                    val notMatched = parentBlockElement.processValue(inline = true) { valueElement ->
-                        !doMatchValue(valueElement, c, complexEnumConfig)
+                    val notMatched = parentBlockElement.values(inline = true).none { valueElement ->
+                        doMatchValue(valueElement, c, complexEnumConfig)
                     }
                     if (notMatched) return false
                 }
@@ -210,15 +210,15 @@ object ParadoxComplexEnumValueManager {
     private fun doMatchBlock(blockElement: ParadoxScriptBlockElement, config: CwtMemberConfig<*>, complexEnumConfig: CwtComplexEnumConfig): Boolean {
         config.properties?.forEach { propConfig ->
             ProgressManager.checkCanceled()
-            val notMatched = blockElement.processProperty(inline = true) { propElement ->
-                !doMatchProperty(propElement, propConfig, complexEnumConfig)
+            val notMatched = blockElement.properties(inline = true).none { propElement ->
+                doMatchProperty(propElement, propConfig, complexEnumConfig)
             }
             if (notMatched) return false
         }
         config.values?.forEach { valueConfig ->
             ProgressManager.checkCanceled()
-            val notMatched = blockElement.processValue(inline = true) { valueElement ->
-                !doMatchValue(valueElement, valueConfig, complexEnumConfig)
+            val notMatched = blockElement.values(inline = true).none { valueElement ->
+                doMatchValue(valueElement, valueConfig, complexEnumConfig)
             }
             if (notMatched) return false
         }

@@ -665,28 +665,27 @@ object ParadoxExpressionManager {
         }
         ProgressManager.checkCanceled()
         //注意这里需要考虑内联和可选的情况
-        blockElement.processMember(conditional = true, inline = true) p@{ data ->
+        blockElement.members(conditional = true, inline = true).forEach f@{ data ->
             val expression = when {
                 data is ParadoxScriptProperty -> ParadoxScriptExpression.resolve(data.propertyKey)
                 data is ParadoxScriptValue -> ParadoxScriptExpression.resolve(data)
-                else -> return@p true
+                else -> return@f
             }
             val isParameterized = expression.type == ParadoxType.String && expression.value.isParameterized()
             //may contain parameter -> can't and should not get occurrences
             if (isParameterized) {
                 occurrenceMap.clear()
-                return@p true
+                return@f
             }
             val matched = childConfigs.find { childConfig ->
                 if (childConfig is CwtPropertyConfig && data !is ParadoxScriptProperty) return@find false
                 if (childConfig is CwtValueConfig && data !is ParadoxScriptValue) return@find false
                 ParadoxScriptExpressionMatcher.matches(data, expression, childConfig.configExpression, childConfig, configGroup).get()
             }
-            if (matched == null) return@p true
+            if (matched == null) return@f
             val occurrence = occurrenceMap[matched.configExpression]
-            if (occurrence == null) return@p true
+            if (occurrence == null) return@f
             occurrence.actual += 1
-            true
         }
         return occurrenceMap
     }
@@ -706,7 +705,7 @@ object ParadoxExpressionManager {
     }
 
     fun annotateCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, holder: AnnotationHolder, config: CwtValueConfig) {
-        if(element is ParadoxCsvColumn && element.isHeaderColumn()) return
+        if (element is ParadoxCsvColumn && element.isHeaderColumn()) return
         val expressionText = getExpressionText(element, rangeInElement)
         ParadoxCsvExpressionSupport.annotate(element, rangeInElement, expressionText, holder, config)
     }
@@ -849,7 +848,7 @@ object ParadoxExpressionManager {
             is ParadoxCsvColumn -> ParadoxCsvManager.getColumnConfig(element)
             else -> null
         }
-        if(columnConfig == null) return PsiReference.EMPTY_ARRAY
+        if (columnConfig == null) return PsiReference.EMPTY_ARRAY
         val textRange = getExpressionTextRange(element) //unquoted text
         val reference = ParadoxCsvExpressionPsiReference(element, textRange, columnConfig)
         return arrayOf(reference)
@@ -920,7 +919,7 @@ object ParadoxExpressionManager {
 
     fun resolveCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, config: CwtValueConfig): PsiElement? {
         ProgressManager.checkCanceled()
-        if(element is ParadoxCsvColumn && element.isHeaderColumn()) return null
+        if (element is ParadoxCsvColumn && element.isHeaderColumn()) return null
         val expressionText = getExpressionText(element, rangeInElement)
 
         val result = ParadoxCsvExpressionSupport.resolve(element, rangeInElement, expressionText, config)
@@ -929,7 +928,7 @@ object ParadoxExpressionManager {
 
     fun multiResolveCsvExpression(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, config: CwtValueConfig): Collection<PsiElement> {
         ProgressManager.checkCanceled()
-        if(element is ParadoxCsvColumn && element.isHeaderColumn()) return emptySet()
+        if (element is ParadoxCsvColumn && element.isHeaderColumn()) return emptySet()
         val expressionText = getExpressionText(element, rangeInElement)
 
         val result = ParadoxCsvExpressionSupport.multiResolve(element, rangeInElement, expressionText, config)

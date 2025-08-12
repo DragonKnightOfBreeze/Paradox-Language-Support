@@ -121,9 +121,8 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             provider as ParadoxEventTreeDiagramProvider
             val itemPropertyKeys = provider.getItemPropertyKeys()
             val properties = sortedSetOf<ParadoxScriptProperty>(compareBy { itemPropertyKeys.indexOf(it.name.lowercase()) })
-            nodeElement.block?.processProperty(conditional = true, inline = true) {
+            nodeElement.block?.properties(conditional = true, inline = true)?.forEach {
                 if (it.name.lowercase() in itemPropertyKeys) properties.add(it)
-                true
             }
             return properties
         }

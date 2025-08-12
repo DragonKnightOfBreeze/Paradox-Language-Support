@@ -133,9 +133,8 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
             provider as ParadoxTechTreeDiagramProvider
             val itemPropertyKeys = provider.getItemPropertyKeys()
             val properties = sortedSetOf<ParadoxScriptProperty>(compareBy { itemPropertyKeys.indexOf(it.name.lowercase()) })
-            nodeElement.block?.processProperty(conditional = true, inline = true) {
+            nodeElement.block?.properties(conditional = true, inline = true)?.forEach {
                 if (it.name.lowercase() in itemPropertyKeys) properties.add(it)
-                true
             }
             return properties
         }
@@ -155,7 +154,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                             val iconUrl = ParadoxImageManager.resolveUrlByFile(nodeItem.virtualFile, nodeItem.project, frameInfo)
 
                             //如果无法解析（包括对应文件不存在的情况）就直接跳过
-                            if(!ParadoxImageManager.canResolve(iconUrl)) return null
+                            if (!ParadoxImageManager.canResolve(iconUrl)) return null
 
                             val iconFileUrl = iconUrl.toFileUrl()
                             val icon = iconFileUrl.toIconOrNull()

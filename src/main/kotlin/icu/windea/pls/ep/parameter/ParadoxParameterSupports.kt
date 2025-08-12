@@ -101,13 +101,12 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
         val contextNameElement = contextReferenceElement.propertyKey
         val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
-        contextReferenceElement.block?.processProperty p@{
-            if (completionOffset != -1 && completionOffset in it.textRange) return@p true
+        contextReferenceElement.block?.properties()?.forEach f@{
+            if (completionOffset != -1 && completionOffset in it.textRange) return@f
             val k = it.propertyKey
             val v = it.propertyValue
             val argumentName = k.name
             arguments += ParadoxParameterContextReferenceInfo.Argument(argumentName, k.createPointer(project), k.textRange, v?.createPointer(project), v?.textRange)
-            true
         }
         val info = ParadoxParameterContextReferenceInfo(
             contextReferenceElement.createPointer(project),
@@ -137,7 +136,6 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val contextName = definitionName
         val contextIcon = PlsIcons.Nodes.Definition(definitionInfo.type)
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
-        val rangeInParent = TextRange.create(0, element.textLength)
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = definitionInfo.gameType
         val project = definitionInfo.project
@@ -150,10 +148,10 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
 
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
         if (config !is CwtPropertyConfig || config.configExpression.type != CwtDataTypes.Parameter) return null
-        return doResolveArgument(element, rangeInElement, config)
+        return doResolveArgument(element, config)
     }
 
-    private fun doResolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtPropertyConfig): ParadoxParameterElement? {
+    private fun doResolveArgument(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): ParadoxParameterElement? {
         val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
         if (contextConfig.configExpression.type != CwtDataTypes.Definition) return null
         val contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
@@ -164,7 +162,6 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         val contextName = definitionName
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "${definitionTypes.joinToString(".")}@${definitionName}"
-        val rangeInParent = rangeInElement ?: TextRange.create(0, element.textLength)
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = config.configGroup.gameType ?: return null
         val project = config.configGroup.project
@@ -354,7 +351,6 @@ class ParadoxScriptValueInlineParameterSupport : ParadoxParameterSupport {
         val contextName = definitionName
         val contextIcon = PlsIcons.Nodes.Definition(definitionTypes[0])
         val contextKey = "script_value@${definitionName}"
-        val rangeInParent = rangeInElement
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
         val gameType = configGroup.gameType ?: return null
         val project = configGroup.project
@@ -443,14 +439,13 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val contextKey = "inline_script@$expression"
         val contextNameElement = contextReferenceElement.propertyKey
         val arguments = mutableListOf<ParadoxParameterContextReferenceInfo.Argument>()
-        contextReferenceElement.block?.processProperty p@{
-            if (completionOffset != -1 && completionOffset in it.textRange) return@p true
+        contextReferenceElement.block?.properties()?.forEach f@{
+            if (completionOffset != -1 && completionOffset in it.textRange) return@f
             val k = it.propertyKey
             val v = it.propertyValue
             val argumentName = k.name
-            if (argumentName == "script") return@p true //hardcoded
+            if (argumentName == "script") return@f //hardcoded
             arguments += ParadoxParameterContextReferenceInfo.Argument(argumentName, k.createPointer(project), k.textRange, v?.createPointer(project), v?.textRange)
-            true
         }
         val info = ParadoxParameterContextReferenceInfo(
             contextReferenceElement.createPointer(project),
@@ -477,7 +472,6 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val contextName = expression
         val contextIcon = PlsIcons.Nodes.InlineScript
         val contextKey = "inline_script@$expression"
-        val rangeInParent = TextRange.create(0, element.textLength)
         val readWriteAccess = ParadoxParameterManager.getReadWriteAccess(element)
         val gameType = selectGameType(context) ?: return null
         val project = context.project
@@ -489,10 +483,10 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
 
     override fun resolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtConfig<*>): ParadoxParameterElement? {
         if (config !is CwtPropertyConfig || config.configExpression.type != CwtDataTypes.Parameter) return null
-        return doResolveArgument(element, rangeInElement, config)
+        return doResolveArgument(element, config)
     }
 
-    private fun doResolveArgument(element: ParadoxScriptExpressionElement, rangeInElement: TextRange?, config: CwtPropertyConfig): ParadoxParameterElement? {
+    private fun doResolveArgument(element: ParadoxScriptExpressionElement, config: CwtPropertyConfig): ParadoxParameterElement? {
         val contextConfig = config.castOrNull<CwtPropertyConfig>()?.parentConfig?.castOrNull<CwtPropertyConfig>() ?: return null
         val inlineConfig = contextConfig.inlineConfig?.takeIf { it.name == ParadoxInlineScriptManager.inlineScriptKey } ?: return null
         val contextReferenceElement = element.findParentProperty(fromParentBlock = true)?.castOrNull<ParadoxScriptProperty>() ?: return null
@@ -502,7 +496,6 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val contextName = expression
         val contextIcon = PlsIcons.Nodes.InlineScript
         val contextKey = "inline_script@$expression"
-        val rangeInParent = rangeInElement ?: TextRange.create(0, element.textLength)
         val readWriteAccess = ReadWriteAccessDetector.Access.Write
         val gameType = config.configGroup.gameType ?: return null
         val project = config.configGroup.project

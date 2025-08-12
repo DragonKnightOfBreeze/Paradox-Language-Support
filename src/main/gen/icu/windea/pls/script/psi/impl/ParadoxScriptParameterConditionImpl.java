@@ -67,23 +67,18 @@ public class ParadoxScriptParameterConditionImpl extends ASTWrapperPsiElement im
   }
 
   @Override
-  public boolean isEmpty() {
-    return ParadoxScriptPsiImplUtil.isEmpty(this);
+  public @Nullable String getPresentationText() {
+    return ParadoxScriptPsiImplUtil.getPresentationText(this);
   }
 
   @Override
-  public boolean isNotEmpty() {
-    return ParadoxScriptPsiImplUtil.isNotEmpty(this);
+  public @NotNull List<@NotNull ParadoxScriptMemberElement> getMemberList() {
+    return ParadoxScriptPsiImplUtil.getMemberList(this);
   }
 
   @Override
   public @NotNull List<@NotNull PsiElement> getComponents() {
     return ParadoxScriptPsiImplUtil.getComponents(this);
-  }
-
-  @Override
-  public @Nullable String getPresentationText() {
-    return ParadoxScriptPsiImplUtil.getPresentationText(this);
   }
 
   @Override

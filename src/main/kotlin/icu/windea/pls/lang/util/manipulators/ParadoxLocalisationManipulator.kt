@@ -27,27 +27,31 @@ object ParadoxLocalisationManipulator {
     fun buildSequence(file: PsiFile): Sequence<ParadoxLocalisationProperty> {
         if (file !is ParadoxLocalisationFile) return emptySequence()
         return sequence {
-            file.children().filterIsInstance<ParadoxLocalisationPropertyList>().forEach { propertyList ->
-                propertyList.children().filterIsInstance<ParadoxLocalisationProperty>().forEach { yield(it) }
-            }
+            file.children().filterIsInstance<ParadoxLocalisationPropertyList>().flatMap { buildSequence(it) }
         }
+    }
+
+    fun buildSequence(propertyList: ParadoxLocalisationPropertyList): Sequence<ParadoxLocalisationProperty> {
+        return propertyList.children().filterIsInstance<ParadoxLocalisationProperty>()
     }
 
     fun buildSelectedSequence(editor: Editor, file: PsiFile): Sequence<ParadoxLocalisationProperty> {
         if (file !is ParadoxLocalisationFile) return emptySequence()
 
-        val localeElement = file.findElementAt(editor.caretModel.offset) { it.parentOfType<ParadoxLocalisationLocale>(withSelf = true) }
-        if (localeElement != null) {
-            val propertyList = localeElement.parent?.castOrNull<ParadoxLocalisationPropertyList>() ?: return emptySequence()
-            return propertyList.children().filterIsInstance<ParadoxLocalisationProperty>()
-        }
+        val locale = file.findElementAt(editor.caretModel.offset) { it.parentOfType<ParadoxLocalisationLocale>(withSelf = true) }
+        if (locale != null) return doBuildSelectedSequenceOf(locale)
 
         val selectionStart = editor.selectionModel.selectionStart
         val selectionEnd = editor.selectionModel.selectionEnd
-        return buildSelectedSequenceBetween(file, selectionStart, selectionEnd)
+        return doBuildSelectedSequenceBetween(file, selectionStart, selectionEnd)
     }
 
-    private fun buildSelectedSequenceBetween(file: PsiFile, start: Int, end: Int): Sequence<ParadoxLocalisationProperty> {
+    private fun doBuildSelectedSequenceOf(locale: ParadoxLocalisationLocale): Sequence<ParadoxLocalisationProperty> {
+        val propertyList = locale.parent?.castOrNull<ParadoxLocalisationPropertyList>() ?: return emptySequence()
+        return buildSequence(propertyList)
+    }
+
+    private fun doBuildSelectedSequenceBetween(file: PsiFile, start: Int, end: Int): Sequence<ParadoxLocalisationProperty> {
         if (start == end) {
             val originalElement = file.findElementAt(start)
             val element = originalElement?.parentOfType<ParadoxLocalisationProperty>() ?: return emptySequence()

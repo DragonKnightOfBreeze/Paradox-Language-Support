@@ -11,7 +11,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import javax.swing.Icon;
 
-public interface ParadoxScriptParameterCondition extends PsiListLikeElement {
+public interface ParadoxScriptParameterCondition extends ParadoxScriptMemberContainer, PsiListLikeElement {
 
   @NotNull
   List<ParadoxScriptParameterCondition> getParameterConditionList();
@@ -29,13 +29,11 @@ public interface ParadoxScriptParameterCondition extends PsiListLikeElement {
 
   @Nullable String getConditionExpression();
 
-  boolean isEmpty();
+  @Nullable String getPresentationText();
 
-  boolean isNotEmpty();
+  @NotNull List<@NotNull ParadoxScriptMemberElement> getMemberList();
 
   @NotNull List<@NotNull PsiElement> getComponents();
-
-  @Nullable String getPresentationText();
 
   @NotNull ItemPresentation getPresentation();
 

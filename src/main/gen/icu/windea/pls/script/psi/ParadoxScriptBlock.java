@@ -17,25 +17,25 @@ public interface ParadoxScriptBlock extends ParadoxScriptValue, ParadoxScriptBlo
   List<ParadoxScriptParameterCondition> getParameterConditionList();
 
   @NotNull
+  List<ParadoxScriptProperty> getPropertyList();
+
+  @NotNull
   List<ParadoxScriptScriptedVariable> getScriptedVariableList();
 
-  @NotNull List<@NotNull ParadoxScriptProperty> getPropertyList();
-
-  @NotNull List<@NotNull ParadoxScriptValue> getValueList();
+  @NotNull
+  List<ParadoxScriptValue> getValueList();
 
   @NotNull Icon getIcon(@IconFlags int flags);
 
   @NotNull String getValue();
 
-  boolean isEmpty();
-
-  boolean isNotEmpty();
-
-  @NotNull List<@NotNull PsiElement> getComponents();
-
   @Nullable PsiReference getReference();
 
   @NotNull PsiReference @NotNull [] getReferences();
+
+  @NotNull List<@NotNull ParadoxScriptMemberElement> getMemberList();
+
+  @NotNull List<@NotNull PsiElement> getComponents();
 
   @NotNull ItemPresentation getPresentation();
 

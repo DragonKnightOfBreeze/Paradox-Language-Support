@@ -14,6 +14,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.expression.*
 import icu.windea.pls.lang.*
@@ -33,7 +34,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
  * @see ParadoxDefinitionInfo
  */
 object ParadoxDefinitionManager {
-    object Keys: KeyRegistry() {
+    object Keys : KeyRegistry() {
         val cachedDefinitionInfo by createKey<CachedValue<ParadoxDefinitionInfo>>(Keys)
         val cachedDefinitionPrimaryLocalisationKey by createKey<CachedValue<String>>(Keys)
         val cachedDefinitionPrimaryLocalisation by createKey<CachedValue<ParadoxLocalisationProperty>>(Keys)
@@ -256,7 +257,7 @@ object ParadoxDefinitionManager {
             if (skipRootKeyConfig.isNullOrEmpty()) {
                 if (elementPath.length > 1) return false
             } else {
-                if(elementPath.isEmpty()) return false
+                if (elementPath.isEmpty()) return false
                 val input = elementPath.subPaths.dropLast(1)
                 val result = skipRootKeyConfig.any { Matchers.PathMatcher.matches(input, it, true, true, true) }
                 if (!result) return false
@@ -393,7 +394,7 @@ object ParadoxDefinitionManager {
         val occurrenceMap = propertyConfigs.associateByTo(mutableMapOf(), { it.key }, { it.toOccurrence(definitionElement, configGroup.project) })
 
         //注意：propConfig.key可能有重复，这种情况下只要有其中一个匹配即可
-        val matched = blockElement.processProperty p@{ propertyElement ->
+        val matched = blockElement.properties().all p@{ propertyElement ->
             val keyElement = propertyElement.propertyKey
             val expression = ParadoxScriptExpression.resolve(keyElement, matchOptions)
             val propConfigs = propertyConfigs.filter {
@@ -426,7 +427,7 @@ object ParadoxDefinitionManager {
 
         val occurrenceMap = valueConfigs.associateByTo(mutableMapOf(), { it.value }, { it.toOccurrence(blockElement, configGroup.project) })
 
-        val matched = blockElement.processValue p@{ valueElement ->
+        val matched = blockElement.values().process p@{ valueElement ->
             //如果没有匹配的规则则忽略
             val expression = ParadoxScriptExpression.resolve(valueElement, matchOptions)
 

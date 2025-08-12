@@ -6,153 +6,41 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.ep.inline.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
+import icu.windea.pls.lang.util.manipulators.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 
-/**
- * 遍历当前脚本文件中的所有（直接作为子节点的）成员。
- * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
- * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
- */
-fun ParadoxScriptFile.processMember(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptMemberElement) -> Boolean): Boolean {
-    return this.block?.processMember(conditional, inline, processor) ?: true
+fun ParadoxScriptFile.members(conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMemberElement> {
+    val options = ParadoxScriptMemberSequenceOptions(conditional, inline)
+    return ParadoxScriptManipulator.buildMemberSequence(this, options)
 }
 
-/**
- * 遍历当前脚本文件中的所有（直接作为子节点的）属性。
- * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
- * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
- */
-fun ParadoxScriptFile.processProperty(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
-    return this.block?.processProperty(conditional, inline, processor) ?: true
+fun ParadoxScriptMemberContainer.members(conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMemberElement> {
+    val options = ParadoxScriptMemberSequenceOptions(conditional, inline)
+    return ParadoxScriptManipulator.buildMemberSequence(this, options)
 }
 
-/**
- * 遍历当前脚本文件中的所有（直接作为子节点的）值。
- * @param conditional 是否也包括间接作为其中的参数表达式的子节点的值。
- * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
- */
-fun ParadoxScriptFile.processValue(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
-    return this.block?.processValue(conditional, inline, processor) ?: true
+fun ParadoxScriptFile.properties(conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptProperty> {
+    val options = ParadoxScriptMemberSequenceOptions(conditional, inline)
+    return ParadoxScriptManipulator.buildMemberSequence(this, options).filterIsInstance<ParadoxScriptProperty>()
 }
 
-/**
- * 遍历当前脚本块中的所有（直接作为子节点的）成员。
- * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
- * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
- */
-fun ParadoxScriptBlockElement.processMember(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptMemberElement) -> Boolean): Boolean {
-    return doProcessData(conditional, inline, processor)
+fun ParadoxScriptMemberContainer.properties(conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptProperty> {
+    val options = ParadoxScriptMemberSequenceOptions(conditional, inline)
+    return ParadoxScriptManipulator.buildMemberSequence(this, options).filterIsInstance<ParadoxScriptProperty>()
 }
 
-/**
- * 遍历当前脚本块中的所有（直接作为子节点的）属性。
- * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
- * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
- */
-fun ParadoxScriptBlockElement.processProperty(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
-    return doProcessProperty(conditional, inline, processor)
+fun ParadoxScriptFile.values(conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptValue> {
+    val options = ParadoxScriptMemberSequenceOptions(conditional, inline)
+    return ParadoxScriptManipulator.buildMemberSequence(this, options).filterIsInstance<ParadoxScriptValue>()
 }
 
-/**
- * 遍历当前脚本块中的所有（直接作为子节点的）值。
- * @param conditional 是否也包括间接作为其中的参数表达式的子节点的值。
- * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
- */
-fun ParadoxScriptBlockElement.processValue(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
-    return doProcessValue(conditional, inline, processor)
-}
-
-/**
- * 遍历当前参数表达式中的所有（直接作为子节点的）成员。
- */
-fun ParadoxScriptParameterCondition.processMember(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptMemberElement) -> Boolean): Boolean {
-    return doProcessData(conditional, inline, processor)
-}
-
-/**
- * 遍历当前参数表达式中的所有（直接作为子节点的）属性。
- */
-fun ParadoxScriptParameterCondition.processProperty(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
-    return doProcessProperty(conditional, inline, processor)
-}
-
-/**
- * 遍历当前参数表达式中的所有（直接作为子节点的）值。
- */
-fun ParadoxScriptParameterCondition.processValue(conditional: Boolean = false, inline: Boolean = false, processor: (ParadoxScriptValue) -> Boolean): Boolean {
-    return doProcessValue(conditional, inline, processor)
-}
-
-private fun PsiElement.doProcessData(conditional: Boolean, inline: Boolean, processor: (ParadoxScriptMemberElement) -> Boolean): Boolean {
-    return processChild {
-        ProgressManager.checkCanceled()
-        when {
-            it is ParadoxScriptValue -> it.doProcessValueChild(conditional, inline, processor)
-            it is ParadoxScriptProperty -> it.doProcessPropertyChild(conditional, inline, processor)
-            conditional && it is ParadoxScriptParameterCondition -> it.doProcessData(true, inline, processor)
-            else -> true
-        }
-    }
-}
-
-private fun PsiElement.doProcessProperty(conditional: Boolean, inline: Boolean, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
-    return processChild {
-        ProgressManager.checkCanceled()
-        when {
-            it is ParadoxScriptProperty -> it.doProcessPropertyChild(conditional, inline, processor)
-            conditional && it is ParadoxScriptParameterCondition -> it.doProcessProperty(true, inline, processor)
-            else -> true
-        }
-    }
-}
-
-private fun PsiElement.doProcessValue(conditional: Boolean, inline: Boolean, processor: (ParadoxScriptValue) -> Boolean): Boolean {
-    return processChild {
-        ProgressManager.checkCanceled()
-        when {
-            it is ParadoxScriptValue -> it.doProcessValueChild(conditional, inline, processor)
-            conditional && it is ParadoxScriptParameterCondition -> it.doProcessValue(true, inline, processor)
-            else -> true
-        }
-    }
-}
-
-private fun ParadoxScriptValue.doProcessValueChild(conditional: Boolean, inline: Boolean, processor: (ParadoxScriptValue) -> Boolean): Boolean {
-    val r = processor(this)
-    if (!r) return false
-    if (inline) {
-        val inlined = ParadoxInlineSupport.inlineElement(this)
-        if (inlined is ParadoxScriptDefinitionElement) {
-            val block = inlined.block
-            if (block != null) {
-                val r1 = block.doProcessValue(conditional, true, processor)
-                if (!r1) return false
-            }
-        }
-        //不处理inlined是value的情况
-    }
-    return true
-}
-
-private fun ParadoxScriptProperty.doProcessPropertyChild(conditional: Boolean, inline: Boolean, processor: (ParadoxScriptProperty) -> Boolean): Boolean {
-    val r = processor(this)
-    if (!r) return false
-    if (inline) {
-        val inlined = ParadoxInlineSupport.inlineElement(this)
-        if (inlined is ParadoxScriptDefinitionElement) {
-            val block = inlined.block
-            if (block != null) {
-                val r1 = block.doProcessProperty(conditional, true, processor)
-                if (!r1) return false
-            }
-        }
-        //不处理inlined是value的情况
-    }
-    return true
+fun ParadoxScriptMemberContainer.values(conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptValue> {
+    val options = ParadoxScriptMemberSequenceOptions(conditional, inline)
+    return ParadoxScriptManipulator.buildMemberSequence(this, options).filterIsInstance<ParadoxScriptValue>()
 }
 
 /**
@@ -190,7 +78,7 @@ fun PsiElement.findProperty(
         else -> null
     }
     var result: ParadoxScriptProperty? = null
-    block?.processProperty(conditional, inline) {
+    block?.properties(conditional, inline)?.process {
         if (propertyName == null || propertyName.equals(it.name, ignoreCase)) {
             result = it
             false
@@ -219,7 +107,7 @@ fun PsiElement.findProperty(
         else -> null
     }
     var result: ParadoxScriptProperty? = null
-    block?.processProperty(conditional, inline) {
+    block?.properties(conditional, inline)?.process {
         if (propertyPredicate(it.name)) {
             result = it
             false

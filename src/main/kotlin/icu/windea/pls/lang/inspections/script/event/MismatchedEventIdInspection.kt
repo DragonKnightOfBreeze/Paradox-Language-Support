@@ -24,13 +24,8 @@ class MismatchedEventIdInspection : LocalInspectionTool() {
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
-        val properties = mutableListOf<ParadoxScriptProperty>()
-        file as ParadoxScriptFile
-        file.processProperty(inline = true) p@{ property ->
-            properties += property
-            true
-        }
-        if (properties.isEmpty()) return null
+        if (file !is ParadoxScriptFile) return null
+        val properties = file.properties(inline = true)
         val namespace2Events = mutableMapOf<String, MutableList<ParadoxScriptProperty>>()
         var nextNamespace = ""
         for (property in properties) {
