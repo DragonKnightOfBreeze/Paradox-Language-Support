@@ -11,6 +11,8 @@
 * [ ] 新功能：提供AI驱动的脚本/本地化生成功能（操作） / NEW: Provide AI-driven script/translation generation features (actions)
 * [ ] 新功能：提供对魔法注释的初步支持，用于批量处理脚本与本地化文件的内容 / NEW: Provide support for magic comments, which are used to batch process of scripts and localisation files
 
+## 2.0.2-dev
+
 ## 2.0.1
 
 * [X] #159 [CK3] Add file `lines.lines` to Paradox script file name patterns
