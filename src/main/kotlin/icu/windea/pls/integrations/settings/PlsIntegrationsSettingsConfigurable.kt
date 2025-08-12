@@ -113,7 +113,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                     put(ParadoxGameType.Vic3, tupleOf("vic3-tiger", settings.lint::vic3TigerPath, settings.lint::vic3TigerConfPath))
                 }
 
-                map.forEach { gameType, tuple ->
+                map.forEach { (gameType, tuple) ->
                     val (name, pathProp, confPathProp) = tuple
 
                     row {
