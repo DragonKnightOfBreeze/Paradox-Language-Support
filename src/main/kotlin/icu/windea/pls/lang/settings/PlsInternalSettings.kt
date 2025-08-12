@@ -42,7 +42,7 @@ class PlsInternalSettings {
     /**
      * 定义相对于脚本文件的最大深度（用于优化性能）。
      */
-    val maxDefinitionDepth get() = Registry.intValue("pls.settings.maxDefinitionDepth", 4)
+    val maxDefinitionDepth get() = Registry.intValue("pls.settings.maxDefinitionDepth", 5)
 
     /**
      * 面包屑导航、导航栏、结构视图中的字符串字面量的文本长度限制。
