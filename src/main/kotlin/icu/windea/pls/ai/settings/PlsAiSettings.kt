@@ -41,13 +41,9 @@ class PlsAiSettingsState : BaseState() {
 
     /**
      * @property localisationChunkSize 本地化的分块大小。即每次输入的本地化条目的最大数量。
-     * @property translateLocalisationsWithDescription 如果启用，翻译本地化时，可以输入额外需求的描述。
-     * @property polishLocalisationsWithDescription 如果启用，润色本地化时，是否可以输入额外需求的描述。
      */
     @Tag("features")
     class FeaturesState : BaseState() {
         var localisationChunkSize by property(PlsAiSettingsManager.getDefaultLocalisationBatchSize())
-        var translateLocalisationsWithDescription by property(false)
-        var polishLocalisationsWithDescription by property(true)
     }
 }
