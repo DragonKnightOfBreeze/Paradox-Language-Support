@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.model
 
 import icu.windea.pls.core.*

@@ -74,9 +74,9 @@ object ParadoxDefinitionManager {
         val fileInfo = file.fileInfo ?: return null
         val path = fileInfo.path
         val gameType = fileInfo.rootInfo.gameType //这里还是基于fileInfo获取gameType
-        val configGroup = PlsFacade.getConfigGroup(project, gameType) //这里需要指定project
         val elementPath = ParadoxExpressionPathManager.get(element, PlsFacade.getInternalSettings().maxDefinitionDepth) ?: return null
         if (elementPath.path.isParameterized()) return null //忽略表达式路径带参数的情况
+        val configGroup = PlsFacade.getConfigGroup(project, gameType) //这里需要指定project
         val rootKeyPrefix = if (element is ParadoxScriptProperty) lazy { ParadoxExpressionPathManager.getKeyPrefixes(element).firstOrNull() } else null
         val typeConfig = getMatchedTypeConfig(element, configGroup, path, elementPath, rootKey, rootKeyPrefix)
         if (typeConfig == null) return null
@@ -222,18 +222,21 @@ object ParadoxDefinitionManager {
                 val result = rootKey.startsWith(startsWithConfig)
                 if (!result) return false
             }
+
             //如果type_key_regex存在，则要求type_key匹配
             val typeKeyRegexConfig = typeConfig.typeKeyRegex
             if (typeKeyRegexConfig != null) {
                 val result = typeKeyRegexConfig.matches(rootKey)
                 if (!result) return false
             }
+
             //如果选项type_key_filter存在，则需要通过type_key进行过滤（忽略大小写）
             val typeKeyFilterConfig = typeConfig.typeKeyFilter
             if (typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
                 val result = typeKeyFilterConfig.withOperator { it.contains(rootKey) }
                 if (!result) return false
             }
+
             //如果name_field存在，则要求root_key必须是由type_key_filter指定的所有可能的root_key之一，或者没有指定任何root_key
             val nameFieldConfig = typeConfig.nameField
             if (nameFieldConfig != null) {
@@ -284,7 +287,7 @@ object ParadoxDefinitionManager {
         return doMatchDefinition(element, elementConfig, configGroup, matchOptions)
     }
 
-    fun matchesSubtypeFast(
+    private fun matchesSubtypeFast(
         rootKey: String,
         subtypeConfig: CwtSubtypeConfig,
         subtypeConfigs: MutableList<CwtSubtypeConfig>
@@ -295,27 +298,32 @@ object ParadoxDefinitionManager {
             val matchesAny = subtypeConfigs.any { it.name in onlyIfNotConfig }
             if (matchesAny) return false
         }
+
         //如果starts_with存在，则要求type_key匹配这个前缀（不忽略大小写）
         val startsWithConfig = subtypeConfig.startsWith
         if (!startsWithConfig.isNullOrEmpty()) {
             val result = rootKey.startsWith(startsWithConfig, false)
             if (!result) return false
         }
+
         //如果type_key_regex存在，则要求type_key匹配
         val typeKeyRegexConfig = subtypeConfig.typeKeyRegex
         if (typeKeyRegexConfig != null) {
             val result = typeKeyRegexConfig.matches(rootKey)
             if (!result) return false
         }
+
         //如果type_key_filter存在，则通过type_key进行过滤（忽略大小写）
         val typeKeyFilterConfig = subtypeConfig.typeKeyFilter
         if (typeKeyFilterConfig != null && typeKeyFilterConfig.value.isNotEmpty()) {
             val filterResult = typeKeyFilterConfig.withOperator { it.contains(rootKey) }
             if (!filterResult) return false
         }
+
         //根据config对property进行内容匹配
         val elementConfig = subtypeConfig.config
         if (elementConfig.configs.isNullOrEmpty()) return true
+
         return null //需要进一步匹配
     }
 
