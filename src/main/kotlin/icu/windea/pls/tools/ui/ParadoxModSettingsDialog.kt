@@ -8,6 +8,7 @@ import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.*
 import icu.windea.pls.integrations.settings.*
 import icu.windea.pls.lang.*
@@ -21,7 +22,7 @@ class ParadoxModSettingsDialog(
     val project: Project,
     val settings: ParadoxModSettingsState
 ) : DialogWrapper(project, true) {
-    private val callbackLock = mutableSetOf<String>()
+    private val callbackLock = CallbackLock()
 
     val oldGameType = settings.finalGameType
 
@@ -38,7 +39,6 @@ class ParadoxModSettingsDialog(
     }
 
     var gameType by gameTypeProperty
-    var gameVersion by gameVersionProperty
     var gameDirectory by gameDirectoryProperty
     val modDependencies = settings.copyModDependencies()
 
@@ -49,7 +49,7 @@ class ParadoxModSettingsDialog(
     }
 
     override fun createCenterPanel(): DialogPanel {
-        callbackLock.clear()
+        callbackLock.reset()
         return panel {
             row {
                 //name

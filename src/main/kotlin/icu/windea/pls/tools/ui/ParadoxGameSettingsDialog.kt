@@ -7,6 +7,7 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.integrations.*
 import icu.windea.pls.integrations.settings.*
 import icu.windea.pls.lang.*
@@ -19,7 +20,7 @@ class ParadoxGameSettingsDialog(
     val project: Project,
     val settings: ParadoxGameSettingsState
 ) : DialogWrapper(project, true) {
-    private val callbackLock = mutableSetOf<String>()
+    private val callbackLock = CallbackLock()
 
     val graph = PropertyGraph()
     val gameTypeProperty = graph.property(settings.gameType ?: PlsFacade.getSettings().defaultGameType)
@@ -32,7 +33,7 @@ class ParadoxGameSettingsDialog(
     }
 
     override fun createCenterPanel(): DialogPanel {
-        callbackLock.clear()
+        callbackLock.reset()
         return panel {
             row {
                 //gameType

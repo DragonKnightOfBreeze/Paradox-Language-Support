@@ -2,18 +2,19 @@ package icu.windea.pls.config.settings
 
 import com.intellij.openapi.application.*
 import icu.windea.pls.config.util.*
+import icu.windea.pls.core.util.CallbackLock
 import icu.windea.pls.lang.listeners.*
 
 object PlsConfigSettingsManager {
-    fun onConfigDirectoriesChanged(callbackLock: MutableSet<String>? = null) {
-        if (callbackLock != null && !callbackLock.add("onConfigDirectoriesChanged")) return
+    fun onConfigDirectoriesChanged(callbackLock: CallbackLock) {
+        if (!callbackLock.check("onConfigDirectoriesChanged")) return
 
         val messageBus = ApplicationManager.getApplication().messageBus
         messageBus.syncPublisher(ParadoxConfigDirectoriesListener.TOPIC).onChange()
     }
 
-    fun onRemoteConfigDirectoriesChanged(callbackLock: MutableSet<String>? = null) {
-        if (callbackLock != null && !callbackLock.add("onRemoteConfigDirectoriesChanged")) return
+    fun onRemoteConfigDirectoriesChanged(callbackLock: CallbackLock) {
+        if (!callbackLock.check("onRemoteConfigDirectoriesChanged")) return
 
         //NOTE 这里需要先验证是否真的需要刷新
         if (!PlsConfigRepositoryManager.isValidToSync()) return

@@ -1,9 +1,12 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.integrations.settings
 
 import com.intellij.openapi.ui.*
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.integrations.images.tools.*
 import icu.windea.pls.integrations.lints.*
 import icu.windea.pls.integrations.lints.tools.*
@@ -33,17 +36,17 @@ object PlsIntegrationsSettingsManager {
         return builder.warning(PlsBundle.message("settings.integrations.lint.tigerConfPath.invalid"))
     }
 
-    fun onTigerSettingsChanged(callbackLock: MutableSet<String>? = null) {
-        if (callbackLock != null && !callbackLock.add("onTigerSettingsChanged")) return
+    fun onTigerSettingsChanged(callbackLock: CallbackLock) {
+        if (!callbackLock.check("onTigerSettingsChanged")) return
 
         val files = PlsCoreManager.findOpenedFiles(onlyParadoxFiles = true)
         PlsCoreManager.refreshFiles(files, refreshInlayHints = false)
     }
 
-    fun onTigerSettingsChanged(gameType: ParadoxGameType, callbackLock: MutableSet<String>? = null) {
+    fun onTigerSettingsChanged(gameType: ParadoxGameType, callbackLock: CallbackLock) {
         onTigerSettingsChanged(callbackLock)
 
-        if (callbackLock != null && !callbackLock.add("onTigerSettingsChanged.${gameType.id}")) return
+        if (!callbackLock.check("onTigerSettingsChanged.${gameType.id}")) return
 
         PlsTigerLintManager.modificationTrackers.getValue(gameType).incModificationCount()
     }

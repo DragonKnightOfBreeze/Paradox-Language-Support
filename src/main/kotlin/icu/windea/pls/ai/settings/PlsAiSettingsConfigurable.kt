@@ -4,16 +4,17 @@ import com.intellij.openapi.options.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.ai.PlsAiFacade
+import icu.windea.pls.ai.*
+import icu.windea.pls.core.util.*
 
 class PlsAiSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.ai")), SearchableConfigurable {
     override fun getId() = "pls.ai"
 
     private val groupNameOpenAI = "pls.ai.openAI"
-    private val callbackLock = mutableSetOf<String>()
+    private val callbackLock = CallbackLock()
 
     override fun createPanel(): DialogPanel {
-        callbackLock.clear()
+        callbackLock.reset()
         val settings = PlsAiFacade.getSettings()
         return panel {
             //enable

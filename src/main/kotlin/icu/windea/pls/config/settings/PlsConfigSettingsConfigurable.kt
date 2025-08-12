@@ -20,10 +20,10 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
     override fun getId() = "pls.config"
 
     private val groupName = "pls.config"
-    private val callbackLock = mutableSetOf<String>()
+    private val callbackLock = CallbackLock()
 
     override fun createPanel(): DialogPanel {
-        callbackLock.clear()
+        callbackLock.reset()
         val settings = PlsFacade.getConfigSettings()
         return panel {
             lateinit var cbRemote: JBCheckBox
@@ -34,14 +34,14 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             row {
                 checkBox(PlsBundle.message("settings.config.enableBuiltInConfigGroups"))
                     .bindSelected(settings::enableBuiltInConfigGroups)
-                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged() }
+                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
                 contextHelp(PlsBundle.message("settings.config.enableBuiltInConfigGroups.tip"))
             }
             //enableRemoteConfigGroups
             row {
                 checkBox(PlsBundle.message("settings.config.enableRemoteConfigGroups"))
                     .bindSelected(settings::enableRemoteConfigGroups)
-                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged() }
+                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
                     .applyToComponent { cbRemote = this }
                 contextHelp(PlsBundle.message("settings.config.enableRemoteConfigGroups.tip"))
                 comment(PlsBundle.message("settings.config.remoteConfigDirectory.comment", MAX_LINE_LENGTH_WORD_WRAP))
@@ -57,8 +57,8 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                     .align(Align.FILL)
                     .onApply {
-                        PlsConfigSettingsManager.onConfigDirectoriesChanged()
-                        PlsConfigSettingsManager.onRemoteConfigDirectoriesChanged()
+                        PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock)
+                        PlsConfigSettingsManager.onRemoteConfigDirectoriesChanged(callbackLock)
                     }
             }.enabledIf(cbRemote.selected)
             //configRepositoryUrls
@@ -79,7 +79,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                         val newConfigRepositoryUrls = list.toMutableMap()
                         if (oldConfigRepositoryUrls == newConfigRepositoryUrls) return@onApply
                         settings.configRepositoryUrls = newConfigRepositoryUrls
-                        PlsConfigSettingsManager.onRemoteConfigDirectoriesChanged()
+                        PlsConfigSettingsManager.onRemoteConfigDirectoriesChanged(callbackLock)
                     }
                     .onReset { list = defaultList }
                     .onIsModified { list != defaultList }
@@ -88,7 +88,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
             row {
                 checkBox(PlsBundle.message("settings.config.enableLocalConfigGroups"))
                     .bindSelected(settings::enableLocalConfigGroups)
-                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged() }
+                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
                     .applyToComponent { cbLocal = this }
                 contextHelp(PlsBundle.message("settings.config.enableLocalConfigGroups.tip"))
             }
@@ -102,13 +102,13 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                     .bindText(settings::localConfigDirectory.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
                     .align(Align.FILL)
-                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged() }
+                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
             }.enabledIf(cbLocal.selected)
             //enableProjectLocalConfigGroups
             row {
                 checkBox(PlsBundle.message("settings.config.enableProjectLocalConfigGroups"))
                     .bindSelected(settings::enableProjectLocalConfigGroups)
-                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged() }
+                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
                     .applyToComponent { cbProjectLocal = this }
                 contextHelp(PlsBundle.message("settings.config.enableProjectLocalConfigGroups.tip"))
             }
@@ -119,7 +119,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                 textField()
                     .bindText(settings::projectLocalConfigDirectoryName.toNonNullableProperty(""))
                     .applyToComponent { setEmptyState(".config") }
-                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged() }
+                    .onApply { PlsConfigSettingsManager.onConfigDirectoriesChanged(callbackLock) }
             }.enabledIf(cbProjectLocal.selected)
         }
     }

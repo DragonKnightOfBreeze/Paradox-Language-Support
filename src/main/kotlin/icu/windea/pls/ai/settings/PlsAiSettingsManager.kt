@@ -1,12 +1,13 @@
 package icu.windea.pls.ai.settings
 
 import com.intellij.*
-import com.intellij.openapi.ui.ValidationInfo
-import com.intellij.ui.components.JBPasswordField
-import com.intellij.ui.layout.ValidationInfoBuilder
-import icu.windea.pls.PlsBundle
+import com.intellij.openapi.ui.*
+import com.intellij.ui.components.*
+import com.intellij.ui.layout.*
+import icu.windea.pls.*
 import icu.windea.pls.ai.*
-import icu.windea.pls.ai.util.PlsChatModelManager
+import icu.windea.pls.ai.util.*
+import icu.windea.pls.core.util.*
 import java.util.*
 
 object PlsAiSettingsManager {
@@ -39,8 +40,8 @@ object PlsAiSettingsManager {
         return null
     }
 
-    fun onOpenAiSettingsChanged(callbackLock:  MutableSet<String>) {
-        if (!callbackLock.add("onOpenAiSettingsChanged")) return
+    fun onOpenAiSettingsChanged(callbackLock: CallbackLock) {
+        if (!callbackLock.check("onOpenAiSettingsChanged")) return
 
         PlsChatModelManager.invalidateChatModel(PlsChatModelType.OPEN_AI)
         PlsChatModelManager.invalidateStreamingChatModel(PlsChatModelType.OPEN_AI)

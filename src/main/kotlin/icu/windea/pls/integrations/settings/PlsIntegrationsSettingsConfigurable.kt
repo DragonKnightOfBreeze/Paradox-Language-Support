@@ -20,10 +20,10 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
 
     private val groupNameImage = "pls.integrations.image"
     private val groupNameLint = "pls.integrations.lint"
-    private val callbackLock = mutableSetOf<String>()
+    private val callbackLock = CallbackLock()
 
     override fun createPanel(): DialogPanel {
-        callbackLock.clear()
+        callbackLock.reset()
         val settings = PlsFacade.getIntegrationsSettings()
         return panel {
             //image tools
