@@ -75,7 +75,7 @@ object ParadoxComplexEnumValueManager {
         //优先从基于文件路经的缓存中获取
         val configs = configGroup.complexEnumConfigsCache.get(path)
         if (configs.isEmpty()) return null
-        return configs.find { config -> matchesComplexEnum(element, config, path) }
+        return configs.find { config -> matchesComplexEnum(element, config, null) }
     }
 
     fun matchesComplexEnum(element: ParadoxScriptStringExpressionElement, complexEnumConfig: CwtComplexEnumConfig, path: ParadoxPath?): Boolean {

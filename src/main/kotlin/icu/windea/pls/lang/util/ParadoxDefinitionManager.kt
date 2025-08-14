@@ -101,7 +101,7 @@ object ParadoxDefinitionManager {
         //优先从基于文件路经的缓存中获取
         val configs = configGroup.typeConfigsCache.get(path)
         if (configs.isEmpty()) return null
-        return configs.find { config -> matchesType(element, config, path, elementPath, rootKey, rootKeyPrefix) }
+        return configs.find { config -> matchesType(element, config, null, elementPath, rootKey, rootKeyPrefix) }
     }
 
     fun getMatchedTypeConfig(
@@ -116,7 +116,7 @@ object ParadoxDefinitionManager {
         //优先从基于文件路经的缓存中获取
         val configs = configGroup.typeConfigsCache.get(path)
         if (configs.isEmpty()) return null
-        return configs.find { config -> matchesType(node, tree, config, path, elementPath, rootKey, rootKeyPrefix) }
+        return configs.find { config -> matchesType(node, tree, config, null, elementPath, rootKey, rootKeyPrefix) }
     }
 
     fun matchesType(
