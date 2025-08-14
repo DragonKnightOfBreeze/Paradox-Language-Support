@@ -48,6 +48,14 @@ object ParadoxParameterManager {
         val parameterValueInjectionInfos by createKey<List<ParadoxParameterValueInjectionInfo>>(Keys)
     }
 
+    //rootFile -> cacheKey -> parameterInfo
+    //depends on config group
+    private val CwtConfigGroup.parameterInfoCache by createKey(CwtConfigGroup.Keys) {
+        createNestedCache<VirtualFile, _, _, _> {
+            CacheBuilder.newBuilder().buildCache<String, ParadoxParameterInfo>().trackedBy { it.modificationTracker }
+        }
+    }
+
     /**
      * 得到[element]的文本，然后使用指定的一组[args]替换其中的占位符。
      *
@@ -419,13 +427,5 @@ object ParadoxParameterManager {
             else -> null
         }
         return injectionInfo
-    }
-}
-
-//rootFile -> cacheKey -> parameterInfo
-//depends on config group
-private val CwtConfigGroup.parameterInfoCache by createKey(CwtConfigContext.Keys) {
-    createNestedCache<VirtualFile, _, _, _> {
-        CacheBuilder.newBuilder().buildCache<String, ParadoxParameterInfo>().trackedBy { it.modificationTracker }
     }
 }

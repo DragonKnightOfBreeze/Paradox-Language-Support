@@ -23,7 +23,6 @@ import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Result
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
@@ -121,6 +120,18 @@ object ParadoxExpressionMatcher {
 
     data class ResultValue<out T>(val value: T, val result: Result)
 
+    //rootFile -> cacheKey -> configMatchResult
+    //depends on config group and indices
+    private val CwtConfigGroup.configMatchResultCache by createKey(CwtConfigContext.Keys) {
+        createCachedValue(project) {
+            createNestedCache<VirtualFile, _, _, _> {
+                CacheBuilder.newBuilder().buildCache<String, Result>()
+            }.withDependencyItems(
+                ParadoxModificationTrackers.FileTracker
+            )
+        }
+    }
+    
     //兼容scriptedVariableReference inlineMath parameter
 
     fun getCachedMatchResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
@@ -217,17 +228,5 @@ object ParadoxExpressionMatcher {
         return getCachedMatchResult(element, cacheKey) {
             CwtTemplateExpressionManager.matches(element, expression, CwtTemplateExpression.resolve(template), configGroup)
         }
-    }
-}
-
-//rootFile -> cacheKey -> configMatchResult
-//depends on config group and indices
-private val CwtConfigGroup.configMatchResultCache by createKey(CwtConfigContext.Keys) {
-    createCachedValue(project) {
-        createNestedCache<VirtualFile, _, _, _> {
-            CacheBuilder.newBuilder().buildCache<String, Result>()
-        }.withDependencyItems(
-            ParadoxModificationTrackers.FileTracker
-        )
     }
 }

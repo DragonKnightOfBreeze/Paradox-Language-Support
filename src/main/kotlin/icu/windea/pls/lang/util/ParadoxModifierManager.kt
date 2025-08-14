@@ -38,6 +38,14 @@ object ParadoxModifierManager {
         val modifierIconPaths by createKey<Set<String>>(Keys)
     }
 
+    //rootFile -> cacheKey -> modifierInfo
+    //depends on config group
+    private val CwtConfigGroup.modifierInfoCache by createKey(CwtConfigGroup.Keys) {
+        createNestedCache<VirtualFile, _, _, _> {
+            CacheBuilder.newBuilder().buildCache<String, ParadoxModifierInfo>().trackedBy { it.modificationTracker }
+        }
+    }
+
     //可通过运行游戏后输出的modifiers.log判断到底会生成哪些修正
     //不同的游戏类型存在一些通过不同逻辑生成的修正
     //插件使用的modifiers.cwt中应当去除生成的修正
@@ -253,13 +261,5 @@ object ParadoxModifierManager {
         return valueConfig.getOrPutUserData(ParadoxEconomicCategoryManager.Keys.modifierCategories) {
             valueConfig.findOption("modifier_categories")?.getOptionValues()
         }
-    }
-}
-
-//rootFile -> cacheKey -> modifierInfo
-//depends on config group
-private val CwtConfigGroup.modifierInfoCache by createKey(CwtConfigContext.Keys) {
-    createNestedCache<VirtualFile, _, _, _> {
-        CacheBuilder.newBuilder().buildCache<String, ParadoxModifierInfo>().trackedBy { it.modificationTracker }
     }
 }

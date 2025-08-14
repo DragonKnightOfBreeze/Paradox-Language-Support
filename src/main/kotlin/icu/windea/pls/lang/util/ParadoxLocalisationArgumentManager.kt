@@ -31,7 +31,7 @@ object ParadoxLocalisationArgumentManager {
         return references.toTypedArray()
     }
 
-    fun getInfo(element: ParadoxLocalisationArgument): String? {
+    fun getInfo(element: ParadoxLocalisationArgument): String {
         return getFormattingTagInfos(element.text).joinToString("<br>")
     }
 

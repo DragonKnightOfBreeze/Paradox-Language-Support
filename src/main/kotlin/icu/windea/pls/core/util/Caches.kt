@@ -152,7 +152,7 @@ class NestedCache<RK : Any, K : Any, V : Any, C : Cache<K, V>>(
 ) {
     private val cacheMap = ConcurrentHashMap<RK, C>()
 
-    fun get(key: RK): C {
+    operator fun get(key: RK): C {
         return cacheMap.computeIfAbsent(key) { cacheProvider() }
     }
 }

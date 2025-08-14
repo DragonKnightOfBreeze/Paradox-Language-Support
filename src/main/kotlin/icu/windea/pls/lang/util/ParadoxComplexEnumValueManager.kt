@@ -2,6 +2,7 @@
 
 package icu.windea.pls.lang.util
 
+import com.google.common.cache.*
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
@@ -12,6 +13,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.mock.*
@@ -25,6 +27,12 @@ import icu.windea.pls.script.psi.*
 object ParadoxComplexEnumValueManager {
     object Keys : KeyRegistry() {
         val cachedComplexEnumValueInfo by createKey<CachedValue<ParadoxComplexEnumValueIndexInfo>>(Keys)
+    }
+
+    private val CwtConfigGroup.complexEnumConfigsCache by createKey(CwtConfigGroup.Keys) {
+        CacheBuilder.newBuilder().buildCache<ParadoxPath, List<CwtComplexEnumConfig>> { path ->
+            complexEnums.values.filter { CwtConfigManager.matchesFilePathPattern(it, path) }.optimized()
+        }
     }
 
     fun getInfo(element: ParadoxComplexEnumValueElement): ParadoxComplexEnumValueIndexInfo {
@@ -65,11 +73,10 @@ object ParadoxComplexEnumValueManager {
     //NOTE 这里匹配时并不兼容向下内联的情况
 
     fun getMatchedComplexEnumConfig(element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, path: ParadoxPath): CwtComplexEnumConfig? {
-        for (complexEnumConfig in configGroup.complexEnums.values) {
-            if (!matchesComplexEnum(element, complexEnumConfig, path)) continue
-            return complexEnumConfig
-        }
-        return null
+        //优先从基于文件路经的缓存中获取
+        val configs = configGroup.complexEnumConfigsCache.get(path)
+        if (configs.isEmpty()) return null
+        return configs.find { config -> matchesComplexEnum(element, config, path) }
     }
 
     fun matchesComplexEnum(element: ParadoxScriptStringExpressionElement, complexEnumConfig: CwtComplexEnumConfig, path: ParadoxPath?): Boolean {
