@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.*
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.10" // https://kotlinlang.org/docs/gradle.html
-    id("org.jetbrains.intellij.platform") version "2.7.0" // https://github.com/JetBrains/intellij-platform-gradle-plugin
+    id("org.jetbrains.intellij.platform") version "2.7.1" // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.grammarkit") version "2022.3.2.2"  // https://github.com/JetBrains/gradle-grammar-kit-plugin
     id("org.jetbrains.changelog") version "2.4.0" // https://github.com/JetBrains/gradle-changelog-plugin
 }
@@ -41,7 +41,7 @@ dependencies {
         // bundledPlugins("tslint")
 
         // TranslationPlugin - https://github.com/YiiGuxing/TranslationPlugin
-        plugin("cn.yiiguxing.plugin.translate:3.7.2")
+        plugin("cn.yiiguxing.plugin.translate:3.7.3")
     }
 
     // junit - https://github.com/junit-team/junit4
