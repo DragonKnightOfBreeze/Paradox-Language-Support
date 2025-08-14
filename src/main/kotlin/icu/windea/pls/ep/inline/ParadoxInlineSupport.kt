@@ -14,16 +14,16 @@ import icu.windea.pls.script.psi.*
  */
 @WithGameTypeEP
 interface ParadoxInlineSupport {
-    fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
+    fun getInlinedElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement?
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxInlineSupport>("icu.windea.pls.inlineSupport")
 
-        fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
+        fun getInlinedElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
             val gameType = selectGameType(element)
             return EP_NAME.extensionList.firstNotNullOfOrNull f@{ ep ->
                 if (!gameType.supportsByAnnotation(ep)) return@f null
-                ep.inlineElement(element)
+                ep.getInlinedElement(element)
             }
         }
     }

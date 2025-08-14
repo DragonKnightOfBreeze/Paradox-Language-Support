@@ -30,7 +30,7 @@ object ParadoxScriptManipulator {
     private suspend fun SequenceScope<ParadoxScriptMemberElement>.doYieldMember(element: ParadoxScriptMemberElement, options: ParadoxScriptMemberSequenceOptions) {
         yield(element)
         if (options.inline) {
-            val inlined = ParadoxInlineSupport.inlineElement(element)
+            val inlined = ParadoxInlineSupport.getInlinedElement(element)
             val finalInlined = when {
                 inlined is ParadoxScriptFile -> inlined.block
                 else -> inlined

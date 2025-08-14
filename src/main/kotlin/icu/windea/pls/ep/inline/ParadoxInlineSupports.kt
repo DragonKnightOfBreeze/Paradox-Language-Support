@@ -7,7 +7,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxInlineScriptInlineSupport : ParadoxInlineSupport {
     //这里需要尝试避免SOE，如果发生SOE，使用发生之前最后得到的那个结果
 
-    override fun inlineElement(element: ParadoxScriptMemberElement): ParadoxScriptMemberElement? {
+    override fun getInlinedElement(element: ParadoxScriptMemberElement): ParadoxScriptFile? {
         if (element !is ParadoxScriptProperty) return null
         val info = ParadoxInlineScriptManager.getUsageInfo(element) ?: return null
         val expression = info.expression

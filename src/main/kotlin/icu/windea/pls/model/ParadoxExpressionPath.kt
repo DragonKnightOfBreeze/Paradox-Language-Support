@@ -51,14 +51,14 @@ fun ParadoxExpressionPath.relativeTo(other: ParadoxExpressionPath): ParadoxExpre
 
 private fun doResolve(originalPath: String): ParadoxExpressionPath {
     if (originalPath.isEmpty()) return EmptyParadoxExpressionPath
-    val mayBeQuoted = originalPath.contains('"')
+    val mayBeQuoted = originalPath.isQuoted('"')
     if (!mayBeQuoted) return ParadoxExpressionPathImpl.Unquoted(originalPath)
     return ParadoxExpressionPathImpl.Default(originalPath)
 }
 
 private fun doResolve(originalSubPaths: List<String>): ParadoxExpressionPath {
     if (originalSubPaths.isEmpty()) return EmptyParadoxExpressionPath
-    val mayBeQuoted = originalSubPaths.any { it.contains('"') }
+    val mayBeQuoted = originalSubPaths.any { it.isQuoted('"') }
     if (!mayBeQuoted) return ParadoxExpressionPathImpl.Unquoted(originalSubPaths)
     return ParadoxExpressionPathImpl.Default(originalSubPaths)
 }
