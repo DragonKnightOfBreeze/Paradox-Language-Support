@@ -115,14 +115,14 @@ private class ParadoxExpressionPathImpl1(originalPath: String) : ParadoxExpressi
 private class ParadoxExpressionPathImpl2(originalSubPaths: List<String>) : ParadoxExpressionPathImpl() {
     override val subPaths: List<String> by lazy { originalSubPaths.map { it.unquote() } }
     override val path: String by lazy { subPaths2Path(subPaths) }
-    override val originalPath: String = subPaths2Path(originalSubPaths)
+    override val originalPath: String by lazy { subPaths2Path(originalSubPaths) }
     override val originalSubPaths: List<String> = originalSubPaths
 }
 
 private class ParadoxExpressionPathImpl3(originalSubPaths: List<String>) : ParadoxExpressionPathImpl() {
     override val path: String get() = originalPath
     override val subPaths: List<String> get() = originalSubPaths
-    override val originalPath: String = subPaths2Path(originalSubPaths)
+    override val originalPath: String by lazy { subPaths2Path(originalSubPaths) }
     override val originalSubPaths: List<String> = originalSubPaths
 }
 
