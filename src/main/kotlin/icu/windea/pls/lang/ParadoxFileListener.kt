@@ -13,7 +13,8 @@ class ParadoxFileListener : AsyncFileListener {
     override fun prepareChange(events: List<VFileEvent>): AsyncFileListener.ChangeApplier {
         val filesToClearRootInfo = mutableSetOf<VirtualFile>()
         val filesToClearFileInfo = mutableSetOf<VirtualFile>()
-        val filesToClearLocale = mutableSetOf<VirtualFile>()
+        val filesToClearLocaleConfig = mutableSetOf<VirtualFile>()
+        val filesToClearSliceInfos = mutableSetOf<VirtualFile>()
         var reparseOpenedFiles = false
         var refreshInlineScripts = false
 
@@ -33,7 +34,8 @@ class ParadoxFileListener : AsyncFileListener {
                     val fileName = file.name
                     run {
                         filesToClearFileInfo.add(file)
-                        filesToClearLocale.add(file)
+                        filesToClearLocaleConfig.add(file)
+                        filesToClearSliceInfos.add(file)
                     }
                     run {
                         if (ParadoxMetadataManager.metadataFileNames.none { fileName.equals(it, true) }) return@run
@@ -54,7 +56,8 @@ class ParadoxFileListener : AsyncFileListener {
                     val fileName = file.name
                     run {
                         filesToClearFileInfo.add(file)
-                        filesToClearLocale.add(file)
+                        filesToClearLocaleConfig.add(file)
+                        filesToClearSliceInfos.add(file)
                     }
                     run {
                         if (ParadoxMetadataManager.metadataFileNames.none { fileName.equals(it, true) }) return@run
@@ -74,7 +77,8 @@ class ParadoxFileListener : AsyncFileListener {
                     val oldFileName = event.oldValue.toString()
                     run {
                         filesToClearFileInfo.add(file)
-                        filesToClearLocale.add(file)
+                        filesToClearLocaleConfig.add(file)
+                        filesToClearSliceInfos.add(file)
                     }
                     run {
                         if (ParadoxMetadataManager.metadataFileNames.none { newFileName.equals(it, true) || oldFileName.equals(it, true) }) return@run
@@ -90,7 +94,8 @@ class ParadoxFileListener : AsyncFileListener {
                     val file = event.file
                     val fileName = file.name
                     run {
-                        filesToClearLocale.add(file)
+                        filesToClearLocaleConfig.add(file)
+                        filesToClearSliceInfos.add(file)
                     }
                     run {
                         if (ParadoxMetadataManager.metadataFileNames.none { fileName.equals(it, true) }) return@run
@@ -102,15 +107,10 @@ class ParadoxFileListener : AsyncFileListener {
 
         return object : AsyncFileListener.ChangeApplier {
             override fun beforeVfsChange() {
-                if (filesToClearRootInfo.isNotEmpty()) {
-                    filesToClearRootInfo.forEach { clearRootInfo(it) }
-                }
-                if (filesToClearFileInfo.isNotEmpty()) {
-                    filesToClearFileInfo.forEach { clearFileInfo(it) }
-                }
-                if (filesToClearLocale.isNotEmpty()) {
-                    filesToClearLocale.forEach { clearLocale(it) }
-                }
+                filesToClearRootInfo.forEach { file -> file.tryPutUserData(PlsKeys.rootInfo, null) }
+                filesToClearFileInfo.forEach { file -> file.tryPutUserData(PlsKeys.fileInfo, null) }
+                filesToClearLocaleConfig.forEach { file -> file.tryPutUserData(PlsKeys.localeConfig, null) }
+                filesToClearSliceInfos.forEach { file -> file.tryPutUserData(ParadoxImageManager.Keys.sliceInfos, null) }
             }
 
             override fun afterVfsChange() {
@@ -124,18 +124,6 @@ class ParadoxFileListener : AsyncFileListener {
                 }
             }
         }
-    }
-
-    private fun clearRootInfo(rootFile: VirtualFile) {
-        rootFile.tryPutUserData(PlsKeys.rootInfo, null)
-    }
-
-    private fun clearFileInfo(file: VirtualFile) {
-        file.tryPutUserData(PlsKeys.fileInfo, null)
-    }
-
-    private fun clearLocale(file: VirtualFile) {
-        file.tryPutUserData(PlsKeys.localeConfig, null)
     }
 
     private fun reparseOpenedFiles() {

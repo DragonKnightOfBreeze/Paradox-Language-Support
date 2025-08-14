@@ -13,6 +13,8 @@
 
 ## 2.0.2-dev
 
+* [X] 修复：修复未在必要时渲染切分后的图片的问题 / FIX: Fix an issue that the image is not rendered with expected slicing
+
 ## 2.0.1
 
 * [X] #159 [CK3] Add file `lines.lines` to Paradox script file name patterns

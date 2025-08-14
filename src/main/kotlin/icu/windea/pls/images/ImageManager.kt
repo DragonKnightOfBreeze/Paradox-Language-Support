@@ -5,7 +5,9 @@ import icu.windea.pls.images.dds.*
 import icu.windea.pls.images.spi.*
 import icu.windea.pls.images.support.*
 import icu.windea.pls.images.tga.*
+import icu.windea.pls.model.*
 import org.intellij.images.fileTypes.impl.*
+import java.awt.image.*
 import java.io.*
 import java.nio.file.*
 import javax.imageio.spi.*
@@ -50,5 +52,18 @@ object ImageManager {
     fun deregisterImageIOSpi() {
         IIORegistry.getDefaultInstance().deregisterServiceProvider(ddsImageReaderSpi)
         IIORegistry.getDefaultInstance().deregisterServiceProvider(tgaImageReaderSpi)
+    }
+
+    //utility methods
+
+    fun sliceImage(image: BufferedImage, frameInfo: ImageFrameInfo): BufferedImage? {
+        if (!frameInfo.canApply()) return null
+        val width = image.width
+        val height = image.height
+        val finalFrames = if (frameInfo.frames > 0) frameInfo.frames else width / height
+        val finalFrame = if (frameInfo.frame > finalFrames) finalFrames else frameInfo.frame
+        val frameWidth = width / finalFrames
+        val startX = (finalFrame - 1) * frameWidth
+        return image.getSubimage(startX, 0, frameWidth, height)
     }
 }

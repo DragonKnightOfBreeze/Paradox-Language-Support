@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.lang.util
 
 import com.intellij.openapi.application.*
@@ -9,7 +11,7 @@ import com.intellij.psi.*
 import com.intellij.util.io.fileSizeSafe
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.ep.data.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.images.*
 import icu.windea.pls.images.dds.*
 import icu.windea.pls.images.tga.*
@@ -20,11 +22,17 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 import org.intellij.images.fileTypes.impl.*
+import java.nio.file.*
+import javax.imageio.*
 import kotlin.contracts.*
 import kotlin.io.path.*
 import kotlin.io.path.exists
 
 object ParadoxImageManager {
+    object Keys : KeyRegistry() {
+        val sliceInfos by createKey<MutableSet<String>>(Keys)
+    }
+
     private val logger = logger<ParadoxImageManager>()
 
     fun isImageFile(file: PsiFile): Boolean {
@@ -50,10 +58,7 @@ object ParadoxImageManager {
         val definitionInfo = definition.definitionInfo ?: return null
         val newFrameInfo = when {
             frameInfo == null -> null
-            definitionInfo.type == ParadoxDefinitionTypes.Sprite -> {
-                val noOfFrames = definition.getData<ParadoxSpriteData>()?.noOfFrames
-                if (noOfFrames != null) ImageFrameInfo.of(frameInfo.frame, noOfFrames) else frameInfo
-            }
+            definitionInfo.type == ParadoxDefinitionTypes.Sprite -> ParadoxSpriteManager.getFrameInfo(definition, frameInfo)
             else -> frameInfo
         }
         try {
@@ -112,18 +117,71 @@ object ParadoxImageManager {
             }
         } ?: return null
         val resolvedFile = resolved.element?.castOrNull<PsiFile>() ?: return null
-        return doResolveUrlByFile(resolvedFile.virtualFile, resolvedFile.project, resolved.frameInfo)
+        return doResolveUrlWithFrameInfo(resolvedFile.virtualFile, resolvedFile.project, resolved.frameInfo)
     }
 
     private fun doResolveUrlByFile(file: VirtualFile, project: Project, frameInfo: ImageFrameInfo?): String? {
-        //accept various image file types (normal file types such as png, or extended file aka dds and tga)
-        if (!ImageManager.isImageFileType(file.fileType)) return null
-        return file.toNioPath().absolutePathString()
+        return doResolveUrlWithFrameInfo(file, project, frameInfo)
     }
 
     private fun doResolveUrlByFilePath(filePath: String, project: Project, frameInfo: ImageFrameInfo?): String? {
         val file = ParadoxFilePathSearch.search(filePath, null, selector(project).file()).find() ?: return null
-        return doResolveUrlByFile(file, project, frameInfo)
+        return doResolveUrlWithFrameInfo(file, project, frameInfo)
+    }
+
+    private fun doResolveUrlWithFrameInfo(file: VirtualFile, project: Project, frameInfo: ImageFrameInfo?): String? {
+        //accept various image file types (normal file types such as png, or extended file aka dds and tga)
+        if (!ImageManager.isImageFileType(file.fileType)) return null
+
+        val filePath = file.toNioPath()
+        if (frameInfo == null || !frameInfo.canApply()) return filePath.absolutePathString()
+
+        val imageAbsPath = filePath.absolutePathString().normalizePath()
+        val imageRelPath = file.fileInfo?.let { it.rootInfo.gameType.id + "/" + it.path.path }?.normalizePath()
+        val imagePath = doResolveSlicedImagePath(imageAbsPath, imageRelPath, frameInfo)
+        val created = doCreateSlicedImageFile(file, filePath, imagePath, frameInfo)
+        if (!created) return filePath.absolutePathString()
+        return imagePath.absolutePathString()
+    }
+
+    private fun doResolveSlicedImagePath(imageAbsPath: String, imageRelPath: String?, frameInfo: ImageFrameInfo): Path {
+        val imagesPath = PlsPathConstants.images
+        imagesPath.createDirectories()
+        if (imageRelPath != null) {
+            //路径：~/.pls/images/${relPathWithoutExtension}@${frame}_${frames}@${uuid}.png
+            //UUID：基于游戏或模组目录的绝对路径
+            val relPathWithoutExtension = imageRelPath.substringBeforeLast('.')
+            val uuid = imageAbsPath.removeSuffix(imageRelPath).trim('/').toUUID().toString()
+            val frameText = "@${frameInfo.frame}_${frameInfo.frames}"
+            val finalPath = "${relPathWithoutExtension}${frameText}@${uuid}.png"
+            return imagesPath.resolve(finalPath).toAbsolutePath()
+        } else {
+            //路径：~/.pls/images/_external/${fileNameWithoutExtension}@${frame}_${frames}@${uuid}.png
+            //UUID：基于DDS文件所在目录
+            val index = imageAbsPath.lastIndexOf('/')
+            val parent = if (index == -1) "" else imageAbsPath.substring(0, index)
+            val fileName = if (index == -1) imageAbsPath else imageAbsPath.substring(index + 1)
+            val fileNameWithoutExtension = fileName.substringBeforeLast('.')
+            val uuid = if (parent.isEmpty()) "" else parent.toUUID().toString()
+            val frameText = "@${frameInfo.frame}_${frameInfo.frames}"
+            val finalPath = "_external/${fileNameWithoutExtension}${frameText}@${uuid}.png"
+            return imagesPath.resolve(finalPath).toAbsolutePath()
+        }
+    }
+
+    private fun doCreateSlicedImageFile(file: VirtualFile, filePath: Path, imagePath: Path, frameInfo: ImageFrameInfo): Boolean {
+        if (imagePath.exists()) {
+            val sliceInfo = "${frameInfo.frame}_${frameInfo.frames}"
+            val slicedInfos = file.getOrPutUserData(Keys.sliceInfos) { mutableSetOf() }
+            if (!slicedInfos.add(sliceInfo)) return true
+            imagePath.deleteIfExists() //IDE newly opened or outdated, delete it
+        }
+
+        imagePath.create()
+        val image = ImageIO.read(filePath.toFile()) ?: return false
+        val slicedImage = ImageManager.sliceImage(image, frameInfo) ?: return false
+        ImageIO.write(slicedImage, "png", imagePath.toFile())
+        return true
     }
 
     @OptIn(ExperimentalContracts::class)
