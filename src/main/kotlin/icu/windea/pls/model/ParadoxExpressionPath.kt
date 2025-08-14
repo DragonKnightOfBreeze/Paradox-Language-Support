@@ -51,33 +51,22 @@ fun ParadoxExpressionPath.relativeTo(other: ParadoxExpressionPath): ParadoxExpre
 
 private fun doResolve(originalPath: String): ParadoxExpressionPath {
     if (originalPath.isEmpty()) return EmptyParadoxExpressionPath
-    val mayBeQuoted = originalPath.isQuoted('"')
-    if (!mayBeQuoted) return ParadoxExpressionPathImpl.Unquoted(originalPath)
-    return ParadoxExpressionPathImpl.Default(originalPath)
+    return ParadoxExpressionPathImpl1(originalPath)
 }
 
 private fun doResolve(originalSubPaths: List<String>): ParadoxExpressionPath {
     if (originalSubPaths.isEmpty()) return EmptyParadoxExpressionPath
     val mayBeQuoted = originalSubPaths.any { it.isQuoted('"') }
-    if (!mayBeQuoted) return ParadoxExpressionPathImpl.Unquoted(originalSubPaths)
-    return ParadoxExpressionPathImpl.Default(originalSubPaths)
+    if (mayBeQuoted) return ParadoxExpressionPathImpl2(originalSubPaths)
+    return ParadoxExpressionPathImpl3(originalSubPaths)
 }
 
-//12 + 4 * 2 = 20 -> 24
 private abstract class ParadoxExpressionPathImpl : ParadoxExpressionPath {
-    final override val originalPath: String
-    final override val originalSubPaths: List<String>
-    override val length: Int get() = subPaths.size
+    override val length: Int get() = originalSubPaths.size
 
-    constructor(originalPath: String) {
-        this.originalPath = originalPath
-        this.originalSubPaths = path2SubPaths(originalPath)
-    }
-
-    constructor(originalSubPaths: List<String>) {
-        this.originalPath = subPaths2Path(originalSubPaths)
-        this.originalSubPaths = originalSubPaths
-    }
+    override fun equals(other: Any?) = this === other || other is ParadoxExpressionPath && originalPath == other.originalPath
+    override fun hashCode() = originalPath.hashCode()
+    override fun toString() = originalPath
 
     protected fun path2SubPaths(path: String): List<String> {
         return buildList {
@@ -114,30 +103,27 @@ private abstract class ParadoxExpressionPathImpl : ParadoxExpressionPath {
         }
         return builder.toString()
     }
+}
 
-    override fun equals(other: Any?) = this === other || other is ParadoxExpressionPath && path == other.path
-    override fun hashCode() = path.hashCode()
-    override fun toString() = path
+private class ParadoxExpressionPathImpl1(originalPath: String) : ParadoxExpressionPathImpl() {
+    override val subPaths: List<String> by lazy { originalSubPaths.map { it.unquote() } }
+    override val path: String by lazy { subPaths2Path(subPaths) }
+    override val originalPath: String = originalPath
+    override val originalSubPaths: List<String> by lazy { path2SubPaths(originalPath) }
+}
 
-    //12 + 4 * 2 = 20 -> 24
-    class Unquoted : ParadoxExpressionPathImpl {
-        override val path: String get() = originalPath
-        override val subPaths: List<String> get() = originalSubPaths
+private class ParadoxExpressionPathImpl2(originalSubPaths: List<String>) : ParadoxExpressionPathImpl() {
+    override val subPaths: List<String> by lazy { originalSubPaths.map { it.unquote() } }
+    override val path: String by lazy { subPaths2Path(subPaths) }
+    override val originalPath: String = subPaths2Path(originalSubPaths)
+    override val originalSubPaths: List<String> = originalSubPaths
+}
 
-        constructor(originalPath: String) : super(originalPath)
-
-        constructor(originalSubPaths: List<String>) : super(originalSubPaths)
-    }
-
-    //12 + 4 * 4 = 28 -> 32
-    class Default : ParadoxExpressionPathImpl {
-        override val subPaths: List<String> = originalSubPaths.map { it.unquote() }
-        override val path: String = subPaths2Path(subPaths)
-
-        constructor(originalPath: String) : super(originalPath)
-
-        constructor(originalSubPaths: List<String>) : super(originalSubPaths)
-    }
+private class ParadoxExpressionPathImpl3(originalSubPaths: List<String>) : ParadoxExpressionPathImpl() {
+    override val path: String get() = originalPath
+    override val subPaths: List<String> get() = originalSubPaths
+    override val originalPath: String = subPaths2Path(originalSubPaths)
+    override val originalSubPaths: List<String> = originalSubPaths
 }
 
 private object EmptyParadoxExpressionPath : ParadoxExpressionPath {

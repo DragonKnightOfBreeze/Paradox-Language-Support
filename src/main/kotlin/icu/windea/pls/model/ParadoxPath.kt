@@ -41,39 +41,35 @@ interface ParadoxPath : Iterable<String> {
 
 private fun doResolve(path: String): ParadoxPath {
     if (path.isEmpty()) return EmptyParadoxPath
-    return ParadoxPathImpl(path)
+    return ParadoxPathImpl1(path)
 }
 
 private fun doResolve(subPaths: List<String>): ParadoxPath {
     if (subPaths.isEmpty()) return EmptyParadoxPath
-    return ParadoxPathImpl(subPaths)
+    return ParadoxPathImpl2(subPaths)
 }
 
-//12 + 3 * 4 = 24 -> 24
-private class ParadoxPathImpl : ParadoxPath {
-    override val path: String
-    override val subPaths: List<String>
-    override val parent: String
+private abstract class ParadoxPathImpl : ParadoxPath {
     override val root: String get() = subPaths.firstOrNull().orEmpty()
     override val fileName: String get() = subPaths.lastOrNull().orEmpty()
     override val fileExtension: String? get() = fileName.substringAfterLast('.', "").orNull()
     override val length: Int get() = subPaths.size
 
-    constructor(path: String) {
-        this.path = path.intern()
-        this.subPaths = path.split('/')
-        this.parent = path.substringBeforeLast('/', "")
-    }
-
-    constructor(subPaths: List<String>) {
-        this.path = subPaths.joinToString("/")
-        this.subPaths = subPaths
-        this.parent = path.substringBeforeLast('/', "")
-    }
-
     override fun equals(other: Any?) = this === other || other is ParadoxPath && path == other.path
     override fun hashCode() = path.hashCode()
     override fun toString() = path
+}
+
+private class ParadoxPathImpl1(path: String) : ParadoxPathImpl() {
+    override val path: String = path
+    override val subPaths: List<String> = path.split('/')
+    override val parent: String = path.substringBeforeLast('/', "")
+}
+
+private class ParadoxPathImpl2(subPaths: List<String>) : ParadoxPathImpl() {
+    override val path: String = subPaths.joinToString("/")
+    override val subPaths: List<String> = subPaths
+    override val parent: String = path.substringBeforeLast('/', "")
 }
 
 private object EmptyParadoxPath : ParadoxPath {
