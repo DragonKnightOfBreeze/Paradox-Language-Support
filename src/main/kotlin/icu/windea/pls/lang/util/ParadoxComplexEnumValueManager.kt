@@ -46,7 +46,6 @@ object ParadoxComplexEnumValueManager {
     private fun doGetInfoFromCache(element: ParadoxScriptStringExpressionElement): ParadoxComplexEnumValueIndexInfo? {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
-            ProgressManager.checkCanceled()
             val file = element.containingFile
             val value = doGetInfo(element, file)
             value.withDependencyItems(file)

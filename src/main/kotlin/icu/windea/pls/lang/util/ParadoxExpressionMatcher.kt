@@ -131,12 +131,14 @@ object ParadoxExpressionMatcher {
             )
         }
     }
-    
+
     //兼容scriptedVariableReference inlineMath parameter
 
     fun getCachedMatchResult(element: PsiElement, cacheKey: String, predicate: () -> Boolean): Result {
+        // indexing -> should not visit indices -> treat as exact match
+        if (PlsCoreManager.processMergedIndex.get() == true) return Result.ExactMatch
+
         ProgressManager.checkCanceled()
-        if (PlsCoreManager.processMergedIndex.get() == true) return Result.ExactMatch // indexing -> should not visit indices -> treat as exact match
         val psiFile = element.containingFile ?: return Result.NotMatch
         val project = psiFile.project
         val rootFile = selectRootFile(psiFile) ?: return Result.NotMatch

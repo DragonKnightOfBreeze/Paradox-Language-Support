@@ -32,7 +32,7 @@ inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.propertyValue(
 }
 
 inline fun <reified T : ParadoxScriptValue> ParadoxScriptProperty.valueList(): List<T> {
-    return findChild<ParadoxScriptBlock>()?.findChildren<T>().orEmpty()
+    return findChild<ParadoxScriptBlock>(forward = false)?.findChildren<T>().orEmpty()
 }
 
 inline fun <reified T : ParadoxScriptValue> ParadoxScriptBlockElement.valueList(): List<T> {

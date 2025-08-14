@@ -341,14 +341,15 @@ object ParadoxDefinitionManager {
         //这里不能基于内联后的声明结构，否则可能会导致SOE
         //也不要参数条件表达式中的声明结构判断，
         val childValueConfigs = propertyConfig.values.orEmpty()
-        val blockElement = definitionElement.block
         if (childValueConfigs.isNotEmpty()) {
             //匹配值列表
+            val blockElement = definitionElement.block
             if (!doMatchValues(blockElement, childValueConfigs, configGroup, matchOptions)) return false //继续匹配
         }
         val childPropertyConfigs = propertyConfig.properties.orEmpty()
         if (childPropertyConfigs.isNotEmpty()) {
             //匹配属性列表
+            val blockElement = definitionElement.block
             if (!doMatchProperties(definitionElement, blockElement, childPropertyConfigs, configGroup, matchOptions)) return false //继续匹配
         }
         return true

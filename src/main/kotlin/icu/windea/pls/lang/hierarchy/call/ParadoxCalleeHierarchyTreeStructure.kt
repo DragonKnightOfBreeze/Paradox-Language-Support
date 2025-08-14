@@ -52,7 +52,7 @@ class ParadoxCalleeHierarchyTreeStructure(
             override fun visitElement(element: PsiElement) {
                 //兼容向下内联的情况（即使内联后为自身）
                 if (element is ParadoxScriptMemberElement) {
-                    val inlined = ParadoxInlineSupport.inlineElement(element)
+                    val inlined = ParadoxInlineSupport.getInlinedElement(element)
                     if (inlined != null) {
                         searchElement(inlined, descriptor, descriptors)
                         return

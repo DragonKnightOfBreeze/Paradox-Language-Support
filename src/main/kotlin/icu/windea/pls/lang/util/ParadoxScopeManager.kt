@@ -26,7 +26,7 @@ import icu.windea.pls.script.psi.*
  */
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScopeManager {
-    object Keys: KeyRegistry() {
+    object Keys : KeyRegistry() {
         val cachedScopeContext by createKey<CachedValue<ParadoxScopeContext>>(Keys)
     }
 
@@ -203,11 +203,10 @@ object ParadoxScopeManager {
     private fun doGetSwitchedScopeContextFromCache(element: ParadoxScriptMemberElement): ParadoxScopeContext? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
             ProgressManager.checkCanceled()
-            val file = element.containingFile ?: return@getCachedValue null
             val value = doGetSwitchedScopeContextOfDefinition(element)
                 ?: doGetSwitchedScopeContextOfDefinitionMember(element)
             value.withDependencyItems(
-                file,
+                element.containingFile,
                 ParadoxModificationTrackers.DefinitionScopeContextInferenceTracker, //from inference
             )
         }
