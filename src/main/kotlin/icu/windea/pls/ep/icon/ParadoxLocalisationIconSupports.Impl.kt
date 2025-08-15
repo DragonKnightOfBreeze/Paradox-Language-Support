@@ -16,6 +16,7 @@ class ParadoxBaseLocalisationIconSupport : CompositeParadoxLocalisationIconSuppo
     class Stellaris : CompositeParadoxLocalisationIconSupport() {
         init {
             fromDefinition(ParadoxDefinitionTypes.Job, { it.removePrefixOrNull("job_") }, { it.addPrefix("job_") })
+            fromDefinition(ParadoxDefinitionTypes.SwappedJob, { it.removePrefixOrNull("job_") }, { it.addPrefix("job_") })
             fromDefinition(ParadoxDefinitionTypes.Resource)
         }
     }

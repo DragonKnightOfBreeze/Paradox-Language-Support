@@ -35,7 +35,7 @@ class ParadoxJobBasedModifierIconProvider : ParadoxModifierIconProvider {
             .find { it.configExpression.type == CwtDataTypes.Definition } ?: return
         val definitionName = snippetNode.text
         val definitionType = snippetNode.configExpression.value ?: return
-        if (definitionType.substringBefore('.') != ParadoxDefinitionTypes.Job) return
+        if (definitionType.substringBefore('.') !in ParadoxDefinitionTypeSets.Job) return
         val configGroup = modifierConfig.config.configGroup
         val selector = selector(configGroup.project, element).definition().contextSensitive()
         ParadoxDefinitionSearch.search(definitionName, definitionType, selector).processQuery p@{ definition ->

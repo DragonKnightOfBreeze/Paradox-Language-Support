@@ -9,6 +9,7 @@ object ParadoxDefinitionTypes {
     const val Technology = "technology"
     const val TechnologyCategory = "technology_category"
     const val Job = "job"
+    const val SwappedJob = "swapped_job"
     const val Resource = "resource"
 
     const val Event = "event"

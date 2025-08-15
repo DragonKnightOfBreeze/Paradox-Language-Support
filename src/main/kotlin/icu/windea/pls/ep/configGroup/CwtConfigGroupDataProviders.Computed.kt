@@ -6,6 +6,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.model.*
 
 /**
  * 用于初始规则分组中需要经过计算的那些数据。
@@ -32,10 +33,14 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 val baseTypeName = typeConfig.baseType!!.substringBefore('.')
                 val baseDeclarationConfig = configGroup.declarations[baseTypeName] ?: continue
                 val typeKey = typeConfig.typeKeyFilter?.takeWithOperator()?.singleOrNull() ?: continue
-                val declarationConfig = baseDeclarationConfig.configForDeclaration.configs
-                    ?.find { it is CwtPropertyConfig && it.key.equals(typeKey, true) }?.castOrNull<CwtPropertyConfig>()
-                    ?.let { CwtDeclarationConfig.resolve(it, name = typeName) }
-                    ?: continue
+                val rootKeysList = typeConfig.skipRootKey?.takeIf { it.size > 1 }?.drop(1) ?: continue
+                val configPaths = when {
+                    rootKeysList.isEmpty() -> listOf(CwtConfigPath.resolve(typeKey))
+                    else -> rootKeysList.map { CwtConfigPath.resolve(it + typeKey) }
+                }
+                val c0 = baseDeclarationConfig.configForDeclaration
+                val c = configPaths.firstNotNullOfOrNull { c0.findPropertyByPath(it, ignoreCase = true) } ?: continue
+                val declarationConfig = CwtDeclarationConfig.resolve(c, name = typeName) ?: continue
                 configGroup.declarations[typeName] = declarationConfig
             }
         }
