@@ -13,10 +13,13 @@
 
 ## 2.0.2-dev
 
+* [ ] 更新参考文档（规则相关，集成，AI，扩展） / Update reference documents (config related, integration, AI, extensions)
 * [X] #165
 * [X] 优化：优化自动识别切换类型（如`swapped_job`）的声明规则的逻辑 / OP: Optimize the logic for automatically detecting declaration configs for swapped types (e.g. `swapped_job`)
 * [X] 修复：修复未在必要时渲染切分后的图片的问题 / FIX: Fix an issue that images are not rendered with expected slicing if necessary
 * [X] 修复：修复某些场合未忽略字符串大小写的问题 / FIX: Fix an issue that string case is not ignored in some situations
+* [ ] 新功能：支持基于CWT规则的自定义的代码折叠 / NEW: Support custom code folding based on CWT configs
+* [ ] 新功能：支持基于CWT规则的自定义的后缀补全 / NEW: Support custom postfix completion based on CWT configs
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.0.1
