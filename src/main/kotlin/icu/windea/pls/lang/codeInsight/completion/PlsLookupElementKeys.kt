@@ -1,7 +1,6 @@
 package icu.windea.pls.lang.codeInsight.completion
 
 import com.intellij.codeInsight.lookup.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import javax.swing.*
 

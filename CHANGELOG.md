@@ -13,7 +13,9 @@
 
 ## 2.0.2-dev
 
+* [X] #165
 * [X] 修复：修复未在必要时渲染切分后的图片的问题 / FIX: Fix an issue that the image is not rendered with expected slicing
+* [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.0.1
 

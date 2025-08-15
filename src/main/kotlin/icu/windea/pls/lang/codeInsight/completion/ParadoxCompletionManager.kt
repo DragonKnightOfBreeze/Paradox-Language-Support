@@ -34,7 +34,6 @@ import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
-import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.localisation.psi.*
@@ -96,7 +95,7 @@ object ParadoxCompletionManager {
         if (configContext == null) return
 
         //仅提示不在定义声明中的rootKey
-        if (!configContext.isRootOrMember()) return addRootKeyCompletions(memberElement, context, result)
+        if (!configContext.isDefinitionOrMember()) return addRootKeyCompletions(memberElement, context, result)
 
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
@@ -138,7 +137,7 @@ object ParadoxCompletionManager {
         val configContext = ParadoxExpressionManager.getConfigContext(memberElement)
         if (configContext == null) return
 
-        if (!configContext.isRootOrMember()) return
+        if (!configContext.isDefinitionOrMember()) return
 
         //这里不要使用合并后的子规则，需要先尝试精确匹配或者合并所有非精确匹配的规则，最后得到子规则列表
         val matchOptions = Options.Default or Options.Relax or Options.AcceptDefinition
@@ -177,7 +176,7 @@ object ParadoxCompletionManager {
         val configContext = ParadoxExpressionManager.getConfigContext(element)
         if (configContext == null) return
 
-        if (!configContext.isRootOrMember()) return
+        if (!configContext.isDefinitionOrMember()) return
 
         val configs = configContext.getConfigs()
         if (configs.isEmpty()) return

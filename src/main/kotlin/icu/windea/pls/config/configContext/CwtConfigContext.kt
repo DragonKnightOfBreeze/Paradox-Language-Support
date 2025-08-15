@@ -103,6 +103,6 @@ fun CwtConfigContext.isDefinition(): Boolean {
     return definitionInfo != null && elementPathFromRoot.let { it != null && it.isEmpty() }
 }
 
-fun CwtConfigContext.isRootOrMember(): Boolean {
+fun CwtConfigContext.isDefinitionOrMember(): Boolean {
     return elementPathFromRoot != null
 }

@@ -43,7 +43,6 @@ class BaseCwtConfigContextProvider : CwtConfigContextProvider {
         if (definition == null) {
             val configGroup = PlsFacade.getConfigGroup(file.project, gameType)
             val configContext = CwtConfigContext(element, fileInfo, elementPath, gameType, configGroup)
-            configContext.elementPathFromRoot = ParadoxExpressionPath.Empty
             return configContext
         } else {
             val definitionInfo = definition.definitionInfo ?: return null
@@ -230,9 +229,9 @@ class ParameterValueCwtConfigContextProvider : CwtConfigContextProvider {
         if (elementPathFromRoot.isNotEmpty()) {
             configContext.parameterValueRootConfigContext = ParadoxExpressionManager.getConfigContext(file) ?: return null
         }
-        configContext.elementPathFromRoot = elementPathFromRoot
         configContext.parameterElement = parameterElement
         configContext.parameterValueQuoted = injectionInfo.parameterValueQuoted
+        configContext.elementPathFromRoot = elementPathFromRoot
         return configContext
     }
 

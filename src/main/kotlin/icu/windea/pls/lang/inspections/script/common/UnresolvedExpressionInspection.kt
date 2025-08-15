@@ -15,6 +15,7 @@ import icu.windea.pls.ep.config.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.*
 import icu.windea.pls.lang.expression.*
+import icu.windea.pls.lang.inspections.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.codeInsight.*
@@ -48,8 +49,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
         return true
     }
 
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        var suppressed: PsiElement? = null
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean, session: LocalInspectionToolSession): PsiElementVisitor {
         val file = holder.file
         val project = holder.project
         val configGroup = PlsFacade.getConfigGroup(project, selectGameType(file))
@@ -60,11 +60,12 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                     is ParadoxScriptValue -> visitValue(element)
                     else -> true
                 }
-                if (!result) suppressed = element
+                if (!result) session.disabledElement = element
             }
 
             private fun visitProperty(element: ParadoxScriptProperty): Boolean {
-                if (suppressed != null && suppressed.isAncestor(element)) return true
+                val disabledElement = session.disabledElement
+                if (disabledElement != null && disabledElement.isAncestor(element)) return true
 
                 //skip checking property if property key is parameterized
                 val propertyKey = element.propertyKey
@@ -75,7 +76,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 //skip if config context not exists
                 val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return true
                 //skip if config context is not suitable
-                if (!configContext.isRootOrMember() || configContext.isDefinition()) return true
+                if (!configContext.isDefinitionOrMember() || configContext.isDefinition()) return true
                 //skip if there are no context configs
                 if (configContext.getConfigs().isEmpty()) return true
 
@@ -106,7 +107,8 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
             private fun visitValue(element: ParadoxScriptValue): Boolean {
                 if (!element.isExpression()) return false // skip check if element is not an expression
 
-                if (suppressed != null && suppressed.isAncestor(element)) return true
+                val disabledElement = session.disabledElement
+                if (disabledElement != null && disabledElement.isAncestor(element)) return true
 
                 //skip checking value if it is parameterized
                 if (element is ParadoxScriptString && element.text.isParameterized()) return false
@@ -117,7 +119,7 @@ class UnresolvedExpressionInspection : LocalInspectionTool() {
                 //skip if config context not exists
                 val configContext = ParadoxExpressionManager.getConfigContext(element) ?: return true
                 //skip if config context is not suitable
-                if (!configContext.isRootOrMember()) return true
+                if (!configContext.isDefinitionOrMember()) return true
                 //skip if there are no context configs
                 if (configContext.getConfigs().isEmpty()) return true
 

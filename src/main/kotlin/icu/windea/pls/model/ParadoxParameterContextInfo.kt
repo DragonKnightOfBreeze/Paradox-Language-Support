@@ -51,12 +51,11 @@ class ParadoxParameterContextInfo(
                 return when {
                     expressionElement is ParadoxScriptPropertyKey -> {
                         val configs = ParadoxExpressionManager.getConfigs(expressionElement)
-                        configs.mapNotNull { if (it is CwtPropertyConfig) it else null }
-                        configs
+                        configs.filterIsInstance<CwtPropertyConfig>()
                     }
                     expressionElement is ParadoxScriptString && expressionElement.isExpression() -> {
                         val configs = ParadoxExpressionManager.getConfigs(expressionElement)
-                        configs.mapNotNull { if (it is CwtValueConfig) it else null }
+                        configs.filterIsInstance<CwtValueConfig>()
                     }
                     else -> {
                         emptyList()
