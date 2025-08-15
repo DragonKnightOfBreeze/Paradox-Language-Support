@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 
 package icu.windea.pls.core.collections
 
@@ -9,27 +9,14 @@ inline fun <T : Map<*, *>> T?.orNull() = this?.takeIf { it.isNotEmpty() }
 
 inline fun <K, V> Map<K, V>.asMutable(): MutableMap<K, V> = this as MutableMap<K, V>
 
-inline fun <K, V> Map<K, V>.optimized(): Map<K, V> = if (size <= 1) this.toMap() else this
+// only for empty list (since, e.g., string elements may ignore case)
+inline fun <K, V> Map<K, V>.optimized(): Map<K, V> = ifEmpty { emptyMap() }
 
 inline fun <K, V> MutableMap<K, V>.synced(): MutableMap<K, V> = Collections.synchronizedMap(this)
 
 inline fun <K, E, M : MutableMap<K, MutableList<E>>> M.getOrInit(key: K): MutableList<E> = getOrPut(key) { mutableListOf() }
 
 inline fun <K, K1, V1, M : MutableMap<K, MutableMap<K1, V1>>> M.getOrInit(key: K): MutableMap<K1, V1> = getOrPut(key) { mutableMapOf() }
-
-fun <K, V> Map<K, V>.find(predicate: (Map.Entry<K, V>) -> Boolean): V? {
-    for (entry in this) {
-        if (predicate(entry)) return entry.value
-    }
-    throw NoSuchElementException()
-}
-
-fun <K, V> Map<K, V>.findOrNull(predicate: (Map.Entry<K, V>) -> Boolean): V? {
-    for (entry in this) {
-        if (predicate(entry)) return entry.value
-    }
-    return null
-}
 
 inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -> R): Array<R> {
     //这里不先将Set转为List
@@ -39,7 +26,6 @@ inline fun <K, V, reified R> Map<K, V>.mapToArray(transform: (Map.Entry<K, V>) -
         val iterator = entries.iterator()
         return Array(size) { transform(iterator.next()) }
     } catch (e: Exception) {
-
         val list = entries.toList()
         return Array(size) { transform(list[it]) }
     }

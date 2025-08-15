@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 
 package icu.windea.pls.core.collections
 
@@ -7,21 +7,23 @@ import java.util.*
 
 inline fun <T : Collection<*>> T?.orNull() = this?.takeIf { it.isNotEmpty() }
 
-inline fun <T> Collection<T>.toListOrThis(): List<T> = if (this is List) this else this.toList()
-
-inline fun <T> Collection<T>.toSetOrThis(): Set<T> = if (this is Set) this else this.toSet()
-
 inline fun <T> List<T>.asMutable(): MutableList<T> = this as MutableList<T>
 
 inline fun <T> Set<T>.asMutable(): MutableSet<T> = this as MutableSet<T>
 
-inline fun <T> List<T>.optimized(): List<T> = if (size <= 1) this.toList() else this
+// only for empty list (since, e.g., string elements may ignore case)
+inline fun <T> List<T>.optimized(): List<T> = ifEmpty { emptyList() }
 
-inline fun <T : Any> Set<T>.optimized(): Set<T> = if (size <= 1) this.toSet() else this
+// only for empty list (since, e.g., string elements may ignore case)
+inline fun <T : Any> Set<T>.optimized(): Set<T> = ifEmpty { emptySet() }
 
 inline fun <T> MutableList<T>.synced(): MutableList<T> = Collections.synchronizedList(this)
 
 inline fun <T> MutableSet<T>.synced(): MutableSet<T> = Collections.synchronizedSet(this)
+
+inline fun <T> Collection<T>.toListOrThis(): List<T> = if (this is List) this else this.toList()
+
+inline fun <T> Collection<T>.toSetOrThis(): Set<T> = if (this is Set) this else this.toSet()
 
 inline fun <reified R> Iterable<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
     return filterIsInstance(R::class.java, predicate)

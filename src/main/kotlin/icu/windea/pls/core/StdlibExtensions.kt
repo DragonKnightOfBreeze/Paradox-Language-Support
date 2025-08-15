@@ -5,9 +5,6 @@ package icu.windea.pls.core
 import com.intellij.openapi.util.text.*
 import icu.windea.pls.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.core.util.console.CommandExecutionException
-import icu.windea.pls.core.util.console.CommandExecutor
-import icu.windea.pls.core.util.console.CommandType
 import java.io.*
 import java.net.*
 import java.nio.charset.*
@@ -420,20 +417,6 @@ fun CharSequence.indicesOf(text: String, startIndex: Int = 0, ignoreCase: Boolea
 
 fun Collection<String>.truncate(limit: Int, ellipsis: String = "..."): List<String> {
     return take(limit).let { if (size > limit) it + ellipsis else it }
-}
-
-fun <K, V> Map<K, V>.find(predicate: (Map.Entry<K, V>) -> Boolean): V? {
-    for (entry in this) {
-        if (predicate(entry)) return entry.value
-    }
-    throw NoSuchElementException()
-}
-
-fun <K, V> Map<K, V>.findOrNull(predicate: (Map.Entry<K, V>) -> Boolean): V? {
-    for (entry in this) {
-        if (predicate(entry)) return entry.value
-    }
-    return null
 }
 
 inline fun <reified T> Any?.cast(): T = this as T
