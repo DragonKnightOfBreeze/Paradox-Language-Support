@@ -5,6 +5,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 
@@ -32,12 +33,9 @@ class ComputedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 configGroup.swappedTypes[typeName] = typeConfig
                 val baseTypeName = typeConfig.baseType!!.substringBefore('.')
                 val baseDeclarationConfig = configGroup.declarations[baseTypeName] ?: continue
+                val rootKeysList = typeConfig.skipRootKey?.filter { it.size > 1 }?.orNull() ?: continue
                 val typeKey = typeConfig.typeKeyFilter?.takeWithOperator()?.singleOrNull() ?: continue
-                val rootKeysList = typeConfig.skipRootKey?.takeIf { it.size > 1 }?.drop(1) ?: continue
-                val configPaths = when {
-                    rootKeysList.isEmpty() -> listOf(CwtConfigPath.resolve(typeKey))
-                    else -> rootKeysList.map { CwtConfigPath.resolve(it + typeKey) }
-                }
+                val configPaths = rootKeysList.map { CwtConfigPath.resolve(it.drop(1) + typeKey) }
                 val c0 = baseDeclarationConfig.configForDeclaration
                 val c = configPaths.firstNotNullOfOrNull { c0.findPropertyByPath(it, ignoreCase = true) } ?: continue
                 val declarationConfig = CwtDeclarationConfig.resolve(c, name = typeName) ?: continue
