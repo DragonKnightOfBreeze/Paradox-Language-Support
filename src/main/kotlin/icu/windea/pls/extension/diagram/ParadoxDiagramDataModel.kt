@@ -8,7 +8,9 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.extension.diagram.provider.*
+import icu.windea.pls.extension.diagram.settings.ParadoxDiagramSettings
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 
 //com.intellij.uml.java.JavaUmlDataModel
@@ -61,6 +63,8 @@ abstract class ParadoxDiagramDataModel(
     }
 
     protected abstract fun updateDataModel()
+
+    protected abstract fun showNode(definition: ParadoxScriptDefinitionElement, settings:  ParadoxDiagramSettings.State): Boolean
 
     override fun getModificationTracker(): ModificationTracker {
         return ParadoxModificationTrackers.FileTracker

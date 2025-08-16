@@ -1,9 +1,8 @@
 package icu.windea.pls.extension.diagram.provider
 
 import com.intellij.diagram.*
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
-import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
@@ -15,9 +14,7 @@ import icu.windea.pls.ep.data.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
 
@@ -43,42 +40,10 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
-        override fun updateDataModel() {
-            provider as StellarisEventTreeDiagramProvider
-            val events = getDefinitions(ParadoxDefinitionTypes.Event)
-            if (events.isEmpty()) return
-            //群星原版事件有5000+
-            val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
-            val eventMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
-            for (event in events) {
-                ProgressManager.checkCanceled()
-                if (!showNode(event)) continue
-                val node = Node(event, provider)
-                nodeMap.put(event, node)
-                val name = event.definitionInfo?.name.orAnonymous()
-                eventMap.put(name, event)
-                nodes.add(node)
-            }
-            for (event in events) {
-                ProgressManager.checkCanceled()
-                val invocations = ParadoxEventManager.getInvocations(event)
-                if (invocations.isEmpty()) continue
-                //事件 --> 调用的事件
-                for (invocation in invocations) {
-                    ProgressManager.checkCanceled()
-                    val source = nodeMap.get(event) ?: continue
-                    val target = eventMap.get(invocation)?.let { nodeMap.get(it) } ?: continue
-                    val edge = Edge(source, target, REL_INVOKE)
-                    edges.add(edge)
-                }
-            }
-        }
-
-        private fun showNode(definition: ParadoxScriptDefinitionElement): Boolean {
-            provider as StellarisEventTreeDiagramProvider
-
+        override fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
+            if (provider !is StellarisEventTreeDiagramProvider) return true
+            if (settings !is StellarisEventTreeDiagramSettings.State) return true
             val definitionInfo = definition.definitionInfo ?: return false
-            val settings = provider.getDiagramSettings(project).state
 
             //对于每组配置，只要其中任意一个配置匹配即可
             with(settings.attributeSettings) {
@@ -155,53 +120,11 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxTechTreeDiagramProvider.DataModel(project, file, provider) {
-        override fun updateDataModel() {
-            provider as StellarisTechTreeDiagramProvider
-            val technologies = getDefinitions(ParadoxDefinitionTypes.Technology)
-            if (technologies.isEmpty()) return
-            //群星原版科技有400+
-            val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
-            val techMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
-            for (technology in technologies) {
-                ProgressManager.checkCanceled()
-                if (!showNode(technology)) continue
-                val node = Node(technology, provider)
-                node.putUserData(Keys.nodeData, technology.getData())
-                nodeMap.put(technology, node)
-                val name = technology.definitionInfo?.name.orAnonymous()
-                techMap.put(name, technology)
-                nodes.add(node)
-            }
-            for (technology in technologies) {
-                ProgressManager.checkCanceled()
-                val data = technology.getData<StellarisTechnologyData>() ?: continue
-                //循环科技 ..> 循环科技
-                val levels = data.levels
-                if (levels != null) {
-                    val label = if (levels <= 0) "max level: inf" else "max level: $levels"
-                    val node = nodeMap.get(technology) ?: continue
-                    val edge = Edge(node, node, REL_REPEAT(label))
-                    edges.add(edge)
-                }
-                //前置 --> 科技
-                val prerequisites = data.prerequisites
-                if (prerequisites.isNotEmpty()) {
-                    for (prerequisite in prerequisites) {
-                        val source = techMap.get(prerequisite)?.let { nodeMap.get(it) } ?: continue
-                        val target = nodeMap.get(technology) ?: continue
-                        val edge = Edge(source, target, REL_PREREQUISITE)
-                        edges.add(edge)
-                    }
-                }
-            }
-        }
-
-        private fun showNode(definition: ParadoxScriptDefinitionElement): Boolean {
-            provider as StellarisTechTreeDiagramProvider
-
+        override fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
+            if (provider !is StellarisTechTreeDiagramProvider) return true
+            if (settings !is StellarisTechTreeDiagramSettings.State) return true
             val definitionInfo = definition.definitionInfo ?: return false
             val data = definition.getData<StellarisTechnologyData>() ?: return false
-            val settings = provider.getDiagramSettings(project).state
 
             //对于每组配置，只要其中任意一个配置匹配即可
             with(settings.attributeSettings) {

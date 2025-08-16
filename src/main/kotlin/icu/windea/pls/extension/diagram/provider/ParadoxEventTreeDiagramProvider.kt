@@ -19,6 +19,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -241,6 +242,41 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
         override fun getModificationTracker(): FilePathBasedModificationTracker {
             return ParadoxModificationTrackers.ScriptFileTracker("events/**/*.txt")
+        }
+
+        override fun updateDataModel() {
+            //群星原版事件有5000+
+            provider as ParadoxDefinitionDiagramProvider
+
+            val events0 = getDefinitions(ParadoxDefinitionTypes.Event)
+            if (events0.isEmpty()) return
+            val settings = provider.getDiagramSettings(project)?.state
+            val events = events0.filter { settings == null || showNode(it, settings) }
+            if (events.isEmpty()) return
+
+            val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
+            val eventMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
+            for (event in events) {
+                ProgressManager.checkCanceled()
+                val node = Node(event, provider)
+                nodeMap.put(event, node)
+                val name = event.definitionInfo?.name.orAnonymous()
+                eventMap.put(name, event)
+                nodes.add(node)
+            }
+            for (event in events) {
+                ProgressManager.checkCanceled()
+                val invocations = ParadoxEventManager.getInvocations(event)
+                if (invocations.isEmpty()) continue
+                //事件 --> 调用的事件
+                for (invocation in invocations) {
+                    ProgressManager.checkCanceled()
+                    val source = nodeMap.get(event) ?: continue
+                    val target = eventMap.get(invocation)?.let { nodeMap.get(it) } ?: continue
+                    val edge = Edge(source, target, REL_INVOKE)
+                    edges.add(edge)
+                }
+            }
         }
     }
 }

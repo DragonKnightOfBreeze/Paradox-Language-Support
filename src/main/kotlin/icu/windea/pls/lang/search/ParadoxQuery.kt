@@ -1,5 +1,6 @@
 package icu.windea.pls.lang.search
 
+import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -24,6 +25,7 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
         val selector = searchParameters.selector
         var result: T? = null
         delegateProcessResults(original) {
+            ProgressManager.checkCanceled()
             if (selector.selectOne(it)) {
                 result = it
                 false
@@ -38,6 +40,7 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
         val selector = searchParameters.selector
         var result: T? = null
         delegateProcessResults(original) {
+            ProgressManager.checkCanceled()
             if (selector.select(it)) {
                 result = it
                 false
@@ -58,12 +61,12 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
 
         val selector = searchParameters.selector
         val finalComparator by lazy { getFinalComparator() }
-        val comparator = Comparator<T> c@{ o1, o2 ->
-            if (o1 == o2) return@c 0
+        val comparator = Comparator<T> { o1, o2 ->
             finalComparator.compare(o1, o2)
         }
         val result = sortedSetOf(comparator)
         delegateProcessResults(original) {
+            ProgressManager.checkCanceled()
             if (selector.select(it)) {
                 result += it
             }
@@ -83,6 +86,7 @@ class ParadoxQuery<T, P : ParadoxSearchParameters<T>>(
         val keySelector = selector.keySelector()
         val keysToDistinct = mutableSetOf<Any?>().synced()
         return delegateProcessResults(original) {
+            ProgressManager.checkCanceled()
             if (selector.select(it) && (keySelector == null || keysToDistinct.add(keySelector.apply(it)))) {
                 consumer.process(it)
             }

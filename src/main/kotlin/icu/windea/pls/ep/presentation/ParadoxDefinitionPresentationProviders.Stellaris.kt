@@ -78,8 +78,9 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
         return panel
     }
 
+    @Suppress("UseJBColor")
     private fun getNameLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): JLabel? {
-        return ParadoxPresentationManager.getNameLabel(definition, JBColor.WHITE)
+        return ParadoxPresentationManager.getNameLabel(definition, Color.WHITE)
     }
 
     private fun getCostLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): JLabel? {

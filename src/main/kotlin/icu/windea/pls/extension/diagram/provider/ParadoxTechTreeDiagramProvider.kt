@@ -12,14 +12,17 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.ep.data.*
 import icu.windea.pls.ep.presentation.*
 import icu.windea.pls.extension.diagram.*
+import icu.windea.pls.extension.diagram.provider.StellarisTechTreeDiagramProvider.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 import javax.swing.*
@@ -258,6 +261,51 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
         override fun getModificationTracker(): FilePathBasedModificationTracker {
             return ParadoxModificationTrackers.ScriptFileTracker("common/technologies/**/*.txt")
+        }
+
+        override fun updateDataModel() {
+            //群星原版科技有400+
+            provider as ParadoxDefinitionDiagramProvider
+
+            val technologies0 = getDefinitions(ParadoxDefinitionTypes.Technology)
+            if (technologies0.isEmpty()) return
+            val settings = provider.getDiagramSettings(project)?.state
+            val technologies = technologies0.filter { settings == null || showNode(it, settings) }
+            if (technologies.isEmpty()) return
+
+            val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
+            val techMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
+            for (technology in technologies) {
+                ProgressManager.checkCanceled()
+                val node = Node(technology, provider)
+                node.putUserData(Keys.nodeData, technology.getData())
+                nodeMap.put(technology, node)
+                val name = technology.definitionInfo?.name.orAnonymous()
+                techMap.put(name, technology)
+                nodes.add(node)
+            }
+            for (technology in technologies) {
+                ProgressManager.checkCanceled()
+                val data = technology.getData<StellarisTechnologyData>() ?: continue
+                //循环科技 ..> 循环科技
+                val levels = data.levels
+                if (levels != null) {
+                    val label = if (levels <= 0) "max level: inf" else "max level: $levels"
+                    val node = nodeMap.get(technology) ?: continue
+                    val edge = Edge(node, node, REL_REPEAT(label))
+                    edges.add(edge)
+                }
+                //前置 --> 科技
+                val prerequisites = data.prerequisites
+                if (prerequisites.isNotEmpty()) {
+                    for (prerequisite in prerequisites) {
+                        val source = techMap.get(prerequisite)?.let { nodeMap.get(it) } ?: continue
+                        val target = nodeMap.get(technology) ?: continue
+                        val edge = Edge(source, target, REL_PREREQUISITE)
+                        edges.add(edge)
+                    }
+                }
+            }
         }
     }
 }
