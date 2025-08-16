@@ -87,4 +87,3 @@ sealed class CwtSchemaExpression(
         }
     }
 }
-
