@@ -121,8 +121,7 @@ Note:
 
 ### Code Fences
 
-By injecting extra information after the language ID of a Markdown code fence,
-you can specify the game type and file path for script or localization file snippets.
+By injecting extra information after the language ID of a Markdown code fence, you can specify the game type and file path for script or localization file snippets.
 PLS will use this information to match CWT configs and provide advanced language features as if you were editing an actual script or localization file.
 
 ![](../images/extensions/md_code_fence_1.png)
@@ -156,3 +155,65 @@ Notes:
 > [!WARNING]
 > 
 > Features in this section and the Diagrams plugin are only available in IDE professional editions (e.g., IntelliJ IDEA Ultimate).
+
+PLS provides several types of diagrams for visualizing the definitions and relationships of certain types of entities.
+
+Currently, only event tree and technology tree diagrams are provided.
+
+> [!TIP]
+>
+> You can also use the type hierarchy view to inspect event trees and technology trees.
+>
+> * When the caret is on a definition or its reference, go to `Navigate > Type Hierarchy` in the main menu to open the type hierarchy window.
+> * In the hierarchy tool window, you can view all definitions of the same type in a collapsible tree view.
+> * If the type is event or technology, you can also view the corresponding event tree or technology tree in the hierarchy view.
+>
+> ![](../images/extensions/diagram_hierarchy_1.png)
+
+### Event Tree
+
+You can open the event tree diagram in the following ways:
+
+* In the project view, select the script file of an event or its parent directory (including the game or mod directory), then open the context menu, choose `Diagrams > Show Diagram...`, and select the desired diagram type for the event tree.
+* In the editor, open the script file of an event, then open the context menu, choose `Diagrams > Show Diagram...`, and select the desired diagram type for the event tree.
+* If available, you can also open it directly via a shortcut or the Search Everywhere feature (press `Shift + Shift`).
+
+The event tree diagram displays key information about events and their invocation relationships. You can use the toolbar above to configure which node elements to display and filter the nodes to be shown.
+
+![](../images/extensions/diagram_event_tree_1.png)
+
+1. Set which node elements to display. From left to right: type, property, localized title, image.
+2. Filter nodes to display by query scope. For example, only show nodes corresponding to events in opened files.
+3. Open the diagram settings pages.
+
+> [!WARNING]
+>
+> IDE needs some time to complete data loading and graph rendering. If there are too many nodes and node elements to render, this process may take a long time.
+
+### Technology Tree
+
+If the current game type is *Stellaris*, you can open the technology tree diagram in the following ways:
+
+* In the project view, select the script file of a technology or its parent directory (including the game or mod directory), then open the context menu, choose `Diagrams > Show Diagram...`, and select the desired diagram type for the technology tree.
+* In the editor, open the script file of a technology, then open the context menu, choose `Diagrams > Show Diagram...`, and select the desired diagram type for the technology tree.
+* If available, you can also open it directly via a shortcut or the Search Everywhere feature (press `Shift + Shift`).
+
+The technology tree diagram displays key information about technologies and their prerequisite relationships. You can use the toolbar above to configure which node elements to display and filter the nodes to be shown.
+
+![](../images/extensions/diagram_tech_tree_1.png)
+
+1. Set which node elements to display. From left to right: type, property, localized name, icon, image (displayed as a technology card).
+2. Filter nodes to display by query scope. For example, only show nodes corresponding to technologies in opened files.
+3. Open the diagram settings pages.
+
+> [!WARNING]
+> 
+> IDE needs some time to complete data loading and graph rendering. If there are too many nodes and node elements to render, this process may take a long time.
+
+### Settings Page
+
+In the IDE's settings page, go to `Languages & Frameworks > Paradox Language Support > Diagrams` to open the diagram settings page.
+
+Here you can configure which nodes to display for each diagram according to various conditions.
+
+![](../images/extensions/diagram_settings_1.png)
