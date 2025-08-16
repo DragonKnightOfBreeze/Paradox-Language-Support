@@ -39,7 +39,7 @@ class Vic2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
-        override fun updateDataModel(indicator: ProgressIndicator?) {
+        override fun updateDataModel() {
             provider as IrEventTreeDiagramProvider
             val events = getDefinitions(ParadoxDefinitionTypes.Event)
             if (events.isEmpty()) return
@@ -85,7 +85,7 @@ class Vic2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
             }
             with(settings.type) {
                 val v = definitionInfo.subtypes.orNull() ?: return@with
-                val enabled = v.any { this[it] ?: false }
+                val enabled = v.mapNotNull { this[it] }.none { !it }
                 if (!enabled) return false
             }
             return true

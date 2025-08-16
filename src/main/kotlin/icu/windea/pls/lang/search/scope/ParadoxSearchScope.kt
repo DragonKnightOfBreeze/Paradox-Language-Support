@@ -71,7 +71,7 @@ open class ParadoxSearchScope(
 
         @JvmStatic
         fun allScope(project: Project, context: Any?): GlobalSearchScope {
-            val file = selectFile(context) ?: return EMPTY_SCOPE //use empty scope here
+            val file = selectFile(context) ?: return allScope(project) //use all scope here
             return allScope(project).intersectWith(ParadoxSearchScope(project, file))
         }
 

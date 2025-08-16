@@ -2,6 +2,7 @@ package icu.windea.pls.extension.diagram.provider
 
 import com.intellij.diagram.*
 import com.intellij.diagram.presentation.*
+import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
@@ -87,6 +88,10 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
 
         override fun getElementTitle(element: PsiElement): String? {
             ProgressManager.checkCanceled()
+            return runReadAction { doGetElementTitle(element) }
+        }
+
+        private fun doGetElementTitle(element: PsiElement): String? {
             return when (element) {
                 is PsiDirectory -> element.name
                 is ParadoxScriptProperty -> ParadoxEventManager.getName(element)
@@ -94,12 +99,12 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             }
         }
 
-        override fun getNodeTooltip(element: PsiElement?): String? {
-            return null
-        }
-
         override fun getNodeItems(nodeElement: PsiElement?, builder: DiagramBuilder): Array<Any> {
             ProgressManager.checkCanceled()
+            return runReadAction { doGetNodeItems(nodeElement) }
+        }
+
+        private fun doGetNodeItems(nodeElement: PsiElement?): Array<Any> {
             return when (nodeElement) {
                 is ParadoxScriptProperty -> {
                     val result = mutableListOf<Any>()
@@ -129,6 +134,10 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
 
         override fun getItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder): JComponent? {
             ProgressManager.checkCanceled()
+            return runReadAction { doGetItemComponent(nodeElement, nodeItem) }
+        }
+
+        private fun doGetItemComponent(nodeElement: PsiElement, nodeItem: Any?): JComponent? {
             return when (nodeElement) {
                 is ParadoxScriptProperty -> {
                     when {
@@ -155,29 +164,12 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             }
         }
 
-        override fun getItemIcon(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): Icon? {
-            ProgressManager.checkCanceled()
-            return when (nodeElement) {
-                is ParadoxScriptProperty -> {
-                    when {
-                        nodeItem is CwtProperty -> PlsIcons.Nodes.Type
-                        nodeItem is ParadoxScriptProperty -> {
-                            val definitionInfo = nodeItem.definitionInfo
-                            if (definitionInfo != null) {
-                                null
-                            } else {
-                                PlsIcons.Nodes.Property
-                            }
-                        }
-                        else -> null
-                    }
-                }
-                else -> null
-            }
-        }
-
         override fun getItemName(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder): SimpleColoredText? {
             ProgressManager.checkCanceled()
+            return runReadAction { doGetItemName(nodeElement, nodeItem) }
+        }
+
+        private fun doGetItemName(nodeElement: PsiElement?, nodeItem: Any?): SimpleColoredText? {
             return when (nodeElement) {
                 is ParadoxScriptProperty -> {
                     when {
@@ -188,18 +180,15 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                         }
                         nodeItem is ParadoxScriptProperty -> {
                             val definitionInfo = nodeItem.definitionInfo
-                            if (definitionInfo != null) {
-                                null
-                            } else {
-                                val rendered = ParadoxScriptTextRenderer(renderInBlock = true).render(nodeItem)
-                                val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
-                                val propertyValue = nodeItem.propertyValue
-                                if (propertyValue is ParadoxScriptScriptedVariableReference) {
-                                    val sv = propertyValue.text
-                                    result.append(" by $sv", SimpleTextAttributes.GRAYED_ATTRIBUTES)
-                                }
-                                result
+                            if (definitionInfo != null) return null
+                            val rendered = ParadoxScriptTextRenderer(renderInBlock = true).render(nodeItem)
+                            val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
+                            val propertyValue = nodeItem.propertyValue
+                            if (propertyValue is ParadoxScriptScriptedVariableReference) {
+                                val sv = propertyValue.text
+                                result.append(" by $sv", SimpleTextAttributes.GRAYED_ATTRIBUTES)
                             }
+                            result
                         }
                         else -> null
                     }
@@ -212,10 +201,36 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             return null
         }
 
+        override fun getItemIcon(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): Icon? {
+            ProgressManager.checkCanceled()
+            return runReadAction { doGetItemIcon(nodeElement, nodeItem) }
+        }
+
+        private fun doGetItemIcon(nodeElement: PsiElement?, nodeItem: Any?): Icon? {
+            return when (nodeElement) {
+                is ParadoxScriptProperty -> {
+                    when {
+                        nodeItem is CwtProperty -> PlsIcons.Nodes.Type
+                        nodeItem is ParadoxScriptProperty -> {
+                            val definitionInfo = nodeItem.definitionInfo
+                            if (definitionInfo != null) return null
+                            PlsIcons.Nodes.Property
+                        }
+                        else -> null
+                    }
+                }
+                else -> null
+            }
+        }
+
         @Suppress("RedundantOverride")
         override fun getItemDocOwner(element: Any?, builder: DiagramBuilder): PsiElement? {
             //property -> No documentation found -> ok
             return super.getItemDocOwner(element, builder)
+        }
+
+        override fun getNodeTooltip(element: PsiElement?): String? {
+            return null
         }
     }
 

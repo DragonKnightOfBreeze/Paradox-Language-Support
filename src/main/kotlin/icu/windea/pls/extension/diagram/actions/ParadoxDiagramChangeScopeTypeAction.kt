@@ -15,9 +15,9 @@ class ParadoxDiagramChangeScopeTypeAction(
     val scopeType: ParadoxSearchScopeType,
     val builder: DiagramBuilder
 ) : DiagramAction(scopeType.text, null, null) {
-    companion object {
-        private val SELECTED_ICON = SelectedVisibilityIcon()
-        private val DESELECTED_ICON = DeselectedVisibilityIcon()
+    object Icons {
+        val SELECTED_ICON = SelectedVisibilityIcon()
+        val DESELECTED_ICON = DeselectedVisibilityIcon()
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -29,11 +29,11 @@ class ParadoxDiagramChangeScopeTypeAction(
     private fun getActionIcon(): Icon {
         val project = builder.project
         val provider = builder.provider
-        if (provider !is ParadoxDiagramProvider) return DESELECTED_ICON
-        val settings = provider.getDiagramSettings(project)?.state ?: return DESELECTED_ICON
+        if (provider !is ParadoxDiagramProvider) return Icons.DESELECTED_ICON
+        val settings = provider.getDiagramSettings(project)?.state ?: return Icons.DESELECTED_ICON
         val currentScopeType = settings.scopeType
         val selected = ParadoxSearchScopeTypes.get(currentScopeType).id == scopeType.id
-        return if (selected) SELECTED_ICON else DESELECTED_ICON
+        return if (selected) Icons.SELECTED_ICON else Icons.DESELECTED_ICON
     }
 
     override fun update(e: AnActionEvent) {

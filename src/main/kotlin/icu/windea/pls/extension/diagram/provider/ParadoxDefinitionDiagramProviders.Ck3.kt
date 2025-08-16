@@ -38,7 +38,7 @@ class Ck3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
-        override fun updateDataModel(indicator: ProgressIndicator?) {
+        override fun updateDataModel() {
             provider as Ck3EventTreeDiagramProvider
             val events = getDefinitions(ParadoxDefinitionTypes.Event)
             if (events.isEmpty()) return
@@ -84,7 +84,7 @@ class Ck3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
             }
             with(settings.type) {
                 val v = definitionInfo.subtypes.orNull() ?: return@with
-                val enabled = v.any { this[it] ?: false }
+                val enabled = v.mapNotNull { this[it] }.none { !it }
                 if (!enabled) return false
             }
             return true

@@ -8,10 +8,7 @@ import java.util.*
  * 而非默认的基于[DiagramCategory]的名字进行排序。
  */
 abstract class OrderedDiagramNodeContentManager : DiagramNodeContentManager {
-    var _dataModel: DiagramDataModel<*>? = null
     val _enabledCategories: MutableSet<DiagramCategory> = Collections.synchronizedSet(TreeSet(compareBy { contentCategories.indexOf(it) }))
-
-    var dataModel: DiagramDataModel<*>? = _dataModel
 
     override fun isCategoryEnabled(category: DiagramCategory): Boolean {
         return _enabledCategories.contains(category)

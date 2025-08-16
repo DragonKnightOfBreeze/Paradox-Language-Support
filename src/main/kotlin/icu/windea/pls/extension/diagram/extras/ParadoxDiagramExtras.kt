@@ -39,6 +39,10 @@ open class ParadoxDiagramExtras(
                 children.add(index, ParadoxDiagramScopeTypesActionGroup(builder))
                 return actionGroup
             }
+
+            override fun updateAllDiagramEditorToolbars(project: Project) {
+                super.updateAllDiagramEditorToolbars(project)
+            }
         }
     }
 }

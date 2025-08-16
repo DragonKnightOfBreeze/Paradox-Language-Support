@@ -1,6 +1,7 @@
 package icu.windea.pls.extension.diagram.provider
 
 import com.intellij.diagram.*
+import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
@@ -42,7 +43,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
-        override fun updateDataModel(indicator: ProgressIndicator?) {
+        override fun updateDataModel() {
             provider as StellarisEventTreeDiagramProvider
             val events = getDefinitions(ParadoxDefinitionTypes.Event)
             if (events.isEmpty()) return
@@ -91,7 +92,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
             }
             with(settings.type) {
                 val v = definitionInfo.subtypes.orNull() ?: return@with
-                val enabled = v.any { this[it] ?: false }
+                val enabled = v.mapNotNull { this[it] }.none { !it }
                 if (!enabled) return false
             }
             return true
@@ -135,7 +136,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
             //这里使用的颜色是来自灰机wiki的特殊字体颜色
             //https://qunxing.huijiwiki.com/wiki/%E7%A7%91%E6%8A%80
             val data = node.getUserData(Keys.nodeData) ?: return null
-            val definitionInfo = node.definitionInfo ?: return null
+            val definitionInfo = runReadAction { node.definitionInfo } ?: return null
             val types = definitionInfo.subtypes
             return when {
                 types.contains("dangerous") && types.contains("rare") -> ColorUtil.fromHex("#e8514f")
@@ -154,7 +155,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxTechTreeDiagramProvider.DataModel(project, file, provider) {
-        override fun updateDataModel(indicator: ProgressIndicator?) {
+        override fun updateDataModel() {
             provider as StellarisTechTreeDiagramProvider
             val technologies = getDefinitions(ParadoxDefinitionTypes.Technology)
             if (technologies.isEmpty()) return
@@ -225,7 +226,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
             }
             with(settings.category) {
                 val v = data.category.orNull() ?: return@with
-                val enabled = v.any { this[it] ?: false }
+                val enabled = v.mapNotNull { this[it] }.none { !it }
                 if (!enabled) return false
             }
             return true

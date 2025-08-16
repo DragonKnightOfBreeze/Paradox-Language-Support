@@ -12,6 +12,9 @@ import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
+import kotlinx.coroutines.future.asCompletableFuture
+import kotlinx.coroutines.launch
+import org.jetbrains.concurrency.asPromise
 
 @WithGameType(ParadoxGameType.Stellaris)
 @Service(Service.Level.PROJECT)

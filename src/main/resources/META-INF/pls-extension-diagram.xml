@@ -1,4 +1,6 @@
 <idea-plugin>
+  <resource-bundle>messages.PlsDiagramBundle</resource-bundle>
+
   <extensions defaultExtensionNs="com.intellij">
     <projectConfigurable id="pls.diagram" parentId="pls" bundle="messages.PlsDiagramBundle" key="settings.diagram" instance="icu.windea.pls.extension.diagram.settings.PlsDiagramSettingsConfigurable"/>
   </extensions>
