@@ -245,6 +245,7 @@ tasks {
             listOf(
                 "-Didea.is.internal=true",
                 "-Dpls.is.debug=true",
+                "-Dide.slow.operations.assertion=false",
             )
         }
     }
