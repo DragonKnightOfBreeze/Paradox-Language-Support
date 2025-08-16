@@ -30,36 +30,45 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         val scope = queryParameters.selector.scope
         if (SearchScope.isEmptyScope(scope)) return
         val name = queryParameters.name
-        val forFile = queryParameters.typeExpression != ""
-        val typeExpression = queryParameters.typeExpression?.orNull()?.let { ParadoxDefinitionTypeExpression.resolve(it) }
+        val typeExpression = queryParameters.typeExpression?.let { ParadoxDefinitionTypeExpression.resolve(it) }
         val project = queryParameters.project
         val gameType = queryParameters.selector.gameType ?: return
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
         val constraint = queryParameters.selector.getConstraint()
 
-        if (forFile && forFile(typeExpression, configGroup)) {
-            processQueryForFileDefinitions(name, typeExpression, project, scope, constraint) { consumer.process(it) }
-        }
-        processQueryForStubDefinitions(name, typeExpression, project, scope, constraint) { consumer.process(it) }
+        val r = processQueryForDefinitions(name, typeExpression, configGroup, scope, constraint, consumer)
+        if (!r) return
 
+        // process swapped types
         if (typeExpression != null) {
-            //如果存在切换类型，也要查找对应的切换类型的定义
             configGroup.swappedTypes.values.forEach f@{ swappedTypeConfig ->
                 val baseType = swappedTypeConfig.baseType ?: return@f
                 val baseTypeExpression = ParadoxDefinitionTypeExpression.resolve(baseType)
                 if (typeExpression.matches(baseTypeExpression)) {
                     ProgressManager.checkCanceled()
                     val swappedTypeExpression = ParadoxDefinitionTypeExpression.resolve(swappedTypeConfig.name)
-                    if (forFile && forFile(typeExpression, configGroup)) {
-                        processQueryForFileDefinitions(name, swappedTypeExpression, project, scope, constraint) { consumer.process(it) }
-                    }
-                    processQueryForStubDefinitions(name, swappedTypeExpression, project, scope, constraint) { consumer.process(it) }
+                    processQueryForDefinitions(name, swappedTypeExpression, configGroup, scope, constraint, consumer)
                 }
             }
         }
     }
 
+    private fun processQueryForDefinitions(
+        name: String?,
+        typeExpression: ParadoxDefinitionTypeExpression?,
+        configGroup: CwtConfigGroup,
+        scope: GlobalSearchScope,
+        constraint: ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?,
+        processor: Processor<in ParadoxScriptDefinitionElement>
+    ): Boolean {
+        if (forFile(typeExpression, configGroup)) {
+            return processQueryForFileDefinitions(name, typeExpression, configGroup.project, scope, constraint) { processor.process(it) }
+        }
+        return processQueryForStubDefinitions(name, typeExpression, configGroup.project, scope, constraint) { processor.process(it) }
+    }
+
     private fun forFile(typeExpression: ParadoxDefinitionTypeExpression?, configGroup: CwtConfigGroup): Boolean {
+        if (typeExpression?.expressionString == "") return false
         return typeExpression == null || configGroup.types.get(typeExpression.type)?.typePerFile == true
     }
 
@@ -70,9 +79,9 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         scope: GlobalSearchScope,
         constraint: ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?,
         processor: Processor<ParadoxScriptFile>
-    ) {
+    ): Boolean {
         val ignoreCase = constraint?.ignoreCase == true
-        FileTypeIndex.processFiles(ParadoxScriptFileType, p@{
+        return FileTypeIndex.processFiles(ParadoxScriptFileType, p@{
             ProgressManager.checkCanceled()
             val file = it.toPsiFile(project) ?: return@p true
             if (file !is ParadoxScriptFile) return@p true
@@ -90,31 +99,39 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         project: Project,
         scope: GlobalSearchScope,
         constraint: ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?,
-        consumer: Processor<in ParadoxScriptDefinitionElement>
-    ) {
+        processor: Processor<in ParadoxScriptDefinitionElement>
+    ): Boolean {
         val indexKey = constraint?.indexKey ?: ParadoxIndexManager.DefinitionNameKey
         val ignoreCase = constraint?.ignoreCase == true
         val finalName = if (ignoreCase) name?.lowercase() else name
-        if (typeExpression == null) {
+        val r = if (typeExpression == null) {
             if (finalName == null) {
-                indexKey.processAllElementsByKeys(project, scope) { _, element -> consumer.process(element) }
+                indexKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
             } else {
-                indexKey.processAllElements(finalName, project, scope) { element -> consumer.process(element) }
+                indexKey.processAllElements(finalName, project, scope) { element -> processor.process(element) }
             }
         } else {
             if (finalName == null) {
                 ParadoxIndexManager.DefinitionTypeKey.processAllElements(typeExpression.type, project, scope) p@{ element ->
                     if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(element, typeExpression.subtypes)) return@p true
-                    consumer.process(element)
+                    processor.process(element)
                 }
             } else {
                 indexKey.processAllElements(finalName, project, scope) p@{ element ->
                     if (!matchesType(element, typeExpression.type)) return@p true
                     if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(element, typeExpression.subtypes)) return@p true
-                    consumer.process(element)
+                    processor.process(element)
                 }
             }
         }
+        if (!r) return false
+
+        // fallback for inferred constraints
+        if (constraint != null && constraint.inferred) {
+            return processQueryForStubDefinitions(name, typeExpression, project, scope, null, processor)
+        }
+
+        return true
     }
 
     private fun matchesType(element: ParadoxScriptDefinitionElement, type: String): Boolean {

@@ -18,6 +18,7 @@
 * [X] 优化：优化自动识别切换类型（如`swapped_job`）的声明规则的逻辑 / OP: Optimize the logic for automatically detecting declaration configs for swapped types (e.g. `swapped_job`)
 * [X] 修复：修复未在必要时渲染切分后的图片的问题 / FIX: Fix an issue that images are not rendered with expected slicing if necessary
 * [X] 修复：修复某些场合未忽略字符串大小写的问题 / FIX: Fix an issue that string case is not ignored in some situations
+* [X] 修复：修复与图表（Diagrams）相关的一些问题并优化性能 / FIX: Fix some issues related to diagrams, together with performance optimization
 * [ ] 新功能：支持基于CWT规则的自定义的代码折叠 / NEW: Support custom code folding based on CWT configs
 * [ ] 新功能：支持基于CWT规则的自定义的后缀补全 / NEW: Support custom postfix completion based on CWT configs
 * [X] 其他优化与BUG修复 / Other optimizations and bug fixes

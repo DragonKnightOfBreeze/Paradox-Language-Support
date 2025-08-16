@@ -22,15 +22,23 @@ class ParadoxLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisatio
      * 用于快速索引修正的名字和描述。它们是忽略大小写的。
      */
     class ModifierIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
-        companion object {
-            private const val VERSION = 71 //2.0.1-dev
-            private const val CACHE_SIZE = 2 * 1024
-        }
-
         override fun getKey() = ParadoxIndexManager.LocalisationNameForModifierKey
-
         override fun getVersion() = VERSION
+    }
 
-        override fun getCacheSize() = CACHE_SIZE
+    /**
+     * 用于快速索引与事件相关的本地化。
+     */
+    class EventIndex: StringStubIndexExtension<ParadoxLocalisationProperty>() {
+        override fun getKey() = ParadoxIndexManager.LocalisationNameForEventKey
+        override fun getVersion() = VERSION
+    }
+
+    /**
+     * 用于快速索引与科技相关的本地化。
+     */
+    class TechIndex: StringStubIndexExtension<ParadoxLocalisationProperty>() {
+        override fun getKey() = ParadoxIndexManager.LocalisationNameForTechKey
+        override fun getVersion() = VERSION
     }
 }

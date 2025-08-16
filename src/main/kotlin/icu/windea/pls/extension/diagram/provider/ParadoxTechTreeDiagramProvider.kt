@@ -5,13 +5,14 @@ import com.intellij.diagram.presentation.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
+import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.*
+import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.data.*
 import icu.windea.pls.ep.presentation.*
 import icu.windea.pls.extension.diagram.*
@@ -20,7 +21,6 @@ import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
@@ -35,23 +35,43 @@ import javax.swing.*
  * * 支持任何通用的图表操作。（例如，导出为图片）
  */
 abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : ParadoxDefinitionDiagramProvider(gameType) {
-    companion object {
-        val CAT_TYPE = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.type"), PlsIcons.Nodes.Type, true, false)
-        val CAT_PROPERTIES = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.properties"), PlsIcons.Nodes.Property, true, false)
-        val CAT_NAME = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.name"), PlsIcons.Nodes.Localisation, false, false)
-        val CAT_ICON = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.icon"), PlsIcons.General.Image, false, false)
-        val CAT_PRESENTATION = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.presentation"), PlsIcons.General.Presentation, false, false)
-        val CATEGORIES = arrayOf(CAT_TYPE, CAT_PROPERTIES, CAT_NAME, CAT_ICON, CAT_PRESENTATION)
+    object Categories {
+        val Type = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.type"), PlsIcons.Nodes.Type, true, false)
+        val Properties = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.properties"), PlsIcons.Nodes.Property, true, false)
+        val Name = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.name"), PlsIcons.Nodes.Localisation, false, false)
+        val Icon = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.icon"), PlsIcons.General.Image, false, false)
+        val Presentation = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.presentation"), PlsIcons.General.Presentation, false, false)
 
-        val REL_PREREQUISITE = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID) {
+        val All = arrayOf(Type, Properties, Name, Icon, Presentation)
+    }
+
+    object Relations {
+        val Prerequisite = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID) {
             override fun getTargetArrow() = DELTA
         }
-        val REL_REPEAT_CACHE = ConcurrentHashMap<String, DiagramRelationshipInfoAdapter>()
-        fun REL_REPEAT(label: String) = REL_REPEAT_CACHE.getOrPut(label) {
+
+        private val repeatCache = ConcurrentHashMap<String, DiagramRelationshipInfoAdapter>()
+        fun Repeat(label: String) = repeatCache.getOrPut(label) {
             object : DiagramRelationshipInfoAdapter("REPEAT", DiagramLineType.DOTTED, label) {
                 override fun getTargetArrow() = DELTA
             }
         }
+    }
+
+    object Items {
+        class Type(val definition: ParadoxScriptProperty)
+
+        class Property(val property: ParadoxScriptProperty)
+
+        class Name(val definition: ParadoxScriptProperty) {
+            val nameElement by lazy { ParadoxTechnologyManager.getLocalizedNameElement(definition) }
+        }
+
+        class Icon(val definition: ParadoxScriptProperty) {
+            val iconFile by lazy { ParadoxTechnologyManager.getIconFile(definition) }
+        }
+
+        class Presentation(val definition: ParadoxScriptProperty)
     }
 
     private val _elementManager by lazy { ElementManager(this) }
@@ -62,30 +82,24 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
     abstract override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel): DataModel
 
-    override fun getAllContentCategories() = CATEGORIES
+    override fun getAllContentCategories() = Categories.All
 
     abstract override fun getDiagramSettings(project: Project): ParadoxTechTreeDiagramSettings<*>?
 
     class NodeContentManager : OrderedDiagramNodeContentManager() {
         override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?): Boolean {
-            return when {
-                item is CwtProperty -> category == CAT_TYPE
-                item is ParadoxScriptProperty -> {
-                    val definitionInfo = item.definitionInfo
-                    if (definitionInfo != null) {
-                        category == CAT_PRESENTATION
-                    } else {
-                        category == CAT_PROPERTIES
-                    }
-                }
-                item is ParadoxLocalisationProperty -> category == CAT_NAME
-                item is PsiFile -> category == CAT_ICON
-                else -> false
+            return when (item) {
+                is Items.Type -> category == Categories.Type
+                is Items.Property -> category == Categories.Properties
+                is Items.Name -> category == Categories.Name
+                is Items.Icon -> category == Categories.Icon
+                is Items.Presentation -> category == Categories.Presentation
+                else -> true
             }
         }
 
         override fun getContentCategories(): Array<DiagramCategory> {
-            return CATEGORIES
+            return Categories.All
         }
     }
 
@@ -100,85 +114,58 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
         override fun getElementTitle(element: PsiElement): String? {
             ProgressManager.checkCanceled()
-            return runReadAction { doGetElementTitle(element) }
-        }
-
-        private fun doGetElementTitle(element: PsiElement): String? {
             return when (element) {
-                is PsiDirectory -> element.name
-                is ParadoxScriptProperty -> ParadoxTechnologyManager.getName(element)
+                is PsiDirectory -> runReadAction { element.name }
+                is ParadoxScriptProperty -> runReadAction { ParadoxTechnologyManager.getName(element) }
                 else -> null
             }
         }
 
         override fun getNodeItems(nodeElement: PsiElement?, builder: DiagramBuilder): Array<Any> {
+            provider as ParadoxTechTreeDiagramProvider
             ProgressManager.checkCanceled()
-            return runReadAction { doGetNodeItems(nodeElement) }
-        }
-
-        private fun doGetNodeItems(nodeElement: PsiElement?): Array<Any> {
             return when (nodeElement) {
                 is ParadoxScriptProperty -> {
                     val result = mutableListOf<Any>()
-                    val typeElement = nodeElement.definitionInfo?.typeConfig?.pointer?.element //should not be null
-                    if (typeElement != null) result.add(typeElement)
-                    val properties = getProperties(nodeElement)
-                    result.addAll(properties)
-                    val localizedNameElement = ParadoxTechnologyManager.getLocalizedNameElement(nodeElement)
-                    if (localizedNameElement != null) result.add(localizedNameElement)
-                    val icon = ParadoxTechnologyManager.getIconFile(nodeElement)
-                    if (icon != null) result.add(icon)
-                    result.add(nodeElement)
+                    result += Items.Type(nodeElement)
+                    val properties = runReadAction { provider.getProperties(nodeElement) }
+                    properties.forEach { result += Items.Property(it) }
+                    result += Items.Name(nodeElement)
+                    result += Items.Icon(nodeElement)
+                    result += Items.Presentation(nodeElement)
                     result.toTypedArray()
                 }
                 else -> emptyArray()
             }
         }
 
-        private fun getProperties(nodeElement: ParadoxScriptProperty): Set<ParadoxScriptProperty> {
-            provider as ParadoxTechTreeDiagramProvider
-            val itemPropertyKeys = provider.getItemPropertyKeys()
-            val properties = sortedSetOf<ParadoxScriptProperty>(compareBy { itemPropertyKeys.indexOf(it.name.lowercase()) })
-            nodeElement.block?.properties(conditional = true, inline = true)?.forEach {
-                if (it.name.lowercase() in itemPropertyKeys) properties.add(it)
-            }
-            return properties
-        }
-
         override fun getItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder): JComponent? {
             ProgressManager.checkCanceled()
-            return runReadAction { doGetItemComponent(nodeElement, nodeItem) }
-        }
+            return when (nodeItem) {
+                is Items.Name -> runReadAction r@{
+                    //科技的名字
+                    val nameElement = nodeItem.nameElement ?: return@r null
+                    val result = ParadoxLocalisationTextUIRenderer().render(nameElement)
+                    result
+                }
+                is Items.Icon -> runReadAction r@{
+                    //科技的图标
+                    val iconFile = nodeItem.iconFile ?: return@r null
+                    val frameInfo = nodeElement.getUserData(PlsKeys.imageFrameInfo)
+                    val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile.virtualFile, iconFile.project, frameInfo)
 
-        private fun doGetItemComponent(nodeElement: PsiElement, nodeItem: Any?): JComponent? {
-            return when (nodeElement) {
-                is ParadoxScriptProperty -> {
-                    when {
-                        nodeItem is ParadoxLocalisationProperty -> {
-                            //科技的名字
-                            ParadoxLocalisationTextUIRenderer().render(nodeItem)
-                        }
-                        nodeItem is PsiFile -> {
-                            //科技的图标
-                            val frameInfo = nodeElement.getUserData(PlsKeys.imageFrameInfo)
-                            val iconUrl = ParadoxImageManager.resolveUrlByFile(nodeItem.virtualFile, nodeItem.project, frameInfo)
+                    //如果无法解析（包括对应文件不存在的情况）就直接跳过
+                    if (!ParadoxImageManager.canResolve(iconUrl)) return@r null
 
-                            //如果无法解析（包括对应文件不存在的情况）就直接跳过
-                            if (!ParadoxImageManager.canResolve(iconUrl)) return null
-
-                            val iconFileUrl = iconUrl.toFileUrl()
-                            val icon = iconFileUrl.toIconOrNull()
-                            icon?.toLabel()
-                        }
-                        nodeItem is ParadoxScriptProperty -> {
-                            //科技树
-                            val definitionInfo = nodeItem.definitionInfo
-                            if (definitionInfo == null) return null
-                            val presentation = ParadoxDefinitionPresentationProvider.getPresentation(nodeItem, definitionInfo)
-                            presentation
-                        }
-                        else -> null
-                    }
+                    val iconFileUrl = iconUrl.toFileUrl()
+                    val icon = iconFileUrl.toIconOrNull()
+                    icon?.toLabel()
+                }
+                is Items.Presentation -> runReadAction r@{
+                    val definition = nodeItem.definition
+                    val definitionInfo = definition.definitionInfo ?: return@r null
+                    val result = ParadoxDefinitionPresentationProvider.getPresentation(definition, definitionInfo)
+                    result
                 }
                 else -> null
             }
@@ -186,59 +173,32 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
         override fun getItemName(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder): SimpleColoredText? {
             ProgressManager.checkCanceled()
-            return runReadAction { doGetItemName(nodeElement, nodeItem) }
-        }
-
-        private fun doGetItemName(nodeElement: PsiElement?, nodeItem: Any?): SimpleColoredText? {
-            return when (nodeElement) {
-                is ParadoxScriptProperty -> {
-                    when {
-                        nodeItem is CwtProperty -> {
-                            val typesText = nodeElement.definitionInfo?.typesText ?: return null
-                            val result = SimpleColoredText(typesText, DEFAULT_TEXT_ATTR)
-                            result
-                        }
-                        nodeItem is ParadoxScriptProperty -> {
-                            val definitionInfo = nodeItem.definitionInfo
-                            if (definitionInfo != null) return null
-                            val rendered = ParadoxScriptTextRenderer(renderInBlock = true).render(nodeItem)
-                            val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
-                            val propertyValue = nodeItem.propertyValue
-                            if (propertyValue is ParadoxScriptScriptedVariableReference) {
-                                val sv = propertyValue.text
-                                result.append(" by $sv", SimpleTextAttributes.GRAYED_ATTRIBUTES)
-                            }
-                            result
-                        }
-                        else -> null
+            return when (nodeItem) {
+                is Items.Type -> runReadAction r@{
+                    val typesText = nodeItem.definition.definitionInfo?.typesText ?: return@r null
+                    val result = SimpleColoredText(typesText, DEFAULT_TEXT_ATTR)
+                    result
+                }
+                is Items.Property -> runReadAction {
+                    val property = nodeItem.property
+                    val rendered = ParadoxScriptTextRenderer(renderInBlock = true).render(property)
+                    val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
+                    val propertyValue = property.propertyValue
+                    if (propertyValue is ParadoxScriptScriptedVariableReference) {
+                        val sv = propertyValue.text
+                        result.append(" by $sv", SimpleTextAttributes.GRAYED_ATTRIBUTES)
                     }
+                    result
                 }
                 else -> null
             }
         }
 
-        override fun getItemType(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): SimpleColoredText? {
-            return null
-        }
-
         override fun getItemIcon(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder?): Icon? {
             ProgressManager.checkCanceled()
-            return runReadAction { doGetItemIcon(nodeElement, nodeItem) }
-        }
-
-        private fun doGetItemIcon(nodeElement: PsiElement?, nodeItem: Any?): Icon? {
-            return when (nodeElement) {
-                is ParadoxScriptProperty -> {
-                    when {
-                        nodeItem is CwtProperty -> PlsIcons.Nodes.Type
-                        nodeItem is ParadoxScriptProperty -> {
-                            val definitionInfo = nodeItem.definitionInfo
-                            if (definitionInfo != null) return null
-                            PlsIcons.Nodes.Property
-                        }
-                        else -> null
-                    }
-                }
+            return when (nodeItem) {
+                is Items.Type -> PlsIcons.Nodes.Type
+                is Items.Property -> PlsIcons.Nodes.Property
                 else -> null
             }
         }
@@ -259,20 +219,25 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
-        override fun getModificationTracker(): FilePathBasedModificationTracker {
-            return ParadoxModificationTrackers.ScriptFileTracker("common/technologies/**/*.txt")
+        override fun getModificationTracker(): ModificationTracker {
+            val definitionType = ParadoxDefinitionTypes.Technology
+            val configGroup = PlsFacade.getConfigGroup(project, provider.gameType)
+            val typeConfig = configGroup.types.get(definitionType) ?: return super.getModificationTracker()
+            val key = CwtConfigManager.getFilePathPatterns(typeConfig).joinToString(";")
+            return ParadoxModificationTrackers.ScriptFileTracker(key)
         }
 
         override fun updateDataModel() {
             //群星原版科技有400+
-            provider as ParadoxDefinitionDiagramProvider
 
-            val technologies0 = getDefinitions(ParadoxDefinitionTypes.Technology)
+            val definitionType = ParadoxDefinitionTypes.Technology
+            val technologies0 = getDefinitions(definitionType)
             if (technologies0.isEmpty()) return
             val settings = provider.getDiagramSettings(project)?.state
             val technologies = technologies0.filter { settings == null || showNode(it, settings) }
             if (technologies.isEmpty()) return
 
+            provider as ParadoxDefinitionDiagramProvider
             val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
             val techMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
             for (technology in technologies) {
@@ -292,7 +257,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                 if (levels != null) {
                     val label = if (levels <= 0) "max level: inf" else "max level: $levels"
                     val node = nodeMap.get(technology) ?: continue
-                    val edge = Edge(node, node, REL_REPEAT(label))
+                    val edge = Edge(node, node, Relations.Repeat(label))
                     edges.add(edge)
                 }
                 //前置 --> 科技
@@ -301,7 +266,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                     for (prerequisite in prerequisites) {
                         val source = techMap.get(prerequisite)?.let { nodeMap.get(it) } ?: continue
                         val target = nodeMap.get(technology) ?: continue
-                        val edge = Edge(source, target, REL_PREREQUISITE)
+                        val edge = Edge(source, target, Relations.Prerequisite)
                         edges.add(edge)
                     }
                 }

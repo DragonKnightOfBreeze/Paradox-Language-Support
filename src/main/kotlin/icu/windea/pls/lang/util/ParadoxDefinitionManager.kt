@@ -645,12 +645,13 @@ object ParadoxDefinitionManager {
         return doGetPrimaryLocalisationFromCache(element)
     }
 
-    private fun doGetPrimaryLocalisationFromCache(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? =
-        CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryLocalisation) {
+    private fun doGetPrimaryLocalisationFromCache(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionPrimaryLocalisation) {
             ProgressManager.checkCanceled()
             val value = doGetPrimaryLocalisation(element)
             value.withDependencyItems(element, ParadoxModificationTrackers.LocalisationFileTracker, ParadoxModificationTrackers.LocaleTracker)
         }
+    }
 
     private fun doGetPrimaryLocalisation(element: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
         val definitionInfo = element.definitionInfo ?: return null

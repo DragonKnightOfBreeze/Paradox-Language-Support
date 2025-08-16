@@ -26,9 +26,8 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         if (SearchScope.isEmptyScope(scope)) return
         val project = queryParameters.project
         val constraint = queryParameters.selector.getConstraint()
-        processQueryForLocalisations(queryParameters.name, project, scope, constraint) { element ->
-            consumer.process(element)
-        }
+
+        processQueryForLocalisations(queryParameters.name, project, scope, constraint) { element -> consumer.process(element) }
     }
 
     private fun processQueryForLocalisations(
@@ -41,10 +40,18 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         val indexKey = constraint?.indexKey ?: ParadoxIndexManager.LocalisationNameKey
         val ignoreCase = constraint?.ignoreCase == true
         val finalName = if (ignoreCase) name?.lowercase() else name
-        if (finalName == null) {
-            return indexKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
+        val r = if (finalName == null) {
+            indexKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
         } else {
-            return indexKey.processAllElements(finalName, project, scope) { element -> processor.process(element) }
+            indexKey.processAllElements(finalName, project, scope) { element -> processor.process(element) }
         }
+        if (!r) return false
+
+        // fallback for inferred constraints
+        if (constraint != null && constraint.inferred) {
+            return processQueryForLocalisations(name, project, scope, null, processor)
+        }
+
+        return true
     }
 }

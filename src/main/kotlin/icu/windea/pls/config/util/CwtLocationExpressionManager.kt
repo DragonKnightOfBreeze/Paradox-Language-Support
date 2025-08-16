@@ -14,6 +14,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
+import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 
 object CwtLocationExpressionManager {
@@ -40,7 +41,7 @@ object CwtLocationExpressionManager {
             if (nameText.isEmpty()) return null
             val name = resolvePlaceholder(locationExpression, nameText)
             if (name.isNullOrEmpty()) return null
-            return createLocalisationResolveResult(name, definition, project, selectorBuilder)
+            return createLocalisationResolveResult(name, definition, definitionInfo, project, selectorBuilder)
         }
 
         val valueElement = definition.findByPath(location, ParadoxScriptValue::class.java, conditional = true, inline = true) ?: return null
@@ -58,7 +59,7 @@ object CwtLocationExpressionManager {
             return createLocalisationResolveResult(PlsBundle.message("inlined"))
         }
         val name = valueElement.stringValue
-        return createLocalisationResolveResult(name, definition, project, selectorBuilder)
+        return createLocalisationResolveResult(name, definition, definitionInfo, project, selectorBuilder)
     }
 
     private fun createLocalisationResolveResult(message: String): CwtLocalisationLocationExpression.ResolveResult {
@@ -68,16 +69,29 @@ object CwtLocationExpressionManager {
     private fun createLocalisationResolveResult(
         name: String,
         definition: ParadoxScriptDefinitionElement,
+        definitionInfo: ParadoxDefinitionInfo,
         project: Project,
         selectorBuilder: ChainedParadoxSelector<ParadoxLocalisationProperty>.() -> Unit
     ): CwtLocalisationLocationExpression.ResolveResult {
         return CwtLocalisationLocationExpression.ResolveResult(name, null, {
-            val selector = selector(project, definition).localisation().contextSensitive().apply(selectorBuilder)
+            val constraint = getLocalisationConstraint(definitionInfo) // use constraint here to optimize search performance
+            val selector = selector(project, definition).localisation().contextSensitive()
+                .withConstraint(constraint)
+                .apply(selectorBuilder)
             ParadoxLocalisationSearch.search(name, selector).find()
         }, {
-            val selector = selector(project, definition).localisation().contextSensitive().apply(selectorBuilder)
+            val selector = selector(project, definition).localisation().contextSensitive()
+                .apply(selectorBuilder)
             ParadoxLocalisationSearch.search(name, selector).findAll()
         })
+    }
+
+    private fun getLocalisationConstraint(definitionInfo: ParadoxDefinitionInfo): ParadoxIndexConstraint.Localisation? {
+        return when {
+            definitionInfo.type == ParadoxDefinitionTypes.Event -> ParadoxIndexConstraint.Localisation.Event
+            definitionInfo.type == ParadoxDefinitionTypes.Technology -> ParadoxIndexConstraint.Localisation.Tech
+            else -> null
+        }
     }
 
     fun resolve(

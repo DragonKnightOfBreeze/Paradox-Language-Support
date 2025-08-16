@@ -38,7 +38,6 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineM
         val tooltipLines = mutableSetOf<String>()
         val keys = mutableSetOf<String>()
         val targets = mutableSetOf<ParadoxLocalisationProperty>() //这里需要考虑基于引用相等去重
-        val project = element.project
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for ((key, locationExpression) in localisationInfos) {
             ProgressManager.checkCanceled()

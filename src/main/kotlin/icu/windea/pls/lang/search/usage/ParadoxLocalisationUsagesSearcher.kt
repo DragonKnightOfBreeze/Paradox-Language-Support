@@ -20,13 +20,14 @@ class ParadoxLocalisationUsagesSearcher : QueryExecutorBase<PsiReference, Refere
         if (target !is ParadoxLocalisationProperty) return
         val name = target.name
         if (name.isEmpty()) return
+        val ignoreCase = ParadoxIndexConstraint.Localisation.entries.filter { it.ignoreCase }.any { it.supports(name) }
 
         //这里不能直接使用target.useScope，否则文件高亮会出现问题
         val useScope = queryParameters.effectiveSearchScope
         val searchContext = UsageSearchContext.IN_CODE or UsageSearchContext.IN_COMMENTS
         val processor = getProcessor(target)
         queryParameters.optimizer.wordRequests.removeIf { it.word == name }
-        queryParameters.optimizer.searchWord(name, useScope, searchContext, true, target, processor)
+        queryParameters.optimizer.searchWord(name, useScope, searchContext, !ignoreCase, target, processor)
     }
 
     private fun getProcessor(target: PsiElement): RequestResultProcessor {

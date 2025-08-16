@@ -30,7 +30,7 @@ class ParadoxDefinitionUsagesSearcher : QueryExecutorBase<PsiReference, Referenc
         if (definitionInfo == null) return
         if (definitionInfo.name.isEmpty()) return //ignore anonymous definitions
         val words = getWords(target, definitionInfo)
-        val ignoreCase = ParadoxIndexConstraint.Definition.entries.filter { it.ignoreCase }.any { it.predicate(definitionInfo.type) }
+        val ignoreCase = ParadoxIndexConstraint.Definition.entries.filter { it.ignoreCase }.any { it.supports(definitionInfo.type) }
 
         //这里不能直接使用target.useScope，否则文件高亮会出现问题
         val useScope = queryParameters.effectiveSearchScope

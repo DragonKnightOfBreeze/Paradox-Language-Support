@@ -14,12 +14,20 @@ import icu.windea.pls.script.psi.*
 abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : ParadoxDiagramProvider(gameType) {
     abstract fun getItemPropertyKeys(): Array<String>
 
+    protected fun getProperties(nodeElement: ParadoxScriptProperty): Set<ParadoxScriptProperty> {
+        val itemPropertyKeys = getItemPropertyKeys()
+        val properties = sortedSetOf<ParadoxScriptProperty>(compareBy { itemPropertyKeys.indexOf(it.name.lowercase()) })
+        nodeElement.block?.properties(conditional = true, inline = true)?.forEach {
+            if (it.name.lowercase() in itemPropertyKeys) properties.add(it)
+        }
+        return properties
+    }
+
     open class Edge(
         override val source: Node,
         override val target: Node,
         relationship: DiagramRelationshipInfo
     ) : ParadoxDiagramEdge(source, target, relationship)
-
 
     open class Node(
         element: ParadoxScriptDefinitionElement,

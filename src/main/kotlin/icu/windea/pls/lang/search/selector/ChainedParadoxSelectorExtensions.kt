@@ -97,8 +97,8 @@ fun <S : ChainedParadoxSelector<ParadoxDefineIndexInfo>> S.distinctByExpression(
     return distinctBy { if (it.variable == null) it.namespace else it.namespace + "." + it.variable }
 }
 
-fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.withConstraint(constraint: ParadoxIndexConstraint<T>): S {
-    selectors += ParadoxWithConstraintSelector(constraint)
+fun <S : ChainedParadoxSelector<T>, T : PsiElement> S.withConstraint(constraint: ParadoxIndexConstraint<T>?): S {
+    if (constraint != null) selectors += ParadoxWithConstraintSelector(constraint)
     return this
 }
 
