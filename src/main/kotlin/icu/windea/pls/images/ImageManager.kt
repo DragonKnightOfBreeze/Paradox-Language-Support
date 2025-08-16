@@ -14,12 +14,11 @@ import javax.imageio.spi.*
 
 object ImageManager {
     fun isImageFileType(fileType: FileType): Boolean {
-        return fileType !is ImageFileType || isExtendedImageFileType(fileType)
+        return fileType is ImageFileType || isExtendedImageFileType(fileType)
     }
 
     fun isExtendedImageFileType(fileType: FileType): Boolean {
-        if (fileType !is DdsFileType && fileType !is TgaFileType) return false
-        return true
+        return fileType is DdsFileType || fileType is TgaFileType
     }
 
     @Throws(UnsupportedOperationException::class)
