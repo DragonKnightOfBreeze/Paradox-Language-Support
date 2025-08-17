@@ -12,7 +12,7 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.ParadoxLocalisationCategory.*
+import icu.windea.pls.model.ParadoxLocalisationType.*
 
 /**
  * 提供本地化（localisation/localisation_synced）的装订线图标。
@@ -27,14 +27,14 @@ class ParadoxLocalisationLineMarkerProvider : RelatedItemLineMarkerProvider() {
         if (element !is ParadoxLocalisationProperty) return
         val name = element.name.orNull()
         if (name == null) return
-        val category = element.category
-        if (category == null) return
+        val type = element.type
+        if (type == null) return
         val icon = PlsIcons.Gutter.Localisation
-        val tooltip = "($category) <b>$name</b>"
+        val tooltip = "($type) <b>$name</b>"
         val targets by lazy {
             val project = element.project
             val selector = selector(project, element).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-            when (category) {
+            when (type) {
                 Normal -> ParadoxLocalisationSearch.search(name, selector).findAll()
                 Synced -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll()
             }

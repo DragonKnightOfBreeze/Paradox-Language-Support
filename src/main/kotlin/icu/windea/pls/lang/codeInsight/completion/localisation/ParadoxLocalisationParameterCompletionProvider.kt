@@ -20,7 +20,7 @@ import icu.windea.pls.model.*
 class ParadoxLocalisationParameterCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return
-        val category = ParadoxLocalisationCategory.resolve(file) ?: return
+        val type = ParadoxLocalisationType.resolve(file) ?: return
         val project = parameters.originalFile.project
 
         //提示parameter
@@ -51,9 +51,9 @@ class ParadoxLocalisationParameterCompletionProvider : CompletionProvider<Comple
         //保证索引在此readAction中可用
 
         ReadAction.nonBlocking<Unit> {
-            when (category) {
-                ParadoxLocalisationCategory.Normal -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
-                ParadoxLocalisationCategory.Synced -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
+            when (type) {
+                ParadoxLocalisationType.Normal -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
+                ParadoxLocalisationType.Synced -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
             }
         }.inSmartMode(project).executeSynchronously()
     }

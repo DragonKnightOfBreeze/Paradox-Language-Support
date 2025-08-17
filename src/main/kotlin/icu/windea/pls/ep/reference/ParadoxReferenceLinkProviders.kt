@@ -227,7 +227,7 @@ class ParadoxLocalisationLinkProvider : ParadoxReferenceLinkProvider {
     override fun createPsiLink(element: PsiElement, plainLink: Boolean): String? {
         if (element !is ParadoxLocalisationProperty) return null
         val localisationInfo = element.localisationInfo ?: return null
-        if (localisationInfo.category != ParadoxLocalisationCategory.Normal) return null
+        if (localisationInfo.type != ParadoxLocalisationType.Normal) return null
         val name = localisationInfo.name
         val gameType = localisationInfo.gameType
         val linkType = ParadoxReferenceLinkType.Localisation

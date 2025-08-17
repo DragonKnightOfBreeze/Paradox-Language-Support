@@ -5,7 +5,7 @@ import com.intellij.codeInsight.highlighting.*
 fun CwtType.optimizeValue() = fromCwtType(this)
 fun CwtSeparatorType.optimizeValue() = fromCwtSeparatorType(this)
 fun ParadoxGameType.optimizeValue() = fromGameType(this)
-fun ParadoxLocalisationCategory.optimizeValue() = fromLocalisationCategory(this)
+fun ParadoxLocalisationType.optimizeValue() = fromLocalisationType(this)
 fun ReadWriteAccessDetector.Access.optimizeValue() = fromAccess(this)
 
 inline fun <reified T> Byte.deoptimizeValue() = deoptimizeValue(T::class.java)
@@ -15,7 +15,7 @@ fun <T> Byte.deoptimizeValue(type: Class<T>): T {
         CwtType::class.java -> toCwtType(this)
         CwtSeparatorType::class.java -> toCwtSeparatorType(this)
         ParadoxGameType::class.java -> toGameType(this)
-        ParadoxLocalisationCategory::class.java -> toLocalisationCategory(this)
+        ParadoxLocalisationType::class.java -> toLocalisationType(this)
         ReadWriteAccessDetector.Access::class.java -> toAccess(this)
         else -> throw UnsupportedOperationException()
     } as T
@@ -30,8 +30,8 @@ private fun toCwtSeparatorType(value: Byte) = CwtSeparatorType.entries[value.toI
 private fun fromGameType(value: ParadoxGameType) = value.ordinal.toByte()
 private fun toGameType(value: Byte) = ParadoxGameType.entries[value.toInt()]
 
-private fun fromLocalisationCategory(value: ParadoxLocalisationCategory) = value.ordinal.toByte()
-private fun toLocalisationCategory(value: Byte) = ParadoxLocalisationCategory.resolve(value)
+private fun fromLocalisationType(value: ParadoxLocalisationType) = value.ordinal.toByte()
+private fun toLocalisationType(value: Byte) = ParadoxLocalisationType.resolve(value)
 
 private fun fromAccess(value: ReadWriteAccessDetector.Access) = value.ordinal.toByte()
 private fun toAccess(value: Byte) = when {

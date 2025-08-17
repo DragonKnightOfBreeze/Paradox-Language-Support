@@ -45,9 +45,9 @@ object ParadoxLocalisationManager {
 
         val name = element.name
         val file = element.containingFile.originalFile.virtualFile ?: return null
-        val category = ParadoxLocalisationCategory.resolve(file) ?: return null
+        val type = ParadoxLocalisationType.resolve(file) ?: return null
         val gameType = selectGameType(file) ?: return null
-        return ParadoxLocalisationInfo(name, category, gameType)
+        return ParadoxLocalisationInfo(name, type, gameType)
     }
 
     //stub methods
@@ -55,20 +55,18 @@ object ParadoxLocalisationManager {
     fun createStub(psi: ParadoxLocalisationProperty, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub? {
         val file = selectFile(psi) ?: return null
         val gameType = selectGameType(file) ?: return null
-        val category = ParadoxLocalisationCategory.resolve(file) ?: return null
+        val type = ParadoxLocalisationType.resolve(file) ?: return null
         val name = psi.name
-        val locale = selectLocale(file)?.id
-        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, category, locale, gameType)
+        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, type, gameType)
     }
 
     fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub? {
         val psi = parentStub.psi
         val file = selectFile(psi) ?: return null
         val gameType = selectGameType(file) ?: return null
-        val category = ParadoxLocalisationCategory.resolve(file) ?: return null
+        val type = ParadoxLocalisationType.resolve(file) ?: return null
         val name = getNameFromNode(node, tree) ?: return null
-        val locale = selectLocale(file)?.id
-        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, category, locale, gameType)
+        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, type, gameType)
     }
 
     private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {
@@ -79,9 +77,9 @@ object ParadoxLocalisationManager {
         val stub = runReadAction { element.greenStub } ?: return null
         //if(!stub.isValid()) return null //这里不用再次判断
         val name = stub.name
-        val category = stub.category
+        val type = stub.type
         val gameType = stub.gameType
-        return ParadoxLocalisationInfo(name, category, gameType)
+        return ParadoxLocalisationInfo(name, type, gameType)
     }
 
     fun isSpecialLocalisation(element: ParadoxLocalisationProperty): Boolean {

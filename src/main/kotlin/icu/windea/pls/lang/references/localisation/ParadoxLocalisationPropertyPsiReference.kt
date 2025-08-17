@@ -11,7 +11,7 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.ParadoxLocalisationCategory.*
+import icu.windea.pls.model.ParadoxLocalisationType.*
 
 /**
  * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationParameterCompletionProvider
@@ -56,13 +56,13 @@ class ParadoxLocalisationPropertyPsiReference(
     private fun doResolve(onlyLocalisation: Boolean = false): PsiElement? {
         val element = element
         val file = element.containingFile as? ParadoxLocalisationFile ?: return null
-        val category = ParadoxLocalisationCategory.resolve(file) ?: return null
+        val type = ParadoxLocalisationType.resolve(file) ?: return null
         val locale = selectLocale(file)
         val name = element.name
 
         //尝试解析成localisation或者synced_localisation
         val selector = selector(project, file).localisation().contextSensitive().preferLocale(locale)
-        val resolved = when (category) {
+        val resolved = when (type) {
             Normal -> ParadoxLocalisationSearch.search(name, selector).find()
             Synced -> ParadoxSyncedLocalisationSearch.search(name, selector).find()
         }
@@ -79,13 +79,13 @@ class ParadoxLocalisationPropertyPsiReference(
     private fun doMultiResolve(onlyLocalisation: Boolean = false): Array<out ResolveResult> {
         val element = element
         val file = element.containingFile as? ParadoxLocalisationFile ?: return emptyArray()
-        val category = ParadoxLocalisationCategory.resolve(file) ?: return emptyArray()
+        val type = ParadoxLocalisationType.resolve(file) ?: return emptyArray()
         val locale = selectLocale(file)
         val name = element.name
 
         //尝试解析成localisation或者synced_localisation
         val selector = selector(project, file).localisation().contextSensitive().preferLocale(locale)
-        val resolved = when (category) {
+        val resolved = when (type) {
             Normal -> ParadoxLocalisationSearch.search(name, selector).findAll() //查找所有语言区域的
             Synced -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll() //查找所有语言区域的
         }

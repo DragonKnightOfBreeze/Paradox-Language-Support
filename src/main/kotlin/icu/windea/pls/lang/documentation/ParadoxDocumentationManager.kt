@@ -773,9 +773,9 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addLocalisationInfo(localisationInfo: ParadoxLocalisationInfo) {
-        val prefix = when (localisationInfo.category) {
-            ParadoxLocalisationCategory.Normal -> PlsStringConstants.localisationPrefix
-            ParadoxLocalisationCategory.Synced -> PlsStringConstants.localisationSyncedPrefix
+        val prefix = when (localisationInfo.type) {
+            ParadoxLocalisationType.Normal -> PlsStringConstants.localisationPrefix
+            ParadoxLocalisationType.Synced -> PlsStringConstants.localisationSyncedPrefix
         }
         append(prefix).append(" ")
         append("<b>").append(localisationInfo.name.orUnresolved()).append("</b>")
@@ -800,10 +800,10 @@ object ParadoxDocumentationManager {
             usedLocale == locale -> element
             else -> {
                 val selector = selector(element.project, element).localisation().contextSensitive().preferLocale(usedLocale)
-                val category = element.category
-                when (category) {
-                    ParadoxLocalisationCategory.Normal -> ParadoxLocalisationSearch.search(element.name, selector).find()
-                    ParadoxLocalisationCategory.Synced -> ParadoxSyncedLocalisationSearch.search(element.name, selector).find()
+                val type = element.type
+                when (type) {
+                    ParadoxLocalisationType.Normal -> ParadoxLocalisationSearch.search(element.name, selector).find()
+                    ParadoxLocalisationType.Synced -> ParadoxSyncedLocalisationSearch.search(element.name, selector).find()
                     null -> element
                 }?.castOrNull<ParadoxLocalisationProperty>() ?: element
             }
@@ -832,7 +832,7 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.buildLocalisationArgumentInfo(element: ParadoxLocalisationArgument) {
         val sections = getSections(SECTIONS_INFO) ?: return
-        ParadoxLocalisationArgumentManager.getInfo(element)?.let {
+        ParadoxLocalisationArgumentManager.getInfo(element).let {
             sections.put(PlsBundle.message("sectionTitle.formattingTags"), it)
         }
     }

@@ -26,15 +26,15 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
         val localisation = element
-        val category = localisation.category ?: return null
+        val type = localisation.type ?: return null
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
         val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
             //need read action here
             runReadAction {
                 val selector = selector(project, localisation).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-                val resolved = when(category) {
-                    ParadoxLocalisationCategory.Normal -> ParadoxLocalisationSearch.search(localisation.name, selector).findAll()
-                    ParadoxLocalisationCategory.Synced -> ParadoxSyncedLocalisationSearch.search(localisation.name, selector).findAll()
+                val resolved = when(type) {
+                    ParadoxLocalisationType.Normal -> ParadoxLocalisationSearch.search(localisation.name, selector).findAll()
+                    ParadoxLocalisationType.Synced -> ParadoxSyncedLocalisationSearch.search(localisation.name, selector).findAll()
                 }
                 targets.addAll(resolved)
             }

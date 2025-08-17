@@ -38,8 +38,8 @@ class ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Paradox
     }
 
     override fun indexStub(stub: ParadoxLocalisationPropertyStub, sink: IndexSink) {
-        when (stub.category) {
-            ParadoxLocalisationCategory.Normal -> {
+        when (stub.type) {
+            ParadoxLocalisationType.Normal -> {
                 sink.occurrence(ParadoxIndexManager.LocalisationNameKey, stub.name)
                 ParadoxIndexConstraint.Localisation.entries.forEach { constraint ->
                     if (constraint.supports(stub.name)) {
@@ -48,7 +48,7 @@ class ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Paradox
                     }
                 }
             }
-            ParadoxLocalisationCategory.Synced -> {
+            ParadoxLocalisationType.Synced -> {
                 sink.occurrence(ParadoxIndexManager.SyncedLocalisationNameKey, stub.name)
             }
         }
@@ -56,15 +56,15 @@ class ParadoxLocalisationPropertyStubElementType : ILightStubElementType<Paradox
 
     override fun serialize(stub: ParadoxLocalisationPropertyStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name)
-        dataStream.writeByte(stub.category.optimizeValue())
+        dataStream.writeByte(stub.type.optimizeValue())
         dataStream.writeByte(stub.gameType.optimizeValue())
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>): ParadoxLocalisationPropertyStub {
         val name = dataStream.readNameString().orEmpty()
-        val category = dataStream.readByte().deoptimizeValue<ParadoxLocalisationCategory>()
+        val type = dataStream.readByte().deoptimizeValue<ParadoxLocalisationType>()
         val gameType = dataStream.readByte().deoptimizeValue<ParadoxGameType>()
-        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, category, gameType)
+        return ParadoxLocalisationPropertyStub.Impl(parentStub, name, type, gameType)
     }
 
     override fun isAlwaysLeaf(root: StubBase<*>): Boolean {

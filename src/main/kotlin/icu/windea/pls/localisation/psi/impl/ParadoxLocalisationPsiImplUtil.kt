@@ -99,9 +99,9 @@ object ParadoxLocalisationPsiImplUtil {
     }
 
     @JvmStatic
-    fun getCategory(element: ParadoxLocalisationProperty): ParadoxLocalisationCategory? {
-        runReadAction { element.stub?.category }?.let { return it }
-        return element.localisationInfo?.category
+    fun getType(element: ParadoxLocalisationProperty): ParadoxLocalisationType? {
+        runReadAction { element.stub?.type }?.let { return it }
+        return element.localisationInfo?.type
     }
 
     @JvmStatic

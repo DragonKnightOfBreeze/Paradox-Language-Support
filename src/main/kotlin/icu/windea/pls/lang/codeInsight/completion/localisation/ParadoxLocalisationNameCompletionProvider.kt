@@ -26,7 +26,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
 
         val element = position.parent?.parent as? ParadoxLocalisationProperty ?: return
         val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return
-        val category = ParadoxLocalisationCategory.resolve(file) ?: return
+        val type = ParadoxLocalisationType.resolve(file) ?: return
         val project = parameters.originalFile.project
 
         //本地化的提示结果可能有上千条，因此这里改为先按照输入的关键字过滤结果，关键字变更时重新提示
@@ -52,9 +52,9 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
         }
         //保证索引在此readAction中可用
         ReadAction.nonBlocking<Unit> {
-            when (category) {
-                ParadoxLocalisationCategory.Normal -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
-                ParadoxLocalisationCategory.Synced -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
+            when (type) {
+                ParadoxLocalisationType.Normal -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
+                ParadoxLocalisationType.Synced -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
             }
         }.inSmartMode(project).executeSynchronously()
     }

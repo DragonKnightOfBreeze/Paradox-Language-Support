@@ -26,14 +26,14 @@ class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, Defin
         if (name.isEmpty()) return true
         val project = queryParameters.project
         ReadAction.nonBlocking<Unit> {
-            val category = localisationInfo.category
+            val type = localisationInfo.type
             //这里不需要也无法进行排序
             val selector = selector(project, sourceElement).localisation()
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig()) //限定语言区域
                 .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
-            val localisations = when (category) {
-                ParadoxLocalisationCategory.Normal -> ParadoxLocalisationSearch.search(name, selector).findAll()
-                ParadoxLocalisationCategory.Synced -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll()
+            val localisations = when (type) {
+                ParadoxLocalisationType.Normal -> ParadoxLocalisationSearch.search(name, selector).findAll()
+                ParadoxLocalisationType.Synced -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll()
             }
             localisations.forEach {
                 consumer.process(it)

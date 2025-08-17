@@ -23,7 +23,7 @@ sealed class ParadoxDeclarationInfo {
 
     class Localisation(
         override val name: String,
-        val category: ParadoxLocalisationCategory
+        val type: ParadoxLocalisationType
     ) : ParadoxDeclarationInfo()
 
     class ComplexEnumValue(
@@ -57,8 +57,8 @@ sealed class ParadoxDeclarationInfo {
                 }
                 is ParadoxLocalisationProperty -> {
                     val name = element.name.orNull() ?: return null
-                    val category = element.category ?: return null
-                    Localisation(name, category)
+                    val type = element.type ?: return null
+                    Localisation(name, type)
                 }
                 is ParadoxComplexEnumValueElement -> {
                     val name = element.name.orNull() ?: return null

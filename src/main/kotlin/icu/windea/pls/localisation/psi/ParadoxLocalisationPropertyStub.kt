@@ -5,14 +5,14 @@ import icu.windea.pls.model.*
 
 interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationProperty> {
     val name: String
-    val category: ParadoxLocalisationCategory
+    val type: ParadoxLocalisationType
     val gameType: ParadoxGameType
 
     abstract class Base(
         parent: StubElement<*>
     ) : StubBase<ParadoxLocalisationProperty>(parent, ParadoxLocalisationPropertyStubElementType.INSTANCE), ParadoxLocalisationPropertyStub {
         override fun toString(): String {
-            return "ParadoxLocalisationPropertyStub(name=$name, category=$category, gameType=$gameType)"
+            return "ParadoxLocalisationPropertyStub(name=$name, category=$type, gameType=$gameType)"
         }
     }
 
@@ -20,7 +20,7 @@ interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationPrope
     class Impl(
         parent: StubElement<*>,
         override val name: String,
-        override val category: ParadoxLocalisationCategory,
+        override val type: ParadoxLocalisationType,
         override val gameType: ParadoxGameType,
     ) : Base(parent)
 
@@ -29,7 +29,7 @@ interface ParadoxLocalisationPropertyStub : StubElement<ParadoxLocalisationPrope
         parent: StubElement<*>
     ) : Base(parent) {
         override val name: String get() = ""
-        override val category: ParadoxLocalisationCategory get() = ParadoxLocalisationCategory.Normal
+        override val type: ParadoxLocalisationType get() = ParadoxLocalisationType.Normal
         override val gameType: ParadoxGameType get() = ParadoxGameType.placeholder()
 
         override fun toString(): String {

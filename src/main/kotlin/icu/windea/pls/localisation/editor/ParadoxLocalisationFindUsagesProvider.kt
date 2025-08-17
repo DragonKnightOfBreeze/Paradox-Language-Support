@@ -32,9 +32,9 @@ class ParadoxLocalisationFindUsagesProvider : FindUsagesProvider, ElementDescrip
                 if (localisationInfo != null) {
                     when (location) {
                         UsageViewTypeLocation.INSTANCE -> {
-                            when (localisationInfo.category) {
-                                ParadoxLocalisationCategory.Normal -> PlsBundle.message("localisation.description.localisation")
-                                ParadoxLocalisationCategory.Synced -> PlsBundle.message("localisation.description.syncedLocalisation")
+                            when (localisationInfo.type) {
+                                ParadoxLocalisationType.Normal -> PlsBundle.message("localisation.description.localisation")
+                                ParadoxLocalisationType.Synced -> PlsBundle.message("localisation.description.syncedLocalisation")
                             }
                         }
                         else -> element.name

@@ -30,10 +30,10 @@ class ParadoxLocalisationSmartEnterProcessor : SmartEnterProcessorWithFixers() {
                 editor.document.deleteString(caretOffset, endOffset)
             }
             val property = targetElement.parent as? ParadoxLocalisationProperty ?: return
-            val category = ParadoxLocalisationCategory.resolve(property)
-            val text = when (category) {
-                ParadoxLocalisationCategory.Normal -> ":0 \"\""
-                ParadoxLocalisationCategory.Synced -> ": \"\""
+            val type = ParadoxLocalisationType.resolve(property)
+            val text = when (type) {
+                ParadoxLocalisationType.Normal -> ":0 \"\""
+                ParadoxLocalisationType.Synced -> ": \"\""
                 null -> ": \"\""
             }
             EditorModificationUtil.insertStringAtCaret(editor, text, false, text.length - 1)

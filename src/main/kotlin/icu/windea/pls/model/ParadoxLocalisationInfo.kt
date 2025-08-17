@@ -4,19 +4,19 @@ import java.util.*
 
 class ParadoxLocalisationInfo(
     val name: String,
-    val category: ParadoxLocalisationCategory,
+    val type: ParadoxLocalisationType,
     val gameType: ParadoxGameType
 ) {
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxLocalisationInfo
-            && name == other.name && category == other.category && gameType == other.gameType
+            && name == other.name && type == other.type && gameType == other.gameType
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(name, category, gameType)
+        return Objects.hash(name, type, gameType)
     }
 
     override fun toString(): String {
-        return "ParadoxLocalisationInfo(name=$name, category=$category, gameType=$gameType)"
+        return "ParadoxLocalisationInfo(name=$name, type=$type, gameType=$gameType)"
     }
 }

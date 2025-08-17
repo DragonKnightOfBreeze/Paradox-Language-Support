@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 
-enum class ParadoxLocalisationCategory(
+enum class ParadoxLocalisationType(
     val id: String
 ) {
     Normal("localisation"),
@@ -18,12 +18,12 @@ enum class ParadoxLocalisationCategory(
 
     companion object {
         @JvmStatic
-        fun resolve(id: Byte): ParadoxLocalisationCategory {
+        fun resolve(id: Byte): ParadoxLocalisationType {
             return entries[id.toInt()]
         }
 
         @JvmStatic
-        fun resolve(path: ParadoxPath): ParadoxLocalisationCategory? {
+        fun resolve(path: ParadoxPath): ParadoxLocalisationType? {
             return when {
                 path.matches(ParadoxPathMatcher.InNormalLocalisationPath) -> Normal
                 path.matches(ParadoxPathMatcher.InSyncedLocalisationPath) -> Synced
@@ -32,20 +32,20 @@ enum class ParadoxLocalisationCategory(
         }
 
         @JvmStatic
-        fun resolve(file: VirtualFile): ParadoxLocalisationCategory? {
+        fun resolve(file: VirtualFile): ParadoxLocalisationType? {
             val root = file.fileInfo?.path ?: return null
             return resolve(root)
         }
 
         @JvmStatic
-        fun resolve(file: PsiFile): ParadoxLocalisationCategory? {
+        fun resolve(file: PsiFile): ParadoxLocalisationType? {
             if (file !is ParadoxLocalisationFile) return null
             val root = file.fileInfo?.path ?: return null
             return resolve(root)
         }
 
         @JvmStatic
-        fun resolve(element: ParadoxLocalisationProperty): ParadoxLocalisationCategory? {
+        fun resolve(element: ParadoxLocalisationProperty): ParadoxLocalisationType? {
             val root = element.fileInfo?.path ?: return null
             return resolve(root)
         }

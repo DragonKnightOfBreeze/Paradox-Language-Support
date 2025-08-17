@@ -24,7 +24,7 @@ class GotoRelatedDefinitionsHandler : GotoTargetHandler() {
         val offset = editor.caretModel.offset
         val element = findElement(file, offset) ?: return null
         val localisation = element
-        if (localisation.category != ParadoxLocalisationCategory.Normal) return null
+        if (localisation.type != ParadoxLocalisationType.Normal) return null
         val targets = Collections.synchronizedList(mutableListOf<PsiElement>())
         val runResult = ProgressManager.getInstance().runProcessWithProgressSynchronously({
             //need read action here

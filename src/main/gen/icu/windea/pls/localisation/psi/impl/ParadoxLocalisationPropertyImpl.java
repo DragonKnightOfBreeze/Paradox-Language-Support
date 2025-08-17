@@ -1,20 +1,17 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi.impl;
 
-import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
 import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyStub;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import icu.windea.pls.model.ParadoxLocalisationCategory;
+import icu.windea.pls.model.ParadoxLocalisationType;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 
@@ -76,8 +73,8 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
   }
 
   @Override
-  public @Nullable ParadoxLocalisationCategory getCategory() {
-    return ParadoxLocalisationPsiImplUtil.getCategory(this);
+  public @Nullable ParadoxLocalisationType getType() {
+    return ParadoxLocalisationPsiImplUtil.getType(this);
   }
 
   @Override
