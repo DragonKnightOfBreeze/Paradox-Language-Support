@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
@@ -31,24 +32,23 @@ class ParadoxCsvFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 
     override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
         val settings = PlsFacade.getSettings().folding
-        collectDescriptorsRecursively(root.node, document, descriptors, settings)
+        collectDescriptors(root, descriptors, settings)
     }
 
-    private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
-        val r = doCollectDescriptors(node, document, descriptors, settings)
-        if (!r) return
-        val children = node.getChildren(null)
-        children.forEach { collectDescriptorsRecursively(it, document, descriptors, settings) }
+    private fun collectDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
+        collectCommentDescriptors(element, descriptors, settings)
     }
 
-    private fun doCollectDescriptors(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState): Boolean {
-        when (node.elementType) {
-            COMMENT -> {
-                if (!settings.comment) return true
-                PlsPsiManager.addCommentFoldingDescriptor(node, document, descriptors)
-            }
+    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
+        if (!settings.comment) return
+        val allSiblingLineComments = PlsPsiManager.findAllSiblingLineCommentsIn(element) { it.elementType == COMMENT }
+        if (allSiblingLineComments.isEmpty()) return
+        allSiblingLineComments.forEach {
+            val startOffset = it.first().startOffset
+            val endOffset = it.last().endOffset
+            val descriptor = FoldingDescriptor(it.first(), TextRange(startOffset, endOffset))
+            descriptors.add(descriptor)
         }
-        return true
     }
 
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {

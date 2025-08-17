@@ -6,7 +6,9 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
@@ -30,7 +32,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         val settings = PlsFacade.getSettings().folding
         return when (node.elementType) {
             COMMENT -> settings.commentByDefault
-            PARAMETER -> settings.localisationReferencesFullyByDefault
+            PARAMETER -> settings.localisationParametersFullyByDefault
             ICON -> settings.localisationIconsFullyByDefault
             COMMAND -> settings.localisationCommandsByDefault
             CONCEPT_COMMAND -> settings.localisationConceptCommandsByDefault
@@ -41,51 +43,54 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 
     override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
         val settings = PlsFacade.getSettings().folding
-        collectDescriptorsRecursively(root.node, document, descriptors, settings)
+        collectDescriptors(root, descriptors, settings)
     }
 
-    private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
-        val r = doCollectDescriptors(node, document, descriptors, settings)
+    private fun collectDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
+        collectCommentDescriptors(element, descriptors, settings)
+        val r = collectOtherDescriptors(element, descriptors, settings)
         if (!r) return
-        val children = node.getChildren(null)
-        children.forEach { doCollectDescriptors(it, document, descriptors, settings) }
+        element.forEachChild { collectDescriptors(it, descriptors, settings) }
     }
 
-    private fun doCollectDescriptors(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState): Boolean {
-        when (node.elementType) {
-            COMMENT -> {
-                if (!settings.comment) return true
-                PlsPsiManager.addCommentFoldingDescriptor(node, document, descriptors)
+    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
+        if (!settings.comment) return
+        val allSiblingLineComments = PlsPsiManager.findAllSiblingLineCommentsIn(element) { it.elementType == COMMENT }
+        if (allSiblingLineComments.isEmpty()) return
+        allSiblingLineComments.forEach {
+            val startOffset = it.first().startOffset
+            val endOffset = it.last().endOffset
+            val descriptor = FoldingDescriptor(it.first(), TextRange(startOffset, endOffset))
+            descriptors.add(descriptor)
+        }
+    }
+
+    private fun collectOtherDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState): Boolean {
+        when (element.elementType) {
+            PARAMETER -> run {
+                if (!settings.localisationParametersFully) return@run
+                descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
-            LOCALE -> return false //optimization
-            PARAMETER -> {
-                if (!settings.localisationReferencesFully) return true
-                descriptors.add(FoldingDescriptor(node, node.textRange))
+            ICON -> run {
+                if (!settings.localisationIconsFully) return@run
+                descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
-            ICON -> {
-                if (!settings.localisationIconsFully) return true
-                descriptors.add(FoldingDescriptor(node, node.textRange))
+            COMMAND -> run {
+                if (!settings.localisationCommands) return@run
+                descriptors.add(FoldingDescriptor(element.node, element.textRange, null, PlsStringConstants.commandFolder))
             }
-            COMMAND -> {
-                if (!settings.localisationCommands) return true
-                descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsStringConstants.commandFolder))
+            CONCEPT_COMMAND -> run {
+                if (!settings.localisationConceptCommands) return@run
+                val conceptTextNode = element.findChild { it.elementType == CONCEPT_TEXT }
+                val placeholder = if (conceptTextNode == null) PlsStringConstants.conceptCommandFolder else PlsStringConstants.conceptCommandWithTextFolder
+                descriptors.add(FoldingDescriptor(element.node, element.textRange, null, placeholder))
             }
-            CONCEPT_COMMAND -> {
-                if (!settings.localisationConceptCommands) return true
-                val conceptTextNode = node.findChildByType(CONCEPT_TEXT)
-                if (conceptTextNode == null) {
-                    descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsStringConstants.conceptCommandFolder))
-                } else {
-                    descriptors.add(FoldingDescriptor(node, node.textRange, null, PlsStringConstants.conceptCommandWithTextFolder))
-                }
-            }
-            CONCEPT_NAME -> return false //optimization
-            CONCEPT_TEXT -> {
-                if (!settings.localisationConceptTexts) return true
-                descriptors.add(FoldingDescriptor(node, node.textRange))
+            CONCEPT_TEXT -> run {
+                if (!settings.localisationConceptTexts) return@run
+                descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
         }
-        return true
+        return ParadoxLocalisationPsiUtil.isRichTextContainer(element)
     }
 
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {

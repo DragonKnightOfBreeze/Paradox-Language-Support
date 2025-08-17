@@ -6,7 +6,9 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
+import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.cwt.psi.CwtElementTypes.*
 import icu.windea.pls.lang.settings.*
@@ -32,28 +34,33 @@ class CwtFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 
     override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
         val settings = PlsFacade.getSettings().folding
-        collectDescriptorsRecursively(root.node, document, descriptors, settings)
+        collectDescriptors(root, descriptors, settings)
     }
 
-    private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
-        val r = doCollectDescriptors(node, document, descriptors, settings)
+    private fun collectDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
+        collectCommentDescriptors(element, descriptors, settings)
+        val r = collectOtherDescriptors(element, descriptors)
         if (!r) return
-        val children = node.getChildren(null)
-        children.forEach { doCollectDescriptors(it, document, descriptors, settings) }
+        element.forEachChild { collectDescriptors(it, descriptors, settings) }
     }
 
-    private fun doCollectDescriptors(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState): Boolean {
-        when (node.elementType) {
-            COMMENT -> {
-                if (!settings.comment) return true
-                PlsPsiManager.addCommentFoldingDescriptor(node, document, descriptors)
-            }
-            OPTION_COMMENT -> return true //optimization
-            DOC_COMMENT -> return true //optimization
-            BLOCK -> descriptors.add(FoldingDescriptor(node, node.textRange))
-            //BLOCK -> if(isSpanMultipleLines(node, document)) descriptors.add(FoldingDescriptor(node, node.textRange))
+    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
+        if (!settings.comment) return
+        val allSiblingLineComments = PlsPsiManager.findAllSiblingLineCommentsIn(element) { it.elementType == COMMENT }
+        if (allSiblingLineComments.isEmpty()) return
+        allSiblingLineComments.forEach {
+            val startOffset = it.first().startOffset
+            val endOffset = it.last().endOffset
+            val descriptor = FoldingDescriptor(it.first(), TextRange(startOffset, endOffset))
+            descriptors.add(descriptor)
         }
-        return true
+    }
+
+    private fun collectOtherDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>): Boolean {
+        if (element.elementType == BLOCK) {
+            descriptors.add(FoldingDescriptor(element, element.textRange))
+        }
+        return CwtPsiUtil.isMemberContainer(element)
     }
 
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {

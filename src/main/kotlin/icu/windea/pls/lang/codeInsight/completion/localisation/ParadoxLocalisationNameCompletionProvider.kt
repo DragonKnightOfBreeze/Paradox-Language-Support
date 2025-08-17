@@ -12,6 +12,7 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.model.*
 
 /**
@@ -22,7 +23,7 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
         if (!PlsFacade.getSettings().completion.completeLocalisationNames) return
 
         val position = parameters.position
-        if (ParadoxPsiManager.isLocalisationLocaleLike(position)) return
+        if (ParadoxLocalisationPsiUtil.isLocalisationLocaleLike(position)) return
 
         val element = position.parent?.parent as? ParadoxLocalisationProperty ?: return
         val file = parameters.originalFile.castOrNull<ParadoxLocalisationFile>() ?: return

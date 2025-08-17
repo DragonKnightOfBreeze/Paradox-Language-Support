@@ -10,6 +10,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
@@ -96,7 +97,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
                         ep.indexLocalisationExpression(element, fileData)
                     }
                 }
-                if (!ParadoxPsiManager.inRichTextContext(element)) return //optimize
+                if (!ParadoxLocalisationPsiUtil.isRichTextContainer(element)) return //optimize
                 super.visitElement(element)
             }
         })

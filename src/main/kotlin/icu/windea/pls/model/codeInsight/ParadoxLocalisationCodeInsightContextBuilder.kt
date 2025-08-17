@@ -14,9 +14,11 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.model.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 
 object ParadoxLocalisationCodeInsightContextBuilder {
     fun fromFile(
@@ -34,7 +36,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
                             is ParadoxScriptDefinitionElement -> fromDefinition(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
                             is ParadoxScriptStringExpressionElement -> fromExpression(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
                         }
-                        if (!ParadoxPsiManager.inMemberContext(element)) return //optimize
+                        if (!ParadoxScriptPsiUtil.isMemberContainer(element)) return //optimize
                         super.visitElement(element)
                     }
                 })
@@ -43,7 +45,7 @@ object ParadoxLocalisationCodeInsightContextBuilder {
                 file.accept(object : PsiRecursiveElementWalkingVisitor() {
                     override fun visitElement(element: PsiElement) {
                         if (element is ParadoxLocalisationProperty) fromLocalisation(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
-                        if (!ParadoxPsiManager.inLocalisationContext(element)) return //optimize
+                        if (!ParadoxLocalisationPsiUtil.isLocalisationContainer(element)) return //optimize
                         super.visitElement(element)
                     }
                 })

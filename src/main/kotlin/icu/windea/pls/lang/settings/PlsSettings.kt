@@ -117,10 +117,12 @@ class PlsSettingsState : BaseState() {
      *
      * @property comment 是否允许折叠多行注释。
      * @property commentByDefault 是否默认折叠多行注释。
-     * @property parameterConditionBlocksByDefault 是否允许折叠参数条件表达式块。
+     * @property parameterConditionBlocks 是否允许折叠参数条件表达式块。
+     * @property parameterConditionBlocksByDefault 是否默认折叠参数条件表达式块。
+     * @property inlineMathBlocks 是否允许折叠内联数学表达式块。
      * @property inlineMathBlocksByDefault 是否默认折叠内联数学表达式块。
-     * @property localisationReferencesFully 是否允许折叠本地化引用。完全折叠。
-     * @property localisationReferencesFullyByDefault 是否默认折叠本地化引用。完全折叠。
+     * @property localisationParametersFully 是否允许折叠本地化参数。完全折叠。
+     * @property localisationParametersFullyByDefault 是否默认折叠本地化参数。完全折叠。
      * @property localisationIconsFully 是否允许折叠本地化图标。完全折叠。
      * @property localisationIconsFullyByDefault 是否默认折叠本地化图标。完全折叠。
      * @property localisationCommands 是否允许折叠本地化命令。
@@ -138,10 +140,12 @@ class PlsSettingsState : BaseState() {
     class FoldingState : BaseState() {
         var comment by property(false)
         var commentByDefault by property(false)
-        var parameterConditionBlocksByDefault by property(false)
+        var parameterConditionBlocks by property(true)
+        var parameterConditionBlocksByDefault by property(true)
+        var inlineMathBlocks by property(true)
         var inlineMathBlocksByDefault by property(true)
-        var localisationReferencesFully by property(false)
-        var localisationReferencesFullyByDefault by property(false)
+        var localisationParametersFully by property(false)
+        var localisationParametersFullyByDefault by property(false)
         var localisationIconsFully by property(false)
         var localisationIconsFullyByDefault by property(false)
         var localisationCommands by property(false)

@@ -12,11 +12,11 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 
 //com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
 
@@ -75,7 +75,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (!inInlineMath && !ParadoxPsiManager.inMemberContext(element)) return //optimize
+                if (!inInlineMath && !ParadoxScriptPsiUtil.isMemberContainer(element)) return //optimize
                 super.visitElement(element)
             }
 

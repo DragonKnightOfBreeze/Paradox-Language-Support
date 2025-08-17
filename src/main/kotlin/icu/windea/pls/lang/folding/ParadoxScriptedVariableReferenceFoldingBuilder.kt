@@ -5,10 +5,10 @@ import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 
 class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
@@ -26,38 +26,25 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
     }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        if (!PlsFacade.getSettings().folding.scriptedVariableReferences) return FoldingDescriptor.EMPTY_ARRAY
-
         if (quick) return FoldingDescriptor.EMPTY_ARRAY
-        if (root.language !is ParadoxBaseLanguage) return FoldingDescriptor.EMPTY_ARRAY
+        if (!PlsFacade.getSettings().folding.scriptedVariableReferences) return FoldingDescriptor.EMPTY_ARRAY
         val foldingGroup = Constants.FOLDING_GROUP
         val allDescriptors = mutableListOf<FoldingDescriptor>()
         root.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptedVariableReference) visitScriptedVariableReference(element)
                 //optimize performance
-                when (element) {
-                    is ParadoxScriptBlockElement -> pass()
-                    is ParadoxScriptPropertyKey -> return
-                    is ParadoxScriptValue -> return
-                    is ParadoxScriptParameterConditionExpression -> return
-                    is ParadoxLocalisationLocale -> return
-                    is ParadoxLocalisationParameter -> pass()
-                    is ParadoxLocalisationColorfulText -> pass()
-                    is ParadoxLocalisationConceptCommand -> pass()
-                    is ParadoxLocalisationConceptName -> return
-                    is ParadoxLocalisationTextFormat -> pass()
-                    is ParadoxLocalisationRichText -> return
+                val r = when (element.language) {
+                    ParadoxScriptLanguage -> ParadoxScriptPsiUtil.isMemberContainer(element)
+                    ParadoxLocalisationLanguage -> ParadoxLocalisationPsiUtil.isRichTextContainer(element)
+                    else -> false
                 }
-                super.visitElement(element)
+                if (r) super.visitElement(element)
             }
 
             private fun visitScriptedVariableReference(element: ParadoxScriptedVariableReference) {
                 val referenceValue = element.resolved()?.scriptedVariableValue ?: return
-                val resolvedValue = when {
-                    element is ParadoxScriptScriptedVariableReference -> referenceValue.value
-                    else -> referenceValue.value.unquote()
-                }
+                val resolvedValue = referenceValue.value
                 val descriptor = FoldingDescriptor(element.node, element.textRange, foldingGroup, resolvedValue)
                 allDescriptors.add(descriptor)
             }

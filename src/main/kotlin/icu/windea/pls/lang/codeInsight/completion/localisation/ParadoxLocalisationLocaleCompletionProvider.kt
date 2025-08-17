@@ -14,6 +14,7 @@ import icu.windea.pls.lang.codeInsight.completion.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 
 /**
  * 提供语言区域名字的代码补全。
@@ -43,7 +44,7 @@ class ParadoxLocalisationLocaleCompletionProvider : CompletionProvider<Completio
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
         val position = parameters.position
-        if (!ParadoxPsiManager.isLocalisationLocaleLike(position)) return
+        if (!ParadoxLocalisationPsiUtil.isLocalisationLocaleLike(position)) return
 
         val file = parameters.originalFile
         val project = file.project

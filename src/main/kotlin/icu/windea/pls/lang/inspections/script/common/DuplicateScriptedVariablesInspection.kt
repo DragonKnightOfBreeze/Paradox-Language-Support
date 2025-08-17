@@ -6,8 +6,8 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.quickfix.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 import org.jetbrains.annotations.*
 
 /**
@@ -33,7 +33,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (!inInlineMath && !ParadoxPsiManager.inMemberContext(element)) return //optimize
+                if (!inInlineMath && !ParadoxScriptPsiUtil.isMemberContainer(element)) return //optimize
                 super.visitElement(element)
             }
 

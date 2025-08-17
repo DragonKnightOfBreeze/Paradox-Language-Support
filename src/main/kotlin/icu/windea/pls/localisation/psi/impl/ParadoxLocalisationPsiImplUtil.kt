@@ -21,6 +21,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
+import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.model.*
 import javax.swing.*
 
@@ -282,7 +283,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationCommandText): PsiElement? {
         val idElement = element.findChild { it.elementType == COMMAND_TEXT_TOKEN }
-        if (!ParadoxPsiManager.checkIdElementInLocalisationFile(idElement)) return null
+        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
         return idElement
     }
 
@@ -309,7 +310,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationCommandArgument): PsiElement? {
         val idElement = element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
-        if (!ParadoxPsiManager.checkIdElementInLocalisationFile(idElement)) return null
+        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
         return idElement
     }
 
@@ -320,7 +321,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationIcon): PsiElement? {
         val idElement = element.findChild { it.elementType == ICON_TOKEN }
-        if (!ParadoxPsiManager.checkIdElementInLocalisationFile(idElement)) return null
+        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
         return idElement
     }
 
@@ -361,7 +362,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationIconArgument): PsiElement? {
         val idElement = element.findChild(forward = false) { it.elementType == ARGUMENT_TOKEN }
-        if (!ParadoxPsiManager.checkIdElementInLocalisationFile(idElement)) return null
+        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
         return idElement
     }
 
@@ -399,7 +400,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationConceptName): PsiElement? {
         val idElement = element.findChild { it.elementType == CONCEPT_NAME_TOKEN }
-        if (!ParadoxPsiManager.checkIdElementInLocalisationFile(idElement)) return null
+        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
         return idElement
     }
 
@@ -426,7 +427,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationTextFormat): PsiElement? {
         val idElement = element.findChild { it.elementType == TEXT_FORMAT_TOKEN }
-        if (!ParadoxPsiManager.checkIdElementInLocalisationFile(idElement)) return null
+        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
         return idElement
     }
 
@@ -456,7 +457,7 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getIdElement(element: ParadoxLocalisationTextIcon): PsiElement? {
         val idElement = element.findChild { it.elementType == TEXT_ICON_TOKEN }
-        if (!ParadoxPsiManager.checkIdElementInLocalisationFile(idElement)) return null
+        if (!ParadoxLocalisationPsiUtil.isIdElement(idElement)) return null
         return idElement
     }
 

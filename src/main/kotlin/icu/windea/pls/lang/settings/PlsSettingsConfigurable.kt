@@ -265,7 +265,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 //parameterConditionBlocks & parameterConditionBlocksByDefault
                 row {
                     checkBox(PlsBundle.message("settings.folding.parameterConditionBlocks"))
-                        .selected(true)
+                        .bindSelected(PlsFacade.getSettings().folding::parameterConditionBlocks)
                         .enabled(false)
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
                         .bindSelected(PlsFacade.getSettings().folding::parameterConditionBlocksByDefault)
@@ -273,7 +273,7 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 //inlineMathBlocks & inlineMathBlocksByDefault
                 row {
                     checkBox(PlsBundle.message("settings.folding.inlineMathBlocks"))
-                        .selected(true)
+                        .bindSelected(PlsFacade.getSettings().folding::inlineMathBlocks)
                         .enabled(false)
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
                         .bindSelected(PlsFacade.getSettings().folding::inlineMathBlocksByDefault)
@@ -281,11 +281,11 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                 //localisationReferencesFully & localisationReferencesFullyByDefault
                 row {
                     lateinit var cb: JBCheckBox
-                    checkBox(PlsBundle.message("settings.folding.localisationReferencesFully"))
-                        .bindSelected(PlsFacade.getSettings().folding::localisationReferencesFully)
+                    checkBox(PlsBundle.message("settings.folding.localisationParametersFully"))
+                        .bindSelected(PlsFacade.getSettings().folding::localisationParametersFully)
                         .applyToComponent { cb = this }
                     checkBox(PlsBundle.message("settings.folding.byDefault"))
-                        .bindSelected(PlsFacade.getSettings().folding::localisationReferencesFullyByDefault)
+                        .bindSelected(PlsFacade.getSettings().folding::localisationParametersFullyByDefault)
                         .enabledIf(cb.selected)
                 }
                 //localisationIconsFully & localisationIconsFullyByDefault

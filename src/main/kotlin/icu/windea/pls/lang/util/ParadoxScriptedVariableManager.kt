@@ -19,6 +19,7 @@ import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
+import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 
 /**
  * 用于处理封装变量。
@@ -42,7 +43,7 @@ object ParadoxScriptedVariableManager {
                 if (element is ParadoxScriptScriptedVariable) {
                     result.add(element.createPointer(file))
                 }
-                if (!ParadoxPsiManager.inMemberContext(element)) return //optimize
+                if (!ParadoxScriptPsiUtil.isMemberContainer(element)) return //optimize
                 super.visitElement(element)
             }
         })

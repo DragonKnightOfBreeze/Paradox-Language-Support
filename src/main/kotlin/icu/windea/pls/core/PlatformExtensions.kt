@@ -716,14 +716,6 @@ fun PsiElement.isIncomplete(): Boolean {
     return false
 }
 
-fun PsiElement.isSpaceOrSingleLineBreak(): Boolean {
-    return this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) <= 1
-}
-
-fun PsiElement.isSingleLineBreak(): Boolean {
-    return this is PsiWhiteSpace && StringUtil.getLineBreakCount(this.text) == 1
-}
-
 fun PsiBuilder.lookupWithOffset(steps: Int, skipWhitespaces: Boolean = true, forward: Boolean = true): Tuple2<IElementType?, Int> {
     var offset = steps
     var token = rawLookup(offset)

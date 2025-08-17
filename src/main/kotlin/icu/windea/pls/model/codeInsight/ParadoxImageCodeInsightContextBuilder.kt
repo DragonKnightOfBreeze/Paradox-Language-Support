@@ -14,6 +14,7 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.codeInsight.ParadoxImageCodeInsightContext.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 
 object ParadoxImageCodeInsightContextBuilder {
     fun fromFile(
@@ -29,7 +30,7 @@ object ParadoxImageCodeInsightContextBuilder {
                     is ParadoxScriptDefinitionElement -> fromDefinition(element, fromInspection = fromInspection)?.let { children.add(it) }
                     is ParadoxScriptStringExpressionElement -> fromExpression(element, fromInspection = fromInspection)?.let { children.add(it) }
                 }
-                if (!ParadoxPsiManager.inMemberContext(element)) return //optimize
+                if (!ParadoxScriptPsiUtil.isMemberContainer(element)) return //optimize
                 super.visitElement(element)
             }
         })

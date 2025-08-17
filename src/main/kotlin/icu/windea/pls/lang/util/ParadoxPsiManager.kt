@@ -425,59 +425,6 @@ object ParadoxPsiManager {
 
     //region Misc Methods
 
-    fun inMemberContext(element: PsiElement): Boolean {
-        return element is ParadoxScriptFile || element.elementType in ParadoxScriptTokenSets.MEMBER_CONTEXT
-    }
-
-    fun inLocalisationContext(element: PsiElement): Boolean {
-        return element is ParadoxLocalisationFile || element.elementType in ParadoxLocalisationTokenSets.PROPERTY_CONTEXT
-    }
-
-    fun inRichTextContext(element: PsiElement): Boolean {
-        return element is ParadoxLocalisationFile || element.elementType in ParadoxLocalisationTokenSets.RICH_TEXT_CONTEXT
-    }
-
-    fun checkIdElementInLocalisationFile(element: PsiElement?): Boolean {
-        if (element == null) return false
-        if (element.nextSibling.elementType in ParadoxLocalisationTokenSets.EXTRA_TEMPLATE_TYPES) return false
-        if (element.prevSibling.elementType in ParadoxLocalisationTokenSets.EXTRA_TEMPLATE_TYPES) return false
-        return true
-    }
-
-    /**
-     * 判断当前位置应当是一个[ParadoxLocalisationLocale]，还是一个[ParadoxLocalisationPropertyKey]。
-     */
-    fun isLocalisationLocaleLike(element: PsiElement): Boolean {
-        val elementType = element.elementType
-        when {
-            elementType == ParadoxLocalisationElementTypes.PROPERTY_KEY_TOKEN -> {
-                //后面只能是空白或冒号,接下来的后面只能是空白，接着前面只能是空白，并且要在一行的开头
-                val prevElement = element.prevLeaf(false)
-                if (prevElement != null) {
-                    val prevElementType = prevElement.elementType
-                    if (prevElementType != TokenType.WHITE_SPACE || !prevElement.text.last().isExactLineBreak()) return false
-                }
-                val nextElement = element.nextSibling
-                if (nextElement != null) {
-                    val nextElementType = nextElement.elementType
-                    if (nextElementType != ParadoxLocalisationElementTypes.COLON && nextElementType != TokenType.WHITE_SPACE) return false
-                    val nextNextElement = nextElement.nextSibling
-                    if (nextNextElement != null) {
-                        val nextNextElementType = nextElement.elementType
-                        if (nextNextElementType != TokenType.WHITE_SPACE) return false
-                    }
-                }
-                return true
-            }
-            elementType == ParadoxLocalisationElementTypes.LOCALE_TOKEN -> {
-                return true
-            }
-            else -> {
-                throw UnsupportedOperationException()
-            }
-        }
-    }
-
     fun isGlobalScriptedVariable(element: ParadoxScriptScriptedVariable): Boolean {
         val path = selectFile(element)?.fileInfo?.path?.path ?: return false
         return "common/scripted_variables".matchesPath(path)

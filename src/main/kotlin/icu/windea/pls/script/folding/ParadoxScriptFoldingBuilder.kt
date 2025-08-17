@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
+import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.settings.*
@@ -42,34 +43,43 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 
     override fun buildLanguageFoldRegions(descriptors: MutableList<FoldingDescriptor>, root: PsiElement, document: Document, quick: Boolean) {
         val settings = PlsFacade.getSettings().folding
-        collectDescriptorsRecursively(root.node, document, descriptors, settings)
+        collectDescriptors(root, descriptors, settings)
     }
 
-    private fun collectDescriptorsRecursively(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
-        val r = doCollectDescriptors(node, document, descriptors, settings)
+    private fun collectDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
+        collectCommentDescriptors(element, descriptors, settings)
+        val r = collectOtherDescriptors(element, descriptors, settings)
         if (!r) return
-        val children = node.getChildren(null)
-        children.forEach { collectDescriptorsRecursively(it, document, descriptors, settings) }
+        element.forEachChild { collectDescriptors(it, descriptors, settings) }
     }
 
-    private fun doCollectDescriptors(node: ASTNode, document: Document, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState): Boolean {
-        when (node.elementType) {
-            COMMENT -> {
-                if (!settings.comment) return true
-                PlsPsiManager.addCommentFoldingDescriptor(node, document, descriptors)
-            }
-            SCRIPTED_VARIABLE -> return false //optimization
+    private fun collectCommentDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState) {
+        if (!settings.comment) return
+        val allSiblingLineComments = PlsPsiManager.findAllSiblingLineCommentsIn(element) { it.elementType == COMMENT }
+        if (allSiblingLineComments.isEmpty()) return
+        allSiblingLineComments.forEach {
+            val startOffset = it.first().startOffset
+            val endOffset = it.last().endOffset
+            val descriptor = FoldingDescriptor(it.first(), TextRange(startOffset, endOffset))
+            descriptors.add(descriptor)
+        }
+    }
+
+    private fun collectOtherDescriptors(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, settings: PlsSettingsState.FoldingState): Boolean {
+        when (element.elementType) {
             BLOCK -> {
-                descriptors.add(FoldingDescriptor(node, node.textRange))
+                descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
-            PARAMETER_CONDITION -> {
-                descriptors.add(FoldingDescriptor(node, node.textRange))
+            PARAMETER_CONDITION -> run r@{
+                if (!settings.parameterConditionBlocks) return@r
+                descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
-            INLINE_MATH -> {
-                descriptors.add(FoldingDescriptor(node, node.textRange))
+            INLINE_MATH -> run r@{
+                if (!settings.inlineMathBlocks) return@r
+                descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
         }
-        return true
+        return ParadoxScriptPsiUtil.isMemberContainer(element)
     }
 
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {
