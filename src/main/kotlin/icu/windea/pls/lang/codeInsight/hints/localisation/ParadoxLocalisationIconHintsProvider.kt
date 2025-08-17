@@ -10,6 +10,7 @@ import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
@@ -47,7 +48,12 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
     //icu.windea.pls.tool.localisation.ParadoxLocalisationTextInlayRenderer.renderIconTo
 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
-        if (element is ParadoxLocalisationIcon) {
+        if (element !is ParadoxLocalisationIcon) return true
+        val name = element.name ?: return true
+        if (name.isEmpty()) return true
+        if (name.isParameterized()) return true
+
+        runCatchingCancelable r@{
             val resolved = element.reference?.resolve()
             val iconFrame = element.frame
             val frameInfo = ImageFrameInfo.of(iconFrame)
@@ -59,11 +65,11 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
             }
 
             //如果无法解析（包括对应文件不存在的情况）就直接跳过
-            if(!ParadoxImageManager.canResolve(iconUrl)) return true
+            if (!ParadoxImageManager.canResolve(iconUrl)) return@r
 
             val iconFileUrl = iconUrl.toFileUrl()
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            val icon = iconFileUrl.toIconOrNull() ?: return true
+            val icon = iconFileUrl.toIconOrNull() ?: return@r
             //这里需要尝试使用图标的原始高度
             val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
             if (originalIconHeight <= settings.iconHeightLimit) {
@@ -74,6 +80,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Se
                 sink.addInlineElement(endOffset, true, finalPresentation, false)
             }
         }
+
         return true
     }
 }

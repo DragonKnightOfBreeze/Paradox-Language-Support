@@ -163,8 +163,8 @@ class ParadoxLocalisationTextHtmlRenderer(
 
     private fun renderIconTo(element: ParadoxLocalisationIcon) {
         //尝试渲染图标
-        run {
-            val resolved = element.reference?.resolve() ?: return@run
+        runCatchingCancelable r@{
+            val resolved = element.reference?.resolve() ?: return@r
             val iconFrame = element.frame
             val frameInfo = ImageFrameInfo.of(iconFrame)
             val iconUrl = when {
@@ -174,14 +174,12 @@ class ParadoxLocalisationTextHtmlRenderer(
             }
 
             //如果无法解析（包括对应文件不存在的情况）就直接跳过
-            if (!ParadoxImageManager.canResolve(iconUrl)) return
+            if (!ParadoxImageManager.canResolve(iconUrl)) return@r
 
             val iconFileUrl = iconUrl.toFileUrl()
-            val icon = iconFileUrl.toIconOrNull() ?: return@run
+            val icon = iconFileUrl.toIconOrNull() ?: return@r
             //这里需要尝试使用图标的原始高度
-            val iconWidth = icon.iconWidth
-            val iconHeight = icon.iconHeight
-            val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrNull() ?: iconHeight
+            val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
             //如果图标高度在 locFontSize 到 locMaxTextIconSize 之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
             //实际上，本地化文本可以嵌入任意大小的图片
             val docFontSize = getDocumentationFontSize().size
@@ -191,6 +189,8 @@ class ParadoxLocalisationTextHtmlRenderer(
                 originalIconHeight in locFontSize..locMaxTextIconSize -> docFontSize.toFloat() / originalIconHeight
                 else -> docFontSize.toFloat() / locFontSize
             }
+            val iconWidth = icon.iconWidth
+            val iconHeight = icon.iconHeight
             val scaleByIcon = originalIconHeight.toFloat() / iconHeight
             val scale = scaleByDocFontSize * scaleByIcon
             val finalIconWidth = (iconWidth * scale).toInt()

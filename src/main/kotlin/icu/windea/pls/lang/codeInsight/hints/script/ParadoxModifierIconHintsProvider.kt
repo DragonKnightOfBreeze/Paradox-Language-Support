@@ -51,32 +51,36 @@ class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return true
         if (!element.isExpression()) return true
+        val name = element.name
+        if (name.isEmpty()) return true
+        if (name.isParameterized()) return true
         val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return true
-        val type = config.configExpression.type
-        if (type == CwtDataTypes.Modifier) {
-            val name = element.value
-            if (name.isEmpty()) return true
-            if (name.isParameterized()) return true
-            val configGroup = config.configGroup
-            val project = configGroup.project
+        if (config.configExpression.type != CwtDataTypes.Modifier) return true
+        val configGroup = config.configGroup
+        val project = configGroup.project
+
+        runCatchingCancelable r@{
             val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
             val iconFile = paths.firstNotNullOfOrNull { path ->
                 val iconSelector = selector(project, element).file().contextSensitive()
                 ParadoxFilePathSearch.searchIcon(path, iconSelector).find()
-            } ?: return true
-            val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile, project)
+            }
+            val iconUrl = when {
+                iconFile != null -> ParadoxImageManager.resolveUrlByFile(iconFile, project)
+                else -> null
+            }
 
             //如果无法解析（包括对应文件不存在的情况）就直接跳过
-            if(!ParadoxImageManager.canResolve(iconUrl)) return true
+            if (!ParadoxImageManager.canResolve(iconUrl)) return@r
 
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             val iconFileUrl = iconUrl.toFileUrl()
-            val icon = iconFileUrl.toIconOrNull() ?: return true
+            val icon = iconFileUrl.toIconOrNull() ?: return@r
             //这里需要尝试使用图标的原始高度
             val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
             if (originalIconHeight <= settings.iconHeightLimit) {
                 //点击可以导航到声明处（DDS）
-                val presentation = psiSingleReference(smallScaledIcon(icon)) { iconFile.toPsiFile(project) }
+                val presentation = psiSingleReference(smallScaledIcon(icon)) { iconFile?.toPsiFile(project) }
                 val finalPresentation = presentation.toFinalPresentation(this, project, smaller = true)
                 val endOffset = element.endOffset
                 sink.addInlineElement(endOffset, true, finalPresentation, false)

@@ -204,8 +204,8 @@ class ParadoxLocalisationTextInlayRenderer(
 
     private fun renderIconTo(element: ParadoxLocalisationIcon): Boolean {
         //尝试渲染图标
-        run {
-            val resolved = element.reference?.resolve() ?: return@run
+        runCatchingCancelable r@{
+            val resolved = element.reference?.resolve() ?: return@r
             val iconFrame = element.frame
             val frameInfo = ImageFrameInfo.of(iconFrame)
             val iconUrl = when {
@@ -215,14 +215,13 @@ class ParadoxLocalisationTextInlayRenderer(
             }
 
             //如果无法解析（包括对应文件不存在的情况）就直接跳过
-            if (!ParadoxImageManager.canResolve(iconUrl)) return true
+            if (!ParadoxImageManager.canResolve(iconUrl)) return@r
 
             val iconFileUrl = iconUrl.toFileUrl()
             //找不到图标的话就直接跳过
-            val icon = iconFileUrl.toIconOrNull() ?: return@run
+            val icon = iconFileUrl.toIconOrNull() ?: return@r
             //这里需要尝试使用图标的原始高度
-            val iconHeight = icon.iconHeight
-            val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { iconHeight }
+            val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             if (originalIconHeight > iconHeightLimit) return true //图标过大，不再尝试渲染
             //基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
