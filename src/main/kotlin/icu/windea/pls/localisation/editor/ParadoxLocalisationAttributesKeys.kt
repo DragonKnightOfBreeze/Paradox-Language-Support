@@ -10,6 +10,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import com.intellij.openapi.editor.markup.*
 import icu.windea.pls.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.localisation.editor.ParadoxLocalisationAttributesKeys
 import java.awt.*
 
 object ParadoxLocalisationAttributesKeys {
@@ -51,6 +52,9 @@ object ParadoxLocalisationAttributesKeys {
     val INVALID_ESCAPE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.INVALID_ESCAPE", INVALID_STRING_ESCAPE)
     @JvmField
     val BAD_CHARACTER_KEY = createTextAttributesKey("PARADOX_LOCALISATION.BAD_CHARACTER", BAD_CHARACTER)
+
+    @JvmField
+    val LOCALISATION_REFERENCE_KEY = createTextAttributesKey("PARADOX_LOCALISATION.LOCALISATION_REFERENCE", PROPERTY_KEY_KEY)
 
     @JvmField
     val SYSTEM_COMMAND_SCOPE_KEY = createTextAttributesKey("PARADOX_SCRIPT.SYSTEM_COMMAND_SCOPE", STATIC_METHOD)

@@ -4,6 +4,7 @@ import com.intellij.lang.annotation.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.editor.*
 import icu.windea.pls.localisation.psi.*
@@ -23,6 +24,14 @@ class ParadoxLocalisationAnnotator : Annotator {
     }
 
     private fun annotateParameter(element: ParadoxLocalisationParameter, holder: AnnotationHolder) {
+        run {
+            //如果可以被解析为本地化，则高亮为本地化引用
+            if (element.resolveLocalisation() == null) return@run
+            val idElement = element.idElement ?: return@run
+            val attributesKey = ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE_KEY
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION).range(idElement).textAttributes(attributesKey).create()
+        }
+
         annotateByArgument(element, holder)
     }
 

@@ -29,6 +29,8 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         AttributesDescriptor(PlsBundle.message("localisation.displayName.invalidEscape"), ParadoxLocalisationAttributesKeys.INVALID_ESCAPE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.badCharacter"), ParadoxLocalisationAttributesKeys.BAD_CHARACTER_KEY),
 
+        AttributesDescriptor(PlsBundle.message("localisation.displayName.localisationReference"), ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE_KEY),
+
         AttributesDescriptor(PlsBundle.message("localisation.displayName.systemCommandScope"), ParadoxLocalisationAttributesKeys.SYSTEM_COMMAND_SCOPE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.commandScope"), ParadoxLocalisationAttributesKeys.COMMAND_SCOPE_KEY),
         AttributesDescriptor(PlsBundle.message("localisation.displayName.commandField"), ParadoxLocalisationAttributesKeys.COMMAND_FIELD_KEY),
@@ -55,9 +57,10 @@ class ParadoxLocalisationColorSettingsPage : ColorSettingsPage {
         "COMMAND_FIELD_VALUE" to ParadoxLocalisationAttributesKeys.COMMAND_FIELD_VALUE_KEY,
         "DYNAMIC_VALUE" to ParadoxLocalisationAttributesKeys.DYNAMIC_VALUE_KEY,
         "VARIABLE" to ParadoxLocalisationAttributesKeys.VARIABLE_KEY,
-        "DEFINITION_REFERENCE" to ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY,
         "DATABASE_OBJECT_TYPE" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_TYPE_KEY,
         "DATABASE_OBJECT" to ParadoxLocalisationAttributesKeys.DATABASE_OBJECT_KEY,
+        "DR" to ParadoxScriptAttributesKeys.DEFINITION_REFERENCE_KEY,
+        "LR" to ParadoxLocalisationAttributesKeys.LOCALISATION_REFERENCE_KEY,
     )
 
     override fun getHighlighter() = SyntaxHighlighterFactory.getSyntaxHighlighter(ParadoxLocalisationLanguage, null, null)
