@@ -149,12 +149,12 @@ class GenerateLocalisationFileAction : AnAction() {
     private fun isValidFile(file: VirtualFile): Boolean {
         if (file.fileType !is ParadoxLocalisationFileType) return false
         if (file.fileInfo == null) return false
-        if (PlsFileManager.isLightFile(file)) return false
+        if (PlsVfsManager.isLightFile(file)) return false
         return true
     }
 
     private fun findFiles(e: AnActionEvent): Collection<VirtualFile> {
-        val files = PlsFileManager.findFiles(e, deep = true) { file -> isValidFile(file) }
+        val files = PlsVfsManager.findFiles(e, deep = true) { file -> isValidFile(file) }
         return files
     }
 

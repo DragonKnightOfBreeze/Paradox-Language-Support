@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util
 import icu.windea.pls.core.*
 import java.io.*
 import java.util.concurrent.*
+import kotlin.collections.iterator
 
 object ParadoxModOverriddenFileSelector {
     private val ignoredFileShortNames = arrayOf("README", "CHANGELOG", "CREDITS")

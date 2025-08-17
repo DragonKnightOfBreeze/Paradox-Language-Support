@@ -1,6 +1,4 @@
 <idea-plugin>
-  <resource-bundle>messages.PlsBundle</resource-bundle>
-
   <extensionPoints>
     <extensionPoint qualifiedName="icu.windea.pls.search.configSymbolSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.localScriptedVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
@@ -464,7 +462,7 @@
       <add-to-group group-id="FileChooserToolbar" anchor="last"/>
     </group>
 
-    <group id="Pls.Tools" class="icu.windea.pls.lang.actions.tools.PlsToolsActionGroup" popup="true">
+    <group id="Pls.Tools" class="icu.windea.pls.lang.actions.tools.ToolsActionGroup" popup="true">
       <reference ref="Pls.OpenGameSettings"/>
       <reference ref="Pls.OpenModSettings"/>
       <reference ref="Pls.SyncConfigGroupFromRemote"/>
@@ -494,6 +492,7 @@
       <add-to-group group-id="EditorPopupMenu"/>
       <add-to-group group-id="ProjectViewPopupMenu"/>
       <add-to-group group-id="Images.EditorPopupMenu"/>
+      <add-to-group group-id="Pls.Images.EditorPopupMenu"/>
     </group>
   </actions>
 </idea-plugin>

@@ -5,6 +5,7 @@ package icu.windea.pls.lang.util
 import com.intellij.injected.editor.*
 import com.intellij.lang.*
 import com.intellij.openapi.diagnostic.*
+import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vcs.*
@@ -12,14 +13,19 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.testFramework.*
 import com.intellij.util.io.*
+import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.csv.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.localisation.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
+import icu.windea.pls.script.*
 import java.nio.file.*
 import java.util.*
+import javax.swing.*
 
 object ParadoxFileManager {
     object Keys : KeyRegistry() {
@@ -66,38 +72,6 @@ object ParadoxFileManager {
             fileExtension in PlsConstants.csvFileExtensions -> true
             else -> false
         }
-    }
-
-    fun canBeScriptFilePath(path: ParadoxPath): Boolean {
-        if (inLocalisationPath(path)) return false
-        val fileExtension = path.fileExtension?.lowercase() ?: return false
-        if (fileExtension !in PlsConstants.scriptFileExtensions) return false
-        return true
-    }
-
-    fun canBeLocalisationFilePath(path: ParadoxPath): Boolean {
-        if (!inLocalisationPath(path)) return false
-        val fileExtension = path.fileExtension?.lowercase() ?: return false
-        if (fileExtension !in PlsConstants.localisationFileExtensions) return false
-        return true
-    }
-
-    fun canBeCsvFilePath(path: ParadoxPath): Boolean {
-        if (inLocalisationPath(path)) return false
-        val fileExtension = path.fileExtension?.lowercase() ?: return false
-        if (fileExtension !in PlsConstants.csvFileExtensions) return false
-        return true
-    }
-
-    fun inLocalisationPath(path: ParadoxPath, synced: Boolean? = null): Boolean {
-        val root = path.root
-        if (synced != true) {
-            if (root == "localisation" || root == "localization") return true
-        }
-        if (synced != false) {
-            if (root == "localisation_synced" || root == "localization_synced") return true
-        }
-        return false
     }
 
     fun getFileExtensionOptionValues(config: CwtMemberConfig<*>): Set<String> {
@@ -205,5 +179,39 @@ object ParadoxFileManager {
     fun createLightFile(name: String, text: CharSequence, language: Language): VirtualFile {
         val lightFile = LightVirtualFile(name, language, text)
         return lightFile
+    }
+
+    fun isIgnoredFile(fileName: String): Boolean {
+        return PlsFacade.getSettings().ignoredFileNameSet.contains(fileName)
+    }
+
+    fun getFileType(fileType: ParadoxFileType): FileType? {
+        return when (fileType) {
+            ParadoxFileType.Script -> ParadoxScriptFileType
+            ParadoxFileType.Localisation -> ParadoxLocalisationFileType
+            ParadoxFileType.Csv -> ParadoxCsvFileType
+            ParadoxFileType.ModDescriptor -> ParadoxScriptFileType
+            else -> null
+        }
+    }
+
+    fun getFileIcon(fileType: ParadoxFileType): Icon? {
+        return when (fileType) {
+            ParadoxFileType.Script -> PlsIcons.FileTypes.ParadoxScript
+            ParadoxFileType.Localisation -> PlsIcons.FileTypes.ParadoxLocalisation
+            ParadoxFileType.Csv -> PlsIcons.FileTypes.ParadoxCsv
+            ParadoxFileType.ModDescriptor -> PlsIcons.FileTypes.ModeDescriptor
+            else -> null
+        }
+    }
+
+    fun canOverrideFile(file: PsiFile, fileType: ParadoxFileType): Boolean {
+        return when (fileType) {
+            ParadoxFileType.Script -> true
+            ParadoxFileType.Localisation -> true
+            ParadoxFileType.Csv -> true
+            ParadoxFileType.ModDescriptor -> false
+            ParadoxFileType.Other -> ParadoxImageManager.isImageFile(file) // currently only accept generic images
+        }
     }
 }

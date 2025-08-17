@@ -46,13 +46,13 @@ abstract class ConvertImageFormatAction(
 
     override fun update(e: AnActionEvent) {
         val project = e.project
-        val enabled = project != null && PlsFileManager.findFiles(e).any { isAvailableForFile(it) }
+        val enabled = project != null && PlsVfsManager.findFiles(e).any { isAvailableForFile(it) }
         e.presentation.isEnabledAndVisible = enabled
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val files = PlsFileManager.findFiles(e).filter { isAvailableForFile(it) }.mapNotNull { it.toPsiFile(project) }
+        val files = PlsVfsManager.findFiles(e).filter { isAvailableForFile(it) }.mapNotNull { it.toPsiFile(project) }
         if (files.isEmpty()) return
         convert(files, project)
     }

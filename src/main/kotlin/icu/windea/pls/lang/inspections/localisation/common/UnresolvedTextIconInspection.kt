@@ -10,7 +10,9 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.ParadoxPathMatcher
 import icu.windea.pls.model.constraints.*
+import icu.windea.pls.model.matches
 import javax.swing.*
 
 /**
@@ -27,10 +29,10 @@ class UnresolvedTextIconInspection : LocalInspectionTool() {
     var ignoredInInjectedFiles = false
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (ignoredInInjectedFiles && PlsFileManager.isInjectedFile(file.virtualFile)) return false
+        if (ignoredInInjectedFiles && PlsVfsManager.isInjectedFile(file.virtualFile)) return false
         if (!ParadoxSyntaxConstraint.LocalisationTextIcon.supports(file)) return false
         val fileInfo = file.fileInfo ?: return false
-        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
+        return fileInfo.path.matches(ParadoxPathMatcher.InLocalisationPath)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

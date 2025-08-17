@@ -1,6 +1,4 @@
 <idea-plugin>
-  <resource-bundle>messages.PlsBundle</resource-bundle>
-
   <extensions defaultExtensionNs="com.intellij">
     <!--region CWT-->
     <intentionAction>

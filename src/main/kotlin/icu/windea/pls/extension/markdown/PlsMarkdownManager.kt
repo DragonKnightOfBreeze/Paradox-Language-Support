@@ -64,7 +64,7 @@ object PlsMarkdownManager {
 
     fun getCodeFenceFromInjectedFile(injectedFile: PsiFile): MarkdownCodeFence? {
         val vFile = selectFile(injectedFile) ?: return null
-        if (!PlsFileManager.isInjectedFile(vFile)) return null
+        if (!PlsVfsManager.isInjectedFile(vFile)) return null
         val host = InjectedLanguageManager.getInstance(injectedFile.project).getInjectionHost(injectedFile)
         if (host == null) return null
 
@@ -75,11 +75,7 @@ object PlsMarkdownManager {
     fun getInjectFileInfoFromInjectedFile(element: MarkdownCodeFence): ParadoxFileInfo? {
         val pathInfo = getPathInfo(element) ?: return null
         val path = ParadoxPath.resolve(pathInfo.path)
-        val fileExtension = path.fileExtension ?: return null
-        val isValid = fileExtension in PlsConstants.scriptFileExtensions
-            || fileExtension in PlsConstants.localisationFileExtensions
-            || fileExtension in PlsConstants.csvFileExtensions
-        if (!isValid) return null
+        if (!canInject(path)) return null
 
         run {
             val rootInfo = selectRootFile(element)?.rootInfo
@@ -95,5 +91,12 @@ object PlsMarkdownManager {
         val fileType = ParadoxFileType.resolve(path, rootInfo)
         val injectedFileInfo = ParadoxFileInfo(path, "", fileType, rootInfo)
         return injectedFileInfo
+    }
+
+    private fun canInject(path: ParadoxPath): Boolean {
+        val fileExtension = path.fileExtension ?: return false
+        return fileExtension in PlsConstants.scriptFileExtensions
+            || fileExtension in PlsConstants.localisationFileExtensions
+            || fileExtension in PlsConstants.csvFileExtensions
     }
 }

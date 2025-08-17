@@ -4,8 +4,9 @@ import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.ParadoxPathMatcher
+import icu.windea.pls.model.matches
 
 /**
  * 不支持的语言区域的检查。
@@ -13,7 +14,7 @@ import icu.windea.pls.localisation.psi.*
 class UnsupportedLocaleInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
-        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
+        return fileInfo.path.matches(ParadoxPathMatcher.InLocalisationPath)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

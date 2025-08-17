@@ -1,12 +1,11 @@
 <idea-plugin>
-  <resource-bundle>messages.PlsMarkdownBundle</resource-bundle>
-
   <extensions defaultExtensionNs="com.intellij">
     <psi.implicitReferenceProvider implementation="icu.windea.pls.extension.markdown.psi.MarkdownInlineCodeReferenceProvider"/>
 
     <localInspection language="Markdown" shortName="PlsMarkdownUnresolvedReferenceLink"
+                     bundle="messages.PlsMarkdownBundle"
+                     key="inspection.unresolvedReferenceLinks" groupKey="inspection.group"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsMarkdownBundle" key="inspection.unresolvedReferenceLinks" groupKey="inspection.group"
                      implementationClass="icu.windea.pls.extension.markdown.inspections.MarkdownUnresolvedReferenceLinkInspection"/>
 
     <advancedSetting id="pls.md.resolveInlineCodes" default="false" groupKey="group.advanced.settings" bundle="messages.PlsMarkdownBundle"/>

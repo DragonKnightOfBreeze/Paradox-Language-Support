@@ -58,7 +58,7 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
 
         val psiFile = file.toPsiFile(queryParameters.project) ?: return true
 
-        if (PlsFileManager.isInjectedFile(file)) {
+        if (PlsVfsManager.isInjectedFile(file)) {
             run {
                 //input file is an injected file (from argument value)
                 val injectionInfo = ParadoxParameterManager.getParameterValueInjectionInfoFromInjectedFile(psiFile) ?: return@run
@@ -70,7 +70,7 @@ class ParadoxLocalScriptedVariableSearcher : QueryExecutorBase<ParadoxScriptScri
             return true
         }
 
-        if (PlsFileManager.isLightFile(file)) return true //skip for other in-memory files
+        if (PlsVfsManager.isLightFile(file)) return true //skip for other in-memory files
 
         //input file is an inline script file
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(file) ?: return true

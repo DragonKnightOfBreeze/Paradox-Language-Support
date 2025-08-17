@@ -8,6 +8,8 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.ParadoxPathMatcher
+import icu.windea.pls.model.matches
 import org.jetbrains.annotations.*
 
 /**
@@ -19,7 +21,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         val fileInfo = file.fileInfo ?: return false
-        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
+        return fileInfo.path.matches(ParadoxPathMatcher.InLocalisationPath)
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {

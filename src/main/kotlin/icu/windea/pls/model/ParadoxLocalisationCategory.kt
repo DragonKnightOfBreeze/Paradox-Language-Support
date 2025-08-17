@@ -3,7 +3,6 @@ package icu.windea.pls.model
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 
 enum class ParadoxLocalisationCategory(
@@ -24,15 +23,10 @@ enum class ParadoxLocalisationCategory(
         }
 
         @JvmStatic
-        fun resolve(flag: Boolean): ParadoxLocalisationCategory {
-            return if (flag) Localisation else SyncedLocalisation
-        }
-
-        @JvmStatic
         fun resolve(path: ParadoxPath): ParadoxLocalisationCategory? {
             return when {
-                ParadoxFileManager.inLocalisationPath(path, synced = false) -> Localisation
-                ParadoxFileManager.inLocalisationPath(path, synced = true) -> SyncedLocalisation
+                path.matches(ParadoxPathMatcher.InNormalLocalisationPath) -> Localisation
+                path.matches(ParadoxPathMatcher.InSyncedLocalisationPath) -> SyncedLocalisation
                 else -> null
             }
         }
@@ -52,12 +46,6 @@ enum class ParadoxLocalisationCategory(
 
         @JvmStatic
         fun resolve(element: ParadoxLocalisationProperty): ParadoxLocalisationCategory? {
-            val root = element.fileInfo?.path ?: return null
-            return resolve(root)
-        }
-
-        @JvmStatic
-        fun resolve(element: ParadoxLocalisationParameter): ParadoxLocalisationCategory? {
             val root = element.fileInfo?.path ?: return null
             return resolve(root)
         }

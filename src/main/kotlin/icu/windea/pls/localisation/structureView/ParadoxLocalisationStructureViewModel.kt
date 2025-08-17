@@ -24,7 +24,7 @@ class ParadoxLocalisationStructureViewModel(
     }
 
     override fun findAcceptableElement(element: PsiElement?): Any? {
-        return PlsPsiManager.findAcceptableElementIncludeComment(element) { it: PsiElement -> isSuitable(it) }
+        return PlsPsiManager.findAcceptableElementInStructureView(element, canAttachComment = true) { isSuitable(it) }
     }
 
     //指定可用的排序器，可自定义

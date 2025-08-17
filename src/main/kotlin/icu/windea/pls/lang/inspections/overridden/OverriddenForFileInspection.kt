@@ -19,7 +19,7 @@ import org.jetbrains.annotations.*
  */
 class OverriddenForFileInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (PlsVfsManager.isLightFile(file.virtualFile)) return false //不检查临时文件
         if (selectRootFile(file) == null) return false
         if (!inProject(file)) return false //only for project files
         return true
@@ -52,13 +52,7 @@ class OverriddenForFileInspection : LocalInspectionTool() {
     }
 
     private fun shouldCheckFile(file: PsiFile, fileType: ParadoxFileType): Boolean {
-        return when (fileType) {
-            ParadoxFileType.Script -> true
-            ParadoxFileType.Localisation -> true
-            ParadoxFileType.Csv -> true
-            ParadoxFileType.ModDescriptor -> false
-            ParadoxFileType.Other -> ParadoxImageManager.isImageFile(file) // currently only accept generic images
-        }
+        return ParadoxFileManager.canOverrideFile(file, fileType)
     }
 
     private class NavigateToOverriddenFilesFix(key: String, element: PsiElement, elements: Collection<PsiElement>) : NavigateToFix(key, element, elements) {

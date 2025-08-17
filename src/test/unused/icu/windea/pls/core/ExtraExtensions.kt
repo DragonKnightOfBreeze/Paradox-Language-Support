@@ -2,6 +2,7 @@
 
 package icu.windea.pls.core
 
+import kotlin.collections.iterator
 import kotlin.reflect.*
 
 inline fun <T> withProperties(block: PropertiesContainer.() -> T): T {

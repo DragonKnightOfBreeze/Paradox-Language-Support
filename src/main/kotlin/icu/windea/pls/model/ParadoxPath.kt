@@ -37,6 +37,10 @@ interface ParadoxPath : Iterable<String> {
     }
 }
 
+fun ParadoxPath.matches(matcher: ParadoxPathMatcher): Boolean {
+    return matcher.matches(this)
+}
+
 //Implementations (not interned)
 
 private fun doResolve(path: String): ParadoxPath {

@@ -75,7 +75,7 @@ fun DocumentationBuilder.appendImgTag(url: String, width: Int, height: Int, loca
 
 fun DocumentationBuilder.appendFileInfoHeader(element: PsiElement): DocumentationBuilder {
     val file = runReadAction { selectFile(element) } ?: return this
-    if (PlsFileManager.isInjectedFile(file)) return this //ignored for injected PSI
+    if (PlsVfsManager.isInjectedFile(file)) return this //ignored for injected PSI
     val fileInfo = file.fileInfo ?: return this
     val rootInfo = fileInfo.rootInfo
     if (rootInfo !is ParadoxRootInfo.MetadataBased) return this

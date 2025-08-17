@@ -1,6 +1,4 @@
 <idea-plugin>
-  <resource-bundle>messages.PlsBundle</resource-bundle>
-
   <extensions defaultExtensionNs="com.intellij">
     <lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.inspections.ParadoxScriptInspectionSuppressor"/>
     <lang.inspectionSuppressor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.inspections.ParadoxLocalisationInspectionSuppressor"/>

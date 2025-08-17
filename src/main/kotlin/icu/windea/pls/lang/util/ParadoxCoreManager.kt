@@ -43,7 +43,7 @@ object ParadoxCoreManager {
             try {
                 val rootInfo = doGetRootInfo(rootFile)
                 rootFile.tryPutUserData(PlsKeys.rootInfo, rootInfo ?: EMPTY_OBJECT)
-                if (rootInfo != null && !PlsFileManager.isLightFile(rootFile)) {
+                if (rootInfo != null && !PlsVfsManager.isLightFile(rootFile)) {
                     ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
                 }
                 return rootInfo
@@ -72,7 +72,7 @@ object ParadoxCoreManager {
         if (injectedFileInfo != null) return injectedFileInfo
 
         //no fileInfo for VirtualFileWindow (injected PSI)
-        if (PlsFileManager.isInjectedFile(file)) return null
+        if (PlsVfsManager.isInjectedFile(file)) return null
 
         val cachedFileInfo = file.getUserData(PlsKeys.fileInfo)
         if (cachedFileInfo != null) return cachedFileInfo.castOrNull()
@@ -121,7 +121,11 @@ object ParadoxCoreManager {
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val relPath = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimFast('/'))
         val (path, entryName) = resolvePathAndEntryName(relPath, rootInfo)
-        val fileType = ParadoxFileType.resolve(file, path, rootInfo)
+        val fileType = when {
+            file.isDirectory -> ParadoxFileType.Other
+            ParadoxFileManager.isIgnoredFile(file.name) -> ParadoxFileType.Other
+            else -> ParadoxFileType.resolve(path, rootInfo)
+        }
         val fileInfo = ParadoxFileInfo(path, entryName, fileType, rootInfo)
         return fileInfo
     }
@@ -152,7 +156,11 @@ object ParadoxCoreManager {
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         val relPath = ParadoxPath.resolve(filePath.path.removePrefix(rootInfo.rootFile.path).trimFast('/'))
         val (path, entryName) = resolvePathAndEntryName(relPath, rootInfo)
-        val fileType = ParadoxFileType.resolve(filePath, path, rootInfo)
+        val fileType = when {
+            filePath.isDirectory -> ParadoxFileType.Other
+            ParadoxFileManager.isIgnoredFile(filePath.name) -> ParadoxFileType.Other
+            else -> ParadoxFileType.resolve(path, rootInfo)
+        }
         val fileInfo = ParadoxFileInfo(path, entryName, fileType, rootInfo)
         return fileInfo
     }

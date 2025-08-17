@@ -22,7 +22,7 @@ class ParadoxLocalisationFileStubElementType : ILightStubFileElementType<PsiFile
     override fun shouldBuildStubFor(file: VirtualFile): Boolean {
         try {
             //不索引内存中的文件
-            if (PlsFileManager.isLightFile(file)) return false
+            if (PlsVfsManager.isLightFile(file)) return false
             //仅索引有根目录的文件
             return file.fileInfo != null
         } catch (e: Exception) {

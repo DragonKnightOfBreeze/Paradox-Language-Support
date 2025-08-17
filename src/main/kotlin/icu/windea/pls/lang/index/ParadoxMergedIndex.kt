@@ -158,7 +158,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
     }
 
     override fun useLazyIndex(file: VirtualFile): Boolean {
-        if (PlsFileManager.isInjectedFile(file)) return true
+        if (PlsVfsManager.isInjectedFile(file)) return true
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true //inline script files should be lazy indexed
         //if (file.fileType is ParadoxLocalisationFileType) return true //to prevent recursion, see #127
         return false

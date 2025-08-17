@@ -103,7 +103,7 @@ sourceSets {
         resources.srcDirs("src/main/resources")
     }
     test {
-        java.srcDirs("src/test/java", "src/test/kotlin")
+        java.srcDirs("src/test/java", "src/test/kotlin", "src/test/unused")
         resources.srcDirs("src/test/resources")
     }
 }

@@ -4,11 +4,9 @@ import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.fileTypes.impl.*
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.core.*
-import icu.windea.pls.csv.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.localisation.*
+import icu.windea.pls.lang.util.ParadoxFileManager
 import icu.windea.pls.model.*
-import icu.windea.pls.script.*
 
 /**
  * 文件类型重载器。
@@ -17,25 +15,20 @@ import icu.windea.pls.script.*
  */
 class ParadoxFileTypeOverrider : FileTypeOverrider {
     override fun getOverriddenFileType(file: VirtualFile): FileType? {
+        if(file.isDirectory) return null
+
         runCatchingCancelable r@{
-            val fileInfoFromUserData = file.getUserData(PlsKeys.injectedFileInfo)
-                ?: file.getUserData(PlsKeys.fileInfo)?.castOrNull<ParadoxFileInfo>()
-                ?: return@r
-            return doGetFileType(fileInfoFromUserData)
+            val injectedFileInfo = file.getUserData(PlsKeys.injectedFileInfo) ?: return@r
+            return ParadoxFileManager.getFileType(injectedFileInfo.fileType)
+        }
+
+        runCatchingCancelable r@{
+            val fileInfo = file.getUserData(PlsKeys.fileInfo)?.castOrNull<ParadoxFileInfo>() ?: return@r
+            return ParadoxFileManager.getFileType(fileInfo.fileType)
         }
 
         if (!ParadoxFileManager.canBeParadoxFile(file)) return null
         val fileInfo = ParadoxCoreManager.getFileInfo(file) ?: return null
-        return doGetFileType(fileInfo)
-    }
-
-    private fun doGetFileType(fileInfo: ParadoxFileInfo): FileType? {
-        return when (fileInfo.fileType) {
-            ParadoxFileType.Script -> ParadoxScriptFileType
-            ParadoxFileType.Localisation -> ParadoxLocalisationFileType
-            ParadoxFileType.Csv -> ParadoxCsvFileType
-            ParadoxFileType.ModDescriptor -> ParadoxScriptFileType
-            else -> null
-        }
+        return ParadoxFileManager.getFileType(fileInfo.fileType)
     }
 }

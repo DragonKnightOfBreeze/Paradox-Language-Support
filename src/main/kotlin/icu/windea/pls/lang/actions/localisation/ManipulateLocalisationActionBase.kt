@@ -58,13 +58,13 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
     protected open fun isValidFile(file: VirtualFile): Boolean {
         if (file.fileType !is ParadoxLocalisationFileType) return false
         if (file.fileInfo == null) return false
-        if (PlsFileManager.isLightFile(file)) return false
+        if (PlsVfsManager.isLightFile(file)) return false
         return true
     }
 
     protected open fun hasFiles(e: AnActionEvent, project: Project): Boolean {
         var r: PsiFile? = null
-        PlsFileManager.processFiles(e, deep = true) p@{ file ->
+        PlsVfsManager.processFiles(e, deep = true) p@{ file ->
             if (!isValidFile(file)) return@p true
             r = file.toPsiFile(project) ?: return@p true
             false
@@ -74,7 +74,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
 
     protected open fun hasElements(e: AnActionEvent, project: Project): Boolean {
         var r: PsiElement? = null
-        PlsFileManager.processFiles(e, deep = true) p@{ file ->
+        PlsVfsManager.processFiles(e, deep = true) p@{ file ->
             if (!isValidFile(file)) return@p true
             val psiFile = file.toPsiFile(project) ?: return@p true
             r = findElements(psiFile).firstOrNull()
@@ -85,7 +85,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
 
     protected open fun findFiles(e: AnActionEvent, project: Project): List<PsiFile> {
         val project = e.project ?: return emptyList()
-        val files = PlsFileManager.findFiles(e, deep = true) { file -> isValidFile(file) }
+        val files = PlsVfsManager.findFiles(e, deep = true) { file -> isValidFile(file) }
         return files.mapNotNull { it.toPsiFile(project) }
     }
 

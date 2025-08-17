@@ -19,7 +19,7 @@ class MultipleLocalesInspection : LocalInspectionTool() {
     var ignoredFileNames = "languages.yml"
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (PlsVfsManager.isLightFile(file.virtualFile)) return false //不检查临时文件
         return true
     }
 

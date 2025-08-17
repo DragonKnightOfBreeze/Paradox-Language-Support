@@ -1,6 +1,4 @@
 <idea-plugin>
-  <resource-bundle>messages.PlsBundle</resource-bundle>
-
   <extensionPoints>
     <extensionPoint qualifiedName="icu.windea.pls.images.support" interface="icu.windea.pls.images.support.ImageSupport" dynamic="true"/>
   </extensionPoints>
@@ -68,7 +66,6 @@
       <reference ref="Pls.Images.EditExternally"/>
       <reference ref="Images.EditExternalEditorPath"/>
       <reference ref="ExternalToolsGroup"/>
-      <reference ref="Pls.Tools"/>
     </group>
 
     <group id="Pls.Images.ConvertGroup">

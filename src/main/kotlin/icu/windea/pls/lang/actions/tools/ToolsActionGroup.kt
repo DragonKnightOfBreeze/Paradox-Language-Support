@@ -3,7 +3,7 @@ package icu.windea.pls.lang.actions.tools
 import com.intellij.openapi.actionSystem.*
 import icu.windea.pls.lang.*
 
-class PlsToolsActionGroup : DefaultActionGroup() {
+class ToolsActionGroup : DefaultActionGroup() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {

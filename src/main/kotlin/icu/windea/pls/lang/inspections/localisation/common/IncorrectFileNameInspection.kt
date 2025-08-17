@@ -14,6 +14,8 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.ParadoxPathMatcher
+import icu.windea.pls.model.matches
 
 /**
  * 不正确的文件名的检查。
@@ -24,9 +26,9 @@ import icu.windea.pls.localisation.psi.*
  */
 class IncorrectFileNameInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {
-        if (PlsFileManager.isLightFile(file.virtualFile)) return false //不检查临时文件
+        if (PlsVfsManager.isLightFile(file.virtualFile)) return false //不检查临时文件
         val fileInfo = file.fileInfo ?: return false
-        return ParadoxFileManager.inLocalisationPath(fileInfo.path)
+        return fileInfo.path.matches(ParadoxPathMatcher.InLocalisationPath)
     }
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {

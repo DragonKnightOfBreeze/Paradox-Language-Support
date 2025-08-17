@@ -140,7 +140,7 @@ class InlineScriptCwtConfigContextProvider : CwtConfigContextProvider {
         ProgressManager.checkCanceled()
 
         val vFile = selectFile(file) ?: return null
-        if (PlsFileManager.isInjectedFile(vFile)) return null //ignored for injected psi
+        if (PlsVfsManager.isInjectedFile(vFile)) return null //ignored for injected psi
 
         val inlineScriptExpression = ParadoxInlineScriptManager.getInlineScriptExpression(vFile)
         if (inlineScriptExpression == null) return null

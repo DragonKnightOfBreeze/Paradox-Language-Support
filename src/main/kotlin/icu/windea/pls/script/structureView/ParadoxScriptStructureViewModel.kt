@@ -28,7 +28,7 @@ class ParadoxScriptStructureViewModel(
     }
 
     override fun findAcceptableElement(element: PsiElement?): Any? {
-        return PlsPsiManager.findAcceptableElementIncludeComment(element) { it: PsiElement -> isSuitable(it) }
+        return PlsPsiManager.findAcceptableElementInStructureView(element, canAttachComment = true) { isSuitable(it) }
     }
 
     //指定可用的分组器，可自定义

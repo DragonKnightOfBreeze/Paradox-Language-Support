@@ -9,7 +9,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.core.util.Processors
 import icu.windea.pls.lang.actions.*
 
-object PlsFileManager {
+object PlsVfsManager {
     fun isLightFile(file: VirtualFile): Boolean {
         return file is LightVirtualFileBase
     }

@@ -4,18 +4,51 @@ import com.intellij.lang.*
 import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.util.*
+import com.intellij.openapi.util.text.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 
 object PlsPsiManager {
-    inline fun findAcceptableElementIncludeComment(element: PsiElement?, predicate: (PsiElement) -> Boolean): Any? {
-        var current: PsiElement? = element ?: return null
+    fun containsBlankLine(element: PsiWhiteSpace): Boolean {
+        return StringUtil.getLineBreakCount(element.text) > 1
+    }
+
+    /**
+     * 得到附加到 [element] 上的所有注释的列表，顺序从后到前。
+     *
+     * 向前遍历，仅采用注释以及不包含空白行的空白，然后返回其中的所有注释。
+     */
+    fun getAttachedComment(element: PsiElement): List<PsiComment> {
+        if (element is PsiComment || element is PsiWhiteSpace) return emptyList()
+        return element.siblings(forward = false, withSelf = false)
+            .takeWhile { it is PsiComment || (it is PsiWhiteSpace && !containsBlankLine(it)) }
+            .filterIsInstance<PsiComment>()
+            .toList()
+    }
+
+    /**
+     * 得到 [comment] 附加到的元素。
+     *
+     * 向后遍历，仅采用注释、不包含空白行的空白以及第一个非注释非空白的元素，然后然后此元素。
+     */
+    fun getAttachingElement(comment: PsiComment): PsiElement? {
+        return comment.siblings(forward = true, withSelf = false)
+            .dropWhile { it is PsiComment || (it is PsiWhiteSpace && !containsBlankLine(it)) }
+            .firstOrNull()
+            ?.takeIf { it !is PsiComment && it !is PsiWhiteSpace }
+    }
+
+    fun findAcceptableElementInStructureView(element: PsiElement?, canAttachComment: Boolean = false, predicate: (PsiElement) -> Boolean): Any? {
+        var current = element
         while (current != null && current !is PsiFile) {
             if (predicate(current)) return current
-            if (current is PsiComment) return current.siblings().find { predicate(it) }
-                ?.takeIf { it.prevSibling.isSpaceOrSingleLineBreak() }
+            if (canAttachComment && current is PsiComment) {
+                val attachingElement = getAttachingElement(current)
+                if (attachingElement != null && predicate(attachingElement)) return attachingElement
+                return null
+            }
             current = current.parent
         }
         return null
@@ -37,8 +70,6 @@ object PlsPsiManager {
         if (comment != null) return comment.startOffset
         return target.startOffset
     }
-
-
 
     /**
      * 查找最远的相同类型的兄弟节点。可指定是否向后查找，以及是否在空行处中断。
