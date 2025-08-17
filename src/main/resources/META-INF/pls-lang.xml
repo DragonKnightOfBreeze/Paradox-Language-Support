@@ -1,4 +1,6 @@
 <idea-plugin>
+  <resource-bundle>messages.PlsBundle</resource-bundle>
+
   <extensionPoints>
     <extensionPoint qualifiedName="icu.windea.pls.search.configSymbolSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.search.localScriptedVariableSearch" interface="com.intellij.util.QueryExecutor" dynamic="true"/>
@@ -16,7 +18,7 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
-    <applicationConfigurable id="pls" groupId="language" bundle="messages.PlsBundle" key="settings" instance="icu.windea.pls.lang.settings.PlsSettingsConfigurable"/>
+    <applicationConfigurable id="pls" groupId="language" key="settings" instance="icu.windea.pls.lang.settings.PlsSettingsConfigurable"/>
 
     <additionalLibraryRootsProvider implementation="icu.windea.pls.lang.ParadoxLibraryProvider"/>
     <moduleRendererFactory implementation="icu.windea.pls.lang.ParadoxModuleRenderFactory"/>
@@ -47,6 +49,8 @@
     <declarationRangeHandler key="icu.windea.pls.script.psi.ParadoxScriptProperty" implementationClass="icu.windea.pls.lang.codeInsight.ParadoxDefinitionDeclarationRangeHandler"/>
 
     <codeInsight.gotoSuper language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.generation.ParadoxGotoSuperDefinitionActionHandler"/>
+
+    <createDirectoryCompletionContributor implementation="icu.windea.pls.lang.actions.ParadoxCreateDirectoryCompletionContributor"/>
 
     <completion.contributor language="CWT" implementationClass="icu.windea.pls.lang.codeInsight.completion.cwt.CwtCompletionContributor"/>
     <completion.contributor language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.completion.csv.ParadoxCsvCompletionContributor"/>
@@ -89,8 +93,6 @@
     <codeInsight.parameterInfo language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.parameterInfo.ParadoxParameterInfoHandler"/>
 
     <codeInsight.template.postfixTemplateProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.template.postfix.ParadoxPostfixTemplateProvider"/>
-
-    <createDirectoryCompletionContributor implementation="icu.windea.pls.lang.actions.ParadoxCreateDirectoryCompletionContributor"/>
 
     <findUsagesHandlerFactory implementation="icu.windea.pls.lang.findUsages.ParadoxFindUsagesHandlerFactory"/>
 
@@ -174,7 +176,9 @@
 
     <pathReferenceProvider implementation="icu.windea.pls.lang.references.paths.ParadoxPathReferenceProvider" order="first"/>
 
-    <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" bundle="messages.PlsBundle" key="notificationGroup.pls"/>
+    <multiHostInjector implementation="icu.windea.pls.lang.injection.ParadoxScriptLanguageInjector"/>
+
+    <notificationGroup id="pls" displayType="BALLOON" isLogByDefault="true" key="notificationGroup.pls"/>
 
     <postStartupActivity implementation="icu.windea.pls.lang.PlsLifecycleListener"/>
 
@@ -411,6 +415,85 @@
       <action id="Pls.Manipulation.SelectRow" class="icu.windea.pls.lang.actions.csv.SelectRowAction" icon="AllIcons.Actions.InSelection"/>
       <action id="Pls.Manipulation.RemoveRow" class="icu.windea.pls.lang.actions.csv.RemoveRowAction" icon="AllIcons.Actions.GC"/>
       <add-to-group group-id="Pls.TableManipulationContextMenuGroup"/>
+    </group>
+
+    <action id="Pls.OpenGameSettings" class="icu.windea.pls.lang.actions.tools.OpenSettingsActions$Game" icon="icu.windea.pls.PlsIcons.Actions.GameSettings">
+      <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
+      <add-to-group group-id="EditorContextBarMenu" anchor="first"/>
+    </action>
+    <action id="Pls.OpenModSettings" class="icu.windea.pls.lang.actions.tools.OpenSettingsActions$Mod" icon="icu.windea.pls.PlsIcons.Actions.ModSettings">
+      <keyboard-shortcut keymap="$default" first-keystroke="control alt m"/>
+      <add-to-group group-id="EditorContextBarMenu" relative-to-action="Pls.OpenGameSettings" anchor="after"/>
+    </action>
+
+    <group id="Pls.OpenPath">
+      <action id="Pls.OpenPath.Steam" class="icu.windea.pls.lang.actions.tools.OpenPathActions$Steam"/>
+      <action id="Pls.OpenPath.SteamGame" class="icu.windea.pls.lang.actions.tools.OpenPathActions$SteamGame"/>
+      <action id="Pls.OpenPath.SteamWorkshop" class="icu.windea.pls.lang.actions.tools.OpenPathActions$SteamWorkshop"/>
+      <action id="Pls.OpenPath.GameData" class="icu.windea.pls.lang.actions.tools.OpenPathActions$GameData"/>
+      <action id="Pls.OpenPath.Game" class="icu.windea.pls.lang.actions.tools.OpenPathActions$Game"/>
+      <action id="Pls.OpenPath.Mod" class="icu.windea.pls.lang.actions.tools.OpenPathActions$Mod"/>
+    </group>
+    <group id="Pls.OpenUrl">
+      <action id="Pls.OpenUrl.GameStorePageInSteam" class="icu.windea.pls.lang.actions.tools.OpenUrlActions$GameStorePageInSteam" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.OpenUrl.GameStorePageInSteamWebsite" class="icu.windea.pls.lang.actions.tools.OpenUrlActions$GameStorePageInSteamWebsite" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.OpenUrl.GameWorkshopPageInSteam" class="icu.windea.pls.lang.actions.tools.OpenUrlActions$GameWorkshopPageInSteam" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.OpenUrl.GameWorkshopPageInSteamWebsite" class="icu.windea.pls.lang.actions.tools.OpenUrlActions$GameWorkshopPageInSteamWebsite" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.OpenUrl.ModPageInSteam" class="icu.windea.pls.lang.actions.tools.OpenUrlActions$ModPageInSteam" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.OpenUrl.ModPageInSteamWebsite" class="icu.windea.pls.lang.actions.tools.OpenUrlActions$ModPageInSteamWebsite" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+    </group>
+    <group id="Pls.CopyPath">
+      <action id="Pls.CopyPath.Steam" class="icu.windea.pls.lang.actions.tools.CopyPathActions$Steam"/>
+      <action id="Pls.CopyPath.SteamGame" class="icu.windea.pls.lang.actions.tools.CopyPathActions$SteamGame"/>
+      <action id="Pls.CopyPath.SteamWorkshop" class="icu.windea.pls.lang.actions.tools.CopyPathActions$SteamWorkshop"/>
+      <action id="Pls.CopyPath.GameData" class="icu.windea.pls.lang.actions.tools.CopyPathActions$GameData"/>
+      <action id="Pls.CopyPath.Game" class="icu.windea.pls.lang.actions.tools.CopyPathActions$Game"/>
+      <action id="Pls.CopyPath.Mod" class="icu.windea.pls.lang.actions.tools.CopyPathActions$Mod"/>
+    </group>
+    <group id="Pls.CopyUrl">
+      <action id="Pls.CopyUrl.GameStorePage" class="icu.windea.pls.lang.actions.tools.CopyUrlActions$GameStorePage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.CopyUrl.GameWorkshopPage" class="icu.windea.pls.lang.actions.tools.CopyUrlActions$GameWorkshopPage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+      <action id="Pls.CopyUrl.ModPage" class="icu.windea.pls.lang.actions.tools.CopyUrlActions$ModPage" icon="icu.windea.pls.PlsIcons.General.Steam"/>
+    </group>
+    <group id="Pls.GotoPath">
+      <separator/>
+      <action id="Pls.GotoPath.Steam" class="icu.windea.pls.lang.actions.tools.GoToPathActions$Steam" icon="AllIcons.Nodes.Module"/>
+      <action id="Pls.GotoPath.SteamGame" class="icu.windea.pls.lang.actions.tools.GoToPathActions$SteamGame" icon="AllIcons.Nodes.Module"/>
+      <action id="Pls.GotoPath.SteamWorkshop" class="icu.windea.pls.lang.actions.tools.GoToPathActions$SteamWorkshop" icon="AllIcons.Nodes.Module"/>
+      <action id="Pls.GotoPath.GameData" class="icu.windea.pls.lang.actions.tools.GoToPathActions$GameData" icon="AllIcons.Nodes.Module"/>
+      <add-to-group group-id="FileChooserToolbar" anchor="last"/>
+    </group>
+
+    <group id="Pls.Tools" class="icu.windea.pls.lang.actions.tools.PlsToolsActionGroup" popup="true">
+      <reference ref="Pls.OpenGameSettings"/>
+      <reference ref="Pls.OpenModSettings"/>
+      <reference ref="Pls.SyncConfigGroupFromRemote"/>
+
+      <group id="Pls.Tools.OpenPath" popup="true">
+        <reference ref="Pls.OpenPath"/>
+      </group>
+      <group id="Pls.Tools.OpenUrl" popup="true">
+        <reference ref="Pls.OpenUrl"/>
+      </group>
+      <group id="Pls.Tools.CopyPath" popup="true">
+        <reference ref="Pls.CopyPath"/>
+      </group>
+      <group id="Pls.Tools.CopyUrl" popup="true">
+        <reference ref="Pls.CopyUrl"/>
+      </group>
+
+      <group id="Pls.Tools.Manipulation" popup="true">
+        <reference ref="Pls.LocalisationManipulation"/>
+        <reference ref="Pls.TableManipulation"/>
+      </group>
+      <group id="Pls.Tools.Generation" popup="true">
+        <reference ref="Pls.LocalisationGeneration"/>
+      </group>
+
+      <add-to-group group-id="ToolsMenu"/>
+      <add-to-group group-id="EditorPopupMenu"/>
+      <add-to-group group-id="ProjectViewPopupMenu"/>
+      <add-to-group group-id="Images.EditorPopupMenu"/>
     </group>
   </actions>
 </idea-plugin>

@@ -12,7 +12,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.injection.*
 import icu.windea.pls.script.psi.*
 
 //region Extensions
@@ -209,7 +208,7 @@ class InlineScriptCwtConfigContextProvider : CwtConfigContextProvider {
  * * 不会将参数值内容内联到对应的调用处，然后再进行相关代码检查。
  * * 不会将参数值内容内联到对应的调用处，然后检查语法是否合法。
  *
- * @see ParadoxScriptLanguageInjector
+ * @see icu.windea.pls.lang.injection.ParadoxScriptLanguageInjector
  */
 class ParameterValueCwtConfigContextProvider : CwtConfigContextProvider {
     override fun getContext(element: ParadoxScriptMemberElement, elementPath: ParadoxExpressionPath, file: PsiFile): CwtConfigContext? {

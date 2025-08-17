@@ -1,4 +1,6 @@
 <idea-plugin>
+  <resource-bundle>messages.PlsBundle</resource-bundle>
+
   <extensions defaultExtensionNs="com.intellij">
     <fileType language="PARADOX_SCRIPT" name="Paradox Script" fieldName="INSTANCE" implementationClass="icu.windea.pls.script.ParadoxScriptFileType"
               fileNames="descriptor.mod"/>

@@ -17,12 +17,12 @@ class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, ParadoxPara
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): PsiElement? {
         val element = context.file.findElementAt(context.offset) ?: return null
         val from = ParadoxParameterContextReferenceInfo.From.InContextReference
-        val contextReferenceInfo = ParadoxParameterSupport.INSTANCE.getContextReferenceInfo(element, from, context.offset) ?: return null
+        val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, context.offset) ?: return null
         val targetElement = contextReferenceInfo.element ?: return null
         val parameterContextInfoMap = mutableMapOf<String, ParadoxParameterContextInfo>()
-        ParadoxParameterSupport.INSTANCE.processContext(element, contextReferenceInfo, true) p@{
+        ParadoxParameterSupport.processContext(element, contextReferenceInfo, true) p@{
             ProgressManager.checkCanceled()
-            val parameterContextInfo = ParadoxParameterSupport.INSTANCE.getContextInfo(it) ?: return@p true
+            val parameterContextInfo = ParadoxParameterSupport.getContextInfo(it) ?: return@p true
             if (parameterContextInfo.parameters.isEmpty()) return@p true
             parameterContextInfoMap.putIfAbsent(parameterContextInfo.parameters.keys.toString(), parameterContextInfo)
             true
@@ -35,7 +35,7 @@ class ParadoxParameterInfoHandler : ParameterInfoHandler<PsiElement, ParadoxPara
     override fun findElementForUpdatingParameterInfo(context: UpdateParameterInfoContext): PsiElement? {
         val element = context.file.findElementAt(context.offset) ?: return null
         val from = ParadoxParameterContextReferenceInfo.From.InContextReference
-        val contextReferenceInfo = ParadoxParameterSupport.INSTANCE.getContextReferenceInfo(element, from, context.offset) ?: return null
+        val contextReferenceInfo = ParadoxParameterSupport.getContextReferenceInfo(element, from, context.offset) ?: return null
         val targetElement = contextReferenceInfo.element ?: return null
         val current = context.parameterOwner
         if (current != null && current !== targetElement) return null

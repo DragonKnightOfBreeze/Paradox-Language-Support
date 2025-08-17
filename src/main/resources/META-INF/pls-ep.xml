@@ -47,6 +47,8 @@
     <extensionPoint qualifiedName="icu.windea.pls.definitionPresentationProvider" interface="icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.priorityProvider" interface="icu.windea.pls.ep.priority.ParadoxPriorityProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.referenceLinkProvider" interface="icu.windea.pls.ep.reference.ParadoxReferenceLinkProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.modImporter" interface="icu.windea.pls.ep.tool.ParadoxModImporter" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.ep.tool.ParadoxModExporter" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
@@ -249,9 +251,11 @@
     <referenceLinkProvider implementation="icu.windea.pls.ep.reference.ParadoxLocalisationLinkProvider"/>
     <referenceLinkProvider implementation="icu.windea.pls.ep.reference.ParadoxFilePathLinkProvider"/>
     <referenceLinkProvider implementation="icu.windea.pls.ep.reference.ParadoxModifierLinkProvider"/>
-  </extensions>
 
-  <extensions defaultExtensionNs="com.intellij">
-    <multiHostInjector implementation="icu.windea.pls.script.injection.ParadoxScriptLanguageInjector"/>
+    <modImporter implementation="icu.windea.pls.ep.tool.ParadoxDlcLoadImporter"/>
+    <modImporter implementation="icu.windea.pls.ep.tool.ParadoxLauncherJsonV3Importer"/>
+
+    <modExporter implementation="icu.windea.pls.ep.tool.ParadoxLauncherJsonV2Exporter"/>
+    <modExporter implementation="icu.windea.pls.ep.tool.ParadoxLauncherJsonV3Exporter"/>
   </extensions>
 </idea-plugin>

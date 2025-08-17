@@ -1,4 +1,6 @@
 <idea-plugin>
+  <resource-bundle>messages.PlsBundle</resource-bundle>
+
   <extensions defaultExtensionNs="com.intellij">
     <lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.inspections.ParadoxScriptInspectionSuppressor"/>
     <lang.inspectionSuppressor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.inspections.ParadoxLocalisationInspectionSuppressor"/>
@@ -7,290 +9,200 @@
 
     <!--region Overridden-->
     <localInspection language="" shortName="ParadoxOverriddenForFile"
+                     key="inspection.overriddenForFile" groupKey="inspection.overridden.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="false" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.overriddenForFile"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.overridden.group"
-                     groupPathKey="inspection.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.overridden.OverriddenForFileInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxOverriddenForScriptedVariable"
+                     key="inspection.overriddenForScriptedVariable" groupKey="inspection.overridden.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="false" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.overriddenForScriptedVariable"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.overridden.group"
-                     groupPathKey="inspection.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.overridden.OverriddenForScriptedVariableInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxOverriddenForDefinition"
+                     key="inspection.overriddenForDefinition" groupKey="inspection.overridden.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="false" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.overriddenForDefinition"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.overridden.group"
-                     groupPathKey="inspection.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.overridden.OverriddenForDefinitionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxIncorrectOverriddenForScriptedVariable"
+                     key="inspection.incorrectOverriddenForScriptedVariable" groupKey="inspection.overridden.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.incorrectOverriddenForScriptedVariable"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.overridden.group"
-                     groupPathKey="inspection.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.overridden.IncorrectOverriddenForScriptedVariableInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxIncorrectOverriddenForDefinition"
+                     key="inspection.incorrectOverriddenForDefinition" groupKey="inspection.overridden.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.incorrectOverriddenForDefinition"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.overridden.group"
-                     groupPathKey="inspection.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.overridden.IncorrectOverriddenForDefinitionInspection"/>
     <!--endregion-->
 
     <!--region Paradox script-->
     <!--region Paradox script/Common-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptDuplicateScriptedVariables"
+                     key="inspection.script.duplicateScriptedVariables" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.duplicateScriptedVariables"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.DuplicateScriptedVariablesInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectFileEncoding"
+                     key="inspection.script.incorrectFileEncoding" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectFileEncoding"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectFileEncodingInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedExpression"
+                     key="inspection.script.unresolvedExpression" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.script.unresolvedExpression"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.UnresolvedExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingResolvedExpression"
+                     key="inspection.script.conflictingResolvedExpression" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.script.conflictingResolvedExpression"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.ConflictingResolvedExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingExpression"
+                     key="inspection.script.missingExpression" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.script.missingExpression"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.MissingExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptTooManyExpression"
+                     key="inspection.script.tooManyExpression" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.tooManyExpression"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.TooManyExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectExpression"
+                     key="inspection.script.incorrectExpression" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectExpression"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingLocalisation"
-                     enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle"
-                     key="inspection.script.missingLocalisation"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="WARNING"
+                     key="inspection.script.missingLocalisation" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.MissingLocalisationInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingImage"
-                     enabledByDefault="true" level="WARNING"
                      bundle="messages.PlsBundle"
-                     key="inspection.script.missingImage"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
+                     enabledByDefault="true" level="WARNING"
+                     key="inspection.script.missingImage" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.MissingImageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedScriptedVariable"
+                     key="inspection.script.unresolvedScriptedVariable" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.script.unresolvedScriptedVariable"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.UnresolvedScriptedVariableInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnresolvedPathReference"
+                     key="inspection.script.unresolvedPathReference" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.script.unresolvedPathReference"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.UnresolvedPathReferenceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedInlineScript"
+                     key="inspection.script.unusedInlineScript" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.unusedInlineScript"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.UnusedInlineScriptInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedParameter"
+                     key="inspection.script.unusedParameter" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.unusedParameter"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.UnusedParameterInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingParameter"
+                     key="inspection.script.missingParameter" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.missingParameter"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.MissingParameterInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnusedDynamicValue"
+                     key="inspection.script.unusedDynamicValue" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="false" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.unusedDynamicValue"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.UnusedDynamicValueInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsetDynamicValue"
+                     key="inspection.script.unsetDynamicValue" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="false" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.unsetDynamicValue"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.UnsetDynamicValueInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectPathReference"
+                     key="inspection.script.incorrectPathReference" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectPathReference"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.common.IncorrectPathReferenceInspection"/>
     <!--endregion-->
     <!--region Paradox script/Possible Bugs-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectSyntax"
+                     key="inspection.script.incorrectSyntax" groupKey="inspection.script.common.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectSyntax"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.common.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.bug.IncorrectSyntaxInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedParameterUsage"
+                     key="inspection.script.unsupportedParameterUsage" groupKey="inspection.script.bug.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.unsupportedParameterUsage"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.bug.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedParameterUsageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedParameterCondition"
+                     key="inspection.script.unsupportedParameterCondition" groupKey="inspection.script.bug.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.unsupportedParameterCondition"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.bug.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedParameterConditionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedInlineMath"
+                     key="inspection.script.unsupportedInlineMath" groupKey="inspection.script.bug.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.unsupportedInlineMath"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.bug.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedInlineMathInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedInlineScriptUsage"
+                     key="inspection.script.unsupportedInlineScriptUsage" groupKey="inspection.script.bug.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.unsupportedInlineScriptUsage"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.bug.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedInlineScriptUsageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptUnsupportedRecursion"
+                     key="inspection.script.unsupportedRecursion" groupKey="inspection.script.bug.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.unsupportedRecursion"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.bug.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.bug.UnsupportedRecursionInspection"/>
     <!--endregion-->
     <!--region Paradox script/Scope issues-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScope"
+                     key="inspection.script.incorrectScope" groupKey="inspection.script.scope.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectScope"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.scope.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.scope.IncorrectScopeInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeSwitch"
+                     key="inspection.script.incorrectScopeSwitch" groupKey="inspection.script.scope.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectScopeSwitch"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.scope.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.scope.IncorrectScopeSwitchInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeLinkChain"
+                     key="inspection.script.incorrectScopeLinkChain" groupKey="inspection.script.scope.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectScopeLinkChain"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.scope.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.scope.IncorrectScopeLinkChainInspection"/>
     <!--endregion-->
     <!--region Paradox script/Complex expressions-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectScopeFieldExpression"
+                     key="inspection.script.incorrectScopeFieldExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectScopeFieldExpression"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.expression.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectScopeFieldExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectValueFieldExpression"
+                     key="inspection.script.incorrectValueFieldExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectValueFieldExpression"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.expression.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectValueFieldExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectVariableFieldExpression"
+                     key="inspection.script.incorrectVariableFieldExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectVariableFieldExpression"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.expression.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectVariableFieldExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectDynamicValueExpression"
+                     key="inspection.script.incorrectDynamicValueExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectDynamicValueExpression"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.expression.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectDynamicValueExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectDatabaseObjectExpression"
+                     key="inspection.script.incorrectDatabaseObjectExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectDatabaseObjectExpression"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.expression.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectDatabaseObjectExpressionInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectDefineReferenceExpression"
+                     key="inspection.script.incorrectDefineReferenceExpression" groupKey="inspection.script.expression.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectDefineReferenceExpression"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.expression.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.expression.IncorrectDefineReferenceExpressionInspection"/>
     <!--endregion-->
     <!--region Paradox script/Events-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectEventId"
+                     key="inspection.script.incorrectEventId" groupKey="inspection.script.event.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectEventId"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.event.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.event.IncorrectEventIdInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptIncorrectEventNamespace"
+                     key="inspection.script.incorrectEventNamespace" groupKey="inspection.script.event.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.incorrectEventNamespace"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.event.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.event.IncorrectEventNamespaceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMissingEventNamespace"
+                     key="inspection.script.missingEventNamespace" groupKey="inspection.script.event.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.missingEventNamespace"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.event.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.event.MissingEventNamespaceInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptMismatchedEventId"
+                     key="inspection.script.mismatchedEventId" groupKey="inspection.script.event.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.mismatchedEventId"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.event.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.event.MismatchedEventIdInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptNonTriggeredEvent"
+                     key="inspection.script.nonTriggeredEvent" groupKey="inspection.script.event.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.nonTriggeredEvent"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.event.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.event.NonTriggeredEventInspection"/>
     <!--endregion-->
     <!--region Paradox script/Smart inference-->
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingInlineScriptUsage"
+                     key="inspection.script.conflictingInlineScriptUsage" groupKey="inspection.script.inference.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.conflictingInlineScriptUsage"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.inference.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.inference.ConflictingInlineScriptUsageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptRecursiveInlineScriptUsage"
+                     key="inspection.script.recursiveInlineScriptUsage" groupKey="inspection.script.inference.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.recursiveInlineScriptUsage"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.inference.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.inference.RecursiveInlineScriptUsageInspection"/>
     <localInspection language="PARADOX_SCRIPT" shortName="ParadoxScriptConflictingScopeContextInference"
+                     key="inspection.script.conflictingScopeContextInference" groupKey="inspection.script.inference.group" groupPathKey="inspection.script.groupPath"
                      enabledByDefault="false" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.script.conflictingScopeContextInference"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.script.inference.group"
-                     groupPathKey="inspection.script.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.script.inference.ConflictingScopeContextInferenceInspection"/>
     <!--endregion-->
     <!--endregion-->
@@ -298,130 +210,90 @@
     <!--region Paradox localisation-->
     <!--region Paradox localisation/Common-->
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationDuplicateProperties"
+                     key="inspection.localisation.duplicateProperties" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.localisation.duplicateProperties"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.DuplicatePropertiesInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectFileName"
+                     key="inspection.localisation.incorrectFileName" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.localisation.incorrectFileName"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.IncorrectFileNameInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectFileEncoding"
+                     key="inspection.localisation.incorrectFileEncoding" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.localisation.incorrectFileEncoding"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.IncorrectFileEncodingInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMultipleLocales"
+                     key="inspection.localisation.multipleLocales" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.localisation.multipleLocales"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.MultipleLocalesInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMissingLocale"
+                     key="inspection.localisation.missingLocale" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.missingLocale"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.MissingLocaleInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationMissingLocalisation"
+                     key="inspection.localisation.missingLocalisation" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.missingLocalisation"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.MissingLocalisationInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedLocale"
+                     key="inspection.localisation.unsupportedLocale" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.unsupportedLocale"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnsupportedLocaleInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedColor"
+                     key="inspection.localisation.unresolvedColor" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.unresolvedColor"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedColorInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedScriptedVariable"
+                     key="inspection.localisation.unresolvedScriptedVariable" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.unresolvedScriptedVariable"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedScriptedVariableInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedIcon"
+                     key="inspection.localisation.unresolvedIcon" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.unresolvedIcon"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedIconInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedConcept"
+                     key="inspection.localisation.unresolvedConcept" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.unresolvedConcept"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedConceptInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedTextFormat"
+                     key="inspection.localisation.unresolvedTextFormat" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.unresolvedTextFormat"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedTextFormatInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnresolvedTextIcon"
+                     key="inspection.localisation.unresolvedTextIcon" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.unresolvedTextIcon"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.common.UnresolvedTextIconInspection"/>
     <!--endregion-->
     <!--region Paradox localisation/Possible bugs-->
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectSyntax"
+                     key="inspection.localisation.incorrectSyntax" groupKey="inspection.localisation.common.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.localisation.incorrectSyntax"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.common.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.bug.IncorrectSyntaxInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationUnsupportedRecursion"
+                     key="inspection.localisation.unsupportedRecursion" groupKey="inspection.localisation.bug.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.localisation.unsupportedRecursion"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.bug.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.bug.UnsupportedRecursionInspection"/>
     <!--endregion-->
     <!--region Paradox localisation/Scope issues-->
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectScope"
+                     key="inspection.localisation.incorrectScope" groupKey="inspection.localisation.scope.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.localisation.incorrectScope"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.scope.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.scope.IncorrectScopeInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectScopeSwitch"
+                     key="inspection.localisation.incorrectScopeSwitch" groupKey="inspection.localisation.scope.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.localisation.incorrectScopeSwitch"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.scope.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.scope.IncorrectScopeSwitchInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectScopeLinkChain"
+                     key="inspection.localisation.incorrectScopeLinkChain" groupKey="inspection.localisation.scope.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="WEAK WARNING"
-                     bundle="messages.PlsBundle" key="inspection.localisation.incorrectScopeLinkChain"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.scope.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.scope.IncorrectScopeLinkChainInspection"/>
     <!--endregion-->
     <!--region Paradox localisation/Complex expressions-->
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectCommandExpression"
+                     key="inspection.localisation.incorrectCommandExpression" groupKey="inspection.localisation.expression.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.incorrectCommandExpression"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.expression.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.expression.IncorrectCommandExpressionInspection"/>
     <localInspection language="PARADOX_LOCALISATION" shortName="ParadoxLocalisationIncorrectDatabaseObjectExpression"
+                     key="inspection.localisation.incorrectDatabaseObjectExpression" groupKey="inspection.localisation.expression.group" groupPathKey="inspection.localisation.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.localisation.incorrectDatabaseObjectExpression"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.localisation.expression.group"
-                     groupPathKey="inspection.localisation.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.localisation.expression.IncorrectDatabaseObjectExpressionInspection"/>
     <!--endregion-->
     <!--endregion-->
@@ -429,40 +301,28 @@
     <!--region Paradox csv-->
     <!--region Paradox csv/Common-->
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvMissingColumnsInspection"
+                     key="inspection.csv.missingColumns" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.csv.missingColumns"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
-                     groupPathKey="inspection.csv.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.MissingColumnsInspection"/>
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvDuplicateColumnsInspection"
+                     key="inspection.csv.duplicateColumns" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="WARNING"
-                     bundle="messages.PlsBundle" key="inspection.csv.duplicateColumns"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
-                     groupPathKey="inspection.csv.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.DuplicateColumnsInspection"/>
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnresolvedColumnsInspection"
+                     key="inspection.csv.unresolvedColumns" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.csv.unresolvedColumns"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
-                     groupPathKey="inspection.csv.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.UnresolvedColumnsInspection"/>
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectColumnSizeInspection"
-                     enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.csv.incorrectColumnSize"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
-                     groupPathKey="inspection.csv.groupPath"
+                     key="inspection.csv.incorrectColumnSize" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.IncorrectColumnSizeInspection"/>
+    enabledByDefault="true" level="ERROR"
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnresolvedExpressionInspection"
+                     key="inspection.csv.unresolvedExpression" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.csv.unresolvedExpression"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
-                     groupPathKey="inspection.csv.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.UnresolvedExpressionInspection"/>
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectExpressionInspection"
+                     key="inspection.csv.incorrectExpression" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.csv.incorrectExpression"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.csv.common.group"
-                     groupPathKey="inspection.csv.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.IncorrectExpressionInspection"/>
     <!--endregion-->
     <!--endregion-->
@@ -470,10 +330,8 @@
     <!--region Lint Tools-->
     <externalAnnotator language="PARADOX" implementationClass="icu.windea.pls.lang.inspections.lints.PlsTigerLintAnnotator"/>
     <localInspection language="PARADOX" shortName="PlsTigerLint"
+                     key="inspection.lints.tiger" groupKey="inspection.lints.group" groupPathKey="inspection.groupPath"
                      enabledByDefault="true" level="ERROR"
-                     bundle="messages.PlsBundle" key="inspection.lints.tiger"
-                     groupBundle="messages.PlsBundle" groupKey="inspection.lints.group"
-                     groupPathKey="inspection.groupPath"
                      implementationClass="icu.windea.pls.lang.inspections.lints.PlsTigerLintInspection"/>
     <!--endregion-->
   </extensions>

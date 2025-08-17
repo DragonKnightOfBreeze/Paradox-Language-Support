@@ -4,3 +4,4 @@ object PlsActions {
     const val DefinitionHierarchyPopupMenu = "Pls.DefinitionHierarchyPopupMenu"
     const val CallHierarchyPopupMenu = "Pls.CallHierarchyPopupMenu"
 }
+

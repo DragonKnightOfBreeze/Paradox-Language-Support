@@ -17,13 +17,13 @@ class CwtConfigFileIconProvider : FileIconProvider, DumbAware {
         if (file.isDirectory) {
             if (ProjectRootsUtil.isModuleContentRoot(file, project)) return null
             if (ProjectRootsUtil.isModuleSourceRoot(file, project)) return null
-            val fileProviders = CwtConfigGroupFileProvider.INSTANCE.EP_NAME.extensionList
+            val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
             val fileProvider = fileProviders.find { it.getRootDirectory(project) == file }
             if (fileProvider == null) return null
             val icon = PlsIcons.General.ConfigGroupDirectory
             return icon
         } else {
-            val fileProviders = CwtConfigGroupFileProvider.INSTANCE.EP_NAME.extensionList
+            val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
             val fileProvider = fileProviders.find { it.getContainingConfigGroup(file, project) != null }
             if (fileProvider == null) return null
             val icon = PlsIcons.FileTypes.CwtConfig
