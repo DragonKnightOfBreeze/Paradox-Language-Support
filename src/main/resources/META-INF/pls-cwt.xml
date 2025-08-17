@@ -22,6 +22,7 @@
                          implementation="icu.windea.pls.cwt.codeInsight.template.CwtTemplateContextType$Base"/>
     <liveTemplateContext contextId="CWT_MEMBERS" baseContextId="CWT"
                          implementation="icu.windea.pls.cwt.codeInsight.template.CwtTemplateContextType$Members"/>
+    <statementUpDownMover implementation="icu.windea.pls.cwt.codeInsight.editorActions.moveUpDown.CwtMover"/>
     <lang.formatter language="CWT" implementationClass="icu.windea.pls.cwt.formatter.CwtFormattingModelBuilder"/>
     <codeStyleSettingsProvider implementation="icu.windea.pls.cwt.codeStyle.CwtCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.cwt.codeStyle.CwtLanguageCodeStyleSettingsProvider"/>

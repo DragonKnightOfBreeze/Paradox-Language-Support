@@ -1,3 +1,5 @@
+@file:Suppress("unused", "UnusedImport")
+
 package icu.windea.pls.script.codeInsight.editorActions.moveUpDown
 
 import com.intellij.codeInsight.editorActions.moveUpDown.*
@@ -8,31 +10,31 @@ import com.intellij.psi.impl.*
 import com.intellij.psi.util.*
 import fleet.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
 import kotlin.math.*
-
-private val logger = logger<ParadoxScriptMover>()
 
 //com.intellij.codeInsight.editorActions.moveUpDown.JavaStatementMover
 
 class ParadoxScriptMover : LineMover() {
     override fun checkAvailable(editor: Editor, file: PsiFile, info: MoveInfo, down: Boolean): Boolean {
-        val available = super.checkAvailable(editor, file, info, down)
-        if (!available) return false
-
-        val range = expandLineRangeToCoverElements(info.toMove, editor, file)
-        if (range == null) return false
-
-        info.toMove = range
-        val startOffset = editor.logicalPositionToOffset(LogicalPosition(range.startLine, 0))
-        val endOffset = editor.logicalPositionToOffset(LogicalPosition(range.endLine, 0))
-        val statements = findElementsInRange(file, startOffset, endOffset)
-        if (statements.isEmpty()) return false
-
-        range.firstElement = statements[0]
-        range.lastElement = statements[statements.size - 1]
-
+        if (file.language !is ParadoxScriptLanguage) return false
+        if (!super.checkAvailable(editor, file, info, down)) return false
         return true
+
+        //val range = expandLineRangeToCoverElements(info.toMove, editor, file)
+        //if (range == null) return false
+        //
+        //info.toMove = range
+        //val startOffset = editor.logicalPositionToOffset(LogicalPosition(range.startLine, 0))
+        //val endOffset = editor.logicalPositionToOffset(LogicalPosition(range.endLine, 0))
+        //val statements = findElementsInRange(file, startOffset, endOffset)
+        //if (statements.isEmpty()) return false
+        //
+        //range.firstElement = statements[0]
+        //range.lastElement = statements[statements.size - 1]
+        //
+        //return true
     }
 
     private fun expandLineRangeToCoverElements(range: LineRange, editor: Editor, file: PsiFile): LineRange? {
@@ -43,10 +45,7 @@ class ParadoxScriptMover : LineMover() {
         if (elementRange == null) return null
         val endOffset = elementRange.getSecond().textRange.endOffset
         val document = editor.document
-        if (endOffset > document.textLength) {
-            logger.assertTrue(!PsiDocumentManager.getInstance(file.project).isUncommited(document))
-            logger.assertTrue(PsiDocumentManagerBase.checkConsistency(file, document))
-        }
+        if (endOffset > document.textLength) return null
         var endLine: Int
         if (endOffset == document.textLength) {
             endLine = document.lineCount
