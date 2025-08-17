@@ -106,7 +106,7 @@ enum class ParadoxResolveConstraint {
                 is ParadoxDatabaseObjectDataSourceNode.Reference -> {
                     reference.node.config?.localisation != null
                 }
-                is ParadoxLocalisationPropertyPsiReference -> true
+                is ParadoxLocalisationParameterPsiReference -> true
                 else -> false
             }
         }
@@ -151,7 +151,7 @@ enum class ParadoxResolveConstraint {
                     val dataType = configExpression.type
                     dataType == CwtDataTypes.LocalisationParameter
                 }
-                is ParadoxLocalisationPropertyPsiReference -> true
+                is ParadoxLocalisationParameterPsiReference -> true
                 else -> false
             }
         }

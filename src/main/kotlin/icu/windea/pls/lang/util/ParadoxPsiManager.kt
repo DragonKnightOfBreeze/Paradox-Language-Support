@@ -125,7 +125,7 @@ object ParadoxPsiManager {
             }
             val resolved = when {
                 reference == null -> null
-                reference is ParadoxLocalisationPropertyPsiReference -> reference.resolveLocalisation() //直接解析为本地化以优化性能
+                reference is ParadoxLocalisationParameterPsiReference -> reference.resolveLocalisation() //直接解析为本地化以优化性能
                 else -> reference.resolve()
             }?.castOrNull<ParadoxLocalisationProperty>()
             if (resolved != null) return resolved

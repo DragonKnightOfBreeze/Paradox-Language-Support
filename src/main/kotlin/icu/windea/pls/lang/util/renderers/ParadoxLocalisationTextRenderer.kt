@@ -1,8 +1,7 @@
 package icu.windea.pls.lang.util.renderers
 
-import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.references.localisation.*
+import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -54,8 +53,8 @@ class ParadoxLocalisationTextRenderer(
     }
 
     private fun renderParameterTo(element: ParadoxLocalisationParameter) {
-        val resolved = element.reference?.castOrNull<ParadoxLocalisationPropertyPsiReference>()?.resolveLocalisation() //直接解析为本地化以优化性能
-            ?: element.scriptedVariableReference?.reference?.resolve()
+        //直接解析为本地化（或者封装变量）以优化性能
+        val resolved = element.resolveLocalisation() ?: element.resolveScriptedVariable()
         when {
             resolved is ParadoxLocalisationProperty -> {
                 if (ParadoxLocalisationManager.isSpecialLocalisation(resolved)) {

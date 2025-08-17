@@ -27,7 +27,7 @@ class ParadoxLocalisationInlineActionHandler : InlineActionHandler() {
 
     override fun canInlineElementInEditor(element: PsiElement, editor: Editor?): Boolean {
         val reference = if (editor != null) TargetElementUtil.findReference(editor, editor.caretModel.offset) else null
-        if (reference != null && reference !is ParadoxLocalisationPropertyPsiReference) return false
+        if (reference != null && reference !is ParadoxLocalisationParameterPsiReference) return false
         return super.canInlineElementInEditor(element, editor)
     }
 
@@ -37,7 +37,7 @@ class ParadoxLocalisationInlineActionHandler : InlineActionHandler() {
     }
 
     private fun performInline(project: Project, editor: Editor?, element: ParadoxLocalisationProperty, reference: PsiReference?) {
-        if (reference != null && reference !is ParadoxLocalisationPropertyPsiReference) {
+        if (reference != null && reference !is ParadoxLocalisationParameterPsiReference) {
             val message = PlsBundle.message("refactoring.localisation.reference", getRefactoringName())
             CommonRefactoringUtil.showErrorHint(project, editor, message, getRefactoringName(), null)
             return

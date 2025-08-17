@@ -16,7 +16,7 @@ import icu.windea.pls.model.ParadoxLocalisationType.*
 /**
  * @see icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationParameterCompletionProvider
  */
-class ParadoxLocalisationPropertyPsiReference(
+class ParadoxLocalisationParameterPsiReference(
     element: ParadoxLocalisationParameter,
     rangeInElement: TextRange
 ) : PsiPolyVariantReferenceBase<ParadoxLocalisationParameter>(element, rangeInElement) {
@@ -29,16 +29,16 @@ class ParadoxLocalisationPropertyPsiReference(
 
     //缓存解析结果以优化性能
 
-    private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationPropertyPsiReference, PsiElement> {
-        override fun resolve(ref: ParadoxLocalisationPropertyPsiReference, incompleteCode: Boolean) = ref.doResolve()
+    private object Resolver : ResolveCache.AbstractResolver<ParadoxLocalisationParameterPsiReference, PsiElement> {
+        override fun resolve(ref: ParadoxLocalisationParameterPsiReference, incompleteCode: Boolean) = ref.doResolve()
     }
 
-    private object MultiResolver : ResolveCache.PolyVariantResolver<ParadoxLocalisationPropertyPsiReference> {
-        override fun resolve(ref: ParadoxLocalisationPropertyPsiReference, incompleteCode: Boolean) = ref.doMultiResolve()
+    private object MultiResolver : ResolveCache.PolyVariantResolver<ParadoxLocalisationParameterPsiReference> {
+        override fun resolve(ref: ParadoxLocalisationParameterPsiReference, incompleteCode: Boolean) = ref.doMultiResolve()
     }
 
-    private object LocResolver : ResolveCache.AbstractResolver<ParadoxLocalisationPropertyPsiReference, PsiElement> {
-        override fun resolve(ref: ParadoxLocalisationPropertyPsiReference, incompleteCode: Boolean) = ref.doResolve(onlyLocalisation = true)
+    private object LocResolver : ResolveCache.AbstractResolver<ParadoxLocalisationParameterPsiReference, PsiElement> {
+        override fun resolve(ref: ParadoxLocalisationParameterPsiReference, incompleteCode: Boolean) = ref.doResolve(onlyLocalisation = true)
     }
 
     override fun resolve(): PsiElement? {

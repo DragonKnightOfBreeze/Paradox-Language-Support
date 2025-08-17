@@ -40,6 +40,7 @@
     <qualifiedNameProvider implementation="icu.windea.pls.lang.ParadoxQualifiedNameProvider"/>
     <codeInsight.typeInfo language="CWT" implementationClass="icu.windea.pls.lang.codeInsight.CwtTypeProvider"/>
     <codeInsight.typeInfo language="PARADOX" implementationClass="icu.windea.pls.lang.codeInsight.ParadoxTypeProvider"/>
+    <codeInsight.typeInfo language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.ParadoxLocalisationTypeProvider"/>
     <typeDeclarationProvider implementation="icu.windea.pls.lang.codeInsight.CwtTypeDeclarationProvider"/>
     <typeDeclarationProvider implementation="icu.windea.pls.lang.codeInsight.ParadoxTypeDeclarationProvider"/>
     <codeInsight.containerProvider implementation="icu.windea.pls.lang.codeInsight.ParadoxContainerProvider"/>
@@ -252,7 +253,7 @@
               topic="icu.windea.pls.lang.listeners.ParadoxRootInfoListener"/>
   </applicationListeners>
 
-  <actions>
+  <actions resource-bundle="messages.PlsBundle">
     <group id="Pls.Documentation.PrimaryGroup">
       <separator/>
       <action id="Pls.Documentation.ChangeLocale" class="icu.windea.pls.lang.documentation.actions.ChangeQuickDocLocalisationLocaleAction"/>

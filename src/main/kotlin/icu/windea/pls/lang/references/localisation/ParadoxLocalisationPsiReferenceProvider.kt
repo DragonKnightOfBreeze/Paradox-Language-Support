@@ -38,9 +38,9 @@ class ParadoxLocalisationPsiReferenceProvider : PsiReferenceProvider() {
         return ParadoxLocalisationTextColorPsiReference(element, rangeInElement)
     }
 
-    private fun getReference(element: ParadoxLocalisationParameter): ParadoxLocalisationPropertyPsiReference? {
+    private fun getReference(element: ParadoxLocalisationParameter): ParadoxLocalisationParameterPsiReference? {
         val rangeInElement = element.idElement?.textRangeInParent ?: return null
-        return ParadoxLocalisationPropertyPsiReference(element, rangeInElement)
+        return ParadoxLocalisationParameterPsiReference(element, rangeInElement)
     }
 
     private fun getReference(element: ParadoxLocalisationIcon): ParadoxLocalisationIconPsiReference? {

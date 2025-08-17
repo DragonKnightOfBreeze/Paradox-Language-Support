@@ -20,6 +20,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.data.*
+import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
+import icu.windea.pls.lang.references.localisation.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
@@ -183,6 +185,14 @@ val ParadoxLocalisationProperty.localisationInfo: ParadoxLocalisationInfo?
 
 val ParadoxScriptStringExpressionElement.complexEnumValueInfo: ParadoxComplexEnumValueIndexInfo?
     get() = ParadoxComplexEnumValueManager.getInfo(this)
+
+fun ParadoxLocalisationParameter.resolveLocalisation(): ParadoxLocalisationProperty? {
+    return reference?.castOrNull<ParadoxLocalisationParameterPsiReference>()?.resolveLocalisation()
+}
+
+fun ParadoxLocalisationParameter.resolveScriptedVariable(): ParadoxScriptScriptedVariable? {
+    return scriptedVariableReference?.reference?.castOrNull<ParadoxScriptedVariablePsiReference>()?.resolve()
+}
 
 /**
  * 获取定义的指定类型的数据。
