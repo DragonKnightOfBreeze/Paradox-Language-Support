@@ -1,10 +1,10 @@
 package icu.windea.pls.inject
 
 import com.intellij.ide.plugins.*
-import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.extensions.*
 import com.intellij.openapi.util.*
+import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.inject.annotations.*
 import kotlin.reflect.full.*
@@ -19,7 +19,7 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
     final override fun inject() {
         val codeInjectorInfo = getCodeInjectorInfo() ?: return
 
-        val classPool = ApplicationManager.getApplication().getUserData(CodeInjectorService.classPoolKey) ?: return
+        val classPool = application.getUserData(CodeInjectorService.classPoolKey) ?: return
         val injectTargetName = codeInjectorInfo.injectTargetName
         val targetClass = classPool.get(injectTargetName)
         putUserData(CodeInjectorService.targetClassKey, targetClass)

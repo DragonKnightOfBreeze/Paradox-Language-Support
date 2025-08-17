@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.ui.tools
 
-import com.intellij.openapi.application.*
 import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.integrations.*
@@ -95,8 +95,7 @@ class ParadoxGameSettingsDialog(
         settings.modDependencies = modDependencies
         PlsFacade.getProfilesSettings().updateSettings()
 
-        val messageBus = ApplicationManager.getApplication().messageBus
-        messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onChange(settings)
+        application.messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onChange(settings)
     }
 
 }

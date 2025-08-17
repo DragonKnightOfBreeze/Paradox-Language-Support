@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.listeners
 
-import com.intellij.openapi.application.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.model.*
@@ -40,7 +40,7 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
             settings.gameSettings.put(gameDirectory, gameSettings)
             settings.updateSettings()
 
-            ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onAdd(gameSettings)
+            application.messageBus.syncPublisher(ParadoxGameSettingsListener.TOPIC).onAdd(gameSettings)
         }
     }
 
@@ -67,7 +67,7 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
             settings.modSettings.put(modDirectory, modSettings)
             settings.updateSettings()
 
-            ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onAdd(modSettings)
+            application.messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onAdd(modSettings)
         }
     }
 }

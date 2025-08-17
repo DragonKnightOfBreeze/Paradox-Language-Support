@@ -4,6 +4,7 @@ import com.intellij.codeInsight.daemon.*
 import com.intellij.codeInsight.daemon.impl.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
@@ -46,9 +47,11 @@ object PlsCoreManager {
 
     fun findFilesByFileNames(fileNames: Set<String>): Set<VirtualFile> {
         val files = mutableSetOf<VirtualFile>()
+        val projects = ProjectManager.getInstance().openProjects.filter { it.isInitialized && !it.isDisposed }
+        val scopes = projects.map { GlobalSearchScope.allScope(it) }
+        val scope = scopes.reduceOrNull { a, b -> a.union(b) } ?: return emptySet()
         runReadAction {
-            val project = getTheOnlyOpenOrDefaultProject()
-            FilenameIndex.processFilesByNames(fileNames, false, GlobalSearchScope.allScope(project), null) { file ->
+            FilenameIndex.processFilesByNames(fileNames, false, scope, null) { file ->
                 if (file.isFile) files.add(file)
                 true
             }

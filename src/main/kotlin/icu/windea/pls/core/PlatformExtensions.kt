@@ -4,7 +4,6 @@ package icu.windea.pls.core
 
 import com.google.common.util.concurrent.*
 import com.intellij.codeInsight.completion.*
-import com.intellij.codeInsight.navigation.*
 import com.intellij.codeInsight.template.*
 import com.intellij.codeInspection.*
 import com.intellij.codeInspection.ex.*
@@ -16,7 +15,6 @@ import com.intellij.lang.injection.*
 import com.intellij.lang.tree.util.*
 import com.intellij.model.*
 import com.intellij.model.psi.*
-import com.intellij.navigation.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
@@ -25,6 +23,8 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.util.text.*
 import com.intellij.openapi.vfs.*
+import com.intellij.openapi.wm.*
+import com.intellij.openapi.wm.ex.*
 import com.intellij.patterns.*
 import com.intellij.platform.backend.presentation.*
 import com.intellij.profile.codeInspection.*
@@ -33,9 +33,7 @@ import com.intellij.psi.impl.source.tree.*
 import com.intellij.psi.impl.source.tree.injected.*
 import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
-import com.intellij.refactoring.actions.BaseRefactoringAction.*
 import com.intellij.util.*
-import com.intellij.util.containers.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.psi.*
@@ -46,7 +44,6 @@ import it.unimi.dsi.fastutil.objects.*
 import java.io.*
 import java.nio.file.*
 import java.util.concurrent.*
-import javax.swing.*
 import kotlin.Result
 import kotlin.reflect.*
 
@@ -182,49 +179,7 @@ fun String.findKeywordsWithRanges(keywords: Collection<String>): List<Tuple2<Tex
     return result.sortedBy { it.first.startOffset }
 }
 
-//com.intellij.refactoring.actions.BaseRefactoringAction.findRefactoringTargetInEditor
-fun DataContext.findElement(): PsiElement? {
-    var element = this.getData(CommonDataKeys.PSI_ELEMENT)
-    if (element == null) {
-        val editor = this.getData(CommonDataKeys.EDITOR)
-        val file = this.getData(CommonDataKeys.PSI_FILE)
-        if (editor != null && file != null) {
-            element = getElementAtCaret(editor, file)
-        }
-        val languages = this.getData(LangDataKeys.CONTEXT_LANGUAGES)
-        if (element == null || element is SyntheticElement || languages == null) {
-            return null
-        }
-    }
-    return element
-}
-
-/**
- * 判断指定的节点是否在文档中跨多行。
- */
-fun isSpanMultipleLines(node: ASTNode, document: Document): Boolean {
-    val range = node.textRange
-    val limit = if (range.endOffset < document.textLength) document.getLineNumber(range.endOffset) else document.lineCount - 1
-    return document.getLineNumber(range.startOffset) < limit
-}
-
-//fun intern(table: CharTable, node: LighterASTTokenNode): String {
-//	return table.intern(node.text).toString()
-//}
-
-private val DEFAULT_PSI_CONVERTOR = NotNullFunction<PsiElement, Collection<PsiElement>> { element: PsiElement ->
-    ContainerUtil.createMaybeSingletonList(element)
-}
-
-fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiElement) -> Collection<GotoRelatedItem>): NavigationGutterIconBuilder<PsiElement> {
-    return NavigationGutterIconBuilder.create(icon, DEFAULT_PSI_CONVERTOR, gotoRelatedItemProvider)
-}
-
-fun getDefaultProject() = ProjectManager.getInstance().defaultProject
-
-fun getTheOnlyOpenOrDefaultProject() = ProjectManager.getInstance().let { it.openProjects.singleOrNull() ?: it.defaultProject }
-
-fun <T> createCachedValue(project: Project = getDefaultProject(), trackValue: Boolean = false, provider: CachedValueProvider<T>): CachedValue<T> {
+fun <T> createCachedValue(project: Project, trackValue: Boolean = false, provider: CachedValueProvider<T>): CachedValue<T> {
     return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
 }
 
@@ -244,6 +199,16 @@ fun <T> Query<T>.processQueryAsync(consumer: Processor<in T>): Boolean {
 inline operator fun <T> DataKey<T>.getValue(thisRef: DataContext, property: KProperty<*>): T? = thisRef.getData(this)
 
 inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KProperty<*>): T? = thisRef.dataContext.getData(this)
+
+fun getDefaultProject(): Project {
+    return ProjectManager.getInstance().defaultProject
+}
+
+fun getCurrentProject(): Project? {
+    val recentFocusedWindow = WindowManagerEx.getInstanceEx().mostRecentFocusedWindow
+    if (recentFocusedWindow is IdeFrame) return recentFocusedWindow.project
+    return ProjectManager.getInstance().openProjects.firstOrNull { o -> o.isInitialized && !o.isDisposed }
+}
 
 //endregion
 

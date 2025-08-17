@@ -8,8 +8,8 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.codeInsight.markers.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 提供定义的相关图片（relatedImages，对应类型为sprite的定义或者DDS图片）的装订线图标。
  */
-class ParadoxDefinitionRelatedImagesLineMarkerProvider : RelatedItemLineMarkerProvider() {
+class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.relatedImages")
 
     override fun getIcon() = PlsIcons.Gutter.RelatedImages

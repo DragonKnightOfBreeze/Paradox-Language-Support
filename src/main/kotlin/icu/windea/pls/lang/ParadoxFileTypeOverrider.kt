@@ -1,10 +1,10 @@
 package icu.windea.pls.lang
 
 import com.intellij.injected.editor.*
-import com.intellij.openapi.application.*
 import com.intellij.openapi.fileTypes.*
 import com.intellij.openapi.fileTypes.impl.*
 import com.intellij.openapi.vfs.*
+import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -39,7 +39,7 @@ class ParadoxFileTypeOverrider : FileTypeOverrider {
         if (possibleFileType == ParadoxFileType.Other) return null
 
         runCatchingCancelable r@{
-            if (!ApplicationManager.getApplication().isUnitTestMode) return@r
+            if (!application.isUnitTestMode) return@r
             if (!file.name.startsWith(PlsConstants.testDataFileNamePrefix)) return@r
             return ParadoxFileManager.getFileType(possibleFileType)
         }

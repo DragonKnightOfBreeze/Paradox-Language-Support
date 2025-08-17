@@ -8,6 +8,7 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.startup.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
@@ -30,7 +31,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     }
 
     private fun initCaches() {
-        if (ApplicationManager.getApplication().isUnitTestMode) return
+        if (application.isUnitTestMode) return
 
         service<PlsDataProvider>().init()
         getDefaultProject().service<CwtConfigGroupService>().init()
@@ -68,7 +69,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     }
 
     private val refreshedProjectIdsKey = createKey<MutableSet<String>>("pls.refreshedProjectIds")
-    private val refreshedProjectIds by lazy { ApplicationManager.getApplication().getOrPutUserData(refreshedProjectIdsKey) { mutableSetOf() } }
+    private val refreshedProjectIds by lazy { application.getOrPutUserData(refreshedProjectIdsKey) { mutableSetOf() } }
 
     private fun refreshOnlyForOpenedFiles(project: Project) {
         //在IDE启动后首次打开某个项目时，刷新此项目已打开的脚本文件和本地化文件
@@ -95,7 +96,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     }
 
     private fun initCaches(project: Project) {
-        if (ApplicationManager.getApplication().isUnitTestMode) return
+        if (application.isUnitTestMode) return
 
         project.service<CwtConfigGroupService>().init()
     }

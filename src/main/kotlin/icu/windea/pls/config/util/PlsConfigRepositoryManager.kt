@@ -2,12 +2,12 @@ package icu.windea.pls.config.util
 
 import com.intellij.ide.*
 import com.intellij.notification.*
-import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.platform.ide.progress.*
 import com.intellij.platform.util.progress.*
 import com.intellij.ui.layout.*
+import com.intellij.util.*
 import com.intellij.util.io.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -17,7 +17,6 @@ import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import kotlinx.coroutines.*
-import kotlin.Result
 
 @Suppress("UnstableApiUsage")
 object PlsConfigRepositoryManager {
@@ -153,8 +152,7 @@ object PlsConfigRepositoryManager {
 
             //如果需要刷新规则分组数据，则通知规则目录发生变更
             if (updated) {
-                val messageBus = ApplicationManager.getApplication().messageBus
-                messageBus.syncPublisher(ParadoxConfigDirectoriesListener.TOPIC).onChange()
+                application.messageBus.syncPublisher(ParadoxConfigDirectoriesListener.TOPIC).onChange()
             }
         }
     }

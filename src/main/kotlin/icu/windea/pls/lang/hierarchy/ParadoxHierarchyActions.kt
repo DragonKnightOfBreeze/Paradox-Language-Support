@@ -3,7 +3,7 @@ package icu.windea.pls.lang.hierarchy
 import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.*
-import com.intellij.openapi.application.*
+import com.intellij.util.*
 import com.intellij.util.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
@@ -56,7 +56,7 @@ interface ParadoxHierarchyActions {
 
                 // invokeLater is called to update state of button before long tree building operation
                 // scope is kept per type so other builders don't need to be refreshed
-                ApplicationManager.getApplication().invokeLater({ browser.function("doRefresh")(true) }) { browser.isDisposed }
+                application.invokeLater({ browser.function("doRefresh")(true) }) { browser.isDisposed }
             }
         }
     }
@@ -117,7 +117,7 @@ interface ParadoxHierarchyActions {
 
                 // invokeLater is called to update state of button before long tree building operation
                 // scope is kept per type so other builders don't need to be refreshed
-                ApplicationManager.getApplication().invokeLater({ browser.function("doRefresh")(true) }) { browser.isDisposed }
+                application.invokeLater({ browser.function("doRefresh")(true) }) { browser.isDisposed }
             }
         }
     }

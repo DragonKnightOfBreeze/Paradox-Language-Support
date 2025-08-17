@@ -7,8 +7,9 @@ import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
+import com.intellij.util.*
 import icu.windea.pls.extension.diagram.provider.*
-import icu.windea.pls.extension.diagram.settings.ParadoxDiagramSettings
+import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
@@ -45,7 +46,7 @@ abstract class ParadoxDiagramDataModel(
         ProgressManager.checkCanceled()
         synchronized(lock) {
             cleanAllNodeAndEdges()
-            if (ApplicationManager.getApplication().isReadAccessAllowed) {
+            if (application.isReadAccessAllowed) {
                 updateDataModel()
             } else {
                 ReadAction.nonBlocking(Callable { updateDataModel() })
@@ -64,7 +65,7 @@ abstract class ParadoxDiagramDataModel(
 
     protected abstract fun updateDataModel()
 
-    protected abstract fun showNode(definition: ParadoxScriptDefinitionElement, settings:  ParadoxDiagramSettings.State): Boolean
+    protected abstract fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean
 
     override fun getModificationTracker(): ModificationTracker {
         return ParadoxModificationTrackers.FileTracker

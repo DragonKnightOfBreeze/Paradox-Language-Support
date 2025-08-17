@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
+import icu.windea.pls.config.util.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.model.indexInfo.*
@@ -22,6 +23,11 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
 
         doProcessFiles(scope) p@{ file ->
             ProgressManager.checkCanceled()
+            //check game type at file level
+            if (gameType != null) {
+                val configGroup = CwtConfigManager.getContainingConfigGroup(file, project) ?: return@p true
+                if (configGroup.gameType != null && configGroup.gameType != gameType) return@p true
+            }
 
             val fileData = CwtConfigIndexManager.Symbol.getFileData(file, project)
             if (fileData.isEmpty()) return@p true
@@ -29,7 +35,6 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
             if (infos.isNullOrEmpty()) return@p true
             infos.forEach f@{ info ->
                 if (name != null && name != info.name) return@f
-                if (gameType != info.gameType) return@f
                 info.virtualFile = file
                 val r = consumer.process(info)
                 if (!r) return@p false

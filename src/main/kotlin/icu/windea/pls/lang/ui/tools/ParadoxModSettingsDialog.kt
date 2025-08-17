@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.ui.tools
 
-import com.intellij.openapi.application.*
 import com.intellij.openapi.fileChooser.*
 import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.dsl.builder.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
@@ -165,9 +165,8 @@ class ParadoxModSettingsDialog(
         settings.modDependencies = modDependencies
         PlsFacade.getProfilesSettings().updateSettings()
 
-        val messageBus = ApplicationManager.getApplication().messageBus
+        val messageBus = application.messageBus
         messageBus.syncPublisher(ParadoxModSettingsListener.TOPIC).onChange(settings)
-
         if (oldGameType != settings.gameType) {
             messageBus.syncPublisher(ParadoxModGameTypeListener.TOPIC).onChange(settings)
         }

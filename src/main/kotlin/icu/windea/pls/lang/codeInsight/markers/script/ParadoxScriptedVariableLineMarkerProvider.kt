@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.codeInsight.markers.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -17,7 +18,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 提供封装变量（scripted_variable）的装订线图标。
  */
-class ParadoxScriptedVariableLineMarkerProvider : RelatedItemLineMarkerProvider() {
+class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.scriptedVariable")
 
     override fun getIcon() = PlsIcons.Gutter.ScriptedVariable

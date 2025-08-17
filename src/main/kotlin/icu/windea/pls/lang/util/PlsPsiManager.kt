@@ -62,6 +62,7 @@ object PlsPsiManager {
         }
         return element.startOffset
     }
+
     /**
      * 适用于各种包含编辑器文本片段的视图（如，快速定义视图）。
      */

@@ -8,8 +8,8 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.codeInsight.markers.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
@@ -20,7 +20,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 提供定义的相关本地化（relatedLocalisation，对应localisation，不对应localisation_synced）的装订线图标。
  */
-class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : RelatedItemLineMarkerProvider() {
+class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("script.gutterIcon.relatedLocalisations")
 
     override fun getIcon() = PlsIcons.Gutter.RelatedLocalisations

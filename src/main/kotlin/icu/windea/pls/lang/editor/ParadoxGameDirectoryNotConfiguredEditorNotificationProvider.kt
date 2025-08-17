@@ -1,11 +1,11 @@
 package icu.windea.pls.lang.editor
 
-import com.intellij.openapi.application.*
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
 import com.intellij.ui.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
@@ -55,8 +55,7 @@ class ParadoxGameDirectoryNotConfiguredEditorNotificationProvider : EditorNotifi
                     val newDefaultGameDirectories = list.toMutableMap()
                     if (oldDefaultGameDirectories == newDefaultGameDirectories) return@action
                     settings.defaultGameDirectories = newDefaultGameDirectories
-                    val messageBus = ApplicationManager.getApplication().messageBus
-                    messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC).onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
+                    application.messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC).onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
                 }
             }
             panel

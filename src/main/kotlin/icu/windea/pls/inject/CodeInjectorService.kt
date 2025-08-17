@@ -1,9 +1,9 @@
 package icu.windea.pls.inject
 
 import com.intellij.ide.*
-import com.intellij.openapi.application.*
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
+import com.intellij.util.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.inject.support.*
 import javassist.*
@@ -42,8 +42,7 @@ class CodeInjectorService {
     }
 
     fun init() {
-        val application = ApplicationManager.getApplication()
-
+        val application = application
         val classPool = getClassPool()
         classPool.importPackage("java.util")
         classPool.importPackage("java.lang.reflect")
@@ -74,7 +73,7 @@ class CodeInjectorService {
         classPathList.split(separator).forEach {
             try {
                 pool.appendClassPath(it)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 //ignore
             }
         }

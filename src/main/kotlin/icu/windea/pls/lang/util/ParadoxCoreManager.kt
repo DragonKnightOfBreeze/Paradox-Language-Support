@@ -10,6 +10,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.testFramework.*
 import com.intellij.ui.layout.*
+import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
@@ -44,7 +45,7 @@ object ParadoxCoreManager {
                 val rootInfo = doGetRootInfo(rootFile)
                 rootFile.tryPutUserData(PlsKeys.rootInfo, rootInfo ?: EMPTY_OBJECT)
                 if (rootInfo != null && !PlsVfsManager.isLightFile(rootFile)) {
-                    ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
+                    application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
                 }
                 return rootInfo
             } catch (e: Exception) {

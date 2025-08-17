@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.settings
 
-import com.intellij.openapi.application.*
 import com.intellij.openapi.options.*
 import com.intellij.openapi.ui.*
 import com.intellij.ui.components.*
@@ -8,6 +7,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
@@ -559,14 +559,14 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
     private fun onDefaultGameTypeChanged(oldDefaultGameType: ParadoxGameType, newDefaultGameType: ParadoxGameType) {
         if (!callbackLock.check("onDefaultGameTypeChanged")) return
 
-        val messageBus = ApplicationManager.getApplication().messageBus
+        val messageBus = application.messageBus
         messageBus.syncPublisher(ParadoxDefaultGameTypeListener.TOPIC).onChange(oldDefaultGameType, newDefaultGameType)
     }
 
     private fun onDefaultGameDirectoriesChanged(oldDefaultGameDirectories: MutableMap<String, String>, newDefaultGameDirectories: MutableMap<String, String>) {
         if (!callbackLock.check("onDefaultGameDirectoriesChanged")) return
 
-        val messageBus = ApplicationManager.getApplication().messageBus
+        val messageBus = application.messageBus
         messageBus.syncPublisher(ParadoxDefaultGameDirectoriesListener.TOPIC).onChange(oldDefaultGameDirectories, newDefaultGameDirectories)
     }
 

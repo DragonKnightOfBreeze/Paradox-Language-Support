@@ -1,8 +1,8 @@
 package icu.windea.pls.inject.support
 
-import com.intellij.openapi.application.*
 import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.*
+import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.inject.*
 import icu.windea.pls.inject.annotations.*
@@ -54,7 +54,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
     }
 
     private fun applyInjectMethods(codeInjector: CodeInjector, targetClass: CtClass, injectMethodInfos: Map<String, InjectMethodInfo>) {
-        val application = ApplicationManager.getApplication()
+        val application = application
         if (application.getUserData(CodeInjectorService.invokeInjectMethodKey) == null) {
             val method = BaseCodeInjectorSupport::class.java.declaredMethods.find { it.name == "invokeInjectMethod" }
             application.putUserData(CodeInjectorService.invokeInjectMethodKey, method)
@@ -103,6 +103,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
     }
 
     private fun findCtMethod(ctClass: CtClass, method: Method, injectMethodInfo: InjectMethodInfo): CtMethod? {
+        val application = application
         val methodName = injectMethodInfo.name
         var argSize = method.parameterCount
         if (injectMethodInfo.hasReceiver) argSize--
@@ -117,7 +118,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         }
         run {
             if (ctMethods.size <= 1) return@run
-            val classPool = ApplicationManager.getApplication().getUserData(CodeInjectorService.classPoolKey) ?: return@run
+            val classPool = application.getUserData(CodeInjectorService.classPoolKey) ?: return@run
             ctMethods = ctMethods.filter { ctMethod ->
                 val size = ctMethod.parameterTypes.size
                 for (i in 0 until size) {
@@ -151,7 +152,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
             //如果注入方法是一个扩展方法，则传递target到接收者（目标方法是一个静态方法时，target的值为null）
             //如果注入方法拥有除了以上情况以外的额外参数，则传递returnValue到第1个额外参数（目标方法没有返回值时，returnValue的值为null）
             //不要在声明和调用注入方法时加载目标类型（例如，将接收者的类型直接指定为目标类型）
-            val application = ApplicationManager.getApplication()
+            val application = application
             val codeInjector = application.getUserData(CodeInjectorService.codeInjectorsKey)?.get(codeInjectorId) ?: throw IllegalStateException()
             val injectMethodInfo = codeInjector.getUserData(CodeInjectorService.injectMethodInfosKey)?.get(methodId) ?: throw IllegalStateException()
             val injectMethod = injectMethodInfo.method

@@ -2,10 +2,10 @@ package icu.windea.pls.lang.actions.tools
 
 import com.intellij.ide.projectView.impl.nodes.*
 import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.roots.*
 import com.intellij.openapi.vfs.*
+import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
@@ -45,7 +45,7 @@ abstract class OpenSettingsAction : DumbAwareAction() {
         val isInProject = ProjectFileIndex.getInstance(project).isInContent(file)
         if (!isInProject) return
         //打开配置前确保已有配置数据
-        ApplicationManager.getApplication().messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
+        application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
 
         showSettingsDialog(rootInfo, project)
     }

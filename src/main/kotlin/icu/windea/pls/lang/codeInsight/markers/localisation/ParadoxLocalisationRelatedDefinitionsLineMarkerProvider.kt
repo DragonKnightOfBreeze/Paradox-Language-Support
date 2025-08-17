@@ -9,6 +9,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.codeInsight.markers.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
@@ -19,7 +20,7 @@ import icu.windea.pls.script.psi.*
 /**
  * 提供本地化（localisation）的相关定义的装订线图标。
  */
-class ParadoxLocalisationRelatedDefinitionsLineMarkerProvider : RelatedItemLineMarkerProvider() {
+class ParadoxLocalisationRelatedDefinitionsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
     override fun getName() = PlsBundle.message("localisation.gutterIcon.relatedDefinitions")
 
     override fun getIcon() = PlsIcons.Gutter.RelatedDefinitions

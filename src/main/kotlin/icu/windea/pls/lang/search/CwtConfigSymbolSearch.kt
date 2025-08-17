@@ -12,7 +12,7 @@ class CwtConfigSymbolSearch : ExtensibleQueryFactory<CwtConfigSymbolIndexInfo, C
     class SearchParameters(
         val name: String?,
         val type: String,
-        val gameType: ParadoxGameType,
+        val gameType: ParadoxGameType?,
         val project: Project,
         val scope: GlobalSearchScope
     )
@@ -30,7 +30,7 @@ class CwtConfigSymbolSearch : ExtensibleQueryFactory<CwtConfigSymbolIndexInfo, C
         fun search(
             name: String?,
             type: String,
-            gameType: ParadoxGameType,
+            gameType: ParadoxGameType?,
             project: Project,
             scope: GlobalSearchScope
         ): Query<CwtConfigSymbolIndexInfo> {
