@@ -34,12 +34,12 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
                 true
             }
         }
-        allInternalFiles.forEach f@{ filePath, file ->
+        allInternalFiles.forEach f@{ (filePath, file) ->
             val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
             val fileConfig = CwtConfigResolver.resolve(psiFile, configGroup)
             processInternalFile(filePath, fileConfig, configGroup)
         }
-        allFiles.forEach f@{ filePath, file ->
+        allFiles.forEach f@{ (_, file) ->
             val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
             val fileConfig = CwtConfigResolver.resolve(psiFile, configGroup)
             processFile(fileConfig, configGroup)

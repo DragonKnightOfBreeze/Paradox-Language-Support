@@ -789,6 +789,7 @@ public class ParadoxScriptParser implements PsiParser, LightPsiParser {
       if (!root_block_item(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "root_block", c)) break;
     }
+    register_hook_(b, WS_BINDERS, GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

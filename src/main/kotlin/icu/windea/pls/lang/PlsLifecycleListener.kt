@@ -25,19 +25,15 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     override fun appFrameCreated(commandLineArgs: MutableList<String>) {
         ImageManager.registerImageIOSpi()
 
-        //init caches for specific services
+        //init caches for specific services and initializers
         initCaches()
-
-        //create necessary files and directories
-        initPaths()
     }
 
     private fun initCaches() {
+        if (ApplicationManager.getApplication().isUnitTestMode) return
+
         service<PlsDataProvider>().init()
         getDefaultProject().service<CwtConfigGroupService>().init()
-    }
-
-    private fun initPaths() {
         PlsPathConstants.init()
     }
 
@@ -62,7 +58,7 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
         //refresh opened files on project startup (once only)
         refreshOnlyForOpenedFiles(project)
 
-        //init caches for specific services
+        //init caches for specific services and initializers
         initCaches(project)
     }
 
@@ -99,6 +95,8 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     }
 
     private fun initCaches(project: Project) {
+        if (ApplicationManager.getApplication().isUnitTestMode) return
+
         project.service<CwtConfigGroupService>().init()
     }
 }

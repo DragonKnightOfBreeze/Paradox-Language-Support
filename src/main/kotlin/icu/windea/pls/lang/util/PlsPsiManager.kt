@@ -20,7 +20,7 @@ object PlsPsiManager {
      *
      * 向前遍历，仅采用注释以及不包含空白行的空白，然后返回其中的所有注释。
      */
-    fun getAttachedComment(element: PsiElement): List<PsiComment> {
+    fun getAttachedComments(element: PsiElement): List<PsiComment> {
         if (element is PsiComment || element is PsiWhiteSpace) return emptyList()
         return element.siblings(forward = false, withSelf = false)
             .takeWhile { it is PsiComment || (it is PsiWhiteSpace && !containsBlankLine(it)) }

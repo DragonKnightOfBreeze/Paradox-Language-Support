@@ -10,6 +10,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
 import com.intellij.lang.LightPsiParser;
+import static com.intellij.lang.WhitespacesBinders.*;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class CwtParser implements PsiParser, LightPsiParser {
@@ -309,6 +310,7 @@ public class CwtParser implements PsiParser, LightPsiParser {
       if (!root_block_item(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "root_block", c)) break;
     }
+    register_hook_(b, WS_BINDERS, GREEDY_LEFT_BINDER, GREEDY_RIGHT_BINDER);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

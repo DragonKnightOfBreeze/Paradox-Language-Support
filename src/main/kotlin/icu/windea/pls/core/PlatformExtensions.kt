@@ -347,17 +347,20 @@ fun Path.toVirtualFile(refreshIfNeed: Boolean = false): VirtualFile? {
 
 /** 将VirtualFile转化为指定类型的PsiFile。 */
 inline fun VirtualFile.toPsiFile(project: Project): PsiFile? {
+    if (project.isDisposed) return null
     return PsiManager.getInstance(project).findFile(this)
 }
 
 /** 将VirtualFile转化为指定类型的PsiDirectory。 */
 inline fun VirtualFile.toPsiDirectory(project: Project): PsiDirectory? {
+    if (project.isDisposed) return null
     return PsiManager.getInstance(project).findDirectory(this)
 }
 
 /** 将VirtualFile转化为指定类型的PsiFile或者PsiDirectory。 */
 inline fun VirtualFile.toPsiFileSystemItem(project: Project): PsiFileSystemItem? {
-    return if (this.isFile) PsiManager.getInstance(project).findFile(this) else PsiManager.getInstance(project).findDirectory(this)
+    if (project.isDisposed) return null
+    return if (this.isFile) toPsiFile(project) else toPsiDirectory(project)
 }
 
 /** （物理层面上）判断虚拟文件是否拥有BOM。 */
