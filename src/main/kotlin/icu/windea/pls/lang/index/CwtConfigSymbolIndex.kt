@@ -14,7 +14,7 @@ import java.io.*
  */
 class CwtConfigSymbolIndex : CwtConfigFileBasedIndex<List<CwtConfigSymbolIndexInfo>>() {
     companion object {
-        private const val VERSION = 71 //2.0.1-dev
+        private const val VERSION = 72 //2.0.2
     }
 
     override fun getName() = CwtConfigIndexManager.SymbolName

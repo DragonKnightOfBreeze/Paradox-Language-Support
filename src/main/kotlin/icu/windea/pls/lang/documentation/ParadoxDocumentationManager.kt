@@ -774,8 +774,8 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.addLocalisationInfo(localisationInfo: ParadoxLocalisationInfo) {
         val prefix = when (localisationInfo.category) {
-            ParadoxLocalisationCategory.Localisation -> PlsStringConstants.localisationPrefix
-            ParadoxLocalisationCategory.SyncedLocalisation -> PlsStringConstants.localisationSyncedPrefix
+            ParadoxLocalisationCategory.Normal -> PlsStringConstants.localisationPrefix
+            ParadoxLocalisationCategory.Synced -> PlsStringConstants.localisationSyncedPrefix
         }
         append(prefix).append(" ")
         append("<b>").append(localisationInfo.name.orUnresolved()).append("</b>")
@@ -802,8 +802,8 @@ object ParadoxDocumentationManager {
                 val selector = selector(element.project, element).localisation().contextSensitive().preferLocale(usedLocale)
                 val category = element.category
                 when (category) {
-                    ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.search(element.name, selector).find()
-                    ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(element.name, selector).find()
+                    ParadoxLocalisationCategory.Normal -> ParadoxLocalisationSearch.search(element.name, selector).find()
+                    ParadoxLocalisationCategory.Synced -> ParadoxSyncedLocalisationSearch.search(element.name, selector).find()
                     null -> element
                 }?.castOrNull<ParadoxLocalisationProperty>() ?: element
             }

@@ -32,8 +32,8 @@ class ParadoxLocalisationImplementationsSearch : QueryExecutor<PsiElement, Defin
                 .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig()) //限定语言区域
                 .withSearchScope(GlobalSearchScope.allScope(project)) //使用全部作用域
             val localisations = when (category) {
-                ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.search(name, selector).findAll()
-                ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll()
+                ParadoxLocalisationCategory.Normal -> ParadoxLocalisationSearch.search(name, selector).findAll()
+                ParadoxLocalisationCategory.Synced -> ParadoxSyncedLocalisationSearch.search(name, selector).findAll()
             }
             localisations.forEach {
                 consumer.process(it)

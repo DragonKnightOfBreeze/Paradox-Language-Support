@@ -29,7 +29,7 @@ class ParadoxLocalisationRelatedDefinitionsLineMarkerProvider : RelatedItemLineM
         val name = element.name.orNull()
         if (name == null) return
         val category = element.category
-        if (category != ParadoxLocalisationCategory.Localisation) return
+        if (category != ParadoxLocalisationCategory.Normal) return
         val icon = PlsIcons.Gutter.RelatedDefinitions
         val prefix = PlsStringConstants.relatedDefinitionPrefix
         val targets = ParadoxLocalisationManager.getRelatedDefinitions(element)

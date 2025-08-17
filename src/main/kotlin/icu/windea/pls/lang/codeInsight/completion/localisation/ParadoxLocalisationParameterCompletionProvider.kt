@@ -52,8 +52,8 @@ class ParadoxLocalisationParameterCompletionProvider : CompletionProvider<Comple
 
         ReadAction.nonBlocking<Unit> {
             when (category) {
-                ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
-                ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
+                ParadoxLocalisationCategory.Normal -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
+                ParadoxLocalisationCategory.Synced -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
             }
         }.inSmartMode(project).executeSynchronously()
     }

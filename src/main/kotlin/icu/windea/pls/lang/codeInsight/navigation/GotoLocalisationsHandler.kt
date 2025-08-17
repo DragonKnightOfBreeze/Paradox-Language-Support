@@ -33,8 +33,8 @@ class GotoLocalisationsHandler : GotoTargetHandler() {
             runReadAction {
                 val selector = selector(project, localisation).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                 val resolved = when(category) {
-                    ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.search(localisation.name, selector).findAll()
-                    ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.search(localisation.name, selector).findAll()
+                    ParadoxLocalisationCategory.Normal -> ParadoxLocalisationSearch.search(localisation.name, selector).findAll()
+                    ParadoxLocalisationCategory.Synced -> ParadoxSyncedLocalisationSearch.search(localisation.name, selector).findAll()
                 }
                 targets.addAll(resolved)
             }

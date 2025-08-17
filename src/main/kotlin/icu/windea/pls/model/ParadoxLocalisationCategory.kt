@@ -8,8 +8,8 @@ import icu.windea.pls.localisation.psi.*
 enum class ParadoxLocalisationCategory(
     val id: String
 ) {
-    Localisation("localisation"),
-    SyncedLocalisation("localisation_synced"),
+    Normal("localisation"),
+    Synced("localisation_synced"),
     ;
 
     override fun toString(): String {
@@ -25,8 +25,8 @@ enum class ParadoxLocalisationCategory(
         @JvmStatic
         fun resolve(path: ParadoxPath): ParadoxLocalisationCategory? {
             return when {
-                path.matches(ParadoxPathMatcher.InNormalLocalisationPath) -> Localisation
-                path.matches(ParadoxPathMatcher.InSyncedLocalisationPath) -> SyncedLocalisation
+                path.matches(ParadoxPathMatcher.InNormalLocalisationPath) -> Normal
+                path.matches(ParadoxPathMatcher.InSyncedLocalisationPath) -> Synced
                 else -> null
             }
         }
@@ -50,7 +50,5 @@ enum class ParadoxLocalisationCategory(
             return resolve(root)
         }
 
-        @JvmStatic
-        fun placeholder() = Localisation
     }
 }

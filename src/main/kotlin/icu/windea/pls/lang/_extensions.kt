@@ -123,11 +123,8 @@ tailrec fun selectLocale(from: Any?): CwtLocaleConfig? {
         from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
         from is PsiFile -> ParadoxCoreManager.getLocaleConfig(from.virtualFile ?: return null, from.project)
         from is ParadoxLocalisationLocale -> from.name.toLocale(from)
-        from is ParadoxLocalisationPropertyList -> selectLocale(from.locale)
-        from is ParadoxLocalisationProperty -> {
-            runReadAction { from.greenStub }?.locale?.toLocale(from)?.let { return it }
-            selectLocale(from.containingFile)
-        }
+        from is ParadoxLocalisationPropertyList -> selectLocale(from.locale ?: from.containingFile)
+        from is ParadoxLocalisationProperty -> selectLocale(from.parent)
         from is StubBasedPsiElementBase<*> && from.language is ParadoxLocalisationLanguage -> selectLocale(from.containingFile)
         from is PsiElement && from.language is ParadoxLocalisationLanguage -> selectLocale(from.parent)
         else -> ParadoxLocaleManager.getPreferredLocaleConfig()

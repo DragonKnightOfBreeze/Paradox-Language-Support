@@ -14,7 +14,7 @@ import java.util.*
  */
 class ParadoxFileLocaleIndex : ScalarIndexExtension<String>() {
     companion object {
-        private const val VERSION = 71 //2.0.1-dev
+        private const val VERSION = 72 //2.0.2
     }
 
     override fun getName() = ParadoxIndexManager.FileLocaleName

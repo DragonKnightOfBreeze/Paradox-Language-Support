@@ -5,7 +5,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 
@@ -33,8 +32,8 @@ class ParadoxLocalisationSmartEnterProcessor : SmartEnterProcessorWithFixers() {
             val property = targetElement.parent as? ParadoxLocalisationProperty ?: return
             val category = ParadoxLocalisationCategory.resolve(property)
             val text = when (category) {
-                ParadoxLocalisationCategory.Localisation -> ":0 \"\""
-                ParadoxLocalisationCategory.SyncedLocalisation -> ": \"\""
+                ParadoxLocalisationCategory.Normal -> ":0 \"\""
+                ParadoxLocalisationCategory.Synced -> ": \"\""
                 null -> ": \"\""
             }
             EditorModificationUtil.insertStringAtCaret(editor, text, false, text.length - 1)

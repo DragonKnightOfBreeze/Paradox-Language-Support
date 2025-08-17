@@ -90,8 +90,8 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
                 val localisationCategory = target.localisationInfo?.category ?: return emptySet()
                 val targetPath = target.fileInfo?.path?.path ?: return emptySet()
                 val p = when (localisationCategory) {
-                    ParadoxLocalisationCategory.Localisation -> "localisation"
-                    ParadoxLocalisationCategory.SyncedLocalisation -> "localisation_synced"
+                    ParadoxLocalisationCategory.Normal -> "localisation"
+                    ParadoxLocalisationCategory.Synced -> "localisation_synced"
                 }
                 p.takeIf { targetPath.matchesAntPattern(it) }.singleton().setOrEmpty()
             }

@@ -53,8 +53,8 @@ class ParadoxLocalisationNameCompletionProvider : CompletionProvider<CompletionP
         //保证索引在此readAction中可用
         ReadAction.nonBlocking<Unit> {
             when (category) {
-                ParadoxLocalisationCategory.Localisation -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
-                ParadoxLocalisationCategory.SyncedLocalisation -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
+                ParadoxLocalisationCategory.Normal -> ParadoxLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
+                ParadoxLocalisationCategory.Synced -> ParadoxSyncedLocalisationSearch.processVariants(result.prefixMatcher, selector, processor)
             }
         }.inSmartMode(project).executeSynchronously()
     }
