@@ -1,5 +1,9 @@
 package icu.windea.pls.model
 
+import icu.windea.pls.core.orNull
+import icu.windea.pls.model.constants.PlsConstants
+import kotlin.collections.contains
+
 enum class ParadoxFileType {
     Script,
     Localisation,
@@ -10,13 +14,24 @@ enum class ParadoxFileType {
 
     companion object {
         @JvmStatic
-        fun resolve(path: ParadoxPath, rootInfo: ParadoxRootInfo? = null): ParadoxFileType {
+        fun resolve(path: ParadoxPath): ParadoxFileType {
             return when {
-                path.length == 1 && rootInfo is ParadoxRootInfo.Game -> Other
                 path.matches(ParadoxPathMatcher.ModDescriptorFile) -> ModDescriptor
                 path.matches(ParadoxPathMatcher.ScriptFile) -> Script
                 path.matches(ParadoxPathMatcher.LocalisationFile) -> Localisation
                 path.matches(ParadoxPathMatcher.CsvFile) -> Csv
+                else -> Other
+            }
+        }
+
+        @JvmStatic
+        fun resolvePossible(fileName: String): ParadoxFileType {
+            val fileExtension = fileName.substringAfterLast('.').orNull()?.lowercase() ?: return Other
+            return when {
+                fileExtension == "mod" -> ModDescriptor
+                fileExtension in PlsConstants.scriptFileExtensions -> Script
+                fileExtension in PlsConstants.localisationFileExtensions -> Localisation
+                fileExtension in PlsConstants.csvFileExtensions -> Csv
                 else -> Other
             }
         }

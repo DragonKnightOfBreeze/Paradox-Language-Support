@@ -80,7 +80,7 @@ object PlsMarkdownManager {
         run {
             val rootInfo = selectRootFile(element)?.rootInfo
             if (rootInfo == null) return@run
-            val fileType = ParadoxFileType.resolve(path, rootInfo)
+            val fileType = ParadoxFileType.resolve(path)
             val injectedFileInfo = ParadoxFileInfo(path, "", fileType, rootInfo)
             return injectedFileInfo
         }
@@ -88,7 +88,7 @@ object PlsMarkdownManager {
         //需要尽可能兼容markdown文件不在游戏或模组目录中的情况
 
         val rootInfo = ParadoxRootInfo.Injected(pathInfo.gameType)
-        val fileType = ParadoxFileType.resolve(path, rootInfo)
+        val fileType = ParadoxFileType.resolve(path)
         val injectedFileInfo = ParadoxFileInfo(path, "", fileType, rootInfo)
         return injectedFileInfo
     }

@@ -122,9 +122,10 @@ object ParadoxCoreManager {
         val relPath = ParadoxPath.resolve(filePath.removePrefix(rootInfo.rootFile.path).trimFast('/'))
         val (path, entryName) = resolvePathAndEntryName(relPath, rootInfo)
         val fileType = when {
+            path.length == 1 && rootInfo is ParadoxRootInfo.Game -> ParadoxFileType.Other
             file.isDirectory -> ParadoxFileType.Other
             ParadoxFileManager.isIgnoredFile(file.name) -> ParadoxFileType.Other
-            else -> ParadoxFileType.resolve(path, rootInfo)
+            else -> ParadoxFileType.resolve(path)
         }
         val fileInfo = ParadoxFileInfo(path, entryName, fileType, rootInfo)
         return fileInfo
@@ -157,9 +158,10 @@ object ParadoxCoreManager {
         val relPath = ParadoxPath.resolve(filePath.path.removePrefix(rootInfo.rootFile.path).trimFast('/'))
         val (path, entryName) = resolvePathAndEntryName(relPath, rootInfo)
         val fileType = when {
+            path.length == 1 && rootInfo is ParadoxRootInfo.Game -> ParadoxFileType.Other
             filePath.isDirectory -> ParadoxFileType.Other
             ParadoxFileManager.isIgnoredFile(filePath.name) -> ParadoxFileType.Other
-            else -> ParadoxFileType.resolve(path, rootInfo)
+            else -> ParadoxFileType.resolve(path)
         }
         val fileInfo = ParadoxFileInfo(path, entryName, fileType, rootInfo)
         return fileInfo

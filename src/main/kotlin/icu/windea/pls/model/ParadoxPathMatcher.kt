@@ -16,6 +16,11 @@ enum class ParadoxPathMatcher {
         private val roots = arrayOf("localisation_synced", "localization_synced")
         override fun matches(path: ParadoxPath) = path.root in roots
     },
+    ModDescriptorFile {
+        override fun matches(path: ParadoxPath): Boolean {
+            return !InLocalisationPath.matches(path) && matchFileExtension(path, "mod")
+        }
+    },
     ScriptFile {
         override fun matches(path: ParadoxPath): Boolean {
             return !InLocalisationPath.matches(path) && matchFileExtension(path, PlsConstants.scriptFileExtensions)
@@ -29,11 +34,6 @@ enum class ParadoxPathMatcher {
     LocalisationFile {
         override fun matches(path: ParadoxPath): Boolean {
             return InLocalisationPath.matches(path) && matchFileExtension(path, PlsConstants.localisationFileExtensions)
-        }
-    },
-    ModDescriptorFile {
-        override fun matches(path: ParadoxPath): Boolean {
-            return !InLocalisationPath.matches(path) && matchFileExtension(path, "mod")
         }
     },
     ;

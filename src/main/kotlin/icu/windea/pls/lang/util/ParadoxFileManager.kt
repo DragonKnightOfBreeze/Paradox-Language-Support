@@ -45,35 +45,6 @@ object ParadoxFileManager {
         return entryFile.findFileByRelativePath(path)
     }
 
-    fun canBeParadoxFile(filePath: FilePath): Boolean {
-        //val fileName = filePath.name.lowercase()
-        val fileExtension = filePath.name.substringAfterLast('.').orNull()?.lowercase() ?: return false
-        return when {
-            fileExtension == "mod" -> true
-            fileExtension in PlsConstants.scriptFileExtensions -> true
-            fileExtension in PlsConstants.localisationFileExtensions -> true
-            fileExtension in PlsConstants.csvFileExtensions -> true
-            else -> false
-        }
-    }
-
-    fun canBeParadoxFile(file: VirtualFile): Boolean {
-        //require pre-check from user data
-        //require further check for VirtualFileWindow (injected PSI)
-
-        if (file is VirtualFileWithoutContent) return false
-        if (file is VirtualFileWindow) return true
-        //val fileName = file.name.lowercase()
-        val fileExtension = file.extension?.lowercase() ?: return false
-        return when {
-            fileExtension == "mod" -> true
-            fileExtension in PlsConstants.scriptFileExtensions -> true
-            fileExtension in PlsConstants.localisationFileExtensions -> true
-            fileExtension in PlsConstants.csvFileExtensions -> true
-            else -> false
-        }
-    }
-
     fun getFileExtensionOptionValues(config: CwtMemberConfig<*>): Set<String> {
         return config.getOrPutUserData(Keys.fileExtensions) {
             config.findOption("file_extensions")?.getOptionValueOrValues().orEmpty()
@@ -191,16 +162,6 @@ object ParadoxFileManager {
             ParadoxFileType.Localisation -> ParadoxLocalisationFileType
             ParadoxFileType.Csv -> ParadoxCsvFileType
             ParadoxFileType.ModDescriptor -> ParadoxScriptFileType
-            else -> null
-        }
-    }
-
-    fun getFileIcon(fileType: ParadoxFileType): Icon? {
-        return when (fileType) {
-            ParadoxFileType.Script -> PlsIcons.FileTypes.ParadoxScript
-            ParadoxFileType.Localisation -> PlsIcons.FileTypes.ParadoxLocalisation
-            ParadoxFileType.Csv -> PlsIcons.FileTypes.ParadoxCsv
-            ParadoxFileType.ModDescriptor -> PlsIcons.FileTypes.ModeDescriptor
             else -> null
         }
     }
