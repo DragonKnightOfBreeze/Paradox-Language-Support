@@ -133,14 +133,14 @@ object ParadoxPsiManager {
         if (file.language !is ParadoxLocalisationLanguage) return null
         if (BitUtil.isSet(options, FindLocalisationOptions.DEFAULT)) {
             val result = file.findElementAt(offset) t@{
-                it.parents(false).find p@{ p -> p is ParadoxLocalisationProperty && p.localisationInfo != null }
+                it.parents(false).find p@{ p -> p is ParadoxLocalisationProperty }
             }?.castOrNull<ParadoxLocalisationProperty>()
             if (result != null) return result
         } else {
             if (BitUtil.isSet(options, FindLocalisationOptions.BY_NAME)) {
                 val result = file.findElementAt(offset) p@{
                     if (it.elementType != ParadoxLocalisationElementTypes.PROPERTY_KEY_TOKEN) return@p null
-                    it.parents(false).find p@{ p -> p is ParadoxLocalisationProperty && p.localisationInfo != null }
+                    it.parents(false).find p@{ p -> p is ParadoxLocalisationProperty }
                 }?.castOrNull<ParadoxLocalisationProperty>()
                 if (result != null) return result
             }

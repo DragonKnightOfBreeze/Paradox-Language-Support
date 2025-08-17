@@ -56,12 +56,12 @@ class CompareLocalisationsAction : ParadoxShowDiffAction() {
     }
 
     private fun findElement(file: PsiFile, offset: Int): ParadoxLocalisationProperty? {
-        return ParadoxPsiManager.findLocalisation(file, offset)
+        return ParadoxPsiManager.findLocalisation(file, offset)?.takeIf { it.type != null }
     }
 
     private fun findElement(e: AnActionEvent): ParadoxLocalisationProperty? {
         val element = e.getData(CommonDataKeys.PSI_ELEMENT)
-        if (element is ParadoxLocalisationProperty && element.localisationInfo != null) return element
+        if (element is ParadoxLocalisationProperty && element.type != null) return element
         return null
     }
 

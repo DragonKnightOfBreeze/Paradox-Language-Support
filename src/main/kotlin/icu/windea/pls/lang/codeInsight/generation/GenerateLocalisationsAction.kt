@@ -56,7 +56,7 @@ class GenerateLocalisationsAction : BaseCodeInsightAction(), GenerateActionPopup
             }
             is ParadoxLocalisationFile -> {
                 val locales = ParadoxLocaleManager.getLocaleConfigs()
-                val element = findElement(file, editor.caretModel.offset)
+                val element = findElement(file, editor.caretModel.offset)?.takeIf { it.type != null }
                 val contextElement = element
                 if (contextElement == null) return null
                 val context = ParadoxLocalisationCodeInsightContextBuilder.fromLocalisation(contextElement, locales)
