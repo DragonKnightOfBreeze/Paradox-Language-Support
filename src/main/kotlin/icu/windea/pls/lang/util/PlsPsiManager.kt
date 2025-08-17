@@ -38,6 +38,8 @@ object PlsPsiManager {
         return target.startOffset
     }
 
+
+
     /**
      * 查找最远的相同类型的兄弟节点。可指定是否向后查找，以及是否在空行处中断。
      */
@@ -77,8 +79,8 @@ object PlsPsiManager {
 
         val element = node.psi
         if (element !is PsiComment) return
-        val startElement = PlsPsiManager.findFurthestSiblingOfSameType(element, findAfter = false)
-        val endElement = PlsPsiManager.findFurthestSiblingOfSameType(element, findAfter = true)
+        val startElement = findFurthestSiblingOfSameType(element, findAfter = false)
+        val endElement = findFurthestSiblingOfSameType(element, findAfter = true)
         if (startElement == endElement) return //受支持的注释都是单行注释，因此这里可以快速判断
         val startOffset = startElement.startOffset
         val endOffset = endElement.endOffset

@@ -706,7 +706,6 @@ fun PsiElement.isIncomplete(): Boolean {
     val originalFile = file.originalFile
     if (originalFile === file) return false
     val startOffset = startOffset
-    file.findElementAt(startOffset)
     val e1 = file.findElementAt(startOffset) ?: return false
     val e2 = originalFile.findElementAt(startOffset) ?: return true
     if (e1.elementType != e2.elementType) return true
