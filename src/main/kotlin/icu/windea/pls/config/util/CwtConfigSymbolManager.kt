@@ -103,7 +103,7 @@ object CwtConfigSymbolManager {
         val readWriteAccess = ReadWriteAccessDetector.Access.Read
         val (prefix, suffix) = CwtConfigTextPatterns.definition
         val text = expressionString.removeSurroundingOrNull(prefix, suffix) ?: return
-        val expression = ParadoxDefinitionTypeExpression.Resolver.resolve(text)
+        val expression = ParadoxDefinitionTypeExpression.resolve(text)
         val keywords = mutableSetOf<String>()
         keywords += expression.type
         keywords += expression.subtypes
@@ -121,7 +121,7 @@ object CwtConfigSymbolManager {
         val readWriteAccess = ReadWriteAccessDetector.Access.Read
         val (prefix, suffix) = CwtConfigTextPatterns.definition
         val text = expressionString.removeSurroundingOrNull(prefix, suffix) ?: return
-        val expression = ParadoxDefinitionTypeExpression.Resolver.resolve(text)
+        val expression = ParadoxDefinitionTypeExpression.resolve(text)
         val keywords = mutableSetOf<String>()
         keywords += expression.type
         keywords += expression.subtypes
