@@ -5,7 +5,7 @@ import com.intellij.openapi.vcs.*
 import com.intellij.psi.*
 import com.intellij.usages.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -27,7 +27,7 @@ class ParadoxDefinitionUsageGroup(
     }
 
     override fun getPresentableGroupText(): String {
-        return _name.orAnonymous()
+        return _name.or.anonymous()
     }
 
     override fun getFileStatus(): FileStatus? {

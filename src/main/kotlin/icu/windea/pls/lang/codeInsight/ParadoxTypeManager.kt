@@ -161,7 +161,7 @@ object ParadoxTypeManager {
                 val definitionInfo = element.definitionInfo
                 if (definitionInfo != null) {
                     if (definitionInfo.types.size == 1) {
-                        return definitionInfo.typeConfig.pointer.element.singleton().listOrEmpty()
+                        return definitionInfo.typeConfig.pointer.element.singleton.listOrEmpty()
                     } else {
                         //这里的element可能是null，以防万一，处理是null的情况
                         return buildList {
@@ -190,7 +190,7 @@ object ParadoxTypeManager {
                         val enumName = complexEnumValueInfo.enumName
                         val config = configGroup.complexEnums[enumName] ?: return emptyList() //unexpected
                         val resolved = config.pointer.element ?: return emptyList()
-                        return resolved.singleton().list()
+                        return resolved.singleton.list()
                     }
                 }
             }

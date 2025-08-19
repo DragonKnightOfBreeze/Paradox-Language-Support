@@ -48,7 +48,7 @@ val CwtMemberConfig<*>.properties: List<CwtPropertyConfig>? get() = configs?.fil
 //}
 
 //fun CwtMemberConfig<*>.getOptionValueOrValues(): Set<String>? {
-//    return getOptionValue()?.let { it.singleton().set() } ?: getOptionValues()
+//    return getOptionValue()?.let { it.singleton.set() } ?: getOptionValues()
 //}
 
 fun CwtMemberConfig<*>.findOption(key: String): CwtOptionConfig? {

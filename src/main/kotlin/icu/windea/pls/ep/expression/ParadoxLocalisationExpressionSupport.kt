@@ -35,7 +35,7 @@ interface ParadoxLocalisationExpressionSupport {
     }
 
     fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Collection<PsiElement> {
-        return resolve(element, rangeInElement, expressionText).singleton().setOrEmpty()
+        return resolve(element, rangeInElement, expressionText).singleton.setOrEmpty()
     }
 
     fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String): Array<out PsiReference>? {

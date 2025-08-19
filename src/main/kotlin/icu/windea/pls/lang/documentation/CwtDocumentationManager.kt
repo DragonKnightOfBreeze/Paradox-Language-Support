@@ -12,6 +12,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.reference.*
@@ -107,7 +108,7 @@ object CwtDocumentationManager {
             if (prefix != null) {
                 append(prefix).append(" ")
             }
-            append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
+            append("<b>").append(name.escapeXml().or.anonymous()).append("</b>")
         }
     }
 
@@ -135,7 +136,7 @@ object CwtDocumentationManager {
             if (prefix != null) {
                 append(prefix).append(" ")
             }
-            append("<b>").append(shortName.escapeXml().orAnonymous()).append("</b>")
+            append("<b>").append(shortName.escapeXml().or.anonymous()).append("</b>")
             if (typeCategory != null) {
                 val typeElement = element.parentOfType<CwtProperty>()
                 val typeName = typeElement?.name?.substringIn('[', ']')?.orNull()
@@ -152,7 +153,7 @@ object CwtDocumentationManager {
             }
             if (byName != null) {
                 grayed {
-                    append(" by ").append(byName.escapeXml().orAnonymous())
+                    append(" by ").append(byName.escapeXml().or.anonymous())
                 }
             }
 

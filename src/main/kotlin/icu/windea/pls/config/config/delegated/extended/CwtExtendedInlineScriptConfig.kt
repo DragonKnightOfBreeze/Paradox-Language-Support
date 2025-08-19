@@ -66,7 +66,7 @@ private class CwtExtendedInlineScriptConfigImpl(
         if (containerConfig !is CwtPropertyConfig) return emptyList()
         val r = when (contextConfigsType) {
             "multiple" -> containerConfig.configs.orEmpty()
-            else -> containerConfig.valueConfig.singleton().listOrEmpty()
+            else -> containerConfig.valueConfig.singleton.listOrEmpty()
         }
         if (r.isEmpty()) return emptyList()
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(config, r, config.configGroup)

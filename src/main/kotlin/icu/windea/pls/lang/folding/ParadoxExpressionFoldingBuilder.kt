@@ -8,13 +8,12 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 
 @WithInternalConfig("builtin/folding_settings.cwt", CwtFoldingSettingsConfig::class)
 abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
@@ -49,7 +48,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
                 val propertyValue = element.propertyValue ?: return
                 val elementsToKeep: List<PsiElement> = when {
                     settings.key != null && propertyValue !is ParadoxScriptBlock -> {
-                        propertyValue.singleton().listOrEmpty()
+                        propertyValue.singleton.listOrEmpty()
                     }
                     settings.keys != null && propertyValue is ParadoxScriptBlock -> {
                         var i = -1
@@ -81,7 +80,7 @@ abstract class ParadoxExpressionFoldingBuilder : FoldingBuilderEx() {
                 var valueRange: TextRange? = null
                 val descriptors = mutableListOf<FoldingDescriptor>()
                 val list = settings.placeholder.split('$')
-                val keys = settings.key?.singleton()?.list() ?: settings.keys ?: emptyList()
+                val keys = settings.key?.singleton?.list() ?: settings.keys ?: emptyList()
                 for ((index, s) in list.withIndex()) {
                     if (index % 2 == 0) {
                         //'{ k = v }' will be folded by ParadoxScriptFoldingBuilder

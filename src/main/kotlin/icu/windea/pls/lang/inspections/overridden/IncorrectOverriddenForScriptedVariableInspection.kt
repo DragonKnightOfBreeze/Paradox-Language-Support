@@ -6,6 +6,7 @@ import com.intellij.openapi.roots.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.priority.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
@@ -82,7 +83,7 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
         override fun getPopupText(editor: Editor, value: PsiElement): @Nls String {
             val file = value.containingFile
             val lineNumber = PsiDocumentManager.getInstance(file.project).getDocument(file)?.getLineNumber(value.textOffset) ?: "?"
-            val filePath = file.fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile?.path.orAnonymous()
+            val filePath = file.fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile?.path.or.anonymous()
             return PlsBundle.message("inspection.fix.navigate.popup.text.3", key, lineNumber, filePath)
         }
     }

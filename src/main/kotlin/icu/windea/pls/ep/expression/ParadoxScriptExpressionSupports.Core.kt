@@ -192,7 +192,7 @@ class ParadoxScriptPathReferenceExpressionSupport : ParadoxScriptExpressionSuppo
         val configGroup = config.configGroup
         val project = configGroup.project
         if (configExpression.type == CwtDataTypes.AbsoluteFilePath) {
-            return expressionText.toVirtualFile(false)?.toPsiFile(project).singleton().setOrEmpty()
+            return expressionText.toVirtualFile(false)?.toPsiFile(project).singleton.setOrEmpty()
         } else {
             //if(ParadoxPathReferenceExpressionSupport.get(configExpression) == null) return null
             val pathReference = expressionText.normalizePath()

@@ -9,6 +9,7 @@ import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.reference.*
 import icu.windea.pls.lang.*
@@ -230,7 +231,7 @@ class ParadoxLocalisationTextHtmlRenderer(
             val conceptText = newBuilder.toString()
             if (referenceElement !is ParadoxScriptDefinitionElement) return@run
             val definitionInfo = referenceElement.definitionInfo ?: return@run
-            val definitionName = definitionInfo.name.orAnonymous()
+            val definitionName = definitionInfo.name.or.anonymous()
             val definitionType = definitionInfo.type
             renderWithColorTo(conceptColor) {
                 val link = ParadoxReferenceLinkType.Definition.createLink(definitionInfo.gameType, definitionName, definitionType)

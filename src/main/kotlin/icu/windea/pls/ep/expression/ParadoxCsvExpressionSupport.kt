@@ -34,7 +34,7 @@ interface ParadoxCsvExpressionSupport {
     }
 
     fun multiResolve(element: ParadoxCsvExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtValueConfig): Collection<PsiElement> {
-        return resolve(element, rangeInElement, expressionText, config).singleton().setOrEmpty()
+        return resolve(element, rangeInElement, expressionText, config).singleton.setOrEmpty()
     }
 
     fun complete(context: ProcessingContext, result: CompletionResultSet) {

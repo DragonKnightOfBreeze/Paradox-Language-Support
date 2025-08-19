@@ -10,6 +10,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.documentation.*
 import icu.windea.pls.ep.inherit.*
 import icu.windea.pls.ep.modifier.*
@@ -185,7 +186,7 @@ object ParadoxDocumentationManager {
             val r = ParadoxParameterSupport.getDocumentationDefinition(element, this)
             if (!r) {
                 //显示默认的快速文档
-                append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+                append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             }
         }
     }
@@ -196,7 +197,7 @@ object ParadoxDocumentationManager {
             val r = ParadoxLocalisationParameterSupport.getDocumentationDefinition(element, this)
             if (!r) {
                 //显示默认的快速文档
-                append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+                append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             }
         }
     }
@@ -207,7 +208,7 @@ object ParadoxDocumentationManager {
             val enumName = element.enumName
             val gameType = element.gameType
             val configGroup = PlsFacade.getConfigGroup(element.project, gameType)
-            append(PlsStringConstants.complexEnumValuePrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+            append(PlsStringConstants.complexEnumValuePrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             val complexEnumConfig = configGroup.complexEnums[enumName]
             if (complexEnumConfig != null) {
                 val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "complex_enums", enumName)
@@ -254,7 +255,7 @@ object ParadoxDocumentationManager {
         val gameType = element.gameType
         val configGroup = PlsFacade.getConfigGroup(element.project, gameType)
         definition {
-            append(PlsStringConstants.dynamicValuePrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+            append(PlsStringConstants.dynamicValuePrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             append(": ")
             var appendSeparator = false
             for (dynamicValueType in dynamicValueTypes) {
@@ -306,7 +307,7 @@ object ParadoxDocumentationManager {
             val r = ParadoxModifierSupport.getDocumentationDefinition(element, this)
             if (!r) {
                 //显示默认的快速文档
-                append(PlsStringConstants.modifierPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+                append(PlsStringConstants.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             }
 
             val configGroup = PlsFacade.getConfigGroup(element.project, element.gameType)
@@ -443,7 +444,7 @@ object ParadoxDocumentationManager {
             //加上文件信息
             appendFileInfoHeader(element)
             //加上定义信息
-            append(PlsStringConstants.scriptedVariablePrefix).append(" <b>@").append(name.escapeXml().orAnonymous()).append("</b>")
+            append(PlsStringConstants.scriptedVariablePrefix).append(" <b>@").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.scriptedVariableValue
             when (valueElement) {
                 is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
@@ -484,7 +485,7 @@ object ParadoxDocumentationManager {
             //加上文件信息
             appendFileInfoHeader(element)
             //加上定义信息
-            append(PlsStringConstants.propertyPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+            append(PlsStringConstants.propertyPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             val valueElement = element.propertyValue
             when (valueElement) {
                 is ParadoxScriptString -> append(" = ").append(valueElement.text.escapeXml())
@@ -538,10 +539,10 @@ object ParadoxDocumentationManager {
         append(prefix).append(" ")
         val name = definitionInfo.name
         if (usePrefix == null) {
-            append("<b>").append(name.escapeXml().orAnonymous()).append("</b>")
+            append("<b>").append(name.escapeXml().or.anonymous()).append("</b>")
         } else {
             val link = ParadoxReferenceLinkType.Definition.createLink(gameType, name, definitionInfo.type)
-            appendPsiLinkOrUnresolved(link.escapeXml(), name.escapeXml().orAnonymous(), context = definition)
+            appendPsiLinkOrUnresolved(link.escapeXml(), name.escapeXml().or.anonymous(), context = definition)
         }
         append(": ")
         val typeConfig = definitionInfo.typeConfig
@@ -561,7 +562,7 @@ object ParadoxDocumentationManager {
         appendIndent().append(PlsBundle.message("inherits")).append(" ")
         val name = definitionInfo.name
         val link = ParadoxReferenceLinkType.Definition.createLink(gameType, name, definitionInfo.type)
-        appendPsiLinkOrUnresolved(link.escapeXml(), name.escapeXml().orAnonymous(), context = definition)
+        appendPsiLinkOrUnresolved(link.escapeXml(), name.escapeXml().or.anonymous(), context = definition)
         append(": ")
         val typeConfig = definitionInfo.typeConfig
         val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "types", typeConfig.name)
@@ -778,7 +779,7 @@ object ParadoxDocumentationManager {
             ParadoxLocalisationType.Synced -> PlsStringConstants.localisationSyncedPrefix
         }
         append(prefix).append(" ")
-        append("<b>").append(localisationInfo.name.orUnresolved()).append("</b>")
+        append("<b>").append(localisationInfo.name.or.unresolved()).append("</b>")
     }
 
     private fun DocumentationBuilder.addRelatedDefinitionsForLocalisation(element: ParadoxLocalisationProperty, localisationInfo: ParadoxLocalisationInfo) {

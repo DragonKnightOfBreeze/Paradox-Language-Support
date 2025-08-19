@@ -6,7 +6,7 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.refactoring.inline.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.refactoring.*
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.localisation.*
@@ -31,7 +31,7 @@ class ParadoxLocalisationInlineDialog(
     }
 
     override fun getNameLabelText(): String {
-        val name = element.name.orAnonymous()
+        val name = element.name.or.anonymous()
         return PlsBundle.message("inline.localisation.label", name)
     }
 

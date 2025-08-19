@@ -4,6 +4,7 @@ import com.intellij.ide.util.treeView.*
 import com.intellij.navigation.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -25,7 +26,7 @@ class ParadoxScriptItemPresentation(
     override fun getPresentableText(): String? {
         //使用PSI元素的名字（如果是定义，优先使用定义的名字）
         val element = element
-        if (element is ParadoxScriptProperty) return element.definitionInfo?.name?.orAnonymous() ?: element.name
+        if (element is ParadoxScriptProperty) return element.definitionInfo?.name?.or?.anonymous() ?: element.name
         if (element is PsiNamedElement) return element.name
         if (element is NavigationItem) return element.name
         return null

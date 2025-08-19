@@ -3,10 +3,10 @@
 package icu.windea.pls.core.util
 
 data class ReversibleValue<T>(
-    override val operator: Boolean,
+    val operator: Boolean,
     val value: T
-): Reversible {
-    override fun reversed(): ReversibleValue<T> = ReversibleValue(!operator, value)
+) {
+    fun reversed(): ReversibleValue<T> = ReversibleValue(!operator, value)
 }
 
 inline fun <T> ReversibleValue<T>.takeWithOperator(): T? = if (operator) value else null

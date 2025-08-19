@@ -70,10 +70,10 @@ class ParadoxScriptedVariableInlineProcessor(
 
     override fun getElementsToWrite(descriptor: UsageViewDescriptor): Collection<PsiElement> {
         return if (inlineThisOnly) {
-            reference?.element.singleton().listOrEmpty()
+            reference?.element.singleton.listOrEmpty()
         } else {
             if (!element.isWritable) return emptyList()
-            if (reference == null) element.singleton().list() else listOf(reference.element, element)
+            if (reference == null) element.singleton.list() else listOf(reference.element, element)
         }
     }
 

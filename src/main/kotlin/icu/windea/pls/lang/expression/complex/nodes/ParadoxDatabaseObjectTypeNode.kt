@@ -25,7 +25,7 @@ class ParadoxDatabaseObjectTypeNode(
     val config: CwtDatabaseObjectTypeConfig?
 ) : ParadoxComplexExpressionNode.Base() {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
-        return config.singleton().setOrEmpty()
+        return config.singleton.setOrEmpty()
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {

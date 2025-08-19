@@ -16,7 +16,6 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
@@ -30,7 +29,7 @@ class ParadoxInlineScriptInlineProcessor(
     private val keepTheDeclaration: Boolean,
 ) : BaseRefactoringProcessor(project, scope, null) {
     //do not use DescriptiveNameUtil.getDescriptiveName(element) here
-    private val descriptiveName = ParadoxInlineScriptManager.getInlineScriptExpression(element).orAnonymous()
+    private val descriptiveName = ParadoxInlineScriptManager.getInlineScriptExpression(element).or.anonymous()
 
     override fun getCommandName() = PlsBundle.message("inline.inlineScript.command", descriptiveName)
 
@@ -72,10 +71,10 @@ class ParadoxInlineScriptInlineProcessor(
 
     override fun getElementsToWrite(descriptor: UsageViewDescriptor): Collection<PsiElement> {
         return if (inlineThisOnly) {
-            reference?.element.singleton().listOrEmpty()
+            reference?.element.singleton.listOrEmpty()
         } else {
             if (!element.isWritable) return emptyList()
-            if (reference == null) element.singleton().list() else listOf(reference.element, element)
+            if (reference == null) element.singleton.list() else listOf(reference.element, element)
         }
     }
 

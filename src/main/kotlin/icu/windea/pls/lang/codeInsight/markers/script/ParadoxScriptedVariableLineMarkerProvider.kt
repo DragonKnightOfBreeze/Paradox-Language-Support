@@ -7,7 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.codeInsight.markers.*
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.search.*
@@ -30,7 +30,7 @@ class ParadoxScriptedVariableLineMarkerProvider : ParadoxRelatedItemLineMarkerPr
         val prefix = PlsStringConstants.scriptedVariablePrefix
         val name = element.name ?: return
         val icon = PlsIcons.Gutter.ScriptedVariable
-        val tooltip = "$prefix <b>@${name.escapeXml().orAnonymous()}</b>"
+        val tooltip = "$prefix <b>@${name.escapeXml().or.anonymous()}</b>"
         val targets by lazy {
             val project = element.project
             val selector = selector(project, element).scriptedVariable().contextSensitive()

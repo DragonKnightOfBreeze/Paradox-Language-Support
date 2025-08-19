@@ -10,6 +10,7 @@ import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -41,7 +42,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         myHighlightedText = CompositeAppearance()
         val file = element.containingFile
         val hierarchySettings = PlsFacade.getSettings().hierarchy
-        val name = name.orAnonymous()
+        val name = name.or.anonymous()
         myHighlightedText.ending.addText(name, getNameAttributes(myColor))
         run {
             if (nodeType.grouped) {

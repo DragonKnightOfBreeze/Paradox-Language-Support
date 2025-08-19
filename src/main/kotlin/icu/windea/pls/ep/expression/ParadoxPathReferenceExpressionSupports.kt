@@ -109,7 +109,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
     }
 
     override fun resolvePath(configExpression: CwtDataExpression, pathReference: String): Set<String>? {
-        val expression = configExpression.value ?: return pathReference.singleton().set()
+        val expression = configExpression.value ?: return pathReference.singleton.set()
         val expressionRel = expression.removePrefixOrNull("./")
         if (expressionRel != null) {
             return null //信息不足
@@ -117,22 +117,22 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         val index = configExpression.expressionString.lastIndexOf(',') //","应当最多出现一次
         if (index == -1) {
             if (expression.endsWith('/')) {
-                return "$expression$pathReference".singleton().set()
+                return "$expression$pathReference".singleton.set()
             } else {
-                return "$expression/$pathReference".singleton().set()
+                return "$expression/$pathReference".singleton.set()
             }
         } else {
-            return expression.replace(",", pathReference).singleton().set()
+            return expression.replace(",", pathReference).singleton.set()
         }
     }
 
     override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): Set<String> {
-        val expression = configExpression.value ?: return pathReference.substringAfterLast('/').singleton().set()
+        val expression = configExpression.value ?: return pathReference.substringAfterLast('/').singleton.set()
         val index = expression.lastIndexOf(',') //","应当最多出现一次
         if (index == -1) {
-            return pathReference.substringAfterLast('/').singleton().set()
+            return pathReference.substringAfterLast('/').singleton.set()
         } else {
-            return expression.replace(",", pathReference).substringAfterLast('/').singleton().set()
+            return expression.replace(",", pathReference).substringAfterLast('/').singleton.set()
         }
     }
 
@@ -166,7 +166,7 @@ class ParadoxFileNameReferenceExpressionSupport : ParadoxPathReferenceExpression
     }
 
     override fun resolveFileName(configExpression: CwtDataExpression, pathReference: String): Set<String> {
-        return pathReference.substringAfterLast('/').singleton().set()
+        return pathReference.substringAfterLast('/').singleton.set()
     }
 
     override fun getUnresolvedMessage(configExpression: CwtDataExpression, pathReference: String): String {

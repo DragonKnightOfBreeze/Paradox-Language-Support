@@ -22,7 +22,7 @@ object PlsVfsManager {
         val editor = e.editor
         if (editor != null) {
             val file = e.getData(LangDataKeys.VIRTUAL_FILE)
-            return file.singleton().setOrEmpty()
+            return file.singleton.setOrEmpty()
         }
         val files = e.getData(LangDataKeys.VIRTUAL_FILE_ARRAY)
         if (files.isNullOrEmpty()) return emptySet()

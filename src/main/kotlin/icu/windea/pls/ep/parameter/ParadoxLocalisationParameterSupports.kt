@@ -8,6 +8,7 @@ import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.reference.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
@@ -62,13 +63,13 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
 
         //加上名字
         val name = element.name
-        append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsStringConstants.parameterPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
 
         //加上所属本地化信息
         val gameType = element.gameType
         appendBr().appendIndent()
         append(PlsBundle.message("ofLocalisation")).append(" ")
-        val nameOrUnknown = element.localisationName.orUnknown()
+        val nameOrUnknown = element.localisationName.or.unknown()
         val link = ParadoxReferenceLinkType.Localisation.createLink(gameType, nameOrUnknown)
         appendPsiLinkOrUnresolved(link.escapeXml(), nameOrUnknown.escapeXml(), context = element)
         return true

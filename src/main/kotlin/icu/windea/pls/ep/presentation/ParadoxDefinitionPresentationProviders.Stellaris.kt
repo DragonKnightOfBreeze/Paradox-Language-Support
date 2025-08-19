@@ -3,6 +3,7 @@ package icu.windea.pls.ep.presentation
 import com.intellij.ui.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.data.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
@@ -79,8 +80,9 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
     }
 
     @Suppress("UseJBColor")
-    private fun getNameLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): JLabel? {
-        return ParadoxPresentationManager.getNameLabel(definition, Color.WHITE)
+    private fun getNameLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): JLabel {
+        val nameText = lazy { ParadoxPresentationManager.getNameText(definition).or.unknown() }
+        return ParadoxPresentationManager.getLabel(nameText, Color.WHITE)
     }
 
     private fun getCostLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): JLabel? {

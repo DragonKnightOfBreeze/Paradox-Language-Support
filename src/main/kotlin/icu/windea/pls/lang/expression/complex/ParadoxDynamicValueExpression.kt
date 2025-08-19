@@ -53,7 +53,7 @@ class ParadoxDynamicValueExpression private constructor(
 
     companion object Resolver {
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, config: CwtConfig<*>): ParadoxDynamicValueExpression? {
-            return resolve(expressionString, range, configGroup, config.singleton().list())
+            return resolve(expressionString, range, configGroup, config.singleton.list())
         }
 
         fun resolve(expressionString: String, range: TextRange, configGroup: CwtConfigGroup, configs: List<CwtConfig<*>>): ParadoxDynamicValueExpression? {

@@ -56,8 +56,8 @@ object CwtTypeManager {
             is CwtValue -> {
                 val configType = getConfigType(element) ?: return emptyList()
                 when (configType) {
-                    CwtConfigTypes.EnumValue -> element.parent.singleton().listOrEmpty()
-                    CwtConfigTypes.DynamicValue -> element.parent.singleton().listOrEmpty()
+                    CwtConfigTypes.EnumValue -> element.parent.singleton.listOrEmpty()
+                    CwtConfigTypes.DynamicValue -> element.parent.singleton.listOrEmpty()
                     else -> emptyList()
                 }
             }

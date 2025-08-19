@@ -4,7 +4,7 @@ import com.intellij.ide.navigationToolbar.*
 import com.intellij.lang.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import javax.swing.*
@@ -21,7 +21,7 @@ class ParadoxLocalisationNavBar : StructureAwareNavBarModelExtension() {
 
     override fun getPresentableText(o: Any?): String? {
         return when {
-            o is ParadoxLocalisationPropertyList -> o.locale?.name.orAnonymous()
+            o is ParadoxLocalisationPropertyList -> o.locale?.name.or.anonymous()
             o is ParadoxLocalisationProperty -> o.name
             else -> null
         }

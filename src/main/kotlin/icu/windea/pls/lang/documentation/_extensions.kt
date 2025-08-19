@@ -67,7 +67,7 @@ fun getDocumentationTargets(element: PsiElement, originalElement: PsiElement?): 
     val targets = psiDocumentationTargets(element, originalElement)
     if (targets.isNotEmpty()) return targets
 
-    return getDocumentationTarget(element, originalElement).singleton().listOrEmpty()
+    return getDocumentationTarget(element, originalElement).singleton.listOrEmpty()
 }
 
 @Suppress("UNUSED_PARAMETER")

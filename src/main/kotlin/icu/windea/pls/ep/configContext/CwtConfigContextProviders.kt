@@ -71,7 +71,7 @@ class BaseCwtConfigContextProvider : CwtConfigContextProvider {
         val elementPathFromRoot = context.elementPathFromRoot ?: return null
         val definitionInfo = context.definitionInfo ?: return null
         val declarationConfig = definitionInfo.getDeclaration(matchOptions) ?: return null
-        val rootConfigs = declarationConfig.singleton().list()
+        val rootConfigs = declarationConfig.singleton.list()
         val configGroup = context.configGroup
         val contextElement = context.element
         return ParadoxExpressionManager.getConfigsForConfigContext(contextElement, rootConfigs, elementPathFromRoot, configGroup, matchOptions)

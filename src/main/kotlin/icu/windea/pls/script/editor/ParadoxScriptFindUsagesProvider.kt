@@ -6,6 +6,7 @@ import com.intellij.psi.*
 import com.intellij.refactoring.util.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.script.psi.*
@@ -38,7 +39,7 @@ class ParadoxScriptFindUsagesProvider : FindUsagesProvider, ElementDescriptionPr
                 if (definitionInfo != null) {
                     when (location) {
                         UsageViewTypeLocation.INSTANCE -> PlsBundle.message("script.description.definition")
-                        else -> definitionInfo.name.orAnonymous()
+                        else -> definitionInfo.name.or.anonymous()
                     }
                 } else {
                     when (location) {

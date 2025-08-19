@@ -8,6 +8,7 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.provider.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
@@ -34,7 +35,7 @@ abstract class ParadoxDiagramDataModel(
 
     override fun getEdges() = _edges
 
-    override fun getNodeName(node: DiagramNode<PsiElement>) = node.tooltip.orAnonymous()
+    override fun getNodeName(node: DiagramNode<PsiElement>) = node.tooltip.or.anonymous()
 
     override fun addElement(element: PsiElement?) = null
 

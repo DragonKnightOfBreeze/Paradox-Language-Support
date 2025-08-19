@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -40,7 +41,7 @@ class ParadoxScriptAnnotator : Annotator {
             val propertyElement = element.findProperty(nameField) //不处理内联的情况
             val nameElement = propertyElement?.propertyValue<ParadoxScriptString>()
             if (nameElement != null) {
-                val nameString = definitionInfo.name.escapeXml().orAnonymous()
+                val nameString = definitionInfo.name.escapeXml().or.anonymous()
                 val typesString = definitionInfo.typesText
                 //这里不能使用PSI链接
                 val tooltip = "<pre>(definition name) <b>$nameString</b>: $typesString</pre>"

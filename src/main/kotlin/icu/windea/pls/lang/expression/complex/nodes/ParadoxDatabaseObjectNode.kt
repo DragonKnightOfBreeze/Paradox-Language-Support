@@ -21,7 +21,7 @@ class ParadoxDatabaseObjectNode(
     val config = expression.typeNode?.config
 
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
-        return config.singleton().setOrEmpty()
+        return config.singleton.setOrEmpty()
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {

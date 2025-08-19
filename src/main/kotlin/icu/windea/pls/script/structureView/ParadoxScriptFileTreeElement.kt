@@ -3,6 +3,7 @@ package icu.windea.pls.script.structureView
 import com.intellij.ide.structureView.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
@@ -46,7 +47,7 @@ class ParadoxScriptFileTreeElement(
         if (name.endsWith(".mod", true)) return name
         //如果是定义，则优先显示定义的名字
         val definitionInfo = element.definitionInfo
-        if (definitionInfo != null) return definitionInfo.name.orAnonymous()
+        if (definitionInfo != null) return definitionInfo.name.or.anonymous()
         return name
     }
 

@@ -2,16 +2,15 @@
 
 package icu.windea.pls.core.collections
 
-import icu.windea.pls.core.util.*
 import kotlin.experimental.*
 
 class ReversibleSequence<T>(
-    override val operator: Boolean = true,
+    val operator: Boolean = true,
     private val builder: (operator: Boolean) -> Sequence<T>
-) : Sequence<T>, Reversible {
+) : Sequence<T> {
     override fun iterator() = builder(operator).iterator()
 
-    override fun reversed() = ReversibleSequence(!operator, builder)
+    fun reversed() = ReversibleSequence(!operator, builder)
 }
 
 @OptIn(ExperimentalTypeInference::class)

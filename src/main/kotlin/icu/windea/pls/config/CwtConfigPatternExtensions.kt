@@ -75,6 +75,6 @@ fun <V> Map<String, V>.filterByPattern(
     fromIndex: Int = 0,
 ): List<V> {
     val fastResult = get(key)
-    if (fastResult != null) return fastResult.singleton().list()
+    if (fastResult != null) return fastResult.singleton.list()
     return entries.filter { (k) -> k.matchFromPattern(key, contextElement, configGroup, matchOptions, fromIndex) }.map { it.value }
 }

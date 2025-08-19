@@ -20,7 +20,6 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 
 object ParadoxEventManager {
     object Keys : KeyRegistry() {
@@ -59,7 +58,7 @@ object ParadoxEventManager {
     }
 
     fun getName(element: ParadoxScriptDefinitionElement): String {
-        return element.definitionInfo?.name.orAnonymous()
+        return element.definitionInfo?.name.or.anonymous()
     }
 
     fun getNamespace(element: ParadoxScriptDefinitionElement): String {

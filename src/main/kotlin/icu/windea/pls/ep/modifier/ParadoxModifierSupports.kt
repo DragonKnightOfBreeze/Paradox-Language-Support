@@ -192,7 +192,7 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         //加上名字
         val configGroup = modifierConfig.configGroup
         val name = modifierElement.name
-        append(PlsStringConstants.modifierPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsStringConstants.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
         //加上模版信息
         val templateConfigExpression = modifierConfig.template
         if (templateConfigExpression.expressionString.isNotEmpty()) {
@@ -400,7 +400,7 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
 
         //加上名字
         val name = modifierElement.name
-        append(PlsStringConstants.modifierPrefix).append(" <b>").append(name.escapeXml().orAnonymous()).append("</b>")
+        append(PlsStringConstants.modifierPrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
         //加上经济类型信息
         appendBr().appendIndent()
         append(PlsBundle.message("generatedFromEconomicCategory"))

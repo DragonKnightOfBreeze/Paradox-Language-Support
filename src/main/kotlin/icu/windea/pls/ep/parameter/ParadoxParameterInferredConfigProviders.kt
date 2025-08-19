@@ -25,7 +25,7 @@ class ParadoxDefaultExpressionParameterInferredConfigProvider : ParadoxParameter
 
     override fun getContextConfigs(parameterInfo: ParadoxParameterContextInfo.Parameter, parameterContextInfo: ParadoxParameterContextInfo): List<CwtMemberConfig<*>>? {
         val configGroup = PlsFacade.getConfigGroup(parameterContextInfo.project, parameterContextInfo.gameType)
-        val finalConfigs = getConfig(parameterInfo, configGroup)?.let { it.singleton().list() } ?: return null
+        val finalConfigs = getConfig(parameterInfo, configGroup)?.let { it.singleton.list() } ?: return null
         val contextConfig = CwtConfigManipulator.inlineWithConfigs(null, finalConfigs, configGroup)
         return listOf(contextConfig)
     }
@@ -158,13 +158,13 @@ class ParadoxComplexExpressionNodeParameterInferredConfigProvider : ParadoxParam
                 node.configs.mapNotNull { it.configExpression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
             }
             node is ParadoxScriptValueNode -> {
-                node.config.singleton().list().mapNotNull { it.configExpression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
+                node.config.singleton.list().mapNotNull { it.configExpression?.let { e -> CwtValueConfig.resolve(emptyPointer(), configGroup, e.expressionString) } }
             }
             node is ParadoxScopeLinkNode -> {
-                CwtValueConfig.resolve(emptyPointer(), configGroup, "scope_field").singleton().list()
+                CwtValueConfig.resolve(emptyPointer(), configGroup, "scope_field").singleton.list()
             }
             node is ParadoxValueFieldNode -> {
-                CwtValueConfig.resolve(emptyPointer(), configGroup, "value_field").singleton().list()
+                CwtValueConfig.resolve(emptyPointer(), configGroup, "value_field").singleton.list()
             }
             node is ParadoxScriptValueArgumentValueNode -> {
                 val argumentNode = node.argumentNode ?: return emptyList()

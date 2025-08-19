@@ -9,6 +9,7 @@ import com.intellij.pom.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -53,14 +54,14 @@ class GotoDefinitionsHandler : GotoTargetHandler() {
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
         val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
         if (definitionInfo == null) return ""
-        val definitionName = definitionInfo.name.orAnonymous()
+        val definitionName = definitionInfo.name.or.anonymous()
         return PlsBundle.message("script.goto.definitions.chooseTitle", definitionName.escapeXml())
     }
 
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo
         if (definitionInfo == null) return ""
-        val definitionName = definitionInfo.name.orAnonymous()
+        val definitionName = definitionInfo.name.or.anonymous()
         return PlsBundle.message("script.goto.definitions.findUsagesTitle", definitionName.escapeXml())
     }
 

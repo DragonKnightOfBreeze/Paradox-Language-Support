@@ -4,6 +4,7 @@ import com.intellij.diagram.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
@@ -40,7 +41,7 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
         }
 
         override fun getTooltip(): String? {
-            return definitionInfo?.name?.orAnonymous()
+            return definitionInfo?.name?.or?.anonymous()
         }
     }
 

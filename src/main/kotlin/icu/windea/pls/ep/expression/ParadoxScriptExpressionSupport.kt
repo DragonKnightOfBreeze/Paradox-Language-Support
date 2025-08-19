@@ -36,7 +36,7 @@ interface ParadoxScriptExpressionSupport {
     }
 
     fun multiResolve(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Collection<PsiElement> {
-        return resolve(element, rangeInElement, expressionText, config, isKey, false).singleton().setOrEmpty()
+        return resolve(element, rangeInElement, expressionText, config, isKey, false).singleton.setOrEmpty()
     }
 
     fun getReferences(element: ParadoxExpressionElement, rangeInElement: TextRange?, expressionText: String, config: CwtConfig<*>, isKey: Boolean? = null): Array<out PsiReference>? {

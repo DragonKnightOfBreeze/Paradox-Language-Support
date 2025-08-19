@@ -21,7 +21,7 @@ class ParadoxScopeNode(
     val config: CwtLinkConfig
 ) : ParadoxComplexExpressionNode.Base(), ParadoxScopeLinkNode {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
-        return config.singleton().set()
+        return config.singleton.set()
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {

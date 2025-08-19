@@ -71,7 +71,7 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
             target is ParadoxScriptScriptedVariable -> {
                 val targetPath = target.fileInfo?.path?.path ?: return emptySet()
                 val p = "common/scripted_variables"
-                p.takeIf { targetPath.matchesAntPattern(it) }.singleton().setOrEmpty()
+                p.takeIf { targetPath.matchesAntPattern(it) }.singleton.setOrEmpty()
             }
             target is ParadoxScriptDefinitionElement -> {
                 val definitionInfo = target.definitionInfo ?: return emptySet()
@@ -94,7 +94,7 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
                     ParadoxLocalisationType.Normal -> "localisation"
                     ParadoxLocalisationType.Synced -> "localisation_synced"
                 }
-                p.takeIf { targetPath.matchesAntPattern(it) }.singleton().setOrEmpty()
+                p.takeIf { targetPath.matchesAntPattern(it) }.singleton.setOrEmpty()
             }
             else -> emptySet()
         }
@@ -104,7 +104,7 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
         return when {
             searchParameters is ParadoxGlobalScriptedVariableSearch.SearchParameters -> {
                 val p = "common/scripted_variables"
-                p.singleton().set()
+                p.singleton.set()
             }
             searchParameters is ParadoxDefinitionSearch.SearchParameters -> {
                 val definitionType = searchParameters.typeExpression?.substringBefore('.') ?: return emptySet()
@@ -122,11 +122,11 @@ abstract class FilePathBasedParadoxPriorityProvider : ParadoxPriorityProvider {
             }
             searchParameters is ParadoxLocalisationSearch.SearchParameters -> {
                 val p = "localisation"
-                p.singleton().set()
+                p.singleton.set()
             }
             searchParameters is ParadoxSyncedLocalisationSearch.SearchParameters -> {
                 val p = "localisation_synced"
-                p.singleton().set()
+                p.singleton.set()
             }
             else -> emptySet()
         }

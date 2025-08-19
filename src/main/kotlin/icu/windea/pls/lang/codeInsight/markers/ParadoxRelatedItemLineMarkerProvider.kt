@@ -10,7 +10,7 @@ import javax.swing.*
 
 abstract class ParadoxRelatedItemLineMarkerProvider : RelatedItemLineMarkerProvider() {
     companion object {
-        private val DEFAULT_PSI_CONVERTOR = NotNullFunction<PsiElement, Collection<PsiElement>> { it.singleton().setOrEmpty() }
+        private val DEFAULT_PSI_CONVERTOR = NotNullFunction<PsiElement, Collection<PsiElement>> { it.singleton.setOrEmpty() }
     }
 
     protected fun createNavigationGutterIconBuilder(icon: Icon, gotoRelatedItemProvider: (PsiElement) -> Collection<GotoRelatedItem>): NavigationGutterIconBuilder<PsiElement> {

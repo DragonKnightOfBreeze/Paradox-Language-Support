@@ -14,6 +14,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.*
 import icu.windea.pls.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
@@ -46,18 +47,18 @@ class ParadoxCallHierarchyNodeDescriptor(
         val hierarchySettings = PlsFacade.getSettings().hierarchy
         when (element) {
             is ParadoxScriptScriptedVariable -> {
-                val name = element.name.orAnonymous()
+                val name = element.name.or.anonymous()
                 myHighlightedText.ending.addText(name, getNameAttributes(myColor))
             }
             is ParadoxScriptDefinitionElement -> {
                 val definitionInfo = element.definitionInfo ?: return invalidElement()
-                val name = definitionInfo.name.orAnonymous()
+                val name = definitionInfo.name.or.anonymous()
                 myHighlightedText.ending.addText(name, getNameAttributes(myColor))
                 val type = definitionInfo.type
                 myHighlightedText.ending.addText(": $type", getTypeAttributes())
             }
             is ParadoxLocalisationProperty -> {
-                val name = element.name.orAnonymous()
+                val name = element.name.or.anonymous()
                 myHighlightedText.ending.addText(name, getNameAttributes(myColor))
             }
         }

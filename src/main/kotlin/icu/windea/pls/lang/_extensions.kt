@@ -20,13 +20,12 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.data.*
-import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
+import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.references.localisation.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
 import java.lang.Integer.*
@@ -62,12 +61,6 @@ fun String.isParameterized(conditionBlock: Boolean = true, full: Boolean = false
 fun String.isInlineUsage(): Boolean {
     return this.equals(ParadoxInlineScriptManager.inlineScriptKey, true)
 }
-
-fun String?.orAnonymous() = if (isNullOrEmpty()) PlsStringConstants.anonymous else this
-
-fun String?.orUnknown() = if (isNullOrEmpty()) PlsStringConstants.unknown else this
-
-fun String?.orUnresolved() = if (isNullOrEmpty()) PlsStringConstants.unresolved else this
 
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
     return when {

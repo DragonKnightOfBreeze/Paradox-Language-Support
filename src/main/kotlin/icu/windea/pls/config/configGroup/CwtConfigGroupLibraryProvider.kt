@@ -10,7 +10,7 @@ import icu.windea.pls.core.util.*
 
 class CwtConfigGroupLibraryProvider : AdditionalLibraryRootsProvider() {
     override fun getAdditionalProjectLibraries(project: Project): Collection<SyntheticLibrary> {
-        return project.configGroupLibrary.takeIf { it.roots.isNotEmpty() }.singleton().setOrEmpty()
+        return project.configGroupLibrary.takeIf { it.roots.isNotEmpty() }.singleton.setOrEmpty()
     }
 
     override fun getRootsToWatch(project: Project): Collection<VirtualFile> {

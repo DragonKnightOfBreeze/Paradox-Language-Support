@@ -171,10 +171,10 @@ object CwtConfigManipulator {
                     return listOf(inlineWithConfigs(null, mergedConfigs, c1.configGroup))
                 }
                 val mergedConfig = mergeValueConfig(c1, c2)
-                if (mergedConfig != null) return mergedConfig.singleton().list()
+                if (mergedConfig != null) return mergedConfig.singleton.list()
             } else if (c1 is CwtPropertyConfig && c2 is CwtPropertyConfig) {
                 val same = getDistinctKey(c1) == getDistinctKey(c2)
-                if (same) return c1.singleton().list()
+                if (same) return c1.singleton.list()
             } else {
                 return emptyList()
             }

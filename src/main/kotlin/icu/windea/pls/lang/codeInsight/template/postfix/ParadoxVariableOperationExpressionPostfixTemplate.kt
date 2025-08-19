@@ -43,6 +43,6 @@ class ParadoxVariableOperationExpressionPostfixTemplate(
             ParadoxScriptExpressionMatcher.matches(context, expression, config.keyExpression, config, configGroup).get()
         }
         if (matched == null) return emptyList()
-        return stringElement.singleton().list()
+        return stringElement.singleton.list()
     }
 }

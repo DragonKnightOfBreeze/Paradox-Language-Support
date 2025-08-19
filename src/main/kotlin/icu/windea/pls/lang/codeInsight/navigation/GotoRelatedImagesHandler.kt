@@ -11,6 +11,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -82,7 +83,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {
         run {
             val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return@run
-            val definitionName = definitionInfo.name.orAnonymous()
+            val definitionName = definitionInfo.name.or.anonymous()
             return PlsBundle.message("script.goto.relatedImages.chooseTitle.1", definitionName.escapeXml())
         }
         run {
@@ -98,7 +99,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
     override fun getFindUsagesTitle(sourceElement: PsiElement, name: String?, length: Int): String {
         run {
             val definitionInfo = sourceElement.castOrNull<ParadoxScriptDefinitionElement>()?.definitionInfo ?: return@run
-            val definitionName = definitionInfo.name.orAnonymous()
+            val definitionName = definitionInfo.name.or.anonymous()
             return PlsBundle.message("script.goto.relatedImages.findUsagesTitle.1", definitionName.escapeXml())
         }
         run {

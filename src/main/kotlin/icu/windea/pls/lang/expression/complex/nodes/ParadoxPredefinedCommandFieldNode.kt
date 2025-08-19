@@ -21,7 +21,7 @@ class ParadoxPredefinedCommandFieldNode(
     val config: CwtLocalisationCommandConfig
 ) : ParadoxComplexExpressionNode.Base(), ParadoxCommandFieldNode {
     override fun getRelatedConfigs(): Collection<CwtConfig<*>> {
-        return config.singleton().set()
+        return config.singleton.set()
     }
 
     override fun getAttributesKey(element: ParadoxExpressionElement): TextAttributesKey {

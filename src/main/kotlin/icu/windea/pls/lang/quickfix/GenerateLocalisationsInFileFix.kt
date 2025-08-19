@@ -8,13 +8,13 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.codeInsight.generation.*
 
 class GenerateLocalisationsInFileFix(
     element: PsiElement,
 ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
-    private val fileName = element.containingFile?.name.orAnonymous()
+    private val fileName = element.containingFile?.name.or.anonymous()
 
     override fun getPriority() = PriorityAction.Priority.HIGH
 

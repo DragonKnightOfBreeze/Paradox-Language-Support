@@ -7,6 +7,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.markers.*
 import icu.windea.pls.lang.navigation.*
@@ -32,7 +33,7 @@ class ParadoxDefinitionLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider
         val prefix = PlsStringConstants.definitionPrefix
         val name = definitionInfo.name
         val typeText = definitionInfo.typesText
-        val tooltip = "<b>$prefix ${name.escapeXml().orAnonymous()}</b>: $typeText"
+        val tooltip = "<b>$prefix ${name.escapeXml().or.anonymous()}</b>: $typeText"
         val targets by lazy {
             val project = element.project
             val selector = selector(project, element).definition().contextSensitive()

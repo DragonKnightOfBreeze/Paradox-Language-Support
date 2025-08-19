@@ -67,7 +67,7 @@ object ParadoxImageManager {
             return url
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
-            logger.warn("Resolve url for dds image failed. (definition name: ${definitionInfo.name.orAnonymous()})", e)
+            logger.warn("Resolve url for dds image failed. (definition name: ${definitionInfo.name.or.anonymous()})", e)
             return null
         }
     }
