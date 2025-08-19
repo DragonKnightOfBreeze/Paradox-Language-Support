@@ -8,7 +8,7 @@ import com.intellij.openapi.util.*
  * 执行一段代码，并通过[SmartRecursionGuard]尝试避免堆栈溢出。
  */
 fun <T> withRecursionGuard(action: SmartRecursionGuard.() -> T): T? {
-    val name = action.hashCode()
+    val name = action::class.java.name
     val recursionGuardCache = SmartRecursionGuard.cache.get()
     val cached = recursionGuardCache.get(name)
     try {
@@ -44,7 +44,7 @@ class SmartRecursionGuard(val name: Any) {
     }
 
     companion object {
-        val cache: ThreadLocal<MutableMap<Int, SmartRecursionGuard>> by lazy { ThreadLocal.withInitial { mutableMapOf() } }
+        val cache: ThreadLocal<MutableMap<String, SmartRecursionGuard>> by lazy { ThreadLocal.withInitial { mutableMapOf() } }
     }
 }
 
