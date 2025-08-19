@@ -6,7 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexKeys
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
@@ -37,7 +37,7 @@ class ParadoxLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationPropert
         constraint: ParadoxIndexConstraint<ParadoxLocalisationProperty>?,
         processor: Processor<ParadoxLocalisationProperty>
     ): Boolean {
-        val indexKey = constraint?.indexKey ?: ParadoxIndexManager.LocalisationNameKey
+        val indexKey = constraint?.indexKey ?: ParadoxIndexKeys.LocalisationName
         val ignoreCase = constraint?.ignoreCase == true
         val finalName = if (ignoreCase) name?.lowercase() else name
         val r = if (finalName == null) {

@@ -7,14 +7,7 @@ import icu.windea.pls.localisation.psi.*
  * 用于基于名字索引同步本地化声明。
  */
 class ParadoxSyncedLocalisationNameIndex : StringStubIndexExtension<ParadoxLocalisationProperty>() {
-    companion object {
-        private const val VERSION = 72 //2.0.2
-        private const val CACHE_SIZE = 2 * 1024
-    }
+    override fun getKey() = ParadoxIndexKeys.SyncedLocalisationName
 
-    override fun getKey() = ParadoxIndexManager.SyncedLocalisationNameKey
-
-    override fun getVersion() = VERSION
-
-    override fun getCacheSize() = CACHE_SIZE
+    override fun getVersion() = 72 // VERSION for 2.0.2
 }

@@ -20,6 +20,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.data.*
+import icu.windea.pls.lang.psi.stubs.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.references.localisation.*
 import icu.windea.pls.lang.util.*
@@ -39,7 +40,7 @@ fun String.isIdentifier(vararg extraChars: Char): Boolean {
 }
 
 fun String.isParameterAwareIdentifier(vararg extraChars: Char): Boolean {
-    //比较复杂的实现逻辑
+    // 比较复杂的实现逻辑
     val fullRange = TextRange.create(0, this.length)
     val parameterRanges = ParadoxExpressionManager.getParameterRanges(this)
     val ranges = TextRangeUtil.excludeRanges(fullRange, parameterRanges)
@@ -65,7 +66,7 @@ fun String.isInlineUsage(): Boolean {
 tailrec fun selectRootFile(from: Any?): VirtualFile? {
     return when {
         from == null -> null
-        from is VirtualFileWindow -> selectRootFile(from.delegate) //for injected PSI
+        from is VirtualFileWindow -> selectRootFile(from.delegate) // for injected PSI
         from is LightVirtualFileBase && from.originalFile != null -> selectRootFile(from.originalFile)
         from is VirtualFile -> from.fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile
         else -> selectRootFile(selectFile(from))
@@ -75,7 +76,7 @@ tailrec fun selectRootFile(from: Any?): VirtualFile? {
 tailrec fun selectFile(from: Any?): VirtualFile? {
     return when {
         from == null -> null
-        from is VirtualFileWindow -> from.castOrNull() //for injected PSI (result is from, not from.delegate)
+        from is VirtualFileWindow -> from.castOrNull() // for injected PSI (result is from, not from.delegate)
         from is LightVirtualFileBase && from.originalFile != null -> selectFile(from.originalFile)
         from is VirtualFile -> from
         from is PsiDirectory -> selectFile(from.virtualFile)
@@ -90,24 +91,21 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
     return when {
         from == null -> null
         from is ParadoxGameType -> from
-        from is VirtualFileWindow -> selectGameType(from.delegate) //for injected PSI
+        from is VirtualFileWindow -> selectGameType(from.delegate) // for injected PSI
         from is LightVirtualFileBase && from.originalFile != null -> selectGameType(from.originalFile)
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
         from is PsiDirectory -> selectGameType(selectFile(from))
         from is PsiFile -> selectGameType(selectFile(from))
-        from is ParadoxScriptScriptedVariable -> {
-            runReadAction { from.greenStub }?.gameType?.let { return it }
-            selectGameType(from.containingFile)
-        }
-        from is ParadoxScriptProperty -> {
-            runReadAction { from.greenStub }?.gameType?.let { return it }
-            selectGameType(from.containingFile)
-        }
-        from is StubBasedPsiElementBase<*> -> selectGameType(from.containingFile)
+        from is StubBasedPsiElementBase<*> -> selectGameType(getStubToSelectGameType(from) ?: from.containingFile)
+        from is ParadoxStub<*> -> from.gameType
         from is PsiElement -> selectGameType(from.parent)
         from is ParadoxIndexInfo -> selectGameType(from.virtualFile)
         else -> null
     }
+}
+
+private fun getStubToSelectGameType(from: StubBasedPsiElementBase<*>): ParadoxStub<*>? {
+    return runReadAction { from.greenStub?.castOrNull<ParadoxStub<*>>() }
 }
 
 tailrec fun selectLocale(from: Any?): CwtLocaleConfig? {
@@ -117,17 +115,21 @@ tailrec fun selectLocale(from: Any?): CwtLocaleConfig? {
         from is VirtualFile -> from.getUserData(PlsKeys.injectedLocaleConfig)
         from is PsiDirectory -> ParadoxLocaleManager.getPreferredLocaleConfig()
         from is PsiFile -> ParadoxCoreManager.getLocaleConfig(from.virtualFile ?: return null, from.project)
-        from is ParadoxLocalisationLocale -> from.name.toLocale(from)
-        from is ParadoxLocalisationPropertyList -> selectLocale(from.locale ?: from.containingFile)
-        from is ParadoxLocalisationProperty -> selectLocale(from.parent)
-        from is StubBasedPsiElementBase<*> && from.language is ParadoxLocalisationLanguage -> selectLocale(from.containingFile)
+        from is ParadoxLocalisationLocale -> toLocale(from.name, from)
+        from is StubBasedPsiElementBase<*> -> selectLocale(getStubToSelectLocale(from) ?: from.parent)
+        from is ParadoxLocaleAwareStub<*> -> toLocale(from.locale, from.containingFileStub?.psi)
         from is PsiElement && from.language is ParadoxLocalisationLanguage -> selectLocale(from.parent)
         else -> ParadoxLocaleManager.getPreferredLocaleConfig()
     }
 }
 
-private fun String.toLocale(from: PsiElement): CwtLocaleConfig? {
-    return PlsFacade.getConfigGroup(from.project, null).localisationLocalesById.get(this)
+private fun getStubToSelectLocale(from: StubBasedPsiElementBase<*>): ParadoxLocaleAwareStub<*>? {
+    return runReadAction { from.greenStub?.castOrNull<ParadoxLocaleAwareStub<*>>() }
+}
+
+private fun toLocale(localeId: String?, from: PsiElement?): CwtLocaleConfig? {
+    if(localeId == null || from == null) return null
+    return PlsFacade.getConfigGroup(from.project, null).localisationLocalesById.get(localeId)
 }
 
 /**
@@ -158,8 +160,8 @@ infix fun String.compareGameVersion(otherVersion: String): Int {
 val Project.paradoxLibrary: ParadoxLibrary
     get() = this.getOrPutUserData(PlsKeys.library) { ParadoxLibrary(this) }
 
-//注意：不要更改直接调用CachedValuesManager.getCachedValue(...)的那个顶级方法（静态方法）的方法声明，IDE内部会进行检查
-//如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
+// 注意：不要更改直接调用CachedValuesManager.getCachedValue(...)的那个顶级方法（静态方法）的方法声明，IDE内部会进行检查
+// 如果不同的输入参数得到了相同的输出值，或者相同的输入参数得到了不同的输出值，IDE都会报错
 
 val VirtualFile.rootInfo: ParadoxRootInfo?
     get() = ParadoxCoreManager.getRootInfo(this)

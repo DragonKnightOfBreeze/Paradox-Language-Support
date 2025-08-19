@@ -135,17 +135,22 @@
     <typeHierarchyProvider language="PARADOX" implementationClass="icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyProvider"/>
     <callHierarchyProvider language="PARADOX" implementationClass="icu.windea.pls.lang.hierarchy.call.ParadoxCallHierarchyProvider"/>
 
+    <languageStubDefinition language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.index.stubs.ParadoxScriptStubDefinition"/>
+    <languageStubDefinition language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.index.stubs.ParadoxLocalisationStubDefinition"/>
+    <!--suppress PluginXmlValidity -->
+    <stubElementRegistryExtension  implementation="icu.windea.pls.lang.index.stubs.ParadoxScriptStubRegistry"/>
+    <!--suppress PluginXmlValidity -->
+    <stubElementRegistryExtension  implementation="icu.windea.pls.lang.index.stubs.ParadoxLocalisationStubRegistry"/>
+
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxScriptedVariableNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionTypeIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex"/>
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxSyncedLocalisationNameIndex"/>
-
-    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextFormatIndex"/>
-
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$ModifierIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$EventIndex"/>
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex$TechIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxLocalisationNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxSyncedLocalisationNameIndex"/>
+    <stubIndex implementation="icu.windea.pls.lang.index.ParadoxDefinitionNameIndex$TextFormatIndex"/>
 
     <fileBasedIndex implementation="icu.windea.pls.lang.index.CwtConfigSymbolIndex"/>
     <fileBasedIndex implementation="icu.windea.pls.lang.index.ParadoxFilePathIndex"/>

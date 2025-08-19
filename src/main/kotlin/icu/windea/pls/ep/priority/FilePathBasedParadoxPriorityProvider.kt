@@ -7,6 +7,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.localisation.psi.*

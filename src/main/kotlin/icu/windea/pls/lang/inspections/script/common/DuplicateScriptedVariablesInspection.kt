@@ -33,7 +33,7 @@ class DuplicateScriptedVariablesInspection : LocalInspectionTool() {
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (!inInlineMath && !ParadoxScriptPsiUtil.isMemberContainer(element)) return //optimize
+                if (!inInlineMath && !ParadoxScriptPsiUtil.isMemberContextElement(element)) return //optimize
                 super.visitElement(element)
             }
 

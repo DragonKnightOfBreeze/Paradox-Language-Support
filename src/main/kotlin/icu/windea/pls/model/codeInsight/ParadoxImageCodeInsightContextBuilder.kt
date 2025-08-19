@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.inspections.script.common.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -30,7 +31,7 @@ object ParadoxImageCodeInsightContextBuilder {
                     is ParadoxScriptDefinitionElement -> fromDefinition(element, fromInspection = fromInspection)?.let { children.add(it) }
                     is ParadoxScriptStringExpressionElement -> fromExpression(element, fromInspection = fromInspection)?.let { children.add(it) }
                 }
-                if (!ParadoxScriptPsiUtil.isMemberContainer(element)) return //optimize
+                if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return //optimize
                 super.visitElement(element)
             }
         })

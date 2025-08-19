@@ -20,6 +20,7 @@ import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.StellarisTechTreeDiagramProvider.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.model.*
@@ -64,13 +65,9 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
         class Property(val property: ParadoxScriptProperty)
 
-        class Name(val definition: ParadoxScriptProperty) {
-            val nameElement by lazy { ParadoxTechnologyManager.getLocalizedNameElement(definition) }
-        }
+        class Name(val definition: ParadoxScriptProperty)
 
-        class Icon(val definition: ParadoxScriptProperty) {
-            val iconFile by lazy { ParadoxTechnologyManager.getIconFile(definition) }
-        }
+        class Icon(val definition: ParadoxScriptProperty)
 
         class Presentation(val definition: ParadoxScriptProperty)
     }
@@ -143,16 +140,15 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
         override fun getItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder): JComponent? {
             ProgressManager.checkCanceled()
             return when (nodeItem) {
-                is Items.Name -> runReadAction r@{
-                    //科技的名字
-                    val nameElement = nodeItem.nameElement ?: return@r null
-                    val nameText = ParadoxLocalisationTextHtmlRenderer().render(nameElement)
-                    val result = ParadoxLocalisationTextUIRenderer().render(nameText)
-                    result
+                is Items.Name -> {
+                    val nameText by lazy {
+                        val nameElement = ParadoxTechnologyManager.getLocalizedNameElement(nodeItem.definition) ?: return@lazy null
+                        ParadoxLocalisationTextHtmlRenderer().render(nameElement)
+                    }
+                    ParadoxLocalisationTextUIRenderer().render { nameText.or.anonymous() }
                 }
                 is Items.Icon -> runReadAction r@{
-                    //科技的图标
-                    val iconFile = nodeItem.iconFile ?: return@r null
+                    val iconFile = ParadoxTechnologyManager.getIconFile(nodeItem.definition) ?: return@r null
                     val frameInfo = nodeElement.getUserData(PlsKeys.imageFrameInfo)
                     val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile.virtualFile, iconFile.project, frameInfo)
 

@@ -5,10 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
+import icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.tree.IElementType;
 import javax.swing.Icon;
 
 public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement, StubBasedPsiElement<ParadoxScriptScriptedVariableStub> {
@@ -32,6 +34,8 @@ public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement
   @Nullable String getValue();
 
   @Nullable String getUnquotedValue();
+
+  @NotNull IElementType getIElementType();
 
   boolean isEquivalentTo(@NotNull PsiElement another);
 

@@ -6,7 +6,7 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexKeys
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 
@@ -30,7 +30,7 @@ class ParadoxSyncedLocalisationSearcher : QueryExecutorBase<ParadoxLocalisationP
     }
 
     private fun processQueryForSyncedLocalisations(name: String?, project: Project, scope: GlobalSearchScope, processor: Processor<ParadoxLocalisationProperty>): Boolean {
-        val indexKey = ParadoxIndexManager.SyncedLocalisationNameKey
+        val indexKey = ParadoxIndexKeys.SyncedLocalisationName
         if (name == null) {
             return indexKey.processAllElementsByKeys(project, scope) { _, element -> processor.process(element) }
         } else {

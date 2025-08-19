@@ -7,14 +7,7 @@ import icu.windea.pls.script.psi.*
  * 用于基于名字索引封装变量声明。
  */
 class ParadoxScriptedVariableNameIndex : StringStubIndexExtension<ParadoxScriptScriptedVariable>() {
-    companion object {
-        private const val VERSION = 72 //2.0.2
-        private const val CACHE_SIZE = 2 * 1024
-    }
+    override fun getKey() = ParadoxIndexKeys.ScriptedVariableName
 
-    override fun getKey() = ParadoxIndexManager.ScriptedVariableNameKey
-
-    override fun getVersion() = VERSION
-
-    override fun getCacheSize() = CACHE_SIZE
+    override fun getVersion() = 72 // VERSION for 2.0.2
 }

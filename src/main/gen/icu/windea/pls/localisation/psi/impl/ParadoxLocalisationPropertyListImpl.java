@@ -8,15 +8,25 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.tree.IElementType;
 import javax.swing.Icon;
+import com.intellij.psi.stubs.IStubElementType;
 
-public class ParadoxLocalisationPropertyListImpl extends ASTWrapperPsiElement implements ParadoxLocalisationPropertyList {
+public class ParadoxLocalisationPropertyListImpl extends ParadoxLocalisationStubElementImpl<ParadoxLocalisationPropertyListStub> implements ParadoxLocalisationPropertyList {
+
+  public ParadoxLocalisationPropertyListImpl(@NotNull ParadoxLocalisationPropertyListStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
+  }
+
+  public ParadoxLocalisationPropertyListImpl(@NotNull ParadoxLocalisationPropertyListStub stub, @NotNull IElementType type) {
+    super(stub, type);
+  }
 
   public ParadoxLocalisationPropertyListImpl(@NotNull ASTNode node) {
     super(node);
@@ -41,7 +51,7 @@ public class ParadoxLocalisationPropertyListImpl extends ASTWrapperPsiElement im
   @Override
   @NotNull
   public List<ParadoxLocalisationProperty> getPropertyList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ParadoxLocalisationProperty.class);
+    return PsiTreeUtil.getStubChildrenOfTypeAsList(this, ParadoxLocalisationProperty.class);
   }
 
   @Override
@@ -52,6 +62,16 @@ public class ParadoxLocalisationPropertyListImpl extends ASTWrapperPsiElement im
   @Override
   public @NotNull List<@NotNull ParadoxLocalisationProperty> getComponents() {
     return ParadoxLocalisationPsiImplUtil.getComponents(this);
+  }
+
+  @Override
+  public @NotNull IElementType getIElementType() {
+    return ParadoxLocalisationPsiImplUtil.getIElementType(this);
+  }
+
+  @Override
+  public @NotNull String toString() {
+    return ParadoxLocalisationPsiImplUtil.toString(this);
   }
 
   @Override

@@ -5,7 +5,7 @@ import com.intellij.psi.search.*
 import com.intellij.psi.stubs.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexKeys
 import icu.windea.pls.script.psi.*
 
 /**
@@ -14,7 +14,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxScriptedVariableChooseByNameContributor : ChooseByNameContributorEx {
     //com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
 
-    private val indexKey = ParadoxIndexManager.ScriptedVariableNameKey
+    private val indexKey = ParadoxIndexKeys.ScriptedVariableName
 
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         StubIndex.getInstance().processAllKeys(indexKey, processor, scope, filter)

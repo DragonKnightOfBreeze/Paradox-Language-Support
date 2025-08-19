@@ -5,6 +5,7 @@ import com.intellij.refactoring.rename.naming.*
 import com.intellij.usageView.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.refactoring.*
 import icu.windea.pls.script.psi.*
 

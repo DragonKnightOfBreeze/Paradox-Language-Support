@@ -11,6 +11,7 @@ import icu.windea.pls.ep.inherit.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.expression.complex.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*

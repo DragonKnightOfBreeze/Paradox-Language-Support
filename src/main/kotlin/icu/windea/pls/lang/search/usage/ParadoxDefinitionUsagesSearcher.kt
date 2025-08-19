@@ -10,6 +10,7 @@ import icu.windea.pls.ep.data.*
 import icu.windea.pls.ep.icon.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*

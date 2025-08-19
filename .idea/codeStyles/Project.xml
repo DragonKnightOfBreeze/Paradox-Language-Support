@@ -51,6 +51,7 @@
       <option name="RIGHT_MARGIN" value="1000" />
       <option name="LINE_COMMENT_AT_FIRST_COLUMN" value="false" />
       <option name="BLOCK_COMMENT_AT_FIRST_COLUMN" value="false" />
+      <option name="LINE_COMMENT_ADD_SPACE" value="true" />
       <option name="WRAP_ON_TYPING" value="0" />
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />
@@ -100,6 +101,7 @@
       <option name="RIGHT_MARGIN" value="1000" />
       <option name="LINE_COMMENT_AT_FIRST_COLUMN" value="false" />
       <option name="BLOCK_COMMENT_AT_FIRST_COLUMN" value="false" />
+      <option name="LINE_COMMENT_ADD_SPACE" value="true" />
       <option name="WRAP_ON_TYPING" value="0" />
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />

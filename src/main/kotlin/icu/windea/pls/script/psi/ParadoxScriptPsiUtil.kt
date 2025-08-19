@@ -8,7 +8,7 @@ object ParadoxScriptPsiUtil {
         return element is ParadoxScriptProperty || (element is ParadoxScriptString && element.isBlockMember())
     }
 
-    fun isMemberContainer(element: PsiElement): Boolean {
-        return element is ParadoxScriptFile || element.elementType in ParadoxScriptTokenSets.MEMBER_CONTAINER
+    fun isMemberContextElement(element: PsiElement): Boolean {
+        return element is ParadoxScriptFile || element.elementType in ParadoxScriptTokenSets.MEMBER_CONTEXT
     }
 }

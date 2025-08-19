@@ -13,13 +13,9 @@ import java.io.*
  * 用于索引CWT规则文件中的符号信息。
  */
 class CwtConfigSymbolIndex : CwtConfigFileBasedIndex<List<CwtConfigSymbolIndexInfo>>() {
-    companion object {
-        private const val VERSION = 72 //2.0.2
-    }
+    override fun getName() = CwtConfigIndexKeys.Symbol
 
-    override fun getName() = CwtConfigIndexManager.SymbolName
-
-    override fun getVersion() = VERSION
+    override fun getVersion() = 72 // VERSION for 2.0.2
 
     override fun indexData(file: PsiFile, fileData: MutableMap<String, List<CwtConfigSymbolIndexInfo>>) {
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {

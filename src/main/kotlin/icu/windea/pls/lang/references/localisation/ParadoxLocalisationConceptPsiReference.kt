@@ -4,6 +4,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.*
 import com.intellij.util.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*

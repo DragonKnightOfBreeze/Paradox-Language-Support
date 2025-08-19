@@ -10,7 +10,7 @@ import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexKeys
 
 /**
  * 用于在游戏或模组目录中创建目录时，提示可用项。
@@ -42,9 +42,9 @@ class ParadoxCreateDirectoryCompletionContributor : CreateDirectoryCompletionCon
         val project = directory.project
         val scope = GlobalSearchScope.allScope(project)
         ProgressManager.checkCanceled()
-        val name = ParadoxIndexManager.FilePathName
-        FileBasedIndex.getInstance().processAllKeys(name, p@{ key ->
-            FileBasedIndex.getInstance().processValues(name, key, null, pp@{ _, info ->
+        val indexId = ParadoxIndexKeys.FilePath
+        FileBasedIndex.getInstance().processAllKeys(indexId, p@{ key ->
+            FileBasedIndex.getInstance().processValues(indexId, key, null, pp@{ _, info ->
                 if (info.gameType != gameType) return@pp true
                 if (!info.included) return@pp true
                 val p = info.directory.removePrefixOrNull(pathPrefix)

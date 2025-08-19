@@ -4,6 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import icu.windea.pls.ep.scope.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 

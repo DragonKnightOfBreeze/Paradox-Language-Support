@@ -35,8 +35,8 @@ class ParadoxScriptedVariableReferenceFoldingBuilder : FoldingBuilderEx() {
                 if (element is ParadoxScriptedVariableReference) visitScriptedVariableReference(element)
                 //optimize performance
                 val r = when (element.language) {
-                    ParadoxScriptLanguage -> ParadoxScriptPsiUtil.isMemberContainer(element)
-                    ParadoxLocalisationLanguage -> ParadoxLocalisationPsiUtil.isRichTextContainer(element)
+                    ParadoxScriptLanguage -> ParadoxScriptPsiUtil.isMemberContextElement(element)
+                    ParadoxLocalisationLanguage -> ParadoxLocalisationPsiUtil.isRichTextContextElement(element)
                     else -> false
                 }
                 if (r) super.visitElement(element)

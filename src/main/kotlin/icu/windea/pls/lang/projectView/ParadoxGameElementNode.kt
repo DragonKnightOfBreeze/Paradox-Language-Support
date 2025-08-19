@@ -9,7 +9,7 @@ import com.intellij.util.indexing.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexKeys
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 
@@ -53,7 +53,7 @@ class ParadoxGameElementNode(
             if (file.isDirectory) {
                 //直接位于入口目录中，且未被排除
                 if (!directoryNames.add(file.name)) return@p true
-                val fileData = FileBasedIndex.getInstance().getFileData(ParadoxIndexManager.FilePathName, file, project)
+                val fileData = FileBasedIndex.getInstance().getFileData(ParadoxIndexKeys.FilePath, file, project)
                 if (!fileData.values.single().included) return@p true
                 val element = ParadoxDirectoryElement(project, fileInfo.path, fileInfo.rootInfo.gameType, value.preferredRootFile)
                 val elementNode = ParadoxDirectoryElementNode(project, element, settings)

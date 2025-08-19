@@ -13,6 +13,7 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -161,7 +162,7 @@ object ParadoxEventManager {
         definition.block?.acceptChildren(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 if (element is ParadoxScriptStringExpressionElement) visitStringExpressionElement(element)
-                if (!ParadoxScriptPsiUtil.isMemberContainer(element)) return //optimize
+                if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return //optimize
                 super.visitElement(element)
             }
 

@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.index.ParadoxIndexInfoType
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*

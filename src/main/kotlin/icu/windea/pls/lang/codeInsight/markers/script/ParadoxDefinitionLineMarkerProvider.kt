@@ -10,6 +10,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.markers.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.navigation.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*

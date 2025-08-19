@@ -1,16 +1,20 @@
 // This is a generated file. Not intended for manual editing.
 package icu.windea.pls.localisation.psi.impl;
 
+import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyStub;
+import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
+import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub;
 import icu.windea.pls.localisation.psi.*;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.model.ParadoxLocalisationType;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
@@ -18,6 +22,10 @@ import com.intellij.psi.stubs.IStubElementType;
 public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElementImpl<ParadoxLocalisationPropertyStub> implements ParadoxLocalisationProperty {
 
   public ParadoxLocalisationPropertyImpl(@NotNull ParadoxLocalisationPropertyStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
+  }
+
+  public ParadoxLocalisationPropertyImpl(@NotNull ParadoxLocalisationPropertyStub stub, @NotNull IElementType type) {
     super(stub, type);
   }
 
@@ -85,6 +93,11 @@ public class ParadoxLocalisationPropertyImpl extends ParadoxLocalisationStubElem
   @Override
   public @NotNull PsiElement setValue(@NotNull String value) {
     return ParadoxLocalisationPsiImplUtil.setValue(this, value);
+  }
+
+  @Override
+  public @NotNull IElementType getIElementType() {
+    return ParadoxLocalisationPsiImplUtil.getIElementType(this);
   }
 
   @Override

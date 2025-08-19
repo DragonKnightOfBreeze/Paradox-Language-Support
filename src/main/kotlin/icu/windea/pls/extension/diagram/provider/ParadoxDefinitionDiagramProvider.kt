@@ -7,6 +7,7 @@ import com.intellij.psi.search.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.*

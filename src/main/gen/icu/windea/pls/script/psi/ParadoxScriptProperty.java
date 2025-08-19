@@ -5,10 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
+import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.tree.IElementType;
 import javax.swing.Icon;
 
 public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, ParadoxScriptDefinitionElement, StubBasedPsiElement<ParadoxScriptPropertyStub> {
@@ -32,6 +34,8 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   int getDepth();
 
   @Nullable ParadoxScriptBlock getBlock();
+
+  @NotNull IElementType getIElementType();
 
   boolean isEquivalentTo(@NotNull PsiElement another);
 

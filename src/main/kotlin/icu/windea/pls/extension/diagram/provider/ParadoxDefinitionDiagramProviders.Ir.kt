@@ -10,6 +10,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 

@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.*
 import com.intellij.psi.impl.source.resolve.reference.*
 import com.intellij.psi.search.*
+import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
@@ -82,6 +83,11 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
+    fun getIElementType(element: ParadoxScriptScriptedVariable): IElementType {
+        return SCRIPTED_VARIABLE
+    }
+
+    @JvmStatic
     fun isEquivalentTo(element: ParadoxScriptScriptedVariable, another: PsiElement): Boolean {
         //name & gameType
         return another is ParadoxScriptScriptedVariable
@@ -105,7 +111,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getName(element: ParadoxScriptScriptedVariableName): String? {
-        // 不包含作为前缀的"@"
+        //不包含作为前缀的"@"
         return element.text.removePrefix("@").orNull()
     }
 
@@ -183,6 +189,11 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getBlock(element: ParadoxScriptProperty): ParadoxScriptBlock? {
         return element.findChild<ParadoxScriptBlock>(forward = false)
+    }
+
+    @JvmStatic
+    fun getIElementType(element: ParadoxScriptProperty): IElementType {
+        return PROPERTY
     }
 
     @JvmStatic

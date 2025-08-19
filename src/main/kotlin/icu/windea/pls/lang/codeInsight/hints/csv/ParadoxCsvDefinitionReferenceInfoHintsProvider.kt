@@ -12,6 +12,7 @@ import icu.windea.pls.*
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvDefinitionReferenceInfoHintsProvider.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*

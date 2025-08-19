@@ -5,13 +5,16 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiListLikeElement;
+import com.intellij.psi.StubBasedPsiElement;
+import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.tree.IElementType;
 import javax.swing.Icon;
 
-public interface ParadoxLocalisationPropertyList extends PsiListLikeElement {
+public interface ParadoxLocalisationPropertyList extends PsiListLikeElement, StubBasedPsiElement<ParadoxLocalisationPropertyListStub> {
 
   @Nullable
   ParadoxLocalisationLocale getLocale();
@@ -22,6 +25,8 @@ public interface ParadoxLocalisationPropertyList extends PsiListLikeElement {
   @NotNull Icon getIcon(@IconFlags int flags);
 
   @NotNull List<@NotNull ParadoxLocalisationProperty> getComponents();
+
+  @NotNull IElementType getIElementType();
 
   @NotNull ItemPresentation getPresentation();
 

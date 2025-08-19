@@ -5,6 +5,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
+import icu.windea.pls.core.findFileBasedIndex
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.util.*
@@ -30,7 +31,7 @@ class ParadoxInlineScriptUsageSearcher : QueryExecutorBase<ParadoxInlineScriptUs
             ParadoxCoreManager.getFileInfo(file) //ensure file info is resolved here
             if (selectGameType(file) != gameType) return@p true //check game type at file level
 
-            val fileData = ParadoxIndexManager.InlineScriptUsage.getFileData(file, project)
+            val fileData = findFileBasedIndex<ParadoxInlineScriptUsageIndex>().getFileData(file, project)
             if (fileData.isEmpty()) return@p true
             if (expression.isNotEmpty()) {
                 val info = fileData[expression] ?: return@p true

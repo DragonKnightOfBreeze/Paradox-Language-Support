@@ -1,16 +1,15 @@
 package icu.windea.pls.lang.index
 
 import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.index.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
@@ -25,13 +24,9 @@ import java.io.*
  * @see ParadoxIndexInfoSupport
  */
 class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
-    companion object {
-        private const val VERSION = 72 //2.0.2
-    }
+    override fun getName() = ParadoxIndexKeys.Merged
 
-    override fun getName() = ParadoxIndexManager.MergedName
-
-    override fun getVersion() = VERSION
+    override fun getVersion() = 72 // VERSION for 2.0.2
 
     override fun indexData(file: PsiFile, fileData: MutableMap<String, List<ParadoxIndexInfo>>) {
         withState(PlsCoreManager.processMergedIndex) {
@@ -97,7 +92,7 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
                         ep.indexLocalisationExpression(element, fileData)
                     }
                 }
-                if (!ParadoxLocalisationPsiUtil.isRichTextContainer(element)) return //optimize
+                if (!ParadoxLocalisationPsiUtil.isRichTextContextElement(element)) return //optimize
                 super.visitElement(element)
             }
         })
@@ -163,10 +158,5 @@ class ParadoxMergedIndex : ParadoxFileBasedIndex<List<ParadoxIndexInfo>>() {
         if (ParadoxInlineScriptManager.getInlineScriptExpression(file) != null) return true //inline script files should be lazy indexed
         //if (file.fileType is ParadoxLocalisationFileType) return true //to prevent recursion, see #127
         return false
-    }
-
-    fun <T : ParadoxIndexInfo> getFileData(file: VirtualFile, project: Project, type: ParadoxIndexInfoType<T>): List<T> {
-        val allFileData = getFileData(file, project)
-        return allFileData.get(type.id.toString())?.castOrNull<List<T>>().orEmpty()
     }
 }

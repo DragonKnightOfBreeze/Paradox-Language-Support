@@ -1,10 +1,6 @@
-@file:Suppress("unused")
-
 package icu.windea.pls.lang.util
 
-import com.intellij.lang.*
 import com.intellij.psi.*
-import com.intellij.psi.stubs.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
@@ -18,8 +14,6 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 
 /**
  * 用于处理封装变量。
@@ -29,6 +23,7 @@ object ParadoxScriptedVariableManager {
         val localScriptedVariable by createKey<CachedValue<List<SmartPsiElementPointer<ParadoxScriptScriptedVariable>>>>(Keys)
     }
 
+    @Suppress("unused")
     fun getLocalScriptedVariables(file: ParadoxScriptFile): List<SmartPsiElementPointer<ParadoxScriptScriptedVariable>> {
         return CachedValuesManager.getCachedValue(file, Keys.localScriptedVariable) {
             val value = doGetLocalScriptedVariables(file)
@@ -43,37 +38,11 @@ object ParadoxScriptedVariableManager {
                 if (element is ParadoxScriptScriptedVariable) {
                     result.add(element.createPointer(file))
                 }
-                if (!ParadoxScriptPsiUtil.isMemberContainer(element)) return //optimize
+                if (!ParadoxScriptPsiUtil.isMemberContextElement(element)) return // optimize
                 super.visitElement(element)
             }
         })
         return result
-    }
-
-    //stub methods
-
-    fun createStub(psi: ParadoxScriptScriptedVariable, parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub? {
-        val file = selectFile(psi) ?: return null
-        val gameType = selectGameType(file) ?: return null
-        val name = psi.name ?: return null
-        return ParadoxScriptScriptedVariableStub.Impl(parentStub, name, gameType)
-    }
-
-    fun createStub(tree: LighterAST, node: LighterASTNode, parentStub: StubElement<*>): ParadoxScriptScriptedVariableStub? {
-        val psi = parentStub.psi
-        val file = selectFile(psi) ?: return null
-        val gameType = selectGameType(file) ?: return null
-        val name = getNameFromNode(node, tree) ?: return null
-        return ParadoxScriptScriptedVariableStub.Impl(parentStub, name, gameType)
-    }
-
-    private fun getNameFromNode(node: LighterASTNode, tree: LighterAST): String? {
-        //这里认为名字是不带参数的
-        return node.firstChild(tree, SCRIPTED_VARIABLE_NAME)
-            ?.children(tree)
-            ?.takeIf { it.size == 2 && it.first().tokenType == AT }
-            ?.last()
-            ?.internNode(tree)?.toString()
     }
 
     fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig): ParadoxLocalisationProperty? {
@@ -83,10 +52,10 @@ object ParadoxScriptedVariableManager {
     }
 
     fun getNameLocalisationFromExtendedConfig(name: String, contextElement: PsiElement): ParadoxLocalisationProperty? {
-        val hint = getHintFromExtendedConfig(name, contextElement) //just use file as contextElement here
+        val hint = getHintFromExtendedConfig(name, contextElement) // just use file as contextElement here
         if (hint.isNullOrEmpty()) return null
         val hintLocalisation = ParadoxLocalisationElementFactory.createProperty(contextElement.project, "hint", hint)
-        //it's necessary to inject fileInfo here (so that gameType can be got later)
+        // it's necessary to inject fileInfo here (so that gameType can be got later)
         hintLocalisation.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, contextElement.fileInfo)
         return hintLocalisation
     }

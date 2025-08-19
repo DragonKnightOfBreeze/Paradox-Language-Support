@@ -72,7 +72,7 @@ object ParadoxExpressionPathManager {
             if (maxDepth >= 0 && maxDepth < depth) return null
             current = tree.getParent(current) ?: break
         }
-        if (current.tokenType is ParadoxScriptFileStubElementType) {
+        if (current.tokenType == ParadoxScriptFile.ELEMENT_TYPE) {
             val virtualFile = file
             val injectedElementPathPrefix = virtualFile.getUserData(PlsKeys.injectedElementPathPrefix)
             if (injectedElementPathPrefix != null && injectedElementPathPrefix.isNotEmpty()) {

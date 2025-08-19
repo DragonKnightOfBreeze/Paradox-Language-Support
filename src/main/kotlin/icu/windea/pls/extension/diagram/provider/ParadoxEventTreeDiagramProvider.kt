@@ -17,6 +17,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.model.*
@@ -28,7 +29,7 @@ import javax.swing.*
  * 提供事件树图表。
  * * 可以配置是否显示事件标题、图片、关键属性。
  * * 可以按类型过滤要显示的事件。
- * * 可以按作用域过滤要显示的科技。（例如，仅限原版，仅限当前模组）
+ * * 可以按作用域过滤要显示的事件。（例如，仅限原版，仅限当前模组）
  * * 支持任何通用的图表操作。（例如，导出为图片）
  */
 abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : ParadoxDefinitionDiagramProvider(gameType) {
@@ -52,13 +53,9 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
 
         class Property(val property: ParadoxScriptProperty)
 
-        class Title(val definition: ParadoxScriptProperty) {
-            val nameElement by lazy { ParadoxTechnologyManager.getLocalizedNameElement(definition) }
-        }
+        class Title(val definition: ParadoxScriptProperty)
 
-        class Picture(val definition: ParadoxScriptProperty) {
-            val iconFile by lazy { ParadoxTechnologyManager.getIconFile(definition) }
-        }
+        class Picture(val definition: ParadoxScriptProperty)
     }
 
     private val _elementManager by lazy { ElementManager(this) }
@@ -127,24 +124,22 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         override fun getItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder): JComponent? {
             ProgressManager.checkCanceled()
             return when (nodeItem) {
-                is Items.Title -> runReadAction r@{
-                    //科技的名字
-                    val nameElement = nodeItem.nameElement ?: return@r null
-                    val nameText = ParadoxLocalisationTextHtmlRenderer().render(nameElement)
-                    val result = ParadoxLocalisationTextUIRenderer().render(nameText)
-                    result
+                is Items.Title -> {
+                    val nameText by lazy {
+                        val nameElement = ParadoxEventManager.getLocalizedNameElement(nodeItem.definition) ?: return@lazy null
+                        ParadoxLocalisationTextHtmlRenderer().render(nameElement)
+                    }
+                    ParadoxLocalisationTextUIRenderer().render { nameText.or.anonymous() }
                 }
                 is Items.Picture -> runReadAction r@{
-                    //科技的图标
-                    val iconFile = nodeItem.iconFile ?: return@r null
+                    val iconFile = ParadoxEventManager.getIconFile(nodeItem.definition) ?: return@r null
                     val frameInfo = nodeElement.getUserData(PlsKeys.imageFrameInfo)
                     val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile.virtualFile, iconFile.project, frameInfo)
 
                     //如果无法解析（包括对应文件不存在的情况）就直接跳过
                     if (!ParadoxImageManager.canResolve(iconUrl)) return@r null
 
-                    val iconFileUrl = iconUrl.toFileUrl()
-                    val icon = iconFileUrl.toIconOrNull()
+                    val icon = iconUrl.toFileUrl().toIconOrNull()
                     icon?.toLabel()
                 }
                 else -> null

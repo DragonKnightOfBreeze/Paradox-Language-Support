@@ -20,13 +20,9 @@ class ParadoxFilePathIndex : FileBasedIndexExtension<String, ParadoxFilePathInde
         val included: Boolean
     )
 
-    companion object {
-        private const val VERSION = 72 //2.0.2
-    }
+    override fun getName() = ParadoxIndexKeys.FilePath
 
-    override fun getName() = ParadoxIndexManager.FilePathName
-
-    override fun getVersion() = VERSION
+    override fun getVersion() = 72 // VERSION for 2.0.2
 
     override fun getIndexer(): DataIndexer<String, Info, FileContent> {
         return DataIndexer { inputData ->

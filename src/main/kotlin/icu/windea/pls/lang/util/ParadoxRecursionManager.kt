@@ -5,6 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*

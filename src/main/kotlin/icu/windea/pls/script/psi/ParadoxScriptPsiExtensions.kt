@@ -8,6 +8,8 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub
+import icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.impl.*

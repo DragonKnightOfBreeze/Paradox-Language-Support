@@ -12,6 +12,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.provider.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 

@@ -79,7 +79,7 @@ class ParadoxScriptFoldingBuilder : CustomFoldingBuilder(), DumbAware {
                 descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
         }
-        return ParadoxScriptPsiUtil.isMemberContainer(element)
+        return ParadoxScriptPsiUtil.isMemberContextElement(element)
     }
 
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {

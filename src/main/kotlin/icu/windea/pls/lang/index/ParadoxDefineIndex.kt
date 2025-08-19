@@ -15,13 +15,9 @@ import java.io.*
  * 用于索引预定义的命名空间与变量。
  */
 class ParadoxDefineIndex : ParadoxFileBasedIndex<Map<String, ParadoxDefineIndexInfo>>() {
-    companion object {
-        private const val VERSION = 72 //2.0.2
-    }
+    override fun getName() = ParadoxIndexKeys.Define
 
-    override fun getName() = ParadoxIndexManager.DefineName
-
-    override fun getVersion() = VERSION
+    override fun getVersion() = 72 // VERSION for 2.0.2
 
     override fun indexData(file: PsiFile, fileData: MutableMap<String, Map<String, ParadoxDefineIndexInfo>>) {
         val gameType = selectGameType(file) ?: return

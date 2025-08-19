@@ -10,6 +10,7 @@ import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionLocalizedNameHintsProvider.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.script.psi.*

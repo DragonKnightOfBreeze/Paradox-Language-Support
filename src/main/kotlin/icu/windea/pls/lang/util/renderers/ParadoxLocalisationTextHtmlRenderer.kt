@@ -14,6 +14,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.reference.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.editor.*

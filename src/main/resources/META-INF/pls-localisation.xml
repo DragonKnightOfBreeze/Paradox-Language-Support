@@ -3,7 +3,6 @@
     <fileType language="PARADOX_LOCALISATION" name="Paradox Localisation" fieldName="INSTANCE" implementationClass="icu.windea.pls.localisation.ParadoxLocalisationFileType"/>
     <lang.parserDefinition language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.ParadoxLocalisationParserDefinition"/>
 
-    <stubElementTypeHolder class="icu.windea.pls.localisation.psi.ParadoxLocalisationStubElementTypes" externalIdPrefix="paradoxLocalisation."/>
     <spellchecker.support language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationSpellchecker"/>
     <lang.syntaxHighlighterFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.localisation.editor.ParadoxLocalisationColorSettingsPage"/>

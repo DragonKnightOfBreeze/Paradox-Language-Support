@@ -2,6 +2,7 @@ package icu.windea.pls.lang.findUsages
 
 import com.intellij.find.findUsages.*
 import com.intellij.openapi.actionSystem.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.*
 
 class ParadoxDefinitionFindUsagesHandler(

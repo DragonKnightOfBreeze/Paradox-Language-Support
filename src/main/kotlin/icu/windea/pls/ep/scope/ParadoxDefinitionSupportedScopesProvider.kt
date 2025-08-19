@@ -3,6 +3,7 @@ package icu.windea.pls.ep.scope
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 

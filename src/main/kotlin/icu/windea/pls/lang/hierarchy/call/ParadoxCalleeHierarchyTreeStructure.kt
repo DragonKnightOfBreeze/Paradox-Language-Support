@@ -9,6 +9,7 @@ import com.intellij.ui.tree.*
 import icu.windea.pls.*
 import icu.windea.pls.ep.inline.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.lang.settings.*
@@ -75,7 +76,7 @@ class ParadoxCalleeHierarchyTreeStructure(
                 if (element is ParadoxScriptInlineMath) {
                     inInlineMath = true
                 }
-                if (!inInlineMath && !ParadoxScriptPsiUtil.isMemberContainer(element)) return //optimize
+                if (!inInlineMath && !ParadoxScriptPsiUtil.isMemberContextElement(element)) return //optimize
                 super.visitElement(element)
             }
 

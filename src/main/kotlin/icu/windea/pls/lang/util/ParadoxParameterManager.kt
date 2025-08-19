@@ -30,6 +30,7 @@ import icu.windea.pls.ep.configContext.*
 import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
@@ -37,7 +38,6 @@ import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*
 import icu.windea.pls.model.injection.*
 import icu.windea.pls.script.codeStyle.*
-import icu.windea.pls.script.injection.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 

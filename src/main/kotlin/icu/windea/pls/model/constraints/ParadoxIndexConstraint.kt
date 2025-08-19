@@ -2,7 +2,8 @@ package icu.windea.pls.model.constraints
 
 import com.intellij.psi.*
 import com.intellij.psi.stubs.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
@@ -17,7 +18,7 @@ interface ParadoxIndexConstraint<T : PsiElement> {
         override val ignoreCase: Boolean = false,
         override val inferred: Boolean = false,
     ) : ParadoxIndexConstraint<ParadoxScriptDefinitionElement> {
-        TextFormat(ParadoxIndexManager.DefinitionNameForTextFormatKey, ignoreCase = true) {
+        TextFormat(ParadoxIndexKeys.DefinitionNameForTextFormat, ignoreCase = true) {
             override fun supports(definitionType: String) = definitionType == ParadoxDefinitionTypes.TextFormat
         },
         ;
@@ -30,14 +31,14 @@ interface ParadoxIndexConstraint<T : PsiElement> {
         override val ignoreCase: Boolean = false,
         override val inferred: Boolean = false,
     ) : ParadoxIndexConstraint<ParadoxLocalisationProperty> {
-        Modifier(ParadoxIndexManager.LocalisationNameForModifierKey, ignoreCase = true) {
+        Modifier(ParadoxIndexKeys.LocalisationNameForModifier, ignoreCase = true) {
             override fun supports(name: String) = name.startsWith("mod_", true)
         },
-        Event(ParadoxIndexManager.LocalisationNameForEventKey, inferred = true) {
+        Event(ParadoxIndexKeys.LocalisationNameForEvent, inferred = true) {
             private val regex = """[\w.]+\.\d+(\.[\w.]*)?""".toRegex()
             override fun supports(name: String) = name.contains('.') && name.matches(regex)
         },
-        Tech(ParadoxIndexManager.LocalisationNameForTechKey) {
+        Tech(ParadoxIndexKeys.LocalisationNameForTech) {
             override fun supports(name: String) = name.startsWith("tech_")
         },
         ;

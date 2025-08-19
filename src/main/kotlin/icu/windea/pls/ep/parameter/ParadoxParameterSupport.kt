@@ -8,6 +8,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.parameter.ParadoxParameterSupport.Keys.synced
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*

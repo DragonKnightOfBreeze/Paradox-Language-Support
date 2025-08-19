@@ -90,7 +90,7 @@ class ParadoxLocalisationFoldingBuilder : CustomFoldingBuilder(), DumbAware {
                 descriptors.add(FoldingDescriptor(element.node, element.textRange))
             }
         }
-        return ParadoxLocalisationPsiUtil.isRichTextContainer(element)
+        return ParadoxLocalisationPsiUtil.isRichTextContextElement(element)
     }
 
     override fun isCustomFoldingRoot(node: ASTNode): Boolean {

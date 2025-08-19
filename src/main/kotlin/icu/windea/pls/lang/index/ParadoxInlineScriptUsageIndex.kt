@@ -15,13 +15,9 @@ import java.io.*
  * 用于索引内联脚本的使用信息。
  */
 class ParadoxInlineScriptUsageIndex : ParadoxFileBasedIndex<ParadoxInlineScriptUsageIndexInfo.Compact>() {
-    companion object {
-        private const val VERSION = 72 //2.0.2
-    }
+    override fun getName() = ParadoxIndexKeys.InlineScriptUsage
 
-    override fun getName() = ParadoxIndexManager.InlineScriptUsageName
-
-    override fun getVersion() = VERSION
+    override fun getVersion() = 72 // VERSION for 2.0.2
 
     override fun indexData(file: PsiFile, fileData: MutableMap<String, ParadoxInlineScriptUsageIndexInfo.Compact>) {
         file.acceptChildren(object: PsiRecursiveElementWalkingVisitor() {

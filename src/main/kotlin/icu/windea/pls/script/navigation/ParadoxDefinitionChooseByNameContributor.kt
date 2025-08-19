@@ -6,7 +6,8 @@ import com.intellij.psi.stubs.*
 import com.intellij.util.*
 import com.intellij.util.indexing.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.script.psi.*
 
@@ -16,7 +17,7 @@ import icu.windea.pls.script.psi.*
 class ParadoxDefinitionChooseByNameContributor : ChooseByNameContributorEx {
     //com.intellij.ide.util.gotoByName.JavaModuleNavigationContributor
 
-    private val indexKey = ParadoxIndexManager.DefinitionNameKey
+    private val indexKey = ParadoxIndexKeys.DefinitionName
 
     override fun processNames(processor: Processor<in String>, scope: GlobalSearchScope, filter: IdFilter?) {
         StubIndex.getInstance().processAllKeys(indexKey, processor, scope, filter)

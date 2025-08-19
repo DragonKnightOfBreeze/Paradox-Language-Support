@@ -14,6 +14,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.modifier.ParadoxModifierSupport.Keys.synced
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.elementInfo.*

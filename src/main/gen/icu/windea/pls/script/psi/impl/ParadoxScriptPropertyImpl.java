@@ -8,18 +8,23 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static icu.windea.pls.script.psi.ParadoxScriptElementTypes.*;
-import icu.windea.pls.script.psi.ParadoxScriptPropertyStub;
+import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub;
 import icu.windea.pls.script.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Iconable.IconFlags;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.tree.IElementType;
 import javax.swing.Icon;
 import com.intellij.psi.stubs.IStubElementType;
 
 public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<ParadoxScriptPropertyStub> implements ParadoxScriptProperty {
 
   public ParadoxScriptPropertyImpl(@NotNull ParadoxScriptPropertyStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
+  }
+
+  public ParadoxScriptPropertyImpl(@NotNull ParadoxScriptPropertyStub stub, @NotNull IElementType type) {
     super(stub, type);
   }
 
@@ -82,6 +87,11 @@ public class ParadoxScriptPropertyImpl extends ParadoxScriptStubElementImpl<Para
   @Override
   public @Nullable ParadoxScriptBlock getBlock() {
     return ParadoxScriptPsiImplUtil.getBlock(this);
+  }
+
+  @Override
+  public @NotNull IElementType getIElementType() {
+    return ParadoxScriptPsiImplUtil.getIElementType(this);
   }
 
   @Override

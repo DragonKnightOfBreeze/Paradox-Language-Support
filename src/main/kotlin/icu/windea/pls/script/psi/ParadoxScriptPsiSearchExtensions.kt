@@ -9,6 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.util.manipulators.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*

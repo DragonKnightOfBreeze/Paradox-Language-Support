@@ -16,6 +16,7 @@ import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*

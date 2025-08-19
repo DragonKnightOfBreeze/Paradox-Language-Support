@@ -12,6 +12,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.actions.*
 import icu.windea.pls.lang.hierarchy.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.*
 import java.text.*
 import java.util.function.*

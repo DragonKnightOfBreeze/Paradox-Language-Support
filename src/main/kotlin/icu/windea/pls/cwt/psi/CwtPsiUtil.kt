@@ -8,7 +8,7 @@ object CwtPsiUtil {
         return element is CwtProperty || (element is CwtString && element.isBlockValue())
     }
 
-    fun isMemberContainer(element: PsiElement): Boolean {
-        return element is CwtFile || element.elementType in CwtTokenSets.MEMBER_CONTAINER
+    fun isMemberContextElement(element: PsiElement): Boolean {
+        return element is CwtFile || element.elementType in CwtTokenSets.MEMBER_CONTEXT
     }
 }

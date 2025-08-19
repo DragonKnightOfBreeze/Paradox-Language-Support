@@ -2,6 +2,7 @@ package icu.windea.pls.lang.util
 
 import icu.windea.pls.ep.data.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 

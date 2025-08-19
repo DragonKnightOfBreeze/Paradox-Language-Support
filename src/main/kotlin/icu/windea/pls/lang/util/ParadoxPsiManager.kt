@@ -12,6 +12,7 @@ import icu.windea.pls.csv.*
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.references.localisation.*
 import icu.windea.pls.localisation.*

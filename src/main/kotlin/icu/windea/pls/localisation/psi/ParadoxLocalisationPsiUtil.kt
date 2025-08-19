@@ -9,19 +9,19 @@ object ParadoxLocalisationPsiUtil {
         return element is ParadoxLocalisationProperty
     }
 
-    fun isLocalisationContainer(element: PsiElement): Boolean {
-        return element is ParadoxLocalisationFile || element.elementType in ParadoxLocalisationTokenSets.PROPERTY_CONTAINER
-    }
-
-    fun isRichTextContainer(element: PsiElement): Boolean {
-        return element is ParadoxLocalisationFile || element.elementType in ParadoxLocalisationTokenSets.RICH_TEXT_CONTAINER
-    }
-
     fun isIdElement(element: PsiElement?): Boolean {
         if (element == null) return false
         if (element.nextSibling.elementType in ParadoxLocalisationTokenSets.EXTRA_TEMPLATE_TYPES) return false
         if (element.prevSibling.elementType in ParadoxLocalisationTokenSets.EXTRA_TEMPLATE_TYPES) return false
         return true
+    }
+
+    fun isLocalisationContextElement(element: PsiElement): Boolean {
+        return element is ParadoxLocalisationFile || element.elementType in ParadoxLocalisationTokenSets.PROPERTY_CONTEXT
+    }
+
+    fun isRichTextContextElement(element: PsiElement): Boolean {
+        return element is ParadoxLocalisationFile || element.elementType in ParadoxLocalisationTokenSets.RICH_TEXT_CONTEXT
     }
 
     /**

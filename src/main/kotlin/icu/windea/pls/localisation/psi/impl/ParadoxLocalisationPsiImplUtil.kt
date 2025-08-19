@@ -7,6 +7,7 @@ import com.intellij.psi.*
 import com.intellij.psi.impl.*
 import com.intellij.psi.impl.source.resolve.reference.*
 import com.intellij.psi.search.*
+import com.intellij.psi.tree.*
 import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
@@ -21,7 +22,6 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.navigation.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*
-import icu.windea.pls.localisation.psi.ParadoxLocalisationPsiUtil
 import icu.windea.pls.model.*
 import javax.swing.*
 
@@ -37,6 +37,16 @@ object ParadoxLocalisationPsiImplUtil {
     @JvmStatic
     fun getComponents(element: ParadoxLocalisationPropertyList): List<ParadoxLocalisationProperty> {
         return element.propertyList
+    }
+
+    @JvmStatic
+    fun getIElementType(element: ParadoxLocalisationPropertyList): IElementType {
+        return PROPERTY_LIST
+    }
+
+    @JvmStatic
+    fun toString(element: ParadoxLocalisationPropertyList): String {
+        return "ParadoxLocalisationPropertyList: ${element.locale?.name}"
     }
 
     //endregion
@@ -121,6 +131,11 @@ object ParadoxLocalisationPsiImplUtil {
             valueElement.replace(newValueElement)
             return element
         }
+    }
+
+    @JvmStatic
+    fun getIElementType(element: ParadoxLocalisationProperty): IElementType {
+        return PROPERTY
     }
 
     @JvmStatic

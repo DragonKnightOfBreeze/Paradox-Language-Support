@@ -3,6 +3,7 @@ package icu.windea.pls.lang.intentions.common
 import com.intellij.modcommand.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 

@@ -10,7 +10,8 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.index.*
+import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.constraints.*
@@ -101,7 +102,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
         constraint: ParadoxIndexConstraint<ParadoxScriptDefinitionElement>?,
         processor: Processor<in ParadoxScriptDefinitionElement>
     ): Boolean {
-        val indexKey = constraint?.indexKey ?: ParadoxIndexManager.DefinitionNameKey
+        val indexKey = constraint?.indexKey ?: ParadoxIndexKeys.DefinitionName
         val ignoreCase = constraint?.ignoreCase == true
         val finalName = if (ignoreCase) name?.lowercase() else name
         val r = if (typeExpression == null) {
@@ -112,7 +113,7 @@ class ParadoxDefinitionSearcher : QueryExecutorBase<ParadoxScriptDefinitionEleme
             }
         } else {
             if (finalName == null) {
-                ParadoxIndexManager.DefinitionTypeKey.processAllElements(typeExpression.type, project, scope) p@{ element ->
+                ParadoxIndexKeys.DefinitionType.processAllElements(typeExpression.type, project, scope) p@{ element ->
                     if (typeExpression.subtypes.isNotEmpty() && !matchesSubtypes(element, typeExpression.subtypes)) return@p true
                     processor.process(element)
                 }

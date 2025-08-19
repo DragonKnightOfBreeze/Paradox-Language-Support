@@ -15,7 +15,7 @@ class ParadoxLocalisationFile(
 ) : PsiFileBase(viewProvider, ParadoxLocalisationLanguage) {
     companion object {
         @JvmField
-        val ELEMENT_TYPE: IFileElementType = ParadoxLocalisationFileStubElementType.INSTANCE
+        val ELEMENT_TYPE: IFileElementType = IFileElementType("PARADOX_LOCALISATION_FILE", ParadoxLocalisationLanguage)
     }
 
     val propertyLists: List<ParadoxLocalisationPropertyList>

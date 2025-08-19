@@ -2,6 +2,7 @@ package icu.windea.pls.lang.search.selector
 
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*

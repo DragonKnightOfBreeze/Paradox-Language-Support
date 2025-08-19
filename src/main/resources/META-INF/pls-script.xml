@@ -4,7 +4,6 @@
               fileNames="descriptor.mod"/>
     <lang.parserDefinition language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.ParadoxScriptParserDefinition"/>
 
-    <stubElementTypeHolder class="icu.windea.pls.script.psi.ParadoxScriptStubElementTypes" externalIdPrefix="paradoxScript."/>
     <spellchecker.support language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSpellchecker"/>
     <lang.syntaxHighlighterFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="icu.windea.pls.script.editor.ParadoxScriptColorSettingsPage"/>

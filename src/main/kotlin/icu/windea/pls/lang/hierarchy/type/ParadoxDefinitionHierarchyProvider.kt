@@ -4,6 +4,7 @@ import com.intellij.ide.hierarchy.*
 import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 

@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 

@@ -13,13 +13,9 @@ import java.util.*
  * 当需要从PsiFile获取语言区域时，改为使用此索引以优化性能。
  */
 class ParadoxFileLocaleIndex : ScalarIndexExtension<String>() {
-    companion object {
-        private const val VERSION = 72 //2.0.2
-    }
+    override fun getName() = ParadoxIndexKeys.FileLocale
 
-    override fun getName() = ParadoxIndexManager.FileLocaleName
-
-    override fun getVersion() = VERSION
+    override fun getVersion() = 72 // VERSION for 2.0.2
 
     override fun getIndexer(): DataIndexer<String, Void, FileContent> {
         return DataIndexer { inputData ->

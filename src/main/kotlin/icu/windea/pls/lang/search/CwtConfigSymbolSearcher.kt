@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
 import com.intellij.util.*
 import icu.windea.pls.config.util.*
+import icu.windea.pls.core.findFileBasedIndex
 import icu.windea.pls.cwt.*
 import icu.windea.pls.lang.index.*
 import icu.windea.pls.model.indexInfo.*
@@ -29,7 +30,7 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
                 if (configGroup.gameType != null && configGroup.gameType != gameType) return@p true
             }
 
-            val fileData = CwtConfigIndexManager.Symbol.getFileData(file, project)
+            val fileData = findFileBasedIndex<CwtConfigSymbolIndex>().getFileData(file, project)
             if (fileData.isEmpty()) return@p true
             val infos = fileData[type]
             if (infos.isNullOrEmpty()) return@p true

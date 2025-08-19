@@ -23,6 +23,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.*
 import icu.windea.pls.cwt.codeStyle.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.ui.clause.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.codeStyle.*
