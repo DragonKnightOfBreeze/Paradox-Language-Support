@@ -116,7 +116,7 @@ class StellarisTechTreeDiagramSettings(
         val areaNameProviders = mutableMapOf<String, () -> String?>()
         areas.forEach { areaNameProviders.put(it) { ParadoxPresentationManager.getText(it.uppercase(), project) } }
         val categoryNameProviders = mutableMapOf<String, () -> String?>()
-        categories.forEach { categoryNameProviders.put(it.name) { ParadoxPresentationManager.getNameText(it) } }
+        categories.forEach { categoryNameProviders.put(it.name) { ParadoxPresentationManager.getNameTextOrKey(it) } }
 
         row {
             label(PlsDiagramBundle.message("settings.diagram.tooltip.selectNodes"))

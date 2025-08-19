@@ -12,7 +12,6 @@ import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
@@ -36,9 +35,8 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         val Type = DiagramCategory(PlsDiagramBundle.lazyMessage("eventTree.category.type"), PlsIcons.Nodes.Type, true, false)
         val Properties = DiagramCategory(PlsDiagramBundle.lazyMessage("eventTree.category.properties"), PlsIcons.Nodes.Property, true, false)
         val Title = DiagramCategory(PlsDiagramBundle.lazyMessage("eventTree.category.title"), PlsIcons.Nodes.Localisation, false, false)
-        val Picture = DiagramCategory(PlsDiagramBundle.lazyMessage("eventTree.category.picture"), PlsIcons.General.Image, false, false)
 
-        val All = arrayOf(Type, Properties, Title, Picture)
+        val All = arrayOf(Type, Properties, Title)
     }
 
     object Relations {
@@ -53,8 +51,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         class Property(val property: ParadoxScriptProperty)
 
         class Title(val definition: ParadoxScriptProperty)
-
-        class Picture(val definition: ParadoxScriptProperty)
     }
 
     private val _elementManager by lazy { ElementManager(this) }
@@ -75,7 +71,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                 is Items.Type -> category == Categories.Type
                 is Items.Property -> category == Categories.Properties
                 is Items.Title -> category == Categories.Title
-                is Items.Picture -> category == Categories.Picture
                 else -> true
             }
         }
@@ -108,7 +103,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                     val properties = runReadAction { provider.getProperties(nodeElement) }
                     properties.forEach { result += Items.Property(it) }
                     result += Items.Title(nodeElement)
-                    result += Items.Picture(nodeElement)
                     result.toTypedArray()
                 }
                 else -> emptyArray()
@@ -118,23 +112,10 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         override fun getItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder): JComponent? {
             ProgressManager.checkCanceled()
             return when (nodeItem) {
-                is Items.Title -> {
-                    val nameText by lazy {
-                        val nameElement = ParadoxEventManager.getLocalizedNameElement(nodeItem.definition) ?: return@lazy null
-                        ParadoxLocalisationTextHtmlRenderer().render(nameElement)
-                    }
-                    ParadoxLocalisationTextUIRenderer().render { nameText.or.anonymous() }
-                }
-                is Items.Picture -> runReadAction r@{
-                    val iconFile = ParadoxEventManager.getIconFile(nodeItem.definition) ?: return@r null
-                    val frameInfo = nodeElement.getUserData(PlsKeys.imageFrameInfo)
-                    val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile.virtualFile, iconFile.project, frameInfo)
-
-                    //如果无法解析（包括对应文件不存在的情况）就直接跳过
-                    if (!ParadoxImageManager.canResolve(iconUrl)) return@r null
-
-                    val icon = iconUrl.toFileUrl().toIconOrNull()
-                    icon?.toLabel()
+                is Items.Title -> runReadAction r@{
+                    val nameText = ParadoxPresentationManager.getNameText(nodeItem.definition)
+                    val result = ParadoxPresentationManager.getLabel(nameText.or.anonymous())
+                    result
                 }
                 else -> null
             }
@@ -150,7 +131,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                 }
                 is Items.Property -> runReadAction {
                     val property = nodeItem.property
-                    val rendered = ParadoxScriptTextRenderer(renderInBlock = true).render(property)
+                    val rendered = ParadoxScriptTextRenderer().render(property)
                     val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
                     val propertyValue = property.propertyValue
                     if (propertyValue is ParadoxScriptScriptedVariableReference) {

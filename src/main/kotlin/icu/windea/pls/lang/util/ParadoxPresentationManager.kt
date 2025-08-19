@@ -3,8 +3,8 @@ package icu.windea.pls.lang.util
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.ep.presentation.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.renderers.*
@@ -14,7 +14,18 @@ import java.awt.*
 import javax.swing.*
 
 object ParadoxPresentationManager {
+    fun getPresentation(definition: ParadoxScriptDefinitionElement): JComponent? {
+        val definitionInfo = definition.definitionInfo ?: return null
+        return ParadoxDefinitionPresentationProvider.getPresentation(definition, definitionInfo)
+    }
+
     fun getNameText(definition: ParadoxScriptDefinitionElement): String? {
+        val localizedName = ParadoxDefinitionManager.getPrimaryLocalisation(definition)
+        if (localizedName != null) return ParadoxLocalisationTextHtmlRenderer().render(localizedName)
+        return null
+    }
+
+    fun getNameTextOrKey(definition: ParadoxScriptDefinitionElement): String? {
         val localizedName = ParadoxDefinitionManager.getPrimaryLocalisation(definition)
         if (localizedName != null) return ParadoxLocalisationTextHtmlRenderer().render(localizedName)
         val localizedNameKey = ParadoxDefinitionManager.getPrimaryLocalisationKey(definition)
@@ -33,10 +44,6 @@ object ParadoxPresentationManager {
 
     fun getLabel(text: String, color: Color? = null): JLabel {
         return ParadoxLocalisationTextUIRenderer(color).render(text)
-    }
-
-    fun getLabel(text: Lazy<String>, color: Color? = null): JLabel {
-        return ParadoxLocalisationTextUIRenderer(color).render(text::value)
     }
 
     fun getIcon(ddsFile: PsiFile): Icon? {
