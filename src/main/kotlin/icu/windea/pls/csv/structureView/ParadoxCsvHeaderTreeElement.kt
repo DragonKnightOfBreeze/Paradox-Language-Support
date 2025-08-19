@@ -16,6 +16,6 @@ class ParadoxCsvHeaderTreeElement(
 
     override fun getPresentableText(): String? {
         //val element = element ?: return null
-        return PlsStringConstants.header
+        return PlsStringConstants.headerMarker
     }
 }

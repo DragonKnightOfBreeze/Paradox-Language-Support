@@ -13,6 +13,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
@@ -129,7 +130,8 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                 is Items.Title -> runReadAction r@{
                     //科技的名字
                     val nameElement = nodeItem.nameElement ?: return@r null
-                    val result = ParadoxLocalisationTextUIRenderer().render(nameElement)
+                    val nameText = ParadoxLocalisationTextHtmlRenderer().render(nameElement)
+                    val result = ParadoxLocalisationTextUIRenderer().render(nameText)
                     result
                 }
                 is Items.Picture -> runReadAction r@{
@@ -222,7 +224,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                 ProgressManager.checkCanceled()
                 val node = Node(event, provider)
                 nodeMap.put(event, node)
-                val name = event.definitionInfo?.name.orAnonymous()
+                val name = event.definitionInfo?.name.or.anonymous()
                 eventMap.put(name, event)
                 nodes.add(node)
             }

@@ -22,8 +22,8 @@ class ParadoxCsvNavBar : StructureAwareNavBarModelExtension() {
 
     override fun getPresentableText(o: Any?): String? {
         return when {
-            o is ParadoxCsvHeader -> PlsStringConstants.header
-            o is ParadoxCsvRow -> PlsStringConstants.row
+            o is ParadoxCsvHeader -> PlsStringConstants.headerMarker
+            o is ParadoxCsvRow -> PlsStringConstants.rowMarker
             o is ParadoxCsvColumn -> getPresentableText(o)
             else -> null
         }

@@ -9,7 +9,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
@@ -53,8 +52,8 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
         val data = definition.getData<StellarisTechnologyData>() ?: return null
         val backgroundIcon = getBackgroundIcon(definition, definitionInfo, data) ?: return null
         val bottomLineIcon = getBottomLineIcon(definition, definitionInfo, data) ?: return null
-        val nameLabel = getNameLabel(definition, definitionInfo, data) ?: return null
-        val costLabel = getCostLabel(definition, definitionInfo, data) ?: return null
+        val nameLabel = getNameLabel(definition, definitionInfo, data)
+        val costLabel = getCostLabel(definition, definitionInfo, data)
         val icon = getIcon(definition, definitionInfo, data)?.resize(52, 52) ?: return null
         val categoryIcon = getCategoryIcon(definition, definitionInfo, data)?.resize(30, 30)
         val panel = object : JPanel() {
@@ -85,10 +84,10 @@ class StellarisTechnologyPresentationProvider : ParadoxDefinitionPresentationPro
         return ParadoxPresentationManager.getLabel(nameText, Color.WHITE)
     }
 
-    private fun getCostLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): JLabel? {
+    private fun getCostLabel(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): JLabel {
         val color = ParadoxTextColorManager.getInfo("G", definitionInfo.project, definition)?.color //Green
         val cost = definition.getData<StellarisTechnologyData>()?.cost ?: 0
-        return ParadoxLocalisationTextUIRenderer(color).render(cost.toString())
+        return ParadoxPresentationManager.getLabel(cost.toString(), color)
     }
 
     private fun getIcon(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, data: StellarisTechnologyData): Icon? {

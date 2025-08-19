@@ -13,6 +13,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.data.*
 import icu.windea.pls.ep.presentation.*
 import icu.windea.pls.extension.diagram.*
@@ -145,7 +146,8 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                 is Items.Name -> runReadAction r@{
                     //科技的名字
                     val nameElement = nodeItem.nameElement ?: return@r null
-                    val result = ParadoxLocalisationTextUIRenderer().render(nameElement)
+                    val nameText = ParadoxLocalisationTextHtmlRenderer().render(nameElement)
+                    val result = ParadoxLocalisationTextUIRenderer().render(nameText)
                     result
                 }
                 is Items.Icon -> runReadAction r@{
@@ -245,7 +247,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                 val node = Node(technology, provider)
                 node.putUserData(Keys.nodeData, technology.getData())
                 nodeMap.put(technology, node)
-                val name = technology.definitionInfo?.name.orAnonymous()
+                val name = technology.definitionInfo?.name.or.anonymous()
                 techMap.put(name, technology)
                 nodes.add(node)
             }

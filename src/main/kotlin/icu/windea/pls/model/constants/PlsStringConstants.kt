@@ -52,8 +52,9 @@ object PlsStringConstants {
     const val localisationIconPrefix = "(localisation icon)"
     const val inlineScriptPrefix = "(inline script)"
 
-    const val header = "(header)"
-    const val row = "(row)"
+    const val headerMarker = "<header>"
+    const val rowMarker = "<row>"
+    const val loadingMarker = "<loading>"
 
     const val commentFolder = "# ..."
     const val blockFolder = "{...}"

@@ -22,8 +22,8 @@ class ParadoxCsvBreadCrumbsProvider : BreadcrumbsProvider {
 
     override fun getElementInfo(element: PsiElement): String {
         return when (element) {
-            is ParadoxCsvHeader -> PlsStringConstants.header
-            is ParadoxCsvRow -> PlsStringConstants.row
+            is ParadoxCsvHeader -> PlsStringConstants.headerMarker
+            is ParadoxCsvRow -> PlsStringConstants.rowMarker
             is ParadoxCsvColumn -> getPresentableText(element)
             else -> throw InternalError()
         }

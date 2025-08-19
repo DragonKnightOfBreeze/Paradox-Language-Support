@@ -30,23 +30,12 @@ object ParadoxPresentationManager {
         return ParadoxLocalisationTextHtmlRenderer().render(localisation)
     }
 
-    fun getNameLabel(definition: ParadoxScriptDefinitionElement, color: Color? = null): JLabel? {
-        val localizedName = ParadoxDefinitionManager.getPrimaryLocalisation(definition)
-        if (localizedName == null) {
-            val key = ParadoxDefinitionManager.getPrimaryLocalisationKey(definition) ?: return null
-            return ParadoxLocalisationTextUIRenderer(color).render(key)
-        }
-        return ParadoxLocalisationTextUIRenderer(color).render(localizedName)
+    fun getLabel(text: String, color: Color? = null): JLabel {
+        return ParadoxLocalisationTextUIRenderer(color).render(text)
     }
 
-    fun getLabel(localisation: ParadoxLocalisationProperty, color: Color? = null): JLabel? {
-        return ParadoxLocalisationTextUIRenderer(color).render(localisation)
-    }
-
-    fun getLabel(localisationKey: String, project: Project, contextElement: PsiElement? = null): JLabel? {
-        val selector = selector(project, contextElement).localisation().contextSensitive().preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
-        val localisation = ParadoxLocalisationSearch.search(localisationKey, selector).find() ?: return null
-        return ParadoxLocalisationTextUIRenderer().render(localisation)
+    fun getLabel(text: Lazy<String>, color: Color? = null): JLabel {
+        return ParadoxLocalisationTextUIRenderer(color).render(text::value)
     }
 
     fun getIcon(ddsFile: PsiFile): Icon? {
