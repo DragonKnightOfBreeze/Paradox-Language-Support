@@ -9,12 +9,10 @@ import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.data.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
@@ -23,7 +21,7 @@ import java.awt.*
 class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Stellaris) {
     object Constants {
         const val ID = "Stellaris.EventTree"
-        val ITEM_PROPERTY_KEYS = arrayOf("picture")
+        val ITEM_PROPERTY_KEYS = listOf("picture")
     }
 
     override fun getID() = Constants.ID
@@ -32,9 +30,9 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
 
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
 
-    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
-
     override fun getDiagramSettings(project: Project) = project.service<StellarisEventTreeDiagramSettings>()
+
+    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
 
     class DataModel(
         project: Project,
@@ -70,11 +68,8 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
 class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxGameType.Stellaris) {
     object Constants {
         const val ID = "Stellaris.TechTree"
-        val ITEM_PROPERTY_KEYS = arrayOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels")
-    }
-
-    object Keys : KeyRegistry() {
-        val nodeData by createKey<StellarisTechnologyData>(Keys)
+        val ITEM_PROPERTY_KEYS = listOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels")
+        val ITEM_PROPERTY_KEYS_IN_DETAIL = listOf("category")
     }
 
     private val _colorManager = ColorManager()
@@ -87,9 +82,11 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
 
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
 
+    override fun getDiagramSettings(project: Project) = project.service<StellarisTechTreeDiagramSettings>()
+
     override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
 
-    override fun getDiagramSettings(project: Project) = project.service<StellarisTechTreeDiagramSettings>()
+    override fun getItemPropertyKeysInDetail() = Constants.ITEM_PROPERTY_KEYS_IN_DETAIL
 
     class ColorManager : DiagramColorManagerBase() {
         override fun getNodeBorderColor(builder: DiagramBuilder, node: DiagramNode<*>?, isSelected: Boolean): Color {

@@ -10,7 +10,6 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
@@ -18,7 +17,7 @@ import icu.windea.pls.script.psi.*
 class Eu4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Eu4) {
     object Constants {
         const val ID = "Eu4.EventTree"
-        val ITEM_PROPERTY_KEYS = arrayOf("picture")
+        val ITEM_PROPERTY_KEYS = listOf("picture")
     }
 
     override fun getID() = Constants.ID
@@ -27,9 +26,9 @@ class Eu4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
 
     override fun createDataModel(project: Project, element: PsiElement?, file: VirtualFile?, model: DiagramPresentationModel) = DataModel(project, file, this)
 
-    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
-
     override fun getDiagramSettings(project: Project) = project.service<Eu4EventTreeDiagramSettings>()
+
+    override fun getItemPropertyKeys() = Constants.ITEM_PROPERTY_KEYS
 
     class DataModel(
         project: Project,

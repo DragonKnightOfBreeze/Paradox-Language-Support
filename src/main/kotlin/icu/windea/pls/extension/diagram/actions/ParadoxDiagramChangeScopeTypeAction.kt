@@ -34,6 +34,7 @@ class ParadoxDiagramChangeScopeTypeAction(
         val originalFile = dataModel.originalFile
         val currentScopeType = dataModel.provider.getDiagramSettings(project)?.state?.scopeType?.orNull()
         val finalCurrentSearchScopeType = when {
+            currentScopeType == ParadoxSearchScopeTypes.File.id && originalFile?.language !is ParadoxBaseLanguage -> null
             currentScopeType != null -> currentScopeType
             originalFile?.language is ParadoxBaseLanguage -> ParadoxSearchScopeTypes.File.id
             else -> null

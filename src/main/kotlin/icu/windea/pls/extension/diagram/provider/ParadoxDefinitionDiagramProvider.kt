@@ -16,16 +16,9 @@ import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : ParadoxDiagramProvider(gameType) {
-    abstract fun getItemPropertyKeys(): Array<String>
+    open fun getItemPropertyKeys(): List<String> = emptyList()
 
-    protected fun getProperties(nodeElement: ParadoxScriptProperty): Set<ParadoxScriptProperty> {
-        val itemPropertyKeys = getItemPropertyKeys()
-        val properties = sortedSetOf<ParadoxScriptProperty>(compareBy { itemPropertyKeys.indexOf(it.name.lowercase()) })
-        nodeElement.block?.properties(conditional = true, inline = true)?.forEach {
-            if (it.name.lowercase() in itemPropertyKeys) properties.add(it)
-        }
-        return properties
-    }
+    open fun getItemPropertyKeysInDetail(): List<String> = emptyList()
 
     open class Edge(
         override val source: Node,
@@ -48,16 +41,21 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
         }
     }
 
+    abstract class ElementManager(
+        override val provider: ParadoxDefinitionDiagramProvider
+    ) : ParadoxDiagramElementManager(provider)
+
     abstract class DataModel(
         project: Project,
         file: VirtualFile?,
-        provider: ParadoxDiagramProvider,
+        override val provider: ParadoxDefinitionDiagramProvider,
     ) : ParadoxDiagramDataModel(project, file, provider) {
         protected fun getDefinitions(typeExpression: String): Set<ParadoxScriptDefinitionElement> {
             val originalFile = originalFile
             val searchScope = scopeManager?.currentScope?.let { GlobalSearchScopes.filterScope(project, it) }
             val searchScopeType = provider.getDiagramSettings(project)?.state?.scopeType?.orNull()
             val finalSearchScopeType = when {
+                searchScopeType == ParadoxSearchScopeTypes.File.id && originalFile?.language !is ParadoxBaseLanguage -> null
                 searchScopeType != null -> searchScopeType
                 originalFile is ParadoxScriptFile -> ParadoxSearchScopeTypes.File.id
                 else -> null

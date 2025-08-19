@@ -19,7 +19,7 @@ import icu.windea.pls.script.psi.*
 class Vic2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Vic2) {
     object Constants {
         const val ID = "Vic2.EventTree"
-        val ITEM_PROPERTY_KEYS = arrayOf("picture")
+        val ITEM_PROPERTY_KEYS = listOf("picture")
     }
 
     override fun getID() = Constants.ID

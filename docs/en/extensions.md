@@ -182,7 +182,7 @@ The event tree diagram displays key information about events and their invocatio
 
 ![](../images/extensions/diagram_event_tree_1.png)
 
-1. Set which node elements to display. From left to right: type, property, localized title, image.
+1. Set which node elements to display. From left to right: type, property, localized title.
 2. Filter nodes to display by query scope. For example, only show nodes corresponding to events in opened files.
 3. Open the diagram settings pages.
 
@@ -202,7 +202,7 @@ The technology tree diagram displays key information about technologies and thei
 
 ![](../images/extensions/diagram_tech_tree_1.png)
 
-1. Set which node elements to display. From left to right: type, property, localized name, icon, image (displayed as a technology card).
+1. Set which node elements to display. From left to right: type, property, localized name, image (displayed as a technology card).
 2. Filter nodes to display by query scope. For example, only show nodes corresponding to technologies in opened files.
 3. Open the diagram settings pages.
 

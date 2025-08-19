@@ -8,13 +8,9 @@ import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import com.intellij.util.containers.ContainerUtil
 import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.provider.*
-import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
-import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 
 //com.intellij.uml.java.JavaUmlDataModel
@@ -22,7 +18,7 @@ import java.util.concurrent.*
 abstract class ParadoxDiagramDataModel(
     project: Project,
     val file: VirtualFile?,
-    val provider: ParadoxDiagramProvider,
+    open val provider: ParadoxDiagramProvider,
 ) : DiagramDataModel<PsiElement>(project, provider) {
     val gameType get() = provider.gameType
 

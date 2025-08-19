@@ -8,7 +8,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.model.*
 
 abstract class ParadoxDiagramElementManager(
-    val provider: ParadoxDiagramProvider
+    open val provider: ParadoxDiagramProvider
 ) : DiagramElementManagerEx<PsiElement>() {
     override fun findInDataContext(context: DataContext): PsiElement? {
         //rootFile
@@ -30,6 +30,22 @@ abstract class ParadoxDiagramElementManager(
 
     override fun getElementTitle(element: PsiElement): String? {
         if (element is PsiFileSystemItem) return provider.presentableName
+        return null
+    }
+
+    // underlying implementation of diagram plugin use DocumentationProvider, rather than DocumentationTarget
+    // so this method is meaningless
+    // override fun getElementDocOwner(element: Any?, builder: DiagramBuilder): Any? {
+    //     return super.getElementDocOwner(element, builder)
+    // }
+
+    // default to null
+    // property -> No documentation found -> ok
+    // override fun getItemDocOwner(element: Any?, builder: DiagramBuilder): PsiElement? {
+    //     return super.getItemDocOwner(element, builder)
+    // }
+
+    override fun getNodeTooltip(element: PsiElement?): String? {
         return null
     }
 }

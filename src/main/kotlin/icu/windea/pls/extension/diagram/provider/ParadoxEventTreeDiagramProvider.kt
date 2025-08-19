@@ -19,7 +19,6 @@ import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
@@ -48,11 +47,16 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     }
 
     object Items {
-        class Type(val definition: ParadoxScriptProperty)
+        class Type(val text: String)
 
-        class Property(val property: ParadoxScriptProperty)
+        class Property(val property: ParadoxScriptProperty, val detail: Boolean)
 
-        class Title(val definition: ParadoxScriptProperty)
+        class Title(val text: String)
+    }
+
+    object Keys : KeyRegistry() {
+        val typeText by createKey<String>(Keys)
+        val nameText by createKey<String>(Keys)
     }
 
     private val _elementManager by lazy { ElementManager(this) }
@@ -82,7 +86,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         }
     }
 
-    class ElementManager(provider: ParadoxDiagramProvider) : ParadoxDiagramElementManager(provider) {
+    class ElementManager(provider: ParadoxDefinitionDiagramProvider) : ParadoxDefinitionDiagramProvider.ElementManager(provider) {
         override fun isAcceptableAsNode(o: Any?): Boolean {
             return o is PsiDirectory || o is ParadoxScriptFile || o is ParadoxScriptProperty
         }
@@ -96,15 +100,16 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         }
 
         override fun getNodeItems(nodeElement: PsiElement?, builder: DiagramBuilder): Array<Any> {
-            provider as ParadoxEventTreeDiagramProvider
             ProgressManager.checkCanceled()
             return when (nodeElement) {
                 is ParadoxScriptProperty -> {
                     val result = mutableListOf<Any>()
-                    result += Items.Type(nodeElement)
-                    val properties = runReadAction { provider.getProperties(nodeElement) }
-                    properties.forEach { result += Items.Property(it) }
-                    result += Items.Title(nodeElement)
+                    nodeElement.getUserData(Keys.typeText)?.let { result += Items.Type(it) }
+                    runReadAction {
+                        val properties = ParadoxPresentationManager.getProperties(nodeElement, provider.getItemPropertyKeys())
+                        properties.forEach { result += Items.Property(it, it.name in provider.getItemPropertyKeysInDetail()) }
+                    }
+                    nodeElement.getUserData(Keys.nameText)?.let { result += Items.Title(it) }
                     result.toTypedArray()
                 }
                 else -> emptyArray()
@@ -114,10 +119,8 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         override fun getItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder): JComponent? {
             ProgressManager.checkCanceled()
             return when (nodeItem) {
-                is Items.Title -> runReadAction r@{
-                    val nameText = ParadoxPresentationManager.getNameText(nodeItem.definition) ?: return@r null
-                    val result = ParadoxPresentationManager.getLabel(nameText.or.anonymous())
-                    result
+                is Items.Title -> {
+                    ParadoxPresentationManager.getLabel(nodeItem.text.or.anonymous())
                 }
                 else -> null
             }
@@ -126,21 +129,12 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         override fun getItemName(nodeElement: PsiElement?, nodeItem: Any?, builder: DiagramBuilder): SimpleColoredText? {
             ProgressManager.checkCanceled()
             return when (nodeItem) {
-                is Items.Type -> runReadAction r@{
-                    val typesText = nodeItem.definition.definitionInfo?.typesText ?: return@r null
-                    val result = SimpleColoredText(typesText, DEFAULT_TEXT_ATTR)
-                    result
+                is Items.Type -> {
+                    SimpleColoredText(nodeItem.text, DEFAULT_TEXT_ATTR)
                 }
                 is Items.Property -> runReadAction {
-                    val property = nodeItem.property
-                    val rendered = ParadoxScriptTextRenderer().render(property)
-                    val result = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
-                    val propertyValue = property.propertyValue
-                    if (propertyValue is ParadoxScriptScriptedVariableReference) {
-                        val sv = propertyValue.text
-                        result.append(" by $sv", SimpleTextAttributes.GRAYED_ATTRIBUTES)
-                    }
-                    result
+                    val propertyText = ParadoxPresentationManager.getPropertyText(nodeItem.property, nodeItem.detail)
+                    propertyText
                 }
                 else -> null
             }
@@ -153,16 +147,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                 is Items.Property -> PlsIcons.Nodes.Property
                 else -> null
             }
-        }
-
-        @Suppress("RedundantOverride")
-        override fun getItemDocOwner(element: Any?, builder: DiagramBuilder): PsiElement? {
-            //property -> No documentation found -> ok
-            return super.getItemDocOwner(element, builder)
-        }
-
-        override fun getNodeTooltip(element: PsiElement?): String? {
-            return null
         }
     }
 
@@ -215,7 +199,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                         reportProgress(size) { reporter ->
                             events.forEach { event ->
                                 reporter.itemStep {
-                                    readAction { preloadLocalisations(event) }
+                                    readAction { preloadData(event) }
                                 }
                             }
                         }
@@ -236,7 +220,6 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
 
         private fun createNode(event: ParadoxScriptDefinitionElement): Boolean {
             ProgressManager.checkCanceled()
-            provider as ParadoxDefinitionDiagramProvider
             val node = Node(event, provider)
             nodeMap.put(event, node)
             val name = event.definitionInfo?.name.or.anonymous()
@@ -257,9 +240,16 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             }
         }
 
-        private fun preloadLocalisations(event: ParadoxScriptDefinitionElement) {
+        private fun preloadData(event: ParadoxScriptDefinitionElement) {
             ProgressManager.checkCanceled()
-            ParadoxPresentationManager.getNameLocalisation(event)
+            run {
+                val result = event.definitionInfo?.typesText
+                event.putUserData(Keys.typeText, result)
+            }
+            run {
+                val result = ParadoxPresentationManager.getNameText(event)
+                event.putUserData(Keys.nameText, result)
+            }
         }
 
         override fun getModificationTracker(): ModificationTracker {

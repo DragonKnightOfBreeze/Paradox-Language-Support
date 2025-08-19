@@ -126,7 +126,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getIcon(element: ParadoxScriptProperty, @Iconable.IconFlags flags: Int): Icon {
-        val definitionInfo = element.definitionInfo
+        val definitionInfo = runReadAction { element.definitionInfo }
         if (definitionInfo != null) return PlsIcons.Nodes.Definition(definitionInfo.type)
         val isInlineScriptInvocation = element.name == ParadoxInlineScriptManager.inlineScriptKey
         if (isInlineScriptInvocation) return PlsIcons.Nodes.InlineScript

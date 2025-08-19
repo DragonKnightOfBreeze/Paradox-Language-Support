@@ -1,7 +1,9 @@
 package icu.windea.pls.lang.util
 
+import com.intellij.diagram.DiagramElementManager.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
+import com.intellij.ui.*
 import icu.windea.pls.core.*
 import icu.windea.pls.ep.presentation.*
 import icu.windea.pls.lang.*
@@ -11,6 +13,7 @@ import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import java.awt.*
+import java.util.*
 import javax.swing.*
 
 object ParadoxPresentationManager {
@@ -38,6 +41,25 @@ object ParadoxPresentationManager {
         if (localizedName != null) return ParadoxLocalisationTextHtmlRenderer().render(localizedName)
         val localizedNameKey = getNameLocalisationKey(definition)
         return localizedNameKey
+    }
+
+    fun getProperties(definition: ParadoxScriptDefinitionElement, keys: Collection<String>): TreeSet<ParadoxScriptProperty> {
+        val properties = sortedSetOf<ParadoxScriptProperty>(compareBy { keys.indexOf(it.name.lowercase()) })
+        definition.block?.properties(conditional = true, inline = true)?.forEach {
+            if (it.name.lowercase() in keys) properties.add(it)
+        }
+        return properties
+    }
+
+    fun getPropertyText(property: ParadoxScriptProperty, detail: Boolean = false): SimpleColoredText {
+        val rendered = ParadoxScriptTextRenderer(renderInBlock = detail).render(property)
+        val propertyText = SimpleColoredText(rendered, DEFAULT_TEXT_ATTR)
+        val propertyValue = property.propertyValue
+        if (propertyValue is ParadoxScriptScriptedVariableReference) {
+            val sv = propertyValue.text
+            propertyText.append(" by $sv", SimpleTextAttributes.GRAYED_ATTRIBUTES)
+        }
+        return propertyText
     }
 
     fun getText(localisation: ParadoxLocalisationProperty): String {
