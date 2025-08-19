@@ -20,7 +20,6 @@ import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.provider.StellarisTechTreeDiagramProvider.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.model.*
@@ -103,19 +102,14 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
     class ElementManager(provider: ParadoxDiagramProvider) : ParadoxDiagramElementManager(provider) {
         override fun isAcceptableAsNode(o: Any?): Boolean {
-            return o is PsiDirectory || o is ParadoxScriptProperty
-        }
-
-        override fun getEditorTitle(element: PsiElement?, additionalElements: MutableCollection<PsiElement>): String {
-            return provider.presentableName
+            return o is PsiDirectory || o is ParadoxScriptFile || o is ParadoxScriptProperty
         }
 
         override fun getElementTitle(element: PsiElement): String? {
             ProgressManager.checkCanceled()
             return when (element) {
-                is PsiDirectory -> runReadAction { element.name }
                 is ParadoxScriptProperty -> runReadAction { ParadoxTechnologyManager.getName(element) }
-                else -> null
+                else -> super.getElementTitle(element)
             }
         }
 

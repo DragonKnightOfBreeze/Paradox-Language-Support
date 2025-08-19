@@ -4,11 +4,12 @@ import com.intellij.diagram.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.vfs.*
 import com.intellij.psi.search.*
+import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.search.*
+import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
@@ -52,12 +53,18 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
         provider: ParadoxDiagramProvider,
     ) : ParadoxDiagramDataModel(project, file, provider) {
         protected fun getDefinitions(typeExpression: String): Set<ParadoxScriptDefinitionElement> {
+            val originalFile = originalFile
             val searchScope = scopeManager?.currentScope?.let { GlobalSearchScopes.filterScope(project, it) }
-            val searchScopeType = provider.getDiagramSettings(project)?.state?.scopeType
+            val searchScopeType = provider.getDiagramSettings(project)?.state?.scopeType?.orNull()
+            val finalSearchScopeType = when {
+                searchScopeType != null -> searchScopeType
+                originalFile is ParadoxScriptFile -> ParadoxSearchScopeTypes.File.id
+                else -> null
+            }
             val selector = selector(project, originalFile).definition()
                 .withGameType(gameType)
                 .withSearchScope(searchScope)
-                .withSearchScopeType(searchScopeType)
+                .withSearchScopeType(finalSearchScopeType)
                 .contextSensitive()
                 .distinctByName()
             return ParadoxDefinitionSearch.search(typeExpression, selector).findAll()

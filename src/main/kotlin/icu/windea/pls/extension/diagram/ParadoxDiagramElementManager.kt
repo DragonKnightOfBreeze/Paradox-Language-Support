@@ -17,7 +17,19 @@ abstract class ParadoxDiagramElementManager(
         val rootInfo = file.fileInfo?.rootInfo ?: return null
         if (rootInfo !is ParadoxRootInfo.MetadataBased) return null
         if (rootInfo.gameType != provider.gameType) return null //获取当前上下文的游戏类型，以确定可以提供哪些图表
-        val rootFile = rootInfo.rootFile
-        return rootFile.toPsiDirectory(project)
+        return file.toPsiFileSystemItem(project)
+    }
+
+    override fun isAcceptableAsNode(o: Any?): Boolean {
+        return o is PsiDirectory || (o is PsiFile && o.language is ParadoxBaseLanguage)
+    }
+
+    override fun getEditorTitle(element: PsiElement?, additionalElements: MutableCollection<PsiElement>): String {
+        return provider.presentableName
+    }
+
+    override fun getElementTitle(element: PsiElement): String? {
+        if (element is PsiFileSystemItem) return provider.presentableName
+        return null
     }
 }

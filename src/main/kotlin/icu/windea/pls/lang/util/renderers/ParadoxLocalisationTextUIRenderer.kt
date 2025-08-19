@@ -50,8 +50,11 @@ class ParadoxLocalisationTextUIRenderer(
         label.size = label.preferredSize
         label.isOpaque = false
         PlsFacade.getCoroutineScope().launch {
-            label.text = readAction { lazyText() }
-            label.size = label.preferredSize
+            val text = readAction { lazyText() }
+            withContext(Dispatchers.UI) {
+                label.text = text
+                label.size = label.preferredSize
+            }
         }
         return label
     }
