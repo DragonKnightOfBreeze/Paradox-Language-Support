@@ -13,6 +13,7 @@ class SmartInitializer(
     private val initializeActions: MutableList<suspend () -> Unit> = mutableListOf()
 ) {
     suspend fun initialize() {
+        if (initializeActions.isEmpty()) return
         val logger = thisLogger()
         coroutineScope {
             initializeActions.map { action ->

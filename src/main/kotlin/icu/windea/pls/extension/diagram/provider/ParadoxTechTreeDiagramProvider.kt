@@ -7,6 +7,8 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
+import com.intellij.platform.util.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.*
@@ -128,7 +130,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
             ProgressManager.checkCanceled()
             return when (nodeItem) {
                 is Items.Name -> runReadAction r@{
-                    val nameText = ParadoxPresentationManager.getNameText(nodeItem.definition)
+                    val nameText = ParadoxPresentationManager.getNameText(nodeItem.definition) ?: return@r null
                     val result = ParadoxPresentationManager.getLabel(nameText.or.anonymous())
                     result
                 }
@@ -189,58 +191,113 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
-        override fun getModificationTracker(): ModificationTracker {
-            val definitionType = ParadoxDefinitionTypes.Technology
-            val configGroup = PlsFacade.getConfigGroup(project, provider.gameType)
-            val typeConfig = configGroup.types.get(definitionType) ?: return super.getModificationTracker()
-            val key = CwtConfigManager.getFilePathPatterns(typeConfig).joinToString(";")
-            return ParadoxModificationTrackers.ScriptFileTracker(key)
-        }
+        private val definitionType = ParadoxDefinitionTypes.Technology
+        private val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
+        private val techMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
 
         override fun updateDataModel() {
             //群星原版科技有400+
 
-            val definitionType = ParadoxDefinitionTypes.Technology
-            val technologies0 = getDefinitions(definitionType)
-            if (technologies0.isEmpty()) return
-            val settings = provider.getDiagramSettings(project)?.state
-            val technologies = technologies0.filter { settings == null || showNode(it, settings) }
-            if (technologies.isEmpty()) return
-
-            provider as ParadoxDefinitionDiagramProvider
-            val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
-            val techMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
-            for (technology in technologies) {
-                ProgressManager.checkCanceled()
-                val node = Node(technology, provider)
-                node.putUserData(Keys.nodeData, technology.getData())
-                nodeMap.put(technology, node)
-                val name = technology.definitionInfo?.name.or.anonymous()
-                techMap.put(name, technology)
-                nodes.add(node)
-            }
-            for (technology in technologies) {
-                ProgressManager.checkCanceled()
-                val data = technology.getData<StellarisTechnologyData>() ?: continue
-                //循环科技 ..> 循环科技
-                val levels = data.levels
-                if (levels != null) {
-                    val label = if (levels <= 0) "max level: inf" else "max level: $levels"
-                    val node = nodeMap.get(technology) ?: continue
-                    val edge = Edge(node, node, Relations.Repeat(label))
-                    edges.add(edge)
-                }
-                //前置 --> 科技
-                val prerequisites = data.prerequisites
-                if (prerequisites.isNotEmpty()) {
-                    for (prerequisite in prerequisites) {
-                        val source = techMap.get(prerequisite)?.let { nodeMap.get(it) } ?: continue
-                        val target = nodeMap.get(technology) ?: continue
-                        val edge = Edge(source, target, Relations.Prerequisite)
-                        edges.add(edge)
+            val title = PlsDiagramBundle.message("techTree.update.title")
+            runWithModalProgressBlocking(project, title) action@{
+                reportSequentialProgress { sReporter ->
+                    val step1 = PlsDiagramBundle.message("techTree.update.step.1")
+                    val technologies = sReporter.indeterminateStep(step1) {
+                        readAction { searchTechnologies() }
                     }
+                    if (technologies.isEmpty()) return@action
+                    val size = technologies.size
+
+                    val step2 = PlsDiagramBundle.message("techTree.update.step.2", size)
+                    sReporter.nextStep(25, step2) {
+                        reportProgress(size) { reporter ->
+                            technologies.forEach { technology ->
+                                reporter.itemStep(step2) {
+                                    readAction { createNode(technology) }
+                                }
+                            }
+                        }
+                    }
+
+                    val step3 = PlsDiagramBundle.message("techTree.update.step.3", size)
+                    sReporter.nextStep(50, step3) {
+                        reportProgress(size) { reporter ->
+                            technologies.forEach { technology ->
+                                reporter.itemStep {
+                                    readAction { createEdges(technology) }
+                                }
+                            }
+                        }
+                    }
+
+                    val step4 = PlsDiagramBundle.message("techTree.update.step.4", size)
+                    sReporter.nextStep(100, step4) {
+                        reportProgress(size) { reporter ->
+                            technologies.forEach { technology ->
+                                reporter.itemStep {
+                                    readAction { preloadLocalisations(technology) }
+                                }
+                            }
+                        }
+                    }
+
+                    nodeMap.clear()
+                    techMap.clear()
                 }
             }
+        }
+
+        private fun searchTechnologies(): List<ParadoxScriptDefinitionElement> {
+            ProgressManager.checkCanceled()
+            val definitions = getDefinitions(definitionType)
+            val settings = provider.getDiagramSettings(project)?.state
+            return definitions.filter { settings == null || showNode(it, settings) }
+        }
+
+        private fun createNode(technology: ParadoxScriptDefinitionElement) {
+            ProgressManager.checkCanceled()
+            provider as ParadoxDefinitionDiagramProvider
+            val node = Node(technology, provider)
+            val data = technology.getData<StellarisTechnologyData>()
+            node.putUserData(Keys.nodeData, data)
+            nodeMap.put(technology, node)
+            val name = technology.definitionInfo?.name.or.anonymous()
+            techMap.put(name, technology)
+            nodes.add(node)
+        }
+
+        private fun createEdges(technology: ParadoxScriptDefinitionElement) {
+            ProgressManager.checkCanceled()
+            val data = technology.getData<StellarisTechnologyData>() ?: return
+            //循环科技 ..> 循环科技
+            val levels = data.levels
+            if (levels != null) {
+                val label = if (levels <= 0) "max level: inf" else "max level: $levels"
+                val node = nodeMap.get(technology) ?: return
+                val edge = Edge(node, node, Relations.Repeat(label))
+                edges.add(edge)
+            }
+            //前置 --> 科技
+            val prerequisites = data.prerequisites
+            prerequisites.forEach { prerequisite ->
+                ProgressManager.checkCanceled()
+                val source = techMap.get(prerequisite)?.let { nodeMap.get(it) } ?: return@forEach
+                val target = nodeMap.get(technology) ?: return@forEach
+                val edge = Edge(source, target, Relations.Prerequisite)
+                edges.add(edge)
+            }
+        }
+
+        private fun preloadLocalisations(technology: ParadoxScriptDefinitionElement) {
+            ProgressManager.checkCanceled()
+            ParadoxPresentationManager.getNameLocalisation(technology)
+        }
+
+        override fun getModificationTracker(): ModificationTracker {
+            val configGroup = PlsFacade.getConfigGroup(project, provider.gameType)
+            val typeConfig = configGroup.types.get(definitionType) ?: return super.getModificationTracker()
+            val key = CwtConfigManager.getFilePathPatterns(typeConfig).joinToString(";")
+            return ParadoxModificationTrackers.ScriptFileTracker(key)
         }
     }
 }

@@ -7,6 +7,8 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.*
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
+import com.intellij.platform.util.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.*
@@ -113,7 +115,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             ProgressManager.checkCanceled()
             return when (nodeItem) {
                 is Items.Title -> runReadAction r@{
-                    val nameText = ParadoxPresentationManager.getNameText(nodeItem.definition)
+                    val nameText = ParadoxPresentationManager.getNameText(nodeItem.definition) ?: return@r null
                     val result = ParadoxPresentationManager.getLabel(nameText.or.anonymous())
                     result
                 }
@@ -169,48 +171,102 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
         file: VirtualFile?, //umlFile
         provider: ParadoxDefinitionDiagramProvider
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
-        override fun getModificationTracker(): ModificationTracker {
-            val definitionType = ParadoxDefinitionTypes.Event
-            val configGroup = PlsFacade.getConfigGroup(project, provider.gameType)
-            val typeConfig = configGroup.types.get(definitionType) ?: return super.getModificationTracker()
-            val key = CwtConfigManager.getFilePathPatterns(typeConfig).joinToString(";")
-            return ParadoxModificationTrackers.ScriptFileTracker(key)
-        }
+        val definitionType = ParadoxDefinitionTypes.Event
+        private val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
+        private val eventMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
 
         override fun updateDataModel() {
             //群星原版事件有5000+
 
-            val definitionType = ParadoxDefinitionTypes.Event
-            val events0 = getDefinitions(definitionType)
-            if (events0.isEmpty()) return
-            val settings = provider.getDiagramSettings(project)?.state
-            val events = events0.filter { settings == null || showNode(it, settings) }
-            if (events.isEmpty()) return
+            val title = PlsDiagramBundle.message("eventTree.update.title")
+            runWithModalProgressBlocking(project, title) action@{
+                reportSequentialProgress { sReporter ->
+                    val step1 = PlsDiagramBundle.message("eventTree.update.step.1")
+                    val events = sReporter.indeterminateStep(step1) {
+                        readAction { searchEvents() }
+                    }
+                    if (events.isEmpty()) return@action
+                    val size = events.size
 
-            provider as ParadoxDefinitionDiagramProvider
-            val nodeMap = mutableMapOf<ParadoxScriptDefinitionElement, Node>()
-            val eventMap = mutableMapOf<String, ParadoxScriptDefinitionElement>()
-            for (event in events) {
-                ProgressManager.checkCanceled()
-                val node = Node(event, provider)
-                nodeMap.put(event, node)
-                val name = event.definitionInfo?.name.or.anonymous()
-                eventMap.put(name, event)
-                nodes.add(node)
-            }
-            for (event in events) {
-                ProgressManager.checkCanceled()
-                val invocations = ParadoxEventManager.getInvocations(event)
-                if (invocations.isEmpty()) continue
-                //事件 --> 调用的事件
-                for (invocation in invocations) {
-                    ProgressManager.checkCanceled()
-                    val source = nodeMap.get(event) ?: continue
-                    val target = eventMap.get(invocation)?.let { nodeMap.get(it) } ?: continue
-                    val edge = Edge(source, target, Relations.Invoke)
-                    edges.add(edge)
+                    val step2 = PlsDiagramBundle.message("eventTree.update.step.2", size)
+                    sReporter.nextStep(25, step2) {
+                        reportProgress(size) { reporter ->
+                            events.forEach { event ->
+                                reporter.itemStep(step2) {
+                                    readAction { createNode(event) }
+                                }
+                            }
+                        }
+                    }
+
+                    val step3 = PlsDiagramBundle.message("eventTree.update.step.3", size)
+                    sReporter.nextStep(50, step3) {
+                        reportProgress(size) { reporter ->
+                            events.forEach { event ->
+                                reporter.itemStep {
+                                    readAction { createEdges(event) }
+                                }
+                            }
+                        }
+                    }
+
+                    val step4 = PlsDiagramBundle.message("eventTree.update.step.4", size)
+                    sReporter.nextStep(100, step4) {
+                        reportProgress(size) { reporter ->
+                            events.forEach { event ->
+                                reporter.itemStep {
+                                    readAction { preloadLocalisations(event) }
+                                }
+                            }
+                        }
+                    }
+
+                    nodeMap.clear()
+                    eventMap.clear()
                 }
             }
+        }
+
+        private fun searchEvents(): List<ParadoxScriptDefinitionElement> {
+            ProgressManager.checkCanceled()
+            val definitions = getDefinitions(definitionType)
+            val settings = provider.getDiagramSettings(project)?.state
+            return definitions.filter { settings == null || showNode(it, settings) }
+        }
+
+        private fun createNode(event: ParadoxScriptDefinitionElement): Boolean {
+            ProgressManager.checkCanceled()
+            provider as ParadoxDefinitionDiagramProvider
+            val node = Node(event, provider)
+            nodeMap.put(event, node)
+            val name = event.definitionInfo?.name.or.anonymous()
+            eventMap.put(name, event)
+            return nodes.add(node)
+        }
+
+        private fun createEdges(event: ParadoxScriptDefinitionElement) {
+            ProgressManager.checkCanceled()
+            //事件 --> 调用的事件
+            val invocations = ParadoxEventManager.getInvocations(event)
+            invocations.forEach { invocation ->
+                ProgressManager.checkCanceled()
+                val source = nodeMap.get(event) ?: return@forEach
+                val target = eventMap.get(invocation)?.let { nodeMap.get(it) } ?: return@forEach
+                val edge = Edge(source, target, Relations.Invoke)
+                edges.add(edge)
+            }
+        }
+
+        private fun preloadLocalisations(event: ParadoxScriptDefinitionElement) {
+            ProgressManager.checkCanceled()
+            ParadoxPresentationManager.getNameLocalisation(event)
+        }
+
+        override fun getModificationTracker(): ModificationTracker {
+            val configGroup = PlsFacade.getConfigGroup(project, provider.gameType)
+            val typeConfig = configGroup.types.get(definitionType) ?: return super.getModificationTracker()
+            val key = CwtConfigManager.getFilePathPatterns(typeConfig).joinToString(";")
+            return ParadoxModificationTrackers.ScriptFileTracker(key)
         }
     }
 }

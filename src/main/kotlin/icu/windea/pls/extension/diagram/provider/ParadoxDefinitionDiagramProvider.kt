@@ -7,6 +7,7 @@ import com.intellij.psi.search.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.extension.diagram.*
+import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.scope.type.*
@@ -69,5 +70,7 @@ abstract class ParadoxDefinitionDiagramProvider(gameType: ParadoxGameType) : Par
                 .distinctByName()
             return ParadoxDefinitionSearch.search(typeExpression, selector).findAll()
         }
+
+        protected abstract fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean
     }
 }

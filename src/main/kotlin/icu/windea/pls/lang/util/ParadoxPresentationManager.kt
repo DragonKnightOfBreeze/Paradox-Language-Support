@@ -19,16 +19,24 @@ object ParadoxPresentationManager {
         return ParadoxDefinitionPresentationProvider.getPresentation(definition, definitionInfo)
     }
 
+    fun getNameLocalisation(definition: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
+        return ParadoxDefinitionManager.getPrimaryLocalisation(definition)
+    }
+
+    fun getNameLocalisationKey(definition: ParadoxScriptDefinitionElement): String? {
+        return ParadoxDefinitionManager.getPrimaryLocalisationKey(definition)
+    }
+
     fun getNameText(definition: ParadoxScriptDefinitionElement): String? {
-        val localizedName = ParadoxDefinitionManager.getPrimaryLocalisation(definition)
+        val localizedName = getNameLocalisation(definition)
         if (localizedName != null) return ParadoxLocalisationTextHtmlRenderer().render(localizedName)
         return null
     }
 
     fun getNameTextOrKey(definition: ParadoxScriptDefinitionElement): String? {
-        val localizedName = ParadoxDefinitionManager.getPrimaryLocalisation(definition)
+        val localizedName = getNameLocalisation(definition)
         if (localizedName != null) return ParadoxLocalisationTextHtmlRenderer().render(localizedName)
-        val localizedNameKey = ParadoxDefinitionManager.getPrimaryLocalisationKey(definition)
+        val localizedNameKey = getNameLocalisationKey(definition)
         return localizedNameKey
     }
 

@@ -68,8 +68,6 @@ abstract class ParadoxDiagramDataModel(
 
     protected abstract fun updateDataModel()
 
-    protected abstract fun showNode(definition: ParadoxScriptDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean
-
     override fun getModificationTracker(): ModificationTracker {
         return ParadoxModificationTrackers.FileTracker
     }
