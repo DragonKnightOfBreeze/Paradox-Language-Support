@@ -38,7 +38,7 @@
   * Click `Settings > Languages & Frameworks > Paradox Language Support` to open the settings page for the plugin.
 * If you encounter some unexpected problems during use, try the following:
   * Update the IDE and plugin to the latest version.
-  * If it may be related to IDE indices, try to rebuild indices and restart the IDE. (Click `File -> Invalidate Caches... -> Invalidate and Restart`)
+  * If it may be related to IDE indices, try to rebuild indices and restart the IDE. (Click `File > Invalidate Caches... > Invalidate and Restart`)
   * If it may be related to plugin's built-in configs, try to [write custom config files](config.md#writing-cwt-config-files).
   * If it may be related to plugin configuration, try to delete the plugin configuration file. (`paradox-language-support.xml`. If you don't know the detailed location, use [Everything](https://www.voidtools.com))
   * Send feedback via GitHub, Discord, etc.

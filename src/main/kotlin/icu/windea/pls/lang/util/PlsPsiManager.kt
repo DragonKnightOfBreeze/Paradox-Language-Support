@@ -38,11 +38,11 @@ object PlsPsiManager {
     /**
      * 适用于结构视图。
      */
-    fun findAcceptableElementInStructureView(element: PsiElement?, canAttachComment: Boolean = false, predicate: (PsiElement) -> Boolean): Any? {
+    fun findAcceptableElementInStructureView(element: PsiElement?, canAttachComments: Boolean = false, predicate: (PsiElement) -> Boolean): Any? {
         var current = element
         while (current != null && current !is PsiFile) {
             if (predicate(current)) return current
-            if (canAttachComment && current is PsiComment) {
+            if (canAttachComments && current is PsiComment) {
                 val attachingElement = getAttachingElement(current)
                 if (attachingElement != null && predicate(attachingElement)) return attachingElement
                 return null

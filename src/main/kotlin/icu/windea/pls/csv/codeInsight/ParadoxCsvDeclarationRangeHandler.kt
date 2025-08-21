@@ -7,7 +7,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.csv.psi.*
 
 /**
- * CSV的上下文信息（表格头）。
+ * 用于在 CSV 文件中，提供上下文信息（表格头）。
  */
 class ParadoxCsvDeclarationRangeHandler : DeclarationRangeHandler<ParadoxCsvRow> {
     override fun getDeclarationRange(container: ParadoxCsvRow): TextRange? {

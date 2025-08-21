@@ -5,7 +5,7 @@ import com.intellij.openapi.util.*
 import icu.windea.pls.localisation.psi.*
 
 /**
- * 本地化属性组的上下文信息（如：`l_english:`）。
+ * 用于在本地化文件中提供上下文信息（语言区域标识，如，`l_english:`）。
  */
 class ParadoxLocalisationDeclarationRangeHandler : DeclarationRangeHandler<ParadoxLocalisationPropertyList> {
     override fun getDeclarationRange(container: ParadoxLocalisationPropertyList): TextRange? {

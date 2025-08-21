@@ -16,15 +16,15 @@
     <annotator language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.ParadoxLocalisationBasicAnnotator"/>
     <lang.smartEnterProcessor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.editor.editorActions.smartEnter.ParadoxLocalisationSmartEnterProcessor"/>
     <lang.foldingBuilder language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.folding.ParadoxLocalisationFoldingBuilder"/>
-    <errorQuickFixProvider implementation="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationErrorQuickFixProvider"/>
     <declarationRangeHandler key="icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList" implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationDeclarationRangeHandler"/>
     <lang.implementationTextSelectioner language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationImplementationTextSelectioner"/>
+    <errorQuickFixProvider implementation="icu.windea.pls.localisation.codeInsight.ParadoxLocalisationErrorQuickFixProvider"/>
+    <statementUpDownMover implementation="icu.windea.pls.localisation.codeInsight.editorActions.ParadoxLocalisationMover"/>
     <liveTemplateContext contextId="PARADOX_LOCALISATION"
                          implementation="icu.windea.pls.localisation.codeInsight.template.ParadoxLocalisationTemplateContextType$Base"/>
     <liveTemplateContext contextId="PARADOX_LOCALISATION_LOCALISATION_TEXT" baseContextId="PARADOX_LOCALISATION"
                          implementation="icu.windea.pls.localisation.codeInsight.template.ParadoxLocalisationTemplateContextType$LocalisationText"/>
     <defaultLiveTemplates file="/liveTemplates/ParadoxLocalisation.xml"/>
-    <statementUpDownMover implementation="icu.windea.pls.localisation.codeInsight.editorActions.moveUpDown.ParadoxLocalisationMover"/>
     <lang.formatter language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.formatter.ParadoxLocalisationFormattingModelBuilder"/>
     <codeStyleSettingsProvider implementation="icu.windea.pls.localisation.codeStyle.ParadoxLocalisationCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.localisation.codeStyle.ParadoxLocalisationLanguageCodeStyleSettingsProvider"/>

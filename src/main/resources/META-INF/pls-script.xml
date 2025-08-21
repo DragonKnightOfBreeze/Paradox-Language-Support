@@ -19,14 +19,14 @@
     <annotator language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.editor.ParadoxScriptBasicAnnotator"/>
     <lang.implementationTextSelectioner language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.ParadoxScriptImplementationTextSelectioner"/>
     <errorQuickFixProvider implementation="icu.windea.pls.script.codeInsight.ParadoxScriptErrorQuickFixProvider"/>
+    <lang.smartEnterProcessor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.editorActions.ParadoxScriptSmartEnterProcessor"/>
+    <statementUpDownMover implementation="icu.windea.pls.script.codeInsight.editorActions.ParadoxScriptMover"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT"
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$Base"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT_MEMBERS" baseContextId="PARADOX_SCRIPT"
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$Members"/>
     <liveTemplateContext contextId="PARADOX_SCRIPT_INLINE_MATH_EXPRESSIONS" baseContextId="PARADOX_SCRIPT"
                          implementation="icu.windea.pls.script.codeInsight.template.ParadoxScriptTemplateContextType$InlineMathExpressions"/>
-    <lang.smartEnterProcessor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.codeInsight.editorActions.smartEnter.ParadoxScriptSmartEnterProcessor"/>
-    <statementUpDownMover implementation="icu.windea.pls.script.codeInsight.editorActions.moveUpDown.ParadoxScriptMover"/>
     <lang.formatter language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>
     <codeStyleSettingsProvider implementation="icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.script.codeStyle.ParadoxScriptLanguageCodeStyleSettingsProvider"/>
