@@ -6,7 +6,9 @@ import com.intellij.psi.search.*
 import com.intellij.psi.search.searches.*
 import com.intellij.util.*
 import icu.windea.pls.config.util.*
+import icu.windea.pls.cwt.*
 import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.lang.search.scope.*
 
 /**
  * CWT规则符号的查询。
@@ -20,7 +22,9 @@ class CwtConfigSymbolUsagesSearcher : QueryExecutorBase<PsiReference, References
         if (extraWords.isEmpty()) return
 
         //这里不能直接使用target.useScope，否则文件高亮会出现问题
+        //只需要在CWT文件中查询
         val useScope = queryParameters.effectiveSearchScope
+            .let { GlobalSearchScopeUtil.toGlobalSearchScope(it, queryParameters.project).withFileTypes(CwtFileType) }
         val searchContext = UsageSearchContext.IN_CODE
         for (extraWord in extraWords) {
             queryParameters.optimizer.searchWord(extraWord, useScope, searchContext, true, target)

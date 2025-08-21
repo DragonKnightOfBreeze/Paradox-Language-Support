@@ -111,6 +111,12 @@
     <lang.foldingBuilder language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
     <lang.foldingBuilder language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.folding.ParadoxScriptedVariableReferenceFoldingBuilder"/>
 
+    <gotoSymbolContributor implementation="icu.windea.pls.lang.navigation.CwtConfigSymbolChooseByNameContributor"/>
+    <gotoSymbolContributor implementation="icu.windea.pls.lang.navigation.ParadoxDefinitionChooseByNameContributor"/>
+    <gotoSymbolContributor implementation="icu.windea.pls.lang.navigation.ParadoxScriptedVariableChooseByNameContributor"/>
+    <gotoSymbolContributor implementation="icu.windea.pls.lang.navigation.ParadoxLocalisationChooseByNameContributor"/>
+    <gotoSymbolContributor implementation="icu.windea.pls.lang.navigation.ParadoxSyncedLocalisationChooseByNameContributor"/>
+
     <lang.refactoringSupport language="PARADOX" implementationClass="icu.windea.pls.lang.refactoring.ParadoxRefactoringSupportProvider"/>
     <applicationService serviceImplementation="icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings"/>
     <elementDescriptionProvider implementation="icu.windea.pls.lang.refactoring.ParadoxRefactoringElementDescriptorProvider"/>

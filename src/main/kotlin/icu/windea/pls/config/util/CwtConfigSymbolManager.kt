@@ -8,6 +8,7 @@ import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
@@ -63,14 +64,32 @@ object CwtConfigSymbolManager {
     }
 
     private fun collectInfosFromDeclarations(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
-        val configType = getSymbolConfigType(element) ?: return
+        val configType = CwtConfigManager.getConfigType(element) ?: return
+        val symbolConfigType = getSymbolConfigType(configType) ?: return
         val name = getSymbolName(expressionString, configType) ?: return
         val nameOffset = expressionString.indexOf(name)
         if (nameOffset == -1) return
-        val readWriteAccess = ReadWriteAccessDetector.Access.Write
-        val nextOffset = offset + nameOffset
-        val info = CwtConfigSymbolIndexInfo(name, configType.id, readWriteAccess, nextOffset, element.startOffset, gameType)
-        infos += info
+        val tuples = buildList b@{
+            if (symbolConfigType != CwtConfigTypes.Alias) {
+                add(tupleOf(name, nameOffset, symbolConfigType))
+                return@b
+            }
+
+            // aliases
+            val n1 = name.substringBefore(':').orNull() ?: return@b
+            add(tupleOf(n1, nameOffset, symbolConfigType))
+            // effects & triggers
+            if (configType != CwtConfigTypes.Trigger && configType != CwtConfigTypes.Effect) return@b
+            val n2 = name.substringAfter(':').orNull() ?: return@b
+            if (CwtDataExpression.resolve(n2, false).type != CwtDataTypes.Constant) return@b
+            add(tupleOf(n2, expressionString.indexOf(':') + 1, configType))
+        }
+        tuples.forEach f@{ (symbolName, symbolOffset, symbolConfigType) ->
+            val readWriteAccess = ReadWriteAccessDetector.Access.Write
+            val nextOffset = offset + symbolOffset
+            val info = CwtConfigSymbolIndexInfo(symbolName, symbolConfigType.id, readWriteAccess, nextOffset, element.startOffset, gameType)
+            infos += info
+        }
     }
 
     private fun collectInfosFromReferences(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
@@ -85,8 +104,9 @@ object CwtConfigSymbolManager {
             collectInfosFromAliasDataExpressions(element, infos, gameType, expressionString, offset)
         }
         run {
-            val configType = getSymbolConfigType(element)
-            if (configType != CwtConfigTypes.Alias) return@run
+            val configType = CwtConfigManager.getConfigType(element) ?: return
+            val symbolConfigType = getSymbolConfigType(configType) ?: return
+            if (symbolConfigType != CwtConfigTypes.Alias) return@run
             val (prefix, suffix, separator) = CwtConfigTextPatterns.alias
             val s = expressionString.removeSurroundingOrNull(prefix, suffix)?.orNull() ?: return@run
             val separatorIndex = s.indexOf(separator)
@@ -181,8 +201,7 @@ object CwtConfigSymbolManager {
         return CwtConfigManager.getContainingConfigGroup(element)?.gameType
     }
 
-    private fun getSymbolConfigType(element: CwtStringExpressionElement): CwtConfigType? {
-        val configType = CwtConfigManager.getConfigType(element)
+    private fun getSymbolConfigType(configType: CwtConfigType): CwtConfigType? {
         return when (configType) {
             CwtConfigTypes.Type, CwtConfigTypes.Subtype -> configType
             CwtConfigTypes.Enum, CwtConfigTypes.ComplexEnum -> CwtConfigTypes.Enum
@@ -193,10 +212,10 @@ object CwtConfigSymbolManager {
         }
     }
 
-    private fun getSymbolName(text: String, type: CwtConfigType): String? {
-        return when (type) {
-            CwtConfigTypes.Alias -> text.removeSurroundingOrNull("alias[", "]")?.substringBefore(":", "")?.orNull()
-            else -> CwtConfigManager.getNameByConfigType(text, type)
+    private fun getSymbolName(text: String, configType: CwtConfigType): String? {
+        return when (configType) {
+            CwtConfigTypes.Alias, CwtConfigTypes.Trigger, CwtConfigTypes.Effect, CwtConfigTypes.Modifier -> text.removeSurroundingOrNull("alias[", "]")?.orNull()
+            else -> CwtConfigManager.getNameByConfigType(text, configType)
         }
     }
 }

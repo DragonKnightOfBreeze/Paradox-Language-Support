@@ -15,7 +15,7 @@ import java.io.*
 class CwtConfigSymbolIndex : CwtConfigFileBasedIndex<List<CwtConfigSymbolIndexInfo>>() {
     override fun getName() = CwtConfigIndexKeys.Symbol
 
-    override fun getVersion() = 72 // VERSION for 2.0.2
+    override fun getVersion() = 73 // VERSION for 2.0.2
 
     override fun indexData(file: PsiFile, fileData: MutableMap<String, List<CwtConfigSymbolIndexInfo>>) {
         file.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {

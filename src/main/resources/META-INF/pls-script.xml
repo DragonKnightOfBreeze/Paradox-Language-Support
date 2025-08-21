@@ -30,8 +30,6 @@
     <lang.formatter language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.formatter.ParadoxScriptFormattingModelBuilder"/>
     <codeStyleSettingsProvider implementation="icu.windea.pls.script.codeStyle.ParadoxScriptCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.script.codeStyle.ParadoxScriptLanguageCodeStyleSettingsProvider"/>
-    <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxDefinitionChooseByNameContributor"/>
-    <gotoSymbolContributor implementation="icu.windea.pls.script.navigation.ParadoxScriptedVariableChooseByNameContributor"/>
     <navbar implementation="icu.windea.pls.script.navigation.ParadoxScriptNavBar"/>
     <lang.psiStructureViewFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.script.usages.ParadoxDefinitionFileStructureGroupRuleProvider"/>

@@ -11,7 +11,7 @@ import icu.windea.pls.model.indexInfo.*
 class CwtConfigSymbolSearch : ExtensibleQueryFactory<CwtConfigSymbolIndexInfo, CwtConfigSymbolSearch.SearchParameters>(EP_NAME) {
     class SearchParameters(
         val name: String?,
-        val type: String,
+        val types: Collection<String>,
         val gameType: ParadoxGameType?,
         val project: Project,
         val scope: GlobalSearchScope
@@ -34,7 +34,21 @@ class CwtConfigSymbolSearch : ExtensibleQueryFactory<CwtConfigSymbolIndexInfo, C
             project: Project,
             scope: GlobalSearchScope
         ): Query<CwtConfigSymbolIndexInfo> {
-            return INSTANCE.createQuery(SearchParameters(name, type, gameType, project, scope))
+            return INSTANCE.createQuery(SearchParameters(name, setOf(type), gameType, project, scope))
+        }
+
+        /**
+         * @see CwtConfigSymbolSearch.SearchParameters
+         */
+        @JvmStatic
+        fun search(
+            name: String?,
+            types: Collection<String>,
+            gameType: ParadoxGameType?,
+            project: Project,
+            scope: GlobalSearchScope
+        ): Query<CwtConfigSymbolIndexInfo> {
+            return INSTANCE.createQuery(SearchParameters(name, types, gameType, project, scope))
         }
     }
 }

@@ -468,6 +468,38 @@ class PlsSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings"))
                         .bindItem(settings.hierarchy::techTreeGrouping.toNullableProperty())
                 }
             }
+            //navigation
+            collapsibleGroup(PlsBundle.message("settings.navigation")) {
+                //seForSymbols
+                row {
+                    label(PlsBundle.message("settings.navigation.seForSymbols"))
+                    contextHelp(PlsBundle.message("settings.navigation.seForSymbols.tip"))
+                }
+                indent {
+                    row {
+                        checkBox(PlsBundle.message("settings.navigation.seForScriptedVariables"))
+                            .bindSelected(settings.navigation::seForScriptedVariables)
+                        checkBox(PlsBundle.message("settings.navigation.seForDefinitions"))
+                            .bindSelected(settings.navigation::seForDefinitions)
+                        checkBox(PlsBundle.message("settings.navigation.seForLocalisations"))
+                            .bindSelected(settings.navigation::seForLocalisations)
+                        checkBox(PlsBundle.message("settings.navigation.seForSyncedLocalisations"))
+                            .bindSelected(settings.navigation::seForSyncedLocalisations)
+                    }
+                }
+                indent {
+                    row {
+                        checkBox(PlsBundle.message("settings.navigation.seForCwtTypeConfigs"))
+                            .bindSelected(settings.navigation::seForCwtTypeConfigs)
+                        checkBox(PlsBundle.message("settings.navigation.seForCwtComplexEnumConfigs"))
+                            .bindSelected(settings.navigation::seForCwtComplexEnumConfigs)
+                        checkBox(PlsBundle.message("settings.navigation.seForCwtTriggerConfigs"))
+                            .bindSelected(settings.navigation::seForCwtTriggerConfigs)
+                        checkBox(PlsBundle.message("settings.navigation.seForCwtEffectConfigs"))
+                            .bindSelected(settings.navigation::seForCwtEffectConfigs)
+                    }
+                }
+            }
             //inference
             collapsibleGroup(PlsBundle.message("settings.inference")) {
                 //configContextForParameters & configContextForParametersFast

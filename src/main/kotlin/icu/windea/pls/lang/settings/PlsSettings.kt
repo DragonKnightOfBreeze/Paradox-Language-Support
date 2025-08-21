@@ -40,9 +40,11 @@ class PlsSettingsState : BaseState() {
     @get:Property(surroundWithTag = false)
     var generation by property(GenerationState())
     @get:Property(surroundWithTag = false)
-    var inference by property(InferenceState())
-    @get:Property(surroundWithTag = false)
     var hierarchy by property(HierarchyState())
+    @get:Property(surroundWithTag = false)
+    var navigation by property(NavigationState())
+    @get:Property(surroundWithTag = false)
+    var inference by property(InferenceState())
     @get:Property(surroundWithTag = false)
     var others by property(OthersState())
 
@@ -228,6 +230,28 @@ class PlsSettingsState : BaseState() {
                 v.toCommaDelimitedStringSet().any { e -> ParadoxDefinitionTypeExpression.resolve(e).matches(definitionInfo) }
             }
         }
+    }
+
+    /**
+     * @property seForScriptedVariables 是否可在随处搜索中搜索封装变量（作为符号）。
+     * @property seForDefinitions 是否可在随处搜索中搜索定义（作为符号）。
+     * @property seForLocalisations 是否可在随处搜索中搜索本地化（作为符号）。
+     * @property seForSyncedLocalisations 是否可在随处搜索中搜索同步本地化（作为符号）。
+     * @property seForCwtTypeConfigs 是否可在随处搜索中搜索CWT类型规则（作为符号）。
+     * @property seForCwtComplexEnumConfigs 是否可在随处搜索中搜索CWT复杂枚举规则（作为符号）。
+     * @property seForCwtTriggerConfigs 是否可在随处搜索中搜索CWT触发器规则（作为符号）。
+     * @property seForCwtEffectConfigs 是否可在随处搜索中搜索CWT效果规则（作为符号）。
+     */
+    class NavigationState : BaseState() {
+        var seForScriptedVariables by property(true)
+        var seForDefinitions by property(true)
+        var seForLocalisations by property(true)
+        var seForSyncedLocalisations by property(true)
+
+        var seForCwtTypeConfigs by property(false)
+        var seForCwtComplexEnumConfigs by property(false)
+        var seForCwtTriggerConfigs by property(false)
+        var seForCwtEffectConfigs by property(false)
     }
 
     /**

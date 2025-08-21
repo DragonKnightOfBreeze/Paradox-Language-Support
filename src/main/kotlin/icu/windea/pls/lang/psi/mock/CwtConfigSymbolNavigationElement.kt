@@ -1,24 +1,23 @@
 package icu.windea.pls.lang.psi.mock
 
-import com.intellij.codeInsight.highlighting.*
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.config.*
-import icu.windea.pls.model.*
-import java.util.*
-import javax.swing.*
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import java.util.Objects
+import javax.swing.Icon
 
 /**
- * 用于为CWT规则文件中的一些符号提供对引用解析和查找用法的支持。
+ * 用于在 *随处搜索* 中查找CWT规则符号。
  */
-class CwtConfigSymbolElement(
+class CwtConfigSymbolNavigationElement(
     parent: PsiElement,
     private val name: String,
     val configType: CwtConfigType,
-    val readWriteAccess: ReadWriteAccessDetector.Access,
     val gameType: ParadoxGameType,
     private val project: Project
-) : CwtMockPsiElement(parent) {
+) : ParadoxMockPsiElement(parent) {
     override fun getIcon(): Icon? {
         return configType.icon
     }
@@ -39,8 +38,12 @@ class CwtConfigSymbolElement(
         return project
     }
 
+    override fun getNavigationElement(): PsiElement {
+        return parent
+    }
+
     override fun equals(other: Any?): Boolean {
-        return this === other || other is CwtConfigSymbolElement
+        return this === other || other is CwtConfigSymbolNavigationElement
             && name == other.name
             && configType == other.configType
             && gameType == other.gameType
@@ -51,4 +54,3 @@ class CwtConfigSymbolElement(
         return Objects.hash(name, configType, gameType, project)
     }
 }
-

@@ -28,7 +28,6 @@
     <lang.formatter language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.formatter.ParadoxLocalisationFormattingModelBuilder"/>
     <codeStyleSettingsProvider implementation="icu.windea.pls.localisation.codeStyle.ParadoxLocalisationCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider implementation="icu.windea.pls.localisation.codeStyle.ParadoxLocalisationLanguageCodeStyleSettingsProvider"/>
-    <gotoSymbolContributor implementation="icu.windea.pls.localisation.navigation.ParadoxLocalisationChooseByNameContributor"/>
     <navbar implementation="icu.windea.pls.localisation.navigation.ParadoxLocalisationNavBar"/>
     <lang.psiStructureViewFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.structureView.ParadoxLocalisationStructureViewFactory"/>
     <fileStructureGroupRuleProvider implementation="icu.windea.pls.localisation.usages.ParadoxLocalisationLocaleFileStructureGroupRuleProvider"/>

@@ -18,7 +18,7 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
         val scope = queryParameters.scope
         if (SearchScope.isEmptyScope(scope)) return
         val name = queryParameters.name
-        val type = queryParameters.type
+        val types = queryParameters.types
         val gameType = queryParameters.gameType
         val project = queryParameters.project
 
@@ -32,13 +32,15 @@ class CwtConfigSymbolSearcher : QueryExecutorBase<CwtConfigSymbolIndexInfo, CwtC
 
             val fileData = findFileBasedIndex<CwtConfigSymbolIndex>().getFileData(file, project)
             if (fileData.isEmpty()) return@p true
-            val infos = fileData[type]
-            if (infos.isNullOrEmpty()) return@p true
-            infos.forEach f@{ info ->
-                if (name != null && name != info.name) return@f
-                info.virtualFile = file
-                val r = consumer.process(info)
-                if (!r) return@p false
+            types.forEach f@{ type ->
+                val infos = fileData[type]
+                if (infos.isNullOrEmpty()) return@f
+                infos.forEach f@{ info ->
+                    if (name != null && name != info.name) return@f
+                    info.virtualFile = file
+                    val r = consumer.process(info)
+                    if (!r) return@p false
+                }
             }
 
             true
