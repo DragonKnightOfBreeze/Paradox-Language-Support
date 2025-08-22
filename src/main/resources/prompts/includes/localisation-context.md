@@ -1,14 +1,12 @@
 {# @pebvariable name="request" type="icu.windea.pls.ai.requests.ManipulateLocalisationAiRequest" #}
-{% if not request.context.isEmpty() %}
-
+{# @pebvariable name="eol" type="java.lang.String" #}
 Context information:
 {% if request.context.filePath %}
-* Current file path: {{ request.context.filePath }}
+- Current file path: {{ request.context.filePath }}{{ eol }}
 {% endif %}
 {% if request.context.fileName %}
-* Current file name: {{ request.context.fileName }}
+- Current file name: {{ request.context.fileName }}{{ eol }}
 {% endif %}
 {% if request.context.modName %}
-* Current mod name: {{ request.context.modName }}
-{% endif %}
+- Current mod name: {{ request.context.modName }}
 {% endif %}

@@ -42,16 +42,20 @@ class ReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionBas
                 rawReporter.text(stepText)
 
                 files.forEachConcurrent { file ->
-                    val elements = ParadoxLocalisationManipulator.buildFlow(file)
-                    val contextsToHandle = elements.map { readAction { ParadoxLocalisationContext.from(it) } }.filter { it.shouldHandle }
+                    val elements = findElements(e, file)
+                    val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }
+                    val contextsToHandle = contexts.filter { context -> context.shouldHandle }
+                    allContexts.addAll(contextsToHandle)
 
-                    contextsToHandle.flatMapMerge { context ->
-                        flow {
-                            runCatchingCancelable { handleText(context, selectedLocale) }.onFailure { errorRef.compareAndSet(null, it) }.getOrThrow()
-                            runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
-                            emit(context)
-                        }
-                    }.collect { context -> allContexts += context }
+                    if (contextsToHandle.isNotEmpty()) {
+                        contextsToHandle.asFlow().flatMapMerge { context ->
+                            flow {
+                                runCatchingCancelable { handleText(context, selectedLocale) }.onFailure { errorRef.compareAndSet(null, it) }.getOrThrow()
+                                runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
+                                emit(context)
+                            }
+                        }.collect()
+                    }
 
                     val processed = processedRef.incrementAndGet()
                     rawReporter.fraction(processed / total.toDouble())

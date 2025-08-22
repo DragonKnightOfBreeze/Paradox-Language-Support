@@ -20,7 +20,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.images.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.manipulators.*
 import java.io.*
 import java.util.concurrent.atomic.*
 import java.util.function.Consumer
@@ -44,15 +44,19 @@ abstract class ConvertImageFormatAction(
         return fileName.substringBeforeLast('.') + "." + targetFormatName.lowercase()
     }
 
+    protected open fun findFiles(e: AnActionEvent): Sequence<VirtualFile> {
+        return PlsFileManipulator.buildSequence(e).filter { isAvailableForFile(it) }
+    }
+
     override fun update(e: AnActionEvent) {
         val project = e.project
-        val enabled = project != null && PlsVfsManager.findFiles(e).any { isAvailableForFile(it) }
+        val enabled = project != null && findFiles(e).any()
         e.presentation.isEnabledAndVisible = enabled
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val files = PlsVfsManager.findFiles(e).filter { isAvailableForFile(it) }.mapNotNull { it.toPsiFile(project) }
+        val files = findFiles(e).mapNotNull { it.toPsiFile(project) }.toList()
         if (files.isEmpty()) return
         convert(files, project)
     }

@@ -10,6 +10,7 @@ import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.actions.*
 import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.dataFlow.*
@@ -27,27 +28,23 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
+        e.presentation.isEnabledAndVisible = false
         val project = e.project
-        if (project == null) {
-            e.presentation.isEnabledAndVisible = false
-            return
-        }
-        if (!isAvailable(e, project)) {
-            e.presentation.isEnabledAndVisible = false
-            return
-        }
-        val hasFiles = hasFiles(e, project)
-        e.presentation.isEnabledAndVisible = hasFiles
+        if (project == null) return
+        if (!isAvailable(e, project)) return
+        val files = findFiles(e, project)
+        val hasFiles = files.any()
+        e.presentation.isVisible = hasFiles
         if (!hasFiles) return
-        val hasElements = hasElements(e, project)
+        val allElements = files.flatMap { findElements(e, it) }
+        val hasElements = allElements.any()
         e.presentation.isEnabled = hasElements
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val files = findFiles(e, project)
-        if (files.isEmpty()) return
-        beforeInvokeAll(e, project, files)
+        val files = findFiles(e, project).toList()
+        if (!beforeInvokeAll(e, project, files)) return
         doInvokeAll(e, project, files)
     }
 
@@ -56,40 +53,20 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
     }
 
     protected open fun isValidFile(file: VirtualFile): Boolean {
+        if (!file.isFile) return false
         if (file.fileType !is ParadoxLocalisationFileType) return false
         if (file.fileInfo == null) return false
         if (PlsVfsManager.isLightFile(file)) return false
         return true
     }
 
-    protected open fun hasFiles(e: AnActionEvent, project: Project): Boolean {
-        var r: PsiFile? = null
-        PlsVfsManager.processFiles(e, deep = true) p@{ file ->
-            if (!isValidFile(file)) return@p true
-            r = file.toPsiFile(project) ?: return@p true
-            false
-        }
-        return r != null
+    protected open fun findFiles(e: AnActionEvent, project: Project): Sequence<PsiFile> {
+        return PlsFileManipulator.buildSequence(e, deep = true).filter { isValidFile(it) }.mapNotNull { it.toPsiFile(project) }
     }
 
-    protected open fun hasElements(e: AnActionEvent, project: Project): Boolean {
-        var r: PsiElement? = null
-        PlsVfsManager.processFiles(e, deep = true) p@{ file ->
-            if (!isValidFile(file)) return@p true
-            val psiFile = file.toPsiFile(project) ?: return@p true
-            r = findElements(psiFile).firstOrNull()
-            false
-        }
-        return r != null
-    }
-
-    protected open fun findFiles(e: AnActionEvent, project: Project): List<PsiFile> {
-        val project = e.project ?: return emptyList()
-        val files = PlsVfsManager.findFiles(e, deep = true) { file -> isValidFile(file) }
-        return files.mapNotNull { it.toPsiFile(project) }
-    }
-
-    protected open fun findElements(psiFile: PsiFile): ParadoxLocalisationSequence {
+    protected open fun findElements(e: AnActionEvent, psiFile: PsiFile): ParadoxLocalisationSequence {
+        val editor = e.editor
+        if (editor != null) return ParadoxLocalisationManipulator.buildSelectedSequence(editor, psiFile)
         return ParadoxLocalisationManipulator.buildSequence(psiFile)
     }
 

@@ -1,9 +1,4 @@
 {# @pebvariable name="request" type="icu.windea.pls.ai.requests.ManipulateLocalisationAiRequest" #}
-Format instructions:
-- Each input line follows the format `{key}: "{text}"`, where `{key}` is the entry key and `{text}` is the localisation text to be processed
-- Each output line uses the same format, with `{text}` being the processed localisation text
-- The number and order of output lines should match the input exactly
-
 The following special syntax can be used in localisation text:
 - Colored text
   - Format: `§{colorId}{richText}§!`

@@ -5,50 +5,50 @@ package icu.windea.pls.ai.util
 import com.google.common.cache.*
 import dev.langchain4j.model.chat.*
 import icu.windea.pls.ai.*
-import icu.windea.pls.ai.providers.*
+import icu.windea.pls.ai.model.ChatModelType
 import icu.windea.pls.core.*
 
 object PlsChatModelManager {
     private val chatModels: Cache<String, Any> = CacheBuilder.newBuilder().build()
     private val streamingChatModels: Cache<String, Any> = CacheBuilder.newBuilder().build()
 
-    fun getChatModelTypeToUse(): PlsChatModelType {
-        return PlsChatModelType.OPEN_AI
+    fun getChatModelTypeToUse(): ChatModelType {
+        return ChatModelType.OPEN_AI
     }
 
-    fun isAvailable(type: PlsChatModelType = getChatModelTypeToUse()): Boolean {
+    fun isAvailable(type: ChatModelType = getChatModelTypeToUse()): Boolean {
         return checkSettings(type)
     }
 
-    fun getChatModel(type: PlsChatModelType = getChatModelTypeToUse()): ChatModel? {
+    fun getChatModel(type: ChatModelType = getChatModelTypeToUse()): ChatModel? {
         return chatModels.get(type.name) {
             createChatModel(type) ?: EMPTY_OBJECT
         } as? ChatModel
     }
 
-    fun getStreamingChatModel(type: PlsChatModelType = getChatModelTypeToUse()): StreamingChatModel? {
+    fun getStreamingChatModel(type: ChatModelType = getChatModelTypeToUse()): StreamingChatModel? {
         return streamingChatModels.get(type.name) {
             createStreamingChatModel(type) ?: EMPTY_OBJECT
         } as? StreamingChatModel
     }
 
-    fun invalidateChatModel(type: PlsChatModelType = getChatModelTypeToUse()) {
+    fun invalidateChatModel(type: ChatModelType = getChatModelTypeToUse()) {
         chatModels.invalidate(type.name)
     }
 
-    fun invalidateStreamingChatModel(type: PlsChatModelType = getChatModelTypeToUse()) {
+    fun invalidateStreamingChatModel(type: ChatModelType = getChatModelTypeToUse()) {
         streamingChatModels.invalidate(type.name)
     }
 
-    private fun checkSettings(type: PlsChatModelType): Boolean {
-        return PlsChatModelProvider.get(type)?.isAvailable() ?: false
+    private fun checkSettings(type: ChatModelType): Boolean {
+        return type.provider.isAvailable()
     }
 
-    private fun createChatModel(type: PlsChatModelType): ChatModel? {
-        return PlsChatModelProvider.get(type)?.createChatModel()
+    private fun createChatModel(type: ChatModelType): ChatModel? {
+        return type.provider.createChatModel()
     }
 
-    private fun createStreamingChatModel(type: PlsChatModelType): StreamingChatModel? {
-        return PlsChatModelProvider.get(type)?.createStreamingChatModel()
+    private fun createStreamingChatModel(type: ChatModelType): StreamingChatModel? {
+        return type.provider.createStreamingChatModel()
     }
 }

@@ -5,7 +5,7 @@ import com.intellij.openapi.ui.*
 import com.intellij.ui.components.*
 import com.intellij.ui.layout.*
 import icu.windea.pls.*
-import icu.windea.pls.ai.*
+import icu.windea.pls.ai.model.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.core.util.*
 import java.util.*
@@ -43,8 +43,9 @@ object PlsAiSettingsManager {
     fun onOpenAiSettingsChanged(callbackLock: CallbackLock) {
         if (!callbackLock.check("onOpenAiSettingsChanged")) return
 
-        PlsChatModelManager.invalidateChatModel(PlsChatModelType.OPEN_AI)
-        PlsChatModelManager.invalidateStreamingChatModel(PlsChatModelType.OPEN_AI)
+        val chatModelType = ChatModelType.OPEN_AI
+        PlsChatModelManager.invalidateChatModel(chatModelType)
+        PlsChatModelManager.invalidateStreamingChatModel(chatModelType)
     }
 
     //endregion

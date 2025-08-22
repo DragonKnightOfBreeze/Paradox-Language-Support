@@ -51,7 +51,7 @@ class ReplaceLocalisationWithAiPolishingAction : ManipulateLocalisationActionBas
                 rawReporter.text(stepText)
 
                 files.forEachConcurrent { file ->
-                    val elements = findElements(file)
+                    val elements = findElements(e, file)
                     val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }
                     val contextsToHandle = contexts.filter { context -> context.shouldHandle }
                     allContexts.addAll(contextsToHandle)

@@ -18,6 +18,7 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.manipulators.*
 import icu.windea.pls.localisation.*
 import icu.windea.pls.localisation.psi.*
 
@@ -31,10 +32,10 @@ class GenerateLocalisationFileAction : AnAction() {
         e.presentation.isEnabledAndVisible = false
         val project = e.project ?: return
         val files = findFiles(e)
-        if (files.isEmpty()) return
+        if (files.none()) return
         e.presentation.isVisible = true
         val allLocales = findAllLocales()
-        val fileMap = buildFileMap(files, allLocales, project)
+        val fileMap = buildFileMap(files.toList(), allLocales, project)
         if (fileMap.isEmpty()) return
         e.presentation.isEnabled = true
     }
@@ -42,9 +43,9 @@ class GenerateLocalisationFileAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val files = findFiles(e)
-        if (files.isEmpty()) return
+        // if (files.none()) return
         val allLocales = findAllLocales()
-        val fileMap = buildFileMap(files, allLocales, project)
+        val fileMap = buildFileMap(files.toList(), allLocales, project)
         if (fileMap.isEmpty()) return
 
         val taskTitle = PlsBundle.message("progress.generateLocalisationFiles")
@@ -153,9 +154,8 @@ class GenerateLocalisationFileAction : AnAction() {
         return true
     }
 
-    private fun findFiles(e: AnActionEvent): Collection<VirtualFile> {
-        val files = PlsVfsManager.findFiles(e, deep = true) { file -> isValidFile(file) }
-        return files
+    private fun findFiles(e: AnActionEvent): Sequence<VirtualFile> {
+        return PlsFileManipulator.buildSequence(e, deep = true).filter { isValidFile(it) }
     }
 
     private fun findAllLocales(): Map<String, CwtLocaleConfig> {

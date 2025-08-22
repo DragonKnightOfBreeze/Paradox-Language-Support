@@ -4,19 +4,21 @@ import com.intellij.DynamicBundle.*
 import icu.windea.pls.ai.requests.*
 import icu.windea.pls.lang.util.manipulators.*
 import io.pebbletemplates.pebble.*
+import io.pebbletemplates.pebble.loader.*
 import java.io.*
 import java.util.Locale.*
 
 object PlsChatMessageManager {
     private val engine by lazy {
-        PebbleEngine.Builder().autoEscaping(false)
-            .build()
+        val loader = ClasspathLoader().apply { prefix = "prompts/" }
+        PebbleEngine.Builder().loader(loader).autoEscaping(false).build()
     }
 
     /**
      * 通过 [Pebble](https://github.com/PebbleTemplates/pebble) 模版引擎生成提示文本。
      *
-     * - 最终使用的模版名是`prompts/{templateId}.md`。如果界面语言是简体中文，则是`prompts/{templateId}_zh.md`。
+     * - 模版文件统一位于`prompts`目录下。
+     * - 最终使用的模版名是`{templateId}.md`。如果界面语言是简体中文，则是`prompts/{templateId}_zh.md`。
      * - 最终得到的提示文本会去除首尾空白。
      *
      * @param templateId 模版ID。
@@ -34,9 +36,8 @@ object PlsChatMessageManager {
     }
 
     private fun getTemplateName(templateId: String): String {
-        val prefix = "prompts/"
         val suffix = if (getLocale() == SIMPLIFIED_CHINESE) "_zh.md" else ".md"
-        return prefix + templateId + suffix
+        return templateId + suffix
     }
 
     fun fromLocalisationContexts(localisationContexts: List<ParadoxLocalisationContext>): String {

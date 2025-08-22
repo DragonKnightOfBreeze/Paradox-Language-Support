@@ -22,12 +22,16 @@ object ParadoxScriptManipulator {
 
     private fun doBuildMemberSequence(file: PsiFile, options: MemberOptions): Sequence<ParadoxScriptMemberElement> {
         if (file !is ParadoxScriptFile) return emptySequence()
-        val blockElement = file.block ?: return emptySequence()
-        return sequence { doYieldMembers(blockElement, options) }
+        return sequence b@{
+            val blockElement = file.block ?: return@b
+            doYieldMembers(blockElement, options)
+        }
     }
 
     private fun doBuilderMemberSequence(blockElement: PsiElement, options: MemberOptions): Sequence<ParadoxScriptMemberElement> {
-        return sequence { doYieldMembers(blockElement, options) }
+        return sequence {
+            doYieldMembers(blockElement, options)
+        }
     }
 
     private suspend fun SequenceScope<ParadoxScriptMemberElement>.doYieldMembers(element: PsiElement, options: MemberOptions) {

@@ -1,9 +1,4 @@
 {# @pebvariable name="request" type="icu.windea.pls.ai.requests.ManipulateLocalisationAiRequest" #}
-格式说明：
-- 输入每行的格式为`{key}: "{text}"`，其中`{key}`为条目的键，`{text}`为待处理的本地化文本
-- 输出每行的格式同上，`{text}`为处理后的本地化文本
-- 输出行数与输入一致，顺序保持不变
-
 在本地化文本中，可以使用以下特殊语法：
 - 彩色文本
   - 格式：`§{colorId}{richText}§!`

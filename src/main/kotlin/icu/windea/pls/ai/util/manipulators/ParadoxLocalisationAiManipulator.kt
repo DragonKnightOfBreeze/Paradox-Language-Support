@@ -54,10 +54,10 @@ object ParadoxLocalisationAiManipulator {
     }
 
     fun checkResult(context: ParadoxLocalisationContext, result: ParadoxLocalisationAiResult) {
-        if (context.key.isEmpty()) { //输出内容的格式不合法
+        if (result.key.isEmpty()) { //输出内容的格式不合法
             throw IllegalStateException(PlsBundle.message("ai.manipulation.localisation.error.2"))
         }
-        if (context.key != result.key) { //不期望的结果，直接报错，中断收集
+        if (result.key != context.key) { //不期望的结果，直接报错，中断收集
             throw IllegalStateException(PlsBundle.message("ai.manipulation.localisation.error.3", context.key, result.key))
         }
     }

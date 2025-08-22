@@ -22,6 +22,8 @@ abstract class ManipulateLocalisationAiRequest(
     class Context(request: ManipulateLocalisationAiRequest) {
         private val fileInfo: ParadoxFileInfo? by lazy { selectFile(request.file)?.fileInfo }
 
+        fun isEmpty() = fileInfo == null
+
         val gameType: ParadoxGameType by lazy { fileInfo?.rootInfo?.gameType.orDefault() }
         val filePath: String? by lazy { fileInfo?.path?.path }
         val fileName: String? by lazy { fileInfo?.path?.fileName }
