@@ -20,6 +20,7 @@
 * [X] 优化：优化编制与查询索引时的性能 / OP: Optimize the performance of building and querying indices
 * [X] 优化：可以配置可在随处搜索中搜索的符号的类型 / OP: Can configure the types of symbols that can be searched in Search Everywhere
 * [X] 优化：随处搜索也支持搜索规则文件中的符号（类型、复杂枚举等），默认不启用 / OP: Search Everywhere also supports searching symbols in config files (types, complex enums, etc.), disabled by default
+* [X] 优化：更好的用于翻译/润色本地化的AI提示 / OP: Better AI prompts for translating and polishing localizations
 * [X] 修复：修复未在必要时渲染切分后的图片的问题 / FIX: Fix an issue that images are not rendered with expected slicing if necessary
 * [X] 修复：修复某些场合未忽略字符串大小写的问题 / FIX: Fix an issue that string case is not ignored in some situations
 * [X] 修复：修复与图表（Diagrams）相关的一些问题并优化性能 / FIX: Fix some issues related to diagrams, together with performance optimization

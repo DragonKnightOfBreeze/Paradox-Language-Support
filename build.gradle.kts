@@ -249,4 +249,10 @@ tasks {
             )
         }
     }
+    withType<Test> {
+        systemProperty("idea.log.debug.categories", "icu.windea.pls")
+    }
+    register("ciTest", Test::class) {
+        exclude("**/*AiServiceTest.class")
+    }
 }

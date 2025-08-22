@@ -5,7 +5,7 @@ import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
-import com.intellij.ui.components.JBTextField
+import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.ai.*
@@ -20,19 +20,16 @@ object ParadoxLocalisationAiManipulator {
     suspend fun handleTextWithAiTranslation(request: TranslateLocalisationAiRequest, callback: suspend (ParadoxLocalisationAiResult) -> Unit) {
         val aiService = PlsAiFacade.getTranslateLocalisationService()
         val resultFlow = aiService.manipulate(request)
-        checkResultFlow(resultFlow)
-        resultFlow.collect { data ->
-            val context = request.localisationContexts[request.index]
-            checkResult(context, data)
-            context.newText = data.text
-            callback(data)
-            request.index++
-        }
+        collectResultFlow(request, resultFlow, callback)
     }
 
     suspend fun handleTextWithAiPolishing(request: PolishLocalisationAiRequest, callback: suspend (ParadoxLocalisationAiResult) -> Unit) {
         val aiService = PlsAiFacade.getPolishLocalisationService()
         val resultFlow = aiService.manipulate(request)
+        collectResultFlow(request, resultFlow, callback)
+    }
+
+    suspend fun collectResultFlow(request: ManipulateLocalisationAiRequest, resultFlow: Flow<ParadoxLocalisationAiResult>?, callback: suspend (ParadoxLocalisationAiResult) -> Unit = {}) {
         checkResultFlow(resultFlow)
         resultFlow.collect { data ->
             val context = request.localisationContexts[request.index]
@@ -44,7 +41,7 @@ object ParadoxLocalisationAiManipulator {
     }
 
     @OptIn(ExperimentalContracts::class)
-    fun checkResultFlow(resultFlow: Flow<ParadoxLocalisationAiResult>?) {
+    private fun checkResultFlow(resultFlow: Flow<ParadoxLocalisationAiResult>?) {
         contract {
             returns() implies (resultFlow != null)
         }
@@ -53,7 +50,7 @@ object ParadoxLocalisationAiManipulator {
         }
     }
 
-    fun checkResult(context: ParadoxLocalisationContext, result: ParadoxLocalisationAiResult) {
+    private fun checkResult(context: ParadoxLocalisationContext, result: ParadoxLocalisationAiResult) {
         if (result.key.isEmpty()) { //输出内容的格式不合法
             throw IllegalStateException(PlsBundle.message("ai.manipulation.localisation.error.2"))
         }
