@@ -28,7 +28,7 @@ class ReplaceLocalisationWithAiPolishingAction : ManipulateLocalisationActionBas
     }
 
     override fun createPopup(e: AnActionEvent, project: Project, callback: (String) -> Unit): JBPopup {
-        return ParadoxLocalisationAiManipulator.createDescriptionPopup(project, "POLISH", callback)
+        return ParadoxLocalisationAiManipulator.createPopup(project, callback)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

@@ -32,7 +32,7 @@ class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationInte
     }
 
     override fun createPopup(project: Project, editor: Editor, file: PsiFile, callback: (String) -> Unit): JBPopup {
-        return ParadoxLocalisationAiManipulator.createDescriptionPopup(project, "TRANSLATE", callback)
+        return ParadoxLocalisationAiManipulator.createPopup(project, callback)
     }
 
     @Suppress("UnstableApiUsage")

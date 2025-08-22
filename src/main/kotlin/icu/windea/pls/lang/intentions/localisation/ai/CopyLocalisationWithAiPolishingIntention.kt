@@ -35,7 +35,7 @@ class CopyLocalisationWithAiPolishingIntention : ManipulateLocalisationIntention
     }
 
     override fun createPopup(project: Project, editor: Editor, file: PsiFile, callback: (String) -> Unit): JBPopup {
-        return ParadoxLocalisationAiManipulator.createDescriptionPopup(project, "POLISH", callback)
+        return ParadoxLocalisationAiManipulator.createPopup(project, callback)
     }
 
     @Suppress("UnstableApiUsage")

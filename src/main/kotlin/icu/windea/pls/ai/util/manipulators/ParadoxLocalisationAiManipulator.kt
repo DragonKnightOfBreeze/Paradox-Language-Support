@@ -5,12 +5,11 @@ import com.intellij.openapi.observable.properties.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.*
 import com.intellij.openapi.ui.popup.util.*
-import com.intellij.ui.*
+import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.ai.PlsAiFacade
-import icu.windea.pls.ai.requests.PolishLocalisationAiRequest
-import icu.windea.pls.ai.requests.TranslateLocalisationAiRequest
+import icu.windea.pls.ai.*
+import icu.windea.pls.ai.requests.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.util.manipulators.*
 import kotlinx.coroutines.flow.*
@@ -68,13 +67,15 @@ object ParadoxLocalisationAiManipulator {
     }
 
     //ee.carlrobert.codegpt.ui.EditCodePopover
-    fun createDescriptionPopup(project: Project, id: String, callback: (String) -> Unit): JBPopup {
+    fun createPopup(
+        project: Project,
+        callback: (String) -> Unit
+    ): JBPopup {
         val submitted = AtomicBooleanProperty(false)
-        val historyPropertyName = "PLS_AI_LOCALISATION_DESCRIPTION_KEYS.$id"
-        val textField = TextFieldWithStoredHistory(historyPropertyName).apply { textEditor.addActionListener { submitted.set(true) } }
+        val textField = JBTextField().apply { addActionListener { submitted.set(true) } } //目前不使用 TextFieldWithStoredHistory
         val panel = panel {
             row {
-                cell(textField).align(AlignX.FILL).focused().columns(COLUMNS_LARGE).smaller()
+                cell(textField).align(AlignX.FILL).focused().smaller()
             }
             row {
                 comment(PlsBundle.message("ai.manipulation.localisation.popup.comment")).align(AlignX.LEFT).smaller()
@@ -94,9 +95,9 @@ object ParadoxLocalisationAiManipulator {
             .setRequestFocus(true)
             .setCancelOnClickOutside(false)
             .setCancelOnWindowDeactivation(false)
-            .setCancelOnOtherWindowOpen(false)
             .setCancelButton(MinimizeButton(IdeBundle.message("tooltip.hide")))
             .setMinSize(Dimension(640, 120))
+            .setDimensionServiceKey(project, "PLS_AI_LOCALISATION_MANIPULATION_POPUP", false)
             .setOkHandler { callback(textField.text.trim()) }
             .createPopup()
         submitted.afterSet { popup.closeOk(null) }
