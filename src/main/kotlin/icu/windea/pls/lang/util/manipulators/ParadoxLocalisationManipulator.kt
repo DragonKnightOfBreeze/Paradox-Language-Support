@@ -18,40 +18,59 @@ import icu.windea.pls.integrations.translation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.localisation.psi.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.coroutines.*
+import icu.windea.pls.lang.util.dataFlow.ParadoxDataFlowOptions.Localisation as LocalisationOptions
 
 object ParadoxLocalisationManipulator {
-    fun buildSequence(file: PsiFile): Sequence<ParadoxLocalisationProperty> {
+    fun buildSequence(file: PsiFile): ParadoxLocalisationSequence {
+        val options = LocalisationOptions()
+        val delegate = doBuildSequence(file, options)
+        return ParadoxLocalisationSequence(delegate, options)
+    }
+
+    @Suppress("unused")
+    fun buildSequence(propertyList: ParadoxLocalisationPropertyList): ParadoxLocalisationSequence {
+        val options = LocalisationOptions()
+        val delegate = doBuildSequence(propertyList, options)
+        return ParadoxLocalisationSequence(delegate, options)
+    }
+
+    fun buildSelectedSequence(editor: Editor, file: PsiFile): ParadoxLocalisationSequence {
+        val options = LocalisationOptions()
+        val delegate = doBuildSelectedSequence(file, editor, options)
+        return ParadoxLocalisationSequence(delegate, options)
+    }
+
+    private fun doBuildSequence(file: PsiFile, options: LocalisationOptions): Sequence<ParadoxLocalisationProperty> {
         if (file !is ParadoxLocalisationFile) return emptySequence()
-        return sequence {
-            file.children().filterIsInstance<ParadoxLocalisationPropertyList>().flatMap { buildSequence(it) }
-        }
+        return file.children(options.forward).filterIsInstance<ParadoxLocalisationPropertyList>().flatMap { doBuildSequence(it, options) }
     }
 
-    fun buildSequence(propertyList: ParadoxLocalisationPropertyList): Sequence<ParadoxLocalisationProperty> {
-        return propertyList.children().filterIsInstance<ParadoxLocalisationProperty>()
+    private fun doBuildSequence(propertyList: ParadoxLocalisationPropertyList, options: LocalisationOptions): Sequence<ParadoxLocalisationProperty> {
+        return propertyList.children(options.forward).filterIsInstance<ParadoxLocalisationProperty>()
     }
 
-    fun buildSelectedSequence(editor: Editor, file: PsiFile): Sequence<ParadoxLocalisationProperty> {
+    private fun doBuildSelectedSequence(file: PsiFile, editor: Editor, options: LocalisationOptions): Sequence<ParadoxLocalisationProperty> {
         if (file !is ParadoxLocalisationFile) return emptySequence()
 
         val locale = file.findElementAt(editor.caretModel.offset) { it.parentOfType<ParadoxLocalisationLocale>(withSelf = true) }
-        if (locale != null) return doBuildSelectedSequenceOf(locale)
+        if (locale != null) return doBuildSelectedSequenceOf(locale, options)
 
         val selectionStart = editor.selectionModel.selectionStart
         val selectionEnd = editor.selectionModel.selectionEnd
-        return doBuildSelectedSequenceBetween(file, selectionStart, selectionEnd)
+        return doBuildSelectedSequenceBetween(file, selectionStart, selectionEnd, options)
     }
 
-    private fun doBuildSelectedSequenceOf(locale: ParadoxLocalisationLocale): Sequence<ParadoxLocalisationProperty> {
+    private fun doBuildSelectedSequenceOf(locale: ParadoxLocalisationLocale, options: LocalisationOptions): Sequence<ParadoxLocalisationProperty> {
         val propertyList = locale.parent?.castOrNull<ParadoxLocalisationPropertyList>() ?: return emptySequence()
-        return buildSequence(propertyList)
+        return doBuildSequence(propertyList, options)
     }
 
-    private fun doBuildSelectedSequenceBetween(file: PsiFile, start: Int, end: Int): Sequence<ParadoxLocalisationProperty> {
+    private fun doBuildSelectedSequenceBetween(file: PsiFile, start: Int, end: Int, options: LocalisationOptions): Sequence<ParadoxLocalisationProperty> {
         if (start == end) {
             val originalElement = file.findElementAt(start)
             val element = originalElement?.parentOfType<ParadoxLocalisationProperty>() ?: return emptySequence()
@@ -68,7 +87,8 @@ object ParadoxLocalisationManipulator {
         }
         val listElement = startElement?.parent ?: endElement?.parent ?: return emptySequence()
         val firstElement = startElement ?: listElement.firstChild ?: return emptySequence()
-        val forward = if (endElement == null) true else firstElement.startOffset <= endElement.startOffset
+        val forwardFirst = if (endElement == null) true else firstElement.startOffset <= endElement.startOffset
+        val forward  = if(options.forward) forwardFirst else !forwardFirst
         return sequence {
             firstElement.siblings(forward = forward, withSelf = true).forEach {
                 if (it is ParadoxLocalisationProperty) yield(it)

@@ -12,16 +12,17 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.actions.*
+import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.lang.util.manipulators.*
 import kotlinx.coroutines.*
 import java.util.function.*
 
 sealed class InsertRowActionBase(private val above: Boolean) : ManipulateRowActionBase() {
-    override fun findElements(e: AnActionEvent, file: PsiFile): Sequence<ParadoxCsvRow> {
-        return super.findElements(e, file).letUnless(above) { it.reversed() }
+    override fun findElements(e: AnActionEvent, file: PsiFile): ParadoxRowSequence {
+        return super.findElements(e, file).options(forward = above)
     }
 
-    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>) {
+    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence) {
         val anchorRow = elements.firstOrNull() ?: return
         val container = anchorRow.parent ?: return
         val project = file.project
@@ -46,15 +47,15 @@ class InsertRowAboveAction : InsertRowActionBase(above = true)
 class InsertRowBelowAction : InsertRowActionBase(above = false)
 
 sealed class MoveRowActionBase(private val above: Boolean) : ManipulateRowActionBase() {
-    override fun findElements(e: AnActionEvent, file: PsiFile): Sequence<ParadoxCsvRow> {
-        return super.findElements(e, file).letUnless(above) { it.reversed() }
+    override fun findElements(e: AnActionEvent, file: PsiFile): ParadoxRowSequence {
+        return super.findElements(e, file).options(forward = above)
     }
 
-    override fun isEnabled(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>): Boolean {
+    override fun isEnabled(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence): Boolean {
         return elements.firstOrNull()?.findOtherRow() != null
     }
 
-    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>) {
+    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence) {
         //实际上是交换而非移动
 
         val project = file.project
@@ -80,7 +81,7 @@ sealed class MoveRowActionBase(private val above: Boolean) : ManipulateRowAction
 }
 
 class MoveRowUpAction : MoveRowActionBase(above = true) {
-    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>): Supplier<String> {
+    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence): Supplier<String> {
         return Supplier {
             when {
                 runReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.MoveRowUp.text")
@@ -91,7 +92,7 @@ class MoveRowUpAction : MoveRowActionBase(above = true) {
 }
 
 class MoveRowDownAction : MoveRowActionBase(above = false) {
-    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>): Supplier<String> {
+    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence): Supplier<String> {
         return Supplier {
             when {
                 runReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.MoveRowDown.text")
@@ -102,7 +103,7 @@ class MoveRowDownAction : MoveRowActionBase(above = false) {
 }
 
 class SelectRowAction : ManipulateRowActionBase() {
-    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>): Supplier<String> {
+    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence): Supplier<String> {
         return Supplier {
             when {
                 runReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.SelectRow.text")
@@ -111,7 +112,7 @@ class SelectRowAction : ManipulateRowActionBase() {
         }
     }
 
-    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>) {
+    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence) {
         val project = file.project
         val editor = e.editor ?: return
         val coroutineScope = PlsFacade.getCoroutineScope(project)
@@ -127,7 +128,7 @@ class SelectRowAction : ManipulateRowActionBase() {
 }
 
 class RemoveRowAction : ManipulateRowActionBase() {
-    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>): Supplier<String> {
+    override fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence): Supplier<String> {
         return Supplier {
             when {
                 runReadAction { elements.singleOrNull() } != null -> PlsBundle.message("action.Pls.Manipulation.RemoveRow.text")
@@ -136,7 +137,7 @@ class RemoveRowAction : ManipulateRowActionBase() {
         }
     }
 
-    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>) {
+    override fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence) {
         val project = file.project
         val coroutineScope = PlsFacade.getCoroutineScope(project)
         coroutineScope.launch {

@@ -12,9 +12,9 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.ui.locale.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.lang.util.manipulators.*
 import icu.windea.pls.localisation.*
-import icu.windea.pls.localisation.psi.*
 import kotlinx.coroutines.*
 
 /**
@@ -89,7 +89,7 @@ abstract class ManipulateLocalisationActionBase<C> : AnAction() {
         return files.mapNotNull { it.toPsiFile(project) }
     }
 
-    protected open fun findElements(psiFile: PsiFile): Sequence<ParadoxLocalisationProperty> {
+    protected open fun findElements(psiFile: PsiFile): ParadoxLocalisationSequence {
         return ParadoxLocalisationManipulator.buildSequence(psiFile)
     }
 

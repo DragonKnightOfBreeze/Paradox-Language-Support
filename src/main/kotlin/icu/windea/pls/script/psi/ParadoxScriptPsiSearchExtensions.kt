@@ -9,54 +9,33 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.lang.util.manipulators.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.*
 
-fun ParadoxScriptFile.members(conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMemberElement> {
-    val options = ParadoxScriptMemberSequenceOptions(conditional, inline)
-    return ParadoxScriptManipulator.buildMemberSequence(this, options)
+fun ParadoxScriptFile.members(): ParadoxMemberSequence {
+    return ParadoxScriptManipulator.buildMemberSequence(this)
 }
 
-fun ParadoxScriptMemberContainer.members(conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptMemberElement> {
-    val options = ParadoxScriptMemberSequenceOptions(conditional, inline)
-    return ParadoxScriptManipulator.buildMemberSequence(this, options)
+fun ParadoxScriptMemberContainer.members(): ParadoxMemberSequence {
+    return ParadoxScriptManipulator.buildMemberSequence(this)
 }
 
-fun ParadoxScriptFile.properties(conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptProperty> {
-    val options = ParadoxScriptMemberSequenceOptions(conditional, inline)
-    return ParadoxScriptManipulator.buildMemberSequence(this, options).filterIsInstance<ParadoxScriptProperty>()
+fun ParadoxScriptFile.properties(): ParadoxPropertySequence {
+    return ParadoxScriptManipulator.buildMemberSequence(this).transform { filterIsInstance<ParadoxScriptProperty>() }
 }
 
-fun ParadoxScriptMemberContainer.properties(conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptProperty> {
-    val options = ParadoxScriptMemberSequenceOptions(conditional, inline)
-    return ParadoxScriptManipulator.buildMemberSequence(this, options).filterIsInstance<ParadoxScriptProperty>()
+fun ParadoxScriptMemberContainer.properties(): ParadoxPropertySequence {
+    return ParadoxScriptManipulator.buildMemberSequence(this).transform { filterIsInstance<ParadoxScriptProperty>() }
 }
 
-fun ParadoxScriptFile.values(conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptValue> {
-    val options = ParadoxScriptMemberSequenceOptions(conditional, inline)
-    return ParadoxScriptManipulator.buildMemberSequence(this, options).filterIsInstance<ParadoxScriptValue>()
+fun ParadoxScriptFile.values(): ParadoxValueSequence {
+    return ParadoxScriptManipulator.buildMemberSequence(this).transform { filterIsInstance<ParadoxScriptValue>() }
 }
 
-fun ParadoxScriptMemberContainer.values(conditional: Boolean = false, inline: Boolean = false): Sequence<ParadoxScriptValue> {
-    val options = ParadoxScriptMemberSequenceOptions(conditional, inline)
-    return ParadoxScriptManipulator.buildMemberSequence(this, options).filterIsInstance<ParadoxScriptValue>()
-}
-
-/**
- * 向上得到第一个定义。
- * 可能为null，可能为自身。
- */
-fun PsiElement.findParentDefinition(): ParadoxScriptDefinitionElement? {
-    if (language !is ParadoxScriptLanguage) return null
-    var current: PsiElement = this
-    while (current !is PsiDirectory) {
-        ProgressManager.checkCanceled()
-        if (current is ParadoxScriptDefinitionElement && current.definitionInfo != null) return current
-        current = current.parent ?: break
-    }
-    return null
+fun ParadoxScriptMemberContainer.values(): ParadoxValueSequence {
+    return ParadoxScriptManipulator.buildMemberSequence(this).transform { filterIsInstance<ParadoxScriptValue>() }
 }
 
 /**
@@ -79,7 +58,7 @@ fun PsiElement.findProperty(
         else -> null
     }
     var result: ParadoxScriptProperty? = null
-    block?.properties(conditional, inline)?.process {
+    block?.properties()?.options(conditional, inline)?.process {
         if (propertyName == null || propertyName.equals(it.name, ignoreCase)) {
             result = it
             false
@@ -108,7 +87,7 @@ fun PsiElement.findProperty(
         else -> null
     }
     var result: ParadoxScriptProperty? = null
-    block?.properties(conditional, inline)?.process {
+    block?.properties()?.options(conditional, inline)?.process {
         if (propertyPredicate(it.name)) {
             result = it
             false
@@ -117,6 +96,60 @@ fun PsiElement.findProperty(
         }
     }
     return result
+}
+
+/**
+ * 基于路径向下查找指定的属性或值。如果路径为空，则返回查找到的第一个属性或值。
+ * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
+ * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
+ * @see ParadoxExpressionPath
+ * @see ParadoxScriptMemberElement
+ */
+fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
+    path: String,
+    targetType: Class<T>,
+    ignoreCase: Boolean = true,
+    conditional: Boolean = false,
+    inline: Boolean = false
+): T? {
+    if (language !is ParadoxScriptLanguage) return null
+    var current: ParadoxScriptMemberElement = this
+    if (path.isNotEmpty()) {
+        val elementPath = ParadoxExpressionPath.resolve(path)
+        for (subPath in elementPath.subPaths) {
+            if (subPath == "-") {
+                return null //TODO 暂不支持
+            } else {
+                current = current.findProperty(subPath, ignoreCase, conditional, inline) ?: return null
+            }
+        }
+    } else {
+        current = current.findProperty("", ignoreCase, conditional, inline) ?: return null
+    }
+    when {
+        ParadoxScriptProperty::class.java.isAssignableFrom(targetType) -> {
+            return current.castOrNull<ParadoxScriptProperty>() as? T
+        }
+        ParadoxScriptValue::class.java.isAssignableFrom(targetType) -> {
+            return current.castOrNull<ParadoxScriptProperty>()?.propertyValue<ParadoxScriptValue>() as? T
+        }
+    }
+    return null
+}
+
+/**
+ * 向上得到第一个定义。
+ * 可能为null，可能为自身。
+ */
+fun PsiElement.findParentDefinition(): ParadoxScriptDefinitionElement? {
+    if (language !is ParadoxScriptLanguage) return null
+    var current: PsiElement = this
+    while (current !is PsiDirectory) {
+        ProgressManager.checkCanceled()
+        if (current is ParadoxScriptDefinitionElement && current.definitionInfo != null) return current
+        current = current.parent ?: break
+    }
+    return null
 }
 
 /**
@@ -174,45 +207,6 @@ fun PsiElement.findParentProperty(
 }
 
 /**
- * 基于路径向下查找指定的属性或值。如果路径为空，则返回查找到的第一个属性或值。
- * @param conditional 是否也包括间接作为其中的参数表达式的子节点的属性。
- * @param inline 是否处理需要内联脚本片段（如，内联脚本）的情况。
- * @see ParadoxExpressionPath
- * @see ParadoxScriptMemberElement
- */
-fun <T : ParadoxScriptMemberElement> ParadoxScriptMemberElement.findByPath(
-    path: String,
-    targetType: Class<T>,
-    ignoreCase: Boolean = true,
-    conditional: Boolean = false,
-    inline: Boolean = false
-): T? {
-    if (language !is ParadoxScriptLanguage) return null
-    var current: ParadoxScriptMemberElement = this
-    if (path.isNotEmpty()) {
-        val elementPath = ParadoxExpressionPath.resolve(path)
-        for (subPath in elementPath.subPaths) {
-            if (subPath == "-") {
-                return null //TODO 暂不支持
-            } else {
-                current = current.findProperty(subPath, ignoreCase, conditional, inline) ?: return null
-            }
-        }
-    } else {
-        current = current.findProperty("", ignoreCase, conditional, inline) ?: return null
-    }
-    when {
-        ParadoxScriptProperty::class.java.isAssignableFrom(targetType) -> {
-            return current.castOrNull<ParadoxScriptProperty>() as? T
-        }
-        ParadoxScriptValue::class.java.isAssignableFrom(targetType) -> {
-            return current.castOrNull<ParadoxScriptProperty>()?.propertyValue<ParadoxScriptValue>() as? T
-        }
-    }
-    return null
-}
-
-/**
  * 基于路径向上查找指定的属性。如果路径为空，则返回查找到的第一个属性或值。
  * @param definitionType 如果不为null则在查找到指定的属性之后再向上查找一层属性，并要求其是定义，如果接着不为空字符串则要求匹配该定义类型表达式。
  * @see ParadoxExpressionPath
@@ -228,8 +222,8 @@ fun ParadoxScriptMemberElement.findParentByPath(
     var current: ParadoxScriptMemberElement = this
     if (path.isNotEmpty()) {
         val elementPath = ParadoxExpressionPath.resolve(path)
-        for(subPath in elementPath.subPaths.reversed()) {
-            if(subPath == "-") {
+        for (subPath in elementPath.subPaths.reversed()) {
+            if (subPath == "-") {
                 current = current.parentOfType<ParadoxScriptBlock>() ?: return null
             } else {
                 current = current.findParentProperty(subPath, ignoreCase) ?: return null

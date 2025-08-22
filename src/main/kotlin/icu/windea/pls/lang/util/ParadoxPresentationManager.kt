@@ -9,6 +9,7 @@ import icu.windea.pls.ep.presentation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
@@ -45,7 +46,7 @@ object ParadoxPresentationManager {
 
     fun getProperties(definition: ParadoxScriptDefinitionElement, keys: Collection<String>): TreeSet<ParadoxScriptProperty> {
         val properties = sortedSetOf<ParadoxScriptProperty>(compareBy { keys.indexOf(it.name.lowercase()) })
-        definition.block?.properties(conditional = true, inline = true)?.forEach {
+        definition.block?.properties()?.options(conditional = true, inline = true)?.forEach {
             if (it.name.lowercase() in keys) properties.add(it)
         }
         return properties

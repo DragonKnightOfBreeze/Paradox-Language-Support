@@ -7,6 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 
@@ -25,7 +26,7 @@ class MismatchedEventIdInspection : LocalInspectionTool() {
 
     override fun checkFile(file: PsiFile, manager: InspectionManager, isOnTheFly: Boolean): Array<ProblemDescriptor>? {
         if (file !is ParadoxScriptFile) return null
-        val properties = file.properties(inline = true)
+        val properties = file.properties().options(inline = true)
         val namespace2Events = mutableMapOf<String, MutableList<ParadoxScriptProperty>>()
         var nextNamespace = ""
         for (property in properties) {

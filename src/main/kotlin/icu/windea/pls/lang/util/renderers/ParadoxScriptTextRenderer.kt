@@ -6,9 +6,7 @@ import icu.windea.pls.script.psi.*
 
 class ParadoxScriptTextRenderer(
     val builder: StringBuilder = StringBuilder(),
-    var renderInBlock: Boolean = false,
-    var conditional: Boolean = false,
-    var inline: Boolean = false,
+    var renderInBlock: Boolean = false
 ) {
     fun render(element: ParadoxScriptMemberElement): String {
         renderTo(element)
@@ -39,7 +37,7 @@ class ParadoxScriptTextRenderer(
         when {
             renderInBlock && element is ParadoxScriptBlock -> {
                 builder.append("{ ")
-                element.members(conditional, inline).forEach f@{
+                element.members().forEach f@{
                     when {
                         it is ParadoxScriptProperty -> renderPropertyTo(it)
                         it is ParadoxScriptValue -> renderValueTo(it)

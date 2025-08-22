@@ -28,7 +28,7 @@ class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.Wit
         val (files, selectedLocale) = context
         withBackgroundProgress(project, PlsBundle.message("action.replaceLocalisationFromLocale.progress.title", selectedLocale.text)) action@{
             val total = files.size
-            val contexts = mutableListOf<ParadoxLocalisationContext>().synced()
+            val allContexts = mutableListOf<ParadoxLocalisationContext>().synced()
             val processedRef = AtomicInteger()
             val errorRef = AtomicReference<Throwable>()
 
@@ -38,17 +38,15 @@ class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.Wit
 
                 files.forEachConcurrent { file ->
                     val elements = ParadoxLocalisationManipulator.buildFlow(file)
-                    elements.transform { element ->
-                        val context = readAction { ParadoxLocalisationContext.from(element) }
-                        if (!context.shouldHandle) return@transform
-                        emit(context)
-                    }.flatMapMerge { context ->
+                    val contextsToHandle = elements.map { readAction { ParadoxLocalisationContext.from(it) } }.filter { it.shouldHandle }
+
+                    contextsToHandle.flatMapMerge { context ->
                         flow {
                             runCatchingCancelable { handleText(context, project, selectedLocale) }.onFailure { errorRef.compareAndSet(null, it) }.getOrThrow()
                             runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
                             emit(context)
                         }
-                    }.collect { context -> contexts += context }
+                    }.collect { context -> allContexts += context }
 
                     val processed = processedRef.incrementAndGet()
                     rawReporter.fraction(processed / total.toDouble())
@@ -57,8 +55,8 @@ class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.Wit
             }
 
             createNotification(selectedLocale, processedRef.get(), errorRef.get())
-                .addAction(ParadoxLocalisationManipulator.createRevertAction(contexts))
-                .addAction(ParadoxLocalisationManipulator.createReapplyAction(contexts))
+                .addAction(ParadoxLocalisationManipulator.createRevertAction(allContexts))
+                .addAction(ParadoxLocalisationManipulator.createReapplyAction(allContexts))
                 .notify(project)
         }
     }

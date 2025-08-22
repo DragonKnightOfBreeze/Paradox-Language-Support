@@ -30,7 +30,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.references.csv.*
@@ -38,6 +37,7 @@ import icu.windea.pls.lang.references.localisation.*
 import icu.windea.pls.lang.references.script.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.ResultValue
+import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.editor.*
@@ -666,7 +666,7 @@ object ParadoxExpressionManager {
         }
         ProgressManager.checkCanceled()
         //注意这里需要考虑内联和可选的情况
-        blockElement.members(conditional = true, inline = true).forEach f@{ data ->
+        blockElement.members().options(conditional = true, inline = true).forEach f@{ data ->
             val expression = when {
                 data is ParadoxScriptProperty -> ParadoxScriptExpression.resolve(data.propertyKey)
                 data is ParadoxScriptValue -> ParadoxScriptExpression.resolve(data)

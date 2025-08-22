@@ -14,6 +14,7 @@ import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Result
+import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
@@ -43,7 +44,7 @@ class BaseParadoxScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
                     if (keys.isEmpty()) return@p true
                     val actualKeys = mutableSetOf<String>()
                     //注意这里需要考虑内联和可选的情况
-                    blockElement.members(conditional = true, inline = true).forEach {
+                    blockElement.members().options(conditional = true, inline = true).forEach {
                         if (it is ParadoxScriptProperty) actualKeys.add(it.name)
                     }
                     actualKeys.any { it in keys }

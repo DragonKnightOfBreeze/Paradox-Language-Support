@@ -15,9 +15,9 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.index.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.search.scope.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.*
@@ -319,7 +319,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
                             val scopesBlockElement = scopesElement.block ?: return@p false
                             val scopeContextOfScopesElement = ParadoxScopeManager.getSwitchedScopeContext(scopesElement)
                             val map = mutableMapOf<String, String>()
-                            scopesBlockElement.properties(inline = true).forEach f@{
+                            scopesBlockElement.properties().options(inline = true).forEach f@{
                                 ProgressManager.checkCanceled()
                                 val n = it.name.lowercase()
                                 if (configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@f
@@ -469,7 +469,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
                             val scopesBlockElement = scopesElement.block ?: return@p false
                             val scopeContextOfScopesElement = ParadoxScopeManager.getSwitchedScopeContext(scopesElement)
                             val map = mutableMapOf<String, String>()
-                            scopesBlockElement.properties(inline = true).forEach f@{
+                            scopesBlockElement.properties().options(inline = true).forEach f@{
                                 ProgressManager.checkCanceled()
                                 val n = it.name.lowercase()
                                 if (configGroup.systemScopes.get(n)?.baseId?.lowercase() != "from") return@f

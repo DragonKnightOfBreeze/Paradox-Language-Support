@@ -4,6 +4,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.*
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.actions.*
+import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.lang.util.manipulators.*
 import java.util.function.*
 
@@ -32,23 +33,23 @@ abstract class ManipulateColumnActionBase : AnAction() {
         doInvoke(e, file, elements)
     }
 
-    protected open fun findElements(e: AnActionEvent, file: ParadoxCsvFile): Sequence<ParadoxCsvColumn> {
-        val editor = e.editor ?: return emptySequence()
+    protected open fun findElements(e: AnActionEvent, file: ParadoxCsvFile): ParadoxColumnSequence {
+        val editor = e.editor ?: return ParadoxColumnSequence()
         return ParadoxCsvManipulator.buildSelectedColumnSequence(editor, file)
     }
 
-    protected open fun getTextProvider(e: AnActionEvent, file: ParadoxCsvFile, elements: Sequence<ParadoxCsvColumn>): Supplier<String>? {
+    protected open fun getTextProvider(e: AnActionEvent, file: ParadoxCsvFile, elements: ParadoxColumnSequence): Supplier<String>? {
         return null
     }
 
-    protected open fun isAvailable(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvColumn>): Boolean {
+    protected open fun isAvailable(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence): Boolean {
         return elements.any()
     }
 
-    protected open fun isEnabled(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvColumn>): Boolean {
+    protected open fun isEnabled(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence): Boolean {
         return true
     }
 
-    abstract fun doInvoke(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvColumn>)
+    abstract fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxColumnSequence)
 }
 

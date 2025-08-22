@@ -2,6 +2,7 @@ package icu.windea.pls.lang.util.data
 
 import com.intellij.psi.*
 import icu.windea.pls.core.*
+import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxScriptDataResolver {
@@ -26,7 +27,7 @@ object ParadoxScriptDataResolver {
     fun resolveBlock(element: ParadoxScriptBlockElement, conditional: Boolean = false, inline: Boolean = false): ParadoxScriptData {
         val value = element as? ParadoxScriptBlock
         val children: MutableList<ParadoxScriptData> = mutableListOf()
-        element.members(conditional, inline).forEach { e ->
+        element.members().options(conditional, inline).forEach { e ->
             when {
                 e is ParadoxScriptValue -> resolveValue(e).let { children.add(it) }
                 e is ParadoxScriptProperty -> resolveProperty(e)?.let { children.add(it) }

@@ -4,6 +4,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.psi.*
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.actions.*
+import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.lang.util.manipulators.*
 import java.util.function.*
 
@@ -32,22 +33,22 @@ abstract class ManipulateRowActionBase : AnAction() {
         doInvoke(e, file, elements)
     }
 
-    protected open fun findElements(e: AnActionEvent, file: PsiFile): Sequence<ParadoxCsvRow> {
-        val editor = e.editor ?: return emptySequence()
+    protected open fun findElements(e: AnActionEvent, file: PsiFile): ParadoxRowSequence {
+        val editor = e.editor ?: return ParadoxRowSequence()
         return ParadoxCsvManipulator.buildSelectedRowSequence(editor, file)
     }
 
-    protected open fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>): Supplier<String>? {
+    protected open fun getTextProvider(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence): Supplier<String>? {
         return null
     }
 
-    protected open fun isAvailable(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>): Boolean {
+    protected open fun isAvailable(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence): Boolean {
         return elements.any()
     }
 
-    protected open fun isEnabled(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>): Boolean {
+    protected open fun isEnabled(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence): Boolean {
         return true
     }
 
-    abstract fun doInvoke(e: AnActionEvent, file: PsiFile, elements: Sequence<ParadoxCsvRow>)
+    abstract fun doInvoke(e: AnActionEvent, file: PsiFile, elements: ParadoxRowSequence)
 }

@@ -8,6 +8,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 
@@ -26,7 +27,7 @@ class NonTriggeredEventInspection : LocalInspectionTool() {
         if (file !is ParadoxScriptFile) return null
         val holder = ProblemsHolder(manager, file, isOnTheFly)
 
-        file.properties(inline = true).forEach f@{ element ->
+        file.properties().options(inline = true).forEach f@{ element ->
             val definitionInfo = element.definitionInfo ?: return@f
             if (definitionInfo.type != ParadoxDefinitionTypes.Event) return@f
             if ("triggered" !in definitionInfo.typeConfig.subtypes.keys) return@f  //no "triggered" subtype declared, skip

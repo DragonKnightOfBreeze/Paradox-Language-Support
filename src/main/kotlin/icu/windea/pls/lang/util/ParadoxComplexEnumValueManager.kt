@@ -19,6 +19,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
+import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
@@ -148,7 +149,7 @@ object ParadoxComplexEnumValueManager {
                 c is CwtPropertyConfig -> {
                     //ignore same config or enum name config
                     if (c == config || c.key == "enum_name" || c.stringValue == "enum_name") return@forEach
-                    val notMatched = parentBlockElement.properties(inline = true).none { propElement ->
+                    val notMatched = parentBlockElement.properties().options(inline = true).none { propElement ->
                         doMatchProperty(propElement, c, complexEnumConfig)
                     }
                     if (notMatched) return false
@@ -156,7 +157,7 @@ object ParadoxComplexEnumValueManager {
                 c is CwtValueConfig -> {
                     //ignore same config or enum name config
                     if (c == config || c.stringValue == "enum_name") return@forEach
-                    val notMatched = parentBlockElement.values(inline = true).none { valueElement ->
+                    val notMatched = parentBlockElement.values().options(inline = true).none { valueElement ->
                         doMatchValue(valueElement, c, complexEnumConfig)
                     }
                     if (notMatched) return false
@@ -216,14 +217,14 @@ object ParadoxComplexEnumValueManager {
     private fun doMatchBlock(blockElement: ParadoxScriptBlockElement, config: CwtMemberConfig<*>, complexEnumConfig: CwtComplexEnumConfig): Boolean {
         config.properties?.forEach { propConfig ->
             ProgressManager.checkCanceled()
-            val notMatched = blockElement.properties(inline = true).none { propElement ->
+            val notMatched = blockElement.properties().options(inline = true).none { propElement ->
                 doMatchProperty(propElement, propConfig, complexEnumConfig)
             }
             if (notMatched) return false
         }
         config.values?.forEach { valueConfig ->
             ProgressManager.checkCanceled()
-            val notMatched = blockElement.values(inline = true).none { valueElement ->
+            val notMatched = blockElement.values().options(inline = true).none { valueElement ->
                 doMatchValue(valueElement, valueConfig, complexEnumConfig)
             }
             if (notMatched) return false
