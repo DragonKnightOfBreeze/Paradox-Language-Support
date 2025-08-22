@@ -53,7 +53,7 @@ class TranslateLocalisationAiService : ManipulateLocalisationAiService<Translate
     }
 
     private fun getSystemMessage(request: TranslateLocalisationAiRequest): SystemMessage {
-        val text = PlsChatMessageManager.fromTemplate("translateLocalisation", request)
+        val text = PlsChatMessageManager.fromTemplate(PlsPrompts.TranslateLocalisation, request)
         logger.debug { "${request.logPrefix} System message: \n$text" }
         return SystemMessage.from(text)
     }

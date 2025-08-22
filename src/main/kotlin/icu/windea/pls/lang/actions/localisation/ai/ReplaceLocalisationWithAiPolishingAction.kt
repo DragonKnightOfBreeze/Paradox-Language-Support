@@ -56,15 +56,17 @@ class ReplaceLocalisationWithAiPolishingAction : ManipulateLocalisationActionBas
                     val contextsToHandle = contexts.filter { context -> context.shouldHandle }
                     allContexts.addAll(contextsToHandle)
 
-                    val request = PolishLocalisationAiRequest(project, file, contextsToHandle, description)
-                    val callback: suspend (ParadoxLocalisationAiResult) -> Unit = {
-                        val context = request.localisationContexts[request.index]
-                        runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
-                    }
-                    runCatchingCancelable { handleText(request, callback) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
+                    if (contextsToHandle.isNotEmpty()) {
+                        val request = PolishLocalisationAiRequest(project, file, contextsToHandle, description)
+                        val callback: suspend (ParadoxLocalisationAiResult) -> Unit = {
+                            val context = request.localisationContexts[request.index]
+                            runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
+                        }
+                        runCatchingCancelable { handleText(request, callback) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
 
-                    //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
-                    if (request.index != contextsToHandle.size) withWarnings = true
+                        //不期望的结果，但是不报错（假定这是因为AI仅翻译了部分条目导致的）
+                        if (request.index != contextsToHandle.size) withWarnings = true
+                    }
 
                     val processed = processedRef.incrementAndGet()
                     rawReporter.fraction(processed / total.toDouble())

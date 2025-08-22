@@ -127,7 +127,7 @@ object ParadoxLocalisationManipulator {
     }
 
     fun joinText(contexts: List<ParadoxLocalisationContext>): String {
-        return contexts.joinToString("\n") { context -> context.joinWithNewText() }
+        return contexts.joinToString("\n") { context -> "${context.prefix}\"${context.newText}\"" }
     }
 
     fun createRevertAction(contexts: List<ParadoxLocalisationContext>): AnAction {

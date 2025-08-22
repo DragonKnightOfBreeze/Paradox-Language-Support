@@ -6,16 +6,18 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.manipulators.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.constraints.*
 
 abstract class ManipulateLocalisationAiRequest(
     val project: Project,
     val file: PsiFile,
     val localisationContexts: List<ParadoxLocalisationContext>
-): AiRequest {
+) : AiRequest {
     @Volatile
     var index: Int = 0
 
     val context = Context(this)
+    val predicates = Predicates(this)
 
     class Context(request: ManipulateLocalisationAiRequest) {
         private val fileInfo: ParadoxFileInfo? by lazy { selectFile(request.file)?.fileInfo }
@@ -24,6 +26,12 @@ abstract class ManipulateLocalisationAiRequest(
         val filePath: String? by lazy { fileInfo?.path?.path }
         val fileName: String? by lazy { fileInfo?.path?.fileName }
         val modName: String? by lazy { fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.Mod>()?.name }
+    }
+
+    class Predicates(request: ManipulateLocalisationAiRequest) {
+        val supportsConceptCommand = ParadoxSyntaxConstraint.LocalisationConceptCommand.supports(request.file)
+        val supportsTextIcon = ParadoxSyntaxConstraint.LocalisationTextIcon.supports(request.file)
+        val supportsTextFormat = ParadoxSyntaxConstraint.LocalisationTextFormat.supports(request.file)
     }
 }
 

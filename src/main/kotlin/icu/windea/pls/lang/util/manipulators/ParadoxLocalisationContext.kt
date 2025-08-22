@@ -18,14 +18,6 @@ data class ParadoxLocalisationContext(
     @Volatile
     var newText: String = text
 
-    fun join(): String {
-        return "$prefix\"$text\"" // KEY:0 "TEXT"
-    }
-
-    fun joinWithNewText(): String {
-        return "$prefix\"$newText\"" // KEY:0 "NEW TEXT"
-    }
-
     companion object {
         @JvmStatic
         fun from(element: ParadoxLocalisationProperty): ParadoxLocalisationContext {

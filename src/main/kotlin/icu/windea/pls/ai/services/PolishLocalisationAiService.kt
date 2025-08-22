@@ -53,7 +53,7 @@ class PolishLocalisationAiService : ManipulateLocalisationAiService<PolishLocali
     }
 
     private fun getSystemMessage(request: PolishLocalisationAiRequest): SystemMessage {
-        val text = PlsChatMessageManager.fromTemplate("polishLocalisation", request)
+        val text = PlsChatMessageManager.fromTemplate(PlsPrompts.PolishLocalisation, request)
         logger.debug { "${request.logPrefix} System message: \n$text" }
         return SystemMessage.from(text)
     }
