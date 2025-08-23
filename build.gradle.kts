@@ -86,7 +86,7 @@ dependencies {
     // 目前仅用作参考
 
     // sqlite - https://github.com/xerial/sqlite-jdbc
-    testImplementation("org.xerial:sqlite-jdbc:3.46.0.0")
+    testImplementation("org.xerial:sqlite-jdbc:3.50.3.0")
 
     // byte-buddy - https://github.com/raphw/byte-buddy
     testImplementation("net.bytebuddy:byte-buddy:1.14.17")
