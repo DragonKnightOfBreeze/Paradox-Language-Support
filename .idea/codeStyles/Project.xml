@@ -37,9 +37,6 @@
       <option name="NAME_COUNT_TO_USE_STAR_IMPORT_FOR_MEMBERS" value="1" />
       <option name="BLANK_LINES_BEFORE_DECLARATION_WITH_COMMENT_OR_ANNOTATION_ON_SEPARATE_LINE" value="0" />
     </JetCodeStyleSettings>
-    <yaml>
-      <option name="INDENT_SEQUENCE_VALUE" value="false" />
-    </yaml>
     <codeStyleSettings language="HTML">
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />
@@ -110,9 +107,6 @@
       <option name="LINE_COMMENT_ADD_SPACE" value="true" />
       <option name="LINE_COMMENT_ADD_SPACE_ON_REFORMAT" value="true" />
       <option name="SPACE_WITHIN_BRACKETS" value="false" />
-      <indentOptions>
-        <option name="KEEP_INDENTS_ON_EMPTY_LINES" value="true" />
-      </indentOptions>
     </codeStyleSettings>
   </code_scheme>
 </component>
