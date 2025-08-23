@@ -89,7 +89,7 @@ dependencies {
     testImplementation("org.xerial:sqlite-jdbc:3.50.3.0")
 
     // byte-buddy - https://github.com/raphw/byte-buddy
-    testImplementation("net.bytebuddy:byte-buddy:1.14.17")
+    testImplementation("net.bytebuddy:byte-buddy:1.17.7")
     testImplementation("net.bytebuddy:byte-buddy-agent:1.17.7")
 
     // jte - https://github.com/casid/jte
