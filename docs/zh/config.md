@@ -13,38 +13,38 @@ PLS基于由CWT规则文件组成的规则分组，实现了诸多语言功能�
 
 参考链接：
 
-* [仓库一览](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/cwt)
+- [仓库一览](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/cwt)
 
 ### 来源 {#sources}
 
 #### 内置的规则分组 {#builtin-config-groups}
 
-* 位置：`config/{gameType}`
-* 位于插件压缩包中的插件jar包中。
-* `{gameType}`为[游戏类型ID](#game-type-id)，对于共享的规则分组则为`core`。
-* 共享的内置规则分组总是会被启用。
+- 位置：`config/{gameType}`
+- 位于插件压缩包中的插件jar包中。
+- `{gameType}`为[游戏类型ID](#game-type-id)，对于共享的规则分组则为`core`。
+- 共享的内置规则分组总是会被启用。
 
 #### 远程的规则分组 {#remote-config-groups}
 
-* 位置：`{configDir}/{dirName}`
-* `{configDir}`为包含所有远程的规则分组目录的父目录，可在插件设置页面中自定义。
-* `{dirName}`为仓库目录的名字，对于共享的规则分组则为`core`。
+- 位置：`{configDir}/{dirName}`
+- `{configDir}`为包含所有远程的规则分组目录的父目录，可在插件设置页面中自定义。
+- `{dirName}`为仓库目录的名字，对于共享的规则分组则为`core`。
 
 更改配置后，PLS会自动从配置的远程仓库中克隆和拉取这些规则分组。
 
 #### 本地的规则分组 {#local-config-groups}
 
-* 位置：`{configDir}/{gameType}`
-* `{configDir}`为包含所有本地的规则分组目录的父目录，可在插件设置页面中自定义。
-* `{gameType}`为[游戏类型ID](#game-type-id)，对于共享的规则分组则为`core`。
+- 位置：`{configDir}/{gameType}`
+- `{configDir}`为包含所有本地的规则分组目录的父目录，可在插件设置页面中自定义。
+- `{gameType}`为[游戏类型ID](#game-type-id)，对于共享的规则分组则为`core`。
 
 其中的规则文件由用户自定义，适用于所有项目。对它们的更改需要手动确认导入。
 
 #### 项目本地的规则分组 {#project-local-config-groups}
 
-* 位置：`{configDirName}/{gameType}`
-* `{configDirName}`为项目本地的规则目录的名字，直接位于项目根目录下，默认为`.config`，可在插件设置页面中自定义。
-* `{gameType}`为[游戏类型ID](#game-type-id)，对于共享的规则分组则为`core`。
+- 位置：`{configDirName}/{gameType}`
+- `{configDirName}`为项目本地的规则目录的名字，直接位于项目根目录下，默认为`.config`，可在插件设置页面中自定义。
+- `{gameType}`为[游戏类型ID](#game-type-id)，对于共享的规则分组则为`core`。
 
 其中的规则文件由用户自定义，仅适用于当前项目。对它们的更改需要手动确认导入。
 
@@ -95,7 +95,7 @@ prop = {
 
 参考链接：
 
-* [指引文档](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
+- [指引文档](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
 
 ### 编写规范
 

@@ -21,63 +21,63 @@ PLS 扩展了与 Markdown 的集成，涉及链接、内联代码、代码块等
 
 **CWT 规则**（目前仅提供有限的支持）
 
-* 格式
-  * `cwt:{gameType}/{parts}`
-* 示例
-  * `cwt:stellaris:types/civic_or_origin`
-  * `cwt:stellaris:types/civic_or_origin/origin`
+- 格式
+  - `cwt:{gameType}/{parts}`
+- 示例
+  - `cwt:stellaris:types/civic_or_origin`
+  - `cwt:stellaris:types/civic_or_origin/origin`
 
 **封装变量**
 
-* 格式
-  * `pdx.sv:{name}`
-  * `pdx.sv:{gameType}/{name}`
-* 示例
-  * `pdx.sv:civic_default_random_weight`
-  * `pdx.sv:stellaris:civic_default_random_weight`
+- 格式
+  - `pdx.sv:{name}`
+  - `pdx.sv:{gameType}/{name}`
+- 示例
+  - `pdx.sv:civic_default_random_weight`
+  - `pdx.sv:stellaris:civic_default_random_weight`
 
 **定义**
 
-* 格式
-  * `pdx.d:{typeExpression}/{name}`
-  * `pdx.d:{gameType}/{typeExpression}/{name}`
-* 示例
-  * `pdx.d:origin_default`
-  * `pdx.d:stellaris:origin_default`
-  * `pdx.d:civic_or_origin.origin/origin_default`
-  * `pdx.d:stellaris:civic_or_origin.origin/origin_default`
+- 格式
+  - `pdx.d:{typeExpression}/{name}`
+  - `pdx.d:{gameType}/{typeExpression}/{name}`
+- 示例
+  - `pdx.d:origin_default`
+  - `pdx.d:stellaris:origin_default`
+  - `pdx.d:civic_or_origin.origin/origin_default`
+  - `pdx.d:stellaris:civic_or_origin.origin/origin_default`
 
 **本地化**
 
-* 格式
-  * `pdx.l:{name}`
-  * `pdx.l:{gameType}/{name}`
-* 示例
-  * `pdx.l:origin_default_desc`
-  * `pdx.l:stellaris:origin_default_desc`
+- 格式
+  - `pdx.l:{name}`
+  - `pdx.l:{gameType}/{name}`
+- 示例
+  - `pdx.l:origin_default_desc`
+  - `pdx.l:stellaris:origin_default_desc`
 
 **文件路径**（相对于游戏或模组目录）
 
-* 格式
-  * `pdx.p:{path}`
-  * `pdx.p:{gameType}/{path}`
-* 示例
-  * `pdx.p:common/governments/civics/00_origins.txt`
-  * `pdx.p:stellaris:common/governments/civics/00_origins.txt`
+- 格式
+  - `pdx.p:{path}`
+  - `pdx.p:{gameType}/{path}`
+- 示例
+  - `pdx.p:common/governments/civics/00_origins.txt`
+  - `pdx.p:stellaris:common/governments/civics/00_origins.txt`
 
 **修正**
 
-* 格式
-  * `pdx.m:{name}`
-  * `pdx.m:{gameType}:{name}`
-* 示例
-  * `pdx.m:job_soldier_add`
-  * `pdx.m:stellaris:job_soldier_add`
+- 格式
+  - `pdx.m:{name}`
+  - `pdx.m:{gameType}:{name}`
+- 示例
+  - `pdx.m:job_soldier_add`
+  - `pdx.m:stellaris:job_soldier_add`
 
 备注：
 
-* `{gameType}` - 游戏类型ID，目前有以下可选值：`stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`（对于共享的规则分组则为`core`）。
-* `{typeExpression}` - 定义类型表达式，可以仅包含基础类型（如`civic_or_origin`），也可以包含基础类型以及多个匹配的子类型，用点号分割（如`civic_or_origin.origin`）。
+- `{gameType}` - 游戏类型ID，目前有以下可选值：`stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`（对于共享的规则分组则为`core`）。
+- `{typeExpression}` - 定义类型表达式，可以仅包含基础类型（如`civic_or_origin`），也可以包含基础类型以及多个匹配的子类型，用点号分割（如`civic_or_origin.origin`）。
 
 ### 内联代码
 
@@ -96,28 +96,28 @@ PLS 可以尝试将 Markdown 内联代码解析为匹配的目标引用（定义
 
 **封装变量**
 
-* 格式
-  * `@{name}`
-* 示例
-  * `@civic_default_random_weight`
+- 格式
+  - `@{name}`
+- 示例
+  - `@civic_default_random_weight`
 
 **定义**
 
-* 格式
-  * `{name}`
-* 示例
-  * `origin_default`
+- 格式
+  - `{name}`
+- 示例
+  - `origin_default`
 
 **本地化**
 
-* 格式
-  * `{name}`
-* 示例
-  * `origin_default_desc`
+- 格式
+  - `{name}`
+- 示例
+  - `origin_default_desc`
 
 备注：
 
-* 如果可以同时解析为定义和本地化，则会优先解析为定义。
+- 如果可以同时解析为定义和本地化，则会优先解析为定义。
 
 ### 代码块
 
@@ -128,10 +128,10 @@ PLS 会根据这些信息来匹配CWT规则，从而提供各种高级语言功�
 
 注入信息的格式与示例如下：
 
-* 格式
-  * `path={gameType}:{path}`
-* 示例
-  * `path=stellaris:common/armies/injected_defence_armies.txt`
+- 格式
+  - `path={gameType}:{path}`
+- 示例
+  - `path=stellaris:common/armies/injected_defence_armies.txt`
 
 更加完整的示例：
 
@@ -143,8 +143,8 @@ defense_army = {
 
 备注：
 
-* `{gameType}` - 游戏类型ID，目前有以下可选值：`stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`（对于共享的规则分组则为`core`）。
-* `{path}` - 模拟的相对于游戏或模组目录的文件路径。必须是合法的脚本或本地化文件的路经。
+- `{gameType}` - 游戏类型ID，目前有以下可选值：`stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`（对于共享的规则分组则为`core`）。
+- `{path}` - 模拟的相对于游戏或模组目录的文件路径。必须是合法的脚本或本地化文件的路经。
 
 ## 图表 {#diagrams}
 
@@ -174,9 +174,9 @@ PLS提供了数种图表（Diagrams），可用于展示特定类型的定义的
 
 可以通过以下几种方式打开事件树的图表：
 
-* 在项目视图中，选中事件的脚本文件或者其父目录（包括游戏或模组目录），然后打开右键菜单，选择 `Diagrams > Show Diagram...`，接着选择任意属于事件树的图表类型。
-* 在编辑器中，打开事件的脚本文件，然后打开右键菜单，选择 `Diagrams > Show Diagram...`，接着选择任意属于事件树的图表类型。
-* 如果可用，也可以直接通过快捷键或者随处搜索功能（按`Shift + Shift`）直接打开。
+- 在项目视图中，选中事件的脚本文件或者其父目录（包括游戏或模组目录），然后打开右键菜单，选择 `Diagrams > Show Diagram...`，接着选择任意属于事件树的图表类型。
+- 在编辑器中，打开事件的脚本文件，然后打开右键菜单，选择 `Diagrams > Show Diagram...`，接着选择任意属于事件树的图表类型。
+- 如果可用，也可以直接通过快捷键或者随处搜索功能（按`Shift + Shift`）直接打开。
 
 事件树的图表展示了事件的关键信息，以及事件之间的调用关系。可以通过上方的工具栏配置要显示的节点元素，以及过滤要展示的节点。
 
@@ -194,9 +194,9 @@ PLS提供了数种图表（Diagrams），可用于展示特定类型的定义的
 
 如果当前游戏类型为 *Stellaris*，可以通过以下几种方式打开科技树的图表：
 
-* 在项目视图中，选中科技的脚本文件或者其父目录（包括游戏或模组目录），然后打开右键菜单，选择 `Diagrams > Show Diagram...`，接着选择任意属于科技树的图表类型。
-* 在编辑器中，打开科技的脚本文件，然后打开右键菜单，选择 `Diagrams > Show Diagram...`，接着选择任意属于科技树的图表类型。
-* 如果可用，也可以直接通过快捷键或者随处搜索功能（按`Shift + Shift`）直接打开。
+- 在项目视图中，选中科技的脚本文件或者其父目录（包括游戏或模组目录），然后打开右键菜单，选择 `Diagrams > Show Diagram...`，接着选择任意属于科技树的图表类型。
+- 在编辑器中，打开科技的脚本文件，然后打开右键菜单，选择 `Diagrams > Show Diagram...`，接着选择任意属于科技树的图表类型。
+- 如果可用，也可以直接通过快捷键或者随处搜索功能（按`Shift + Shift`）直接打开。
 
 科技树的图表展示了科技的关键信息，以及科技之间的先后关系。可以通过上方的工具栏配置要显示的节点元素，以及过滤要展示的节点。
 

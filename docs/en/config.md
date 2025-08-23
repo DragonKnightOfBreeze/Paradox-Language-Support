@@ -14,37 +14,37 @@ The parent directories for these config groups, as well as the repository URLs f
 
 Reference Links:
 
-* [Repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/cwt)
+- [Repositories](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/tree/master/cwt)
 
 ### Sources {#sources}
 
 #### Built-in Config Groups {#builtin-config-groups}
 
-* Location: `config/{gameType}`
-* Located inside the plugin jar, which is packaged within the plugin zip.
-* `{gameType}` is the [Game Type ID](#game-type-id); for the shared config group, it is `core`.
-* The shared built-in config group is always enabled.
+- Location: `config/{gameType}`
+- Located inside the plugin jar, which is packaged within the plugin zip.
+- `{gameType}` is the [Game Type ID](#game-type-id); for the shared config group, it is `core`.
+- The shared built-in config group is always enabled.
 
 #### Remote Config Groups {#remote-config-groups}
 
-* Location: `{configDir}/{dirName}`
-* `{configDir}` is the parent directory containing all remote config group directories, and can be customized in the plugin settings.
-* `{dirName}` is the repository directory name; for the shared config group, it is `core`.
-* After modifying the configuration, PLS will automatically clone and pull these config groups from the configured remote repositories.
+- Location: `{configDir}/{dirName}`
+- `{configDir}` is the parent directory containing all remote config group directories, and can be customized in the plugin settings.
+- `{dirName}` is the repository directory name; for the shared config group, it is `core`.
+- After modifying the configuration, PLS will automatically clone and pull these config groups from the configured remote repositories.
 
 #### Local Config Groups {#local-config-groups}
 
-* Location: `{configDir}/{gameType}`
-* `{configDir}` is the parent directory containing all global local config group directories, and can be customized in the plugin settings.
-* `{gameType}` is the [Game Type ID](#game-type-id); for the shared config group, it is `core`.
-* The config files inside are user-defined and apply to all projects. Changes require manual import.
+- Location: `{configDir}/{gameType}`
+- `{configDir}` is the parent directory containing all global local config group directories, and can be customized in the plugin settings.
+- `{gameType}` is the [Game Type ID](#game-type-id); for the shared config group, it is `core`.
+- The config files inside are user-defined and apply to all projects. Changes require manual import.
 
 #### Project Local Config Groups {#project-local-config-groups}
 
-* Location: `{configDirName}/{gameType}`
-* `{configDirName}` is the name of the directory for project local config groups, located directly under the project root (default is `.config`), and can be customized in the plugin settings.
-* `{gameType}` is the [Game Type ID](#game-type-id); for the shared config group, it is `core`.
-* The config files inside are user-defined and only apply to the current project. Changes require manual import.
+- Location: `{configDirName}/{gameType}`
+- `{configDirName}` is the name of the directory for project local config groups, located directly under the project root (default is `.config`), and can be customized in the plugin settings.
+- `{gameType}` is the [Game Type ID](#game-type-id); for the shared config group, it is `core`.
+- The config files inside are user-defined and only apply to the current project. Changes require manual import.
 
 ### Overridden Strategy {#overridden-strategy}
 
@@ -98,7 +98,7 @@ currently you can refer to the writing style of the built-in config files.
 
 Reference Links:
 
-* [Guidance](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
+- [Guidance](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/blob/master/references/cwt/guidance.md)
 
 ### Specifications
 
