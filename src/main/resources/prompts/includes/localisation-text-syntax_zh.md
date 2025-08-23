@@ -1,4 +1,4 @@
-{# @pebvariable name="request" type="icu.windea.pls.ai.requests.ManipulateLocalisationAiRequest" #}
+{# @pebvariable name="request" type="icu.windea.pls.ai.model.requests.ManipulateLocalisationAiRequest" #}
 在本地化文本中，可以使用以下特殊语法：
 - 彩色文本
   - 格式：`§{colorId}{richText}§!`

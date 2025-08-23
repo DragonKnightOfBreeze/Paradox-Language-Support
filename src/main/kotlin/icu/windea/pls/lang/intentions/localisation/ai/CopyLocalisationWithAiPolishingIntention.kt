@@ -12,7 +12,8 @@ import com.intellij.platform.util.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.ai.*
-import icu.windea.pls.ai.requests.*
+import icu.windea.pls.ai.model.requests.*
+import icu.windea.pls.ai.model.results.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.ai.util.manipulators.*
 import icu.windea.pls.core.*
@@ -55,7 +56,7 @@ class CopyLocalisationWithAiPolishingIntention : ManipulateLocalisationIntention
                     reporter.text(PlsBundle.message("manipulation.localisation.polish.progress.step"))
 
                     val request = PolishLocalisationAiRequest(project, file, contextsToHandle, description)
-                    val callback: suspend (ParadoxLocalisationAiResult) -> Unit = { data ->
+                    val callback: suspend (LocalisationAiResult) -> Unit = { data ->
                         current++
                         reporter.text(PlsBundle.message("manipulation.localisation.polish.progress.itemStep", data.key))
                         reporter.fraction(current / total.toDouble())
@@ -75,7 +76,7 @@ class CopyLocalisationWithAiPolishingIntention : ManipulateLocalisationIntention
         }
     }
 
-    private suspend fun handleText(request: PolishLocalisationAiRequest, callback: suspend (ParadoxLocalisationAiResult) -> Unit) {
+    private suspend fun handleText(request: PolishLocalisationAiRequest, callback: suspend (LocalisationAiResult) -> Unit) {
         ParadoxLocalisationAiManipulator.handleTextWithAiPolishing(request, callback)
     }
 

@@ -1,4 +1,4 @@
-{# @pebvariable name="request" type="icu.windea.pls.ai.requests.TranslateLocalisationAiRequest" #}
+{# @pebvariable name="request" type="icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest" #}
 {# @pebvariable name="eol" type="java.lang.String" #}
 你是一位经验丰富的 {{ request.context.gameType.title }} 模组作者。
 请将输入的一组本地化条目翻译为 {{ request.targetLocale.text }}。

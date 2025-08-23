@@ -1,7 +1,7 @@
 package icu.windea.pls.ai.util
 
 import com.intellij.DynamicBundle.*
-import icu.windea.pls.ai.requests.*
+import icu.windea.pls.ai.model.requests.*
 import icu.windea.pls.lang.util.manipulators.*
 import io.pebbletemplates.pebble.*
 import io.pebbletemplates.pebble.loader.*

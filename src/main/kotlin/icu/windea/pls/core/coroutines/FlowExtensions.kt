@@ -17,14 +17,11 @@ fun <T> Flow<T>.chunked(chunkSize: Int): Flow<List<T>> = flow {
     }
 }
 
-fun <T> Flow<T>.toLineFlow(
-    transform: (T) -> String
-): Flow<String> = flow {
+fun Flow<String>.toLineFlow(): Flow<String> = flow {
     val buffer = StringBuilder()
     collect { input ->
-        val input0 = transform(input)
-        if (input0.isEmpty()) return@collect
-        buffer.append(input0)
+        if (input.isEmpty()) return@collect
+        buffer.append(input)
         var lineEnd: Int
         while (buffer.indexOf('\n').also { lineEnd = it } != -1) {
             val line = buffer.substring(0, lineEnd)

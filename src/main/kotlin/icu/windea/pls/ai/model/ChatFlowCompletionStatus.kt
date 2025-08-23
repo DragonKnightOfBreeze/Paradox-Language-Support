@@ -1,6 +1,7 @@
 package icu.windea.pls.ai.model
 
 import dev.langchain4j.model.chat.response.*
+import kotlin.coroutines.cancellation.*
 
 sealed class ChatFlowCompletionStatus {
     abstract val text: String
@@ -29,5 +30,17 @@ sealed class ChatFlowCompletionStatus {
 
     object Cancelled : ChatFlowCompletionStatus() {
         override val text = "Cancelled"
+    }
+
+    companion object {
+        @JvmStatic
+        fun from(e: Throwable?): ChatFlowCompletionStatus {
+            return when {
+                e is ChatFlowCompletionException -> Completed(e.response)
+                e is CancellationException -> Cancelled
+                e != null -> Error(e)
+                else -> Completed()
+            }
+        }
     }
 }

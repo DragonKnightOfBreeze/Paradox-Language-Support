@@ -5,13 +5,14 @@ package icu.windea.pls.ai.services
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.*
 import dev.langchain4j.data.message.*
-import dev.langchain4j.kotlin.model.chat.*
 import dev.langchain4j.memory.*
 import dev.langchain4j.memory.chat.*
+import dev.langchain4j.model.chat.request.*
 import icu.windea.pls.ai.*
-import icu.windea.pls.ai.requests.*
+import icu.windea.pls.ai.model.*
+import icu.windea.pls.ai.model.requests.*
+import icu.windea.pls.ai.model.results.*
 import icu.windea.pls.ai.util.*
-import icu.windea.pls.ai.util.manipulators.*
 import icu.windea.pls.core.coroutines.*
 import icu.windea.pls.lang.util.manipulators.*
 import kotlinx.coroutines.flow.*
@@ -20,7 +21,7 @@ import kotlinx.coroutines.flow.*
 class PolishLocalisationAiService : ManipulateLocalisationAiService<PolishLocalisationAiRequest>() {
     private val logger = logger<PolishLocalisationAiService>()
 
-    override fun manipulate(request: PolishLocalisationAiRequest): Flow<ParadoxLocalisationAiResult>? {
+    override fun manipulate(request: PolishLocalisationAiRequest): Flow<LocalisationAiResult>? {
         //得到输入的本地化上下文，按特定数量进行分块，然后逐个发送请求（附带记忆）
 
         val chatModel = PlsChatModelManager.getStreamingChatModel() ?: return null
@@ -31,21 +32,23 @@ class PolishLocalisationAiService : ManipulateLocalisationAiService<PolishLocali
         var chunkIndex = 0
         val startTime = System.currentTimeMillis()
         memory.add(getSystemMessage(request))
-        return request.localisationContexts.asFlow().chunked(chunkSize).flatMapConcat { chunk ->
-            logger.info("${request.logPrefix} Chunk #$chunkIndex: Sending request...")
-            chunkIndex++
-            memory.add(getUserMessage(request, chunk))
-            chatModel.chatFlow {
-                messages = memory.messages()
-            }.toLineFlow().map { ParadoxLocalisationAiResult.fromLine(it) }.onCompletion { e ->
-                val status = PlsAiManager.getChatFlowCompletionStatus(e)
-                logger.info("${request.logPrefix} Chunk #$chunkIndex: ${status.text}")
-            }.catchCompletion()
-        }.onCompletion {
-            val endTime = System.currentTimeMillis()
-            val cost = endTime - startTime
-            logger.info("${request.logPrefix} Polishing localisation finished in $cost ms")
-        }
+        return request.localisationContexts.asFlow().chunked(chunkSize)
+            .flatMapConcat { chunk ->
+                logger.info("${request.logPrefix} Chunk #$chunkIndex: Sending request...")
+                chunkIndex++
+                memory.add(getUserMessage(request, chunk))
+                val chatRequest = ChatRequest.builder().messages(memory.messages()).build()
+                chatModel.chatFlow(chatRequest).toLineFlow().map { LocalisationAiResult.fromLine(it) }
+                    .onChatCompletion { e ->
+                        val status = ChatFlowCompletionStatus.from(e)
+                        logger.info("${request.logPrefix} Chunk #$chunkIndex: ${status.text}")
+                    }
+            }
+            .onCompletion {
+                val endTime = System.currentTimeMillis()
+                val cost = endTime - startTime
+                logger.info("${request.logPrefix} Polishing localisation finished in $cost ms")
+            }
     }
 
     private fun getMemory(): ChatMemory {

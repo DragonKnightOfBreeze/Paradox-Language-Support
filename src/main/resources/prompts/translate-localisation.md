@@ -1,4 +1,4 @@
-{# @pebvariable name="request" type="icu.windea.pls.ai.requests.TranslateLocalisationAiRequest" #}
+{# @pebvariable name="request" type="icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest" #}
 {# @pebvariable name="eol" type="java.lang.String" #}
 You are an experienced mod author for {{ request.context.gameType.title }}.
 Please translate the provided set of localisation entries into {{ request.targetLocale.text }}.

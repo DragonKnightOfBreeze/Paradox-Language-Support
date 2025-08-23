@@ -1,4 +1,4 @@
-{# @pebvariable name="request" type="icu.windea.pls.ai.requests.ManipulateLocalisationAiRequest" #}
+{# @pebvariable name="request" type="icu.windea.pls.ai.model.requests.ManipulateLocalisationAiRequest" #}
 {# @pebvariable name="eol" type="java.lang.String" #}
 Context information:
 {% if request.context.filePath %}

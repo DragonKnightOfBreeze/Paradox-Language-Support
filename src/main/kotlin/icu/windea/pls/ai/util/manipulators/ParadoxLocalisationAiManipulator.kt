@@ -9,7 +9,8 @@ import com.intellij.ui.components.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.ai.*
-import icu.windea.pls.ai.requests.*
+import icu.windea.pls.ai.model.requests.*
+import icu.windea.pls.ai.model.results.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.util.manipulators.*
 import kotlinx.coroutines.flow.*
@@ -17,19 +18,19 @@ import java.awt.*
 import kotlin.contracts.*
 
 object ParadoxLocalisationAiManipulator {
-    suspend fun handleTextWithAiTranslation(request: TranslateLocalisationAiRequest, callback: suspend (ParadoxLocalisationAiResult) -> Unit) {
+    suspend fun handleTextWithAiTranslation(request: TranslateLocalisationAiRequest, callback: suspend (LocalisationAiResult) -> Unit) {
         val aiService = PlsAiFacade.getTranslateLocalisationService()
         val resultFlow = aiService.manipulate(request)
         collectResultFlow(request, resultFlow, callback)
     }
 
-    suspend fun handleTextWithAiPolishing(request: PolishLocalisationAiRequest, callback: suspend (ParadoxLocalisationAiResult) -> Unit) {
+    suspend fun handleTextWithAiPolishing(request: PolishLocalisationAiRequest, callback: suspend (LocalisationAiResult) -> Unit) {
         val aiService = PlsAiFacade.getPolishLocalisationService()
         val resultFlow = aiService.manipulate(request)
         collectResultFlow(request, resultFlow, callback)
     }
 
-    suspend fun collectResultFlow(request: ManipulateLocalisationAiRequest, resultFlow: Flow<ParadoxLocalisationAiResult>?, callback: suspend (ParadoxLocalisationAiResult) -> Unit = {}) {
+    suspend fun collectResultFlow(request: ManipulateLocalisationAiRequest, resultFlow: Flow<LocalisationAiResult>?, callback: suspend (LocalisationAiResult) -> Unit = {}) {
         checkResultFlow(resultFlow)
         resultFlow.collect { data ->
             val context = request.localisationContexts[request.index]
@@ -41,7 +42,7 @@ object ParadoxLocalisationAiManipulator {
     }
 
     @OptIn(ExperimentalContracts::class)
-    private fun checkResultFlow(resultFlow: Flow<ParadoxLocalisationAiResult>?) {
+    private fun checkResultFlow(resultFlow: Flow<LocalisationAiResult>?) {
         contract {
             returns() implies (resultFlow != null)
         }
@@ -50,7 +51,7 @@ object ParadoxLocalisationAiManipulator {
         }
     }
 
-    private fun checkResult(context: ParadoxLocalisationContext, result: ParadoxLocalisationAiResult) {
+    private fun checkResult(context: ParadoxLocalisationContext, result: LocalisationAiResult) {
         if (result.key.isEmpty()) { //输出内容的格式不合法
             throw IllegalStateException(PlsBundle.message("ai.manipulation.localisation.error.2"))
         }

@@ -1,4 +1,4 @@
-{# @pebvariable name="request" type="icu.windea.pls.ai.requests.PolishLocalisationAiRequest" #}
+{# @pebvariable name="request" type="icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest" #}
 {# @pebvariable name="eol" type="java.lang.String" #}
 You are an experienced mod author for {{ request.context.gameType.title }}.
 Please professionally polish the provided set of localisation entries.

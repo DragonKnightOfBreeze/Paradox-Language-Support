@@ -11,7 +11,8 @@ import com.intellij.platform.util.coroutines.*
 import com.intellij.platform.util.progress.*
 import icu.windea.pls.*
 import icu.windea.pls.ai.*
-import icu.windea.pls.ai.requests.*
+import icu.windea.pls.ai.model.requests.*
+import icu.windea.pls.ai.model.results.*
 import icu.windea.pls.ai.util.*
 import icu.windea.pls.ai.util.manipulators.*
 import icu.windea.pls.config.config.*
@@ -59,7 +60,7 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
 
                     if (contextsToHandle.isNotEmpty()) {
                         val request = TranslateLocalisationAiRequest(project, file, contextsToHandle, selectedLocale, description)
-                        val callback: suspend (ParadoxLocalisationAiResult) -> Unit = {
+                        val callback: suspend (LocalisationAiResult) -> Unit = {
                             val context = request.localisationContexts[request.index]
                             runCatchingCancelable { replaceText(context, project) }.onFailure { errorRef.compareAndSet(null, it) }.getOrNull()
                         }
@@ -82,7 +83,7 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
         }
     }
 
-    private suspend fun handleText(request: TranslateLocalisationAiRequest, callback: suspend (ParadoxLocalisationAiResult) -> Unit) {
+    private suspend fun handleText(request: TranslateLocalisationAiRequest, callback: suspend (LocalisationAiResult) -> Unit) {
         ParadoxLocalisationAiManipulator.handleTextWithAiTranslation(request, callback)
     }
 

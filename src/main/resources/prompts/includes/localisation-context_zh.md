@@ -1,4 +1,4 @@
-{# @pebvariable name="request" type="icu.windea.pls.ai.requests.ManipulateLocalisationAiRequest" #}
+{# @pebvariable name="request" type="icu.windea.pls.ai.model.requests.ManipulateLocalisationAiRequest" #}
 {# @pebvariable name="eol" type="java.lang.String" #}
 上下文信息：
 {% if request.context.filePath %}

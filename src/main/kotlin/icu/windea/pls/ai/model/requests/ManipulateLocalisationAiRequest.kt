@@ -1,4 +1,4 @@
-package icu.windea.pls.ai.requests
+package icu.windea.pls.ai.model.requests
 
 import com.intellij.openapi.project.*
 import com.intellij.psi.*

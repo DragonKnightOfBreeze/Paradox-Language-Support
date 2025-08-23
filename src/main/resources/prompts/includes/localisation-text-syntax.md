@@ -1,4 +1,4 @@
-{# @pebvariable name="request" type="icu.windea.pls.ai.requests.ManipulateLocalisationAiRequest" #}
+{# @pebvariable name="request" type="icu.windea.pls.ai.model.requests.ManipulateLocalisationAiRequest" #}
 The following special syntax can be used in localisation text:
 - Colored text
   - Format: `§{colorId}{richText}§!`
