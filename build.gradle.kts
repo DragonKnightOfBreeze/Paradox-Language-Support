@@ -90,7 +90,7 @@ dependencies {
 
     // byte-buddy - https://github.com/raphw/byte-buddy
     testImplementation("net.bytebuddy:byte-buddy:1.14.17")
-    testImplementation("net.bytebuddy:byte-buddy-agent:1.15.0")
+    testImplementation("net.bytebuddy:byte-buddy-agent:1.17.7")
 
     // jte - https://github.com/casid/jte
     testImplementation("gg.jte:jte:3.2.1")
