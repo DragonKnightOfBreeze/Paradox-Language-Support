@@ -132,7 +132,7 @@ Note:
 
 ### Code Blocks
 
-By injecting additional information after the language ID in Markdown code blocks, you can specify the game type and file path for script or localization file fragments. 
+By injecting additional information after the language ID in Markdown code blocks, you can specify the game type and file path for script / localization / csv file fragments. 
 PLS will use this information to match CWT configs, providing various advanced language features as if editing actual script or localization files.
 
 ![](../images/extensions/md_code_fence_1.png)
@@ -157,7 +157,7 @@ defense_army = {
 Notes:
 
 - `{gameType}` - <GameTypeNote />
-- `{path}` - Simulated file path relative to game or mod directory. Must be a valid script or localization file path.
+- `{path}` - Mocked file path relative to game or mod directory. Must be a valid script / localization / csv file path.
 
 ## Diagrams {#diagrams}
 
