@@ -1,7 +1,6 @@
 package icu.windea.pls.inject.support
 
 import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.progress.*
 import com.intellij.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.inject.*
@@ -54,16 +53,10 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
     }
 
     private fun applyInjectMethods(codeInjector: CodeInjector, targetClass: CtClass, injectMethodInfos: Map<String, InjectMethodInfo>) {
-        val application = application
-        if (application.getUserData(CodeInjectorService.invokeInjectMethodKey) == null) {
-            val method = BaseCodeInjectorSupport::class.java.declaredMethods.find { it.name == "invokeInjectMethod" }
-            application.putUserData(CodeInjectorService.invokeInjectMethodKey, method)
-        }
-
         val fieldCode = """private static volatile Method __invokeInjectMethod__ = (Method) ApplicationManager.getApplication().getUserData(Key.findKeyByName("INVOKE_INJECT_METHOD_BY_WINDEA"));"""
         targetClass.addField(CtField.make(fieldCode, targetClass))
 
-        injectMethodInfos.forEach f@{ methodId, injectMethodInfo ->
+        injectMethodInfos.forEach f@{ (methodId, injectMethodInfo) ->
             val injectMethod = injectMethodInfo.method
             val targetMethod = findCtMethod(targetClass, injectMethod, injectMethodInfo)
             if (targetMethod == null) {
@@ -86,7 +79,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
                         try {
                             return $expr;
                         } catch(InvocationTargetException __e__) {
-                            if(!"CONTINUE_INVOCATION".equals(__e__.getCause().getCause().getMessage())) throw __e__;
+                            if(!"${CONTINUE_INVOCATION.message}".equals(__e__.getCause().getCause().getMessage())) throw __e__;
                         }
                     }
                     """.trimIndent()
@@ -142,43 +135,5 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         return ctMethods.firstOrNull()
     }
 
-    @Suppress("CompanionObjectInExtension")
-    companion object {
-        //method invoked by injected codes
-
-        @Suppress("unused")
-        @JvmStatic
-        fun invokeInjectMethod(codeInjectorId: String, methodId: String, args: Array<out Any?>, target: Any?, returnValue: Any?): Any? {
-            //如果注入方法是一个扩展方法，则传递target到接收者（目标方法是一个静态方法时，target的值为null）
-            //如果注入方法拥有除了以上情况以外的额外参数，则传递returnValue到第1个额外参数（目标方法没有返回值时，returnValue的值为null）
-            //不要在声明和调用注入方法时加载目标类型（例如，将接收者的类型直接指定为目标类型）
-            val application = application
-            val codeInjector = application.getUserData(CodeInjectorService.codeInjectorsKey)?.get(codeInjectorId) ?: throw IllegalStateException()
-            val injectMethodInfo = codeInjector.getUserData(CodeInjectorService.injectMethodInfosKey)?.get(methodId) ?: throw IllegalStateException()
-            val injectMethod = injectMethodInfo.method
-            val actualArgsSize = injectMethod.parameterCount
-            val finalArgs = when (actualArgsSize) {
-                args.size -> args
-                else -> {
-                    @Suppress("RemoveExplicitTypeArguments")
-                    buildList<Any?> {
-                        if (injectMethodInfo.hasReceiver) {
-                            add(target)
-                        }
-                        addAll(args)
-                        if (size < actualArgsSize) {
-                            add(returnValue)
-                        }
-                    }.toTypedArray()
-                }
-            }
-            if (finalArgs.size != actualArgsSize) throw IllegalStateException()
-            try {
-                return injectMethod.invoke(codeInjector, *finalArgs)
-            } catch (e: Exception) {
-                if(e is InvocationTargetException && e.targetException is ProcessCanceledException) throw e.targetException
-                throw e
-            }
-        }
-    }
+    private val CONTINUE_INVOCATION by lazy { application.getUserData(CodeInjectorService.continueInvocationExceptionKey)!! }
 }
