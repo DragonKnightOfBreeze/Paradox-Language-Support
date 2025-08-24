@@ -176,7 +176,7 @@ object Matchers {
          * @param other 指定的子路径。
          * @param ignoreCase 是否忽略大小写。
          * @param useAny 如果启用，且用来匹配的子路径是`"any"`，则表示匹配任意子路径。
-         * @param usePattern 如果启用，用来匹配的子路经可以是一个GLOB表达式。参见：[GlobMatcher]。
+         * @param usePattern 如果启用，用来匹配的子路径可以是一个GLOB表达式。参见：[GlobMatcher]。
          */
         fun matches(input: String, other: String, ignoreCase: Boolean = false, useAny: Boolean = false, usePattern: Boolean = false): Boolean {
             if (useAny && other == "any") return true
@@ -191,7 +191,7 @@ object Matchers {
          * @param other 指定的子路径列表。
          * @param ignoreCase 是否忽略大小写。
          * @param useAny 如果启用，且用来匹配的子路径是`"any"`，则表示匹配任意子路径。
-         * @param usePattern 如果启用，用来匹配的子路经可以是一个GLOB表达式。参见：[GlobMatcher]。
+         * @param usePattern 如果启用，用来匹配的子路径可以是一个GLOB表达式。参见：[GlobMatcher]。
          */
         fun matches(input: List<String>, other: List<String>, ignoreCase: Boolean = false, useAny: Boolean = false, usePattern: Boolean = false): Boolean {
             if (input.size != other.size) return false //路径过短或路径长度不一致
@@ -212,7 +212,7 @@ object Matchers {
          * @param other 指定的子路径列表。
          * @param ignoreCase 是否忽略大小写。
          * @param useAny 如果启用，且用来匹配的子路径是`"any"`，则表示匹配任意子路径。
-         * @param usePattern 如果启用，用来匹配的子路经可以是一个GLOB表达式。参见：[GlobMatcher]。
+         * @param usePattern 如果启用，用来匹配的子路径可以是一个GLOB表达式。参见：[GlobMatcher]。
          */
         fun relative(input: List<String>, other: List<String>, ignoreCase: Boolean = false, useAny: Boolean = false, usePattern: Boolean = false): String? {
             if (input.size > other.size) return null

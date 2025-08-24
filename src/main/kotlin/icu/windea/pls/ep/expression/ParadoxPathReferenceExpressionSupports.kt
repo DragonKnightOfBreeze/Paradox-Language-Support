@@ -62,7 +62,7 @@ class ParadoxFilePathReferenceExpressionSupport : ParadoxPathReferenceExpression
         return configExpression.type == CwtDataTypes.FilePath
     }
 
-    //filepath - 匹配任意路经
+    //filepath - 匹配任意路径
     //filepath[./] - 匹配相对于脚本文件所在目录的路径
 
     override fun matches(configExpression: CwtDataExpression, element: PsiElement?, filePath: String): Boolean {

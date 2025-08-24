@@ -116,7 +116,7 @@ object ParadoxDefinitionManager {
         rootKey: String,
         rootKeyPrefix: Lazy<String?>?
     ): CwtTypeConfig? {
-        // 优先从基于文件路经的缓存中获取
+        // 优先从基于文件路径的缓存中获取
         val configs = configGroup.typeConfigsCache.get(path)
         if (configs.isEmpty()) return null
         return configs.find { config -> matchesType(element, config, null, elementPath, rootKey, rootKeyPrefix) }
@@ -131,7 +131,7 @@ object ParadoxDefinitionManager {
         rootKey: String,
         rootKeyPrefix: Lazy<String?>?
     ): CwtTypeConfig? {
-        // 优先从基于文件路经的缓存中获取
+        // 优先从基于文件路径的缓存中获取
         val configs = configGroup.typeConfigsCache.get(path)
         if (configs.isEmpty()) return null
         return configs.find { config -> matchesType(node, tree, config, null, elementPath, rootKey, rootKeyPrefix) }

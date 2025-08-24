@@ -178,7 +178,7 @@ class PlsSettingsState : BaseState() {
     /**
      * @property showLocalizedName 是否在层级视图中额外显示本地化名字。
      * @property showLocationInfo 是否在层级视图中额外显示位置信息。
-     * @property showLocationInfoByPath 显示位置信息时，是否显示路经。
+     * @property showLocationInfoByPath 显示位置信息时，是否显示路径。
      * @property showLocationInfoByRootInfo 显示位置信息时，是否显示游戏或模组信息。
      * @property showScriptedVariablesInCallHierarchy 是否在调用层级视图中显示封装变量。
      * @property showDefinitionsInCallHierarchyByBindings 是否在调用层级视图中显示定义。

@@ -58,7 +58,7 @@ class PlsDataProvider {
                 commandResult?.toPathOrNull()?.formatted()
             }
             OS.Linux -> {
-                //默认路经（不准确，但是已经足够）
+                //默认路径（不准确，但是已经足够）
                 Path("~", ".local", "share", "Steam").formatted()
             }
         }
@@ -80,12 +80,12 @@ class PlsDataProvider {
                 val fromCommandResult = commandResult?.toPathOrNull()?.formatted()
                 if (fromCommandResult != null) return fromCommandResult
 
-                //默认路经（不准确，可以放在不同库目录下）
+                //默认路径（不准确，可以放在不同库目录下）
                 val steamPath = getSteamPath()?.toString() ?: return null
                 Path(steamPath, "steamapps", "common", gameName).formatted()
             }
             OS.Linux -> {
-                //默认路经（不准确，可以放在不同库目录下）
+                //默认路径（不准确，可以放在不同库目录下）
                 val steamPath = getSteamPath()?.toString() ?: return null
                 Path(steamPath, "steamapps", "common", gameName).formatted()
             }

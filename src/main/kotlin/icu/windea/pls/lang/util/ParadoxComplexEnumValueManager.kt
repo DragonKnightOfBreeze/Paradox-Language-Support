@@ -73,7 +73,7 @@ object ParadoxComplexEnumValueManager {
     //NOTE 这里匹配时并不兼容向下内联的情况
 
     fun getMatchedComplexEnumConfig(element: ParadoxScriptStringExpressionElement, configGroup: CwtConfigGroup, path: ParadoxPath): CwtComplexEnumConfig? {
-        //优先从基于文件路经的缓存中获取
+        //优先从基于文件路径的缓存中获取
         val configs = configGroup.complexEnumConfigsCache.get(path)
         if (configs.isEmpty()) return null
         return configs.find { config -> matchesComplexEnum(element, config, null) }
