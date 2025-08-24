@@ -20,9 +20,6 @@ importers:
       artplayer:
         specifier: ^5.2.5
         version: 5.2.5
-      vidstack:
-        specifier: ^1.12.13
-        version: 1.12.13
       vue:
         specifier: ^3.4.31
         version: 3.4.31
@@ -1813,13 +1810,16 @@ snapshots:
   '@floating-ui/core@1.7.3':
     dependencies:
       '@floating-ui/utils': 0.2.10
+    optional: true
 
   '@floating-ui/dom@1.7.4':
     dependencies:
       '@floating-ui/core': 1.7.3
       '@floating-ui/utils': 0.2.10
+    optional: true
 
-  '@floating-ui/utils@0.2.10': {}
+  '@floating-ui/utils@0.2.10':
+    optional: true
 
   '@jridgewell/sourcemap-codec@1.4.15': {}
 
@@ -2538,7 +2538,8 @@ snapshots:
       - '@vue/composition-api'
       - vue
 
-  acorn@8.15.0: {}
+  acorn@8.15.0:
+    optional: true
 
   ansi-regex@5.0.1: {}
 
@@ -2912,6 +2913,7 @@ snapshots:
   lit-html@2.8.0:
     dependencies:
       '@types/trusted-types': 2.0.7
+    optional: true
 
   lit-html@3.1.4:
     dependencies:
@@ -2954,7 +2956,8 @@ snapshots:
 
   mdurl@2.0.0: {}
 
-  media-captions@1.0.4: {}
+  media-captions@1.0.4:
+    optional: true
 
   merge2@1.4.1: {}
 
@@ -3203,6 +3206,7 @@ snapshots:
     dependencies:
       acorn: 8.15.0
       webpack-virtual-modules: 0.6.2
+    optional: true
 
   upath@2.0.1: {}
 
@@ -3218,6 +3222,7 @@ snapshots:
       lit-html: 2.8.0
       media-captions: 1.0.4
       unplugin: 1.16.1
+    optional: true
 
   vite@5.3.3(@types/node@20.14.9)(sass@1.77.6):
     dependencies:
@@ -3402,7 +3407,8 @@ snapshots:
 
   watermark-js-plus@1.5.1: {}
 
-  webpack-virtual-modules@0.6.2: {}
+  webpack-virtual-modules@0.6.2:
+    optional: true
 
   which-module@2.0.1: {}
 
