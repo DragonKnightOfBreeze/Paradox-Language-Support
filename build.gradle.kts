@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.*
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.10" // https://kotlinlang.org/docs/gradle.html
-    id("org.jetbrains.intellij.platform") version "2.7.1" // https://github.com/JetBrains/intellij-platform-gradle-plugin
+    id("org.jetbrains.intellij.platform") version "2.7.2" // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.grammarkit") version "2022.3.2.2"  // https://github.com/JetBrains/gradle-grammar-kit-plugin
     id("org.jetbrains.changelog") version "2.4.0" // https://github.com/JetBrains/gradle-changelog-plugin
 }
@@ -86,11 +86,11 @@ dependencies {
     // 目前仅用作参考
 
     // sqlite - https://github.com/xerial/sqlite-jdbc
-    testImplementation("org.xerial:sqlite-jdbc:3.46.0.0")
+    testImplementation("org.xerial:sqlite-jdbc:3.50.3.0")
 
     // byte-buddy - https://github.com/raphw/byte-buddy
-    testImplementation("net.bytebuddy:byte-buddy:1.14.17")
-    testImplementation("net.bytebuddy:byte-buddy-agent:1.15.0")
+    testImplementation("net.bytebuddy:byte-buddy:1.17.7")
+    testImplementation("net.bytebuddy:byte-buddy-agent:1.17.7")
 
     // jte - https://github.com/casid/jte
     testImplementation("gg.jte:jte:3.2.1")

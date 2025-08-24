@@ -22,69 +22,69 @@ jobs:
 
     steps:
 
-    # Check out the current repository
-    - name: Fetch Sources
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ github.event.release.tag_name }}
+      # Check out the current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.release.tag_name }}
 
-    # Gradle cache
-    - name: Cache Gradle
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: gradle-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties') }}
-        restore-keys: |
-          gradle-${{ runner.os }}-
+      # Gradle cache
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
 
-    # Set up Java environment for the next steps
-    - name: Setup Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: zulu
-        java-version: 21
+      # Set up Java environment for the next steps
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: 21
 
-    # Setup Gradle
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      # Setup Gradle
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-    # Set gradlew executable permission
-    - name: Set gradlew executable permission
-      run: chmod +x gradlew
+      # Set gradlew executable permission
+      - name: Set gradlew executable permission
+        run: chmod +x gradlew
 
-    # Set environment variables
-    - name: Export Properties
-      id: properties
-      shell: bash
-      run: |
-        CHANGELOG="$(cat << 'EOM' | sed -e 's/^[[:space:]]*$//g' -e '/./,$!d'
-        ${{ github.event.release.body }}
-        EOM
-        )"
+      # Set environment variables
+      - name: Export Properties
+        id: properties
+        shell: bash
+        run: |
+          CHANGELOG="$(cat << 'EOM' | sed -e 's/^[[:space:]]*$//g' -e '/./,$!d'
+          ${{ github.event.release.body }}
+          EOM
+          )"
 
-        echo "changelog<<EOF" >> $GITHUB_OUTPUT
-        echo "$CHANGELOG" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
-    # Publish to JetBrains Marketplace
-    - name: Publish Plugin
-      env:
-        PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
-      run: ./gradlew publishPlugin
+      # Publish to JetBrains Marketplace
+      - name: Publish Plugin
+        env:
+          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+        run: ./gradlew publishPlugin
 
-    # Upload artifact as a release asset
-    - name: Upload Release Asset
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: gh release upload v${{ steps.properties.outputs.pluginVersion }} ./build/distributions/*
+      # Upload artifact as a release asset
+      - name: Upload Release Asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload v${{ steps.properties.outputs.pluginVersion }} ./build/distributions/*
 
-    # Close the milestone
-    - name: Close Milestone
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        gh api repos/{owner}/{repo}/milestones \
-          --jq '.[] | select(.title == "${{ github.event.release.tag_name }}") | .number' \
-          | xargs -I '{}' gh api -X PATCH repos/{owner}/{repo}/milestones/{} -F state='closed'
+      # Close the milestone
+      - name: Close Milestone
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/{owner}/{repo}/milestones \
+            --jq '.[] | select(.title == "${{ github.event.release.tag_name }}") | .number' \
+            | xargs -I '{}' gh api -X PATCH repos/{owner}/{repo}/milestones/{} -F state='closed'
