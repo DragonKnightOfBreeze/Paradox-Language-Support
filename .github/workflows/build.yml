@@ -161,7 +161,7 @@ jobs:
 
     # Run tests
     - name: Run Tests
-      run: ./gradlew test --tests "!icu/windea/pls/ai/**"
+      run: ./gradlew test --exclude-task test --tests "!icu.windea.pls.ai.**"
 
     # Collect Tests Result of failed tests
     - name: Collect Tests Result
