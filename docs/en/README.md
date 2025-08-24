@@ -11,7 +11,7 @@ The Intellij IDEA plugin for Stellaris modding (also supports other Paradox Inte
 Features:
 
 - Supports the script language, localisation language and csv languages used to write mods, and the CWT language used to write config files.
-- Provides various relatively complete language features. Including code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff and more.
+- Provides a wide range of powerful language features. Including code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff and more.
 - Supports previewing and rendering DDS and TGA pictures, and provides actions to convert image formats (PNG, DDS, TGA).
 - Supports rendering various useful information via quick documentation and inlay hints (such as localisation text, image, scope information and parameter information).
 - Supports most advanced features of script and localisation languages (such as parameters, scopes, inline scripts and various complex expressions).

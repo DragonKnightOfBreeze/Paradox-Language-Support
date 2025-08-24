@@ -3,7 +3,7 @@ The Intellij IDEA plugin for Stellaris modding (also supports other Paradox Inte
 Features:
 
 - Supports the script language, localisation language and csv languages used to write mods, and the CWT language used to write config files.
-- Provides various relatively complete language features. Including code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff and more.
+- Provides a wide range of powerful language features. Including code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff and more.
 - Supports previewing and rendering DDS and TGA pictures, and provides actions to convert image formats (PNG, DDS, TGA).
 - Supports rendering various useful information via quick documentation and inlay hints (such as localisation text, image, scope information and parameter information).
 - Supports most advanced features of script and localisation languages (such as parameters, scopes, inline scripts and various complex expressions).
@@ -23,7 +23,7 @@ Besides, [customizing](https://windea.icu/Paradox-Language-Support/en/config.htm
 特性：
 
 - 支持编写模组所使用的脚本语言、本地化语言与CSV语言，以及编写规则文件所使用的CWT语言。
-- 提供诸多较为完备的语言功能，包括代码高亮、代码导航、代码补全、代码检查、代码重构、快速文档、内嵌提示、动态模版、代码层级、图表、差异比较等。
+- 提供诸多完备的语言功能，包括代码高亮、代码导航、代码补全、代码检查、代码重构、快速文档、内嵌提示、动态模版、代码层级、图表、差异比较等。
 - 支持预览与渲染DDS和TGA图片，提供不同图片格式（PNG、DDS、TGA）之间的相互转换的操作。
 - 支持通过快速文档与内嵌提示等方式，渲染各种有用的信息（例如本地化文本、图片、作用域信息和参数信息）。
 - 支持脚本语言与本地化语言的多数高级特性（例如参数、作用域、内联脚本和各种复杂表达式）。

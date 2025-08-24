@@ -4,25 +4,25 @@
 
 > [!NOTE]
 > 
-> Features in this section require the [Markdown](https://plugins.jetbrains.com/plugin/7793-markdown) plugin to be installed and enabled.
+> The features mentioned in this section require installation and activation of the official [Markdown](https://plugins.jetbrains.com/plugin/7793-markdown) plugin.
 
-PLS extends integration with Markdown, covering links, inline code, code fences, and more.
+PLS deeply integrates Markdown support, optimizing the handling of links, inline code, and code blocks for mod development scenarios.
 
 ### Links
 
-By using specially formatted link texts with specific prefixes, PLS can resolve Markdown links to matched target references (definitions, localizations, etc.),
-providing additional language features in the editor such as code navigation and quick documentation.
+Through specially formatted link text, PLS can parse Markdown links into matching target references (definitions, localizations, etc.), 
+providing language features such as code navigation and quick documentation in the editor, offering powerful support for mod documentation writing.
 
-This also applies to links in other places, such as HTML links, and links in the raw text of quick documentation for navigation to PSI elements.
+This functionality also applies to HTML links and PSI element navigation (definitions, localizations, etc.) in quick documentation.
 
 ![](../images/extensions/md_link_1.png)
 
 For different types of reference links, the formats and examples are as follows:
 
-**CWT config** (limited support only)
+**CWT Rules** (limited support only)
 
 - Format
-  - `cwt:{gameType}/{parts}`
+  - `cwt:{gameType}:{parts}`
 - Examples
   - `cwt:stellaris:types/civic_or_origin`
   - `cwt:stellaris:types/civic_or_origin/origin`
@@ -40,45 +40,45 @@ For different types of reference links, the formats and examples are as follows:
   - `cwt:stellaris:modifier_categories/some_modifier_category`
   - `cwt:stellaris:modifiers/some_modifier`
 
-**Scoped Variable**
+**Scripted Variables**
 
 - Format
   - `pdx.sv:{name}`
-  - `pdx.sv:{gameType}/{name}`
+  - `pdx.sv:{gameType}:{name}`
 - Examples
   - `pdx.sv:civic_default_random_weight`
   - `pdx.sv:stellaris:civic_default_random_weight`
 
-**Definition**
+**Definitions**
 
 - Format
   - `pdx.d:{typeExpression}/{name}`
-  - `pdx.d:{gameType}/{typeExpression}/{name}`
+  - `pdx.d:{gameType}:{typeExpression}/{name}`
 - Examples
   - `pdx.d:origin_default`
   - `pdx.d:stellaris:origin_default`
   - `pdx.d:civic_or_origin.origin/origin_default`
   - `pdx.d:stellaris:civic_or_origin.origin/origin_default`
 
-**Localization**
+**Localizations**
 
 - Format
   - `pdx.l:{name}`
-  - `pdx.l:{gameType}/{name}`
+  - `pdx.l:{gameType}:{name}`
 - Examples
   - `pdx.l:origin_default_desc`
   - `pdx.l:stellaris:origin_default_desc`
 
-**File Path** (relative to game or mod directory)
+**File Paths** (relative to game or mod directory)
 
 - Format
   - `pdx.p:{path}`
-  - `pdx.p:{gameType}/{path}`
+  - `pdx.p:{gameType}:{path}`
 - Examples
   - `pdx.p:common/governments/civics/00_origins.txt`
   - `pdx.p:stellaris:common/governments/civics/00_origins.txt`
 
-**Modifier**
+**Modifiers**
 
 - Format
   - `pdx.m:{name}`
@@ -96,10 +96,10 @@ Notes:
 
 > [!NOTE]
 >
-> Features in this section require specific advanced settings to be enabled (`Advanced Settings > Paradox Language Support > Resolve Markdown inline codes`)
+> This feature requires enabling a specific advanced setting (`Advanced Settings > Paradox Language Support > Resolve Markdown Inline Code`).
 
-PLS can try to resolve Markdown inline codes to matched target references (definitions, localizations, etc.),
-providing additional language features in the editor such as code navigation and quick documentation.
+PLS can try to resolve Markdown inline code into matching target references (definitions, localizations, etc.), 
+providing additional language features such as code navigation and quick documentation in the editor.
 
 ![](../images/extensions/md_inline_code_1.png)
 
@@ -107,21 +107,21 @@ providing additional language features in the editor such as code navigation and
 
 For different types of targets, the formats and examples are as follows:
 
-**Scripted Variable**
+**Scripted Variables**
 
 - Format
   - `@{name}`
 - Example
   - `@civic_default_random_weight`
 
-**Definition**
+**Definitions**
 
 - Format
   - `{name}`
 - Example
   - `origin_default`
 
-**Localisation**
+**Localizations**
 
 - Format
   - `{name}`
@@ -130,23 +130,23 @@ For different types of targets, the formats and examples are as follows:
 
 Note:
 
-- If the inline code can be parsed as a definition and a localization at the same time, the definition will be preferred.
+- If both definition and localization can be resolved, definition takes precedence.
 
-### Code Fences
+### Code Blocks
 
-By injecting extra information after the language ID of a Markdown code fence, you can specify the game type and file path for script or localization file snippets.
-PLS will use this information to match CWT configs and provide advanced language features as if you were editing an actual script or localization file.
+By injecting additional information after the language ID in Markdown code blocks, you can specify the game type and file path for script or localization file fragments. 
+PLS will use this information to match CWT configs, providing various advanced language features as if editing actual script or localization files.
 
 ![](../images/extensions/md_code_fence_1.png)
 
-The format and examples for the injected information are as follows:
+Injection format and examples:
 
 - Format
   - `path={gameType}:{path}`
 - Example
   - `path=stellaris:common/armies/injected_defence_armies.txt`
 
-A more complete example:
+Full example:
 
 ````markdown
 ```paradox_script path=stellaris:common/armies/injected_defence_armies.txt
@@ -159,76 +159,76 @@ defense_army = {
 Notes:
 
 - `{gameType}` - <GameTypeNote />
-- `{path}` - Simulated file path relative to the game or mod directory. Must be a valid script or localization file path.
+- `{path}` - Simulated file path relative to game or mod directory. Must be a valid script or localization file path.
 
 ## Diagrams {#diagrams}
 
 > [!NOTE]
 >
-> Features in this section require the Diagrams plugin to be installed and enabled.
+> This feature requires installation and activation of the official Diagrams plugin.
 
 > [!WARNING]
 > 
-> Features in this section and the Diagrams plugin are only available in IDE professional editions (e.g., IntelliJ IDEA Ultimate).
+> This feature and the Diagrams plugin are only available in professional IDEs (e.g., IntelliJ IDEA Ultimate).
 
-PLS provides several types of diagrams for visualizing the definitions and relationships of certain types of entities.
+PLS provides several diagrams for displaying information about specific types of definitions and their relationships.
 
-Currently, only event tree and technology tree diagrams are provided.
+Currently, only event trees and technology trees are provided.
 
 > [!TIP]
->
-> You can also use the type hierarchy view to inspect event trees and technology trees.
->
-> * When the caret is on a definition or its reference, go to `Navigate > Type Hierarchy` in the main menu to open the type hierarchy window.
-> * In the hierarchy tool window, you can view all definitions of the same type in a collapsible tree view.
-> * If the type is event or technology, you can also view the corresponding event tree or technology tree in the hierarchy view.
->
+> 
+> You can also use the type hierarchy view to examine event trees and technology trees.
+> 
+> * With the cursor on a definition or its reference, go to `Navigate > Type Hierarchy` in the main menu to open the type hierarchy window.
+> * In the hierarchy tool window, view information for all definitions of the same type through a collapsible tree view.
+> * If the definition type is event or technology, the hierarchy view can be displayed as an event tree or technology tree.
+> 
 > ![](../images/extensions/diagram_hierarchy_1.png)
 
 ### Settings Page
 
-In the IDE's settings page, go to `Languages & Frameworks > Paradox Language Support > Diagrams` to open the diagram settings page.
+In the IDE settings page, go to `Languages & Frameworks > Paradox Language Support > Diagrams` to open the diagram settings page.
 
-Here you can configure which nodes to display for each diagram according to various conditions.
+Here you can configure which nodes to display for various diagram types based on multiple conditions.
 
 ![](../images/extensions/diagram_settings_1.png)
 
 ### Event Tree
 
-You can open the event tree diagram in the following ways:
+You can open event tree diagrams in several ways:
 
-- In the project view, select the script file of an event or its parent directory (including the game or mod directory), then open the context menu, choose `Diagrams > Show Diagram...`, and select the desired diagram type for the event tree.
-- In the editor, open the script file of an event, then open the context menu, choose `Diagrams > Show Diagram...`, and select the desired diagram type for the event tree.
-- If available, you can also open it directly via a shortcut or the Search Everywhere feature (press `Shift + Shift`).
+- In the project view, select an event script file or its parent directory (including game or mod directories), right-click and choose `Diagrams > Show Diagram...`, then select any diagram type belonging to event trees.
+- In the editor, open an event script file, right-click and choose `Diagrams > Show Diagram...`, then select any diagram type belonging to event trees.
+- If available, use keyboard shortcuts or the Search Everywhere feature (`Shift + Shift`) to open directly.
 
-The event tree diagram displays key information about events and their invocation relationships. You can use the toolbar above to configure which node elements to display and filter the nodes to be shown.
+Event tree diagrams display key information about events and their invocation relationships. Use the toolbar at the top to configure which node elements to display and filter nodes.
 
 ![](../images/extensions/diagram_event_tree_1.png)
 
-1. Set which node elements to display. From left to right: type, property, localized title.
-2. Filter nodes to display by query scope. For example, only show nodes corresponding to events in opened files.
-3. Open the diagram settings pages.
+1. Configure node elements to display. From left to right: type, properties, localized title.
+2. Filter nodes by query scope. For example, only show nodes for events in open files.
+3. Open the diagram settings pages. From left to right: Diagrams plugin's, PLS's.
 
 > [!WARNING]
 >
-> IDE needs some time to complete data loading and graph rendering. If there are too many nodes and node elements to render, this process may take a long time.
+> The IDE requires time to complete data loading and rendering. This may take considerable time if many nodes and elements need rendering.
 
 ### Technology Tree
 
-If the current game type is *Stellaris*, you can open the technology tree diagram in the following ways:
+If the current game type is *Stellaris*, you can open technology tree diagrams in several ways:
 
-- In the project view, select the script file of a technology or its parent directory (including the game or mod directory), then open the context menu, choose `Diagrams > Show Diagram...`, and select the desired diagram type for the technology tree.
-- In the editor, open the script file of a technology, then open the context menu, choose `Diagrams > Show Diagram...`, and select the desired diagram type for the technology tree.
-- If available, you can also open it directly via a shortcut or the Search Everywhere feature (press `Shift + Shift`).
+- In the project view, select a technology script file or its parent directory (including game or mod directories), right-click and choose `Diagrams > Show Diagram...`, then select any diagram type belonging to technology trees.
+- In the editor, open a technology script file, right-click and choose `Diagrams > Show Diagram...`, then select any diagram type belonging to technology trees.
+- If available, use keyboard shortcuts or the Search Everywhere feature (`Shift + Shift`) to open directly.
 
-The technology tree diagram displays key information about technologies and their prerequisite relationships. You can use the toolbar above to configure which node elements to display and filter the nodes to be shown.
+Technology tree diagrams display key information about technologies and their prerequisite relationships. Use the toolbar at the top to configure which node elements to display and filter nodes.
 
 ![](../images/extensions/diagram_tech_tree_1.png)
 
-1. Set which node elements to display. From left to right: type, property, localized name, image (displayed as a technology card).
-2. Filter nodes to display by query scope. For example, only show nodes corresponding to technologies in opened files.
-3. Open the diagram settings pages.
+1. Configure node elements to display. From left to right: type, properties, localized name, presentation (displayed as tech card).
+2. Filter nodes by query scope. For example, only show nodes for technologies in open files.
+3. Open the diagram settings pages. From left to right: Diagrams plugin's, PLS's.
 
 > [!WARNING]
-> 
-> IDE needs some time to complete data loading and graph rendering. If there are too many nodes and node elements to render, this process may take a long time.
+>
+> The IDE requires time to complete data loading and rendering. This may take considerable time if many nodes and elements need rendering.

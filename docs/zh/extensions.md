@@ -4,16 +4,16 @@
 
 > [!NOTE]
 > 
-> 此章节的功能要求同时安装与启用 [Markdown](https://plugins.jetbrains.com/plugin/7793-markdown) 插件
+> 本章节提到的功能需要同时安装并启用官方的 [Markdown](https://plugins.jetbrains.com/plugin/7793-markdown) 插件。
 
-PLS 扩展了与 Markdown 的集成，涉及链接、内联代码、代码块等。
+PLS 深度集成了 Markdown 支持，针对模组开发场景，优化了对链接、内联代码和代码块的处理。
 
 ### 链接
 
-通过使用带有特定前缀的特定格式的链接文本，PLS 可以将 Markdown 链接解析为匹配的目标引用（定义、本地化等），
-从而在编辑器视图中额外提供代码导航、快速文档等语言功能。
+通过特定语法格式的链接文本，PLS 可以将 Markdown 链接解析为匹配的目标引用（定义、本地化等），
+从而在编辑器中提供代码导航、快速文档等语言功能，为模组文档编写提供有力支持。
 
-这也适用于其他地方的链接，例如 HTML 链接，以及快速文档的原始文本中的用于导航到 PSI 元素的链接。
+此功能同样适用于 HTML 链接，以及快速文档中的 PSI 元素导航（定义、本地化等）。
 
 ![](../images/extensions/md_link_1.png)
 
@@ -22,7 +22,7 @@ PLS 扩展了与 Markdown 的集成，涉及链接、内联代码、代码块等
 **CWT 规则**（仅提供有限的支持）
 
 - 格式
-  - `cwt:{gameType}/{parts}`
+  - `cwt:{gameType}:{parts}`
 - 示例
   - `cwt:stellaris:types/civic_or_origin`
   - `cwt:stellaris:types/civic_or_origin/origin`
@@ -44,7 +44,7 @@ PLS 扩展了与 Markdown 的集成，涉及链接、内联代码、代码块等
 
 - 格式
   - `pdx.sv:{name}`
-  - `pdx.sv:{gameType}/{name}`
+  - `pdx.sv:{gameType}:{name}`
 - 示例
   - `pdx.sv:civic_default_random_weight`
   - `pdx.sv:stellaris:civic_default_random_weight`
@@ -53,7 +53,7 @@ PLS 扩展了与 Markdown 的集成，涉及链接、内联代码、代码块等
 
 - 格式
   - `pdx.d:{typeExpression}/{name}`
-  - `pdx.d:{gameType}/{typeExpression}/{name}`
+  - `pdx.d:{gameType}:{typeExpression}/{name}`
 - 示例
   - `pdx.d:origin_default`
   - `pdx.d:stellaris:origin_default`
@@ -64,7 +64,7 @@ PLS 扩展了与 Markdown 的集成，涉及链接、内联代码、代码块等
 
 - 格式
   - `pdx.l:{name}`
-  - `pdx.l:{gameType}/{name}`
+  - `pdx.l:{gameType}:{name}`
 - 示例
   - `pdx.l:origin_default_desc`
   - `pdx.l:stellaris:origin_default_desc`
@@ -73,7 +73,7 @@ PLS 扩展了与 Markdown 的集成，涉及链接、内联代码、代码块等
 
 - 格式
   - `pdx.p:{path}`
-  - `pdx.p:{gameType}/{path}`
+  - `pdx.p:{gameType}:{path}`
 - 示例
   - `pdx.p:common/governments/civics/00_origins.txt`
   - `pdx.p:stellaris:common/governments/civics/00_origins.txt`
@@ -96,10 +96,10 @@ PLS 扩展了与 Markdown 的集成，涉及链接、内联代码、代码块等
 
 > [!NOTE]
 >
-> 此章节的功能需要启用特定的高级设置项（`高级设置 > Paradox Language Support > 解析 Markdown 内联代码`）
+> 本章节的功能需要启用特定的高级设置项（`高级设置 > Paradox Language Support > 解析 Markdown 内联代码`）。
 
 PLS 可以尝试将 Markdown 内联代码解析为匹配的目标引用（定义、本地化等），
-从而在编辑器视图中额外提供代码导航、快速文档等语言功能。
+从而在编辑器中额外提供代码导航、快速文档等语言功能。
 
 ![](../images/extensions/md_inline_code_1.png)
 
@@ -134,8 +134,8 @@ PLS 可以尝试将 Markdown 内联代码解析为匹配的目标引用（定义
 
 ### 代码块
 
-通过在 Markdown 代码块的语言ID后面注入额外的信息，可以为其中的脚本或本地化文件的片段指定游戏类型和文件路径。
-PLS 会根据这些信息来匹配CWT规则，从而提供各种高级语言功能，如同编写实际的脚本或本地化文件一样。
+通过在 Markdown 代码块的语言 ID 后面注入额外的信息，可以为其中的脚本或本地化文件的片段指定游戏类型和文件路径。
+PLS 会根据这些信息来匹配 CWT 规则，从而提供各种高级语言功能，如同编写实际的脚本或本地化文件一样。
 
 ![](../images/extensions/md_code_fence_1.png)
 
@@ -159,17 +159,17 @@ defense_army = {
 备注：
 
 - `{gameType}` - <GameTypeNote />
-- `{path}` - 模拟的相对于游戏或模组目录的文件路径。必须是合法的脚本或本地化文件的路经。
+- `{path}` - 模拟的相对于游戏或模组目录的文件路径。必须是合法的脚本或本地化文件的路径。
 
 ## 图表 {#diagrams}
 
 > [!NOTE]
 >
-> 此章节的功能要求同时安装与启用 Diagrams 插件
+> 本章节的功能需要安装并启用官方的 Diagrams 插件。
 
 > [!WARNING]
 > 
-> 此章节的功能以及 Diagrams 插件仅在专业版IDE中可用（例如：IntelliJ IDEA Ultimate）
+> 本章节功能以及 Diagrams 插件仅在专业版 IDE 中可用（例如：IntelliJ IDEA Ultimate）。
 
 PLS 提供了数种图表（Diagrams），可用于展示特定类型的定义的信息，以及相互之间的关系。
 
@@ -189,7 +189,7 @@ PLS 提供了数种图表（Diagrams），可用于展示特定类型的定义�
 
 在 IDE 的设置页面中，点击 `Languages & Frameworks > Paradox Language Support > 图表`，可以打开图表的设置页面。
 
-可以在这里根据各种条件，配置各种图表的要显示的节点。
+可以在此根据多种条件，配置各类图表需要显示的节点。
 
 ![](../images/extensions/diagram_settings_1.png)
 
@@ -199,7 +199,7 @@ PLS 提供了数种图表（Diagrams），可用于展示特定类型的定义�
 
 - 在项目视图中，选中事件的脚本文件或者其父目录（包括游戏或模组目录），然后打开右键菜单，选择 `Diagrams > Show Diagram...`，接着选择任意属于事件树的图表类型。
 - 在编辑器中，打开事件的脚本文件，然后打开右键菜单，选择 `Diagrams > Show Diagram...`，接着选择任意属于事件树的图表类型。
-- 如果可用，也可以直接通过快捷键或者随处搜索功能（按`Shift + Shift`）直接打开。
+- 如果可用，也可以直接通过快捷键或者随处搜索功能（按 `Shift + Shift`）直接打开。
 
 事件树的图表展示了事件的关键信息，以及事件之间的调用关系。可以通过上方的工具栏配置要显示的节点元素，以及过滤要展示的节点。
 
@@ -207,7 +207,7 @@ PLS 提供了数种图表（Diagrams），可用于展示特定类型的定义�
 
 1. 用于设置要显示的节点元素。从左到右依次是类型、属性、本地化标题。
 2. 用于按查询作用域过滤要显示的节点。例如，仅显示已打开的文件中的事件对应的节点。
-3. 用于打开图表的设置页面。
+3. 用于打开图表的设置页面。从左到右依次是 Diagrams 插件的设置页面与 PLS 的设置页面。
 
 > [!WARNING]
 >
@@ -219,7 +219,7 @@ PLS 提供了数种图表（Diagrams），可用于展示特定类型的定义�
 
 - 在项目视图中，选中科技的脚本文件或者其父目录（包括游戏或模组目录），然后打开右键菜单，选择 `Diagrams > Show Diagram...`，接着选择任意属于科技树的图表类型。
 - 在编辑器中，打开科技的脚本文件，然后打开右键菜单，选择 `Diagrams > Show Diagram...`，接着选择任意属于科技树的图表类型。
-- 如果可用，也可以直接通过快捷键或者随处搜索功能（按`Shift + Shift`）直接打开。
+- 如果可用，也可以直接通过快捷键或者随处搜索功能（按 `Shift + Shift`）直接打开。
 
 科技树的图表展示了科技的关键信息，以及科技之间的先后关系。可以通过上方的工具栏配置要显示的节点元素，以及过滤要展示的节点。
 
@@ -227,7 +227,7 @@ PLS 提供了数种图表（Diagrams），可用于展示特定类型的定义�
 
 1. 用于设置要显示的节点元素。从左到右依次是类型、属性、本地化名字、图像（以科技卡的形式显示）。
 2. 用于按查询作用域过滤要显示的节点。例如，仅显示已打开的文件中的科技对应的节点。
-3. 用于打开图表的设置页面。
+3. 用于打开图表的设置页面。从左到右依次是 Diagrams 插件的设置页面与 PLS 的设置页面。
 
 > [!WARNING]
 >

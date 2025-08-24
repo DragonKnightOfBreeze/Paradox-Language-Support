@@ -1,9 +1,15 @@
 # AI
 
-## The Settings Page
+## The Settings Page {#settings_page}
 
 To be completed.
 
-## Features
+## Related Features {#features}
 
 To be completed.
+
+### Translate Localisation Text
+
+To be completed.
+
+### Polish Localisation Text

@@ -14,7 +14,7 @@ The Intellij IDEA plugin for Stellaris modding (also supports other Paradox Inte
 Features:
 
 - Supports the script language, localisation language and csv languages used to write mods, and the CWT language used to write config files.
-- Provides various relatively complete language features. Including code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff and more.
+- Provides a wide range of powerful language features. Including code highlight, code navigation, code completion, code inspection, code refactoring, quick documentation, inlay hints, live templates, code hierarchy, diagram, diff and more.
 - Supports previewing and rendering DDS and TGA pictures, and provides actions to convert image formats (PNG, DDS, TGA).
 - Supports rendering various useful information via quick documentation and inlay hints (such as localisation text, image, scope information and parameter information).
 - Supports most advanced features of script and localisation languages (such as parameters, scopes, inline scripts and various complex expressions).
@@ -54,8 +54,8 @@ Tips:
   - Click `Navigate` or `Go To` in the editor's right-click menu, and choose the target to navigate to.
   - Click `Navigate > Definition Hierarchy` to open the definition hierarchy window, to view the definition implementation relationship of a specific definition type.
   - Click `Navigate > Call Hierarchy` to open the call hierarchy window, to view the call relationship of definitions, localisations, scripted variables, etc.
-  - Click `Alt 1` or `Project` Tool window, open the Project View panel, then click `Project > Paradox Files` in the upper left corner, to view the summarized game and mod files.
-  - Click `Alt 1` or `Project` Tool window, open the Project View panel, then click `Project > CWT Config Files` in the upper left corner, to view the summarized CWT config files.
+  - Click `Alt 1` or `Project` Tool window, open the Project panel, then click `Project > Paradox Files` in the upper left corner, to view the summarized game and mod files.
+  - Click `Alt 1` or `Project` Tool window, open the Project panel, then click `Project > CWT Config Files` in the upper left corner, to view the summarized CWT config files.
 - To run a global code inspection, refer to the following method:
   - Click `Alt 6` or `Problems` Tool window, open the Problems panel ,then view problems of current file, or run a global code inspection for whole project.
   - Click `Code > Inspect Code...`, run a global code inspection for whole project.
