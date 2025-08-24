@@ -9,7 +9,6 @@ on:
     types: [released]
 
 jobs:
-
   # Prepare and publish the plugin to JetBrains Marketplace repository
   release:
     name: Publish Plugin
@@ -21,7 +20,6 @@ jobs:
     if: ${{ !contains(github.event.release.prerelease, 'true') }}
 
     steps:
-
       # Check out the current repository
       - name: Fetch Sources
         uses: actions/checkout@v5
