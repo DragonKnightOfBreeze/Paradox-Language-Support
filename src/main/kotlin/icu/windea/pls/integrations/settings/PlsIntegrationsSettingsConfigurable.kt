@@ -55,7 +55,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                         .withTitle(PlsBundle.message("settings.integrations.image.magickPath.title"))
                     textFieldWithBrowseButton(descriptor, null)
                         .bindText(settings.image::magickPath.toNonNullableProperty(""))
-                        .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
+                        .applyToComponent { setEmptyState(PlsIntegrationConstants.Magick.pathTip()) }
                         .align(Align.FILL)
                         .validationOnInput { PlsIntegrationsSettingsManager.validateMagickPath(this, it) }
                 }.enabledIf(cbMagick.selected)
@@ -119,7 +119,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                             .withTitle(PlsBundle.message("settings.integrations.lint.tigerPath.title", name))
                         textFieldWithBrowseButton(descriptor, null)
                             .bindText(pathProp.toNonNullableProperty(""))
-                            .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
+                            .applyToComponent { setEmptyState(PlsIntegrationConstants.Tiger.pathTip(gameType)) }
                             .align(Align.FILL)
                             .validationOnInput { PlsIntegrationsSettingsManager.validateTigerPath(this, it, gameType) }
                             .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }
@@ -131,7 +131,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                             .withTitle(PlsBundle.message("settings.integrations.lint.tigerConfPath.title", name))
                         textFieldWithBrowseButton(descriptor, null)
                             .bindText(confPathProp.toNonNullableProperty(""))
-                            .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) }
+                            .applyToComponent { setEmptyState(PlsIntegrationConstants.Tiger.confPathTip(gameType)) }
                             .validationOnInput { PlsIntegrationsSettingsManager.validateTigerConfPath(this, it, gameType) }
                             .align(Align.FILL)
                             .onApply { PlsIntegrationsSettingsManager.onTigerSettingsChanged(gameType, callbackLock) }

@@ -241,13 +241,10 @@ tasks {
         archiveBaseName = properties("pluginPackageName")
     }
     runIde {
-        jvmArgumentProviders += CommandLineArgumentProvider {
-            listOf(
-                "-Didea.is.internal=true",
-                "-Dpls.is.debug=true",
-                "-Dide.slow.operations.assertion=false",
-            )
-        }
+        systemProperty("idea.is.internal", "true")
+        systemProperty("idea.log.debug.categories", "icu.windea.pls")
+        systemProperty("ide.slow.operations.assertion", "false")
+        systemProperty("pls.is.debug", "true")
     }
     withType<Test> {
         systemProperty("idea.log.debug.categories", "icu.windea.pls")

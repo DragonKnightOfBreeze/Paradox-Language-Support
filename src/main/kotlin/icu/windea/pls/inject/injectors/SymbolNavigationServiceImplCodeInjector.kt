@@ -1,4 +1,4 @@
-@file:Suppress("UnstableApiUsage", "UNUSED_PARAMETER", "UNCHECKED_CAST")
+@file:Suppress("UnstableApiUsage", "UNCHECKED_CAST", "unused")
 
 package icu.windea.pls.inject.injectors
 

@@ -42,6 +42,6 @@ object PlsChatMessageManager {
 
     fun fromLocalisationContexts(localisationContexts: List<ParadoxLocalisationContext>): String {
         //去除首尾空白
-        return localisationContexts.joinToString("\n") { context -> "${context.key} \"${context.text}\"" }.trim()
+        return localisationContexts.joinToString("\n") { context -> "${context.key}: \"${context.text}\"" }.trim()
     }
 }

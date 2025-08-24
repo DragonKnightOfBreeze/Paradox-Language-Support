@@ -18,7 +18,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.lang.expression.complex.nodes.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -218,18 +217,19 @@ open class ParadoxDefinitionParameterSupport : ParadoxParameterSupport {
         }
         //加上所属定义信息
         val gameType = parameterElement.gameType
+        val categories = ParadoxReferenceLinkType.CwtConfig.Categories
         appendBr().appendIndent()
         append(PlsBundle.message("ofDefinition")).append(" ")
-        val link = ParadoxReferenceLinkType.Definition.createLink(gameType, definitionName, definitionType.first())
+        val link = ParadoxReferenceLinkType.Definition.createLink(definitionName, definitionType.first(), gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), definitionName.escapeXml(), context = parameterElement)
         append(": ")
         val type = definitionType.first()
-        val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "types", type)
+        val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.types, type, gameType)
         appendPsiLinkOrUnresolved(typeLink.escapeXml(), type.escapeXml())
         for ((index, t) in definitionType.withIndex()) {
             if (index == 0) continue
             append(", ")
-            val subtypeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "types", type, t)
+            val subtypeLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.types, "$type/$t", gameType)
             appendPsiLinkOrUnresolved(subtypeLink.escapeXml(), t.escapeXml())
         }
         return true
@@ -546,7 +546,7 @@ open class ParadoxInlineScriptParameterSupport : ParadoxParameterSupport {
         val gameType = parameterElement.gameType
         appendBr().appendIndent()
         append(PlsBundle.message("ofInlineScript")).append(" ")
-        val link = ParadoxReferenceLinkType.FilePath.createLink(gameType, filePath)
+        val link = ParadoxReferenceLinkType.FilePath.createLink(filePath, gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), inlineScriptExpression.escapeXml(), context = parameterElement)
         return true
     }

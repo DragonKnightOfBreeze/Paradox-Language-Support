@@ -14,7 +14,6 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.reference.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.editor.*
@@ -235,7 +234,7 @@ class ParadoxLocalisationTextHtmlRenderer(
             val definitionName = definitionInfo.name.or.anonymous()
             val definitionType = definitionInfo.type
             renderWithColorTo(conceptColor) {
-                val link = ParadoxReferenceLinkType.Definition.createLink(definitionInfo.gameType, definitionName, definitionType)
+                val link = ParadoxReferenceLinkType.Definition.createLink(definitionName, definitionType, definitionInfo.gameType)
                 builder.appendPsiLinkOrUnresolved(link.escapeXml(), conceptText, context = referenceElement)
             }
             return

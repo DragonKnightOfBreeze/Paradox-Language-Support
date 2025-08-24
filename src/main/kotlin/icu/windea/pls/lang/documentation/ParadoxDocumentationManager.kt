@@ -17,7 +17,6 @@ import icu.windea.pls.ep.modifier.*
 import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.ep.reference.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -212,7 +211,8 @@ object ParadoxDocumentationManager {
             append(PlsStringConstants.complexEnumValuePrefix).append(" <b>").append(name.escapeXml().or.anonymous()).append("</b>")
             val complexEnumConfig = configGroup.complexEnums[enumName]
             if (complexEnumConfig != null) {
-                val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "complex_enums", enumName)
+                val category = ParadoxReferenceLinkType.CwtConfig.Categories.complexEnums
+                val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(category, enumName, gameType)
                 append(": ").appendPsiLinkOrUnresolved(typeLink.escapeXml(), enumName.escapeXml())
             } else {
                 append(": ").append(enumName)
@@ -236,7 +236,7 @@ object ParadoxDocumentationManager {
             if (nameLocalisation == null) return@run
             appendBr()
             append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
-            val link = ParadoxReferenceLinkType.Localisation.createLink(gameType, nameLocalisation.name)
+            val link = ParadoxReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
         }
         run rs@{
@@ -263,7 +263,8 @@ object ParadoxDocumentationManager {
                 if (appendSeparator) append(" | ") else appendSeparator = true
                 val valueConfig = configGroup.dynamicValueTypes[dynamicValueType]
                 if (valueConfig != null) {
-                    val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "values", dynamicValueType)
+                    val category = ParadoxReferenceLinkType.CwtConfig.Categories.values
+                    val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(category, dynamicValueType, gameType)
                     appendPsiLinkOrUnresolved(typeLink.escapeXml(), dynamicValueType.escapeXml())
                 } else {
                     append(dynamicValueType)
@@ -288,7 +289,7 @@ object ParadoxDocumentationManager {
             if (nameLocalisation == null) return@run
             appendBr()
             append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
-            val link = ParadoxReferenceLinkType.Localisation.createLink(gameType, nameLocalisation.name)
+            val link = ParadoxReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
         }
         run rs@{
@@ -348,14 +349,14 @@ object ParadoxDocumentationManager {
             if (nameLocalisation == null) return@run
             appendBr()
             append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
-            val link = ParadoxReferenceLinkType.Localisation.createLink(gameType, nameLocalisation.name)
+            val link = ParadoxReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
         }
         run {
             if (descLocalisation == null) return@run
             appendBr()
             append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
-            val link = ParadoxReferenceLinkType.Localisation.createLink(gameType, descLocalisation.name)
+            val link = ParadoxReferenceLinkType.Localisation.createLink(descLocalisation.name, gameType)
             append("desc = ").appendPsiLinkOrUnresolved(link.escapeXml(), descLocalisation.name.escapeXml(), context = element)
         }
         run rs@{
@@ -391,7 +392,7 @@ object ParadoxDocumentationManager {
             val iconPath = iconFile.fileInfo?.path?.path ?: return@run
             appendBr()
             append(PlsStringConstants.relatedImagePrefix).append(" ")
-            val link = ParadoxReferenceLinkType.FilePath.createLink(gameType, iconPath)
+            val link = ParadoxReferenceLinkType.FilePath.createLink(iconPath, gameType)
             append("icon = ").appendPsiLinkOrUnresolved(link.escapeXml(), iconPath.escapeXml(), context = element)
         }
         run rs@{
@@ -467,7 +468,7 @@ object ParadoxDocumentationManager {
             if (nameLocalisation == null) return@run
             appendBr()
             append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
-            val link = ParadoxReferenceLinkType.Localisation.createLink(gameType, nameLocalisation.name)
+            val link = ParadoxReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = element)
         }
         run rs@{
@@ -536,23 +537,24 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.addDefinitionInfo(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, usePrefix: String? = null) {
         val gameType = definitionInfo.gameType
+        val categories = ParadoxReferenceLinkType.CwtConfig.Categories
         val prefix = usePrefix ?: PlsStringConstants.definitionPrefix
         append(prefix).append(" ")
         val name = definitionInfo.name
         if (usePrefix == null) {
             append("<b>").append(name.escapeXml().or.anonymous()).append("</b>")
         } else {
-            val link = ParadoxReferenceLinkType.Definition.createLink(gameType, name, definitionInfo.type)
+            val link = ParadoxReferenceLinkType.Definition.createLink(name, definitionInfo.type, gameType)
             appendPsiLinkOrUnresolved(link.escapeXml(), name.escapeXml().or.anonymous(), context = definition)
         }
         append(": ")
         val typeConfig = definitionInfo.typeConfig
-        val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "types", typeConfig.name)
+        val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.types, typeConfig.name, gameType)
         appendPsiLinkOrUnresolved(typeLink.escapeXml(), typeConfig.name.escapeXml())
         val subtypeConfigs = definitionInfo.subtypeConfigs
         if (subtypeConfigs.isNotEmpty()) {
             for (subtypeConfig in subtypeConfigs) {
-                val subtypeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "types", typeConfig.name, subtypeConfig.name)
+                val subtypeLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.types, "${typeConfig.name}/${subtypeConfig.name}", gameType)
                 append(", ").appendPsiLinkOrUnresolved(subtypeLink.escapeXml(), subtypeConfig.name.escapeXml())
             }
         }
@@ -560,18 +562,19 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.addSuperDefinitionInfo(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
         val gameType = definitionInfo.gameType
+        val categories = ParadoxReferenceLinkType.CwtConfig.Categories
         appendIndent().append(PlsBundle.message("inherits")).append(" ")
         val name = definitionInfo.name
-        val link = ParadoxReferenceLinkType.Definition.createLink(gameType, name, definitionInfo.type)
+        val link = ParadoxReferenceLinkType.Definition.createLink(name, definitionInfo.type, gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), name.escapeXml().or.anonymous(), context = definition)
         append(": ")
         val typeConfig = definitionInfo.typeConfig
-        val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "types", typeConfig.name)
+        val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.types, typeConfig.name, gameType)
         appendPsiLinkOrUnresolved(typeLink.escapeXml(), typeConfig.name.escapeXml())
         val subtypeConfigs = definitionInfo.subtypeConfigs
         if (subtypeConfigs.isNotEmpty()) {
             for (subtypeConfig in subtypeConfigs) {
-                val subtypeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "types", typeConfig.name, subtypeConfig.name)
+                val subtypeLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.types, "${typeConfig.name}/${subtypeConfig.name}", gameType)
                 append(", ").appendPsiLinkOrUnresolved(subtypeLink.escapeXml(), subtypeConfig.name.escapeXml())
             }
         }
@@ -591,7 +594,7 @@ object ParadoxDocumentationManager {
                 map.put(key, resolveResult.message)
             } else if (resolveResult.element != null) {
                 map.put(key, buildDocumentation {
-                    val link = ParadoxReferenceLinkType.Localisation.createLink(definitionInfo.gameType, resolveResult.name)
+                    val link = ParadoxReferenceLinkType.Localisation.createLink(resolveResult.name, definitionInfo.gameType)
                     appendPsiLinkOrUnresolved(link.escapeXml(), resolveResult.name.escapeXml(), context = element)
                 })
             } else if (required) {
@@ -631,11 +634,11 @@ object ParadoxDocumentationManager {
                 val gameType = definitionInfo.gameType
                 val v = when {
                     nameOrFilePath.startsWith("GFX") -> buildDocumentation {
-                        val link = ParadoxReferenceLinkType.Definition.createLink(gameType, nameOrFilePath, ParadoxDefinitionTypes.Sprite)
+                        val link = ParadoxReferenceLinkType.Definition.createLink(nameOrFilePath, ParadoxDefinitionTypes.Sprite, gameType)
                         appendPsiLinkOrUnresolved(link.escapeXml(), nameOrFilePath.escapeXml(), context = element)
                     }
                     else -> buildDocumentation {
-                        val link = ParadoxReferenceLinkType.FilePath.createLink(gameType, nameOrFilePath)
+                        val link = ParadoxReferenceLinkType.FilePath.createLink(nameOrFilePath, gameType)
                         appendPsiLinkOrUnresolved(link.escapeXml(), nameOrFilePath.escapeXml(), context = element)
                     }
                 }
@@ -741,7 +744,8 @@ object ParadoxDocumentationManager {
         if (config == null) return
         val eventType = config.eventType
         appendBr()
-        val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "types", "event", eventType)
+        val categories = ParadoxReferenceLinkType.CwtConfig.Categories
+        val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.types, "event/$eventType", gameType)
         append(PlsStringConstants.eventTypePrefix).append(" ").appendPsiLinkOrUnresolved(typeLink.escapeXml(), eventType.escapeXml())
     }
 

@@ -150,7 +150,8 @@ fun DocumentationBuilder.buildScopeDoc(scopeId: String, gameType: ParadoxGameTyp
     when {
         isUnsureScopeId(scopeId) -> append(scopeId)
         else -> {
-            val link = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "scopes", scopeId)
+            val category = ParadoxReferenceLinkType.CwtConfig.Categories.scopes
+            val link = ParadoxReferenceLinkType.CwtConfig.createLink(category, scopeId, gameType)
             appendPsiLinkOrUnresolved(link.escapeXml(), scopeId.escapeXml(), context = contextElement)
         }
     }
@@ -158,16 +159,17 @@ fun DocumentationBuilder.buildScopeDoc(scopeId: String, gameType: ParadoxGameTyp
 }
 
 fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement): DocumentationBuilder {
+    val categories = ParadoxReferenceLinkType.CwtConfig.Categories
     var appendSeparator = false
     scopeContext.toScopeMap().forEach { (systemScope, scope) ->
         if (appendSeparator) appendBr() else appendSeparator = true
-        val systemScopeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "system_scopes", systemScope)
+        val systemScopeLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.systemScopes, systemScope, gameType)
         appendPsiLinkOrUnresolved(systemScopeLink.escapeXml(), systemScope.escapeXml(), context = contextElement)
         append(" = ")
         if (isUnsureScopeId(scope.id)) {
             append(scope)
         } else {
-            val scopeLink = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "scopes", scope.id)
+            val scopeLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.scopes, scope.id, gameType)
             appendPsiLinkOrUnresolved(scopeLink.escapeXml(), scope.id.escapeXml(), context = contextElement)
         }
     }
@@ -181,7 +183,8 @@ fun DocumentationBuilder.getModifierCategoriesText(categories: Set<String>, game
         var appendSeparator = false
         for (category in categories) {
             if (appendSeparator) append(", ") else appendSeparator = true
-            val link = ParadoxReferenceLinkType.CwtConfig.createLink(gameType, "modifier_categories", category)
+            val category = ParadoxReferenceLinkType.CwtConfig.Categories.modifierCategories
+            val link = ParadoxReferenceLinkType.CwtConfig.createLink(category, category, gameType)
             appendPsiLinkOrUnresolved(link.escapeXml(), category.escapeXml(), context = contextElement)
         }
         append("</pre>")

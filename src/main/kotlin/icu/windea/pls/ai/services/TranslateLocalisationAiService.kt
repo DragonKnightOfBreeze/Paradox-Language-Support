@@ -38,11 +38,10 @@ class TranslateLocalisationAiService : ManipulateLocalisationAiService<Translate
                 chunkIndex++
                 memory.add(getUserMessage(request, chunk))
                 val chatRequest = ChatRequest.builder().messages(memory.messages()).build()
-                chatModel.chatFlow(chatRequest).toLineFlow().map { LocalisationAiResult.fromLine(it) }
-                    .onChatCompletion { e ->
-                        val status = ChatFlowCompletionStatus.from(e)
-                        logger.info("${request.logPrefix} Chunk #$chunkIndex: ${status.text}")
-                    }
+                chatModel.chatFlow(chatRequest)
+                    .onCompletionStatus { status -> logger.info("${request.logPrefix} Chunk #$chunkIndex: ${status.text}") }
+                    .toLineFlow()
+                    .map { LocalisationAiResult.fromLine(it) }
             }
             .onCompletion {
                 val endTime = System.currentTimeMillis()

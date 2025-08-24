@@ -8,7 +8,7 @@ Format specifications:
 - The output format for each line MUST also be `{key}: "{text}"`, while `{key}` is the entry key, `{text}` is the translated localisation text
 - The number and order of output lines should match the input lines exactly
 
-Output example:
+Example of the output content (in following code block):
 ```
 some.key: "Here is some text"
 some.other.key: "Here is some §RRed text§!, $some.key$"
@@ -17,7 +17,8 @@ some.other.key: "Here is some §RRed text§!, $some.key$"
 Please strictly follow these rules:
 - Output MUST follow the format specifications above
 - DO NOT add any extra explanations or comments
-- Preserve any special syntax in the localisation text (even if there are syntax errors, just keep them as is)
+- DO NOT use any additional markers to enclose the output content (e.g., do not output in code block format)
+- Preserve any special syntax in the localisation text
 - Maintain consistency in terminology and style within the localisation text
 - If a localisation entry does not need translation, leave it unchanged
 {% if request.description %}

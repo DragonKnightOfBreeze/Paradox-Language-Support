@@ -70,7 +70,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         appendBr().appendIndent()
         append(PlsBundle.message("ofLocalisation")).append(" ")
         val nameOrUnknown = element.localisationName.or.unknown()
-        val link = ParadoxReferenceLinkType.Localisation.createLink(gameType, nameOrUnknown)
+        val link = ParadoxReferenceLinkType.Localisation.createLink(nameOrUnknown, gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), nameOrUnknown.escapeXml(), context = element)
         return true
     }

@@ -22,34 +22,11 @@ class CodeInjectorService {
         }
     }
 
-    companion object {
-        //for Application
-        @JvmField
-        val continueInvocationExceptionKey = createKey<Exception>("CONTINUE_INVOCATION_EXCEPTION_BY_WINDEA")
-        //for Application
-        @JvmField
-        val invokeInjectMethodKey = createKey<Method>("INVOKE_INJECT_METHOD_BY_WINDEA")
-
-        //for Application
-        @JvmField
-        val classPoolKey = createKey<ClassPool>("CLASS_POOL_BY_WINDEA")
-        //for Application
-        @JvmField
-        val codeInjectorsKey = createKey<Map<String, CodeInjector>>("CODE_INJECTORS_BY_WINDEA")
-
-        //for CodeInjector
-        @JvmField
-        val targetClassKey = createKey<CtClass>("TARGET_CLASS_BY_WINDEA")
-        //for CodeInjector
-        @JvmField
-        val injectMethodInfosKey = createKey<Map<String, BaseCodeInjectorSupport.InjectMethodInfo>>("INJECT_METHOD_INFOS_BY_WINDEA")
-    }
-
     fun init() {
         val application = application
 
         application.putUserData(continueInvocationExceptionKey, continueInvocationException)
-        application.putUserData(invokeInjectMethodKey, javaClass.getMethod("invokeInjectMethod").apply { trySetAccessible() })
+        application.putUserData(invokeInjectMethodKey, javaClass.declaredMethods.first { it.name == "invokeInjectMethod" }.apply { trySetAccessible() })
 
         val classPool = getClassPool()
         classPool.importPackage("java.util")
@@ -88,44 +65,69 @@ class CodeInjectorService {
         return pool
     }
 
-    //method invoked by injected codes
+    companion object {
+        //for Application
+        @JvmField
+        val continueInvocationExceptionKey = createKey<Exception>("CONTINUE_INVOCATION_EXCEPTION_BY_WINDEA")
+        //for Application
+        @JvmField
+        val invokeInjectMethodKey = createKey<Method>("INVOKE_INJECT_METHOD_BY_WINDEA")
 
-    @Suppress("unused")
-    private fun invokeInjectMethod(codeInjectorId: String, methodId: String, args: Array<out Any?>, target: Any?, returnValue: Any?): Any? {
-        //如果注入方法是一个扩展方法，则传递target到接收者（目标方法是一个静态方法时，target的值为null）
-        //如果注入方法拥有除了以上情况以外的额外参数，则传递returnValue到第1个额外参数（目标方法没有返回值时，returnValue的值为null）
-        //不要在声明和调用注入方法时加载目标类型（例如，将接收者的类型直接指定为目标类型）
-        val application = application
-        val codeInjector = application.getUserData(codeInjectorsKey)?.get(codeInjectorId) ?: throw IllegalStateException()
-        val injectMethodInfo = codeInjector.getUserData(injectMethodInfosKey)?.get(methodId) ?: throw IllegalStateException()
-        val injectMethod = injectMethodInfo.method
-        val actualArgsSize = injectMethod.parameterCount
-        val finalArgs = when (actualArgsSize) {
-            args.size -> args
-            else -> {
-                @Suppress("RemoveExplicitTypeArguments")
-                buildList<Any?> {
-                    if (injectMethodInfo.hasReceiver) {
-                        add(target)
-                    }
-                    addAll(args)
-                    if (size < actualArgsSize) {
-                        add(returnValue)
-                    }
-                }.toTypedArray()
+        //for Application
+        @JvmField
+        val classPoolKey = createKey<ClassPool>("CLASS_POOL_BY_WINDEA")
+        //for Application
+        @JvmField
+        val codeInjectorsKey = createKey<Map<String, CodeInjector>>("CODE_INJECTORS_BY_WINDEA")
+
+        //for CodeInjector
+        @JvmField
+        val targetClassKey = createKey<CtClass>("TARGET_CLASS_BY_WINDEA")
+        //for CodeInjector
+        @JvmField
+        val injectMethodInfosKey = createKey<Map<String, BaseCodeInjectorSupport.InjectMethodInfo>>("INJECT_METHOD_INFOS_BY_WINDEA")
+
+        //method invoked by injected codes
+
+        @JvmStatic
+        @Suppress("unused")
+        private fun invokeInjectMethod(codeInjectorId: String, methodId: String, args: Array<out Any?>, target: Any?, returnValue: Any?): Any? {
+            //如果注入方法是一个扩展方法，则传递target到接收者（目标方法是一个静态方法时，target的值为null）
+            //如果注入方法拥有除了以上情况以外的额外参数，则传递returnValue到第1个额外参数（目标方法没有返回值时，returnValue的值为null）
+            //不要在声明和调用注入方法时加载目标类型（例如，将接收者的类型直接指定为目标类型）
+            val application = application
+            val codeInjector = application.getUserData(codeInjectorsKey)?.get(codeInjectorId) ?: throw IllegalStateException()
+            val injectMethodInfo = codeInjector.getUserData(injectMethodInfosKey)?.get(methodId) ?: throw IllegalStateException()
+            val injectMethod = injectMethodInfo.method
+            val actualArgsSize = injectMethod.parameterCount
+            val finalArgs = when (actualArgsSize) {
+                args.size -> args
+                else -> {
+                    @Suppress("RemoveExplicitTypeArguments")
+                    buildList<Any?> {
+                        if (injectMethodInfo.hasReceiver) {
+                            add(target)
+                        }
+                        addAll(args)
+                        if (size < actualArgsSize) {
+                            add(returnValue)
+                        }
+                    }.toTypedArray()
+                }
+            }
+            if (finalArgs.size != actualArgsSize) throw IllegalStateException()
+            try {
+                return injectMethod.invoke(codeInjector, *finalArgs)
+            } catch (e: Exception) {
+                if (e is InvocationTargetException) throw e.targetException
+                throw e
             }
         }
-        if (finalArgs.size != actualArgsSize) throw IllegalStateException()
-        try {
-            return injectMethod.invoke(codeInjector, *finalArgs)
-        } catch (e: Exception) {
-            if (e is InvocationTargetException) throw e.targetException
-            throw e
-        }
+
+        //exception thrown when should continue invocation
+
+        @JvmStatic
+        @Suppress("unused")
+        private val continueInvocationException = ContinueInvocationException("CONTINUE_INVOCATION_BY_WINDEA")
     }
-
-    //exception thrown when should continue invocation
-
-    @Suppress("unused")
-    private val continueInvocationException = ContinueInvocationException("CONTINUE_INVOCATION_BY_WINDEA")
 }

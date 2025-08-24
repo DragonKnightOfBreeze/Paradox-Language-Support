@@ -95,45 +95,49 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         }
     }
 
-    private fun findCtMethod(ctClass: CtClass, method: Method, injectMethodInfo: InjectMethodInfo): CtMethod? {
-        val application = application
-        val methodName = injectMethodInfo.name
-        var argSize = method.parameterCount
-        if (injectMethodInfo.hasReceiver) argSize--
-        if (injectMethodInfo.hasReturnValue) argSize--
-        if (argSize < 0) return null //unexpected
-        var argIndexOffset = 0
-        if (injectMethodInfo.hasReceiver) argIndexOffset++
-        var ctMethods = ctClass.getDeclaredMethods(methodName).filter f@{ ctMethod ->
-            val isStatic = Modifier.isStatic(ctMethod.modifiers)
-            if ((injectMethodInfo.static && !isStatic) || (!injectMethodInfo.static && isStatic)) return@f false
-            ctMethod.parameterTypes.size >= argSize
-        }
-        run {
-            if (ctMethods.size <= 1) return@run
-            val classPool = application.getUserData(CodeInjectorService.classPoolKey) ?: return@run
-            ctMethods = ctMethods.filter { ctMethod ->
-                val size = ctMethod.parameterTypes.size
-                for (i in 0 until size) {
-                    val r = runCatchingCancelable {
-                        val t1 = ctMethod.parameterTypes[i]
-                        val t2 = method.parameterTypes[i + argIndexOffset]
-                        val t3 = classPool.get(t2.name)
-                        t1.subclassOf(t3)
-                    }.getOrElse { true }
-                    if (!r) return@filter false
+    companion object {
+        @JvmStatic
+        private fun findCtMethod(ctClass: CtClass, method: Method, injectMethodInfo: InjectMethodInfo): CtMethod? {
+            val application = application
+            val methodName = injectMethodInfo.name
+            var argSize = method.parameterCount
+            if (injectMethodInfo.hasReceiver) argSize--
+            if (injectMethodInfo.hasReturnValue) argSize--
+            if (argSize < 0) return null //unexpected
+            var argIndexOffset = 0
+            if (injectMethodInfo.hasReceiver) argIndexOffset++
+            var ctMethods = ctClass.getDeclaredMethods(methodName).filter f@{ ctMethod ->
+                val isStatic = Modifier.isStatic(ctMethod.modifiers)
+                if ((injectMethodInfo.static && !isStatic) || (!injectMethodInfo.static && isStatic)) return@f false
+                ctMethod.parameterTypes.size >= argSize
+            }
+            run {
+                if (ctMethods.size <= 1) return@run
+                val classPool = application.getUserData(CodeInjectorService.classPoolKey) ?: return@run
+                ctMethods = ctMethods.filter { ctMethod ->
+                    val size = ctMethod.parameterTypes.size
+                    for (i in 0 until size) {
+                        val r = runCatchingCancelable {
+                            val t1 = ctMethod.parameterTypes[i]
+                            val t2 = method.parameterTypes[i + argIndexOffset]
+                            val t3 = classPool.get(t2.name)
+                            t1.subclassOf(t3)
+                        }.getOrElse { true }
+                        if (!r) return@filter false
+                    }
+                    true
                 }
-                true
             }
-        }
-        run {
-            if (ctMethods.size <= 1) return@run
-            ctMethods = ctMethods.filter { ctMethod ->
-                ctMethod.parameterTypes.size == argSize
+            run {
+                if (ctMethods.size <= 1) return@run
+                ctMethods = ctMethods.filter { ctMethod ->
+                    ctMethod.parameterTypes.size == argSize
+                }
             }
+            return ctMethods.firstOrNull()
         }
-        return ctMethods.firstOrNull()
-    }
 
-    private val CONTINUE_INVOCATION by lazy { application.getUserData(CodeInjectorService.continueInvocationExceptionKey)!! }
+        @JvmStatic
+        private val CONTINUE_INVOCATION by lazy { application.getUserData(CodeInjectorService.continueInvocationExceptionKey)!! }
+    }
 }
