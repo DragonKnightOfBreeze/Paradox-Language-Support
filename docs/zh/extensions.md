@@ -19,13 +19,26 @@ PLS 扩展了与 Markdown 的集成，涉及链接、内联代码、代码块等
 
 对于不同类型的引用链接，其格式与示例如下：
 
-**CWT 规则**（目前仅提供有限的支持）
+**CWT 规则**（仅提供有限的支持）
 
 - 格式
   - `cwt:{gameType}/{parts}`
 - 示例
   - `cwt:stellaris:types/civic_or_origin`
   - `cwt:stellaris:types/civic_or_origin/origin`
+  - `cwt:stellaris:values/some_dynamic_value_type`
+  - `cwt:stellaris:values/some_dynamic_value_type/some_value`
+  - `cwt:stellaris:enums/some_enum`
+  - `cwt:stellaris:enums/some_enum/some_value`
+  - `cwt:stellaris:complex_enums/some_complex_enum`
+  - `cwt:stellaris:complex_enums/some_complex_enum/some_value`
+  - `cwt:stellaris:scopes/some_scope`
+  - `cwt:stellaris:system_scopes/some_system_scope`
+  - `cwt:stellaris:links/some_link`
+  - `cwt:stellaris:localisation_links/some_localisation_link`
+  - `cwt:stellaris:localisation_commands/some_localisation_command`
+  - `cwt:stellaris:modifier_categories/some_modifier_category`
+  - `cwt:stellaris:modifiers/some_modifier`
 
 **封装变量**
 
