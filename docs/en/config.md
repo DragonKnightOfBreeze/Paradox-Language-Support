@@ -173,7 +173,6 @@ TODO
 ### Specifications (Extended CWT Configs)
 
 > [!tip]
->
 > These configs are mostly provided by users themselves,
 > they can be used to enhance plugin's various language features,
 > such as quick documentation, inlay hints, code highlighting and code completion.

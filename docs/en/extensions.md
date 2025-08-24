@@ -2,8 +2,7 @@
 
 ## Markdown {#md}
 
-> [!NOTE]
-> 
+> [!note]
 > The features mentioned in this section require installation and activation of the official [Markdown](https://plugins.jetbrains.com/plugin/7793-markdown) plugin.
 
 PLS deeply integrates Markdown support, optimizing the handling of links, inline code, and code blocks for mod development scenarios.
@@ -94,8 +93,7 @@ Notes:
 
 ### Inline Code
 
-> [!NOTE]
->
+> [!note]
 > This feature requires enabling a specific advanced setting (`Advanced Settings > Paradox Language Support > Resolve Markdown Inline Code`).
 
 PLS can try to resolve Markdown inline code into matching target references (definitions, localizations, etc.), 
@@ -163,20 +161,17 @@ Notes:
 
 ## Diagrams {#diagrams}
 
-> [!NOTE]
->
+> [!note]
 > This feature requires installation and activation of the official Diagrams plugin.
 
-> [!WARNING]
-> 
+> [!warning]
 > This feature and the Diagrams plugin are only available in professional IDEs (e.g., IntelliJ IDEA Ultimate).
 
 PLS provides several diagrams for displaying information about specific types of definitions and their relationships.
 
 Currently, only event trees and technology trees are provided.
 
-> [!TIP]
-> 
+> [!tip]
 > You can also use the type hierarchy view to examine event trees and technology trees.
 > 
 > * With the cursor on a definition or its reference, go to `Navigate > Type Hierarchy` in the main menu to open the type hierarchy window.
@@ -209,8 +204,7 @@ Event tree diagrams display key information about events and their invocation re
 2. Filter nodes by query scope. For example, only show nodes for events in open files.
 3. Open the diagram settings pages. From left to right: Diagrams plugin's, PLS's.
 
-> [!WARNING]
->
+> [!warning]
 > The IDE requires time to complete data loading and rendering. This may take considerable time if many nodes and elements need rendering.
 
 ### Technology Tree
@@ -229,6 +223,5 @@ Technology tree diagrams display key information about technologies and their pr
 2. Filter nodes by query scope. For example, only show nodes for technologies in open files.
 3. Open the diagram settings pages. From left to right: Diagrams plugin's, PLS's.
 
-> [!WARNING]
->
+> [!warning]
 > The IDE requires time to complete data loading and rendering. This may take considerable time if many nodes and elements need rendering.

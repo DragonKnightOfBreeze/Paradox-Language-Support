@@ -40,22 +40,19 @@ The plugin also allows selecting multiple images in the project view and perform
 
 ![](../images/integrations/convert_image_format_2.png)<!--batch-->
 
-> [!WARNING]
-> 
+> [!warning]
 > Note that [TwelveMonkeys ImageIO](https://github.com/haraldk/TwelveMonkeys) has some limitations in supporting DDS images, such as not supporting DX11 formats.
 > 
 > If you encounter issues with PLS rendering DDS images properly, we recommend enabling the integration with [Image Magick](https://www.imagemagick.org).
 > Download the package from the official website to your local machine, enable the integration in the settings page, correctly configure the path to its executable (named `magick.exe` or `magick`), and save the settings.
 > After restarting the IDE, the issue should be resolved.
 
-> [!TIP]
-> 
+> [!tip]
 > If you need to visually edit DDS and TGA images, we recommend using [Paint.NET](https://www.getpaint.net).
 > 
 > If you need to batch process DDS and TGA images, such as batch resizing, we recommend using [Image Magick](https://www.imagemagick.org).
 
-> [!TIP]
-> 
+> [!tip]
 > You can jump directly to external image tools from the IDE in several ways:
 > 
 > 1. Using Intellij IDEA's [External Tools](https://www.jetbrains.com/help/idea/configuring-third-party-tools.html) feature
@@ -94,10 +91,7 @@ Here is a demonstration of using AI to batch translate localization texts:
 
 <ArtPlayer src="/videos/integrations/translate_and_replace_1.mp4" poster="../images/translate_and_replace_1.png" />
 
-> [!NOTE]
-> 
-> About feature details:
-> 
+> [!info]
 > * For manipulation tasks based on the [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin), they are executed concurrently at the file level and at each localization entry level within the file.
 > * For AI-based manipulation tasks, they are executed concurrently at the file level and streamed at each localization entry level within the file.
 > * After completing the task, a notification will pop up to indicate the task's execution status and provide options to revert or reapply the manipulations.
@@ -123,8 +117,7 @@ You can view the inspection results directly in the Problems view, or perform a 
 
 ![](../images/integrations/lint_results_2.png)<!--batch-->
 
-> [!TIP]
-> 
+> [!tip]
 > You can selectively disable linting tools at the project level or mod level in the following ways:
 > 
 > - Project level: In the IDE settings page, go to `Editor > Inspections`, search for `paradox lint`, and disable the found inspection items as needed.
