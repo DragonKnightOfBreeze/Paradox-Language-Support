@@ -44,12 +44,23 @@ export default hopeTheme({
   },
 
   plugins: {
+    components: {
+      components: [
+          "ArtPlayer"
+      ],
+      componentOptions: {
+        artPlayer: {
+          muted: true // muted by default
+        }
+      }
+    },
+
     redirect: {
       autoLocale: true,
       switchLocale: "direct",
       localeConfig: {
         "/zh/": ["zh-CN", "zh-TW", "zh"],
-        "/en/": ["en-US", "en-UK", "en"]
+        "/en/": ["en-US", "en-UK", "en"],
       }
     },
     // note that fulltext search is not supported by @vuepress/plugin-search (only for titles)

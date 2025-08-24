@@ -187,7 +187,7 @@ PLS 提供了数种图表（Diagrams），可用于展示特定类型的定义�
 
 ### 设置页面
 
-在 IDE 的设置页面中，点击 `Languages & Frameworks > Paradox Language Support > Diagrams`，可以打开图表的设置页面。
+在 IDE 的设置页面中，点击 `Languages & Frameworks > Paradox Language Support > 图表`，可以打开图表的设置页面。
 
 可以在这里根据各种条件，配置各种图表的要显示的节点。
 
