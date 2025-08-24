@@ -158,7 +158,7 @@ defense_army = {
 > 
 > 此章节的功能以及 Diagrams 插件仅在专业版IDE中可用（例如：IntelliJ IDEA Ultimate）
 
-PLS提供了数种图表（Diagrams），可用于展示特定类型的定义的信息，以及相互之间的关系。
+PLS 提供了数种图表（Diagrams），可用于展示特定类型的定义的信息，以及相互之间的关系。
 
 目前仅提供事件树与科技树的图表。
 
