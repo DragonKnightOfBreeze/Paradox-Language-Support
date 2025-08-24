@@ -76,8 +76,8 @@ PLS 扩展了与 Markdown 的集成，涉及链接、内联代码、代码块等
 
 备注：
 
-- `{gameType}` - 游戏类型ID，目前有以下可选值：`stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`（对于共享的规则分组则为`core`）。
-- `{typeExpression}` - 定义类型表达式，可以仅包含基础类型（如`civic_or_origin`），也可以包含基础类型以及多个匹配的子类型，用点号分割（如`civic_or_origin.origin`）。
+- `{gameType}` - <GameTypeNote />
+- `{typeExpression}` - <DefinitionTypeNote />
 
 ### 内联代码
 
@@ -135,15 +135,17 @@ PLS 会根据这些信息来匹配CWT规则，从而提供各种高级语言功�
 
 更加完整的示例：
 
+````markdown
 ```paradox_script path=stellaris:common/armies/injected_defence_armies.txt
 defense_army = {
     # ...
 }
 ```
+````
 
 备注：
 
-- `{gameType}` - 游戏类型ID，目前有以下可选值：`stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3`（对于共享的规则分组则为`core`）。
+- `{gameType}` - <GameTypeNote />
 - `{path}` - 模拟的相对于游戏或模组目录的文件路径。必须是合法的脚本或本地化文件的路经。
 
 ## 图表 {#diagrams}
@@ -169,6 +171,14 @@ PLS提供了数种图表（Diagrams），可用于展示特定类型的定义的
 > * 如果定义类型为事件或科技，也可以对应地以事件树或科技树的形式展示层级视图。
 > 
 > ![](../images/extensions/diagram_hierarchy_1.png)
+
+### 设置页面
+
+在 IDE 的设置页面中，点击 `Languages & Frameworks > Paradox Language Support > Diagrams`，可以打开图表的设置页面。
+
+可以在这里根据各种条件，配置各种图表的要显示的节点。
+
+![](../images/extensions/diagram_settings_1.png)
 
 ### 事件树
 
@@ -209,11 +219,3 @@ PLS提供了数种图表（Diagrams），可用于展示特定类型的定义的
 > [!WARNING]
 >
 > IDE 需要花费一定时间来完成数据加载与图形渲染。如果需要渲染的节点与节点元素过多，这个耗时可能相当长。
-
-### 设置页面
-
-在 IDE 的设置页面中，点击 `Languages & Frameworks > Paradox Language Support > Diagrams`，可以打开图表的设置页面。
-
-可以在这里根据各种条件，配置各种图表的要显示的节点。
-
-![](../images/extensions/diagram_settings_1.png)

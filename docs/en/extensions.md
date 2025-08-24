@@ -76,8 +76,8 @@ For different types of reference links, the formats and examples are as follows:
 
 Notes:
 
-- `{gameType}` - Game type ID. Currently supported values: `stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3` (for shared config groups use `core`).
-- `{typeExpression}` - Definition type expression, can be a base type (e.g., `civic_or_origin`) or include base type and subtypes separated by dots (e.g., `civic_or_origin.origin`).
+- `{gameType}` - <GameTypeNote />
+- `{typeExpression}` - <DefinitionTypeNote />
 
 ### Inline Code
 
@@ -135,15 +135,17 @@ The format and examples for the injected information are as follows:
 
 A more complete example:
 
+````markdown
 ```paradox_script path=stellaris:common/armies/injected_defence_armies.txt
 defense_army = {
     # ...
 }
 ```
+````
 
 Notes:
 
-- `{gameType}` - Game type ID. Currently supported values: `stellaris`, `ck2`, `ck3`, `eu4`, `hoi4`, `ir`, `vic2`, `vic3` (for shared config groups use `core`).
+- `{gameType}` - <GameTypeNote />
 - `{path}` - Simulated file path relative to the game or mod directory. Must be a valid script or localization file path.
 
 ## Diagrams {#diagrams}
@@ -169,6 +171,14 @@ Currently, only event tree and technology tree diagrams are provided.
 > * If the type is event or technology, you can also view the corresponding event tree or technology tree in the hierarchy view.
 >
 > ![](../images/extensions/diagram_hierarchy_1.png)
+
+### Settings Page
+
+In the IDE's settings page, go to `Languages & Frameworks > Paradox Language Support > Diagrams` to open the diagram settings page.
+
+Here you can configure which nodes to display for each diagram according to various conditions.
+
+![](../images/extensions/diagram_settings_1.png)
 
 ### Event Tree
 
@@ -209,11 +219,3 @@ The technology tree diagram displays key information about technologies and thei
 > [!WARNING]
 > 
 > IDE needs some time to complete data loading and graph rendering. If there are too many nodes and node elements to render, this process may take a long time.
-
-### Settings Page
-
-In the IDE's settings page, go to `Languages & Frameworks > Paradox Language Support > Diagrams` to open the diagram settings page.
-
-Here you can configure which nodes to display for each diagram according to various conditions.
-
-![](../images/extensions/diagram_settings_1.png)
