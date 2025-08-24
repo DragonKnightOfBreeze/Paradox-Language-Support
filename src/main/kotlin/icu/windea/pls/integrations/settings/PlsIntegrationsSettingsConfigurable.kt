@@ -87,7 +87,7 @@ class PlsIntegrationsSettingsConfigurable : BoundConfigurable(PlsBundle.message(
                     }
                 }
             }
-            //lint tools
+            //linting tools
             group(PlsBundle.message("settings.integrations.lint")) {
                 lateinit var cbTiger: JBCheckBox
 

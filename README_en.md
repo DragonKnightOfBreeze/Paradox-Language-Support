@@ -19,7 +19,7 @@ Features:
 - Supports rendering various useful information via quick documentation and inlay hints (such as localisation text, image, scope information and parameter information).
 - Supports most advanced features of script and localisation languages (such as parameters, scopes, inline scripts and various complex expressions).
 - Supports customizing extended config files, allowing plugin to provide more perfect language features (such as code navigation, code completion, quick documentation and inlay hints).
-- Integrates image tools (such as [Image Magick](https://www.imagemagick.org)), translation tools (such as [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)) and lint tools (such as [Tiger](https://github.com/amtep/tiger)).
+- Integrates image tools (such as [Image Magick](https://www.imagemagick.org)), translation tools (such as [Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)) and linting tools (such as [Tiger](https://github.com/amtep/tiger)).
 - Integrates AI technologies initially, make it available to translating and polishing localisation text.
 - Recognizes game directories and mod directories automatically.
 

@@ -42,7 +42,7 @@
 
 ## 2.0.0
 
-- [X] #128 集成Tiger检查工具 / Integrate Tiger lint tools
+- [X] #128 集成Tiger检查工具 / Integrate Tiger linting tools
 - [X] #148 更改`date_field`的默认日期模式为`y.M.d`，且允许声明日期模式（`date_field[y.M.d]`） / Change the default date format of `date_field` to `y.M.d`, and allow declaring date formats (`date_field[y.M.d]`)
 - [X] #151 Local variable, defined inside inline_script but passed from the outside as a parameter is not recognized.
 - [X] #153 可以配置是否在注入的文件（如，参数值）中、内联脚本文件中忽略各种无法解析的引用的代码检查 / Can configure whether to ignore unresolved references inspections in injected files (e.g., parameter values) and inline script files
@@ -55,7 +55,7 @@
 - [X] 优化：可以配置是否在内嵌提示中显示定义的子类型 / Can configure whether to show subtypes of definitions in inlay hints
 - [X] 优化：可以配置处理图片时使用的工具（默认且内置：Texconv，可选：Image Magick） / OP: Can configure the tool used to process images (Default and built-in: Texconv, Available: Image Magick)
 - [X] 优化：可以配置翻译本地化文本时使用的工具（目前仅限Translation Plugin） / OP: Can configure the tool used to translate localisation text (Currently limited to Translation Plugin)
-- [X] 优化：可以配置要启用的检查工具（目前仅限Tiger） / OP: Can configure which lint tools to enable (Currently limited to Tiger)
+- [X] 优化：可以配置要启用的检查工具（目前仅限Tiger） / OP: Can configure which linting tools to enable (Currently limited to Tiger)
 - [X] 优化：更好的对图片的支持，优化实现，支持预览与渲染DDS、TGA图片，提供不同图片格式（PNG、DDS、TGA）之间的相互转换的操作 / OP: Better support for images, optimize the implementation, support to preview and render DDS, TGA images, and provide actions to convert image formats (PNG, DDS, TGA)
 - [X] 新功能：集成AI，提供对应的设置页面 / NEW: Integrate AI, provide corresponding settings page
 - [X] 新功能：提供AI驱动的本地化翻译功能（意向） / NEW: Provide AI-driven localisation translation features (intentions)

@@ -327,7 +327,7 @@
     <!--endregion-->
     <!--endregion-->
 
-    <!--region Lint Tools-->
+    <!--region Linting Tools-->
     <externalAnnotator language="PARADOX" implementationClass="icu.windea.pls.lang.inspections.lints.PlsTigerLintAnnotator"/>
     <localInspection language="PARADOX" shortName="PlsTigerLint"
                      key="inspection.lints.tiger" groupKey="inspection.lints.group" groupPathKey="inspection.groupPath"
