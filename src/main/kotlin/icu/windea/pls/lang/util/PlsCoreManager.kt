@@ -2,6 +2,7 @@ package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.daemon.*
 import com.intellij.codeInsight.daemon.impl.*
+import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
@@ -34,6 +35,37 @@ object PlsCoreManager {
      * 用于标记是否允许不完整的复杂脚本表达式。（用于兼容代码补全）
      */
     val incompleteComplexExpression = ThreadLocal<Boolean>()
+
+    //endregion
+
+    //region Global Methods
+
+    /**
+     * 比较游戏版本。允许通配符，如："3.3.*"
+     */
+    @Suppress("unused")
+    fun compareGameVersion(version: String, otherVersion: String): Int {
+        val versionSnippets = version.split('.')
+        val otherVersionSnippets = otherVersion.split('.')
+        val minSnippetSize = Integer.min(versionSnippets.size, otherVersionSnippets.size)
+        for (i in 0 until minSnippetSize) {
+            val versionSnippet = versionSnippets[i]
+            val otherVersionSnippet = otherVersionSnippets[i]
+            if (versionSnippet == otherVersionSnippet || versionSnippet == "*" || otherVersion == "*") continue
+            return versionSnippet.compareTo(otherVersionSnippet)
+        }
+        return 0
+    }
+
+    fun createNotification(notificationType: NotificationType, content: String): Notification {
+        return NotificationGroupManager.getInstance().getNotificationGroup("pls")
+            .createNotification(content, notificationType)
+    }
+
+    fun createNotification(notificationType: NotificationType, title: String, content: String): Notification {
+        return NotificationGroupManager.getInstance().getNotificationGroup("pls")
+            .createNotification(title, content, notificationType)
+    }
 
     //endregion
 

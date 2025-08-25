@@ -3,9 +3,9 @@ package icu.windea.pls.ep.tool
 import com.intellij.notification.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.ui.tools.ParadoxModDependenciesTable
+import icu.windea.pls.lang.ui.tools.*
+import icu.windea.pls.lang.util.*
 import java.nio.file.*
 import kotlin.io.path.*
 
@@ -29,23 +29,16 @@ open class ParadoxFromLauncherImporter : ParadoxModImporter {
 
     override fun execute(project: Project, table: ParadoxModDependenciesTable) {
         val settings = table.model.settings
+        val qualifiedName = settings.qualifiedName
         val gameType = settings.gameType ?: return
         val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title) ?: return
         if (!gameDataPath.exists()) {
-            run {
-                val title = settings.qualifiedName ?: return@run
-                val message = PlsBundle.message("mod.importer.error.gameDataDir", gameDataPath)
-                createNotification(title, message, NotificationType.WARNING).notify(project)
-            }
+            PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.importer.error.gameDataDir", gameDataPath)).notify(project)
             return
         }
         val dbPath = getDbPath(gameDataPath)
         if (!dbPath.exists()) {
-            run {
-                val title = settings.qualifiedName ?: return@run
-                val content = PlsBundle.message("mod.importer.error.dbFile", dbPath)
-                createNotification(title, content, NotificationType.WARNING).notify(project)
-            }
+            PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.importer.error.dbFile", dbPath)).notify(project)
             return
         }
 

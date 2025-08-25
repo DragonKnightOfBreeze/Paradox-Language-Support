@@ -22,11 +22,11 @@ class ConfigGroupSyncFromRemoteAction : DumbAwareAction() {
         presentation.isEnabledAndVisible = false
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
         if (file?.fileInfo == null) return
-        val valid = PlsConfigRepositoryManager.isValidToSync()
+        val valid = CwtConfigRepositoryManager.isValidToSync()
         presentation.isEnabledAndVisible = valid
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        PlsConfigRepositoryManager.syncFromUrls()
+        CwtConfigRepositoryManager.syncFromUrls()
     }
 }

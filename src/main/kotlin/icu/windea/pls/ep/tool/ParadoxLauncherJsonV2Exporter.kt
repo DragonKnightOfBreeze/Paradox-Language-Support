@@ -11,6 +11,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.ui.tools.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.tools.*
 
@@ -29,6 +30,7 @@ class ParadoxLauncherJsonV2Exporter : ParadoxModExporter {
 
     override fun execute(project: Project, table: ParadoxModDependenciesTable) {
         val settings = table.model.settings
+        val qualifiedName = settings.qualifiedName
         val gameType = settings.gameType ?: return
         val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)
         val defaultSavedDir = gameDataPath?.resolve(playlistsName)
@@ -59,20 +61,12 @@ class ParadoxLauncherJsonV2Exporter : ParadoxModExporter {
             }
             val count = validModDependencies.size
 
-            run {
-                val title = settings.qualifiedName ?: return@run
-                val content = PlsBundle.message("mod.exporter.info", savedFile.nameWithoutExtension, count)
-                createNotification(title, content, NotificationType.INFORMATION).notify(project)
-            }
+            PlsCoreManager.createNotification(NotificationType.INFORMATION, qualifiedName, PlsBundle.message("mod.exporter.info", savedFile.nameWithoutExtension, count)).notify(project)
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             thisLogger().warn(e)
 
-            run {
-                val title = settings.qualifiedName ?: return@run
-                val content = PlsBundle.message("mod.exporter.error")
-                createNotification(title, content, NotificationType.WARNING).notify(project)
-            }
+            PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.exporter.error")).notify(project)
         }
     }
 }

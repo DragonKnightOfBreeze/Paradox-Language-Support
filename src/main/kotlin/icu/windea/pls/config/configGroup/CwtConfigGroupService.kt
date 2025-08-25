@@ -10,7 +10,6 @@ import com.intellij.openapi.progress.impl.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.ep.configGroup.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
@@ -95,18 +94,19 @@ class CwtConfigGroupService(private val project: Project) {
                     PlsCoreManager.reparseFiles(files)
                 }
 
-                run {
-                    val title = PlsBundle.message("configGroup.refresh.notification.finished.title")
-                    val content = PlsBundle.message("configGroup.refresh.notification.finished.content")
-                    createNotification(title, content, NotificationType.INFORMATION).addAction(action).notify(project)
-                }
+                PlsCoreManager.createNotification(
+                    NotificationType.INFORMATION,
+                    PlsBundle.message("configGroup.refresh.notification.finished.title"),
+                    PlsBundle.message("configGroup.refresh.notification.finished.content")
+                ).addAction(action).notify(project)
             }
 
             override fun onCancel() {
-                run {
-                    val title = PlsBundle.message("configGroup.refresh.notification.cancelled.title")
-                    createNotification(title, "", NotificationType.INFORMATION).notify(project)
-                }
+                PlsCoreManager.createNotification(
+                    NotificationType.INFORMATION,
+                    PlsBundle.message("configGroup.refresh.notification.cancelled.title"),
+                    ""
+                ).notify(project)
             }
         }
         val progressIndicator = BackgroundableProcessIndicator(task)

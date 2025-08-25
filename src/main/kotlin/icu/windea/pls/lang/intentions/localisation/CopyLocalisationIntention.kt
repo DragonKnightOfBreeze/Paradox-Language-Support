@@ -6,7 +6,7 @@ import com.intellij.openapi.ide.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import java.awt.datatransfer.*
 
 /**
@@ -26,6 +26,6 @@ class CopyLocalisationIntention : ManipulateLocalisationIntentionBase.Default(),
 
     private fun createNotification(): Notification {
         val content = PlsBundle.message("intention.copyLocalisation.notification", Messages.success())
-        return createNotification(content, NotificationType.INFORMATION)
+        return PlsCoreManager.createNotification(NotificationType.INFORMATION, content)
     }
 }

@@ -12,7 +12,7 @@ import com.intellij.ui.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
-import icu.windea.pls.model.*
+import icu.windea.pls.lang.util.*
 
 @Suppress("unused")
 interface ParadoxModDependenciesToolbarActions {
@@ -23,7 +23,8 @@ interface ParadoxModDependenciesToolbarActions {
         override fun run(e: AnActionButton) {
             //添加模组依赖时可以多选
             val settings = table.model.settings
-            val gameType = settings.gameType.orDefault()
+            val qualifiedName = settings.qualifiedName
+            val gameType = settings.gameType ?: return
             val descriptor = FileChooserDescriptorFactory.multiDirs()
                 .withTitle(PlsBundle.message("mod.dependencies.add.title"))
                 .apply { putUserData(PlsDataKeys.gameType, gameType) }
@@ -50,20 +51,12 @@ interface ParadoxModDependenciesToolbarActions {
                     //选中刚刚添加的所有模组依赖
                     table.setRowSelectionInterval(position, position + newSettingsList.size - 1)
 
-                    run n@{
-                        val title = settings.qualifiedName ?: return@n
-                        val content = PlsBundle.message("mod.dependencies.add.info", count)
-                        createNotification(title, content, NotificationType.INFORMATION).notify(project)
-                    }
+                    PlsCoreManager.createNotification(NotificationType.INFORMATION, qualifiedName, PlsBundle.message("mod.dependencies.add.info", count)).notify(project)
                 } catch (e: Exception) {
                     if (e is ProcessCanceledException) throw e
                     thisLogger().warn(e)
 
-                    run n@{
-                        val title = settings.qualifiedName ?: return@n
-                        val content = PlsBundle.message("mod.dependencies.add.error")
-                        createNotification(title, content, NotificationType.WARNING).notify(project)
-                    }
+                    PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.dependencies.add.error")).notify(project)
                 }
             }
         }

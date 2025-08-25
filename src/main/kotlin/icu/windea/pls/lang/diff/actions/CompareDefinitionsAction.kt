@@ -25,7 +25,6 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.actions.*
 import icu.windea.pls.lang.diff.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
@@ -116,10 +115,10 @@ class CompareDefinitionsAction : ParadoxShowDiffAction() {
         }, PlsBundle.message("diff.compare.definitions.collect.title"), true, project)
         if (definitions.size <= 1) {
             //unexpected, should not be empty here
-            run {
-                val content = PlsBundle.message("diff.compare.definitions.content.title.info.1")
-                createNotification(content, NotificationType.INFORMATION).notify(project)
-            }
+            PlsCoreManager.createNotification(
+                NotificationType.INFORMATION,
+                PlsBundle.message("diff.compare.definitions.content.title.info.1")
+            ).notify(project)
             return null
         }
 

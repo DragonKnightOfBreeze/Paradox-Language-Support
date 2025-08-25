@@ -18,8 +18,8 @@ import icu.windea.pls.ai.util.manipulators.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.actions.localisation.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.manipulators.*
 import kotlinx.coroutines.*
 import java.util.concurrent.atomic.*
@@ -96,16 +96,16 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
         if (error == null) {
             if (!withWarnings) {
                 val content = PlsBundle.message("action.replaceLocalisationWithAiTranslation.notification", selectedLocale.text, Messages.success(processed))
-                return createNotification(content, NotificationType.INFORMATION)
+                return PlsCoreManager.createNotification(NotificationType.INFORMATION, content)
             }
             val content = PlsBundle.message("action.replaceLocalisationWithAiTranslation.notification", selectedLocale.text, Messages.partialSuccess(processed))
-            return createNotification(content, NotificationType.WARNING)
+            return PlsCoreManager.createNotification(NotificationType.WARNING, content)
         }
 
         thisLogger().warn(error)
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("action.replaceLocalisationWithAiTranslation.notification", selectedLocale.text, Messages.partialSuccess(processed)) + errorDetails
-        return createNotification(content, NotificationType.WARNING)
+        return PlsCoreManager.createNotification(NotificationType.WARNING, content)
     }
 }

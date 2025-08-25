@@ -18,8 +18,8 @@ import icu.windea.pls.ai.util.*
 import icu.windea.pls.ai.util.manipulators.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.intentions.localisation.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.manipulators.*
 import java.awt.datatransfer.*
 import java.util.concurrent.atomic.*
@@ -85,16 +85,16 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
         if (error == null) {
             if (!withWarnings) {
                 val content = PlsBundle.message("intention.copyLocalisationWithAiTranslation.notification", selectedLocale.text, Messages.success())
-                return createNotification(content, NotificationType.INFORMATION)
+                return PlsCoreManager.createNotification(NotificationType.INFORMATION, content)
             }
             val content = PlsBundle.message("intention.copyLocalisationWithAiTranslation.notification", selectedLocale.text, Messages.partialSuccess())
-            return createNotification(content, NotificationType.WARNING)
+            return PlsCoreManager.createNotification(NotificationType.WARNING, content)
         }
 
         thisLogger().warn(error)
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("intention.copyLocalisationWithAiTranslation.notification", selectedLocale.text, Messages.partialSuccess()) + errorDetails
-        return createNotification(content, NotificationType.WARNING)
+        return PlsCoreManager.createNotification(NotificationType.WARNING, content)
     }
 }

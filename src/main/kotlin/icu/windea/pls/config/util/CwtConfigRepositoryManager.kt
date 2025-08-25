@@ -12,14 +12,13 @@ import com.intellij.util.io.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import kotlinx.coroutines.*
 
 @Suppress("UnstableApiUsage")
-object PlsConfigRepositoryManager {
+object CwtConfigRepositoryManager {
     fun getDefaultUrl(gameType: ParadoxGameType): String {
         return "https://github.com/DragonKnightOfBreeze/cwtools-${gameType.id}-config"
     }
@@ -106,7 +105,7 @@ object PlsConfigRepositoryManager {
         val r = runCatchingCancelable { parentDirectory.toPath().createDirectories() }
         if (r.isFailure) {
             val warningMessage = PlsBundle.message("config.repo.sync.createDirectoryFailed")
-            createNotification(PlsBundle.message("config.repo.sync.result.title"), warningMessage, NotificationType.ERROR).notify(project)
+            PlsCoreManager.createNotification(NotificationType.ERROR, PlsBundle.message("config.repo.sync.result.title"), warningMessage).notify(project)
             return
         }
 
@@ -135,7 +134,7 @@ object PlsConfigRepositoryManager {
             //如果存在报错，发送通知并直接返回
             if (results.any { it.isFailure }) {
                 val warningMessage = PlsBundle.message("config.repo.sync.result.2")
-                val notification = createNotification(PlsBundle.message("config.repo.sync.result.title"), warningMessage, NotificationType.WARNING)
+                val notification = PlsCoreManager.createNotification(NotificationType.WARNING, PlsBundle.message("config.repo.sync.result.title"), warningMessage)
                     .addAction(action)
                 openProjects.forEach { notification.notify(it) }
                 return@c
@@ -146,7 +145,7 @@ object PlsConfigRepositoryManager {
             //发送成功的通知
             val successMessage = if (updated) PlsBundle.message("config.repo.sync.result.0")
             else PlsBundle.message("config.repo.sync.result.1")
-            val notification = createNotification(PlsBundle.message("config.repo.sync.result.title"), successMessage, NotificationType.INFORMATION)
+            val notification = PlsCoreManager.createNotification(NotificationType.INFORMATION, PlsBundle.message("config.repo.sync.result.title"), successMessage)
                 .addAction(action)
             openProjects.forEach { notification.notify(it) }
 

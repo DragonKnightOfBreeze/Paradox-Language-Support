@@ -4,7 +4,6 @@ package icu.windea.pls.lang
 
 import com.intellij.extapi.psi.*
 import com.intellij.injected.editor.*
-import com.intellij.notification.*
 import com.intellij.openapi.application.*
 import com.intellij.openapi.project.*
 import com.intellij.openapi.util.*
@@ -29,7 +28,6 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
 import icu.windea.pls.script.psi.*
-import java.lang.Integer.*
 
 fun Char.isIdentifierChar(): Boolean {
     return StringUtil.isJavaIdentifierPart(this)
@@ -141,22 +139,6 @@ fun ParadoxGameType?.supportsByAnnotation(target: Any): Boolean {
     return targetGameType == null || this in targetGameType
 }
 
-/**
- * 比较游戏版本。允许通配符，如："3.3.*"
- */
-infix fun String.compareGameVersion(otherVersion: String): Int {
-    val versionSnippets = this.split('.')
-    val otherVersionSnippets = otherVersion.split('.')
-    val minSnippetSize = min(versionSnippets.size, otherVersionSnippets.size)
-    for (i in 0 until minSnippetSize) {
-        val versionSnippet = versionSnippets[i]
-        val otherVersionSnippet = otherVersionSnippets[i]
-        if (versionSnippet == otherVersionSnippet || versionSnippet == "*" || otherVersion == "*") continue
-        return versionSnippet.compareTo(otherVersionSnippet)
-    }
-    return 0
-}
-
 val Project.paradoxLibrary: ParadoxLibrary
     get() = this.getOrPutUserData(PlsKeys.library) { ParadoxLibrary(this) }
 
@@ -194,16 +176,6 @@ fun ParadoxLocalisationParameter.resolveScriptedVariable(): ParadoxScriptScripte
  */
 inline fun <reified T : ParadoxDefinitionData> ParadoxScriptDefinitionElement.getData(): T? {
     return ParadoxDefinitionDataProvider.getData(T::class.java, this)
-}
-
-fun createNotification(content: String, notificationType: NotificationType): Notification {
-    return NotificationGroupManager.getInstance().getNotificationGroup("pls")
-        .createNotification(content, notificationType)
-}
-
-fun createNotification(title: String, content: String, notificationType: NotificationType): Notification {
-    return NotificationGroupManager.getInstance().getNotificationGroup("pls")
-        .createNotification(title, content, notificationType)
 }
 
 inline fun <T> withState(state: ThreadLocal<Boolean>, action: () -> T): T {

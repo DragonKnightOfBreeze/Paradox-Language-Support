@@ -32,10 +32,10 @@ class ConfigRepositoryUrlsDialog(val list: MutableList<Entry<String, String>>) :
                         .align(AlignX.FILL)
                         .resizableColumn()
                         .applyToComponent { setEmptyState(PlsBundle.message("not.configured")) } // If not configured, do not use default repo urls
-                        .validationOnInput { PlsConfigRepositoryManager.validateUrl(this, gameType, configRepositoryUrlProperty.get()) }
+                        .validationOnInput { CwtConfigRepositoryManager.validateUrl(this, gameType, configRepositoryUrlProperty.get()) }
 
                     button(PlsBundle.message("reset")) {
-                        configRepositoryUrlProperty.set(PlsConfigRepositoryManager.getDefaultUrl(gameType))
+                        configRepositoryUrlProperty.set(CwtConfigRepositoryManager.getDefaultUrl(gameType))
                     }.align(AlignX.RIGHT)
                 }
             }
@@ -45,7 +45,7 @@ class ConfigRepositoryUrlsDialog(val list: MutableList<Entry<String, String>>) :
     override fun doOKAction() {
         //即使配置并未更改，也要使用 git ls-remote 检查
         val newValues = properties.map { it.value.get() }
-        if (!PlsConfigRepositoryManager.validateUrlsByGit(newValues)) return //invalid
+        if (!CwtConfigRepositoryManager.validateUrlsByGit(newValues)) return //invalid
 
         resultList.clear()
         properties.mapTo(resultList) { (k, p) -> Entry(k, p.get()) }

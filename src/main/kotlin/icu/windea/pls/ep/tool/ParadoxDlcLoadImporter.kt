@@ -30,23 +30,16 @@ class ParadoxDlcLoadImporter : ParadoxModImporter {
 
     override fun execute(project: Project, table: ParadoxModDependenciesTable) {
         val settings = table.model.settings
+        val qualifiedName = settings.qualifiedName
         val gameType = settings.gameType ?: return
         val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title) ?: return
         if (!gameDataPath.exists()) {
-            run {
-                val title = settings.qualifiedName ?: return@run
-                val content = PlsBundle.message("mod.importer.error.gameDataDir", gameDataPath)
-                createNotification(title, content, NotificationType.WARNING).notify(project)
-            }
+            PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.importer.error.gameDataDir", gameDataPath)).notify(project)
             return
         }
         val jsonPath = gameDataPath.resolve(dlcLoadJsonName) ?: return
         if (!jsonPath.exists()) {
-            run {
-                val title = settings.qualifiedName ?: return@run
-                val content = PlsBundle.message("mod.importer.error.file", jsonPath)
-                createNotification(title, content, NotificationType.WARNING).notify(project)
-            }
+            PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.importer.error.file", jsonPath)).notify(project)
             return
         }
         val file = jsonPath.toVirtualFile(true) ?: return
@@ -79,20 +72,12 @@ class ParadoxDlcLoadImporter : ParadoxModImporter {
             //选中刚刚添加的所有模组依赖
             table.setRowSelectionInterval(position, position + newSettingsList.size - 1)
 
-            run {
-                val title = settings.qualifiedName ?: return@run
-                val content = PlsBundle.message("mod.importer.info", collectionName, count)
-                createNotification(title, content, NotificationType.INFORMATION).notify(project)
-            }
+            PlsCoreManager.createNotification(NotificationType.INFORMATION, qualifiedName, PlsBundle.message("mod.importer.info", collectionName, count)).notify(project)
         } catch (e: Exception) {
             if (e is ProcessCanceledException) throw e
             thisLogger().warn(e)
 
-            run {
-                val title = settings.qualifiedName ?: return@run
-                val content = PlsBundle.message("mod.importer.error")
-                createNotification(title, content, NotificationType.WARNING).notify(project)
-            }
+            PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.importer.error")).notify(project)
         }
     }
 }

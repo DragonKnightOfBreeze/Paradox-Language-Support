@@ -11,6 +11,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.integrations.lints.tools.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 
 object PlsTigerLintManager {
@@ -104,6 +105,6 @@ object PlsTigerLintManager {
         val title = PlsBundle.message("lint.tiger.notification.warning.title", tool.name)
         val content = e.message?.let { message -> PlsBundle.message("lint.tiger.notification.warning.content", fileUrl, message) }
             ?: PlsBundle.message("lint.tiger.notification.warning.content1", fileUrl)
-        createNotification(title, content, NotificationType.WARNING).notify(rootDirectory.project)
+        PlsCoreManager.createNotification(NotificationType.WARNING, title, content).notify(rootDirectory.project)
     }
 }

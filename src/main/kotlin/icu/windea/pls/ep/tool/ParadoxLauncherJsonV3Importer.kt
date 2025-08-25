@@ -12,6 +12,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.ui.tools.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.tools.*
 import kotlin.io.path.*
 
@@ -27,17 +28,14 @@ class ParadoxLauncherJsonV3Importer : ParadoxModImporter {
 
     override fun execute(project: Project, table: ParadoxModDependenciesTable) {
         val settings = table.model.settings
+        val qualifiedName = settings.qualifiedName
         val gameType = settings.gameType ?: return
         val gameDataPath = PlsFacade.getDataProvider().getGameDataPath(gameType.title)
         val defaultSelectedDir = gameDataPath?.resolve(playlistsName)
         val defaultSelected = defaultSelectedDir?.toVirtualFile(false)
         val workshopDirPath = PlsFacade.getDataProvider().getSteamWorkshopPath(gameType.steamId) ?: return
         if (!workshopDirPath.exists()) {
-            run {
-                val title = settings.qualifiedName ?: return@run
-                val content = PlsBundle.message("mod.importer.error.steamWorkshopDir", workshopDirPath)
-                createNotification(title, content, NotificationType.WARNING).notify(project)
-            }
+            PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.importer.error.steamWorkshopDir", workshopDirPath)).notify(project)
             return
         }
         val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor("json")
@@ -47,11 +45,7 @@ class ParadoxLauncherJsonV3Importer : ParadoxModImporter {
             try {
                 val data = ObjectMappers.jsonMapper.readValue<ParadoxLauncherJsonV3>(file.inputStream)
                 if (data.game != gameType.id) {
-                    run {
-                        val title = settings.qualifiedName ?: return@run
-                        val content = PlsBundle.message("mod.importer.error.gameType")
-                        createNotification(title, content, NotificationType.WARNING).notify(project)
-                    }
+                    PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.importer.error.gameType")).notify(project)
                     return@chooseFile
                 }
 
@@ -81,20 +75,12 @@ class ParadoxLauncherJsonV3Importer : ParadoxModImporter {
                 //选中刚刚添加的所有模组依赖
                 table.setRowSelectionInterval(position, position + newSettingsList.size - 1)
 
-                run {
-                    val title = settings.qualifiedName ?: return@run
-                    val content = PlsBundle.message("mod.importer.info", collectionName, count)
-                    createNotification(title, content, NotificationType.INFORMATION).notify(project)
-                }
+                PlsCoreManager.createNotification(NotificationType.INFORMATION, qualifiedName, PlsBundle.message("mod.importer.info", collectionName, count)).notify(project)
             } catch (e: Exception) {
                 if (e is ProcessCanceledException) throw e
                 thisLogger().warn(e)
 
-                run {
-                    val title = settings.qualifiedName ?: return@run
-                    val content = PlsBundle.message("mod.importer.error")
-                    createNotification(title, content, NotificationType.WARNING).notify(project)
-                }
+                PlsCoreManager.createNotification(NotificationType.WARNING, qualifiedName, PlsBundle.message("mod.importer.error")).notify(project)
             }
         }
     }

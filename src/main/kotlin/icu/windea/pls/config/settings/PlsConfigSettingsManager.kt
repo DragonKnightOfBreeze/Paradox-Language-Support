@@ -16,7 +16,7 @@ object PlsConfigSettingsManager {
         if (!callbackLock.check("onRemoteConfigDirectoriesChanged")) return
 
         //NOTE 这里需要先验证是否真的需要刷新
-        if (!PlsConfigRepositoryManager.isValidToSync()) return
+        if (!CwtConfigRepositoryManager.isValidToSync()) return
 
         application.messageBus.syncPublisher(ParadoxConfigRepositoryUrlsListener.TOPIC).onChange()
 

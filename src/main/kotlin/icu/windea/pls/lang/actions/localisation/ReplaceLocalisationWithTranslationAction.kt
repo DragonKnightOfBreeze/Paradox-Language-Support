@@ -13,7 +13,7 @@ import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.integrations.translation.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.manipulators.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -82,12 +82,12 @@ class ReplaceLocalisationWithTranslationAction : ManipulateLocalisationActionBas
     private fun createNotification(selectedLocale: CwtLocaleConfig, processed: Int, error: Throwable?): Notification {
         if (error == null) {
             val content = PlsBundle.message("action.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.success(processed))
-            return createNotification(content, NotificationType.INFORMATION)
+            return PlsCoreManager.createNotification(NotificationType.INFORMATION, content)
         }
 
         thisLogger().warn(error)
         val errorDetails = error.message?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
         val content = PlsBundle.message("action.replaceLocalisationWithTranslation.notification", selectedLocale.text, Messages.failed(processed)) + errorDetails
-        return createNotification(content, NotificationType.WARNING)
+        return PlsCoreManager.createNotification(NotificationType.WARNING, content)
     }
 }

@@ -133,11 +133,11 @@ class GenerateLocalisationFileAction : AnAction() {
                     }
                 }
 
-                run {
-                    val title = PlsBundle.message("notification.generateLocalisationFile.success.title")
-                    val content = PlsBundle.message("notification.generateLocalisationFile.success.content", generated, total)
-                    createNotification(title, content, NotificationType.INFORMATION).notify(project)
-                }
+                PlsCoreManager.createNotification(
+                    NotificationType.INFORMATION,
+                    PlsBundle.message("notification.generateLocalisationFile.success.title"),
+                    PlsBundle.message("notification.generateLocalisationFile.success.content", generated, total)
+                ).notify(project)
             }
         }
         executeCommand(project) {

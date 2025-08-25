@@ -19,7 +19,7 @@ import com.intellij.util.containers.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.images.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.manipulators.*
 import java.io.*
 import java.util.concurrent.atomic.*
@@ -99,7 +99,8 @@ abstract class ConvertImageFormatAction(
                     files.size -> PlsBundle.message("convertImageFormat.error.1", targetFormatName)
                     else -> PlsBundle.message("convertImageFormat.error.2", targetFormatName)
                 }
-                createNotification(content, NotificationType.WARNING).notify(targetDirectory.project)
+                PlsCoreManager.createNotification(NotificationType.WARNING, content)
+                    .notify(targetDirectory.project)
             }
         } catch (e: Exception) {
             Messages.showErrorDialog(project, e.message, PlsBundle.message("error.title"))

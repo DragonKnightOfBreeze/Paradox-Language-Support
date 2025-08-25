@@ -82,7 +82,7 @@ class ParadoxModDescriptorSettingsState : BaseState() {
     }
 }
 
-interface ParadoxGameOrModSettingsState {
+sealed interface ParadoxGameOrModSettingsState {
     val gameType: ParadoxGameType?
     val gameDirectory: String?
 
@@ -173,7 +173,7 @@ val ParadoxModSettingsState.finalGameDirectory: String?
     get() = gameDirectory?.orNull() ?: PlsFacade.getSettings().defaultGameDirectories[finalGameType.id]
         ?.orNull()
 
-val ParadoxGameOrModSettingsState.qualifiedName: String?
+val ParadoxGameOrModSettingsState.qualifiedName: String
     get() = when (this) {
         is ParadoxGameSettingsState -> buildString {
             append(gameType.orDefault().title)
@@ -188,7 +188,6 @@ val ParadoxGameOrModSettingsState.qualifiedName: String?
                 append("@").append(version)
             }
         }
-        else -> null
     }
 
 /**

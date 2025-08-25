@@ -125,7 +125,7 @@ class BuiltInCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * 更改配置后，PLS会自动从配置的远程仓库中克隆和拉取这些规则分组。
  * 在自动或手动同步后，才允许刷新规则分组数据。
  *
- * @see PlsConfigRepositoryManager
+ * @see CwtConfigRepositoryManager
  */
 class RemoteCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
     override val type get() = CwtConfigGroupFileProvider.Type.Remote
@@ -146,13 +146,13 @@ class RemoteCwtConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
         val fromConfig = PlsFacade.getConfigSettings().configRepositoryUrls[gameType.id]?.orNull()
             ?.let { PlsGitManager.getRepositoryPathFromUrl(it) }
         if (fromConfig != null) return fromConfig
-        val fromDefault = PlsConfigRepositoryManager.getDefaultDirectoryName(gameType)
+        val fromDefault = CwtConfigRepositoryManager.getDefaultDirectoryName(gameType)
         return fromDefault
     }
 
     override fun getGameTypeIdFromDirectoryName(project: Project, directoryName: String): String? {
         if (directoryName == "core") return null
-        val fromDefault = PlsConfigRepositoryManager.getGameTypeIdFromDefaultDirectoryName(directoryName)
+        val fromDefault = CwtConfigRepositoryManager.getGameTypeIdFromDefaultDirectoryName(directoryName)
         if (fromDefault != null) return fromDefault
         val fromConfig = PlsFacade.getConfigSettings().configRepositoryUrls.entries
             .find { PlsGitManager.getRepositoryPathFromUrl(it.value) == directoryName }

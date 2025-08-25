@@ -66,7 +66,7 @@ class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("setti
                 label(PlsBundle.message("settings.config.configRepositoryUrls")).widthGroup(groupName)
                     .applyToComponent { toolTipText = PlsBundle.message("settings.config.configRepositoryUrls.tip") }
                 val configRepositoryUrls = settings.configRepositoryUrls
-                ParadoxGameType.entries.forEach { configRepositoryUrls.putIfAbsent(it.id, PlsConfigRepositoryManager.getDefaultUrl(it)) }
+                ParadoxGameType.entries.forEach { configRepositoryUrls.putIfAbsent(it.id, CwtConfigRepositoryManager.getDefaultUrl(it)) }
                 val defaultList = configRepositoryUrls.toMutableEntryList()
                 var list = defaultList.mapTo(mutableListOf()) { it.copy() }
                 val action = { _: ActionEvent ->
