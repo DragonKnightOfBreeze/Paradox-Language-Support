@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.colorSupport" interface="icu.windea.pls.ep.color.ParadoxColorSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.colorProvider" interface="icu.windea.pls.ep.color.ParadoxColorProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.injectedConfigProvider" interface="icu.windea.pls.ep.config.CwtInjectedConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.overriddenConfigProvider" interface="icu.windea.pls.ep.config.CwtOverriddenConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.relatedConfigProvider" interface="icu.windea.pls.ep.config.CwtRelatedConfigProvider" dynamic="true"/>
@@ -52,9 +52,9 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
-    <colorSupport implementation="icu.windea.pls.ep.color.ParadoxScriptStringColorSupport"/>
-    <colorSupport implementation="icu.windea.pls.ep.color.ParadoxScriptBlockColorSupport"/>
-    <colorSupport implementation="icu.windea.pls.ep.color.ParadoxScriptColorColorSupport"/>
+    <colorProvider implementation="icu.windea.pls.ep.color.ParadoxScriptStringColorProvider"/>
+    <colorProvider implementation="icu.windea.pls.ep.color.ParadoxScriptBlockColorProvider"/>
+    <colorProvider implementation="icu.windea.pls.ep.color.ParadoxScriptColorColorProvider"/>
 
     <injectedConfigProvider implementation="icu.windea.pls.ep.config.CwtTechnologyWithLevelInjectedConfigProvider"/>
     <injectedConfigProvider implementation="icu.windea.pls.ep.config.CwtInOnActionInjectedConfigProvider"/>

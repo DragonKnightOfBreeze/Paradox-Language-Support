@@ -319,16 +319,14 @@ object ParadoxScriptPsiImplUtil {
         return element.text.substringIn('{', '}').trim().splitByBlank()
     }
 
-    private val colorSupport by lazy { ParadoxColorSupport.EP_NAME.findExtensionOrFail(ParadoxScriptColorColorSupport::class.java) }
-
     @JvmStatic
     fun getColor(element: ParadoxScriptColor): Color? {
-        return colorSupport.getColor(element)
+        return ParadoxColorProvider.getColor(element, fromToken = false)
     }
 
     @JvmStatic
     fun setColor(element: ParadoxScriptColor, color: Color) {
-        colorSupport.setColor(element, color)
+        return ParadoxColorProvider.setColor(element, color, fromToken = false)
     }
 
     //endregion

@@ -9,24 +9,41 @@ import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
+import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 import java.awt.*
 
-class ParadoxScriptStringColorSupport : ParadoxColorSupport {
+/**
+ * 用于为字符串字面量（[ParadoxScriptString]）提供颜色的装订线图标。
+ *
+ * 示例 - 脚本片段：
+ *
+ * ```paradox_script
+ * color = 0x2288E1
+ * ```
+ *
+ * 示例 - 需要匹配的规则：
+ *
+ * ```cwt
+ * ## color_type = hex
+ * color = scalar
+ * ```
+ */
+class ParadoxScriptStringColorProvider : ParadoxColorProvider {
+    override fun getTargetElement(tokenElement: PsiElement): ParadoxScriptString? {
+        if (tokenElement.elementType != STRING_TOKEN) return null
+        if (tokenElement.prevSibling != null || tokenElement.nextSibling != null) return null
+        return tokenElement.parent?.castOrNull()
+    }
+
     override fun getColor(element: PsiElement): Color? {
-        val targetElement = getTargetElement(element) ?: return null
-        return runCatchingCancelable { doGetColor(targetElement) }.getOrNull()
+        if (element !is ParadoxScriptString) return null
+        return runCatchingCancelable { doGetColor(element) }.getOrNull()
     }
 
     override fun setColor(element: PsiElement, color: Color): Boolean {
-        val targetElement = getTargetElement(element) ?: return false
-        runCatchingCancelable { doSetColor(targetElement, color) }
+        if (element !is ParadoxScriptString) return false
+        runCatchingCancelable { doSetColor(element, color) }
         return true
-    }
-
-    private fun getTargetElement(element: PsiElement): ParadoxScriptString? {
-        if(element.elementType != ParadoxScriptElementTypes.STRING_TOKEN) return null
-        if(element.prevSibling != null || element.nextSibling != null) return null
-        return element.parent?.castOrNull()
     }
 
     private fun doGetColor(element: ParadoxScriptString): Color? {
@@ -53,21 +70,47 @@ class ParadoxScriptStringColorSupport : ParadoxColorSupport {
     }
 }
 
-class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
+/**
+ * 用于为子句（[ParadoxScriptBlock]）提供颜色的装订线图标。
+ *
+ * 示例 - 脚本片段：
+ *
+ * ```paradox_script
+ * color_rgb = { 34 136 225 }
+ * color_hsv = { 208 0.849 0.882 }
+ * ```
+ *
+ *
+ * 示例 - 需要匹配的规则：
+ *
+ * ```cwt
+ * 	## color_type = rgb
+ * 	color_rgb = {
+ * 		## cardinality = 3..3
+ * 		int[0..255]
+ * 	}
+ * 	## color_type = hsv
+ * 	color_hsv = {
+ * 		## cardinality = 3..3
+ * 		float
+ * 	}
+ * ```
+ */
+class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
+    override fun getTargetElement(tokenElement: PsiElement): ParadoxScriptBlock? {
+        if (tokenElement.elementType != LEFT_BRACE) return null
+        return tokenElement.parent?.castOrNull()
+    }
+
     override fun getColor(element: PsiElement): Color? {
-        val targetElement = getTargetElement(element) ?: return null
-        return runCatchingCancelable { doGetColorFromCache(targetElement) }.getOrNull()
+        if (element !is ParadoxScriptBlock) return null
+        return runCatchingCancelable { doGetColorFromCache(element) }.getOrNull()
     }
 
     override fun setColor(element: PsiElement, color: Color): Boolean {
-        val targetElement = getTargetElement(element) ?: return false
-        runCatchingCancelable { doSetColor(targetElement, color) }
+        if (element !is ParadoxScriptBlock) return false
+        runCatchingCancelable { doSetColor(element, color) }
         return true
-    }
-
-    private fun getTargetElement(element: PsiElement): ParadoxScriptBlock? {
-        if(element.elementType != ParadoxScriptElementTypes.LEFT_BRACE) return null
-        return element.parent?.castOrNull()
     }
 
     private fun doGetColorFromCache(element: ParadoxScriptBlock): Color? {
@@ -122,22 +165,38 @@ class ParadoxScriptBlockColorSupport : ParadoxColorSupport {
     }
 }
 
-class ParadoxScriptColorColorSupport : ParadoxColorSupport {
+/**
+ * 用于为颜色声明（[ParadoxScriptColor]）提供颜色的装订线图标。
+ *
+ * 示例 - 脚本片段：
+ * ```paradox_script
+ * color_rgb = rgb { 34 136 225 }
+ * color_hsv = hsv { 208 0.849 0.882 }
+ * ```
+ *
+ * 示例 - 需要匹配的规则：
+ * ```cwt
+ * 	color_rgb = color[rgb]
+ * 	color_hsv = color[hsv]
+ * ```
+ */
+class ParadoxScriptColorColorProvider : ParadoxColorProvider {
+    override fun getTargetElement(tokenElement: PsiElement): ParadoxScriptColor? {
+        if (tokenElement.elementType != COLOR_TOKEN) return null
+        return tokenElement.parent?.castOrNull()
+    }
+
     override fun getColor(element: PsiElement): Color? {
-        val targetElement = getTargetElement(element) ?: return null
-        return runCatchingCancelable { doGetColorFromCache(targetElement) }.getOrNull()
+        if (element !is ParadoxScriptColor) return null
+        return runCatchingCancelable { doGetColorFromCache(element) }.getOrNull()
     }
 
     override fun setColor(element: PsiElement, color: Color): Boolean {
-        val targetElement = getTargetElement(element) ?: return false
-        runCatchingCancelable { doSetColor(targetElement, color) }
+        if (element !is ParadoxScriptColor) return false
+        runCatchingCancelable { doSetColor(element, color) }
         return true
     }
 
-    private fun getTargetElement(element: PsiElement): ParadoxScriptColor? {
-        if(element.elementType != ParadoxScriptElementTypes.COLOR_TOKEN) return null
-        return element.parent?.castOrNull()
-    }
 
     private fun doGetColorFromCache(element: ParadoxScriptColor): Color? {
         return CachedValuesManager.getCachedValue(element, ParadoxColorManager.Keys.cachedColor) {

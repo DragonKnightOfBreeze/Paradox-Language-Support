@@ -11,6 +11,5 @@ data class ParadoxImageCodeInsightContext(
         File,
         Definition,
         Modifier,
-        Unresolved
     }
 }
