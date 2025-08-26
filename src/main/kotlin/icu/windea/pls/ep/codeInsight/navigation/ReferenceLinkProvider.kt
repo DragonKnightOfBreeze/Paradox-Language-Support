@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.reference
+package icu.windea.pls.ep.codeInsight.navigation
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
@@ -9,7 +9,7 @@ import icu.windea.pls.*
  *
  * @see icu.windea.pls.lang.references.paths.ParadoxPathReferenceProvider
  */
-interface ParadoxReferenceLinkProvider {
+interface ReferenceLinkProvider {
     val linkPrefix: String
 
     fun resolve(link: String, contextElement: PsiElement): PsiElement?
@@ -19,7 +19,7 @@ interface ParadoxReferenceLinkProvider {
     fun createPsiLink(element: PsiElement, plainLink: Boolean = true): String? = null
 
     companion object INSTANCE {
-        val EP_NAME = ExtensionPointName<ParadoxReferenceLinkProvider>("icu.windea.pls.referenceLinkProvider")
+        val EP_NAME = ExtensionPointName<ReferenceLinkProvider>("icu.windea.pls.referenceLinkProvider")
 
         fun supports(link: String): Boolean {
             return EP_NAME.extensionList.any { ep ->

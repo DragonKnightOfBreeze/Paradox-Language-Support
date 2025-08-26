@@ -6,12 +6,13 @@ import com.intellij.openapi.editor.colors.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.ui.*
+import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.ep.reference.*
+import icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.lang.psi.mock.*
@@ -234,7 +235,7 @@ class ParadoxLocalisationTextHtmlRenderer(
             val definitionName = definitionInfo.name.or.anonymous()
             val definitionType = definitionInfo.type
             renderWithColorTo(conceptColor) {
-                val link = ParadoxReferenceLinkType.Definition.createLink(definitionName, definitionType, definitionInfo.gameType)
+                val link = ReferenceLinkType.Definition.createLink(definitionName, definitionType, definitionInfo.gameType)
                 builder.appendPsiLinkOrUnresolved(link.escapeXml(), conceptText, context = referenceElement)
             }
             return
@@ -296,7 +297,7 @@ class ParadoxLocalisationTextHtmlRenderer(
                 val s = reference.rangeInElement.substring(text)
                 builder.append(s.escapeXml())
             } else {
-                val link = ParadoxReferenceLinkProvider.createPsiLink(resolved)
+                val link = ReferenceLinkProvider.createPsiLink(resolved)
                 if (link != null) {
                     //如果没有颜色，这里需要使用文档的默认前景色，以显示为普通文本
                     val usedColor = if (colorStack.isEmpty()) defaultColor else null

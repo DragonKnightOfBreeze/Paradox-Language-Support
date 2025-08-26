@@ -5,6 +5,7 @@ package icu.windea.pls.lang.documentation
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
+import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -142,7 +143,7 @@ object CwtDocumentationManager {
                     //在脚本文件中显示为链接
                     if (configGroup != null) {
                         val gameType = configGroup.gameType
-                        val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(typeCategory, typeName, gameType)
+                        val typeLink = ReferenceLinkType.CwtConfig.createLink(typeCategory, typeName, gameType)
                         append(": ").appendPsiLinkOrUnresolved(typeLink.escapeXml(), typeName.escapeXml(), context = typeElement)
                     } else {
                         append(": ").append(typeName)
@@ -199,14 +200,14 @@ object CwtDocumentationManager {
             if (nameLocalisation == null) return@run
             appendBr()
             append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
-            val link = ParadoxReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
+            val link = ReferenceLinkType.Localisation.createLink(nameLocalisation.name, gameType)
             append("name = ").appendPsiLinkOrUnresolved(link.escapeXml(), nameLocalisation.name.escapeXml(), context = contextElement)
         }
         run {
             if (descLocalisation == null) return@run
             appendBr()
             append(PlsStringConstants.relatedLocalisationPrefix).append(" ")
-            val link = ParadoxReferenceLinkType.Localisation.createLink(descLocalisation.name, gameType)
+            val link = ReferenceLinkType.Localisation.createLink(descLocalisation.name, gameType)
             append("desc = ").appendPsiLinkOrUnresolved(link.escapeXml(), descLocalisation.name.escapeXml(), context = contextElement)
         }
         run rs@{
@@ -243,7 +244,7 @@ object CwtDocumentationManager {
             val iconPath = iconFile.fileInfo?.path?.path ?: return@run
             appendBr()
             append(PlsStringConstants.relatedImagePrefix).append(" ")
-            val link = ParadoxReferenceLinkType.FilePath.createLink(iconPath, gameType)
+            val link = ReferenceLinkType.FilePath.createLink(iconPath, gameType)
             append("icon = ").appendPsiLinkOrUnresolved(link.escapeXml(), iconPath.escapeXml(), context = contextElement)
         }
         run rs@{

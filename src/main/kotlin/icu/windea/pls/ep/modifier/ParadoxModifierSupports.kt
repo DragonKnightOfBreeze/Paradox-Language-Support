@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
+import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -197,12 +198,12 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val templateConfigExpression = modifierConfig.template
         if (templateConfigExpression.expressionString.isNotEmpty()) {
             val gameType = modifierElement.gameType
-            val categories = ParadoxReferenceLinkType.CwtConfig.Categories
+            val categories = ReferenceLinkType.CwtConfig.Categories
             val templateString = templateConfigExpression.expressionString
 
             appendBr().appendIndent()
             append(PlsBundle.message("byTemplate")).append(" ")
-            val templateLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.modifiers, templateString, gameType)
+            val templateLink = ReferenceLinkType.CwtConfig.createLink(categories.modifiers, templateString, gameType)
             appendPsiLinkOrUnresolved(templateLink.escapeXml(), templateString.escapeXml())
 
             //加上生成源信息
@@ -218,17 +219,17 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             val definitionTypes = definitionType.split('.')
                             append(PlsBundle.message("generatedFromDefinition"))
                             append(" ")
-                            val link = ParadoxReferenceLinkType.Definition.createLink(definitionName, definitionType, gameType)
+                            val link = ReferenceLinkType.Definition.createLink(definitionName, definitionType, gameType)
                             appendPsiLinkOrUnresolved(link.escapeXml(), definitionName.escapeXml(), context = modifierElement)
                             append(": ")
 
                             val type = definitionTypes.first()
-                            val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.types, type, gameType)
+                            val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, type, gameType)
                             appendPsiLinkOrUnresolved(typeLink.escapeXml(), type.escapeXml())
                             for ((index, t) in definitionTypes.withIndex()) {
                                 if (index == 0) continue
                                 append(", ")
-                                val subtypeLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.types, "$type/$t", gameType)
+                                val subtypeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, "$type/$t", gameType)
                                 appendPsiLinkOrUnresolved(subtypeLink.escapeXml(), t.escapeXml())
                             }
                         }
@@ -238,15 +239,15 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             append(PlsBundle.message("generatedFromEnumValue"))
                             append(" ")
                             if (configGroup.enums.containsKey(enumName)) {
-                                val link = ParadoxReferenceLinkType.CwtConfig.createLink(categories.enums, "$enumName/$enumValueName", gameType)
+                                val link = ReferenceLinkType.CwtConfig.createLink(categories.enums, "$enumName/$enumValueName", gameType)
                                 appendPsiLinkOrUnresolved(link.escapeXml(), enumName.escapeXml(), context = modifierElement)
                                 append(": ")
-                                val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.enums, enumName, gameType)
+                                val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.enums, enumName, gameType)
                                 appendPsiLinkOrUnresolved(typeLink.escapeXml(), enumName.escapeXml(), context = modifierElement)
                             } else if (configGroup.complexEnums.containsKey(enumName)) {
                                 append(enumValueName.escapeXml())
                                 append(": ")
-                                val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.complexEnums, enumName, gameType)
+                                val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.complexEnums, enumName, gameType)
                                 appendPsiLinkOrUnresolved(typeLink.escapeXml(), enumName.escapeXml(), context = modifierElement)
                             } else {
                                 //unexpected
@@ -260,10 +261,10 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
                             val valueName = configExpression.value!!
                             append(PlsBundle.message("generatedFromDynamicValue"))
                             if (configGroup.dynamicValueTypes.containsKey(valueName)) {
-                                val link = ParadoxReferenceLinkType.CwtConfig.createLink(categories.values, "$dynamicValueType/$valueName", gameType)
+                                val link = ReferenceLinkType.CwtConfig.createLink(categories.values, "$dynamicValueType/$valueName", gameType)
                                 appendPsiLinkOrUnresolved(link.escapeXml(), valueName.escapeXml(), context = modifierElement)
                                 append(": ")
-                                val typeLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.values, dynamicValueType, gameType)
+                                val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.values, dynamicValueType, gameType)
                                 appendPsiLinkOrUnresolved(typeLink.escapeXml(), valueName.escapeXml(), context = modifierElement)
                             } else {
                                 append(valueName.escapeXml())
@@ -284,18 +285,18 @@ class ParadoxTemplateModifierSupport : ParadoxModifierSupport {
         val modifiers = definitionInfo.modifiers
         if (modifiers.isEmpty()) return false
         val gameType = definitionInfo.gameType
-        val categories = ParadoxReferenceLinkType.CwtConfig.Categories
+        val categories = ReferenceLinkType.CwtConfig.Categories
         for (modifier in modifiers) {
             appendBr()
             append(PlsStringConstants.generatedModifierPrefix).append(" ")
-            val link = ParadoxReferenceLinkType.Modifier.createLink(modifier.name, gameType)
+            val link = ReferenceLinkType.Modifier.createLink(modifier.name, gameType)
             appendPsiLink(link.escapeXml(), modifier.name.escapeXml())
             grayed {
                 append(" ")
                 append(PlsBundle.message("byTemplate"))
                 append(" ")
                 val key = modifier.config.name
-                val templateLink = ParadoxReferenceLinkType.CwtConfig.createLink(categories.modifiers, key, gameType)
+                val templateLink = ReferenceLinkType.CwtConfig.createLink(categories.modifiers, key, gameType)
                 appendPsiLinkOrUnresolved(templateLink.escapeXml(), key.escapeXml())
             }
         }
@@ -407,13 +408,13 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         appendBr().appendIndent()
         append(PlsBundle.message("generatedFromEconomicCategory"))
         append(" ")
-        val ecLink = ParadoxReferenceLinkType.Definition.createLink(economicCategoryInfo.name, ParadoxDefinitionTypes.EconomicCategory, gameType)
+        val ecLink = ReferenceLinkType.Definition.createLink(economicCategoryInfo.name, ParadoxDefinitionTypes.EconomicCategory, gameType)
         appendPsiLinkOrUnresolved(ecLink.escapeXml(), economicCategoryInfo.name.escapeXml(), context = modifierElement)
         if (modifierInfo.resource != null) {
             appendBr().appendIndent()
             append(PlsBundle.message("generatedFromResource"))
             append(" ")
-            val resourceLink = ParadoxReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.Resource, gameType)
+            val resourceLink = ReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.Resource, gameType)
             appendPsiLinkOrUnresolved(resourceLink.escapeXml(), modifierInfo.resource.escapeXml(), context = modifierElement)
         } else {
             appendBr().appendIndent()
@@ -435,14 +436,14 @@ class ParadoxEconomicCategoryModifierSupport : ParadoxModifierSupport {
         for (modifierInfo in economicCategoryInfo.modifiers) {
             appendBr()
             append(PlsStringConstants.generatedModifierPrefix).append(" ")
-            val modifierLink = ParadoxReferenceLinkType.Modifier.createLink(modifierInfo.name, gameType)
+            val modifierLink = ReferenceLinkType.Modifier.createLink(modifierInfo.name, gameType)
             appendPsiLink(modifierLink.escapeXml(), modifierInfo.name.escapeXml())
             if (modifierInfo.resource != null) {
                 grayed {
                     append(" ")
                     append(PlsBundle.message("fromResource"))
                     append(" ")
-                    val resourceLink = ParadoxReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.Resource, gameType)
+                    val resourceLink = ReferenceLinkType.Definition.createLink(modifierInfo.resource, ParadoxDefinitionTypes.Resource, gameType)
                     appendPsiLinkOrUnresolved(resourceLink.escapeXml(), modifierInfo.resource.escapeXml(), context = definition)
                 }
             } else {

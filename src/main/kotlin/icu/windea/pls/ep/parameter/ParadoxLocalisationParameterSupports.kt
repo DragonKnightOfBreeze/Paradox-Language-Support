@@ -3,6 +3,7 @@ package icu.windea.pls.ep.parameter
 import com.intellij.codeInsight.highlighting.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.util.*
+import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
@@ -70,7 +71,7 @@ class ParadoxBaseLocalisationParameterSupport : ParadoxLocalisationParameterSupp
         appendBr().appendIndent()
         append(PlsBundle.message("ofLocalisation")).append(" ")
         val nameOrUnknown = element.localisationName.or.unknown()
-        val link = ParadoxReferenceLinkType.Localisation.createLink(nameOrUnknown, gameType)
+        val link = ReferenceLinkType.Localisation.createLink(nameOrUnknown, gameType)
         appendPsiLinkOrUnresolved(link.escapeXml(), nameOrUnknown.escapeXml(), context = element)
         return true
     }

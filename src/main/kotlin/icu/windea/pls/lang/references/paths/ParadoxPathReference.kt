@@ -4,7 +4,7 @@ import com.intellij.codeInsight.daemon.*
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import com.intellij.util.*
-import icu.windea.pls.ep.reference.*
+import icu.windea.pls.ep.codeInsight.navigation.ReferenceLinkProvider
 
 /**
  * @see ParadoxPathReferenceProvider
@@ -19,10 +19,10 @@ class ParadoxPathReference(
     }
 
     override fun resolve(): PsiElement? {
-        return ParadoxReferenceLinkProvider.resolve(link, element)
+        return ReferenceLinkProvider.resolve(link, element)
     }
 
     override fun getUnresolvedMessagePattern(): String {
-        return ParadoxReferenceLinkProvider.getUnresolvedMessage(link)
+        return ReferenceLinkProvider.getUnresolvedMessage(link)
     }
 }

@@ -1,9 +1,7 @@
-package icu.windea.pls.ep.reference
-
-import icu.windea.pls.model.*
+package icu.windea.pls.model
 
 @Suppress("unused")
-abstract class ParadoxReferenceLinkType(
+abstract class ReferenceLinkType(
     val prefix: String
 ) {
     /**
@@ -26,7 +24,7 @@ abstract class ParadoxReferenceLinkType(
      * - `cwt:stellaris:modifier_categories/some_modifier_category`
      * - `cwt:stellaris:modifiers/some_modifier`
      */
-    data object CwtConfig : ParadoxReferenceLinkType("cwt:") {
+    data object CwtConfig : ReferenceLinkType("cwt:") {
         fun createLink(category: String, name: String, gameType: ParadoxGameType? = null): String {
             return "$prefix${gameType.id}:$category/$name"
         }
@@ -51,7 +49,7 @@ abstract class ParadoxReferenceLinkType(
      * - `pdx.sv:civic_default_random_weight`
      * - `pdx.sv:stellaris:civic_default_random_weight`
      */
-    data object ScriptedVariable : ParadoxReferenceLinkType("pdx.sv:") {
+    data object ScriptedVariable : ReferenceLinkType("pdx.sv:") {
         fun createLink(name: String, gameType: ParadoxGameType? = null): String {
             if (gameType == null) return "$prefix$name"
             return "$prefix${gameType.id}:$name"
@@ -65,7 +63,7 @@ abstract class ParadoxReferenceLinkType(
      * - `pdx.d:civic_or_origin.origin/origin_default`
      * - `pdx.d:stellaris:civic_or_origin.origin/origin_default`
      */
-    data object Definition : ParadoxReferenceLinkType("pdx.d:") {
+    data object Definition : ReferenceLinkType("pdx.d:") {
         fun createLink(name: String, typeExpression: String? = null, gameType: ParadoxGameType? = null): String {
             val expression = if (typeExpression == null) name else "$name/$typeExpression"
             if (gameType == null) return "$prefix$expression"
@@ -78,7 +76,7 @@ abstract class ParadoxReferenceLinkType(
      * - `pdx.l:origin_default`
      * - `pdx.l:stellaris:origin_default`
      */
-    data object Localisation : ParadoxReferenceLinkType("pdx.l:") {
+    data object Localisation : ReferenceLinkType("pdx.l:") {
         fun createLink(name: String, gameType: ParadoxGameType?): String {
             if (gameType == null) return "$prefix$name"
             return "$prefix${gameType.id}:$name"
@@ -90,7 +88,7 @@ abstract class ParadoxReferenceLinkType(
      * - `pdx.p:common/governments/civics/00_origins.txt`
      * - `pdx.p:stellaris:common/governments/civics/00_origins.txt`
      */
-    data object FilePath : ParadoxReferenceLinkType("pdx.p:") {
+    data object FilePath : ReferenceLinkType("pdx.p:") {
         fun createLink(path: String, gameType: ParadoxGameType? = null): String {
             if (gameType == null) return "$prefix$path"
             return "$prefix${gameType.id}:$path"
@@ -102,7 +100,7 @@ abstract class ParadoxReferenceLinkType(
      * - `pdx.m:job_soldier_add`
      * - `pdx.m:stellaris:job_soldier_add`
      */
-    data object Modifier : ParadoxReferenceLinkType("pdx.m:") {
+    data object Modifier : ReferenceLinkType("pdx.m:") {
         fun createLink(name: String, gameType: ParadoxGameType? = null): String {
             if (gameType == null) return "$prefix$name"
             return "$prefix${gameType.id}:$name"

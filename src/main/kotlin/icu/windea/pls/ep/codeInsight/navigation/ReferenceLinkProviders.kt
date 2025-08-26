@@ -1,8 +1,9 @@
-package icu.windea.pls.ep.reference
+package icu.windea.pls.ep.codeInsight.navigation
 
 import com.intellij.codeInsight.documentation.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
+import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
@@ -17,8 +18,8 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-class CwtConfigLinkProvider : ParadoxReferenceLinkProvider {
-    override val linkPrefix = ParadoxReferenceLinkType.CwtConfig.prefix
+class CwtConfigLinkProvider : ReferenceLinkProvider {
+    override val linkPrefix = ReferenceLinkType.CwtConfig.prefix
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
@@ -27,7 +28,7 @@ class CwtConfigLinkProvider : ParadoxReferenceLinkProvider {
         val category = tokens.getOrNull(0) ?: return null
         val project = contextElement.project
         val configGroup = PlsFacade.getConfigGroup(project, gameType)
-        val categories = ParadoxReferenceLinkType.CwtConfig.Categories
+        val categories = ReferenceLinkType.CwtConfig.Categories
         return when (category) {
             categories.types -> {
                 if (tokens.isEmpty() || tokens.size > 3) return null
@@ -116,8 +117,8 @@ class CwtConfigLinkProvider : ParadoxReferenceLinkProvider {
         if (element !is CwtProperty && element !is CwtValue) return null
         val config = element.getUserData(PlsKeys.bindingConfig) ?: return null //retrieve config from user data
         //这里目前仅支持可能用到的那些
-        val linkType = ParadoxReferenceLinkType.CwtConfig
-        val categories = ParadoxReferenceLinkType.CwtConfig.Categories
+        val linkType = ReferenceLinkType.CwtConfig
+        val categories = ReferenceLinkType.CwtConfig.Categories
         val builder = StringBuilder()
         when {
             config is CwtSystemScopeConfig -> {
@@ -144,8 +145,8 @@ class CwtConfigLinkProvider : ParadoxReferenceLinkProvider {
     }
 }
 
-class ParadoxScriptedVariableLinkProvider : ParadoxReferenceLinkProvider {
-    override val linkPrefix = ParadoxReferenceLinkType.ScriptedVariable.prefix
+class ParadoxScriptedVariableLinkProvider : ReferenceLinkProvider {
+    override val linkPrefix = ReferenceLinkType.ScriptedVariable.prefix
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
@@ -165,7 +166,7 @@ class ParadoxScriptedVariableLinkProvider : ParadoxReferenceLinkProvider {
         if (element !is ParadoxScriptScriptedVariable) return null
         val gameType = selectGameType(element)
         val name = element.name?.orNull() ?: return null
-        val linkType = ParadoxReferenceLinkType.ScriptedVariable
+        val linkType = ReferenceLinkType.ScriptedVariable
         val link = linkType.createLink(name, gameType)
         val builder = StringBuilder()
         DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
@@ -173,8 +174,8 @@ class ParadoxScriptedVariableLinkProvider : ParadoxReferenceLinkProvider {
     }
 }
 
-class ParadoxDefinitionLinkProvider : ParadoxReferenceLinkProvider {
-    override val linkPrefix = ParadoxReferenceLinkType.Definition.prefix
+class ParadoxDefinitionLinkProvider : ReferenceLinkProvider {
+    override val linkPrefix = ReferenceLinkType.Definition.prefix
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
@@ -201,7 +202,7 @@ class ParadoxDefinitionLinkProvider : ParadoxReferenceLinkProvider {
         val gameType = definitionInfo.gameType
         val name = definitionInfo.name
         val typesText = definitionInfo.types.joinToString(".")
-        val linkType = ParadoxReferenceLinkType.Definition
+        val linkType = ReferenceLinkType.Definition
         val link = linkType.createLink(name, typesText, gameType)
         val builder = StringBuilder()
         DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
@@ -209,8 +210,8 @@ class ParadoxDefinitionLinkProvider : ParadoxReferenceLinkProvider {
     }
 }
 
-class ParadoxLocalisationLinkProvider : ParadoxReferenceLinkProvider {
-    override val linkPrefix = ParadoxReferenceLinkType.Localisation.prefix
+class ParadoxLocalisationLinkProvider : ReferenceLinkProvider {
+    override val linkPrefix = ReferenceLinkType.Localisation.prefix
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
@@ -232,7 +233,7 @@ class ParadoxLocalisationLinkProvider : ParadoxReferenceLinkProvider {
         if (localisationInfo.type != ParadoxLocalisationType.Normal) return null
         val name = localisationInfo.name
         val gameType = localisationInfo.gameType
-        val linkType = ParadoxReferenceLinkType.Localisation
+        val linkType = ReferenceLinkType.Localisation
         val link = linkType.createLink(name, gameType)
         val builder = StringBuilder()
         DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
@@ -240,8 +241,8 @@ class ParadoxLocalisationLinkProvider : ParadoxReferenceLinkProvider {
     }
 }
 
-class ParadoxFilePathLinkProvider : ParadoxReferenceLinkProvider {
-    override val linkPrefix = ParadoxReferenceLinkType.FilePath.prefix
+class ParadoxFilePathLinkProvider : ReferenceLinkProvider {
+    override val linkPrefix = ReferenceLinkType.FilePath.prefix
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         //can be resolved to file or directory
@@ -263,8 +264,8 @@ class ParadoxFilePathLinkProvider : ParadoxReferenceLinkProvider {
     }
 }
 
-class ParadoxModifierLinkProvider : ParadoxReferenceLinkProvider {
-    override val linkPrefix = ParadoxReferenceLinkType.Modifier.prefix
+class ParadoxModifierLinkProvider : ReferenceLinkProvider {
+    override val linkPrefix = ReferenceLinkType.Modifier.prefix
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
