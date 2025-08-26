@@ -20,7 +20,9 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 定义或定义成员的作用域上下文信息的内嵌提示（`this = ? root = ? from = ?`）。
+ * 通过内嵌提示显示定义及其成员的作用域上下文信息。
+ *
+ * 示例：`this = owner root = country from = ?`
  */
 class ParadoxScopeContextInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(

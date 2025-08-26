@@ -14,7 +14,7 @@ sealed class ParadoxQuickDocTextProviderBase : ParadoxQuickDocTextProvider {
             val name = element.name
             if (name.isNullOrEmpty()) return null
             if (name.isParameterized()) return null
-            return doGetQuickDocText(element)
+            return doGetQuickDocText(element, name)
         }
 
         abstract fun doGetQuickDocText(element: ParadoxScriptScriptedVariable, name: String): String?

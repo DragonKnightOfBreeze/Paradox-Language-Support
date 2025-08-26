@@ -25,9 +25,23 @@ import icu.windea.pls.script.psi.*
  * @see ParadoxDocumentationManager
  * @see ParadoxPsiMatcher
  */
+@Suppress("unused")
 @WithGameTypeEP
 interface ParadoxQuickDocTextProvider {
+    val source: Source get() = Source.Other
+
     fun getQuickDocText(element: PsiElement): String?
+
+    /**
+     * 提示文本的来源。
+     */
+    enum class Source {
+        /** 未归类 */
+        Other,
+        /** 来自扩展规则 */
+        Extended,
+        ;
+    }
 
     companion object INSTANCE {
         val EP_NAME = ExtensionPointName<ParadoxQuickDocTextProvider>("icu.windea.pls.quickDocTextProvider")

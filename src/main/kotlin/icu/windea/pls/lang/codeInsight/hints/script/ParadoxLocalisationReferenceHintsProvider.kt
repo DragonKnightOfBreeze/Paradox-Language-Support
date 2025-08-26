@@ -11,7 +11,7 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxLocalisationReferenceInfoHintsProvider.*
+import icu.windea.pls.lang.codeInsight.hints.script.ParadoxLocalisationReferenceHintsProvider.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.localisation.psi.*
@@ -19,9 +19,11 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 本地化引用信息的内嵌提示（对应的本地化的渲染后文本，如果过长则会截断）。
+ * 通过内嵌提示显示渲染后的本地化文本，适用于引用的本地化。
+ *
+ * 如果本地化文本过长则会先被截断。
  */
-class ParadoxLocalisationReferenceInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
+class ParadoxLocalisationReferenceHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = PlsFacade.getInternalSettings().textLengthLimit,
         var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimit,

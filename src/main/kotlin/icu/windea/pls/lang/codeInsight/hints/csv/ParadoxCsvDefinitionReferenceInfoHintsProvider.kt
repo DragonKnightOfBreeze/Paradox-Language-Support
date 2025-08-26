@@ -12,13 +12,12 @@ import icu.windea.pls.*
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvDefinitionReferenceInfoHintsProvider.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * CSV文件中的定义引用信息的内嵌提示（对应定义的名字和类型）。
+ * C通过内嵌提示显示定义引用信息，包括名称、类型和子类型。
  */
 class ParadoxCsvDefinitionReferenceInfoHintsProvider : ParadoxCsvHintsProvider<Settings>() {
     data class Settings(

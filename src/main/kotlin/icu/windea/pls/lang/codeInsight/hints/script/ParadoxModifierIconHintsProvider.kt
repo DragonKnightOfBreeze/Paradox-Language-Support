@@ -21,7 +21,7 @@ import javax.imageio.*
 import javax.swing.*
 
 /**
- * 修正的图标的内嵌提示。
+ * 通过内嵌提示显示修正的渲染后的图标。
  */
 class ParadoxModifierIconHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(

@@ -116,16 +116,6 @@ val CwtConfigGroup.extendedGameRules: MutableMap<String, CwtExtendedGameRuleConf
 @Tags(Tag.Extended)
 val CwtConfigGroup.extendedOnActions: MutableMap<String, CwtExtendedOnActionConfig>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
-
-//template_expression - config
-@Tags(Tag.Extended)
-val CwtConfigGroup.extendedInlineScripts: MutableMap<String, CwtExtendedInlineScriptConfig>
-    by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
-//template_expression - configs
-@Tags(Tag.Extended)
-val CwtConfigGroup.extendedParameters: MutableMap<String, MutableList<CwtExtendedParameterConfig>>
-    by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
-
 //complex_enum_name - template_expression - config
 @Tags(Tag.Extended)
 val CwtConfigGroup.extendedComplexEnumValues: MutableMap<String, MutableMap<String, CwtExtendedComplexEnumValueConfig>>
@@ -133,6 +123,14 @@ val CwtConfigGroup.extendedComplexEnumValues: MutableMap<String, MutableMap<Stri
 //dynamic_value_type - template_expression - config
 @Tags(Tag.Extended)
 val CwtConfigGroup.extendedDynamicValues: MutableMap<String, MutableMap<String, CwtExtendedDynamicValueConfig>>
+    by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
+//template_expression - config
+@Tags(Tag.Extended)
+val CwtConfigGroup.extendedInlineScripts: MutableMap<String, CwtExtendedInlineScriptConfig>
+    by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
+//template_expression - configs
+@Tags(Tag.Extended)
+val CwtConfigGroup.extendedParameters: MutableMap<String, MutableList<CwtExtendedParameterConfig>>
     by createKey(CwtConfigGroup.Keys) { mutableMapOf() }
 
 @Tags(Tag.Computed)

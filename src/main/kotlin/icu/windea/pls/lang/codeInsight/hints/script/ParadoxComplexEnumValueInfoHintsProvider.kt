@@ -16,7 +16,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 复杂枚举值信息的内嵌提示（枚举名）。
+ * 通过内嵌提示显示复杂枚举值信息，即枚举名。
  */
 class ParadoxComplexEnumValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
     private val settingsKey = SettingsKey<NoSettings>("ParadoxComplexEnumValueInfoHintsSettingsKey")

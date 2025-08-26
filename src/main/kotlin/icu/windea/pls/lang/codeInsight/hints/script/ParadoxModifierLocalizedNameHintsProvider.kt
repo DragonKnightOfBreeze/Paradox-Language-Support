@@ -22,7 +22,8 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 修正的本地化名字的内嵌提示。
+ * 通过内嵌提示显示修正的本地化后的名字。
+ * 来自对应的本地化。
  */
 class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
@@ -32,8 +33,8 @@ class ParadoxModifierLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Set
 
     private val settingsKey = SettingsKey<Settings>("ParadoxModifierLocalizedNameHintsSettingsKey")
 
-    override val name: String get() = PlsBundle.message("script.hints.modifierLocalizedName")
-    override val description: String get() = PlsBundle.message("script.hints.modifierLocalizedName.description")
+    override val name: String get() = PlsBundle.message("script.hints.modifierHintText")
+    override val description: String get() = PlsBundle.message("script.hints.modifierHintText.description")
     override val key: SettingsKey<Settings> get() = settingsKey
 
     override val renderLocalisation: Boolean get() = true

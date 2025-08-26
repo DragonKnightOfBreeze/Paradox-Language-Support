@@ -9,17 +9,21 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionLocalizedNameHintsProvider.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.ep.codeInsight.hints.*
+import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionHintTextHintsProvider.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 定义的本地化名字的内嵌提示。
+ * 通过内嵌提示显示定义的提示文本。
+ * 来自本地化后的名字（即最相关的本地化），或者对应的扩展规则。优先级从低到高。
+ *
+ * @see ParadoxHintTextProvider
+ * @see ParadoxHintTextProviderBase.Definition
  */
-class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
+class ParadoxDefinitionHintTextHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = PlsFacade.getInternalSettings().textLengthLimit,
         var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimit,
@@ -27,8 +31,8 @@ class ParadoxDefinitionLocalizedNameHintsProvider : ParadoxScriptHintsProvider<S
 
     private val settingsKey = SettingsKey<Settings>("ParadoxDefinitionLocalizedNameHintsSettingsKey")
 
-    override val name: String get() = PlsBundle.message("script.hints.definitionLocalizedName")
-    override val description: String get() = PlsBundle.message("script.hints.definitionLocalizedName.description")
+    override val name: String get() = PlsBundle.message("script.hints.definitionHintText")
+    override val description: String get() = PlsBundle.message("script.hints.definitionHintText.description")
     override val key: SettingsKey<Settings> get() = settingsKey
 
     override val renderLocalisation: Boolean get() = true

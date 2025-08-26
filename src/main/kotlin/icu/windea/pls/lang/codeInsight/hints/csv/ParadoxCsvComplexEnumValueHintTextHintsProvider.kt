@@ -10,27 +10,30 @@ import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.csv.psi.*
-import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvComplexEnumValueLocalizedNameHintsProvider.*
+import icu.windea.pls.ep.codeInsight.hints.*
+import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvComplexEnumValueHintTextHintsProvider.*
 import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.constraints.*
 import javax.swing.*
 
 /**
- * 复杂枚举值的本地化名字的内嵌提示（来自扩展的CWT规则）。
+ * 通过内嵌提示显示复杂枚举值的提示文本。
+ * 来自本地化后的名字（即同名的本地化），或者对应的扩展规则。优先级从低到高。
+ *
+ * @see ParadoxHintTextProvider
+ * @see ParadoxHintTextProviderBase.ComplexEnumValue
  */
-class ParadoxCsvComplexEnumValueLocalizedNameHintsProvider : ParadoxCsvHintsProvider<Settings>() {
+class ParadoxCsvComplexEnumValueHintTextHintsProvider : ParadoxCsvHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = PlsFacade.getInternalSettings().textLengthLimit,
         var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimit,
     )
 
-    private val settingsKey = SettingsKey<Settings>("ParadoxCsvComplexEnumValueLocalizedNameHintsSettingsKey")
+    private val settingsKey = SettingsKey<Settings>("ParadoxCsvComplexEnumValueHintTextHintsSettingsKey")
 
-    override val name: String get() = PlsBundle.message("csv.hints.complexEnumValueLocalizedName")
-    override val description: String get() = PlsBundle.message("csv.hints.complexEnumValueLocalizedName.description")
+    override val name: String get() = PlsBundle.message("csv.hints.complexEnumValueHintText")
+    override val description: String get() = PlsBundle.message("csv.hints.complexEnumValueHintText.description")
     override val key: SettingsKey<Settings> get() = settingsKey
 
     override val renderLocalisation: Boolean get() = true
@@ -55,23 +58,16 @@ class ParadoxCsvComplexEnumValueLocalizedNameHintsProvider : ParadoxCsvHintsProv
         if (!ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference)) return true
         val resolved = reference.resolve() ?: return true
         if (resolved !is ParadoxComplexEnumValueElement) return true
-        val presentation = doCollect(resolved, file, editor, settings) ?: return true
+        val presentation = doCollect(resolved, editor, settings) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
         return true
     }
 
-    private fun PresentationFactory.doCollect(element: ParadoxComplexEnumValueElement, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
-        val name = element.name
-        val enumName = element.enumName
-        val hintElement = getNameLocalisationToUse(name, enumName, file) ?: return null
-        return ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit).render(hintElement)
-    }
-
-    private fun getNameLocalisationToUse(name: String, enumName: String, file: PsiFile): ParadoxLocalisationProperty? {
-        ParadoxComplexEnumValueManager.getNameLocalisationFromExtendedConfig(name, enumName, file)?.let { return it }
-        ParadoxComplexEnumValueManager.getNameLocalisation(name, file, ParadoxLocaleManager.getPreferredLocaleConfig())?.let { return it }
-        return null
+    private fun PresentationFactory.doCollect(element: ParadoxComplexEnumValueElement, editor: Editor, settings: Settings): InlayPresentation? {
+        val hintLocalisation = ParadoxHintTextProvider.getHintLocalisation(element) ?: return null
+        val renderer = ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit)
+        return renderer.render(hintLocalisation)
     }
 }

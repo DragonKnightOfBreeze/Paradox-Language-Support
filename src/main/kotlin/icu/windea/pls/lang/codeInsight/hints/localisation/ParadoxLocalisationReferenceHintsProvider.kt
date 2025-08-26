@@ -15,7 +15,9 @@ import icu.windea.pls.localisation.psi.*
 import javax.swing.*
 
 /**
- * 本地化引用的内嵌提示（对应的本地化的渲染后文本，如果过长则会截断）。
+ * 通过内嵌提示显示渲染后的本地化文本，适用于本地化参数中引用的本地化。
+ *
+ * 如果本地化文本过长则会先被截断。
  */
 class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvider<Settings>() {
     data class Settings(

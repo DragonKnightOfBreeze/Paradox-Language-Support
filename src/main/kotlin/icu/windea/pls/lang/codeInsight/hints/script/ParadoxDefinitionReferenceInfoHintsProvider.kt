@@ -11,14 +11,13 @@ import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionReferenceInfoHintsProvider.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 定义引用信息的内嵌提示（对应定义的名字和类型）。
+ * 通过内嵌提示显示定义引用信息，包括名称、类型和子类型。
  */
 class ParadoxDefinitionReferenceInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(

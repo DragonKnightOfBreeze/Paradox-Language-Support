@@ -12,8 +12,9 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.expression.*
+import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxComplexEnumValueLocalizedNameHintsProvider.*
+import icu.windea.pls.lang.codeInsight.hints.script.ParadoxComplexEnumValueHintTextHintsProvider.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.localisation.psi.*
@@ -21,9 +22,13 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 复杂枚举值的本地化名字的内嵌提示（来自扩展的CWT规则）。
+ * 通过内嵌提示显示复杂枚举值的提示文本。
+ * 来自本地化后的名字（即同名的本地化），或者对应的扩展规则。优先级从低到高。
+ *
+ * @see ParadoxHintTextProvider
+ * @see ParadoxHintTextProviderBase.ComplexEnumValue
  */
-class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
+class ParadoxComplexEnumValueHintTextHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = PlsFacade.getInternalSettings().textLengthLimit,
         var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimit,
@@ -31,8 +36,8 @@ class ParadoxComplexEnumValueLocalizedNameHintsProvider : ParadoxScriptHintsProv
 
     private val settingsKey = SettingsKey<Settings>("ParadoxComplexEnumValueLocalizedNameHintsSettingsKey")
 
-    override val name: String get() = PlsBundle.message("script.hints.complexEnumValueLocalizedName")
-    override val description: String get() = PlsBundle.message("script.hints.complexEnumValueLocalizedName.description")
+    override val name: String get() = PlsBundle.message("script.hints.complexEnumValueHintText")
+    override val description: String get() = PlsBundle.message("script.hints.complexEnumValueHintText.description")
     override val key: SettingsKey<Settings> get() = settingsKey
 
     override val renderLocalisation: Boolean get() = true

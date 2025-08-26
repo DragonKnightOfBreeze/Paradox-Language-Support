@@ -15,7 +15,7 @@ import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 动态值信息的内嵌提示（类型）。
+ * 通过内嵌提示显示动态值信息，即动态值的集合。
  */
 @Suppress("UnstableApiUsage")
 class ParadoxDynamicValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {

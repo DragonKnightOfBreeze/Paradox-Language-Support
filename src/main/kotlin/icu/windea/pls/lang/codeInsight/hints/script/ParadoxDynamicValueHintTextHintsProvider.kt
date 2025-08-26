@@ -9,9 +9,9 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
+import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDynamicValueLocalizedNameHintsProvider.*
+import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDynamicValueHintTextHintsProvider.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
@@ -21,18 +21,22 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 动态值的本地化名字的内嵌提示。
+ * 通过内嵌提示显示动态值的提示文本。
+ * 来自本地化后的名字（即同名的本地化），或者对应的扩展规则。优先级从低到高。
+ *
+ * @see ParadoxHintTextProvider
+ * @see ParadoxHintTextProviderBase.DynamicValue
  */
-class ParadoxDynamicValueLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
+class ParadoxDynamicValueHintTextHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = PlsFacade.getInternalSettings().textLengthLimit,
         var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimit,
     )
 
-    private val settingsKey = SettingsKey<Settings>("ParadoxDynamicValueLocalizedNameHintsSettingsKey")
+    private val settingsKey = SettingsKey<Settings>("ParadoxDynamicValueHintTextHintsSettingsKey")
 
-    override val name: String get() = PlsBundle.message("script.hints.dynamicValueLocalizedName")
-    override val description: String get() = PlsBundle.message("script.hints.dynamicValueLocalizedName.description")
+    override val name: String get() = PlsBundle.message("script.hints.dynamicValueHintText")
+    override val description: String get() = PlsBundle.message("script.hints.dynamicValueHintText.description")
     override val key: SettingsKey<Settings> get() = settingsKey
 
     override val renderLocalisation: Boolean get() = true
@@ -54,29 +58,31 @@ class ParadoxDynamicValueLocalizedNameHintsProvider : ParadoxScriptHintsProvider
 
         if (element !is ParadoxScriptStringExpressionElement) return true
         if (!element.isExpression()) return true
+        val expression = element.name
+        if (expression.isEmpty()) return true
+        if (expression.isParameterized()) return true
         val resolveConstraint = ParadoxResolveConstraint.DynamicValueStrictly
-        val resolved = element.references.filter { resolveConstraint.canResolve(it) }.mapNotNull { it.resolve() }.lastOrNull()
-            ?.castOrNull<ParadoxDynamicValueElement>()
-            ?: return true
+        val resolved = element.references.reversed().filter { resolveConstraint.canResolve(it) }.firstNotNullOfOrNull { it.resolve() }
+        if (resolved !is ParadoxDynamicValueElement) return true
         val name = resolved.name
         if (name.isEmpty()) return true
         if (name.isParameterized()) return true
 
-        val presentation = doCollect(resolved.name, resolved.dynamicValueTypes, file, editor, settings) ?: return true
+        val presentation = doCollect(resolved, file, editor, settings) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
         return true
     }
 
-    private fun PresentationFactory.doCollect(name: String, types: Set<String>, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
-        val hintElement = getNameLocalisationToUse(name, types, file) ?: return null
+    private fun PresentationFactory.doCollect(element: ParadoxDynamicValueElement, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
+        val hintElement = getHintLocalisationToUse(element, file) ?: return null
         return ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit).render(hintElement)
     }
 
-    private fun getNameLocalisationToUse(name: String, types: Set<String>, file: PsiFile): ParadoxLocalisationProperty? {
-        ParadoxDynamicValueManager.getNameLocalisationFromExtendedConfig(name, types, file)?.let { return it }
-        ParadoxDynamicValueManager.getNameLocalisation(name, file, ParadoxLocaleManager.getPreferredLocaleConfig())?.let { return it }
+    private fun getHintLocalisationToUse(element: ParadoxDynamicValueElement, file: PsiFile): ParadoxLocalisationProperty? {
+        ParadoxHintTextProvider.getHintLocalisation(element)?.let { return it }
+        ParadoxDynamicValueManager.getNameLocalisation(element.name, file, ParadoxLocaleManager.getPreferredLocaleConfig())?.let { return it }
         return null
     }
 }

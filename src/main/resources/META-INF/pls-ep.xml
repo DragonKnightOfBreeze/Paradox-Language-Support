@@ -2,6 +2,7 @@
   <extensionPoints>
     <extensionPoint qualifiedName="icu.windea.pls.colorProvider" interface="icu.windea.pls.ep.codeInsight.hints.ParadoxColorProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.quickDocTextProvider" interface="icu.windea.pls.ep.codeInsight.hints.ParadoxQuickDocTextProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.hintTextProvider" interface="icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.injectedConfigProvider" interface="icu.windea.pls.ep.config.CwtInjectedConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.overriddenConfigProvider" interface="icu.windea.pls.ep.config.CwtOverriddenConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.relatedConfigProvider" interface="icu.windea.pls.ep.config.CwtRelatedConfigProvider" dynamic="true"/>
@@ -52,14 +53,24 @@
     <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptBlockColorProvider"/>
     <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptColorColorProvider"/>
 
+    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxTextColorQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedScriptedVariableQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedDefinitionQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedGameRuleQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedOnActionQuickDocTextProvider"/>
-    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedTextColorQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedComplexEnumValueQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedDynamicValueQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedParameterQuickDocTextProvider"/>
+
+    <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxInferredScriptedVariableHintTextProvider"/>
+    <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxInferredComplexEnumValueHintTextProvider"/>
+    <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxInferredDynamicValueHintTextProvider"/>
+    <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedScriptedVariableHintTextProvider"/>
+    <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedDefinitionHintTextProvider"/>
+    <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedGameRuleHintTextProvider"/>
+    <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedOnActionHintTextProvider"/>
+    <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedComplexEnumValueHintTextProvider"/>
+    <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedDynamicValueHintTextProvider"/>
 
     <injectedConfigProvider implementation="icu.windea.pls.ep.config.CwtTechnologyWithLevelInjectedConfigProvider"/>
     <injectedConfigProvider implementation="icu.windea.pls.ep.config.CwtInOnActionInjectedConfigProvider"/>

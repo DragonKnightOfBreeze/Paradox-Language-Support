@@ -20,7 +20,9 @@ import javax.imageio.*
 import javax.swing.*
 
 /**
- * 本地化图标的内嵌提示（显示选用的图标，如果大小合适且存在，只是显示图标而已）。
+ * 为本地化图标显示渲染后图标。
+ *
+ * 对应的图标需要大小合适且存在。
  */
 class ParadoxLocalisationIconHintsProvider : ParadoxLocalisationHintsProvider<Settings>() {
     data class Settings(

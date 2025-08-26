@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 定义信息的内嵌提示（定义的名字和类型）。
+ * 通过内嵌提示显示定义信息，包括名称、类型和子类型。
  */
 class ParadoxDefinitionInfoHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(

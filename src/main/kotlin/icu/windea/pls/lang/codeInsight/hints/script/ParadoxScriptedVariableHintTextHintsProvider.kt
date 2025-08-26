@@ -9,18 +9,22 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
+import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.codeInsight.hints.script.ParadoxScriptedVariableLocalizedNameHintsProvider.*
-import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.codeInsight.hints.script.ParadoxScriptedVariableHintTextHintsProvider.*
 import icu.windea.pls.lang.util.renderers.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
 /**
- * 封装变量的本地化名字的内嵌提示。
+ * 封装变量的提示文本的内嵌提示。
+ *
+ * 来自同名的本地化，或者对应的扩展规则。优先级从低到高。
+ *
+ * @see ParadoxHintTextProvider
+ * @see ParadoxHintTextProviderBase.ScriptedVariable
  */
-class ParadoxScriptedVariableLocalizedNameHintsProvider : ParadoxScriptHintsProvider<Settings>() {
+class ParadoxScriptedVariableHintTextHintsProvider : ParadoxScriptHintsProvider<Settings>() {
     data class Settings(
         var textLengthLimit: Int = PlsFacade.getInternalSettings().textLengthLimit,
         var iconHeightLimit: Int = PlsFacade.getInternalSettings().iconHeightLimit,
@@ -28,8 +32,8 @@ class ParadoxScriptedVariableLocalizedNameHintsProvider : ParadoxScriptHintsProv
 
     private val settingsKey = SettingsKey<Settings>("ParadoxScriptedVariableLocalizedNameHintsSettingsKey")
 
-    override val name: String get() = PlsBundle.message("script.hints.scriptedVariableLocalizedName")
-    override val description: String get() = PlsBundle.message("script.hints.scriptedVariableLocalizedName.description")
+    override val name: String get() = PlsBundle.message("script.hints.scriptedVariableHintText")
+    override val description: String get() = PlsBundle.message("script.hints.scriptedVariableHintText.description")
     override val key: SettingsKey<Settings> get() = settingsKey
 
     override val renderLocalisation: Boolean get() = true
@@ -54,21 +58,16 @@ class ParadoxScriptedVariableLocalizedNameHintsProvider : ParadoxScriptHintsProv
         if (name.isNullOrEmpty()) return true
         if (name.isParameterized()) return true
 
-        val presentation = doCollect(name, file, editor, settings) ?: return true
+        val presentation = doCollect(element, editor, settings) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.scriptedVariableName.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
         return true
     }
 
-    private fun PresentationFactory.doCollect(name: String, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
-        val hintElement = getNameLocalisationToUse(name, file) ?: return null
-        return ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit).render(hintElement)
-    }
-
-    private fun getNameLocalisationToUse(name: String, file: PsiFile): ParadoxLocalisationProperty? {
-        ParadoxScriptedVariableManager.getNameLocalisationFromExtendedConfig(name, file)?.let { return it }
-        ParadoxScriptedVariableManager.getNameLocalisation(name, file, ParadoxLocaleManager.getPreferredLocaleConfig())?.let { return it }
-        return null
+    private fun PresentationFactory.doCollect(element: ParadoxScriptScriptedVariable, editor: Editor, settings: Settings): InlayPresentation? {
+        val hintLocalisation = ParadoxHintTextProvider.getHintLocalisation(element) ?: return null
+        val renderer = ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit)
+        return renderer.render(hintLocalisation)
     }
 }

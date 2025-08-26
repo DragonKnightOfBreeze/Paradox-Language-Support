@@ -14,7 +14,7 @@ import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.model.constraints.*
 
 /**
- * 复杂枚举值信息的内嵌提示（枚举名）。
+ * 通过内嵌提示显示复杂枚举值信息，即枚举名。
  */
 class ParadoxCsvComplexEnumValueInfoHintsProvider : ParadoxCsvHintsProvider<NoSettings>() {
     private val settingsKey = SettingsKey<NoSettings>("ParadoxCsvComplexEnumValueInfoHintsSettingsKey")
