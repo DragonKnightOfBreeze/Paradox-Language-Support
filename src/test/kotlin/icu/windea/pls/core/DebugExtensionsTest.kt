@@ -3,7 +3,7 @@ package icu.windea.pls.core
 import org.junit.Assert
 import org.junit.Test
 
-class DebugExtensionsPureTest {
+class DebugExtensionsTest {
     @Test
     fun withMeasureMillis_updates_avg_when_debug_true() {
         // ensure debug enabled before first access to DebugExtensions.kt top-level vals

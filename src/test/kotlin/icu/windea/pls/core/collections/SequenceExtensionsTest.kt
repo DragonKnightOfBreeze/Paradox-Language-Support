@@ -3,7 +3,7 @@ package icu.windea.pls.core.collections
 import org.junit.Assert.*
 import org.junit.Test
 
-class SequenceExtensionsPureTest {
+class SequenceExtensionsTest {
     @Test
     fun filterIsInstance_and_findIsInstance() {
         val seq1: Sequence<Any?> = sequenceOf(1, "a", null, "abc", 2)

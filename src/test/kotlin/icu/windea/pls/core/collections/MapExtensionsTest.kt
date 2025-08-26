@@ -3,7 +3,7 @@ package icu.windea.pls.core.collections
 import org.junit.Assert.*
 import org.junit.Test
 
-class MapExtensionsPureTest {
+class MapExtensionsTest {
     @Test
     fun orNull_on_map() {
         assertNull(emptyMap<String, Int>().orNull())

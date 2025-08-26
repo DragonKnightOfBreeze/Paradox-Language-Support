@@ -5,16 +5,20 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
 
-class FlowExtensionsPureTest {
+class FlowExtensionsTest {
     @Test
     fun chunked_basic_and_tail() = runBlocking {
         val result = (1..5).asFlow().chunked(2).toList()
         assertEquals(listOf(listOf(1, 2), listOf(3, 4), listOf(5)), result)
     }
 
-    @Test(expected = IllegalArgumentException::class)
-    fun chunked_invalid_size() = runBlocking {
-        (1..3).asFlow().chunked(0).toList()
+    @Test
+    fun chunked_invalid_size() {
+        assertThrows(IllegalArgumentException::class.java) {
+            runBlocking {
+                (1..3).asFlow().chunked(0).toList()
+            }
+        }
     }
 
     @Test

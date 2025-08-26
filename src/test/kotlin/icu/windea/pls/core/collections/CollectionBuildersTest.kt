@@ -5,7 +5,7 @@ import org.junit.Test
 import java.util.Comparator
 import java.util.TreeSet
 
-class CollectionBuildersPureTest {
+class CollectionBuildersTest {
     @Test
     fun mutableSet_without_comparator() {
         val s = MutableSet<Int>()

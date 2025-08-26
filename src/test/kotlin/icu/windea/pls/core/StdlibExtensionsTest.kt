@@ -3,7 +3,7 @@ package icu.windea.pls.core
 import org.junit.Assert
 import org.junit.Test
 
-class StdlibExtensionsPureTest {
+class StdlibExtensionsTest {
     @Test
     fun quote_unquote_and_escape() {
         val s = "ab\"c"
