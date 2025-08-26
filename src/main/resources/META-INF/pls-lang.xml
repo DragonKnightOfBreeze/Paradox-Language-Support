@@ -51,9 +51,29 @@
 
     <createDirectoryCompletionContributor implementation="icu.windea.pls.lang.actions.ParadoxCreateDirectoryCompletionContributor"/>
     <completion.contributor language="CWT" implementationClass="icu.windea.pls.lang.codeInsight.completion.cwt.CwtCompletionContributor"/>
+    <!--icu.windea.pls.lang.codeInsight.completion.cwt.CwtKeywordCompletionProvider-->
     <completion.contributor language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.completion.csv.ParadoxCsvCompletionContributor"/>
+    <!--icu.windea.pls.lang.codeInsight.completion.csv.ParadoxCsvExpressionCompletionProvider-->
     <completion.contributor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptCompletionContributor"/>
+    <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxKeywordCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptedVariableCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptExpressionCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxEventIdCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxParameterCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxInlineScriptInvocationCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptedVariableNameCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxDefinitionNameCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.script.ParadoxVariableNameCompletionProvider-->
     <completion.contributor language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationCompletionContributor"/>
+    <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationLocaleCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationNameCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationColorCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationParameterCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxScriptedVariableCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationExpressionCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationConceptCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextFormatCompletionProvider-->
+    <!--icu.windea.pls.lang.codeInsight.completion.localisation.ParadoxLocalisationTextIconCompletionProvider-->
 
     <readWriteAccessDetector implementation="icu.windea.pls.lang.codeInsight.highlight.CwtConfigReadWriteAccessDetector"/>
     <readWriteAccessDetector implementation="icu.windea.pls.lang.codeInsight.highlight.ParadoxReadWriteAccessDetector"/>
@@ -179,9 +199,16 @@
     <referencesSearch implementation="icu.windea.pls.lang.search.usage.ParadoxLocalisationParameterUsagesSearcher"/>
 
     <psi.referenceContributor language="CWT" implementation="icu.windea.pls.lang.references.cwt.CwtConfigPsiReferenceContributor"/>
+    <!--icu.windea.pls.lang.references.cwt.CwtConfigSymbolReferenceProvider-->
     <psi.referenceContributor language="PARADOX_SCRIPT" implementation="icu.windea.pls.lang.references.script.ParadoxScriptPsiReferenceContributor"/>
+    <!--icu.windea.pls.lang.references.script.ParadoxScriptPsiReferenceProvider-->
+    <!--icu.windea.pls.lang.references.script.ParadoxScriptExpressionPsiReferenceProvider-->
+    <!--icu.windea.pls.lang.references.script.ParadoxEventNamespacePsiReferenceProvider-->
+    <!--icu.windea.pls.lang.references.script.ParadoxScriptTypeKeyPrefixPsiReferenceProvider-->
     <psi.referenceContributor language="PARADOX_LOCALISATION" implementation="icu.windea.pls.lang.references.localisation.ParadoxLocalisationPsiReferenceContributor"/>
+    <!--icu.windea.pls.lang.references.localisation.ParadoxLocalisationPsiReferenceProvider-->
     <psi.referenceContributor language="PARADOX_CSV" implementation="icu.windea.pls.lang.references.csv.ParadoxCsvPsiReferenceContributor"/>
+    <!--icu.windea.pls.lang.references.csv.ParadoxCsvExpressionPsiReferenceProvider-->
 
     <pathReferenceProvider implementation="icu.windea.pls.lang.references.paths.ParadoxPathReferenceProvider" order="first"/>
 
