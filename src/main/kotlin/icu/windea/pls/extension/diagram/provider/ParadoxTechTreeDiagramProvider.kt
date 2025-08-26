@@ -29,7 +29,7 @@ import javax.swing.*
 
 /**
  * 提供群星的科技树图表。
- * * 可以配置是否显示UI表示（科技卡图片）、科技名、图标、关键属性。
+ * * 可以配置是否显示类型、关键属性、本地化后的名字（科技名）、图形表示（科技卡）。
  * * 可以按类型、级别、分类、领域过滤要显示的科技。
  * * 可以按作用域过滤要显示的科技。（例如，仅限原版，仅限当前模组）
  * * 支持任何通用的图表操作。（例如，导出为图片）
@@ -38,10 +38,10 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
     object Categories {
         val Type = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.type"), PlsIcons.Nodes.Type, true, false)
         val Properties = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.properties"), PlsIcons.Nodes.Property, true, false)
-        val Name = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.name"), PlsIcons.Nodes.Localisation, false, false)
+        val LocalizedName = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.localizedName"), PlsIcons.Nodes.Localisation, false, false)
         val Presentation = DiagramCategory(PlsDiagramBundle.lazyMessage("techTree.category.presentation"), PlsIcons.General.Presentation, false, false)
 
-        val All = arrayOf(Type, Properties, Name, Presentation)
+        val All = arrayOf(Type, Properties, LocalizedName, Presentation)
     }
 
     object Relations {
@@ -62,7 +62,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
         class Property(val property: ParadoxScriptProperty, val detail: Boolean)
 
-        class Name(val text: String)
+        class LocalizedName(val text: String)
 
         class Presentation(val definition: ParadoxScriptProperty)
     }
@@ -91,7 +91,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
             return when (item) {
                 is Items.Type -> category == Categories.Type
                 is Items.Property -> category == Categories.Properties
-                is Items.Name -> category == Categories.Name
+                is Items.LocalizedName -> category == Categories.LocalizedName
                 is Items.Presentation -> category == Categories.Presentation
                 else -> true
             }
@@ -126,7 +126,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                         val properties = ParadoxPresentationManager.getProperties(nodeElement, provider.getItemPropertyKeys())
                         properties.forEach { result += Items.Property(it, it.name in provider.getItemPropertyKeysInDetail()) }
                     }
-                    nodeElement.getUserData(Keys.nameText)?.let { result += Items.Name(it) }
+                    nodeElement.getUserData(Keys.nameText)?.let { result += Items.LocalizedName(it) }
                     result.toTypedArray()
                 }
                 else -> emptyArray()
@@ -136,7 +136,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
         override fun getItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder): JComponent? {
             ProgressManager.checkCanceled()
             return when (nodeItem) {
-                is Items.Name -> {
+                is Items.LocalizedName -> {
                     ParadoxPresentationManager.getLabel(nodeItem.text.or.anonymous())
                 }
                 is Items.Presentation -> runReadAction r@{
