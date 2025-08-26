@@ -1,8 +1,7 @@
-package icu.windea.pls.ep.color
+package icu.windea.pls.ep.codeInsight.hints
 
 import com.intellij.openapi.extensions.*
 import com.intellij.psi.*
-import icu.windea.pls.script.editor.*
 import java.awt.*
 
 /**
@@ -10,7 +9,7 @@ import java.awt.*
  *
  * 备注：alpha值可以小于0或者大于255（对于浮点数写法则是小于0.0或者大于1.0），表示粒子外溢的光照强度。
  *
- * @see ParadoxScriptColorProvider
+ * @see icu.windea.pls.script.editor.ParadoxScriptColorProvider
  * @see com.intellij.openapi.editor.ElementColorProvider
  * @see com.intellij.ui.ColorLineMarkerProvider
  */

@@ -2,7 +2,7 @@ package icu.windea.pls.script.editor
 
 import com.intellij.openapi.editor.*
 import com.intellij.psi.*
-import icu.windea.pls.ep.color.*
+import icu.windea.pls.ep.codeInsight.hints.*
 import java.awt.*
 
 class ParadoxScriptColorProvider : ElementColorProvider {

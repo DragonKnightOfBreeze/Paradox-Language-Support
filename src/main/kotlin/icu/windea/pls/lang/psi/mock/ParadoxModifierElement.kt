@@ -17,7 +17,7 @@ import javax.swing.*
 class ParadoxModifierElement(
     parent: PsiElement,
     private val name: String,
-    val gameType: ParadoxGameType,
+    override val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxMockPsiElement(parent) {
     var canRename = false

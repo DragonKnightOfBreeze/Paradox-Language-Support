@@ -14,9 +14,9 @@ import javax.swing.*
 class CwtMemberConfigElement(
     parent: PsiElement,
     val config: CwtMemberConfig<*>,
-    val gameType: ParadoxGameType,
+    override val gameType: ParadoxGameType,
     private val project: Project
-) : CwtMockPsiElement(parent) {
+) : CwtConfigMockPsiElement(parent) {
     override fun getIcon(): Icon {
         return when (config) {
             is CwtPropertyConfig -> PlsIcons.Nodes.CwtProperty

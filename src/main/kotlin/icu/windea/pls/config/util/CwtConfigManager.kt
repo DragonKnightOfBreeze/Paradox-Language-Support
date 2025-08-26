@@ -26,6 +26,7 @@ object CwtConfigManager {
         val gameTypeIdFromRepoFile by createKey<String>(Keys)
         val cachedConfigPath by createKey<CachedValue<CwtConfigPath>>(Keys)
         val cachedConfigType by createKey<CachedValue<CwtConfigType>>(Keys)
+        val cachedDocumentation by createKey<CachedValue<String>>(Keys)
         val filePathPatterns by createKey<Set<String>>(Keys)
         val filePathPatternsForPriority by createKey<Set<String>>(Keys)
     }
@@ -114,9 +115,11 @@ object CwtConfigManager {
     private fun doGetConfigPathFromCache(element: CwtMemberElement): CwtConfigPath? {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigPath) {
-            val file = runReadAction { element.containingFile }
-            val value = doGetConfigPath(element)
-            value.withDependencyItems(file)
+            runReadAction {
+                val file = element.containingFile
+                val value = doGetConfigPath(element)
+                value.withDependencyItems(file)
+            }
         }
     }
 
@@ -151,17 +154,16 @@ object CwtConfigManager {
     private fun doGetConfigTypeFromCache(element: CwtMemberElement): CwtConfigType? {
         //invalidated on file modification
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigType) {
-            val file = runReadAction { element.containingFile }
-            val value = when (element) {
-                is CwtProperty -> doGetConfigType(element, file)
-                is CwtValue -> doGetConfigType(element, file)
-                else -> null
+            runReadAction {
+                val file = element.containingFile
+                val value = doGetConfigType(element, file)
+                value.withDependencyItems(file)
             }
-            value.withDependencyItems(file)
         }
     }
 
     private fun doGetConfigType(element: CwtMemberElement, file: PsiFile): CwtConfigType? {
+        if (element !is CwtProperty && element !is CwtValue) return null
         val filePath = getFilePath(file) ?: return null
         if (filePath.startsWith("internal/")) return null //排除内部规则文件
         val configPath = getConfigPath(element)
@@ -296,11 +298,22 @@ object CwtConfigManager {
     }
 
     fun getDocumentation(config: CwtMemberConfig<*>): String? {
-        return doGetDocumentation(config) //DO NOT be cached here
+        val element = config.pointer.element ?: return null
+        return doGetDocumentationFromCache(element)
     }
 
-    private fun doGetDocumentation(config: CwtMemberConfig<*>): String? {
-        val element = config.pointer.element ?: return null
+    private fun doGetDocumentationFromCache(element: CwtMemberElement): String? {
+        //invalidated on file modification
+        return CachedValuesManager.getCachedValue(element, Keys.cachedDocumentation) {
+            runReadAction {
+                val file = element.containingFile
+                val value = doGetDocumentation(element)
+                value.withDependencyItems(file)
+            }
+        }
+    }
+
+    private fun doGetDocumentation(element: CwtMemberElement): String? {
         return ParadoxPsiManager.getDocCommentText(element, CwtElementTypes.DOC_COMMENT, "<br>")
     }
 

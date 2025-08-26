@@ -1,6 +1,7 @@
 <idea-plugin>
   <extensionPoints>
-    <extensionPoint qualifiedName="icu.windea.pls.colorProvider" interface="icu.windea.pls.ep.color.ParadoxColorProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.colorProvider" interface="icu.windea.pls.ep.codeInsight.hints.ParadoxColorProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.quickDocTextProvider" interface="icu.windea.pls.ep.codeInsight.hints.ParadoxQuickDocTextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.injectedConfigProvider" interface="icu.windea.pls.ep.config.CwtInjectedConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.overriddenConfigProvider" interface="icu.windea.pls.ep.config.CwtOverriddenConfigProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.relatedConfigProvider" interface="icu.windea.pls.ep.config.CwtRelatedConfigProvider" dynamic="true"/>
@@ -9,11 +10,6 @@
     <extensionPoint qualifiedName="icu.windea.pls.configGroupDataProvider" interface="icu.windea.pls.ep.configGroup.CwtConfigGroupDataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.configGroupFileProvider" interface="icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionDataProvider" interface="icu.windea.pls.ep.data.ParadoxDefinitionDataProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.scriptedVariableExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxScriptedVariableExtendedDocumentationProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.definitionExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxDefinitionExtendedDocumentationProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.parameterExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxParameterExtendedDocumentationProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.complexEnumValueExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxComplexEnumValueExtendedDocumentationProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.dynamicValueExtendedDocumentationProvider" interface="icu.windea.pls.ep.documentation.ParadoxDynamicValueExtendedDocumentationProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionResolver" interface="icu.windea.pls.ep.dataExpression.CwtDataExpressionResolver" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionMerger" interface="icu.windea.pls.ep.dataExpression.CwtDataExpressionMerger" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.dataExpressionPriorityProvider" interface="icu.windea.pls.ep.dataExpression.CwtDataExpressionPriorityProvider" dynamic="true"/>
@@ -52,9 +48,18 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
-    <colorProvider implementation="icu.windea.pls.ep.color.ParadoxScriptStringColorProvider"/>
-    <colorProvider implementation="icu.windea.pls.ep.color.ParadoxScriptBlockColorProvider"/>
-    <colorProvider implementation="icu.windea.pls.ep.color.ParadoxScriptColorColorProvider"/>
+    <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptStringColorProvider"/>
+    <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptBlockColorProvider"/>
+    <colorProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxScriptColorColorProvider"/>
+
+    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedScriptedVariableQuickDocTextProvider"/>
+    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedDefinitionQuickDocTextProvider"/>
+    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedGameRuleQuickDocTextProvider"/>
+    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedOnActionQuickDocTextProvider"/>
+    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedTextColorQuickDocTextProvider"/>
+    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedComplexEnumValueQuickDocTextProvider"/>
+    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedDynamicValueQuickDocTextProvider"/>
+    <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedParameterQuickDocTextProvider"/>
 
     <injectedConfigProvider implementation="icu.windea.pls.ep.config.CwtTechnologyWithLevelInjectedConfigProvider"/>
     <injectedConfigProvider implementation="icu.windea.pls.ep.config.CwtInOnActionInjectedConfigProvider"/>
@@ -90,19 +95,6 @@
     <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisGameConceptData$Provider"/>
     <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisTechnologyData$Provider"/>
     <definitionDataProvider implementation="icu.windea.pls.ep.data.StellarisEventData$Provider"/>
-
-    <scriptedVariableExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxBaseScriptedVariableExtendedDocumentationProvider" order="last"/>
-
-    <definitionExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxBaseDefinitionExtendedDocumentationProvider" order="last"/>
-    <definitionExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxGameRuleExtendedDocumentationProvider"/>
-    <definitionExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxOnActionExtendedDocumentationProvider"/>
-    <definitionExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxTextColorExtendedDocumentationProvider"/>
-
-    <parameterExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxBaseParameterExtendedDocumentationProvider" order="last"/>
-
-    <complexEnumValueExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxBaseComplexEnumValueExtendedDocumentationProvider" order="last"/>
-
-    <dynamicValueExtendedDocumentationProvider implementation="icu.windea.pls.ep.documentation.ParadoxBaseDynamicValueExtendedDocumentationProvider" order="last"/>
 
     <dataExpressionResolver id="base" implementation="icu.windea.pls.ep.dataExpression.BaseCwtDataExpressionResolver"/>
     <dataExpressionResolver id="core" implementation="icu.windea.pls.ep.dataExpression.CoreCwtDataExpressionResolver"/>

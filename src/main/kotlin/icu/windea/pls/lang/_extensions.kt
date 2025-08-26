@@ -19,6 +19,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.data.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.psi.stubs.*
 import icu.windea.pls.lang.references.*
 import icu.windea.pls.lang.references.localisation.*
@@ -94,10 +95,13 @@ tailrec fun selectGameType(from: Any?): ParadoxGameType? {
         from is VirtualFile -> from.fileInfo?.rootInfo?.gameType
         from is PsiDirectory -> selectGameType(selectFile(from))
         from is PsiFile -> selectGameType(selectFile(from))
+        from is CwtConfigMockPsiElement -> from.gameType
+        from is ParadoxMockPsiElement -> from.gameType
         from is StubBasedPsiElementBase<*> -> selectGameType(getStubToSelectGameType(from) ?: from.containingFile)
         from is ParadoxStub<*> -> from.gameType
         from is PsiElement -> selectGameType(from.parent)
-        from is ParadoxIndexInfo -> selectGameType(from.virtualFile)
+        from is ParadoxIndexInfo -> from.gameType
+        from is CwtConfigIndexInfo -> from.gameType
         else -> null
     }
 }

@@ -18,7 +18,7 @@ class ParadoxComplexEnumValueElement(
     private val name: String,
     val enumName: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
-    val gameType: ParadoxGameType,
+    override val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxMockPsiElement(parent) {
     val searchScopeType: ParadoxSearchScopeType

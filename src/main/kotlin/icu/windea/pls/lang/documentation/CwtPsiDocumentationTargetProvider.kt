@@ -14,7 +14,7 @@ class CwtPsiDocumentationTargetProvider : PsiDocumentationTargetProvider {
 
     private fun isValid(elementWithDocumentation: PsiElement): Boolean {
         if (elementWithDocumentation.language is CwtLanguage) return true
-        if (elementWithDocumentation is CwtMockPsiElement) return true
+        if (elementWithDocumentation is CwtConfigMockPsiElement) return true
         return false
     }
 }

@@ -16,9 +16,9 @@ class CwtConfigSymbolElement(
     private val name: String,
     val configType: CwtConfigType,
     val readWriteAccess: ReadWriteAccessDetector.Access,
-    val gameType: ParadoxGameType,
+    override val gameType: ParadoxGameType,
     private val project: Project
-) : CwtMockPsiElement(parent) {
+) : CwtConfigMockPsiElement(parent) {
     override fun getIcon(): Icon? {
         return configType.icon
     }

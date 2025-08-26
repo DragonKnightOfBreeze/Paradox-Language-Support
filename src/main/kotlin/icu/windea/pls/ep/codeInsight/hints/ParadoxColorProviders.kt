@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.color
+package icu.windea.pls.ep.codeInsight.hints
 
 import com.intellij.openapi.command.*
 import com.intellij.psi.*

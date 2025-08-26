@@ -11,7 +11,7 @@ import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.documentation.*
+import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.ep.inherit.*
 import icu.windea.pls.ep.modifier.*
 import icu.windea.pls.ep.parameter.*
@@ -124,7 +124,7 @@ object ParadoxDocumentationManager {
             if (!hint) initSections(3)
             buildDefinitionDefinition(element, definitionInfo)
             if (hint) return@buildDocumentation
-            buildDocumentationContent(element, definitionInfo)
+            buildDocumentationContent(element)
             buildLineCommentContent(element)
             buildSections()
         }
@@ -843,18 +843,8 @@ object ParadoxDocumentationManager {
         }
     }
 
-    private fun DocumentationBuilder.buildDocumentationContent(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo) {
-        ParadoxDefinitionExtendedDocumentationProvider.getAllDocumentationContent(element, definitionInfo).forEach { content { append(it) } }
-    }
-
     private fun DocumentationBuilder.buildDocumentationContent(element: PsiElement) {
-        val contents = when (element) {
-            is ParadoxParameterElement -> ParadoxParameterExtendedDocumentationProvider.getAllDocumentationContent(element)
-            is ParadoxComplexEnumValueElement -> ParadoxComplexEnumValueExtendedDocumentationProvider.getAllDocumentationContent(element)
-            is ParadoxDynamicValueElement -> ParadoxDynamicValueExtendedDocumentationProvider.getAllDocumentationContent(element)
-            is ParadoxScriptScriptedVariable -> ParadoxScriptedVariableExtendedDocumentationProvider.getAllDocumentationContent(element)
-            else -> emptyList()
-        }
+        val contents = ParadoxQuickDocTextProvider.listQuickDocText(element)
         if (contents.isEmpty()) return
         contents.forEach { content { append(it) } }
     }

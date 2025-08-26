@@ -16,7 +16,7 @@ class ParadoxDynamicValueElement(
     private val name: String,
     val dynamicValueTypes: Set<String>,
     val readWriteAccess: ReadWriteAccessDetector.Access,
-    val gameType: ParadoxGameType,
+    override val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxMockPsiElement(parent) {
     constructor(parent: PsiElement, name: String, dynamicValueType: String, readWriteAccess: ReadWriteAccessDetector.Access, gameType: ParadoxGameType, project: Project)

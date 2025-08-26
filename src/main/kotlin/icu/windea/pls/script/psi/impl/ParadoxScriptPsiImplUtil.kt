@@ -13,6 +13,7 @@ import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.core.*
+import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.ep.color.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.navigation.*

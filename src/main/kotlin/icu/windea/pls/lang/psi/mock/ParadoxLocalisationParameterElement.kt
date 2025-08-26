@@ -21,7 +21,7 @@ class ParadoxLocalisationParameterElement(
     private val name: String,
     val localisationName: String,
     val readWriteAccess: ReadWriteAccessDetector.Access,
-    val gameType: ParadoxGameType,
+    override val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxMockPsiElement(parent) {
     override fun getIcon(): Icon {

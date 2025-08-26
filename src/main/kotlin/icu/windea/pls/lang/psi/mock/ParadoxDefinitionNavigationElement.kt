@@ -39,6 +39,8 @@ class ParadoxDefinitionNavigationElement(
         return parent
     }
 
+    override val gameType: ParadoxGameType get() = definitionInfo.gameType
+
     override fun equals(other: Any?): Boolean {
         return this === other || other is ParadoxDefinitionNavigationElement
             && definitionInfo == other.definitionInfo
