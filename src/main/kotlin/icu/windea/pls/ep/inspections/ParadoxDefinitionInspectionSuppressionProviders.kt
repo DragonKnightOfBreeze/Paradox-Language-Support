@@ -1,7 +1,6 @@
-package icu.windea.pls.ep.inspection
+package icu.windea.pls.ep.inspections
 
 import icu.windea.pls.core.annotations.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 

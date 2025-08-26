@@ -3,9 +3,8 @@ package icu.windea.pls.lang.inspections
 import com.intellij.codeInspection.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.ep.inspection.*
+import icu.windea.pls.ep.inspections.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.script.psi.*
 import java.util.regex.*
 

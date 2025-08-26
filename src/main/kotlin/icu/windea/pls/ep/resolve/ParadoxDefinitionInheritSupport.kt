@@ -1,14 +1,20 @@
-package icu.windea.pls.ep.inherit
+package icu.windea.pls.ep.resolve
 
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
+import icu.windea.pls.lang.codeInsight.navigation.*
+import icu.windea.pls.lang.documentation.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 用于实现定义继承的逻辑。
+ * 用于提供对定义的继承逻辑的支持。
+ *
+ * 这个扩展点目前主要用于以下功能：
+ *
+ * - 快速文档（[ParadoxDocumentationTarget]）。
+ * - 导航到父定义的导航动作（[ParadoxGotoSuperDefinitionActionHandler]）。
  */
 @WithGameTypeEP
 interface ParadoxDefinitionInheritSupport {

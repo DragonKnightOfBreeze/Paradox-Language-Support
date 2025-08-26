@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.codeInsight.generation
+package icu.windea.pls.lang.codeInsight.navigation
 
 import com.intellij.codeInsight.generation.actions.*
 import com.intellij.ide.util.*
@@ -7,9 +7,8 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import icu.windea.pls.*
-import icu.windea.pls.ep.inherit.*
+import icu.windea.pls.ep.resolve.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
@@ -23,7 +22,7 @@ class ParadoxGotoSuperDefinitionActionHandler : PresentableCodeInsightActionHand
         val options = allOptions.BY_ROOT_KEY or allOptions.BY_NAME or allOptions.BY_REFERENCE
         val definition = ParadoxPsiManager.findDefinition(file, offset, options) ?: return null
         val definitionInfo = definition.definitionInfo ?: return null
-        val superDefinition = ParadoxDefinitionInheritSupport.getSuperDefinition(definition, definitionInfo) ?: return null
+        val superDefinition = ParadoxDefinitionInheritSupport.INSTANCE.getSuperDefinition(definition, definitionInfo) ?: return null
         return superDefinition
     }
 

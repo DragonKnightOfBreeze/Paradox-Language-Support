@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.ep.tool
+package icu.windea.pls.ep.tools
 
 import icu.windea.pls.*
 import java.nio.file.*

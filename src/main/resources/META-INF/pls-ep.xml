@@ -23,10 +23,8 @@
     <extensionPoint qualifiedName="icu.windea.pls.pathReferenceExpressionSupport" interface="icu.windea.pls.ep.expression.ParadoxPathReferenceExpressionSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.localisationIconSupport" interface="icu.windea.pls.ep.icon.ParadoxLocalisationIconSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.infoIndexSupport" interface="icu.windea.pls.ep.index.ParadoxIndexInfoSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.definitionInheritSupport" interface="icu.windea.pls.ep.inherit.ParadoxDefinitionInheritSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.inlineSupport" interface="icu.windea.pls.ep.inline.ParadoxInlineSupport" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.definitionInspectionSuppressionProvider" interface="icu.windea.pls.ep.inspection.ParadoxDefinitionInspectionSuppressionProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.incorrectExpressionChecker" interface="icu.windea.pls.ep.inspection.ParadoxIncorrectExpressionChecker" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.definitionInspectionSuppressionProvider" interface="icu.windea.pls.ep.inspections.ParadoxDefinitionInspectionSuppressionProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.incorrectExpressionChecker" interface="icu.windea.pls.ep.inspections.ParadoxIncorrectExpressionChecker" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.inferredGameTypeProvider" interface="icu.windea.pls.ep.metadata.ParadoxInferredGameTypeProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.metadataProvider" interface="icu.windea.pls.ep.metadata.ParadoxMetadataProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.modifierSupport" interface="icu.windea.pls.ep.modifier.ParadoxModifierSupport" dynamic="true"/>
@@ -43,9 +41,11 @@
     <extensionPoint qualifiedName="icu.windea.pls.dynamicValueInferredScopeContextProvider" interface="icu.windea.pls.ep.scope.ParadoxDynamicValueInferredScopeContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.overriddenScopeContextProvider" interface="icu.windea.pls.ep.scope.ParadoxOverriddenScopeContextProvider" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.definitionPresentationProvider" interface="icu.windea.pls.ep.presentation.ParadoxDefinitionPresentationProvider" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.definitionInheritSupport" interface="icu.windea.pls.ep.resolve.ParadoxDefinitionInheritSupport" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.inlineSupport" interface="icu.windea.pls.ep.resolve.ParadoxInlineSupport" dynamic="true"/>
     <extensionPoint qualifiedName="icu.windea.pls.priorityProvider" interface="icu.windea.pls.ep.priority.ParadoxPriorityProvider" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.modImporter" interface="icu.windea.pls.ep.tool.ParadoxModImporter" dynamic="true"/>
-    <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.ep.tool.ParadoxModExporter" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.modImporter" interface="icu.windea.pls.ep.tools.ParadoxModImporter" dynamic="true"/>
+    <extensionPoint qualifiedName="icu.windea.pls.modExporter" interface="icu.windea.pls.ep.tools.ParadoxModExporter" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="icu.windea.pls">
@@ -187,22 +187,17 @@
     <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxEventInEventIndexInfoSupport"/>
     <infoIndexSupport implementation="icu.windea.pls.ep.index.ParadoxOnActionInEventIndexInfoSupport"/>
 
-    <definitionInheritSupport implementation="icu.windea.pls.ep.inherit.ParadoxSwappedTypeInheritSupport"/>
-    <definitionInheritSupport implementation="icu.windea.pls.ep.inherit.StellarisEventInheritSupport"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxRangedIntChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxRangedFloatChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxColorFieldChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxScopeBasedScopeFieldExpressionChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxScopeGroupBasedScopeFieldExpressionChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.StellarisTechnologyWithLevelChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInSwitchChecker"/>
+    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspections.ParadoxTriggerInTriggerWithParametersAwareChecker"/>
 
-    <inlineSupport implementation="icu.windea.pls.ep.inline.ParadoxInlineScriptInlineSupport"/>
-
-    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspection.ParadoxRangedIntChecker"/>
-    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspection.ParadoxRangedFloatChecker"/>
-    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspection.ParadoxColorFieldChecker"/>
-    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspection.ParadoxScopeBasedScopeFieldExpressionChecker"/>
-    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspection.ParadoxScopeGroupBasedScopeFieldExpressionChecker"/>
-    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspection.StellarisTechnologyWithLevelChecker"/>
-    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspection.ParadoxTriggerInSwitchChecker"/>
-    <incorrectExpressionChecker implementation="icu.windea.pls.ep.inspection.ParadoxTriggerInTriggerWithParametersAwareChecker"/>
-
-    <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspection.BaseParadoxDefinitionInspectionSuppressionProvider"/>
-    <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspection.BaseStellarisDefinitionInspectionSuppressionProvider"/>
+    <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.BaseParadoxDefinitionInspectionSuppressionProvider"/>
+    <definitionInspectionSuppressionProvider implementation="icu.windea.pls.ep.inspections.BaseStellarisDefinitionInspectionSuppressionProvider"/>
 
     <inferredGameTypeProvider implementation="icu.windea.pls.ep.metadata.ParadoxGameDataModPathBasedInferredGameTypeProvider"/>
     <inferredGameTypeProvider implementation="icu.windea.pls.ep.metadata.ParadoxWorkshopPathBasedInferredGameTypeProvider"/>
@@ -254,12 +249,17 @@
 
     <definitionPresentationProvider implementation="icu.windea.pls.ep.presentation.StellarisTechnologyPresentationProvider"/>
 
+    <definitionInheritSupport implementation="icu.windea.pls.ep.resolve.ParadoxSwappedTypeInheritSupport"/>
+    <definitionInheritSupport implementation="icu.windea.pls.ep.resolve.StellarisEventInheritSupport"/>
+
+    <inlineSupport implementation="icu.windea.pls.ep.resolve.ParadoxInlineScriptInlineSupport"/>
+
     <priorityProvider implementation="icu.windea.pls.ep.priority.ParadoxBasePriorityProvider"/>
 
-    <modImporter implementation="icu.windea.pls.ep.tool.ParadoxDlcLoadImporter"/>
-    <modImporter implementation="icu.windea.pls.ep.tool.ParadoxLauncherJsonV3Importer"/>
+    <modImporter implementation="icu.windea.pls.ep.tools.ParadoxDlcLoadImporter"/>
+    <modImporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherJsonV3Importer"/>
 
-    <modExporter implementation="icu.windea.pls.ep.tool.ParadoxLauncherJsonV2Exporter"/>
-    <modExporter implementation="icu.windea.pls.ep.tool.ParadoxLauncherJsonV3Exporter"/>
+    <modExporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherJsonV2Exporter"/>
+    <modExporter implementation="icu.windea.pls.ep.tools.ParadoxLauncherJsonV3Exporter"/>
   </extensions>
 </idea-plugin>

@@ -7,9 +7,8 @@ import com.intellij.psi.*
 import com.intellij.psi.search.*
 import com.intellij.ui.tree.*
 import icu.windea.pls.*
-import icu.windea.pls.ep.inline.*
+import icu.windea.pls.ep.resolve.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.search.scope.type.*
 import icu.windea.pls.lang.settings.*
@@ -17,7 +16,6 @@ import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptPsiUtil
 
 //com.intellij.ide.hierarchy.call.CallerMethodsTreeStructure
 

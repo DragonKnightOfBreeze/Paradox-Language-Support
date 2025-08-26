@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.tool
+package icu.windea.pls.ep.tools
 
 import com.intellij.notification.*
 import com.intellij.openapi.application.*

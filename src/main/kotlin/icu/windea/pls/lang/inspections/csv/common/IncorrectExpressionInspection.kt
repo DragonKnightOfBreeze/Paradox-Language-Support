@@ -5,7 +5,7 @@ import com.intellij.psi.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
 import icu.windea.pls.csv.psi.*
-import icu.windea.pls.ep.inspection.*
+import icu.windea.pls.ep.inspections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import javax.swing.*

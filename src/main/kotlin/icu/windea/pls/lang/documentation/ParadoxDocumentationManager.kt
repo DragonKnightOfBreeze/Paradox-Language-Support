@@ -4,7 +4,6 @@ package icu.windea.pls.lang.documentation
 
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.configGroup.*
@@ -13,10 +12,9 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.documentation.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.codeInsight.hints.*
-import icu.windea.pls.ep.inherit.*
 import icu.windea.pls.ep.modifier.*
 import icu.windea.pls.ep.parameter.*
-import icu.windea.pls.ep.reference.*
+import icu.windea.pls.ep.resolve.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.search.*

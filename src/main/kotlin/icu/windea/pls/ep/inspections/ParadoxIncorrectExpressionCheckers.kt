@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.inspection
+package icu.windea.pls.ep.inspections
 
 import com.intellij.codeInspection.*
 import com.intellij.openapi.util.*

@@ -3,7 +3,7 @@ package icu.windea.pls.lang.ui.tools
 import com.intellij.openapi.project.*
 import com.intellij.openapi.ui.popup.util.*
 import icu.windea.pls.*
-import icu.windea.pls.ep.tool.*
+import icu.windea.pls.ep.tools.*
 import javax.swing.*
 
 class ParadoxModDependenciesExportPopup(

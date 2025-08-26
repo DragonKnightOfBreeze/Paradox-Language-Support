@@ -1,16 +1,20 @@
-package icu.windea.pls.ep.inline
+package icu.windea.pls.ep.resolve
 
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.core.annotations.*
 import icu.windea.pls.lang.*
+import icu.windea.pls.lang.hierarchy.call.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 提供对脚本片段的内联逻辑的支持。
+ * 用于提供对脚本片段的内联逻辑的支持。
  *
- * 注意嵌套内联目前是允许的，但需要特别处理递归嵌套内联的情况。
+ * 嵌套内联是允许的，但是需要在实现中妥善处理。
  *
- * 目前仅限内联脚本。
+ * 这个扩展点目前主要用于以下功能：
+ *
+ * - 跨内联向下的查询。
+ * - 跨内联向下的调用层次视图（[ParadoxCalleeHierarchyTreeStructure]）。
  */
 @WithGameTypeEP
 interface ParadoxInlineSupport {
@@ -28,4 +32,3 @@ interface ParadoxInlineSupport {
         }
     }
 }
-

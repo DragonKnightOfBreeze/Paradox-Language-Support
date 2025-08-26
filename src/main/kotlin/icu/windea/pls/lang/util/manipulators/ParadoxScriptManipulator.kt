@@ -2,7 +2,7 @@ package icu.windea.pls.lang.util.manipulators
 
 import com.intellij.psi.*
 import icu.windea.pls.core.*
-import icu.windea.pls.ep.inline.*
+import icu.windea.pls.ep.resolve.*
 import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.lang.util.dataFlow.ParadoxDataFlowOptions.Member as MemberOptions
