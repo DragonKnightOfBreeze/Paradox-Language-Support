@@ -10,12 +10,14 @@ object PlsDiagramBundle {
     private val INSTANCE = DynamicBundle(PlsDiagramBundle::class.java, BUNDLE)
 
     @JvmStatic
-    fun message(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): @Nls String {
+    @Nls
+    fun message(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): String {
         return INSTANCE.getMessage(key, *params)
     }
 
     @JvmStatic
-    fun lazyMessage(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): Supplier<@Nls String> {
+    @Nls
+    fun lazyMessage(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): Supplier<String> {
         return INSTANCE.getLazyMessage(key, *params)
     }
 }

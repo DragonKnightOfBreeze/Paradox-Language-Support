@@ -8,9 +8,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.ParadoxPathMatcher
-import icu.windea.pls.model.matches
-import org.jetbrains.annotations.*
+import icu.windea.pls.model.*
 
 /**
  * （对于本地化文件）检查是否存在不支持的递归。
@@ -49,7 +47,7 @@ class UnsupportedRecursionInspection : LocalInspectionTool() {
 
         override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.localisation.unsupportedRecursion.fix.1.popup.title", key)
 
-        override fun getPopupText(editor: Editor, value: PsiElement): @Nls String {
+        override fun getPopupText(editor: Editor, value: PsiElement): String {
             val lineNumber = editor.document.getLineNumber(value.textOffset)
             return PlsBundle.message("inspection.fix.navigate.popup.text.2", key, lineNumber)
         }

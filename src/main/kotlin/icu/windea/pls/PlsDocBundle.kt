@@ -12,52 +12,60 @@ import icu.windea.pls.model.constants.*
 import org.jetbrains.annotations.*
 import java.util.function.*
 
+@Suppress("unused")
 object PlsDocBundle {
     @NonNls
     private const val BUNDLE = "messages.PlsDocBundle"
     private val INSTANCE = DynamicBundle(PlsDocBundle::class.java, BUNDLE)
 
     @JvmStatic
-    fun message(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): @Nls String {
+    @Nls
+    fun message(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): String {
         return INSTANCE.getMessage(key, *params)
     }
 
     @JvmStatic
-    fun lazyMessage(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): Supplier<@Nls String> {
+    @Nls
+    fun lazyMessage(@PropertyKey(resourceBundle = BUNDLE) key: String, vararg params: Any): Supplier<String> {
         return INSTANCE.getLazyMessage(key, *params)
     }
 
     //methods to get specific messages
 
     @JvmStatic
-    fun locale(name: String) : @Nls String {
+    @Nls
+    fun locale(name: String): String {
         return INSTANCE.messageOrNull("locale.$name")
             ?: name
     }
 
     @JvmStatic
-    fun eventType(name: String, gameType: ParadoxGameType?): @Nls String {
+    @Nls
+    fun eventType(name: String, gameType: ParadoxGameType?): String {
         return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.event.type.$name")
             ?: INSTANCE.messageOrNull("general.event.type.$name")
             ?: INSTANCE.getMessage("default.event.type", name)
     }
 
     @JvmStatic
-    fun eventAttribute(name: String, gameType: ParadoxGameType?): @Nls String {
+    @Nls
+    fun eventAttribute(name: String, gameType: ParadoxGameType?): String {
         return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.event.attribute.$name")
             ?: INSTANCE.messageOrNull("general.event.attribute.$name")
             ?: INSTANCE.getMessage("general.event.attribute.default", name)
     }
 
     @JvmStatic
-    fun technologyTier(name: String, gameType: ParadoxGameType?): @Nls String {
+    @Nls
+    fun technologyTier(name: String, gameType: ParadoxGameType?): String {
         return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.technology.tier.$name")
             ?: INSTANCE.messageOrNull("general.technology.tier.$name")
             ?: INSTANCE.getMessage("default.technology.tier", name)
     }
 
     @JvmStatic
-    fun technologyArea(name: String, gameType: ParadoxGameType?, project: Project, context: Any? = null): @Nls String {
+    @Nls
+    fun technologyArea(name: String, gameType: ParadoxGameType?, project: Project, context: Any? = null): String {
         run {
             val selector = selector(project, context).localisation().contextSensitive()
                 .withGameType(gameType)
@@ -73,7 +81,8 @@ object PlsDocBundle {
     }
 
     @JvmStatic
-    fun technologyCategory(name: String, gameType: ParadoxGameType?, project: Project, context: Any? = null): @Nls String {
+    @Nls
+    fun technologyCategory(name: String, gameType: ParadoxGameType?, project: Project, context: Any? = null): String {
         run {
             val selector = selector(project, context).definition().contextSensitive()
                 .withGameType(gameType)
@@ -91,7 +100,8 @@ object PlsDocBundle {
     }
 
     @JvmStatic
-    fun technologyAttribute(name: String, gameType: ParadoxGameType?): @Nls String {
+    @Nls
+    fun technologyAttribute(name: String, gameType: ParadoxGameType?): String {
         return INSTANCE.messageOrNull("${gameType?.id ?: "general"}.technology.attribute.$name")
             ?: INSTANCE.messageOrNull("general.technology.attribute.$name")
             ?: INSTANCE.getMessage("default.technology.attribute", name)

@@ -12,7 +12,6 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import org.jetbrains.annotations.*
 
 /**
  * 检查是否存在对文件的重载
@@ -60,7 +59,7 @@ class OverriddenForFileInspection : LocalInspectionTool() {
 
         override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.overriddenForFile.fix.1.popup.title", key)
 
-        override fun getPopupText(editor: Editor, value: PsiElement): @Nls String {
+        override fun getPopupText(editor: Editor, value: PsiElement): String {
             val file = value.containingFile
             val filePath = file.fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile?.path
             if (filePath == null) return PlsBundle.message("inspection.fix.navigate.popup.text.0", key)

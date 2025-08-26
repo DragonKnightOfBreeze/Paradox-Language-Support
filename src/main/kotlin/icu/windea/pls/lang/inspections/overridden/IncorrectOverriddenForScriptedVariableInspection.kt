@@ -15,7 +15,6 @@ import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
-import org.jetbrains.annotations.*
 
 /**
  * （对于脚本文件）检查是否存在不正确的对（全局）封装的重载。
@@ -80,7 +79,7 @@ class IncorrectOverriddenForScriptedVariableInspection : LocalInspectionTool() {
 
         override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.incorrectOverriddenForScriptedVariable.fix.1.popup.title", key)
 
-        override fun getPopupText(editor: Editor, value: PsiElement): @Nls String {
+        override fun getPopupText(editor: Editor, value: PsiElement): String {
             val file = value.containingFile
             val lineNumber = PsiDocumentManager.getInstance(file.project).getDocument(file)?.getLineNumber(value.textOffset) ?: "?"
             val filePath = file.fileInfo?.rootInfo?.castOrNull<ParadoxRootInfo.MetadataBased>()?.rootFile?.path.or.anonymous()

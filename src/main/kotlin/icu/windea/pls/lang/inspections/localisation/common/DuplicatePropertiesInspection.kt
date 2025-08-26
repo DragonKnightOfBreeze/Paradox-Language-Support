@@ -6,7 +6,6 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.localisation.psi.*
-import org.jetbrains.annotations.*
 
 /**
  * 同一文件中重复的（同一语言区域的）属性声明的检查。
@@ -43,7 +42,7 @@ class DuplicatePropertiesInspection : LocalInspectionTool() {
 
         override fun getPopupTitle(editor: Editor) = PlsBundle.message("inspection.localisation.duplicateProperties.fix.1.popup.title", key)
 
-        override fun getPopupText(editor: Editor, value: PsiElement): @Nls String {
+        override fun getPopupText(editor: Editor, value: PsiElement): String {
             val lineNumber = editor.document.getLineNumber(value.textOffset)
             return PlsBundle.message("inspection.fix.navigate.popup.text.2", key, lineNumber)
         }
