@@ -72,11 +72,11 @@ dependencies {
     implementation("dev.langchain4j:langchain4j-open-ai:1.3.0") {
         exclude(group = "com.fasterxml.jackson.core")
     }
-    implementation("dev.langchain4j:langchain4j-kotlin:1.3.0-beta9") {
-        exclude(group = "org.jetbrains.kotlin")
-        exclude(group = "org.jetbrains.kotlinx")
-        exclude(group = "com.fasterxml.jackson.core")
-    }
+    // implementation("dev.langchain4j:langchain4j-kotlin:1.3.0-beta9") {
+    //     exclude(group = "org.jetbrains.kotlin")
+    //     exclude(group = "org.jetbrains.kotlinx")
+    //     exclude(group = "com.fasterxml.jackson.core")
+    // }
 
     // 目前仅用作参考
 
