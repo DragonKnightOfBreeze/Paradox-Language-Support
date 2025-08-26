@@ -60,11 +60,6 @@ dependencies {
     // javassist - https://github.com/jboss-javassist/javassist
     implementation("org.javassist:javassist:3.30.2-GA")
 
-    // jackson-csv - https://github.com/FasterXML/jackson-dataformats-text/tree/master/csv
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.19.2") {
-        exclude(group = "com.fasterxml.jackson.core")
-    }
-
     // pebble - https://github.com/PebbleTemplates/pebble
     implementation("io.pebbletemplates:pebble:3.2.4")
 
@@ -95,6 +90,13 @@ dependencies {
     // jte - https://github.com/casid/jte
     testImplementation("gg.jte:jte:3.2.1")
     testCompileOnly("gg.jte:jte-kotlin:3.2.1")
+
+    // 用于工具代码（src/test/tool）
+
+    // jackson-csv - https://github.com/FasterXML/jackson-dataformats-text/tree/master/csv
+    testImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.19.2") {
+        exclude(group = "com.fasterxml.jackson.core")
+    }
 }
 
 sourceSets {
@@ -103,7 +105,9 @@ sourceSets {
         resources.srcDirs("src/main/resources")
     }
     test {
-        java.srcDirs("src/test/java", "src/test/kotlin", "src/test/unused")
+        java.srcDirs("src/test/java", "src/test/kotlin")
+        java.srcDirs("src/test/tool") // tool codes (e.g., CwtConfigGenerator) (NOTE: cannot move to another source set)
+        java.srcDirs("src/test/unused") // unused codes (NOTE: cannot move to another source set)
         resources.srcDirs("src/test/resources")
     }
 }
@@ -185,9 +189,7 @@ grammarKit {
     jflexRelease = "1.7.0-2"
 }
 
-val excludesInJar = listOf(
-    "icu/windea/pls/dev",
-)
+val excludesInJar = emptyList<String>()
 val excludesInZip = emptyList<String>()
 val cwtConfigDirs = listOf(
     "core" to "core",

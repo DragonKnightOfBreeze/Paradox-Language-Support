@@ -18,10 +18,10 @@
   <xi:include href="/META-INF/pls-csv.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/pls-config.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/pls-images.xml" xpointer="xpointer(/idea-plugin/*)"/>
+  <xi:include href="/META-INF/pls-lang.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/pls-integrations.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/pls-ai.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/pls-intentions.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/pls-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
   <xi:include href="/META-INF/pls-ep.xml" xpointer="xpointer(/idea-plugin/*)"/>
-  <xi:include href="/META-INF/pls-lang.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>

@@ -3,7 +3,6 @@ package icu.windea.pls.core.util.console
 import org.junit.*
 
 class CommandExecutorTest {
-    @Ignore
     @Test
     fun testUtf8OutputForCmd() {
         val command = "echo 中文测试"
@@ -11,7 +10,6 @@ class CommandExecutorTest {
         Assert.assertEquals(expect, CommandExecutor().execute(command, CommandType.CMD))
     }
 
-    @Ignore
     @Test
     fun testUtf8OutputForPowerShell() {
         val command = "echo 中文测试"

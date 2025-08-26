@@ -1,4 +1,4 @@
-package icu.windea.pls.dev.cwt
+package icu.windea.pls.tool.cwt
 
 import icu.windea.pls.*
 import icu.windea.pls.model.*

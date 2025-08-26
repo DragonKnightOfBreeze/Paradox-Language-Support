@@ -1,4 +1,4 @@
-package icu.windea.pls.dev.cwt
+package icu.windea.pls.tool.cwt
 
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
@@ -6,9 +6,9 @@ import icu.windea.pls.model.*
 import java.io.*
 
 /**
- * 用于从`effects.log`生成`effects.cwt`。
+ * 用于从`triggers.log`生成`triggers.cwt`。
  */
-class CwtEffectConfigGenerator(
+class CwtTriggerConfigGenerator(
     val gameType: ParadoxGameType,
     val logPath: String,
     val cwtPath: String,
@@ -18,12 +18,12 @@ class CwtEffectConfigGenerator(
     val ignoredNames = mutableSetOf<String>()
 
     companion object {
-        private const val startMarker = "== EFFECT DOCUMENTATION =="
+        private const val startMarker = "== TRIGGER DOCUMENTATION =="
         private const val endMarker = "================="
         private val optionNames = listOf("scope", "scopes", "push_scope", "severity")
     }
 
-    data class EffectInfo(
+    data class TriggerInfo(
         var name: String = "",
         val description: MutableList<String> = mutableListOf(),
         val declaration: MutableList<String> = mutableListOf(),
@@ -35,8 +35,8 @@ class CwtEffectConfigGenerator(
         generateCwt(infos)
     }
 
-    private fun parseLog(): Map<String, EffectInfo> {
-        val infos = mutableMapOf<String, EffectInfo>()
+    private fun parseLog(): Map<String, TriggerInfo> {
+        val infos = mutableMapOf<String, TriggerInfo>()
         val logFile = File(logPath)
         val allLines = logFile.bufferedReader().readLines()
         val startIndex = allLines.indexOf(startMarker)
@@ -44,7 +44,7 @@ class CwtEffectConfigGenerator(
         val lines = allLines.subList(startIndex + 1, endIndex - 1)
         var isName = true
         var isDeclaration = false
-        lateinit var info: EffectInfo
+        lateinit var info: TriggerInfo
         for (line in lines) {
             if (line.isBlank()) continue
             if (isName) {
@@ -52,7 +52,7 @@ class CwtEffectConfigGenerator(
                 val list = line.split('-', limit = 2)
                 if (list.size < 2) throw IllegalStateException()
                 val (name, desc) = list
-                info = EffectInfo()
+                info = TriggerInfo()
                 info.name = name.trim()
                 info.description += desc.trim()
                 infos.put(info.name, info)
@@ -79,7 +79,7 @@ class CwtEffectConfigGenerator(
         return infos
     }
 
-    private fun generateCwt(infos: Map<String, EffectInfo>) {
+    private fun generateCwt(infos: Map<String, TriggerInfo>) {
         val missingNames = infos.keys.toMutableSet()
         missingNames.removeAll(ignoredNames)
         val unknownNames = mutableSetOf<String>()
@@ -89,7 +89,7 @@ class CwtEffectConfigGenerator(
         while (lineIndex < lines.size) {
             val line = lines[lineIndex]
             if (line.startsWith("alias")) {
-                val name = line.substringBefore('=', "").trim().substringIn("alias[effect:", "]", "")
+                val name = line.substringBefore('=', "").trim().substringIn("alias[trigger:", "]", "")
                 missingNames.remove(name)
                 val info = infos[name]
                 if (info != null) {
@@ -106,20 +106,20 @@ class CwtEffectConfigGenerator(
         }
 
         if (missingNames.isNotEmpty()) {
-            println("Missing effects:")
+            println("Missing triggers:")
             for (name in missingNames) {
                 println("- $name")
             }
             if (generateMissing) {
                 lines.add("")
-                lines.add("# TODO missing effects")
+                lines.add("# TODO missing triggers")
                 for (name in missingNames) {
                     val info = infos[name] ?: continue
                     lines.add("")
                     info.description.forEach { lines.add("### $it") }
                     val scopesText = getScopesText(info)
                     info.supportedScopes.let { lines.add("## $scopesText") }
-                    info.name.let { lines.add("alias[effect:$it] = {") }
+                    info.name.let { lines.add("alias[trigger:$it] = {") }
                     info.declaration.forEach { lines.add("# $it") }
                     lines.add("}")
                 }
@@ -127,7 +127,7 @@ class CwtEffectConfigGenerator(
         }
 
         if (unknownNames.isNotEmpty()) {
-            println("Unknown effects:")
+            println("Unknown triggers:")
             for (name in unknownNames) {
                 println("- $name")
             }
@@ -136,7 +136,7 @@ class CwtEffectConfigGenerator(
         cwtFile.writeText(lines.joinToString("\n"))
     }
 
-    private fun setDocumentation(lineIndex: Int, lines: MutableList<String>, info: EffectInfo): Int {
+    private fun setDocumentation(lineIndex: Int, lines: MutableList<String>, info: TriggerInfo): Int {
         var offset = 0
         var delta = 0
         var prevIndex = lineIndex - 1
@@ -161,7 +161,7 @@ class CwtEffectConfigGenerator(
         return delta
     }
 
-    private fun setScopeOption(lineIndex: Int, lines: MutableList<String>, info: EffectInfo): Int {
+    private fun setScopeOption(lineIndex: Int, lines: MutableList<String>, info: TriggerInfo): Int {
         var offset = 0
         var delta = 0
         var prevIndex = lineIndex - 1
@@ -207,7 +207,7 @@ class CwtEffectConfigGenerator(
         return 0
     }
 
-    private fun getScopesText(info: EffectInfo) = when {
+    private fun getScopesText(info: TriggerInfo) = when {
         info.supportedScopes.singleOrNull().let { it == "any" || it == "all" } -> "scopes = any"
         else -> "scopes = { ${info.supportedScopes.joinToString(" ")} }"
     }
