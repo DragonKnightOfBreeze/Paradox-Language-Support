@@ -242,11 +242,29 @@ tasks {
     }
     runIde {
         systemProperty("idea.is.internal", "true")
-        systemProperty("idea.log.debug.categories", "icu.windea.pls")
         systemProperty("ide.slow.operations.assertion", "false")
+        systemProperty("idea.log.debug.categories", "icu.windea.pls")
         systemProperty("pls.is.debug", "true")
     }
     withType<Test> {
         systemProperty("idea.log.debug.categories", "icu.windea.pls")
+        systemProperty("pls.is.debug", "true")
+    }
+
+    // Run only pure Kotlin unit tests (classes ending with *PureTest)
+    register<Test>("pureTest") {
+        group = "verification"
+        description = "Runs pure Kotlin tests (without IntelliJ Platform dependencies)"
+
+        // Reuse the same compiled outputs and classpath as the default 'test' task
+        testClassesDirs = sourceSets.test.get().output.classesDirs
+        classpath = sourceSets.test.get().runtimeClasspath
+
+        useJUnit()
+        filter {
+            includeTestsMatching("*PureTest")
+        }
+
+        systemProperty("pls.is.debug", "true")
     }
 }
