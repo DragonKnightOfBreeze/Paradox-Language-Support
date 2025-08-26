@@ -46,10 +46,10 @@ interface ParadoxHintTextProvider {
     enum class Source {
         /** 未归类 */
         Other,
-        /** 来自同名的本地化 */
+        /** 来自本地化后的名字（同名的本地化） */
         NameLocalisation,
-        /** 来自相关的本地化 */
-        RelatedLocalisation,
+        /** 来自本地化后的名字（最相关的本地化） */
+        PrimaryLocalisation,
         /** 来自扩展规则 */
         Extended,
         ;

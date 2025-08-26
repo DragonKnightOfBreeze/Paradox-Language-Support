@@ -8,14 +8,13 @@ import com.intellij.openapi.editor.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 通过内嵌提示显示动态值信息，即动态值的集合。
+ * 通过内嵌提示显示动态值信息，即类型。
  */
 @Suppress("UnstableApiUsage")
 class ParadoxDynamicValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettings>() {
@@ -32,10 +31,12 @@ class ParadoxDynamicValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettin
 
         if (element !is ParadoxScriptStringExpressionElement) return true
         if (!element.isExpression()) return true
+        val expression = element.name
+        if (expression.isEmpty()) return true
+        if (expression.isParameterized()) return true
         val resolveConstraint = ParadoxResolveConstraint.DynamicValueStrictly
-        val resolved = element.references.filter { resolveConstraint.canResolve(it) }.mapNotNull { it.resolve() }.lastOrNull()
-            ?.castOrNull<ParadoxDynamicValueElement>()
-            ?: return true
+        val resolved = element.references.reversed().filter { resolveConstraint.canResolve(it) }.firstNotNullOfOrNull { it.resolve() }
+        if (resolved !is ParadoxDynamicValueElement) return true
         val presentation = doCollect(resolved) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset
@@ -51,4 +52,3 @@ class ParadoxDynamicValueInfoHintsProvider : ParadoxScriptHintsProvider<NoSettin
         return smallText(": $type")
     }
 }
-

@@ -57,7 +57,6 @@ class ParadoxScriptedVariableHintTextHintsProvider : ParadoxScriptHintsProvider<
         val name = element.name
         if (name.isNullOrEmpty()) return true
         if (name.isParameterized()) return true
-
         val presentation = doCollect(element, editor, settings) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.scriptedVariableName.endOffset

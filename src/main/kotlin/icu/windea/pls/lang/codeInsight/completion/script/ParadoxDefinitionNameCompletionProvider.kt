@@ -105,16 +105,16 @@ class ParadoxDefinitionNameCompletionProvider : CompletionProvider<CompletionPar
         }
     }
 
-    private fun processDefinition(context: ProcessingContext, result: CompletionResultSet, definition: ParadoxScriptDefinitionElement): Boolean {
+    private fun processDefinition(context: ProcessingContext, result: CompletionResultSet, element: ParadoxScriptDefinitionElement): Boolean {
         ProgressManager.checkCanceled()
-        val definitionInfo = definition.definitionInfo ?: return true
+        val definitionInfo = element.definitionInfo ?: return true
         if (definitionInfo.name.isEmpty()) return true //ignore anonymous definitions
         val icon = PlsIcons.Nodes.Definition(definitionInfo.type)
-        val typeFile = definition.containingFile
-        val lookupElement = LookupElementBuilder.create(definition, definitionInfo.name)
+        val typeFile = element.containingFile
+        val lookupElement = LookupElementBuilder.create(element, definitionInfo.name)
             .withTypeText(typeFile?.name, typeFile?.icon, true)
             .withPatchableIcon(icon)
-            .withDefinitionLocalizedNamesIfNecessary(definition)
+            .withDefinitionLocalizedNamesIfNecessary(element)
             .forScriptExpression(context)
         result.addElement(lookupElement, context)
         return true

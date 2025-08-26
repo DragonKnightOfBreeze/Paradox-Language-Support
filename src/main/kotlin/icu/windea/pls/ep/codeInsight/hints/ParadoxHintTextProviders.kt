@@ -9,26 +9,34 @@ import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.search.*
-import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.script.psi.*
 
+class ParadoxDefinitionHintTextProvider : ParadoxHintTextProviderBase.Definition() {
+    override val source: Source get() = Source.PrimaryLocalisation
+
+    override fun doGetHintText(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): String? {
+        return doGetHintLocalisation(element, definitionInfo, locale)?.value?.orNull()
+    }
+
+    override fun doGetHintLocalisation(element: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
+        return ParadoxDefinitionManager.getPrimaryLocalisation(element)
+    }
+}
+
 class ParadoxInferredScriptedVariableHintTextProvider : ParadoxHintTextProviderBase.ScriptedVariable() {
     override val source: Source get() = Source.NameLocalisation
 
     override fun doGetHintText(element: ParadoxScriptScriptedVariable, name: String, locale: CwtLocaleConfig?): String? {
-        // use raw localisation text here
-        return doGetHintLocalisation(element, name, locale)?.value?.orNull()
+        return ParadoxScriptedVariableManager.getLocalizedName(element)
     }
 
     override fun doGetHintLocalisation(element: ParadoxScriptScriptedVariable, name: String, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
         val localeToUse = locale ?: ParadoxLocaleManager.getPreferredLocaleConfig()
-        val selector = selector(element.project, element).localisation().contextSensitive().preferLocale(localeToUse)
-        return ParadoxLocalisationSearch.search(name, selector).find()
+        return ParadoxScriptedVariableManager.getNameLocalisation(name, element, localeToUse)
     }
 }
 
@@ -36,15 +44,14 @@ class ParadoxInferredComplexEnumValueHintTextProvider : ParadoxHintTextProviderB
     override val source: Source get() = Source.NameLocalisation
 
     override fun doGetHintText(element: ParadoxComplexEnumValueElement, locale: CwtLocaleConfig?): String? {
-        // use raw localisation text here
+        // raw localisation text
         return doGetHintLocalisation(element, locale)?.value?.orNull()
     }
 
     override fun doGetHintLocalisation(element: ParadoxComplexEnumValueElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
         val name = element.name
         val localeToUse = locale ?: ParadoxLocaleManager.getPreferredLocaleConfig()
-        val selector = selector(element.project, element).localisation().contextSensitive().preferLocale(localeToUse)
-        return ParadoxLocalisationSearch.search(name, selector).find()
+        return ParadoxComplexEnumValueManager.getNameLocalisation(name, element, localeToUse)
     }
 }
 
@@ -52,15 +59,14 @@ class ParadoxInferredDynamicValueHintTextProvider : ParadoxHintTextProviderBase.
     override val source: Source get() = Source.NameLocalisation
 
     override fun doGetHintText(element: ParadoxDynamicValueElement, locale: CwtLocaleConfig?): String? {
-        // use raw localisation text here
+        // raw localisation text
         return doGetHintLocalisation(element, locale)?.value?.orNull()
     }
 
     override fun doGetHintLocalisation(element: ParadoxDynamicValueElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
         val name = element.name
         val localeToUse = locale ?: ParadoxLocaleManager.getPreferredLocaleConfig()
-        val selector = selector(element.project, element).localisation().contextSensitive().preferLocale(localeToUse)
-        return ParadoxLocalisationSearch.search(name, selector).find()
+        return ParadoxDynamicValueManager.getNameLocalisation(name, element, localeToUse)
     }
 }
 

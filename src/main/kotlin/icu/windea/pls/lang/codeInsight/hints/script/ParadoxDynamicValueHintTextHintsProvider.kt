@@ -13,9 +13,7 @@ import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxDynamicValueHintTextHintsProvider.*
 import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
-import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
@@ -64,25 +62,19 @@ class ParadoxDynamicValueHintTextHintsProvider : ParadoxScriptHintsProvider<Sett
         val resolveConstraint = ParadoxResolveConstraint.DynamicValueStrictly
         val resolved = element.references.reversed().filter { resolveConstraint.canResolve(it) }.firstNotNullOfOrNull { it.resolve() }
         if (resolved !is ParadoxDynamicValueElement) return true
-        val name = resolved.name
-        if (name.isEmpty()) return true
-        if (name.isParameterized()) return true
-
-        val presentation = doCollect(resolved, file, editor, settings) ?: return true
+        val presentation = doCollect(resolved, editor, settings) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
         return true
     }
 
-    private fun PresentationFactory.doCollect(element: ParadoxDynamicValueElement, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
-        val hintElement = getHintLocalisationToUse(element, file) ?: return null
-        return ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit).render(hintElement)
-    }
-
-    private fun getHintLocalisationToUse(element: ParadoxDynamicValueElement, file: PsiFile): ParadoxLocalisationProperty? {
-        ParadoxHintTextProvider.getHintLocalisation(element)?.let { return it }
-        ParadoxDynamicValueManager.getNameLocalisation(element.name, file, ParadoxLocaleManager.getPreferredLocaleConfig())?.let { return it }
-        return null
+    private fun PresentationFactory.doCollect(element: ParadoxDynamicValueElement, editor: Editor, settings: Settings): InlayPresentation? {
+        val name = element.name
+        if (name.isEmpty()) return null
+        if (name.isParameterized()) return null
+        val hintLocalisation = ParadoxHintTextProvider.getHintLocalisation(element) ?: return null
+        val renderer = ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit)
+        return renderer.render(hintLocalisation)
     }
 }

@@ -60,7 +60,7 @@ class ParadoxScriptFileTreeElement(
         val definitionInfo = element.definitionInfo ?: return null
         val builder = StringBuilder()
         builder.append(": ").append(definitionInfo.typesText)
-        //如果存在，显示定义的本地化名字（来自相关的本地化文本）
+        //如果存在，显示定义的本地化后的名字（来自相关的本地化文本）
         val primaryLocalisation = ParadoxDefinitionManager.getPrimaryLocalisation(element)
         if (primaryLocalisation != null) {
             //这里需要使用移除格式后的纯文本，这里返回的字符串不是HTML

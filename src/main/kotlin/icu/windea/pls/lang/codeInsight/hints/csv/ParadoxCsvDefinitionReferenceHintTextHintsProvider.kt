@@ -12,7 +12,6 @@ import icu.windea.pls.*
 import icu.windea.pls.csv.psi.*
 import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.codeInsight.hints.csv.ParadoxCsvDefinitionReferenceHintTextHintsProvider.*
-import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.renderers.*
 import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
@@ -53,7 +52,6 @@ class ParadoxCsvDefinitionReferenceHintTextHintsProvider : ParadoxCsvHintsProvid
 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxCsvColumn) return true
-        if (element.isHeaderColumn()) return true
         if (!ParadoxResolveConstraint.Definition.canResolveReference(element)) return true
         val reference = element.reference ?: return true
         if (!ParadoxResolveConstraint.Definition.canResolve(reference)) return true
@@ -67,7 +65,8 @@ class ParadoxCsvDefinitionReferenceHintTextHintsProvider : ParadoxCsvHintsProvid
     }
 
     private fun PresentationFactory.doCollect(element: ParadoxScriptDefinitionElement, editor: Editor, settings: Settings): InlayPresentation? {
-        val primaryLocalisation = ParadoxDefinitionManager.getPrimaryLocalisation(element) ?: return null
-        return ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit).render(primaryLocalisation)
+        val primaryLocalisation = ParadoxHintTextProvider.getHintLocalisation(element) ?: return null
+        val renderer = ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit)
+        return renderer.render(primaryLocalisation)
     }
 }

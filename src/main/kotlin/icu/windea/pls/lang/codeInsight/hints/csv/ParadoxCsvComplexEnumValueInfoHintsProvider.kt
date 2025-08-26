@@ -27,10 +27,10 @@ class ParadoxCsvComplexEnumValueInfoHintsProvider : ParadoxCsvHintsProvider<NoSe
 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxCsvColumn) return true
-        if (element.isHeaderColumn()) return true
-        if (!ParadoxResolveConstraint.ComplexEnumValue.canResolveReference(element)) return true
+        val resolveConstraint = ParadoxResolveConstraint.ComplexEnumValue
+        if (!resolveConstraint.canResolveReference(element)) return true
         val reference = element.reference ?: return true
-        if (!ParadoxResolveConstraint.ComplexEnumValue.canResolve(reference)) return true
+        if (!resolveConstraint.canResolve(reference)) return true
         val resolved = reference.resolve() ?: return true
         if (resolved !is ParadoxComplexEnumValueElement) return true
         val presentation = doCollect(resolved) ?: return true

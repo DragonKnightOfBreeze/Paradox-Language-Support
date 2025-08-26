@@ -35,8 +35,8 @@ dependencies {
         bundledPlugins("com.intellij.diagram")
 
         // 用作参考
-        // bundledPlugins("com.intellij.java")
-        // bundledPlugins("org.jetbrains.kotlin")
+        bundledPlugins("com.intellij.java")
+        bundledPlugins("org.jetbrains.kotlin")
         // bundledPlugins("JavaScript")
         // bundledPlugins("tslint")
 

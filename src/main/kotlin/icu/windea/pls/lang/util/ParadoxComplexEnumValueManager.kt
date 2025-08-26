@@ -237,26 +237,7 @@ object ParadoxComplexEnumValueManager {
     }
 
     fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig): ParadoxLocalisationProperty? {
-        val selector = selector(contextElement.project, contextElement).localisation().contextSensitive()
-            .preferLocale(locale)
+        val selector = selector(contextElement.project, contextElement).localisation().contextSensitive().preferLocale(locale)
         return ParadoxLocalisationSearch.search(name, selector).find()
-    }
-
-    fun getNameLocalisationFromExtendedConfig(name: String, enumName: String, contextElement: PsiElement): ParadoxLocalisationProperty? {
-        val hint = getHintFromExtendedConfig(name, enumName, contextElement) //just use file as contextElement here
-        if (hint.isNullOrEmpty()) return null
-        val hintLocalisation = ParadoxLocalisationElementFactory.createProperty(contextElement.project, "hint", hint)
-        //it's necessary to inject fileInfo here (so that gameType can be got later)
-        hintLocalisation.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, contextElement.fileInfo)
-        return hintLocalisation
-    }
-
-    fun getHintFromExtendedConfig(name: String, enumName: String, contextElement: PsiElement): String? {
-        if (name.isEmpty()) return null
-        val gameType = selectGameType(contextElement) ?: return null
-        val configGroup = PlsFacade.getConfigGroup(contextElement.project, gameType)
-        val configs = configGroup.extendedComplexEnumValues[enumName] ?: return null
-        val config = configs.findFromPattern(name, contextElement, configGroup) ?: return null
-        return config.hint
     }
 }

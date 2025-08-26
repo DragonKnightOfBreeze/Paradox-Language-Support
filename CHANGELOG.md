@@ -122,7 +122,7 @@
 
 ## 1.3.35
 
-- [X] 优化：可以配置是否在层级视图中显示位置信息与本地化名字 / OP: Allow to configure whether to show position info and localized name in hierarchy views
+- [X] 优化：可以配置是否在层级视图中显示位置信息与本地化后的名字 / OP: Allow to configure whether to show position info and localized name in hierarchy views
 - [X] 实现高级类型层级视图，支持过滤、分组、展开等操作 / Implement advanced type hierarchy views, support operations such as filtering, grouping, expansion, etc.
 - [X] 实现事件树与科技树对应的高级层级视图 / Implement advanced hierarchy views for event trees and technology trees
 - [X] 可以配置是否在高级层级视图中显示相关信息（事件信息或科技信息） / Allow to configure whether to show related info in advanced type hierarchy views (event info or technology info)
@@ -798,7 +798,7 @@
 - [X] 修复 #26 P2 - 在脚本文件中，应当允许多行的用双引号括起的字符串
 - [X] 修复 #28 - 生成科技树时报错
 - [X] 修复 #29 - 应当允许在SV表达式（以及其他各种复杂表达式）中为参数指定默认值
-- [X] 优化基于本地化名字进行代码补全时的性能
+- [X] 优化基于本地化后的名字进行代码补全时的性能
 - [X] 尝试优化性能
 
 ## 1.0.6
@@ -843,7 +843,7 @@
 ## 1.0.0
 
 - [X] 
-  提示定义和修正时，也可以基于它们的本地化名字进行提示。（在插件配置页面中勾选`Code Completion > Complete by localized names`
+  提示定义和修正时，也可以基于它们的本地化后的名字进行提示。（在插件配置页面中勾选`Code Completion > Complete by localized names`
   以启用此功能）
 - [X] 尝试基于在其他事件中的调用推断事件的作用域上下文（如果推断发生递归或者存在冲突则取消推断）
 - [X] 完善Stellaris的CWT规则文件 - 完善`localisation.cwt`

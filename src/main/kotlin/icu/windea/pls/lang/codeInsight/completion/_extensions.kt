@@ -21,9 +21,9 @@ import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.*
+import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.codeStyle.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.ui.clause.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.codeStyle.*
@@ -152,6 +152,14 @@ fun <T : LookupElement> T.withForceInsertCurlyBraces(forceInsertCurlyBraces: Boo
     return this
 }
 
+fun LookupElementBuilder.withScriptedVariableLocalizedNamesIfNecessary(element: ParadoxScriptScriptedVariable): LookupElementBuilder {
+    if (PlsFacade.getSettings().completion.completeByLocalizedName) {
+        ProgressManager.checkCanceled()
+        localizedNames = ParadoxScriptedVariableManager.getLocalizedName(element).singleton.setOrEmpty()
+    }
+    return this
+}
+
 fun LookupElementBuilder.withDefinitionLocalizedNamesIfNecessary(element: ParadoxScriptDefinitionElement): LookupElementBuilder {
     if (PlsFacade.getSettings().completion.completeByLocalizedName) {
         ProgressManager.checkCanceled()
@@ -182,9 +190,11 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
         else -> null
     }?.let { c -> CwtConfigManipulator.inlineSingleAlias(c) ?: c } //这里需要进行必要的内联
 
+    val contextElement = context.contextElement
+    val isKeyOrStringElement = contextElement is ParadoxScriptPropertyKey || contextElement is ParadoxScriptString
     val isKey = context.isKey
-    val isKeyOnly = context.contextElement is ParadoxScriptPropertyKey && isKey != false
-    val isValueOnly = context.contextElement is ParadoxScriptValue && isKey != true
+    val isKeyOnly = contextElement is ParadoxScriptPropertyKey && isKey != false
+    val isValueOnly = contextElement is ParadoxScriptString && isKey != true
     val isBlock = targetConfig?.isBlock ?: false
     val constantValue = when {
         completeWithValue -> targetConfig?.valueExpression?.takeIf { it.type == CwtDataTypes.Constant }?.value
@@ -224,6 +234,8 @@ fun LookupElementBuilder.forScriptExpression(context: ProcessingContext): Lookup
         if (patchableTailText != null) append(patchableTailText)
     }
     lookupElement = lookupElement.withTailText(tailText, true)
+
+    if (!isKeyOrStringElement) return lookupElement
 
     if (isKeyOnly || isValueOnly) { //key or value only
         lookupElement = lookupElement.withInsertHandler { c, _ -> applyKeyOrValueInsertHandler(c, context, isKey) }

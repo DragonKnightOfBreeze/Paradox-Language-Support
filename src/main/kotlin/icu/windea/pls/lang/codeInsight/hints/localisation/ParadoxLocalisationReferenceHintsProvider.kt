@@ -60,7 +60,8 @@ class ParadoxLocalisationReferenceHintsProvider : ParadoxLocalisationHintsProvid
     }
 
     private fun PresentationFactory.doCollect(element: ParadoxLocalisationParameter, editor: Editor, settings: Settings): InlayPresentation? {
-        return ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit).render(element)
+        val renderer = ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit)
+        return renderer.render(element)
     }
 }
 

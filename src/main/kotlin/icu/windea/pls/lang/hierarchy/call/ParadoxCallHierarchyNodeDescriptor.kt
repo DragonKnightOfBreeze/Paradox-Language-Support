@@ -65,7 +65,7 @@ class ParadoxCallHierarchyNodeDescriptor(
         }
         run {
             if (!(hierarchySettings.showLocalizedName)) return@run
-            val localizedName = getLocalizedName(element, file)
+            val localizedName = getLocalizedName(element)
             if (localizedName.isNullOrEmpty()) return@run
             myHighlightedText.ending.addText(" $localizedName", getLocalizedNameAttributes())
         }
@@ -96,17 +96,11 @@ class ParadoxCallHierarchyNodeDescriptor(
         return changes
     }
 
-    private fun getLocalizedName(element: PsiElement, file: PsiFile): String? {
+    private fun getLocalizedName(element: PsiElement): String? {
+        // ParadoxHintTextProvider.getHintText(element)?.let { return it }
         return when (element) {
-            is ParadoxScriptScriptedVariable -> {
-                val name = element.name
-                if (name.isNullOrEmpty()) return null
-                ParadoxScriptedVariableManager.getHintFromExtendedConfig(name, file)
-                    ?: ParadoxScriptedVariableManager.getLocalizedName(element)
-            }
-            is ParadoxScriptDefinitionElement -> {
-                ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
-            }
+            is ParadoxScriptScriptedVariable -> ParadoxScriptedVariableManager.getLocalizedName(element)
+            is ParadoxScriptDefinitionElement -> ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
             else -> null
         }
     }

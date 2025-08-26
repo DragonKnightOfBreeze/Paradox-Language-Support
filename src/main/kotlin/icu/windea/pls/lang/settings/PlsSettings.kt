@@ -86,7 +86,7 @@ class PlsSettingsState : BaseState() {
      * @property completeWithValue 进行代码补全时，如果可能，将会另外提供提示项，自动插入常量字符串或者花括号。
      * @property completeWithClauseTemplate 进行代码补全时，如果可能，将会另外提供提示项，自动插入从句模版。
      * @property completeOnlyScopeIsMatched 如果存在，是否仅提供匹配当前作用域的提示项。
-     * @property completeByLocalizedName 是否也根据定义和修正的本地化名字来进行代码补全。
+     * @property completeByLocalizedName 是否也根据定义和修正的本地化后的名字来进行代码补全。
      * @property completeByExtendedConfigs 是否也根据扩展的规则来进行代码补全。
      */
     @Tag("completion")
@@ -176,7 +176,7 @@ class PlsSettingsState : BaseState() {
     }
 
     /**
-     * @property showLocalizedName 是否在层级视图中额外显示本地化名字。
+     * @property showLocalizedName 是否在层级视图中额外显示本地化后的名字。
      * @property showLocationInfo 是否在层级视图中额外显示位置信息。
      * @property showLocationInfoByPath 显示位置信息时，是否显示路径。
      * @property showLocationInfoByRootInfo 显示位置信息时，是否显示游戏或模组信息。

@@ -15,7 +15,6 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import icu.windea.pls.script.psi.*
 import java.awt.*
 import javax.swing.*
 import icu.windea.pls.lang.hierarchy.type.ParadoxDefinitionHierarchyNodeType as NodeType
@@ -155,8 +154,11 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
     }
 
     private fun getLocalizedName(element: PsiElement): String? {
-        if (element !is ParadoxScriptDefinitionElement) return null
-        return ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
+        // ParadoxHintTextProvider.getHintText(element)?.let { return it }
+        return when (element) {
+            is ParadoxScriptDefinitionElement -> ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
+            else -> null
+        }
     }
 
     override fun getIcon(element: PsiElement): Icon? {

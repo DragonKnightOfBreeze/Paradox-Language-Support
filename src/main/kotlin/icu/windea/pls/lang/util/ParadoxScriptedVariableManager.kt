@@ -2,13 +2,9 @@ package icu.windea.pls.lang.util
 
 import com.intellij.psi.*
 import com.intellij.psi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.renderers.*
@@ -46,31 +42,13 @@ object ParadoxScriptedVariableManager {
     }
 
     fun getNameLocalisation(name: String, contextElement: PsiElement, locale: CwtLocaleConfig): ParadoxLocalisationProperty? {
-        val selector = selector(contextElement.project, contextElement).localisation().contextSensitive()
-            .preferLocale(locale)
+        val selector = selector(contextElement.project, contextElement).localisation().contextSensitive().preferLocale(locale)
         return ParadoxLocalisationSearch.search(name, selector).find()
-    }
-
-    fun getNameLocalisationFromExtendedConfig(name: String, contextElement: PsiElement): ParadoxLocalisationProperty? {
-        val hint = getHintFromExtendedConfig(name, contextElement) // just use file as contextElement here
-        if (hint.isNullOrEmpty()) return null
-        val hintLocalisation = ParadoxLocalisationElementFactory.createProperty(contextElement.project, "hint", hint)
-        // it's necessary to inject fileInfo here (so that gameType can be got later)
-        hintLocalisation.containingFile.virtualFile.putUserData(PlsKeys.injectedFileInfo, contextElement.fileInfo)
-        return hintLocalisation
     }
 
     fun getLocalizedName(element: ParadoxScriptScriptedVariable): String? {
         val name = element.name?.orNull() ?: return null
         val nameLocalisation = getNameLocalisation(name, element, ParadoxLocaleManager.getPreferredLocaleConfig()) ?: return null
         return ParadoxLocalisationTextRenderer().render(nameLocalisation).orNull()
-    }
-
-    fun getHintFromExtendedConfig(name: String, contextElement: PsiElement): String? {
-        if (name.isNotEmpty()) return null
-        val gameType = selectGameType(contextElement) ?: return null
-        val configGroup = PlsFacade.getConfigGroup(contextElement.project, gameType)
-        val config = configGroup.extendedScriptedVariables.findFromPattern(name, contextElement, configGroup) ?: return null
-        return config.hint
     }
 }

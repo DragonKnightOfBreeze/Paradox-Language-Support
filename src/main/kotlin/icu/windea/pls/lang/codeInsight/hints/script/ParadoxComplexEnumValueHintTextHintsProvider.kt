@@ -9,15 +9,12 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.ui.dsl.builder.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.ep.codeInsight.hints.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxComplexEnumValueHintTextHintsProvider.*
-import icu.windea.pls.lang.util.*
+import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.renderers.*
-import icu.windea.pls.localisation.psi.*
+import icu.windea.pls.model.constraints.*
 import icu.windea.pls.script.psi.*
 import javax.swing.*
 
@@ -56,41 +53,25 @@ class ParadoxComplexEnumValueHintTextHintsProvider : ParadoxScriptHintsProvider<
 
     override fun PresentationFactory.collect(element: PsiElement, file: PsiFile, editor: Editor, settings: Settings, sink: InlayHintsSink): Boolean {
         if (element !is ParadoxScriptStringExpressionElement) return true
-        if (!element.isExpression()) return true
         val name = element.name
         if (name.isEmpty()) return true
         if (name.isParameterized()) return true
-
-        val info = ParadoxComplexEnumValueManager.getInfo(element)
-        if (info != null) {
-            val presentation = doCollect(info.name, info.enumName, file, editor, settings) ?: return true
-            val finalPresentation = presentation.toFinalPresentation(this, file.project)
-            val endOffset = element.endOffset
-            sink.addInlineElement(endOffset, true, finalPresentation, false)
-            return true
-        }
-
-        val config = ParadoxExpressionManager.getConfigs(element).firstOrNull() ?: return true
-        val type = config.configExpression.type
-        if (type != CwtDataTypes.EnumValue) return true
-        val enumName = config.configExpression.value ?: return true
-        if (enumName in config.configGroup.enums) return true //only for complex enums
-        val presentation = doCollect(name, enumName, file, editor, settings) ?: return true
+        val resolveConstraint = ParadoxResolveConstraint.ComplexEnumValue
+        if (!resolveConstraint.canResolveReference(element)) return true
+        val reference = element.reference ?: return true
+        if (!resolveConstraint.canResolve(reference)) return true
+        val resolved = reference.resolve() ?: return true
+        if (resolved !is ParadoxComplexEnumValueElement) return true
+        val presentation = doCollect(resolved, editor, settings) ?: return true
         val finalPresentation = presentation.toFinalPresentation(this, file.project)
         val endOffset = element.endOffset
         sink.addInlineElement(endOffset, true, finalPresentation, false)
-
         return true
     }
 
-    private fun PresentationFactory.doCollect(name: String, enumName: String, file: PsiFile, editor: Editor, settings: Settings): InlayPresentation? {
-        val hintElement = getNameLocalisationToUse(name, enumName, file) ?: return null
-        return ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit).render(hintElement)
-    }
-
-    private fun getNameLocalisationToUse(name: String, enumName: String, file: PsiFile): ParadoxLocalisationProperty? {
-        ParadoxComplexEnumValueManager.getNameLocalisationFromExtendedConfig(name, enumName, file)?.let { return it }
-        ParadoxComplexEnumValueManager.getNameLocalisation(name, file, ParadoxLocaleManager.getPreferredLocaleConfig())?.let { return it }
-        return null
+    private fun PresentationFactory.doCollect(element: ParadoxComplexEnumValueElement, editor: Editor, settings: Settings): InlayPresentation? {
+        val hintLocalisation = ParadoxHintTextProvider.getHintLocalisation(element) ?: return null
+        val renderer = ParadoxLocalisationTextInlayRenderer(editor, this).withLimit(settings.textLengthLimit, settings.iconHeightLimit)
+        return renderer.render(hintLocalisation)
     }
 }

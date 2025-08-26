@@ -8,7 +8,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 复制封装变量的本地化名字到剪贴板。
+ * 复制封装变量的本地化后的名字到剪贴板。
  */
 abstract class CopyScriptedVariableLocalizedNameIntentionBase : ModCommandAction, DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.copyScriptedVariableLocalizedName")
@@ -25,9 +25,8 @@ abstract class CopyScriptedVariableLocalizedNameIntentionBase : ModCommandAction
 
     private fun getText(context: ActionContext): String? {
         val element = findElement(context) ?: return null
-        val name = element.name?.orNull() ?: return null
-        return ParadoxScriptedVariableManager.getHintFromExtendedConfig(name, context.file)?.orNull()
-            ?: ParadoxScriptedVariableManager.getLocalizedName(element)?.orNull()
+        // ParadoxHintTextProvider.getHintText(element)?.let { return it }
+        return ParadoxScriptedVariableManager.getLocalizedName(element)?.orNull()
     }
 
     private fun findElement(context: ActionContext): ParadoxScriptScriptedVariable? {

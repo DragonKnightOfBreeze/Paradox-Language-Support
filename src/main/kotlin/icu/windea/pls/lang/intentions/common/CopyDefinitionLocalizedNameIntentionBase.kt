@@ -8,7 +8,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
 
 /**
- * 复制定义的本地化名字到剪贴板。
+ * 复制定义的本地化后的名字到剪贴板。
  */
 abstract class CopyDefinitionLocalizedNameIntentionBase : ModCommandAction, DumbAware {
     override fun getFamilyName() = PlsBundle.message("intention.copyDefinitionLocalizedName")
@@ -25,6 +25,7 @@ abstract class CopyDefinitionLocalizedNameIntentionBase : ModCommandAction, Dumb
 
     private fun getText(context: ActionContext): String? {
         val element = findElement(context) ?: return null
+        // ParadoxHintTextProvider.getHintText(element)?.let { return it }
         return ParadoxDefinitionManager.getLocalizedNames(element).firstOrNull()
     }
 

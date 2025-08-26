@@ -62,6 +62,7 @@
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedDynamicValueQuickDocTextProvider"/>
     <quickDocTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxExtendedParameterQuickDocTextProvider"/>
 
+    <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxDefinitionHintTextProvider"/>
     <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxInferredScriptedVariableHintTextProvider"/>
     <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxInferredComplexEnumValueHintTextProvider"/>
     <hintTextProvider implementation="icu.windea.pls.ep.codeInsight.hints.ParadoxInferredDynamicValueHintTextProvider"/>

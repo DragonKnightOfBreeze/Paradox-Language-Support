@@ -38,13 +38,15 @@ class ParadoxScriptedVariableCompletionProvider : CompletionProvider<CompletionP
     private fun processScriptedVariable(context: ProcessingContext, result: CompletionResultSet, element: ParadoxScriptScriptedVariable): Boolean {
         ProgressManager.checkCanceled()
         val name = element.name ?: return true
+        val icon = PlsIcons.Nodes.ScriptedVariable
         val tailText = element.value?.let { " = $it" }
         val typeFile = element.containingFile
         val lookupElement = LookupElementBuilder.create(element, name)
-            .withIcon(PlsIcons.Nodes.ScriptedVariable)
             .withTailText(tailText, true)
             .withTypeText(typeFile.name, typeFile.icon, true)
-            .withCompletionId()
+            .withPatchableIcon(icon)
+            .withScriptedVariableLocalizedNamesIfNecessary(element)
+            .forScriptExpression(context)
         result.addElement(lookupElement, context)
         return true
     }
