@@ -250,8 +250,8 @@ class PlsSettingsState : BaseState() {
 
         var seForCwtTypeConfigs by property(false)
         var seForCwtComplexEnumConfigs by property(false)
-        var seForCwtTriggerConfigs by property(false)
-        var seForCwtEffectConfigs by property(false)
+        var seForCwtTriggerConfigs by property(true)
+        var seForCwtEffectConfigs by property(true)
     }
 
     /**
