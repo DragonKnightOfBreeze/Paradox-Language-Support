@@ -10,23 +10,22 @@
 - [ ] 支持直接在IDE中启动游戏，且启用的模组来自可配置的模组列表
 - [ ] 新功能：提供AI驱动的脚本/本地化生成功能（操作） / NEW: Provide AI-driven script/translation generation features (actions)
 - [ ] 新功能：提供对魔法注释的初步支持，用于批量处理脚本与本地化文件的内容 / NEW: Provide support for magic comments, which are used to batch process of scripts and localisation files
+- [ ] 新功能：支持基于CWT规则的自定义的代码折叠 / NEW: Support custom code folding based on CWT configs
+- [ ] 新功能：支持基于CWT规则的自定义的后缀补全 / NEW: Support custom postfix completion based on CWT configs
 
 ## 2.0.2-dev
 
-- [ ] 更新参考文档（规则相关，集成，AI，扩展） / Update reference documents (config related, integration, AI, extensions)
 - [X] #165
 - [X] 优化：优化自动识别切换类型的声明规则的逻辑 / OP: Optimize the logic for automatically detecting declaration configs for swapped types
 - [X] 优化：如果本地化参数可以被解析为本地化，则启用特殊高亮 / OP: If a localization parameter can be resolved to a localization, enable special highlighting
 - [X] 优化：优化编制与查询索引时的性能 / OP: Optimize the performance of building and querying indices
 - [X] 优化：可以配置可在随处搜索中搜索的符号的类型 / OP: Can configure the types of symbols that can be searched in Search Everywhere
-- [X] 优化：随处搜索也支持搜索规则文件中的符号（类型、复杂枚举等），默认不启用 / OP: Search Everywhere also supports searching symbols in config files (types, complex enums, etc.), disabled by default
+- [X] 优化：随处搜索也支持搜索规则文件中的符号（类型、复杂枚举等） / OP: Search Everywhere also supports searching symbols in config files (types, complex enums, etc.)
 - [X] 优化：更好的用于翻译/润色本地化的AI提示 / OP: Better AI prompts for translating and polishing localizations
 - [X] 修复：修复未在必要时渲染切分后的图片的问题 / FIX: Fix an issue that images are not rendered with expected slicing if necessary
 - [X] 修复：修复某些场合未忽略字符串大小写的问题 / FIX: Fix an issue that string case is not ignored in some situations
 - [X] 修复：修复与图表（Diagrams）相关的一些问题并优化性能 / FIX: Fix some issues related to diagrams, together with performance optimization
 - [X] 新功能：适配上移/下移声明的功能，适用于CWT文件和脚本文件中的成员（封装变量、属性、值），以及本地化文件中的属性（即本地化条目）（入口：主菜单，点击`Code > Move Statement Up/Down`） / NEW: Support moving statements up/down, for members (scripted variables, properties, values) in cwt files and script files, and properties (aka localisation items) in localisation files. (Entry: Main menu, click `Code > Move Statement Up/Down`)
-- [ ] 新功能：支持基于CWT规则的自定义的代码折叠 / NEW: Support custom code folding based on CWT configs
-- [ ] 新功能：支持基于CWT规则的自定义的后缀补全 / NEW: Support custom postfix completion based on CWT configs
 - [X] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 2.0.1
