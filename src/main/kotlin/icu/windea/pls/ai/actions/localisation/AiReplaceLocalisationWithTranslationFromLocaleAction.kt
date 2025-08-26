@@ -1,30 +1,34 @@
-package icu.windea.pls.lang.actions.localisation.ai
+package icu.windea.pls.ai.actions.localisation
 
-import com.intellij.notification.*
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.popup.*
-import com.intellij.platform.ide.progress.*
-import com.intellij.platform.util.coroutines.*
-import com.intellij.platform.util.progress.*
-import icu.windea.pls.*
-import icu.windea.pls.ai.*
-import icu.windea.pls.ai.model.requests.*
-import icu.windea.pls.ai.model.results.*
-import icu.windea.pls.ai.util.*
-import icu.windea.pls.ai.util.manipulators.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.actions.localisation.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.manipulators.*
-import kotlinx.coroutines.*
-import java.util.concurrent.atomic.*
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.popup.JBPopup
+import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.platform.util.coroutines.forEachConcurrent
+import com.intellij.platform.util.progress.reportRawProgress
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.ai.PlsAiFacade
+import icu.windea.pls.ai.model.requests.TranslateLocalisationAiRequest
+import icu.windea.pls.ai.model.results.LocalisationAiResult
+import icu.windea.pls.ai.util.PlsAiManager
+import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
+import icu.windea.pls.config.config.CwtLocaleConfig
+import icu.windea.pls.core.collections.synced
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.lang.actions.localisation.ManipulateLocalisationActionBase
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicReference
 
-class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionBase.WithLocalePopupAndPopup<String>(), DumbAware {
+class AiReplaceLocalisationWithTranslationFromLocaleAction : ManipulateLocalisationActionBase.WithLocalePopupAndPopup<String>(), DumbAware {
     override fun isAvailable(e: AnActionEvent, project: Project): Boolean {
         return super.isAvailable(e, project) && PlsAiFacade.isAvailable()
     }
@@ -41,7 +45,7 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
 
         val (files, selectedLocale, data) = context
         val description = ParadoxLocalisationAiManipulator.getOptimizedDescription(data)
-        withBackgroundProgress(project, PlsBundle.message("action.replaceLocalisationWithAiTranslation.progress.title", selectedLocale.text)) action@{
+        withBackgroundProgress(project, PlsBundle.message("ai.action.replaceLocalisationWithTranslationFromLocale.progress.title", selectedLocale.text)) action@{
             val total = files.size
             val allContexts = mutableListOf<ParadoxLocalisationContext>().synced()
             val processedRef = AtomicInteger()
@@ -84,7 +88,8 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
     }
 
     private suspend fun handleText(request: TranslateLocalisationAiRequest, callback: suspend (LocalisationAiResult) -> Unit) {
-        ParadoxLocalisationAiManipulator.handleTextWithAiTranslation(request, callback)
+        TODO("TL")
+        // ParadoxLocalisationAiManipulator.handleTextWithAiTranslation(request, callback)
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {
@@ -95,17 +100,17 @@ class ReplaceLocalisationWithAiTranslationAction : ManipulateLocalisationActionB
     private fun createNotification(selectedLocale: CwtLocaleConfig, processed: Int, error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
-                val content = PlsBundle.message("action.replaceLocalisationWithAiTranslation.notification", selectedLocale.text, Messages.success(processed))
+                val content = PlsBundle.message("ai.action.replaceLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.success(processed))
                 return PlsCoreManager.createNotification(NotificationType.INFORMATION, content)
             }
-            val content = PlsBundle.message("action.replaceLocalisationWithAiTranslation.notification", selectedLocale.text, Messages.partialSuccess(processed))
+            val content = PlsBundle.message("ai.action.replaceLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.partialSuccess(processed))
             return PlsCoreManager.createNotification(NotificationType.WARNING, content)
         }
 
         thisLogger().warn(error)
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsBundle.message("action.replaceLocalisationWithAiTranslation.notification", selectedLocale.text, Messages.partialSuccess(processed)) + errorDetails
+        val content = PlsBundle.message("ai.action.replaceLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.partialSuccess(processed)) + errorDetails
         return PlsCoreManager.createNotification(NotificationType.WARNING, content)
     }
 }

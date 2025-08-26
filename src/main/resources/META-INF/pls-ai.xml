@@ -6,26 +6,49 @@
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.localisation.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.localisation.ai.CopyLocalisationWithAiTranslationIntention</className>
+      <className>icu.windea.pls.ai.intentions.localisation.AiCopyLocalisationWithTranslationIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.localisation.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.localisation.ai.ReplaceLocalisationWithAiTranslationIntention</className>
-    </intentionAction>
-
-    <intentionAction>
-      <language>PARADOX_LOCALISATION</language>
-      <bundleName>messages.PlsBundle</bundleName>
-      <categoryKey>intention.localisation.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.localisation.ai.CopyLocalisationWithAiPolishingIntention</className>
+      <className>icu.windea.pls.ai.intentions.localisation.AiReplaceLocalisationWithTranslationIntention</className>
     </intentionAction>
     <intentionAction>
       <language>PARADOX_LOCALISATION</language>
       <bundleName>messages.PlsBundle</bundleName>
       <categoryKey>intention.localisation.category</categoryKey>
-      <className>icu.windea.pls.lang.intentions.localisation.ai.ReplaceLocalisationWithAiPolishingIntention</className>
+      <className>icu.windea.pls.ai.intentions.localisation.AiCopyLocalisationWithTranslationFromLocaleIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_LOCALISATION</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>intention.localisation.category</categoryKey>
+      <className>icu.windea.pls.ai.intentions.localisation.AiReplaceLocalisationWithTranslationFromLocaleIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_LOCALISATION</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>intention.localisation.category</categoryKey>
+      <className>icu.windea.pls.ai.intentions.localisation.AiCopyLocalisationWithPolishingIntention</className>
+    </intentionAction>
+    <intentionAction>
+      <language>PARADOX_LOCALISATION</language>
+      <bundleName>messages.PlsBundle</bundleName>
+      <categoryKey>intention.localisation.category</categoryKey>
+      <className>icu.windea.pls.ai.intentions.localisation.AiReplaceLocalisationWithPolishingIntention</className>
     </intentionAction>
   </extensions>
+
+  <actions>
+    <action id="Pls.Manipulation.AiReplaceLocalisationWithTranslation" class="icu.windea.pls.ai.actions.localisation.AiReplaceLocalisationWithTranslationAction">
+      <add-to-group group-id="Pls.LocalisationManipulation"/>
+    </action>
+    <action id="Pls.Manipulation.AiReplaceLocalisationWithTranslationFromLocale" class="icu.windea.pls.ai.actions.localisation.AiReplaceLocalisationWithTranslationFromLocaleAction">
+      <add-to-group group-id="Pls.LocalisationManipulation"/>
+    </action>
+    <action id="Pls.Manipulation.AiReplaceLocalisationWithPolishing" class="icu.windea.pls.ai.actions.localisation.AiReplaceLocalisationWithPolishingAction">
+      <add-to-group group-id="Pls.LocalisationManipulation"/>
+    </action>
+  </actions>
 </idea-plugin>

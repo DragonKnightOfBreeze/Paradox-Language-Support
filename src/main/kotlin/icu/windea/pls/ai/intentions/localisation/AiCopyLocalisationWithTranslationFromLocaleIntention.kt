@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.intentions.localisation.ai
+package icu.windea.pls.ai.intentions.localisation
 
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
@@ -25,12 +25,12 @@ import java.awt.datatransfer.*
 import java.util.concurrent.atomic.*
 
 /**
- * （基于AI）复制翻译后的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）到剪贴板。
+ * 【AI】复制翻译后的来自指定语言区域的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）到剪贴板。
  *
  * 复制的文本格式为：`KEY:0 "TEXT"`
  */
-class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopupAndPopup<String>(), DumbAware {
-    override fun getFamilyName() = PlsBundle.message("intention.copyLocalisationWithAiTranslation")
+class AiCopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisationIntentionBase.WithLocalePopupAndPopup<String>(), DumbAware {
+    override fun getFamilyName() = PlsBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
         return super.isAvailable(project, editor, file) && PlsAiFacade.isAvailable()
@@ -44,7 +44,7 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context<String>) {
         val (elements, selectedLocale, data) = context
         val description = ParadoxLocalisationAiManipulator.getOptimizedDescription(data)
-        withBackgroundProgress(project, PlsBundle.message("intention.copyLocalisationWithAiTranslation.progress.title", selectedLocale.text)) action@{
+        withBackgroundProgress(project, PlsBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.progress.title", selectedLocale.text)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
@@ -78,23 +78,24 @@ class CopyLocalisationWithAiTranslationIntention : ManipulateLocalisationIntenti
     }
 
     private suspend fun handleText(request: TranslateLocalisationAiRequest, callback: suspend (LocalisationAiResult) -> Unit) {
-        ParadoxLocalisationAiManipulator.handleTextWithAiTranslation(request, callback)
+        TODO("TL")
+        // ParadoxLocalisationAiManipulator.handleTextWithAiTranslation(request, callback)
     }
 
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
-                val content = PlsBundle.message("intention.copyLocalisationWithAiTranslation.notification", selectedLocale.text, Messages.success())
+                val content = PlsBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.success())
                 return PlsCoreManager.createNotification(NotificationType.INFORMATION, content)
             }
-            val content = PlsBundle.message("intention.copyLocalisationWithAiTranslation.notification", selectedLocale.text, Messages.partialSuccess())
+            val content = PlsBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.partialSuccess())
             return PlsCoreManager.createNotification(NotificationType.WARNING, content)
         }
 
         thisLogger().warn(error)
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsBundle.message("intention.copyLocalisationWithAiTranslation.notification", selectedLocale.text, Messages.partialSuccess()) + errorDetails
+        val content = PlsBundle.message("ai.intention.copyLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.partialSuccess()) + errorDetails
         return PlsCoreManager.createNotification(NotificationType.WARNING, content)
     }
 }

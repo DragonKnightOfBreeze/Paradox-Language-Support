@@ -1,31 +1,34 @@
-package icu.windea.pls.lang.intentions.localisation.ai
+package icu.windea.pls.ai.intentions.localisation
 
-import com.intellij.notification.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.editor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.popup.*
-import com.intellij.platform.ide.progress.*
-import com.intellij.platform.util.progress.*
-import com.intellij.psi.*
-import icu.windea.pls.*
-import icu.windea.pls.ai.*
-import icu.windea.pls.ai.model.requests.*
-import icu.windea.pls.ai.model.results.*
-import icu.windea.pls.ai.util.*
-import icu.windea.pls.ai.util.manipulators.*
-import icu.windea.pls.core.*
-import icu.windea.pls.lang.intentions.localisation.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.lang.util.manipulators.*
-import java.util.concurrent.atomic.*
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.popup.JBPopup
+import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.platform.util.progress.reportRawProgress
+import com.intellij.psi.PsiFile
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.ai.PlsAiFacade
+import icu.windea.pls.ai.model.requests.PolishLocalisationAiRequest
+import icu.windea.pls.ai.model.results.LocalisationAiResult
+import icu.windea.pls.ai.util.PlsAiManager
+import icu.windea.pls.ai.util.manipulators.ParadoxLocalisationAiManipulator
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.lang.intentions.localisation.ManipulateLocalisationIntentionBase
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationContext
+import icu.windea.pls.lang.util.manipulators.ParadoxLocalisationManipulator
+import java.util.concurrent.atomic.AtomicReference
 
 /**
- * （基于AI）替换为翻译后的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
+ * 【AI】替换为翻译后的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
  */
-class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntentionBase.WithPopup<String>(), DumbAware {
-    override fun getFamilyName() = PlsBundle.message("intention.replaceLocalisationWithAiPolishing")
+class AiReplaceLocalisationWithPolishingIntention : ManipulateLocalisationIntentionBase.WithPopup<String>(), DumbAware {
+    override fun getFamilyName() = PlsBundle.message("ai.intention.replaceLocalisationWithPolishing")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
         return super.isAvailable(project, editor, file) && PlsAiFacade.isAvailable()
@@ -39,7 +42,7 @@ class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntent
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context<String>) {
         val (elements, data) = context
         val description = ParadoxLocalisationAiManipulator.getOptimizedDescription(data)
-        withBackgroundProgress(project, PlsBundle.message("intention.replaceLocalisationWithAiPolishing.progress.title")) action@{
+        withBackgroundProgress(project, PlsBundle.message("ai.intention.replaceLocalisationWithPolishing.progress.title")) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
@@ -86,17 +89,17 @@ class ReplaceLocalisationWithAiPolishingIntention : ManipulateLocalisationIntent
     private fun createNotification(error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
-                val content = PlsBundle.message("intention.replaceLocalisationWithAiPolishing.notification", Messages.success())
+                val content = PlsBundle.message("ai.intention.replaceLocalisationWithPolishing.notification", Messages.success())
                 return PlsCoreManager.createNotification(NotificationType.INFORMATION, content)
             }
-            val content = PlsBundle.message("intention.replaceLocalisationWithAiPolishing.notification", Messages.partialSuccess())
+            val content = PlsBundle.message("ai.intention.replaceLocalisationWithPolishing.notification", Messages.partialSuccess())
             return PlsCoreManager.createNotification(NotificationType.WARNING, content)
         }
 
         thisLogger().warn(error)
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsBundle.message("intention.replaceLocalisationWithAiPolishing.notification", Messages.partialSuccess()) + errorDetails
+        val content = PlsBundle.message("ai.intention.replaceLocalisationWithPolishing.notification", Messages.partialSuccess()) + errorDetails
         return PlsCoreManager.createNotification(NotificationType.WARNING, content)
     }
 }

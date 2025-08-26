@@ -426,8 +426,7 @@
     <group id="Pls.LocalisationManipulation">
       <action id="Pls.Manipulation.ReplaceLocalisationFromLocale" class="icu.windea.pls.lang.actions.localisation.ReplaceLocalisationFromLocaleAction"/>
       <action id="Pls.Manipulation.ReplaceLocalisationWithTranslation" class="icu.windea.pls.lang.actions.localisation.ReplaceLocalisationWithTranslationAction"/>
-      <action id="Pls.Manipulation.ReplaceLocalisationWithAiTranslation" class="icu.windea.pls.lang.actions.localisation.ai.ReplaceLocalisationWithAiTranslationAction"/>
-      <action id="Pls.Manipulation.ReplaceLocalisationWithAiPolishing" class="icu.windea.pls.lang.actions.localisation.ai.ReplaceLocalisationWithAiPolishingAction"/>
+      <action id="Pls.Manipulation.ReplaceLocalisationWithTranslationFromLocale" class="icu.windea.pls.lang.actions.localisation.ReplaceLocalisationWithTranslationFromLocaleAction"/>
       <add-to-group group-id="Pls.LocalisationManipulationContextMenuGroup"/>
     </group>
 

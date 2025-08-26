@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.intentions.localisation.ai
+package icu.windea.pls.ai.intentions.localisation
 
 import com.intellij.notification.*
 import com.intellij.openapi.application.*
@@ -23,10 +23,10 @@ import icu.windea.pls.lang.util.manipulators.*
 import java.util.concurrent.atomic.*
 
 /**
- * （基于AI）替换为翻译后的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
+ * 【AI】替换为翻译后的来自指定语言区域的本地化（光标位置对应的本地化，或者光标选取范围涉及到的所有本地化）。
  */
-class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationIntentionBase.WithLocalePopupAndPopup<String>(), DumbAware {
-    override fun getFamilyName() = PlsBundle.message("intention.replaceLocalisationWithAiTranslation")
+class AiReplaceLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisationIntentionBase.WithLocalePopupAndPopup<String>(), DumbAware {
+    override fun getFamilyName() = PlsBundle.message("ai.intention.replaceLocalisationWithTranslationFromLocale")
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
         return super.isAvailable(project, editor, file) && PlsAiFacade.isAvailable()
@@ -40,7 +40,7 @@ class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationInte
     override suspend fun doHandle(project: Project, file: PsiFile, context: Context<String>) {
         val (elements, selectedLocale, data) = context
         val description = ParadoxLocalisationAiManipulator.getOptimizedDescription(data)
-        withBackgroundProgress(project, PlsBundle.message("intention.replaceLocalisationWithAiTranslation.progress.title", selectedLocale.text)) action@{
+        withBackgroundProgress(project, PlsBundle.message("ai.intention.replaceLocalisationWithTranslationFromLocale.progress.title", selectedLocale.text)) action@{
             val contexts = readAction { elements.map { ParadoxLocalisationContext.from(it) }.toList() }
             val contextsToHandle = contexts.filter { context -> context.shouldHandle }
             val errorRef = AtomicReference<Throwable>()
@@ -76,7 +76,8 @@ class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationInte
     }
 
     private suspend fun handleText(request: TranslateLocalisationAiRequest, callback: suspend (LocalisationAiResult) -> Unit) {
-        ParadoxLocalisationAiManipulator.handleTextWithAiTranslation(request, callback)
+        TODO("TL")
+        // ParadoxLocalisationAiManipulator.handleTextWithAiTranslation(request, callback)
     }
 
     private suspend fun replaceText(context: ParadoxLocalisationContext, project: Project) {
@@ -87,17 +88,17 @@ class ReplaceLocalisationWithAiTranslationIntention : ManipulateLocalisationInte
     private fun createNotification(selectedLocale: CwtLocaleConfig, error: Throwable?, withWarnings: Boolean): Notification {
         if (error == null) {
             if (!withWarnings) {
-                val content = PlsBundle.message("intention.replaceLocalisationWithAiTranslation.notification", selectedLocale.text, Messages.success())
+                val content = PlsBundle.message("ai.intention.replaceLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.success())
                 return PlsCoreManager.createNotification(NotificationType.INFORMATION, content)
             }
-            val content = PlsBundle.message("intention.replaceLocalisationWithAiTranslation.notification", selectedLocale.text, Messages.partialSuccess())
+            val content = PlsBundle.message("ai.intention.replaceLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.partialSuccess())
             return PlsCoreManager.createNotification(NotificationType.WARNING, content)
         }
 
         thisLogger().warn(error)
         val errorMessage = PlsAiManager.getOptimizedErrorMessage(error)
         val errorDetails = errorMessage?.let { PlsBundle.message("manipulation.localisation.error", it) }.orEmpty()
-        val content = PlsBundle.message("intention.replaceLocalisationWithAiTranslation.notification", selectedLocale.text, Messages.partialSuccess()) + errorDetails
+        val content = PlsBundle.message("ai.intention.replaceLocalisationWithTranslationFromLocale.notification", selectedLocale.text, Messages.partialSuccess()) + errorDetails
         return PlsCoreManager.createNotification(NotificationType.WARNING, content)
     }
 }
