@@ -21,7 +21,7 @@ inline fun <T, R, C : Comparable<C>> complexCompareBy(
         val a1 = selector(a)
         val b1 = selector(b)
         when {
-            a1 == b1 -> 0
+            a1 == b1 -> 0 // requires chained comparators
             a1 == null -> 1
             b1 == null -> -1
             pinPredicate(b1) -> if (pinPredicate(a1)) 0 else 1
@@ -49,7 +49,7 @@ inline fun <T, R, C : Comparable<C>> complexCompareByDescending(
         val a1 = selector(a)
         val b1 = selector(b)
         when {
-            a1 == b1 -> 1
+            a1 == b1 -> 0 // requires chained comparators
             a1 == null -> 1
             b1 == null -> -1
             pinPredicate(b1) -> if (pinPredicate(a1)) 0 else 1

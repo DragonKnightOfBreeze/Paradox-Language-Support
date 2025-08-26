@@ -136,7 +136,7 @@ class AccessorProviderImpl<T : Any>(
                 .firstNotNullOfOrNull { AccessorDelegateBuilder.Write.fromProperty<T, V>(it)?.takeIfAccessible() }
                 ?.let { return it }
             allMemberFunctions
-                .filter { it.isGetter(propertyName) }
+                .filter { it.isSetter(propertyName) }
                 .firstNotNullOfOrNull { AccessorDelegateBuilder.Write.fromSetter<T, V>(it).takeIfAccessible() }
                 ?.let { return it }
             allJavaFields
@@ -149,7 +149,7 @@ class AccessorProviderImpl<T : Any>(
                 .firstNotNullOfOrNull { AccessorDelegateBuilder.Write.fromProperty<T, V>(it)?.takeIfAccessible() }
                 ?.let { return it }
             allStaticFunctions
-                .filter { it.isGetter(propertyName) }
+                .filter { it.isSetter(propertyName) }
                 .firstNotNullOfOrNull { AccessorDelegateBuilder.Write.fromSetter<T, V>(it).takeIfAccessible() }
                 ?.let { return it }
             allJavaFields

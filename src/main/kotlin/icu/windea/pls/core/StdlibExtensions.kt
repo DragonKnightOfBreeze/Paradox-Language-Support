@@ -449,12 +449,14 @@ fun String.matchesRegex(pattern: String, ignoreCase: Boolean = false): Boolean {
 }
 
 /**
- * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。使用"/"作为路径分隔符。
+ * 判断当前路径是否匹配另一个路径（相同或者是其父路径）。
+ * 使用"/"作为路径分隔符。
+ * 不会忽略前导的路径分隔符。
  *
  * @param other 另一个路径。
  * @param acceptSelf 是否接受路径完全一致的情况。
  * @param strict 是否严格匹配（相同或是其直接父路径）。
- * @param trim 是否需要事先去除当前路径首尾的路径分隔符.
+ * @param trim 是否需要事先去除当前路径首尾的路径分隔符。不会去除另一个路径首尾的路径分隔符。
  */
 @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 fun String.matchesPath(other: String, acceptSelf: Boolean = true, strict: Boolean = false, trim: Boolean = false): Boolean {

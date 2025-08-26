@@ -23,7 +23,7 @@ fun KFunction<*>.isSetter(propertyName: String? = null): Boolean {
     if (propertyName == null) {
         if (name.startsWith("set") && name.length > 3) return true
     } else {
-        val suffix = propertyName.decapitalized()
+        val suffix = propertyName.capitalized()
         if (name == "set$suffix") return true
     }
     return false
