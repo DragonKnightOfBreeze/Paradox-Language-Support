@@ -3,9 +3,8 @@ package icu.windea.pls.config.expression
 import com.google.common.cache.*
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.*
-import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.dataExpression.*
+import icu.windea.pls.ep.configExpression.*
 
 /**
  * CWT数据表达式。

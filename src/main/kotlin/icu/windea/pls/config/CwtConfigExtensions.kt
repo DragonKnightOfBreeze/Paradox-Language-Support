@@ -10,7 +10,7 @@ import icu.windea.pls.config.util.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.ep.dataExpression.*
+import icu.windea.pls.ep.configExpression.*
 import icu.windea.pls.lang.*
 
 val Project.configGroupLibrary: CwtConfigGroupLibrary

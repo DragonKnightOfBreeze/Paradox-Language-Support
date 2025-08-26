@@ -9,7 +9,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.config.*
-import icu.windea.pls.ep.dataExpression.*
+import icu.windea.pls.ep.configExpression.*
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*

@@ -1,4 +1,4 @@
-package icu.windea.pls.ep.dataExpression
+package icu.windea.pls.ep.configExpression
 
 import com.intellij.openapi.extensions.*
 import icu.windea.pls.config.configGroup.*
