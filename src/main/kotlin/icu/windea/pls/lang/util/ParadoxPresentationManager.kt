@@ -5,7 +5,6 @@ import com.intellij.openapi.project.*
 import com.intellij.psi.*
 import com.intellij.ui.*
 import icu.windea.pls.core.*
-import icu.windea.pls.ep.presentation.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
@@ -18,11 +17,6 @@ import java.util.*
 import javax.swing.*
 
 object ParadoxPresentationManager {
-    fun getPresentation(definition: ParadoxScriptDefinitionElement): JComponent? {
-        val definitionInfo = definition.definitionInfo ?: return null
-        return ParadoxDefinitionPresentationProvider.getPresentation(definition, definitionInfo)
-    }
-
     fun getNameLocalisation(definition: ParadoxScriptDefinitionElement): ParadoxLocalisationProperty? {
         return ParadoxDefinitionManager.getPrimaryLocalisation(definition)
     }

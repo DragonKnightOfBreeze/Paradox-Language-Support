@@ -16,6 +16,7 @@ import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.data.*
+import icu.windea.pls.ep.presentation.*
 import icu.windea.pls.extension.diagram.*
 import icu.windea.pls.extension.diagram.settings.*
 import icu.windea.pls.lang.*
@@ -139,8 +140,8 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                     ParadoxPresentationManager.getLabel(nodeItem.text.or.anonymous())
                 }
                 is Items.Presentation -> runReadAction r@{
-                    val presentation = ParadoxPresentationManager.getPresentation(nodeItem.definition)
-                    presentation
+                    val presentation = nodeItem.definition.getPresentation<StellarisTechnologyPresentation>()
+                    presentation?.createComponent()
                 }
                 else -> null
             }

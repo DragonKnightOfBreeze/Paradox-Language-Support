@@ -1,14 +1,14 @@
-package icu.windea.pls.ep.data
+package icu.windea.pls.ep.presentation
 
 import icu.windea.pls.lang.expression.*
 import icu.windea.pls.model.*
 import icu.windea.pls.script.psi.*
 
-object ParadoxDefinitionDataProviderDelegates {
-    class FromDefinitionType<T : ParadoxDefinitionData>(
+object ParadoxDefinitionPresentationProviderDelegates {
+    class FromDefinitionType<T : ParadoxDefinitionPresentation>(
         override val type: Class<T>,
         definitionType: String
-    ) : ParadoxDefinitionDataProviderBase<T>() {
+    ) : ParadoxDefinitionPresentationProviderBase<T>() {
         private val typeExpression = ParadoxDefinitionTypeExpression.resolve(definitionType)
 
         override fun supports(definition: ParadoxScriptDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
@@ -16,8 +16,7 @@ object ParadoxDefinitionDataProviderDelegates {
         }
     }
 
-    inline fun <reified T : ParadoxDefinitionData> create(definitionType: String): ParadoxDefinitionDataProvider<T> {
+    inline fun <reified T : ParadoxDefinitionPresentation> create(definitionType: String): ParadoxDefinitionPresentationProvider<T> {
         return FromDefinitionType(T::class.java, definitionType)
     }
 }
-

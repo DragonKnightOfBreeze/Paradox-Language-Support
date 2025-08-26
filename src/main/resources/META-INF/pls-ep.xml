@@ -247,7 +247,7 @@
     <overriddenScopeContextProvider implementation="icu.windea.pls.ep.scope.ParadoxSwitchOverriddenScopeContextProvider"/>
     <overriddenScopeContextProvider implementation="icu.windea.pls.ep.scope.ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider"/>
 
-    <definitionPresentationProvider implementation="icu.windea.pls.ep.presentation.StellarisTechnologyPresentationProvider"/>
+    <definitionPresentationProvider implementation="icu.windea.pls.ep.presentation.StellarisTechnologyPresentation$Provider"/>
 
     <definitionInheritSupport implementation="icu.windea.pls.ep.resolve.ParadoxSwappedTypeInheritSupport"/>
     <definitionInheritSupport implementation="icu.windea.pls.ep.resolve.StellarisEventInheritSupport"/>
