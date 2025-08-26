@@ -49,15 +49,6 @@ dependencies {
     // opentest4j - https://github.com/ota4j-team/opentest4j
     testImplementation("org.opentest4j:opentest4j:1.3.0")
 
-    // kotlinx-coroutines - https://github.com/Kotlin/kotlinx.coroutines
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
-
-    // guava - required by Matchers.kt (CacheBuilder) for pure tests
-    testImplementation("com.google.guava:guava:32.1.3-jre")
-
-    // fastutil - required by StdlibFastExtensions.kt (ObjectArrayList) for pure tests
-    testImplementation("it.unimi.dsi:fastutil:8.5.12")
-
     // TwelveMonkeys - https://github.com/haraldk/TwelveMonkeys
     implementation("com.twelvemonkeys.imageio:imageio-dds:3.12.0")
     implementation("com.twelvemonkeys.imageio:imageio-tga:3.12.0")

@@ -64,6 +64,8 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     }
 
     private fun refreshRootsForLibraries(project: Project) {
+        if (application.isUnitTestMode) return
+
         project.paradoxLibrary.refreshRoots()
         project.configGroupLibrary.refreshRoots()
     }
@@ -72,6 +74,8 @@ class PlsLifecycleListener : AppLifecycleListener, DynamicPluginListener, Projec
     private val refreshedProjectIds by lazy { application.getOrPutUserData(refreshedProjectIdsKey) { mutableSetOf() } }
 
     private fun refreshOnlyForOpenedFiles(project: Project) {
+        if (application.isUnitTestMode) return
+
         //在IDE启动后首次打开某个项目时，刷新此项目已打开的脚本文件和本地化文件
 
         //否则，如果插件更新后内置的规则文件也更新了，对于已打开的脚本文件和文本化文件，
