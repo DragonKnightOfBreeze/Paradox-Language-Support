@@ -8,15 +8,15 @@ To be completed.
 
 To be completed.
 
-## Rule Expressions
+## Config Expressions
 
-> This section explains the purpose, syntax, default and edge-case behaviors of "rule expressions" used in CWT config files (.cwt) and extension capabilities, helping mod authors write rules correctly.
+> This section explains the purpose, syntax, default and edge-case behaviors of "config expressions" used in CWT config files (.cwt) and extension capabilities, helping mod authors write configs correctly.
 
 <!-- AI: maps to icu.windea.pls.config.configExpression.CwtConfigExpression -->
 <!-- AI: impl-notes
 Resolvers (Schema/Cardinality/Template/Data(key|value|template)/ImageLocation/LocalisationLocation) share Guava caches: maximumSize=4096, expireAfterAccess=10 minutes.
 Schema: allow empty names for Type/Constraint; prefer Template when both ends are '$'; enum inside larger string -> Template; escaped dollars are not replaced; odd count of dollars -> Constant; only escaped dollars -> Constant; Template.pattern replaces each unescaped '$...$' with '*'.
-Template (data-driven): whitespace is not allowed; a single snippet (pure constant or pure dynamic) is not treated as a template; choose the leftmost earliest dynamic rule (has both prefix and suffix); a special split avoids combining symbol + rule-name into one constant.
+Template (data-driven): whitespace is not allowed; a single snippet (pure constant or pure dynamic) is not treated as a template; choose the leftmost earliest dynamic config (has both prefix and suffix); a special split avoids combining symbol + config-name into one constant.
 Cardinality: '~' marks relaxed bounds; negative min is clamped to 0; 'inf' (case-insensitive) is unlimited; if invalid or min>max -> treated as empty constraint.
 Location: '$' indicates a placeholder in 'location'; ImageLocation: '|' args, '$' args -> namePaths, others -> framePaths; LocalisationLocation: '$' args -> namePaths, 'u' -> force upper case; if multiple placeholders exist, all placeholders are replaced.
 Schema edge tests exist covering the cases above.
@@ -24,7 +24,7 @@ Schema edge tests exist covering the cases above.
 
 ### Basic concepts and scope
 
-* __Definition__: a rule expression is a structured syntax inside string fields of rules to describe the value shape or matching pattern.
+* __Definition__: a config expression is a structured syntax inside string fields of configs to describe the value shape or matching pattern.
 * __Families__:
   - Schema expressions: declare the value shape for RHS.
   - Data expressions: parse data types or dynamic fragments.
@@ -77,7 +77,7 @@ Pitfalls:
 
 <!-- AI: maps to icu.windea.pls.config.configExpression.CwtDataExpression -->
 
-Describe the shapes for keys/values in rules. It can be a constant or a dynamic fragment driven by rules (e.g. `value[...]`, `enum[...]`, `scope[...]`, `icon[...]`, `<definition>`).
+Describe the shapes for keys/values in configs. It can be a constant or a dynamic fragment driven by configs (e.g. `value[...]`, `enum[...]`, `scope[...]`, `icon[...]`, `<definition>`).
 
 Key points:
 
@@ -104,13 +104,13 @@ Note: this document does not enumerate all base types and forms; follow the conv
 
 <!-- AI: maps to icu.windea.pls.config.configExpression.CwtTemplateExpression -->
 
-Constructed by concatenating ordered "snippets": constant snippets + dynamic snippets (defined by dynamic rules of data expressions such as `value[...]`/`enum[...]`/`scope[...]`/`icon[...]`/`<...>`).
+Constructed by concatenating ordered "snippets": constant snippets + dynamic snippets (defined by dynamic configs of data expressions such as `value[...]`/`enum[...]`/`scope[...]`/`icon[...]`/`<...>`).
 
 Defaults and constraints:
 
 * __No whitespace__: if any whitespace appears, it is an invalid template.
 * __Snippet cardinality__: a single snippet (pure constant or pure dynamic) does not constitute a template.
-* __Matching strategy__: split using all dynamic rules (those with both prefix and suffix) with a "leftmost-earliest" strategy.
+* __Matching strategy__: split using all dynamic configs (those with both prefix and suffix) with a "leftmost-earliest" strategy.
 
 Examples:
 
@@ -122,7 +122,7 @@ a_enum[weight_or_base]_b
 
 Pitfalls:
 
-* When a constant snippet is immediately followed by something that looks like a rule name, prefer correct recognition of dynamic rules to avoid treating "symbol + rule-name" as a single constant.
+* When a constant snippet is immediately followed by something that looks like a config name, prefer correct recognition of dynamic configs to avoid treating "symbol + config-name" as a single constant.
 * If whitespace is needed, use a more appropriate matcher (e.g. ANT/regex).
 
 ---
