@@ -152,10 +152,90 @@
 
 ---
 
+## 阶段更新：阅读 pls-images.xml（探索_12）
+
+- 笔记文件：`notes/ai-vision/task-3/探索_12_pls-images.xml.md`
+- 关键发现（摘要）：
+  - 扩展点：`icu.windea.pls.images.support`（`ImageSupport`，`dynamic=true`），实现：`DefaultImageSupport`（`order="last"`）、`ToolBasedImageSupport`。
+  - 文件类型与编辑：DDS/TGA 的 `fileType`、`fileLookupInfoProvider`、`documentationProvider`、`fileEditorProvider`。
+  - 动作与菜单：外部编辑器（Ctrl+Alt+F4）、编辑器工具栏/弹出菜单引用 Images 动作、PNG/DDS/TGA 转换并挂载多处菜单。
+
+---
+
+## 阶段更新：阅读 pls-integrations.xml（探索_13）
+
+- 笔记文件：`notes/ai-vision/task-3/探索_13_pls-integrations.xml.md`
+- 关键发现（摘要）：
+  - 设置页：`applicationConfigurable` -> `PlsIntegrationsSettingsConfigurable`（`id=pls.integrations`，`key=settings.integrations`）。
+  - VFS 监听：`PlsTigerConfFileListener`（异步监听 Lint 配置变更）。
+  - 扩展点：`imageToolProvider`、`translationToolProvider`、`lintToolProvider`（均 `dynamic=true`）。
+  - 实现：`PlsTexconvToolProvider`、`PlsMagickToolProvider`、`PlsTigerLintToolProvider$Ck3/$Ir/$Vic3`。
+  - 备注：翻译工具提供者示例被注释，参见 `pls-extension-translation.xml`。
+
+---
+
+## 阶段更新：阅读 pls-ai.xml（探索_14）
+
+- 笔记文件：`notes/ai-vision/task-3/探索_14_pls-ai.xml.md`
+- 关键发现（摘要）：
+  - 设置页：`applicationConfigurable` -> `PlsAiSettingsConfigurable`（`id=pls.ai`，父分组 `pls`，`key=settings.ai`）。
+  - 意图：覆盖复制/替换 × 翻译/来自 Locale 翻译/润色 6 种变体（`Ai*Intention`）。
+  - 动作：3 个替换类动作加入 `Pls.LocalisationManipulation` 组。
+
+---
+
+## 阶段更新：阅读 pls-inject.xml（探索_15）
+
+- 笔记文件：`notes/ai-vision/task-3/探索_15_pls-inject.xml.md`
+- 关键发现（摘要）：
+  - 扩展点：`codeInjectorSupport`、`codeInjector`、`injectedFileProcessor`（均 `dynamic=true`）。
+  - 监听器：`CodeInjectorService$Listener` 订阅 `AppLifecycleListener`（应用生命周期阶段装配/清理注入）。
+  - Support 实现：`BaseCodeInjectorSupport`、`FieldBasedCacheCodeInjectorSupport`。
+  - 注入器（部分）：
+    - 核心能力修正：Search/Ref/Navigation/CopyPaste/PathReference 等实现级注入。
+    - 图像读取优化：`DDSImageReaderCodeInjector`、`TGAImageReaderCodeInjector`（委托外部工具）。
+    - 附加能力：`FileRenderCodeInjector`、`InjectionRegistrarImplCodeInjector`。
+    - PSI 级性能优化：Script/Localisation/CWT 多类节点的专用注入器。
+  - 备注：存在注释的 bugfix 注入器 `ImageDescriptorKtCodeInjector` 以备版本兼容问题。
+
+---
+
+## 阶段更新：阅读 pls-extension-markdown.xml（探索_16）
+
+- 笔记文件：`notes/ai-vision/task-3/探索_16_pls-extension-markdown.xml.md`
+- 关键发现（摘要）：
+  - Markdown 内联代码引用 Provider、未解析链接 Inspection（WARNING，默认开）。
+  - 高级设置：`pls.md.resolveInlineCodes`（默认 false）。
+  - 注入后处理：`MarkdownCodeFenceInjectedFileProcessor`。
+
+---
+
+## 阶段更新：阅读 pls-extension-diagram.xml（探索_17）
+
+- 笔记文件：`notes/ai-vision/task-3/探索_17_pls-extension-diagram.xml.md`
+- 关键发现（摘要）：
+  - Diagram Provider：多游戏的事件树/科技树。
+  - 设置页：`PlsDiagramSettingsConfigurable`。
+  - Actions：加入 Diagram 工具栏与 UML 菜单，提供打开设置动作。
+
+---
+
+## 阶段更新：阅读 pls-extension-translation.xml（探索_18）
+
+- 笔记文件：`notes/ai-vision/task-3/探索_18_pls-extension-translation.xml.md`
+- 关键发现（摘要）：
+  - QuickDoc 翻译优先：为 CWT/Script/Localisation 注册 `TranslatedDocumentationProvider`（order=first）。
+  - 集成提供者：`PlsTranslationPluginToolProvider` 接入 PLS 工具生态。
+
+---
+
 ## 待办与下一步
 
-- 请指定下一个 include 文件（建议：`src/main/resources/META-INF/pls-images.xml`、`src/main/resources/META-INF/pls-integrations.xml`、`src/main/resources/META-INF/pls-ai.xml`）。
-- 也可按主题推进（script/localisation/csv/images/ai/integrations/config 等）；每阅读一个文件即产出探索笔记并更新本报告。
+- include 配置阅读已完成（Markdown/Diagram/Translation）。
+- 下一步建议：进入源码实现与验证阶段（按主题或特性）：
+  - 实现阅读：Provider/Inspection/Action/Diagram 等关键类与调用链。
+  - 验证清单：QuickDoc 翻译、Markdown 引用检查、Diagram 渲染与导航。
+  - 观测与优化：性能/兼容性记录，必要时加日志与开关。
 
 ---
 
@@ -172,3 +252,10 @@
 - 2025-08-27：完成第九阶段（pls-ep.xml）探索，输出 `探索_9_pls-ep.xml.md`。
 - 2025-08-27：完成第十阶段（pls-intentions.xml）探索，输出 `探索_10_pls-intentions.xml.md`。
 - 2025-08-27：完成第十一阶段（pls-inspections.xml）探索，输出 `探索_11_pls-inspections.xml.md`。
+- 2025-08-27：完成第十二阶段（pls-images.xml）探索，输出 `探索_12_pls-images.xml.md`。
+ - 2025-08-27：完成第十三阶段（pls-integrations.xml）探索，输出 `探索_13_pls-integrations.xml.md`。
+ - 2025-08-27：完成第十四阶段（pls-ai.xml）探索，输出 `探索_14_pls-ai.xml.md`。
+ - 2025-08-27：完成第十五阶段（pls-inject.xml）探索，输出 `探索_15_pls-inject.xml.md`。
+ - 2025-08-27：完成第十六阶段（pls-extension-markdown.xml）探索，输出 `探索_16_pls-extension-markdown.xml.md`。
+ - 2025-08-27：完成第十七阶段（pls-extension-diagram.xml）探索，输出 `探索_17_pls-extension-diagram.xml.md`。
+ - 2025-08-27：完成第十八阶段（pls-extension-translation.xml）探索，输出 `探索_18_pls-extension-translation.xml.md`。

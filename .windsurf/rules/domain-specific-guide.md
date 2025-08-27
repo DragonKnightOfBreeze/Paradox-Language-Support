@@ -1,6 +1,6 @@
 ---
-trigger: manual
-description: 
+trigger: model_decision
+description: 如果你需要查看、修改、生成项目代码，或是基于项目内容进行翻译
 globs: 
 ---
 
