@@ -1,5 +1,5 @@
 types = {
-	### Army
+	### Doc comment
 	type[army] = {
 		path = "game/common/armies"
 		subtype[buildable] = {
