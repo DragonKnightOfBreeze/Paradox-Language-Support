@@ -314,8 +314,8 @@
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.UnresolvedColumnsInspection"/>
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvIncorrectColumnSizeInspection"
                      key="inspection.csv.incorrectColumnSize" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
+                     enabledByDefault="true" level="ERROR"
                      implementationClass="icu.windea.pls.lang.inspections.csv.common.IncorrectColumnSizeInspection"/>
-    enabledByDefault="true" level="ERROR"
     <localInspection language="PARADOX_CSV" shortName="ParadoxCsvUnresolvedExpressionInspection"
                      key="inspection.csv.unresolvedExpression" groupKey="inspection.csv.common.group" groupPathKey="inspection.csv.groupPath"
                      enabledByDefault="true" level="ERROR"
