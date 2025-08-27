@@ -1,6 +1,12 @@
 package icu.windea.pls.config.configExpression
 
 import icu.windea.pls.config.configExpression.impl.CwtTemplateExpressionResolverImpl
+import icu.windea.pls.config.CwtDataTypes.Constant
+import icu.windea.pls.config.CwtDataTypes.Value
+import icu.windea.pls.config.CwtDataTypes.EnumValue
+import icu.windea.pls.config.CwtDataTypes.Scope
+import icu.windea.pls.config.CwtDataTypes.Icon
+import icu.windea.pls.config.CwtDataTypes.Definition
 
 /**
  * CWT 模板表达式。
@@ -17,16 +23,9 @@ import icu.windea.pls.config.configExpression.impl.CwtTemplateExpressionResolver
  * - `job_<job>_add`
  * - `xxx_value[xxx]_xxx`
  *
- * @property snippetExpressions 解析得到的所有片段，顺序与原始字符串一致。常量片段类型为 `CwtDataTypes.Constant`，
- * 动态片段类型取决于匹配到的规则（如 `Value`、`EnumValue`、`Scope`、`Icon`、`Definition` 等）。
- * @property referenceExpressions 过滤后的“引用片段”（即非 `Constant` 片段），用于后续的引用解析、导航与高亮。
- *
- * 缓存与相等性：
- * - 解析结果按 `expressionString` 缓存并复用；`equals`/`hashCode`/`toString` 均基于 `expressionString`。
- *
- * 参考：
- * - docs: `docs/zh/config.md`
- * - guidance: `references/cwt/guidance.md`
+ * @property snippetExpressions 解析得到的所有片段，顺序与原始字符串一致。常量片段类型为 `[Constant]`，
+ * 动态片段类型取决于匹配到的规则（如 [Value]、[EnumValue]、[Scope]、[Icon]、[Definition] 等）。
+ * @property referenceExpressions 过滤后的“引用片段”（即非 [Constant] 片段），用于后续的引用解析、导航与高亮。
  *
  * @see CwtDataExpression
  * @see icu.windea.pls.ep.configExpression.CwtDataExpressionResolver

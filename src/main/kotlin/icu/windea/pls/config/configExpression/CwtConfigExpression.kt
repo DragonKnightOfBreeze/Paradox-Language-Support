@@ -8,8 +8,6 @@ package icu.windea.pls.config.configExpression
  * 这些解析结果会承载后续的导航、高亮、校验与补全等能力所需的元数据。
  *
  * @property expressionString 原始的表达式字符串（作为缓存键与相等性依据）。
- *
- * 参考：`references/cwt/guidance.md` 与 `docs/zh/config.md`。
  */
 interface CwtConfigExpression {
     val expressionString: String

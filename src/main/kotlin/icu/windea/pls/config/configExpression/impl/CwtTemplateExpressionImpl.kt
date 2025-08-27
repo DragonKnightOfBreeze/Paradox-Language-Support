@@ -11,27 +11,22 @@ import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
 import icu.windea.pls.ep.configExpression.RuleBasedCwtDataExpressionResolver
 import icu.windea.pls.lang.isIdentifierChar
 
-/**
- * 模板表达式解析器实现。
- *
- * 关键点：
- * - 使用基于 `expressionString` 的缓存以复用解析结果。
- * - 含空白字符的输入直接视为非法模板，返回空表达式（避免对不规范规则进行模板拆分）。
- * - 仅对拥有“前后缀”的动态规则进行扫描（例如 `value[` 与 `]`、`<` 与 `>`）。
- * - 采用“最左最早匹配”的策略：在剩余字符串中选择最靠左的动态片段进行切分，然后继续向后扫描。
- * - 当最终片段数不超过 1（纯常量或纯一个动态值）时，不视为模板，返回空表达式。
- * - 常量片段中的特殊拆分：若常量尾部包含非标识符字符且其后紧跟可能的“常量规则名”，尝试按 `#129` 的方式拆分，
- *   以避免把 `"<特殊符号> + 常量规则名"` 误读为一个整体常量，影响后续的规则识别与高亮。
- */
 internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolver {
-    // 解析缓存（按原始字符串缓存解析结果）
+    // 关键点：
+    // - 使用基于 `expressionString` 的缓存以复用解析结果。
+    // - 含空白字符的输入直接视为非法模板，返回空表达式（避免对不规范规则进行模板拆分）。
+    // - 仅对拥有“前后缀”的动态规则进行扫描（例如 `value[` 与 `]`、`<` 与 `>`）。
+    // - 采用“最左最早匹配”的策略：在剩余字符串中选择最靠左的动态片段进行切分，然后继续向后扫描。
+    // - 当最终片段数不超过 1（纯常量或纯一个动态值）时，不视为模板，返回空表达式。
+    // - 常量片段中的特殊拆分：若常量尾部包含非标识符字符且其后紧跟可能的“常量规则名”，尝试按 `#129` 的方式拆分，
+    //   以避免把 `"<特殊符号> + 常量规则名"` 误读为一个整体常量，影响后续的规则识别与高亮。
+
     private val cache = CacheBuilder.newBuilder().buildCache<String, CwtTemplateExpression> { doResolve(it) }
     private val emptyExpression = CwtTemplateExpressionImpl("", emptyList())
 
     override fun resolveEmpty(): CwtTemplateExpression = emptyExpression
 
     override fun resolve(expressionString: String): CwtTemplateExpression {
-        // 快速失败：空字符串或包含空白的字符串不参与模板解析
         if (expressionString.isEmpty()) return emptyExpression
         if (expressionString.containsBlank()) return emptyExpression // 不允许包含空白
         return cache.get(expressionString)

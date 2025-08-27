@@ -3,7 +3,7 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.config.configExpression.impl.CwtCardinalityExpressionResolverImpl
 
 /**
- * CWT基数表达式。
+ * CWT 基数表达式。
  *
  * 示例：
  *

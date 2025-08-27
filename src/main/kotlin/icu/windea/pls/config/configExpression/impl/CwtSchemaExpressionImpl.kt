@@ -2,18 +2,19 @@ package icu.windea.pls.config.configExpression.impl
 
 import com.google.common.cache.CacheBuilder
 import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
 import icu.windea.pls.core.indicesOf
+import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.buildCache
 
 internal class CwtSchemaExpressionResolverImpl : CwtSchemaExpression.Resolver {
-    private val logger = logger<CwtSchemaExpression>()
-
-    // 基于 expressionString 的结果缓存，避免重复解析
+    private val logger = thisLogger()
     private val cache = CacheBuilder.newBuilder().buildCache<String, CwtSchemaExpression> { doResolve(it) }
+
     // 匹配未转义的 `$...$` 片段，用于生成模板的 pattern（替换为 `*`）
     private val parameterRegex = """(?<!\\)\$.*?\$""".toRegex()
 
@@ -22,14 +23,13 @@ internal class CwtSchemaExpressionResolverImpl : CwtSchemaExpression.Resolver {
     override fun resolveEmpty(): CwtSchemaExpression = emptyExpression
 
     override fun resolve(expressionString: String): CwtSchemaExpression {
-        // 空字符串快速返回空表达式
         if (expressionString.isEmpty()) return emptyExpression
         return cache.get(expressionString)
     }
 
     private fun doResolve(expressionString: String): CwtSchemaExpression {
         // 收集所有 `$` 的索引，以便快速判定表达式形态
-        val indices = expressionString.indicesOf('$')
+        val indices = expressionString.indicesOf('$').filter { !expressionString.isEscapedCharAt(it) }
         if (indices.isEmpty()) {
             return CwtSchemaConstantExpression(expressionString)
         }
@@ -64,9 +64,7 @@ internal class CwtSchemaExpressionResolverImpl : CwtSchemaExpression.Resolver {
     }
 }
 
-private class CwtSchemaConstantExpression(
-    override val expressionString: String
-) : CwtSchemaExpression.Constant {
+private sealed class CwtSchemaExpressionImplBase : CwtSchemaExpression {
     override fun equals(other: Any?): Boolean {
         return this === other || other is CwtSchemaExpression && expressionString == other.expressionString
     }
@@ -75,56 +73,28 @@ private class CwtSchemaConstantExpression(
 
     override fun toString(): String = expressionString
 }
+
+private class CwtSchemaConstantExpression(
+    override val expressionString: String
+) : CwtSchemaExpressionImplBase(), CwtSchemaExpression.Constant
 
 private class CwtSchemaTemplateExpression(
     override val expressionString: String,
     override val pattern: String,
     override val parameterRanges: List<TextRange>
-) : CwtSchemaExpression.Template {
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is CwtSchemaExpression && expressionString == other.expressionString
-    }
-
-    override fun hashCode(): Int = expressionString.hashCode()
-
-    override fun toString(): String = expressionString
-}
+) : CwtSchemaExpressionImplBase(), CwtSchemaExpression.Template
 
 private class CwtSchemaTypeExpression(
     override val expressionString: String,
     override val name: String
-) : CwtSchemaExpression.Type {
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is CwtSchemaExpression && expressionString == other.expressionString
-    }
-
-    override fun hashCode(): Int = expressionString.hashCode()
-
-    override fun toString(): String = expressionString
-}
+) : CwtSchemaExpressionImplBase(), CwtSchemaExpression.Type
 
 private class CwtSchemaEnumExpression(
     override val expressionString: String,
     override val name: String
-) : CwtSchemaExpression.Enum {
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is CwtSchemaExpression && expressionString == other.expressionString
-    }
-
-    override fun hashCode(): Int = expressionString.hashCode()
-
-    override fun toString(): String = expressionString
-}
+) : CwtSchemaExpressionImplBase(), CwtSchemaExpression.Enum
 
 private class CwtSchemaConstraintExpression(
     override val expressionString: String,
     override val name: String
-) : CwtSchemaExpression.Constraint {
-    override fun equals(other: Any?): Boolean {
-        return this === other || other is CwtSchemaExpression && expressionString == other.expressionString
-    }
-
-    override fun hashCode(): Int = expressionString.hashCode()
-
-    override fun toString(): String = expressionString
-}
+) : CwtSchemaExpressionImplBase(), CwtSchemaExpression.Constraint

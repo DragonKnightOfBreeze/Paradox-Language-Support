@@ -6,21 +6,17 @@ import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.buildCache
 
 internal class CwtImageLocationExpressionResolverImpl : CwtImageLocationExpression.Resolver {
-    // 解析缓存：按原始字符串缓存解析结果
     private val cache = CacheBuilder.newBuilder().buildCache<String, CwtImageLocationExpression> { doResolve(it) }
-    // 预构建空表达式，避免重复分配
     private val emptyExpression = CwtImageLocationExpressionImpl("", "")
 
     override fun resolveEmpty(): CwtImageLocationExpression = emptyExpression
 
     override fun resolve(expressionString: String): CwtImageLocationExpression {
-        // 空串快速返回
         if (expressionString.isEmpty()) return emptyExpression
         return cache.get(expressionString)
     }
 
     private fun doResolve(expressionString: String): CwtImageLocationExpression {
-        if (expressionString.isEmpty()) return emptyExpression
         // 以 '|' 切分：首段为 location，其余为参数
         val tokens = expressionString.split('|')
         // 仅包含 location，无额外参数

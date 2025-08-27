@@ -4,7 +4,7 @@ import icu.windea.pls.config.configExpression.impl.CwtLocalisationLocationExpres
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
- * CWT本地化位置表达式。用于定位定义的相关本地化。
+ * CWT 本地化位置表达式。用于定位定义的相关本地化。
  *
  * 语法与约定：
  * - 以 `|` 分隔参数：`<location>|<args...>`。
