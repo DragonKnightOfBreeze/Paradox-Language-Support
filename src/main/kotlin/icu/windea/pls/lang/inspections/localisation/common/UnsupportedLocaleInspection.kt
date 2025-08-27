@@ -5,8 +5,7 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.ParadoxPathMatcher
-import icu.windea.pls.model.matches
+import icu.windea.pls.model.paths.*
 
 /**
  * 不支持的语言区域的检查。

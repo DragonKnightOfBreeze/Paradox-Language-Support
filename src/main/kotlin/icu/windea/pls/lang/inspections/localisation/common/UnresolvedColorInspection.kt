@@ -7,8 +7,7 @@ import icu.windea.pls.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.ParadoxPathMatcher
-import icu.windea.pls.model.matches
+import icu.windea.pls.model.paths.*
 import javax.swing.*
 
 /**

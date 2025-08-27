@@ -16,8 +16,8 @@ import com.intellij.util.text.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configContext.*
+import icu.windea.pls.config.configExpression.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -40,6 +40,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionMatcher.ResultValue
 import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.localisation.psi.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.paths.*
 import icu.windea.pls.script.editor.*
 import icu.windea.pls.script.psi.*
 import kotlin.collections.isNullOrEmpty

@@ -8,7 +8,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
+import icu.windea.pls.model.paths.*
 
 /**
  * （对于本地化文件）检查是否存在不支持的递归。

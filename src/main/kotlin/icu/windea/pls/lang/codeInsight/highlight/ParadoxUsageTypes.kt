@@ -2,7 +2,7 @@ package icu.windea.pls.lang.codeInsight.highlight
 
 import com.intellij.usages.impl.rules.*
 import icu.windea.pls.*
-import icu.windea.pls.config.expression.*
+import icu.windea.pls.config.configExpression.*
 import java.util.concurrent.*
 
 object ParadoxUsageTypes {

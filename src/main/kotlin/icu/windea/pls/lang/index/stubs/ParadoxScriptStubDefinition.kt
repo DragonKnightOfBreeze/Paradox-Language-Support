@@ -7,7 +7,7 @@ import com.intellij.util.diff.*
 import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import icu.windea.pls.model.paths.*
 import icu.windea.pls.script.lexer.*
 import icu.windea.pls.script.parser.*
 import icu.windea.pls.script.psi.*

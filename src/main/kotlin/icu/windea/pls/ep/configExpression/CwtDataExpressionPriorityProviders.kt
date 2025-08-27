@@ -1,8 +1,8 @@
 package icu.windea.pls.ep.configExpression
 
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configExpression.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 
 class BaseCwtDataExpressionPriorityProvider : CwtDataExpressionPriorityProvider {
     override fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Double {

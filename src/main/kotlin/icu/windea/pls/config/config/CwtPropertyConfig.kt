@@ -3,8 +3,8 @@ package icu.windea.pls.config.config
 import com.intellij.openapi.util.*
 import com.intellij.psi.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configExpression.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
@@ -103,7 +103,7 @@ private abstract class CwtPropertyConfigImpl(
 
     //not cached to optimize memory
     override val keyExpression get() = CwtDataExpression.resolve(key, true)
-    override val valueExpression get() = if (isBlock) CwtDataExpression.BlockExpression else CwtDataExpression.resolve(value, false)
+    override val valueExpression get() = if (isBlock) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
 
     override fun toString() = "$key ${separatorType} $value"
 }
@@ -176,7 +176,7 @@ private abstract class CwtPropertyConfigDelegate(
 
     //not cached to optimize memory
     override val keyExpression get() = CwtDataExpression.resolve(key, true)
-    override val valueExpression get() = if (isBlock) CwtDataExpression.BlockExpression else CwtDataExpression.resolve(value, false)
+    override val valueExpression get() = if (isBlock) CwtDataExpression.resolveBlock() else CwtDataExpression.resolve(value, false)
 
     override fun <T : Any?> getUserData(key: Key<T>) = delegate.getUserData(key) ?: super.getUserData(key)
     override fun <T : Any?> putUserData(key: Key<T>, value: T?) = super.putUserData(key, value)

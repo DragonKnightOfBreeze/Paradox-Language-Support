@@ -4,7 +4,7 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.codeInsight.template.*
 import com.intellij.openapi.util.*
 import com.intellij.util.*
-import icu.windea.pls.config.expression.*
+import icu.windea.pls.config.configExpression.*
 import icu.windea.pls.core.*
 
 sealed class CwtConfigTemplateExpression(

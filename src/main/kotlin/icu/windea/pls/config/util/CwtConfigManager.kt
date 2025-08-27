@@ -10,8 +10,8 @@ import com.intellij.psi.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configExpression.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
@@ -20,6 +20,7 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.ep.configGroup.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.paths.*
 
 object CwtConfigManager {
     object Keys : KeyRegistry() {
@@ -106,7 +107,7 @@ object CwtConfigManager {
 
     fun getConfigPath(element: PsiElement): CwtConfigPath? {
         if (element.language !is CwtLanguage) return null
-        if (element is CwtFile || element is CwtRootBlock) return CwtConfigPath.Empty
+        if (element is CwtFile || element is CwtRootBlock) return CwtConfigPath.resolveEmpty()
         val memberElement = element.parentOfType<CwtMemberElement>(withSelf = true)
         if (memberElement == null) return null
         return doGetConfigPathFromCache(memberElement)
@@ -138,7 +139,7 @@ object CwtConfigManager {
                     depth++
                 }
             }
-            current = runReadAction { current.parent } ?: break
+            current = current.parent ?: break
         }
         if (current !is CwtFile) return null //unexpected
         return CwtConfigPath.resolve(subPaths)

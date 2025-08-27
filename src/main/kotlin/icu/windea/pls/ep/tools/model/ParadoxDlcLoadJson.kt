@@ -1,4 +1,4 @@
-package icu.windea.pls.model.tools
+package icu.windea.pls.ep.tools.model
 
 import com.fasterxml.jackson.annotation.*
 

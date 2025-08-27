@@ -3,8 +3,8 @@ package icu.windea.pls.ep.configGroup
 import com.intellij.openapi.vfs.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configExpression.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -36,12 +36,12 @@ class FileBasedCwtConfigGroupDataProvider : CwtConfigGroupDataProvider {
         }
         allInternalFiles.forEach f@{ (filePath, file) ->
             val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
-            val fileConfig = CwtConfigResolver.resolve(psiFile, configGroup)
+            val fileConfig = CwtConfigFileResolver.resolve(psiFile, configGroup)
             processInternalFile(filePath, fileConfig, configGroup)
         }
         allFiles.forEach f@{ (_, file) ->
             val psiFile = file.toPsiFile(configGroup.project) as? CwtFile ?: return@f
-            val fileConfig = CwtConfigResolver.resolve(psiFile, configGroup)
+            val fileConfig = CwtConfigFileResolver.resolve(psiFile, configGroup)
             processFile(fileConfig, configGroup)
             //configGroup.files[filePath] = fileConfig //TODO 2.0.0-dev+ 目前并不需要缓存文件规则
         }

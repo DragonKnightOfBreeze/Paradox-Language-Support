@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.configExpression
 
 import icu.windea.pls.config.*
-import icu.windea.pls.config.expression.*
+import icu.windea.pls.config.configExpression.*
 import icu.windea.pls.core.*
 
 abstract class RuleBasedCwtDataExpressionResolver : CwtDataExpressionResolver {

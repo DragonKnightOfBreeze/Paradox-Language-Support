@@ -1,0 +1,53 @@
+package icu.windea.pls.config.configExpression.impl
+
+import com.google.common.cache.CacheBuilder
+import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
+import icu.windea.pls.core.*
+import icu.windea.pls.core.util.*
+
+internal class CwtLocalisationLocationExpressionResolverImpl : CwtLocalisationLocationExpression.Resolver {
+    private val cache = CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) }
+    private val emptyExpression = CwtLocalisationLocationExpressionImpl("", "")
+
+    override fun resolveEmpty(): CwtLocalisationLocationExpression = emptyExpression
+
+    override fun resolve(expressionString: String): CwtLocalisationLocationExpression {
+        if (expressionString.isEmpty()) return emptyExpression
+        return cache.get(expressionString)
+    }
+
+    private fun doResolve(expressionString: String): CwtLocalisationLocationExpression {
+        if (expressionString.isEmpty()) return emptyExpression
+        val tokens = expressionString.split('|')
+        if (tokens.size == 1) return CwtLocalisationLocationExpressionImpl(expressionString, expressionString)
+        val location = tokens.first()
+        val args = tokens.drop(1)
+        var namePaths: Set<String>? = null
+        var forceUpperCase = false
+        args.forEach { arg ->
+            if (arg.startsWith('$')) {
+                namePaths = arg.drop(1).toCommaDelimitedStringSet()
+            } else if (arg == "u") {
+                forceUpperCase = true
+            }
+        }
+        return CwtLocalisationLocationExpressionImpl(expressionString, location, namePaths.orEmpty(), forceUpperCase)
+    }
+}
+
+private class CwtLocalisationLocationExpressionImpl(
+    override val expressionString: String,
+    override val location: String,
+    override val namePaths: Set<String> = emptySet(),
+    override val forceUpperCase: Boolean = false,
+) : CwtLocalisationLocationExpression {
+    override val isPlaceholder: Boolean = location.contains('$')
+
+    override fun equals(other: Any?): Boolean {
+        return this === other || other is CwtLocalisationLocationExpression && expressionString == other.expressionString
+    }
+
+    override fun hashCode(): Int = expressionString.hashCode()
+
+    override fun toString(): String = expressionString
+}

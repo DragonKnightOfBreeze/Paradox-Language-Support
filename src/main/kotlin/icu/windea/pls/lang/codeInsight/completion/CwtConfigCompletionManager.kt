@@ -14,8 +14,8 @@ import com.intellij.psi.util.*
 import com.intellij.util.*
 import icu.windea.pls.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configExpression.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.codeInsight.*
@@ -25,6 +25,7 @@ import icu.windea.pls.cwt.codeStyle.*
 import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
+import icu.windea.pls.model.paths.*
 
 object CwtConfigCompletionManager {
     object Keys : KeyRegistry()

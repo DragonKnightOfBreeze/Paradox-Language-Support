@@ -4,8 +4,8 @@ import com.google.common.cache.*
 import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import icu.windea.pls.config.*
+import icu.windea.pls.config.configExpression.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.expression.*

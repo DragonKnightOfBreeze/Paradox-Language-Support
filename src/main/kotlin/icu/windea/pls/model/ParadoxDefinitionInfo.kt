@@ -2,8 +2,8 @@ package icu.windea.pls.model
 
 import com.intellij.openapi.util.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configExpression.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.annotations.*
@@ -11,6 +11,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.configContext.*
 import icu.windea.pls.lang.util.*
+import icu.windea.pls.model.paths.*
 import icu.windea.pls.script.psi.*
 import java.util.*
 import java.util.concurrent.*

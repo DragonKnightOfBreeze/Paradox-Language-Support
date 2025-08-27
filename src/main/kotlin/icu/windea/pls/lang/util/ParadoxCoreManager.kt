@@ -19,9 +19,10 @@ import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
 import icu.windea.pls.ep.metadata.*
 import icu.windea.pls.lang.*
-import icu.windea.pls.lang.index.ParadoxIndexKeys
+import icu.windea.pls.lang.index.*
 import icu.windea.pls.lang.listeners.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.paths.*
 import java.nio.file.*
 import kotlin.io.path.*
 

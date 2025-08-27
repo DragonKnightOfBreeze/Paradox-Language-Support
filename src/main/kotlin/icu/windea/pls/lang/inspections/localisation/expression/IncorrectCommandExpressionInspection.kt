@@ -12,8 +12,7 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.expression.complex.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.ParadoxPathMatcher
-import icu.windea.pls.model.matches
+import icu.windea.pls.model.paths.*
 
 /**
  * 不正确的[ParadoxCommandExpression]的检查。

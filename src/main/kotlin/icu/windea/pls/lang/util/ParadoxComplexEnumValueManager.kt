@@ -8,7 +8,6 @@ import com.intellij.openapi.progress.*
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import icu.windea.pls.*
-import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configGroup.*
 import icu.windea.pls.config.util.*
@@ -21,8 +20,8 @@ import icu.windea.pls.lang.search.*
 import icu.windea.pls.lang.search.selector.*
 import icu.windea.pls.lang.util.dataFlow.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
 import icu.windea.pls.model.indexInfo.*
+import icu.windea.pls.model.paths.*
 import icu.windea.pls.script.psi.*
 
 object ParadoxComplexEnumValueManager {

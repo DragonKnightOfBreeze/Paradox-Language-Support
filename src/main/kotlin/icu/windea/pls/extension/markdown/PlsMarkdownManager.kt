@@ -11,6 +11,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
 import icu.windea.pls.model.constants.*
 import icu.windea.pls.model.injection.*
+import icu.windea.pls.model.paths.*
 import org.intellij.plugins.markdown.lang.*
 import org.intellij.plugins.markdown.lang.psi.impl.*
 

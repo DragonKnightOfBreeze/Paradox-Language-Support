@@ -7,9 +7,8 @@ import icu.windea.pls.core.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.quickfix.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.ParadoxPathMatcher
 import icu.windea.pls.model.constants.*
-import icu.windea.pls.model.matches
+import icu.windea.pls.model.paths.*
 
 //com.intellij.openapi.editor.actions.AddBomAction
 //com.intellij.openapi.editor.actions.RemoveBomAction

@@ -1,8 +1,9 @@
 package icu.windea.pls.script.psi.stubs
 
 import com.intellij.psi.stubs.*
-import icu.windea.pls.lang.psi.stubs.ParadoxStub
+import icu.windea.pls.lang.psi.stubs.*
 import icu.windea.pls.model.*
+import icu.windea.pls.model.paths.*
 import icu.windea.pls.script.psi.*
 import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 
@@ -41,7 +42,7 @@ interface ParadoxScriptPropertyStub : ParadoxStub<ParadoxScriptProperty> {
         override val definitionType: String get() = ""
         override val definitionSubtypes: List<String>? get() = null
         override val rootKey: String get() = ""
-        override val elementPath: ParadoxExpressionPath get() = ParadoxExpressionPath.Empty
+        override val elementPath: ParadoxExpressionPath get() = ParadoxExpressionPath.resolveEmpty()
         override val gameType: ParadoxGameType get() = ParadoxGameType.placeholder()
 
         override fun toString(): String {

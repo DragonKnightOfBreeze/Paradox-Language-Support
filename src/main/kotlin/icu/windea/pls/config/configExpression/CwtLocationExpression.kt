@@ -1,4 +1,4 @@
-package icu.windea.pls.config.expression
+package icu.windea.pls.config.configExpression
 
 /**
  * CWT位置表达式。用于定位目标的来源。
@@ -6,7 +6,7 @@ package icu.windea.pls.config.expression
  * @property location 位置表达式。
  * @property isPlaceholder 位置表达式是否是占位符（包含`$`）。
  */
-interface CwtLocationExpression : CwtExpression {
+interface CwtLocationExpression : CwtConfigExpression {
     val location: String
     val isPlaceholder: Boolean
 

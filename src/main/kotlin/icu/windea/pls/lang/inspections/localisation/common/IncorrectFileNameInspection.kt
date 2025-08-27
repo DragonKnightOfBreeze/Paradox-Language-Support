@@ -14,8 +14,7 @@ import icu.windea.pls.core.collections.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.ParadoxPathMatcher
-import icu.windea.pls.model.matches
+import icu.windea.pls.model.paths.*
 
 /**
  * 不正确的文件名的检查。

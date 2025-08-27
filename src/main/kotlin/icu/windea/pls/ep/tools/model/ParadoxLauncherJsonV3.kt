@@ -1,8 +1,8 @@
-package icu.windea.pls.model.tools
+package icu.windea.pls.ep.tools.model
 
 import com.fasterxml.jackson.annotation.*
 
-data class ParadoxLauncherJsonV2(
+data class ParadoxLauncherJsonV3(
     val game: String,
     val mods: List<Mod>,
     val name: String,
@@ -12,7 +12,7 @@ data class ParadoxLauncherJsonV2(
         val displayName: String,
         val enabled: Boolean,
         val pdxId: String? = null,
-        val position: String, // (i + 1 + 4096).toString(10).padStart(10, '0')
+        val position: Int, // i
         val steamId: String? = null,
     )
 }

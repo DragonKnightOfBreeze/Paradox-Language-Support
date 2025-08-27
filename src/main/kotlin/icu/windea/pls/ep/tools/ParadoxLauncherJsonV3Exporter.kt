@@ -8,12 +8,12 @@ import com.intellij.openapi.progress.*
 import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.ep.tools.model.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.ui.tools.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.model.*
-import icu.windea.pls.model.tools.*
 
 /**
  * 导出模组配置到启动器JSON配置文件。（>= 2021.10）

@@ -1,6 +1,6 @@
-package icu.windea.pls.model
+package icu.windea.pls.model.paths
 
-import icu.windea.pls.model.constants.PlsConstants
+import icu.windea.pls.model.constants.*
 
 @Suppress("unused", "SameParameterValue")
 enum class ParadoxPathMatcher {

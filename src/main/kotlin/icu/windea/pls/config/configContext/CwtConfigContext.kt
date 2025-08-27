@@ -17,6 +17,7 @@ import icu.windea.pls.lang.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.lang.util.ParadoxExpressionMatcher.Options
 import icu.windea.pls.model.*
+import icu.windea.pls.model.paths.*
 import icu.windea.pls.script.psi.*
 import java.util.concurrent.*
 

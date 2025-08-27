@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.configExpression
 
 import com.intellij.openapi.extensions.*
-import icu.windea.pls.config.expression.*
+import icu.windea.pls.config.configExpression.*
 
 /**
  * 用于解析CWT数据表达式。

@@ -10,9 +10,9 @@ import icu.windea.pls.cwt.psi.*
 import icu.windea.pls.lang.codeInsight.*
 import icu.windea.pls.model.*
 
-private val logger = logger<CwtConfigResolver>()
+object CwtConfigFileResolver {
+    private val logger = thisLogger()
 
-object CwtConfigResolver {
     fun resolve(file: CwtFile, configGroup: CwtConfigGroup): CwtFileConfig {
         val rootBlock = file.block
         val properties = mutableListOf<CwtPropertyConfig>()

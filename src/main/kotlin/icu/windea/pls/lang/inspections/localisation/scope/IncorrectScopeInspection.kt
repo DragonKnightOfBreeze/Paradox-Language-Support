@@ -10,8 +10,7 @@ import icu.windea.pls.lang.expression.complex.nodes.*
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.ParadoxPathMatcher
-import icu.windea.pls.model.matches
+import icu.windea.pls.model.paths.*
 
 class IncorrectScopeInspection : LocalInspectionTool() {
     override fun isAvailableForFile(file: PsiFile): Boolean {

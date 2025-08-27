@@ -11,7 +11,7 @@ import icu.windea.pls.core.util.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import icu.windea.pls.model.paths.*
 import icu.windea.pls.script.psi.*
 
 //region Extensions

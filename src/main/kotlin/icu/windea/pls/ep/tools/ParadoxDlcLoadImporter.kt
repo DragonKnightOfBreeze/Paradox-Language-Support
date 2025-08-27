@@ -8,11 +8,11 @@ import com.intellij.openapi.project.*
 import icu.windea.pls.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.util.*
+import icu.windea.pls.ep.tools.model.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.settings.*
 import icu.windea.pls.lang.ui.tools.*
 import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.tools.*
 import kotlin.io.path.*
 
 /**

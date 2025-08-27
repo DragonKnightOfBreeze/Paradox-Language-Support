@@ -1,6 +1,6 @@
 @file:Suppress("PackageDirectoryMismatch")
 
-package icu.windea.pls.config.expression
+package icu.windea.pls.config.configExpression
 
 import com.google.common.cache.*
 import com.intellij.openapi.diagnostic.*
@@ -12,7 +12,7 @@ private val logger = logger<CwtSchemaExpression>()
 
 sealed class CwtSchemaExpression(
     override val expressionString: String
-) : CwtExpression {
+) : CwtConfigExpression {
     override fun equals(other: Any?): Boolean {
         return this === other || other is CwtSchemaExpression && expressionString == other.expressionString
     }

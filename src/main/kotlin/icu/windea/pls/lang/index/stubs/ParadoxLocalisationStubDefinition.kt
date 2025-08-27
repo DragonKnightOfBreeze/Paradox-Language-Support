@@ -10,7 +10,7 @@ import icu.windea.pls.lang.util.*
 import icu.windea.pls.localisation.lexer.*
 import icu.windea.pls.localisation.parser.*
 import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.model.*
+import icu.windea.pls.model.paths.*
 
 @Suppress("UnstableApiUsage")
 class ParadoxLocalisationStubDefinition : LightLanguageStubDefinition {

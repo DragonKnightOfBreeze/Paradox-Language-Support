@@ -19,8 +19,8 @@ import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
 import icu.windea.pls.config.configContext.*
+import icu.windea.pls.config.configExpression.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.config.util.*
 import icu.windea.pls.core.*
 import icu.windea.pls.core.collections.*
@@ -30,7 +30,6 @@ import icu.windea.pls.ep.configContext.*
 import icu.windea.pls.ep.parameter.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.completion.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.*
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
@@ -386,7 +385,7 @@ object ParadoxParameterManager {
     }
 
     /**
-     * @param shift 从[element]开始向上的偏移，偏移量与[ParadoxExpressionPath]的长度的判定方式是一致的。
+     * @param shift 从[element]开始向上的偏移，偏移量与[icu.windea.pls.model.paths.ParadoxExpressionPath]的长度的判定方式是一致的。
      */
     fun getParameterizedKeyConfigs(element: PsiElement, shift: Int): List<CwtValueConfig> {
         val parameterizedProperty = element.parentsOfType<ParadoxScriptMemberElement>()

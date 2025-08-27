@@ -6,13 +6,12 @@ import com.intellij.psi.*
 import icu.windea.pls.*
 import icu.windea.pls.config.*
 import icu.windea.pls.config.config.*
+import icu.windea.pls.config.configExpression.*
 import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.expression.*
 import icu.windea.pls.ep.modifier.*
 import icu.windea.pls.ep.scope.*
 import icu.windea.pls.lang.*
 import icu.windea.pls.lang.codeInsight.*
-import icu.windea.pls.script.psi.ParadoxScriptDefinitionElement
 import icu.windea.pls.lang.psi.mock.*
 import icu.windea.pls.lang.util.*
 import icu.windea.pls.script.psi.*
