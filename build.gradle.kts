@@ -1,6 +1,7 @@
-import org.jetbrains.changelog.*
-import org.jetbrains.intellij.platform.gradle.*
-import org.jetbrains.kotlin.gradle.dsl.*
+import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.markdownToHTML
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.10" // https://kotlinlang.org/docs/gradle.html
@@ -255,25 +256,29 @@ tasks {
         systemProperty("pls.is.debug", "true")
     }
     test {
-        exclude("icu/windea/pls/ai/**")
-    }
-    val testTaskProvider = named<Test>("test")
-    register<Test>("aiTest") {
-        group = "verification"
-        description = "Run AI-related tests"
-        useJUnit()
-        // Reuse the same compiled classes and classpath as the main 'test' task
-        testClassesDirs = testTaskProvider.get().testClassesDirs
-        classpath = testTaskProvider.get().classpath
-        // Only run AI tests
-        include("icu/windea/pls/ai/**")
-        // Avoid parallel API calls
-        maxParallelForks = 1
-        // Run only when API key exists to prevent false failures locally/CI
-        onlyIf {
-            val hasKey = System.getenv("DEEPSEEK_KEY")?.isNotBlank() == true
-            if (!hasKey) logger.lifecycle("Skipping aiTest because DEEPSEEK_KEY is not set.")
-            hasKey
+        if (!hasProperty("pls.include.test.ai")) {
+            exclude("icu/windea/pls/ai/**")
         }
     }
+
+    // 让它正常工作有点太麻烦了
+    // val testTaskProvider = named<Test>("test")
+    // register<Test>("aiTest") {
+    //     group = "verification"
+    //     description = "Run AI-related tests"
+    //     useJUnit()
+    //     // Reuse the same compiled classes and classpath as the main 'test' task
+    //     testClassesDirs = testTaskProvider.get().testClassesDirs
+    //     classpath = testTaskProvider.get().classpath
+    //     // Only run AI tests
+    //     include("icu/windea/pls/ai/**")
+    //     // Avoid parallel API calls
+    //     maxParallelForks = 1
+    //     // Run only when API key exists to prevent false failures locally/CI
+    //     onlyIf {
+    //         val hasKey = System.getenv("DEEPSEEK_KEY")?.isNotBlank() == true
+    //         if (!hasKey) logger.lifecycle("Skipping aiTest because DEEPSEEK_KEY is not set.")
+    //         hasKey
+    //     }
+    // }
 }
