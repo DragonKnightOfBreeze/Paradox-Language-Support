@@ -39,11 +39,7 @@ private class CwtCardinalityExpressionImpl(
         return this === other || other is CwtCardinalityExpression && expressionString == other.expressionString
     }
 
-    override fun hashCode(): Int {
-        return expressionString.hashCode()
-    }
+    override fun hashCode(): Int = expressionString.hashCode()
 
-    override fun toString(): String {
-        return expressionString
-    }
+    override fun toString(): String = expressionString
 }

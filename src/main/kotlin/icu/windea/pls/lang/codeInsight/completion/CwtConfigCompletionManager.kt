@@ -380,6 +380,7 @@ object CwtConfigCompletionManager {
                 true
             }
             is CwtSchemaExpression.Constraint -> true
+            else -> true
         }
     }
 

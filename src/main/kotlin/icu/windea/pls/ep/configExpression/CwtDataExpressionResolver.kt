@@ -27,7 +27,7 @@ interface CwtDataExpressionResolver {
         }
 
         /**
-         * @see CwtDataExpressionResolver.resolve
+         * @see CwtDataExpressionResolver.resolveTemplate
          */
         fun resolveTemplate(expressionString: String): CwtDataExpression? {
             EP_NAME.extensionList.forEach f@{ ep ->
