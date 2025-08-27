@@ -6,18 +6,22 @@ import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.buildCache
 
 internal class CwtLocalisationLocationExpressionResolverImpl : CwtLocalisationLocationExpression.Resolver {
+    // 解析缓存：按原始字符串缓存解析结果
     private val cache = CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) }
+    // 预构建空表达式，避免重复分配
     private val emptyExpression = CwtLocalisationLocationExpressionImpl("", "")
 
     override fun resolveEmpty(): CwtLocalisationLocationExpression = emptyExpression
 
     override fun resolve(expressionString: String): CwtLocalisationLocationExpression {
+        // 空串快速返回
         if (expressionString.isEmpty()) return emptyExpression
         return cache.get(expressionString)
     }
 
     private fun doResolve(expressionString: String): CwtLocalisationLocationExpression {
         if (expressionString.isEmpty()) return emptyExpression
+        // 以 '|' 切分：首段为 location，其余为参数
         val tokens = expressionString.split('|')
         if (tokens.size == 1) return CwtLocalisationLocationExpressionImpl(expressionString, expressionString)
         val location = tokens.first()
@@ -25,6 +29,7 @@ internal class CwtLocalisationLocationExpressionResolverImpl : CwtLocalisationLo
         var namePaths: Set<String>? = null
         var forceUpperCase = false
         args.forEach { arg ->
+            // 以 '$' 开头：表示 namePaths；参数 'u' 表示强制大写
             if (arg.startsWith('$')) {
                 namePaths = arg.drop(1).toCommaDelimitedStringSet()
             } else if (arg == "u") {
@@ -41,6 +46,7 @@ private class CwtLocalisationLocationExpressionImpl(
     override val namePaths: Set<String> = emptySet(),
     override val forceUpperCase: Boolean = false,
 ) : CwtLocalisationLocationExpression {
+    // 当 location 包含占位符 '$' 时，需要在后续步骤以名称文本替换
     override val isPlaceholder: Boolean = location.contains('$')
 
     override fun equals(other: Any?): Boolean {

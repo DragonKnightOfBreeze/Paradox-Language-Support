@@ -12,7 +12,9 @@ import icu.windea.pls.core.util.buildCache
 internal class CwtSchemaExpressionResolverImpl : CwtSchemaExpression.Resolver {
     private val logger = logger<CwtSchemaExpression>()
 
+    // 基于 expressionString 的结果缓存，避免重复解析
     private val cache = CacheBuilder.newBuilder().buildCache<String, CwtSchemaExpression> { doResolve(it) }
+    // 匹配未转义的 `$...$` 片段，用于生成模板的 pattern（替换为 `*`）
     private val parameterRegex = """(?<!\\)\$.*?\$""".toRegex()
 
     private val emptyExpression: CwtSchemaExpression = CwtSchemaConstantExpression("")
@@ -20,34 +22,41 @@ internal class CwtSchemaExpressionResolverImpl : CwtSchemaExpression.Resolver {
     override fun resolveEmpty(): CwtSchemaExpression = emptyExpression
 
     override fun resolve(expressionString: String): CwtSchemaExpression {
+        // 空字符串快速返回空表达式
         if (expressionString.isEmpty()) return emptyExpression
         return cache.get(expressionString)
     }
 
     private fun doResolve(expressionString: String): CwtSchemaExpression {
+        // 收集所有 `$` 的索引，以便快速判定表达式形态
         val indices = expressionString.indicesOf('$')
         if (indices.isEmpty()) {
             return CwtSchemaConstantExpression(expressionString)
         }
         if (indices.size == 1) {
             run {
+                // `$xxx` -> 类型表达式
                 val name = expressionString.removePrefixOrNull("$") ?: return@run
                 return CwtSchemaTypeExpression(expressionString, name)
             }
         } else if (indices.size == 2) {
             run {
+                // `$$xxx` -> 约束表达式
                 val name = expressionString.removePrefixOrNull("$$") ?: return@run
                 return CwtSchemaConstraintExpression(expressionString, name)
             }
             run {
+                // `$enum:xxx$` -> 枚举表达式
                 val name = expressionString.removeSurroundingOrNull("\$enum:", "$") ?: return@run
                 return CwtSchemaEnumExpression(expressionString, name)
             }
         }
+        // 奇数个 `$` 视为非法模板，回退为常量（保持容错）
         if (indices.size % 2 == 1) {
             logger.warn("Invalid schema expression $expressionString, fallback to constant")
             return CwtSchemaConstantExpression(expressionString)
         }
+        // 模板：将 `$...$` 片段替换为 `*` 形成展示/匹配用的 pattern
         val pattern = expressionString.replace(parameterRegex, "*")
         val parameterRanges = indices
             .windowed(2, 2) { (i1, i2) -> TextRange.create(i1, i2 + 1) }
