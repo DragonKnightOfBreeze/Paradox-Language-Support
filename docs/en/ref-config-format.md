@@ -1,4 +1,4 @@
-### Appendix: Config Formats Reference
+# Appendix: Config Formats Reference
 
 ## Summary
 
