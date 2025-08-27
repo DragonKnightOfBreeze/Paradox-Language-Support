@@ -1,15 +1,18 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.ide.*
-import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.ui.*
-import icu.windea.pls.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.ep.configGroup.*
+import com.intellij.ide.BrowserUtil
+import com.intellij.openapi.fileEditor.FileEditor
+import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.EditorNotificationProvider
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.cwt.CwtFileType
+import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
 import java.util.function.Function
-import javax.swing.*
+import javax.swing.JComponent
 
 /**
  * 当用户打开CWT规则文件时，给出提示以及一些参考信息。

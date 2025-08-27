@@ -2,16 +2,18 @@
 
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.util.*
-import icu.windea.pls.config.config.CwtConfig.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.ep.parameter.*
-import icu.windea.pls.lang.psi.mock.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.script.psi.*
+import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.psi.util.parentOfType
+import icu.windea.pls.config.config.CwtConfig.Option
+import icu.windea.pls.config.util.CwtConfigManipulator
+import icu.windea.pls.core.util.listOrEmpty
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.ep.parameter.containingContextReference
+import icu.windea.pls.lang.psi.mock.ParadoxParameterElement
+import icu.windea.pls.lang.util.ParadoxExpressionManager
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.script.psi.ParadoxScriptMemberElement
 
 interface CwtExtendedParameterConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String

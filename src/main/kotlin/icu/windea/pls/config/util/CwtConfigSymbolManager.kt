@@ -2,23 +2,38 @@
 
 package icu.windea.pls.config.util
 
-import com.intellij.codeInsight.highlighting.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import com.intellij.psi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.cwt.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.references.cwt.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
-import icu.windea.pls.model.indexInfo.*
+import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiReference
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
+import com.intellij.psi.util.startOffset
+import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypes
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.findKeywordsWithRanges
+import icu.windea.pls.core.isLeftQuoted
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.tupleOf
+import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.cwt.CwtLanguage
+import icu.windea.pls.cwt.psi.CwtStringExpressionElement
+import icu.windea.pls.cwt.psi.isExpression
+import icu.windea.pls.lang.expression.ParadoxDefinitionTypeExpression
+import icu.windea.pls.lang.references.cwt.CwtConfigSymbolPsiReference
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.constants.CwtConfigTextPatternSets
+import icu.windea.pls.model.constants.CwtConfigTextPatterns
+import icu.windea.pls.model.indexInfo.CwtConfigSymbolIndexInfo
 
 object CwtConfigSymbolManager {
     object Keys : KeyRegistry() {

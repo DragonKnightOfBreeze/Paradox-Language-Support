@@ -1,9 +1,11 @@
 package icu.windea.pls.config.config
 
-import com.intellij.psi.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.model.*
+import com.intellij.psi.PsiElement
+import icu.windea.pls.core.cast
+import icu.windea.pls.core.toBooleanYesNo
+import icu.windea.pls.core.util.set
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.model.CwtType
 
 sealed interface CwtOptionMemberConfig<out T : PsiElement> : CwtDetachedConfig {
     val value: String

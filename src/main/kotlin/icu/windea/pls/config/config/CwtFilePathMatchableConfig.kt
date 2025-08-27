@@ -1,7 +1,7 @@
 package icu.windea.pls.config.config
 
-import icu.windea.pls.config.config.CwtConfig.*
-import icu.windea.pls.cwt.psi.*
+import icu.windea.pls.config.config.CwtConfig.Property
+import icu.windea.pls.cwt.psi.CwtProperty
 
 interface CwtFilePathMatchableConfig : CwtConfig<CwtProperty> {
     @Property("path: string", multiple = true)

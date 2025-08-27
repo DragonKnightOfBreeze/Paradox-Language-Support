@@ -2,12 +2,12 @@
 
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.CwtConfig.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.util.*
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.config.CwtConfig.Property
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.util.ParadoxScopeManager
 
 interface CwtLinkConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String

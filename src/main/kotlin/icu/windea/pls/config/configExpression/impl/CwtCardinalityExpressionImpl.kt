@@ -1,8 +1,8 @@
 package icu.windea.pls.config.configExpression.impl
 
-import com.google.common.cache.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.core.util.*
+import com.google.common.cache.CacheBuilder
+import icu.windea.pls.config.configExpression.CwtCardinalityExpression
+import icu.windea.pls.core.util.buildCache
 
 internal class CwtCardinalityExpressionResolverImpl : CwtCardinalityExpression.Resolver {
     private val cache = CacheBuilder.newBuilder().buildCache<String, CwtCardinalityExpression> { doResolve(it) }

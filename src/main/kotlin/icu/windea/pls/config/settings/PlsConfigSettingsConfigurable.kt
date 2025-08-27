@@ -1,19 +1,26 @@
 package icu.windea.pls.config.settings
 
-import com.intellij.openapi.fileChooser.*
-import com.intellij.openapi.options.*
-import com.intellij.openapi.ui.*
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.options.BoundConfigurable
+import com.intellij.openapi.options.SearchableConfigurable
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.setEmptyState
 import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.MAX_LINE_LENGTH_WORD_WRAP
+import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.toNonNullableProperty
 import com.intellij.ui.layout.selected
-import icu.windea.pls.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.model.*
-import java.awt.event.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.config.util.CwtConfigRepositoryManager
+import icu.windea.pls.core.util.CallbackLock
+import icu.windea.pls.core.util.toMutableEntryList
+import icu.windea.pls.core.util.toMutableMap
+import icu.windea.pls.model.ParadoxGameType
+import java.awt.event.ActionEvent
 
 @Suppress("UnstableApiUsage")
 class PlsConfigSettingsConfigurable : BoundConfigurable(PlsBundle.message("settings.config")), SearchableConfigurable {

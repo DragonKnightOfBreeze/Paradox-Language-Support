@@ -1,8 +1,9 @@
 package icu.windea.pls.config
 
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.model.paths.*
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.core.collections.findIsInstance
+import icu.windea.pls.model.paths.CwtConfigPath
 
 fun CwtMemberConfig<*>.findProperty(key: String, ignoreCase: Boolean = false): CwtPropertyConfig? {
     return configs?.findIsInstance<CwtPropertyConfig> { it.key.equals(key, ignoreCase) }

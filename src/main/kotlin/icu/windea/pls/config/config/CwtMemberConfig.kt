@@ -1,16 +1,30 @@
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.project.*
-import com.intellij.psi.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configContext.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.ep.config.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.CwtTagType
+import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
+import icu.windea.pls.config.configExpression.CwtCardinalityExpression
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.core.cast
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.toBooleanYesNo
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getOrPutUserData
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.setValue
+import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.ep.config.CwtOverriddenConfigProvider
+import icu.windea.pls.lang.util.ParadoxDefineManager
+import icu.windea.pls.lang.util.ParadoxScopeManager
+import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.Occurrence
+import icu.windea.pls.model.ParadoxScopeContext
+import icu.windea.pls.model.resolve
+import icu.windea.pls.model.resolveNext
 
 sealed interface CwtMemberConfig<out T : CwtMemberElement> : CwtConfig<T> {
     val value: String

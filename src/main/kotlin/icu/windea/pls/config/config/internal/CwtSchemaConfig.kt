@@ -2,8 +2,9 @@
 
 package icu.windea.pls.config.config
 
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
+import icu.windea.pls.config.configExpression.CwtSchemaExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.schemas
 
 class CwtSchemaConfig(
     val file: CwtFileConfig,

@@ -2,13 +2,13 @@
 
 package icu.windea.pls.config.config
 
-import com.google.common.cache.*
-import com.intellij.openapi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.expression.*
-import kotlin.Pair
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.util.buildCache
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.expression.ParadoxDefinitionSubtypeExpression
 
 interface CwtTypeImagesConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val locationConfigs: List<Pair<String?, CwtLocationConfig>> //(subtypeExpression, locationConfig)

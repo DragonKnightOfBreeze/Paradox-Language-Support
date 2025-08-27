@@ -2,10 +2,10 @@
 
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.CwtConfig.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.cwt.psi.*
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.config.CwtConfig.Option
+import icu.windea.pls.config.util.CwtConfigManipulator
+import icu.windea.pls.cwt.psi.CwtMemberElement
 
 /**
  * @property name template_expression

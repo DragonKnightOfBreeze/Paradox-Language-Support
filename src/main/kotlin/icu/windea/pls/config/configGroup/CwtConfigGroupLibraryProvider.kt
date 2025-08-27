@@ -1,10 +1,12 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.openapi.project.*
-import com.intellij.openapi.roots.*
-import com.intellij.openapi.vfs.*
-import icu.windea.pls.config.*
-import icu.windea.pls.core.util.*
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.AdditionalLibraryRootsProvider
+import com.intellij.openapi.roots.SyntheticLibrary
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.config.configGroupLibrary
+import icu.windea.pls.core.util.setOrEmpty
+import icu.windea.pls.core.util.singleton
 
 //each library each project
 

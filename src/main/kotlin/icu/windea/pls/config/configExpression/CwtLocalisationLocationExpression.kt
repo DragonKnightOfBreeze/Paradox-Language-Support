@@ -1,7 +1,7 @@
 package icu.windea.pls.config.configExpression
 
-import icu.windea.pls.localisation.psi.*
-import icu.windea.pls.config.configExpression.impl.*
+import icu.windea.pls.config.configExpression.impl.CwtLocalisationLocationExpressionResolverImpl
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**
  * CWT本地化位置表达式。用于定位定义的相关本地化。

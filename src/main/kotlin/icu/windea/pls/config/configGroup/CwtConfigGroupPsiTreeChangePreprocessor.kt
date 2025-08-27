@@ -1,10 +1,13 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.openapi.components.*
-import com.intellij.psi.impl.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.ep.configGroup.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.components.service
+import com.intellij.psi.impl.PsiModificationTrackerImpl
+import com.intellij.psi.impl.PsiTreeChangeEventImpl
+import com.intellij.psi.impl.PsiTreeChangePreprocessor
+import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.ep.configGroup.BuiltInCwtConfigGroupFileProvider
+import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于监听规则文件的PSI的更改，以便在必要时通知规则分组发生更改。

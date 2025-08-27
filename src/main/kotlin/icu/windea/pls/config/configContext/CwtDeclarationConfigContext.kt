@@ -1,13 +1,21 @@
 package icu.windea.pls.config.configContext
 
-import com.google.common.cache.*
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.configContext.*
-import icu.windea.pls.model.*
+import com.google.common.cache.CacheBuilder
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.config.CwtDeclarationConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.declarationConfigCacheKey
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.createCachedValue
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.buildCache
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.setValue
+import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.ep.configContext.CwtDeclarationConfigContextProvider
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * CWT声明规则上下文。

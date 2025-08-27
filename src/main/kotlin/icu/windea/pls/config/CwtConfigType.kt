@@ -1,6 +1,6 @@
 package icu.windea.pls.config
 
-import javax.swing.*
+import javax.swing.Icon
 
 /**
  * @see CwtConfigTypes

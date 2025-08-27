@@ -1,9 +1,10 @@
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
+import com.intellij.openapi.util.Key
+import com.intellij.psi.PsiElement
+import com.intellij.psi.SmartPsiElementPointer
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.emptyPointer
 
 interface CwtDetachedConfig : CwtConfig<PsiElement> {
     override val pointer: SmartPsiElementPointer<out PsiElement> get() = emptyPointer()

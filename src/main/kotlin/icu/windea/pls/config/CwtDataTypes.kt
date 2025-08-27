@@ -1,7 +1,7 @@
 package icu.windea.pls.config
 
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.model.*
+import icu.windea.pls.core.annotations.WithGameType
+import icu.windea.pls.model.ParadoxGameType
 
 object CwtDataTypes {
     val Block = CwtDataType("Block")

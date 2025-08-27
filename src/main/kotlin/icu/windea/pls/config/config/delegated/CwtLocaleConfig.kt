@@ -2,10 +2,10 @@
 
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.util.*
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.PlsDocBundle
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.util.ParadoxLocaleManager
 
 interface CwtLocaleConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val id: String

@@ -2,11 +2,11 @@
 
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.util.*
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.configExpression.CwtTemplateExpression
+import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.util.ParadoxScopeManager
 
 //CWT规则文件中关于（生成的）修正的规则有多种写法
 //* 写在 type[xxx] = {...} 子句中的 modifiers = { ... } 子句中，允许按子类型进行匹配，格式为 <template_string> = <categories>

@@ -1,18 +1,24 @@
 package icu.windea.pls.config.util
 
-import icu.windea.pls.config.*
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configContext.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.config.*
-import icu.windea.pls.ep.configExpression.*
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.model.*
-import icu.windea.pls.model.constants.*
+import icu.windea.pls.config.configContext.CwtDeclarationConfigContext
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.singleAliases
+import icu.windea.pls.core.castOrNull
+import icu.windea.pls.core.collections.merge
+import icu.windea.pls.core.emptyPointer
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.util.list
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.ep.config.CwtInjectedConfigProvider
+import icu.windea.pls.ep.configExpression.CwtDataExpressionMerger
+import icu.windea.pls.lang.expression.ParadoxDefinitionSubtypeExpression
+import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.constants.PlsStringConstants
 
 object CwtConfigManipulator {
     //region Core Methods

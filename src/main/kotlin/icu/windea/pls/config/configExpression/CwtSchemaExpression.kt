@@ -2,11 +2,13 @@
 
 package icu.windea.pls.config.configExpression
 
-import com.google.common.cache.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
+import com.google.common.cache.CacheBuilder
+import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.util.TextRange
+import icu.windea.pls.core.indicesOf
+import icu.windea.pls.core.removePrefixOrNull
+import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.util.buildCache
 
 private val logger = logger<CwtSchemaExpression>()
 

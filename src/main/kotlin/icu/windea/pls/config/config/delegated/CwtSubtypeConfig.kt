@@ -2,14 +2,16 @@
 
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.CwtConfig.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.config.CwtConfig.Option
+import icu.windea.pls.core.annotations.CaseInsensitive
+import icu.windea.pls.core.caseInsensitiveStringSet
+import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.util.ReversibleValue
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.model.CwtSeparatorType
 
 interface CwtSubtypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String

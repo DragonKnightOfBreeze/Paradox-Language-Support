@@ -1,20 +1,26 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.notification.*
-import com.intellij.openapi.application.*
-import com.intellij.openapi.components.*
-import com.intellij.openapi.diagnostic.*
-import com.intellij.openapi.editor.toolbar.floating.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.progress.impl.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.*
-import icu.windea.pls.ep.configGroup.*
-import icu.windea.pls.lang.settings.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import kotlinx.coroutines.*
-import java.util.concurrent.*
+import com.intellij.notification.NotificationAction
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.editor.toolbar.floating.FloatingToolbarProvider
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.Task
+import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator
+import com.intellij.openapi.project.Project
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.ep.configGroup.CwtConfigGroupDataProvider
+import icu.windea.pls.lang.settings.finalGameType
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.id
+import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentHashMap
 
 private val logger = logger<CwtConfigGroupService>()
 

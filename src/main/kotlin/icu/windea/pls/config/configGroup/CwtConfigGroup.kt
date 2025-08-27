@@ -1,12 +1,14 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.openapi.project.*
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.SimpleModificationTracker
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.config.CwtFileConfig
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.model.ParadoxGameType
+import icu.windea.pls.model.id
 import java.util.*
-import java.util.concurrent.atomic.*
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * 规则分组。

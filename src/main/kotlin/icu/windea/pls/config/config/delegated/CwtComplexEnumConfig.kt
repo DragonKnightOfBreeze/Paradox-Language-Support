@@ -2,12 +2,14 @@
 
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.CwtConfig.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.cwt.psi.*
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.config.CwtConfig.Property
+import icu.windea.pls.config.processDescendants
+import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.normalizePath
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.cwt.psi.CwtProperty
 
 /**
  * @property searchScopeType 查询作用域，认为仅该作用域下的复杂枚举值是等同的。（目前支持：definition）

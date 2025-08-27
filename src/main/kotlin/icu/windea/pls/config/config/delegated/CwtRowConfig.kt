@@ -2,11 +2,13 @@
 
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.CwtConfig.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.cwt.psi.*
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.config.CwtConfig.Property
+import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.normalizePath
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.cwt.psi.CwtProperty
 
 /**
  * @property columns 各个列对应的CWT规则。

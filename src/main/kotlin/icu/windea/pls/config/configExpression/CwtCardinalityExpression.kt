@@ -1,6 +1,6 @@
 package icu.windea.pls.config.configExpression
 
-import icu.windea.pls.config.configExpression.impl.*
+import icu.windea.pls.config.configExpression.impl.CwtCardinalityExpressionResolverImpl
 
 /**
  * CWT基数表达式。

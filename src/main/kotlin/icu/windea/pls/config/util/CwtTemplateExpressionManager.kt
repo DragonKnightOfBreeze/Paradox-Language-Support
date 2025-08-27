@@ -1,16 +1,18 @@
 package icu.windea.pls.config.util
 
-import com.google.common.cache.*
-import com.intellij.openapi.progress.*
-import com.intellij.psi.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.expression.*
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.util.*
+import com.google.common.cache.CacheBuilder
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtTemplateExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.unquote
+import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.buildCache
+import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
+import icu.windea.pls.lang.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher
 
 object CwtTemplateExpressionManager {
     fun extract(templateExpression: CwtTemplateExpression, referenceName: String): String {

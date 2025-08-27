@@ -1,10 +1,13 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.*
-import icu.windea.pls.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.project.DumbAwareAction
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.config.util.CwtConfigRepositoryManager
+import icu.windea.pls.lang.fileInfo
 
 class ConfigGroupSyncFromRemoteAction : DumbAwareAction() {
     init {

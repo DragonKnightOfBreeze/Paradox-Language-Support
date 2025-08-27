@@ -1,15 +1,19 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.*
+import com.intellij.openapi.util.ModificationTracker
 import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.annotations.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.priority.*
-import icu.windea.pls.ep.scope.*
-import icu.windea.pls.lang.*
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.filePathPatterns
+import icu.windea.pls.core.annotations.CaseInsensitive
+import icu.windea.pls.core.caseInsensitiveStringKeyMap
+import icu.windea.pls.core.emptyPointer
+import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.ep.priority.ParadoxPriority
+import icu.windea.pls.ep.scope.ParadoxBaseDefinitionInferredScopeContextProvider
+import icu.windea.pls.lang.ParadoxModificationTrackers
 
 //region Internal Accessors
 

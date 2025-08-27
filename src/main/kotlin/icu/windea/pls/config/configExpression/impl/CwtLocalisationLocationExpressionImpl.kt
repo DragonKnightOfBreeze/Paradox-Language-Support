@@ -2,8 +2,8 @@ package icu.windea.pls.config.configExpression.impl
 
 import com.google.common.cache.CacheBuilder
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
+import icu.windea.pls.core.toCommaDelimitedStringSet
+import icu.windea.pls.core.util.buildCache
 
 internal class CwtLocalisationLocationExpressionResolverImpl : CwtLocalisationLocationExpression.Resolver {
     private val cache = CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) }

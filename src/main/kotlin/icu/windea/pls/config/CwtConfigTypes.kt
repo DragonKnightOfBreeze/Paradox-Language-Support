@@ -1,7 +1,8 @@
 package icu.windea.pls.config
 
-import icu.windea.pls.*
-import icu.windea.pls.model.constants.*
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsIcons
+import icu.windea.pls.model.constants.PlsStringConstants
 
 object CwtConfigTypes {
     val Type = CwtConfigType.create("type") {

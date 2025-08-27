@@ -2,13 +2,15 @@
 
 package icu.windea.pls.config
 
-import com.intellij.psi.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.ep.expression.*
-import icu.windea.pls.lang.expression.*
-import icu.windea.pls.lang.util.*
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.util.list
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.ep.expression.ParadoxScriptExpressionMatcher
+import icu.windea.pls.ep.expression.PatternAwareParadoxScriptExpressionMatcher
+import icu.windea.pls.lang.expression.ParadoxScriptExpression
+import icu.windea.pls.lang.util.ParadoxExpressionMatcher
 
 /**
  * 用当前键作为通配符来匹配指定的[key]。

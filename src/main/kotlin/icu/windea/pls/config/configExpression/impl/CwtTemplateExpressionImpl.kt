@@ -4,11 +4,12 @@ import com.google.common.cache.CacheBuilder
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
-import icu.windea.pls.core.*
-import icu.windea.pls.core.util.*
+import icu.windea.pls.core.containsBlank
+import icu.windea.pls.core.util.buildCache
+import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
 import icu.windea.pls.ep.configExpression.RuleBasedCwtDataExpressionResolver
-import icu.windea.pls.lang.*
+import icu.windea.pls.lang.isIdentifierChar
 
 internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolver {
     private val cache = CacheBuilder.newBuilder().buildCache<String, CwtTemplateExpression> { doResolve(it) }

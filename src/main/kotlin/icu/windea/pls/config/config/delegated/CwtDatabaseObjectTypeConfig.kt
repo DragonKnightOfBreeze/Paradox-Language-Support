@@ -2,10 +2,10 @@
 
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.CwtConfig.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.*
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.config.CwtConfig.Property
+import icu.windea.pls.core.emptyPointer
+import icu.windea.pls.cwt.psi.CwtProperty
 
 interface CwtDatabaseObjectTypeConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig> {
     val name: String

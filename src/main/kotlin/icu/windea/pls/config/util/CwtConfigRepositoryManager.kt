@@ -1,21 +1,36 @@
 package icu.windea.pls.config.util
 
-import com.intellij.ide.*
-import com.intellij.notification.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.ui.*
-import com.intellij.platform.ide.progress.*
-import com.intellij.platform.util.progress.*
-import com.intellij.ui.layout.*
-import com.intellij.util.*
-import com.intellij.util.io.*
-import icu.windea.pls.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.lang.listeners.*
-import icu.windea.pls.lang.util.*
-import icu.windea.pls.model.*
-import kotlinx.coroutines.*
+import com.intellij.ide.BrowserUtil
+import com.intellij.notification.NotificationAction
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.ui.ValidationInfo
+import com.intellij.platform.ide.progress.ModalTaskOwner
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
+import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.platform.util.progress.reportRawProgress
+import com.intellij.ui.layout.ValidationInfoBuilder
+import com.intellij.util.application
+import com.intellij.util.io.createDirectories
+import icu.windea.pls.PlsBundle
+import icu.windea.pls.PlsFacade
+import icu.windea.pls.core.collections.orNull
+import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.toPath
+import icu.windea.pls.lang.listeners.ParadoxConfigDirectoriesListener
+import icu.windea.pls.lang.util.PlsCoreManager
+import icu.windea.pls.lang.util.PlsGitManager
+import icu.windea.pls.model.ParadoxGameType
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Suppress("UnstableApiUsage")
 object CwtConfigRepositoryManager {

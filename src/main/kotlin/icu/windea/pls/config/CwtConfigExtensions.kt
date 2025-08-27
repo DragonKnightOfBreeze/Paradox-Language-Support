@@ -2,16 +2,23 @@
 
 package icu.windea.pls.config
 
-import com.intellij.openapi.project.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.ep.configExpression.*
-import icu.windea.pls.lang.*
+import com.intellij.openapi.project.Project
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtFilePathMatchableConfig
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.aliasConfig
+import icu.windea.pls.config.config.inlineConfig
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.CwtConfigGroupLibrary
+import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.core.collections.process
+import icu.windea.pls.core.collections.toListOrThis
+import icu.windea.pls.core.util.getOrPutUserData
+import icu.windea.pls.cwt.psi.CwtMemberElement
+import icu.windea.pls.ep.configExpression.CwtDataExpressionPriorityProvider
+import icu.windea.pls.lang.PlsKeys
 
 val Project.configGroupLibrary: CwtConfigGroupLibrary
     get() = this.getOrPutUserData(PlsKeys.configGroupLibrary) { CwtConfigGroupLibrary(this) }

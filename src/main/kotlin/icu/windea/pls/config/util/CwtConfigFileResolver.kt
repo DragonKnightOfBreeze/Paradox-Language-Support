@@ -1,14 +1,32 @@
 package icu.windea.pls.config.util
 
-import com.intellij.openapi.diagnostic.*
-import com.intellij.psi.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.codeInsight.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiWhiteSpace
+import icu.windea.pls.config.config.CwtFileConfig
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtOptionConfig
+import icu.windea.pls.config.config.CwtOptionMemberConfig
+import icu.windea.pls.config.config.CwtOptionValueConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtPropertyPointer
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.resolve
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.emptyPointer
+import icu.windea.pls.core.forEachChild
+import icu.windea.pls.core.processChild
+import icu.windea.pls.cwt.psi.CwtBlock
+import icu.windea.pls.cwt.psi.CwtFile
+import icu.windea.pls.cwt.psi.CwtOption
+import icu.windea.pls.cwt.psi.CwtOptionComment
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.cwt.psi.CwtValue
+import icu.windea.pls.lang.codeInsight.type
+import icu.windea.pls.model.CwtType
 
 object CwtConfigFileResolver {
     private val logger = thisLogger()

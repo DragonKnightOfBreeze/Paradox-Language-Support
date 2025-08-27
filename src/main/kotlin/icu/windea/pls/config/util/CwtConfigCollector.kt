@@ -1,10 +1,18 @@
 package icu.windea.pls.config.util
 
-import icu.windea.pls.config.*
-import icu.windea.pls.config.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.CwtTagType
+import icu.windea.pls.config.config.CwtConfig
+import icu.windea.pls.config.config.CwtMemberConfig
+import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.findOptionValue
+import icu.windea.pls.config.config.tagType
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.value
+import icu.windea.pls.config.configGroup.filePathExpressions
+import icu.windea.pls.config.configGroup.parameterConfigs
+import icu.windea.pls.core.pass
 
 object CwtConfigCollector {
     fun postHandleConfig(config: CwtMemberConfig<*>) {

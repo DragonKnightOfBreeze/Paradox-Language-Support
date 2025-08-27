@@ -2,11 +2,12 @@
 
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.config.CwtConfig.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.cwt.psi.*
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.config.CwtConfig.Option
+import icu.windea.pls.config.util.CwtConfigManipulator
+import icu.windea.pls.core.util.listOrEmpty
+import icu.windea.pls.core.util.singleton
+import icu.windea.pls.cwt.psi.CwtMemberElement
 
 interface CwtExtendedInlineScriptConfig : CwtDelegatedConfig<CwtMemberElement, CwtMemberConfig<*>> {
     val name: String

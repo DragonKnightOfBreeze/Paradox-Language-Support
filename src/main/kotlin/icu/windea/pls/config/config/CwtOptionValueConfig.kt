@@ -1,8 +1,10 @@
 package icu.windea.pls.config.config
 
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.model.*
-import java.util.concurrent.*
+import icu.windea.pls.cwt.psi.CwtOption
+import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.deoptimizeValue
+import icu.windea.pls.model.optimizeValue
+import java.util.concurrent.ConcurrentHashMap
 
 interface CwtOptionValueConfig : CwtOptionMemberConfig<CwtOption> {
     companion object Resolver {

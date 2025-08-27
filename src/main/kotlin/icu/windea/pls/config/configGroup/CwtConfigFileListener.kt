@@ -1,12 +1,18 @@
 package icu.windea.pls.config.configGroup
 
-import com.intellij.openapi.components.*
-import com.intellij.openapi.progress.*
-import com.intellij.openapi.project.*
-import com.intellij.openapi.vfs.*
-import com.intellij.openapi.vfs.newvfs.events.*
-import icu.windea.pls.ep.configGroup.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.components.service
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.vfs.AsyncFileListener
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.newvfs.events.VFileCopyEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
+import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
+import icu.windea.pls.ep.configGroup.BuiltInCwtConfigGroupFileProvider
+import icu.windea.pls.ep.configGroup.CwtConfigGroupFileProvider
+import icu.windea.pls.model.ParadoxGameType
 
 /**
  * 用于监听规则文件的更改，以便在必要时通知规则分组发生更改。

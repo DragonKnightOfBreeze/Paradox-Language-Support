@@ -2,8 +2,9 @@
 
 package icu.windea.pls.config.config
 
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.foldingSettings
+import icu.windea.pls.core.caseInsensitiveStringKeyMap
 
 class CwtFoldingSettingsConfig(
     val id: String,

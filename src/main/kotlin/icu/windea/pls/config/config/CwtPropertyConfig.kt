@@ -1,13 +1,19 @@
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.*
-import com.intellij.psi.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.configExpression.*
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.model.*
+import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.psi.SmartPsiElementPointer
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.resolved
+import icu.windea.pls.core.EMPTY_OBJECT
+import icu.windea.pls.core.cast
+import icu.windea.pls.core.createPointer
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.model.CwtSeparatorType
+import icu.windea.pls.model.CwtType
+import icu.windea.pls.model.deoptimizeValue
+import icu.windea.pls.model.optimizeValue
 
 interface CwtPropertyConfig : CwtMemberConfig<CwtProperty> {
     val key: String

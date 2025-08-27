@@ -2,8 +2,9 @@
 
 package icu.windea.pls.config.config
 
-import icu.windea.pls.config.configGroup.*
-import icu.windea.pls.core.*
+import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.config.configGroup.postfixTemplateSettings
+import icu.windea.pls.core.caseInsensitiveStringKeyMap
 
 class CwtPostfixTemplateSettingsConfig(
     val id: String,

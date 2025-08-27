@@ -2,15 +2,18 @@
 
 package icu.windea.pls.config.config
 
-import com.intellij.openapi.util.*
-import icu.windea.pls.config.*
-import icu.windea.pls.config.util.*
-import icu.windea.pls.core.*
-import icu.windea.pls.core.collections.*
-import icu.windea.pls.core.util.*
-import icu.windea.pls.cwt.psi.*
-import icu.windea.pls.lang.*
-import icu.windea.pls.lang.expression.*
+import com.intellij.openapi.util.UserDataHolderBase
+import icu.windea.pls.config.processDescendants
+import icu.windea.pls.config.util.CwtConfigManipulator
+import icu.windea.pls.core.collections.optimized
+import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.lang.expression.ParadoxDefinitionSubtypeExpression
+import icu.windea.pls.lang.isIdentifier
 
 /**
  * @property name string
