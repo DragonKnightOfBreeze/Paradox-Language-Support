@@ -9,7 +9,8 @@ export const sidebarZh: SidebarOptions = [
   { text: "集成", link: "/zh/integrations.md" },
   { text: "AI", link: "/zh/ai.md" },
   { text: "扩展", link: "/zh/extensions.md" },
-  { text: "附录", link: "/zh/appendix.md" },
+  { text: "附录：语法参考", link: "/zh/ref-syntax.md" },
+  { text: "附录：规则格式参考", link: "/zh/ref-config-formats.md" },
 ]
 
 export const sidebarEn: SidebarOptions = [
@@ -22,5 +23,6 @@ export const sidebarEn: SidebarOptions = [
   { text: "Integrations", link: "/en/integrations.md" },
   { text: "AI", link: "/en/ai.md" },
   { text: "Extensions", link: "/en/extensions.md" },
-  { text: "Appendix", link: "/en/appendix.md" },
+  { text: "Appendix: Syntax Reference", link: "/en/ref-config-formats.md" },
+  { text: "Appendix: Config Format Reference", link: "/en/ref-config-formats.md" },
 ]
