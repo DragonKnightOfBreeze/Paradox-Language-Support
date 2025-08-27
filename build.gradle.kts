@@ -249,8 +249,31 @@ tasks {
         systemProperty("pls.is.debug", "true")
     }
     withType<Test> {
+        useJUnit()
         systemProperty("ide.slow.operations.assertion", "false")
         systemProperty("idea.log.debug.categories", "icu.windea.pls")
         systemProperty("pls.is.debug", "true")
+    }
+    test {
+        exclude("icu/windea/pls/ai/**")
+    }
+    val testTaskProvider = named<Test>("test")
+    register<Test>("aiTest") {
+        group = "verification"
+        description = "Run AI-related tests"
+        useJUnit()
+        // Reuse the same compiled classes and classpath as the main 'test' task
+        testClassesDirs = testTaskProvider.get().testClassesDirs
+        classpath = testTaskProvider.get().classpath
+        // Only run AI tests
+        include("icu/windea/pls/ai/**")
+        // Avoid parallel API calls
+        maxParallelForks = 1
+        // Run only when API key exists to prevent false failures locally/CI
+        onlyIf {
+            val hasKey = System.getenv("DEEPSEEK_KEY")?.isNotBlank() == true
+            if (!hasKey) logger.lifecycle("Skipping aiTest because DEEPSEEK_KEY is not set.")
+            hasKey
+        }
     }
 }
