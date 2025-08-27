@@ -4,11 +4,18 @@ import com.google.common.cache.CacheBuilder
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.configExpression.CwtCardinalityExpression
 import icu.windea.pls.core.util.buildCache
+import java.util.concurrent.TimeUnit
 
 internal class CwtCardinalityExpressionResolverImpl : CwtCardinalityExpression.Resolver {
     private val logger = thisLogger()
 
-    private val cache = CacheBuilder.newBuilder().buildCache<String, CwtCardinalityExpression> { doResolve(it) }
+    // 基于 expressionString 的缓存：
+    // - maximumSize: 限制缓存上界，避免长时间运行导致内存无限增长
+    // - expireAfterAccess: 非热点条目在一段时间未被访问后自动回收
+    private val cache = CacheBuilder.newBuilder()
+        .maximumSize(4096)
+        .expireAfterAccess(10, TimeUnit.MINUTES)
+        .buildCache<String, CwtCardinalityExpression> { doResolve(it) }
     private val emptyExpression = CwtCardinalityExpressionImpl("", 0, null, false, false)
 
     override fun resolveEmpty(): CwtCardinalityExpression = emptyExpression

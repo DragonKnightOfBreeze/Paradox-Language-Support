@@ -4,9 +4,16 @@ import com.google.common.cache.CacheBuilder
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.core.toCommaDelimitedStringSet
 import icu.windea.pls.core.util.buildCache
+import java.util.concurrent.TimeUnit
 
 internal class CwtLocalisationLocationExpressionResolverImpl : CwtLocalisationLocationExpression.Resolver {
-    private val cache = CacheBuilder.newBuilder().buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) }
+    // 解析结果缓存：本地化路径表达式在补全/导航中被频繁使用
+    // - maximumSize: 限制缓存容量，防止内存无限增长
+    // - expireAfterAccess: 非热点表达式在一段时间未被访问后回收
+    private val cache = CacheBuilder.newBuilder()
+        .maximumSize(4096)
+        .expireAfterAccess(10, TimeUnit.MINUTES)
+        .buildCache<String, CwtLocalisationLocationExpression> { doResolve(it) }
     private val emptyExpression = CwtLocalisationLocationExpressionImpl("", "")
 
     override fun resolveEmpty(): CwtLocalisationLocationExpression = emptyExpression

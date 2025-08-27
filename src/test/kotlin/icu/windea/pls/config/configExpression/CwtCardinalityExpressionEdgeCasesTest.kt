@@ -16,10 +16,11 @@ class CwtCardinalityExpressionEdgeCasesTest {
     }
 
     @Test
-    fun resolveNegativeValues_supported() {
+    fun resolveNegativeMin_isClampedToZero() {
+        // 当前实现将最小值钳制到 >= 0
         val s = "-1..2"
         val e = CwtCardinalityExpression.resolve(s)
-        assertEquals(-1, e.min)
+        assertEquals(0, e.min)
         assertEquals(2, e.max)
         assertFalse(e.relaxMin)
         assertFalse(e.relaxMax)

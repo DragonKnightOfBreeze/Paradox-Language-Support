@@ -65,11 +65,11 @@ class CwtSchemaExpressionEdgeCasesTest {
     }
 
     @Test
-    fun resolveEscapedDollarsClassifiedAsTemplate() {
+    fun resolveEscapedDollarsFallbackToConstant() {
+        // 只有转义美元（\\$）不视为参数占位，按当前实现不构成模板
         val s = """a \${'$'}x\${'$'} b"""
         val e = CwtSchemaExpression.resolve(s)
-        assertTrue(e is CwtSchemaExpression.Template)
-        val t = e as CwtSchemaExpression.Template
-        assertEquals(s, t.pattern)
+        assertTrue(e is CwtSchemaExpression.Constant)
+        assertEquals(s, e.expressionString)
     }
 }

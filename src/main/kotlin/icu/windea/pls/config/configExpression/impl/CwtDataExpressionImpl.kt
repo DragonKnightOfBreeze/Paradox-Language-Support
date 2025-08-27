@@ -8,11 +8,24 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.value
 import icu.windea.pls.core.util.buildCache
 import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
+import java.util.concurrent.TimeUnit
 
 internal class CwtDataExpressionResolverImpl : CwtDataExpression.Resolver {
-    private val cacheForKey = CacheBuilder.newBuilder().buildCache<String, CwtDataExpression> { doResolve(it, true) }
-    private val cacheForValue = CacheBuilder.newBuilder().buildCache<String, CwtDataExpression> { doResolve(it, false) }
-    private val cacheForTemplate = CacheBuilder.newBuilder().buildCache<String, CwtDataExpression> { doResolveTemplate(it) }
+    // 三类缓存分别对应 key / value / template 的解析结果
+    // - maximumSize: 限制缓存容量，防止内存无限增长
+    // - expireAfterAccess: 非热点条目在一段时间未被访问后回收
+    private val cacheForKey = CacheBuilder.newBuilder()
+        .maximumSize(4096)
+        .expireAfterAccess(10, TimeUnit.MINUTES)
+        .buildCache<String, CwtDataExpression> { doResolve(it, true) }
+    private val cacheForValue = CacheBuilder.newBuilder()
+        .maximumSize(4096)
+        .expireAfterAccess(10, TimeUnit.MINUTES)
+        .buildCache<String, CwtDataExpression> { doResolve(it, false) }
+    private val cacheForTemplate = CacheBuilder.newBuilder()
+        .maximumSize(4096)
+        .expireAfterAccess(10, TimeUnit.MINUTES)
+        .buildCache<String, CwtDataExpression> { doResolveTemplate(it) }
 
     private val emptyKeyExpression = CwtDataExpressionImpl("", true, CwtDataTypes.Constant).apply { value = "" }
     private val emptyValueExpression = CwtDataExpressionImpl("", false, CwtDataTypes.Constant).apply { value = "" }

@@ -1,7 +1,6 @@
 package icu.windea.pls.config.configExpression.impl
 
 import com.google.common.cache.CacheBuilder
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.TextRange
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
@@ -10,10 +9,18 @@ import icu.windea.pls.core.isEscapedCharAt
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.util.buildCache
+import java.util.concurrent.TimeUnit
 
 internal class CwtSchemaExpressionResolverImpl : CwtSchemaExpression.Resolver {
     private val logger = thisLogger()
-    private val cache = CacheBuilder.newBuilder().buildCache<String, CwtSchemaExpression> { doResolve(it) }
+
+    // 基于 expressionString 的结果缓存，避免重复解析
+    // - maximumSize: 限制缓存上界，避免长时间运行导致内存无限增长
+    // - expireAfterAccess: 非热点条目在一段时间未被访问后自动回收，保持性能与内存的平衡
+    private val cache = CacheBuilder.newBuilder()
+        .maximumSize(4096)
+        .expireAfterAccess(10, TimeUnit.MINUTES)
+        .buildCache<String, CwtSchemaExpression> { doResolve(it) }
 
     // 匹配未转义的 `$...$` 片段，用于生成模板的 pattern（替换为 `*`）
     private val parameterRegex = """(?<!\\)\$.*?\$""".toRegex()

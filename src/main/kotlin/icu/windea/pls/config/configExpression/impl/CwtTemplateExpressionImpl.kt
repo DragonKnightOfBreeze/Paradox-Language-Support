@@ -10,6 +10,7 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ep.configExpression.CwtDataExpressionResolver
 import icu.windea.pls.ep.configExpression.RuleBasedCwtDataExpressionResolver
 import icu.windea.pls.lang.isIdentifierChar
+import java.util.concurrent.TimeUnit
 
 internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolver {
     // 关键点：
@@ -21,7 +22,13 @@ internal class CwtTemplateExpressionResolverImpl : CwtTemplateExpression.Resolve
     // - 常量片段中的特殊拆分：若常量尾部包含非标识符字符且其后紧跟可能的“常量规则名”，尝试按 `#129` 的方式拆分，
     //   以避免把 `"<特殊符号> + 常量规则名"` 误读为一个整体常量，影响后续的规则识别与高亮。
 
-    private val cache = CacheBuilder.newBuilder().buildCache<String, CwtTemplateExpression> { doResolve(it) }
+    // 模板解析结果缓存：模板常用于复杂规则拼装，命中率较高
+    // - maximumSize: 限制上界，避免内存膨胀
+    // - expireAfterAccess: 非热点在一段时间无访问后自动淘汰
+    private val cache = CacheBuilder.newBuilder()
+        .maximumSize(4096)
+        .expireAfterAccess(10, TimeUnit.MINUTES)
+        .buildCache<String, CwtTemplateExpression> { doResolve(it) }
     private val emptyExpression = CwtTemplateExpressionImpl("", emptyList())
 
     override fun resolveEmpty(): CwtTemplateExpression = emptyExpression
