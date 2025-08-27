@@ -1,5 +1,9 @@
 # Appendix: Syntax Reference
 
+## CWT 文件
+
+To be completed.
+
 ## Paradox Script File
 
 To be completed.
@@ -10,4 +14,4 @@ To be completed.
 
 ## Paradox CSV File
 
-To be completed.
+Paradox CSV files are based on regular CSV files, using `;` as column separator and allowing single-line comments starting with `#`.
