@@ -13,3 +13,5 @@ To be completed.
 To be completed.
 
 ### Polish Localisation Text
+
+To be completed.
