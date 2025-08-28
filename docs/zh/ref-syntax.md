@@ -1,11 +1,28 @@
 # 附录：语法参考
 
-待编写。
+
 
 <!-- @ai-generated DS
 本节提供关于语法的权威参考信息，采用简洁的技术文档风格。
 目标是成为开发过程中的速查手册，方便快速定位关键信息。
 -->
+
+## 总览
+
+本节涵盖以下语法（文档示例的代码块已配置 Prism 高亮）：
+
+* __CWT config file__（`*.cwt`）
+  - 注释：`#`、`##`（选项注释）、`###`（文档注释）
+  - 代码块语言 ID：`cwt`
+* __Paradox Script__（脚本文件）
+  - 注释：`#`
+  - 代码块语言 ID：`paradox_script`
+* __Paradox Localisation__（本地化 `.yml`）
+  - 注释：`#`
+  - 代码块语言 ID：`paradox_localisation`
+* __Paradox CSV__（分号分隔 CSV）
+  - 注释：`#`
+  - 代码块语言 ID：`paradox_csv`
 
 ## CWT 文件
 
@@ -108,7 +125,74 @@ types = {
 
 ## Paradox 脚本文件
 
-待编写。
+本文档说明 Paradox 脚本文件（Script）的表面语法，内容与实现对齐于 `src/main/kotlin/icu/windea/pls/script/ParadoxScript.bnf` 与 `ParadoxScript.flex`。
+
+基础概念：
+
+* __成员类型__：属性（property）、值（value）、块（block）。
+* __分隔符（比较/赋值）__：`=`、`!=`、`<`、`>`、`<=`、`>=`、`?=`。
+* __注释__：以 `#` 开始的单行注释。
+
+属性（property）：
+
+* 结构：`<key> <sep> <value>`，`<sep>` 取上述分隔符之一。
+* 键（key）：未加引号或双引号。键可参数化（见下节）。
+* 例：`enabled = yes`、`level >= 2`、`size ?= @var`。
+
+值（value）：
+
+* __布尔__：`yes`/`no`。
+* __整数/浮点__：如 `10`、`-5`、`1.25`。
+* __字符串__：未加引号或双引号；双引号字符串中可嵌入参数、内联参数条件。
+* __颜色__：`rgb{...}`、`hsv{...}`、`hsv360{...}`。
+* __块__：`{ ... }`，内部可包含注释、属性、值与脚本变量等。
+* __脚本变量引用__：`@name`。
+* __内联数学表达式__：`@[ <expr> ]`，支持 `+ - * / %`、一元正负号、绝对值 `|x|` 与括号。
+
+脚本变量（scripted variable）：
+
+* 定义：`@<name> = <value>`，其中 `<value>` 可为布尔/整数/浮点/字符串/内联数学表达式。
+* 引用：`@<name>`。
+
+参数（parameter）：
+
+* 语法：`$name$` 或 `$name|argument$`。
+* 位置：可用于脚本变量名、脚本变量引用名、键、字符串、内联数学表达式。
+
+参数条件（parameter condition）：
+
+* 语法（外层）：`[ [!]<parameter> <members...> ]`。
+* 说明：用于定义声明上下文中的条件化成员（仅在特定定义中有效）。
+
+内联参数条件（inline parameter condition）：
+
+* 用于字符串内部的条件片段，形如：`"a[[cond]b]c"`。
+
+示例：
+
+```paradox_script
+# comment
+@my_var = 42
+
+effect = {
+  enabled = yes
+  level >= 2
+  size ?= @my_var
+
+  name = "Hello $who|leader$!"
+
+  modifier = {
+    add = 1
+  }
+
+  result = @[[1 + 2 * 3]]
+}
+```
+
+注意事项：
+
+* 参数、参数条件与内联数学等属于高级语法，通常仅在特定定义（如脚本化效果/触发）中生效或被引擎评估。
+* 未加引号的键与字符串请避免保留字符；复杂文本使用双引号。
 
 <!-- @ai-generated DS
 描述：脚本语法权威参考
@@ -121,7 +205,36 @@ types = {
 
 ## Paradox 本地化文件
 
-待编写。
+本文档说明 Paradox 本地化（Localisation）文件的表面语法，内容与实现对齐于 `src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.bnf`、`ParadoxLocalisation.flex` 与 `ParadoxLocalisation.Text.flex`。
+
+文件结构：
+
+* 可选的 __语言标识__ 行：如 `l_english:`、`l_simp_chinese:`（可以有多个，以兼容 `localisation/languages.yml`）。
+* 多个 __键值对__：`<key>:<number?> "<text>"`，其中 `<number>` 为可选的内部追踪号。
+* 注释：以 `#` 开始的单行注释。
+
+文本（`"<text>"`）内可用的标记：
+
+* __颜色__：`§X ... §!`（`X` 为单字符 ID）。
+* __参数__：`$name$` 或 `$name|argument$`。`name` 可为本地化键、命令，或脚本变量引用（如 `$@var$` 形式在解析层面等价）。
+* __方括号命令__：`[text|argument]`，其中 `text` 可参数化；常用于 `Get...`/上下文调用。
+* __图标__：`£icon|frame£`（`|frame` 可省略），在渲染时嵌入 GFX 图标。
+* __概念命令（Stellaris）__：`['concept' <rich text>]`，用于链接概念与显示说明文本。
+* __文本格式（CK3/Vic3）__：`#format ... #!`，用于样式化文本块；以及 __文本图标__：`@icon!`（以 `@` 开始、以 `!` 结束）。
+
+示例：
+
+```paradox_localisation
+l_english:
+  my_key:0 "Hello §Y$target$§! [GetPlayerName] £alloys£"
+  concept_key:0 "['pop_growth', §G+10%§!]"
+```
+
+注意事项：
+
+* 冒号后的数字（追踪号）可以省略。
+* 文本中的双引号在多数情况下不需要转义，但建议避免不成对的引号。
+* `#format`/`@icon!` 等仅在支持对应语法的游戏中可用。
 
 <!-- @ai-generated DS
 描述：.yml本地化文件完整规范
@@ -134,4 +247,17 @@ types = {
 
 ## Paradox CSV 文件
 
-Paradox CSV 文件在常规 CSV 文件的基础上，使用 `;` 作为列分隔符，且允许以 `#` 开始的单行注释。
+Paradox CSV 文件在常规 CSV 的基础上，约定：
+
+* __列分隔符__：分号 `;`（常见于早期/工具导出的 CSV）。
+* __注释__：以 `#` 开始的整行注释。
+* __字符串__：使用双引号包裹；内部双引号使用 `""` 表示（标准 CSV 规则）。
+
+示例：
+
+```paradox_csv
+# comment
+key;col1;col2
+id1;"text with ; semicolon";42
+id2;plain;"quoted"
+```
