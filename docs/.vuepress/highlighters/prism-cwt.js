@@ -48,7 +48,7 @@ export function registerCwt(Prism) {
       { pattern: /"([^"\\\r\n]|\\[\s\S])*"?/, greedy: true },
     ],
     'operator': /==|=|!=|<>/,
-    'punctuation': /@\[|[{}\[\]]/,
+    'punctuation': /[{}\[\]]/,
   };
 }
 

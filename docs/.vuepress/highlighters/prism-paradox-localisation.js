@@ -19,28 +19,38 @@ export function registerParadoxLocalisation(Prism) {
   if (!Prism || Prism.languages.paradox_localisation) return;
 
   Prism.languages.paradox_localisation = {
-    comment: /^#.*$/m,
-    // l_english:
-    locale: { pattern: /^[a-z_]+\s*:/m, alias: 'symbol' },
-    // key: before colon
-    property: { pattern: /(^|[\r\n])\s*[A-Za-z0-9_.\-']+(?=\s*:)/m, lookbehind: true, alias: 'attr-name' },
-    number: /\b\d+(?:\.\d+)?\b/,
-    string: {
-      pattern: /"(?:[^"\r\n]|\\[\s\S])*"/,
+    // line comment (# ...)
+    'comment': {
+      pattern: /(^|\s)#.*/,
+      lookbehind: true,
+    },
+    // locale (l_english:)
+    'locale': {
+      pattern: /^[a-z_]+:\s*$/m,
+      alias: 'symbol'
+    },
+    // key
+    'property': {
+      pattern: /(^|\s)[A-Za-z0-9_.\-']+/m,
+      lookbehind: true
+    },
+    'number': /\b\d+(?:\.\d+)?\b/,
+    'string': {
+      pattern: /"[^\r\n]+"?/,
       greedy: true,
       inside: {
         'color-end': { pattern: /§!/, alias: 'important' },
-        'color-start': { pattern: /§[A-Za-z0-9]/, alias: 'keyword' },
-        parameter: { pattern: /\$(?:@[A-Za-z_]\w*|[A-Za-z0-9_.\-']+)(?:\|[^"§$\[\]\r\n\\]+)?\$/ , greedy: true, alias: 'variable' },
-        icon: { pattern: /£[A-Za-z0-9\-_\/\\]+(?:\|[^"§$\[\]\r\n\\]+)?£/, greedy: true },
-        command: { pattern: /\[[^\]\r\n]*\]/, greedy: true },
+        'color-start': { pattern: /§[A-Za-z0-9]/, alias: 'important' },
+        'parameter': { pattern: /\$(?:@[A-Za-z_]\w*|[A-Za-z0-9_.\-']+)(?:\|[^"§$\[\]\r\n\\]+)?\$/ , greedy: true, alias: 'variable' },
+        'icon': { pattern: /£[A-Za-z0-9\-_\/\\]+(?:\|[^"§$\[\]\r\n\\]+)?£/, greedy: true },
+        'command': { pattern: /\[[^\]\r\n]*]/, greedy: true },
         'text-format-start': { pattern: /#(?!!)[\w:;]+/, alias: 'function' },
         'text-format-end': { pattern: /#!/, alias: 'important' },
         'text-icon': { pattern: /@[A-Za-z0-9_]+!/, alias: 'function' },
-        escape: { pattern: /\\./ }
+        'escape': { pattern: /\\./ }
       }
     },
-    punctuation: /[:\[\]]/
+    'punctuation': /[:\[\]]/
   };
 }
 

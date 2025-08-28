@@ -20,7 +20,22 @@ export function registerParadoxScript(Prism) {
 
   Prism.languages.paradox_script = {
     // line comment (# ...)
-    'comment': /^#.*$/m,
+    'comment': {
+      pattern: /(^|\s)#.*/,
+      lookbehind: true,
+    },
+    // scripted variable (identifier after @)
+    'variable': {
+      // pattern: /(^|\s\[\{)@[A-Za-z_$\[][^@#={}\s"]*/,
+      // lookbehind: true,
+      // greedy: true,
+      // alias: 'symbol',
+      pattern: /(^|[\s\[{])@[A-Za-z_$\[][^@#={}\s"]*/,
+      // pattern: /@[A-Za-z0-9_]+/,
+      lookbehind: true,
+      greedy: true,
+      alias: 'symbol',
+    },
     'boolean': /\b(?:yes|no)\b/,
     'number': /\b[+-]?\d+(?:\.\d+)?\b/,
     // color (rgb{...}, hsv{...}, hsv360{...})
@@ -30,34 +45,25 @@ export function registerParadoxScript(Prism) {
       pattern: /@\[[\s\S]*?]/,
       greedy: true,
       inside: {
+        'variable': /@[A-Za-z_$\[][^@#={}\s"]*/,
         'operator': /[+\-*/%]/,
         'number': /[+-]?(?:\d*\.\d+|\d+)/,
-        'punctuation': /[()\[\]|]/
+        'punctuation': /@\[|[()\[\]|]/
       }
     },
+    // property key (before separator =, !=, <, >, <=, >=, ?=)
+    'property': [
+      { pattern: /[^@#=<>?{}\[\]\s"]+"?(?=\s*(?:=|!=|<|>|<=|>=|\?=))/ },
+      { pattern: /"([^"\\\r\n]|\\[\s\S])*"?(?=\s*(?:=|!=|<|>|<=|>=|\?=))/, greedy: true },
+    ],
+    // string (must not before separator)
+    'string': [
+      { pattern: /[^@#=<>?{}\[\]\s"]+"?/ },
+      // { pattern: /"([^"\\\r\n]|\\[\s\S])*"?/, greedy: true },
+      { pattern: /"([^"\\]|\\[\s\S])*"?/, greedy: true }, // can be multiline
+    ],
     'operator': /!=|<=|>=|\?=|=|<|>|[+\-*/%]/,
     'punctuation': /[{}\[\](),]/,
-    // scripted variable (identifier after @)
-    'variable': [
-      // declaration
-      { pattern: /@[a-zA-Z_$\\[][^@#={}\\s"]*(?!\s*=)/, greedy: true },
-      // reference
-      { pattern: /@[a-zA-Z0-9_]+/, greedy: true },
-    ],
-    // property key (before separator =, !=, <, >, <=, >=, ?=)
-    'property': {
-      pattern: /(^|[\r\n{\s])(?:"(?:[^"\\\r\n]|\\[\s\S])*"|[^#=<>!?{}\s"\r\n]+)(?=\s*(?:!=|<=|>=|\?=|=|<|>))/m,
-      lookbehind: true,
-    },
-    // string (must not before separator)
-    'string': {
-      // pattern: /[^#$=<>?{}\[\]\s"]+"?|"([^"\\\r\n]|\\[\s\S])*"(?!=|!=|<>)?/,
-      pattern: /[^\s"]+"?|"([^"\\\r\n]|\\[\s\S])*"(?!=|!=|<>)?/,
-    },
-    // parameter ($param$ or $param|arg$)
-    'symbol': {
-      pattern: /\$[A-Za-z_]\w*(?:\|[^$#{}\[\]\s]+)?\$/,
-    },
   };
 }
 
