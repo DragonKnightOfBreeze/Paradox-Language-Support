@@ -17,5 +17,8 @@
     "vuepress": "2.0.0-rc.25",
     "vuepress-theme-hope": "2.0.0-rc.94"
   },
-  "packageManager": "pnpm@10.15.0+sha1.8e43a0b959a228ea479539575a66f5eafc89023a"
+  "packageManager": "pnpm@10.15.0+sha1.8e43a0b959a228ea479539575a66f5eafc89023a",
+  "dependencies": {
+    "prismjs": "^1.30.0"
+  }
 }

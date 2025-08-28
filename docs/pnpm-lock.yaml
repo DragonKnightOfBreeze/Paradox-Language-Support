@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      prismjs:
+        specifier: ^1.30.0
+        version: 1.30.0
     devDependencies:
       '@vuepress/bundler-vite':
         specifier: 2.0.0-rc.25
