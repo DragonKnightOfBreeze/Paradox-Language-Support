@@ -7,6 +7,8 @@ export default defineClientConfig({
     app.component('GameTypeNote', GameTypeNote)
     app.component('DefinitionTypeNote', DefinitionTypeNote)
 
+    // TODO 本地启动 VuePress 预览以检查渲染后的警告框、代码高亮显示效果是否符合预期
+
     // register PrismJS language: cwt (client side only)
     if (typeof window !== 'undefined') {
       const Prism: any = (window as any).Prism
@@ -30,7 +32,7 @@ export default defineClientConfig({
             punctuation: /[{}\[\]]/,
             // key before separator (=, ==, !=, <>)
             property: {
-              pattern: /(^|[\r\n{\s])(?:\"(?:[^"\\\r\n]|\\[\s\S])*\"|[^#={}\s"\r\n]+)(?=\s*(?:==|=|!=|<>))/m,
+              pattern: /(^|[\r\n{\s])(?:"(?:[^"\\\r\n]|\\[\s\S])*"|[^#={}\s"\r\n]+)(?=\s*(?:==|=|!=|<>))/m,
               lookbehind: true,
               alias: 'attr-name'
             },
@@ -54,14 +56,14 @@ export default defineClientConfig({
             number: /[+-]?(?:\d*\.\d+|\d+)/,
             // $param$ or $param|arg$
             variable: [
-              { pattern: /\$[A-Za-z_][\w]*(?:\|[^$#{}\[\]\s]+)?\$/ , greedy: true },
+              { pattern: /\$[A-Za-z_]\w*(?:\|[^$#{}\[\]\s]+)?\$/ , greedy: true },
               { pattern: /@[A-Za-z0-9_]+/, alias: 'symbol' }
             ],
             // rgb{...}, hsv{...}, hsv360{...}
             function: /\b(?:rgb|hsv|hsv360)\b/,
             // @[ ... ] inline math
             'inline-math': {
-              pattern: /@\[[\s\S]*?\]/,
+              pattern: /@\[[\s\S]*?]/,
               greedy: true,
               inside: {
                 operator: /[+\-*/%]/,
@@ -71,7 +73,7 @@ export default defineClientConfig({
             },
             // key before separator (=, !=, <, >, <=, >=, ?=)
             property: {
-              pattern: /(^|[\r\n{\s])(?:\"(?:[^"\\\r\n]|\\[\s\S])*\"|[^#=<>!?{}\s"\r\n]+)(?=\s*(?:!=|<=|>=|\?=|=|<|>))/m,
+              pattern: /(^|[\r\n{\s])(?:"(?:[^"\\\r\n]|\\[\s\S])*"|[^#=<>!?{}\s"\r\n]+)(?=\s*(?:!=|<=|>=|\?=|=|<|>))/m,
               lookbehind: true,
               alias: 'attr-name'
             },
@@ -96,10 +98,10 @@ export default defineClientConfig({
               inside: {
                 'color-end': { pattern: /§!/, alias: 'important' },
                 'color-start': { pattern: /§[A-Za-z0-9]/, alias: 'keyword' },
-                parameter: { pattern: /\$(?:@[A-Za-z_]\w*|[A-Za-z0-9_.\-']+)(?:\|[^"§\$\[\]\r\n\\]+)?\$/ , greedy: true, alias: 'variable' },
-                icon: { pattern: /£[A-Za-z0-9\-_/\\]+(?:\|[^"§\$\[\]\r\n\\]+)?£/, greedy: true },
-                command: { pattern: /\[[^\]\r\n]*\]/, greedy: true },
-                'text-format-start': { pattern: /#(?!\!)[\w:;]+/, alias: 'function' },
+                parameter: { pattern: /\$(?:@[A-Za-z_]\w*|[A-Za-z0-9_.\-']+)(?:\|[^"§$\[\]\r\n\\]+)?\$/ , greedy: true, alias: 'variable' },
+                icon: { pattern: /£[A-Za-z0-9\-_\/\\]+(?:\|[^"§$\[\]\r\n\\]+)?£/, greedy: true },
+                command: { pattern: /\[[^\]\r\n]*]/, greedy: true },
+                'text-format-start': { pattern: /#(?!!)[\w:;]+/, alias: 'function' },
                 'text-format-end': { pattern: /#!/, alias: 'important' },
                 'text-icon': { pattern: /@[A-Za-z0-9_]+!/, alias: 'function' },
                 escape: { pattern: /\\./ }

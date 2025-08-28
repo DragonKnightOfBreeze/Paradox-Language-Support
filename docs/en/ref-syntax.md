@@ -1,5 +1,7 @@
 # Appendix: Syntax Reference
 
+<!-- TODO 人工改进与润色 -->
+
 ## Positioning & Vision
 
 This chapter aims to be an authoritative, practical, and concise reference for Paradox modding syntaxes. We strive to align with real-world usage and toolchain behaviour, and will continue refining it as the ecosystem evolves.
