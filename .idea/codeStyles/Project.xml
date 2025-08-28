@@ -27,6 +27,10 @@
     <HTMLCodeStyleSettings>
       <option name="HTML_DO_NOT_INDENT_CHILDREN_OF" value="html,thead,tbody,tfoot" />
     </HTMLCodeStyleSettings>
+    <JSCodeStyleSettings version="0">
+      <option name="SPACE_WITHIN_ARRAY_INITIALIZER_BRACKETS" value="true" />
+      <option name="SPACES_WITHIN_OBJECT_LITERAL_BRACES" value="true" />
+    </JSCodeStyleSettings>
     <JavaCodeStyleSettings>
       <option name="REPLACE_NULL_CHECK" value="false" />
       <option name="REPLACE_SUM" value="false" />
@@ -66,7 +70,6 @@
     </codeStyleSettings>
     <codeStyleSettings language="JavaScript">
       <option name="BLOCK_COMMENT_AT_FIRST_COLUMN" value="false" />
-      <option name="LINE_COMMENT_ADD_SPACE" value="false" />
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />
         <option name="TAB_SIZE" value="2" />
@@ -82,7 +85,6 @@
     </codeStyleSettings>
     <codeStyleSettings language="TypeScript">
       <option name="BLOCK_COMMENT_AT_FIRST_COLUMN" value="false" />
-      <option name="LINE_COMMENT_ADD_SPACE" value="false" />
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />
         <option name="TAB_SIZE" value="2" />

@@ -19,40 +19,52 @@ export function registerParadoxScript(Prism) {
   if (!Prism || Prism.languages.paradox_script) return;
 
   Prism.languages.paradox_script = {
-    comment: /^#.*$/m,
-    string: { pattern: /"(?:[^"\\]|\\[\s\S])*"/, greedy: true },
-    boolean: /\b(?:yes|no)\b/,
-    number: /[+-]?(?:\d*\.\d+|\d+)/,
-    // $param$ or $param|arg$
-    variable: [
-      { pattern: /\$[A-Za-z_]\w*(?:\|[^$#{}\[\]\s]+)?\$/ , greedy: true },
-      { pattern: /@[A-Za-z0-9_]+/, alias: 'symbol' }
-    ],
-    // rgb{...}, hsv{...}, hsv360{...}
-    function: /\b(?:rgb|hsv|hsv360)\b/,
-    // @[ ... ] inline math
+    // line comment (# ...)
+    'comment': /^#.*$/m,
+    'boolean': /\b(?:yes|no)\b/,
+    'number': /\b[+-]?\d+(?:\.\d+)?\b/,
+    // color (rgb{...}, hsv{...}, hsv360{...})
+    'function': /\b(?:rgb|hsv|hsv360)\b/,
+    // inline math (@[ ... ])
     'inline-math': {
-      pattern: /@\[[\s\S]*?\]/,
+      pattern: /@\[[\s\S]*?]/,
       greedy: true,
       inside: {
-        operator: /[+\-*/%]/,
-        number: /[+-]?(?:\d*\.\d+|\d+)/,
-        punctuation: /[()\[\]|]/
+        'operator': /[+\-*/%]/,
+        'number': /[+-]?(?:\d*\.\d+|\d+)/,
+        'punctuation': /[()\[\]|]/
       }
     },
-    // key before separator (=, !=, <, >, <=, >=, ?=)
-    property: {
+    'operator': /!=|<=|>=|\?=|=|<|>|[+\-*/%]/,
+    'punctuation': /[{}\[\](),]/,
+    // scripted variable (identifier after @)
+    'variable': [
+      // declaration
+      { pattern: /@[a-zA-Z_$\\[][^@#={}\\s"]*(?!\s*=)/, greedy: true },
+      // reference
+      { pattern: /@[a-zA-Z0-9_]+/, greedy: true },
+    ],
+    // property key (before separator =, !=, <, >, <=, >=, ?=)
+    'property': {
       pattern: /(^|[\r\n{\s])(?:"(?:[^"\\\r\n]|\\[\s\S])*"|[^#=<>!?{}\s"\r\n]+)(?=\s*(?:!=|<=|>=|\?=|=|<|>))/m,
       lookbehind: true,
-      alias: 'attr-name'
     },
-    operator: /!=|<=|>=|\?=|=|<|>|[+\-*/%]/,
-    punctuation: /[{}\[\](),]/,
-    'class-name': { pattern: /\b[a-zA-Z_][\w-]*?(?=\[)/ }
+    // string (must not before separator)
+    'string': {
+      // pattern: /[^#$=<>?{}\[\]\s"]+"?|"([^"\\\r\n]|\\[\s\S])*"(?!=|!=|<>)?/,
+      pattern: /[^\s"]+"?|"([^"\\\r\n]|\\[\s\S])*"(?!=|!=|<>)?/,
+    },
+    // parameter ($param$ or $param|arg$)
+    'symbol': {
+      pattern: /\$[A-Za-z_]\w*(?:\|[^$#{}\[\]\s]+)?\$/,
+    },
   };
 }
 
 // auto-register for browser usage
 if (typeof window !== 'undefined' && window.Prism) {
-  try { registerParadoxScript(window.Prism); } catch {}
+  try {
+    registerParadoxScript(window.Prism);
+  } catch {
+  }
 }

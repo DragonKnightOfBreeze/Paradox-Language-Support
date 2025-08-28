@@ -19,14 +19,25 @@ export function registerParadoxCsv(Prism) {
   if (!Prism || Prism.languages.paradox_csv) return;
 
   Prism.languages.paradox_csv = {
-    comment: /^#.*$/m,
-    string: { pattern: /"(?:[^"\r\n]|"")*"/, greedy: true },
-    number: /\b[+-]?(?:\d*\.\d+|\d+)\b/,
-    punctuation: /[;,\t]/
+    // line comment (# ...) (must at line start)
+    'comment': {
+      pattern: /(^|\s+)#.*/,
+      lookbehind: true,
+    },
+    'boolean': /\b(?:yes|no)\b/,
+    'number': /\b[+-]?\d+(?:\.\d+)?\b/,
+    'string': [
+      { pattern: /[^#;"\s]([^#;"\r\n]*[^#;\s])?/ }, // middle whitespaces are permitted
+      { pattern: /"([^"\\\r\n]|\\[\s\S])*"?/, greedy: true },
+    ],
+    'punctuation': /;/, // only for semicolons
   };
 }
 
 // auto-register for browser usage
 if (typeof window !== 'undefined' && window.Prism) {
-  try { registerParadoxCsv(window.Prism); } catch {}
+  try {
+    registerParadoxCsv(window.Prism);
+  } catch {
+  }
 }

@@ -37,15 +37,15 @@ import static icu.windea.pls.cwt.psi.CwtElementTypes.*;
 BLANK=\s+
 COMMENT=#[^\r\n]*
 
-SEPARATOR_CHECK=(=)|(\!=)|(<>)
+SEPARATOR_CHECK=(=|\!=|<>)
 PROPERTY_KEY_CHECK=({PROPERTY_KEY_TOKEN})?\s*{SEPARATOR_CHECK}
 
 PROPERTY_KEY_TOKEN=({UNQUOTED_PROPERTY_KEY_TOKEN})|({QUOTED_KEY_TOKEN})
 UNQUOTED_PROPERTY_KEY_TOKEN=[^#={}\s\"]+\"?
 QUOTED_KEY_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
-BOOLEAN_TOKEN=(yes)|(no)
-INT_TOKEN=[+-]?[0-9]+ // leading zero is permitted
-FLOAT_TOKEN=[+-]?[0-9]*(\.[0-9]+) // leading zero is permitted
+BOOLEAN_TOKEN=(yes|no)
+INT_TOKEN=[+-]?\d+ // leading zero is permitted
+FLOAT_TOKEN=[+-]?\d*\.\d+ // leading zero is permitted
 STRING_TOKEN=({UNQUOTED_STRING_TOKEN})|({QUOTED_STRING_TOKEN})
 UNQUOTED_STRING_TOKEN=[^#={}\s\"]+\"?
 QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
@@ -65,7 +65,7 @@ QUOTED_STRING_TOKEN=\"([^\"\\\r\n]|\\[\s\S])*\"?
     }
 }
 <PS>{
-    "="|"==" { yybegin(PV); return EQUAL_SIGN; }
+    "=="|"=" { yybegin(PV); return EQUAL_SIGN; }
     "!="|"<>" { yybegin(PV); return NOT_EQUAL_SIGN; }
 }
 

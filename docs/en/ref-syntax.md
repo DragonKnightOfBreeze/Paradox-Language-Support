@@ -75,8 +75,8 @@ Block:
 
 ```cwt
 ship_size = {
-    ## cardinality = 0..1
     ### The base cost of this ship_size
+    ## cardinality = 0..1
     cost = int
 
     modifier = {

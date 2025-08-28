@@ -81,8 +81,8 @@ class = enum[shipsize_class]
 
 ```cwt
 ship_size = {
-    ## cardinality = 0..1
     ### The base cost of this ship_size
+    ## cardinality = 0..1
     cost = int
 
     modifier = {
@@ -203,9 +203,10 @@ effect = {
     enabled = yes
     level >= 2
     size ?= @my_var
-
+    color = rgb { 34, 136, 255 }
+    
     name = "Hello $who|leader$!"
-
+    
     modifier = {
         add = 1
     }
