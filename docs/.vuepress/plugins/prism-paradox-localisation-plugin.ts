@@ -3,6 +3,7 @@
 
 import Prism from 'prismjs'
 import { registerParadoxLocalisation } from '../highlighters/prism-paradox-localisation.js'
+import { PluginObject } from "vuepress";
 
 /**
  * uePress Prism plugin for Paradox Localisation.
@@ -17,7 +18,7 @@ import { registerParadoxLocalisation } from '../highlighters/prism-paradox-local
  *
  * @author windea
  */
-export default function prismParadoxLocalisationPlugin() {
+export default function prismParadoxLocalisationPlugin(): PluginObject {
   return {
     name: 'prism-paradox-localisation',
     extendsMarkdown() {

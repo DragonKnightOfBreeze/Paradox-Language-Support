@@ -3,6 +3,7 @@
 
 import Prism from 'prismjs'
 import { registerParadoxCsv } from '../highlighters/prism-paradox-csv.js'
+import { PluginObject } from "vuepress";
 
 /**
  * VuePress Prism plugin for CWT.
@@ -17,7 +18,7 @@ import { registerParadoxCsv } from '../highlighters/prism-paradox-csv.js'
  *
  * @author windea
  */
-export default function prismParadoxCsvPlugin() {
+export default function prismParadoxCsvPlugin(): PluginObject {
   return {
     name: 'prism-paradox-csv',
     extendsMarkdown(/* md */) {

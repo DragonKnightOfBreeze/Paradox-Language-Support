@@ -3,6 +3,7 @@
 
 import Prism from 'prismjs'
 import { registerCwt } from '../highlighters/prism-cwt.js'
+import { PluginObject } from "vuepress";
 
 /**
  * VuePress Prism plugin for CWT.
@@ -17,7 +18,7 @@ import { registerCwt } from '../highlighters/prism-cwt.js'
  *
  * @author windea
  */
-export default function prismCwtPlugin() {
+export default function prismCwtPlugin(): PluginObject {
   return {
     name: 'prism-cwt',
     extendsMarkdown() {

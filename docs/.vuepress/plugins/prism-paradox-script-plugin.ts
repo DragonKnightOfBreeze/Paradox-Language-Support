@@ -3,6 +3,7 @@
 
 import Prism from 'prismjs'
 import { registerParadoxScript } from '../highlighters/prism-paradox-script.js'
+import { PluginObject } from "vuepress";
 
 /**
  * VuePress Prism plugin for Paradox Script.
@@ -17,7 +18,7 @@ import { registerParadoxScript } from '../highlighters/prism-paradox-script.js'
  *
  * @author windea
  */
-export default function prismParadoxScriptPlugin() {
+export default function prismParadoxScriptPlugin(): PluginObject {
   return {
     name: 'prism-paradox-script',
     extendsMarkdown() {
