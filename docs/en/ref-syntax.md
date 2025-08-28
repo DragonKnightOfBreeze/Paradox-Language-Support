@@ -2,7 +2,7 @@
 
 <!-- TODO 人工改进与润色 -->
 
-## Positioning & Vision
+## Positioning & Vision {#vision}
 
 This chapter aims to be an authoritative, practical, and concise reference for Paradox modding syntaxes. We strive to align with real-world usage and toolchain behaviour, and will continue refining it as the ecosystem evolves.
 
@@ -23,7 +23,7 @@ This chapter covers the following syntaxes (examples use Prism code fences):
   - Comments: `#`
   - Code fence language id: `paradox_csv`
 
-## CWT Language
+## CWT Language {#cwt}
 
 <!--
 @impl-notes
@@ -128,7 +128,7 @@ Notes:
 - Avoid reserved characters in unquoted keys/strings; use double quotes for complex content.
 - Both equal and not-equal separators are valid for properties and options; pick according to intended semantics.
 
-## Paradox Script Language
+## Paradox Script Language {#paradox-script}
 
 <!--
 @impl-notes
@@ -208,7 +208,7 @@ effect = {
 > [!warning]
 > Parameters, parameter conditions and inline math are advanced features, typically meaningful only in specific definitions (e.g., scripted effects/triggers) or when evaluated by the engine.
 
-## Paradox Localisation Language
+## Paradox Localisation Language {#paradox-localisation}
 
 <!--
 @impl-notes
@@ -256,7 +256,7 @@ Notes:
 > [!warning]
 > `#format` and `@icon!` are advanced, game-specific constructs and only available in games that implement them. `['concept' ...]` is Stellaris-only.
 
-## Paradox CSV File
+## Paradox CSV Language {#paradox-csv}
 
 <!--
 @impl-notes
