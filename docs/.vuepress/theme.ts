@@ -3,7 +3,6 @@ import { navbarEn, navbarZh, sidebarEn, sidebarZh } from "./configs/index.js"
 
 export default hopeTheme({
   hostname: "https://windea.icu",
-  iconAssets: "fontawesome-with-brands",
   logo: null, // no logo
   repo: "DragonKnightOfBreeze/Paradox-Language-Support",
 
@@ -71,25 +70,29 @@ export default hopeTheme({
         "/en/": { placeholder: "Search" }
       }
     },
-    mdEnhance: {
-      gfm: true,
-      breaks: false,
-      attrs: true,
-      alert: true,
-      footnote: true,
+  },
 
-      stylize: [
-        // generate "New in {version}" badges
-        {
-          matcher: /^\(New in .*\)$/,
-          replacer: ({ tag, content }) => {
-            if (tag === "em") {
-                return {tag: "Badge", attrs: {type: "tip"}, content: content.substring(1, content.length - 1)}
-            }
+  markdown: {
+    highlighter: {
+      type: "prismjs"
+    },
+    gfm: true,
+    breaks: false,
+    attrs: true,
+    alert: true,
+    footnote: true,
+
+    stylize: [
+      // generate "New in {version}" badges
+      {
+        matcher: /^\(New in .*\)$/,
+        replacer: ({ tag, content }) => {
+          if (tag === "em") {
+            return {tag: "Badge", attrs: {type: "tip"}, content: content.substring(1, content.length - 1)}
           }
         }
-      ]
-    }
-  }
+      }
+    ],
+  },
 })
 

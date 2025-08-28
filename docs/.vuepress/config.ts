@@ -1,5 +1,5 @@
-import viteBundler from "@vuepress/bundler-vite"
 import { defineUserConfig } from "vuepress"
+import { viteBundler } from "@vuepress/bundler-vite"
 import { head } from "./configs/index.js"
 import theme from "./theme.js"
 
@@ -17,5 +17,5 @@ export default defineUserConfig({
     }
   },
   bundler: viteBundler(),
-  theme: theme
+  theme: theme,
 })

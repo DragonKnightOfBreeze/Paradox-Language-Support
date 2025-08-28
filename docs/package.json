@@ -8,12 +8,14 @@
     "docs:build": "vuepress build ./"
   },
   "devDependencies": {
-    "@vuepress/bundler-vite": "2.0.0-rc.14",
-    "@vuepress/plugin-redirect": "2.0.0-rc.37",
-    "@vuepress/plugin-search": "2.0.0-rc.37",
+    "@vuepress/bundler-vite": "2.0.0-rc.25",
+    "@vuepress/plugin-prismjs": "2.0.0-rc.112",
+    "@vuepress/plugin-redirect": "2.0.0-rc.112",
+    "@vuepress/plugin-search": "2.0.0-rc.112",
     "artplayer": "^5.2.5",
-    "vue": "^3.4.31",
-    "vuepress": "2.0.0-rc.14",
-    "vuepress-theme-hope": "2.0.0-rc.50"
-  }
+    "vue": "^3.5.20",
+    "vuepress": "2.0.0-rc.25",
+    "vuepress-theme-hope": "2.0.0-rc.94"
+  },
+  "packageManager": "pnpm@10.15.0+sha1.8e43a0b959a228ea479539575a66f5eafc89023a"
 }
