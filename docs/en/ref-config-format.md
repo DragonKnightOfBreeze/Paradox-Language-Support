@@ -24,8 +24,8 @@ Schema edge tests exist covering the cases above.
 
 ### Basic concepts and scope
 
-* __Definition__: a config expression is a structured syntax inside string fields of configs to describe the value shape or matching pattern.
-* __Families__:
+- **Definition**: a config expression is a structured syntax inside string fields of configs to describe the value shape or matching pattern.
+- **Families**:
   - Schema expressions: declare the value shape for RHS.
   - Data expressions: parse data types or dynamic fragments.
   - Template expressions (data-driven): patterns concatenating constants and dynamic fragments.
@@ -42,19 +42,19 @@ Describe the allowed value shapes at the right-hand side (often used by data typ
 
 Supported forms:
 
-* __Constant__: a raw string without '$'.
-* __Type__: starts with a single '$', such as `$any`, `$int` (empty name is allowed).
-* __Constraint__: starts with `$$`, such as `$$custom` (empty name is allowed).
-* __Enum__: starts with `$enum:` and ends with `$`, such as `$enum:ship_size$`.
-* __Template__: contains paired `$...$` segments, the other parts are treated as constants, e.g. `a $x$ b $y$`.
+- **Constant**: a raw string without '$'.
+- **Type**: starts with a single '$', such as `$any`, `$int` (empty name is allowed).
+- **Constraint**: starts with `$$`, such as `$$custom` (empty name is allowed).
+- **Enum**: starts with `$enum:` and ends with `$`, such as `$enum:ship_size$`.
+- **Template**: contains paired `$...$` segments, the other parts are treated as constants, e.g. `a $x$ b $y$`.
 
 Defaults and edge cases:
 
-* __Odd number of '$'__: treated as an invalid template and handled as a constant.
-* __Both ends have '$'__: prefer Template to Type (`$any$` -> Template, pattern is `*`).
-* __Enum embedded in a larger string__: the whole becomes a Template (e.g. `prefix $enum:ship_size$ suffix`).
-* __Escaped dollar `\$`__: does not participate in placeholders and is not replaced by `*`. If only escaped dollars appear, it is not a template and is handled as a constant.
-* __Template pattern__: replace every unescaped `$...$` segment with `*`.
+- **Odd number of '$'**: treated as an invalid template and handled as a constant.
+- **Both ends have '$'**: prefer Template to Type (`$any$` -> Template, pattern is `*`).
+- **Enum embedded in a larger string**: the whole becomes a Template (e.g. `prefix $enum:ship_size$ suffix`).
+- **Escaped dollar `\$`**: does not participate in placeholders and is not replaced by `*`. If only escaped dollars appear, it is not a template and is handled as a constant.
+- **Template pattern**: replace every unescaped `$...$` segment with `*`.
 
 Examples:
 
@@ -68,8 +68,8 @@ a \$x\$ b       # has escaped dollars, not a template, treated as constant
 
 Pitfalls:
 
-* A single '$' (or any odd count) does not form a parameter placeholder; the whole is treated as constant.
-* `$...$` inside a template must be paired and unescaped; otherwise it is not a parameter position.
+- A single '$' (or any odd count) does not form a parameter placeholder; the whole is treated as constant.
+- `$...$` inside a template must be paired and unescaped; otherwise it is not a parameter position.
 
 ---
 
@@ -81,9 +81,9 @@ Describe the shapes for keys/values in configs. It can be a constant or a dynami
 
 Key points:
 
-* __Key/value context__: parsing distinguishes key (isKey=true) and value (isKey=false).
-* __Types__: resolve into concrete types such as `int`, `float`, `scalar`, `enum[...]`, `scope[...]`, `<type_key>`, etc.
-* __Extended metadata__: may carry numeric ranges or case policies depending on type (e.g. `int[-5..100]`, `float[-inf..inf]`, `ignoreCase`).
+- **Key/value context**: parsing distinguishes key (isKey=true) and value (isKey=false).
+- **Types**: resolve into concrete types such as `int`, `float`, `scalar`, `enum[...]`, `scope[...]`, `<type_key>`, etc.
+- **Extended metadata**: may carry numeric ranges or case policies depending on type (e.g. `int[-5..100]`, `float[-inf..inf]`, `ignoreCase`).
 
 Examples (excerpt):
 
@@ -108,9 +108,9 @@ Constructed by concatenating ordered "snippets": constant snippets + dynamic sni
 
 Defaults and constraints:
 
-* __No whitespace__: if any whitespace appears, it is an invalid template.
-* __Snippet cardinality__: a single snippet (pure constant or pure dynamic) does not constitute a template.
-* __Matching strategy__: split using all dynamic configs (those with both prefix and suffix) with a "leftmost-earliest" strategy.
+- **No whitespace**: if any whitespace appears, it is an invalid template.
+- **Snippet cardinality**: a single snippet (pure constant or pure dynamic) does not constitute a template.
+- **Matching strategy**: split using all dynamic configs (those with both prefix and suffix) with a "leftmost-earliest" strategy.
 
 Examples:
 
@@ -122,8 +122,8 @@ a_enum[weight_or_base]_b
 
 Pitfalls:
 
-* When a constant snippet is immediately followed by something that looks like a config name, prefer correct recognition of dynamic configs to avoid treating "symbol + config-name" as a single constant.
-* If whitespace is needed, use a more appropriate matcher (e.g. ANT/regex).
+- When a constant snippet is immediately followed by something that looks like a config name, prefer correct recognition of dynamic configs to avoid treating "symbol + config-name" as a single constant.
+- If whitespace is needed, use a more appropriate matcher (e.g. ANT/regex).
 
 ---
 
@@ -143,10 +143,10 @@ min..~max          # above max produces warnings only (relaxed)
 
 Defaults and edge cases:
 
-* __Negative min__: clamped to 0.
-* __max is `inf` (case-insensitive)__: unlimited.
-* __No `..` separator__: treated as invalid and no constraint is produced.
-* __min > max__: treated as invalid and no constraint is produced.
+- **Negative min**: clamped to 0.
+- **max is `inf` (case-insensitive)**: unlimited.
+- **No `..` separator**: treated as invalid and no constraint is produced.
+- **min > max**: treated as invalid and no constraint is produced.
 
 Examples (from comment conventions):
 
@@ -166,7 +166,7 @@ Locate target resources (images / localisations). If `$` appears in `location`, 
 
 Defaults and edge cases:
 
-* __Placeholder count__: at most one is recommended; if multiple exist, all placeholders are replaced.
+- **Placeholder count**: at most one is recommended; if multiple exist, all placeholders are replaced.
 
 #### Image location expressions
 
@@ -174,10 +174,10 @@ Defaults and edge cases:
 
 Syntax and conventions:
 
-* Use `|` to separate arguments: `<location>|<args...>`.
-* Arguments starting with `$` specify name paths (comma-separated) to substitute the placeholder; stored as namePaths.
-* Other arguments specify frame paths (comma-separated) for sprite frames; stored as framePaths.
-* When duplicate arguments of the same kind appear (all starting with `$`, or all not starting with `$`), the later one overrides the earlier ones.
+- Use `|` to separate arguments: `<location>|<args...>`.
+- Arguments starting with `$` specify name paths (comma-separated) to substitute the placeholder; stored as namePaths.
+- Other arguments specify frame paths (comma-separated) for sprite frames; stored as framePaths.
+- When duplicate arguments of the same kind appear (all starting with `$`, or all not starting with `$`), the later one overrides the earlier ones.
 
 Examples:
 
@@ -197,10 +197,10 @@ Note: `icon` can resolve to a file path, a sprite name, or a definition; for a d
 
 Syntax and conventions:
 
-* Use `|` to separate arguments: `<location>|<args...>`.
-* Arguments starting with `$` specify name paths (comma-separated); stored as namePaths.
-* Argument `u` forces the final name to upper case.
-* When `$` arguments are duplicated, the later one overrides the earlier ones.
+- Use `|` to separate arguments: `<location>|<args...>`.
+- Arguments starting with `$` specify name paths (comma-separated); stored as namePaths.
+- Argument `u` forces the final name to upper case.
+- When `$` arguments are duplicated, the later one overrides the earlier ones.
 
 Examples:
 

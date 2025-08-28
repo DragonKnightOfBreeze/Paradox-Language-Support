@@ -10,16 +10,16 @@ This chapter aims to be an authoritative, practical, and concise reference for P
 
 This chapter covers the following syntaxes (examples use Prism code fences):
 
-* __CWT config file__ (`*.cwt`)
+- **CWT config file** (`*.cwt`)
   - Comments: `#`, `##` (option comment), `###` (doc comment)
   - Code fence language id: `cwt`
-* __Paradox Script__
+- **Paradox Script**
   - Comments: `#`
   - Code fence language id: `paradox_script`
-* __Paradox Localisation__ (`.yml`)
+- **Paradox Localisation** (`.yml`)
   - Comments: `#`
   - Code fence language id: `paradox_localisation`
-* __Paradox CSV__ (semicolon-separated CSV)
+- **Paradox CSV** (semicolon-separated CSV)
   - Comments: `#`
   - Code fence language id: `paradox_csv`
 
@@ -41,15 +41,15 @@ This section defines the syntax of CWT config files used to author and organize 
 
 Basics:
 
-* __Member types__: property, value, block.
-* __Separators__: `=`/`==` mean equal; `!=`/`<>` mean not equal.
-* __Whitespace/newlines__: whitespace and newlines separate tokens; blank lines are allowed.
+- **Member types**: property, value, block.
+- **Separators**: `=`/`==` mean equal; `!=`/`<>` mean not equal.
+- **Whitespace/newlines**: whitespace and newlines separate tokens; blank lines are allowed.
 
 Property:
 
-* Structure: `<key> <sep> <value>`, where `<sep>` is one of `=`/`==`/`!=`/`<>`.
-* Key: unquoted or double-quoted. Unquoted keys must not contain `# = { }` or whitespace.
-* Example:
+- Structure: `<key> <sep> <value>`, where `<sep>` is one of `=`/`==`/`!=`/`<>`.
+- Key: unquoted or double-quoted. Unquoted keys must not contain `# = { }` or whitespace.
+- Example:
 
 ```cwt
 cost = int
@@ -59,19 +59,19 @@ class = enum[shipsize_class]
 
 Value:
 
-* __Boolean__: `yes`/`no`.
-* __Integer__: `10`, `-5` (leading minus and leading zeros are permitted).
-* __Float__: `1.0`, `-0.5`.
-* __String__:
+- **Boolean**: `yes`/`no`.
+- **Integer**: `10`, `-5` (leading minus and leading zeros are permitted).
+- **Float**: `1.0`, `-0.5`.
+- **String**:
   - Unquoted: must not contain `# = { }` or whitespace.
   - Double-quoted: supports escapes like `\"`.
-* __Block__: see below.
+- **Block**: see below.
 
 Block:
 
-* Enclosed by braces: `{ ... }`.
-* Content may mix: properties, values, and option comments (see below). Both inline and standalone comments are allowed.
-* Example:
+- Enclosed by braces: `{ ... }`.
+- Content may mix: properties, values, and option comments (see below). Both inline and standalone comments are allowed.
+- Example:
 
 ```cwt
 ship_size = {
@@ -87,11 +87,11 @@ ship_size = {
 
 Comments and documentation:
 
-* __Line comment__: starts with `#`; the whole line is a comment.
-* __Option comment__: starts with `##`; declares metadata for the immediately following member (property/block/value).
+- **Line comment**: starts with `#`; the whole line is a comment.
+- **Option comment**: starts with `##`; declares metadata for the immediately following member (property/block/value).
   - Syntax mirrors properties: `<optionKey> <sep> <optionValue>`.
   - Common examples: `## cardinality = 0..1`, `## severity = warning`, `## push_scope = country`.
-* __Documentation comment__: starts with `###`; provides human-readable docs for a member (shown in completion/tooltips).
+- **Documentation comment**: starts with `###`; provides human-readable docs for a member (shown in completion/tooltips).
 
 Grammar highlights and example:
 
@@ -124,9 +124,9 @@ types = {
 
 Notes:
 
-* An option comment applies to the immediately following member (and, depending on consumer semantics, may scope to its body).
-* Avoid reserved characters in unquoted keys/strings; use double quotes for complex content.
-* Both equal and not-equal separators are valid for properties and options; pick according to intended semantics.
+- An option comment applies to the immediately following member (and, depending on consumer semantics, may scope to its body).
+- Avoid reserved characters in unquoted keys/strings; use double quotes for complex content.
+- Both equal and not-equal separators are valid for properties and options; pick according to intended semantics.
 
 ## Paradox Script Language
 
@@ -145,44 +145,44 @@ This section documents the surface syntax of Paradox Script and strives to match
 
 Basics:
 
-* __Members__: property, value, block.
-* __Separators/relations__: `=`, `!=`, `<`, `>`, `<=`, `>=`, `?=`.
-* __Comment__: single-line comment starts with `#`.
+- **Members**: property, value, block.
+- **Separators/relations**: `=`, `!=`, `<`, `>`, `<=`, `>=`, `?=`.
+- **Comment**: single-line comment starts with `#`.
 
 Property:
 
-* Structure: `<key> <sep> <value>` where `<sep>` is one of the separators above.
-* Key: unquoted or double-quoted. Keys can be parameterized.
-* Examples: `enabled = yes`, `level >= 2`, `size ?= @var`.
+- Structure: `<key> <sep> <value>` where `<sep>` is one of the separators above.
+- Key: unquoted or double-quoted. Keys can be parameterized.
+- Examples: `enabled = yes`, `level >= 2`, `size ?= @var`.
 
 Values:
 
-* __Boolean__: `yes`/`no`.
-* __Integer/Float__: e.g., `10`, `-5`, `1.25`.
-* __String__: unquoted or double-quoted; quoted strings may embed parameters and inline-parameter-conditions.
-* __Color__: `rgb{...}`, `hsv{...}`, `hsv360{...}`.
-* __Block__: `{ ... }` with nested properties/values/variables.
-* __Scripted variable reference__: `@name`.
-* __Inline math__: `@[ <expr> ]` with `+ - * / %`, unary `+/-`, absolute `|x|`, and parentheses.
+- **Boolean**: `yes`/`no`.
+- **Integer/Float**: e.g., `10`, `-5`, `1.25`.
+- **String**: unquoted or double-quoted; quoted strings may embed parameters and inline-parameter-conditions.
+- **Color**: `rgb{...}`, `hsv{...}`, `hsv360{...}`.
+- **Block**: `{ ... }` with nested properties/values/variables.
+- **Scripted variable reference**: `@name`.
+- **Inline math**: `@[ <expr> ]` with `+ - * / %`, unary `+/-`, absolute `|x|`, and parentheses.
 
 Scripted variables:
 
-* Declaration: `@<name> = <value>` where value can be boolean/int/float/string/inline-math.
-* Reference: `@<name>`.
+- Declaration: `@<name> = <value>` where value can be boolean/int/float/string/inline-math.
+- Reference: `@<name>`.
 
 Parameters:
 
-* Syntax: `$name$` or `$name|argument$`.
-* Locations: may appear in variable names, variable references, keys, strings, and inline math.
+- Syntax: `$name$` or `$name|argument$`.
+- Locations: may appear in variable names, variable references, keys, strings, and inline math.
 
 Parameter conditions:
 
-* Outer form: `[ [!]<parameter> <members...> ]`.
-* Purpose: conditionally define members in declaration contexts.
+- Outer form: `[ [!]<parameter> <members...> ]`.
+- Purpose: conditionally define members in declaration contexts.
 
 Inline parameter condition:
 
-* Within strings, fragments like: `"a[[cond]b]c"`.
+- Within strings, fragments like: `"a[[cond]b]c"`.
 
 Example:
 
@@ -227,18 +227,18 @@ This section documents the surface syntax of Paradox Localisation and strives to
 
 File layout:
 
-* Optional __locale header__ line(s): e.g., `l_english:` or `l_simp_chinese:` (multiple allowed to be compatible with `localisation/languages.yml`).
-* Multiple __key-value__ entries: `<key>:<number?> "<text>"`, where `<number>` is an optional tracking number.
-* Comments: single-line comments start with `#`.
+- Optional **locale header** line(s): e.g., `l_english:` or `l_simp_chinese:` (multiple allowed to be compatible with `localisation/languages.yml`).
+- Multiple **key-value** entries: `<key>:<number?> "<text>"`, where `<number>` is an optional tracking number.
+- Comments: single-line comments start with `#`.
 
 Markup inside the quoted text:
 
-* __Color__: `§X ... §!` (`X` is a single-character id).
-* __Parameters__: `$name$` or `$name|argument$`. The `name` can be a localisation key, a command, or a scripted variable reference using `$@var$` (parse-equivalent).
-* __Bracket commands__: `[text|argument]`, `text` can be parameterized; often used for `Get...` functions/context lookups.
-* __Icon__: `£icon|frame£` (the `|frame` part is optional) to embed a GFX icon.
-* __Concept command (Stellaris)__: `['concept' <rich text>]` for linking a concept and showing rich text.
-* __Text format (CK3/Vic3)__: `#format ... #!` to style a text block; and __Text icon__: `@icon!`.
+- **Color**: `§X ... §!` (`X` is a single-character id).
+- **Parameters**: `$name$` or `$name|argument$`. The `name` can be a localisation key, a command, or a scripted variable reference using `$@var$` (parse-equivalent).
+- **Bracket commands**: `[text|argument]`, `text` can be parameterized; often used for `Get...` functions/context lookups.
+- **Icon**: `£icon|frame£` (the `|frame` part is optional) to embed a GFX icon.
+- **Concept command (Stellaris)**: `['concept' <rich text>]` for linking a concept and showing rich text.
+- **Text format (CK3/Vic3)**: `#format ... #!` to style a text block; and **Text icon**: `@icon!`.
 
 Example:
 
@@ -250,8 +250,8 @@ l_english:
 
 Notes:
 
-* The number after the colon can be omitted.
-* Quoted text generally does not require escaping for quotes if kept balanced; avoid stray quotes.
+- The number after the colon can be omitted.
+- Quoted text generally does not require escaping for quotes if kept balanced; avoid stray quotes.
 
 > [!warning]
 > `#format` and `@icon!` are advanced, game-specific constructs and only available in games that implement them. `['concept' ...]` is Stellaris-only.
@@ -271,9 +271,9 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 
 Paradox CSV files are typically regular CSV with project-specific conventions:
 
-* __Column separator__: semicolon `;`.
-* __Comments__: single-line comments starting with `#`.
-* __Strings__: double-quoted; inner quotes follow the regular CSV rule of doubling (`""`).
+- **Column separator**: semicolon `;`.
+- **Comments**: single-line comments starting with `#`.
+- **Strings**: double-quoted; inner quotes follow the regular CSV rule of doubling (`""`).
 
 Example:
 
