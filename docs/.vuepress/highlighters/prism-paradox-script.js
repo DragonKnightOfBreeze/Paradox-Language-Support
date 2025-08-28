@@ -1,8 +1,19 @@
-// Prism language definition for Paradox Script
-// Usage:
-// - Browser: include after Prism, it will auto-register if window.Prism exists
-// - Module: import { registerParadoxScript } and call registerParadoxScript(Prism)
+// Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
+// All rights reserved.
 
+/**
+ * Register Prism language definition for Paradox Script.
+ *
+ * Usage:
+ * - Browser: include after Prism, it will auto-register if window.Prism exists
+ * - Module: import { registerParadoxScript } and call registerParadoxScript(Prism)
+ *
+ * @see https://github.com/PrismJS/prism
+ * @see https://prismjs.com
+ * @see https://windea.icu/Paradox-Language-Support/ref-syntax.html#paradox-script
+ *
+ * @author windea
+ */
 export function registerParadoxScript(Prism) {
   if (!Prism || Prism.languages.paradox_script) return;
 

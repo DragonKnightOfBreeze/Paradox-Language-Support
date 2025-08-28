@@ -1,8 +1,19 @@
-// Prism language definition for Paradox Localisation
-// Usage:
-// - Browser: include after Prism, it will auto-register if window.Prism exists
-// - Module: import { registerParadoxLocalisation } and call registerParadoxLocalisation(Prism)
+// Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
+// All rights reserved.
 
+/**
+ * Register Prism language definition for Paradox Localisation.
+ *
+ * Usage:
+ * - Browser: include after Prism, it will auto-register if window.Prism exists
+ * - Module: import { registerParadoxLocalisation } and call registerParadoxLocalisation(Prism)
+ *
+ * @see https://github.com/PrismJS/prism
+ * @see https://prismjs.com
+ * @see https://windea.icu/Paradox-Language-Support/ref-syntax.html#paradox-localisation
+ *
+ * @author windea
+ */
 export function registerParadoxLocalisation(Prism) {
   if (!Prism || Prism.languages.paradox_localisation) return;
 

@@ -1,8 +1,19 @@
-// Prism language definition for CWT config file syntax
-// Usage:
-// - Browser: include after Prism, it will auto-register if window.Prism exists
-// - Module: import { registerCwt } and call registerCwt(Prism)
+// Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
+// All rights reserved.
 
+/**
+ * Register Prism language definition for CWT.
+ *
+ * Usage:
+ * - Browser: include after Prism, it will auto-register if window.Prism exists
+ * - Module: import { registerCwt } and call registerCwt(Prism)
+ *
+ * @see https://github.com/PrismJS/prism
+ * @see https://prismjs.com
+ * @see https://windea.icu/Paradox-Language-Support/ref-syntax.html#cwt
+ *
+ * @author windea
+ */
 export function registerCwt(Prism) {
   if (!Prism || Prism.languages.cwt) return;
 

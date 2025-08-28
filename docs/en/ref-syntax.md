@@ -6,7 +6,7 @@
 
 This chapter aims to be an authoritative, practical, and concise reference for Paradox modding syntaxes. We strive to align with real-world usage and toolchain behaviour, and will continue refining it as the ecosystem evolves.
 
-## Overview
+## Overview {#overview}
 
 This chapter covers the following syntaxes (examples use Prism code fences):
 
