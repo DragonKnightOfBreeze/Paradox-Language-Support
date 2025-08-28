@@ -10,6 +10,7 @@
  *
  * @see https://github.com/PrismJS/prism
  * @see https://prismjs.com
+ * @see https://prismjs.com/extending#language-definitions
  * @see https://windea.icu/Paradox-Language-Support/ref-syntax.html#paradox-script
  *
  * @author windea
