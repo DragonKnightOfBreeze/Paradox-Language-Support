@@ -1,0 +1,110 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Paradox Script",
+  "scopeName": "source.paradoxscript",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#property" },
+    { "include": "#variables" },
+    { "include": "#operators" },
+    { "include": "#colors" },
+    { "include": "#inline-math" },
+    { "include": "#parameters-anywhere" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#braces" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.paradox",
+          "match": "^(\\s*)(#).*$",
+          "captures": { "2": { "name": "punctuation.definition.comment.paradox" } }
+        }
+      ]
+    },
+    "property": {
+      "patterns": [
+        {
+          "name": "meta.property.paradox",
+          "match": "^(\\s*)([A-Za-z0-9_.\\-']+)(?=\\s*(==|!=|<=|>=|<|>|\\?=|=))",
+          "captures": {
+            "2": { "name": "variable.other.key.paradox" }
+          }
+        }
+      ]
+    },
+    "variables": {
+      "patterns": [
+        { "name": "variable.other.scripted.paradox", "match": "@[A-Za-z_][A-Za-z0-9_]*" }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        { "name": "keyword.operator.comparison.paradox", "match": "==|!=|<=|>=|<|>|\\?=|=" }
+      ]
+    },
+    "colors": {
+      "patterns": [
+        { "name": "support.function.color.paradox", "match": "(?i)(rgb|hsv|hsv360)(?=\\s*\\{)" }
+      ]
+    },
+    "inline-math": {
+      "patterns": [
+        {
+          "name": "meta.inline.math.paradox",
+          "begin": "@\\[",
+          "beginCaptures": { "0": { "name": "punctuation.section.embedded.begin.paradox" } },
+          "end": "\\]",
+          "endCaptures": { "0": { "name": "punctuation.section.embedded.end.paradox" } },
+          "patterns": [
+            { "name": "keyword.operator.arithmetic.paradox", "match": "[+*/%\\-|]" },
+            { "name": "punctuation.section.group.paradox", "match": "[()]" },
+            { "name": "constant.numeric.number.paradox", "match": "-?\\d+(?:\\.\\d+)?" },
+            { "name": "variable.other.scripted.paradox", "match": "@[A-Za-z_][A-Za-z0-9_]*" }
+          ]
+        }
+      ]
+    },
+    "parameters-anywhere": {
+      "patterns": [
+        {
+          "name": "variable.parameter.paradox",
+          "match": "\\$(?:@[A-Za-z_]\\w*|[A-Za-z0-9_.\\-']+)(?:\\|[^\\"$\\[\\]\\r\\n\\\\]+)?\\$"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.paradox",
+          "begin": "\"",
+          "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.paradox" } },
+          "end": "\"",
+          "endCaptures": { "0": { "name": "punctuation.definition.string.end.paradox" } },
+          "patterns": [
+            { "include": "#parameters-anywhere" },
+            {
+              "name": "meta.inline.parameter.condition.paradox",
+              "match": "\\[\\[[^\\]]*\\]\\]"
+            },
+            { "name": "constant.character.escape.paradox", "match": "\\\\." }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        { "name": "constant.numeric.float.paradox", "match": "\\b-?\\d+\\.\\d+\\b" },
+        { "name": "constant.numeric.integer.paradox", "match": "\\b-?\\d+\\b" }
+      ]
+    },
+    "braces": {
+      "patterns": [
+        { "name": "punctuation.section.block.begin.paradox", "match": "\\{" },
+        { "name": "punctuation.section.block.end.paradox", "match": "\\}" }
+      ]
+    }
+  }
+}

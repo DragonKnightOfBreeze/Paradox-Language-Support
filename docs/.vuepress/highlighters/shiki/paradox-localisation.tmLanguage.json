@@ -1,0 +1,53 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Paradox Localisation",
+  "scopeName": "source.paradoxlocalisation",
+  "fileTypes": ["yml"],
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#header" },
+    { "include": "#entry" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        { "name": "comment.line.number-sign.localisation", "match": "^(\\s*)(#).*$", "captures": { "2": { "name": "punctuation.definition.comment.localisation" } } }
+      ]
+    },
+    "header": {
+      "patterns": [
+        { "name": "entity.name.section.locale.localisation", "match": "^(\\s*)[a-z_]+\\s*:" }
+      ]
+    },
+    "entry": {
+      "patterns": [
+        {
+          "name": "meta.entry.localisation",
+          "begin": "^(\\s*)([A-Za-z0-9_.\\-']+)\\s*:(\\s*(\\d+))?\\s*\"",
+          "beginCaptures": {
+            "2": { "name": "entity.name.key.localisation" },
+            "4": { "name": "constant.numeric.tracking.localisation" }
+          },
+          "end": "\"",
+          "endCaptures": { "0": { "name": "punctuation.definition.string.end.localisation" } },
+          "patterns": [
+            { "include": "#string-markup" }
+          ]
+        }
+      ]
+    },
+    "string-markup": {
+      "patterns": [
+        { "name": "constant.other.color.start.localisation", "match": "§[A-Za-z0-9]" },
+        { "name": "constant.other.color.end.localisation", "match": "§!" },
+        { "name": "variable.parameter.localisation", "match": "\\$(?:@[A-Za-z_]\\w*|[A-Za-z0-9_.\\-']+)(?:\\|[^\\\"§$\\[\\]\\r\\n\\\\]+)?\\$" },
+        { "name": "support.constant.icon.localisation", "match": "£[A-Za-z0-9_\\-\\/\\\\]+(?:\\|[^\\\"§$\\[\\]\\r\\n\\\\]+)?£" },
+        { "name": "meta.bracket.command.localisation", "match": "\\[[^\\]\\r\\n]*\\]" },
+        { "name": "support.other.text-format.start.localisation", "match": "#(?!!)[\\w:;]+" },
+        { "name": "support.other.text-format.end.localisation", "match": "#!" },
+        { "name": "support.other.text-icon.localisation", "match": "@[A-Za-z0-9_]+!" },
+        { "name": "constant.character.escape.localisation", "match": "\\\\." }
+      ]
+    }
+  }
+}

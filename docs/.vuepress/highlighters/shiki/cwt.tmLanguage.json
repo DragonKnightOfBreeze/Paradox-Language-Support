@@ -1,0 +1,87 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "CWT",
+  "scopeName": "source.cwt",
+  "fileTypes": ["cwt"],
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#property" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#operators" },
+    { "include": "#braces" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.triple-number-sign.cwt",
+          "match": "^(\\s*)(###).*$",
+          "captures": {
+            "2": { "name": "punctuation.definition.comment.cwt" }
+          }
+        },
+        {
+          "name": "comment.line.double-number-sign.cwt",
+          "match": "^(\\s*)(##).*$",
+          "captures": {
+            "2": { "name": "punctuation.definition.comment.cwt" }
+          }
+        },
+        {
+          "name": "comment.line.number-sign.cwt",
+          "match": "^(\\s*)(#).*$",
+          "captures": {
+            "2": { "name": "punctuation.definition.comment.cwt" }
+          }
+        }
+      ]
+    },
+    "property": {
+      "patterns": [
+        {
+          "name": "meta.property.cwt",
+          "match": "^(\\s*)([A-Za-z0-9_.'\\-]+)(?=\\s*(==|!=|<>|=))",
+          "captures": {
+            "2": { "name": "variable.other.key.cwt" }
+          }
+        },
+        {
+          "name": "support.function.dynamic.cwt",
+          "match": "(?x)(value|enum|scope|icon)\\s*\\[[^\\]\\r\\n]+\\]"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.cwt",
+          "begin": "\"",
+          "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.cwt" } },
+          "end": "\"",
+          "endCaptures": { "0": { "name": "punctuation.definition.string.end.cwt" } },
+          "patterns": [
+            { "name": "constant.character.escape.cwt", "match": "\\\\." }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        { "name": "constant.numeric.float.cwt", "match": "\\b-?\\d+\\.\\d+\\b" },
+        { "name": "constant.numeric.integer.cwt", "match": "\\b-?\\d+\\b" }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        { "name": "keyword.operator.comparison.cwt", "match": "==|!=|<>|=" }
+      ]
+    },
+    "braces": {
+      "patterns": [
+        { "name": "punctuation.section.block.begin.cwt", "match": "\\{" },
+        { "name": "punctuation.section.block.end.cwt", "match": "\\}" }
+      ]
+    }
+  }
+}

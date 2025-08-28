@@ -1,0 +1,32 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Paradox CSV",
+  "scopeName": "source.paradoxcsv",
+  "fileTypes": ["csv"],
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#fields" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        { "name": "comment.line.number-sign.csv", "match": "^(\\s*)(#).*$", "captures": { "2": { "name": "punctuation.definition.comment.csv" } } }
+      ]
+    },
+    "fields": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.csv",
+          "begin": "\"",
+          "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.csv" } },
+          "end": "\"",
+          "endCaptures": { "0": { "name": "punctuation.definition.string.end.csv" } },
+          "patterns": [
+            { "name": "constant.character.escape.csv", "match": "\"\"" }
+          ]
+        },
+        { "name": "punctuation.separator.delimiter.csv", "match": ";" }
+      ]
+    }
+  }
+}

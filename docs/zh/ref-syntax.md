@@ -285,7 +285,7 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 -->
 
 本章节说明 Paradox CSV 语言的语法。
-Paradox CSV 语言的文件扩展名是 `.cwt`，其在常规 CSV 的基础上，约定：
+Paradox CSV 语言的文件扩展名是 `.csv`，其在常规 CSV 的基础上，约定：
 
 - **列分隔符**：分号 `;`（常见于早期/工具导出的 CSV）。
 - **注释**：以 `#` 开始的整行注释。

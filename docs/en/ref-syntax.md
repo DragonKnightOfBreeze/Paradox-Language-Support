@@ -224,6 +224,10 @@ This section describes surface syntax and lexer tokens; details follow the plugi
 
 This section documents the surface syntax of Paradox Localisation and strives to match actual usage and toolchain behaviour.
 
+Paradox Localisation files use the `.yml` extension but are actually not valid YAML. They also require the file encoding to be **UTF-8 WITH BOM**.
+
+> [!tip]
+> PLS can detect encoding issues of localisation files and can auto-fix the file encoding when necessary.
 
 File layout:
 
@@ -282,3 +286,4 @@ Example:
 key;col1;col2
 id1;"text with ; semicolon";42
 id2;plain;"quoted"
+```
