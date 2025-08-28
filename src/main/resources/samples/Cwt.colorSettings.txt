@@ -17,9 +17,9 @@ types = {
 		}
 		localisation = {
 			## required
-			Name = "$"
+			name = "$"
 			## required
-			Desc = "$_desc"
+			desc = "$_desc"
 		}
 		images = {
 			## primary

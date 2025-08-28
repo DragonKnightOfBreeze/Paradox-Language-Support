@@ -4,33 +4,46 @@
 
 ## 定位与愿景
 
-本章节旨在成为 Paradox 模组语法的权威指南与速查参考。我们有信心以清晰、准确、可操作为原则，保持与实际用法及工具链表现的一致，并将随着生态与版本演进持续打磨与完善。
+本文档旨在成为编写 CWT 规则文件以及 Paradox 模组时使用的领域特定语言的语法的权威指南与速查参考。
+我们有信心以清晰、准确、可操作为原则，保持与实际用法及工具链表现的一致，并将随着生态与版本演进持续打磨与完善。
 
 ## 总览
 
-本节涵盖以下语法（文档示例的代码块已配置 Prism 高亮）：
+本文档涵盖对以下语言的语法的说明：
 
-* __CWT config file__（`*.cwt`）
+* __CWT__（`*.cwt`）
   - 注释：`#`、`##`（选项注释）、`###`（文档注释）
   - 代码块语言 ID：`cwt`
-* __Paradox Script__（脚本文件）
+* __Paradox Script__（脚本）
   - 注释：`#`
   - 代码块语言 ID：`paradox_script`
 * __Paradox Localisation__（本地化 `.yml`）
   - 注释：`#`
   - 代码块语言 ID：`paradox_localisation`
-* __Paradox CSV__（分号分隔 CSV）
+* __Paradox CSV__（分号分隔 CSV，`*.cwt`）
   - 注释：`#`
   - 代码块语言 ID：`paradox_csv`
 
-## CWT config file
+## CWT 语言
 
-<!-- AI: maps to icu.windea.pls.cwt.CwtLanguage; icu.windea.pls.cwt.CwtFileType -->
-<!-- AI: impl-notes
-Language id: CWT; default extension: .cwt. This section describes surface syntax and lexer tokens; details follow the plugin grammar.
+<!--
+@impl-notes
+Language id: `CWT`; default extension: `.cwt`
+This section describes surface syntax and lexer tokens; details follow the plugin grammar.
+
+@see icu.windea.pls.cwt.CwtLanguage
+@see icu.windea.pls.cwt.CwtFileType
+@see src/main/kotlin/icu/windea/pls/cwt/Cwt.bnf
+@see src/main/kotlin/icu/windea/pls/cwt/Cwt.flex
+@see src/main/kotlin/icu/windea/pls/cwt/Cwt.OptionDocument.flex
 -->
 
-本文档说明 CWT config file 的基本语法，用于编写与组织 CWT 配置内容。其外观与 Paradox 脚本类似，但有额外的“选项注释”等扩展能力。
+本章节说明 CWT 语言的语法。
+
+CWT 语言是一种领域特定语言，用于编写 CWT 规则。
+CWT 语言的文件扩展名是 `.cwt`，其语法与 Paradox 脚本语言类似，但额外支持 *选项注释* 与 *文档注释*。
+
+CWT 规则用于为 CWT 语言自身以及各种 Paradox 语言提供高级语言功能，包括但不限于代码高亮、代码检查、代码补全等。
 
 基础概念：
 
@@ -68,13 +81,13 @@ class = enum[shipsize_class]
 
 ```cwt
 ship_size = {
-  ## cardinality = 0..1
-  ### The base cost of this ship_size
-  cost = int
+    ## cardinality = 0..1
+    ### The base cost of this ship_size
+    cost = int
 
-  modifier = {
-    alias_name[modifier] = alias_match_left[modifier]
-  }
+    modifier = {
+        alias_name[modifier] = alias_match_left[modifier]
+    }
 }
 ```
 
@@ -90,29 +103,28 @@ ship_size = {
 
 ```cwt
 # 普通注释
-## option_key = option_value    # 选项注释（作用于下一成员）
-### Documentation text          # 文档注释
-
 types = {
-  type[army] = {
-    path = "game/common/armies"
-    subtype[buildable] = {
-      potential = {
-        ## cardinality = 0..0
-        always = no
-      }
+    ### Documentation text
+    ## option_key = option_value
+    type[army] = {
+        path = "game/common/armies"
+        subtype[buildable] = {
+            potential = {
+                ## cardinality = 0..0
+                always = no
+            }
+        }
+        localisation = {
+            ## required
+            name = "$"
+            ## required
+            desc = "$_desc"
+        }
+        images = {
+            ## primary
+            icon = "#icon"
+        }
     }
-    localisation = {
-      ## required
-      Name = "$"
-      ## required
-      Desc = "$_desc"
-    }
-    images = {
-      ## primary
-      icon = "#icon"
-    }
-  }
 }
 ```
 
@@ -122,10 +134,23 @@ types = {
 * 未加引号的键与字符串尽量避免包含空白与保留符号；复杂内容建议使用双引号。
 * 等号与不等号均可用于选项与属性；请根据语义选择。
 
-## Paradox 脚本文件
+## Paradox 脚本语言
 
-本文档说明 Paradox 脚本文件（Script）的表面语法，力求与实际用法及工具链行为保持一致。
-<!-- impl: src/main/kotlin/icu/windea/pls/script/ParadoxScript.bnf, src/main/kotlin/icu/windea/pls/script/ParadoxScript.flex -->
+<!--
+@impl-notes
+Language id: `PARADOX_SCRIPT`; extensions: `.txt`, `.gfx`, `.gui`, etc.
+This section describes surface syntax and lexer tokens; details follow the plugin grammar.
+
+@see icu.windea.pls.script.ParadoxScriptLanguage
+@see icu.windea.pls.script.ParadoxScriptFileType
+@see src/main/kotlin/icu/windea/pls/script/ParadoxScript.bnf
+@see src/main/kotlin/icu/windea/pls/script/ParadoxScript.flex
+-->
+
+本章节说明 Paradox 脚本（Script）语言的基本语法。
+
+Paradox 脚本语言是一种领域特定语言，用于编写游戏脚本。
+其文件扩展名通常是 `.txt`。某些特定位置的文件会使用其他扩展名，例如 `.gfx`、`.gui`。
 
 基础概念：
 
@@ -151,7 +176,7 @@ types = {
 
 脚本变量（scripted variable）：
 
-* 定义：`@<name> = <value>`，其中 `<value>` 可为布尔/整数/浮点/字符串/内联数学表达式。
+* 声明：`@<name> = <value>`，其中 `<value>` 可为布尔/整数/浮点/字符串/内联数学表达式。
 * 引用：`@<name>`。
 
 参数（parameter）：
@@ -175,30 +200,44 @@ types = {
 @my_var = 42
 
 effect = {
-  enabled = yes
-  level >= 2
-  size ?= @my_var
+    enabled = yes
+    level >= 2
+    size ?= @my_var
 
-  name = "Hello $who|leader$!"
+    name = "Hello $who|leader$!"
 
-  modifier = {
-    add = 1
-  }
+    modifier = {
+        add = 1
+    }
 
-  result = @[1 + 2 * 3]
+    result = @[ 1 + 2 * 3 ]
 }
 ```
-
-注意事项：
 
 > [!warning]
 > 参数、参数条件与内联数学等属于进阶语法，通常仅在特定定义（如脚本化效果/触发）中生效或被引擎评估。
 
-* 未加引号的键与字符串请避免保留字符；复杂文本使用双引号。
+## Paradox 本地化语言
 
-## Paradox 本地化文件
+<!--
+@impl-notes
+Language id: `PARADOX_LOCALISATION`; default extension: `.yml`
+This section describes surface syntax and lexer tokens; details follow the plugin grammar.
 
-本文档说明 Paradox 本地化（Localisation）文件的表面语法，力求与实际用法及工具链行为保持一致。
+@see icu.windea.pls.localisation.ParadoxLocalisationLanguage
+@see icu.windea.pls.localisation.ParadoxLocalisationFileType
+@see src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.bnf
+@see src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.flex
+@see src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.Text.flex
+-->
+
+本章节说明 Paradox 本地化（Localisation）语言的基本语法。
+
+Paradox 本地化语言是一种领域特定语言，用于为游戏提供可国际化的、可包含动态内容的富文本。
+其文件扩展名是 `.yml`，但实际上并非合法的 YAML 文件，且需要使用 **UTF-8 WITH BOM** 作为文件编码。
+
+> [!tip]
+> PLS 可以检测本地化文件的文件编码问题，并且支持自动修正文件编码。
 
 文件结构：
 
@@ -231,9 +270,21 @@ l_english:
 > [!warning]
 > `#format`、`@icon!` 等为特定游戏支持的进阶标记；仅在对应游戏中有效。`['concept' ...]` 仅 Stellaris 支持。
 
-## Paradox CSV 文件
+## Paradox CSV 语言
 
-Paradox CSV 文件在常规 CSV 的基础上，约定：
+<!--
+@impl-notes
+Language id: `PARADOX_CSV`; default extension: `.csv`
+This section describes surface syntax and lexer tokens; details follow the plugin grammar.
+
+@see icu.windea.pls.csv.ParadoxCsvLanguage
+@see icu.windea.pls.csv.ParadoxCsvFileType
+@see src/main/kotlin/icu/windea/pls/csv/ParadoxCsv.bnf
+@see src/main/kotlin/icu/windea/pls/csv/ParadoxCsv.flex
+-->
+
+本章节说明 Paradox CSV 语言的语法。
+Paradox CSV 语言的文件扩展名是 `.cwt`，其在常规 CSV 的基础上，约定：
 
 * __列分隔符__：分号 `;`（常见于早期/工具导出的 CSV）。
 * __注释__：以 `#` 开始的整行注释。

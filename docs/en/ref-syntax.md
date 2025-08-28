@@ -23,11 +23,18 @@ This chapter covers the following syntaxes (examples use Prism code fences):
   - Comments: `#`
   - Code fence language id: `paradox_csv`
 
-## CWT File
+## CWT Language
 
-<!-- AI: maps to icu.windea.pls.cwt.CwtLanguage; icu.windea.pls.cwt.CwtFileType -->
-<!-- AI: impl-notes
-Language id: CWT; default extension: .cwt. This section describes surface syntax and lexer tokens; details follow the plugin grammar.
+<!--
+@impl-notes
+Language id: `CWT`; default extension: `.cwt`
+This section describes surface syntax and lexer tokens; details follow the plugin grammar.
+
+@see icu.windea.pls.cwt.CwtLanguage
+@see icu.windea.pls.cwt.CwtFileType
+@see src/main/kotlin/icu/windea/pls/cwt/Cwt.bnf
+@see src/main/kotlin/icu/windea/pls/cwt/Cwt.flex
+@see src/main/kotlin/icu/windea/pls/cwt/Cwt.OptionDocument.flex
 -->
 
 This section defines the syntax of CWT config files used to author and organize CWT configuration content. The surface form resembles Paradox Script with additional capabilities such as option comments.
@@ -68,13 +75,13 @@ Block:
 
 ```cwt
 ship_size = {
-  ## cardinality = 0..1
-  ### The base cost of this ship_size
-  cost = int
+    ## cardinality = 0..1
+    ### The base cost of this ship_size
+    cost = int
 
-  modifier = {
-    alias_name[modifier] = alias_match_left[modifier]
-  }
+    modifier = {
+        alias_name[modifier] = alias_match_left[modifier]
+    }
 }
 ```
 
@@ -90,29 +97,28 @@ Grammar highlights and example:
 
 ```cwt
 # regular comment
-## option_key = option_value    # option comment (applies to the next member)
-### Documentation text          # doc comment
-
 types = {
-  type[army] = {
-    path = "game/common/armies"
-    subtype[buildable] = {
-      potential = {
-        ## cardinality = 0..0
-        always = no
-      }
+    ### Documentation text
+    ## option_key = option_value
+    type[army] = {
+        path = "game/common/armies"
+        subtype[buildable] = {
+            potential = {
+                ## cardinality = 0..0
+                always = no
+            }
+        }
+        localisation = {
+            ## required
+            name = "$"
+            ## required
+            desc = "$_desc"
+        }
+        images = {
+            ## primary
+            icon = "#icon"
+        }
     }
-    localisation = {
-      ## required
-      Name = "$"
-      ## required
-      Desc = "$_desc"
-    }
-    images = {
-      ## primary
-      icon = "#icon"
-    }
-  }
 }
 ```
 
@@ -122,10 +128,20 @@ Notes:
 * Avoid reserved characters in unquoted keys/strings; use double quotes for complex content.
 * Both equal and not-equal separators are valid for properties and options; pick according to intended semantics.
 
-## Paradox Script File
+## Paradox Script Language
+
+<!--
+@impl-notes
+Language id: `PARADOX_SCRIPT`; extensions: `.txt`, `.gfx`, `.gui`, etc.
+This section describes surface syntax and lexer tokens; details follow the plugin grammar.
+
+@see icu.windea.pls.script.ParadoxScriptLanguage
+@see icu.windea.pls.script.ParadoxScriptFileType
+@see src/main/kotlin/icu/windea/pls/script/ParadoxScript.bnf
+@see src/main/kotlin/icu/windea/pls/script/ParadoxScript.flex
+-->
 
 This section documents the surface syntax of Paradox Script and strives to match actual usage and toolchain behaviour.
-<!-- impl: src/main/kotlin/icu/windea/pls/script/ParadoxScript.bnf, src/main/kotlin/icu/windea/pls/script/ParadoxScript.flex -->
 
 Basics:
 
@@ -151,7 +167,7 @@ Values:
 
 Scripted variables:
 
-* Definition: `@<name> = <value>` where value can be boolean/int/float/string/inline-math.
+* Declaration: `@<name> = <value>` where value can be boolean/int/float/string/inline-math.
 * Reference: `@<name>`.
 
 Parameters:
@@ -175,30 +191,39 @@ Example:
 @my_var = 42
 
 effect = {
-  enabled = yes
-  level >= 2
-  size ?= @my_var
+    enabled = yes
+    level >= 2
+    size ?= @my_var
 
-  name = "Hello $who|leader$!"
+    name = "Hello $who|leader$!"
 
-  modifier = {
-    add = 1
-  }
+    modifier = {
+        add = 1
+    }
 
-  result = @[1 + 2 * 3]
+    result = @[ 1 + 2 * 3 ]
 }
 ```
 
-Notes:
-
 > [!warning]
 > Parameters, parameter conditions and inline math are advanced features, typically meaningful only in specific definitions (e.g., scripted effects/triggers) or when evaluated by the engine.
-* Avoid reserved characters in unquoted keys/strings; prefer quoted strings for complex text.
 
-## Paradox Localisation File
+## Paradox Localisation Language
+
+<!--
+@impl-notes
+Language id: `PARADOX_LOCALISATION`; default extension: `.yml`
+This section describes surface syntax and lexer tokens; details follow the plugin grammar.
+
+@see icu.windea.pls.localisation.ParadoxLocalisationLanguage
+@see icu.windea.pls.localisation.ParadoxLocalisationFileType
+@see src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.bnf
+@see src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.flex
+@see src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.Text.flex
+-->
 
 This section documents the surface syntax of Paradox Localisation and strives to match actual usage and toolchain behaviour.
-<!-- impl: src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.bnf, src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.flex, src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.Text.flex -->
+
 
 File layout:
 
@@ -232,6 +257,17 @@ Notes:
 > `#format` and `@icon!` are advanced, game-specific constructs and only available in games that implement them. `['concept' ...]` is Stellaris-only.
 
 ## Paradox CSV File
+
+<!--
+@impl-notes
+Language id: `PARADOX_CSV`; default extension: `.csv`
+This section describes surface syntax and lexer tokens; details follow the plugin grammar.
+
+@see icu.windea.pls.csv.ParadoxCsvLanguage
+@see icu.windea.pls.csv.ParadoxCsvFileType
+@see src/main/kotlin/icu/windea/pls/csv/ParadoxCsv.bnf
+@see src/main/kotlin/icu/windea/pls/csv/ParadoxCsv.flex
+-->
 
 Paradox CSV files are typically regular CSV with project-specific conventions:
 

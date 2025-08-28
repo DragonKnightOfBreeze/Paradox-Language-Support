@@ -51,7 +51,7 @@ Supported forms:
 Defaults and edge cases:
 
 * __Odd number of '$'__: treated as an invalid template and handled as a constant.
-* __Both ends have '$'__: prefer Template over Type (`$any$` -> Template, pattern is `*`).
+* __Both ends have '$'__: prefer Template to Type (`$any$` -> Template, pattern is `*`).
 * __Enum embedded in a larger string__: the whole becomes a Template (e.g. `prefix $enum:ship_size$ suffix`).
 * __Escaped dollar `\$`__: does not participate in placeholders and is not replaced by `*`. If only escaped dollars appear, it is not a template and is handled as a constant.
 * __Template pattern__: replace every unescaped `$...$` segment with `*`.
