@@ -1,5 +1,9 @@
 # Appendix: Syntax Reference
 
+## Positioning & Vision
+
+This chapter aims to be an authoritative, practical, and concise reference for Paradox modding syntaxes. We strive to align with real-world usage and toolchain behaviour, and will continue refining it as the ecosystem evolves.
+
 ## Overview
 
 This chapter covers the following syntaxes (examples use Prism code fences):
@@ -118,7 +122,8 @@ Notes:
 
 ## Paradox Script File
 
-This section documents the surface syntax of Paradox Script, aligned with `src/main/kotlin/icu/windea/pls/script/ParadoxScript.bnf` and `ParadoxScript.flex`.
+This section documents the surface syntax of Paradox Script and strives to match actual usage and toolchain behaviour.
+<!-- impl: src/main/kotlin/icu/windea/pls/script/ParadoxScript.bnf, src/main/kotlin/icu/windea/pls/script/ParadoxScript.flex -->
 
 Basics:
 
@@ -178,18 +183,20 @@ effect = {
     add = 1
   }
 
-  result = @[[1 + 2 * 3]]
+  result = @[1 + 2 * 3]
 }
 ```
 
 Notes:
 
-* Parameters, parameter conditions and inline math are advanced features and are only meaningful in specific definitions or when evaluated by the engine.
+> [!warning]
+> Parameters, parameter conditions and inline math are advanced features, typically meaningful only in specific definitions (e.g., scripted effects/triggers) or when evaluated by the engine.
 * Avoid reserved characters in unquoted keys/strings; prefer quoted strings for complex text.
 
 ## Paradox Localisation File
 
-This section documents the surface syntax of Paradox Localisation, aligned with `src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.bnf`, `ParadoxLocalisation.flex`, and `ParadoxLocalisation.Text.flex`.
+This section documents the surface syntax of Paradox Localisation and strives to match actual usage and toolchain behaviour.
+<!-- impl: src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.bnf, src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.flex, src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.Text.flex -->
 
 File layout:
 
@@ -218,7 +225,9 @@ Notes:
 
 * The number after the colon can be omitted.
 * Quoted text generally does not require escaping for quotes if kept balanced; avoid stray quotes.
-* `#format`/`@icon!` are supported only in games that implement these constructs.
+
+> [!warning]
+> `#format` and `@icon!` are advanced, game-specific constructs and only available in games that implement them. `['concept' ...]` is Stellaris-only.
 
 ## Paradox CSV File
 

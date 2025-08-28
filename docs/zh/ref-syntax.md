@@ -2,10 +2,9 @@
 
 
 
-<!-- @ai-generated DS
-本节提供关于语法的权威参考信息，采用简洁的技术文档风格。
-目标是成为开发过程中的速查手册，方便快速定位关键信息。
--->
+## 定位与愿景
+
+本章节旨在成为 Paradox 模组语法的权威指南与速查参考。我们有信心以清晰、准确、可操作为原则，保持与实际用法及工具链表现的一致，并将随着生态与版本演进持续打磨与完善。
 
 ## 总览
 
@@ -24,7 +23,7 @@
   - 注释：`#`
   - 代码块语言 ID：`paradox_csv`
 
-## CWT 文件
+## CWT config file
 
 <!-- AI: maps to icu.windea.pls.cwt.CwtLanguage; icu.windea.pls.cwt.CwtFileType -->
 <!-- AI: impl-notes
@@ -125,7 +124,8 @@ types = {
 
 ## Paradox 脚本文件
 
-本文档说明 Paradox 脚本文件（Script）的表面语法，内容与实现对齐于 `src/main/kotlin/icu/windea/pls/script/ParadoxScript.bnf` 与 `ParadoxScript.flex`。
+本文档说明 Paradox 脚本文件（Script）的表面语法，力求与实际用法及工具链行为保持一致。
+<!-- impl: src/main/kotlin/icu/windea/pls/script/ParadoxScript.bnf, src/main/kotlin/icu/windea/pls/script/ParadoxScript.flex -->
 
 基础概念：
 
@@ -185,27 +185,20 @@ effect = {
     add = 1
   }
 
-  result = @[[1 + 2 * 3]]
+  result = @[1 + 2 * 3]
 }
 ```
 
 注意事项：
 
-* 参数、参数条件与内联数学等属于高级语法，通常仅在特定定义（如脚本化效果/触发）中生效或被引擎评估。
-* 未加引号的键与字符串请避免保留字符；复杂文本使用双引号。
+> [!warning]
+> 参数、参数条件与内联数学等属于进阶语法，通常仅在特定定义（如脚本化效果/触发）中生效或被引擎评估。
 
-<!-- @ai-generated DS
-描述：脚本语法权威参考
-编写思路：
-- 语法结构：块/键值对/列表的规范格式
-- 特殊语法：内联脚本/表达式的高级用法
-- 注释规范：支持的单行和多行注释
-- 示例：展示符合规范的事件脚本结构
--->
+* 未加引号的键与字符串请避免保留字符；复杂文本使用双引号。
 
 ## Paradox 本地化文件
 
-本文档说明 Paradox 本地化（Localisation）文件的表面语法，内容与实现对齐于 `src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.bnf`、`ParadoxLocalisation.flex` 与 `ParadoxLocalisation.Text.flex`。
+本文档说明 Paradox 本地化（Localisation）文件的表面语法，力求与实际用法及工具链行为保持一致。
 
 文件结构：
 
@@ -220,7 +213,7 @@ effect = {
 * __方括号命令__：`[text|argument]`，其中 `text` 可参数化；常用于 `Get...`/上下文调用。
 * __图标__：`£icon|frame£`（`|frame` 可省略），在渲染时嵌入 GFX 图标。
 * __概念命令（Stellaris）__：`['concept' <rich text>]`，用于链接概念与显示说明文本。
-* __文本格式（CK3/Vic3）__：`#format ... #!`，用于样式化文本块；以及 __文本图标__：`@icon!`（以 `@` 开始、以 `!` 结束）。
+* __文本格式（CK3/Vic3）__：`#format ... #!`，用于样式化文本块；以及 __文本图标__：`@icon!`（以 `@` 开始、以 `!` 结尾）。
 
 示例：
 
@@ -234,16 +227,9 @@ l_english:
 
 * 冒号后的数字（追踪号）可以省略。
 * 文本中的双引号在多数情况下不需要转义，但建议避免不成对的引号。
-* `#format`/`@icon!` 等仅在支持对应语法的游戏中可用。
 
-<!-- @ai-generated DS
-描述：.yml本地化文件完整规范
-编写思路：
-- 文件结构：键值对组织标准
-- 富文本标记：§符号命令全集
-- 多语言支持：locale代码标准
-- 示例：展示包含条件表达式的复杂本地化条目
--->
+> [!warning]
+> `#format`、`@icon!` 等为特定游戏支持的进阶标记；仅在对应游戏中有效。`['concept' ...]` 仅 Stellaris 支持。
 
 ## Paradox CSV 文件
 
