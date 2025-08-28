@@ -76,7 +76,7 @@ COMMENT=#[^\r\n]*
 
 LOCALE_TOKEN=[a-z_]+
 PROPERTY_NUMBER=\d+
-PROPERTY_KEY_TOKEN=[a-zA-Z0-9_.\-']+
+PROPERTY_KEY_TOKEN=[A-Za-z0-9_.\-']+
 PROPERTY_VALUE_TOKEN=[^\"\r\n]+ // it's unnecessary to escape double quotes in loc text in fact
 
 %%

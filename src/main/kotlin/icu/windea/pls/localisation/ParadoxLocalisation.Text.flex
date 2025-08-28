@@ -201,17 +201,17 @@ ARGUMENT_TOKEN=[^\"§\$\[\]\r\n\\]+ // pipe is allowed?
 COLORFUL_TEXT_CHECK=§.?
 COLOR_TOKEN=\w
 REFERENCE_CHECK=\$(\S*\$|.?) // no blank in $...$
-REFERENCE_TOKEN=[a-zA-Z0-9_.\-']+
+REFERENCE_TOKEN=[A-Za-z0-9_.\-']+
 
-SCRIPTED_VARIABLE_TOKEN=[a-zA-Z_][a-zA-Z0-9_]*
+SCRIPTED_VARIABLE_TOKEN=[A-Za-z_][A-Za-z0-9_]*
 
 COMMAND_CHECK=\[.?
 COMMAND_TEXT_TOKEN=([^\r\n\'\[\]]+)|('([^'\\\r\n]|\\[\s\S])*'?)
 
 ICON_CHECK=£.?
-ICON_TOKEN=[a-zA-Z0-9\-_\\/]+
+ICON_TOKEN=[A-Za-z0-9\-_\\/]+
 
-CONCEPT_NAME_TOKEN=[a-zA-Z0-9_:]+
+CONCEPT_NAME_TOKEN=[A-Za-z0-9_:]+
 
 TEXT_FORMAT_CHECK=#.?
 TEXT_FORMAT_TOKEN=[\w:;]+ // "italic;color:green" is allowed

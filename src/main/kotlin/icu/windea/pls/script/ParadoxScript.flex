@@ -113,12 +113,12 @@ BLANK=\s+
 COMMENT=#[^\r\n]*
 
 // leading number is not permitted for parameter names
-PARAMETER_TOKEN=[a-zA-Z_][a-zA-Z0-9_]*
+PARAMETER_TOKEN=[A-Za-z_][A-Za-z0-9_]*
 
 // leading number is not permitted for scripted variable names
-SCRIPTED_VARIABLE_NAME_TOKEN=[a-zA-Z0-9_]+
-CHECK_SCRIPTED_VARIABLE_NAME=[a-zA-Z_$\[][^@#={}\s\"]*(\s*=)?
-CHECK_SCRIPTED_VARIABLE_REFERENCE=[a-zA-Z_$\[][^@#={}\s\"]*
+SCRIPTED_VARIABLE_NAME_TOKEN=[A-Za-z0-9_]+
+CHECK_SCRIPTED_VARIABLE_NAME=[A-Za-z_$\[][^@#={}\s\"]*(\s*=)?
+CHECK_SCRIPTED_VARIABLE_REFERENCE=[A-Za-z_$\[][^@#={}\s\"]*
 
 CHECK_PROPERTY_SEPARTOR=[=<>!?]
 CHECK_PROPERTY_KEY=({WILDCARD_PROPERTY_KEY_TOKEN}|{WILDCARD_QUOTED_PROPERTY_KEY_TOKEN})\s*{CHECK_PROPERTY_SEPARTOR}

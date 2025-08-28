@@ -180,7 +180,7 @@ intellijPlatform {
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
     header = version
-    headerParserRegex.set("""[a-zA-Z0-9.-]+""".toRegex())
+    headerParserRegex.set("""[A-Za-z0-9.-]+""".toRegex())
     groups.empty()
     keepUnreleasedSection = true
     repositoryUrl = properties("pluginRepositoryUrl")
