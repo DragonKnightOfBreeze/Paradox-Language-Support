@@ -8,10 +8,11 @@
  * - Browser: include after Prism, it will auto-register if window.Prism exists
  * - Module: import { registerParadoxScript } and call registerParadoxScript(Prism)
  *
- * @see https://github.com/PrismJS/prism
- * @see https://prismjs.com
- * @see https://prismjs.com/extending#language-definitions
- * @see https://windea.icu/Paradox-Language-Support/ref-syntax.html#paradox-script
+ * References:
+ * - https://github.com/PrismJS/prism
+ * - https://prismjs.com
+ * - https://prismjs.com/extending#language-definitions
+ * - https://windea.icu/Paradox-Language-Support/ref-syntax.html#paradox-script
  *
  * @author windea
  */

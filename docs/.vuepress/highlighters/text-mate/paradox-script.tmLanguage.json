@@ -9,9 +9,11 @@
     { "include": "#operators" },
     { "include": "#colors" },
     { "include": "#inline-math" },
+    { "include": "#booleans" },
     { "include": "#parameters-anywhere" },
     { "include": "#strings" },
     { "include": "#numbers" },
+    { "include": "#punctuation" },
     { "include": "#braces" }
   ],
   "repository": {
@@ -42,7 +44,13 @@
     },
     "operators": {
       "patterns": [
-        { "name": "keyword.operator.comparison.paradox", "match": "==|!=|<=|>=|<|>|\\?=|=" }
+        { "name": "keyword.operator.comparison.paradox", "match": "==|!=|<=|>=|<|>|\\?=|=" },
+        { "name": "keyword.operator.arithmetic.paradox", "match": "[+\\-*/%]" }
+      ]
+    },
+    "booleans": {
+      "patterns": [
+        { "name": "constant.language.boolean.paradox", "match": "\\b(?:yes|no)\\b" }
       ]
     },
     "colors": {
@@ -91,6 +99,10 @@
             },
             { "name": "constant.character.escape.paradox", "match": "\\\\." }
           ]
+        },
+        {
+          "name": "string.unquoted.paradox",
+          "match": "(?x)(?<![@#$])(?:[A-Za-z_][^@#=<>?{}\\[\\]\\s\"(),]*)"
         }
       ]
     },
@@ -98,6 +110,15 @@
       "patterns": [
         { "name": "constant.numeric.float.paradox", "match": "\\b-?\\d+\\.\\d+\\b" },
         { "name": "constant.numeric.integer.paradox", "match": "\\b-?\\d+\\b" }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        { "name": "punctuation.section.group.begin.paradox", "match": "\\(" },
+        { "name": "punctuation.section.group.end.paradox", "match": "\\)" },
+        { "name": "punctuation.section.brackets.begin.paradox", "match": "\\[" },
+        { "name": "punctuation.section.brackets.end.paradox", "match": "\\]" },
+        { "name": "punctuation.separator.comma.paradox", "match": "," }
       ]
     },
     "braces": {

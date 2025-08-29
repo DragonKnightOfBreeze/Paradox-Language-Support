@@ -8,7 +8,9 @@
     { "include": "#property" },
     { "include": "#strings" },
     { "include": "#numbers" },
+    { "include": "#booleans" },
     { "include": "#operators" },
+    { "include": "#punctuation" },
     { "include": "#braces" }
   ],
   "repository": {
@@ -63,6 +65,10 @@
           "patterns": [
             { "name": "constant.character.escape.cwt", "match": "\\\\." }
           ]
+        },
+        {
+          "name": "string.unquoted.cwt",
+          "match": "(?x)(?:[A-Za-z0-9_.'\\-][^#=<>{}\\[\\]\\s\"(),]*)"
         }
       ]
     },
@@ -72,9 +78,23 @@
         { "name": "constant.numeric.integer.cwt", "match": "\\b-?\\d+\\b" }
       ]
     },
+    "booleans": {
+      "patterns": [
+        { "name": "constant.language.boolean.cwt", "match": "\\b(?:yes|no)\\b" }
+      ]
+    },
     "operators": {
       "patterns": [
         { "name": "keyword.operator.comparison.cwt", "match": "==|!=|<>|=" }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        { "name": "punctuation.section.group.begin.cwt", "match": "\\(" },
+        { "name": "punctuation.section.group.end.cwt", "match": "\\)" },
+        { "name": "punctuation.section.brackets.begin.cwt", "match": "\\[" },
+        { "name": "punctuation.section.brackets.end.cwt", "match": "\\]" },
+        { "name": "punctuation.separator.comma.cwt", "match": "," }
       ]
     },
     "braces": {
